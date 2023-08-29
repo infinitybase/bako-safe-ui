@@ -21,7 +21,8 @@
     "react-refresh",
     "import",
     "simple-import-sort",
-    "prettier"
+    "prettier",
+    "unused-imports"
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
@@ -44,7 +45,12 @@
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "import/no-duplicates": "error",
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ]
   },
   "ignorePatterns": [
     "dist",

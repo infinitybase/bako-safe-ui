@@ -1,16 +1,7 @@
-import { Button } from '@chakra-ui/react';
-import { useState } from 'react';
+import { AppRoutes } from '@/routes';
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      {count}
-      Teste
-      <Button onClick={() => setCount(count + 1)}>a</Button>
-    </>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

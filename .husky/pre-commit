@@ -1,8 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-bold=$(tput bold)
-normal=$(tput sgr0)
-
-echo "\n🐶 ${bold}[Husky]${normal} Running ESLint:"
+echo "\n🐶 [Husky] Running ESLint:"
 yarn lint-staged
