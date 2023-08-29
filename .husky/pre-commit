@@ -4,8 +4,5 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-echo "\n🐶 ${bold}[Husky]${normal} Running prettier:"
-yarn pretty-quick --staged --pattern '**/*.*(js|ts|tsx|jsx)'
-
 echo "\n🐶 ${bold}[Husky]${normal} Running ESLint:"
 yarn lint-staged
