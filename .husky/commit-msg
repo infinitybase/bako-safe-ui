@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+echo "\n🐶 ${bold}[Husky]${normal} Validating commit message:"
+yarn commitlint --edit $1
