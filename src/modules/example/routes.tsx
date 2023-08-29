@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 
-import { ExamplePage } from '@/modules/example/pages';
+import { ExamplePage } from './pages';
 
 const exampleRoutes = (
   <Route path="/">
