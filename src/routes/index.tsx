@@ -1,11 +1,18 @@
 import { BrowserRouter, Routes } from 'react-router-dom';
 
-import { exampleRoutes } from '@/modules/example';
+import { exampleRoutes, signinRoutes } from '@/modules';
+
+const routes = (
+  <>
+    {exampleRoutes}
+    {signinRoutes}
+  </>
+);
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <Routes>{exampleRoutes}</Routes>
+      <Routes>{routes}</Routes>
     </BrowserRouter>
   );
 };

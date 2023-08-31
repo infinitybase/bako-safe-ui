@@ -23,7 +23,8 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.15.0",
     "react-text-mask": "^5.5.0",
-    "text-mask-addons": "^3.8.0"
+    "text-mask-addons": "^3.8.0",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
