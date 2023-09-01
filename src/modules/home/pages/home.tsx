@@ -4,7 +4,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Container,
   Flex,
   Heading,
   Icon,
@@ -13,6 +12,7 @@ import {
 import { MdChevronRight } from 'react-icons/md';
 
 import { Loader } from '@/components';
+import { DefaultLayout } from '@/layouts';
 
 import { useHome } from '../hooks';
 
@@ -23,9 +23,7 @@ const HomePage = () => {
   console.log('[HOME] Account:', { account });
 
   return (
-    <Container maxWidth="container.xl">
-      {/*<Header />*/}
-
+    <DefaultLayout>
       <Flex width="100%" justifyContent="center" mt={20}>
         <Card bg="dark.500" color="white" minW={600} boxShadow="xl">
           {isLoading && !predicates ? (
@@ -109,7 +107,7 @@ const HomePage = () => {
           )}
         </Card>
       </Flex>
-    </Container>
+    </DefaultLayout>
   );
 };
 
