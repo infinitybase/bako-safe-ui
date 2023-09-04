@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useDidMountEffect, useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -13,24 +13,28 @@ export enum TabState {
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
-  const navigate = useNavigate();
-  const [tab, setTab] = useState<TabState>(TabState.INFO);
-  const { form, addressesFieldArray } = useCreateVaultForm();
   const { account } = useFuelAccount();
 
-  useDidMountEffect(() => {
-    addressesFieldArray.append({ value: account });
-  }, []);
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<TabState>(TabState.INFO);
+  const { form, addressesFieldArray } = useCreateVaultForm(account);
 
   const handleCreateVault = form.handleSubmit((data) => {
     console.log(data);
   });
 
-  const removeAddress = (index: number) => addressesFieldArray.remove(index);
-  const appendAddress = () => addressesFieldArray.append({ value: '' });
+  const removeAddress = (index: number) => {
+    addressesFieldArray.remove(index);
+  };
+  const appendAddress = () => {
+    addressesFieldArray.append({ value: '' });
+  };
 
-  const hasAddress = (value: string) =>
-    addressesFieldArray.fields.map((field) => field.value === value);
+  const hasAddress = (address: string, index: number) => {
+    return addressesFieldArray.fields.some(({ value }, _index) => {
+      return index !== _index && value === address;
+    });
+  };
 
   return {
     form: {

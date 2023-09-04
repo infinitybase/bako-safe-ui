@@ -15,6 +15,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
+import { Controller } from 'react-hook-form';
 import { MdAdd as AddIcon, MdChevronLeft as LeftIcon } from 'react-icons/md';
 import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
@@ -27,6 +28,7 @@ export interface CreateVaultFormProps {
 }
 
 const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
+  console.log(form.formState.errors);
   return (
     <form onSubmit={form.handleCreateVault}>
       <Tabs index={tabs.tab} colorScheme="green">
@@ -34,22 +36,32 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
           <TabPanel p={0}>
             <Box mb={6} maxW={400}>
               <Text fontSize="sm" color="gray">
-                Select a Name and a Description to reconize your predicate.
+                Select a Name and a Description to recognize your predicate.
               </Text>
             </Box>
             <Box mb={2}>
-              <FormControl>
-                <FormLabel color="gray">Name</FormLabel>
-                <Input
-                  variant="filled"
-                  bg="dark.100"
-                  color="gray"
-                  _hover={{}}
-                  {...form.register('name', {
-                    required: true,
-                  })}
-                />
-              </FormControl>
+              <Controller
+                name="name"
+                render={({ field, fieldState }) => {
+                  return (
+                    <FormControl isInvalid={fieldState.invalid}>
+                      <FormLabel color="gray">Name</FormLabel>
+                      <Input
+                        value={field.value}
+                        onChange={field.onChange}
+                        variant="filled"
+                        bg="dark.100"
+                        color="gray"
+                        _hover={{}}
+                      />
+                      <FormHelperText>
+                        <Text color="error">{fieldState.error?.message}</Text>
+                      </FormHelperText>
+                    </FormControl>
+                  );
+                }}
+                control={form.control}
+              />
             </Box>
             <Box mb={8}>
               <FormControl>
@@ -86,79 +98,90 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
             </Box>
             <Box mb={8}>
               {addresses.fields.map(({ id }, index) => {
-                const error =
-                  form.formState.errors?.addresses?.[index]?.value?.message;
-
                 return (
                   <Box key={id} mb={2}>
-                    <FormControl>
-                      <FormLabel color="gray">
-                        {index === 0 ? 'Your address' : `Address ${index + 1}`}
-                      </FormLabel>
-                      <InputGroup>
-                        <Input
-                          variant="filled"
-                          bg="dark.100"
-                          borderColor={error ? 'error' : undefined}
-                          color="gray"
-                          isDisabled={index === 0}
-                          _hover={{}}
-                          {...form.register(`addresses.${index}.value`, {
-                            required: tabs.tab === TabState.ADDRESSES,
-                          })}
-                        />
-                        {index > 0 && (
-                          <InputRightAddon borderColor="dark.100" bg="dark.100">
-                            <Icon
-                              as={RemoveIcon}
-                              fontSize="md"
-                              color="red.400"
-                              cursor="pointer"
-                              onClick={() => {
-                                if (index > 0) {
-                                  addresses.remove(index);
+                    <Controller
+                      name={`addresses.${index}.value`}
+                      render={({ field, fieldState }) => {
+                        return (
+                          <FormControl isInvalid={fieldState.invalid}>
+                            <FormLabel color="gray">
+                              {index === 0
+                                ? 'Your address'
+                                : `Address ${index + 1}`}
+                            </FormLabel>
+                            <InputGroup>
+                              <Input
+                                value={field.value}
+                                onChange={(event) => {
+                                  field.onChange(event);
+                                  form.trigger('addresses');
+                                }}
+                                variant="filled"
+                                bg="dark.100"
+                                borderColor={
+                                  fieldState.invalid ? 'error' : undefined
                                 }
-                              }}
-                            />
-                          </InputRightAddon>
-                        )}
-                      </InputGroup>
-                      <FormHelperText>
-                        <Text color="error">{error}</Text>
-                      </FormHelperText>
-                    </FormControl>
+                                color="gray"
+                                isDisabled={index === 0}
+                                _hover={{}}
+                              />
+                              {index > 0 && (
+                                <InputRightAddon
+                                  borderColor="dark.100"
+                                  bg="dark.100"
+                                >
+                                  <Icon
+                                    as={RemoveIcon}
+                                    fontSize="md"
+                                    color="red.400"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                      if (index > 0) {
+                                        addresses.remove(index);
+                                      }
+                                    }}
+                                  />
+                                </InputRightAddon>
+                              )}
+                            </InputGroup>
+                            <FormHelperText>
+                              <Text color="error">
+                                {fieldState.error?.message}
+                              </Text>
+                            </FormHelperText>
+                          </FormControl>
+                        );
+                      }}
+                      control={form.control}
+                    />
                   </Box>
                 );
               })}
               <Box mb={2}>
-                <FormControl>
-                  <FormLabel color="gray">Signatures Required</FormLabel>
-                  <Input
-                    variant="filled"
-                    bg="dark.100"
-                    color="gray"
-                    type="number"
-                    _hover={{}}
-                    {...form.register('minSigners', {
-                      required: true,
-                      validate: (value) => {
-                        const isValid =
-                          Number(value) <= addresses.fields.length;
-
-                        if (!isValid) {
-                          return 'The number of required signatures must be less than or equal to the number of addresses.';
-                        }
-
-                        return isValid;
-                      },
-                    })}
-                  />
-                  <FormHelperText>
-                    <Text color="error">
-                      {form.formState.errors?.minSigners?.message}
-                    </Text>
-                  </FormHelperText>
-                </FormControl>
+                <Controller
+                  name="minSigners"
+                  render={({ field, fieldState }) => {
+                    return (
+                      <FormControl isInvalid={fieldState.invalid}>
+                        <FormLabel color="gray">Signatures Required</FormLabel>
+                        <Input
+                          value={field.value}
+                          onChange={field.onChange}
+                          variant="filled"
+                          bg="dark.100"
+                          color="gray"
+                          type="number"
+                          _hover={{}}
+                        />
+                        <FormHelperText>
+                          <Text color="error">{fieldState.error?.message}</Text>
+                        </FormHelperText>
+                      </FormControl>
+                    );
+                  }}
+                  control={form.control}
+                />
               </Box>
             </Box>
           </TabPanel>

@@ -1,51 +1,55 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import * as yup from 'yup';
 
 import { AddressUtils } from '@/modules';
 
-function validateUniqueAddresses(addresses: string[]) {
-  const uniqueAddresses = new Set(addresses);
-  return uniqueAddresses.size === addresses.length;
-}
-
-const schema = z
+const schema = yup
   .object({
-    name: z.string(),
-    description: z.string().optional(),
-    quantity: z.number(),
-    destiny: z.string(),
-    amount: z.string(),
-    addresses: z
-      .array(
-        z.object({
-          value: z.string().refine((address) => AddressUtils.isValid(address), {
-            message: 'Not valid address.',
-          }),
-        }),
-      )
-      .refine(
-        (addresses) =>
-          validateUniqueAddresses(addresses.map((address) => address.value)),
-        {
-          message: 'Address registered.',
-        },
-      ),
-    minSigners: z.string().transform(Number),
-    required: z.string().transform(Number),
+    name: yup.string().required('Name is required.'),
+    description: yup.string().optional(),
+    addresses: yup.array().of(
+      yup.object({
+        value: yup
+          .string()
+          .required('Empty address.')
+          .test('is-valid-address', 'Invalid address.', (address) =>
+            AddressUtils.isValid(address),
+          ),
+      }),
+    ),
+    minSigners: yup.string(),
   })
-  .refine((values) => values.addresses.length >= values.minSigners, {
-    message:
-      'The number of required signatures must be less than or equal to the number of addresses.',
-  });
+  .test(
+    'minSigner-validation',
+    'The number of required signatures must be less than or equal to the number of addresses.',
+    function (values) {
+      if (
+        values.addresses &&
+        values?.addresses?.length < Number(values?.minSigners)
+      ) {
+        return this.createError({
+          path: 'minSigners',
+        });
+      }
 
-export type UseCreateVaultFormFields = z.infer<typeof schema>;
+      return true;
+    },
+  );
 
-const useCreateVaultForm = () => {
-  const form = useForm<UseCreateVaultFormFields>({
+export type UseCreateVaultFormFields = yup.InferType<typeof schema>;
+
+const useCreateVaultForm = (account?: string) => {
+  const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: zodResolver(schema),
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      description: '',
+      minSigners: '1',
+      addresses: [{ value: account }],
+    },
   });
 
   const addressesFieldArray = useFieldArray<UseCreateVaultFormFields>({
