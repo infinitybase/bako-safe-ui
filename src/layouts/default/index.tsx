@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 import { Container } from './container.tsx';
 import { Content } from './content';
@@ -17,8 +18,14 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
   );
 };
 
+const DefaultLayoutRouter = () => (
+  <DefaultLayout>
+    <Outlet />
+  </DefaultLayout>
+);
+
 DefaultLayout.Header = Header;
 DefaultLayout.Content = Content;
 DefaultLayout.Container = Container;
 
-export { DefaultLayout };
+export { DefaultLayout, DefaultLayoutRouter };

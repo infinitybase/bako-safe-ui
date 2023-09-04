@@ -1,0 +1,3 @@
+const useCreateVaultRequest = () => {};
+
+export { useCreateVaultRequest };

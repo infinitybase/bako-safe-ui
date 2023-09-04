@@ -3,19 +3,19 @@ import { Route } from 'react-router-dom';
 import { DefaultLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { HomePage } from './pages';
+import { CreateVaultPage } from './pages/create';
 
-const homeRoutes = (
-  <Route path={Pages.home()} element={<DefaultLayoutRouter />}>
+const vaultRoutes = (
+  <Route element={<DefaultLayoutRouter />}>
     <Route
-      index
+      path={Pages.createVault()}
       element={
         <AuthRoute>
-          <HomePage />
+          <CreateVaultPage />
         </AuthRoute>
       }
     />
   </Route>
 );
 
-export { homeRoutes };
+export { vaultRoutes };

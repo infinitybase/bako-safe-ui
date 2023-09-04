@@ -45,6 +45,7 @@ const useFuelConnection = (params?: UseFuelConnectParams) => {
 
     return () => {
       fuel?.off(fuel.events.connection, handleConnection);
+      fuel?.on(fuel.events.currentAccount, handleConnection);
     };
   }, [fuel, params]);
 
