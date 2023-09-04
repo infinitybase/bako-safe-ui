@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { Pages, useCreateVaultRequest, useFuelAccount } from '@/modules';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -18,9 +18,20 @@ const useCreateVault = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const { form, addressesFieldArray } = useCreateVaultForm(account);
+  const request = useCreateVaultRequest({
+    onSuccess: () => navigate(Pages.home()),
+  });
 
   const handleCreateVault = form.handleSubmit((data) => {
-    console.log(data);
+    const addresses = data.addresses?.map((address) => address.value) ?? [];
+
+    request.createVault({
+      name: data.name,
+      addresses,
+      minSigners: Number(data.minSigners),
+      description: data.description,
+      owner: account,
+    });
   });
 
   const removeAddress = (index: number) => {
@@ -52,6 +63,7 @@ const useCreateVault = () => {
       set: setTab,
       isLast: tab === TabState.ADDRESSES,
     },
+    request,
     navigate,
   };
 };

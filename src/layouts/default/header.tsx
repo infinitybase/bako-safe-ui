@@ -8,7 +8,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useFuel, useFuelAccount } from '@/modules';
+import { Pages, useFuel, useFuelAccount } from '@/modules';
 
 import { TabEnum } from './types';
 
@@ -23,7 +23,7 @@ const Header = () => {
 
   const disconnect = async () => {
     await fuel.disconnect();
-    navigate('/');
+    navigate(Pages.index());
   };
 
   return (
@@ -47,7 +47,7 @@ const Header = () => {
             cursor="pointer"
             onClick={() => {
               setTab(TabEnum.SIGNATURES);
-              navigate('/home');
+              navigate(Pages.home());
             }}
           >
             <Flex mr={2} alignItems="center">

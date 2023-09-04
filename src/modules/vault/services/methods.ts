@@ -7,7 +7,7 @@ import {
   GetPredicateResponse,
 } from './types.ts';
 
-export class PredicateService {
+export class VaultService {
   static async create(payload: CreatePredicatePayload) {
     const { data } = await api.post<CreatePredicateResponse>(
       '/predicates',

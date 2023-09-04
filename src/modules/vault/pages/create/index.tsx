@@ -7,11 +7,13 @@ import {
   Heading,
 } from '@chakra-ui/react';
 
+import { Pages } from '@/modules';
+
 import { CreateVaultForm } from '../../components';
 import { useCreateVault } from '../../hooks';
 
 const CreateVaultPage = () => {
-  const { form, addresses, tabs, navigate } = useCreateVault();
+  const { form, addresses, tabs, navigate, request } = useCreateVault();
 
   return (
     <Card bg="dark.500" width="100%" maxWidth={400} boxShadow="xl">
@@ -27,7 +29,7 @@ const CreateVaultPage = () => {
             variant="solid"
             colorScheme="brand"
             loadingText="Connecting.."
-            onClick={() => navigate('/home')}
+            onClick={() => navigate(Pages.home())}
           >
             Cancel
           </Button>
@@ -35,7 +37,12 @@ const CreateVaultPage = () => {
       </CardHeader>
 
       <CardBody pt={0}>
-        <CreateVaultForm form={form} addresses={addresses} tabs={tabs} />
+        <CreateVaultForm
+          form={form}
+          tabs={tabs}
+          addresses={addresses}
+          isLoading={request.isLoading}
+        />
       </CardBody>
     </Card>
   );

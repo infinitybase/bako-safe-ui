@@ -1,10 +1,10 @@
 import { useQuery } from 'react-query';
 
-import { PredicateService } from '../services';
+import { VaultService } from '../services';
 
 const useUserVaultRequest = (account?: string) => {
   return useQuery(['predicate/by-address', account], () =>
-    account ? PredicateService.findByAddresses(account) : [],
+    account ? VaultService.findByAddresses(account) : [],
   );
 };
 

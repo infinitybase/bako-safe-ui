@@ -25,10 +25,15 @@ export interface CreateVaultFormProps {
   tabs: UseCreateVaultReturn['tabs'];
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
+  isLoading?: boolean;
 }
 
-const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
-  console.log(form.formState.errors);
+const CreateVaultForm = ({
+  form,
+  tabs,
+  addresses,
+  isLoading,
+}: CreateVaultFormProps) => {
   return (
     <form onSubmit={form.handleCreateVault}>
       <Tabs index={tabs.tab} colorScheme="green">
@@ -210,8 +215,8 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
               variant="solid"
               colorScheme="brand"
               type="submit"
-              isLoading={false}
-              isDisabled={!form.formState.isValid}
+              isLoading={isLoading}
+              isDisabled={!form.formState.isValid || isLoading}
             >
               Create
             </Button>
@@ -223,6 +228,8 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
           color="brand.900"
           variant="solid"
           colorScheme="brand"
+          isDisabled={!!form.formState.errors?.name}
+          isLoading={isLoading}
           onClick={(e) => {
             e.preventDefault();
             tabs.set(TabState.ADDRESSES);

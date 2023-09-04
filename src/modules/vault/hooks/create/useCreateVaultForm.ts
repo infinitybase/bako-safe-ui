@@ -12,8 +12,8 @@ const schema = yup
       yup.object({
         value: yup
           .string()
-          .required('Empty address.')
-          .test('is-valid-address', 'Invalid address.', (address) =>
+          .required('Empty address')
+          .test('is-valid-address', 'Invalid address', (address) =>
             AddressUtils.isValid(address),
           ),
       }),
@@ -22,7 +22,7 @@ const schema = yup
   })
   .test(
     'minSigner-validation',
-    'The number of required signatures must be less than or equal to the number of addresses.',
+    'The number of required signatures must be less than or equal to the number of addresses',
     function (values) {
       if (
         values.addresses &&

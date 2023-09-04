@@ -12,6 +12,7 @@ import {
 import { MdChevronRight } from 'react-icons/md';
 
 import { Loader } from '@/components';
+import { Pages } from '@/modules';
 
 import { useHome } from '../hooks';
 
@@ -39,7 +40,7 @@ const HomePage = () => {
                     variant="solid"
                     colorScheme="brand"
                     loadingText="Connecting.."
-                    onClick={() => navigate('/create-predicate')}
+                    onClick={() => navigate(Pages.createVault())}
                   >
                     Create
                   </Button>
@@ -94,7 +95,7 @@ const HomePage = () => {
                     variant="solid"
                     colorScheme="brand"
                     loadingText="Connecting.."
-                    onClick={() => navigate('/create-predicate')}
+                    onClick={() => navigate(Pages.createVault())}
                   >
                     Create
                   </Button>

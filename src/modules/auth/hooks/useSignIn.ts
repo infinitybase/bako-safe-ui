@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { useDidMountEffect, useFuelConnection } from '@/modules/core';
+import { Pages, useDidMountEffect, useFuelConnection } from '@/modules/core';
 
 const useSignIn = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const useSignIn = () => {
 
   const goToApp = () => {
     if (isConnected) {
-      return navigate('/home');
+      return navigate(Pages.home());
     }
 
     connect();

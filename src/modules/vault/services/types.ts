@@ -1,7 +1,7 @@
 export interface Predicate {
   name: string;
   address: string;
-  description: string;
+  description?: string;
   minSigners: number;
   addresses: string[];
   owner: string;
