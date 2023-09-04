@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { useDidMountEffect, useFuelAccount } from '@/modules';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -16,24 +16,11 @@ const useCreateVault = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const { form, addressesFieldArray } = useCreateVaultForm();
-
   const { account } = useFuelAccount();
 
-  useEffect(() => {
-    const hasUserAccount = addressesFieldArray.fields.some(
-      (field) => field.value === account,
-    );
-
-    console.log({ hasUserAccount });
-
-    if (account && !hasUserAccount) {
-      addressesFieldArray.append({ value: account });
-    }
-  }, [account]);
-
-  useEffect(() => {
-    console.log({ account, fields: addressesFieldArray.fields });
-  }, [addressesFieldArray]);
+  useDidMountEffect(() => {
+    addressesFieldArray.append({ value: account });
+  }, []);
 
   const handleCreateVault = form.handleSubmit((data) => {
     console.log(data);

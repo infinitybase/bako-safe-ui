@@ -1,18 +1,12 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelConnection } from '@/modules/core';
-
-import { useFuelAccount } from '../store';
+import { useDidMountEffect, useFuelConnection } from '@/modules/core';
 
 const useSignIn = () => {
-  const { setAccount } = useFuelAccount();
   const navigate = useNavigate();
 
   const { connect, isConnecting, isConnected, isValidAccount } =
-    useFuelConnection({
-      onAccountConnect: (account) => setAccount(account),
-    });
+    useFuelConnection();
 
   const goToApp = () => {
     if (isConnected) {
@@ -22,7 +16,7 @@ const useSignIn = () => {
     connect();
   };
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     connect();
   }, [connect]);
 
