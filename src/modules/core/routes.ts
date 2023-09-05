@@ -1,10 +1,11 @@
 import { pageRoute } from './utils/routes';
 
 const Pages = {
-  home: pageRoute<{ id: string }>('/home'),
+  home: pageRoute('/home'),
   index: pageRoute('/'),
   example: pageRoute<{ id: string }>('/example/:id'),
-  createVault: pageRoute('/create-predicate'),
+  createVault: pageRoute('/vault'),
+  detailsVault: pageRoute<{ id: string }>('/vault/:id'),
 };
 
 export { Pages };

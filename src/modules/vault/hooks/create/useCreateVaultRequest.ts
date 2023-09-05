@@ -8,6 +8,9 @@ import {
   VaultService,
 } from '../../services';
 
+const { VITE_NETWORK = 'https://beta-4.fuel.network/graphql' } = import.meta
+  .env;
+
 export interface CreatePredicateParams {
   name: string;
   description?: string;
@@ -33,7 +36,7 @@ const useCreateVaultRequest = (
     addresses: string[],
     minSigners: number,
   ) => {
-    const provider = new Provider('https://beta-4.fuel.network/graphql');
+    const provider = new Provider(VITE_NETWORK);
     const predicate = new Vault({
       configurable: {
         minSigners,
@@ -65,8 +68,7 @@ const useCreateVaultRequest = (
       bytes: predicateBIN,
       abi: JSON.stringify(predicateABI),
       configurable: JSON.stringify(predicate.configurable),
-      network:
-        import.meta.env.VITE_NETWORK || 'https://beta-4.fuel.network/graphql',
+      network: VITE_NETWORK,
     });
   };
 

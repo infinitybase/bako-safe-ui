@@ -59,7 +59,9 @@ const HomePage = () => {
                 <Box w="100%">
                   {predicates?.map((predicate) => (
                     <Flex
-                      onClick={() => navigate(`/predicate/${predicate._id}`)}
+                      onClick={() =>
+                        navigate(Pages.detailsVault({ id: predicate._id }))
+                      }
                       key={predicate.name}
                       justifyContent="space-between"
                       alignItems="center"

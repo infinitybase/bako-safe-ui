@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { DefaultLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { CreateVaultPage } from './pages/create';
+import { CreateVaultPage, VaultDetailsPage } from './pages';
 
 const vaultRoutes = (
   <Route element={<DefaultLayoutRouter />}>
@@ -12,6 +12,14 @@ const vaultRoutes = (
       element={
         <AuthRoute>
           <CreateVaultPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.detailsVault()}
+      element={
+        <AuthRoute>
+          <VaultDetailsPage />
         </AuthRoute>
       }
     />
