@@ -127,7 +127,7 @@ const VaultDetailsPage = () => {
                       color="white"
                       bgColor="dark.100"
                       onClick={() =>
-                        navigate(Pages.example({ id: String(vault?._id) }))
+                        navigate(Pages.transactions({ id: String(vault?._id) }))
                       }
                       _hover={{}}
                       _active={{}}

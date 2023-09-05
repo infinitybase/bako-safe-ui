@@ -4,6 +4,7 @@ import {
   exampleRoutes,
   homeRoutes,
   signinRoutes,
+  transactionRoutes,
   vaultRoutes,
 } from '@/modules';
 
@@ -13,6 +14,7 @@ const routes = (
     {signinRoutes}
     {homeRoutes}
     {vaultRoutes}
+    {transactionRoutes}
   </>
 );
 
