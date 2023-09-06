@@ -114,7 +114,9 @@ const VaultDetailsPage = () => {
                       variant="solid"
                       colorScheme="brand"
                       onClick={() =>
-                        navigate(Pages.example({ id: String(vault?._id) }))
+                        navigate(
+                          Pages.createTransaction({ id: String(vault?._id) }),
+                        )
                       }
                       isDisabled={!vault.hasBalance}
                     >

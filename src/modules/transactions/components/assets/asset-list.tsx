@@ -1,0 +1,30 @@
+import { Box } from '@chakra-ui/react';
+
+import { AssetItem } from './asset-item.tsx';
+
+interface Props {
+  assets: {
+    name: string;
+    slug: string;
+    amount: string;
+    assetId: string;
+  }[];
+}
+
+function AssetList({ assets }: Props) {
+  return (
+    <Box>
+      {assets.map((asset) => (
+        <AssetItem
+          key={asset.assetId}
+          name={asset.name}
+          slug={asset.slug}
+          amount={asset.amount}
+          assetId={asset.assetId}
+        />
+      ))}
+    </Box>
+  );
+}
+
+export { AssetList };

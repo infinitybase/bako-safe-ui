@@ -7,6 +7,9 @@ const Pages = {
   createVault: pageRoute('/vault'),
   detailsVault: pageRoute<{ id: string }>('/vault/:id'),
   transactions: pageRoute<{ id: string }>('/vault/:id/transactions'),
+  createTransaction: pageRoute<{ id: string }>(
+    '/vault/:id/transactions/create',
+  ),
 };
 
 export { Pages };
