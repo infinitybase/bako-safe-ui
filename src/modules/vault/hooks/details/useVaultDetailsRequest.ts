@@ -27,7 +27,8 @@ const getPredicateInstance = async (id: string) => {
     };
     return {
       ...restPredicate,
-      addresses: addresses,
+      minSigners,
+      addresses,
       predicateInstance: await new Vault({
         abi,
         configurable: _configurable,
