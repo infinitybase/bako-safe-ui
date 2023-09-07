@@ -1,3 +1,5 @@
+import { useMutation } from 'react-query';
+
 import { useWallet } from '@/modules/core';
 import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest.ts';
 
@@ -15,24 +17,36 @@ const useSignTransaction = () => {
     onError: () => alert('error on sign'),
   });
 
-  const signMessage = async (params: SignTransactionParams) => {
-    const signedMessage = await currentWallet?.signMessage(params.txId);
+  // Todo: Refactor to other directory/file
+  const signMessageRequest = useMutation(
+    'wallet/sign',
+    async (params: SignTransactionParams) => {
+      const signedMessage = await currentWallet?.signMessage(params.txId);
+      return {
+        ...params,
+        signedMessage,
+      };
+    },
+    {
+      onSuccess: (response) => {
+        if (!response.signedMessage) {
+          alert('not signed');
+          return;
+        }
 
-    if (!signedMessage) {
-      alert('not signed');
-      return;
-    }
-
-    request.mutate({
-      id: params.transactionID,
-      predicateID: params.predicateID,
-      signer: signedMessage,
-    });
-  };
+        request.mutate({
+          id: response.transactionID,
+          predicateID: response.predicateID,
+          signer: response.signedMessage,
+        });
+      },
+      onError: () => alert('erro on sign message'),
+    },
+  );
 
   return {
     request,
-    signMessage,
+    signMessageRequest,
   };
 };
 

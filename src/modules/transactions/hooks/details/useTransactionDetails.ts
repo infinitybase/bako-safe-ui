@@ -119,7 +119,13 @@ const useTransactionDetails = () => {
     params,
     navigate,
     transactionData,
-    signTransaction,
+    signTransaction: {
+      sign: {
+        isLoading: signTransaction.signMessageRequest.isLoading,
+        execute: signTransaction.signMessageRequest.mutate,
+      },
+      request: signTransaction.request,
+    },
     vaultDetailsRequest,
     transactionDetailRequest,
   };

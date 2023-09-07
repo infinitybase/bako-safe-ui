@@ -60,13 +60,16 @@ const DetailsTransactionPage = () => {
             transferData={transactionData!}
             transaction={transactionDetailRequest.data!}
             signin={(hash, id, predicateID) => {
-              signTransaction.signMessage({
+              signTransaction.sign.execute({
                 transactionID: id,
                 txId: hash,
                 predicateID,
               });
             }}
-            isLoading={signTransaction.request.isLoading}
+            isLoading={
+              signTransaction.sign.isLoading ||
+              signTransaction.request.isLoading
+            }
             isLoadingRequest={transactionDetailRequest.isLoading}
           />
         </>
