@@ -1,5 +1,4 @@
 import { predicateABI, predicateBIN, Vault } from 'bsafe';
-import { Provider } from 'fuels';
 import { useMutation, UseMutationOptions } from 'react-query';
 
 import {
@@ -7,6 +6,7 @@ import {
   CreatePredicateResponse,
   VaultService,
 } from '../../services';
+import { VaultUtils } from '../../utils';
 
 const { VITE_NETWORK = 'https://beta-4.fuel.network/graphql' } = import.meta
   .env;
@@ -36,20 +36,15 @@ const useCreateVaultRequest = (
     addresses: string[],
     minSigners: number,
   ) => {
-    const provider = new Provider(VITE_NETWORK);
-    const predicate = new Vault({
-      configurable: {
-        minSigners,
-        addresses,
-        network: provider.url,
-        chainId: await provider.getChainId(),
-        SIGNATURES_COUNT: minSigners.toString(),
-        SIGNERS: addresses,
-        HASH_PREDUCATE: undefined,
-      },
-    });
+    const configurable = {
+      SIGNATURES_COUNT: minSigners.toString(),
+      SIGNERS: VaultUtils.makeSubscribers(addresses),
+      HASH_PREDUCATE: VaultUtils.makeHashPredicate(),
+      addresses: addresses,
+      minSigners: minSigners,
+    };
 
-    return predicate;
+    return new Vault({ configurable });
   };
 
   const createVault = async (params: CreatePredicateParams) => {

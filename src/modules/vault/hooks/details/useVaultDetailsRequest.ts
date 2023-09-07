@@ -22,7 +22,6 @@ const getPredicateInstance = async (id: string) => {
       minSigners,
       addresses,
       network,
-      chainId: 0, // -> todo: add chainID in predicate module [this value is default to betha-4]
       ...params,
     };
     return {
