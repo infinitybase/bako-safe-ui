@@ -1,6 +1,6 @@
 import { FuelWalletLocked } from '@fuel-wallet/sdk';
 import { Address } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { GetPredicateResponse, useFuelAccount } from '@/modules';
@@ -11,13 +11,15 @@ import { useVaultDetailsRequest } from '@/modules/vault';
 
 /*
  * verifica o status de assinaturas
- * TODO: Refatorar
+ * TODO: Refactor
  * */
-const getTransacionData = async (
+const getTransacionData = (
   transaction: GetTransactionResponse,
   predicate: GetPredicateResponse,
-  wallet: FuelWalletLocked | Promise<FuelWalletLocked>,
+  wallet: FuelWalletLocked,
 ) => {
+  if (!transaction) return;
+
   const signers_done: (string | Address)[] = [];
   transaction?.witnesses?.map((item) => {
     const _signers = SignatureUtils.recoverSignerAddress(
@@ -40,7 +42,7 @@ const getTransacionData = async (
     transaction.hash
   }?providerUrl=${encodeURIComponent(predicate.network)}`;
 
-  const currentWallet = await wallet;
+  const currentWallet = wallet;
 
   const isSigner =
     signers.length > 0 &&
@@ -75,9 +77,14 @@ const getTransacionData = async (
   };
 };
 
+type TransactionData = ReturnType<typeof getTransacionData>;
+
 const useTransactionDetails = () => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string; transactionId: string }>();
+
+  const [transactionData, setTransactionData] =
+    useState<TransactionData | null>(null);
 
   const [fuel] = useFuel();
   const { account } = useFuelAccount();
@@ -87,12 +94,18 @@ const useTransactionDetails = () => {
   );
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
 
-  const transactionData = useMemo(() => {
-    return getTransacionData(
-      transactionDetailRequest.data!,
-      vaultDetailsRequest.predicate!,
-      fuel.getWallet(account),
-    );
+  useEffect(() => {
+    const findTransactionData = async () => {
+      const transacionData = getTransacionData(
+        transactionDetailRequest.data!,
+        vaultDetailsRequest.predicate!,
+        await fuel.getWallet(account),
+      );
+
+      setTransactionData(transacionData);
+    };
+
+    findTransactionData();
   }, [
     account,
     fuel,

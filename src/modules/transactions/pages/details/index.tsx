@@ -11,6 +11,7 @@ import { MdChevronLeft } from 'react-icons/md';
 
 import { Loader } from '@/components';
 import { Pages } from '@/modules';
+import { BodyTransactionDetails } from '@/modules/transactions/components';
 import { useTransactionDetails } from '@/modules/transactions/hooks';
 
 const DetailsTransactionPage = () => {
@@ -54,13 +55,13 @@ const DetailsTransactionPage = () => {
               </Text>
             </Box>
           </CardHeader>
-          {/*<BodyTransactionDetails*/}
-          {/*  transferData={_transferData as TransactionDetailUI}*/}
-          {/*  transaction={transaction as GetTransactionResponse}*/}
-          {/*  signin={signinTransaction}*/}
-          {/*  isLoading={isLoadingTransfer}*/}
-          {/*  isLoadingRequest={isLoading}*/}
-          {/*/>*/}
+          <BodyTransactionDetails
+            transferData={transactionData!}
+            transaction={transactionDetailRequest.data!}
+            signin={console.log}
+            isLoading={false}
+            isLoadingRequest={transactionDetailRequest.isLoading}
+          />
         </>
       )}
     </Card>
