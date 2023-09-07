@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
-import { useCreateTransactionRequest } from './useCreateTransactionRequest.ts';
+import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
 const useCreateTransaction = () => {
   const params = useParams<{ id: string }>();
@@ -11,7 +11,9 @@ const useCreateTransaction = () => {
 
   const { transactionsFields, form } = useCreateTransactionForm();
   const transactionRequest = useCreateTransactionRequest({
-    onSuccess: console.log,
+    onSuccess: () => {
+      navigate(-1);
+    },
   });
 
   // Vault
@@ -19,7 +21,28 @@ const useCreateTransaction = () => {
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const handleCreateTransaction = form.handleSubmit((data) => {
-    console.log(data);
+    transactionRequest.mutate({
+      predicate: vaultDetails.predicate!.predicateInstance,
+      transaction: {
+        name: data.name,
+        predicateID: params.id!,
+        predicateAddress:
+          vaultDetails.predicate!.predicateInstance.address.toString(),
+        assets: data.transactions!.map((transaction) => ({
+          assetId: transaction.asset,
+          amount: transaction.amount,
+          to: transaction.to,
+        })),
+        witnesses: [],
+        to: '',
+        hash: '',
+        txData: '',
+        status: 'PENDING',
+        sendTime: '',
+        gasUsed: '',
+      },
+      predicateID: params.id!,
+    });
   });
 
   return {

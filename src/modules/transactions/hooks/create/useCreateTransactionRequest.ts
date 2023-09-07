@@ -32,6 +32,7 @@ interface InstanceTransactionParams {
   witnesses: string[];
 }
 
+// TODO: Move to bsafe SDK
 const instanceTransaction = async ({
   predicate,
   assets,
