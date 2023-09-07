@@ -44,6 +44,7 @@ interface Transaction {
 }
 
 export interface SignerTransactionPayload {
+  id: string;
   signer: string;
   predicateID: string;
 }

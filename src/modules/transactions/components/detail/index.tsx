@@ -171,8 +171,8 @@ function BodyTransactionDetails({
             color="brand.900"
             variant="solid"
             colorScheme="brand"
-            onClick={async () => {
-              await signin(
+            onClick={() => {
+              signin(
                 transaction?.hash,
                 transaction?._id,
                 transaction?.predicateID,

@@ -19,6 +19,7 @@ const DetailsTransactionPage = () => {
     params,
     navigate,
     transactionData,
+    signTransaction,
     transactionDetailRequest,
     vaultDetailsRequest,
   } = useTransactionDetails();
@@ -58,8 +59,14 @@ const DetailsTransactionPage = () => {
           <BodyTransactionDetails
             transferData={transactionData!}
             transaction={transactionDetailRequest.data!}
-            signin={console.log}
-            isLoading={false}
+            signin={(hash, id, predicateID) => {
+              signTransaction.signMessage({
+                transactionID: id,
+                txId: hash,
+                predicateID,
+              });
+            }}
+            isLoading={signTransaction.request.isLoading}
             isLoadingRequest={transactionDetailRequest.isLoading}
           />
         </>

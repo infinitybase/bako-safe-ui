@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GetPredicateResponse, useFuelAccount } from '@/modules';
 import { NativeAssetId, SignatureUtils, useFuel } from '@/modules/core';
 import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest.ts';
+import { useSignTransaction } from '@/modules/transactions/hooks/signature';
 import { GetTransactionResponse } from '@/modules/transactions/services';
 import { useVaultDetailsRequest } from '@/modules/vault';
 
@@ -93,6 +94,7 @@ const useTransactionDetails = () => {
     params.transactionId!,
   );
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
+  const signTransaction = useSignTransaction();
 
   useEffect(() => {
     const findTransactionData = async () => {
@@ -117,6 +119,7 @@ const useTransactionDetails = () => {
     params,
     navigate,
     transactionData,
+    signTransaction,
     vaultDetailsRequest,
     transactionDetailRequest,
   };
