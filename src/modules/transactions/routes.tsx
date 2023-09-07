@@ -3,7 +3,11 @@ import { Route } from 'react-router-dom';
 import { DefaultLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { CreateTransactionPage, TransactionsVaultPage } from './pages';
+import {
+  CreateTransactionPage,
+  DetailsTransactionPage,
+  TransactionsVaultPage,
+} from './pages';
 
 const transactionRoutes = (
   <Route element={<DefaultLayoutRouter />}>
@@ -20,6 +24,14 @@ const transactionRoutes = (
       element={
         <AuthRoute>
           <CreateTransactionPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.detailsTransaction()}
+      element={
+        <AuthRoute>
+          <DetailsTransactionPage />
         </AuthRoute>
       }
     />

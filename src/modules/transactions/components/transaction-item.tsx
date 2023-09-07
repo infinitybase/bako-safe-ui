@@ -3,7 +3,6 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
 import { MdChevronRight } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 
 import { assetsMap, SignatureUtils } from '@/modules/core';
 
@@ -23,10 +22,15 @@ interface Props {
     hash: string;
   };
   hidePredicateName?: boolean;
+  onClick: (transactionId: string) => void;
 }
 
-function TransactionItem({ transaction, assets, hidePredicateName }: Props) {
-  const navigate = useNavigate();
+function TransactionItem({
+  transaction,
+  assets,
+  hidePredicateName,
+  onClick,
+}: Props) {
   const calculateSignatures = (signers: number, requiredSigners: number) =>
     (signers * 100) / requiredSigners;
   const isFullSigned =
@@ -64,7 +68,7 @@ function TransactionItem({ transaction, assets, hidePredicateName }: Props) {
 
   return (
     <Flex
-      onClick={() => navigate(`/transaction/${transaction._id}`)}
+      onClick={() => onClick(transaction._id)}
       justifyContent="space-between"
       alignItems="center"
       py={2}

@@ -53,7 +53,9 @@ const TransactionsVaultPage = () => {
                   variant="solid"
                   colorScheme="brand"
                   loadingText="Connecting.."
-                  onClick={() => navigate(Pages.example())}
+                  onClick={() =>
+                    navigate(Pages.createTransaction({ id: params.id! }))
+                  }
                 >
                   Create
                 </Button>
@@ -93,7 +95,9 @@ const TransactionsVaultPage = () => {
                       variant="solid"
                       colorScheme="brand"
                       loadingText="Connecting.."
-                      onClick={() => navigate(Pages.example())}
+                      onClick={() =>
+                        navigate(Pages.createTransaction({ id: params.id! }))
+                      }
                     >
                       Create
                     </Button>
@@ -104,6 +108,14 @@ const TransactionsVaultPage = () => {
               <Box w="100%">
                 {transactionRequest.transactions?.map((item) => (
                   <TransactionItem
+                    onClick={(transactionId) =>
+                      navigate(
+                        Pages.detailsTransaction({
+                          transactionId,
+                          vaultId: params.id!,
+                        }),
+                      )
+                    }
                     key={item._id}
                     assets={item.assets}
                     transaction={{
