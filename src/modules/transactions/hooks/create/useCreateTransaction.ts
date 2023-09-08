@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useDidMountEffect } from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
@@ -17,7 +18,7 @@ const useCreateTransaction = () => {
   });
 
   // Vault
-  const vaultDetails = useVaultDetailsRequest(params.id);
+  const vaultDetails = useVaultDetailsRequest(params.id!);
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const handleCreateTransaction = form.handleSubmit((data) => {
@@ -44,6 +45,14 @@ const useCreateTransaction = () => {
       predicateID: params.id!,
     });
   });
+
+  useDidMountEffect(() => {
+    transactionsFields.append({
+      amount: '',
+      asset: '',
+      to: '',
+    });
+  }, []);
 
   return {
     transactionsFields,

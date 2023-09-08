@@ -12,7 +12,7 @@ const useVaultDetails = () => {
   const params = useParams<{ id: string }>();
   const { account } = useFuelAccount();
 
-  const { predicate, isLoading } = useVaultDetailsRequest(params.id);
+  const { predicate, isLoading } = useVaultDetailsRequest(params.id!);
   const {
     assets,
     ethBalance,
