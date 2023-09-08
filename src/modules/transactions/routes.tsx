@@ -6,6 +6,7 @@ import { AuthRoute, Pages } from '@/modules/core';
 import {
   CreateTransactionPage,
   DetailsTransactionPage,
+  MeTransactionsPage,
   TransactionsVaultPage,
 } from './pages';
 
@@ -32,6 +33,14 @@ const transactionRoutes = (
       element={
         <AuthRoute>
           <DetailsTransactionPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.signatures()}
+      element={
+        <AuthRoute>
+          <MeTransactionsPage />
         </AuthRoute>
       }
     />

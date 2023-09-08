@@ -46,7 +46,7 @@ const Header = () => {
             borderRadius={!isSignatureTab ? '27px' : undefined}
             cursor="pointer"
             onClick={() => {
-              setTab(TabEnum.SIGNATURES);
+              setTab(TabEnum.VAULTS);
               navigate(Pages.home());
             }}
           >
@@ -70,8 +70,8 @@ const Header = () => {
             borderRadius={isSignatureTab ? '27px' : undefined}
             cursor="pointer"
             onClick={() => {
-              setTab(TabEnum.VAULTS);
-              navigate('/transaction/me');
+              setTab(TabEnum.SIGNATURES);
+              navigate(Pages.signatures());
             }}
           >
             <Flex mr={2} alignItems="center">

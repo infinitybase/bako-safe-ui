@@ -13,6 +13,7 @@ const Pages = {
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
     '/vault/:vaultId/transactions/:transactionId',
   ),
+  signatures: pageRoute('/signatures'),
 };
 
 export { Pages };
