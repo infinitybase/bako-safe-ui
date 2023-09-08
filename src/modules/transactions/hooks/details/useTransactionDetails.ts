@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GetPredicateResponse, useFuelAccount } from '@/modules';
 import { NativeAssetId, SignatureUtils, useFuel } from '@/modules/core';
 import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest.ts';
+import { useTransactionSendRequest } from '@/modules/transactions/hooks/details/useTransactionSendRequest.ts';
 import { useSignTransaction } from '@/modules/transactions/hooks/signature';
 import { GetTransactionResponse } from '@/modules/transactions/services';
 import { useVaultDetailsRequest } from '@/modules/vault';
@@ -95,6 +96,7 @@ const useTransactionDetails = () => {
   );
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const signTransaction = useSignTransaction();
+  const transactionSendRequest = useTransactionSendRequest();
 
   useEffect(() => {
     const findTransactionData = async () => {
@@ -114,6 +116,18 @@ const useTransactionDetails = () => {
     transactionDetailRequest.data,
     vaultDetailsRequest.predicate,
   ]);
+
+  useEffect(() => {
+    const transaction = transactionDetailRequest.data;
+    if (!transaction) return;
+
+    if (transaction?.status == 'PENDING') {
+      transactionSendRequest.mutate({
+        transaction,
+        predicate: vaultDetailsRequest.predicate!.predicateInstance!,
+      });
+    }
+  }, [transactionDetailRequest.data]);
 
   return {
     params,
