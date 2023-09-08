@@ -1,19 +1,34 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useDidMountEffect } from '@/modules';
+import { useDidMountEffect, useToast } from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
 const useCreateTransaction = () => {
-  const params = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const toast = useToast();
 
   const { transactionsFields, form } = useCreateTransactionForm();
   const transactionRequest = useCreateTransactionRequest({
     onSuccess: () => {
+      toast.show({
+        status: 'success',
+        title: 'Transaction created',
+        position: 'bottom',
+        isClosable: true,
+      });
       navigate(-1);
+    },
+    onError: () => {
+      toast.show({
+        status: 'error',
+        title: 'Error on create transaction.',
+        position: 'bottom',
+        isClosable: true,
+      });
     },
   });
 

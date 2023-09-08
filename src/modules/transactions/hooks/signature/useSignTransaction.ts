@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query';
 
-import { useWallet } from '@/modules/core';
+import { useToast, useWallet } from '@/modules/core';
 import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest.ts';
 
 export interface SignTransactionParams {
@@ -9,12 +9,35 @@ export interface SignTransactionParams {
   predicateID: string;
 }
 
-const useSignTransaction = () => {
+export interface UseSignTransactionOptions {
+  onSuccess: () => void;
+}
+
+const useSignTransaction = (options?: UseSignTransactionOptions) => {
   const { data: currentWallet } = useWallet();
+  const toast = useToast();
 
   const request = useSignTransactionRequest({
-    onSuccess: () => alert('signed'),
-    onError: () => alert('error on sign'),
+    onSuccess: () => {
+      toast.update({
+        status: 'success',
+        title: 'Transaction signed',
+        position: 'bottom',
+        isClosable: true,
+        duration: 5000,
+      });
+
+      options?.onSuccess();
+    },
+    onError: () => {
+      toast.update({
+        status: 'error',
+        title: 'Error on sign transaction',
+        position: 'bottom',
+        isClosable: true,
+        duration: 5000,
+      });
+    },
   });
 
   // Todo: Refactor to other directory/file
@@ -28,9 +51,22 @@ const useSignTransaction = () => {
       };
     },
     {
+      onMutate: () => {
+        toast.show({
+          status: 'info',
+          title: 'Sign transaction...',
+          position: 'bottom',
+          duration: 100000,
+        });
+      },
       onSuccess: (response) => {
         if (!response.signedMessage) {
-          alert('not signed');
+          toast.update({
+            status: 'error',
+            title: 'Message sign rejected',
+            position: 'bottom',
+            duration: 100000,
+          });
           return;
         }
 
@@ -40,7 +76,14 @@ const useSignTransaction = () => {
           signer: response.signedMessage,
         });
       },
-      onError: () => alert('erro on sign message'),
+      onError: () =>
+        toast.update({
+          status: 'error',
+          title: 'Error on sign transaction',
+          position: 'bottom',
+          isClosable: true,
+          duration: 5000,
+        }),
     },
   );
 

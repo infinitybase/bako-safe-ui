@@ -3,7 +3,7 @@ import { Address } from 'fuels';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { GetPredicateResponse, useFuelAccount } from '@/modules';
+import { GetPredicateResponse, useFuelAccount, useToast } from '@/modules';
 import { NativeAssetId, SignatureUtils, useFuel } from '@/modules/core';
 import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest.ts';
 import { useTransactionSendRequest } from '@/modules/transactions/hooks/details/useTransactionSendRequest.ts';
@@ -82,6 +82,7 @@ const getTransacionData = (
 type TransactionData = ReturnType<typeof getTransacionData>;
 
 const useTransactionDetails = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string; transactionId: string }>();
 
@@ -95,8 +96,40 @@ const useTransactionDetails = () => {
     params.transactionId!,
   );
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
-  const signTransaction = useSignTransaction();
-  const transactionSendRequest = useTransactionSendRequest();
+  const signTransaction = useSignTransaction({
+    onSuccess: () => {
+      transactionDetailRequest.refetch();
+    },
+  });
+  const transactionSendRequest = useTransactionSendRequest({
+    onMutate: () => {
+      toast.show({
+        status: 'info',
+        title: 'Sending transaction...',
+        position: 'bottom',
+        duration: 100000,
+      });
+    },
+    onSuccess: () => {
+      toast.update({
+        status: 'success',
+        title: 'Transaction success.',
+        position: 'bottom',
+        duration: 5000,
+        isClosable: true,
+      });
+      transactionDetailRequest.refetch();
+    },
+    onError: () => {
+      toast.update({
+        status: 'error',
+        title: 'Error on send transaction.',
+        position: 'bottom',
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
 
   useEffect(() => {
     const findTransactionData = async () => {

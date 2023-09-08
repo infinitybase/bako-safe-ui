@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Pages, useCreateVaultRequest, useFuelAccount } from '@/modules';
+import {
+  Pages,
+  useCreateVaultRequest,
+  useFuelAccount,
+  useToast,
+} from '@/modules';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -17,9 +22,27 @@ const useCreateVault = () => {
 
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
+  const toast = useToast();
+
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
-    onSuccess: () => navigate(Pages.home()),
+    onSuccess: () => {
+      toast.show({
+        status: 'success',
+        title: 'Vault created',
+        position: 'bottom',
+        isClosable: true,
+      });
+      navigate(Pages.home());
+    },
+    onError: () => {
+      toast.show({
+        status: 'error',
+        title: 'Error on create vault',
+        position: 'bottom',
+        isClosable: true,
+      });
+    },
   });
 
   const handleCreateVault = form.handleSubmit((data) => {
