@@ -5,7 +5,8 @@ import logo from '@/assets/logo.svg';
 import { useSignIn } from '../hooks';
 
 const SigninPage = () => {
-  const { isConnected, isConnecting, isValidAccount, goToApp } = useSignIn();
+  const { isConnected, isConnecting, isValidAccount, goToApp, isBeta3 } =
+    useSignIn();
 
   return (
     <Box
@@ -37,20 +38,30 @@ const SigninPage = () => {
       </Box>
 
       <Box>
-        {isValidAccount ? (
+        {isValidAccount && (
           <Button
             size="lg"
             color="brand.900"
             variant="solid"
             colorScheme="brand"
             isLoading={isConnecting}
-            disabled={isConnecting}
+            disabled={isConnecting || !isBeta3}
             loadingText="Connecting.."
             onClick={goToApp}
           >
             {isConnected ? 'Go to app' : 'Connect Wallet'}
           </Button>
-        ) : (
+        )}
+        {!isBeta3 && (
+          <Text textAlign="center" color="gray.400" fontSize="lg">
+            Connect in{' '}
+            <Text as="span" fontWeight="semibold">
+              beta 3{' '}
+            </Text>
+            network.
+          </Text>
+        )}
+        {!isValidAccount && (
           <Text color="gray.400" fontSize="lg">
             Please connect through an authorized account.
           </Text>

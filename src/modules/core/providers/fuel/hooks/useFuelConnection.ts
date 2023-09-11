@@ -10,6 +10,7 @@ const useFuelConnection = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isValidAccount, setIsValidAccount] = useState(false);
+  const [network, setNetowrk] = useState('');
 
   const { setAccount } = useFuelAccount();
 
@@ -45,11 +46,26 @@ const useFuelConnection = () => {
 
     return () => {
       fuel?.off(fuel.events.connection, handleConnection);
-      fuel?.on(fuel.events.currentAccount, handleConnection);
+      fuel?.off(fuel.events.currentAccount, handleConnection);
     };
   }, [fuel, setAccount]);
 
-  return { isConnected, isConnecting, isValidAccount, connect };
+  useEffect(() => {
+    const getWalletNetwork = async () => {
+      const network = await fuel.network();
+      setNetowrk(network.url);
+    };
+
+    getWalletNetwork();
+
+    fuel?.on(fuel.events.network, getWalletNetwork);
+
+    return () => {
+      fuel?.off(fuel.events.network, getWalletNetwork);
+    };
+  }, [fuel]);
+
+  return { isConnected, isConnecting, isValidAccount, connect, network };
 };
 
 export { useFuelConnection };
