@@ -15,6 +15,24 @@ const schema = yup
           .required('Empty address')
           .test('is-valid-address', 'Invalid address', (address) =>
             AddressUtils.isValid(address),
+          )
+          .test(
+            'is-equal-addresses',
+            'Address registered.',
+            (address, context) => {
+              const schema = context.from?.at(1);
+              const addresses = schema?.value.addresses.map(
+                (_address: { value: string }) => _address.value,
+              );
+              const addressIndex = context.path.replace(/\D/g, '');
+              const hasAddress = addresses.some(
+                (value: string, _index: number) => {
+                  return Number(addressIndex) !== _index && value === address;
+                },
+              );
+
+              return !hasAddress;
+            },
           ),
       }),
     ),

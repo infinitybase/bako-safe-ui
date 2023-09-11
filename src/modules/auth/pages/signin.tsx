@@ -38,7 +38,7 @@ const SigninPage = () => {
       </Box>
 
       <Box>
-        {isValidAccount && (
+        {isBeta3 && isValidAccount && (
           <Button
             size="lg"
             color="brand.900"

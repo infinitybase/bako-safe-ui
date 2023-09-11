@@ -59,9 +59,11 @@ const useCreateVault = () => {
 
   const removeAddress = (index: number) => {
     addressesFieldArray.remove(index);
+    form.trigger();
   };
   const appendAddress = () => {
     addressesFieldArray.append({ value: '' });
+    form.trigger();
   };
 
   const hasAddress = (address: string, index: number) => {
