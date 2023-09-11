@@ -52,18 +52,22 @@ const useFuelConnection = () => {
 
   useEffect(() => {
     const getWalletNetwork = async () => {
+      if (!isConnected) return;
+
       const network = await fuel.network();
       setNetowrk(network.url);
     };
 
-    getWalletNetwork();
+    if (!network) {
+      getWalletNetwork();
+    }
 
     fuel?.on(fuel.events.network, getWalletNetwork);
 
     return () => {
       fuel?.off(fuel.events.network, getWalletNetwork);
     };
-  }, [fuel]);
+  }, [fuel, isConnected]);
 
   return { isConnected, isConnecting, isValidAccount, connect, network };
 };

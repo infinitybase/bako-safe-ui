@@ -52,7 +52,7 @@ const SigninPage = () => {
             {isConnected ? 'Go to app' : 'Connect Wallet'}
           </Button>
         )}
-        {!isBeta3 && (
+        {isConnected && !isBeta3 && (
           <Text textAlign="center" color="gray.400" fontSize="lg">
             Connect in{' '}
             <Text as="span" fontWeight="semibold">
