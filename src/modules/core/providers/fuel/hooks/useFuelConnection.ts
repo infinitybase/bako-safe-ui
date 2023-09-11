@@ -46,7 +46,6 @@ const useFuelConnection = () => {
 
     return () => {
       fuel?.off(fuel.events.connection, handleConnection);
-      fuel?.off(fuel.events.currentAccount, handleConnection);
     };
   }, [fuel, setAccount]);
 
