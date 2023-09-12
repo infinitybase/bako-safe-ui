@@ -19,7 +19,7 @@ import { TransactionItem } from '../../components';
 import { useTransactionList } from '../../hooks';
 
 const TransactionsVaultPage = () => {
-  const { transactionRequest, vaultRequest, navigate, params } =
+  const { transactionRequest, vaultRequest, navigate, params, vaultAssets } =
     useTransactionList();
 
   return (
@@ -46,20 +46,21 @@ const TransactionsVaultPage = () => {
                 />
                 <Heading size="lg">Transactions</Heading>
               </Flex>
-              {!!transactionRequest.transactions?.length && (
-                <Button
-                  size="xs"
-                  color="brand.900"
-                  variant="solid"
-                  colorScheme="brand"
-                  loadingText="Connecting.."
-                  onClick={() =>
-                    navigate(Pages.createTransaction({ id: params.id! }))
-                  }
-                >
-                  Create
-                </Button>
-              )}
+              {!!transactionRequest.transactions?.length &&
+                vaultAssets.hasBalance && (
+                  <Button
+                    size="xs"
+                    color="brand.900"
+                    variant="solid"
+                    colorScheme="brand"
+                    loadingText="Connecting.."
+                    onClick={() =>
+                      navigate(Pages.createTransaction({ id: params.id! }))
+                    }
+                  >
+                    Create
+                  </Button>
+                )}
             </Flex>
             <Box mr={2} mt={2} maxW={500}>
               <Text fontSize="sm" color="gray">
@@ -90,17 +91,19 @@ const TransactionsVaultPage = () => {
                     <Box mb={4}>
                       <Text>Not found transactions.</Text>
                     </Box>
-                    <Button
-                      color="brand.900"
-                      variant="solid"
-                      colorScheme="brand"
-                      loadingText="Connecting.."
-                      onClick={() =>
-                        navigate(Pages.createTransaction({ id: params.id! }))
-                      }
-                    >
-                      Create
-                    </Button>
+                    {vaultAssets.hasAssets && (
+                      <Button
+                        color="brand.900"
+                        variant="solid"
+                        colorScheme="brand"
+                        loadingText="Connecting.."
+                        onClick={() =>
+                          navigate(Pages.createTransaction({ id: params.id! }))
+                        }
+                      >
+                        Create
+                      </Button>
+                    )}
                   </>
                 )}
               </Flex>

@@ -1,5 +1,3 @@
-import { bn } from 'fuels';
-import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules';
@@ -17,13 +15,9 @@ const useVaultDetails = () => {
     assets,
     ethBalance,
     isLoading: isLoadingAssets,
+    hasBalance,
+    hasAssets,
   } = useVaultAssets(predicate?.predicateInstance);
-
-  const hasBalance = useMemo(() => {
-    return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
-  }, [assets]);
-
-  const hasAssets = !!assets?.length;
 
   return {
     vault: {

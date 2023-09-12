@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useVaultDetailsRequest } from '@/modules';
+import { useVaultAssets, useVaultDetailsRequest } from '@/modules';
 import { useTransactionListRequest } from '@/modules/transactions/hooks';
 
 const useTransactionList = () => {
@@ -9,6 +9,7 @@ const useTransactionList = () => {
 
   const transactionRequest = useTransactionListRequest(params.id!);
   const vaultRequest = useVaultDetailsRequest(params.id!);
+  const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
   return {
     transactionRequest: {
@@ -16,6 +17,7 @@ const useTransactionList = () => {
       transactions: transactionRequest.data,
     },
     vaultRequest: vaultRequest,
+    vaultAssets,
     navigate,
     params,
   };

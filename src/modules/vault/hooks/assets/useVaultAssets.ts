@@ -1,4 +1,5 @@
 import { bn, InputValue, Predicate } from 'fuels';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
@@ -61,12 +62,12 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     const coinBalance = getCoinBalance(assetId);
     const hasBalance = bn(bn.parseUnits(value)).lte(bn.parseUnits(coinBalance));
 
-    if (!hasBalance) {
-      return 'Not found asset balance.';
-    }
-
-    return true;
+    return hasBalance;
   };
+
+  const hasBalance = useMemo(() => {
+    return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
+  }, [assets]);
 
   return {
     assets,
@@ -77,6 +78,8 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     getCoinAmount,
     getCoinBalance,
     hasAssetBalance,
+    hasBalance,
+    hasAssets: !!assets?.length,
   };
 }
 
