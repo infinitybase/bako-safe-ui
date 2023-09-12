@@ -48,7 +48,7 @@ const SigninPage = () => {
           <Alert bg="none" status="info">
             <AlertIcon />
             <Text>
-              Please, connect you wallet in
+              Please, connect your wallet in
               <Text fontWeight="bold" as="span">
                 {' '}
                 beta 3{' '}
