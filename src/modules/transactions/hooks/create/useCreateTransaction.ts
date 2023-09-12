@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useDidMountEffect, useToast } from '@/modules';
+import { useToast } from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
@@ -60,14 +60,6 @@ const useCreateTransaction = () => {
       predicateID: params.id!,
     });
   });
-
-  useDidMountEffect(() => {
-    transactionsFields.append({
-      amount: '',
-      asset: '',
-      to: '',
-    });
-  }, []);
 
   return {
     transactionsFields,

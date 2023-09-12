@@ -18,6 +18,16 @@ const useCreateTransactionForm = () => {
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      transactions: [
+        {
+          asset: '',
+          to: '',
+          amount: '',
+        },
+      ],
+    },
   });
   const transactionsFields = useFieldArray({
     control: form.control,
