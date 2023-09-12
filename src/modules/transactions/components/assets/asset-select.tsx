@@ -20,7 +20,7 @@ interface Props extends SelectProps {
 
 function AssetSelect(props: Props) {
   //todo: remove coment with fix bug send n diferent amounts
-  const assets = assetsList; //!!_assets && _assets.length > 0 ? _assets : assetsList;
+  const assets = props.assets ?? assetsList; //!!_assets && _assets.length > 0 ? _assets : assetsList;
   return (
     <FormControl>
       <FormLabel color="gray">Asset</FormLabel>
