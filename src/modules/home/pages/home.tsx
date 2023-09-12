@@ -17,10 +17,8 @@ import { Pages } from '@/modules';
 import { useHome } from '../hooks';
 
 const HomePage = () => {
-  const { account, request, navigate } = useHome();
+  const { request, navigate } = useHome();
   const { isLoading, predicates } = request;
-
-  console.log('[HOME] Account:', { account });
 
   return (
     <Flex width="100%" justifyContent="center" mt={20}>
