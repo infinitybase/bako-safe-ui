@@ -73,7 +73,7 @@ const CreateTransactionPage = () => {
             <Controller
               name="name"
               control={form.control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormControl>
                   <FormLabel color="gray">Name</FormLabel>
                   <Input
@@ -83,6 +83,9 @@ const CreateTransactionPage = () => {
                     bg="dark.100"
                     color="gray"
                   />
+                  <FormHelperText>
+                    <Text color="error">{fieldState.error?.message}</Text>
+                  </FormHelperText>
                 </FormControl>
               )}
             />
@@ -97,7 +100,7 @@ const CreateTransactionPage = () => {
                   <Controller
                     name={`transactions.${index}.to`}
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormControl>
                         <div
                           style={{
@@ -126,6 +129,9 @@ const CreateTransactionPage = () => {
                           color="gray"
                           _hover={{}}
                         />
+                        <FormHelperText>
+                          <Text color="error">{fieldState.error?.message}</Text>
+                        </FormHelperText>
                       </FormControl>
                     )}
                   />
@@ -148,7 +154,7 @@ const CreateTransactionPage = () => {
                   <Controller
                     name={`transactions.${index}.amount`}
                     control={form.control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormControl>
                         <FormLabel color="gray">Amount</FormLabel>
                         <AmountInput
@@ -162,6 +168,9 @@ const CreateTransactionPage = () => {
                               {assets.getCoinBalance(asset)}
                             </Text>
                           )}
+                        </FormHelperText>
+                        <FormHelperText>
+                          <Text color="error">{fieldState.error?.message}</Text>
                         </FormHelperText>
                       </FormControl>
                     )}

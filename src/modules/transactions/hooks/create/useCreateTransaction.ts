@@ -11,7 +11,16 @@ const useCreateTransaction = () => {
   const params = useParams<{ id: string }>();
   const toast = useToast();
 
-  const { transactionsFields, form } = useCreateTransactionForm();
+  // Vault
+  const vaultDetails = useVaultDetailsRequest(params.id!);
+  const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
+
+  const { transactionsFields, form } = useCreateTransactionForm({
+    assets: vaultAssets.assets,
+    getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset),
+    validateBalance: (asset, amount) =>
+      vaultAssets.hasAssetBalance(asset, amount),
+  });
   const transactionRequest = useCreateTransactionRequest({
     onSuccess: () => {
       toast.show({
@@ -31,10 +40,6 @@ const useCreateTransaction = () => {
       });
     },
   });
-
-  // Vault
-  const vaultDetails = useVaultDetailsRequest(params.id!);
-  const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const handleCreateTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate({

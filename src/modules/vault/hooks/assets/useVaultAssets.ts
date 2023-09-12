@@ -1,5 +1,5 @@
 import { bn, InputValue, Predicate } from 'fuels';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
@@ -30,25 +30,31 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     },
   );
 
-  const getCoinAmount = (assetId: string) => {
-    const balance = assets?.find((asset) => asset.assetId === assetId);
+  const getCoinAmount = useCallback(
+    (assetId: string) => {
+      const balance = assets?.find((asset) => asset.assetId === assetId);
 
-    if (!balance) {
-      return bn(0);
-    }
+      if (!balance) {
+        return bn(0);
+      }
 
-    return bn(bn.parseUnits(balance.amount));
-  };
+      return bn(bn.parseUnits(balance.amount));
+    },
+    [assets],
+  );
 
-  const getCoinBalance = (assetId: string) => {
-    const balance = assets?.find((asset) => asset.assetId === assetId);
+  const getCoinBalance = useCallback(
+    (assetId: string) => {
+      const balance = assets?.find((asset) => asset.assetId === assetId);
 
-    if (!balance) {
-      return bn(0).format();
-    }
+      if (!balance) {
+        return bn(0).format();
+      }
 
-    return bn(bn.parseUnits(balance.amount)).format({ precision: 3 });
-  };
+      return bn(bn.parseUnits(balance.amount)).format({ precision: 3 });
+    },
+    [assets],
+  );
 
   const getEthBalance = () => {
     return getCoinBalance(NativeAssetId);
@@ -58,12 +64,17 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     return assetsMap[assetId];
   };
 
-  const hasAssetBalance = (assetId: string, value: string) => {
-    const coinBalance = getCoinBalance(assetId);
-    const hasBalance = bn(bn.parseUnits(value)).lte(bn.parseUnits(coinBalance));
+  const hasAssetBalance = useCallback(
+    (assetId: string, value: string) => {
+      const coinBalance = getCoinBalance(assetId);
+      const hasBalance = bn(bn.parseUnits(value)).lte(
+        bn.parseUnits(coinBalance),
+      );
 
-    return hasBalance;
-  };
+      return hasBalance;
+    },
+    [getCoinBalance],
+  );
 
   const hasBalance = useMemo(() => {
     return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
