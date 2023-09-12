@@ -12,7 +12,7 @@ const useFuelConnection = () => {
   const [isValidAccount, setIsValidAccount] = useState(false);
   const [network, setNetowrk] = useState('');
 
-  const { setAccount } = useFuelAccount();
+  const { account, setAccount } = useFuelAccount();
 
   const connect = useCallback(async () => {
     setIsConnecting(true);
@@ -26,8 +26,9 @@ const useFuelConnection = () => {
   useEffect(() => {
     async function handleConnection() {
       try {
-        const isConnected = await fuel.isConnected();
         setIsValidAccount(false);
+
+        const isConnected = await fuel.isConnected();
         const authAccounts = await fuel.accounts();
         const account = await fuel.currentAccount();
 
@@ -68,7 +69,14 @@ const useFuelConnection = () => {
     };
   }, [fuel, isConnected]);
 
-  return { isConnected, isConnecting, isValidAccount, connect, network };
+  return {
+    isConnected,
+    isConnecting,
+    isValidAccount,
+    connect,
+    network,
+    account,
+  };
 };
 
 export { useFuelConnection };

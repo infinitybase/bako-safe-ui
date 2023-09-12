@@ -1,12 +1,13 @@
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Alert, AlertIcon, Box, Button, Text } from '@chakra-ui/react';
 
 import logo from '@/assets/logo.svg';
 
 import { useSignIn } from '../hooks';
 
 const SigninPage = () => {
-  const { isConnected, isConnecting, isValidAccount, goToApp, isBeta3 } =
-    useSignIn();
+  const { isConnected, isConnecting, goToApp, isBeta3 } = useSignIn();
+
+  const buttonDisabled = isConnected && !isBeta3;
 
   return (
     <Box
@@ -37,35 +38,37 @@ const SigninPage = () => {
         </Box>
       </Box>
 
-      <Box>
-        {isBeta3 && isValidAccount && (
-          <Button
-            size="lg"
-            color="brand.900"
-            variant="solid"
-            colorScheme="brand"
-            isLoading={isConnecting}
-            disabled={isConnecting || !isBeta3}
-            loadingText="Connecting.."
-            onClick={goToApp}
-          >
-            {isConnected ? 'Go to app' : 'Connect Wallet'}
-          </Button>
-        )}
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         {isConnected && !isBeta3 && (
-          <Text textAlign="center" color="gray.400" fontSize="lg">
-            Connect in{' '}
-            <Text as="span" fontWeight="semibold">
-              beta 3{' '}
+          <Alert bg="none" status="info">
+            <AlertIcon />
+            <Text>
+              Please, connect you wallet in
+              <Text fontWeight="bold" as="span">
+                {' '}
+                beta 3{' '}
+              </Text>
+              .
             </Text>
-            network.
-          </Text>
+          </Alert>
         )}
-        {!isValidAccount && (
-          <Text color="gray.400" fontSize="lg">
-            Please connect through an authorized account.
-          </Text>
-        )}
+        <Button
+          size="lg"
+          color="brand.900"
+          variant="solid"
+          colorScheme="brand"
+          isLoading={isConnecting}
+          isDisabled={buttonDisabled}
+          loadingText="Connecting.."
+          onClick={goToApp}
+        >
+          Connect Wallet
+        </Button>
       </Box>
     </Box>
   );
