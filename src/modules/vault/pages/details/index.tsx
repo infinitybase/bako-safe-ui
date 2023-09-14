@@ -71,7 +71,7 @@ const VaultDetailsPage = () => {
                 alignItems="center"
               >
                 <QRCodeSVG
-                  value={String(vault?.address)}
+                  value={String(vault?.predicateAddress)}
                   fgColor="#4D4D52FF"
                   bgColor="#191B20"
                   style={{ borderRadius: 5 }}
@@ -79,13 +79,15 @@ const VaultDetailsPage = () => {
                 <Flex mt={2} alignItems="center">
                   <Box mr={1}>
                     <Text color="gray">
-                      {String(vault?.address).slice(0, 4)}...
-                      {String(vault?.address).slice(-10)}
+                      {String(vault?.predicateAddress).slice(0, 4)}...
+                      {String(vault?.predicateAddress).slice(-10)}
                     </Text>
                   </Box>
                   <Icon
                     onClick={() =>
-                      navigator.clipboard.writeText(vault?.address ?? '')
+                      navigator.clipboard.writeText(
+                        vault?.predicateAddress ?? '',
+                      )
                     }
                     fontSize="md"
                     color="brand.500"
@@ -115,7 +117,7 @@ const VaultDetailsPage = () => {
                       colorScheme="brand"
                       onClick={() =>
                         navigate(
-                          Pages.createTransaction({ id: String(vault?._id) }),
+                          Pages.createTransaction({ id: String(vault?.id) }),
                         )
                       }
                       isDisabled={!vault.hasBalance}
@@ -129,7 +131,7 @@ const VaultDetailsPage = () => {
                       color="white"
                       bgColor="dark.100"
                       onClick={() =>
-                        navigate(Pages.transactions({ id: String(vault?._id) }))
+                        navigate(Pages.transactions({ id: String(vault?.id) }))
                       }
                       _hover={{}}
                       _active={{}}
@@ -168,7 +170,7 @@ const VaultDetailsPage = () => {
                 </Flex>
                 {vault?.addresses?.map((address) => (
                   <Flex
-                    key={vault._id + address}
+                    key={vault.id + address}
                     justifyContent="space-between"
                     alignItems="center"
                     py={2}
