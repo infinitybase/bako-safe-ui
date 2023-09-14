@@ -5,7 +5,7 @@ const NativeAssetId =
 
 const assetsList: Asset[] = [
   {
-    name: 'Etherum',
+    name: 'Ethereum',
     slug: 'ETH',
     assetId: NativeAssetId,
   },

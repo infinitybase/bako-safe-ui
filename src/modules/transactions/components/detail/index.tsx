@@ -60,14 +60,14 @@ function BodyTransactionDetails({
         <CardHeader>
           <Flex width="100%" justifyContent="space-between" ml={-3}>
             <Heading color="white" size="md">
-              Geral
+              Summary
             </Heading>
           </Flex>
           <Flex width="100%" justifyContent="space-between" ml={-3}>
             <Flex flexDirection="column" mt={2} mb={2}>
-              <Text color="gray">Gás used: {transaction?.gasUsed}</Text>
+              <Text color="gray">Gas fee: {transaction?.gasUsed}</Text>
               <Text color="gray">
-                Time: {format(new Date(transaction?.sendTime), 'Pp')}
+                Time: {format(new Date(transaction?.sendTime), 'yyyy/MM/dd')}
               </Text>
             </Flex>
             <Flex mt={2} mb={2} mr={-5}>

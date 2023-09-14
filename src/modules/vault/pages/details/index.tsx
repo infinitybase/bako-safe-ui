@@ -52,9 +52,10 @@ const VaultDetailsPage = () => {
             </Flex>
             <Box mr={2} mt={2} maxW={500}>
               <Text fontSize="sm" color="gray">
-                Add funds to your vault using the QRcode or the address and
-                start making safer transactions. You can also see your pending
-                signatures below and the old ones clicking in “Transactions”
+                Add funds to your vault using the QR code or the address, and
+                start making safer transactions. You can also view your pending
+                signatures below and access previous ones by clicking on
+                “Transactions”.
               </Text>
             </Box>
           </CardHeader>
@@ -151,7 +152,7 @@ const VaultDetailsPage = () => {
                 </Flex>
                 {!assets.hasAssets && (
                   <AssetItem
-                    name="Etherum"
+                    name="Ethereum"
                     slug="ETH"
                     amount={assets.ethBalance}
                     assetId={NativeAssetId}
