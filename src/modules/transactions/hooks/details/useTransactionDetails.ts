@@ -168,8 +168,9 @@ const useTransactionDetails = () => {
     transactionData,
     signTransaction: {
       sign: {
-        isLoading: signTransaction.signMessageRequest.isLoading,
         execute: signTransaction.signMessageRequest.mutate,
+        isLoading: signTransaction.signMessageRequest.isLoading,
+        isSigned: signTransaction.signMessageRequest.isSuccess,
       },
       request: signTransaction.request,
     },

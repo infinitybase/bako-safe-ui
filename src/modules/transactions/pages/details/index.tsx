@@ -66,6 +66,7 @@ const DetailsTransactionPage = () => {
                 predicateID,
               });
             }}
+            isSigned={signTransaction.sign.isSigned}
             isLoading={
               signTransaction.sign.isLoading ||
               signTransaction.request.isLoading

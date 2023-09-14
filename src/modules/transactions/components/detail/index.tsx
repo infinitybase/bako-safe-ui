@@ -28,12 +28,14 @@ function BodyTransactionDetails({
   transaction,
   transferData,
   signin,
+  isSigned,
   isLoading,
   isLoadingRequest,
 }: {
   transferData: TransactionDetailUI;
   transaction: GetTransactionResponse;
   signin: (hash: string, id: string, predicateID: string) => void;
+  isSigned: boolean;
   isLoading: boolean;
   isLoadingRequest: boolean;
   //set: (value: boolean) => void
@@ -165,7 +167,7 @@ function BodyTransactionDetails({
       </Box>
 
       <Box mb={2}>
-        {isLoadingButton && (
+        {isLoadingButton && !isSigned && (
           <Button
             w="100%"
             color="brand.900"
