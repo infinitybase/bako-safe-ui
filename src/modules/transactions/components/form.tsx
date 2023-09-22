@@ -16,12 +16,18 @@ import { MdAdd as AddIcon } from 'react-icons/md';
 import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
 import { AmountInput } from '@/components';
-import { AssetSelect } from '@/modules/transactions/components/assets';
-import { useCreateTransaction } from '@/modules/transactions/hooks';
+import { AssetSelect } from '@/modules/core';
+import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
-const CreateTransactionForm = () => {
-  const { transactionsFields, transactionRequest, form, assets } =
-    useCreateTransaction();
+export interface CreateTransactionFormProps {
+  form: UseCreateTransaction['form'];
+  assets: UseCreateTransaction['assets'];
+  transactionsFields: UseCreateTransaction['transactionsFields'];
+  isCreating?: boolean;
+}
+
+const CreateTransactionForm = (props: CreateTransactionFormProps) => {
+  const { form, assets, transactionsFields, isCreating } = props;
 
   return (
     <form onSubmit={form.handleCreateTransaction}>
@@ -29,7 +35,7 @@ const CreateTransactionForm = () => {
         <Controller
           name="name"
           control={form.control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormControl>
               <FormLabel color="gray">Name</FormLabel>
               <Input
@@ -39,6 +45,9 @@ const CreateTransactionForm = () => {
                 bg="dark.100"
                 color="gray"
               />
+              <FormHelperText>
+                <Text color="error">{fieldState.error?.message}</Text>
+              </FormHelperText>
             </FormControl>
           )}
         />
@@ -53,7 +62,7 @@ const CreateTransactionForm = () => {
               <Controller
                 name={`transactions.${index}.to`}
                 control={form.control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormControl>
                     <div
                       style={{
@@ -82,6 +91,9 @@ const CreateTransactionForm = () => {
                       color="gray"
                       _hover={{}}
                     />
+                    <FormHelperText>
+                      <Text color="error">{fieldState.error?.message}</Text>
+                    </FormHelperText>
                   </FormControl>
                 )}
               />
@@ -104,7 +116,7 @@ const CreateTransactionForm = () => {
               <Controller
                 name={`transactions.${index}.amount`}
                 control={form.control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormControl>
                     <FormLabel color="gray">Amount</FormLabel>
                     <AmountInput
@@ -118,6 +130,9 @@ const CreateTransactionForm = () => {
                           {assets.getCoinBalance(asset)}
                         </Text>
                       )}
+                    </FormHelperText>
+                    <FormHelperText>
+                      <Text color="error">{fieldState.error?.message}</Text>
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -151,7 +166,7 @@ const CreateTransactionForm = () => {
         colorScheme="brand"
         type="submit"
         isDisabled={!form.formState.isValid}
-        isLoading={transactionRequest.isLoading}
+        isLoading={isCreating}
       >
         Create
       </Button>

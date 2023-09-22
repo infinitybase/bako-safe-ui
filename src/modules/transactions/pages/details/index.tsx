@@ -28,7 +28,7 @@ const DetailsTransactionPage = () => {
     <Card bg="dark.500" minW={400} boxShadow="xl">
       {!transactionData &&
       transactionDetailRequest.isLoading &&
-      !vaultDetailsRequest.predicate?._id ? (
+      !vaultDetailsRequest.predicate?.id ? (
         <Loader w={550} h={500} />
       ) : (
         <>

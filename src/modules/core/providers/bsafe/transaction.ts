@@ -1,20 +1,11 @@
-import { Transfer } from 'bsafe';
+import { IPayloadTransfer, Transfer } from 'bsafe';
 import { InputType, Predicate } from 'fuels';
 
-import {
-  CreateTransactionPayload,
-  TransferAsset,
-} from '@/modules/transactions/services';
-
-export interface CreateTransactionParams {
-  predicate: Predicate<InputType[]>;
-  transaction: CreateTransactionPayload;
-  predicateID: string;
-}
+import { AssetModel } from '@/modules';
 
 export interface InstanceTransactionParams {
   predicate: Predicate<InputType[]>;
-  assets: TransferAsset[];
+  assets: AssetModel[];
   witnesses: string[];
 }
 
@@ -22,11 +13,15 @@ class TransactionHelpers {
   static async instanceTransaction(params: InstanceTransactionParams) {
     const { witnesses, assets, predicate } = params;
 
-    const transferParams = {
+    const transferParams: IPayloadTransfer = {
       vault: {
         configurable: predicate,
       },
-      assets,
+      assets: assets.map((asset) => ({
+        assetId: asset.assetID,
+        amount: asset.amount,
+        to: asset.to,
+      })),
       witnesses,
     };
 

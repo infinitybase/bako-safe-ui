@@ -12,7 +12,7 @@ interface Props {
     amount: string;
   }[];
   transaction: {
-    _id: string;
+    id: string;
     name: string;
     predicate?: {
       name: string;
@@ -68,7 +68,7 @@ function TransactionItem({
 
   return (
     <Flex
-      onClick={() => onClick(transaction._id)}
+      onClick={() => onClick(transaction.id)}
       justifyContent="space-between"
       alignItems="center"
       py={2}
@@ -106,7 +106,7 @@ function TransactionItem({
             {groupedAssets.map((asset) => (
               <Box key={`${asset.amount}${asset.assetId}`}>
                 <Badge backgroundColor="dark.500" color="gray">
-                  {asset.amount} {assetsMap[asset.assetId].slug}{' '}
+                  {asset.amount} {assetsMap[asset.assetId]?.slug}{' '}
                 </Badge>
               </Box>
             ))}

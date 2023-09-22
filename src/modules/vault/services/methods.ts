@@ -1,19 +1,5 @@
 import { api } from '@/config';
-
-export interface Predicate {
-  id: number;
-  name: string;
-  predicateAddress: string;
-  description: string;
-  minSigners: number;
-  addresses: string[];
-  owner: string;
-  bytes: string;
-  abi: string;
-  configurable: string;
-  network: string;
-  chainId?: number;
-}
+import { Predicate } from '@/modules/core';
 
 export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;
@@ -39,10 +25,12 @@ export class VaultService {
     return data;
   }
 
-  static async findByAddresses(address: string) {
-    const { data } = await api.get<GetAllPredicateResponse>(
-      `/predicate/by-addresses/${address}`,
-    );
+  static async findPredicates(address: string) {
+    const { data } = await api.get<GetAllPredicateResponse>(`/predicate`, {
+      data: {
+        signer: address,
+      },
+    });
     return data;
   }
 }

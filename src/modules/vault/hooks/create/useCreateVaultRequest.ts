@@ -1,15 +1,13 @@
-import { predicateABI, predicateBIN, Vault } from 'bsafe';
+import { predicateABI, predicateBIN } from 'bsafe';
 import { useMutation, UseMutationOptions } from 'react-query';
+
+import { BsafeVaultProvider } from '@/modules/core';
 
 import {
   CreatePredicatePayload,
   CreatePredicateResponse,
   VaultService,
 } from '../../services';
-import { VaultUtils } from '../../utils';
-
-const { VITE_NETWORK = 'https://beta-4.fuel.network/graphql' } = import.meta
-  .env;
 
 export interface CreatePredicateParams {
   name: string;
@@ -32,39 +30,24 @@ const useCreateVaultRequest = (
     options,
   );
 
-  const instanceNewPredicate = async (
-    addresses: string[],
-    minSigners: number,
-  ) => {
-    const configurable = {
-      SIGNATURES_COUNT: minSigners.toString(),
-      SIGNERS: VaultUtils.makeSubscribers(addresses),
-      HASH_PREDUCATE: VaultUtils.makeHashPredicate(),
-      addresses: addresses,
-      minSigners: minSigners,
-    };
-
-    return new Vault({ configurable });
-  };
-
   const createVault = async (params: CreatePredicateParams) => {
-    const predicate = await instanceNewPredicate(
-      params.addresses,
-      params.minSigners,
-    );
+    const vault = BsafeVaultProvider.instanceNewVault({
+      minSigners: params.minSigners,
+      addresses: params.addresses,
+    });
 
     return _createPredicate({
       name: params.name,
-      predicateAddress: (await predicate.getPredicate()).address.toString(),
+      predicateAddress: (await vault.getPredicate()).address.toString(),
       description: params.description ?? '',
       minSigners: params.minSigners,
       addresses: params.addresses,
       owner: params.owner,
       bytes: predicateBIN,
       abi: JSON.stringify(predicateABI),
-      configurable: JSON.stringify(predicate.configurable),
-      network: VITE_NETWORK,
+      configurable: JSON.stringify(vault.configurable),
       chainId: undefined,
+      provider: vault.getNetwork(),
     });
   };
 

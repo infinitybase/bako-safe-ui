@@ -90,4 +90,8 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
   };
 };
 
+export type UseCreateTransactionForm = ReturnType<
+  typeof useCreateTransactionForm
+>;
+
 export { useCreateTransactionForm };

@@ -16,7 +16,7 @@ const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
   const transactionInstance = await TransactionHelpers.instanceTransaction({
     predicate,
     assets: transaction.assets,
-    witnesses: transaction.witnesses,
+    witnesses: transaction.witnesses.map((witness) => witness.signature!),
   });
 
   const result = await transactionInstance.sendTransaction();
@@ -25,7 +25,7 @@ const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
     throw new Error('Error to send transaction.');
   }
 
-  return TransactionService.done(transaction?._id, {
+  return TransactionService.close(transaction?.id, {
     gasUsed: result.gasUsed,
     transactionResult: JSON.stringify(result),
   });

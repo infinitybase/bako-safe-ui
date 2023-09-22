@@ -52,6 +52,8 @@ function BodyTransactionDetails({
     //set(isLoading)
   }, [transaction, transferData]);
 
+  console.log({ transferData, transaction });
+
   return !!transferData && !!transaction ? (
     <CardBody>
       {transferData?.isDone && transaction?.sendTime && (
@@ -97,10 +99,10 @@ function BodyTransactionDetails({
         <TransactionList
           assets={
             transferData?.transfers?.map((transfer) => ({
-              assetId: transfer.assetId,
-              name: assetsMap[transfer.assetId].name,
+              assetId: transfer.assetID,
+              name: assetsMap[transfer.assetID].name,
               amount: transfer.amount,
-              slug: assetsMap[transfer.assetId].slug,
+              slug: assetsMap[transfer.assetID].slug,
               to: transfer.to,
             })) ?? []
           }
@@ -128,7 +130,6 @@ function BodyTransactionDetails({
         {!!transferData?.signers &&
           transferData?.signers.map((item, index) => {
             return (
-              // eslint-disable-next-line react/jsx-key
               <Box
                 mb={4}
                 key={index}
@@ -174,7 +175,7 @@ function BodyTransactionDetails({
             onClick={() => {
               signin(
                 transaction?.hash,
-                transaction?._id,
+                transaction?.id,
                 transaction?.predicateID,
               );
             }}

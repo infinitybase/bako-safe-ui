@@ -22,9 +22,8 @@ import {
 } from 'react-icons/md';
 
 import { Loader } from '@/components';
-import { AssetList, NativeAssetId, Pages, useVaultDetails } from '@/modules';
-
-import { AssetItem } from '../../components';
+import { AssetItem, AssetList, NativeAssetId, Pages } from '@/modules/core';
+import { useVaultDetails } from '@/modules/vault';
 
 const VaultDetailsPage = () => {
   const { vault, assets, navigate, account } = useVaultDetails();

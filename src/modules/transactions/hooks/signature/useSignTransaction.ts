@@ -72,7 +72,7 @@ const useSignTransaction = (options?: UseSignTransactionOptions) => {
 
         request.mutate({
           id: response.transactionID,
-          predicateID: response.predicateID,
+          account: currentWallet!.address.toString(),
           signer: response.signedMessage,
         });
       },

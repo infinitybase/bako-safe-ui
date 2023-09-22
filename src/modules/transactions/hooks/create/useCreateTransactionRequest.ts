@@ -1,7 +1,7 @@
 import { InputType, Predicate } from 'fuels';
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { TransactionHelpers } from '@/modules';
+import { TransactionHelpers } from '@/modules/core';
 
 import {
   CreateTransactionPayload,
@@ -26,7 +26,7 @@ const newTransaction = async (params: CreateTransactionParams) => {
 
   return TransactionService.create({
     ...transaction,
-    predicateAddress: predicate.address.toString(),
+    predicateAdress: predicate.address.toString(),
     predicateID,
     hash: instance.getHashTxId(),
     txData: JSON.stringify(instance.getTransaction()),
