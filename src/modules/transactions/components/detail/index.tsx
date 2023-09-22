@@ -52,8 +52,6 @@ function BodyTransactionDetails({
     //set(isLoading)
   }, [transaction, transferData]);
 
-  console.log({ transferData, transaction });
-
   return !!transferData && !!transaction ? (
     <CardBody>
       {transferData?.isDone && transaction?.sendTime && (
