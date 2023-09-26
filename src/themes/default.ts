@@ -81,6 +81,11 @@ const defaultTheme = extendTheme({
           borderColor: 'grey.500',
           color: 'grey.200',
         },
+        icon: {
+          bgColor: 'dark.100',
+          color: 'grey.200',
+          fontSize: 'xl',
+        },
       },
     },
   },

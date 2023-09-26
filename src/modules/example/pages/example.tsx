@@ -5,9 +5,13 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { BsBoxArrowUpRight } from 'react-icons/bs';
+import { FaRegClone } from 'react-icons/fa';
+import { HiQrCode } from 'react-icons/hi2';
 import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
@@ -121,7 +125,7 @@ const ExamplePage = () => {
       <Box width="100%" mb={10}>
         <Heading size="lg">Button</Heading>
         <Box mt={4}>
-          <HStack spacing={2}>
+          <HStack mb={2} spacing={2}>
             <Card w="100%">
               <Box mb={3}>
                 <Heading variant="title">Primary</Heading>
@@ -144,6 +148,8 @@ const ExamplePage = () => {
                 </Button>
               </Box>
             </Card>
+          </HStack>
+          <HStack mb={2} spacing={2}>
             <Card w="100%">
               <Box mb={3}>
                 <Heading variant="title">Secondary</Heading>
@@ -151,6 +157,28 @@ const ExamplePage = () => {
               <Box>
                 <Button variant="secondary">Decline</Button>
               </Box>
+            </Card>
+            <Card w="100%">
+              <Box mb={3}>
+                <Heading variant="title">Button icon</Heading>
+              </Box>
+              <HStack spacing={2}>
+                <IconButton
+                  aria-label="Copy"
+                  variant="icon"
+                  icon={<Icon as={FaRegClone} />}
+                />
+                <IconButton
+                  aria-label="QR Code"
+                  variant="icon"
+                  icon={<Icon as={HiQrCode} />}
+                />
+                <IconButton
+                  aria-label="Show in explorer"
+                  variant="icon"
+                  icon={<Icon as={BsBoxArrowUpRight} />}
+                />
+              </HStack>
             </Card>
           </HStack>
         </Box>
