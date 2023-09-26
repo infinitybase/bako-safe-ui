@@ -1,8 +1,11 @@
+import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Container } from './container';
+import { Content } from './content';
 import { Header } from './header';
+import { Sidebar } from './sidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,7 +15,10 @@ const DashboardLayout = (props: DashboardLayoutProps) => {
   return (
     <DashboardLayout.Container>
       <DashboardLayout.Header />
-      {props.children}
+      <Flex w="100%">
+        <DashboardLayout.Sidebar />
+        <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
+      </Flex>
     </DashboardLayout.Container>
   );
 };
@@ -23,7 +29,9 @@ const DashboardLayoutRouter = () => (
   </DashboardLayout>
 );
 
-DashboardLayout.Header = Header;
 DashboardLayout.Container = Container;
+DashboardLayout.Header = Header;
+DashboardLayout.Sidebar = Sidebar;
+DashboardLayout.Content = Content;
 
 export { DashboardLayout, DashboardLayoutRouter };

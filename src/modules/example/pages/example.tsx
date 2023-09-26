@@ -20,7 +20,7 @@ import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
 
 const ExamplePage = () => {
   return (
-    <Container maxWidth="container.md" paddingY="10">
+    <Container maxWidth="full" paddingY="10">
       {/* CARDS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Card</Heading>
@@ -28,7 +28,7 @@ const ExamplePage = () => {
           <HStack spacing={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Infinitybase</Heading>
+                <Heading variant="title-xl">Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -39,7 +39,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Infinitybase</Heading>
+                <Heading variant="title-xl">Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -50,7 +50,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Infinitybase</Heading>
+                <Heading variant="title-xl">Infinitybase</Heading>
               </Box>
               <Box>
                 <Text variant="description">
@@ -131,7 +131,7 @@ const ExamplePage = () => {
           <HStack mb={2} spacing={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Primary</Heading>
+                <Heading variant="title-xl">Primary</Heading>
               </Box>
               <Box>
                 <Button variant="primary">Sign</Button>
@@ -139,7 +139,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Primary with icon</Heading>
+                <Heading variant="title-xl">Primary with icon</Heading>
               </Box>
               <Box>
                 <Button
@@ -155,7 +155,7 @@ const ExamplePage = () => {
           <HStack mb={2} spacing={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Secondary</Heading>
+                <Heading variant="title-xl">Secondary</Heading>
               </Box>
               <Box>
                 <Button variant="secondary">Decline</Button>
@@ -163,7 +163,7 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading variant="title">Button icon</Heading>
+                <Heading variant="title-xl">Button icon</Heading>
               </Box>
               <HStack spacing={2}>
                 <IconButton

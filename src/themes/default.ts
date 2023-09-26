@@ -57,8 +57,13 @@ const defaultTheme = extendTheme({
     },
     Heading: {
       variants: {
-        title: {
+        'title-xl': {
           fontSize: 'xl',
+          fontWeight: 'bold',
+          color: 'white',
+        },
+        'title-md': {
+          fontSize: 'md',
           fontWeight: 'bold',
           color: 'white',
         },
@@ -69,6 +74,9 @@ const defaultTheme = extendTheme({
         borderRadius: 8,
         fontWeight: 'semibold',
         fontSize: 'md',
+        span: {
+          marginRight: 4,
+        },
       },
       variants: {
         primary: {
