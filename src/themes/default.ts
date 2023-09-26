@@ -1,8 +1,6 @@
-import { extendBaseTheme, withDefaultColorScheme } from '@chakra-ui/react';
-import chakraTheme from '@chakra-ui/theme';
+import { extendTheme } from '@chakra-ui/react';
 
-const defaultTheme = extendBaseTheme({
-  ...chakraTheme,
+const defaultTheme = extendTheme({
   fonts: {
     heading: `Inter, sans-serif`,
     body: `Inter, sans-serif`,
@@ -43,9 +41,21 @@ const defaultTheme = extendBaseTheme({
       },
     }),
   },
-  ...withDefaultColorScheme({
-    colorScheme: 'brand',
-  }),
+  components: {
+    Text: {
+      variants: {
+        description: {
+          fontSize: 'sm',
+          color: 'grey.500',
+        },
+        subtitle: {
+          fontSize: 'md',
+          color: 'grey.200',
+          fontWeight: 'semibold',
+        },
+      },
+    },
+  },
 });
 
 export { defaultTheme };

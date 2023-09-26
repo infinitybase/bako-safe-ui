@@ -1,7 +1,7 @@
 import { pageRoute } from './utils/routes';
 
 const Pages = {
-  example: pageRoute<{ id: string }>('/example/:id'),
+  example: pageRoute('/example'),
   index: pageRoute('/'),
   home: pageRoute('/home'),
   createVault: pageRoute('/vault'),
