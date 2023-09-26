@@ -35,6 +35,14 @@ const defaultTheme = extendBaseTheme({
       900: 'rgba(73,248,174,0.1)',
     },
   },
+  styles: {
+    global: () => ({
+      body: {
+        bg: 'dark.500',
+        color: '#FFFFFF',
+      },
+    }),
+  },
   ...withDefaultColorScheme({
     colorScheme: 'brand',
   }),
