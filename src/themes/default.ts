@@ -88,6 +88,35 @@ const defaultTheme = extendTheme({
         },
       },
     },
+    Badge: {
+      baseStyle: {
+        fontSize: 'xs',
+        textTransform: 'initial',
+        borderWidth: 1,
+        padding: 1.5,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        borderRadius: 8,
+      },
+      variants: {
+        success: {
+          bgColor: 'success.900',
+          color: 'success.500',
+          borderColor: 'success.900',
+        },
+        error: {
+          bgColor: 'error.900',
+          color: 'error.500',
+          borderColor: 'error.900',
+        },
+        warning: {
+          bgColor: 'warning.900',
+          color: 'warning.500',
+          borderColor: 'warning.900',
+        },
+      },
+    },
   },
 });
 

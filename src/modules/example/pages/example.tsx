@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -196,6 +197,33 @@ const ExamplePage = () => {
                 <Icon as={PendingIcon} fontSize="xl" color="warning.500" />
                 <Icon as={ErrorIcon} fontSize="xl" color="error.500" />
                 <Icon as={SuccessIcon} fontSize="xl" color="success.500" />
+              </HStack>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* BADGE */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Badge</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card w="100%">
+              <HStack spacing={2}>
+                <Badge variant="success">
+                  You signed
+                  <Icon as={SuccessIcon} />
+                </Badge>
+                <Badge variant="error">
+                  You declined
+                  <Icon as={ErrorIcon} />
+                </Badge>
+                <Badge variant="warning">
+                  <Icon as={PendingIcon} />1 waiting for your signature
+                </Badge>
+                <Badge variant="warning">
+                  <Icon as={PendingIcon} /> 1
+                </Badge>
               </HStack>
             </Card>
           </HStack>
