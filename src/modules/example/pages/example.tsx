@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Container,
   Heading,
   HStack,
@@ -7,15 +8,16 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
 import { Card } from '@/components';
 
 const ExamplePage = () => {
   return (
-    <Container maxWidth="container.md">
-      <Box width="100%">
-        <Heading size="lg">Cards</Heading>
+    <Container maxWidth="container.md" paddingY="10">
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Card</Heading>
         <Box mt={4}>
           <HStack spacing={2}>
             <Card w="100%">
@@ -113,6 +115,44 @@ const ExamplePage = () => {
               </HStack>
             </Card>
           </VStack>
+        </Box>
+      </Box>
+
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Button</Heading>
+        <Box mt={4}>
+          <HStack spacing={2}>
+            <Card w="100%">
+              <Box mb={3}>
+                <Heading variant="title">Primary</Heading>
+              </Box>
+              <Box>
+                <Button variant="primary">Sign</Button>
+              </Box>
+            </Card>
+            <Card w="100%">
+              <Box mb={3}>
+                <Heading variant="title">Primary with icon</Heading>
+              </Box>
+              <Box>
+                <Button
+                  variant="primary"
+                  fontWeight="bold"
+                  leftIcon={<MdEmail />}
+                >
+                  Create New Vault
+                </Button>
+              </Box>
+            </Card>
+            <Card w="100%">
+              <Box mb={3}>
+                <Heading variant="title">Secondary</Heading>
+              </Box>
+              <Box>
+                <Button variant="secondary">Decline</Button>
+              </Box>
+            </Card>
+          </HStack>
         </Box>
       </Box>
     </Container>

@@ -64,6 +64,25 @@ const defaultTheme = extendTheme({
         },
       },
     },
+    Button: {
+      baseStyle: {
+        borderRadius: 8,
+        fontWeight: 'semibold',
+        fontSize: 'md',
+      },
+      variants: {
+        primary: {
+          bgColor: 'brand.500',
+          color: 'dark.300',
+        },
+        secondary: {
+          bgColor: 'initial',
+          borderWidth: 1,
+          borderColor: 'grey.500',
+          color: 'grey.200',
+        },
+      },
+    },
   },
 });
 
