@@ -20,10 +20,10 @@ const ExamplePage = () => {
           <HStack spacing={2}>
             <Card w="100%">
               <Box mb={3}>
-                <Heading size="md">Infinitybase</Heading>
+                <Heading variant="title">Infinitybase</Heading>
               </Box>
               <Box>
-                <Text color="grey.500">
+                <Text variant="description">
                   Setting Sail on a Journey to Unlock the Potential of
                   User-Centered Design.
                 </Text>
@@ -31,10 +31,10 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading size="md">Infinitybase</Heading>
+                <Heading variant="title">Infinitybase</Heading>
               </Box>
               <Box>
-                <Text color="grey.500">
+                <Text variant="description">
                   Setting Sail on a Journey to Unlock the Potential of
                   User-Centered Design.
                 </Text>
@@ -42,10 +42,10 @@ const ExamplePage = () => {
             </Card>
             <Card w="100%">
               <Box mb={3}>
-                <Heading size="md">Infinitybase</Heading>
+                <Heading variant="title">Infinitybase</Heading>
               </Box>
               <Box>
-                <Text color="grey.500">
+                <Text variant="description">
                   Setting Sail on a Journey to Unlock the Potential of
                   User-Centered Design.
                 </Text>

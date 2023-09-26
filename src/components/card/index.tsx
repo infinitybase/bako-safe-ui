@@ -10,7 +10,7 @@ const Card = (props: CardProps) => {
       bg="dark.200"
       borderWidth={1}
       borderColor="dark.100"
-      borderRadius={5}
+      borderRadius={10}
       padding={6}
       {...rest}
     >

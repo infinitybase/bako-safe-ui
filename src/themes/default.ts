@@ -55,6 +55,15 @@ const defaultTheme = extendTheme({
         },
       },
     },
+    Heading: {
+      variants: {
+        title: {
+          fontSize: 'xl',
+          fontWeight: 'bold',
+          color: 'white',
+        },
+      },
+    },
   },
 });
 
