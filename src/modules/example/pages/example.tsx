@@ -15,11 +15,12 @@ import { HiQrCode } from 'react-icons/hi2';
 import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
-import { Card } from '@/components';
+import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
 
 const ExamplePage = () => {
   return (
     <Container maxWidth="container.md" paddingY="10">
+      {/* CARDS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Card</Heading>
         <Box mt={4}>
@@ -122,6 +123,7 @@ const ExamplePage = () => {
         </Box>
       </Box>
 
+      {/* BUTTONS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Button</Heading>
         <Box mt={4}>
@@ -178,6 +180,22 @@ const ExamplePage = () => {
                   variant="icon"
                   icon={<Icon as={BsBoxArrowUpRight} />}
                 />
+              </HStack>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* ICONS */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Icons</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card w="100%">
+              <HStack spacing={2}>
+                <Icon as={PendingIcon} fontSize="xl" color="warning.500" />
+                <Icon as={ErrorIcon} fontSize="xl" color="error.500" />
+                <Icon as={SuccessIcon} fontSize="xl" color="success.500" />
               </HStack>
             </Card>
           </HStack>
