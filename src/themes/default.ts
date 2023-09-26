@@ -117,6 +117,22 @@ const defaultTheme = extendTheme({
         },
       },
     },
+    Avatar: {
+      baseStyle: {
+        container: {
+          borderRadius: 8,
+          img: {
+            borderRadius: 8,
+          },
+        },
+        excessLabel: {
+          borderRadius: 8,
+        },
+        badge: {
+          borderRadius: 8,
+        },
+      },
+    },
   },
 });
 
