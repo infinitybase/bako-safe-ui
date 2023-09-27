@@ -7,8 +7,8 @@ import { ExampleHomePage, ExamplePage } from './pages';
 
 const exampleRoutes = (
   <Route path={Pages.example()} element={<DashboardLayoutRouter />}>
-    <Route index element={<ExamplePage />} />
-    <Route path={Pages.exampleHome()} element={<ExampleHomePage />} />
+    <Route index element={<ExampleHomePage />} />
+    <Route path={Pages.exampleHome()} element={<ExamplePage />} />
   </Route>
 );
 
