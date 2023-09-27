@@ -70,7 +70,7 @@ const TransactionCard = ({
 }) => (
   <Card
     w="100%"
-    bgColor={isPending ? 'warning.900' : 'dark.300'}
+    bgColor={isPending ? 'warning.800' : 'dark.300'}
     borderColor={isPending ? 'warning.500' : 'dark.100'}
   >
     <HStack alignItems="center" spacing={10}>

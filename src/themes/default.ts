@@ -26,6 +26,7 @@ const defaultTheme = extendTheme({
     },
     warning: {
       500: '#F59E1C',
+      800: 'rgba(245,158,28,0.04)',
       900: 'rgba(245,158,28,0.1)',
     },
     success: {
