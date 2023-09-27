@@ -29,7 +29,7 @@ import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
 /* TODO: Move to vault module */
 const VaultCard = ({ avatarSrc }: { avatarSrc: string }) => (
   <Card p={7}>
-    <HStack mb={3} spacing={6}>
+    <HStack mb={6} spacing={6}>
       <Avatar name="Vault 1" src={avatarSrc} size="80px" />
       <Box maxW={280}>
         <Box mb={3}>
