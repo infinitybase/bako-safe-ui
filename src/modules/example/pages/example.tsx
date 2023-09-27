@@ -2,7 +2,6 @@ import {
   Badge,
   Box,
   Button,
-  Container,
   Heading,
   HStack,
   Icon,
@@ -20,7 +19,7 @@ import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
 
 const ExamplePage = () => {
   return (
-    <Container maxWidth="full" paddingY="10">
+    <Box>
       {/* CARDS */}
       <Box width="100%" mb={10}>
         <Heading size="lg">Card</Heading>
@@ -229,7 +228,7 @@ const ExamplePage = () => {
           </HStack>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

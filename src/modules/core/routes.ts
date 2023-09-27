@@ -2,6 +2,7 @@ import { pageRoute } from './utils/routes';
 
 const Pages = {
   example: pageRoute('/example'),
+  exampleHome: pageRoute('/example/home'),
   index: pageRoute('/'),
   home: pageRoute('/home'),
   createVault: pageRoute('/vault'),

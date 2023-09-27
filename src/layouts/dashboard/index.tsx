@@ -15,7 +15,7 @@ const DashboardLayout = (props: DashboardLayoutProps) => {
   return (
     <DashboardLayout.Container>
       <DashboardLayout.Header />
-      <Flex w="100%">
+      <Flex w="100%" flex={1}>
         <DashboardLayout.Sidebar />
         <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
       </Flex>
