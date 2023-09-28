@@ -1,5 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import { themeComponents } from '@/themes/components';
+
 const defaultTheme = extendTheme({
   fonts: {
     heading: `Inter, sans-serif`,
@@ -43,89 +45,7 @@ const defaultTheme = extendTheme({
     }),
   },
   components: {
-    Text: {
-      variants: {
-        description: {
-          fontSize: 'sm',
-          color: 'grey.500',
-        },
-        subtitle: {
-          fontSize: 'md',
-          color: 'grey.200',
-          fontWeight: 'semibold',
-        },
-      },
-    },
-    Heading: {
-      variants: {
-        'title-xl': {
-          fontSize: 'xl',
-          fontWeight: 'bold',
-          color: 'white',
-        },
-        'title-md': {
-          fontSize: 'md',
-          fontWeight: 'bold',
-          color: 'white',
-        },
-      },
-    },
-    Button: {
-      baseStyle: {
-        borderRadius: 8,
-        fontWeight: 'semibold',
-        fontSize: 'md',
-        span: {
-          marginRight: 4,
-        },
-      },
-      variants: {
-        primary: {
-          bgColor: 'brand.500',
-          color: 'dark.300',
-        },
-        secondary: {
-          bgColor: 'initial',
-          borderWidth: 1,
-          borderColor: 'grey.500',
-          color: 'grey.200',
-        },
-        icon: {
-          bgColor: 'dark.100',
-          color: 'grey.200',
-          fontSize: 'xl',
-        },
-      },
-    },
-    Badge: {
-      baseStyle: {
-        fontSize: 'xs',
-        textTransform: 'initial',
-        borderWidth: 1,
-        padding: 1.5,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        borderRadius: 8,
-      },
-      variants: {
-        success: {
-          bgColor: 'success.900',
-          color: 'success.500',
-          borderColor: 'success.900',
-        },
-        error: {
-          bgColor: 'error.900',
-          color: 'error.500',
-          borderColor: 'error.900',
-        },
-        warning: {
-          bgColor: 'warning.900',
-          color: 'warning.500',
-          borderColor: 'warning.900',
-        },
-      },
-    },
+    ...themeComponents,
     Avatar: {
       baseStyle: {
         container: {
@@ -156,12 +76,6 @@ const defaultTheme = extendTheme({
             },
           },
         },
-      },
-    },
-    Link: {
-      baseStyle: {
-        textDecoration: 'underline',
-        fontWeight: 'semibold',
       },
     },
   },
