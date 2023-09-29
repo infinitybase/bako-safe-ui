@@ -11,7 +11,6 @@ const useSignIn = () => {
 
   const createUserRequest = useCreateUserRequest({
     onSuccess: ({ address, id, provider }) => {
-      console.log(`>>>>> success createUserRequest`, { address, id, provider });
       signInRequest.mutate({
         address,
         provider,
@@ -22,8 +21,6 @@ const useSignIn = () => {
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken }) => {
-      console.log(`>>>>> success createUserRequest`, { accessToken });
-
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
