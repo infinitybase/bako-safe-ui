@@ -1,7 +1,8 @@
 import { predicateABI, predicateBIN } from 'bsafe';
+import { Provider } from 'fuels';
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { BsafeVaultProvider } from '@/modules/core';
+import { BsafeProvider } from '@/modules/core';
 
 import {
   CreatePredicatePayload,
@@ -15,6 +16,7 @@ export interface CreatePredicateParams {
   owner: string;
   addresses: string[];
   minSigners: number;
+  provider: Provider;
 }
 
 const useCreateVaultRequest = (
@@ -31,23 +33,24 @@ const useCreateVaultRequest = (
   );
 
   const createVault = async (params: CreatePredicateParams) => {
-    const vault = BsafeVaultProvider.instanceNewVault({
+    const vault = await BsafeProvider.instanceNewVault({
       minSigners: params.minSigners,
       addresses: params.addresses,
+      provider: params.provider,
     });
 
     return _createPredicate({
       name: params.name,
-      predicateAddress: (await vault.getPredicate()).address.toString(),
+      predicateAddress: vault.address.toString(),
       description: params.description ?? '',
       minSigners: params.minSigners,
       addresses: params.addresses,
       owner: params.owner,
       bytes: predicateBIN,
       abi: JSON.stringify(predicateABI),
-      configurable: JSON.stringify(vault.configurable),
+      configurable: JSON.stringify(vault.getConfigurable()),
       chainId: undefined,
-      provider: vault.getNetwork(),
+      provider: vault.provider.url,
     });
   };
 

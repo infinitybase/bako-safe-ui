@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Pages, useFuelConnection } from '@/modules/core';
@@ -6,25 +6,11 @@ import { Pages, useFuelConnection } from '@/modules/core';
 const useSignIn = () => {
   const navigate = useNavigate();
 
-  const {
-    connect,
-    isConnecting,
-    isConnected,
-    isValidAccount,
-    network,
-    account,
-  } = useFuelConnection();
-
-  const isBeta3 = useMemo(() => {
-    if (network.includes('localhost')) {
-      return true;
-    }
-
-    return network === import.meta.env.VITE_NETWORK_BETA_3;
-  }, [network]);
+  const { connect, isConnecting, isConnected, isValidAccount, account } =
+    useFuelConnection();
 
   const goToApp = async () => {
-    if (isBeta3 && isConnected) {
+    if (isConnected) {
       return navigate(Pages.home());
     }
 
@@ -32,10 +18,10 @@ const useSignIn = () => {
   };
 
   useEffect(() => {
-    if (account && isBeta3) {
+    if (account) {
       return navigate(Pages.home());
     }
-  }, [account, isBeta3, navigate]);
+  }, [account, navigate]);
 
   return {
     isConnected,
@@ -43,7 +29,6 @@ const useSignIn = () => {
     connect,
     isValidAccount,
     goToApp,
-    isBeta3,
   };
 };
 

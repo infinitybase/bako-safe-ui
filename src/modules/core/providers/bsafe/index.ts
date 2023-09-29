@@ -1,3 +1,2 @@
-export * from './transaction';
+export * from './provider';
 export * from './utils';
-export * from './vault';

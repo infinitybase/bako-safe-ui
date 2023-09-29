@@ -1,7 +1,7 @@
-import { InputType, Predicate } from 'fuels';
+import { Vault } from 'bsafe';
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { TransactionHelpers } from '@/modules';
+import { BsafeProvider } from '@/modules/core';
 import {
   GetTransactionResponse,
   TransactionService,
@@ -9,11 +9,11 @@ import {
 
 export interface SendTransferParams {
   transaction: GetTransactionResponse;
-  predicate: Predicate<InputType[]>;
+  predicate: Vault;
 }
 
 const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
-  const transactionInstance = await TransactionHelpers.instanceTransaction({
+  const transactionInstance = await BsafeProvider.instanceTransaction({
     predicate,
     assets: transaction.assets,
     witnesses: transaction.witnesses.map((witness) => witness.signature!),
