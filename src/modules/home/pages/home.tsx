@@ -1,111 +1,146 @@
 import {
+  Badge,
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
   Heading,
+  HStack,
   Icon,
   Text,
+  VStack,
 } from '@chakra-ui/react';
-import { MdChevronRight } from 'react-icons/md';
+import { CgList } from 'react-icons/cg';
+import { FaRegPlusSquare } from 'react-icons/fa';
+import { GoArrowSwitch } from 'react-icons/go';
+import { useNavigate } from 'react-router-dom';
 
-import { Loader } from '@/components';
-import { Pages } from '@/modules';
-
-import { useHome } from '../hooks';
+import { Card, HomeIcon, VaultIcon } from '@/components';
 
 const HomePage = () => {
-  const { request, navigate } = useHome();
-  const { isLoading, predicates } = request;
+  const navigate = useNavigate();
 
   return (
-    <Flex width="100%" justifyContent="center" mt={20}>
-      <Card bg="dark.500" color="white" minW={600} boxShadow="xl">
-        {isLoading && !predicates ? (
-          <Loader w={600} h={500} />
-        ) : (
-          <>
-            <CardHeader>
-              <Flex width="100%" justifyContent="space-between">
-                <Heading size="lg">Predicates</Heading>
-
-                {!!predicates?.length && (
-                  <Button
-                    size="xs"
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                )}
-              </Flex>
-              <Box mt={2} maxW={400}>
-                <Text fontSize="sm" color="gray">
-                  Click on “Create” and start a vault for your company, family
-                  or friends to perform secure transactions.
+    <VStack w="full" spacing={6}>
+      <HStack w="full" h="10" justifyContent="space-between">
+        <HStack>
+          <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
+          <Text color="grey.200" fontWeight="semibold">
+            Home
+          </Text>
+        </HStack>
+        <Box>
+          <Button
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            onClick={() => alert('ok')}
+          >
+            Create vault
+          </Button>
+        </Box>
+      </HStack>
+      <HStack spacing={6}>
+        <Card
+          bg="dark.300"
+          w="100%"
+          cursor="pointer"
+          onClick={() => navigate('/predicate')}
+        >
+          <HStack>
+            <Flex alignItems="center" justifyContent="center" mr={3}>
+              <Box
+                h="80px"
+                w="80px"
+                bg="brand.500"
+                opacity="0.1"
+                borderRadius={10}
+              />
+              <Icon as={VaultIcon} position="absolute" />
+            </Flex>
+            <Box>
+              <Box mb={3}>
+                <Heading variant="title-xl" color="grey.200">
+                  Vaults
+                </Heading>
+              </Box>
+              <Box>
+                <Text variant="description">
+                  Setting Sail on a Journey to Unlock the Potential of
+                  User-Centered Design.
                 </Text>
               </Box>
-            </CardHeader>
-
-            <CardBody>
-              {!!predicates && predicates.length > 0 ? (
-                <Box w="100%">
-                  {predicates?.map((predicate) => (
-                    <Flex
-                      onClick={() =>
-                        navigate(Pages.detailsVault({ id: predicate._id }))
-                      }
-                      key={predicate.name}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      py={2}
-                      px={3}
-                      mb={2}
-                      bg="dark.100"
-                      borderRadius="md"
-                      cursor="pointer"
-                      _hover={{ bg: 'dark.200' }}
-                    >
-                      <Box>
-                        <Text>{predicate.name}</Text>
-                        <Text color="gray">{predicate.description}</Text>
-                      </Box>
-
-                      <Icon color="gray" fontSize="xl" as={MdChevronRight} />
-                    </Flex>
-                  ))}
-                </Box>
-              ) : (
-                <Flex
-                  flexDirection="column"
-                  textAlign="center"
-                  justifyContent="center"
-                  w="100%"
-                >
-                  <Box mb={4}>
-                    <Text>Not found predicates.</Text>
-                  </Box>
-                  <Button
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                </Flex>
-              )}
-            </CardBody>
-          </>
-        )}
-      </Card>
-    </Flex>
+            </Box>
+          </HStack>
+        </Card>
+        <Card w="100%" bg="dark.300" cursor="pointer">
+          <HStack>
+            <Flex alignItems="center" justifyContent="center" mr={3}>
+              <Box
+                h="80px"
+                w="80px"
+                bg="brand.500"
+                opacity="0.1"
+                borderRadius={10}
+              />
+              <Icon
+                as={GoArrowSwitch}
+                color="brand.500"
+                fontSize={30}
+                position="absolute"
+              />
+            </Flex>
+            <Box>
+              <Box mb={3}>
+                <Heading variant="title-xl" color="grey.200">
+                  Transactions
+                </Heading>
+              </Box>
+              <Box>
+                <Text variant="description">
+                  Setting Sail on a Journey to Unlock the Potential of
+                  User-Centered Design.
+                </Text>
+              </Box>
+            </Box>
+          </HStack>
+        </Card>
+        <Card w="100%" bg="dark.300">
+          <HStack>
+            <Flex alignItems="center" justifyContent="center" mr={3}>
+              <Box
+                h="80px"
+                w="80px"
+                bg="grey.500"
+                opacity="0.2"
+                borderRadius={10}
+              />
+              <Icon
+                as={CgList}
+                position="absolute"
+                color="grey.500"
+                fontSize={30}
+              />
+            </Flex>
+            <Box>
+              <Flex mb={3} alignItems="center">
+                <Heading variant="title-xl" color="grey.200">
+                  Address book
+                </Heading>
+                <Badge h="5" variant="warning" ml={3}>
+                  Upcoming
+                </Badge>
+              </Flex>
+              <Box>
+                <Text variant="description">
+                  Setting Sail on a Journey to Unlock the Potential of
+                  User-Centered Design.
+                </Text>
+              </Box>
+            </Box>
+          </HStack>
+        </Card>
+      </HStack>
+    </VStack>
   );
 };
 
