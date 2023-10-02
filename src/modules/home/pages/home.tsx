@@ -1,24 +1,22 @@
 import {
-  Badge,
   Box,
   Button,
-  Flex,
-  Heading,
   HStack,
   Icon,
   Text,
   VStack,
+  // Wrap,
+  // WrapItem,
 } from '@chakra-ui/react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
-import { useNavigate } from 'react-router-dom';
 
-import { Card, HomeIcon, VaultIcon } from '@/components';
+import { HomeIcon, VaultIcon } from '@/components';
+
+import { ActionCard } from '../components/ActionCard';
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between">
@@ -40,105 +38,36 @@ const HomePage = () => {
         </Box>
       </HStack>
       <HStack spacing={6}>
-        <Card
-          bg="dark.300"
-          w="100%"
-          cursor="pointer"
-          onClick={() => navigate('/predicate')}
-        >
-          <HStack>
-            <Flex alignItems="center" justifyContent="center" mr={3}>
-              <Box
-                h="80px"
-                w="80px"
-                bg="brand.500"
-                opacity="0.1"
-                borderRadius={10}
-              />
-              <Icon as={VaultIcon} position="absolute" />
-            </Flex>
-            <Box>
-              <Box mb={3}>
-                <Heading variant="title-xl" color="grey.200">
-                  Vaults
-                </Heading>
-              </Box>
-              <Box>
-                <Text variant="description">
-                  Setting Sail on a Journey to Unlock the Potential of
-                  User-Centered Design.
-                </Text>
-              </Box>
-            </Box>
-          </HStack>
-        </Card>
-        <Card w="100%" bg="dark.300" cursor="pointer">
-          <HStack>
-            <Flex alignItems="center" justifyContent="center" mr={3}>
-              <Box
-                h="80px"
-                w="80px"
-                bg="brand.500"
-                opacity="0.1"
-                borderRadius={10}
-              />
-              <Icon
-                as={GoArrowSwitch}
-                color="brand.500"
-                fontSize={30}
-                position="absolute"
-              />
-            </Flex>
-            <Box>
-              <Box mb={3}>
-                <Heading variant="title-xl" color="grey.200">
-                  Transactions
-                </Heading>
-              </Box>
-              <Box>
-                <Text variant="description">
-                  Setting Sail on a Journey to Unlock the Potential of
-                  User-Centered Design.
-                </Text>
-              </Box>
-            </Box>
-          </HStack>
-        </Card>
-        <Card w="100%" bg="dark.300">
-          <HStack>
-            <Flex alignItems="center" justifyContent="center" mr={3}>
-              <Box
-                h="80px"
-                w="80px"
-                bg="grey.500"
-                opacity="0.2"
-                borderRadius={10}
-              />
-              <Icon
-                as={CgList}
-                position="absolute"
-                color="grey.500"
-                fontSize={30}
-              />
-            </Flex>
-            <Box>
-              <Flex mb={3} alignItems="center">
-                <Heading variant="title-xl" color="grey.200">
-                  Address book
-                </Heading>
-                <Badge h="5" variant="warning" ml={3}>
-                  Upcoming
-                </Badge>
-              </Flex>
-              <Box>
-                <Text variant="description">
-                  Setting Sail on a Journey to Unlock the Potential of
-                  User-Centered Design.
-                </Text>
-              </Box>
-            </Box>
-          </HStack>
-        </Card>
+        <ActionCard.Container navigateTo="/predicate">
+          <ActionCard.Icon icon={VaultIcon} />
+          <Box>
+            <ActionCard.Title>Vaults</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container navigateTo="/transaction">
+          <ActionCard.Icon icon={GoArrowSwitch} />
+          <Box>
+            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon icon={CgList} isUpcoming={true} />
+          <Box>
+            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
       </HStack>
     </VStack>
   );
