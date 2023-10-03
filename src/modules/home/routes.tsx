@@ -1,12 +1,12 @@
 import { Route } from 'react-router-dom';
 
-import { DefaultLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
 import { HomePage } from './pages';
 
 const homeRoutes = (
-  <Route path={Pages.home()} element={<DefaultLayoutRouter />}>
+  <Route path={Pages.home()} element={<DashboardLayoutRouter />}>
     <Route
       index
       element={
