@@ -14,7 +14,7 @@ export interface SendTransferParams {
 
 const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
   const transactionInstance = await BsafeProvider.instanceTransaction({
-    predicate,
+    predicate: Object.create(predicate),
     assets: transaction.assets,
     witnesses: transaction.witnesses.map((witness) => witness.signature!),
   });

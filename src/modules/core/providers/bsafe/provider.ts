@@ -36,12 +36,7 @@ class BsafeProvider {
 
     return new Vault({
       abi: params.abi,
-      configurable: {
-        minSigners: params.minSigners,
-        addresses: params.addresses,
-        network: params.provider,
-        ...configurable,
-      },
+      configurable,
       bytecode: params.bytes,
     });
   }

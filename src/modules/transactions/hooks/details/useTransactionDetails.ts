@@ -167,6 +167,10 @@ const useTransactionDetails = () => {
         predicate: vaultDetailsRequest.predicate!.predicateInstance!,
       });
     }
+
+    return () => {
+      setTransactionData(null);
+    };
   }, [transactionDetailRequest.data]);
 
   return {

@@ -19,7 +19,7 @@ const newTransaction = async (params: CreateTransactionParams) => {
   const { transaction, predicate, predicateID } = params;
 
   const instance = await BsafeProvider.instanceTransaction({
-    predicate,
+    predicate: Object.create(predicate),
     assets: transaction.assets,
     witnesses: [],
   });
