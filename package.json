@@ -2,10 +2,6 @@
   "name": "bsafe-ui",
   "private": true,
   "version": "0.0.0",
-  "type": "commonjs",
-  "engines": {
-    "node": ">=18.14.1"
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
