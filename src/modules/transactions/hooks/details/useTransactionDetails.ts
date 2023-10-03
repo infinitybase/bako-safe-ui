@@ -3,7 +3,12 @@ import { Address } from 'fuels';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { GetPredicateResponse, useFuelAccount, useToast } from '@/modules';
+import {
+  GetPredicateResponse,
+  TransactionStatus,
+  useFuelAccount,
+  useToast,
+} from '@/modules';
 import { NativeAssetId, SignatureUtils, useFuel } from '@/modules/core';
 import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest.ts';
 import { useTransactionSendRequest } from '@/modules/transactions/hooks/details/useTransactionSendRequest.ts';
@@ -23,15 +28,17 @@ const getTransacionData = (
   if (!transaction) return;
 
   const signers_done: (string | Address)[] = [];
-  transaction?.witnesses?.map((item) => {
-    const _signers = SignatureUtils.recoverSignerAddress(
-      item,
-      `${transaction.hash}`,
-    );
-    if (_signers) {
-      signers_done.push(_signers.toString());
-    }
-  });
+  transaction?.witnesses
+    ?.filter((witness) => !!witness.signature)
+    .map((item) => {
+      const _signers = SignatureUtils.recoverSignerAddress(
+        item.signature!,
+        `${transaction.hash}`,
+      );
+      if (_signers) {
+        signers_done.push(_signers.toString());
+      }
+    });
   const signers = JSON.parse(predicate.configurable).SIGNERS.filter(
     (item: string) => item != NativeAssetId.toString(),
   );
@@ -42,7 +49,7 @@ const getTransacionData = (
 
   const fuelRedirect = `https://fuellabs.github.io/block-explorer-v2/transaction/0x${
     transaction.hash
-  }?providerUrl=${encodeURIComponent(predicate.network)}`;
+  }?providerUrl=${encodeURIComponent(predicate.provider)}`;
 
   const currentWallet = wallet;
 
@@ -154,12 +161,16 @@ const useTransactionDetails = () => {
     const transaction = transactionDetailRequest.data;
     if (!transaction) return;
 
-    if (transaction?.status == 'PENDING') {
+    if (transaction?.status === TransactionStatus.PENDING) {
       transactionSendRequest.mutate({
         transaction,
         predicate: vaultDetailsRequest.predicate!.predicateInstance!,
       });
     }
+
+    return () => {
+      setTransactionData(null);
+    };
   }, [transactionDetailRequest.data]);
 
   return {

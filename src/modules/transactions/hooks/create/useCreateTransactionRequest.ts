@@ -1,7 +1,7 @@
-import { InputType, Predicate } from 'fuels';
+import { Vault } from 'bsafe';
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { TransactionHelpers } from '@/modules';
+import { BsafeProvider } from '@/modules/core';
 
 import {
   CreateTransactionPayload,
@@ -10,7 +10,7 @@ import {
 } from '../../services';
 
 interface CreateTransactionParams {
-  predicate: Predicate<InputType[]>;
+  predicate: Vault;
   transaction: CreateTransactionPayload;
   predicateID: string;
 }
@@ -18,16 +18,18 @@ interface CreateTransactionParams {
 const newTransaction = async (params: CreateTransactionParams) => {
   const { transaction, predicate, predicateID } = params;
 
-  const instance = await TransactionHelpers.instanceTransaction({
-    predicate,
+  const instance = await BsafeProvider.instanceTransaction({
+    predicate: Object.create(predicate),
     assets: transaction.assets,
     witnesses: [],
   });
 
   return TransactionService.create({
-    ...transaction,
-    predicateAddress: predicate.address.toString(),
     predicateID,
+    assets: transaction.assets,
+    name: transaction.name,
+    status: transaction.status,
+    predicateAdress: predicate.address.toString(),
     hash: instance.getHashTxId(),
     txData: JSON.stringify(instance.getTransaction()),
   });

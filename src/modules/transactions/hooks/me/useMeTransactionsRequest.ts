@@ -2,9 +2,9 @@ import { useQuery } from 'react-query';
 
 import { TransactionService } from '@/modules/transactions/services';
 
-const useMeTransactionsRequest = (address: string) => {
-  return useQuery(['transaction/by-address', address], async () =>
-    address ? TransactionService.getByAddress(address) : [],
+const useMeTransactionsRequest = (predicateId: string) => {
+  return useQuery(['transaction/by-predicateId', predicateId], async () =>
+    predicateId ? TransactionService.getTransactions({ predicateId }) : [],
   );
 };
 

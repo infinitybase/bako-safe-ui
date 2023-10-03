@@ -16,7 +16,10 @@ const useMeTransactions = () => {
     return transactionsRequest.data
       ?.map((transaction) => {
         const isSigned = transaction?.witnesses?.some((signature) =>
-          SignatureUtils.recoverSignerAddress(signature, `${transaction.hash}`),
+          SignatureUtils.recoverSignerAddress(
+            signature.signature!,
+            `${transaction.hash}`,
+          ),
         );
         return {
           ...transaction,

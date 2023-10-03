@@ -1,12 +1,11 @@
 import { api } from '@/config/api';
 
 import {
-  CloseSender,
+  CloseTransactionPayload,
   CreateTransactionPayload,
   CreateTransactionResponse,
-  GetAllTransactionResponse,
   GetTransactionByAddressesResponse,
-  GetTransactionByPredicateIdResponse,
+  GetTransactionParams,
   GetTransactionResponse,
   SignerTransactionPayload,
   SignerTransactionResponse,
@@ -15,54 +14,42 @@ import {
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
     const { data } = await api.post<CreateTransactionResponse>(
-      '/transactions',
+      '/transaction',
       payload,
     );
     return data;
   }
-  static async getAll() {
-    const { data } = await api.get<GetAllTransactionResponse>('/transactions');
-    return data;
-  }
+
   static async getById(id: string) {
     const { data } = await api.get<GetTransactionResponse>(
-      `/transactions/${id}`,
+      `/transaction/${id}`,
     );
     return data;
   }
+
   static async signer(payload: SignerTransactionPayload) {
-    const { id } = payload;
+    const { id, ...body } = payload;
     const { data } = await api.put<SignerTransactionResponse>(
-      `/transactions/signer/${id}`,
-      payload,
-    );
-    return data;
-  }
-  static async getByVault(predicateId: string) {
-    const { data } = await api.get<GetTransactionByPredicateIdResponse>(
-      `/transactions/predicate/${predicateId}`,
+      `/transaction/signer/${id}`,
+      body,
     );
     return data;
   }
 
-  async getByDestiny(address: string) {
-    const { data } = await api.get<GetTransactionByPredicateIdResponse>(
-      `/transactions/predicate/${address}`,
-    );
-    return data;
-  }
-
-  static async done(id: string, payload: CloseSender) {
+  static async close(id: string, payload: CloseTransactionPayload) {
     const { data } = await api.put<GetTransactionResponse>(
-      `/transactions/close/${id}`,
+      `/transaction/close/${id}`,
       payload,
     );
     return data;
   }
 
-  static async getByAddress(address: string) {
+  static async getTransactions(params: GetTransactionParams) {
     const { data } = await api.get<GetTransactionByAddressesResponse>(
-      `transactions/by-address/${address}`,
+      `/transaction`,
+      {
+        params: { ...params },
+      },
     );
     return data;
   }

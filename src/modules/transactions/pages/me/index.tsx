@@ -51,9 +51,9 @@ const MeTransactionsPage = () => {
           // const userSigned = transaction?.witnesses?.some(signature => signer(signature, `${transaction.hash}`));
           const assets = transaction.assets.reduce(
             (accumulator, asset) => {
-              const { assetId, amount } = asset;
+              const { assetID, amount } = asset;
               const existingItem = accumulator.find(
-                (item) => item.assetId === assetId,
+                (item) => item.assetID === assetID,
               );
               if (existingItem) {
                 existingItem.amount = bn
@@ -79,11 +79,11 @@ const MeTransactionsPage = () => {
                 navigate(
                   Pages.detailsTransaction({
                     vaultId: transaction.predicateID,
-                    transactionId: transaction._id,
+                    transactionId: transaction.id,
                   }),
                 )
               }
-              key={transaction._id}
+              key={transaction.id}
               justifyContent="space-between"
               alignItems="center"
               py={2}
@@ -119,7 +119,7 @@ const MeTransactionsPage = () => {
                     {assets.map((asset) => (
                       <Box key={`${asset.amount}${asset.to}`}>
                         <Badge backgroundColor="dark.500" color="gray">
-                          {asset.amount} {assetsMap[asset.assetId].slug}{' '}
+                          {asset.amount} {assetsMap[asset.assetID].slug}{' '}
                         </Badge>
                       </Box>
                     ))}
