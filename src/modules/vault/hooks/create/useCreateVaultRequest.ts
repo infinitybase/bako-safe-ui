@@ -55,8 +55,8 @@ const useCreateVaultRequest = (
 
     return _createPredicate({
       name: params.name,
-      address: (await predicate.getPredicate()).address.toString(),
-      description: params.description,
+      predicateAddress: (await predicate.getPredicate()).address.toString(),
+      description: params.description ?? '',
       minSigners: params.minSigners,
       addresses: params.addresses,
       owner: params.owner,
@@ -64,6 +64,7 @@ const useCreateVaultRequest = (
       abi: JSON.stringify(predicateABI),
       configurable: JSON.stringify(predicate.configurable),
       network: VITE_NETWORK,
+      chainId: undefined,
     });
   };
 
