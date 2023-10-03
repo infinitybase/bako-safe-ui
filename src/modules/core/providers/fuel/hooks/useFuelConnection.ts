@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { CookieName, CookiesConfig } from '@/config/cookies.ts';
 import { useFuelAccount } from '@/modules';
 
 import { useFuel } from './useFuel.ts';
@@ -29,7 +30,9 @@ const useFuelConnection = (params?: UserFuelConnectionProps) => {
 
   useEffect(() => {
     async function changeAccount() {
-      if (!account) return;
+      const isAuthenticated = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+
+      if (!account || isAuthenticated) return;
 
       const provider = await fuel.getProvider();
       params?.onChangeAccount(account, provider.url);

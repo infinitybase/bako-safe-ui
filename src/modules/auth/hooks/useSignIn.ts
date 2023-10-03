@@ -39,11 +39,15 @@ const useSignIn = () => {
     });
 
   const goToApp = async () => {
-    if (isConnected) {
+    const isAuthenticated = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+
+    if (isConnected && isAuthenticated) {
       return navigate(Pages.home());
     }
 
-    connect();
+    if (!isConnected) {
+      connect();
+    }
   };
 
   useEffect(() => {

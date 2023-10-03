@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
 
 export enum CookieName {
-  ACCESS_TOKEN = `bsafe/@refresh-token`,
+  ACCESS_TOKEN = `bsafe/token`,
 }
 
 interface Cookie {
