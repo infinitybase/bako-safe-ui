@@ -4,7 +4,11 @@ import { useFuelAccount } from '@/modules';
 
 import { useFuel } from './useFuel.ts';
 
-const useFuelConnection = () => {
+interface UserFuelConnectionProps {
+  onChangeAccount: (account: string, provider: string) => void;
+}
+
+const useFuelConnection = (params?: UserFuelConnectionProps) => {
   const [fuel] = useFuel();
 
   const [isConnected, setIsConnected] = useState(false);
@@ -31,11 +35,13 @@ const useFuelConnection = () => {
         const isConnected = await fuel.isConnected();
         const authAccounts = await fuel.accounts();
         const account = await fuel.currentAccount();
+        const provider = await fuel.getProvider();
 
         if (authAccounts.includes(account)) {
           setAccount(account);
           setIsConnected(isConnected);
           setIsValidAccount(true);
+          params?.onChangeAccount(account, provider.url);
         }
       } catch (e) {
         setIsValidAccount(false);
@@ -48,7 +54,7 @@ const useFuelConnection = () => {
     return () => {
       fuel?.off(fuel.events.connection, handleConnection);
     };
-  }, [fuel, setAccount]);
+  }, [fuel, setAccount, params]);
 
   useEffect(() => {
     const getWalletNetwork = async () => {
@@ -67,7 +73,7 @@ const useFuelConnection = () => {
     return () => {
       fuel?.off(fuel.events.network, getWalletNetwork);
     };
-  }, [fuel, isConnected]);
+  }, [fuel, isConnected, network]);
 
   return {
     isConnected,

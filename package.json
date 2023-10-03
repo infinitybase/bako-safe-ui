@@ -21,6 +21,7 @@
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.1",
     "fuels": "0.55.0",
+    "js-cookie": "^3.0.5",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@types/js-cookie": "^3.0.4",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/react-text-mask": "^5.4.11",
@@ -71,5 +73,8 @@
   "lint-staged": {
     "*.ts": "prettier --write",
     "*.tsx": "prettier --write"
+  },
+  "resolutions": {
+    "string-width": "4.1.0"
   }
 }
