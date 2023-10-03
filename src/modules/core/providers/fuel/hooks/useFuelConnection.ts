@@ -12,7 +12,7 @@ const useFuelConnection = () => {
   const [isValidAccount, setIsValidAccount] = useState(false);
   const [network, setNetowrk] = useState('');
 
-  const { account, setAccount } = useFuelAccount();
+  const { account, setAccount, formattedAccount } = useFuelAccount();
 
   const connect = useCallback(async () => {
     setIsConnecting(true);
@@ -76,6 +76,7 @@ const useFuelConnection = () => {
     connect,
     network,
     account,
+    formattedAccount,
   };
 };
 

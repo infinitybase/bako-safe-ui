@@ -7,10 +7,12 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import avatar from '@/assets/avatars/user-1.png';
 import logo from '@/assets/logo.svg';
 import { ArrowDownIcon, NotificationIcon, QuestionIcon } from '@/components';
+import { useFuelConnection } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -32,6 +34,16 @@ const TopBarItem = chakra(SpacedBox, {
 
 /* TODO: create props with data user */
 const UserBox = () => {
+  const { connect, formattedAccount } = useFuelConnection();
+
+  const connectWallet = async () => {
+    await connect();
+  };
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
+
   return (
     <Flex w="100%" display="flex" alignItems="center">
       <Box mr={4}>
@@ -39,7 +51,7 @@ const UserBox = () => {
       </Box>
       <Box mr={9}>
         <Text variant="subtitle">Fábio Nascimento</Text>
-        <Text variant="description">0xf3f0e35b4efd0b6ce3...</Text>
+        <Text variant="description">{formattedAccount}</Text>
       </Box>
       <Box>
         <Icon color="grey.200" as={ArrowDownIcon} />
