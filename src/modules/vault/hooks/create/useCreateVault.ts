@@ -46,7 +46,6 @@ const useCreateVault = () => {
   });
 
   const handleCreateVault = form.handleSubmit((data) => {
-    console.log('[DATA]: ', data);
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
     request.createVault({
