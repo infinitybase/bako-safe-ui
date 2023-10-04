@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
 
 import {
   exampleRoutes,
@@ -19,11 +19,7 @@ const routes = (
 );
 
 const AppRoutes = () => {
-  return (
-    <BrowserRouter>
-      <Routes>{routes}</Routes>
-    </BrowserRouter>
-  );
+  return <Routes>{routes}</Routes>;
 };
 
 export { AppRoutes };
