@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 
 import { useToast, useWallet } from '@/modules/core';
-import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest.ts';
+import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest';
 
 export interface SignTransactionParams {
   txId: string;

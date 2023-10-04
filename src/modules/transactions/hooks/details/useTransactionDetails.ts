@@ -10,8 +10,8 @@ import {
   useToast,
 } from '@/modules';
 import { NativeAssetId, SignatureUtils, useFuel } from '@/modules/core';
-import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest.ts';
-import { useTransactionSendRequest } from '@/modules/transactions/hooks/details/useTransactionSendRequest.ts';
+import { useTransactionDetailRequest } from '@/modules/transactions/hooks/details/useTransactionDetailRequest';
+import { useTransactionSendRequest } from '@/modules/transactions/hooks/details/useTransactionSendRequest';
 import { useSignTransaction } from '@/modules/transactions/hooks/signature';
 import { GetTransactionResponse } from '@/modules/transactions/services';
 import { useVaultDetailsRequest } from '@/modules/vault';

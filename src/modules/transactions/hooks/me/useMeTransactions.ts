@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { SignatureUtils } from '@/modules';
 import { useFuelAccount } from '@/modules/auth';
 
-import { useMeTransactionsRequest } from './useMeTransactionsRequest.ts';
+import { useMeTransactionsRequest } from './useMeTransactionsRequest';
 
 const useMeTransactions = () => {
   const navigate = useNavigate();
