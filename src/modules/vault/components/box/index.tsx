@@ -8,6 +8,7 @@ import {
   SkeletonCircle,
   SkeletonText,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 
 import { ChartBulletIcon, ReplaceIcon } from '@/components';
@@ -50,7 +51,13 @@ const VaultBox = (props: VaultBoxPropx) => {
         <Avatar bgColor="dark.150" name={name} />
         <Box w="100%" maxW="100%">
           <Flex alignItems="center" justifyContent="space-between">
-            <Heading variant="title-md">{name}</Heading>
+            <Tooltip bgColor="dark.100" label={name} aria-label="Name of vault">
+              <Box maxW="48%">
+                <Heading variant="title-md" noOfLines={1}>
+                  {name}
+                </Heading>
+              </Box>
+            </Tooltip>
             <Box ml={2}>
               <Button
                 size="sm"
