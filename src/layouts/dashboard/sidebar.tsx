@@ -1,28 +1,11 @@
-import {
-  Badge,
-  Box,
-  chakra,
-  Divider,
-  Flex,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Divider, Icon } from '@chakra-ui/react';
 import { HiQrCode } from 'react-icons/hi2';
 
 import { HomeIcon, PendingIcon } from '@/components';
-import { useSidebar } from '@/layouts/dashboard/hooks';
+import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, VaultBox } from '@/modules';
 
-const MenuList = chakra(VStack);
-const MenuItem = chakra(Flex, {
-  baseStyle: {
-    w: '100%',
-    justifyContent: 'flex-start',
-    gap: 4,
-    alignItems: 'center',
-  },
-});
+import { useSidebar } from './hook';
 
 // TODO: Move to utils or use one if wxists
 const formatAddress = (address?: string) =>
@@ -31,7 +14,7 @@ const formatAddress = (address?: string) =>
     : '';
 
 const Sidebar = () => {
-  const { route, vaultRequest } = useSidebar();
+  const { route, vaultRequest, pendingTransactions } = useSidebar();
 
   return (
     <Box
@@ -43,6 +26,7 @@ const Sidebar = () => {
       py={6}
       px={6}
     >
+      {/* VAULT INFOS */}
       <VaultBox
         name={String(vaultRequest.predicate?.name)}
         address={formatAddress(vaultRequest.predicate?.predicateAddress)}
@@ -57,54 +41,48 @@ const Sidebar = () => {
 
       <Divider borderColor="dark.100" my={8} />
 
-      <MenuList spacing={6} w="100%">
-        <MenuItem
+      {/* MENU */}
+      <SidebarMenu.List spacing={6} w="100%">
+        <SidebarMenu.Container
           onClick={() => {
             route.navigate(Pages.home());
           }}
         >
-          <Icon as={HomeIcon} fontSize="xl" />
-          <Text variant="subtitle" fontSize="lg" fontWeight="bold">
-            Home
-          </Text>
-        </MenuItem>
-        <MenuItem
+          <SidebarMenu.Icon as={HomeIcon} />
+          <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+        </SidebarMenu.Container>
+
+        <SidebarMenu.Container
           onClick={() => {
-            route.navigate('');
+            route.navigate(Pages.home());
           }}
         >
-          <Icon as={HiQrCode} fontSize="xl" />
-          <Text variant="subtitle" fontSize="lg">
-            Transactions
-          </Text>
-          <Badge variant="warning" fontWeight="normal">
-            <Icon as={PendingIcon} /> 1
-          </Badge>
-        </MenuItem>
-        <MenuItem
+          <SidebarMenu.Icon as={HiQrCode} />
+          <SidebarMenu.Title>Transactions</SidebarMenu.Title>
+          <SidebarMenu.Badge hidden={!pendingTransactions}>
+            <Icon as={PendingIcon} /> {pendingTransactions}
+          </SidebarMenu.Badge>
+        </SidebarMenu.Container>
+
+        <SidebarMenu.Container
           onClick={() => {
-            route.navigate('');
+            route.navigate(Pages.home());
           }}
         >
-          <Icon as={HiQrCode} fontSize="xl" />
-          <Text variant="subtitle" fontSize="lg">
-            Address book
-          </Text>
-          <Badge variant="warning" fontWeight="normal">
-            Upcoming
-          </Badge>
-        </MenuItem>
-        <MenuItem
+          <SidebarMenu.Icon as={HiQrCode} />
+          <SidebarMenu.Title> Address book</SidebarMenu.Title>
+          <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>
+        </SidebarMenu.Container>
+
+        <SidebarMenu.Container
           onClick={() => {
-            route.navigate('');
+            route.navigate(Pages.home());
           }}
         >
-          <Icon as={HiQrCode} fontSize="xl" />
-          <Text variant="subtitle" fontSize="lg">
-            Settings
-          </Text>
-        </MenuItem>
-      </MenuList>
+          <SidebarMenu.Icon as={HiQrCode} />
+          <SidebarMenu.Title>Settings</SidebarMenu.Title>
+        </SidebarMenu.Container>
+      </SidebarMenu.List>
     </Box>
   );
 };
