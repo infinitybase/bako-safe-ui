@@ -35,16 +35,16 @@ const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
   }
 
   useEffect(() => {
-    fuel.on(fuel.events.network, onNetwork);
-    fuel.on(fuel.events.accounts, onAccount);
-    fuel.on(fuel.events.connection, onConnection);
-    fuel.on(fuel.events.currentAccount, onCurrentAccount);
+    fuel?.on(fuel?.events.network, onNetwork);
+    fuel?.on(fuel?.events.accounts, onAccount);
+    fuel?.on(fuel?.events.connection, onConnection);
+    fuel?.on(fuel?.events.currentAccount, onCurrentAccount);
 
     return () => {
-      fuel.on(fuel.events.network, onNetwork);
-      fuel.on(fuel.events.accounts, onAccount);
-      fuel.on(fuel.events.connection, onConnection);
-      fuel.on(fuel.events.currentAccount, onCurrentAccount);
+      fuel?.on(fuel?.events.network, onNetwork);
+      fuel?.on(fuel?.events.accounts, onAccount);
+      fuel?.on(fuel?.events.connection, onConnection);
+      fuel?.on(fuel?.events.currentAccount, onCurrentAccount);
     };
   }, [fuel]);
 
