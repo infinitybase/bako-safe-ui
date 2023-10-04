@@ -1,13 +1,11 @@
 import { create } from 'zustand';
 
+import { AddressUtils } from '@/modules';
+
 interface State {
   account: string;
   setAccount: (account: string) => void;
 }
-
-const format = (address: string) => {
-  return `${address.slice(0, 10)}...${address.slice(-5)}`;
-};
 
 const useFuelAccount = create<State>((set) => ({
   account: '',
@@ -15,7 +13,7 @@ const useFuelAccount = create<State>((set) => ({
   setAccount: (account) =>
     set((state) => ({
       account,
-      formattedAccount: format(state.account),
+      formattedAccount: AddressUtils.format(state.account),
     })),
 }));
 
