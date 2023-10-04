@@ -1,4 +1,5 @@
 import {
+  Divider,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -47,7 +48,9 @@ const VaultDrawer = () => {
         </DrawerHeader>
 
         <DrawerBody>
-          <Input placeholder="Search..." />
+          <Input placeholder="Search" variant="custom" colorScheme="dark" />
+
+          <Divider borderColor="dark.100" my={8} />
         </DrawerBody>
       </DrawerContent>
     </Drawer>
