@@ -6,15 +6,20 @@ import { FuelQueryKeys } from './types';
 
 const useWallet = (account?: string) => {
   const [fuel] = useFuel();
-  const { account: currentAccount } = useFuelAccount();
 
   return useQuery(
-    [FuelQueryKeys.WALLET, account, currentAccount],
-    () => fuel?.getWallet(account || currentAccount),
+    [FuelQueryKeys.WALLET, account],
+    () => fuel?.getWallet(account!),
     {
-      enabled: !!fuel,
+      enabled: !!fuel && !!account,
     },
   );
 };
 
-export { useWallet };
+const useMyWallet = () => {
+  const { account: currentAccount } = useFuelAccount();
+
+  return useWallet(currentAccount);
+};
+
+export { useMyWallet, useWallet };

@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query';
 
-import { useToast, useWallet } from '@/modules/core';
+import { useMyWallet, useToast } from '@/modules/core';
 import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest';
 
 export interface SignTransactionParams {
@@ -14,7 +14,7 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options?: UseSignTransactionOptions) => {
-  const { data: currentWallet } = useWallet();
+  const { data: currentWallet } = useMyWallet();
   const toast = useToast();
 
   const request = useSignTransactionRequest({
