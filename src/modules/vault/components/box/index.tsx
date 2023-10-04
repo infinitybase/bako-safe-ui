@@ -5,6 +5,8 @@ import {
   Flex,
   Heading,
   HStack,
+  SkeletonCircle,
+  SkeletonText,
   Text,
 } from '@chakra-ui/react';
 
@@ -14,10 +16,33 @@ interface VaultBoxPropx {
   name: string;
   address: string;
   onChangeVault: () => void;
+  onCreateTransaction: () => void;
+  isLoading?: boolean;
 }
 
+const VaultBoxSkeleton = () => (
+  <Box w="100%">
+    <HStack width="100%" alignItems="center" spacing={5} mb={5}>
+      <SkeletonCircle />
+      <Box w="100%" maxW="100%">
+        <SkeletonText w="100%" />
+      </Box>
+    </HStack>
+    <Box w="100%">
+      <Button
+        w="100%"
+        variant="primary"
+        fontWeight="bold"
+        leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
+      >
+        Create transaction
+      </Button>
+    </Box>
+  </Box>
+);
+
 const VaultBox = (props: VaultBoxPropx) => {
-  const { name, address, onChangeVault } = props;
+  const { name, address, onChangeVault, onCreateTransaction } = props;
 
   return (
     <Box w="100%">
@@ -48,6 +73,7 @@ const VaultBox = (props: VaultBoxPropx) => {
           w="100%"
           variant="primary"
           fontWeight="bold"
+          onClick={onCreateTransaction}
           leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
         >
           Create transaction
@@ -57,4 +83,4 @@ const VaultBox = (props: VaultBoxPropx) => {
   );
 };
 
-export { VaultBox };
+export { VaultBox, VaultBoxSkeleton };
