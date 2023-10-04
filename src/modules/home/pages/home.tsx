@@ -1,113 +1,75 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
-  Heading,
+  HStack,
   Icon,
   Text,
+  VStack,
+  // Wrap,
+  // WrapItem,
 } from '@chakra-ui/react';
-import { MdChevronRight } from 'react-icons/md';
+import { CgList } from 'react-icons/cg';
+import { FaRegPlusSquare } from 'react-icons/fa';
+import { GoArrowSwitch } from 'react-icons/go';
 
-import { Loader } from '@/components';
-import { Pages } from '@/modules';
+import { HomeIcon, VaultIcon } from '@/components';
 
-import { useHome } from '../hooks';
+import { ActionCard } from '../components/ActionCard';
 
 const HomePage = () => {
-  const { request, navigate } = useHome();
-  const { isLoading, predicates } = request;
-
   return (
-    <Flex width="100%" justifyContent="center" mt={20}>
-      <Card bg="dark.500" color="white" minW={600} boxShadow="xl">
-        {isLoading && !predicates ? (
-          <Loader w={600} h={500} />
-        ) : (
-          <>
-            <CardHeader>
-              <Flex width="100%" justifyContent="space-between">
-                <Heading size="lg">Predicates</Heading>
-
-                {!!predicates?.length && (
-                  <Button
-                    size="xs"
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                )}
-              </Flex>
-              <Box mt={2} maxW={400}>
-                <Text fontSize="sm" color="gray">
-                  Click on “Create” and start a vault for your company, family
-                  or friends to perform secure transactions.
-                </Text>
-              </Box>
-            </CardHeader>
-
-            <CardBody>
-              {!!predicates && predicates.length > 0 ? (
-                <Box w="100%">
-                  {predicates?.map((predicate) => (
-                    <Flex
-                      onClick={() =>
-                        navigate(
-                          Pages.detailsVault({ id: String(predicate.id) }),
-                        )
-                      }
-                      key={predicate.name}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      py={2}
-                      px={3}
-                      mb={2}
-                      bg="dark.100"
-                      borderRadius="md"
-                      cursor="pointer"
-                      _hover={{ bg: 'dark.200' }}
-                    >
-                      <Box>
-                        <Text>{predicate.name}</Text>
-                        <Text color="gray">{predicate.description}</Text>
-                      </Box>
-
-                      <Icon color="gray" fontSize="xl" as={MdChevronRight} />
-                    </Flex>
-                  ))}
-                </Box>
-              ) : (
-                <Flex
-                  flexDirection="column"
-                  textAlign="center"
-                  justifyContent="center"
-                  w="100%"
-                >
-                  <Box mb={4}>
-                    <Text>Not found predicates.</Text>
-                  </Box>
-                  <Button
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                </Flex>
-              )}
-            </CardBody>
-          </>
-        )}
-      </Card>
-    </Flex>
+    <VStack w="full" spacing={6}>
+      <HStack w="full" h="10" justifyContent="space-between">
+        <HStack>
+          <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
+          <Text color="grey.200" fontWeight="semibold">
+            Home
+          </Text>
+        </HStack>
+        <Box>
+          <Button
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            onClick={() => alert('ok')}
+          >
+            Create vault
+          </Button>
+        </Box>
+      </HStack>
+      <HStack spacing={6}>
+        <ActionCard.Container navigateTo="/predicate">
+          <ActionCard.Icon icon={VaultIcon} />
+          <Box>
+            <ActionCard.Title>Vaults</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container navigateTo="/transaction">
+          <ActionCard.Icon icon={GoArrowSwitch} />
+          <Box>
+            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon icon={CgList} isUpcoming={true} />
+          <Box>
+            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
+            <ActionCard.Description>
+              Setting Sail on a Journey to Unlock the Potential of User-Centered
+              Design.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+      </HStack>
+    </VStack>
   );
 };
 

@@ -4,7 +4,7 @@ export interface ContentProps extends FlexProps {}
 
 const Content = (props: ContentProps) => {
   return (
-    <Flex flex={1} p={8}>
+    <Flex flex={1} p={6}>
       {props.children}
     </Flex>
   );
