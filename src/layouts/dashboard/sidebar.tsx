@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   chakra,
+  Divider,
   HStack,
   Icon,
   Text,
@@ -9,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { HiQrCode } from 'react-icons/hi2';
 
-import { PendingIcon } from '@/components';
+import { HomeIcon, PendingIcon } from '@/components';
 import { VaultBox } from '@/modules';
 
 const MenuList = chakra(VStack);
@@ -39,13 +40,22 @@ const Sidebar = () => {
           console.log('Changing vault');
         }}
       />
+
+      <Divider borderColor="dark.100" my={8} />
+
       <MenuList spacing={6} w="100%">
+        <MenuItem spacing={4}>
+          <Icon as={HomeIcon} fontSize="xl" />
+          <Text variant="subtitle" fontSize="lg" fontWeight="bold">
+            Home
+          </Text>
+        </MenuItem>
         <MenuItem spacing={4}>
           <Icon as={HiQrCode} fontSize="xl" />
           <Text variant="subtitle" fontSize="lg">
             Transactions
           </Text>
-          <Badge variant="warning">
+          <Badge variant="warning" fontWeight="normal">
             <Icon as={PendingIcon} /> 1
           </Badge>
         </MenuItem>
@@ -54,6 +64,9 @@ const Sidebar = () => {
           <Text variant="subtitle" fontSize="lg">
             Address book
           </Text>
+          <Badge variant="warning" fontWeight="normal">
+            Upcoming
+          </Badge>
         </MenuItem>
         <MenuItem spacing={4}>
           <Icon as={HiQrCode} fontSize="xl" />

@@ -20,7 +20,7 @@ const VaultBox = (props: VaultBoxPropx) => {
   const { name, address, onChangeVault } = props;
 
   return (
-    <Box w="100%" mb={12}>
+    <Box w="100%">
       <HStack width="100%" alignItems="center" spacing={5} mb={5}>
         <Avatar bgColor="dark.150" name={name} />
         <Box w="100%" maxW="100%">
