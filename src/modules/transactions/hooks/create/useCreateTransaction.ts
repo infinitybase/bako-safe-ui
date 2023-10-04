@@ -8,11 +8,11 @@ import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
 const useCreateTransaction = () => {
   const navigate = useNavigate();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
   const toast = useToast();
 
   // Vault
-  const vaultDetails = useVaultDetailsRequest(params.id!);
+  const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const { transactionsFields, form } = useCreateTransactionForm({
@@ -46,7 +46,7 @@ const useCreateTransaction = () => {
       predicate: vaultDetails.predicate!.predicateInstance,
       transaction: {
         name: data.name,
-        predicateID: params.id!,
+        predicateID: params.vaultId!,
         predicateAdress:
           vaultDetails.predicate!.predicateInstance.address.toString(),
         assets: data.transactions!.map((transaction) => ({
@@ -58,7 +58,7 @@ const useCreateTransaction = () => {
         txData: '',
         hash: '',
       },
-      predicateID: params.id!,
+      predicateID: params.vaultId!,
     });
   });
 

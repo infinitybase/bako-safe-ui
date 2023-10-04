@@ -35,7 +35,9 @@ const Sidebar = () => {
           console.log('Changing vault');
         }}
         onCreateTransaction={() => {
-          route.navigate(Pages.createTransaction({ id: route.params.id! }));
+          route.navigate(
+            Pages.createTransaction({ vaultId: route.params.vaultId! }),
+          );
         }}
       />
 

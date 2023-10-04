@@ -5,15 +5,15 @@ import { useTransactionListRequest, useVaultDetailsRequest } from '@/modules';
 
 const useSidebar = () => {
   const navigate = useNavigate();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
 
-  const vaultDetailsRequest = useVaultDetailsRequest(params.id!);
-  const transactionListRequest = useTransactionListRequest(params.id!);
+  const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
+  const transactionListRequest = useTransactionListRequest(params.vaultId!);
 
   const pendingTransactions = useMemo(() => {
     return (
       transactionListRequest.data
-        ?.filter((transaction) => transaction.predicateID === params.id)
+        ?.filter((transaction) => transaction.predicateID === params.vaultId)
         .map((transaction) => transaction.witnesses)
         .flat()
         .filter((transaction) => !transaction.signature).length ?? 0

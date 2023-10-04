@@ -7,10 +7,10 @@ import { useVaultDetailsRequest } from '../details';
 
 const useVaultDetails = () => {
   const navigate = useNavigate();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
   const { account } = useFuelAccount();
 
-  const { predicate, isLoading } = useVaultDetailsRequest(params.id!);
+  const { predicate, isLoading } = useVaultDetailsRequest(params.vaultId!);
   const {
     assets,
     ethBalance,
