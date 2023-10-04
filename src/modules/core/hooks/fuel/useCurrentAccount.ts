@@ -9,7 +9,10 @@ const useCurrentAccount = () => {
   const { data, ...query } = useQuery(
     FuelQueryKeys.CURRENT_ACCOUNT,
     async () => {
-      return fuel.currentAccount();
+      return fuel?.currentAccount();
+    },
+    {
+      enabled: !!fuel,
     },
   );
 

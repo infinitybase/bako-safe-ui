@@ -6,8 +6,12 @@ import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 const useProvider = () => {
   const [fuel] = useFuel();
 
-  const { data, ...query } = useQuery(FuelQueryKeys.PROVIDER, () =>
-    fuel.getProvider(),
+  const { data, ...query } = useQuery(
+    FuelQueryKeys.PROVIDER,
+    () => fuel.getProvider(),
+    {
+      enabled: !!fuel,
+    },
   );
 
   return {

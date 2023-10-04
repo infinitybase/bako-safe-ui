@@ -6,7 +6,11 @@ import { useFuel } from './useFuel';
 const useIsConnected = () => {
   const [fuel] = useFuel();
 
-  const query = useQuery(FuelQueryKeys.IS_CONNECTED, () => fuel.isConnected());
+  const query = useQuery(
+    FuelQueryKeys.IS_CONNECTED,
+    () => fuel?.isConnected(),
+    { enabled: !!fuel },
+  );
 
   return {
     isConnected: query.data,

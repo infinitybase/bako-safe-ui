@@ -14,7 +14,7 @@ const useConnect = (params?: UseConnectParams) => {
   const mutation = useMutation(
     FuelQueryKeys.CONNECT,
     () => {
-      return fuel.connect();
+      return fuel?.connect();
     },
     {
       onSuccess: params?.onConnect,

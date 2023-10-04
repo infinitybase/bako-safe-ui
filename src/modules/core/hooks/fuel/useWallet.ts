@@ -8,8 +8,12 @@ const useWallet = (account?: string) => {
   const [fuel] = useFuel();
   const { account: currentAccount } = useFuelAccount();
 
-  return useQuery([FuelQueryKeys.WALLET, account, currentAccount], () =>
-    fuel.getWallet(account || currentAccount),
+  return useQuery(
+    [FuelQueryKeys.WALLET, account, currentAccount],
+    () => fuel?.getWallet(account || currentAccount),
+    {
+      enabled: !!fuel,
+    },
   );
 };
 
