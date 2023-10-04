@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Pages,
   useCreateVaultRequest,
+  useFuel,
   useFuelAccount,
   useToast,
 } from '@/modules';
@@ -19,6 +20,7 @@ export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
   const { account } = useFuelAccount();
+  const [fuel] = useFuel();
 
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
@@ -45,7 +47,7 @@ const useCreateVault = () => {
     },
   });
 
-  const handleCreateVault = form.handleSubmit((data) => {
+  const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
     request.createVault({
@@ -54,6 +56,7 @@ const useCreateVault = () => {
       minSigners: Number(data.minSigners),
       description: data.description,
       owner: account,
+      provider: await fuel.getProvider(),
     });
   });
 

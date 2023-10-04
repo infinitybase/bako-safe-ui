@@ -1,13 +1,11 @@
-import { Alert, AlertIcon, Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 
 import logo from '@/assets/logo.svg';
 
 import { useSignIn } from '../hooks';
 
 const SigninPage = () => {
-  const { isConnected, isConnecting, goToApp, isBeta3 } = useSignIn();
-
-  const buttonDisabled = isConnected && !isBeta3;
+  const { isConnected, isConnecting, goToApp } = useSignIn();
 
   return (
     <Box
@@ -44,26 +42,12 @@ const SigninPage = () => {
         justifyContent="center"
         alignItems="center"
       >
-        {isConnected && !isBeta3 && (
-          <Alert bg="none" status="info">
-            <AlertIcon />
-            <Text>
-              Please, connect your wallet in
-              <Text fontWeight="bold" as="span">
-                {' '}
-                beta 3{' '}
-              </Text>
-              .
-            </Text>
-          </Alert>
-        )}
         <Button
           size="lg"
           color="brand.900"
           variant="solid"
           colorScheme="brand"
           isLoading={isConnecting}
-          isDisabled={buttonDisabled}
           loadingText="Connecting.."
           onClick={goToApp}
         >

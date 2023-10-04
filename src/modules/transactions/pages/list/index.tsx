@@ -119,10 +119,16 @@ const TransactionsVaultPage = () => {
                         }),
                       )
                     }
-                    key={item._id}
-                    assets={item.assets}
+                    key={item.id}
+                    assets={item.assets.map((asset) => ({
+                      assetId: asset.assetID,
+                      amount: asset.amount,
+                    }))}
                     transaction={{
                       ...item,
+                      witnesses: item.witnesses
+                        .filter((witness) => !!witness.signature)
+                        .map((witness) => witness.signature!),
                       predicate: vaultRequest.predicate,
                     }}
                     hidePredicateName

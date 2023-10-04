@@ -2,7 +2,6 @@
   "name": "bsafe-ui",
   "private": true,
   "version": "0.0.0",
-  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -15,12 +14,14 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@fuel-wallet/sdk": "^0.11.0",
+    "@fuels/ts-config": "^0.0.11",
     "@hookform/resolvers": "^3.3.1",
     "axios": "^1.5.0",
-    "bsafe": "^0.0.4",
+    "bsafe": "^0.0.12",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.1",
-    "fuels": "0.43.1",
+    "fuels": "^0.60.0",
+    "js-cookie": "^3.0.5",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@types/js-cookie": "^3.0.4",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/react-text-mask": "^5.4.11",
@@ -71,5 +73,8 @@
   "lint-staged": {
     "*.ts": "prettier --write",
     "*.tsx": "prettier --write"
+  },
+  "resolutions": {
+    "string-width": "4.1.0"
   }
 }
