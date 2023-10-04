@@ -1,49 +1,72 @@
-import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Pages, useFuelConnection } from '@/modules/core';
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useFuelAccount } from '@/modules';
+import {
+  Pages,
+  useConnect,
+  useCurrentAccount,
+  useIsConnected,
+  useProvider,
+} from '@/modules/core';
+
+import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
 const useSignIn = () => {
   const navigate = useNavigate();
 
-  const {
-    connect,
-    isConnecting,
-    isConnected,
-    isValidAccount,
-    network,
-    account,
-  } = useFuelConnection();
+  const { setAccount } = useFuelAccount();
+  const { isConnected } = useIsConnected();
+  const { connect, isConnecting } = useConnect();
+  const { account } = useCurrentAccount();
+  const { provider } = useProvider();
 
-  const isBeta3 = useMemo(() => {
-    if (network.includes('localhost')) {
-      return true;
-    }
+  const signInRequest = useSignInRequest({
+    onSuccess: ({ accessToken }) => {
+      CookiesConfig.setCookies([
+        {
+          name: CookieName.ACCESS_TOKEN,
+          value: accessToken,
+        },
+      ]);
+      setAccount(account!);
+      navigate(Pages.home());
+    },
+  });
 
-    return network === import.meta.env.VITE_NETWORK_BETA_3;
-  }, [network]);
+  const createUserRequest = useCreateUserRequest({
+    onSuccess: ({ address, id, provider }) => {
+      signInRequest.mutate({
+        address,
+        provider,
+        user_id: id,
+      });
+    },
+  });
 
   const goToApp = async () => {
-    if (isBeta3 && isConnected) {
-      return navigate(Pages.home());
-    }
+    try {
+      const connected = await connect();
 
-    connect();
+      if (!connected) return;
+
+      createUserRequest.mutate({
+        address: account!,
+        provider: provider!.url,
+      });
+    } catch (e) {
+      console.log({ e });
+    }
   };
 
-  useEffect(() => {
-    if (account && isBeta3) {
-      return navigate(Pages.home());
-    }
-  }, [account, isBeta3, navigate]);
-
   return {
-    isConnected,
-    isConnecting,
     connect,
-    isValidAccount,
     goToApp,
-    isBeta3,
+    signInRequest,
+    isConnected,
+    isConnecting:
+      isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
+    createUserRequest,
   };
 };
 

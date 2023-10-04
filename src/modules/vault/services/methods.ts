@@ -1,44 +1,36 @@
 import { api } from '@/config';
-
-export interface Predicate {
-  name: string;
-  address: string;
-  description?: string;
-  minSigners: number;
-  addresses: string[];
-  owner: string;
-  bytes: string;
-  abi: string;
-  configurable: string;
-  network: string;
-  _id: string;
-}
+import { Predicate } from '@/modules/core';
 
 export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;
 export type GetAllPredicateResponse = Predicate[];
-export type CreatePredicatePayload = Omit<Predicate, '_id'>;
+export type CreatePredicatePayload = Omit<Predicate, 'id'>;
 
 export class VaultService {
   static async create(payload: CreatePredicatePayload) {
     const { data } = await api.post<CreatePredicateResponse>(
-      '/predicates',
+      '/predicate',
       payload,
     );
     return data;
   }
+
   static async getAll() {
-    const { data } = await api.get<GetAllPredicateResponse>('/predicates');
+    const { data } = await api.get<GetAllPredicateResponse>('/predicate');
     return data;
   }
+
   static async getById(id: string) {
-    const { data } = await api.get<GetPredicateResponse>(`/predicates/${id}`);
+    const { data } = await api.get<GetPredicateResponse>(`/predicate/${id}`);
     return data;
   }
-  static async findByAddresses(address: string) {
-    const { data } = await api.get<GetAllPredicateResponse>(
-      `/predicates/by-addresses/${address}`,
-    );
+
+  static async findPredicates(address: string) {
+    const { data } = await api.get<GetAllPredicateResponse>(`/predicate`, {
+      data: {
+        signer: address,
+      },
+    });
     return data;
   }
 }

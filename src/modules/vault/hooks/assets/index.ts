@@ -1,1 +1,1 @@
-export * from './useVaultAssets.ts';
+export * from './useVaultAssets';

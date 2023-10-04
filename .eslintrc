@@ -47,6 +47,7 @@
   },
   "ignorePatterns": [
     "dist",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "*.svg"
   ]
 }

@@ -1,10 +1,11 @@
-import { bn, InputValue, Predicate } from 'fuels';
+import { Vault } from 'bsafe';
+import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
-const balancesToAssets = async (predicate?: Predicate<InputValue[]>) => {
+const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
@@ -20,13 +21,14 @@ const balancesToAssets = async (predicate?: Predicate<InputValue[]>) => {
   });
 };
 
-function useVaultAssets(predicate?: Predicate<InputValue[]>) {
+function useVaultAssets(predicate?: Vault) {
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', predicate],
     () => balancesToAssets(predicate),
     {
       initialData: [],
       refetchInterval: 10000,
+      keepPreviousData: true,
     },
   );
 
@@ -56,10 +58,6 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     [assets],
   );
 
-  const getEthBalance = () => {
-    return getCoinBalance(NativeAssetId);
-  };
-
   const getAssetInfo = (assetId: string) => {
     return assetsMap[assetId];
   };
@@ -80,12 +78,15 @@ function useVaultAssets(predicate?: Predicate<InputValue[]>) {
     return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
   }, [assets]);
 
+  const ethBalance = useMemo(() => {
+    return getCoinBalance(NativeAssetId);
+  }, [getCoinBalance]);
+
   return {
     assets,
     ...rest,
-    ethBalance: getEthBalance(),
+    ethBalance,
     getAssetInfo,
-    getEthBalance,
     getCoinAmount,
     getCoinBalance,
     hasAssetBalance,

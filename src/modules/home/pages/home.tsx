@@ -58,7 +58,9 @@ const HomePage = () => {
                   {predicates?.map((predicate) => (
                     <Flex
                       onClick={() =>
-                        navigate(Pages.detailsVault({ id: predicate._id }))
+                        navigate(
+                          Pages.detailsVault({ id: String(predicate.id) }),
+                        )
                       }
                       key={predicate.name}
                       justifyContent="space-between"

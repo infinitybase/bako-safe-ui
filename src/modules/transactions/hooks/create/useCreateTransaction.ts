@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useToast } from '@/modules';
+import { TransactionStatus, useToast } from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
@@ -47,20 +47,16 @@ const useCreateTransaction = () => {
       transaction: {
         name: data.name,
         predicateID: params.id!,
-        predicateAddress:
+        predicateAdress:
           vaultDetails.predicate!.predicateInstance.address.toString(),
         assets: data.transactions!.map((transaction) => ({
-          assetId: transaction.asset,
+          assetID: transaction.asset,
           amount: transaction.amount,
           to: transaction.to,
         })),
-        witnesses: [],
-        to: '',
-        hash: '',
+        status: TransactionStatus.PENDING,
         txData: '',
-        status: 'PENDING',
-        sendTime: '',
-        gasUsed: '',
+        hash: '',
       },
       predicateID: params.id!,
     });
@@ -78,5 +74,7 @@ const useCreateTransaction = () => {
     navigate,
   };
 };
+
+export type UseCreateTransaction = ReturnType<typeof useCreateTransaction>;
 
 export { useCreateTransaction };
