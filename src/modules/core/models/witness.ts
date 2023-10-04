@@ -1,4 +1,4 @@
-import { Transaction } from './transaction.ts';
+import { Transaction } from './transaction';
 
 export interface Witness {
   id: string;

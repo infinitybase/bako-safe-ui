@@ -7,8 +7,6 @@ import { useSignIn } from '../hooks';
 const SigninPage = () => {
   const { isConnected, isConnecting, goToApp } = useSignIn();
 
-  const buttonDisabled = isConnected;
-
   return (
     <Box
       w="100%"
@@ -50,7 +48,6 @@ const SigninPage = () => {
           variant="solid"
           colorScheme="brand"
           isLoading={isConnecting}
-          isDisabled={buttonDisabled}
           loadingText="Connecting.."
           onClick={goToApp}
         >

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { CookieName, CookiesConfig } from '@/config/cookies.ts';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules';
 
-import { useFuel } from './useFuel.ts';
+import { useFuel } from '../../../hooks/fuel/useFuel';
 
 interface UserFuelConnectionProps {
   onChangeAccount: (account: string, provider: string) => void;
