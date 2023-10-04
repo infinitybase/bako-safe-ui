@@ -1,4 +1,4 @@
-import { Asset, AssetMap } from './types.ts';
+import { Asset, AssetMap } from './types';
 
 const NativeAssetId =
   '0x0000000000000000000000000000000000000000000000000000000000000000';

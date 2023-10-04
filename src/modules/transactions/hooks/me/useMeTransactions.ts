@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { SignatureUtils } from '@/modules';
 import { useFuelAccount } from '@/modules/auth';
 
-import { useMeTransactionsRequest } from './useMeTransactionsRequest.ts';
+import { useMeTransactionsRequest } from './useMeTransactionsRequest';
 
 const useMeTransactions = () => {
   const navigate = useNavigate();
@@ -16,7 +16,10 @@ const useMeTransactions = () => {
     return transactionsRequest.data
       ?.map((transaction) => {
         const isSigned = transaction?.witnesses?.some((signature) =>
-          SignatureUtils.recoverSignerAddress(signature, `${transaction.hash}`),
+          SignatureUtils.recoverSignerAddress(
+            signature.signature!,
+            `${transaction.hash}`,
+          ),
         );
         return {
           ...transaction,

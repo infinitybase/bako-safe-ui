@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Container } from './container.tsx';
+import { Container } from './container';
 import { Content } from './content';
 import { Header } from './header';
 

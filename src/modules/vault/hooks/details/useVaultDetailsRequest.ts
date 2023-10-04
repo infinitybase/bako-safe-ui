@@ -1,26 +1,16 @@
-import { Vault } from 'bsafe';
 import { useQuery } from 'react-query';
 
-import { VaultService } from '@/modules';
+import { BsafeProvider } from '@/modules/core';
+import { VaultService } from '@/modules/vault/services';
 
 const getPredicateInstance = async (id: string) => {
   const predicate = await VaultService.getById(id);
 
-  const params = JSON.parse(predicate.configurable);
+  const vault = BsafeProvider.instanceVault(predicate);
 
-  const _configurable = {
-    minSigners: predicate.minSigners,
-    addresses: predicate.addresses,
-    network: predicate.network,
-    ...params,
-  };
   return {
     ...predicate,
-    predicateInstance: await new Vault({
-      abi: predicate.abi,
-      configurable: _configurable,
-      bytecode: predicate.bytes,
-    }).getPredicate(),
+    predicateInstance: vault,
   };
 };
 

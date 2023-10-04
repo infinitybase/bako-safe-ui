@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 
-import { useToast, useWallet } from '@/modules/core';
-import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest.ts';
+import { useMyWallet, useToast } from '@/modules/core';
+import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest';
 
 export interface SignTransactionParams {
   txId: string;
@@ -14,7 +14,7 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options?: UseSignTransactionOptions) => {
-  const { data: currentWallet } = useWallet();
+  const { data: currentWallet } = useMyWallet();
   const toast = useToast();
 
   const request = useSignTransactionRequest({
@@ -72,7 +72,7 @@ const useSignTransaction = (options?: UseSignTransactionOptions) => {
 
         request.mutate({
           id: response.transactionID,
-          predicateID: response.predicateID,
+          account: currentWallet!.address.toString(),
           signer: response.signedMessage,
         });
       },
