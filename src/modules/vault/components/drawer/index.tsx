@@ -1,5 +1,6 @@
 import {
-  Divider,
+  Avatar,
+  Box,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -13,7 +14,27 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { ErrorIcon } from '@/components';
+import { Card, ErrorIcon } from '@/components';
+
+const VaultDrawerBox = () => {
+  return (
+    <Card bgColor="dark.300" w="100%">
+      <HStack width="100%" alignItems="center" spacing={4} mb={5}>
+        <Avatar bgColor="dark.150" name="Infinitybase" />
+        <VStack alignItems="flex-start" spacing={1}>
+          <Text variant="subtitle">Infinitybase</Text>
+          <Text variant="description">alskdjlaksdjlaksjd</Text>
+        </VStack>
+      </HStack>
+      <Box>
+        <Text variant="description">
+          Setting Sail on a Journey to Unlock the Potential of User-Centered
+          Design.
+        </Text>
+      </Box>
+    </Card>
+  );
+};
 
 const VaultDrawer = () => {
   return (
@@ -47,10 +68,20 @@ const VaultDrawer = () => {
           </VStack>
         </DrawerHeader>
 
-        <DrawerBody>
+        <Box w="100%" mb={8}>
           <Input placeholder="Search" variant="custom" colorScheme="dark" />
+        </Box>
 
-          <Divider borderColor="dark.100" my={8} />
+        <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
+          <VStack>
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+            <VaultDrawerBox />
+          </VStack>
         </DrawerBody>
       </DrawerContent>
     </Drawer>
