@@ -11,7 +11,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 
 export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;
-export type GetAllPredicateResponse = Predicate;
+export type GetAllPredicateResponse = Predicate[];
 export type GetAllPredicatePaginationResponse = IPagination<Predicate>;
 export type CreatePredicatePayload = Omit<Predicate, 'id'>;
 
