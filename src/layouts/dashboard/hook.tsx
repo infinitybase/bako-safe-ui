@@ -1,3 +1,4 @@
+import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ import { useTransactionListRequest, useVaultDetailsRequest } from '@/modules';
 const useSidebar = () => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
+  const drawer = useDisclosure();
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
@@ -27,6 +29,7 @@ const useSidebar = () => {
     },
     vaultRequest: vaultDetailsRequest,
     pendingTransactions,
+    drawer,
   };
 };
 

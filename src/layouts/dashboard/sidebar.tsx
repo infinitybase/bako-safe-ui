@@ -1,9 +1,9 @@
-import { Box, Icon } from '@chakra-ui/react';
+import { Box, Divider, Icon } from '@chakra-ui/react';
 import { HiQrCode } from 'react-icons/hi2';
 
 import { HomeIcon, PendingIcon } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { Pages, VaultDrawer } from '@/modules';
+import { Pages, VaultBox, VaultDrawer } from '@/modules';
 
 import { useSidebar } from './hook';
 
@@ -14,7 +14,7 @@ const formatAddress = (address?: string) =>
     : '';
 
 const Sidebar = () => {
-  const { route, vaultRequest, pendingTransactions } = useSidebar();
+  const { route, vaultRequest, pendingTransactions, drawer } = useSidebar();
 
   return (
     <Box
@@ -27,24 +27,22 @@ const Sidebar = () => {
       px={6}
     >
       {/* VAULT DRAWER LIST */}
-      <VaultDrawer />
+      <VaultDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
 
       {/*/!* VAULT INFOS *!/*/}
-      {/*<VaultBox*/}
-      {/*  name={String(vaultRequest.predicate?.name)}*/}
-      {/*  address={formatAddress(vaultRequest.predicate?.predicateAddress)}*/}
-      {/*  isLoading={vaultRequest.isLoading}*/}
-      {/*  onChangeVault={() => {*/}
-      {/*    console.log('Changing vault');*/}
-      {/*  }}*/}
-      {/*  onCreateTransaction={() => {*/}
-      {/*    route.navigate(*/}
-      {/*      Pages.createTransaction({ vaultId: route.params.vaultId! }),*/}
-      {/*    );*/}
-      {/*  }}*/}
-      {/*/>*/}
+      <VaultBox
+        name={String(vaultRequest.predicate?.name)}
+        address={formatAddress(vaultRequest.predicate?.predicateAddress)}
+        isLoading={vaultRequest.isLoading}
+        onChangeVault={drawer.onOpen}
+        onCreateTransaction={() => {
+          route.navigate(
+            Pages.createTransaction({ vaultId: route.params.vaultId! }),
+          );
+        }}
+      />
 
-      {/*<Divider borderColor="dark.100" my={8} />*/}
+      <Divider borderColor="dark.100" my={8} />
 
       {/* MENU */}
       <SidebarMenu.List spacing={6} w="100%">

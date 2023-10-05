@@ -6,6 +6,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  DrawerProps,
   Flex,
   Heading,
   HStack,
@@ -14,11 +15,24 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Card, ErrorIcon } from '@/components';
+import { Card, CardProps, ErrorIcon } from '@/components';
 
-const VaultDrawerBox = () => {
+interface VaultDrawerBoxProps extends CardProps {
+  isActive?: boolean;
+}
+
+const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
+  const { isActive, ...rest } = props;
+
   return (
-    <Card bgColor="dark.300" w="100%">
+    <Card
+      {...rest}
+      w="100%"
+      bgColor="dark.300"
+      cursor="pointer"
+      borderColor={isActive ? 'brand.500' : 'dark.100'}
+      borderWidth={isActive ? '2px' : '1px'}
+    >
       <HStack width="100%" alignItems="center" spacing={4} mb={5}>
         <Avatar bgColor="dark.150" name="Infinitybase" />
         <VStack alignItems="flex-start" spacing={1}>
@@ -36,19 +50,15 @@ const VaultDrawerBox = () => {
   );
 };
 
-const VaultDrawer = () => {
+interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {}
+
+const VaultDrawer = (props: VaultDrawerProps) => {
   return (
-    <Drawer
-      size="sm"
-      isOpen={true}
-      variant="glassmorphic"
-      placement="left"
-      onClose={console.log}
-    >
+    <Drawer {...props} size="sm" variant="glassmorphic" placement="left">
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack spacing={2}>
+          <HStack cursor="pointer" onClick={props.onClose} spacing={2}>
             <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close
@@ -61,7 +71,7 @@ const VaultDrawer = () => {
             <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
               Vault
             </Heading>
-            <Text variant="description">
+            <Text maxWidth={300} variant="description">
               Setting Sail on a Journey to Unlock the Potential of User-Centered
               Design.
             </Text>
@@ -73,10 +83,10 @@ const VaultDrawer = () => {
         </Box>
 
         <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
-          <VStack>
+          <VStack spacing={4}>
             <VaultDrawerBox />
             <VaultDrawerBox />
-            <VaultDrawerBox />
+            <VaultDrawerBox isActive />
             <VaultDrawerBox />
             <VaultDrawerBox />
             <VaultDrawerBox />
