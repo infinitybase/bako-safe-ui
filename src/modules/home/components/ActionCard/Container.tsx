@@ -1,29 +1,20 @@
-import { HStack } from '@chakra-ui/react';
+import { CardProps, HStack } from '@chakra-ui/react';
 import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components';
 
-interface ActionCardContainerProps {
+interface ActionCardContainerProps extends CardProps {
   children: ReactNode;
   isUpcoming?: boolean;
-  navigateTo?: string;
 }
 
 const Container = ({
   children,
   isUpcoming,
-  navigateTo,
+  ...rest
 }: ActionCardContainerProps) => {
-  const navigate = useNavigate();
-
   return (
-    <Card
-      bg="dark.300"
-      w="100%"
-      cursor={isUpcoming ? '' : 'pointer'}
-      onClick={() => navigateTo && navigate(navigateTo)}
-    >
+    <Card w="100%" cursor={isUpcoming ? '' : 'pointer'} {...rest}>
       <HStack>{children}</HStack>
     </Card>
   );
