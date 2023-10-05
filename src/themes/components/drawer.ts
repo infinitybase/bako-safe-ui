@@ -2,7 +2,7 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const glassmorphic = defineStyle({
   dialog: {
-    bg: 'rgba(18, 18, 18, 0.8)',
+    bg: 'rgba(12, 12, 12, 0.8)',
     py: 9,
     px: 6,
   },
