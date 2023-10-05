@@ -49,7 +49,7 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
       borderWidth={isActive ? '2px' : '1px'}
     >
       <HStack width="100%" alignItems="center" spacing={4} mb={5}>
-        <Avatar bgColor="dark.150" name="Infinitybase" />
+        <Avatar color="white" bgColor="dark.150" name={name} />
         <VStack alignItems="flex-start" spacing={1}>
           <Text variant="subtitle">{name}</Text>
           <Text variant="description">{formatAddress(address)}</Text>
@@ -69,16 +69,12 @@ interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const navigate = useNavigate();
 
-  const inView = useInView({
-    delay: 300,
-  });
+  const inView = useInView({ delay: 300 });
 
   const [search, setSearch] = useState('');
 
   const { vaults, fetchNextPage, isLoading } = useVaultListRequest(
-    {
-      q: search,
-    },
+    { q: search },
     props.isOpen,
   );
 
