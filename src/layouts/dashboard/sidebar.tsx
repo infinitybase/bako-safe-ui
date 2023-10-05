@@ -27,7 +27,14 @@ const Sidebar = () => {
       px={6}
     >
       {/* VAULT DRAWER LIST */}
-      <VaultDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <VaultDrawer
+        // onSelectVault={(vaultId) => {
+        //   drawer.onClose();
+        //   route.navigate(Pages.detailsVault({ vaultId }));
+        // }}
+        isOpen={drawer.isOpen}
+        onClose={drawer.onClose}
+      />
 
       {/*/!* VAULT INFOS *!/*/}
       <VaultBox
