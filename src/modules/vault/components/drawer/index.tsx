@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Drawer,
   DrawerBody,
@@ -14,106 +13,39 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
 
-import { Card, CardProps, ErrorIcon } from '@/components';
-import { queryClient } from '@/config';
-import { Pages, useVaultListRequest } from '@/modules';
+import { ErrorIcon } from '@/components';
 
-// TODO: Move to utils or use one if wxists
-const formatAddress = (address?: string) =>
-  address
-    ? `${String(address).slice(0, 15)}...${String(address).slice(-4)}`
-    : '';
-
-interface VaultDrawerBoxProps extends CardProps {
-  isActive?: boolean;
-  name: string;
-  address: string;
-  description?: string;
-}
-
-const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, address, description, ...rest } = props;
-
-  return (
-    <Card
-      {...rest}
-      w="100%"
-      bgColor="dark.300"
-      cursor="pointer"
-      borderColor={isActive ? 'brand.500' : 'dark.100'}
-      borderWidth={isActive ? '2px' : '1px'}
-    >
-      <HStack width="100%" alignItems="center" spacing={4} mb={5}>
-        <Avatar color="white" bgColor="dark.150" name={name} />
-        <VStack alignItems="flex-start" spacing={1}>
-          <Text variant="subtitle">{name}</Text>
-          <Text variant="description">{formatAddress(address)}</Text>
-        </VStack>
-      </HStack>
-      <Box>
-        <Text variant="description">{description ?? ''}</Text>
-      </Box>
-    </Card>
-  );
-};
+import { VaultDrawerBox } from './box';
+import { useVaultDrawer } from './hook';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
 }
 
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
-  const navigate = useNavigate();
-
-  const inView = useInView({ delay: 300 });
-
-  const [search, setSearch] = useState('');
-
-  const { vaults, fetchNextPage, isLoading } = useVaultListRequest(
-    { q: search },
-    props.isOpen,
-  );
-
-  const debouncedSearchHandler = useCallback(
-    debounce((value: string) => {
-      setSearch(value);
-    }, 300),
-    [],
-  );
-
-  useEffect(() => {
-    if (inView.inView && !isLoading) {
-      fetchNextPage();
-    }
-  }, [inView.inView, isLoading, fetchNextPage]);
-
-  const onSelectVault = (vaultId: string) => {
-    props.onClose();
-    navigate(Pages.detailsVault({ vaultId }));
-  };
-
-  const onCloseDrawer = () => {
-    props.onClose();
-    queryClient.invalidateQueries('vault/pagination');
-    setSearch('');
-  };
+  const {
+    drawer,
+    search,
+    request: { vaults },
+    inView,
+  } = useVaultDrawer({
+    onClose: props.onClose,
+    isOpen: props.isOpen,
+  });
 
   return (
     <Drawer
       {...props}
       size="sm"
-      onClose={onCloseDrawer}
+      onClose={drawer.onClose}
       variant="glassmorphic"
       placement="left"
     >
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={props.onClose} spacing={2}>
+          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
             <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close
@@ -135,7 +67,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
 
         <Box w="100%" mb={8}>
           <Input
-            onChange={(e) => debouncedSearchHandler(e.target.value)}
+            onChange={search}
             placeholder="Search"
             variant="custom"
             colorScheme="dark"
@@ -151,7 +83,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                 address={vault.predicateAddress}
                 isActive={vaultId === vault.id}
                 description={vault.description}
-                onClick={() => onSelectVault(vault.id)}
+                onClick={() => drawer.onSelectVault(vault.id)}
               />
             ))}
             <Box ref={inView.ref} />
