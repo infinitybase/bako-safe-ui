@@ -28,12 +28,9 @@ const Sidebar = () => {
     >
       {/* VAULT DRAWER LIST */}
       <VaultDrawer
-        // onSelectVault={(vaultId) => {
-        //   drawer.onClose();
-        //   route.navigate(Pages.detailsVault({ vaultId }));
-        // }}
         isOpen={drawer.isOpen}
         onClose={drawer.onClose}
+        vaultId={route.params.vaultId!}
       />
 
       {/*/!* VAULT INFOS *!/*/}

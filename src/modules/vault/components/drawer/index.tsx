@@ -62,9 +62,11 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
   );
 };
 
-interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {}
+interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
+  vaultId: string;
+}
 
-const VaultDrawer = (props: VaultDrawerProps) => {
+const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const navigate = useNavigate();
 
   const inView = useInView({
@@ -151,6 +153,7 @@ const VaultDrawer = (props: VaultDrawerProps) => {
                 key={vault.id}
                 name={vault.name}
                 address={vault.predicateAddress}
+                isActive={vaultId === vault.id}
                 description={vault.description}
                 onClick={() => onSelectVault(vault.id)}
               />
