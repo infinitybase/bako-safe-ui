@@ -6,6 +6,9 @@ const inputActiveStyle = {
   boxShadow:
     // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
     '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500) 50%, transparent)',
+  '~ .chakra-input__right-element': {
+    background: 'dark.300',
+  },
 };
 
 const baseStyle = defineStyle({
@@ -24,7 +27,6 @@ const baseStyle = defineStyle({
       borderColor: `dark.100`,
     },
     _focus: inputActiveStyle,
-    _active: inputActiveStyle,
     _focusVisible: inputActiveStyle,
     _placeholder: {
       color: 'grey.500',

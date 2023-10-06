@@ -3,6 +3,11 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 const primary = defineStyle({
   bgColor: 'brand.500',
   color: 'dark.300',
+  _hover: {
+    _disabled: {
+      bgColor: 'brand.500',
+    },
+  },
 });
 
 const secondary = defineStyle({
@@ -10,6 +15,11 @@ const secondary = defineStyle({
   borderWidth: 1,
   borderColor: 'grey.500',
   color: 'grey.200',
+  _hover: {
+    _disabled: {
+      bgColor: 'initial',
+    },
+  },
 });
 
 const icon = defineStyle({
@@ -22,7 +32,6 @@ const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
   fontSize: 'md',
-  _hover: {},
 });
 
 const Button = defineStyleConfig({

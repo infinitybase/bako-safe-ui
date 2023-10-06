@@ -12,7 +12,7 @@ import {
 import { MdChevronRight } from 'react-icons/md';
 
 import { Loader } from '@/components';
-import { Pages } from '@/modules';
+import { CreateVaultDialog, Pages } from '@/modules';
 
 import { useHome } from '../hooks';
 
@@ -51,6 +51,8 @@ const HomePage = () => {
                 </Text>
               </Box>
             </CardHeader>
+
+            <CreateVaultDialog />
 
             <CardBody>
               {!!predicates && predicates.length > 0 ? (

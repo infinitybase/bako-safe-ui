@@ -23,7 +23,7 @@ import {
 
 import { Loader } from '@/components';
 import { AssetItem, AssetList, NativeAssetId, Pages } from '@/modules/core';
-import { useVaultDetails } from '@/modules/vault';
+import { useVaultDetails } from '@/modules/vault/hooks';
 
 const VaultDetailsPage = () => {
   const { vault, assets, navigate, account } = useVaultDetails();

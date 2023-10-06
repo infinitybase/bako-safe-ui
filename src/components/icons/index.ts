@@ -5,6 +5,8 @@ export * from './home';
 export * from './notification';
 export * from './pending';
 export * from './question';
+export * from './remove';
 export * from './replace';
 export * from './square-plus';
 export * from './success';
+export * from './user-add';
