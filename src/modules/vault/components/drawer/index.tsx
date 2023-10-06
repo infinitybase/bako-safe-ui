@@ -7,12 +7,15 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
   Input,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
 
 import { ErrorIcon } from '@/components';
 
@@ -66,12 +69,16 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
         </DrawerHeader>
 
         <Box w="100%" mb={8}>
-          <Input
-            onChange={search}
-            placeholder="Search"
-            variant="custom"
-            colorScheme="dark"
-          />
+          <FormControl>
+            <Input
+              onChange={search}
+              placeholder=" "
+              variant="custom"
+              colorScheme="dark"
+            />
+            <FormLabel>Search</FormLabel>
+            {/* It is important that the Label comes after the Control due to css selectors */}
+          </FormControl>
         </Box>
 
         <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
