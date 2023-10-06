@@ -22,7 +22,7 @@ const Dialog = (props: VaultDialogProps) => {
       <ModalOverlay />
       <ModalContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" spacing={2}>
+          <HStack onClick={props.onClose} cursor="pointer" spacing={2}>
             <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close

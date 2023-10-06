@@ -9,7 +9,7 @@ import {
 
 import { Pages } from '@/modules';
 
-import { CreateVaultForm } from '../../components/dialog/create/form/form';
+import { CreateVaultForm } from '../../components/dialog/create/form';
 import { useCreateVault } from '../../hooks';
 
 const CreateVaultPage = () => {

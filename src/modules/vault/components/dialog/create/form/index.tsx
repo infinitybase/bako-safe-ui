@@ -10,6 +10,7 @@ import {
 import React from 'react';
 
 import { TabState, UseCreateVaultReturn } from '@/modules';
+import { VaultSuccessStep } from '@/modules/vault/components/dialog/create/form/steps/success';
 
 import { VaultFormActions } from './actions';
 import { VaultAddressesStep, VaultInfosStep } from './steps';
@@ -19,25 +20,38 @@ export interface CreateVaultFormProps {
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
   isLoading?: boolean;
+  onCancel: () => void;
 }
 
-const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
+const CreateVaultForm = (props: CreateVaultFormProps) => {
+  const { form, tabs, addresses, isLoading } = props;
+
   const stepActions = {
     [TabState.INFO]: {
+      hide: false,
       disable: !form.watch('name'),
       onContinue: () => tabs.set(TabState.ADDRESSES),
+      closeText: 'Cancel',
     },
     [TabState.ADDRESSES]: {
+      hide: false,
       disable: !form.formState.isValid,
-      onContinue: () => console.log('ok'),
+      onContinue: form.handleCreateVault,
+      closeText: 'Cancel',
+    },
+    [TabState.SUCCESS]: {
+      hide: true,
+      disable: false,
+      onContinue: () => {},
+      closeText: `I'll do it later`,
     },
   };
 
   const stepAction = stepActions[tabs.tab];
 
   return (
-    <Box w="full" as="form" maxW={420} onSubmit={form.handleCreateVault}>
-      <VStack spacing={4} alignItems="flex-start">
+    <Box w="full" as="form" maxW={420}>
+      <VStack hidden={stepAction?.hide} spacing={4} alignItems="flex-start">
         <Heading fontSize="2xl" color="grey.200">
           Create Vault
         </Heading>
@@ -47,7 +61,7 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
         </Text>
       </VStack>
 
-      <Box my={12}>
+      <Box hidden={stepAction.hide} my={12}>
         <Progress value={50} size="xs" colorScheme="brand" bgColor="dark.200" />
       </Box>
 
@@ -55,13 +69,17 @@ const CreateVaultForm = ({ form, tabs, addresses }: CreateVaultFormProps) => {
         <TabPanels>
           <VaultInfosStep form={form} />
           <VaultAddressesStep form={form} addresses={addresses} />
+          <VaultSuccessStep />
         </TabPanels>
       </Tabs>
 
       <VaultFormActions
-        onCancel={() => console.log('cancel')}
-        onContinue={stepAction?.onContinue}
+        onCancel={props.onCancel}
+        closeText={stepAction?.closeText}
+        isLoading={isLoading}
         isDisabled={stepAction?.disable}
+        onContinue={stepAction?.onContinue}
+        hideContinue={stepAction?.hide}
       />
     </Box>
   );

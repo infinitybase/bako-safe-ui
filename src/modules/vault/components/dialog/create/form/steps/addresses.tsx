@@ -155,9 +155,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
         />
       </Box>
     </HStack>
-
-    {/* TODO: Form actions component */}
-    <Divider borderColor="dark.100" my={9} />
   </TabPanel>
 );
 

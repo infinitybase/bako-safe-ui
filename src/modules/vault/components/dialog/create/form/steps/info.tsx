@@ -1,5 +1,4 @@
 import {
-  Divider,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -35,13 +34,11 @@ const VaultInfosStep = ({ form }: VaultInfoStepProps) => (
         )}
       />
       <FormControl>
-        <Textarea placeholder=" " />
+        <Textarea {...form.register('description')} placeholder=" " />
         <FormLabel>Description</FormLabel>
         <FormHelperText>Optional</FormHelperText>
       </FormControl>
     </VStack>
-
-    <Divider borderColor="dark.100" my={9} />
   </TabPanel>
 );
 

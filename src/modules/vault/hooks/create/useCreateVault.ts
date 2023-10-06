@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Pages,
   useCreateVaultRequest,
   useFuel,
   useFuelAccount,
@@ -14,6 +13,7 @@ import { useCreateVaultForm } from './useCreateVaultForm';
 export enum TabState {
   INFO,
   ADDRESSES,
+  SUCCESS,
 }
 
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
@@ -29,13 +29,7 @@ const useCreateVault = () => {
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
     onSuccess: () => {
-      toast.show({
-        status: 'success',
-        title: 'Vault created',
-        position: 'bottom',
-        isClosable: true,
-      });
-      navigate(Pages.home());
+      setTab(TabState.SUCCESS);
     },
     onError: () => {
       toast.show({
