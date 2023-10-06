@@ -25,6 +25,9 @@ const floating = defineStyle({
     {
       ...activeLabelStyles,
     },
+  '&:not(:has(label)) select': {
+    py: 2,
+  },
   label: {
     top: '2px',
     left: '-1px',

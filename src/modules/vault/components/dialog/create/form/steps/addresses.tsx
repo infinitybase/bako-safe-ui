@@ -138,6 +138,8 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
           render={({ field }) => (
             <FormControl>
               <Select
+                pt={2}
+                pb={2}
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
