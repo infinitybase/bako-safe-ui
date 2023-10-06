@@ -2,13 +2,18 @@ import {
   Badge,
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
   Icon,
   IconButton,
+  Input,
+  Select,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { FaRegClone } from 'react-icons/fa';
 import { HiQrCode } from 'react-icons/hi2';
@@ -224,6 +229,50 @@ const ExamplePage = () => {
                   <Icon as={PendingIcon} /> 1
                 </Badge>
               </HStack>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* BUTTONS */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Form</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card flex={1}>
+              <Box mb={3}>
+                <Heading variant="title-xl">Input</Heading>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Input placeholder=" " />
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Input placeholder=" " />
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
+            </Card>
+            <Card flex={1}>
+              <Box mb={3}>
+                <Heading variant="title-xl">Select</Heading>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Select placeholder=" ">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                  </Select>
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
             </Card>
           </HStack>
         </Box>
