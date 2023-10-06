@@ -6,4 +6,5 @@ export * from './notification';
 export * from './pending';
 export * from './question';
 export * from './replace';
+export * from './square-plus';
 export * from './success';
