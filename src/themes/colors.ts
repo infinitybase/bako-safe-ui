@@ -16,6 +16,7 @@ const colors = {
   },
   error: {
     500: '#EF9B8F',
+    600: '#F84949',
     900: 'rgba(248,73,73,0.1)',
   },
   warning: {

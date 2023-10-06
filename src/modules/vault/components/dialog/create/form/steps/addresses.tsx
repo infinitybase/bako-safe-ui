@@ -74,12 +74,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
                     {index === 0 ? 'Your address' : `Address ${index + 1}`}
                   </FormLabel>
                   {index > 0 && (
-                    /*
-                    background-color: var(--chakra-colors-dark-200);
-                    right: 1px;
-                    border-radius: 0px 10px 10px 0;
-                    */
-
                     <InputRightElement
                       px={2}
                       top="1px"
@@ -101,8 +95,8 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
                     </InputRightElement>
                   )}
                 </InputGroup>
-                <FormHelperText>
-                  <Text color="error">{fieldState.error?.message}</Text>
+                <FormHelperText color="error.500">
+                  {fieldState.error?.message}
                 </FormHelperText>
               </FormControl>
             );

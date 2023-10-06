@@ -11,6 +11,15 @@ const inputActiveStyle = {
   },
 };
 
+const inputInvalidStyle = {
+  borderColor: `error.500`,
+  bg: `dark.300`,
+  boxShadow: 'error.600',
+  '~ .chakra-input__right-element': {
+    background: 'dark.300',
+  },
+};
+
 const baseStyle = defineStyle({
   field: {
     bg: `dark.200`,
@@ -26,6 +35,7 @@ const baseStyle = defineStyle({
     _hover: {
       borderColor: `dark.100`,
     },
+    _invalid: inputInvalidStyle,
     _focus: inputActiveStyle,
     _focusVisible: inputActiveStyle,
     _placeholder: {

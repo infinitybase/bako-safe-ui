@@ -22,14 +22,17 @@ const VaultInfosStep = ({ form }: VaultInfoStepProps) => (
       <Controller
         control={form.control}
         name="name"
-        render={({ field }) => (
-          <FormControl>
+        render={({ field, fieldState }) => (
+          <FormControl isInvalid={fieldState.invalid}>
             <Input
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
             />
             <FormLabel>Vault name</FormLabel>
+            <FormHelperText color="error.500">
+              {fieldState.error?.message}
+            </FormHelperText>
           </FormControl>
         )}
       />
