@@ -1,43 +1,44 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-/* TODO: Wait design finish to set styles */
 const baseStyle = defineStyle({
   field: {
+    bg: `dark.200`,
+    color: 'grey.200',
+    fontSize: 'md',
+    borderColor: `dark.100`,
+    borderWidth: 1,
+    pt: 4,
+    pb: 1,
+    px: 5,
+    height: 'auto',
     borderRadius: 10,
-  },
-});
-
-const variantCustom = defineStyle((props) => {
-  const { colorScheme: c } = props;
-  return {
-    field: {
-      bg: `${c}.200`,
-      color: 'grey.500',
-      fontSize: 'lg',
-      borderColor: `${c}.100`,
-      py: 4,
-      px: 5,
-      _hover: {
-        borderColor: `${c}.100`,
-      },
-      _focusVisible: {
-        borderColor: `${c}.100`,
-      },
-      _placeholder: {
-        color: 'grey.500',
-        fontWeight: 'medium',
-      },
+    _hover: {
+      borderColor: `dark.100`,
     },
-    addon: {},
-    element: {},
-  };
+    _focusVisible: {
+      borderColor: `grey.200`,
+      bg: `dark.300`,
+      boxShadow:
+        // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
+        '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500) 50%, transparent)',
+    },
+    _placeholder: {
+      color: 'grey.500',
+      fontWeight: 'medium',
+    },
+  },
+  addon: {},
+  element: {},
 });
 
 const Input = defineStyleConfig({
   baseStyle,
+  defaultProps: {
+    colorScheme: 'dark',
+  },
   variants: {
-    custom: variantCustom,
+    custom: baseStyle,
   },
 });
 
-export { Input };
+export { Input, baseStyle as inputStyle };
