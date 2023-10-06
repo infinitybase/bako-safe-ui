@@ -38,6 +38,7 @@ const CreateVaultPage = () => {
 
       <CardBody pt={0}>
         <CreateVaultForm
+          onCancel={() => {}}
           form={form}
           tabs={tabs}
           addresses={addresses}
