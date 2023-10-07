@@ -9,6 +9,8 @@ interface Props {
 }
 
 function AddressCopy({ address }: Props) {
+  const isValid = !!address && address.length > 0;
+  if (!isValid) return;
   return (
     <Grid
       height="5vh"

@@ -11,4 +11,5 @@ export type Asset = {
   slug: string;
   assetId: string;
   icon?: string;
+  amount?: string;
 };

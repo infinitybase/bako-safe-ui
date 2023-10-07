@@ -4,12 +4,9 @@ import React from 'react';
 import { HomeIcon } from '@/components';
 
 import { AmountDetails } from '../../components/AmountDetails';
-import { VaultDetails } from '../../components/CardDetails';
+import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-
 const VaultDetailsPage = () => {
-  //const { vault, assets, navigate, account } = useVaultDetails();
-
   return (
     <VStack
       w="full"
@@ -41,7 +38,7 @@ const VaultDetailsPage = () => {
         alignItems="start"
         justifyContent="center"
       >
-        <VaultDetails />
+        <CardDetails />
         <AmountDetails />
         <SignersDetails />
       </HStack>

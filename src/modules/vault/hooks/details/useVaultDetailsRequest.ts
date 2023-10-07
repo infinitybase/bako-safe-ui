@@ -3,8 +3,8 @@ import { useQuery } from 'react-query';
 import { BsafeProvider } from '@/modules/core';
 import { VaultService } from '@/modules/vault/services';
 
-const getPredicateInstance = async (id: string) => {
-  const predicate = await VaultService.getById(id);
+const getPredicateInstance = async (address: string) => {
+  const predicate = await VaultService.getByAddress(address);
 
   const vault = BsafeProvider.instanceVault(predicate);
 
@@ -14,9 +14,10 @@ const getPredicateInstance = async (id: string) => {
   };
 };
 
-function useVaultDetailsRequest(id: string) {
-  const { data: predicate, ...rest } = useQuery(['predicate/get', id], () =>
-    getPredicateInstance(id),
+function useVaultDetailsRequest(address: string) {
+  const { data: predicate, ...rest } = useQuery(
+    ['predicate/get', address],
+    () => getPredicateInstance(address),
   );
 
   return {

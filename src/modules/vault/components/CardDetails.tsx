@@ -16,8 +16,14 @@ import React from 'react';
 import { Card } from '@/components';
 
 import { AddressCopy } from '../../../components/addressCopy';
+import { useVaultDetails } from '../hooks/details';
+import { useVaultState } from '../states';
+const CardDetails = () => {
+  const { biggerAsset, visebleBalance, setVisibleBalance } = useVaultState();
+  const { vault } = useVaultDetails();
 
-const VaultDetails = () => {
+  if (!vault) return;
+
   return (
     <VStack w="45%" justifyContent="flex-start" h="470" p={2}>
       <HStack w="full">
@@ -55,13 +61,10 @@ const VaultDetails = () => {
                 </GridItem>
                 <GridItem m={1}>
                   <Heading mb={3} variant="title-xl">
-                    Infinitybase
+                    {vault?.name}
                   </Heading>
 
-                  <Text variant="description">
-                    Setting Sail on a Journey to Unlock the Potential of
-                    User-Centered Design.
-                  </Text>
+                  <Text variant="description">{vault?.description}</Text>
                 </GridItem>
               </HStack>
 
@@ -76,8 +79,8 @@ const VaultDetails = () => {
                       borderRadius={10}
                     >
                       <QRCodeSVG
-                        //value={String(vault?.predicateAddress)}
-                        value={'https://google.com'}
+                        value={vault?.predicateAddress}
+                        //value="https://google.com"
                         fgColor="black"
                         bgColor="white"
                         style={{
@@ -87,7 +90,7 @@ const VaultDetails = () => {
                         }}
                       />
                     </Box>
-                    <AddressCopy address="guilherm" />
+                    <AddressCopy address={vault?.predicateAddress} />
                   </GridItem>
                 </VStack>
                 <VStack minH={280} minW={200}>
@@ -107,10 +110,10 @@ const VaultDetails = () => {
                         alignItems="center"
                       >
                         <Heading variant="title-xl">
-                          {false ? '*****' : '189.821,99'}
+                          {visebleBalance ? '*****' : biggerAsset?.amount}
                         </Heading>
                         <Text variant="description" fontSize="20px">
-                          USD
+                          {!visebleBalance && biggerAsset?.slug}
                         </Text>
                       </Box>
                       <Box
@@ -118,8 +121,9 @@ const VaultDetails = () => {
                         width="18%"
                         justifyContent="center"
                         alignItems="center"
+                        onClick={() => setVisibleBalance(!visebleBalance)}
                       >
-                        {true ? (
+                        {visebleBalance ? (
                           <ViewIcon boxSize={6} />
                         ) : (
                           <ViewOffIcon boxSize={6} />
@@ -154,4 +158,4 @@ const VaultDetails = () => {
   );
 };
 
-export { VaultDetails };
+export { CardDetails };
