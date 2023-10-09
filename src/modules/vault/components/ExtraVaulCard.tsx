@@ -4,29 +4,18 @@ import { Card } from '@/components';
 
 interface ExtraVaultCardProps extends CardProps {
   extra: number;
-  clickAction?: () => void;
 }
 
-export const ExtraVaultCard = ({
-  extra,
-  clickAction,
-  ...rest
-}: ExtraVaultCardProps) => (
-  <Card
-    cursor="pointer"
-    onClick={clickAction}
-    p={10}
-    borderStyle="dashed"
-    {...rest}
-  >
+export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
+  <Card cursor="pointer" p={10} borderStyle="dashed" {...rest}>
     <VStack spacing={0}>
       <Box>
         <Box>
           <Heading variant="title-lg" color="grey.200">
-            +{extra}
+            +{extra + 1}
           </Heading>
         </Box>
-        <Heading variant="title-md" color="grey.200">
+        <Heading variant="title-md" color="grey.200" my={1}>
           View all
         </Heading>
       </Box>

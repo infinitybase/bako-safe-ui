@@ -17,9 +17,8 @@ import avatar from '@/assets/avatars/user-1.png';
 import avatar2 from '@/assets/avatars/user-2.png';
 import avatar3 from '@/assets/avatars/user-3.png';
 import avatar4 from '@/assets/avatars/user-4.png';
-import avatar5 from '@/assets/avatars/user-5.png';
 import { Card } from '@/components';
-import { shortenHexString } from '@/utils/shorten-hex-string';
+import { shortenHexString } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
@@ -27,12 +26,24 @@ interface VaultCardProps extends CardProps {
   members: string[];
 }
 
-export const VaultCard = ({ name, address, ...rest }: VaultCardProps) => (
-  <Card w="100%" cursor="pointer" {...rest}>
+const avatars = [avatar, avatar2, avatar3, avatar4];
+
+export const VaultCard = ({
+  name,
+  address,
+  members,
+  ...rest
+}: VaultCardProps) => (
+  <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
     <VStack alignItems="flex-start">
       <HStack w="100%" justifyContent="space-between" mb={1}>
         <HStack>
-          <Avatar name={name} color="white" bg="grey.900" />
+          <Avatar
+            variant="roundedSquare"
+            name={name}
+            color="white"
+            bg="grey.900"
+          />
           <Box ml={2}>
             <Heading variant="title-md" color="grey.200">
               {name}
@@ -47,23 +58,31 @@ export const VaultCard = ({ name, address, ...rest }: VaultCardProps) => (
           aria-label="Copy"
           variant="icon"
           icon={<Icon as={FaRegClone} />}
-          onClick={() => navigator.clipboard.writeText(address)}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(address);
+          }}
         />
       </HStack>
 
-      <Divider borderColor="dark.100" my={2} />
+      <Divider borderColor="dark.100" my={1} />
 
       <Box>
         <Text variant="description">Its signers</Text>
-        <AvatarGroup max={5} mt={1} size="sm" spacing={-2}>
-          <Avatar name="Fábio Nascimento Teste" src={avatar} />
-          <Avatar name="Fábio Nascimento" src={avatar2} />
-          <Avatar name="Fábio Nascimento" src={avatar3} />
-          <Avatar name="Fábio Nascimento" src={avatar4} />
-          <Avatar name="Fábio Nascimento" src={avatar5} />
-          <Avatar name="Fábio Nascimento" src={avatar5} />
-          <Avatar name="Fábio Nascimento" src={avatar5} />
-          <Avatar name="Fábio Nascimento" src={avatar5} />
+        <AvatarGroup
+          variant="roundedSquare"
+          max={5}
+          mt={1}
+          size="sm"
+          spacing={-2}
+        >
+          {members.map((member) => (
+            <Avatar
+              variant="roundedSquare"
+              src={avatars[Math.floor(Math.random() * 4)]}
+              key={member}
+            />
+          ))}
         </AvatarGroup>
       </Box>
     </VStack>
