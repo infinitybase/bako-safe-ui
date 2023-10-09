@@ -18,6 +18,7 @@ export interface GetTransactionParams {
   predicateId?: string;
   to?: string;
   hash?: string;
+  status?: TransactionStatus;
 }
 
 export interface SignerTransactionPayload {

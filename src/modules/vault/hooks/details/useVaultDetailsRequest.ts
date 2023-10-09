@@ -15,8 +15,12 @@ const getPredicateInstance = async (id: string) => {
 };
 
 function useVaultDetailsRequest(id: string) {
-  const { data: predicate, ...rest } = useQuery(['predicate/get', id], () =>
-    getPredicateInstance(id),
+  const { data: predicate, ...rest } = useQuery(
+    ['predicate/get', id],
+    () => getPredicateInstance(id),
+    {
+      enabled: !!id,
+    },
   );
 
   return {

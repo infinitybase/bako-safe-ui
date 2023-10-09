@@ -117,7 +117,9 @@ const VaultDetailsPage = () => {
                       colorScheme="brand"
                       onClick={() =>
                         navigate(
-                          Pages.createTransaction({ id: String(vault?.id) }),
+                          Pages.createTransaction({
+                            vaultId: String(vault?.id),
+                          }),
                         )
                       }
                       isDisabled={!vault.hasBalance}
@@ -131,7 +133,9 @@ const VaultDetailsPage = () => {
                       color="white"
                       bgColor="dark.100"
                       onClick={() =>
-                        navigate(Pages.transactions({ id: String(vault?.id) }))
+                        navigate(
+                          Pages.transactions({ vaultId: String(vault?.id) }),
+                        )
                       }
                       _hover={{}}
                       _active={{}}

@@ -1,12 +1,12 @@
 import { Route } from 'react-router-dom';
 
-import { DefaultLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
 import { CreateVaultPage, VaultDetailsPage } from './pages';
 
 const vaultRoutes = (
-  <Route element={<DefaultLayoutRouter />}>
+  <Route element={<DashboardLayoutRouter hasSideBar />}>
     <Route
       path={Pages.createVault()}
       element={

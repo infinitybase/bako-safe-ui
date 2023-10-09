@@ -22,9 +22,7 @@ const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
   fontSize: 'md',
-  span: {
-    marginRight: 4,
-  },
+  _hover: {},
 });
 
 const Button = defineStyleConfig({

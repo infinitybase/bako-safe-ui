@@ -8,7 +8,8 @@ import { Header } from './header';
 import { Sidebar } from './sidebar';
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  hasSideBar?: boolean;
 }
 
 const DashboardLayout = (props: DashboardLayoutProps) => {
@@ -16,15 +17,15 @@ const DashboardLayout = (props: DashboardLayoutProps) => {
     <DashboardLayout.Container>
       <DashboardLayout.Header />
       <Flex w="100%" flex={1}>
-        <DashboardLayout.Sidebar />
+        {props.hasSideBar && <DashboardLayout.Sidebar />}
         <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
       </Flex>
     </DashboardLayout.Container>
   );
 };
 
-const DashboardLayoutRouter = () => (
-  <DashboardLayout>
+const DashboardLayoutRouter = (props: DashboardLayoutProps) => (
+  <DashboardLayout {...props}>
     <Outlet />
   </DashboardLayout>
 );
