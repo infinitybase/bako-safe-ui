@@ -29,7 +29,7 @@ const floating = defineStyle({
     py: 2,
   },
   label: {
-    top: '2px',
+    top: '5px',
     left: '-1px',
     zIndex: 2,
     position: 'absolute',

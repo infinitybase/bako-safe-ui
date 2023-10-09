@@ -27,7 +27,7 @@ const baseStyle = defineStyle({
     fontSize: 'md',
     borderColor: `dark.100`,
     borderWidth: 1,
-    pt: 4,
+    pt: 5,
     pb: 1,
     px: 5,
     height: 'auto',

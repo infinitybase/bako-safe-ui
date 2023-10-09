@@ -29,8 +29,8 @@ export interface VaultAddressesStepProps {
   addresses: UseCreateVaultReturn['addresses'];
 }
 
-export interface VaultFormFieldBoxProps extends StackProps {
-  title: string;
+export interface VaultFormFieldBoxProps extends Omit<StackProps, 'title'> {
+  title: React.ReactNode;
   description: string;
 }
 
@@ -40,9 +40,7 @@ const VaultFormFieldBox = ({
   ...stackProps
 }: VaultFormFieldBoxProps) => (
   <VStack spacing={4} alignItems="flex-start" {...stackProps}>
-    <Heading fontSize="md" color="grey.200">
-      {title}
-    </Heading>
+    {title}
     <Text variant="description">{description}</Text>
   </VStack>
 );
@@ -50,7 +48,40 @@ const VaultFormFieldBox = ({
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
   <TabPanel p={0}>
     <VaultFormFieldBox
-      title="Vault signers"
+      title={
+        <Heading fontSize="lg" color="grey.200">
+          Vault rules
+        </Heading>
+      }
+      description="Who is going to sign this vault?"
+      mb={8}
+    />
+
+    <Divider borderColor="dark.100" mt={5} mb={9} />
+
+    <Box w="100%">
+      <FormControl>
+        <Select placeholder=" ">
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+        </Select>
+        <FormLabel>Do you want to use a template?</FormLabel>
+        <FormHelperText>
+          You can make your work easier by following a rule that {`you've`} set
+          up.
+        </FormHelperText>
+      </FormControl>
+    </Box>
+
+    <Divider borderColor="dark.100" my={9} />
+
+    <VaultFormFieldBox
+      title={
+        <Heading fontSize="md" color="grey.200">
+          Vault signers
+        </Heading>
+      }
       description="Who is going to sign this vault?"
       mb={8}
     />
@@ -70,7 +101,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
                     disabled={index === 0}
                     placeholder=" "
                   />
-                  <FormLabel color="gray">
+                  <FormLabel color="grey.500">
                     {index === 0 ? 'Your address' : `Address ${index + 1}`}
                   </FormLabel>
                   {index > 0 && (
