@@ -22,7 +22,7 @@ function AddressCopy({ address }: Props) {
       borderRadius={10}
       color="grey.500"
       backgroundColor="grey.300"
-      onClick={() => navigator.clipboard.writeText('guilherme')}
+      onClick={() => navigator.clipboard.writeText(address)}
     >
       <GridItem width="15%" mr={3}>
         <IconButton
