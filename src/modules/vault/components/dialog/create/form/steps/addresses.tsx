@@ -12,16 +12,14 @@ import {
   InputGroup,
   InputRightElement,
   Select,
-  StackProps,
   TabPanel,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
-import { UserAddIcon } from '@/components';
+import { Dialog, UserAddIcon } from '@/components';
 import { UseCreateVaultReturn } from '@/modules';
 
 export interface VaultAddressesStepProps {
@@ -29,25 +27,9 @@ export interface VaultAddressesStepProps {
   addresses: UseCreateVaultReturn['addresses'];
 }
 
-export interface VaultFormFieldBoxProps extends Omit<StackProps, 'title'> {
-  title: React.ReactNode;
-  description: string;
-}
-
-const VaultFormFieldBox = ({
-  title,
-  description,
-  ...stackProps
-}: VaultFormFieldBoxProps) => (
-  <VStack spacing={4} alignItems="flex-start" {...stackProps}>
-    {title}
-    <Text variant="description">{description}</Text>
-  </VStack>
-);
-
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
   <TabPanel p={0}>
-    <VaultFormFieldBox
+    <Dialog.Section
       title={
         <Heading fontSize="lg" color="grey.200">
           Vault rules
@@ -76,7 +58,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
 
     <Divider borderColor="dark.100" my={9} />
 
-    <VaultFormFieldBox
+    <Dialog.Section
       title={
         <Heading fontSize="md" color="grey.200">
           Vault signers
@@ -149,7 +131,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
     <Divider borderColor="dark.100" my={9} />
 
     <HStack>
-      <VaultFormFieldBox
+      <Dialog.Section
         w="full"
         maxW={300}
         title="Min signatures required?"

@@ -6,6 +6,7 @@ import {
 import { DialogBody } from './body';
 import { DialogHeader } from './header';
 import { DialogModal } from './modal';
+import { DialogSection } from './section';
 
 const Dialog = {
   Header: DialogHeader,
@@ -14,6 +15,7 @@ const Dialog = {
   Actions: DialogActions,
   PrimaryAction: DialogPrimaryAction,
   SecondaryAction: DialogSecondaryAction,
+  Section: DialogSection,
 };
 
 export { Dialog };
