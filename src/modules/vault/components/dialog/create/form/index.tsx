@@ -1,11 +1,11 @@
 import { Box, Heading, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
+import { StepProgress } from '@/components';
 import { TabState, UseCreateVaultReturn } from '@/modules';
 import { VaultSuccessStep } from '@/modules/vault/components/dialog/create/form/steps/success';
 
 import { VaultFormActions } from './actions';
-import { VaultProgressForm } from './progress';
 import { VaultAddressesStep, VaultInfosStep } from './steps';
 
 export interface CreateVaultFormProps {
@@ -59,7 +59,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
       </VStack>
 
       <Box hidden={stepAction.hide} my={12}>
-        <VaultProgressForm length={stepLength} value={tabs.tab} />
+        <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
 
       <Tabs index={tabs.tab} colorScheme="green">

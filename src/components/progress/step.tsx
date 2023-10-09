@@ -1,15 +1,15 @@
 import { Box, HStack } from '@chakra-ui/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { TabState } from '@/modules';
 
-export interface VaultProgressFormProps {
+export interface StepProgressProps {
   length: number;
   value: TabState;
 }
 
-const VaultProgressForm = ({ value, length }: VaultProgressFormProps) => {
-  const maxWidth = Math.round(100 / length);
+const StepProgress = ({ value, length }: StepProgressProps) => {
+  const maxWidth = useMemo(() => Math.round(100 / length), [length]);
 
   return (
     <HStack
@@ -34,4 +34,4 @@ const VaultProgressForm = ({ value, length }: VaultProgressFormProps) => {
   );
 };
 
-export { VaultProgressForm };
+export { StepProgress };
