@@ -3,21 +3,21 @@ import React from 'react';
 
 import { StepProgress } from '@/components';
 import { TabState, UseCreateVaultReturn } from '@/modules';
-import { VaultSuccessStep } from '@/modules/vault/components/dialog/create/form/steps/success';
 
 import { VaultFormActions } from './actions';
-import { VaultAddressesStep, VaultInfosStep } from './steps';
+import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
 
 export interface CreateVaultFormProps {
   tabs: UseCreateVaultReturn['tabs'];
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
+  onDeposit: UseCreateVaultReturn['onDeposit'];
   isLoading?: boolean;
   onCancel: () => void;
 }
 
 const CreateVaultForm = (props: CreateVaultFormProps) => {
-  const { form, tabs, addresses, isLoading } = props;
+  const { form, tabs, addresses, isLoading, onDeposit } = props;
 
   const stepActions = {
     [TabState.INFO]: {
@@ -66,7 +66,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
         <TabPanels>
           <VaultInfosStep form={form} />
           <VaultAddressesStep form={form} addresses={addresses} />
-          <VaultSuccessStep />
+          <VaultSuccessStep onDeposit={onDeposit} />
         </TabPanels>
       </Tabs>
 

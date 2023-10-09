@@ -9,7 +9,7 @@ import { CreateVaultForm } from './form';
 export type CreateVaultDialogProps = Omit<ModalProps, 'children'>;
 
 const CreateVaultDialog = (props: CreateVaultDialogProps) => {
-  const { tabs, form, addresses } = useCreateVault();
+  const { tabs, form, addresses, onDeposit } = useCreateVault();
 
   const handleCancel = useCallback(() => {
     props.onClose();
@@ -24,6 +24,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         form={form}
         addresses={addresses}
         onCancel={handleCancel}
+        onDeposit={onDeposit}
       />
     </Dialog>
   );

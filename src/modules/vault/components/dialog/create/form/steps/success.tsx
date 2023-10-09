@@ -13,7 +13,11 @@ import React from 'react';
 
 import { VaultSuccessIcon } from '@/components';
 
-const VaultSuccessStep = () => {
+interface VaultSuccessStepProp {
+  onDeposit: () => void;
+}
+
+const VaultSuccessStep = ({ onDeposit }: VaultSuccessStepProp) => {
   return (
     <TabPanel>
       <Center flexDirection="column" mb={5}>
@@ -37,7 +41,7 @@ const VaultSuccessStep = () => {
               Unlock Vault Features: Start Your First Deposit
             </Text>
           </Box>
-          <Button variant="primary" size="sm">
+          <Button onClick={onDeposit} variant="primary" size="sm">
             First deposit
           </Button>
         </HStack>

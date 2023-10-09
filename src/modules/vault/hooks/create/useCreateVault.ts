@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  BsafeProvider,
   useCreateVaultRequest,
   useFuel,
   useFuelAccount,
+  useMyWallet,
   useToast,
 } from '@/modules';
 
@@ -25,6 +27,7 @@ const useCreateVault = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const toast = useToast();
+  const { data: wallet } = useMyWallet();
 
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
@@ -41,6 +44,12 @@ const useCreateVault = () => {
     },
   });
 
+  const vault = useMemo(() => {
+    if (!request.data) return undefined;
+
+    return BsafeProvider.instanceVault(request.data);
+  }, [request.data]);
+
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
@@ -53,6 +62,10 @@ const useCreateVault = () => {
       provider: await fuel.getProvider(),
     });
   });
+
+  const onDeposit = async () => {
+    /* TODO: implement logic to transfer asset for vault */
+  };
 
   const removeAddress = (index: number) => {
     addressesFieldArray.remove(index);
@@ -87,6 +100,7 @@ const useCreateVault = () => {
     },
     request,
     navigate,
+    onDeposit,
   };
 };
 
