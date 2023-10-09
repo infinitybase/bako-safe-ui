@@ -1,14 +1,11 @@
-import { ModalProps } from '@chakra-ui/react';
 import React from 'react';
 
-import { Dialog, SquarePlusIcon } from '@/components';
+import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
 import { useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import { CreateVaultForm } from './form';
 
-export type CreateVaultDialogProps = Omit<ModalProps, 'children'>;
-
-const CreateVaultDialog = (props: CreateVaultDialogProps) => {
+const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const { tabs, form, addresses, onDeposit, steps, request, handleCancel } =
     useCreateVaultDialog({
       onClose: props.onClose,
@@ -35,7 +32,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         />
       </Dialog.Body>
 
-      <Dialog.Actions>
+      <Dialog.Actions maxW={420}>
         <Dialog.SecondaryAction onClick={steps.step.onCancel}>
           {steps.step.closeText}
         </Dialog.SecondaryAction>

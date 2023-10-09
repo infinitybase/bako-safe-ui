@@ -46,7 +46,6 @@ const AmountInput = (props: AmountInputProps) => (
         step="any"
         ref={(input) => maskedInputRef(input as HTMLInputElement)}
         inputMode="decimal"
-        placeholder="0.00"
         borderColor={props.isInvalid ? 'error' : undefined}
         _focusVisible={{
           borderColor: props.isInvalid ? 'error' : undefined,

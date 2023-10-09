@@ -1,9 +1,11 @@
 import { FormControl, FormLabel, Select, SelectProps } from '@chakra-ui/react';
+import React from 'react';
 
 import { Asset, assetsList } from '@/modules/core';
 
 interface Props extends SelectProps {
   assets?: Asset[];
+  helperText?: React.ReactNode;
 }
 
 /*
@@ -23,13 +25,11 @@ function AssetSelect(props: Props) {
   const assets = props.assets ?? assetsList; //!!_assets && _assets.length > 0 ? _assets : assetsList;
   return (
     <FormControl>
-      <FormLabel color="gray">Asset</FormLabel>
       <Select
-        variant="filled"
-        bg="dark.100"
-        color="gray"
-        {...props}
-        _hover={{}}
+        value={props.value}
+        onChange={props.onChange}
+        isInvalid={props.isInvalid}
+        placeholder=" "
       >
         <option>Select asset</option>
         {assets.map((asset) => (
@@ -38,6 +38,8 @@ function AssetSelect(props: Props) {
           </option>
         ))}
       </Select>
+      <FormLabel color="gray">Asset</FormLabel>
+      {props.helperText}
     </FormControl>
   );
 }

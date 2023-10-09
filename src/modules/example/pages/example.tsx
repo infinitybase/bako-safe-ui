@@ -1,4 +1,8 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Badge,
   Box,
   Button,
@@ -11,6 +15,7 @@ import {
   Input,
   Select,
   Text,
+  useAccordionItemState,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -28,6 +33,16 @@ import {
   PendingIcon,
   SuccessIcon,
 } from '@/components';
+
+const AccordionTEste = () => {
+  const { isOpen, onClose, onOpen } = useAccordionItemState();
+
+  return (
+    <Button onClick={() => (isOpen ? onClose() : onOpen())}>
+      Open <AccordionButton />
+    </Button>
+  );
+};
 
 const ExamplePage = () => {
   const dialogExample = useDisclosure();
@@ -284,6 +299,30 @@ const ExamplePage = () => {
                   {/* It is important that the Label comes after the Control due to css selectors */}
                 </FormControl>
               </Box>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* ACCORDION */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Accordion</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card flex={1}>
+              <Accordion allowToggle>
+                <AccordionItem>
+                  <h2>
+                    <AccordionTEste />
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
             </Card>
           </HStack>
         </Box>
