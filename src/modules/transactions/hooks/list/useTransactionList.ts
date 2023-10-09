@@ -4,11 +4,11 @@ import { useVaultAssets, useVaultDetailsRequest } from '@/modules';
 import { useTransactionListRequest } from '@/modules/transactions/hooks';
 
 const useTransactionList = () => {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
 
-  const transactionRequest = useTransactionListRequest(params.id!);
-  const vaultRequest = useVaultDetailsRequest(params.id!);
+  const transactionRequest = useTransactionListRequest(params.vaultId!);
+  const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
   return {

@@ -1,6 +1,7 @@
 import { Avatar } from './avatar';
 import { Badge } from './badge';
 import { Button } from './button';
+import { Drawer } from './drawer';
 import { Form } from './form';
 import { Heading } from './heading';
 import { Input } from './input';
@@ -15,8 +16,9 @@ const components = {
   Badge,
   Link,
   Avatar,
-  Form,
+  Drawer,
   Input,
+  Form,
   Select,
 };
 

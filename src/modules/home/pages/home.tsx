@@ -59,7 +59,7 @@ const HomePage = () => {
                     <Flex
                       onClick={() =>
                         navigate(
-                          Pages.detailsVault({ id: String(predicate.id) }),
+                          Pages.detailsVault({ vaultId: String(predicate.id) }),
                         )
                       }
                       key={predicate.name}

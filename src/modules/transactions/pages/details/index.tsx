@@ -36,7 +36,7 @@ const DetailsTransactionPage = () => {
             <Flex width="100%" alignItems="center">
               <Icon
                 onClick={() =>
-                  navigate(Pages.transactions({ id: params.vaultId! }))
+                  navigate(Pages.transactions({ vaultId: params.vaultId! }))
                 }
                 cursor="pointer"
                 color="gray"

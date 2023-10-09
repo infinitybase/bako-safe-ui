@@ -5,7 +5,7 @@ const description = defineStyle({
   color: 'grey.500',
 });
 
-const subTitle = defineStyle({
+const subtitle = defineStyle({
   fontSize: 'md',
   color: 'grey.200',
   fontWeight: 'semibold',
@@ -14,7 +14,7 @@ const subTitle = defineStyle({
 const Text = defineStyleConfig({
   variants: {
     description,
-    subTitle,
+    subtitle,
   },
 });
 
