@@ -20,11 +20,10 @@ export interface CreateTransactionFormProps {
   form: UseCreateTransaction['form'];
   assets: UseCreateTransaction['assets'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
-  isCreating?: boolean;
 }
 
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
-  const { form, assets, transactionsFields, isCreating } = props;
+  const { form, assets, transactionsFields } = props;
 
   return (
     <Box w="full">

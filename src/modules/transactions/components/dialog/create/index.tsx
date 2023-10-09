@@ -25,7 +25,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           form={form}
           assets={assets}
           transactionsFields={transactionsFields}
-          isCreating={transactionRequest.isLoading}
         />
       </Dialog.Body>
 

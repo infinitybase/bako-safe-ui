@@ -1,8 +1,6 @@
 import {
   Accordion,
-  AccordionButton,
   AccordionItem,
-  Button,
   Center,
   FormControl,
   FormHelperText,
@@ -121,10 +119,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   return (
     <Accordion allowMultiple>
       {transactions.fields.map((field, index) => {
-        const to = form.watch(`transactions.${index}.to`);
-        const asset = form.watch(`transactions.${index}.asset`);
-        const assetSlug = assets.getAssetInfo(asset)?.slug;
-        const assetAmount = form.watch(`transactions.${index}.amount`);
+        const transaction = form.watch(`transactions.${index}`);
+        const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
+        const fieldState = form.getFieldState(`transactions.${index}`);
+
+        const hasEmptyField = Object.values(transaction).some(
+          (value) => value === '',
+        );
+        const isDisabled = hasEmptyField || fieldState.invalid;
 
         return (
           <AccordionItem
@@ -143,7 +145,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction isDisabled={isExpanded} />
+                    <TransactionAccordion.EditAction />
                     <TransactionAccordion.DeleteAction
                       isDisabled={props.transactions.fields.length === 1}
                       onClick={() => props.transactions.remove(index)}
@@ -151,14 +153,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   </TransactionAccordion.Actions>
                 }
                 resume={
-                  to &&
-                  assetAmount &&
-                  assetSlug && (
+                  !hasEmptyField && (
                     <Text fontSize="sm" color="grey.500">
                       <b>
-                        {assetAmount} {assetSlug}
+                        {transaction.amount} {assetSlug}
                       </b>{' '}
-                      to <b> {formatAddress(to)}</b>
+                      to <b> {formatAddress(transaction.to)}</b>
                     </Text>
                   )
                 }
@@ -171,16 +171,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 />
 
                 <Center mt={9}>
-                  <AccordionButton
-                    as={Button}
-                    maxW="fit-content"
-                    variant="secondary"
-                    bgColor="dark.100"
-                    border="none"
-                    _hover={{}}
-                  >
-                    Confirm recipient
-                  </AccordionButton>
+                  <TransactionAccordion.ConfirmAction isDisabled={isDisabled} />
                 </Center>
               </TransactionAccordion.Item>
             )}

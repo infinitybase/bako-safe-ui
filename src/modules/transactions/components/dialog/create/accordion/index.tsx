@@ -1,5 +1,6 @@
 import {
   AccordionActions,
+  AccordionConfirmAction,
   AccordionDeleteAction,
   AccordionEditAction,
 } from './actions';
@@ -9,6 +10,7 @@ const TransactionAccordion = {
   Item: AccordionItem,
   Actions: AccordionActions,
   EditAction: AccordionEditAction,
+  ConfirmAction: AccordionConfirmAction,
   DeleteAction: AccordionDeleteAction,
 };
 

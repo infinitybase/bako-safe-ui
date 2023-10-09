@@ -1,4 +1,4 @@
-import { ChakraBaseProvider } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import { DevSupport } from '@react-buddy/ide-toolbox';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -11,14 +11,14 @@ import { defaultTheme } from '@/themes';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BsafeQueryClientProvider>
-      <ChakraBaseProvider theme={defaultTheme}>
+      <ChakraProvider theme={defaultTheme}>
         <DevSupport
           ComponentPreviews={ComponentPreviews}
           useInitialHook={useInitial}
         >
           <App />
         </DevSupport>
-      </ChakraBaseProvider>
+      </ChakraProvider>
     </BsafeQueryClientProvider>
   </React.StrictMode>,
 );
