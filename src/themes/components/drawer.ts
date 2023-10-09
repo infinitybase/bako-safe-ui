@@ -19,9 +19,27 @@ const glassmorphic = defineStyle({
 });
 
 const Drawer = defineStyleConfig({
+  defaultProps: {
+    variant: 'glassmorphic',
+  },
   variants: {
     glassmorphic,
   },
 });
 
-export { Drawer };
+const Modal = defineStyleConfig({
+  defaultProps: {
+    variant: 'glassmorphic',
+  },
+  variants: {
+    glassmorphic: {
+      ...glassmorphic,
+      dialog: {
+        ...glassmorphic.dialog,
+        bg: 'dark.500',
+      },
+    },
+  },
+});
+
+export { Drawer, Modal };

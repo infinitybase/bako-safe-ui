@@ -1,5 +1,25 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
+const inputActiveStyle = {
+  borderColor: `grey.200`,
+  bg: `dark.300`,
+  boxShadow:
+    // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
+    '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500) 50%, transparent)',
+  '~ .chakra-input__right-element': {
+    background: 'dark.300',
+  },
+};
+
+const inputInvalidStyle = {
+  borderColor: `error.500`,
+  bg: `dark.300`,
+  boxShadow: 'error.600',
+  '~ .chakra-input__right-element': {
+    background: 'dark.300',
+  },
+};
+
 const baseStyle = defineStyle({
   field: {
     bg: `dark.200`,
@@ -7,7 +27,7 @@ const baseStyle = defineStyle({
     fontSize: 'md',
     borderColor: `dark.100`,
     borderWidth: 1,
-    pt: 4,
+    pt: 5,
     pb: 1,
     px: 5,
     height: 'auto',
@@ -15,13 +35,9 @@ const baseStyle = defineStyle({
     _hover: {
       borderColor: `dark.100`,
     },
-    _focusVisible: {
-      borderColor: `grey.200`,
-      bg: `dark.300`,
-      boxShadow:
-        // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
-        '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500) 50%, transparent)',
-    },
+    _invalid: inputInvalidStyle,
+    _focus: inputActiveStyle,
+    _focusVisible: inputActiveStyle,
     _placeholder: {
       color: 'grey.500',
       fontWeight: 'medium',
@@ -41,4 +57,6 @@ const Input = defineStyleConfig({
   },
 });
 
-export { Input, baseStyle as inputStyle };
+const Textarea = Input;
+
+export { Input, baseStyle as inputStyle, Textarea };

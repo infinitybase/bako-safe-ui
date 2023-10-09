@@ -9,7 +9,7 @@ import {
 
 import { Pages } from '@/modules';
 
-import { CreateVaultForm } from '../../components';
+import { CreateVaultForm } from '../../components/dialog/create/form';
 import { useCreateVault } from '../../hooks';
 
 const CreateVaultPage = () => {
@@ -38,6 +38,7 @@ const CreateVaultPage = () => {
 
       <CardBody pt={0}>
         <CreateVaultForm
+          onCancel={() => {}}
           form={form}
           tabs={tabs}
           addresses={addresses}
