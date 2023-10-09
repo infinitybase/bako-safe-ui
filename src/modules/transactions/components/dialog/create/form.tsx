@@ -1,19 +1,18 @@
 import {
   Box,
   Button,
+  Center,
   Divider,
   FormControl,
   FormHelperText,
   FormLabel,
   Heading,
-  Icon,
   Input,
 } from '@chakra-ui/react';
 import React from 'react';
 import { Controller } from 'react-hook-form';
-import { MdAdd as AddIcon } from 'react-icons/md';
 
-import { Dialog } from '@/components';
+import { Dialog, UserAddIcon } from '@/components';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
@@ -65,20 +64,20 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         transactions={transactionsFields}
       />
 
-      <Button
-        mt={8}
-        width="100%"
-        color="grey"
-        bgColor="dark.100"
-        leftIcon={<Icon as={AddIcon} />}
-        _hover={{}}
-        _active={{}}
-        onClick={() =>
-          transactionsFields.append({ amount: '', asset: '', to: '' })
-        }
-      >
-        Add Transaction
-      </Button>
+      <Center>
+        <Button
+          maxW="fit-content"
+          leftIcon={<UserAddIcon />}
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() =>
+            transactionsFields.append({ amount: '', asset: '', to: '' })
+          }
+        >
+          Add new recipient
+        </Button>
+      </Center>
     </Box>
   );
 };

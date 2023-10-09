@@ -6,7 +6,11 @@ import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
-const useCreateTransaction = () => {
+interface UseCreateTransactionParams {
+  onClose: () => void;
+}
+
+const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
   const toast = useToast();
@@ -29,7 +33,7 @@ const useCreateTransaction = () => {
         position: 'bottom',
         isClosable: true,
       });
-      navigate(-1);
+      handleClose();
     },
     onError: () => {
       toast.show({
@@ -40,6 +44,11 @@ const useCreateTransaction = () => {
       });
     },
   });
+
+  const handleClose = () => {
+    props?.onClose();
+    form.reset();
+  };
 
   const handleCreateTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate({
@@ -72,6 +81,7 @@ const useCreateTransaction = () => {
     vault: vaultDetails,
     assets: vaultAssets,
     navigate,
+    handleClose,
   };
 };
 

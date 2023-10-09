@@ -25,7 +25,12 @@ function AssetSelect(props: Props) {
   const assets = props.assets ?? assetsList; //!!_assets && _assets.length > 0 ? _assets : assetsList;
   return (
     <FormControl>
-      <Select value={props.value} onChange={props.onChange} placeholder=" ">
+      <Select
+        value={props.value}
+        onChange={props.onChange}
+        isInvalid={props.isInvalid}
+        placeholder=" "
+      >
         <option>Select asset</option>
         {assets.map((asset) => (
           <option key={asset.assetId} value={asset.assetId}>

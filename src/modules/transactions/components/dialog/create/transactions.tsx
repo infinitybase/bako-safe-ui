@@ -3,6 +3,7 @@ import {
   AccordionButton,
   AccordionItem,
   Button,
+  Center,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -18,6 +19,12 @@ import { AssetSelect } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
+
+// TODO: Move to utils or use one if wxists
+const formatAddress = (address?: string) =>
+  address
+    ? `${String(address).slice(0, 15)}...${String(address).slice(-4)}`
+    : '';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
@@ -62,6 +69,7 @@ const TransactionFormField = ({
         control={form.control}
         render={({ field, fieldState }) => (
           <AssetSelect
+            isInvalid={fieldState.invalid}
             assets={assets.assets}
             name={`transaction.${index}.asset`}
             value={field.value}
@@ -113,6 +121,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   return (
     <Accordion allowMultiple>
       {transactions.fields.map((field, index) => {
+        const to = form.watch(`transactions.${index}.to`);
+        const asset = form.watch(`transactions.${index}.asset`);
+        const assetSlug = assets.getAssetInfo(asset)?.slug;
+        const assetAmount = form.watch(`transactions.${index}.amount`);
+
         return (
           <AccordionItem
             key={field.id}
@@ -130,7 +143,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction disabled={isExpanded} />
+                    <TransactionAccordion.EditAction isDisabled={isExpanded} />
                     <TransactionAccordion.DeleteAction
                       isDisabled={props.transactions.fields.length === 1}
                       onClick={() => props.transactions.remove(index)}
@@ -138,9 +151,16 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   </TransactionAccordion.Actions>
                 }
                 resume={
-                  <Text fontSize="sm" color="grey.500">
-                    0.03898 ETH to 827383764...0909
-                  </Text>
+                  to &&
+                  assetAmount &&
+                  assetSlug && (
+                    <Text fontSize="sm" color="grey.500">
+                      <b>
+                        {assetAmount} {assetSlug}
+                      </b>{' '}
+                      to <b> {formatAddress(to)}</b>
+                    </Text>
+                  )
                 }
                 isExpanded={isExpanded}
               >
@@ -150,7 +170,18 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   assets={assets}
                 />
 
-                <AccordionButton as={Button}>Confirm</AccordionButton>
+                <Center mt={9}>
+                  <AccordionButton
+                    as={Button}
+                    maxW="fit-content"
+                    variant="secondary"
+                    bgColor="dark.100"
+                    border="none"
+                    _hover={{}}
+                  >
+                    Confirm recipient
+                  </AccordionButton>
+                </Center>
               </TransactionAccordion.Item>
             )}
           </AccordionItem>
