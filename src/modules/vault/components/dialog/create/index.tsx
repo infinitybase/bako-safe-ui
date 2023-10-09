@@ -35,7 +35,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         />
       </Dialog.Body>
 
-      <Dialog.Actions>
+      <Dialog.Actions maxW={420}>
         <Dialog.SecondaryAction onClick={steps.step.onCancel}>
           {steps.step.closeText}
         </Dialog.SecondaryAction>
