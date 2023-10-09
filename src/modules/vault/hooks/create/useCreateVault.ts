@@ -27,7 +27,6 @@ const useCreateVault = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const toast = useToast();
-  const { data: wallet } = useMyWallet();
 
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
@@ -43,12 +42,6 @@ const useCreateVault = () => {
       });
     },
   });
-
-  const vault = useMemo(() => {
-    if (!request.data) return undefined;
-
-    return BsafeProvider.instanceVault(request.data);
-  }, [request.data]);
 
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];

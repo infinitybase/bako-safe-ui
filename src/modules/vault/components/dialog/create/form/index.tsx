@@ -1,67 +1,32 @@
-import { Box, Heading, TabPanels, Tabs, Text, VStack } from '@chakra-ui/react';
+import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 import React from 'react';
 
 import { StepProgress } from '@/components';
-import { TabState, UseCreateVaultReturn } from '@/modules';
+import { UseCreateVaultDialogReturn } from '@/modules';
 
-import { VaultFormActions } from './actions';
 import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
 
 export interface CreateVaultFormProps {
-  tabs: UseCreateVaultReturn['tabs'];
-  form: UseCreateVaultReturn['form'];
-  addresses: UseCreateVaultReturn['addresses'];
-  onDeposit: UseCreateVaultReturn['onDeposit'];
+  tabs: UseCreateVaultDialogReturn['tabs'];
+  form: UseCreateVaultDialogReturn['form'];
+  addresses: UseCreateVaultDialogReturn['addresses'];
+  onDeposit: UseCreateVaultDialogReturn['onDeposit'];
+  steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
   onCancel: () => void;
 }
 
 const CreateVaultForm = (props: CreateVaultFormProps) => {
-  const { form, tabs, addresses, isLoading, onDeposit } = props;
+  const { form, tabs, addresses, onDeposit, steps } = props;
 
-  const stepActions = {
-    [TabState.INFO]: {
-      hide: false,
-      disable: !form.watch('name'),
-      onContinue: () => tabs.set(TabState.ADDRESSES),
-      onCancel: props.onCancel,
-      closeText: 'Cancel',
-    },
-    [TabState.ADDRESSES]: {
-      hide: false,
-      disable: !form.formState.isValid,
-      onContinue: form.handleCreateVault,
-      onCancel: () => tabs.set(TabState.INFO),
-      closeText: 'Back',
-    },
-    [TabState.SUCCESS]: {
-      hide: true,
-      disable: false,
-      onContinue: () => {},
-      onCancel: props.onCancel,
-      closeText: `I'll do it later`,
-    },
-  };
-
-  const stepAction = stepActions[tabs.tab];
-  const stepLength = Object.keys(stepActions).length;
+  const stepAction = steps.step;
+  const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full" as="form" maxW={420}>
-      <VStack hidden={stepAction?.hide} spacing={4} alignItems="flex-start">
-        <Heading fontSize="2xl" color="grey.200">
-          Create Vault
-        </Heading>
-        <Text variant="description">
-          Setting Sail on a Journey to Unlock the Potential of User-Centered
-          Design.
-        </Text>
-      </VStack>
-
-      <Box hidden={stepAction.hide} my={12}>
+    <Box w="full" maxW={420}>
+      <Box hidden={stepAction.hide} mb={12}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
-
       <Tabs index={tabs.tab} colorScheme="green">
         <TabPanels>
           <VaultInfosStep form={form} />
@@ -69,15 +34,6 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
           <VaultSuccessStep onDeposit={onDeposit} />
         </TabPanels>
       </Tabs>
-
-      <VaultFormActions
-        onCancel={stepAction?.onCancel}
-        closeText={stepAction?.closeText}
-        isLoading={isLoading}
-        isDisabled={stepAction?.disable}
-        onContinue={stepAction?.onContinue}
-        hideContinue={stepAction?.hide}
-      />
     </Box>
   );
 };

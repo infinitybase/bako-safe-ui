@@ -1,32 +1,55 @@
 import { ModalProps } from '@chakra-ui/react';
-import { useCallback } from 'react';
+import React from 'react';
 
-import { Dialog } from '@/components';
-import { TabState, useCreateVault } from '@/modules';
+import { Dialog, SquarePlusIcon } from '@/components';
+import { useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import { CreateVaultForm } from './form';
 
 export type CreateVaultDialogProps = Omit<ModalProps, 'children'>;
 
 const CreateVaultDialog = (props: CreateVaultDialogProps) => {
-  const { tabs, form, addresses, onDeposit } = useCreateVault();
-
-  const handleCancel = useCallback(() => {
-    props.onClose();
-    form.reset();
-    tabs.set(TabState.INFO);
-  }, [form, props, tabs]);
+  const { tabs, form, addresses, onDeposit, steps, request, handleCancel } =
+    useCreateVaultDialog({
+      onClose: props.onClose,
+    });
 
   return (
-    <Dialog {...props} onClose={handleCancel}>
-      <CreateVaultForm
-        tabs={tabs}
-        form={form}
-        addresses={addresses}
-        onCancel={handleCancel}
-        onDeposit={onDeposit}
+    <Dialog.Modal {...props} onClose={handleCancel}>
+      <Dialog.Header
+        maxW={420}
+        hidden={steps.step?.hide}
+        title="Create Vault"
+        description="Setting Sail on a Journey to Unlock the Potential of User-Centered
+          Design."
       />
-    </Dialog>
+
+      <Dialog.Body maxW={420}>
+        <CreateVaultForm
+          tabs={tabs}
+          form={form}
+          steps={steps}
+          onCancel={handleCancel}
+          onDeposit={onDeposit}
+          addresses={addresses}
+        />
+      </Dialog.Body>
+
+      <Dialog.Actions>
+        <Dialog.SecondaryAction onClick={steps.step.onCancel}>
+          {steps.step.closeText}
+        </Dialog.SecondaryAction>
+        <Dialog.PrimaryAction
+          hidden={steps.step?.hide}
+          onClick={steps.step?.onContinue}
+          leftIcon={<SquarePlusIcon />}
+          isDisabled={!form.formState.isValid}
+          isLoading={request.isLoading}
+        >
+          Continue
+        </Dialog.PrimaryAction>
+      </Dialog.Actions>
+    </Dialog.Modal>
   );
 };
 
