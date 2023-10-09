@@ -12,9 +12,9 @@ import React from 'react';
 
 import { ErrorIcon } from '@/components';
 
-interface VaultDialogProps extends ModalProps {}
+interface DialogProps extends ModalProps {}
 
-const Dialog = (props: VaultDialogProps) => {
+const Dialog = (props: DialogProps) => {
   const { children, ...rest } = props;
 
   return (

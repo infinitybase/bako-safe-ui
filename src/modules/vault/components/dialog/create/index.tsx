@@ -1,9 +1,9 @@
 import { ModalProps } from '@chakra-ui/react';
 import { useCallback } from 'react';
 
+import { Dialog } from '@/components';
 import { TabState, useCreateVault } from '@/modules';
 
-import { Dialog } from './dialog';
 import { CreateVaultForm } from './form';
 
 export type CreateVaultDialogProps = Omit<ModalProps, 'children'>;
