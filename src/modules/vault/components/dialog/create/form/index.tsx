@@ -24,7 +24,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
 
   return (
     <Box w="full" maxW={420}>
-      <Box hidden={stepAction.hide} my={12}>
+      <Box hidden={stepAction.hide} mb={12}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
       <Tabs index={tabs.tab} colorScheme="green">

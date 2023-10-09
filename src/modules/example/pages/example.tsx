@@ -11,6 +11,7 @@ import {
   Input,
   Select,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -20,9 +21,17 @@ import { HiQrCode } from 'react-icons/hi2';
 import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
-import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
+import {
+  Card,
+  Dialog,
+  ErrorIcon,
+  PendingIcon,
+  SuccessIcon,
+} from '@/components';
 
 const ExamplePage = () => {
+  const dialogExample = useDisclosure();
+
   return (
     <Box>
       {/* CARDS */}
@@ -138,7 +147,9 @@ const ExamplePage = () => {
                 <Heading variant="title-xl">Primary</Heading>
               </Box>
               <Box>
-                <Button variant="primary">Sign</Button>
+                <Button variant="primary" onClick={dialogExample.onOpen}>
+                  Open example modal
+                </Button>
               </Box>
             </Card>
             <Card w="100%">
@@ -277,6 +288,39 @@ const ExamplePage = () => {
           </HStack>
         </Box>
       </Box>
+
+      {/* DIALOG */}
+      <Dialog.Modal
+        isOpen={dialogExample.isOpen}
+        onClose={dialogExample.onClose}
+      >
+        <Dialog.Header
+          w="full"
+          maxW={420}
+          title="Modal example"
+          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        />
+
+        <Dialog.Body maxW={420}>
+          <VStack>
+            <FormControl>
+              <Input placeholder=" " />
+              <FormLabel>First name</FormLabel>
+            </FormControl>
+            <FormControl>
+              <Input placeholder=" " />
+              <FormLabel>First name</FormLabel>
+            </FormControl>
+          </VStack>
+        </Dialog.Body>
+
+        <Dialog.Actions maxW={420}>
+          <Dialog.SecondaryAction onClick={dialogExample.onClose}>
+            Cancel
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction>Continue</Dialog.PrimaryAction>
+        </Dialog.Actions>
+      </Dialog.Modal>
     </Box>
   );
 };

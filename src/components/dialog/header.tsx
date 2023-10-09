@@ -1,4 +1,4 @@
-import { Heading, StackProps, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, StackProps, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 interface DialogHeaderProps extends StackProps {
@@ -11,11 +11,13 @@ const DialogHeader = ({
   description,
   ...stackProps
 }: DialogHeaderProps) => (
-  <VStack spacing={4} alignItems="flex-start" {...stackProps}>
+  <VStack w="full" mb={12} spacing={4} alignItems="flex-start" {...stackProps}>
     <Heading fontSize="2xl" color="grey.200">
       {title}
     </Heading>
-    <Text variant="description">{description}</Text>
+    <Box maxW={305}>
+      <Text variant="description">{description}</Text>
+    </Box>
   </VStack>
 );
 
