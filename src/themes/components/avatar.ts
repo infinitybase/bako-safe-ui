@@ -1,35 +1,57 @@
-/* TODO: Refactor */
-const Avatar = {
-  baseStyle: {
-    container: {
-      borderRadius: 8,
-      img: {
-        borderRadius: 8,
-      },
+import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
+
+const baseStyle = defineStyle({
+  excessLabel: {
+    width: '30px',
+    height: '30px',
+    bgColor: 'brand.500',
+    borderWidth: 2,
+    borderColor: 'dark.100',
+    color: 'dark.900',
+    fontWeight: 'bold',
+    fontSize: 'sm',
+    marginLeft: -2,
+    letterSpacing: -1,
+  },
+
+  group: {
+    '.chakra-avatar': {
+      borderColor: 'dark.100',
+      borderWidth: 2,
+      width: '30px',
+      height: '30px',
     },
-    excessLabel: {
-      borderRadius: 8,
+  },
+});
+
+const roundedSquare = defineStyle({
+  container: {
+    borderRadius: 8,
+  },
+  excessLabel: {
+    borderRadius: 8,
+  },
+  badge: {
+    borderRadius: 8,
+  },
+  group: {
+    '.chakra-avatar': {
+      borderColor: 'dark.100',
+      borderWidth: 2,
       width: '40px',
       height: '40px',
-      bgColor: 'dark.200',
-      borderWidth: 2,
-      borderColor: 'dark.100',
-    },
-    badge: {
-      borderRadius: 8,
-    },
-    group: {
-      '.chakra-avatar': {
-        borderColor: 'brand.600',
-        borderWidth: 2,
-        width: '40px',
-        height: '40px',
-        img: {
-          borderRadius: 5,
-        },
+      img: {
+        borderRadius: 5,
       },
     },
   },
-};
+});
+
+const Avatar = defineStyleConfig({
+  baseStyle,
+  variants: {
+    roundedSquare,
+  },
+});
 
 export { Avatar };
