@@ -5,7 +5,7 @@ import {
 } from './actions';
 import { DialogBody } from './body';
 import { DialogHeader } from './header';
-import { DialogModal } from './modal';
+import { DialogModal, DialogModalProps } from './modal';
 import { DialogSection } from './section';
 
 const Dialog = {
@@ -18,4 +18,5 @@ const Dialog = {
   Section: DialogSection,
 };
 
+export type { DialogModalProps };
 export { Dialog };

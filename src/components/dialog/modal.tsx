@@ -12,7 +12,7 @@ import React from 'react';
 
 import { ErrorIcon } from '../icons';
 
-interface DialogModalProps extends ModalProps {}
+export interface DialogModalProps extends ModalProps {}
 
 const DialogModal = (props: DialogModalProps) => {
   const { children, ...rest } = props;
