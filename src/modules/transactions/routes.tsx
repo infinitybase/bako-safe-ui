@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 
-import { DefaultLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter, DefaultLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
 import {
@@ -10,31 +10,35 @@ import {
 } from './pages';
 
 const transactionRoutes = (
-  <Route element={<DefaultLayoutRouter />}>
-    <Route
-      path={Pages.transactions()}
-      element={
-        <AuthRoute>
-          <TransactionsVaultPage />
-        </AuthRoute>
-      }
-    />
-    <Route
-      path={Pages.detailsTransaction()}
-      element={
-        <AuthRoute>
-          <DetailsTransactionPage />
-        </AuthRoute>
-      }
-    />
-    <Route
-      path={Pages.signatures()}
-      element={
-        <AuthRoute>
-          <MeTransactionsPage />
-        </AuthRoute>
-      }
-    />
+  <Route>
+    <Route element={<DefaultLayoutRouter />}>
+      <Route
+        path={Pages.detailsTransaction()}
+        element={
+          <AuthRoute>
+            <DetailsTransactionPage />
+          </AuthRoute>
+        }
+      />
+      <Route
+        path={Pages.signatures()}
+        element={
+          <AuthRoute>
+            <MeTransactionsPage />
+          </AuthRoute>
+        }
+      />
+    </Route>
+    <Route element={<DashboardLayoutRouter hasSideBar />}>
+      <Route
+        path={Pages.transactions()}
+        element={
+          <AuthRoute>
+            <TransactionsVaultPage />
+          </AuthRoute>
+        }
+      />
+    </Route>
   </Route>
 );
 
