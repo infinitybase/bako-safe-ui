@@ -1,27 +1,33 @@
 import { Vault } from 'bsafe';
 import { bn } from 'fuels';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
+import { Asset } from '../../../core/utils/assets/types';
+import { useVaultState } from '../../states';
+
 const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
-
   const balances = await predicate.getBalances();
 
-  return balances.map((balance) => {
+  const result: Asset[] = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
     return {
       amount: balance.amount.format(),
       slug: assetInfos?.slug ?? 'UKN',
       name: assetInfos?.name ?? 'Unknown',
       assetId: balance.assetId,
+      icon: assetInfos?.icon,
     };
   });
+
+  return result || [];
 };
 
 function useVaultAssets(predicate?: Vault) {
+  const { setVisibleBalance, setBiggerAsset } = useVaultState();
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', predicate],
     () => balancesToAssets(predicate),
@@ -31,6 +37,28 @@ function useVaultAssets(predicate?: Vault) {
       keepPreviousData: true,
     },
   );
+  const findBiggerAsset = () => {
+    let bigger = 0;
+    const isValid = assets && assets.length > 0;
+
+    if (isValid) {
+      setBiggerAsset(assets[0]);
+      assets.map((item, index) => {
+        const _isValid =
+          index > 0 &&
+          item?.amount &&
+          bn(assets[bigger].amount) < bn(item.amount);
+        if (_isValid) {
+          bigger = index;
+        }
+      });
+      setBiggerAsset(assets[bigger]);
+    }
+  };
+
+  useEffect(() => {
+    findBiggerAsset();
+  }, [assets]);
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
@@ -90,6 +118,7 @@ function useVaultAssets(predicate?: Vault) {
     getCoinAmount,
     getCoinBalance,
     hasAssetBalance,
+    setVisibleBalance,
     hasBalance,
     hasAssets: !!assets?.length,
   };

@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules';
+import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
@@ -9,6 +11,7 @@ const useVaultDetails = () => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
   const { account } = useFuelAccount();
+  const store = useVaultState();
 
   const { predicate, isLoading } = useVaultDetailsRequest(params.vaultId!);
   const {
@@ -19,9 +22,27 @@ const useVaultDetails = () => {
     hasAssets,
   } = useVaultAssets(predicate?.predicateInstance);
 
+  const configurable = useMemo(() => {
+    const configurableJSON = predicate?.configurable;
+
+    if (!configurableJSON) return null;
+
+    return JSON.parse(configurableJSON);
+  }, [predicate?.configurable]);
+
+  const signersOrdination = useMemo(() => {
+    if (!predicate) return [];
+
+    return predicate.addresses
+      .map((address) => ({ address, isOwner: address === predicate.owner }))
+      .sort((address) => (address.isOwner ? -1 : 0));
+  }, [predicate]);
+
   return {
     vault: {
       ...predicate,
+      configurable,
+      signers: signersOrdination,
       isLoading,
       hasBalance,
     },
@@ -33,7 +54,10 @@ const useVaultDetails = () => {
     },
     navigate,
     account,
+    store,
   };
 };
+
+export type UseVaultDetailsReturn = ReturnType<typeof useVaultDetails>;
 
 export { useVaultDetails };

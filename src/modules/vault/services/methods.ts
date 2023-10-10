@@ -40,6 +40,13 @@ export class VaultService {
     return data;
   }
 
+  static async getByAddress(address: string) {
+    const { data } = await api.get<GetPredicateResponse>(
+      `/predicate/by-address/${address}`,
+    );
+    return data;
+  }
+
   static async findPredicates(address: string) {
     const { data } = await api.get<GetAllPredicateResponse>(`/predicate`, {
       data: {

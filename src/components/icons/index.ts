@@ -11,4 +11,5 @@ export * from './replace';
 export * from './square-plus';
 export * from './success';
 export * from './user-add';
+export * from './vault';
 export * from './vault-success';

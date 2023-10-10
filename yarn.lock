@@ -2310,6 +2310,11 @@
     uuid "^9.0.0"
     xstate "^4.38.2"
 
+"@fuels/assets@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@fuels/assets/-/assets-0.0.12.tgz#b38f94e636eb813a8f39d64f3169745066c27d42"
+  integrity sha512-kErMHC+j/9CHrSNQLIuqDonIoeWfYtjJOJtdj5fq7oTCLMAtvrTCIm/iqjfVeclM3d8IFg5nJ8CRyk2dxIG0Og==
+
 "@fuels/ts-config@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@fuels/ts-config/-/ts-config-0.0.11.tgz#51b3619fc129f64f57032d7165a5c15431b7e375"

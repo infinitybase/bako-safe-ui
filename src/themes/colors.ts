@@ -5,6 +5,7 @@ const colors = {
   },
   grey: {
     200: '#C0C0C0',
+    300: '#2C2C2C',
     500: '#696B65',
   },
   dark: {
