@@ -29,7 +29,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box>
+    <Box w="full" maxW="fit-content">
       <Box mb={5} w="full">
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Overview

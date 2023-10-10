@@ -1,4 +1,4 @@
-import { HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 import { Card } from '@/components';
@@ -20,12 +20,12 @@ const AmountDetails = (props: AmountDetailsProps) => {
   const isBig = assets?.value ? formatList(assets.value) : 0;
 
   return (
-    <VStack w="25%" justifyContent="start" alignItems="center" minH="475" p={2}>
-      <HStack w="full" mb={1}>
+    <Box w="full" maxW="25%">
+      <Box mb={5} w="full">
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Balance
         </Text>
-      </HStack>
+      </Box>
       {assets?.value &&
         assets.value.map((asset: Asset, index: number) => {
           if (isBig > 0 && index > 3) return;
@@ -86,7 +86,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
             </Card>
           );
         })}
-    </VStack>
+    </Box>
   );
 };
 

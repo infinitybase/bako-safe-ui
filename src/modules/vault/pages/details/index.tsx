@@ -26,7 +26,7 @@ const VaultDetailsPage = () => {
         </Button>
       </HStack>
 
-      <HStack w="full">
+      <HStack alignItems="flex-start" w="full" spacing={5}>
         <CardDetails vault={vault} store={store} />
         <AmountDetails assets={assets} />
         <SignersDetails vault={vault} />
