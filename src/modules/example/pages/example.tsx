@@ -1,23 +1,52 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Badge,
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
   Icon,
   IconButton,
+  Input,
+  Select,
   Text,
+  useAccordionItemState,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { FaRegClone } from 'react-icons/fa';
 import { HiQrCode } from 'react-icons/hi2';
 import { MdEmail } from 'react-icons/md';
 import { SiBitcoinsv } from 'react-icons/si';
 
-import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@/components';
+import {
+  Card,
+  Dialog,
+  ErrorIcon,
+  PendingIcon,
+  SuccessIcon,
+} from '@/components';
+
+const AccordionTEste = () => {
+  const { isOpen, onClose, onOpen } = useAccordionItemState();
+
+  return (
+    <Button onClick={() => (isOpen ? onClose() : onOpen())}>
+      Open <AccordionButton />
+    </Button>
+  );
+};
 
 const ExamplePage = () => {
+  const dialogExample = useDisclosure();
+
   return (
     <Box>
       {/* CARDS */}
@@ -133,7 +162,9 @@ const ExamplePage = () => {
                 <Heading variant="title-xl">Primary</Heading>
               </Box>
               <Box>
-                <Button variant="primary">Sign</Button>
+                <Button variant="primary" onClick={dialogExample.onOpen}>
+                  Open example modal
+                </Button>
               </Box>
             </Card>
             <Card w="100%">
@@ -228,6 +259,107 @@ const ExamplePage = () => {
           </HStack>
         </Box>
       </Box>
+
+      {/* BUTTONS */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Form</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card flex={1}>
+              <Box mb={3}>
+                <Heading variant="title-xl">Input</Heading>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Input placeholder=" " />
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Input placeholder=" " />
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
+            </Card>
+            <Card flex={1}>
+              <Box mb={3}>
+                <Heading variant="title-xl">Select</Heading>
+              </Box>
+              <Box w="100%" py={2}>
+                <FormControl>
+                  <Select placeholder=" ">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                  </Select>
+                  <FormLabel>First name</FormLabel>
+                  {/* It is important that the Label comes after the Control due to css selectors */}
+                </FormControl>
+              </Box>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* ACCORDION */}
+      <Box width="100%" mb={10}>
+        <Heading size="lg">Accordion</Heading>
+        <Box mt={4}>
+          <HStack mb={2} spacing={2}>
+            <Card flex={1}>
+              <Accordion allowToggle>
+                <AccordionItem>
+                  <h2>
+                    <AccordionTEste />
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </Card>
+          </HStack>
+        </Box>
+      </Box>
+
+      {/* DIALOG */}
+      <Dialog.Modal
+        isOpen={dialogExample.isOpen}
+        onClose={dialogExample.onClose}
+      >
+        <Dialog.Header
+          w="full"
+          maxW={420}
+          title="Modal example"
+          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        />
+
+        <Dialog.Body maxW={420}>
+          <VStack>
+            <FormControl>
+              <Input placeholder=" " />
+              <FormLabel>First name</FormLabel>
+            </FormControl>
+            <FormControl>
+              <Input placeholder=" " />
+              <FormLabel>First name</FormLabel>
+            </FormControl>
+          </VStack>
+        </Dialog.Body>
+
+        <Dialog.Actions maxW={420}>
+          <Dialog.SecondaryAction onClick={dialogExample.onClose}>
+            Cancel
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction>Continue</Dialog.PrimaryAction>
+        </Dialog.Actions>
+      </Dialog.Modal>
     </Box>
   );
 };

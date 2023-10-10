@@ -35,7 +35,7 @@ const TransactionsVaultPage = () => {
                   onClick={() =>
                     navigate(
                       Pages.detailsVault({
-                        id: params.id!,
+                        vaultId: params.vaultId!,
                       }),
                     )
                   }
@@ -55,7 +55,9 @@ const TransactionsVaultPage = () => {
                     colorScheme="brand"
                     loadingText="Connecting.."
                     onClick={() =>
-                      navigate(Pages.createTransaction({ id: params.id! }))
+                      navigate(
+                        Pages.createTransaction({ vaultId: params.vaultId! }),
+                      )
                     }
                   >
                     Create
@@ -98,7 +100,11 @@ const TransactionsVaultPage = () => {
                         colorScheme="brand"
                         loadingText="Connecting.."
                         onClick={() =>
-                          navigate(Pages.createTransaction({ id: params.id! }))
+                          navigate(
+                            Pages.createTransaction({
+                              vaultId: params.vaultId!,
+                            }),
+                          )
                         }
                       >
                         Create
@@ -115,7 +121,7 @@ const TransactionsVaultPage = () => {
                       navigate(
                         Pages.detailsTransaction({
                           transactionId,
-                          vaultId: params.id!,
+                          vaultId: params.vaultId!,
                         }),
                       )
                     }

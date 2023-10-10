@@ -4,7 +4,6 @@ import { DefaultLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
 import {
-  CreateTransactionPage,
   DetailsTransactionPage,
   MeTransactionsPage,
   TransactionsVaultPage,
@@ -17,14 +16,6 @@ const transactionRoutes = (
       element={
         <AuthRoute>
           <TransactionsVaultPage />
-        </AuthRoute>
-      }
-    />
-    <Route
-      path={Pages.createTransaction()}
-      element={
-        <AuthRoute>
-          <CreateTransactionPage />
         </AuthRoute>
       }
     />

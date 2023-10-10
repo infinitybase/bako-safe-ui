@@ -6,13 +6,17 @@ import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
-const useCreateTransaction = () => {
+interface UseCreateTransactionParams {
+  onClose: () => void;
+}
+
+const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
   const toast = useToast();
 
   // Vault
-  const vaultDetails = useVaultDetailsRequest(params.id!);
+  const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const { transactionsFields, form } = useCreateTransactionForm({
@@ -29,7 +33,7 @@ const useCreateTransaction = () => {
         position: 'bottom',
         isClosable: true,
       });
-      navigate(-1);
+      handleClose();
     },
     onError: () => {
       toast.show({
@@ -41,12 +45,17 @@ const useCreateTransaction = () => {
     },
   });
 
+  const handleClose = () => {
+    props?.onClose();
+    form.reset();
+  };
+
   const handleCreateTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate({
       predicate: vaultDetails.predicate!.predicateInstance,
       transaction: {
         name: data.name,
-        predicateID: params.id!,
+        predicateID: params.vaultId!,
         predicateAdress:
           vaultDetails.predicate!.predicateInstance.address.toString(),
         assets: data.transactions!.map((transaction) => ({
@@ -58,7 +67,7 @@ const useCreateTransaction = () => {
         txData: '',
         hash: '',
       },
-      predicateID: params.id!,
+      predicateID: params.vaultId!,
     });
   });
 
@@ -72,6 +81,7 @@ const useCreateTransaction = () => {
     vault: vaultDetails,
     assets: vaultAssets,
     navigate,
+    handleClose,
   };
 };
 

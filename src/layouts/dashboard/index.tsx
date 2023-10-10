@@ -17,7 +17,7 @@ const DashboardLayout = (props: DashboardLayoutProps) => {
     <DashboardLayout.Container>
       <DashboardLayout.Header />
       <Flex w="100%" flex={1}>
-        <DashboardLayout.Sidebar />
+        {props.hasSideBar && <DashboardLayout.Sidebar />}
         <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
       </Flex>
     </DashboardLayout.Container>
@@ -25,15 +25,9 @@ const DashboardLayout = (props: DashboardLayoutProps) => {
 };
 
 const DashboardLayoutRouter = (props: DashboardLayoutProps) => (
-  <DashboardLayout.Container>
-    <DashboardLayout.Header />
-    <Flex w="100%" flex={1}>
-      {props.hasSideBar && <DashboardLayout.Sidebar />}
-      <DashboardLayout.Content>
-        <Outlet />
-      </DashboardLayout.Content>
-    </Flex>
-  </DashboardLayout.Container>
+  <DashboardLayout {...props}>
+    <Outlet />
+  </DashboardLayout>
 );
 
 DashboardLayout.Container = Container;

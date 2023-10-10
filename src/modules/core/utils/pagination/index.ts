@@ -9,6 +9,6 @@ export interface IPagination<T> {
 }
 
 export interface PaginationParams {
-  page: string;
-  perPage: string;
+  page?: number;
+  perPage?: number;
 }

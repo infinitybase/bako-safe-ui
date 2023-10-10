@@ -7,7 +7,9 @@ import { fonts } from '@/themes/fonts';
 const defaultTheme = extendTheme({
   fonts,
   colors,
-  components,
+  components: {
+    ...components,
+  },
   styles: {
     global: () => ({
       body: {

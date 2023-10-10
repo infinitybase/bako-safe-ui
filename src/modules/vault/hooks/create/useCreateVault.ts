@@ -14,6 +14,7 @@ import { useCreateVaultForm } from './useCreateVaultForm';
 export enum TabState {
   INFO,
   ADDRESSES,
+  SUCCESS,
 }
 
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
@@ -29,13 +30,7 @@ const useCreateVault = () => {
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
     onSuccess: () => {
-      toast.show({
-        status: 'success',
-        title: 'Vault created',
-        position: 'bottom',
-        isClosable: true,
-      });
-      navigate(Pages.home());
+      setTab(TabState.SUCCESS);
     },
     onError: () => {
       toast.show({
@@ -59,6 +54,18 @@ const useCreateVault = () => {
       provider: await fuel.getProvider(),
     });
   });
+
+  const onDeposit = async () => {
+    if (request.data) {
+      window.open(
+        `${import.meta.env.VITE_FAUCET}?address=${
+          request.data.predicateAddress
+        }`,
+        '_BLANK',
+      );
+      navigate(Pages.detailsVault({ vaultId: request.data.id }));
+    }
+  };
 
   const removeAddress = (index: number) => {
     addressesFieldArray.remove(index);
@@ -93,6 +100,7 @@ const useCreateVault = () => {
     },
     request,
     navigate,
+    onDeposit,
   };
 };
 

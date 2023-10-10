@@ -1,72 +1,13 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
-  Heading,
-  Icon,
-  Text,
-} from '@chakra-ui/react';
-import { MdChevronLeft } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
-import { CreateTransactionForm } from '@/modules/transactions/components';
-import { useCreateTransaction } from '@/modules/transactions/hooks';
+import { CreateTransactionDialog } from '@/modules/transactions/components';
 
 const CreateTransactionPage = () => {
-  const { transactionsFields, transactionRequest, form, assets, navigate } =
-    useCreateTransaction();
+  const navigate = useNavigate();
 
-  return (
-    <Card bg="dark.500" width="100%" maxWidth={400} boxShadow="xl">
-      <CardHeader>
-        <Flex width="100%" alignItems="center" justifyContent="space-between">
-          <Box display="flex">
-            <Box>
-              <Icon
-                onClick={() => navigate(-1)}
-                cursor="pointer"
-                color="gray"
-                fontSize="4xl"
-                as={MdChevronLeft}
-              />
-            </Box>
-            <Heading color="white" size="lg">
-              Transaction
-            </Heading>
-          </Box>
+  const handleClose = () => navigate(-1);
 
-          <Button
-            size="xs"
-            color="brand.900"
-            variant="solid"
-            colorScheme="brand"
-            loadingText="Connecting.."
-            onClick={() => navigate(-1)}
-          >
-            Cancel
-          </Button>
-        </Flex>
-        <Box mr={2} mt={2} maxW={500}>
-          <Text fontSize="sm" color="gray">
-            Complete the info to create your transaction. You can send to
-            different addresses using the button {'"Add a transaction"'} and
-            select the asset and amount of your choice.
-          </Text>
-        </Box>
-      </CardHeader>
-
-      <CardBody>
-        <CreateTransactionForm
-          form={form}
-          assets={assets}
-          isCreating={transactionRequest.isLoading}
-          transactionsFields={transactionsFields}
-        />
-      </CardBody>
-    </Card>
-  );
+  return <CreateTransactionDialog onClose={handleClose} isOpen />;
 };
 
 export { CreateTransactionPage };
