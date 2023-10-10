@@ -5,14 +5,20 @@ import { Card } from '@/components';
 
 import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
-import { useVaultDetails } from '../hooks/details';
+import { UseVaultDetailsReturn } from '../hooks/details';
 
 const formatList = (list: Asset[]) => {
   return list.length - 4;
 };
-const AmountDetails = () => {
-  const { assets } = useVaultDetails();
+
+export interface AmountDetailsProps {
+  assets: UseVaultDetailsReturn['assets'];
+}
+
+const AmountDetails = (props: AmountDetailsProps) => {
+  const { assets } = props;
   const isBig = assets?.value ? formatList(assets.value) : 0;
+
   return (
     <VStack w="25%" justifyContent="start" alignItems="center" minH="475" p={2}>
       <HStack w="full" mb={1}>
