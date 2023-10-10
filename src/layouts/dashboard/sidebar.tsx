@@ -1,7 +1,11 @@
 import { Box, Divider, Icon } from '@chakra-ui/react';
-import { HiQrCode } from 'react-icons/hi2';
 
-import { HomeIcon, PendingIcon } from '@/components';
+import {
+  ExchangeIcon,
+  HomeIcon,
+  PendingIcon,
+  SettingsIcon,
+} from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
 
@@ -63,25 +67,25 @@ const Sidebar = () => {
             );
           }}
         >
-          <SidebarMenu.Icon as={HiQrCode} />
+          <SidebarMenu.Icon as={ExchangeIcon} />
           <SidebarMenu.Title>Transactions</SidebarMenu.Title>
           <SidebarMenu.Badge hidden={!pendingTransactions}>
             <Icon as={PendingIcon} /> {pendingTransactions}
           </SidebarMenu.Badge>
         </SidebarMenu.Container>
 
-        <SidebarMenu.Container onClick={() => {}}>
-          <SidebarMenu.Icon as={HiQrCode} />
-          <SidebarMenu.Title> Address book</SidebarMenu.Title>
-          <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>
-        </SidebarMenu.Container>
+        {/*<SidebarMenu.Container onClick={() => {}}>*/}
+        {/*  <SidebarMenu.Icon as={HiQrCode} />*/}
+        {/*  <SidebarMenu.Title> Address book</SidebarMenu.Title>*/}
+        {/*  <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>*/}
+        {/*</SidebarMenu.Container>*/}
 
         <SidebarMenu.Container
           onClick={() => {
             route.navigate(Pages.home());
           }}
         >
-          <SidebarMenu.Icon as={HiQrCode} />
+          <SidebarMenu.Icon as={SettingsIcon} />
           <SidebarMenu.Title>Settings</SidebarMenu.Title>
         </SidebarMenu.Container>
       </SidebarMenu.List>
