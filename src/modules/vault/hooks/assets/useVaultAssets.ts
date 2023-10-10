@@ -5,14 +5,14 @@ import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
-import { Asset } from '../../../core/utils/assets/types';
 import { useVaultState } from '../../states';
 
 const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
+
   const balances = await predicate.getBalances();
 
-  const result: Asset[] = balances.map((balance) => {
+  const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
     return {
       amount: balance.amount.format(),
@@ -28,6 +28,7 @@ const balancesToAssets = async (predicate?: Vault) => {
 
 function useVaultAssets(predicate?: Vault) {
   const { setVisibleBalance, setBiggerAsset } = useVaultState();
+
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', predicate],
     () => balancesToAssets(predicate),
@@ -68,7 +69,7 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0);
       }
 
-      return bn(bn.parseUnits(balance.amount));
+      return bn(bn.parseUnits(balance.amount!));
     },
     [assets],
   );
@@ -81,7 +82,7 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0).format();
       }
 
-      return bn(bn.parseUnits(balance.amount)).format({ precision: 3 });
+      return bn(bn.parseUnits(balance.amount!)).format({ precision: 3 });
     },
     [assets],
   );
