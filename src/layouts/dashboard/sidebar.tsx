@@ -62,7 +62,9 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           onClick={() => {
-            route.navigate(Pages.home());
+            route.navigate(
+              Pages.transactions({ vaultId: route.params.vaultId! }),
+            );
           }}
         >
           <SidebarMenu.Icon as={HiQrCode} />
@@ -72,11 +74,7 @@ const Sidebar = () => {
           </SidebarMenu.Badge>
         </SidebarMenu.Container>
 
-        <SidebarMenu.Container
-          onClick={() => {
-            route.navigate(Pages.home());
-          }}
-        >
+        <SidebarMenu.Container onClick={() => {}}>
           <SidebarMenu.Icon as={HiQrCode} />
           <SidebarMenu.Title> Address book</SidebarMenu.Title>
           <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>

@@ -1,12 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  BsafeProvider,
+  Pages,
   useCreateVaultRequest,
   useFuel,
   useFuelAccount,
-  useMyWallet,
   useToast,
 } from '@/modules';
 
@@ -57,7 +56,15 @@ const useCreateVault = () => {
   });
 
   const onDeposit = async () => {
-    /* TODO: implement logic to transfer asset for vault */
+    if (request.data) {
+      window.open(
+        `${import.meta.env.VITE_FAUCET}?address=${
+          request.data.predicateAddress
+        }`,
+        '_BLANK',
+      );
+      navigate(Pages.detailsVault({ vaultId: request.data.id }));
+    }
   };
 
   const removeAddress = (index: number) => {
