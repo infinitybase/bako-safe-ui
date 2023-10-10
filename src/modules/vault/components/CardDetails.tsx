@@ -79,7 +79,7 @@ const CardDetails = () => {
                       borderRadius={10}
                     >
                       <QRCodeSVG
-                        value={vault?.predicateAddress}
+                        value={vault?.predicateAddress || ''}
                         //value="https://google.com"
                         fgColor="black"
                         bgColor="white"
@@ -90,7 +90,7 @@ const CardDetails = () => {
                         }}
                       />
                     </Box>
-                    <AddressCopy address={vault?.predicateAddress} />
+                    <AddressCopy address={vault?.predicateAddress || ''} />
                   </GridItem>
                 </VStack>
                 <VStack minH={280} minW={200}>
