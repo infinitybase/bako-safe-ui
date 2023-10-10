@@ -3,15 +3,9 @@ import { HiQrCode } from 'react-icons/hi2';
 
 import { HomeIcon, PendingIcon } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { Pages, VaultBox, VaultDrawer } from '@/modules';
+import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
 
 import { useSidebar } from './hook';
-
-// TODO: Move to utils or use one if wxists
-const formatAddress = (address?: string) =>
-  address
-    ? `${String(address).slice(0, 15)}...${String(address).slice(-4)}`
-    : '';
 
 const Sidebar = () => {
   const { route, vaultRequest, pendingTransactions, drawer } = useSidebar();
@@ -37,7 +31,9 @@ const Sidebar = () => {
       <VaultBox
         name={String(`${vaultRequest.predicate?.name.slice(0, 9)}...`)}
         fullName={String(vaultRequest.predicate?.name)}
-        address={formatAddress(vaultRequest.predicate?.predicateAddress)}
+        address={AddressUtils.format(
+          vaultRequest.predicate?.predicateAddress ?? '',
+        )}
         isLoading={vaultRequest.isLoading}
         onChangeVault={drawer.onOpen}
         onCreateTransaction={() => {

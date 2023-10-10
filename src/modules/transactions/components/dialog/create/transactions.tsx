@@ -13,16 +13,10 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
-import { AssetSelect } from '@/modules/core';
+import { AddressUtils, AssetSelect } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
-
-// TODO: Move to utils or use one if wxists
-const formatAddress = (address?: string) =>
-  address
-    ? `${String(address).slice(0, 15)}...${String(address).slice(-4)}`
-    : '';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
@@ -158,7 +152,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {transaction.amount} {assetSlug}
                       </b>{' '}
-                      to <b> {formatAddress(transaction.to)}</b>
+                      to <b> {AddressUtils.format(transaction.to)}</b>
                     </Text>
                   )
                 }

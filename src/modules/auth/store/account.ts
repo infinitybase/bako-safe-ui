@@ -4,6 +4,7 @@ import { AddressUtils } from '@/modules';
 
 interface State {
   account: string;
+  formattedAccount: string;
   setAccount: (account: string) => void;
 }
 
@@ -11,10 +12,10 @@ const useFuelAccount = create<State>((set) => ({
   account: '',
   formattedAccount: '',
   setAccount: (account) =>
-    set((state) => ({
+    set({
       account,
-      formattedAccount: AddressUtils.format(state.account),
-    })),
+      formattedAccount: AddressUtils.format(account),
+    }),
 }));
 
 export { useFuelAccount };
