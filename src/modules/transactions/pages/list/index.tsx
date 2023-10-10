@@ -55,19 +55,19 @@ const TransactionsVaultPage = () => {
 
       {/* FILTER */}
       <TransactionFilter.Control
-        onChange={(value) => filter.set(value as StatusFilter)}
         value={filter.value}
+        onChange={(value) => filter.set(value as StatusFilter)}
       >
         <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
         <TransactionFilter.Field
           value={StatusFilter.COMPLETED}
-          label="COMPLETED"
+          label="Completed"
         />
         <TransactionFilter.Field
           value={StatusFilter.DECLINED}
-          label="DECLINED"
+          label="Declined"
         />
-        <TransactionFilter.Field value={StatusFilter.PENDING} label="PENDING" />
+        <TransactionFilter.Field value={StatusFilter.PENDING} label="Pending" />
       </TransactionFilter.Control>
 
       {/* TRANSACTION LIST */}
