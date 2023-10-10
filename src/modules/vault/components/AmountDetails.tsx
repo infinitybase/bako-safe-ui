@@ -35,7 +35,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
           Balance
         </Text>
       </Box>
-      <VStack justifyContent="space-between">
+      <VStack spacing={5} justifyContent="space-between">
         {assets?.value &&
           assets.value.map((asset: Asset, index: number) => {
             if (isBig > 0 && index > 3) return;
