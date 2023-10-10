@@ -1,4 +1,9 @@
-import { AssetModel, Transaction, TransactionStatus } from '@/modules/core';
+import {
+  AssetModel,
+  IPagination,
+  Transaction,
+  TransactionStatus,
+} from '@/modules/core';
 
 export interface TransactionDetails {
   signers: {
@@ -18,7 +23,9 @@ export interface GetTransactionParams {
   predicateId?: string;
   to?: string;
   hash?: string;
-  status?: TransactionStatus;
+  status?: TransactionStatus[] | string[];
+  perPage?: number;
+  page?: number;
 }
 
 export interface SignerTransactionPayload {
@@ -43,7 +50,8 @@ export interface CloseTransactionPayload {
 }
 
 export type GetTransactionResponse = Transaction;
-export type GetTransactionByAddressesResponse = Transaction[];
+export type GetTransactionsResponse = Transaction[];
+export type GetTransactionsPaginationResponse = IPagination<Transaction>;
 export type CreateTransactionResponse = Transaction;
 export type SignerTransactionResponse = Transaction;
 export type TransferAsset = AssetModel;

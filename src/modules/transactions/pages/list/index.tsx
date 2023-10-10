@@ -4,26 +4,17 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Heading,
-  HStack,
   Icon,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 
 import { Card, HomeIcon } from '@/components';
+import { TransactionFilter } from '@/modules/transactions/components';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 
 const TransactionsVaultPage = () => {
-  const {
-    transactionRequest,
-    vaultRequest,
-    navigate,
-    params,
-    vaultAssets,
-    filter,
-    inView,
-  } = useTransactionList();
+  const { transactionRequest, filter, inView } = useTransactionList();
 
   return (
     <Box maxW={1000} w="full">
@@ -63,66 +54,37 @@ const TransactionsVaultPage = () => {
       </Box>
 
       {/* FILTER */}
-      <HStack spacing={7} mb={7}>
-        <Text
-          color={filter.value === StatusFilter.ALL ? 'brand.500' : 'grey.200'}
-          onClick={() => filter.set(StatusFilter.ALL)}
-          fontWeight="medium"
-          cursor="pointer"
-        >
-          All
-        </Text>
-        <Text
-          color={
-            filter.value === StatusFilter.COMPLETED ? 'brand.500' : 'grey.200'
-          }
-          onClick={() => filter.set(StatusFilter.COMPLETED)}
-          fontWeight="medium"
-          cursor="pointer"
-        >
-          Completed
-        </Text>
-        <Text
-          color={
-            filter.value === StatusFilter.DECLINED ? 'brand.500' : 'grey.200'
-          }
-          onClick={() => filter.set(StatusFilter.DECLINED)}
-          fontWeight="medium"
-          cursor="pointer"
-        >
-          Declined
-        </Text>
-        <Text
-          color={
-            filter.value === StatusFilter.PENDING ? 'brand.500' : 'grey.200'
-          }
-          onClick={() => filter.set(StatusFilter.PENDING)}
-          fontWeight="medium"
-          cursor="pointer"
-        >
-          Pending
-        </Text>
-      </HStack>
+      <TransactionFilter.Control
+        onChange={(value) => filter.set(value as StatusFilter)}
+        value={filter.value}
+      >
+        <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
+        <TransactionFilter.Field
+          value={StatusFilter.COMPLETED}
+          label="COMPLETED"
+        />
+        <TransactionFilter.Field
+          value={StatusFilter.DECLINED}
+          label="DECLINED"
+        />
+        <TransactionFilter.Field value={StatusFilter.PENDING} label="PENDING" />
+      </TransactionFilter.Control>
 
       {/* TRANSACTION LIST */}
-      <VStack spacing={3} w="full" alignItems="flex-start">
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
-        <Card w="full">ok</Card>
+      <VStack
+        mt={7}
+        spacing={3}
+        w="full"
+        maxH="calc(100% - 82px)"
+        overflowY="scroll"
+        alignItems="flex-start"
+      >
+        {transactionRequest.transactions.map((transaction) => (
+          <Card w="full" key={transaction.id}>
+            ok
+          </Card>
+        ))}
+        {!transactionRequest.isLoading && <Box ref={inView.ref} />}
       </VStack>
     </Box>
   );

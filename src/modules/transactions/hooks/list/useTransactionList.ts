@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules';
+import {
+  useTransactionListPaginationRequest,
+  useVaultAssets,
+  useVaultDetailsRequest,
+} from '@/modules';
 import { TransactionStatus } from '@/modules/core';
-import { useTransactionListRequest } from '@/modules/transactions/hooks';
 
 export enum StatusFilter {
   ALL = 'ALL',
@@ -20,15 +23,22 @@ const useTransactionList = () => {
 
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
-  const transactionRequest = useTransactionListRequest(params.vaultId!);
+  const transactionRequest = useTransactionListPaginationRequest({
+    predicateId: params.vaultId,
+    /* TODO: Change logic this */
+    status: [filter],
+  });
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
+  useEffect(() => {
+    if (inView.inView) {
+      transactionRequest.fetchNextPage();
+    }
+  }, [inView.inView]);
+
   return {
-    transactionRequest: {
-      ...transactionRequest,
-      transactions: transactionRequest.data,
-    },
+    transactionRequest,
     vaultRequest: vaultRequest,
     vaultAssets,
     navigate,
