@@ -14,6 +14,7 @@ import { ChartBulletIcon, ReplaceIcon } from '@/components';
 
 interface VaultBoxPropx {
   name: string;
+  fullName: string;
   address: string;
   onChangeVault: () => void;
   onCreateTransaction: () => void;
@@ -42,12 +43,12 @@ const VaultBoxSkeleton = () => (
 );
 
 const VaultBox = (props: VaultBoxPropx) => {
-  const { name, address, onChangeVault, onCreateTransaction } = props;
+  const { name, address, fullName, onChangeVault, onCreateTransaction } = props;
 
   return (
     <Box w="100%">
       <HStack width="100%" alignItems="center" spacing={5} mb={5}>
-        <Avatar bgColor="dark.150" color="white" name={name} />
+        <Avatar bgColor="dark.150" color="white" name={fullName} />
         <Box w="100%" maxW="100%">
           <Flex alignItems="center" justifyContent="space-between">
             <Box maxW="48%">

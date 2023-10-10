@@ -36,6 +36,7 @@ const Sidebar = () => {
       {/*/!* VAULT INFOS *!/*/}
       <VaultBox
         name={String(`${vaultRequest.predicate?.name.slice(0, 9)}...`)}
+        fullName={String(vaultRequest.predicate?.name)}
         address={formatAddress(vaultRequest.predicate?.predicateAddress)}
         isLoading={vaultRequest.isLoading}
         onChangeVault={drawer.onOpen}
