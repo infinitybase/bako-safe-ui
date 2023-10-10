@@ -1,40 +1,44 @@
-import { Grid, GridItem, Icon, IconButton } from '@chakra-ui/react';
+import {
+  Box,
+  HStack,
+  Icon,
+  StackProps,
+  Text,
+  useClipboard,
+} from '@chakra-ui/react';
 import React from 'react';
-import { FaRegClone } from 'react-icons/fa';
 
-import { AddressUtils } from '../modules/core/utils/address';
+import { CopyIcon } from '@/components/icons';
 
-interface Props {
+interface Props extends StackProps {
   address: string;
 }
 
-function AddressCopy({ address }: Props) {
+function AddressCopy({ address, ...rest }: Props) {
+  const clipboard = useClipboard(address);
+
   const isValid = !!address && address.length > 0;
+
   if (!isValid) return;
+
   return (
-    <Grid
-      height="5vh"
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      my={3}
-      px={1}
+    <HStack
+      p={3}
+      spacing={4}
+      cursor="pointer"
       borderRadius={10}
-      color="grey.500"
-      backgroundColor="grey.300"
-      onClick={() => navigator.clipboard.writeText(address)}
+      justifyContent="center"
+      backgroundColor="dark.100"
+      onClick={() => clipboard.onCopy()}
+      {...rest}
     >
-      <GridItem width="15%" mr={3}>
-        <IconButton
-          aria-label="Copy"
-          variant="icon"
-          icon={<Icon as={FaRegClone} />}
-        />
-      </GridItem>
-      <GridItem ml={3} width="80%">
-        {AddressUtils.format(address)}
-      </GridItem>
-    </Grid>
+      <Icon color="grey.200" fontSize="md" as={CopyIcon} />
+      <Box maxWidth="145px" w="full">
+        <Text noOfLines={1} color="grey.500">
+          {address}
+        </Text>
+      </Box>
+    </HStack>
   );
 }
 

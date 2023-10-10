@@ -1,4 +1,12 @@
-import { Box, Button, HStack, Icon, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Button,
+  HStack,
+  Icon,
+} from '@chakra-ui/react';
 import React from 'react';
 
 import { HomeIcon } from '@/components';
@@ -15,12 +23,41 @@ const VaultDetailsPage = () => {
   return (
     <Box w="full">
       <HStack mb={9} w="full" justifyContent="space-between">
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Icon as={HomeIcon} fontSize="lg" color="grey.200" mr={3} />
-          <Text color="grey.200" fontWeight="semibold">
-            Home / Vaults / {vault.name}
-          </Text>
-        </Box>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              Vaults
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              {vault.name}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
         <Button variant="secondary" bgColor="dark.100" border="none">
           Set as template
         </Button>

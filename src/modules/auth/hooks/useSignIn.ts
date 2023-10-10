@@ -30,7 +30,9 @@ const useSignIn = () => {
         },
       ]);
       setAccount(account!);
-      navigate(Pages.home());
+      navigate(
+        Pages.detailsVault({ vaultId: '5e858bcd-15a3-4c2d-872b-9bd296151887' }),
+      );
     },
   });
 
