@@ -1,48 +1,37 @@
-import { Box, Button, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { HomeIcon } from '@/components';
+import { useVaultDetails } from '@/modules/vault/hooks';
 
 import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 const VaultDetailsPage = () => {
+  const { vault, store, assets } = useVaultDetails();
+
+  if (!vault) return null;
+
   return (
-    <VStack
-      w="full"
-      spacing={6}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <HStack w="full" justifyContent="space-between">
+    <Box w="full">
+      <HStack mb={9} w="full" justifyContent="space-between">
         <Box display="flex" flexDirection="row" alignItems="center">
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" mr={3} />
           <Text color="grey.200" fontWeight="semibold">
-            Home / Vaults / [vaultName]
+            Home / Vaults / {vault.name}
           </Text>
         </Box>
-        <Button
-          variant="primary"
-          backgroundColor="grey.500"
-          color="white"
-          cursor="pointer"
-        >
+        <Button variant="secondary" bgColor="dark.100" border="none">
           Set as template
         </Button>
       </HStack>
 
-      <HStack
-        w="full"
-        display="flex"
-        alignItems="start"
-        justifyContent="center"
-      >
-        <CardDetails />
-        <AmountDetails />
-        <SignersDetails />
+      <HStack alignItems="flex-start" w="full" spacing={5}>
+        <CardDetails vault={vault} store={store} />
+        <AmountDetails assets={assets} />
+        <SignersDetails vault={vault} />
       </HStack>
-    </VStack>
+    </Box>
   );
 };
 

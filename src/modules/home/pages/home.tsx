@@ -11,12 +11,16 @@ import {
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
+import { useNavigate } from 'react-router-dom';
 
 import { HomeIcon, VaultIcon } from '@/components';
+import { Pages } from '@/modules';
 
 import { ActionCard } from '../components/ActionCard';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between">
@@ -31,7 +35,7 @@ const HomePage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() => alert('ok')}
+            onClick={() => navigate(Pages.createVault())}
           >
             Create vault
           </Button>

@@ -20,7 +20,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: vaultAssets.assets,
+    assets: vaultAssets.assets?.map((asset) => ({
+      amount: asset.amount,
+      assetId: asset.assetId,
+    })),
     getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset),
     validateBalance: (asset, amount) =>
       vaultAssets.hasAssetBalance(asset, amount),
