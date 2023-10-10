@@ -1,6 +1,6 @@
 export interface ITemplate {
   name: string;
-  description: string;
+  description?: string;
   minSigners: number;
-  addresses: string[];
+  addresses: [];
 }

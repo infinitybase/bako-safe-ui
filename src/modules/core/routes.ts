@@ -15,6 +15,9 @@ const Pages = {
     '/vault/:vaultId/transactions/:transactionId',
   ),
   signatures: pageRoute('/signatures'),
+
+  //template
+  template: pageRoute('/template'),
 };
 
 export { Pages };
