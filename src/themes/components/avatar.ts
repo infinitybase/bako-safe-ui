@@ -30,6 +30,8 @@ const roundedSquare = defineStyle({
   },
   excessLabel: {
     borderRadius: 8,
+    width: '40px',
+    height: '40px',
   },
   badge: {
     borderRadius: 8,
