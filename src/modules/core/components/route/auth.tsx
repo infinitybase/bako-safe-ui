@@ -1,5 +1,7 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 
+import { Pages } from '@/modules';
 import { useFuelAccount } from '@/modules/auth';
 
 export interface AuthRouteProps {
@@ -9,9 +11,9 @@ export interface AuthRouteProps {
 const AuthRoute = (props: AuthRouteProps) => {
   const { account } = useFuelAccount();
 
-  // if (!account) {
-  //   return <Navigate to={Pages.index()} />;
-  // }
+  if (!account) {
+    return <Navigate to={Pages.index()} />;
+  }
 
   return props.children;
 };
