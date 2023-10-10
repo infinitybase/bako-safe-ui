@@ -4,8 +4,6 @@ import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
 
 import { IStep, useModal, useSteps } from '../../hooks';
 import { useTemplateStore } from '../../store';
-import { ITemplate } from '@/modules/core';
-import { useForm } from 'react-hook-form';
 
 const CreateTemplateForm = () => {
   const { step } = useTemplateStore();
@@ -35,6 +33,7 @@ const CreateTemplateForm = () => {
           hidden={steps[step].hiddeFooter}
           type="submit"
           leftIcon={<SquarePlusIcon />}
+          isDisabled={steps[step].isLoading}
         >
           Continue
         </Dialog.PrimaryAction>

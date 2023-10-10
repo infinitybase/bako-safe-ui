@@ -1,6 +1,6 @@
 import { UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
 
-import { ITemplate } from '@/modules/core';
+import { ITemplatePayload } from '@/modules/core';
 
 import { AddressStep, InfoStep, SuccesStep } from '../components';
 import { useModal } from './useModal';
@@ -12,23 +12,27 @@ export interface IStep {
   hiddeTitle: boolean;
   hiddeFooter: boolean;
   hiddeProgressBar: boolean;
-  onSubmit: (data: ITemplate) => void;
+  onSubmit: (data: ITemplatePayload) => void;
+  isLoading: boolean;
 }
-
+import { useCreate } from './useCreateTemplate';
+import { useNavigate } from 'react-router-dom';
 const useSteps = () => {
   const { nextStep } = useModal();
-  const { handleSubmit, ...form } = useForm<ITemplate>({
+  const navigate = useNavigate();
+  const { createTemplate, isLoading } = useCreate();
+  const { handleSubmit, ...form } = useForm<ITemplatePayload>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
       description: '',
       addresses: [],
-      minSigners: 0,
+      minSigners: 1,
     },
   });
 
   const a: string[] = [];
-  const addressesFieldArray = useFieldArray<ITemplate>({
+  const addressesFieldArray = useFieldArray<ITemplatePayload>({
     control: form.control,
     name: 'addresses' as never,
   });
@@ -39,8 +43,8 @@ const useSteps = () => {
       hiddeTitle: false,
       hiddeFooter: false,
       hiddeProgressBar: false,
+      isLoading,
       onSubmit: (data) => {
-        console.log(data);
         nextStep();
       },
     },
@@ -49,14 +53,27 @@ const useSteps = () => {
       hiddeTitle: false,
       hiddeFooter: false,
       hiddeProgressBar: false,
-      onSubmit: (data) => console.log(data),
+      isLoading,
+      onSubmit: async (data) => {
+        const { addresses, ...rest } = data;
+        const add = addresses as unknown as { value: string }[];
+
+        await createTemplate({
+          ...data,
+          addresses: add.map((item) => item.value),
+        });
+        nextStep();
+      },
     },
     {
       component: <SuccesStep />,
       hiddeTitle: true,
       hiddeFooter: true,
       hiddeProgressBar: true,
-      onSubmit: (data) => console.log(data),
+      isLoading,
+      onSubmit: (data) => {
+        navigate('/home');
+      },
     },
   ];
 

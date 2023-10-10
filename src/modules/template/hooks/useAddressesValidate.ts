@@ -43,8 +43,10 @@ const schema = yup
     'The number of required signatures must be less than or equal to the number of addresses',
     function (values) {
       if (
+        typeof values.minSigners != 'bigint' &&
         values.addresses &&
-        values?.addresses?.length < Number(values?.minSigners)
+        values?.addresses?.length < (values?.minSigners || 1) &&
+        values.minSigners < 1
       ) {
         return this.createError({
           path: 'minSigners',

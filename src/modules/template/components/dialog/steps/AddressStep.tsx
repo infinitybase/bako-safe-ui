@@ -18,10 +18,10 @@ import {
 import { Controller, UseFormReturn } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
-import { ITemplate } from '@/modules/core';
+import { ITemplatePayload } from '@/modules/core';
 import { useSteps } from '@/modules/template/hooks';
 
-const AddressStep = ({ form }: { form: UseFormReturn<ITemplate> }) => {
+const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
   const { addresses } = useSteps();
   return (
     <TabPanel p={0}>
@@ -105,16 +105,17 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplate> }) => {
           description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
         />
 
-        <Box w="full" maxW={90}>
+        <Box w="full" maxW={90} mb={3}>
           <Controller
             name="minSigners"
             control={form.control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormControl>
                 <Select
                   pt={2}
                   pb={2}
                   value={field.value}
+                  defaultValue={1}
                   onChange={field.onChange}
                   placeholder=" "
                 >
@@ -126,6 +127,18 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplate> }) => {
                       </option>
                     ))}
                 </Select>
+                <FormHelperText
+                  color="error.500"
+                  style={{
+                    display: 'flex',
+                    position: 'absolute',
+                    left: '-300px',
+                    minWidth: '400px',
+                    marginBottom: '20px',
+                  }}
+                >
+                  {fieldState.error?.message}
+                </FormHelperText>
               </FormControl>
             )}
           />

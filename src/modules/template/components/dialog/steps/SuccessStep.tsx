@@ -9,8 +9,12 @@ import {
 } from '@chakra-ui/react';
 
 import { VaultSuccessIcon } from '@/components';
+import { ITemplatePayload } from '@/modules/core';
+import { useModal, useSteps } from '@/modules/template/hooks';
 
 const SuccesStep = () => {
+  const { steps } = useSteps();
+  const { step } = useModal();
   return (
     <TabPanel>
       <Center flexDirection="column" mb={5}>
@@ -27,7 +31,15 @@ const SuccesStep = () => {
           </Heading>
         </Box>
         <Divider m={4} color="grey.300" />
-        <Button m={4} variant="primary" background="grey.500" color="grey.300">
+        <Button
+          m={4}
+          variant="primary"
+          background="grey.500"
+          color="grey.300"
+          onClick={() => {
+            steps[step].onSubmit({} as ITemplatePayload);
+          }}
+        >
           Conclude
         </Button>
       </Center>

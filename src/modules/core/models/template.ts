@@ -1,6 +1,13 @@
-export interface ITemplate {
+export interface ITemplatePayload {
   name: string;
   description?: string;
   minSigners: number;
-  addresses: [];
+  addresses: string[];
+}
+
+export interface ITemplate extends ITemplatePayload {
+  id: string;
+  owner: string;
+  createdAt: string;
+  updatedAt: string;
 }

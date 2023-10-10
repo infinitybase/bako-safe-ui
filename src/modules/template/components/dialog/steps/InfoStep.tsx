@@ -9,9 +9,8 @@ import {
 } from '@chakra-ui/react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-import { useSteps } from '../../../hooks/useSteps';
-import { ITemplate } from '@/modules/core';
-const InfoStep = ({ form }: { form: UseFormReturn<ITemplate> }) => {
+import { ITemplatePayload } from '@/modules/core';
+const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
   return (
     <TabPanel p={0}>
       <VStack spacing={6}>
