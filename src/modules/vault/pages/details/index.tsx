@@ -12,7 +12,6 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
 import {
@@ -24,12 +23,10 @@ import {
 
 import { Loader } from '@/components';
 import { AssetItem, AssetList, NativeAssetId, Pages } from '@/modules/core';
-import { CreateTransactionDialog } from '@/modules/transactions/components';
 import { useVaultDetails } from '@/modules/vault/hooks';
 
 const VaultDetailsPage = () => {
   const { vault, assets, navigate, account } = useVaultDetails();
-  const createTransactionDialog = useDisclosure();
 
   return (
     <Card mb={4} bg="dark.500" minW={600} boxShadow="xl" minH={550}>
@@ -38,10 +35,6 @@ const VaultDetailsPage = () => {
       ) : (
         <>
           <CardHeader>
-            <CreateTransactionDialog
-              isOpen={createTransactionDialog.isOpen}
-              onClose={createTransactionDialog.onClose}
-            />
             <Flex hidden={vault.isLoading} width="100%" alignItems="center">
               <Box pt={2}>
                 <Icon
@@ -122,7 +115,11 @@ const VaultDetailsPage = () => {
                       color="brand.900"
                       variant="solid"
                       colorScheme="brand"
-                      onClick={() => createTransactionDialog.onOpen()}
+                      onClick={() =>
+                        navigate(
+                          Pages.createTransaction({ vaultId: vault.id! }),
+                        )
+                      }
                       isDisabled={!vault.hasBalance}
                     >
                       Send

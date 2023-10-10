@@ -8,19 +8,17 @@ import {
   Heading,
   Icon,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { MdChevronRight } from 'react-icons/md';
 
 import { Loader } from '@/components';
-import { CreateVaultDialog, Pages } from '@/modules';
+import { Pages } from '@/modules';
 
 import { useHome } from '../hooks';
 
 const HomePage = () => {
   const { request, navigate } = useHome();
   const { isLoading, predicates } = request;
-  const createVaultModal = useDisclosure();
 
   return (
     <Flex width="100%" justifyContent="center" mt={20}>
@@ -40,7 +38,7 @@ const HomePage = () => {
                     variant="solid"
                     colorScheme="brand"
                     loadingText="Connecting.."
-                    onClick={createVaultModal.onOpen}
+                    onClick={() => navigate(Pages.createVault())}
                   >
                     Create
                   </Button>
@@ -53,11 +51,6 @@ const HomePage = () => {
                 </Text>
               </Box>
             </CardHeader>
-
-            <CreateVaultDialog
-              isOpen={createVaultModal.isOpen}
-              onClose={createVaultModal.onClose}
-            />
 
             <CardBody>
               {!!predicates && predicates.length > 0 ? (
@@ -104,7 +97,6 @@ const HomePage = () => {
                     variant="solid"
                     colorScheme="brand"
                     loadingText="Connecting.."
-                    onClick={createVaultModal.onOpen}
                   >
                     Create
                   </Button>

@@ -5,7 +5,7 @@ const Pages = {
   exampleHome: pageRoute('/example/home'),
   index: pageRoute('/'),
   home: pageRoute('/home'),
-  createVault: pageRoute('/vault'),
+  createVault: pageRoute('/home/vault'),
   detailsVault: pageRoute<{ vaultId: string }>('/vault/:vaultId'),
   transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
   createTransaction: pageRoute<{ vaultId: string }>(
