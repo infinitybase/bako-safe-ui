@@ -15,6 +15,7 @@ import { useVaultDetails } from '@/modules/vault/hooks';
 import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
+
 const VaultDetailsPage = () => {
   const { vault, store, assets } = useVaultDetails();
 
