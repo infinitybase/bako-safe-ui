@@ -1,5 +1,6 @@
 import { Asset, AssetMap } from './types';
 
+const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0x0000000000000000000000000000000000000000000000000000000000000000';
 
@@ -8,6 +9,7 @@ const assetsList: Asset[] = [
     name: 'Ethereum',
     slug: 'ETH',
     assetId: NativeAssetId,
+    icon: ETHDefault,
   },
   {
     name: 'Dai',
@@ -29,6 +31,7 @@ const assetsMap: AssetMap = assetsList.reduce((previousValue, currentValue) => {
     [currentValue.assetId]: {
       name: currentValue.name,
       slug: currentValue.slug,
+      icon: currentValue.icon,
     },
   };
 }, {});
