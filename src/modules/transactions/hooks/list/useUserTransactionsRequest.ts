@@ -1,10 +1,12 @@
 import { useQuery } from 'react-query';
 
-import { SortOption, TransactionService } from '../services';
+import { SortOption, TransactionService } from '../../services';
+
+const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
 
 const useUserTransactionsRequest = () => {
   return useQuery(
-    ['transactions/byUser'],
+    [USER_TRANSACTIONS_QUERY_KEY],
     () =>
       TransactionService.getUserTransactions({
         // limit: 6,
@@ -18,4 +20,4 @@ const useUserTransactionsRequest = () => {
   );
 };
 
-export { useUserTransactionsRequest };
+export { USER_TRANSACTIONS_QUERY_KEY, useUserTransactionsRequest };

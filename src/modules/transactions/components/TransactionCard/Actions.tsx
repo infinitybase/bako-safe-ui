@@ -23,7 +23,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
 
   const { isSigned, isDeclined, isCompleted, isReproved, isPending } = status;
   const { confirmTransaction, declineTransaction, isLoading } =
-    useSignTransaction();
+    useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;

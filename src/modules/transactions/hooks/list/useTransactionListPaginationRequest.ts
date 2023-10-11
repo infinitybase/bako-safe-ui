@@ -7,11 +7,13 @@ type UseTransactionListPaginationParams = Omit<
   'perPage' | 'page'
 >;
 
+const TRANSACTION_LIST_PAGINATION_QUERY_KEY = 'transactions/pagination';
+
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
   const { data, ...query } = useInfiniteQuery(
-    ['predicate/transactions', params],
+    [TRANSACTION_LIST_PAGINATION_QUERY_KEY, params],
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
         ...params,
@@ -33,4 +35,7 @@ const useTransactionListPaginationRequest = (
   };
 };
 
-export { useTransactionListPaginationRequest };
+export {
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  useTransactionListPaginationRequest,
+};

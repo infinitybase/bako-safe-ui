@@ -1,7 +1,19 @@
-import { useMutation } from 'react-query';
+import { useEffect, useMemo } from 'react';
 
-import { useMyWallet, useToast } from '@/modules/core';
-import { useSignTransactionRequest } from '@/modules/transactions/hooks/signature/useSignTransactionRequest';
+import {
+  BsafeProvider,
+  invalidateQueries,
+  Transaction,
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  TransactionStatus,
+  useFuelAccount,
+  USER_TRANSACTIONS_QUERY_KEY,
+} from '@/modules';
+import { useToast, useWalletSignMessage } from '@/modules/core';
+
+import { useTransactionSendRequest } from '../details';
+import { useSignTransactionRequest } from './useSignTransactionRequest';
 
 export interface SignTransactionParams {
   txId: string;
@@ -10,102 +22,82 @@ export interface SignTransactionParams {
 }
 
 export interface UseSignTransactionOptions {
-  onSuccess: () => void;
+  transaction: Transaction;
 }
 
-const useSignTransaction = (options?: UseSignTransactionOptions) => {
-  const { data: currentWallet } = useMyWallet();
+const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useToast();
+  const { account } = useFuelAccount();
+
+  const transaction = useMemo(() => {
+    return options.transaction;
+  }, [options.transaction]);
+
+  const refetetchTransactionList = () =>
+    invalidateQueries([
+      TRANSACTION_LIST_QUERY_KEY,
+      TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+      USER_TRANSACTIONS_QUERY_KEY,
+    ]);
 
   const request = useSignTransactionRequest({
-    onSuccess: () => {
-      toast.update({
-        status: 'success',
-        title: 'Transaction signed',
-        position: 'bottom',
-        isClosable: true,
-        duration: 5000,
-      });
-
-      options?.onSuccess();
-    },
-    onError: () => {
-      toast.update({
-        status: 'error',
-        title: 'Error on sign transaction',
-        position: 'bottom',
-        isClosable: true,
-        duration: 5000,
-      });
-    },
+    onSuccess: refetetchTransactionList,
+    onError: () => toast.error('Error on sign transaction'),
   });
 
-  // Todo: Refactor to other directory/file
-  const signMessageRequest = useMutation(
-    'wallet/sign',
-    async (params: SignTransactionParams) => {
-      const signedMessage = await currentWallet?.signMessage(params.txId);
-      return {
-        ...params,
-        signedMessage,
-      };
+  const signMessageRequest = useWalletSignMessage({
+    onError: () => toast.error('Message sign rejected'),
+  });
+
+  const transactionSendRequest = useTransactionSendRequest({
+    onSuccess: () => {
+      toast.success('Transaction success.');
+      refetetchTransactionList();
     },
-    {
-      onMutate: () => {
-        toast.show({
-          status: 'info',
-          title: 'Sign transaction...',
-          position: 'bottom',
-          duration: 100000,
-        });
-      },
-      onSuccess: (response) => {
-        if (!response.signedMessage) {
-          toast.update({
-            status: 'error',
-            title: 'Message sign rejected',
-            position: 'bottom',
-            duration: 100000,
-          });
-          return;
-        }
+    onError: () => toast.error('Error send your transaction'),
+  });
 
-        request.mutate({
-          id: response.transactionID,
-          account: currentWallet!.address.toString(),
-          signer: response.signedMessage,
-          confirm: true,
-        });
-      },
-      onError: () =>
-        toast.update({
-          status: 'error',
-          title: 'Error on sign transaction',
-          position: 'bottom',
-          isClosable: true,
-          duration: 5000,
-        }),
-    },
-  );
-
-  const confirmTransaction = (params: SignTransactionParams) => {
-    signMessageRequest.mutate(params);
-  };
-
-  const declineTransaction = (transactionId: string) => {
-    request.mutate({
-      id: transactionId,
-      confirm: false,
-      account: currentWallet!.address.toString(),
+  const confirmTransaction = async (params: SignTransactionParams) => {
+    const signedMessage = await signMessageRequest.mutateAsync(
+      JSON.stringify(params),
+    );
+    await request.mutateAsync({
+      account,
+      confirm: true,
+      signer: signedMessage,
+      id: params.transactionID,
     });
   };
+
+  const declineTransaction = async (transactionId: string) => {
+    await request.mutateAsync({
+      id: transactionId,
+      confirm: false,
+      account,
+    });
+  };
+
+  useEffect(() => {
+    if (!transaction) return;
+
+    if (transaction.status === TransactionStatus.PENDING) {
+      transactionSendRequest.mutate({
+        transaction,
+        predicate: BsafeProvider.instanceVault(transaction.predicate),
+      });
+    }
+  }, [transaction]);
 
   return {
     request,
     signMessageRequest,
     confirmTransaction,
     declineTransaction,
-    isLoading: request.isLoading || signMessageRequest.isLoading,
+    transactionSendRequest,
+    isLoading:
+      request.isLoading ||
+      signMessageRequest.isLoading ||
+      transactionSendRequest.isLoading,
   };
 };
 
