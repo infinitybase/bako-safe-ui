@@ -1,4 +1,11 @@
-import { Badge, Button, HStack, Icon, Spacer } from '@chakra-ui/react';
+import {
+  Badge,
+  Button,
+  HStack,
+  Icon,
+  Spacer,
+  useAccordionItemState,
+} from '@chakra-ui/react';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
@@ -8,17 +15,12 @@ import { useSignTransaction } from '../../hooks/signature';
 
 interface TransactionActionsProps {
   status: TransactionState;
-  isExpanded?: boolean;
   transaction?: Transaction;
-  collapse: () => void;
 }
 
-const Actions = ({
-  isExpanded,
-  transaction,
-  status,
-  collapse,
-}: TransactionActionsProps) => {
+const Actions = ({ transaction, status }: TransactionActionsProps) => {
+  const { isOpen } = useAccordionItemState();
+
   const { isSigned, isDeclined, isCompleted, isReproved, isPending } = status;
   const { confirmTransaction, declineTransaction, isLoading } =
     useSignTransaction();
@@ -27,14 +29,6 @@ const Actions = ({
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const userDidntAnswer =
     !isSigned && !isDeclined && (isCompleted || isReproved);
-
-  console.log(`>>>>>`, transaction?.name, {
-    isSigned,
-    isDeclined,
-    isCompleted,
-    isReproved,
-    isPending,
-  });
 
   return (
     <>
@@ -62,6 +56,7 @@ const Actions = ({
             h={9}
             px={3}
             variant="primary"
+            size="sm"
             isDisabled={isLoading}
             onClick={() =>
               confirmTransaction({
@@ -77,6 +72,7 @@ const Actions = ({
             h={9}
             px={3}
             variant="secondary"
+            size="sm"
             onClick={() => declineTransaction(transaction.id)}
           >
             Decline
@@ -85,11 +81,10 @@ const Actions = ({
       )}
 
       <Icon
-        as={isExpanded ? IoIosArrowUp : IoIosArrowDown}
+        as={isOpen ? IoIosArrowUp : IoIosArrowDown}
         fontSize="xl"
         color="grey.200"
         cursor="pointer"
-        onClick={collapse}
         ml={-5}
       />
     </>

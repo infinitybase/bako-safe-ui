@@ -6,6 +6,7 @@ export enum TransactionStatus {
   AWAIT = 'AWAIT',
   DONE = 'DONE',
   PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
 }
 
 export interface TransactionState {

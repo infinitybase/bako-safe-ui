@@ -12,9 +12,9 @@ import { TransactionStatus } from '@/modules/core';
 
 export enum StatusFilter {
   ALL = '',
-  COMPLETED = TransactionStatus.DONE,
-  DECLINED = 'DECLINE',
   PENDING = TransactionStatus.AWAIT,
+  COMPLETED = TransactionStatus.DONE,
+  DECLINED = TransactionStatus.REJECTED,
 }
 
 const useTransactionList = () => {

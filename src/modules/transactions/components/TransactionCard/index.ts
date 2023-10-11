@@ -3,19 +3,23 @@ import { Amount } from './Amount';
 import { Assets } from './Assets';
 import { Container } from './Container';
 import { CreationDate } from './CreationDate';
+import { Details } from './Details';
+import { List } from './List';
 import { Name } from './Name';
 import { Status } from './Status';
 import { VaultInfo } from './VaultInfo';
 
 const TransactionCard = {
-  Container,
-  VaultInfo,
-  CreationDate,
-  Assets,
+  Actions,
   Amount,
+  Assets,
+  Container,
+  CreationDate,
+  Details,
+  List,
   Name,
   Status,
-  Actions,
+  VaultInfo,
 };
 
 export { TransactionCard };

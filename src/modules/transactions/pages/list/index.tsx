@@ -5,7 +5,6 @@ import {
   BreadcrumbLink,
   Heading,
   Icon,
-  VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
@@ -77,21 +76,20 @@ const TransactionsVaultPage = () => {
       </TransactionFilter.Control>
 
       {/* TRANSACTION LIST */}
-      <VStack
+      <TransactionCard.List
         mt={7}
-        spacing={5}
         w="full"
-        maxH="calc(100% - 82px)"
+        spacing={5}
         overflowY="scroll"
-        alignItems="flex-start"
+        maxH="calc(100% - 82px)"
       >
         {transactionRequest.transactions.map((transaction) => (
           <TransactionCard.Container
-            status={transactionStatus({ ...transaction, account })}
-            isExpanded={false}
             key={transaction.id}
+            status={transactionStatus({ ...transaction, account })}
+            details={<TransactionCard.Details />}
           >
-            {/*<TransactionCard.VaultInfo vault={transaction.predicate} />*/}
+            <TransactionCard.VaultInfo vault={transaction.predicate} />
             <TransactionCard.CreationDate>
               {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
             </TransactionCard.CreationDate>
@@ -106,14 +104,12 @@ const TransactionsVaultPage = () => {
             />
             <TransactionCard.Actions
               transaction={transaction}
-              isExpanded={true}
               status={transactionStatus({ ...transaction, account })}
-              collapse={() => console.log('ok')}
             />
           </TransactionCard.Container>
         ))}
         {!transactionRequest.isLoading && <Box ref={inView.ref} />}
-      </VStack>
+      </TransactionCard.List>
     </Box>
   );
 };

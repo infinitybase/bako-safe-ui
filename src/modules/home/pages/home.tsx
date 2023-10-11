@@ -170,13 +170,14 @@ const HomePage = () => {
           <Link color="brand.500">View all</Link>
         </HStack>
 
-        <VStack spacing={4} mt={6} mb={12}>
+        <TransactionCard.List spacing={4} mt={6} mb={12}>
           {transactions?.map((transaction) => {
             return (
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 isExpanded={open}
                 key={transaction.id}
+                details={<TransactionCard.Details />}
               >
                 <TransactionCard.VaultInfo vault={transaction.predicate} />
                 <TransactionCard.CreationDate>
@@ -200,7 +201,7 @@ const HomePage = () => {
               </TransactionCard.Container>
             );
           })}
-        </VStack>
+        </TransactionCard.List>
       </Box>
     </VStack>
   );
