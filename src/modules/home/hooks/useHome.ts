@@ -19,15 +19,10 @@ const useHome = () => {
     const recentVaults =
       count <= max ? userPredicates : userPredicates?.slice(0, max);
 
-    const vaultsTransactions = userPredicates
-      ?.map((predicate) => predicate.transactions)
-      ?.reduce((acc, current) => [...acc, ...current], []);
-
     return {
       recentVaults,
       extraCount,
       vaultsMax: max,
-      vaultsTransactions,
     };
   }, [vaultsRequest.data]);
 

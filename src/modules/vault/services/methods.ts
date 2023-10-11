@@ -24,13 +24,19 @@ export class VaultService {
     return data;
   }
 
-  static async getAll(params: GetAllPredicatesPayload) {
+  static async getAllWithPagination(params: GetAllPredicatesPayload) {
     const { data } = await api.get<GetAllPredicatePaginationResponse>(
       '/predicate',
       {
         params,
       },
     );
+
+    return data;
+  }
+
+  static async getAll() {
+    const { data } = await api.get<GetAllPredicateResponse>('/predicate');
 
     return data;
   }

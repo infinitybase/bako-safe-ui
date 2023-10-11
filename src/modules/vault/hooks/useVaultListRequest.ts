@@ -9,7 +9,7 @@ const useVaultListRequest = (
   const { data, ...query } = useInfiniteQuery(
     ['vault/pagination', filter],
     ({ pageParam }) =>
-      VaultService.getAll({
+      VaultService.getAllWithPagination({
         ...filter,
         perPage: 5,
         page: pageParam || 0,

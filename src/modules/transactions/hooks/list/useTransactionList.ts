@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
+  useFuelAccount,
   useTransactionListPaginationRequest,
   useVaultAssets,
   useVaultDetailsRequest,
@@ -20,6 +21,7 @@ const useTransactionList = () => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
+  const { account } = useFuelAccount();
 
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
@@ -48,6 +50,7 @@ const useTransactionList = () => {
       value: filter,
     },
     inView,
+    account,
   };
 };
 

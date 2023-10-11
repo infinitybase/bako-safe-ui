@@ -19,55 +19,29 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { HomeIcon, PendingIcon, VaultIcon } from '@/components';
-import { Transaction, Witness, WitnessStatus } from '@/modules/core';
-import { TransactionCard } from '@/modules/transactions/components/';
+import {
+  TransactionCard,
+  transactionStatus,
+  waitingSignatures,
+} from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
-const { REJECTED, DONE, PENDING } = WitnessStatus;
-
 const HomePage = () => {
   const [open, setOpen] = useState(false);
 
   const {
     vaultsRequest: {
-      vaults: { recentVaults, extraCount, vaultsMax, vaultsTransactions },
+      vaults: { recentVaults, extraCount, vaultsMax },
       isLoading: loadingRecentVaults,
     },
     transactionsRequest: { transactions },
     account,
     navigate,
   } = useHome();
-
-  const transactionStatus = ({ predicate, witnesses }: Transaction) => {
-    const { minSigners } = predicate;
-    const vaultMembersCount = predicate.addresses.length;
-    const signatureCount = witnesses.filter((t) => t.status === DONE).length;
-    const witness = witnesses.find((t: Witness) => t.account === account);
-    const howManyDeclined = witnesses.filter(
-      (w) => w.status === REJECTED,
-    ).length;
-
-    return {
-      isCompleted: signatureCount >= minSigners,
-      isDeclined: witness?.status === REJECTED,
-      isSigned: witness?.status === DONE,
-      isPending: witness?.status !== PENDING,
-      isReproved: vaultMembersCount - howManyDeclined < minSigners,
-    };
-  };
-
-  const waitingSignatures = () => {
-    return vaultsTransactions?.filter((transaction) => {
-      const { isCompleted, isSigned, isDeclined, isReproved } =
-        transactionStatus(transaction);
-
-      return !isSigned && !isDeclined && !isCompleted && !isReproved;
-    }).length;
-  };
 
   return (
     <VStack w="full" spacing={6}>
@@ -184,7 +158,10 @@ const HomePage = () => {
           </Text>
           <Badge h={6} variant="warning">
             <Icon as={PendingIcon} />
-            {`${waitingSignatures()} waiting for your signature`}
+            {`${waitingSignatures({
+              account,
+              transactions: transactions ?? [],
+            })} waiting for your signature`}
           </Badge>
           <Spacer />
           <Link color="brand.500">View all</Link>
@@ -194,7 +171,7 @@ const HomePage = () => {
           {transactions?.map((transaction) => {
             return (
               <TransactionCard.Container
-                status={transactionStatus(transaction)}
+                status={transactionStatus({ ...transaction, account })}
                 isExpanded={open}
                 key={transaction.id}
               >
@@ -209,12 +186,12 @@ const HomePage = () => {
                 </TransactionCard.Name>
                 <TransactionCard.Status
                   transaction={transaction}
-                  status={transactionStatus(transaction)}
+                  status={transactionStatus({ ...transaction, account })}
                 />
                 <TransactionCard.Actions
                   transaction={transaction}
                   isExpanded={open}
-                  status={transactionStatus(transaction)}
+                  status={transactionStatus({ ...transaction, account })}
                   collapse={() => setOpen(!open)}
                 />
               </TransactionCard.Container>

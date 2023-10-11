@@ -3,7 +3,6 @@ import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0x0000000000000000000000000000000000000000000000000000000000000000';
-const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 
 const assetsList: Asset[] = [
   {

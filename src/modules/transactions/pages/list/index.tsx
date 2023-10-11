@@ -7,14 +7,20 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 
-import { Card, HomeIcon } from '@/components';
-import { TransactionFilter } from '@/modules/transactions/components';
+import { HomeIcon } from '@/components';
+import { transactionStatus } from '@/modules';
+import {
+  TransactionCard,
+  TransactionFilter,
+} from '@/modules/transactions/components';
+import { limitCharacters } from '@/utils';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 
 const TransactionsVaultPage = () => {
-  const { transactionRequest, filter, inView } = useTransactionList();
+  const { transactionRequest, filter, inView, account } = useTransactionList();
 
   return (
     <Box maxW={1000} w="full">
@@ -80,9 +86,31 @@ const TransactionsVaultPage = () => {
         alignItems="flex-start"
       >
         {transactionRequest.transactions.map((transaction) => (
-          <Card w="full" key={transaction.id}>
-            ok
-          </Card>
+          <TransactionCard.Container
+            status={transactionStatus({ ...transaction, account })}
+            isExpanded={true}
+            key={transaction.id}
+          >
+            {/*<TransactionCard.VaultInfo vault={transaction.predicate} />*/}
+            <TransactionCard.CreationDate>
+              {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+            </TransactionCard.CreationDate>
+            <TransactionCard.Assets />
+            <TransactionCard.Amount assets={transaction.assets} />
+            <TransactionCard.Name>
+              {limitCharacters(transaction.name, 20)}
+            </TransactionCard.Name>
+            <TransactionCard.Status
+              transaction={transaction}
+              status={transactionStatus({ ...transaction, account })}
+            />
+            <TransactionCard.Actions
+              transaction={transaction}
+              isExpanded={true}
+              status={transactionStatus({ ...transaction, account })}
+              collapse={() => console.log('ok')}
+            />
+          </TransactionCard.Container>
         ))}
         {!transactionRequest.isLoading && <Box ref={inView.ref} />}
       </VStack>
