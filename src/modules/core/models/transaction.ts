@@ -8,6 +8,14 @@ export enum TransactionStatus {
   PENDING = 'PENDING',
 }
 
+export interface TransactionState {
+  isCompleted: boolean;
+  isDeclined: boolean;
+  isSigned: boolean;
+  isPending: boolean;
+  isReproved: boolean;
+}
+
 export interface Transaction {
   id: string;
   predicateAdress: string;
@@ -22,4 +30,5 @@ export interface Transaction {
   assets: AssetModel[];
   witnesses: Witness[];
   predicate: Predicate;
+  createdAt: Date;
 }
