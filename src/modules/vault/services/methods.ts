@@ -13,7 +13,7 @@ export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;
 export type GetAllPredicateResponse = Predicate[];
 export type GetAllPredicatePaginationResponse = IPagination<Predicate>;
-export type CreatePredicatePayload = Omit<Predicate, 'id'>;
+export type CreatePredicatePayload = Omit<Predicate, 'id' | 'transactions'>;
 
 export class VaultService {
   static async create(payload: CreatePredicatePayload) {
