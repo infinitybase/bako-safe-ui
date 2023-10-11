@@ -9,7 +9,7 @@ const useUserTransactionsRequest = () => {
     [USER_TRANSACTIONS_QUERY_KEY],
     () =>
       TransactionService.getUserTransactions({
-        // limit: 6,
+        limit: 6,
         orderBy: 'created_at',
         sort: SortOption.DESC,
         allOfUser: true,
