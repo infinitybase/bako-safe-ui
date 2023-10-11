@@ -23,7 +23,12 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
       borderWidth={isActive ? '2px' : '1px'}
     >
       <HStack width="100%" alignItems="center" spacing={4} mb={5}>
-        <Avatar color="white" bgColor="dark.150" name={name} />
+        <Avatar
+          variant="roundedSquare"
+          color="white"
+          bgColor="dark.150"
+          name={name}
+        />
         <VStack alignItems="flex-start" spacing={1}>
           <Text variant="subtitle">{name}</Text>
           <Text variant="description">{AddressUtils.format(address)}</Text>

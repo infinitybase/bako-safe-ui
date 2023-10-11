@@ -19,6 +19,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { HomeIcon, PendingIcon, VaultIcon } from '@/components';
+import { Pages } from '@/modules';
 import {
   TransactionCard,
   transactionStatus,
@@ -58,7 +59,7 @@ const HomePage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() => alert('ok')}
+            onClick={() => navigate(Pages.createVault())}
           >
             Create vault
           </Button>
@@ -135,7 +136,9 @@ const HomePage = () => {
                       name={name}
                       address={predicateAddress}
                       members={addresses}
-                      onClick={() => navigate(`/predicate/${id}`)}
+                      onClick={() =>
+                        navigate(Pages.detailsVault({ vaultId: id }))
+                      }
                     />
                   )}
                 </Skeleton>

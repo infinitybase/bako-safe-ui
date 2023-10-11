@@ -18,7 +18,7 @@ const useWallet = (account?: string) => {
 
 const useMyWallet = () => {
   const { account: currentAccount } = useFuelAccount();
-  currentAccount.getBalances();
+
   return useWallet(currentAccount);
 };
 

@@ -11,14 +11,6 @@ export const transactionStatus = ({
   witnesses,
   account,
 }: TransactionStatusParams) => {
-  return {
-    isCompleted: false,
-    isDeclined: false,
-    isSigned: false,
-    isPending: false,
-    isReproved: false,
-  };
-
   const { minSigners } = predicate;
   const vaultMembersCount = predicate.addresses.length;
   const signatureCount = witnesses.filter((t) => t.status === DONE).length;

@@ -48,7 +48,12 @@ const VaultBox = (props: VaultBoxPropx) => {
   return (
     <Box w="100%">
       <HStack width="100%" alignItems="center" spacing={5} mb={5}>
-        <Avatar bgColor="dark.150" color="white" name={fullName} />
+        <Avatar
+          variant="roundedSquare"
+          bgColor="dark.150"
+          color="white"
+          name={fullName}
+        />
         <Box w="100%" maxW="100%">
           <Flex alignItems="center" justifyContent="space-between">
             <Box maxW="48%">

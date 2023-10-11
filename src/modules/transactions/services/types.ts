@@ -25,7 +25,7 @@ export interface TransactionDetails {
 }
 
 export interface GetTransactionParams {
-  predicateId?: string;
+  predicateId?: string[];
   to?: string;
   hash?: string;
   status?: TransactionStatus[] | string[];

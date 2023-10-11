@@ -23,7 +23,7 @@ const TransactionsVaultPage = () => {
   const { transactionRequest, filter, inView, account } = useTransactionList();
 
   return (
-    <Box maxW={1000} w="full">
+    <Box w="full">
       {/* BREADCRUMB */}
       <Box mb={10}>
         <Breadcrumb>
@@ -79,7 +79,7 @@ const TransactionsVaultPage = () => {
       {/* TRANSACTION LIST */}
       <VStack
         mt={7}
-        spacing={3}
+        spacing={5}
         w="full"
         maxH="calc(100% - 82px)"
         overflowY="scroll"
@@ -88,7 +88,7 @@ const TransactionsVaultPage = () => {
         {transactionRequest.transactions.map((transaction) => (
           <TransactionCard.Container
             status={transactionStatus({ ...transaction, account })}
-            isExpanded={true}
+            isExpanded={false}
             key={transaction.id}
           >
             {/*<TransactionCard.VaultInfo vault={transaction.predicate} />*/}

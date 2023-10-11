@@ -11,7 +11,7 @@ import {
 import { TransactionStatus } from '@/modules/core';
 
 export enum StatusFilter {
-  ALL = 'ALL',
+  ALL = '',
   COMPLETED = TransactionStatus.DONE,
   DECLINED = 'DECLINE',
   PENDING = TransactionStatus.AWAIT,
@@ -26,9 +26,9 @@ const useTransactionList = () => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
   const transactionRequest = useTransactionListPaginationRequest({
-    predicateId: params.vaultId,
+    predicateId: params.vaultId ? [params.vaultId] : undefined,
     /* TODO: Change logic this */
-    status: [filter],
+    status: filter ? [filter] : undefined,
   });
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
