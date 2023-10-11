@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { Resolver, useFieldArray, useForm } from 'react-hook-form';
 
 import { ITemplatePayload } from '@/modules/core';
 
@@ -25,7 +25,7 @@ const useSteps = () => {
   const { templateFormInitial } = useTemplateStore();
   const { createTemplate, isLoading } = useCreate();
   const { handleSubmit, ...form } = useForm<ITemplatePayload>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as Resolver<ITemplatePayload, unknown>,
     defaultValues: {
       name: '',
       description: '',
@@ -50,7 +50,7 @@ const useSteps = () => {
       hiddeFooter: false,
       hiddeProgressBar: false,
       isLoading,
-      onSubmit: (data) => {
+      onSubmit: () => {
         nextStep();
       },
     },
@@ -77,7 +77,7 @@ const useSteps = () => {
       hiddeFooter: true,
       hiddeProgressBar: true,
       isLoading,
-      onSubmit: (data) => {
+      onSubmit: () => {
         navigate(-1);
       },
     },
