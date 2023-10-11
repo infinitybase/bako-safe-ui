@@ -74,6 +74,7 @@ const useSignTransaction = (options?: UseSignTransactionOptions) => {
           id: response.transactionID,
           account: currentWallet!.address.toString(),
           signer: response.signedMessage,
+          confirm: true,
         });
       },
       onError: () =>
@@ -87,9 +88,24 @@ const useSignTransaction = (options?: UseSignTransactionOptions) => {
     },
   );
 
+  const confirmTransaction = (params: SignTransactionParams) => {
+    signMessageRequest.mutate(params);
+  };
+
+  const declineTransaction = (transactionId: string) => {
+    request.mutate({
+      id: transactionId,
+      confirm: false,
+      account: currentWallet!.address.toString(),
+    });
+  };
+
   return {
     request,
     signMessageRequest,
+    confirmTransaction,
+    declineTransaction,
+    isLoading: request.isLoading || signMessageRequest.isLoading,
   };
 };
 
