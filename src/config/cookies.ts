@@ -4,6 +4,7 @@ const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
 
 export enum CookieName {
   ACCESS_TOKEN = `bsafe/token`,
+  ADDRESS = `bsafe/address`,
 }
 
 interface Cookie {

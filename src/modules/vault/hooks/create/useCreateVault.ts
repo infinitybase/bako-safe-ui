@@ -8,6 +8,7 @@ import {
   useFuelAccount,
   useToast,
 } from '@/modules';
+import { TemplateService } from '@/modules/template/services/methods';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -55,6 +56,20 @@ const useCreateVault = () => {
     });
   });
 
+  const setFormWithTemplate = async (id: string) => {
+    const template = await TemplateService.getById(id);
+    const address: string[] = template.addresses as string[];
+
+    form.setValue('minSigners', template.minSigners.toString());
+    template.addresses ??
+      form.setValue(
+        'addresses',
+        address.map((item: string) => {
+          return { value: item };
+        }),
+      );
+  };
+
   const onDeposit = async () => {
     if (request.data) {
       window.open(
@@ -101,6 +116,7 @@ const useCreateVault = () => {
     request,
     navigate,
     onDeposit,
+    setFormWithTemplate,
   };
 };
 
