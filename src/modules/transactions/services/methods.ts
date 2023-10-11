@@ -7,6 +7,8 @@ import {
   GetTransactionByAddressesResponse,
   GetTransactionParams,
   GetTransactionResponse,
+  GetUserTransactionsParams,
+  GetUserTransactionsResponse,
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
@@ -46,6 +48,16 @@ export class TransactionService {
 
   static async getTransactions(params: GetTransactionParams) {
     const { data } = await api.get<GetTransactionByAddressesResponse>(
+      `/transaction`,
+      {
+        params: { ...params },
+      },
+    );
+    return data;
+  }
+
+  static async getUserTransactions(params: GetUserTransactionsParams) {
+    const { data } = await api.get<GetUserTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },

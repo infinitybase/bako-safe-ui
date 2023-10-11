@@ -1,21 +1,33 @@
 interface TransactionCardStatusProps {
-  isDeclined?: boolean;
-  isCompleted?: boolean;
+  status: TransactionState;
+  transaction: Transaction;
 }
 import { Badge, Text, VStack } from '@chakra-ui/react';
 
-const Status = ({ isDeclined, isCompleted }: TransactionCardStatusProps) => (
-  <VStack spacing={0}>
-    <Badge
-      h={5}
-      variant={isDeclined ? 'error' : isCompleted ? 'success' : 'warning'}
-    >
-      {isCompleted ? 'Completed' : isDeclined ? 'Declined' : '2/4 Sgd'}
-    </Badge>
-    <Text variant="description" fontSize="sm" color="grey.500">
-      Transfer status
-    </Text>
-  </VStack>
-);
+import { Transaction, TransactionState, WitnessStatus } from '@/modules/core';
+
+const Status = ({ transaction, status }: TransactionCardStatusProps) => {
+  const { isReproved, isCompleted } = status;
+
+  const signaturesCount = transaction.witnesses.filter(
+    (w) => w?.status === WitnessStatus.DONE,
+  ).length;
+
+  const signatureStatus = `${signaturesCount}/${transaction.predicate.minSigners} Sgd`;
+
+  return (
+    <VStack spacing={0}>
+      <Badge
+        h={5}
+        variant={isReproved ? 'error' : isCompleted ? 'success' : 'warning'}
+      >
+        {isCompleted ? 'Completed' : isReproved ? 'Declined' : signatureStatus}
+      </Badge>
+      <Text variant="description" fontSize="sm" color="grey.500">
+        Transfer status
+      </Text>
+    </VStack>
+  );
+};
 
 export { Status };
