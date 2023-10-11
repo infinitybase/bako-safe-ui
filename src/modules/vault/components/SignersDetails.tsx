@@ -4,6 +4,7 @@ import {
   chakra,
   HStack,
   Image,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -30,6 +31,7 @@ const SignerCard = chakra(Card, {
 
 const SignersDetails = (props: SignersDetailsProps) => {
   const { vault } = props;
+
   const formatList = (list: { address: string; isOwner: boolean }[]) => {
     return list.length - 4;
   };
@@ -49,6 +51,24 @@ const SignersDetails = (props: SignersDetailsProps) => {
         </Badge>
       </HStack>
       <VStack spacing={5}>
+        <Skeleton
+          hidden={!vault.isLoading}
+          w="full"
+          h={93}
+          startColor="dark.100"
+          endColor="dark.300"
+          borderRadius={10}
+        />
+
+        <Skeleton
+          hidden={!vault.isLoading}
+          w="full"
+          h={93}
+          startColor="dark.100"
+          endColor="dark.300"
+          borderRadius={10}
+        />
+
         {vault.signers.map(
           (asset: { address: string; isOwner: boolean }, index: number) => {
             if (isBig > 0 && index > 3) return;

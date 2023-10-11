@@ -47,59 +47,57 @@ const AmountDetails = (props: AmountDetailsProps) => {
         </Text>
       </Box>
       <VStack spacing={5} justifyContent="space-between">
-        {!assets.hasAssets && !assets.isLoadingAssets && (
-          <AssetCard
-            w="full"
-            p={5}
-            display="flex"
-            justifyContent="center"
-            flexDirection="column"
-            alignItems="center"
-            borderStyle="dashed"
-            height="450px"
-          >
-            <Box mb={6}>
-              <NotFoundIcon w={70} h={70} />
-            </Box>
-            <Box mb={5}>
-              <Heading color="grey.200" variant="title-xl">
-                No assets
-              </Heading>
-            </Box>
-            <Box mb={8}>
-              <Text
-                textAlign="center"
-                color="grey.200"
-                fontSize="sm"
-                fontWeight="medium"
-              >
-                Make your first deposit to see your assets here
-              </Text>
-            </Box>
-            <Button
-              variant="primary"
-              onClick={() =>
-                /* TODO: move to utils */
-                window.open(
-                  `${import.meta.env.VITE_FAUCET}?address=${vaultAddress}`,
-                  '_BLANK',
-                )
-              }
+        <AssetCard
+          w="full"
+          p={5}
+          display="flex"
+          justifyContent="center"
+          flexDirection="column"
+          alignItems="center"
+          borderStyle="dashed"
+          height="450px"
+          hidden={assets.hasAssets || assets.isLoadingAssets}
+        >
+          <Box mb={6}>
+            <NotFoundIcon w={70} h={70} />
+          </Box>
+          <Box mb={5}>
+            <Heading color="grey.200" variant="title-xl">
+              No assets
+            </Heading>
+          </Box>
+          <Box mb={8}>
+            <Text
+              textAlign="center"
+              color="grey.200"
+              fontSize="sm"
+              fontWeight="medium"
             >
-              Make a deposit
-            </Button>
-          </AssetCard>
-        )}
+              Make your first deposit to see your assets here
+            </Text>
+          </Box>
+          <Button
+            variant="primary"
+            onClick={() =>
+              /* TODO: move to utils */
+              window.open(
+                `${import.meta.env.VITE_FAUCET}?address=${vaultAddress}`,
+                '_BLANK',
+              )
+            }
+          >
+            Make a deposit
+          </Button>
+        </AssetCard>
 
-        {assets?.isLoadingAssets && (
-          <Skeleton
-            w="full"
-            h={93}
-            startColor="dark.100"
-            endColor="dark.300"
-            borderRadius={10}
-          />
-        )}
+        <Skeleton
+          w="full"
+          h={93}
+          startColor="dark.100"
+          endColor="dark.300"
+          borderRadius={10}
+          hidden={!assets.isLoadingAssets}
+        />
 
         {assets?.value &&
           assets.value.map((asset: Asset, index: number) => {

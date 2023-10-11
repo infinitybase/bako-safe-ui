@@ -6,6 +6,7 @@ import {
   Center,
   Heading,
   HStack,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -35,7 +36,17 @@ const CardDetails = (props: CardDetailsProps) => {
           Overview
         </Text>
       </Box>
-      <Card p={8}>
+
+      <Skeleton
+        hidden={!vault.isLoading}
+        w="full"
+        h={450}
+        startColor="dark.100"
+        endColor="dark.300"
+        borderRadius={10}
+      />
+
+      <Card hidden={vault.isLoading} p={8}>
         <VStack spacing={9} w="full">
           <HStack spacing={6} w="full">
             <Center>
