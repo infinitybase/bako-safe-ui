@@ -2,7 +2,7 @@ export interface ITemplatePayload {
   name: string;
   description?: string;
   minSigners: number;
-  addresses: string[];
+  addresses: string[] | { value: string }[];
 }
 
 export interface ITemplate extends ITemplatePayload {

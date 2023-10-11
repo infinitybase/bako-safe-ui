@@ -15,6 +15,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     request,
     handleCancel,
     setFormWithTemplate,
+    onSaveTemplate,
   } = useCreateVaultDialog({
     onClose: props.onClose,
   });
@@ -38,6 +39,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onDeposit={onDeposit}
           addresses={addresses}
           setTemplate={setFormWithTemplate}
+          onSaveTemplate={onSaveTemplate}
         />
       </Dialog.Body>
 

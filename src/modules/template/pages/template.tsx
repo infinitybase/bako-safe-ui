@@ -1,16 +1,15 @@
 import { Dialog } from '@/components';
 
 import { CreateTemplateForm } from '../components/dialog';
-import { useModal, useSteps } from '../hooks';
+import { useSteps } from '../hooks';
 import { useTemplateStore } from '../store';
 
 const TemplatePage = () => {
-  const { step, templateFormInitial } = useTemplateStore();
-  const { closeModal } = useModal();
-  const { steps } = useSteps();
+  const { step } = useTemplateStore();
+  const { steps, onClose } = useSteps();
 
   return (
-    <Dialog.Modal isOpen={true} onClose={closeModal}>
+    <Dialog.Modal isOpen={true} onClose={onClose}>
       <Dialog.Header
         maxW={420}
         hidden={steps[step].hiddeTitle}

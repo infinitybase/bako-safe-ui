@@ -12,6 +12,7 @@ export interface CreateVaultFormProps {
   form: UseCreateVaultDialogReturn['form'];
   addresses: UseCreateVaultDialogReturn['addresses'];
   onDeposit: UseCreateVaultDialogReturn['onDeposit'];
+  onSaveTemplate: UseCreateVaultDialogReturn['onSaveTemplate'];
   setTemplate: UseCreateVaultDialogReturn['setFormWithTemplate'];
   steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
@@ -19,7 +20,15 @@ export interface CreateVaultFormProps {
 }
 
 const CreateVaultForm = (props: CreateVaultFormProps) => {
-  const { form, tabs, addresses, onDeposit, steps, setTemplate } = props;
+  const {
+    form,
+    tabs,
+    addresses,
+    onDeposit,
+    steps,
+    setTemplate,
+    onSaveTemplate,
+  } = props;
 
   const { template } = useFindTemplate();
   const stepAction = steps.step;
@@ -39,7 +48,10 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             templates={template}
             setTemplate={setTemplate}
           />
-          <VaultSuccessStep onDeposit={onDeposit} />
+          <VaultSuccessStep
+            onDeposit={onDeposit}
+            onSaveTemplate={onSaveTemplate}
+          />
         </TabPanels>
       </Tabs>
     </Box>
