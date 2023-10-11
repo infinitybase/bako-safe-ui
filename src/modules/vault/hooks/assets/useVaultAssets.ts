@@ -36,6 +36,7 @@ function useVaultAssets(predicate?: Vault) {
       initialData: [],
       refetchInterval: 10000,
       keepPreviousData: true,
+      enabled: !!predicate,
     },
   );
   const findBiggerAsset = () => {

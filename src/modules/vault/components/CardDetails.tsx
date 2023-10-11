@@ -6,6 +6,7 @@ import {
   Center,
   Heading,
   HStack,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -29,13 +30,23 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW="fit-content">
+    <Box w="full" maxW="460px">
       <Box mb={5} w="full">
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Overview
         </Text>
       </Box>
-      <Card>
+
+      <Skeleton
+        hidden={!vault.isLoading}
+        w="full"
+        h={450}
+        startColor="dark.100"
+        endColor="dark.300"
+        borderRadius={10}
+      />
+
+      <Card hidden={vault.isLoading} p={8}>
         <VStack spacing={9} w="full">
           <HStack spacing={6} w="full">
             <Center>
@@ -55,28 +66,26 @@ const CardDetails = (props: CardDetailsProps) => {
             </Box>
           </HStack>
 
-          <HStack spacing={5} alignItems="flex-start">
-            <VStack justifyContent="flex-start">
-              <Box
-                w="100%"
-                p={3}
-                backgroundColor={'white'}
-                h="100%"
-                borderRadius={10}
-              >
+          <HStack
+            w="full"
+            spacing={5}
+            justifyContent="flex-start"
+            alignItems="flex-start"
+          >
+            <VStack spacing={4} justifyContent="flex-start">
+              <Box p={3} backgroundColor={'white'} borderRadius={10}>
                 <QRCodeSVG
                   value={vault.predicateAddress!}
-                  //value="https://google.com"
                   fgColor="black"
                   bgColor="white"
                   style={{
                     borderRadius: 10,
-                    width: '100%',
-                    height: '100%',
+                    width: 180,
+                    height: 180,
                   }}
                 />
               </Box>
-              <AddressCopy address={vault.predicateAddress!} />
+              <AddressCopy w="full" address={vault.predicateAddress!} />
             </VStack>
             <VStack spacing={5}>
               <Box width="100%">
@@ -105,22 +114,22 @@ const CardDetails = (props: CardDetailsProps) => {
                 </HStack>
                 <Text variant="description">Vault balance</Text>
               </Box>
-              <Box>
+              <VStack spacing={2} alignItems="flex-start">
                 <Button minW={130} variant="primary">
                   Deposit
                 </Button>
-                <Text variant="description">
-                  When I hear the buzz of the little world...
+                <Text variant="description" fontSize="xs">
+                  Add assets to the vault. <br /> Choose the asset you prefer.
                 </Text>
-              </Box>
-              <Box>
+              </VStack>
+              <VStack spacing={2} alignItems="flex-start">
                 <Button minW={130} variant="primary">
                   Send
                 </Button>
-                <Text variant="description">
-                  When I hear the buzz of the little world...
+                <Text variant="description" fontSize="xs">
+                  Send single or batch <br /> payments with multi assets.
                 </Text>
-              </Box>
+              </VStack>
             </VStack>
           </HStack>
         </VStack>
