@@ -56,7 +56,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
             flexDirection="column"
             alignItems="center"
             borderStyle="dashed"
-            height="434px"
+            height="450px"
           >
             <Box mb={6}>
               <NotFoundIcon w={70} h={70} />

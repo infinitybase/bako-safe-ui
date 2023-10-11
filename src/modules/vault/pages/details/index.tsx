@@ -105,9 +105,7 @@ const VaultDetailsPage = () => {
           leftIcon={<SquarePlusIcon />}
           variant="primary"
           onClick={() =>
-            navigate(
-              Pages.createTransaction({ vaultId: vault.predicateAddress! }),
-            )
+            navigate(Pages.createTransaction({ vaultId: vault.id! }))
           }
         >
           Create transaction
