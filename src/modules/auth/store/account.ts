@@ -12,7 +12,7 @@ const { ADDRESS } = CookieName;
 
 const useFuelAccount = create<State>((set) => ({
   account: CookiesConfig.getCookie(ADDRESS)!,
-  formattedAccount: AddressUtils.format(CookiesConfig.getCookie(ADDRESS)!),
+  formattedAccount: AddressUtils.format(CookiesConfig.getCookie(ADDRESS)!)!,
   setAccount: (account) =>
     set({
       account,
