@@ -8,7 +8,7 @@ interface ActionCardTitleProps {
 
 const Title = ({ children, isUpcoming }: ActionCardTitleProps) => {
   return (
-    <Flex mb={3} alignItems="center">
+    <Flex mb={1.5} alignItems="center">
       <Text
         variant="subtitle"
         fontSize="lg"
