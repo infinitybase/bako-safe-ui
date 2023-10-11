@@ -13,6 +13,7 @@ import React from 'react';
 
 import { Card, HomeIcon, NotFoundIcon, SquarePlusIcon } from '@/components';
 import { Pages } from '@/modules';
+import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { useVaultDetails } from '@/modules/vault/hooks';
 
 import { AmountDetails } from '../../components/AmountDetails';
@@ -21,6 +22,7 @@ import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
   const { vault, store, assets, navigate } = useVaultDetails();
+  const { setTemplateFormInitial } = useTemplateStore();
 
   if (!vault) return null;
 
@@ -62,7 +64,19 @@ const VaultDetailsPage = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Button variant="secondary" bgColor="dark.100" border="none">
+        <Button
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() => {
+            setTemplateFormInitial({
+              minSigners: vault.minSigners!,
+              addresses:
+                vault.signers! && vault.signers.map((signer) => signer.address),
+            });
+            navigate(Pages.createTemplate());
+          }}
+        >
           Set as template
         </Button>
       </HStack>
