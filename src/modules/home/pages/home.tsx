@@ -175,9 +175,8 @@ const HomePage = () => {
             return (
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
-                isExpanded={open}
                 key={transaction.id}
-                details={<TransactionCard.Details />}
+                details={<TransactionCard.Details transaction={transaction} />}
               >
                 <TransactionCard.VaultInfo vault={transaction.predicate} />
                 <TransactionCard.CreationDate>
@@ -194,9 +193,7 @@ const HomePage = () => {
                 />
                 <TransactionCard.Actions
                   transaction={transaction}
-                  isExpanded={open}
                   status={transactionStatus({ ...transaction, account })}
-                  collapse={() => setOpen(!open)}
                 />
               </TransactionCard.Container>
             );

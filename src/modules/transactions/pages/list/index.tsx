@@ -87,7 +87,7 @@ const TransactionsVaultPage = () => {
           <TransactionCard.Container
             key={transaction.id}
             status={transactionStatus({ ...transaction, account })}
-            details={<TransactionCard.Details />}
+            details={<TransactionCard.Details transaction={transaction} />}
           >
             <TransactionCard.VaultInfo vault={transaction.predicate} />
             <TransactionCard.CreationDate>

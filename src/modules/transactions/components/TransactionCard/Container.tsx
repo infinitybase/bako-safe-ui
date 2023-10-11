@@ -2,6 +2,7 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
+  Box,
   CardProps,
   HStack,
   VStack,
@@ -37,7 +38,7 @@ const Container = ({
       borderColor={missingSignature ? 'warning.500' : 'dark.100'}
       {...rest}
     >
-      <VStack w="full">
+      <VStack justifyContent="flex-start" w="full">
         <HStack
           as={AccordionButton}
           w="full"
@@ -48,7 +49,11 @@ const Container = ({
           {children}
         </HStack>
 
-        <AccordionPanel>{details}</AccordionPanel>
+        <Box w="full">
+          <AccordionPanel px={4} w="full">
+            {details}
+          </AccordionPanel>
+        </Box>
       </VStack>
     </Card>
   );

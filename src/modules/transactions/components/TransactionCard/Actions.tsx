@@ -57,7 +57,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
             px={3}
             variant="primary"
             size="sm"
-            isDisabled={isLoading}
+            isLoading={isLoading}
             onClick={() =>
               confirmTransaction({
                 txId: transaction.hash,
@@ -74,6 +74,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
             variant="secondary"
             size="sm"
             onClick={() => declineTransaction(transaction.id)}
+            isLoading={isLoading}
           >
             Decline
           </Button>
