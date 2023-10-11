@@ -22,7 +22,7 @@ const TransactionsVaultPage = () => {
   const { transactionRequest, filter, inView, account } = useTransactionList();
 
   return (
-    <Box w="full">
+    <Box w="full" height="100%" maxH="100%" overflowY="hidden">
       {/* BREADCRUMB */}
       <Box mb={10}>
         <Breadcrumb>
@@ -80,8 +80,9 @@ const TransactionsVaultPage = () => {
         mt={7}
         w="full"
         spacing={5}
+        maxH="calc(100% - 140px)"
         overflowY="scroll"
-        maxH="calc(100% - 82px)"
+        pb={10}
       >
         {transactionRequest.transactions.map((transaction) => (
           <TransactionCard.Container
@@ -89,7 +90,6 @@ const TransactionsVaultPage = () => {
             status={transactionStatus({ ...transaction, account })}
             details={<TransactionCard.Details transaction={transaction} />}
           >
-            <TransactionCard.VaultInfo vault={transaction.predicate} />
             <TransactionCard.CreationDate>
               {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
             </TransactionCard.CreationDate>
@@ -108,7 +108,7 @@ const TransactionsVaultPage = () => {
             />
           </TransactionCard.Container>
         ))}
-        {!transactionRequest.isLoading && <Box ref={inView.ref} />}
+        <Box ref={inView.ref} />
       </TransactionCard.List>
     </Box>
   );

@@ -17,7 +17,7 @@ const useTransactionListPaginationRequest = (
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
         ...params,
-        perPage: 7,
+        perPage: 5,
         page: pageParam || 0,
       }),
     {
