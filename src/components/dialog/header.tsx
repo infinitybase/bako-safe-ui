@@ -15,7 +15,7 @@ const DialogHeader = ({
     <Heading fontSize="2xl" color="grey.200">
       {title}
     </Heading>
-    <Box maxW={305}>
+    <Box maxW={345}>
       <Text variant="description">{description}</Text>
     </Box>
   </VStack>

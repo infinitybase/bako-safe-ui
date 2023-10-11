@@ -37,6 +37,12 @@ const schema = yup
       }),
     ),
     minSigners: yup.string(),
+    templateOptions: yup.array().of(
+      yup.object({
+        value: yup.string().required(),
+        label: yup.string().required(),
+      }),
+    ),
   })
   .test(
     'minSigner-validation',
