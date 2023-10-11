@@ -1,7 +1,17 @@
-import { Box, chakra, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  chakra,
+  Heading,
+  HStack,
+  Image,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React from 'react';
 
-import { Card } from '@/components';
+import { Card, NotFoundIcon } from '@/components';
 
 import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
@@ -13,6 +23,7 @@ const formatList = (list: Asset[]) => {
 
 export interface AmountDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
+  vaultAddress: string;
 }
 
 const AssetCard = chakra(Card, {
@@ -25,7 +36,7 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
-  const { assets } = props;
+  const { assets, vaultAddress } = props;
   const isBig = assets?.value ? formatList(assets.value) : 0;
 
   return (
@@ -36,12 +47,66 @@ const AmountDetails = (props: AmountDetailsProps) => {
         </Text>
       </Box>
       <VStack spacing={5} justifyContent="space-between">
+        {!assets.hasAssets && !assets.isLoadingAssets && (
+          <AssetCard
+            w="full"
+            p={5}
+            display="flex"
+            justifyContent="center"
+            flexDirection="column"
+            alignItems="center"
+            borderStyle="dashed"
+            height="434px"
+          >
+            <Box mb={6}>
+              <NotFoundIcon w={70} h={70} />
+            </Box>
+            <Box mb={5}>
+              <Heading color="grey.200" variant="title-xl">
+                No assets
+              </Heading>
+            </Box>
+            <Box mb={8}>
+              <Text
+                textAlign="center"
+                color="grey.200"
+                fontSize="sm"
+                fontWeight="medium"
+              >
+                Make your first deposit to see your assets here
+              </Text>
+            </Box>
+            <Button
+              variant="primary"
+              onClick={() =>
+                /* TODO: move to utils */
+                window.open(
+                  `${import.meta.env.VITE_FAUCET}?address=${vaultAddress}`,
+                  '_BLANK',
+                )
+              }
+            >
+              Make a deposit
+            </Button>
+          </AssetCard>
+        )}
+
+        {assets?.isLoadingAssets && (
+          <Skeleton
+            w="full"
+            h={93}
+            startColor="dark.100"
+            endColor="dark.300"
+            borderRadius={10}
+          />
+        )}
+
         {assets?.value &&
           assets.value.map((asset: Asset, index: number) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <AssetCard key={index} w="full">
+                <AssetCard key={index} w="full" borderStyle="dashed">
                   <HStack
                     w="100%"
                     spacing={0}

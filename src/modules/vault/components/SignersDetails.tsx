@@ -54,7 +54,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <SignerCard key={index}>
+                <SignerCard borderStyle="dashed" key={index}>
                   <HStack
                     w="100%"
                     spacing={0}

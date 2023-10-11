@@ -4,6 +4,7 @@ export * from './copy';
 export * from './edit';
 export * from './error';
 export * from './home';
+export * from './not-found';
 export * from './notification';
 export * from './pending';
 export * from './question';
