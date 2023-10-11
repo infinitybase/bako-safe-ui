@@ -12,12 +12,17 @@ import {
 import React from 'react';
 
 import { VaultSuccessIcon } from '@/components';
+import { UseCreateVaultDialogReturn } from '@/modules/vault/hooks';
 
 interface VaultSuccessStepProp {
   onDeposit: () => void;
+  onSaveTemplate: UseCreateVaultDialogReturn['onSaveTemplate'];
 }
 
-const VaultSuccessStep = ({ onDeposit }: VaultSuccessStepProp) => {
+const VaultSuccessStep = ({
+  onDeposit,
+  onSaveTemplate,
+}: VaultSuccessStepProp) => {
   return (
     <TabPanel>
       <Center flexDirection="column" mb={5}>
@@ -51,7 +56,7 @@ const VaultSuccessStep = ({ onDeposit }: VaultSuccessStepProp) => {
               Streamline Your Workflow: Set this vault as Template
             </Text>
           </Box>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={onSaveTemplate}>
             Set as template
           </Button>
         </HStack>

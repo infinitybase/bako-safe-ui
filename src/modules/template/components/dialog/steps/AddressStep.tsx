@@ -88,7 +88,11 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
           border="none"
           bgColor="dark.100"
           variant="secondary"
-          onClick={addresses.append}
+          onClick={() => {
+            addresses.append({
+              value: '',
+            });
+          }}
           leftIcon={<UserAddIcon />}
         >
           Add address
