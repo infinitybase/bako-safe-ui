@@ -1,11 +1,11 @@
-import { UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 import { ITemplatePayload } from '@/modules/core';
 
 import { AddressStep, InfoStep, SuccesStep } from '../components';
-import { useModal } from './useModal';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './useAddressesValidate';
+import { useModal } from './useModal';
 
 export interface IStep {
   component: React.ReactNode;
@@ -15,9 +15,10 @@ export interface IStep {
   onSubmit: (data: ITemplatePayload) => void;
   isLoading: boolean;
 }
-import { useCreate } from './useCreateTemplate';
 import { useNavigate } from 'react-router-dom';
+
 import { useTemplateStore } from '../store';
+import { useCreate } from './useCreateTemplate';
 const useSteps = () => {
   const { nextStep } = useModal();
   const navigate = useNavigate();
@@ -28,12 +29,15 @@ const useSteps = () => {
     defaultValues: {
       name: '',
       description: '',
-      addresses: templateFormInitial.addresses || [],
+      addresses: templateFormInitial.addresses.map((item: string) => {
+        return {
+          value: item,
+        };
+      }),
       minSigners: templateFormInitial.minSigners || 1,
     },
   });
 
-  const a: string[] = [];
   const addressesFieldArray = useFieldArray<ITemplatePayload>({
     control: form.control,
     name: 'addresses' as never,
@@ -57,7 +61,7 @@ const useSteps = () => {
       hiddeProgressBar: false,
       isLoading,
       onSubmit: async (data) => {
-        const { addresses, ...rest } = data;
+        const { addresses } = data;
         const add = addresses as unknown as { value: string }[];
 
         await createTemplate({
@@ -74,12 +78,17 @@ const useSteps = () => {
       hiddeProgressBar: true,
       isLoading,
       onSubmit: (data) => {
-        navigate('/home');
+        navigate(-1);
       },
     },
   ];
 
-  return { steps, handleSubmit, form, addresses: addressesFieldArray };
+  const onClose = () => {
+    navigate(-1);
+    form.reset();
+  };
+
+  return { steps, handleSubmit, form, addresses: addressesFieldArray, onClose };
 };
 
 export { useSteps };

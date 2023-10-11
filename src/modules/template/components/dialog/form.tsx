@@ -2,13 +2,12 @@ import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
 
-import { IStep, useModal, useSteps } from '../../hooks';
+import { IStep, useSteps } from '../../hooks';
 import { useTemplateStore } from '../../store';
 
 const CreateTemplateForm = () => {
   const { step } = useTemplateStore();
-  const { steps, handleSubmit } = useSteps();
-  const { closeModal } = useModal();
+  const { steps, handleSubmit, onClose } = useSteps();
 
   return (
     <form onSubmit={handleSubmit(steps[step].onSubmit)}>
@@ -22,11 +21,7 @@ const CreateTemplateForm = () => {
       </Box>
 
       <Dialog.Actions maxW={420} hidden={steps[step].hiddeFooter}>
-        <Dialog.SecondaryAction
-          onClick={() => {
-            closeModal();
-          }}
-        >
+        <Dialog.SecondaryAction onClick={onClose}>
           cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
