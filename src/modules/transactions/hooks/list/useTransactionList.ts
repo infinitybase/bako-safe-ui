@@ -1,25 +1,56 @@
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules';
-import { useTransactionListRequest } from '@/modules/transactions/hooks';
+import {
+  useFuelAccount,
+  useTransactionListPaginationRequest,
+  useVaultAssets,
+  useVaultDetailsRequest,
+} from '@/modules';
+import { TransactionStatus } from '@/modules/core';
+
+export enum StatusFilter {
+  ALL = '',
+  PENDING = TransactionStatus.AWAIT,
+  COMPLETED = TransactionStatus.DONE,
+  DECLINED = TransactionStatus.REJECTED,
+}
 
 const useTransactionList = () => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
+  const inView = useInView();
+  const { account } = useFuelAccount();
 
-  const transactionRequest = useTransactionListRequest(params.vaultId!);
+  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+
+  const transactionRequest = useTransactionListPaginationRequest({
+    predicateId: params.vaultId ? [params.vaultId] : undefined,
+    /* TODO: Change logic this */
+    status: filter ? [filter] : undefined,
+  });
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
+  useEffect(() => {
+    if (inView.inView && !transactionRequest.isFetching) {
+      transactionRequest.fetchNextPage();
+    }
+  }, [inView.inView]);
+
   return {
-    transactionRequest: {
-      ...transactionRequest,
-      transactions: transactionRequest.data,
-    },
+    transactionRequest,
     vaultRequest: vaultRequest,
     vaultAssets,
     navigate,
     params,
+    filter: {
+      set: setFilter,
+      value: filter,
+    },
+    inView,
+    account,
   };
 };
 

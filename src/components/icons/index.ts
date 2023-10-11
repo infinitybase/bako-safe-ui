@@ -1,6 +1,7 @@
 export * from './arrow-down';
 export * from './chart-bullet';
 export * from './copy';
+export * from './double-arrow-right';
 export * from './edit';
 export * from './error';
 export * from './exchange';

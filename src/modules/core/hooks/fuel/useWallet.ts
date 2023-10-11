@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
 import { useFuel, useFuelAccount } from '@/modules';
 
@@ -18,8 +18,19 @@ const useWallet = (account?: string) => {
 
 const useMyWallet = () => {
   const { account: currentAccount } = useFuelAccount();
-  //currentAccount.getBalances();
+
   return useWallet(currentAccount);
 };
 
-export { useMyWallet, useWallet };
+const useWalletSignMessage = (
+  options?: UseMutationOptions<string, unknown, string>,
+) => {
+  const { data: wallet } = useMyWallet();
+
+  return useMutation((message: string) => wallet!.signMessage(message), {
+    retry: false,
+    ...options,
+  });
+};
+
+export { useMyWallet, useWallet, useWalletSignMessage };

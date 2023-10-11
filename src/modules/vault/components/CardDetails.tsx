@@ -51,6 +51,7 @@ const CardDetails = (props: CardDetailsProps) => {
           <HStack spacing={6} w="full">
             <Center>
               <Avatar
+                variant="roundedSquare"
                 size="xxl"
                 bgColor="dark.100"
                 color="white"

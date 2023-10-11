@@ -5,32 +5,25 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(avatarAnatomy.keys);
 
 const baseStyle = definePartsStyle({
-  container: {
-    borderRadius: 8,
-    img: {
-      borderRadius: 8,
-    },
-  },
   excessLabel: {
-    borderRadius: 8,
-    width: '40px',
-    height: '40px',
-    bgColor: 'dark.200',
+    width: '30px',
+    height: '30px',
+    bgColor: 'brand.500',
     borderWidth: 2,
     borderColor: 'dark.100',
+    color: 'dark.900',
+    fontWeight: 'bold',
+    fontSize: 'sm',
+    marginLeft: -2,
+    letterSpacing: -1,
   },
-  badge: {
-    borderRadius: 8,
-  },
+
   group: {
     '.chakra-avatar': {
-      borderColor: 'brand.600',
+      borderColor: 'dark.100',
       borderWidth: 2,
-      width: '40px',
-      height: '40px',
-      img: {
-        borderRadius: 5,
-      },
+      width: '30px',
+      height: '30px',
     },
   },
 });
@@ -41,10 +34,43 @@ const xxl = defineStyle({
   fontSize: 'md',
 });
 
+const roundedSquare = definePartsStyle({
+  container: {
+    borderRadius: 8,
+    fontSize: 'sm',
+  },
+  excessLabel: {
+    borderRadius: 8,
+    width: '40px',
+    height: '40px',
+    fontSize: 'sm',
+  },
+  badge: {
+    borderRadius: 8,
+    fontSize: 'sm',
+  },
+  group: {
+    '.chakra-avatar': {
+      borderColor: 'dark.100',
+      borderWidth: 2,
+      fontSize: 'sm',
+      width: '40px',
+      height: '40px',
+      img: {
+        borderRadius: 5,
+      },
+    },
+  },
+});
+
 const sizes = {
   xxl: definePartsStyle({ container: xxl }),
 };
 
-const Avatar = defineMultiStyleConfig({ baseStyle, sizes });
+const variants = {
+  roundedSquare,
+};
+
+const Avatar = defineMultiStyleConfig({ baseStyle, sizes, variants });
 
 export { Avatar };

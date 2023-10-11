@@ -1,151 +1,116 @@
 import {
   Box,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Heading,
   Icon,
-  Spinner,
-  Text,
 } from '@chakra-ui/react';
-import { MdChevronLeft } from 'react-icons/md';
+import { format } from 'date-fns';
 
-import { Loader } from '@/components';
-import { Pages } from '@/modules';
+import { HomeIcon } from '@/components';
+import { transactionStatus } from '@/modules';
+import {
+  TransactionCard,
+  TransactionFilter,
+} from '@/modules/transactions/components';
+import { limitCharacters } from '@/utils';
 
-import { TransactionItem } from '../../components';
-import { useTransactionList } from '../../hooks';
+import { StatusFilter, useTransactionList } from '../../hooks';
 
 const TransactionsVaultPage = () => {
-  const { transactionRequest, vaultRequest, navigate, params, vaultAssets } =
-    useTransactionList();
+  const { transactionRequest, filter, inView, account } = useTransactionList();
 
   return (
-    <Card bg="dark.500" color="white" minW={600} boxShadow="xl">
-      {transactionRequest.isLoading ? (
-        <Loader w={600} h={400} />
-      ) : (
-        <>
-          <CardHeader>
-            <Flex width="100%" justifyContent="space-between">
-              <Flex alignItems="center">
-                <Icon
-                  onClick={() =>
-                    navigate(
-                      Pages.detailsVault({
-                        vaultId: params.vaultId!,
-                      }),
-                    )
-                  }
-                  cursor="pointer"
-                  color="gray"
-                  fontSize="4xl"
-                  as={MdChevronLeft}
-                />
-                <Heading size="lg">Transactions</Heading>
-              </Flex>
-              {!!transactionRequest.transactions?.length &&
-                vaultAssets.hasBalance && (
-                  <Button
-                    size="xs"
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() =>
-                      navigate(
-                        Pages.createTransaction({ vaultId: params.vaultId! }),
-                      )
-                    }
-                  >
-                    Create
-                  </Button>
-                )}
-            </Flex>
-            <Box mr={2} mt={2} maxW={500}>
-              <Text fontSize="sm" color="gray">
-                Track your transactions here and click on one to see its details
-              </Text>
-            </Box>
-          </CardHeader>
-          <CardBody>
-            {!transactionRequest.transactions?.length ? (
-              <Flex
-                flexDirection="column"
-                textAlign="center"
-                justifyContent="center"
-                w="100%"
-              >
-                {transactionRequest.isLoading ? (
-                  <Flex
-                    w="100%"
-                    justifyContent="center"
-                    alignItems="center"
-                    minH={500}
-                    minW={550}
-                  >
-                    <Spinner color="brand.500" size="xl" />
-                  </Flex>
-                ) : (
-                  <>
-                    <Box mb={4}>
-                      <Text>Not found transactions.</Text>
-                    </Box>
-                    {vaultAssets.hasAssets && (
-                      <Button
-                        color="brand.900"
-                        variant="solid"
-                        colorScheme="brand"
-                        loadingText="Connecting.."
-                        onClick={() =>
-                          navigate(
-                            Pages.createTransaction({
-                              vaultId: params.vaultId!,
-                            }),
-                          )
-                        }
-                      >
-                        Create
-                      </Button>
-                    )}
-                  </>
-                )}
-              </Flex>
-            ) : (
-              <Box w="100%">
-                {transactionRequest.transactions?.map((item) => (
-                  <TransactionItem
-                    onClick={(transactionId) =>
-                      navigate(
-                        Pages.detailsTransaction({
-                          transactionId,
-                          vaultId: params.vaultId!,
-                        }),
-                      )
-                    }
-                    key={item.id}
-                    assets={item.assets.map((asset) => ({
-                      assetId: asset.assetID,
-                      amount: asset.amount,
-                    }))}
-                    transaction={{
-                      ...item,
-                      witnesses: item.witnesses
-                        .filter((witness) => !!witness.signature)
-                        .map((witness) => witness.signature!),
-                      predicate: vaultRequest.predicate,
-                    }}
-                    hidePredicateName
-                  />
-                ))}
-              </Box>
-            )}
-          </CardBody>
-        </>
-      )}
-    </Card>
+    <Box w="full" height="100%" maxH="100%" overflowY="hidden">
+      {/* BREADCRUMB */}
+      <Box mb={10}>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              Transactions
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+      </Box>
+
+      {/* TITLE */}
+      <Box mb={7}>
+        <Heading variant="title-xl" color="grey.200">
+          Transactions
+        </Heading>
+      </Box>
+
+      {/* FILTER */}
+      <TransactionFilter.Control
+        value={filter.value}
+        onChange={(value) => filter.set(value as StatusFilter)}
+      >
+        <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
+        <TransactionFilter.Field
+          value={StatusFilter.COMPLETED}
+          label="Completed"
+        />
+        <TransactionFilter.Field
+          value={StatusFilter.DECLINED}
+          label="Declined"
+        />
+        <TransactionFilter.Field value={StatusFilter.PENDING} label="Pending" />
+      </TransactionFilter.Control>
+
+      {/* TRANSACTION LIST */}
+      <TransactionCard.List
+        mt={7}
+        w="full"
+        spacing={5}
+        maxH="calc(100% - 140px)"
+        overflowY="scroll"
+        pb={10}
+      >
+        {transactionRequest.transactions.map((transaction) => (
+          <TransactionCard.Container
+            key={transaction.id}
+            status={transactionStatus({ ...transaction, account })}
+            details={<TransactionCard.Details transaction={transaction} />}
+          >
+            <TransactionCard.CreationDate>
+              {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+            </TransactionCard.CreationDate>
+            <TransactionCard.Assets />
+            <TransactionCard.Amount assets={transaction.assets} />
+            <TransactionCard.Name>
+              {limitCharacters(transaction.name, 20)}
+            </TransactionCard.Name>
+            <TransactionCard.Status
+              transaction={transaction}
+              status={transactionStatus({ ...transaction, account })}
+            />
+            <TransactionCard.Actions
+              transaction={transaction}
+              status={transactionStatus({ ...transaction, account })}
+            />
+          </TransactionCard.Container>
+        ))}
+        <Box ref={inView.ref} />
+      </TransactionCard.List>
+    </Box>
   );
 };
 
