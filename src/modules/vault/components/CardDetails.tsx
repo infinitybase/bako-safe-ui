@@ -29,13 +29,13 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW="500px">
+    <Box w="full" maxW="460px">
       <Box mb={5} w="full">
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Overview
         </Text>
       </Box>
-      <Card>
+      <Card p={8}>
         <VStack spacing={9} w="full">
           <HStack spacing={6} w="full">
             <Center>
@@ -56,6 +56,7 @@ const CardDetails = (props: CardDetailsProps) => {
           </HStack>
 
           <HStack
+            w="full"
             spacing={5}
             justifyContent="flex-start"
             alignItems="flex-start"
@@ -107,7 +108,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   Deposit
                 </Button>
                 <Text variant="description" fontSize="xs">
-                  Add assets to the vault. Choose the asset you prefer.
+                  Add assets to the vault. <br /> Choose the asset you prefer.
                 </Text>
               </VStack>
               <VStack spacing={2} alignItems="flex-start">
@@ -115,7 +116,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   Send
                 </Button>
                 <Text variant="description" fontSize="xs">
-                  Send single or batch payments with multi assets.
+                  Send single or batch <br /> payments with multi assets.
                 </Text>
               </VStack>
             </VStack>
