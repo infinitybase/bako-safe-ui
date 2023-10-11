@@ -1,4 +1,6 @@
+
 import { Transaction } from './transaction';
+import { User } from './user';
 
 export interface Predicate {
   id: string;
@@ -6,6 +8,7 @@ export interface Predicate {
   predicateAddress: string;
   description: string;
   minSigners: number;
+  completeAddress: User[];
   addresses: string[];
   owner: string;
   bytes: string;

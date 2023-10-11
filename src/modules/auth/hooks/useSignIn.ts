@@ -15,14 +15,14 @@ import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 const useSignIn = () => {
   const navigate = useNavigate();
 
-  const { setAccount } = useFuelAccount();
+  const { setAccount, setAvatar } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { account } = useCurrentAccount();
   const { provider } = useProvider();
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken }) => {
+    onSuccess: ({ accessToken, avatar }) => {
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
@@ -32,8 +32,13 @@ const useSignIn = () => {
           name: CookieName.ADDRESS,
           value: account!,
         },
+        {
+          name: CookieName.AVATAR,
+          value: avatar!,
+        },
       ]);
       setAccount(account!);
+      setAvatar(avatar!);
       navigate(Pages.home());
     },
   });
@@ -44,6 +49,7 @@ const useSignIn = () => {
         address,
         provider,
         user_id: id,
+        avatar: '',
       });
     },
   });

@@ -11,6 +11,7 @@ import {
 import React from 'react';
 
 import { Card } from '@/components';
+import { User } from '@/modules/core/models/user';
 
 import { AddressUtils } from '../../core/utils/address';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -69,8 +70,8 @@ const SignersDetails = (props: SignersDetailsProps) => {
           borderRadius={10}
         />
 
-        {vault.signers.map(
-          (asset: { address: string; isOwner: boolean }, index: number) => {
+        {vault.completeSigners.map(
+          (asset: { address: User; isOwner: boolean }, index: number) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
@@ -99,7 +100,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                 <HStack spacing={4} w="full">
                   <Image
                     borderRadius={10}
-                    src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg"
+                    src={asset.address.avatar}
                     boxSize="38px"
                   />
                   <VStack
@@ -120,7 +121,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       fontSize="lg"
                       noOfLines={1}
                     >
-                      {AddressUtils.format(asset?.address)}
+                      {AddressUtils.format(asset?.address.address)}
                     </Text>
                   </VStack>
                 </HStack>

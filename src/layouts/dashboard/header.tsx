@@ -8,7 +8,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import avatar from '@/assets/avatars/user-1.png';
 import logo from '@/assets/logo.svg';
 import { ArrowDownIcon, NotificationIcon, QuestionIcon } from '@/components';
 import { useFuelAccount } from '@/modules';
@@ -33,8 +32,7 @@ const TopBarItem = chakra(SpacedBox, {
 
 /* TODO: create props with data user */
 const UserBox = () => {
-  const { formattedAccount } = useFuelAccount();
-
+  const { formattedAccount, avatar } = useFuelAccount();
   return (
     <Flex w="100%" display="flex" alignItems="center">
       <Box mr={4}>
