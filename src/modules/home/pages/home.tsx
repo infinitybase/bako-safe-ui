@@ -13,7 +13,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useState } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -32,8 +31,6 @@ import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
 const HomePage = () => {
-  const [open, setOpen] = useState(false);
-
   const {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
@@ -67,7 +64,7 @@ const HomePage = () => {
       </HStack>
 
       <HStack spacing={6}>
-        <ActionCard.Container onClick={() => navigate('/vaults')}>
+        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -77,7 +74,7 @@ const HomePage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate('/transaction')}>
+        <ActionCard.Container onClick={() => navigate(Pages.transactions())}>
           <ActionCard.Icon icon={GoArrowSwitch} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
@@ -129,7 +126,7 @@ const HomePage = () => {
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
                       extra={extraCount}
-                      onClick={() => navigate('/vaults')}
+                      onClick={() => navigate(Pages.userVaults())}
                     />
                   ) : (
                     <VaultCard

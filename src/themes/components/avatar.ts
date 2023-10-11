@@ -41,8 +41,8 @@ const roundedSquare = definePartsStyle({
   },
   excessLabel: {
     borderRadius: 8,
-    width: '40px',
-    height: '40px',
+    width: '34px',
+    height: '34px',
     fontSize: 'sm',
   },
   badge: {
@@ -54,8 +54,8 @@ const roundedSquare = definePartsStyle({
       borderColor: 'dark.100',
       borderWidth: 2,
       fontSize: 'sm',
-      width: '40px',
-      height: '40px',
+      width: '34px',
+      height: '34px',
       img: {
         borderRadius: 5,
       },

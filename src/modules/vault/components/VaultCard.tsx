@@ -11,7 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegClone } from 'react-icons/fa';
+import { GoCopy } from 'react-icons/go';
 
 import avatar from '@/assets/avatars/user-1.png';
 import avatar2 from '@/assets/avatars/user-2.png';
@@ -57,7 +57,7 @@ export const VaultCard = ({
         <IconButton
           aria-label="Copy"
           variant="icon"
-          icon={<Icon as={FaRegClone} />}
+          icon={<Icon as={GoCopy} color="grey.200" />}
           onClick={(e) => {
             e.stopPropagation();
             navigator.clipboard.writeText(address);

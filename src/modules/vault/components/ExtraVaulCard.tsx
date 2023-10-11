@@ -7,7 +7,7 @@ interface ExtraVaultCardProps extends CardProps {
 }
 
 export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
-  <Card cursor="pointer" p={10} borderStyle="dashed" {...rest}>
+  <Card cursor="pointer" p={9} borderStyle="dashed" {...rest}>
     <VStack spacing={0}>
       <Box>
         <Box>
