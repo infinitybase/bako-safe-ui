@@ -5,7 +5,7 @@ import { useFuelAccount } from '@/modules';
 import { CookieName, CookiesConfig } from './cookies';
 
 const { VITE_API_URL } = import.meta.env;
-const { ACCESS_TOKEN } = CookieName;
+const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export enum ApiUnauthorizedErrorsTitles {
   MISSING_CREDENTIALS = 'Missing credentials',
@@ -35,7 +35,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (value) => {
     const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
-    const address = useFuelAccount.getState().account;
+    const address = CookiesConfig.getCookie(ADDRESS);
 
     if (accessToken) value.headers['authorization'] = accessToken;
     if (address) value.headers['signerAddress'] = address;

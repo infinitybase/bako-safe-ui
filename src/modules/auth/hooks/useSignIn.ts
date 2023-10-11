@@ -28,6 +28,10 @@ const useSignIn = () => {
           name: CookieName.ACCESS_TOKEN,
           value: accessToken,
         },
+        {
+          name: CookieName.ADDRESS,
+          value: account!,
+        },
       ]);
       setAccount(account!);
       navigate(Pages.home());

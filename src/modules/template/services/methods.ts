@@ -1,18 +1,14 @@
 import { api } from '@/config';
-import {
-  IPagination,
-  ITemplatePayload,
-  PaginationParams,
-} from '@/modules/core';
+import { ITemplate, ITemplatePayload, PaginationParams } from '@/modules/core';
 
 export interface GetAllTemplatesPayload extends PaginationParams {
   q?: string;
 }
 
-export type GetTemplateResponse = ITemplatePayload;
+export type GetTemplateResponse = ITemplate;
 export type CreateTemplateResponse = ITemplatePayload;
 export type GetAllTemplateResponse = ITemplatePayload[];
-export type GetAllTemplatePaginationResponse = IPagination<ITemplatePayload>;
+export type GetAllTemplatePaginationResponse = ITemplate[];
 export type CreateTemplatePayload = ITemplatePayload;
 
 export class TemplateService {
@@ -24,7 +20,7 @@ export class TemplateService {
     return data;
   }
 
-  static async getAll(params: GetAllTemplatesPayload) {
+  static async getAll(params?: GetAllTemplatesPayload) {
     const { data } = await api.get<GetAllTemplatePaginationResponse>(
       '/template',
       {

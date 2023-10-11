@@ -6,10 +6,18 @@ import { useCreateVaultDialog } from '@/modules/vault/hooks';
 import { CreateVaultForm } from './form';
 
 const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const { tabs, form, addresses, onDeposit, steps, request, handleCancel } =
-    useCreateVaultDialog({
-      onClose: props.onClose,
-    });
+  const {
+    tabs,
+    form,
+    addresses,
+    onDeposit,
+    steps,
+    request,
+    handleCancel,
+    setFormWithTemplate,
+  } = useCreateVaultDialog({
+    onClose: props.onClose,
+  });
 
   return (
     <Dialog.Modal {...props} onClose={handleCancel}>
@@ -29,6 +37,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onCancel={handleCancel}
           onDeposit={onDeposit}
           addresses={addresses}
+          setTemplate={setFormWithTemplate}
         />
       </Dialog.Body>
 
@@ -40,7 +49,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           hidden={steps.step?.hide}
           onClick={steps.step?.onContinue}
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid}
+          //isDisabled={!form.formState.isValid}
           isLoading={request.isLoading}
         >
           Continue

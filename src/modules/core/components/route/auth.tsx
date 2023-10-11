@@ -1,17 +1,17 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { Pages } from '@/modules';
-import { useFuelAccount } from '@/modules/auth';
 
 export interface AuthRouteProps {
   children: React.ReactNode;
 }
 
 const AuthRoute = (props: AuthRouteProps) => {
-  const { account } = useFuelAccount();
+  const { ADDRESS } = CookieName;
 
-  if (!account) {
+  if (!CookiesConfig.getCookie(ADDRESS)) {
     return <Navigate to={Pages.index()} />;
   }
 
