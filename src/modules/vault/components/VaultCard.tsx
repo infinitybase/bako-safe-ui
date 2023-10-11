@@ -18,7 +18,7 @@ import avatar2 from '@/assets/avatars/user-2.png';
 import avatar3 from '@/assets/avatars/user-3.png';
 import avatar4 from '@/assets/avatars/user-4.png';
 import { Card } from '@/components';
-import { shortenHexString } from '@/utils';
+import { limitCharacters, shortenHexString } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
@@ -46,7 +46,7 @@ export const VaultCard = ({
           />
           <Box ml={2}>
             <Heading variant="title-md" color="grey.200">
-              {name}
+              {limitCharacters(name, 18)}
             </Heading>
             <Text variant="description" color="grey.500">
               {shortenHexString(address)}
@@ -68,7 +68,7 @@ export const VaultCard = ({
       <Divider borderColor="dark.100" my={1} />
 
       <Box>
-        <Text variant="description">Its signers</Text>
+        <Text variant="description">Members</Text>
         <AvatarGroup
           variant="roundedSquare"
           max={5}
