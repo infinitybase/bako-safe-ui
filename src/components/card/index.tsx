@@ -7,9 +7,9 @@ const Card = (props: CardProps) => {
 
   return (
     <Box
-      bg="dark.200"
       borderWidth={1}
       borderColor="dark.100"
+      bg="dark.300"
       borderRadius={10}
       padding={6}
       {...rest}

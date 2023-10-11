@@ -5,6 +5,11 @@ import {
   TransactionStatus,
 } from '@/modules/core';
 
+export enum SortOption {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export interface TransactionDetails {
   signers: {
     address: string;
@@ -28,10 +33,20 @@ export interface GetTransactionParams {
   page?: number;
 }
 
+export interface GetUserTransactionsParams {
+  allOfUser?: boolean;
+  orderBy?: string;
+  sort?: SortOption;
+  page?: number;
+  perPage?: number;
+  limit?: number;
+}
+
 export interface SignerTransactionPayload {
   id: string;
-  signer: string;
+  signer?: string;
   account: string;
+  confirm: boolean;
 }
 
 export interface CreateTransactionPayload {
@@ -52,6 +67,8 @@ export interface CloseTransactionPayload {
 export type GetTransactionResponse = Transaction;
 export type GetTransactionsResponse = Transaction[];
 export type GetTransactionsPaginationResponse = IPagination<Transaction>;
+export type GetUserTransactionsResponse = Transaction[];
+export type GetTransactionByAddressesResponse = Transaction[];
 export type CreateTransactionResponse = Transaction;
 export type SignerTransactionResponse = Transaction;
 export type TransferAsset = AssetModel;
