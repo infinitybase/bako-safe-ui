@@ -27,19 +27,23 @@ const baseStyle = defineStyle({
 const roundedSquare = defineStyle({
   container: {
     borderRadius: 8,
+    fontSize: 'sm',
   },
   excessLabel: {
     borderRadius: 8,
     width: '40px',
     height: '40px',
+    fontSize: 'sm',
   },
   badge: {
     borderRadius: 8,
+    fontSize: 'sm',
   },
   group: {
     '.chakra-avatar': {
       borderColor: 'dark.100',
       borderWidth: 2,
+      fontSize: 'sm',
       width: '40px',
       height: '40px',
       img: {

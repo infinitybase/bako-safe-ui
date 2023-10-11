@@ -26,6 +26,7 @@ const info = defineStyle({
 
 const baseStyle = defineStyle({
   fontSize: 'xs',
+  fontWeight: 'normal',
   textTransform: 'initial',
   borderWidth: 1,
   padding: 1.5,
