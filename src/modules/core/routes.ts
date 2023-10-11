@@ -7,6 +7,7 @@ const Pages = {
   home: pageRoute('/home'),
   createVault: pageRoute('/vault'),
   detailsVault: pageRoute<{ id: string }>('/vault/:id'),
+  userVaults: pageRoute('/vault/me'),
   transactions: pageRoute<{ id: string }>('/vault/:id/transactions'),
   createTransaction: pageRoute<{ id: string }>(
     '/vault/:id/transactions/create',

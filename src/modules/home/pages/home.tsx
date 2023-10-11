@@ -19,7 +19,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { HomeIcon, PendingIcon, VaultIcon } from '@/components';
-import { Transaction, Witness, WitnessStatus } from '@/modules/core';
+import { Pages, Transaction, Witness, WitnessStatus } from '@/modules/core';
 import { TransactionCard } from '@/modules/transactions/components/';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { limitCharacters } from '@/utils';
@@ -92,7 +92,7 @@ const HomePage = () => {
       </HStack>
 
       <HStack spacing={6}>
-        <ActionCard.Container onClick={() => navigate('/vaults')}>
+        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -102,7 +102,7 @@ const HomePage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate('/transaction')}>
+        <ActionCard.Container onClick={() => navigate(Pages.transactions())}>
           <ActionCard.Icon icon={GoArrowSwitch} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
@@ -125,7 +125,7 @@ const HomePage = () => {
       </HStack>
 
       {/* RECENT VAULTS */}
-      <Box mt={4} alignSelf="flex-start">
+      <Box mt={4} mb={-2} alignSelf="flex-start">
         <Text
           variant="subtitle"
           fontWeight="semibold"
@@ -154,7 +154,7 @@ const HomePage = () => {
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
                       extra={extraCount}
-                      onClick={() => navigate('/vaults')}
+                      onClick={() => navigate(Pages.userVaults())}
                     />
                   ) : (
                     <VaultCard
