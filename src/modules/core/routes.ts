@@ -17,7 +17,7 @@ const Pages = {
   signatures: pageRoute('/signatures'),
 
   //template
-  template: pageRoute('/template'),
+  createTemplate: pageRoute('/template'),
 };
 
 export { Pages };

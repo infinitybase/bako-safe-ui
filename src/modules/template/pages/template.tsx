@@ -5,9 +5,10 @@ import { useModal, useSteps } from '../hooks';
 import { useTemplateStore } from '../store';
 
 const TemplatePage = () => {
-  const { step } = useTemplateStore();
+  const { step, templateFormInitial } = useTemplateStore();
   const { closeModal } = useModal();
   const { steps } = useSteps();
+
   return (
     <Dialog.Modal isOpen={true} onClose={closeModal}>
       <Dialog.Header

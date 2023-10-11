@@ -17,17 +17,19 @@ export interface IStep {
 }
 import { useCreate } from './useCreateTemplate';
 import { useNavigate } from 'react-router-dom';
+import { useTemplateStore } from '../store';
 const useSteps = () => {
   const { nextStep } = useModal();
   const navigate = useNavigate();
+  const { templateFormInitial } = useTemplateStore();
   const { createTemplate, isLoading } = useCreate();
   const { handleSubmit, ...form } = useForm<ITemplatePayload>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
       description: '',
-      addresses: [],
-      minSigners: 1,
+      addresses: templateFormInitial.addresses || [],
+      minSigners: templateFormInitial.minSigners || 1,
     },
   });
 

@@ -6,7 +6,7 @@ import { TemplatePage } from './pages';
 
 const templateRoutes = (
   <Route
-    path={Pages.template()}
+    path={Pages.createTemplate()}
     element={
       <AuthRoute>
         <TemplatePage />
