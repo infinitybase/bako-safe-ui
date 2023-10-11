@@ -1,4 +1,6 @@
+import { Transaction } from './transaction';
 import { User } from './user';
+
 
 export interface Predicate {
   id: string;
@@ -14,4 +16,5 @@ export interface Predicate {
   configurable: string;
   provider: string;
   chainId?: number;
+  transactions: Transaction[];
 }

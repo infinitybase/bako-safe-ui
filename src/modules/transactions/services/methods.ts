@@ -4,9 +4,12 @@ import {
   CloseTransactionPayload,
   CreateTransactionPayload,
   CreateTransactionResponse,
-  GetTransactionByAddressesResponse,
   GetTransactionParams,
   GetTransactionResponse,
+  GetTransactionsPaginationResponse,
+  GetTransactionsResponse,
+  GetUserTransactionsParams,
+  GetUserTransactionsResponse,
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
@@ -29,11 +32,11 @@ export class TransactionService {
 
   static async signer(payload: SignerTransactionPayload) {
     const { id, ...body } = payload;
-    const { data } = await api.put<SignerTransactionResponse>(
+    const response = await api.put<SignerTransactionResponse>(
       `/transaction/signer/${id}`,
       body,
     );
-    return data;
+    return response.data ?? {};
   }
 
   static async close(id: string, payload: CloseTransactionPayload) {
@@ -45,7 +48,25 @@ export class TransactionService {
   }
 
   static async getTransactions(params: GetTransactionParams) {
-    const { data } = await api.get<GetTransactionByAddressesResponse>(
+    const { data } = await api.get<GetTransactionsResponse>(`/transaction`, {
+      params: { ...params },
+    });
+    return data;
+  }
+
+  static async getTransactionsPagination(params: GetTransactionParams) {
+    const { data } = await api.get<GetTransactionsPaginationResponse>(
+      `/transaction`,
+      {
+        params: { ...params },
+      },
+    );
+
+    return data;
+  }
+
+  static async getUserTransactions(params: GetUserTransactionsParams) {
+    const { data } = await api.get<GetUserTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },

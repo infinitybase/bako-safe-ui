@@ -2,12 +2,14 @@ import { useQuery } from 'react-query';
 
 import { TransactionService } from '../../services';
 
+const TRANSACTION_LIST_QUERY_KEY = 'transactions/list';
+
 const useTransactionListRequest = (vaultId: string) => {
   return useQuery(
-    ['predicate/transactions', vaultId],
-    () => TransactionService.getTransactions({ predicateId: vaultId }),
+    [TRANSACTION_LIST_QUERY_KEY, vaultId],
+    () => TransactionService.getTransactions({ predicateId: [vaultId] }),
     { enabled: !!vaultId },
   );
 };
 
-export { useTransactionListRequest };
+export { TRANSACTION_LIST_QUERY_KEY, useTransactionListRequest };

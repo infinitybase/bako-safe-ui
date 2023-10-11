@@ -1,6 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { TransactionStatus, useToast } from '@/modules';
+import {
+  invalidateQueries,
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  TransactionStatus,
+  USER_TRANSACTIONS_QUERY_KEY,
+  useToast,
+} from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
@@ -36,6 +43,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         position: 'bottom',
         isClosable: true,
       });
+      invalidateQueries([
+        TRANSACTION_LIST_QUERY_KEY,
+        TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+        USER_TRANSACTIONS_QUERY_KEY,
+      ]);
       handleClose();
     },
     onError: () => {

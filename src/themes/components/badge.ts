@@ -18,8 +18,15 @@ const warning = defineStyle({
   borderColor: 'warning.900',
 });
 
+const info = defineStyle({
+  bgColor: 'rgba(18, 18, 18, 0.8)',
+  color: 'grey.500',
+  borderColor: 'rgba(73, 248, 174, 0.1)',
+});
+
 const baseStyle = defineStyle({
   fontSize: 'xs',
+  fontWeight: 'normal',
   textTransform: 'initial',
   borderWidth: 1,
   padding: 1.5,
@@ -35,6 +42,7 @@ const Badge = defineStyleConfig({
     error,
     success,
     warning,
+    info,
   },
 });
 

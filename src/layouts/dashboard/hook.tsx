@@ -6,6 +6,7 @@ import {
   useFuelAccount,
   useTransactionListRequest,
   useVaultDetailsRequest,
+  WitnessStatus,
 } from '@/modules';
 
 const useSidebar = () => {
@@ -18,13 +19,12 @@ const useSidebar = () => {
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
 
   const pendingTransactions = useMemo(() => {
-    /* TODO: Catch pending transactions by Witnesses.status when implement this in server */
     return (
       transactionListRequest.data
         ?.filter((transaction) => transaction.predicateID === params.vaultId)
         .map((transaction) => transaction.witnesses)
         .flat()
-        .filter((transaction) => !transaction.signature)
+        .filter((witness) => witness.status === WitnessStatus.PENDING)
         .filter((transaction) => transaction.account === account).length ?? 0
     );
   }, [account, params.vaultId, transactionListRequest.data]);

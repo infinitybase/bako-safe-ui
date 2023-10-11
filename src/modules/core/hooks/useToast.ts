@@ -19,9 +19,31 @@ const useToast = () => {
     toastRef.current = toast(params);
   };
 
+  const success = (title: string) => {
+    toast({
+      title,
+      status: 'success',
+      position: 'bottom',
+      isClosable: true,
+      duration: 5000,
+    });
+  };
+
+  const error = (title: string) => {
+    toast({
+      title,
+      status: 'error',
+      position: 'bottom',
+      isClosable: true,
+      duration: 5000,
+    });
+  };
+
   return {
     show,
+    error,
     update,
+    success,
   };
 };
 
