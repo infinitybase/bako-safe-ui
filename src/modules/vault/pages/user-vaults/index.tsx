@@ -132,18 +132,21 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-        {vaults?.map(({ id, name, predicateAddress, addresses }) => {
-          return (
-            <GridItem key={id}>
-              <VaultCard
-                name={name}
-                address={predicateAddress}
-                members={addresses}
-                onClick={() => navigate(`/vault/${id}`)}
-              />
-            </GridItem>
-          );
-        })}
+        {vaults?.map(
+          ({ id, name, predicateAddress, addresses, description }) => {
+            return (
+              <GridItem key={id}>
+                <VaultCard
+                  name={name}
+                  title={description}
+                  address={predicateAddress}
+                  members={addresses}
+                  onClick={() => navigate(`/vault/${id}`)}
+                />
+              </GridItem>
+            );
+          },
+        )}
       </Grid>
     </VStack>
   );
