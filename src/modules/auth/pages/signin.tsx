@@ -40,7 +40,7 @@ const SigninPage = () => {
         <Box
           w="30%"
           h="80vh"
-          backgroundColor="green.300"
+          backgroundColor="brand.500"
           borderRadius="10px 0px 0px 10px"
           p={10}
           display="flex"
@@ -80,15 +80,13 @@ const SigninPage = () => {
           alignItems="start"
           justifyContent="center"
         >
-          <Box textAlign="center">
-            <Text color="white" fontSize="4xl">
-              <Text as="b" color="brand.500">
-                Hey!
-              </Text>
+          <Box textAlign="center" mb={2}>
+            <Text fontSize="4xl" fontWeight="bold" color="brand.500">
+              Hey!
             </Text>
           </Box>
-          <Box textAlign="start">
-            <Text color="gray.200" fontSize="2xl" fontWeight="bold">
+          <Box textAlign="start" mb={5} maxW={305}>
+            <Text color="white" fontWeight="bold">
               Click the button bellow to connect your wallet to BSAFE.
             </Text>
           </Box>
@@ -104,7 +102,7 @@ const SigninPage = () => {
               color="dark.500"
               fontWeight="bold"
               variant="solid"
-              backgroundColor="green.300"
+              backgroundColor="brand.500"
               colorScheme="brand"
               isLoading={isConnecting}
               loadingText="Connecting.."
