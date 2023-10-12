@@ -20,6 +20,7 @@ import { Pages } from '@/modules';
 
 import { AddressCopy } from '../../../components/addressCopy';
 import { UseVaultDetailsReturn } from '../hooks/details';
+import { openFaucet } from '../utils';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
@@ -61,8 +62,9 @@ const CardDetails = (props: CardDetailsProps) => {
             <Center>
               <Avatar
                 variant="roundedSquare"
-                size="xxl"
-                bgColor="dark.100"
+                size="lg"
+                p={10}
+                bgColor="grey.900"
                 color="white"
                 name={vault.name}
               />
@@ -125,7 +127,11 @@ const CardDetails = (props: CardDetailsProps) => {
                 <Text variant="description">Vault balance</Text>
               </Box>
               <VStack spacing={2} alignItems="flex-start">
-                <Button minW={130} variant="primary">
+                <Button
+                  minW={130}
+                  variant="primary"
+                  onClick={() => openFaucet(vault.predicateAddress!)}
+                >
                   Deposit
                 </Button>
                 <Text variant="description" fontSize="xs">

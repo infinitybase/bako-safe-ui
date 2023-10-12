@@ -18,6 +18,7 @@ import { AddressCopy } from '@/components/addressCopy';
 import { Pages } from '@/modules/core';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
+import { openFaucet } from '../utils';
 import { SettingsSigners } from './SettingsSigners';
 
 export interface CardDetailsProps {
@@ -98,7 +99,11 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
                 <HStack spacing={40}>
                   <VStack spacing={2} alignItems="flex-start">
-                    <Button minW={130} variant="primary">
+                    <Button
+                      minW={130}
+                      variant="primary"
+                      onClick={() => openFaucet(vault.predicateAddress!)}
+                    >
                       Deposit
                     </Button>
                     <Text variant="description" fontSize="xs">
