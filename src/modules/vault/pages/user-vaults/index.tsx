@@ -81,7 +81,7 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() => alert('ok')}
+            onClick={() => navigate(Pages.createVault())}
           >
             Create vault
           </Button>
@@ -89,7 +89,7 @@ const UserVaultsPage = () => {
       </HStack>
 
       <HStack spacing={6}>
-        <ActionCard.Container onClick={() => navigate('/vault/me')}>
+        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -99,10 +99,10 @@ const UserVaultsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate('/transaction')}>
-          <ActionCard.Icon icon={GoArrowSwitch} />
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
           <Box>
-            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Title isUpcoming={true}>Transactions</ActionCard.Title>
             <ActionCard.Description>
               Manage Transactions Across All Vaults in One Place.
             </ActionCard.Description>
