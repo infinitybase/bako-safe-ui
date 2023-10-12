@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuel, useFuelAccount } from '@/modules';
 import { AppRoutes } from '@/routes';
 
@@ -10,6 +11,10 @@ function App() {
   useEffect(() => {
     function onFuelEvent() {
       setAccount('');
+      CookiesConfig.removeCookies([
+        CookieName.ACCESS_TOKEN,
+        CookieName.ADDRESS,
+      ]);
     }
 
     fuel?.on(fuel?.events.connection, onFuelEvent);

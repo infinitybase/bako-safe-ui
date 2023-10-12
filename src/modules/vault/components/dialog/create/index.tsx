@@ -51,7 +51,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           hidden={steps.step?.hide}
           onClick={steps.step?.onContinue}
           leftIcon={<SquarePlusIcon />}
-          //isDisabled={!form.formState.isValid}
+          isDisabled={steps.step?.disable}
           isLoading={request.isLoading}
         >
           Continue
