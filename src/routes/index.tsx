@@ -2,6 +2,7 @@ import { BrowserRouter, Routes } from 'react-router-dom';
 
 import {
   exampleRoutes,
+  faucetRoutes,
   homeRoutes,
   signinRoutes,
   templateRoutes,
@@ -14,6 +15,7 @@ const routes = (
     {exampleRoutes}
     {signinRoutes}
     {homeRoutes}
+    {faucetRoutes}
     {vaultRoutes}
     {templateRoutes}
     {transactionRoutes}

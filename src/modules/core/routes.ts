@@ -19,6 +19,9 @@ const Pages = {
 
   //template
   createTemplate: pageRoute('/template'),
+
+  //faucet
+  faucet: pageRoute('/faucet/:id'),
 };
 
 export { Pages };
