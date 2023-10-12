@@ -106,6 +106,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       request.isLoading ||
       signMessageRequest.isLoading ||
       transactionSendRequest.isLoading,
+    isSuccess: request.isSuccess,
   };
 };
 

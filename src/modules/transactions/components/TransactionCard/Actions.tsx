@@ -22,7 +22,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
   const { isOpen } = useAccordionItemState();
 
   const { isSigned, isDeclined, isCompleted, isReproved, isPending } = status;
-  const { confirmTransaction, declineTransaction, isLoading } =
+  const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
     useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
@@ -58,6 +58,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
             variant="primary"
             size="sm"
             isLoading={isLoading}
+            isDisabled={isSuccess}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -73,14 +74,15 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
           <Button
             h={9}
             px={3}
-            variant="secondary"
             size="sm"
+            variant="secondary"
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
               declineTransaction(transaction.id);
             }}
             isLoading={isLoading}
+            isDisabled={isSuccess}
           >
             Decline
           </Button>
