@@ -13,22 +13,27 @@ export interface SendTransferParams {
 }
 
 const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
-  const transactionInstance = await BsafeProvider.instanceTransaction({
-    predicate: Object.create(predicate),
-    assets: transaction.assets,
-    witnesses: transaction.witnesses.map((witness) => witness.signature!),
-  });
+  try {
+    const transactionInstance = await BsafeProvider.instanceTransaction({
+      predicate: Object.create(predicate),
+      assets: transaction.assets,
+      witnesses: transaction.witnesses.map((witness) => witness.signature!),
+    });
 
-  const result = await transactionInstance.sendTransaction();
+    const result = await transactionInstance.sendTransaction();
 
-  if (result.status !== 'success') {
-    throw new Error('Error to send transaction.');
+    return TransactionService.close(transaction?.id, {
+      gasUsed: result.gasUsed,
+      transactionResult: JSON.stringify(result),
+      hasError: result.status === 'failure',
+    });
+  } catch (e) {
+    return TransactionService.close(transaction?.id, {
+      gasUsed: '0',
+      transactionResult: '{}',
+      hasError: true,
+    });
   }
-
-  return TransactionService.close(transaction?.id, {
-    gasUsed: result.gasUsed,
-    transactionResult: JSON.stringify(result),
-  });
 };
 
 const useTransactionSendRequest = (
