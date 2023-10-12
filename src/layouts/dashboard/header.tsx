@@ -36,13 +36,12 @@ const UserBox = () => {
   return (
     <Flex w="100%" display="flex" alignItems="center">
       <Box mr={4}>
-        <Avatar name="Fábio Nascimento" src={avatar} />
+        <Avatar name={formattedAccount} src={avatar} />
       </Box>
       <Box mr={9}>
-        <Text variant="subtitle">Fábio Nascimento</Text>
         <Text variant="description">{formattedAccount}</Text>
       </Box>
-      <Box>
+      <Box hidden={true}>
         <Icon color="grey.200" as={ArrowDownIcon} />
       </Box>
     </Flex>
