@@ -100,7 +100,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
 
           <Box
             mt={10}
-            hidden={!transaction.gasUsed}
+            hidden={transaction.status !== TransactionStatus.DONE}
             borderColor="dark.100"
             borderTopWidth={1}
           >

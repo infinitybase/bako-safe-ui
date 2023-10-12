@@ -7,6 +7,7 @@ export enum TransactionStatus {
   DONE = 'DONE',
   PENDING = 'PENDING',
   REJECTED = 'REJECTED',
+  ERROR = 'ERROR',
 }
 
 export interface TransactionState {
@@ -15,6 +16,7 @@ export interface TransactionState {
   isSigned: boolean;
   isPending: boolean;
   isReproved: boolean;
+  isError: boolean;
 }
 
 export interface Transaction {

@@ -67,6 +67,7 @@ export interface CreateTransactionPayload {
 
 export interface CloseTransactionPayload {
   gasUsed: string;
+  hasError?: boolean;
   transactionResult: string;
 }
 

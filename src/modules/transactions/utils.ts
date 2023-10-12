@@ -1,4 +1,9 @@
-import { Transaction, Witness, WitnessStatus } from '@/modules';
+import {
+  Transaction,
+  TransactionStatus,
+  Witness,
+  WitnessStatus,
+} from '@/modules';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;
 
@@ -10,6 +15,7 @@ export const transactionStatus = ({
   predicate,
   witnesses,
   account,
+  ...transaction
 }: TransactionStatusParams) => {
   const { minSigners } = predicate;
   const vaultMembersCount = predicate.addresses.length;
@@ -18,11 +24,14 @@ export const transactionStatus = ({
   const howManyDeclined = witnesses.filter((w) => w.status === REJECTED).length;
 
   return {
-    isCompleted: signatureCount >= minSigners,
+    isCompleted:
+      signatureCount >= minSigners ||
+      transaction.status === TransactionStatus.DONE,
     isDeclined: witness?.status === REJECTED,
     isSigned: witness?.status === DONE,
     isPending: witness?.status !== PENDING,
     isReproved: vaultMembersCount - howManyDeclined < minSigners,
+    isError: transaction.status === TransactionStatus.ERROR,
   };
 };
 
