@@ -13,8 +13,10 @@ import {
 import { bn } from 'fuels';
 import { QRCodeSVG } from 'qrcode.react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components';
+import { Pages } from '@/modules';
 
 import { AddressCopy } from '../../../components/addressCopy';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -25,6 +27,8 @@ export interface CardDetailsProps {
 }
 
 const CardDetails = (props: CardDetailsProps) => {
+  const navigate = useNavigate();
+
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
 
@@ -129,7 +133,13 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Text>
               </VStack>
               <VStack spacing={2} alignItems="flex-start">
-                <Button minW={130} variant="primary">
+                <Button
+                  onClick={() =>
+                    navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                  }
+                  minW={130}
+                  variant="primary"
+                >
                   Send
                 </Button>
                 <Text variant="description" fontSize="xs">
