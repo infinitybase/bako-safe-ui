@@ -13,7 +13,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useState } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -32,8 +31,6 @@ import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
 const HomePage = () => {
-  const [open, setOpen] = useState(false);
-
   const {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
