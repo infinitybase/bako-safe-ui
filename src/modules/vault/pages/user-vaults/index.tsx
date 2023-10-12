@@ -133,15 +133,15 @@ const UserVaultsPage = () => {
       </Box>
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
         {vaults?.map(
-          ({ id, name, predicateAddress, addresses, description }) => {
+          ({ id, name, predicateAddress, completeAddress, description }) => {
             return (
               <GridItem key={id}>
                 <VaultCard
                   name={name}
                   title={description}
                   address={predicateAddress}
-                  members={addresses}
-                  onClick={() => navigate(`/vault/${id}`)}
+                  members={completeAddress}
+                  onClick={() => navigate(Pages.detailsVault({ vaultId: id }))}
                 />
               </GridItem>
             );
