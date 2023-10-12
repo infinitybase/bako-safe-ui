@@ -6,7 +6,6 @@ import {
   GridItem,
   HStack,
   Icon,
-  Link,
   Skeleton,
   Spacer,
   Text,
@@ -193,7 +192,7 @@ const HomePage = () => {
               })} waiting for your signature`}
             </Badge>
             <Spacer />
-            <Link color="brand.500">View all</Link>
+            {/*<Link color="brand.500">View all</Link>*/}
           </HStack>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             {transactions?.map((transaction) => {
