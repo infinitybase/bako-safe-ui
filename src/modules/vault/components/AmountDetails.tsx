@@ -10,13 +10,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import React from 'react';
 
 import { Card, NotFoundIcon } from '@/components';
 
 import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
 import { UseVaultDetailsReturn } from '../hooks/details';
+import { openFaucet } from '../utils';
 
 const formatList = (list: Asset[]) => {
   return list.length - 4;
@@ -77,16 +77,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
               Make your first deposit to see your assets here
             </Text>
           </Box>
-          <Button
-            variant="primary"
-            onClick={() =>
-              /* TODO: move to utils */
-              window.open(
-                `${import.meta.env.VITE_FAUCET}?address=${vaultAddress}`,
-                '_BLANK',
-              )
-            }
-          >
+          <Button variant="primary" onClick={() => openFaucet(vaultAddress)}>
             Make a deposit
           </Button>
         </AssetCard>
