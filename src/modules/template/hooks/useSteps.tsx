@@ -15,13 +15,15 @@ export interface IStep {
   onSubmit: (data: ITemplatePayload) => void;
   isLoading: boolean;
 }
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useTemplateStore } from '../store';
 import { useCreate } from './useCreateTemplate';
 const useSteps = () => {
-  const { nextStep } = useModal();
+  const { nextStep, resetSteps } = useModal();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { templateFormInitial } = useTemplateStore();
   const { createTemplate, isLoading } = useCreate();
   const { handleSubmit, ...form } = useForm<ITemplatePayload>({
@@ -78,14 +80,18 @@ const useSteps = () => {
       hiddeProgressBar: true,
       isLoading,
       onSubmit: () => {
-        navigate(-1);
+        resetSteps();
+        onClose();
       },
     },
   ];
 
   const onClose = () => {
-    navigate(-1);
     form.reset();
+    const vaultId = location?.pathname.replace('/template/', '');
+    console.log(vaultId);
+
+    vaultId.length > 0 ? navigate(`/vault/${vaultId}`) : navigate(-1);
   };
 
   return { steps, handleSubmit, form, addresses: addressesFieldArray, onClose };

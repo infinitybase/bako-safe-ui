@@ -27,11 +27,13 @@ const useCreateVault = () => {
 
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
+  const [vaultId, setVaultId] = useState<string>('');
   const toast = useToast();
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setVaultId(data.id);
       setTab(TabState.SUCCESS);
     },
     onError: () => {
@@ -72,7 +74,9 @@ const useCreateVault = () => {
           }),
         );
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const onDeposit = async () => {
@@ -97,7 +101,11 @@ const useCreateVault = () => {
       addresses,
     });
 
-    navigate(Pages.createTemplate());
+    navigate(
+      Pages.createTemplate({
+        vaultId,
+      }),
+    );
   };
 
   const removeAddress = (index: number) => {

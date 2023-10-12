@@ -18,7 +18,7 @@ const Pages = {
   signatures: pageRoute('/signatures'),
 
   //template
-  createTemplate: pageRoute('/template'),
+  createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
   //faucet
   faucet: pageRoute('/faucet/:id'),

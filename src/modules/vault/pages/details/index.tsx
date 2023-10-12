@@ -90,7 +90,11 @@ const VaultDetailsPage = () => {
               addresses:
                 vault.signers! && vault.signers.map((signer) => signer.address),
             });
-            navigate(Pages.createTemplate());
+            navigate(
+              Pages.createTemplate({
+                vaultId: vault.id!,
+              }),
+            );
           }}
         >
           Set as template
