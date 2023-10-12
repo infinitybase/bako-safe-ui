@@ -52,7 +52,10 @@ api.interceptors.response.use(
 
     if (unauthorizedError) {
       useFuelAccount.getState().setAccount('');
-      CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN]);
+      CookiesConfig.removeCookies([
+        CookieName.ACCESS_TOKEN,
+        CookieName.ADDRESS,
+      ]);
     }
 
     return Promise.reject(error);
