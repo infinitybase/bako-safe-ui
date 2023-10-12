@@ -9,7 +9,7 @@ const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 
 const useVaultTransactionsRequest = (id: string) => {
   return useQuery(
-    [VAULT_TRANSACTIONS_QUERY_KEY],
+    [VAULT_TRANSACTIONS_QUERY_KEY, id],
     () =>
       TransactionService.getVaultTransactions({
         orderBy: 'created_at',
@@ -18,6 +18,7 @@ const useVaultTransactionsRequest = (id: string) => {
       }),
     {
       initialData: [],
+      enabled: !!id,
     },
   );
 };

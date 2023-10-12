@@ -14,6 +14,7 @@ export interface SendTransferParams {
 
 const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
   try {
+    debugger;
     const transactionInstance = await BsafeProvider.instanceTransaction({
       predicate: Object.create(predicate),
       assets: transaction.assets,
