@@ -42,6 +42,12 @@ export interface GetUserTransactionsParams {
   limit?: number;
 }
 
+export interface GetVaultTransactionsParams {
+  predicateId?: string[];
+  orderBy?: string;
+  sort?: SortOption;
+}
+
 export interface SignerTransactionPayload {
   id: string;
   signer?: string;
@@ -68,6 +74,7 @@ export type GetTransactionResponse = Transaction;
 export type GetTransactionsResponse = Transaction[];
 export type GetTransactionsPaginationResponse = IPagination<Transaction>;
 export type GetUserTransactionsResponse = Transaction[];
+export type GetVaultTransactionsResponse = Transaction[];
 export type GetTransactionByAddressesResponse = Transaction[];
 export type CreateTransactionResponse = Transaction;
 export type SignerTransactionResponse = Transaction;

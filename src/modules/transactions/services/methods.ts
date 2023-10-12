@@ -10,6 +10,8 @@ import {
   GetTransactionsResponse,
   GetUserTransactionsParams,
   GetUserTransactionsResponse,
+  GetVaultTransactionsParams,
+  GetVaultTransactionsResponse,
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
@@ -67,6 +69,16 @@ export class TransactionService {
 
   static async getUserTransactions(params: GetUserTransactionsParams) {
     const { data } = await api.get<GetUserTransactionsResponse>(
+      `/transaction`,
+      {
+        params: { ...params },
+      },
+    );
+    return data;
+  }
+
+  static async getVaultTransactions(params: GetVaultTransactionsParams) {
+    const { data } = await api.get<GetVaultTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },

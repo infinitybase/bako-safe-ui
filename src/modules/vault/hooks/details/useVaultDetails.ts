@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules';
@@ -6,14 +7,18 @@ import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
+import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 const useVaultDetails = () => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
   const { account } = useFuelAccount();
   const store = useVaultState();
+  const inView = useInView();
 
   const { predicate, isLoading } = useVaultDetailsRequest(params.vaultId!);
+  const vaultTransactionsRequest = useVaultTransactionsRequest(params.vaultId!);
+
   const {
     assets,
     ethBalance,
@@ -45,6 +50,10 @@ const useVaultDetails = () => {
       signers: signersOrdination,
       isLoading,
       hasBalance,
+      transactions: {
+        ...vaultTransactionsRequest,
+        vaultTransactions: vaultTransactionsRequest.data,
+      },
     },
     assets: {
       hasAssets,
@@ -52,6 +61,7 @@ const useVaultDetails = () => {
       ethBalance,
       value: assets,
     },
+    inView,
     navigate,
     account,
     store,
