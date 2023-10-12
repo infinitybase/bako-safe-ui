@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import { FuelQueryKeys } from './types';
 import { useFuel } from './useFuel';
@@ -22,4 +22,21 @@ const useCurrentAccount = () => {
   };
 };
 
-export { useCurrentAccount };
+const useGetCurrentAccount = () => {
+  const [fuel] = useFuel();
+
+  const { data, mutateAsync, ...query } = useMutation(
+    FuelQueryKeys.CURRENT_ACCOUNT,
+    async () => {
+      return fuel?.currentAccount();
+    },
+  );
+
+  return {
+    account: data,
+    getAccount: mutateAsync,
+    ...query,
+  };
+};
+
+export { useCurrentAccount, useGetCurrentAccount };

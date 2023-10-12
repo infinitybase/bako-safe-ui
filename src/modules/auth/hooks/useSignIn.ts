@@ -1,13 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuel, useFuelAccount } from '@/modules';
-import {
-  Pages,
-  useConnect,
-  useCurrentAccount,
-  useIsConnected,
-} from '@/modules/core';
+import { useFuel, useFuelAccount, useGetCurrentAccount } from '@/modules';
+import { Pages, useConnect, useIsConnected } from '@/modules/core';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
@@ -18,7 +13,7 @@ const useSignIn = () => {
   const { setAccount, setAvatar } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
-  const { account } = useCurrentAccount();
+  const { getAccount, account } = useGetCurrentAccount();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar }) => {
@@ -59,6 +54,7 @@ const useSignIn = () => {
       if (!connected) return;
 
       const network = await fuel.network();
+      const account = await getAccount();
 
       createUserRequest.mutate({
         address: account!,
