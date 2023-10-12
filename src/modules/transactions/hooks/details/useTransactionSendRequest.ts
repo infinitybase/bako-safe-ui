@@ -28,11 +28,13 @@ const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
       hasError: result.status === 'failure',
     });
   } catch (e) {
-    return TransactionService.close(transaction?.id, {
+    await TransactionService.close(transaction?.id, {
       gasUsed: '0',
       transactionResult: '{}',
       hasError: true,
     });
+
+    throw e;
   }
 };
 
