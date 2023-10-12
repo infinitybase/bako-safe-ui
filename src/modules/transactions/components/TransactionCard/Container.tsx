@@ -30,7 +30,7 @@ const Container = ({
 
   return (
     <Card
-      py={5}
+      py={4}
       px={2}
       w="full"
       as={AccordionItem}
@@ -38,7 +38,7 @@ const Container = ({
       borderColor={missingSignature ? 'warning.500' : 'dark.100'}
       {...rest}
     >
-      <VStack justifyContent="flex-start" w="full">
+      <VStack justifyContent="flex-start" gap={0} w="full">
         <HStack
           as={AccordionButton}
           w="full"
