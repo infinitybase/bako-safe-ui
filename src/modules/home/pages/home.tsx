@@ -84,10 +84,10 @@ const HomePage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate(Pages.transactions())}>
-          <ActionCard.Icon icon={GoArrowSwitch} />
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
           <Box>
-            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Title isUpcoming={true}>Transactions</ActionCard.Title>
             <ActionCard.Description>
               Manage Transactions Across All Vaults in One Place.
             </ActionCard.Description>
