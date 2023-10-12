@@ -32,6 +32,8 @@ interface AssetBoxInfoProps extends StackProps {
 const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
   const assetInfo = useMemo(() => assetsMap[asset.assetID], [asset.assetID]);
 
+  if (!assetInfo) return null;
+
   return (
     <HStack
       p={5}

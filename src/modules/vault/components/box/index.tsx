@@ -19,6 +19,7 @@ interface VaultBoxPropx {
   onChangeVault: () => void;
   onCreateTransaction: () => void;
   isLoading?: boolean;
+  hasBalance?: boolean;
 }
 
 const VaultBoxSkeleton = () => (
@@ -43,7 +44,14 @@ const VaultBoxSkeleton = () => (
 );
 
 const VaultBox = (props: VaultBoxPropx) => {
-  const { name, address, fullName, onChangeVault, onCreateTransaction } = props;
+  const {
+    name,
+    address,
+    fullName,
+    onChangeVault,
+    hasBalance,
+    onCreateTransaction,
+  } = props;
 
   return (
     <Box w="100%">
@@ -84,6 +92,7 @@ const VaultBox = (props: VaultBoxPropx) => {
           variant="primary"
           fontWeight="bold"
           onClick={onCreateTransaction}
+          isDisabled={!hasBalance}
           leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
         >
           Create transaction

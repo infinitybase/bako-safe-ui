@@ -143,6 +143,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   onClick={() =>
                     navigate(Pages.createTransaction({ vaultId: vault.id! }))
                   }
+                  isDisabled={!vault?.hasBalance}
                   minW={130}
                   variant="primary"
                 >

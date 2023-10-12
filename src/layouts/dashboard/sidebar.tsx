@@ -12,8 +12,14 @@ import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
 import { useSidebar } from './hook';
 
 const Sidebar = () => {
-  const { route, vaultRequest, pendingTransactions, drawer, menuItems } =
-    useSidebar();
+  const {
+    route,
+    drawer,
+    menuItems,
+    vaultAssets,
+    vaultRequest,
+    transactionListRequest,
+  } = useSidebar();
 
   return (
     <Box
@@ -41,6 +47,7 @@ const Sidebar = () => {
         }
         isLoading={vaultRequest.isLoading}
         onChangeVault={drawer.onOpen}
+        hasBalance={vaultAssets.hasBalance}
         onCreateTransaction={() => {
           route.navigate(
             Pages.createTransaction({ vaultId: route.params.vaultId! }),
@@ -54,11 +61,11 @@ const Sidebar = () => {
       <SidebarMenu.List w="100%">
         <SidebarMenu.Container
           isActive={menuItems.home}
-          onClick={() => {
+          onClick={() =>
             route.navigate(
               Pages.detailsVault({ vaultId: route.params.vaultId! }),
-            );
-          }}
+            )
+          }
         >
           <SidebarMenu.Icon as={HomeIcon} />
           <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
@@ -66,16 +73,23 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           isActive={menuItems.transactions}
-          onClick={() => {
+          cursor={
+            transactionListRequest.hasTransactions ? 'pointer' : 'not-allowed'
+          }
+          onClick={() =>
+            transactionListRequest.hasTransactions &&
             route.navigate(
               Pages.transactions({ vaultId: route.params.vaultId! }),
-            );
-          }}
+            )
+          }
         >
           <SidebarMenu.Icon as={ExchangeIcon} />
           <SidebarMenu.Title>Transactions</SidebarMenu.Title>
-          <SidebarMenu.Badge hidden={!pendingTransactions}>
-            <Icon as={PendingIcon} /> {pendingTransactions}
+          <SidebarMenu.Badge
+            hidden={!transactionListRequest.pendingTransactions}
+          >
+            <Icon as={PendingIcon} />{' '}
+            {transactionListRequest.pendingTransactions}
           </SidebarMenu.Badge>
         </SidebarMenu.Container>
 
@@ -87,11 +101,11 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           isActive={menuItems.settings}
-          onClick={() => {
+          onClick={() =>
             route.navigate(
               Pages.vaultSettings({ vaultId: route.params.vaultId! }),
-            );
-          }}
+            )
+          }
         >
           <SidebarMenu.Icon as={SettingsIcon} />
           <SidebarMenu.Title>Settings</SidebarMenu.Title>

@@ -6,6 +6,7 @@ import {
   Pages,
   useFuelAccount,
   useTransactionListRequest,
+  useVaultAssets,
   useVaultDetailsRequest,
   WitnessStatus,
 } from '@/modules';
@@ -19,6 +20,9 @@ const useSidebar = () => {
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
+  const vaultAssets = useVaultAssets(
+    vaultDetailsRequest.predicate?.predicateInstance,
+  );
 
   const pendingTransactions = useMemo(() => {
     return (
@@ -50,7 +54,12 @@ const useSidebar = () => {
     },
     drawer,
     menuItems,
-    pendingTransactions,
+    vaultAssets,
+    transactionListRequest: {
+      ...transactionListRequest,
+      pendingTransactions,
+      hasTransactions: !!transactionListRequest.data?.length,
+    },
     vaultRequest: vaultDetailsRequest,
   };
 };

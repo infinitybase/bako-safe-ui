@@ -188,8 +188,9 @@ const VaultDetailsPage = () => {
             </Text>
           </Box>
           <Button
-            leftIcon={<SquarePlusIcon />}
             variant="primary"
+            leftIcon={<SquarePlusIcon />}
+            isDisabled={!vault?.hasBalance}
             onClick={() =>
               navigate(Pages.createTransaction({ vaultId: vault.id! }))
             }
