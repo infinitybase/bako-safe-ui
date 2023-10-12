@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import logo from '@/assets/logo.svg';
-import { ArrowDownIcon, NotificationIcon, QuestionIcon } from '@/components';
+import { ArrowDownIcon, QuestionIcon } from '@/components';
 import { useFuelAccount } from '@/modules';
 
 const SpacedBox = chakra(Box, {
@@ -27,6 +27,7 @@ const TopBarItem = chakra(SpacedBox, {
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
+    cursor: 'pointer',
   },
 });
 
@@ -66,12 +67,16 @@ const Header = () => {
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
-        <TopBarItem>
+        <TopBarItem
+          onClick={() =>
+            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+          }
+        >
           <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
-        <TopBarItem>
-          <Icon color="grey.200" as={NotificationIcon} />
-        </TopBarItem>
+        {/*<TopBarItem>*/}
+        {/*  <Icon color="grey.200" as={NotificationIcon} />*/}
+        {/*</TopBarItem>*/}
         <TopBarItem>
           <UserBox />
         </TopBarItem>
