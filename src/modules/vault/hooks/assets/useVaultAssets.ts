@@ -11,7 +11,6 @@ const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
-
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
     return {
