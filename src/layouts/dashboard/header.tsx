@@ -39,7 +39,9 @@ const UserBox = () => {
         <Avatar name={formattedAccount} src={avatar} />
       </Box>
       <Box mr={9}>
-        <Text variant="description">{formattedAccount}</Text>
+        <Text fontWeight="semibold" color="grey.200">
+          {formattedAccount}
+        </Text>
       </Box>
       <Box hidden={true}>
         <Icon color="grey.200" as={ArrowDownIcon} />
