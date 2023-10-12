@@ -4,8 +4,7 @@ import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 import { CreateTransactionPage } from '@/modules/transactions';
 
-import { VaultDetailsPage } from './pages';
-import { VaultSettingsPage } from './pages/settings';
+import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const vaultRoutes = (
   <Route element={<DashboardLayoutRouter hasSideBar />}>

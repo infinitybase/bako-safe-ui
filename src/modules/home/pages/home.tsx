@@ -13,7 +13,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useState } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -30,10 +29,10 @@ import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
+import { EmptyTransaction } from '../components/EmptyCard/Transaction';
+import { EmptyVault } from '../components/EmptyCard/Vault';
 
 const HomePage = () => {
-  const [open, setOpen] = useState(false);
-
   const {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
@@ -43,6 +42,14 @@ const HomePage = () => {
     account,
     navigate,
   } = useHome();
+
+  if (recentVaults && recentVaults?.length <= 0) {
+    return (
+      <VStack w="full" spacing={6}>
+        <EmptyVault />
+      </VStack>
+    );
+  }
 
   return (
     <VStack w="full" spacing={6}>
@@ -67,7 +74,7 @@ const HomePage = () => {
       </HStack>
 
       <HStack spacing={6}>
-        <ActionCard.Container onClick={() => navigate('/vaults')}>
+        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -77,7 +84,7 @@ const HomePage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate('/transaction')}>
+        <ActionCard.Container onClick={() => navigate(Pages.transactions())}>
           <ActionCard.Icon icon={GoArrowSwitch} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
@@ -112,7 +119,10 @@ const HomePage = () => {
       </Box>
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
         {recentVaults?.map(
-          ({ id, name, predicateAddress, addresses }, index) => {
+          (
+            { id, name, predicateAddress, completeAddress, description },
+            index,
+          ) => {
             const lastCard = index === vaultsMax - 1;
             const hasMore = extraCount > 0;
 
@@ -129,13 +139,14 @@ const HomePage = () => {
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
                       extra={extraCount}
-                      onClick={() => navigate('/vaults')}
+                      onClick={() => navigate(Pages.userVaults())}
                     />
                   ) : (
                     <VaultCard
                       name={name}
+                      title={description}
                       address={predicateAddress}
-                      members={addresses}
+                      members={completeAddress}
                       onClick={() =>
                         navigate(Pages.detailsVault({ vaultId: id }))
                       }
@@ -149,57 +160,74 @@ const HomePage = () => {
       </Grid>
 
       {/* TRANSACTION LIST */}
-      <Box w="full" mt={8}>
-        <HStack spacing={4}>
-          <Text
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="xl"
-            color="grey.200"
-          >
-            Transactions
-          </Text>
-          <Badge h={6} variant="warning">
-            <Icon as={PendingIcon} />
-            {`${waitingSignatures({
-              account,
-              transactions: transactions ?? [],
-            })} waiting for your signature`}
-          </Badge>
-          <Spacer />
-          <Link color="brand.500">View all</Link>
-        </HStack>
-
-        <TransactionCard.List spacing={4} mt={6} mb={12}>
-          {transactions?.map((transaction) => {
-            return (
-              <TransactionCard.Container
-                status={transactionStatus({ ...transaction, account })}
-                key={transaction.id}
-                details={<TransactionCard.Details transaction={transaction} />}
-              >
-                <TransactionCard.VaultInfo vault={transaction.predicate} />
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
-                <TransactionCard.Assets />
-                <TransactionCard.Amount assets={transaction.assets} />
-                <TransactionCard.Name>
-                  {limitCharacters(transaction.name, 20)}
-                </TransactionCard.Name>
-                <TransactionCard.Status
-                  transaction={transaction}
+      {transactions && transactions.length <= 0 ? (
+        <VStack w="full" spacing={6}>
+          <HStack w="full" spacing={4}>
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="xl"
+              color="grey.200"
+            >
+              Transactions
+            </Text>
+          </HStack>
+          <EmptyTransaction />
+        </VStack>
+      ) : (
+        <Box w="full" mt={8}>
+          <HStack spacing={4}>
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="xl"
+              color="grey.200"
+            >
+              Transactions
+            </Text>
+            <Badge h={6} variant="warning">
+              <Icon as={PendingIcon} />
+              {`${waitingSignatures({
+                account,
+                transactions: transactions ?? [],
+              })} waiting for your signature`}
+            </Badge>
+            <Spacer />
+            <Link color="brand.500">View all</Link>
+          </HStack>
+          <TransactionCard.List spacing={4} mt={6} mb={12}>
+            {transactions?.map((transaction) => {
+              return (
+                <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
-                />
-                <TransactionCard.Actions
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-              </TransactionCard.Container>
-            );
-          })}
-        </TransactionCard.List>
-      </Box>
+                  key={transaction.id}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
+                  }
+                >
+                  <TransactionCard.VaultInfo vault={transaction.predicate} />
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount assets={transaction.assets} />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction.name, 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              );
+            })}
+          </TransactionCard.List>
+        </Box>
+      )}
     </VStack>
   );
 };

@@ -58,17 +58,21 @@ const useCreateVault = () => {
   });
 
   const setFormWithTemplate = async (id: string) => {
-    const template = await TemplateService.getById(id);
-    const address: string[] = template.addresses as string[];
+    try {
+      const template = await TemplateService.getById(id);
+      const address: string[] = template.addresses as string[];
 
-    form.setValue('minSigners', template.minSigners.toString());
-    template.addresses ??
-      form.setValue(
-        'addresses',
-        address.map((item: string) => {
-          return { value: item };
-        }),
-      );
+      form.setValue('minSigners', template.minSigners.toString());
+
+      if (template.addresses) {
+        form.setValue(
+          'addresses',
+          address.map((item: string) => {
+            return { value: item };
+          }),
+        );
+      }
+    } catch (e) {}
   };
 
   const onDeposit = async () => {

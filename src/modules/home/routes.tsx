@@ -2,14 +2,14 @@ import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
-import { CreateVaultPage } from '@/modules/vault/pages';
+import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
 
 import { HomePage } from './pages';
 
 const homeRoutes = (
-  <Route path={Pages.home()} element={<DashboardLayoutRouter />}>
+  <Route element={<DashboardLayoutRouter />}>
     <Route
-      index
+      path={Pages.home()}
       element={
         <AuthRoute>
           <HomePage />
@@ -21,6 +21,14 @@ const homeRoutes = (
       element={
         <AuthRoute>
           <CreateVaultPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.userVaults()}
+      element={
+        <AuthRoute>
+          <UserVaultsPage />
         </AuthRoute>
       }
     />

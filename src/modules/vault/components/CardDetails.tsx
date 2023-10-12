@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { QRCodeSVG } from 'qrcode.react';
 import React from 'react';
 
@@ -26,6 +27,10 @@ export interface CardDetailsProps {
 const CardDetails = (props: CardDetailsProps) => {
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
+
+  const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
+    precision: 4,
+  });
 
   if (!vault) return;
 
@@ -93,7 +98,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 <HStack width="100%" spacing={2}>
                   <HStack spacing={2}>
                     <Heading variant="title-xl">
-                      {visebleBalance ? '*****' : biggerAsset?.amount}
+                      {visebleBalance ? '*****' : balance}
                     </Heading>
                     <Text variant="description" fontSize="md">
                       {!visebleBalance && biggerAsset?.slug}

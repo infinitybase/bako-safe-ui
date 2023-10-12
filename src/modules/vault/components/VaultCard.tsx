@@ -11,22 +11,17 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegClone } from 'react-icons/fa';
+import { GoCopy } from 'react-icons/go';
 
-import avatar from '@/assets/avatars/user-1.png';
-import avatar2 from '@/assets/avatars/user-2.png';
-import avatar3 from '@/assets/avatars/user-3.png';
-import avatar4 from '@/assets/avatars/user-4.png';
 import { Card } from '@/components';
+import { User } from '@/modules/core/models/user';
 import { limitCharacters, shortenHexString } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
   address: string;
-  members: string[];
+  members: User[];
 }
-
-const avatars = [avatar, avatar2, avatar3, avatar4];
 
 export const VaultCard = ({
   name,
@@ -57,7 +52,7 @@ export const VaultCard = ({
         <IconButton
           aria-label="Copy"
           variant="icon"
-          icon={<Icon as={FaRegClone} />}
+          icon={<Icon as={GoCopy} color="grey.200" />}
           onClick={(e) => {
             e.stopPropagation();
             navigator.clipboard.writeText(address);
@@ -79,8 +74,8 @@ export const VaultCard = ({
           {members.map((member) => (
             <Avatar
               variant="roundedSquare"
-              src={avatars[Math.floor(Math.random() * 4)]}
-              key={member}
+              src={member.avatar}
+              key={member.address}
             />
           ))}
         </AvatarGroup>
