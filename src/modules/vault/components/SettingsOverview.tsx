@@ -90,7 +90,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   >
                     <Text variant="description">Vault balance</Text>
                     <Heading variant="title-xl">
-                      {`${biggerAsset?.amount} ${biggerAsset?.slug}`}
+                      {`${biggerAsset?.amount ?? 0} ${
+                        biggerAsset?.slug ?? 'ETH'
+                      }`}
                     </Heading>
                   </HStack>
                 </Box>
