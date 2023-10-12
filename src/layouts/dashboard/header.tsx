@@ -7,10 +7,11 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
 import { ArrowDownIcon, QuestionIcon } from '@/components';
-import { useFuelAccount } from '@/modules';
+import { Pages, useFuelAccount } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -52,17 +53,19 @@ const UserBox = () => {
 };
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <Flex
-      w="100%"
       h={82}
-      alignItems="center"
-      justifyContent="space-between"
+      w="100%"
       bgColor="dark.300"
+      alignItems="center"
       borderBottomWidth={1}
+      justifyContent="space-between"
       borderBottomColor="dark.100"
     >
-      <SpacedBox>
+      <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
         <img width={90} src={logo} alt="" />
       </SpacedBox>
 
