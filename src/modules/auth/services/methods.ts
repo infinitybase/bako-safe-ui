@@ -9,6 +9,7 @@ export type CreateUserResponse = {
   id: string;
   address: string;
   provider: string;
+  avatar: string;
 };
 
 export type CreateUserPayload = {
@@ -28,6 +29,7 @@ export type SignInPayload = {
 
 export type SignInResponse = {
   accessToken: string;
+  avatar: string;
 };
 
 export class UserService {

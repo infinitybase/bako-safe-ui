@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Center,
   Heading,
   HStack,
@@ -9,7 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { DoubleArrowIcon } from '@/components';
 import {
@@ -17,6 +18,7 @@ import {
   AssetModel,
   assetsMap,
   Transaction,
+  TransactionStatus,
 } from '@/modules/core';
 
 interface TransactionDetailsProps {
@@ -71,29 +73,56 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
 };
 
 const Details = ({ transaction }: TransactionDetailsProps) => {
+  const handleViewInExplorer = async () => {
+    const resume = JSON.parse(transaction.resume);
+    window.open(resume.block, '_BLANK');
+  };
+
   return (
-    <HStack pt={5} w="full">
-      <Box hidden={!transaction?.assets?.length}>
-        <Box mb={4}>
-          <Text color="grey.200" fontWeight="medium">
-            Transaction breakdown
-          </Text>
-        </Box>
+    <VStack>
+      <HStack pt={5} w="full">
+        <Box hidden={!transaction?.assets?.length}>
+          <Box mb={4}>
+            <Text color="grey.200" fontWeight="medium">
+              Transaction breakdown
+            </Text>
+          </Box>
 
-        <VStack alignItems="flex-start">
-          {transaction.assets.map((asset) => (
-            <AssetBoxInfo asset={asset} key={asset.amount} />
-          ))}
-        </VStack>
+          <VStack alignItems="flex-start">
+            {transaction.assets.map((asset, index) => (
+              <AssetBoxInfo
+                key={asset.amount}
+                asset={asset}
+                borderColor={index > 0 ? 'dark.100' : 'transparent'}
+              />
+            ))}
+          </VStack>
 
-        <Box hidden={!transaction.gasUsed}>
-          <HStack justifyContent="space-between">
-            <Text>Gás Fee (ETH)</Text>
-            <Text>-{transaction.gasUsed}</Text>
-          </HStack>
+          <Box
+            mt={10}
+            hidden={!transaction.gasUsed}
+            borderColor="dark.100"
+            borderTopWidth={1}
+          >
+            <HStack mt={2} p={5} justifyContent="space-between">
+              <Text color="grey.200">Gás Fee (ETH)</Text>
+              <Text color="grey.200" fontSize="lg" fontWeight="semibold">
+                -{transaction.gasUsed}
+              </Text>
+            </HStack>
+          </Box>
         </Box>
-      </Box>
-    </HStack>
+      </HStack>
+      <Button
+        border="none"
+        bgColor="dark.100"
+        variant="secondary"
+        onClick={handleViewInExplorer}
+        hidden={transaction.status !== TransactionStatus.DONE}
+      >
+        View on Explorer
+      </Button>
+    </VStack>
   );
 };
 

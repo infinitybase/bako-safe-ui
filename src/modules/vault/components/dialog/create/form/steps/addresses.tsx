@@ -20,14 +20,21 @@ import { Controller } from 'react-hook-form';
 import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
 import { Dialog, UserAddIcon } from '@/components';
-import { UseCreateVaultReturn } from '@/modules';
+import { ITemplate, UseCreateVaultReturn } from '@/modules';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
+  templates: ITemplate[];
+  setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
 }
 
-const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
+const VaultAddressesStep = ({
+  form,
+  addresses,
+  templates,
+  setTemplate,
+}: VaultAddressesStepProps) => (
   <TabPanel p={0}>
     <Dialog.Section
       title={
@@ -43,10 +50,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => (
 
     <Box w="100%">
       <FormControl>
-        <Select placeholder=" ">
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+        <Select
+          placeholder=" "
+          onChange={(item) => setTemplate(item.target.value)}
+        >
+          {templates.length > 0 &&
+            templates?.map((item: ITemplate) => {
+              return (
+                <option value={item.id} key={item.id}>
+                  {item.name}
+                </option>
+              );
+            })}
         </Select>
         <FormLabel>Do you want to use a template?</FormLabel>
         <FormHelperText>

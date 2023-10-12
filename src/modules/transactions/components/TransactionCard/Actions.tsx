@@ -23,7 +23,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
 
   const { isSigned, isDeclined, isCompleted, isReproved, isPending } = status;
   const { confirmTransaction, declineTransaction, isLoading } =
-    useSignTransaction();
+    useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
@@ -58,13 +58,15 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
             variant="primary"
             size="sm"
             isLoading={isLoading}
-            onClick={() =>
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
               confirmTransaction({
                 txId: transaction.hash,
                 transactionID: transaction.id,
                 predicateID: transaction.predicateID,
-              })
-            }
+              });
+            }}
           >
             Sign
           </Button>
@@ -73,7 +75,11 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
             px={3}
             variant="secondary"
             size="sm"
-            onClick={() => declineTransaction(transaction.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              declineTransaction(transaction.id);
+            }}
             isLoading={isLoading}
           >
             Decline

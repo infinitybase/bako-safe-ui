@@ -34,7 +34,7 @@ const useTransactionList = () => {
   const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
   useEffect(() => {
-    if (inView.inView) {
+    if (inView.inView && !transactionRequest.isFetching) {
       transactionRequest.fetchNextPage();
     }
   }, [inView.inView]);

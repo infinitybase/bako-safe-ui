@@ -25,6 +25,7 @@ import {
   transactionStatus,
   waitingSignatures,
 } from '@/modules';
+import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { useVaultDetails } from '@/modules/vault/hooks';
 import { limitCharacters } from '@/utils';
 
@@ -33,6 +34,7 @@ import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
+  const { setTemplateFormInitial } = useTemplateStore();
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions } = vault.transactions;
 
@@ -78,7 +80,19 @@ const VaultDetailsPage = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Button variant="secondary" bgColor="dark.100" border="none">
+        <Button
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() => {
+            setTemplateFormInitial({
+              minSigners: vault.minSigners!,
+              addresses:
+                vault.signers! && vault.signers.map((signer) => signer.address),
+            });
+            navigate(Pages.createTemplate());
+          }}
+        >
           Set as template
         </Button>
       </HStack>

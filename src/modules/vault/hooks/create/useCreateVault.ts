@@ -8,6 +8,8 @@ import {
   useFuelAccount,
   useToast,
 } from '@/modules';
+import { TemplateService } from '@/modules/template/services/methods';
+import { useTemplateStore } from '@/modules/template/store';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -26,7 +28,7 @@ const useCreateVault = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const toast = useToast();
-
+  const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
   const request = useCreateVaultRequest({
     onSuccess: () => {
@@ -55,6 +57,20 @@ const useCreateVault = () => {
     });
   });
 
+  const setFormWithTemplate = async (id: string) => {
+    const template = await TemplateService.getById(id);
+    const address: string[] = template.addresses as string[];
+
+    form.setValue('minSigners', template.minSigners.toString());
+    template.addresses ??
+      form.setValue(
+        'addresses',
+        address.map((item: string) => {
+          return { value: item };
+        }),
+      );
+  };
+
   const onDeposit = async () => {
     if (request.data) {
       window.open(
@@ -65,6 +81,19 @@ const useCreateVault = () => {
       );
       navigate(Pages.detailsVault({ vaultId: request.data.id }));
     }
+  };
+
+  const onSaveTemplate = async () => {
+    const data = form.getValues();
+    const addresses = data.addresses?.map((address) => address.value) ?? [];
+    const minSigners = Number(data.minSigners) ?? 1;
+
+    setTemplateFormInitial({
+      minSigners,
+      addresses,
+    });
+
+    navigate(Pages.createTemplate());
   };
 
   const removeAddress = (index: number) => {
@@ -101,6 +130,8 @@ const useCreateVault = () => {
     request,
     navigate,
     onDeposit,
+    setFormWithTemplate,
+    onSaveTemplate,
   };
 };
 
