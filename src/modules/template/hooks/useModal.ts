@@ -8,9 +8,12 @@ const useModal = () => {
   const nextStep = () => {
     setStep(step + 1);
   };
+  const resetSteps = () => {
+    setStep(0);
+  };
   const prevStep = () => setStep(step - 1);
 
-  return { isOpen, openModal, step, nextStep, prevStep };
+  return { isOpen, openModal, step, nextStep, prevStep, resetSteps };
 };
 
 export { useModal };

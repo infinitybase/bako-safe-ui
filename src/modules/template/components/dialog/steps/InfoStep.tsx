@@ -24,7 +24,7 @@ const InfoStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                 onChange={field.onChange}
                 placeholder=" "
               />
-              <FormLabel>Vault name</FormLabel>
+              <FormLabel>Template name</FormLabel>
               <FormHelperText color="error.500">
                 {fieldState.error?.message}
               </FormHelperText>
