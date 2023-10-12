@@ -2,8 +2,7 @@ import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
-import { CreateVaultPage } from '@/modules/vault/pages';
-import { UserVaultsPage } from '@/modules/vault/pages/user-vaults';
+import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
 
 import { HomePage } from './pages';
 
