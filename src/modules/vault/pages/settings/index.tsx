@@ -32,7 +32,7 @@ const VaultSettingsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href="/home"
+              href={Pages.home()}
             >
               Home
             </BreadcrumbLink>
@@ -54,7 +54,7 @@ const VaultSettingsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href="#"
+              href={Pages.detailsVault({ vaultId: vault.id! })}
             >
               {vault.name}
             </BreadcrumbLink>

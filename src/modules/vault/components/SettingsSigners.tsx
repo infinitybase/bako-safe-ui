@@ -42,7 +42,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Signers
         </Text>
-        <Badge p={1} variant="warning">
+        <Badge p={1} variant="warning" h={5}>
           Required signers {vault?.minSigners}/{vault?.signers.length}
         </Badge>
       </HStack>
