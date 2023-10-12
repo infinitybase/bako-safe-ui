@@ -9,7 +9,7 @@ const Pages = {
   detailsVault: pageRoute<{ vaultId: string }>('/vault/:vaultId'),
   userVaults: pageRoute('/vault/me'),
   transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
-  createTransactio0n: pageRoute<{ vaultId: string }>(
+  createTransaction: pageRoute<{ vaultId: string }>(
     '/vault/:vaultId/transactions/create',
   ),
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
