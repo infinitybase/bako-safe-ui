@@ -30,13 +30,16 @@ const useToast = () => {
   };
 
   const error = (title: string) => {
-    toast({
-      title,
-      status: 'error',
-      position: 'bottom',
-      isClosable: true,
-      duration: 5000,
-    });
+    toast.isActive('error')
+      ? update({ title, status: 'error' })
+      : toast({
+          id: 'error',
+          title,
+          status: 'error',
+          position: 'bottom',
+          isClosable: true,
+          duration: 5000,
+        });
   };
 
   return {

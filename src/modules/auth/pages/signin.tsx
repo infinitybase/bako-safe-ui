@@ -1,13 +1,28 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
 
 import doubleB from '@/assets/doubleB.svg';
 import logo from '@/assets/logoDark.svg';
+import { useGetCurrentAccount, useToast } from '@/modules/core';
 
 import { useSignIn } from '../hooks';
+import { useFuelAccount } from '../store';
 
 const SigninPage = () => {
-  const { isConnected, isConnecting, goToApp } = useSignIn();
+  const { isConnecting, goToApp } = useSignIn();
+  const { invalidAccount, setInvalidAccount } = useFuelAccount();
+  const { getAccount } = useGetCurrentAccount();
+  const { error } = useToast();
+
+  useEffect(() => {
+    getAccount();
+  }, []);
+
+  useMemo(() => {
+    invalidAccount && error('Please select an valid account!');
+    setInvalidAccount(false);
+  }, [invalidAccount]);
 
   return (
     <>
