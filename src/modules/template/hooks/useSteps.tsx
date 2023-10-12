@@ -24,13 +24,13 @@ const useSteps = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { templateFormInitial } = useTemplateStore();
+  const { templateFormInitial, setTemplateFormInitial } = useTemplateStore();
   const { createTemplate, isLoading } = useCreate();
   const { handleSubmit, ...form } = useForm<ITemplatePayload>({
     resolver: yupResolver(schema) as Resolver<ITemplatePayload, unknown>,
     defaultValues: {
       name: '',
-      description: '',
+      description: undefined,
       addresses: templateFormInitial.addresses.map((item: string) => {
         return {
           value: item,
@@ -80,7 +80,6 @@ const useSteps = () => {
       hiddeProgressBar: true,
       isLoading,
       onSubmit: () => {
-        resetSteps();
         onClose();
       },
     },
@@ -88,8 +87,12 @@ const useSteps = () => {
 
   const onClose = () => {
     form.reset();
+    setTemplateFormInitial({
+      addresses: [],
+      minSigners: 1,
+    });
+    resetSteps();
     const vaultId = location?.pathname.replace('/template/', '');
-    console.log(vaultId);
 
     vaultId.length > 0 ? navigate(`/vault/${vaultId}`) : navigate(-1);
   };
