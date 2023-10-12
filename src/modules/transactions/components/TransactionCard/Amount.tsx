@@ -10,7 +10,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   const ethAmount = assets.find((a) => a.assetID === NativeAssetId)?.amount;
 
   return (
-    <HStack w={110} ml={6}>
+    <HStack w={110} ml={6} textAlign="left">
       <Box mt={0.5}>
         <Heading variant="title-md" color="grey.200">
           {ethAmount}

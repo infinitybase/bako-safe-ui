@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import React from 'react';
 
 import { Card, NotFoundIcon } from '@/components';
@@ -128,13 +129,18 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 </AssetCard>
               );
             }
+
+            const balance = bn(bn.parseUnits(asset.amount ?? '0.000')).format({
+              precision: 4,
+            });
+
             return (
               <AssetCard key={index}>
                 <HStack w="full" spacing={4}>
                   <Image src={assetsMap[asset.assetId].icon} boxSize="38px" />
                   <Box>
                     <Text color="grey.200" fontWeight="semibold" fontSize="lg">
-                      {asset.amount}
+                      {balance}
                     </Text>
                     <Text variant="description" fontSize="md">
                       {assetsMap[asset.assetId].slug}

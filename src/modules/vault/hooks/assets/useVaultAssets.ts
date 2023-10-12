@@ -59,6 +59,10 @@ function useVaultAssets(predicate?: Vault) {
 
   useEffect(() => {
     findBiggerAsset();
+
+    return () => {
+      setBiggerAsset(null);
+    };
   }, [assets]);
 
   const getCoinAmount = useCallback(

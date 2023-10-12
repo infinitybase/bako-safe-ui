@@ -3,8 +3,8 @@ import { create } from 'zustand';
 import { Asset } from '../../core/utils/assets/types';
 
 interface State {
-  biggerAsset: Asset;
-  setBiggerAsset: (asset: Asset) => void;
+  biggerAsset: Asset | null;
+  setBiggerAsset: (asset: Asset | null) => void;
   visebleBalance: boolean;
   setVisibleBalance: (visible: boolean) => void;
   assets: Asset[];
@@ -12,7 +12,7 @@ interface State {
 }
 
 const useVaultState = create<State>((set) => ({
-  biggerAsset: {} as Asset,
+  biggerAsset: null,
   setBiggerAsset: (asset) => set({ biggerAsset: asset }),
   visebleBalance: false,
   setVisibleBalance: (visible) => set({ visebleBalance: visible }),
