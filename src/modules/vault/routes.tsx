@@ -4,7 +4,7 @@ import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 import { CreateTransactionPage } from '@/modules/transactions';
 
-import { VaultDetailsPage } from './pages/details';
+import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const vaultRoutes = (
   <Route element={<DashboardLayoutRouter hasSideBar />}>
@@ -21,6 +21,14 @@ const vaultRoutes = (
       element={
         <AuthRoute>
           <CreateTransactionPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.vaultSettings()}
+      element={
+        <AuthRoute>
+          <VaultSettingsPage />
         </AuthRoute>
       }
     />

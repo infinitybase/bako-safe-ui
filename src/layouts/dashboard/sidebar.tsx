@@ -82,7 +82,9 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           onClick={() => {
-            route.navigate(Pages.home());
+            route.navigate(
+              Pages.vaultSettings({ vaultId: route.params.vaultId! }),
+            );
           }}
         >
           <SidebarMenu.Icon as={SettingsIcon} />
