@@ -1,6 +1,7 @@
 import {
   Badge as ChakraBadge,
   BadgeProps,
+  Box,
   chakra,
   Flex,
   FlexProps,
@@ -18,13 +19,25 @@ const MenuItem = chakra(Flex, {
     justifyContent: 'flex-start',
     gap: 4,
     alignItems: 'center',
+    pb: 5,
+    pt: 5,
   },
 });
 
-const Container = ({ children, ...props }: FlexProps) => (
-  <MenuItem cursor="pointer" {...props}>
-    {children}
-  </MenuItem>
+const Container = ({
+  children,
+  isActive,
+  ...props
+}: FlexProps & { isActive?: boolean }) => (
+  <Box
+    px={4}
+    w="full"
+    cursor="pointer"
+    borderBottomWidth={1}
+    borderColor={isActive ? 'brand.600' : 'transparent'}
+  >
+    <MenuItem {...props}>{children}</MenuItem>
+  </Box>
 );
 
 const Icon = (props: MergeWithAs<IconProps, never>) => (

@@ -12,7 +12,8 @@ import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
 import { useSidebar } from './hook';
 
 const Sidebar = () => {
-  const { route, vaultRequest, pendingTransactions, drawer } = useSidebar();
+  const { route, vaultRequest, pendingTransactions, drawer, menuItems } =
+    useSidebar();
 
   return (
     <Box
@@ -47,13 +48,16 @@ const Sidebar = () => {
         }}
       />
 
-      <Divider borderColor="dark.100" my={8} />
+      <Divider borderColor="dark.100" mt={8} mb={4} />
 
       {/* MENU */}
-      <SidebarMenu.List spacing={6} w="100%">
+      <SidebarMenu.List w="100%">
         <SidebarMenu.Container
+          isActive={menuItems.home}
           onClick={() => {
-            route.navigate(Pages.home());
+            route.navigate(
+              Pages.detailsVault({ vaultId: route.params.vaultId! }),
+            );
           }}
         >
           <SidebarMenu.Icon as={HomeIcon} />
@@ -61,6 +65,7 @@ const Sidebar = () => {
         </SidebarMenu.Container>
 
         <SidebarMenu.Container
+          isActive={menuItems.transactions}
           onClick={() => {
             route.navigate(
               Pages.transactions({ vaultId: route.params.vaultId! }),
@@ -81,6 +86,7 @@ const Sidebar = () => {
         {/*</SidebarMenu.Container>*/}
 
         <SidebarMenu.Container
+          isActive={menuItems.settings}
           onClick={() => {
             route.navigate(
               Pages.vaultSettings({ vaultId: route.params.vaultId! }),

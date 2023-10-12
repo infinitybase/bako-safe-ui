@@ -1,8 +1,9 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
+  Pages,
   useFuelAccount,
   useTransactionListRequest,
   useVaultDetailsRequest,
@@ -11,6 +12,7 @@ import {
 
 const useSidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams<{ vaultId: string }>();
   const drawer = useDisclosure();
   const { account } = useFuelAccount();
@@ -29,14 +31,27 @@ const useSidebar = () => {
     );
   }, [account, params.vaultId, transactionListRequest.data]);
 
+  const checkPathname = (path: string) => location.pathname === path;
+
+  const menuItems = {
+    home: checkPathname(Pages.detailsVault({ vaultId: params?.vaultId ?? '' })),
+    settings: checkPathname(
+      Pages.vaultSettings({ vaultId: params?.vaultId ?? '' }),
+    ),
+    transactions: checkPathname(
+      Pages.transactions({ vaultId: params?.vaultId ?? '' }),
+    ),
+  };
+
   return {
     route: {
       params,
       navigate,
     },
-    vaultRequest: vaultDetailsRequest,
-    pendingTransactions,
     drawer,
+    menuItems,
+    pendingTransactions,
+    vaultRequest: vaultDetailsRequest,
   };
 };
 
