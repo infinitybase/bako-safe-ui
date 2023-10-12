@@ -2310,6 +2310,15 @@
     uuid "^9.0.0"
     xstate "^4.38.2"
 
+"@fuel-wallet/types@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@fuel-wallet/types/-/types-0.13.0.tgz#79b3ec60910a96bc297a3a37a9427baa73ddf689"
+  integrity sha512-qhEM5KYWMFS/SnDKLby3v1+3SIY0MebWhuME2FdHH95wukZOdTsK1qj/cnNLVs2RXlEO41oz23BqzLPG3i439g==
+  dependencies:
+    "@types/chrome" "^0.0.243"
+    dexie-observable "4.0.1-beta.13"
+    json-rpc-2.0 "^1.6.0"
+
 "@fuels/assets@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@fuels/assets/-/assets-0.0.12.tgz#b38f94e636eb813a8f39d64f3169745066c27d42"
@@ -2571,6 +2580,14 @@
   version "0.0.242"
   resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.242.tgz#bb1199fb885ff6d3e8d30dd81fe97e23bd9d6ecd"
   integrity sha512-SeMXBSfcAGX9ezTz7Pro7n/AiNdIH3cetkdbM+Kfg3zD24jmbnm0IAEIxzx8ccqrnJenLCfD7fR+4WIYAbeQHw==
+  dependencies:
+    "@types/filesystem" "*"
+    "@types/har-format" "*"
+
+"@types/chrome@^0.0.243":
+  version "0.0.243"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.243.tgz#a6752af287195b4abe0dfb72a172fcd728617c06"
+  integrity sha512-4PHv0kxxxpZFHWPBiJJ9TWH8kbx0567j1b2djnhpJjpiSGNI7UKkz7dSEECBtQ0B3N5nQTMwSB/5IopkWGAbEA==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"

@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount, useNetwork } from '@/modules';
 import {
   Pages,
   useConnect,
   useCurrentAccount,
   useIsConnected,
-  useProvider,
 } from '@/modules/core';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
@@ -19,7 +18,7 @@ const useSignIn = () => {
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { account } = useCurrentAccount();
-  const { provider } = useProvider();
+  const { network } = useNetwork();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar }) => {
@@ -61,7 +60,7 @@ const useSignIn = () => {
 
       createUserRequest.mutate({
         address: account!,
-        provider: provider!.url,
+        provider: network!.url,
       });
     } catch (e) {
       console.log({ e });
