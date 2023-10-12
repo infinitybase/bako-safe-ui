@@ -10,7 +10,7 @@ const useSignIn = () => {
   const navigate = useNavigate();
 
   const [fuel] = useFuel();
-  const { setAccount, setAvatar } = useFuelAccount();
+  const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
@@ -61,6 +61,7 @@ const useSignIn = () => {
         provider: network!.url,
       });
     } catch (e) {
+      setInvalidAccount(true);
       console.log({ e });
     }
   };
