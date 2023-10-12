@@ -45,12 +45,13 @@ const useVaultDetails = () => {
     if (!predicate) return [];
 
     return predicate.completeAddress
-      .map((address) => ({
+      ?.map((address) => ({
         address,
         isOwner: address.address === predicate.owner,
       }))
       .sort((address) => (address.isOwner ? -1 : 0));
   }, [predicate]);
+
   return {
     vault: {
       ...predicate,

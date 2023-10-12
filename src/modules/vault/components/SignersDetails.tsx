@@ -41,6 +41,8 @@ const SignersDetails = (props: SignersDetailsProps) => {
 
   if (!vault) return null;
 
+  const signers = vault.completeSigners ?? vault.signers;
+
   return (
     <Box>
       <HStack alignItems="flex-start" mb={5} w="full" spacing={2}>
@@ -70,7 +72,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
           borderRadius={10}
         />
 
-        {vault.completeSigners.map(
+        {signers.map(
           (asset: { address: User; isOwner: boolean }, index: number) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
