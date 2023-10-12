@@ -2,12 +2,12 @@ import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
+import { CreateTransactionPage } from '@/modules/transactions';
 
-import { VaultDetailsPage } from './pages';
-import { UserVaultsPage } from './pages/user-vaults';
+import { VaultDetailsPage } from './pages/details';
 
 const vaultRoutes = (
-  <Route element={<DashboardLayoutRouter />}>
+  <Route element={<DashboardLayoutRouter hasSideBar />}>
     <Route
       path={Pages.detailsVault()}
       element={
@@ -16,19 +16,11 @@ const vaultRoutes = (
         </AuthRoute>
       }
     />
-    {/* <Route
+    <Route
       path={Pages.createTransaction()}
       element={
         <AuthRoute>
           <CreateTransactionPage />
-        </AuthRoute>
-      }
-    /> */}
-    <Route
-      path={Pages.userVaults()}
-      element={
-        <AuthRoute>
-          <UserVaultsPage />
         </AuthRoute>
       }
     />
