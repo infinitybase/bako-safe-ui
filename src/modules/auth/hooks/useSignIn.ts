@@ -49,7 +49,6 @@ const useSignIn = () => {
         address,
         provider,
         user_id: id,
-        avatar: '',
       });
     },
   });

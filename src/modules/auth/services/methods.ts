@@ -20,7 +20,6 @@ export type CreateUserPayload = {
 export type SignInPayload = {
   address: string;
   hash: string;
-  avatar: string;
   createdAt: string;
   encoder: Encoder;
   provider: string;
