@@ -11,12 +11,14 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
+import { Pages } from '@/modules/core';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
-import { SignersDetails } from './SignersDetails';
+import { SettingsSigners } from './SettingsSigners';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
@@ -24,8 +26,9 @@ export interface CardDetailsProps {
 }
 
 const SettingsOverview = (props: CardDetailsProps) => {
-  const { vault } = props;
-  // const { biggerAsset, visebleBalance, setVisibleBalance } = store;
+  const navigate = useNavigate();
+  const { vault, store } = props;
+  const { biggerAsset } = store;
 
   if (!vault) return;
 
@@ -55,6 +58,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   variant="roundedSquare"
                   name={vault.name}
                   bg="grey.900"
+                  color="white"
                   size={'lg'}
                   p={10}
                 />
@@ -65,12 +69,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Heading>
 
                 <Box maxW={420}>
-                  <Text variant="description">
-                    Setting Sail on a Journey to Unlock the Potential of
-                    User-Centered Design.
-                  </Text>
+                  <Text variant="description">{vault?.description}</Text>
                 </Box>
-                {/* <Text variant="description">{vault?.description}</Text> */}
               </Box>
             </HStack>
 
@@ -89,13 +89,12 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   >
                     <Text variant="description">Vault balance</Text>
                     <Heading variant="title-xl">
-                      {/* {`${biggerAsset?.amount} ${biggerAsset?.slug}`} */}
-                      {`532.0545429 ETH`}
+                      {`${biggerAsset?.amount} ${biggerAsset?.slug}`}
                     </Heading>
                   </HStack>
                 </Box>
 
-                <Divider />
+                <Divider borderColor="dark.100" />
 
                 <HStack spacing={40}>
                   <VStack spacing={2} alignItems="flex-start">
@@ -109,7 +108,15 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   </VStack>
 
                   <VStack spacing={2} alignItems="flex-start">
-                    <Button minW={130} variant="primary">
+                    <Button
+                      minW={130}
+                      variant="primary"
+                      onClick={() =>
+                        navigate(
+                          Pages.createTransaction({ vaultId: vault.id! }),
+                        )
+                      }
+                    >
                       Send
                     </Button>
                     <Text variant="description" fontSize="xs">
@@ -135,17 +142,13 @@ const SettingsOverview = (props: CardDetailsProps) => {
               />
             </Box>
 
-            <AddressCopy
-              w="full"
-              address="fuel14yleyeny9pm60ezpmm3s28z34h4f7jy9z2u3l69u6amq8c9ehqwq43wts8"
-              // address={vault.predicateAddress!}
-            />
+            <AddressCopy w="full" address={vault.predicateAddress!} />
           </VStack>
         </HStack>
       </Card>
 
       <Box mt={8}>
-        <SignersDetails vault={vault} />
+        <SettingsSigners vault={vault} />
       </Box>
     </Box>
   );

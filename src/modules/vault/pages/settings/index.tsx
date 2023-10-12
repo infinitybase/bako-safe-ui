@@ -24,7 +24,7 @@ const VaultSettingsPage = () => {
 
   return (
     <Box w="full">
-      <HStack mb={9} w="full" justifyContent="space-between">
+      <HStack mb={8} w="full" justifyContent="space-between">
         <Breadcrumb>
           <BreadcrumbItem>
             <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
@@ -78,7 +78,7 @@ const VaultSettingsPage = () => {
         </Button>
       </HStack>
 
-      <VStack mb={14} alignItems="flex-start" w="full" spacing={5}>
+      <VStack mb={14} alignItems="flex-start" w="100%" spacing={5}>
         <SettingsOverview vault={vault} store={store} />
       </VStack>
     </Box>
