@@ -74,7 +74,9 @@ const CardDetails = (props: CardDetailsProps) => {
                 {vault?.name}
               </Heading>
 
-              <Text variant="description">{vault?.description}</Text>
+              <Text variant="description" maxW="250px">
+                {vault?.description}
+              </Text>
             </Box>
           </HStack>
 
