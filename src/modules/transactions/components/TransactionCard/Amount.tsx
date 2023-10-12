@@ -1,4 +1,5 @@
 import { Box, Heading, HStack, Text } from '@chakra-ui/react';
+import { bn } from 'fuels';
 
 import { AssetModel, NativeAssetId } from '@/modules/core';
 
@@ -7,7 +8,10 @@ interface TransactionCardAmountProps {
 }
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
-  const ethAmount = assets.find((a) => a.assetID === NativeAssetId)?.amount;
+  const ethAmount = assets
+    .filter((a) => a.assetID === NativeAssetId)
+    .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
+    .format();
 
   return (
     <HStack w={110} ml={6} textAlign="left">
