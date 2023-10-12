@@ -2,9 +2,14 @@ interface TransactionCardStatusProps {
   status: TransactionState;
   transaction: Transaction;
 }
-import { Badge, Text, VStack } from '@chakra-ui/react';
+import { Badge, CircularProgress, Text, VStack } from '@chakra-ui/react';
 
-import { Transaction, TransactionState, WitnessStatus } from '@/modules/core';
+import {
+  Transaction,
+  TransactionState,
+  TransactionStatus,
+  WitnessStatus,
+} from '@/modules/core';
 
 const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
@@ -14,6 +19,17 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   ).length;
 
   const signatureStatus = `${signaturesCount}/${transaction.predicate.minSigners} Sgd`;
+
+  if (transaction.status === TransactionStatus.PENDING) {
+    return (
+      <CircularProgress
+        trackColor="dark.100"
+        size={30}
+        isIndeterminate
+        color="brand.500"
+      />
+    );
+  }
 
   return (
     <VStack spacing={0}>

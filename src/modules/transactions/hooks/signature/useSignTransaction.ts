@@ -9,10 +9,7 @@ import {
   useToast,
   useWalletSignMessage,
 } from '@/modules/core';
-import {
-  VAULT_DETAIL_QUERY_KEY,
-  VAULT_TRANSACTIONS_QUERY_KEY,
-} from '@/modules/vault';
+import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSendRequest } from '../details';
 import {
@@ -42,7 +39,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const refetetchTransactionList = () =>
     invalidateQueries([
-      VAULT_DETAIL_QUERY_KEY,
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
