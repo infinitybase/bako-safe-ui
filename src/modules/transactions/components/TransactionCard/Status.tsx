@@ -2,7 +2,7 @@ interface TransactionCardStatusProps {
   status: TransactionState;
   transaction: Transaction;
 }
-import { Badge, CircularProgress, Text, VStack } from '@chakra-ui/react';
+import { Badge, Box, CircularProgress, Text, VStack } from '@chakra-ui/react';
 
 import {
   Transaction,
@@ -22,17 +22,19 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
 
   if (transaction.status === TransactionStatus.PENDING) {
     return (
-      <CircularProgress
-        trackColor="dark.100"
-        size={30}
-        isIndeterminate
-        color="brand.500"
-      />
+      <Box minW={100}>
+        <CircularProgress
+          trackColor="dark.100"
+          size={30}
+          isIndeterminate
+          color="brand.500"
+        />
+      </Box>
     );
   }
 
   return (
-    <VStack spacing={0}>
+    <VStack minW={100} spacing={0}>
       <Badge
         h={5}
         variant={
