@@ -1,113 +1,233 @@
 import {
+  Badge,
   Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
-  Heading,
+  Grid,
+  GridItem,
+  HStack,
   Icon,
+  Skeleton,
+  Spacer,
   Text,
+  VStack,
 } from '@chakra-ui/react';
-import { MdChevronRight } from 'react-icons/md';
+import { format } from 'date-fns';
+import { CgList } from 'react-icons/cg';
+import { FaRegPlusSquare } from 'react-icons/fa';
+import { GoArrowSwitch } from 'react-icons/go';
 
-import { Loader } from '@/components';
+import { HomeIcon, PendingIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules';
+import {
+  TransactionCard,
+  transactionStatus,
+  waitingSignatures,
+} from '@/modules/transactions';
+import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { limitCharacters } from '@/utils';
 
-import { useHome } from '../hooks';
+import { useHome } from '..';
+import { ActionCard } from '../components/ActionCard';
+import { EmptyTransaction } from '../components/EmptyCard/Transaction';
+import { EmptyVault } from '../components/EmptyCard/Vault';
 
 const HomePage = () => {
-  const { request, navigate } = useHome();
-  const { isLoading, predicates } = request;
+  const {
+    vaultsRequest: {
+      vaults: { recentVaults, extraCount, vaultsMax },
+      isLoading: loadingRecentVaults,
+    },
+    transactionsRequest: { transactions },
+    account,
+    navigate,
+  } = useHome();
+
+  if (recentVaults && recentVaults?.length <= 0) {
+    return (
+      <VStack w="full" spacing={6}>
+        <EmptyVault />
+      </VStack>
+    );
+  }
 
   return (
-    <Flex width="100%" justifyContent="center" mt={20}>
-      <Card bg="dark.500" color="white" minW={600} boxShadow="xl">
-        {isLoading && !predicates ? (
-          <Loader w={600} h={500} />
-        ) : (
-          <>
-            <CardHeader>
-              <Flex width="100%" justifyContent="space-between">
-                <Heading size="lg">Predicates</Heading>
+    <VStack w="full" spacing={6}>
+      <HStack w="full" h="10" justifyContent="space-between">
+        <HStack>
+          <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
+          <Text color="grey.200" fontWeight="semibold">
+            Home
+          </Text>
+        </HStack>
 
-                {!!predicates?.length && (
-                  <Button
-                    size="xs"
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                )}
-              </Flex>
-              <Box mt={2} maxW={400}>
-                <Text fontSize="sm" color="gray">
-                  Click on “Create” and start a vault for your company, family
-                  or friends to perform secure transactions.
-                </Text>
-              </Box>
-            </CardHeader>
+        <Box>
+          <Button
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            onClick={() => navigate(Pages.createVault())}
+          >
+            Create vault
+          </Button>
+        </Box>
+      </HStack>
 
-            <CardBody>
-              {!!predicates && predicates.length > 0 ? (
-                <Box w="100%">
-                  {predicates?.map((predicate) => (
-                    <Flex
-                      onClick={() =>
-                        navigate(
-                          Pages.detailsVault({ id: String(predicate.id) }),
-                        )
-                      }
-                      key={predicate.name}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      py={2}
-                      px={3}
-                      mb={2}
-                      bg="dark.100"
-                      borderRadius="md"
-                      cursor="pointer"
-                      _hover={{ bg: 'dark.200' }}
-                    >
-                      <Box>
-                        <Text>{predicate.name}</Text>
-                        <Text color="gray">{predicate.description}</Text>
-                      </Box>
+      <HStack spacing={6}>
+        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+          <ActionCard.Icon icon={VaultIcon} />
+          <Box>
+            <ActionCard.Title>Vaults</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage All Your Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
 
-                      <Icon color="gray" fontSize="xl" as={MdChevronRight} />
-                    </Flex>
-                  ))}
-                </Box>
-              ) : (
-                <Flex
-                  flexDirection="column"
-                  textAlign="center"
-                  justifyContent="center"
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
+          <Box>
+            <ActionCard.Title isUpcoming={true}>Transactions</ActionCard.Title>
+            <ActionCard.Description>
+              Manage Transactions Across All Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon icon={CgList} isUpcoming={true} />
+          <Box>
+            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage Your Contacts for Easy Transfers and Vault
+              Creation.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+      </HStack>
+
+      {/* RECENT VAULTS */}
+      <Box mt={4} alignSelf="flex-start">
+        <Text
+          variant="subtitle"
+          fontWeight="semibold"
+          fontSize="xl"
+          color="grey.200"
+        >
+          Recently used vaults
+        </Text>
+      </Box>
+      <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
+        {recentVaults?.map(
+          (
+            { id, name, predicateAddress, completeAddress, description },
+            index,
+          ) => {
+            const lastCard = index === vaultsMax - 1;
+            const hasMore = extraCount > 0;
+
+            return (
+              <GridItem key={id}>
+                <Skeleton
+                  speed={1}
+                  startColor="dark.200"
+                  endColor="dark.500"
+                  isLoaded={!loadingRecentVaults}
                   w="100%"
+                  borderRadius={10}
                 >
-                  <Box mb={4}>
-                    <Text>Not found predicates.</Text>
-                  </Box>
-                  <Button
-                    color="brand.900"
-                    variant="solid"
-                    colorScheme="brand"
-                    loadingText="Connecting.."
-                    onClick={() => navigate(Pages.createVault())}
-                  >
-                    Create
-                  </Button>
-                </Flex>
-              )}
-            </CardBody>
-          </>
+                  {lastCard && hasMore ? (
+                    <ExtraVaultCard
+                      extra={extraCount}
+                      onClick={() => navigate(Pages.userVaults())}
+                    />
+                  ) : (
+                    <VaultCard
+                      name={name}
+                      title={description}
+                      address={predicateAddress}
+                      members={completeAddress}
+                      onClick={() =>
+                        navigate(Pages.detailsVault({ vaultId: id }))
+                      }
+                    />
+                  )}
+                </Skeleton>
+              </GridItem>
+            );
+          },
         )}
-      </Card>
-    </Flex>
+      </Grid>
+
+      {/* TRANSACTION LIST */}
+      {transactions && transactions.length <= 0 ? (
+        <VStack w="full" spacing={6}>
+          <HStack w="full" spacing={4}>
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="xl"
+              color="grey.200"
+            >
+              Transactions
+            </Text>
+          </HStack>
+          <EmptyTransaction />
+        </VStack>
+      ) : (
+        <Box w="full" mt={8}>
+          <HStack spacing={4}>
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="xl"
+              color="grey.200"
+            >
+              Transactions
+            </Text>
+            <Badge h={6} variant="warning">
+              <Icon as={PendingIcon} />
+              {`${waitingSignatures({
+                account,
+                transactions: transactions ?? [],
+              })} waiting for your signature`}
+            </Badge>
+            <Spacer />
+            {/*<Link color="brand.500">View all</Link>*/}
+          </HStack>
+          <TransactionCard.List spacing={4} mt={6} mb={12}>
+            {transactions?.map((transaction) => {
+              return (
+                <TransactionCard.Container
+                  status={transactionStatus({ ...transaction, account })}
+                  key={transaction.id}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
+                  }
+                >
+                  <TransactionCard.VaultInfo vault={transaction.predicate} />
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount assets={transaction.assets} />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction.name, 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              );
+            })}
+          </TransactionCard.List>
+        </Box>
+      )}
+    </VStack>
   );
 };
 

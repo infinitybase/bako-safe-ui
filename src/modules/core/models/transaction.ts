@@ -6,6 +6,17 @@ export enum TransactionStatus {
   AWAIT = 'AWAIT',
   DONE = 'DONE',
   PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+  ERROR = 'ERROR',
+}
+
+export interface TransactionState {
+  isCompleted: boolean;
+  isDeclined: boolean;
+  isSigned: boolean;
+  isPending: boolean;
+  isReproved: boolean;
+  isError: boolean;
 }
 
 export interface Transaction {
@@ -22,4 +33,5 @@ export interface Transaction {
   assets: AssetModel[];
   witnesses: Witness[];
   predicate: Predicate;
+  createdAt: Date;
 }

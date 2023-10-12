@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuel, useFuelAccount } from '@/modules';
 import { AppRoutes } from '@/routes';
 
@@ -10,14 +11,18 @@ function App() {
   useEffect(() => {
     function onFuelEvent() {
       setAccount('');
+      CookiesConfig.removeCookies([
+        CookieName.ACCESS_TOKEN,
+        CookieName.ADDRESS,
+      ]);
     }
 
     fuel?.on(fuel?.events.connection, onFuelEvent);
     fuel?.on(fuel?.events.currentAccount, onFuelEvent);
 
     return () => {
-      fuel?.on(fuel?.events.connection, onFuelEvent);
-      fuel?.on(fuel?.events.currentAccount, onFuelEvent);
+      fuel?.off(fuel?.events.connection, onFuelEvent);
+      fuel?.off(fuel?.events.currentAccount, onFuelEvent);
     };
   }, [fuel, setAccount]);
 

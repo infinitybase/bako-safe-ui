@@ -1,17 +1,34 @@
 import { Route } from 'react-router-dom';
 
-import { DefaultLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
+import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
 
 import { HomePage } from './pages';
 
 const homeRoutes = (
-  <Route path={Pages.home()} element={<DefaultLayoutRouter />}>
+  <Route element={<DashboardLayoutRouter />}>
     <Route
-      index
+      path={Pages.home()}
       element={
         <AuthRoute>
           <HomePage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.createVault()}
+      element={
+        <AuthRoute>
+          <CreateVaultPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.userVaults()}
+      element={
+        <AuthRoute>
+          <UserVaultsPage />
         </AuthRoute>
       }
     />

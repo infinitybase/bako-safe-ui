@@ -1,13 +1,14 @@
 import { Route } from 'react-router-dom';
 
-import { DefaultLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts';
 import { Pages } from '@/modules/core';
 
-import { ExamplePage } from './pages';
+import { ExampleHomePage, ExamplePage } from './pages';
 
 const exampleRoutes = (
-  <Route path={Pages.example()} element={<DefaultLayoutRouter />}>
-    <Route index element={<ExamplePage />} />
+  <Route path={Pages.example()} element={<DashboardLayoutRouter hasSideBar />}>
+    <Route index element={<ExampleHomePage />} />
+    <Route path={Pages.exampleHome()} element={<ExamplePage />} />
   </Route>
 );
 

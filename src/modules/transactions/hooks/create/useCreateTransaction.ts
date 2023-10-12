@@ -1,22 +1,36 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { TransactionStatus, useToast } from '@/modules';
+import {
+  invalidateQueries,
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  TransactionStatus,
+  USER_TRANSACTIONS_QUERY_KEY,
+  useToast,
+} from '@/modules';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useCreateTransactionRequest } from './useCreateTransactionRequest';
 
-const useCreateTransaction = () => {
+interface UseCreateTransactionParams {
+  onClose: () => void;
+}
+
+const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ vaultId: string }>();
   const toast = useToast();
 
   // Vault
-  const vaultDetails = useVaultDetailsRequest(params.id!);
+  const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails.predicate?.predicateInstance);
 
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: vaultAssets.assets,
+    assets: vaultAssets.assets?.map((asset) => ({
+      amount: asset.amount,
+      assetId: asset.assetId,
+    })),
     getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset),
     validateBalance: (asset, amount) =>
       vaultAssets.hasAssetBalance(asset, amount),
@@ -29,7 +43,12 @@ const useCreateTransaction = () => {
         position: 'bottom',
         isClosable: true,
       });
-      navigate(-1);
+      invalidateQueries([
+        TRANSACTION_LIST_QUERY_KEY,
+        TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+        USER_TRANSACTIONS_QUERY_KEY,
+      ]);
+      handleClose();
     },
     onError: () => {
       toast.show({
@@ -41,12 +60,17 @@ const useCreateTransaction = () => {
     },
   });
 
+  const handleClose = () => {
+    props?.onClose();
+    form.reset();
+  };
+
   const handleCreateTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate({
       predicate: vaultDetails.predicate!.predicateInstance,
       transaction: {
         name: data.name,
-        predicateID: params.id!,
+        predicateID: params.vaultId!,
         predicateAdress:
           vaultDetails.predicate!.predicateInstance.address.toString(),
         assets: data.transactions!.map((transaction) => ({
@@ -58,7 +82,7 @@ const useCreateTransaction = () => {
         txData: '',
         hash: '',
       },
-      predicateID: params.id!,
+      predicateID: params.vaultId!,
     });
   });
 
@@ -72,6 +96,7 @@ const useCreateTransaction = () => {
     vault: vaultDetails,
     assets: vaultAssets,
     navigate,
+    handleClose,
   };
 };
 

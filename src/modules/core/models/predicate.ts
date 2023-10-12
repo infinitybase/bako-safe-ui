@@ -1,9 +1,13 @@
+import { Transaction } from './transaction';
+import { User } from './user';
+
 export interface Predicate {
   id: string;
   name: string;
   predicateAddress: string;
   description: string;
   minSigners: number;
+  completeAddress: User[];
   addresses: string[];
   owner: string;
   bytes: string;
@@ -11,4 +15,5 @@ export interface Predicate {
   configurable: string;
   provider: string;
   chainId?: number;
+  transactions: Transaction[];
 }

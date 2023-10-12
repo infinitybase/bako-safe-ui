@@ -1,27 +1,33 @@
 import { Vault } from 'bsafe';
 import { bn } from 'fuels';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
+
+import { useVaultState } from '../../states';
 
 const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
-
-  return balances.map((balance) => {
+  const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
     return {
       amount: balance.amount.format(),
       slug: assetInfos?.slug ?? 'UKN',
       name: assetInfos?.name ?? 'Unknown',
       assetId: balance.assetId,
+      icon: assetInfos?.icon,
     };
   });
+
+  return result || [];
 };
 
 function useVaultAssets(predicate?: Vault) {
+  const { setVisibleBalance, setBiggerAsset } = useVaultState();
+
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', predicate],
     () => balancesToAssets(predicate),
@@ -29,8 +35,35 @@ function useVaultAssets(predicate?: Vault) {
       initialData: [],
       refetchInterval: 10000,
       keepPreviousData: true,
+      enabled: !!predicate,
     },
   );
+  const findBiggerAsset = () => {
+    let bigger = 0;
+    const isValid = assets && assets.length > 0;
+
+    if (isValid) {
+      setBiggerAsset(assets[0]);
+      assets.map((item, index) => {
+        const _isValid =
+          index > 0 &&
+          item?.amount &&
+          bn(assets[bigger].amount) < bn(item.amount);
+        if (_isValid) {
+          bigger = index;
+        }
+      });
+      setBiggerAsset(assets[bigger]);
+    }
+  };
+
+  useEffect(() => {
+    findBiggerAsset();
+
+    return () => {
+      setBiggerAsset(null);
+    };
+  }, [assets]);
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
@@ -40,7 +73,7 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0);
       }
 
-      return bn(bn.parseUnits(balance.amount));
+      return bn(bn.parseUnits(balance.amount!));
     },
     [assets],
   );
@@ -53,7 +86,7 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0).format();
       }
 
-      return bn(bn.parseUnits(balance.amount)).format({ precision: 3 });
+      return bn(bn.parseUnits(balance.amount!)).format({ precision: 3 });
     },
     [assets],
   );
@@ -90,6 +123,7 @@ function useVaultAssets(predicate?: Vault) {
     getCoinAmount,
     getCoinBalance,
     hasAssetBalance,
+    setVisibleBalance,
     hasBalance,
     hasAssets: !!assets?.length,
   };

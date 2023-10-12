@@ -1,199 +1,205 @@
 import {
   Badge,
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Flex,
   Heading,
+  HStack,
   Icon,
-  Stat,
-  StatLabel,
-  StatNumber,
   Text,
 } from '@chakra-ui/react';
-import { QRCodeSVG } from 'qrcode.react';
-import {
-  MdChevronLeft,
-  MdCopyAll as CopyIcon,
-  MdGroup as GroupIcon,
-  MdMonetizationOn as CoinIcon,
-} from 'react-icons/md';
+import { format } from 'date-fns';
 
-import { Loader } from '@/components';
-import { AssetItem, AssetList, NativeAssetId, Pages } from '@/modules/core';
-import { useVaultDetails } from '@/modules/vault';
+import {
+  Card,
+  HomeIcon,
+  NotFoundIcon,
+  PendingIcon,
+  SquarePlusIcon,
+} from '@/components';
+import {
+  Pages,
+  TransactionCard,
+  transactionStatus,
+  waitingSignatures,
+} from '@/modules';
+import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
+import { useVaultDetails } from '@/modules/vault/hooks';
+import { limitCharacters } from '@/utils';
+
+import { AmountDetails } from '../../components/AmountDetails';
+import { CardDetails } from '../../components/CardDetails';
+import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
-  const { vault, assets, navigate, account } = useVaultDetails();
+  const { setTemplateFormInitial } = useTemplateStore();
+  const { vault, store, assets, navigate, account, inView } = useVaultDetails();
+  const { vaultTransactions } = vault.transactions;
+
+  const hasTransactions = vaultTransactions?.length;
+
+  if (!vault) return null;
 
   return (
-    <Card mb={4} bg="dark.500" minW={600} boxShadow="xl" minH={550}>
-      {vault.isLoading ? (
-        <Loader h={500} w={400} />
+    <Box w="full">
+      <HStack mb={9} w="full" justifyContent="space-between">
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href={Pages.home()}
+            >
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href={Pages.userVaults()}
+            >
+              Vaults
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              fontSize="sm"
+              color="grey.200"
+              fontWeight="semibold"
+              href="#"
+            >
+              {vault.name}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <Button
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() => {
+            setTemplateFormInitial({
+              minSigners: vault.minSigners!,
+              addresses:
+                vault.signers! && vault.signers.map((signer) => signer.address),
+            });
+            navigate(
+              Pages.createTemplate({
+                vaultId: vault.id!,
+              }),
+            );
+          }}
+        >
+          Set as template
+        </Button>
+      </HStack>
+
+      <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
+        <CardDetails vault={vault} store={store} />
+        <AmountDetails vaultAddress={vault.predicateAddress!} assets={assets} />
+        <SignersDetails vault={vault} />
+      </HStack>
+
+      <HStack spacing={4} mb={3}>
+        <Text
+          variant="subtitle"
+          fontWeight="semibold"
+          fontSize="xl"
+          color="grey.200"
+        >
+          Transactions
+        </Text>
+        <Badge h={6} variant="warning">
+          <Icon as={PendingIcon} />
+          {`${waitingSignatures({
+            account,
+            transactions: vaultTransactions ?? [],
+          })} waiting for your signature`}
+        </Badge>
+      </HStack>
+
+      {hasTransactions ? (
+        <TransactionCard.List
+          mt={7}
+          w="full"
+          spacing={5}
+          maxH="calc(100% - 82px)"
+        >
+          {vaultTransactions.map((transaction) => (
+            <TransactionCard.Container
+              key={transaction.id}
+              status={transactionStatus({ ...transaction, account })}
+              details={<TransactionCard.Details transaction={transaction} />}
+            >
+              <TransactionCard.CreationDate>
+                {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+              </TransactionCard.CreationDate>
+              <TransactionCard.Assets />
+              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Name>
+                {limitCharacters(transaction.name, 20)}
+              </TransactionCard.Name>
+              <TransactionCard.Status
+                transaction={transaction}
+                status={transactionStatus({ ...transaction, account })}
+              />
+              <TransactionCard.Actions
+                transaction={transaction}
+                status={transactionStatus({ ...transaction, account })}
+              />
+            </TransactionCard.Container>
+          ))}
+          {!vault.transactions.isLoading && <Box ref={inView.ref} />}
+        </TransactionCard.List>
       ) : (
-        <>
-          <CardHeader>
-            <Flex hidden={vault.isLoading} width="100%" alignItems="center">
-              <Box pt={2}>
-                <Icon
-                  onClick={() => navigate(Pages.home())}
-                  cursor="pointer"
-                  color="gray"
-                  fontSize="4xl"
-                  as={MdChevronLeft}
-                />
-              </Box>
-              <Heading color="white" size="lg">
-                {vault?.name}
-              </Heading>
-            </Flex>
-            <Box mr={2} mt={2} maxW={500}>
-              <Text fontSize="sm" color="gray">
-                Add funds to your vault using the QR code or the address, and
-                start making safer transactions. You can also view your pending
-                signatures below and access previous ones by clicking on
-                “Transactions”.
-              </Text>
-            </Box>
-          </CardHeader>
-
-          <CardBody hidden={vault.isLoading}>
-            <Flex mb={8}>
-              <Flex
-                p={5}
-                mr={8}
-                rounded="md"
-                shadow="md"
-                maxWidth="fit-content"
-                direction="column"
-                alignItems="center"
-              >
-                <QRCodeSVG
-                  value={String(vault?.predicateAddress)}
-                  fgColor="#4D4D52FF"
-                  bgColor="#191B20"
-                  style={{ borderRadius: 5 }}
-                />
-                <Flex mt={2} alignItems="center">
-                  <Box mr={1}>
-                    <Text color="gray">
-                      {String(vault?.predicateAddress).slice(0, 4)}...
-                      {String(vault?.predicateAddress).slice(-10)}
-                    </Text>
-                  </Box>
-                  <Icon
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        vault?.predicateAddress ?? '',
-                      )
-                    }
-                    fontSize="md"
-                    color="brand.500"
-                    cursor="pointer"
-                    as={CopyIcon}
-                  />
-                </Flex>
-              </Flex>
-
-              <Flex direction="column" justifyContent="center">
-                <Box w="100%">
-                  <Stat maxWidth="max-content">
-                    <StatLabel color="white" fontSize="md">
-                      Balance
-                    </StatLabel>
-                    <StatNumber color="white" fontSize="4xl">
-                      ETH {assets.ethBalance}
-                    </StatNumber>
-                  </Stat>
-                </Box>
-                <Flex w="100%" mt={4} mb={2} justifyContent="center">
-                  <Box mr={2}>
-                    <Button
-                      minW={100}
-                      color="brand.900"
-                      variant="solid"
-                      colorScheme="brand"
-                      onClick={() =>
-                        navigate(
-                          Pages.createTransaction({ id: String(vault?.id) }),
-                        )
-                      }
-                      isDisabled={!vault.hasBalance}
-                    >
-                      Send
-                    </Button>
-                  </Box>
-                  <Box>
-                    <Button
-                      minW={100}
-                      color="white"
-                      bgColor="dark.100"
-                      onClick={() =>
-                        navigate(Pages.transactions({ id: String(vault?.id) }))
-                      }
-                      _hover={{}}
-                      _active={{}}
-                    >
-                      Transactions
-                    </Button>
-                  </Box>
-                </Flex>
-              </Flex>
-            </Flex>
-
-            <Flex w="100%">
-              <Box flex={1} mr={3}>
-                <Flex alignItems="center" mb={4}>
-                  <Icon mr={2} color="brand.500" as={CoinIcon} />
-                  <Heading color="white" size="md">
-                    Assets
-                  </Heading>
-                </Flex>
-                {!assets.hasAssets && (
-                  <AssetItem
-                    name="Ethereum"
-                    slug="ETH"
-                    amount={assets.ethBalance}
-                    assetId={NativeAssetId}
-                  />
-                )}
-                <AssetList assets={assets.value ?? []} />
-              </Box>
-              <Box flex={1}>
-                <Flex alignItems="center" mb={4}>
-                  <Icon mr={2} color="brand.500" as={GroupIcon} />
-                  <Heading color="white" size="md">
-                    Signers
-                  </Heading>
-                </Flex>
-                {vault?.addresses?.map((address) => (
-                  <Flex
-                    key={vault.id + address}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    py={2}
-                    px={3}
-                    mb={2}
-                    bg="dark.100"
-                    borderRadius="md"
-                  >
-                    <Text color="white">
-                      {String(address).slice(0, 4)}...
-                      {String(address).slice(-10)}
-                    </Text>
-                    <Badge hidden={account !== address} colorScheme="brand">
-                      You
-                    </Badge>
-                  </Flex>
-                ))}
-              </Box>
-            </Flex>
-          </CardBody>
-        </>
+        <Card
+          w="full"
+          p={20}
+          bgColor="dark.300"
+          display="flex"
+          justifyContent="center"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Box mb={6}>
+            <NotFoundIcon w={100} h={100} />
+          </Box>
+          <Box mb={5}>
+            <Heading color="brand.500" fontSize="4xl">
+              Anything to show here.
+            </Heading>
+          </Box>
+          <Box maxW={400} mb={8}>
+            <Text
+              color="white"
+              fontSize="md"
+              textAlign="center"
+              fontWeight="bold"
+            >
+              It seems like you {"haven't"} made any transactions yet. Would you
+              like to make one now?
+            </Text>
+          </Box>
+          <Button
+            variant="primary"
+            leftIcon={<SquarePlusIcon />}
+            isDisabled={!vault?.hasBalance}
+            onClick={() =>
+              navigate(Pages.createTransaction({ vaultId: vault.id! }))
+            }
+          >
+            Create transaction
+          </Button>
+        </Card>
       )}
-    </Card>
+    </Box>
   );
 };
 

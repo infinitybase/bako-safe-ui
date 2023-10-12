@@ -1,1 +1,1 @@
-export * from './useTransactionDetails';
+export * from './useTransactionSendRequest';
