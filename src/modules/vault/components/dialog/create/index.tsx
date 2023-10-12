@@ -26,8 +26,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         maxW={420}
         hidden={steps.step?.hide}
         title="Create Vault"
-        description="Setting Sail on a Journey to Unlock the Potential of User-Centered
-          Design."
+        description="Define the name and description of this vault. These details will be visible to all members."
       />
 
       <Dialog.Body maxW={420}>
