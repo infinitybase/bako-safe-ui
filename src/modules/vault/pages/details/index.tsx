@@ -103,7 +103,7 @@ const VaultDetailsPage = () => {
         <SignersDetails vault={vault} />
       </HStack>
 
-      <HStack spacing={4} mb={-3}>
+      <HStack spacing={4} mb={3}>
         <Text
           variant="subtitle"
           fontWeight="semibold"
