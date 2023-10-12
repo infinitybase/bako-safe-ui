@@ -21,8 +21,8 @@ function App() {
     fuel?.on(fuel?.events.currentAccount, onFuelEvent);
 
     return () => {
-      fuel?.on(fuel?.events.connection, onFuelEvent);
-      fuel?.on(fuel?.events.currentAccount, onFuelEvent);
+      fuel?.off(fuel?.events.connection, onFuelEvent);
+      fuel?.off(fuel?.events.currentAccount, onFuelEvent);
     };
   }, [fuel, setAccount]);
 

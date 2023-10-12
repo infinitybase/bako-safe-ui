@@ -5,9 +5,11 @@ import {
   TransactionService,
 } from '@/modules/transactions/services';
 
+const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
+
 const useVaultTransactionsRequest = (id: string) => {
   return useQuery(
-    ['transactions/byVault'],
+    [VAULT_TRANSACTIONS_QUERY_KEY, id],
     () =>
       TransactionService.getVaultTransactions({
         orderBy: 'created_at',
@@ -16,8 +18,9 @@ const useVaultTransactionsRequest = (id: string) => {
       }),
     {
       initialData: [],
+      enabled: !!id,
     },
   );
 };
 
-export { useVaultTransactionsRequest };
+export { useVaultTransactionsRequest, VAULT_TRANSACTIONS_QUERY_KEY };

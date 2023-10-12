@@ -6,7 +6,6 @@ import {
   GridItem,
   HStack,
   Icon,
-  Link,
   Skeleton,
   Spacer,
   Text,
@@ -84,10 +83,10 @@ const HomePage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate(Pages.transactions())}>
-          <ActionCard.Icon icon={GoArrowSwitch} />
+        <ActionCard.Container isUpcoming={true}>
+          <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
           <Box>
-            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Title isUpcoming={true}>Transactions</ActionCard.Title>
             <ActionCard.Description>
               Manage Transactions Across All Vaults in One Place.
             </ActionCard.Description>
@@ -193,7 +192,7 @@ const HomePage = () => {
               })} waiting for your signature`}
             </Badge>
             <Spacer />
-            <Link color="brand.500">View all</Link>
+            {/*<Link color="brand.500">View all</Link>*/}
           </HStack>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             {transactions?.map((transaction) => {
