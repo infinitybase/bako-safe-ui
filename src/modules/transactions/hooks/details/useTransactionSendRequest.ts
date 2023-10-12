@@ -18,7 +18,9 @@ const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
     const transactionInstance = await BsafeProvider.instanceTransaction({
       predicate: Object.create(predicate),
       assets: transaction.assets,
-      witnesses: transaction.witnesses.map((witness) => witness.signature!),
+      witnesses: transaction.witnesses
+        .filter((witness) => !!witness.signature)
+        .map((witness) => witness.signature!),
     });
 
     const result = await transactionInstance.sendTransaction();
