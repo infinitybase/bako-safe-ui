@@ -21,11 +21,19 @@ export function useFuel() {
       setFuel(globalWindow.fuel);
       clearTimeout(timeoutNotFound);
       setError('');
+      globalWindow.onfocus = () => {};
     };
 
     if (globalWindow.fuel) {
       onFuelLoaded();
     }
+
+    globalWindow.onfocus = () => {
+      console.log('ok');
+      if (globalWindow.fuel) {
+        onFuelLoaded();
+      }
+    };
 
     // Listen for the fuelLoaded event
     document.addEventListener('FuelLoaded', onFuelLoaded);
@@ -34,6 +42,7 @@ export function useFuel() {
     return () => {
       document.removeEventListener('FuelLoaded', onFuelLoaded);
       clearTimeout(timeoutNotFound);
+      globalWindow.onfocus = () => {};
     };
   }, []);
 

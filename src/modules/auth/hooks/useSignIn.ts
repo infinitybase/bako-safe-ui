@@ -66,6 +66,9 @@ const useSignIn = () => {
     }
   };
 
+  const redirectToWalletLink = () =>
+    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
+
   return {
     connect,
     goToApp,
@@ -74,6 +77,8 @@ const useSignIn = () => {
     isConnecting:
       isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
+    hasFuel: !!fuel,
+    redirectToWalletLink,
   };
 };
 
