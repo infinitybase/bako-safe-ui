@@ -14,8 +14,8 @@ import {
 import { GoCopy } from 'react-icons/go';
 
 import { Card } from '@/components';
+import { AddressUtils } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
-import { limitCharacters, shortenHexString } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
@@ -40,11 +40,11 @@ export const VaultCard = ({
             bg="grey.900"
           />
           <Box ml={2}>
-            <Heading variant="title-md" color="grey.200">
-              {limitCharacters(name, 18)}
+            <Heading variant="title-md" color="grey.200" noOfLines={1}>
+              {name}
             </Heading>
             <Text variant="description" color="grey.500">
-              {shortenHexString(address)}
+              {AddressUtils.format(address)}
             </Text>
           </Box>
         </HStack>
