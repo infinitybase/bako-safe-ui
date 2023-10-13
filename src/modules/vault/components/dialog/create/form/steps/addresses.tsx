@@ -150,8 +150,12 @@ const VaultAddressesStep = ({
       <Dialog.Section
         w="full"
         maxW={300}
-        title="Min signatures required?"
-        description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        title={
+          <Heading fontSize="md" color="grey.200">
+            Min signatures required?
+          </Heading>
+        }
+        description="Set the minimum number of signatures to approve a transfer."
       />
 
       <Box w="full" maxW={90}>
