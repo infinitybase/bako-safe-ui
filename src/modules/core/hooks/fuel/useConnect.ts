@@ -29,4 +29,17 @@ const useConnect = (params?: UseConnectParams) => {
   };
 };
 
-export { useConnect };
+const useDisconnect = () => {
+  const [fuel] = useFuel();
+
+  const mutation = useMutation(FuelQueryKeys.DISCONNECT, () => {
+    return fuel?.disconnect();
+  });
+
+  return {
+    discconnect: mutation.mutateAsync,
+    ...mutation,
+  };
+};
+
+export { useConnect, useDisconnect };

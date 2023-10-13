@@ -38,6 +38,9 @@ const roundedSquare = definePartsStyle({
   container: {
     borderRadius: 8,
     fontSize: 'sm',
+    img: {
+      borderRadius: 5,
+    },
   },
   excessLabel: {
     borderRadius: 8,
