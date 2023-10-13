@@ -8,9 +8,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components';
+import { Pages } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
 
 import { AddressUtils } from '../../core/utils/address';
@@ -31,6 +32,7 @@ const SignerCard = chakra(Card, {
 });
 
 const SignersDetails = (props: SignersDetailsProps) => {
+  const navigate = useNavigate();
   const { vault } = props;
 
   const formatList = (list: { address: string; isOwner: boolean }[]) => {
@@ -86,6 +88,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
                     alignItems="center"
                     flexDirection="column"
                     cursor="pointer"
+                    onClick={() =>
+                      navigate(Pages.vaultSettings({ vaultId: vault.id! }))
+                    }
                   >
                     <Text variant="description" fontSize="lg" fontWeight="bold">
                       +{isBig + 1}

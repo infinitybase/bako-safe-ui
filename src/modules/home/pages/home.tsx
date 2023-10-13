@@ -72,7 +72,7 @@ const HomePage = () => {
         </Box>
       </HStack>
 
-      <HStack spacing={6}>
+      <HStack spacing={6} w="full">
         <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
