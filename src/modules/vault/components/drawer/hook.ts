@@ -59,7 +59,10 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       onSelectVault,
       onClose: onCloseDrawer,
     },
-    search: debouncedSearchHandler,
+    search: {
+      value: search,
+      handler: debouncedSearchHandler,
+    },
     request: vaultListRequestRequest,
     inView,
   };

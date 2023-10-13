@@ -30,7 +30,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const {
     drawer,
     search,
-    request: { vaults },
+    request: { vaults, isSuccess },
     inView,
   } = useVaultDrawer({
     onClose: props.onClose,
@@ -71,10 +71,10 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
         <Box w="100%" mb={8}>
           <FormControl>
             <Input
-              onChange={search}
               placeholder=" "
               variant="custom"
               colorScheme="dark"
+              onChange={search.handler}
             />
             <FormLabel>Search</FormLabel>
             {/* It is important that the Label comes after the Control due to css selectors */}
@@ -82,6 +82,12 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
         </Box>
 
         <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
+          {isSuccess && !vaults.length && (
+            <Text variant="variant">
+              We {"couldn't"} find any results for <b>“{search.value}”</b> in
+              the vault.
+            </Text>
+          )}
           <VStack spacing={4}>
             {vaults?.map((vault) => (
               <VaultDrawerBox
