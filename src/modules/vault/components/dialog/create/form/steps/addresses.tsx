@@ -42,7 +42,7 @@ const VaultAddressesStep = ({
           Vault rules
         </Heading>
       }
-      description="Who is going to sign this vault?"
+      description="What is the rule of the vault?"
       mb={8}
     />
 

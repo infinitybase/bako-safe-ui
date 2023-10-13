@@ -24,6 +24,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       hide: false,
       disable: !form.watch('name'),
       onContinue: () => tabs.set(TabState.ADDRESSES),
+      description:
+        'Define the name and description of this vault. These details will be visible to all members.',
       onCancel: handleCancel,
       closeText: 'Cancel',
     },
@@ -31,12 +33,15 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       hide: false,
       disable: !form.formState.isValid,
       onContinue: form.handleCreateVault,
+      description:
+        'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
       onCancel: () => tabs.set(TabState.INFO),
       closeText: 'Back',
     },
     [TabState.SUCCESS]: {
       hide: true,
       disable: false,
+      description: null,
       onContinue: () => {},
       onCancel: handleCancel,
       closeText: `I'll do it later`,
