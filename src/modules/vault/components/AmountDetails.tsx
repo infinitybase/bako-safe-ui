@@ -48,39 +48,46 @@ const AmountDetails = (props: AmountDetailsProps) => {
         </Text>
       </Box>
       <VStack spacing={5} justifyContent="space-between">
-        <AssetCard
-          w="full"
-          p={5}
-          display="flex"
-          justifyContent="center"
-          flexDirection="column"
-          alignItems="center"
-          borderStyle="dashed"
-          height="450px"
-          hidden={assets.hasAssets || assets.isLoadingAssets}
-        >
-          <Box mb={6}>
-            <NotFoundIcon w={70} h={70} />
-          </Box>
-          <Box mb={5}>
-            <Heading color="grey.200" variant="title-xl">
-              No assets
-            </Heading>
-          </Box>
-          <Box mb={8}>
-            <Text
-              textAlign="center"
-              color="grey.200"
-              fontSize="sm"
-              fontWeight="medium"
+        {!assets.hasAssets && (
+          <CustomSkeleton isLoaded={!assets.isLoadingAssets && !isLoading}>
+            <AssetCard
+              w="full"
+              p={5}
+              display="flex"
+              justifyContent="center"
+              flexDirection="column"
+              alignItems="center"
+              borderStyle="dashed"
+              height="450px"
+              // hidden={assets.hasAssets || assets.isLoadingAssets || isLoading}
             >
-              Make your first deposit to see your assets here
-            </Text>
-          </Box>
-          <Button variant="primary" onClick={() => openFaucet(vaultAddress)}>
-            Make a deposit
-          </Button>
-        </AssetCard>
+              <Box mb={6}>
+                <NotFoundIcon w={70} h={70} />
+              </Box>
+              <Box mb={5}>
+                <Heading color="grey.200" variant="title-xl">
+                  No assets
+                </Heading>
+              </Box>
+              <Box mb={8}>
+                <Text
+                  textAlign="center"
+                  color="grey.200"
+                  fontSize="sm"
+                  fontWeight="medium"
+                >
+                  Make your first deposit to see your assets here
+                </Text>
+              </Box>
+              <Button
+                variant="primary"
+                onClick={() => openFaucet(vaultAddress)}
+              >
+                Make a deposit
+              </Button>
+            </AssetCard>
+          </CustomSkeleton>
+        )}
 
         {assets?.value &&
           assets.value.map((asset: Asset, index: number) => {

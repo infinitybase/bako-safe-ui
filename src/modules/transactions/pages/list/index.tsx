@@ -81,7 +81,7 @@ const TransactionsVaultPage = () => {
         w="full"
         spacing={5}
         maxH="calc(100% - 140px)"
-        // overflowY="scroll"
+        overflowY="scroll"
         pb={10}
       >
         {transactionRequest.transactions.map((transaction) => (
