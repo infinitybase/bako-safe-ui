@@ -8,7 +8,11 @@ const useUserVaults = () => {
 
   return {
     navigate,
-    vaultsRequest: { ...vaultsRequest, vaults: vaultsRequest.data },
+    vaultsRequest: {
+      ...vaultsRequest,
+      vaults: vaultsRequest.data,
+      loadingVaults: vaultsRequest.isFetching,
+    },
   };
 };
 

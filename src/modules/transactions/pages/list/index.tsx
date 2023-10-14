@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
-import { HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { transactionStatus } from '@/modules';
 import {
   TransactionCard,
@@ -81,32 +81,36 @@ const TransactionsVaultPage = () => {
         w="full"
         spacing={5}
         maxH="calc(100% - 140px)"
-        overflowY="scroll"
+        // overflowY="scroll"
         pb={10}
       >
         {transactionRequest.transactions.map((transaction) => (
-          <TransactionCard.Container
+          <CustomSkeleton
             key={transaction.id}
-            status={transactionStatus({ ...transaction, account })}
-            details={<TransactionCard.Details transaction={transaction} />}
+            isLoaded={!transactionRequest.isFetching}
           >
-            <TransactionCard.CreationDate>
-              {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-            </TransactionCard.CreationDate>
-            <TransactionCard.Assets />
-            <TransactionCard.Amount assets={transaction.assets} />
-            <TransactionCard.Name>
-              {limitCharacters(transaction.name, 20)}
-            </TransactionCard.Name>
-            <TransactionCard.Status
-              transaction={transaction}
+            <TransactionCard.Container
               status={transactionStatus({ ...transaction, account })}
-            />
-            <TransactionCard.Actions
-              transaction={transaction}
-              status={transactionStatus({ ...transaction, account })}
-            />
-          </TransactionCard.Container>
+              details={<TransactionCard.Details transaction={transaction} />}
+            >
+              <TransactionCard.CreationDate>
+                {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+              </TransactionCard.CreationDate>
+              <TransactionCard.Assets />
+              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Name>
+                {limitCharacters(transaction.name, 20)}
+              </TransactionCard.Name>
+              <TransactionCard.Status
+                transaction={transaction}
+                status={transactionStatus({ ...transaction, account })}
+              />
+              <TransactionCard.Actions
+                transaction={transaction}
+                status={transactionStatus({ ...transaction, account })}
+              />
+            </TransactionCard.Container>
+          </CustomSkeleton>
         ))}
         <Box ref={inView.ref} />
       </TransactionCard.List>

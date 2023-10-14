@@ -5,13 +5,12 @@ import {
   Heading,
   HStack,
   Image,
-  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 
-import { Card, NotFoundIcon } from '@/components';
+import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
 
 import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
@@ -25,6 +24,7 @@ const formatList = (list: Asset[]) => {
 export interface AmountDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
   vaultAddress: string;
+  isLoading: boolean;
 }
 
 const AssetCard = chakra(Card, {
@@ -37,7 +37,7 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
-  const { assets, vaultAddress } = props;
+  const { assets, vaultAddress, isLoading } = props;
   const isBig = assets?.value ? formatList(assets.value) : 0;
 
   return (
@@ -82,42 +82,35 @@ const AmountDetails = (props: AmountDetailsProps) => {
           </Button>
         </AssetCard>
 
-        <Skeleton
-          w="full"
-          h={93}
-          startColor="dark.100"
-          endColor="dark.300"
-          borderRadius={10}
-          hidden={!assets.isLoadingAssets}
-        />
-
         {assets?.value &&
           assets.value.map((asset: Asset, index: number) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <AssetCard key={index} w="full" borderStyle="dashed">
-                  <HStack
-                    w="100%"
-                    spacing={0}
-                    justifyContent="center"
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="column"
-                    cursor="pointer"
-                  >
-                    <Text
-                      variant="description"
-                      fontSize="20px"
-                      fontWeight="bold"
+                <CustomSkeleton isLoaded={!isLoading} key={index}>
+                  <AssetCard w="full" borderStyle="dashed">
+                    <HStack
+                      w="100%"
+                      spacing={0}
+                      justifyContent="center"
+                      alignItems="center"
+                      display="flex"
+                      flexDirection="column"
+                      cursor="pointer"
                     >
-                      +{isBig + 1}
-                    </Text>
-                    <Text variant="description" fontSize="15px">
-                      View all
-                    </Text>
-                  </HStack>
-                </AssetCard>
+                      <Text
+                        variant="description"
+                        fontSize="20px"
+                        fontWeight="bold"
+                      >
+                        +{isBig + 1}
+                      </Text>
+                      <Text variant="description" fontSize="15px">
+                        View all
+                      </Text>
+                    </HStack>
+                  </AssetCard>
+                </CustomSkeleton>
               );
             }
 
@@ -126,19 +119,25 @@ const AmountDetails = (props: AmountDetailsProps) => {
             });
 
             return (
-              <AssetCard key={index}>
-                <HStack w="full" spacing={4}>
-                  <Image src={assetsMap[asset.assetId].icon} boxSize="38px" />
-                  <Box>
-                    <Text color="grey.200" fontWeight="semibold" fontSize="lg">
-                      {balance}
-                    </Text>
-                    <Text variant="description" fontSize="md">
-                      {assetsMap[asset.assetId].slug}
-                    </Text>
-                  </Box>
-                </HStack>
-              </AssetCard>
+              <CustomSkeleton isLoaded={!isLoading} key={index}>
+                <AssetCard>
+                  <HStack w="full" spacing={4}>
+                    <Image src={assetsMap[asset.assetId].icon} boxSize="38px" />
+                    <Box>
+                      <Text
+                        color="grey.200"
+                        fontWeight="semibold"
+                        fontSize="lg"
+                      >
+                        {balance}
+                      </Text>
+                      <Text variant="description" fontSize="md">
+                        {assetsMap[asset.assetId].slug}
+                      </Text>
+                    </Box>
+                  </HStack>
+                </AssetCard>
+              </CustomSkeleton>
             );
           })}
       </VStack>

@@ -16,7 +16,9 @@ const useVaultDetails = () => {
   const store = useVaultState();
   const inView = useInView();
 
-  const { predicate, isLoading } = useVaultDetailsRequest(params.vaultId!);
+  const { predicate, isLoading, isFetching } = useVaultDetailsRequest(
+    params.vaultId!,
+  );
   const vaultTransactionsRequest = useVaultTransactionsRequest(params.vaultId!);
 
   const {
@@ -64,10 +66,12 @@ const useVaultDetails = () => {
       signers: signersOrdination,
       completeSigners: completeSignersOrdination,
       isLoading,
+      isFetching,
       hasBalance,
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.data,
+        loadingVaultTransactions: vaultTransactionsRequest.isFetching,
       },
     },
     assets: {

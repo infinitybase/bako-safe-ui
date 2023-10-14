@@ -29,6 +29,7 @@ const CreateTemplateForm = () => {
           type="submit"
           leftIcon={<SquarePlusIcon />}
           isDisabled={steps[step].isLoading}
+          isLoading={steps[step].isLoading}
         >
           Continue
         </Dialog.PrimaryAction>
