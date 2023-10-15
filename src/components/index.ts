@@ -4,3 +4,4 @@ export * from './icons';
 export * from './input';
 export * from './loader';
 export * from './progress';
+export * from './skeleton';

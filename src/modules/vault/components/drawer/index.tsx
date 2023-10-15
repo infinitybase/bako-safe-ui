@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-import { ErrorIcon } from '@/components';
+import { CustomSkeleton, ErrorIcon } from '@/components';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
@@ -30,7 +30,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const {
     drawer,
     search,
-    request: { vaults, isSuccess },
+    request: { vaults, isSuccess, isFetching },
     inView,
   } = useVaultDrawer({
     onClose: props.onClose,
@@ -90,14 +90,15 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
           )}
           <VStack spacing={4}>
             {vaults?.map((vault) => (
-              <VaultDrawerBox
-                key={vault.id}
-                name={vault.name}
-                address={vault.predicateAddress}
-                isActive={vaultId === vault.id}
-                description={vault.description}
-                onClick={() => drawer.onSelectVault(vault.id)}
-              />
+              <CustomSkeleton key={vault.id} isLoaded={!isFetching}>
+                <VaultDrawerBox
+                  name={vault.name}
+                  address={vault.predicateAddress}
+                  isActive={vaultId === vault.id}
+                  description={vault.description}
+                  onClick={() => drawer.onSelectVault(vault.id)}
+                />
+              </CustomSkeleton>
             ))}
             <Box ref={inView.ref} />
           </VStack>

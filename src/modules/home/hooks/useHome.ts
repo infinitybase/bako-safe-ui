@@ -28,10 +28,15 @@ const useHome = () => {
 
   return {
     account,
-    vaultsRequest: { ...vaultsRequest, vaults },
+    vaultsRequest: {
+      ...vaultsRequest,
+      vaults,
+      loadingRecentVaults: vaultsRequest.isFetching,
+    },
     transactionsRequest: {
       ...transactionsRequest,
       transactions: transactionsRequest.data?.slice(0, 6),
+      loadingTransactions: transactionsRequest.isFetching,
     },
     navigate,
   };
