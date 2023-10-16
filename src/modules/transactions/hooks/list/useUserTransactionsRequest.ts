@@ -15,7 +15,7 @@ const useUserTransactionsRequest = () => {
         allOfUser: true,
       }),
     {
-      initialData: [],
+      refetchOnWindowFocus: false,
     },
   );
 };
