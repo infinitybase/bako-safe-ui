@@ -84,10 +84,11 @@ const TransactionsVaultPage = () => {
         overflowY="scroll"
         pb={10}
       >
+        {/*{true && <CustomSkeleton isLoaded={false} />}*/}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}
-            isLoaded={!transactionRequest.isFetching}
+            isLoaded={!transactionRequest.isLoading}
           >
             <TransactionCard.Container
               status={transactionStatus({ ...transaction, account })}

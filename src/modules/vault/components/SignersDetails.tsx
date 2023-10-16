@@ -60,7 +60,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
-                <CustomSkeleton isLoaded={!vault.isFetching} key={index}>
+                <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                   <SignerCard borderStyle="dashed">
                     <HStack
                       w="100%"
@@ -90,7 +90,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
               );
             }
             return (
-              <CustomSkeleton isLoaded={!vault.isFetching} key={index}>
+              <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <SignerCard key={index}>
                   <HStack spacing={4} w="full">
                     <Image
