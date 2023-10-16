@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 
 interface CustomSkeletonProps extends SkeletonProps {
   children?: ReactNode;
-  isLoaded: boolean;
 }
 
 const CustomSkeleton = ({

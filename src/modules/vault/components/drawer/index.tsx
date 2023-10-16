@@ -30,7 +30,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const {
     drawer,
     search,
-    request: { vaults, isSuccess, isFetching },
+    request: { vaults, isSuccess, isLoading, isFetching },
     inView,
   } = useVaultDrawer({
     onClose: props.onClose,
@@ -89,8 +89,11 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             </Text>
           )}
           <VStack spacing={4}>
+            {!vaults.length && isFetching && (
+              <CustomSkeleton h="90px" w="full" />
+            )}
             {vaults?.map((vault) => (
-              <CustomSkeleton key={vault.id} isLoaded={!isFetching}>
+              <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
                 <VaultDrawerBox
                   name={vault.name}
                   address={vault.predicateAddress}
