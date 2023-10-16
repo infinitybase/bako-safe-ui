@@ -88,7 +88,10 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   useEffect(() => {
     if (!transaction) return;
 
-    if (transaction.status === TransactionStatus.PENDING) {
+    if (
+      transaction.status === TransactionStatus.PENDING &&
+      !transactionSendRequest.isLoading
+    ) {
       transactionSendRequest.mutate({
         transaction,
         predicate: BsafeProvider.instanceVault(transaction.predicate),
