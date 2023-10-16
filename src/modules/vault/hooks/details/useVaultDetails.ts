@@ -71,7 +71,7 @@ const useVaultDetails = () => {
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.data,
-        loadingVaultTransactions: vaultTransactionsRequest.isFetching,
+        loadingVaultTransactions: vaultTransactionsRequest.isLoading,
       },
     },
     assets: {

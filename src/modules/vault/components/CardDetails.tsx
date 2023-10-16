@@ -45,7 +45,7 @@ const CardDetails = (props: CardDetailsProps) => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!vault.isFetching}>
+      <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={8}>
           <VStack spacing={9} w="full">
             <HStack spacing={6} w="full">
