@@ -1,6 +1,10 @@
 import { useInfiniteQuery } from 'react-query';
 
-import { GetTransactionParams, TransactionService } from '../../services';
+import {
+  GetTransactionParams,
+  SortOption,
+  TransactionService,
+} from '../../services';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
@@ -19,6 +23,8 @@ const useTransactionListPaginationRequest = (
         ...params,
         perPage: 5,
         page: pageParam || 0,
+        orderBy: 'createdAt',
+        sort: SortOption.DESC,
       }),
     {
       enabled: !!params.predicateId,

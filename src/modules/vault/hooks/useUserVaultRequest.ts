@@ -11,7 +11,7 @@ const useUserVaultRequest = () => {
     ['predicate/by-address', account],
     () => VaultService.getAll(),
     {
-      initialData: [],
+      refetchOnWindowFocus: false,
     },
   );
 };

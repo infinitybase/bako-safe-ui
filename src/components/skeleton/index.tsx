@@ -1,19 +1,23 @@
-import { Skeleton } from '@chakra-ui/react';
+import { Skeleton, SkeletonProps } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-interface CustomSkeletonProps {
-  children: ReactNode;
-  isLoaded: boolean;
+interface CustomSkeletonProps extends SkeletonProps {
+  children?: ReactNode;
 }
 
-const CustomSkeleton = ({ children, isLoaded }: CustomSkeletonProps) => (
+const CustomSkeleton = ({
+  children,
+  isLoaded,
+  ...props
+}: CustomSkeletonProps) => (
   <Skeleton
+    w="100%"
     speed={1}
     startColor="dark.200"
     endColor="dark.500"
     isLoaded={isLoaded}
-    w="100%"
     borderRadius={10}
+    {...props}
   >
     {children}
   </Skeleton>

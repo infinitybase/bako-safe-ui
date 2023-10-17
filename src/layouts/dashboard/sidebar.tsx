@@ -76,6 +76,7 @@ const Sidebar = () => {
           cursor={
             transactionListRequest.hasTransactions ? 'pointer' : 'not-allowed'
           }
+          opacity={transactionListRequest.hasTransactions ? '1' : '0.6'}
           onClick={() =>
             transactionListRequest.hasTransactions &&
             route.navigate(

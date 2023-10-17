@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  CircularProgress,
   Grid,
   GridItem,
   HStack,
@@ -38,7 +39,11 @@ const HomePage = () => {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
     },
-    transactionsRequest: { transactions, loadingTransactions },
+    transactionsRequest: {
+      transactions,
+      loadingTransactions,
+      isFetching: isFetchingTransactions,
+    },
   } = useHome();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
@@ -183,7 +188,14 @@ const HomePage = () => {
                 >
                   Transactions
                 </Text>
-                <Badge h={6} variant="warning">
+                <CircularProgress
+                  hidden={!isFetchingTransactions}
+                  size="20px"
+                  color="brand.500"
+                  trackColor="dark.100"
+                  isIndeterminate
+                />
+                <Badge h={6} variant="warning" hidden={isFetchingTransactions}>
                   <Icon as={PendingIcon} />
                   {`${waitingSignatures({
                     account,

@@ -17,8 +17,8 @@ const useVaultTransactionsRequest = (id: string) => {
         predicateId: [id],
       }),
     {
-      initialData: [],
       enabled: !!id,
+      refetchOnWindowFocus: false,
     },
   );
 };

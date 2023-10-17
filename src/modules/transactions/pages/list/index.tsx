@@ -3,7 +3,9 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  CircularProgress,
   Heading,
+  HStack,
   Icon,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -52,11 +54,18 @@ const TransactionsVaultPage = () => {
       </Box>
 
       {/* TITLE */}
-      <Box mb={7}>
+      <HStack spacing={5} mb={7}>
         <Heading variant="title-xl" color="grey.200">
           Transactions
         </Heading>
-      </Box>
+        <CircularProgress
+          hidden={!transactionRequest.isFetching}
+          size="20px"
+          color="brand.500"
+          trackColor="dark.100"
+          isIndeterminate
+        />
+      </HStack>
 
       {/* FILTER */}
       <TransactionFilter.Control
@@ -84,10 +93,11 @@ const TransactionsVaultPage = () => {
         overflowY="scroll"
         pb={10}
       >
+        {/*{true && <CustomSkeleton isLoaded={false} />}*/}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}
-            isLoaded={!transactionRequest.isFetching}
+            isLoaded={!transactionRequest.isLoading}
           >
             <TransactionCard.Container
               status={transactionStatus({ ...transaction, account })}

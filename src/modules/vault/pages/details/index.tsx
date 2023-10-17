@@ -5,6 +5,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  CircularProgress,
   Heading,
   HStack,
   Icon,
@@ -39,10 +40,7 @@ const VaultDetailsPage = () => {
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
-  const hasTransactions =
-    !loadingVaultTransactions &&
-    !!vaultTransactions &&
-    vaultTransactions?.length;
+  const hasTransactions = !loadingVaultTransactions && !!vaultTransactions;
 
   if (!vault) return null;
 
@@ -110,7 +108,7 @@ const VaultDetailsPage = () => {
         <AmountDetails
           vaultAddress={vault.predicateAddress!}
           assets={assets}
-          isLoading={vault.isFetching}
+          isLoading={vault.isLoading}
         />
         <SignersDetails vault={vault} />
       </HStack>
@@ -124,7 +122,14 @@ const VaultDetailsPage = () => {
         >
           Transactions
         </Text>
-        <Badge h={6} variant="warning">
+        <CircularProgress
+          size="20px"
+          trackColor="dark.100"
+          color="brand.500"
+          isIndeterminate
+          hidden={!vault.transactions.isFetching}
+        />
+        <Badge hidden={vault.transactions.isFetching} h={6} variant="warning">
           <Icon as={PendingIcon} />
           {`${waitingSignatures({
             account,

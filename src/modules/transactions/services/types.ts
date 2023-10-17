@@ -31,6 +31,8 @@ export interface GetTransactionParams {
   status?: TransactionStatus[] | string[];
   perPage?: number;
   page?: number;
+  orderBy?: string;
+  sort?: SortOption;
 }
 
 export interface GetUserTransactionsParams {
