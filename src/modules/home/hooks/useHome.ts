@@ -31,12 +31,12 @@ const useHome = () => {
     vaultsRequest: {
       ...vaultsRequest,
       vaults,
-      loadingRecentVaults: vaultsRequest.isFetching,
+      loadingRecentVaults: vaultsRequest.isLoading,
     },
     transactionsRequest: {
       ...transactionsRequest,
       transactions: transactionsRequest.data?.slice(0, 6),
-      loadingTransactions: transactionsRequest.isFetching,
+      loadingTransactions: transactionsRequest.isLoading,
     },
     navigate,
   };
