@@ -9,7 +9,7 @@ import {
   useToast,
   useWalletSignMessage,
 } from '@/modules/core';
-import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
+import { VAULT_TRANSACTIONS_QUERY_KEY, VaultService } from '@/modules/vault';
 
 import { useTransactionSendRequest } from '../details';
 import {
@@ -85,6 +85,14 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
+  const sendTransaction = async () => {
+    const predicate = await VaultService.getById(transaction.predicateID);
+    transactionSendRequest.mutate({
+      transaction,
+      predicate: BsafeProvider.instanceVault(predicate),
+    });
+  };
+
   useEffect(() => {
     if (!transaction) return;
 
@@ -92,10 +100,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       transaction.status === TransactionStatus.PENDING &&
       !transactionSendRequest.isLoading
     ) {
-      transactionSendRequest.mutate({
-        transaction,
-        predicate: BsafeProvider.instanceVault(transaction.predicate),
-      });
+      sendTransaction();
     }
   }, [transaction]);
 

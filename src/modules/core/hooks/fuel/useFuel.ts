@@ -29,7 +29,6 @@ export function useFuel() {
     }
 
     globalWindow.onfocus = () => {
-      console.log('ok');
       if (globalWindow.fuel) {
         onFuelLoaded();
       }
