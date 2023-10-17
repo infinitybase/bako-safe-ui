@@ -23,7 +23,7 @@ const EmptyTransaction = () => {
       </Box>
       <Box maxW={400} mb={8}>
         <Text color="white" fontSize="md" textAlign="center" fontWeight="bold">
-          It seems like you {"haven't"} made any transactions yet.
+          It seems like you {"haven't"} made any <br /> transactions yet.
         </Text>
       </Box>
     </Card>

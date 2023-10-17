@@ -37,6 +37,7 @@ const VaultAddressesStep = ({
 }: VaultAddressesStepProps) => (
   <TabPanel p={0}>
     <Dialog.Section
+      hidden={!templates.length}
       title={
         <Heading fontSize="lg" color="grey.200">
           Vault rules
@@ -46,9 +47,9 @@ const VaultAddressesStep = ({
       mb={8}
     />
 
-    <Divider borderColor="dark.100" mt={5} mb={9} />
+    <Divider hidden={!templates.length} borderColor="dark.100" mt={5} mb={9} />
 
-    <Box w="100%">
+    <Box hidden={!templates.length} w="100%">
       <FormControl>
         <Select
           placeholder=" "
@@ -71,7 +72,7 @@ const VaultAddressesStep = ({
       </FormControl>
     </Box>
 
-    <Divider borderColor="dark.100" my={9} />
+    <Divider hidden={!templates.length} borderColor="dark.100" my={9} />
 
     <Dialog.Section
       title={
@@ -149,8 +150,12 @@ const VaultAddressesStep = ({
       <Dialog.Section
         w="full"
         maxW={300}
-        title="Min signatures required?"
-        description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        title={
+          <Heading fontSize="md" color="grey.200">
+            Min signatures required?
+          </Heading>
+        }
+        description="Set the minimum number of signatures to approve a transfer."
       />
 
       <Box w="full" maxW={90}>

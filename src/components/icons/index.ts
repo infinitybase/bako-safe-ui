@@ -5,6 +5,7 @@ export * from './double-arrow-right';
 export * from './edit';
 export * from './error';
 export * from './exchange';
+export * from './exit';
 export * from './home';
 export * from './not-found';
 export * from './notification';

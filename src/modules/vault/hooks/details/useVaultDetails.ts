@@ -16,13 +16,15 @@ const useVaultDetails = () => {
   const store = useVaultState();
   const inView = useInView();
 
-  const { predicate, isLoading } = useVaultDetailsRequest(params.vaultId!);
+  const { predicate, isLoading, isFetching } = useVaultDetailsRequest(
+    params.vaultId!,
+  );
   const vaultTransactionsRequest = useVaultTransactionsRequest(params.vaultId!);
 
   const {
     assets,
     ethBalance,
-    isLoading: isLoadingAssets,
+    isFetching: isLoadingAssets,
     hasBalance,
     hasAssets,
   } = useVaultAssets(predicate?.predicateInstance);
@@ -64,10 +66,12 @@ const useVaultDetails = () => {
       signers: signersOrdination,
       completeSigners: completeSignersOrdination,
       isLoading,
+      isFetching,
       hasBalance,
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.data,
+        loadingVaultTransactions: vaultTransactionsRequest.isLoading,
       },
     },
     assets: {

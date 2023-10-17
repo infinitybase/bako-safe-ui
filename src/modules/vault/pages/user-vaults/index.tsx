@@ -16,7 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { HomeIcon, VaultIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 
@@ -26,7 +26,7 @@ import { useUserVaults } from '../../hooks/user-vaults';
 const UserVaultsPage = () => {
   const {
     navigate,
-    vaultsRequest: { vaults },
+    vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
 
   return (
@@ -88,38 +88,44 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <HStack spacing={6}>
-        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
-          <ActionCard.Icon icon={VaultIcon} />
-          <Box>
-            <ActionCard.Title>Vaults</ActionCard.Title>
-            <ActionCard.Description>
-              Access and Manage All Your Vaults in One Place.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
+      <CustomSkeleton isLoaded={!loadingVaults}>
+        <HStack w="full" spacing={6}>
+          <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
 
-        <ActionCard.Container isUpcoming={true}>
-          <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
-          <Box>
-            <ActionCard.Title isUpcoming={true}>Transactions</ActionCard.Title>
-            <ActionCard.Description>
-              Manage Transactions Across All Vaults in One Place.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
+          <ActionCard.Container isUpcoming={true}>
+            <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
+            <Box>
+              <ActionCard.Title isUpcoming={true}>
+                Transactions
+              </ActionCard.Title>
+              <ActionCard.Description>
+                Manage Transactions Across All Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
 
-        <ActionCard.Container isUpcoming={true}>
-          <ActionCard.Icon icon={CgList} isUpcoming={true} />
-          <Box>
-            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
-            <ActionCard.Description>
-              Access and Manage Your Contacts for Easy Transfers and Vault
-              Creation.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
-      </HStack>
+          <ActionCard.Container isUpcoming={true}>
+            <ActionCard.Icon icon={CgList} isUpcoming={true} />
+            <Box>
+              <ActionCard.Title isUpcoming={true}>
+                Address book
+              </ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage Your Contacts for Easy Transfers and Vault
+                Creation.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </HStack>
+      </CustomSkeleton>
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
@@ -137,13 +143,17 @@ const UserVaultsPage = () => {
           ({ id, name, predicateAddress, completeAddress, description }) => {
             return (
               <GridItem key={id}>
-                <VaultCard
-                  name={name}
-                  title={description}
-                  address={predicateAddress}
-                  members={completeAddress}
-                  onClick={() => navigate(Pages.detailsVault({ vaultId: id }))}
-                />
+                <CustomSkeleton isLoaded={!loadingVaults}>
+                  <VaultCard
+                    name={name}
+                    title={description}
+                    address={predicateAddress}
+                    members={completeAddress}
+                    onClick={() =>
+                      navigate(Pages.detailsVault({ vaultId: id }))
+                    }
+                  />
+                </CustomSkeleton>
               </GridItem>
             );
           },

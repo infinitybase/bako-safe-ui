@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuel, useFuelAccount } from '@/modules';
+import { invalidateQueries, useFuel, useFuelAccount } from '@/modules';
 import { AppRoutes } from '@/routes';
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
         CookieName.ACCESS_TOKEN,
         CookieName.ADDRESS,
       ]);
+      invalidateQueries();
     }
 
     fuel?.on(fuel?.events.connection, onFuelEvent);

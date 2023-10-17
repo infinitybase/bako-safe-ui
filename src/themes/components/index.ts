@@ -7,6 +7,7 @@ import { Heading } from './heading';
 import { Input, Textarea } from './input';
 import { Link } from './link';
 import { Select } from './select';
+import { Skeleton } from './skeleton';
 import { Text } from './text';
 
 const components = {
@@ -22,6 +23,7 @@ const components = {
   Link,
   Select,
   Text,
+  Skeleton,
 };
 
 export { components };

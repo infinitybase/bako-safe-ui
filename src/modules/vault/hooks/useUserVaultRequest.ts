@@ -1,11 +1,19 @@
 import { useQuery } from 'react-query';
 
+import { useFuelAccount } from '@/modules/auth';
+
 import { VaultService } from '../services';
 
 const useUserVaultRequest = () => {
-  return useQuery(['predicate/by-address'], () => VaultService.getAll(), {
-    initialData: [],
-  });
+  const { account } = useFuelAccount();
+
+  return useQuery(
+    ['predicate/by-address', account],
+    () => VaultService.getAll(),
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 };
 
 export { useUserVaultRequest };

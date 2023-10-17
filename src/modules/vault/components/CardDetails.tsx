@@ -6,16 +6,14 @@ import {
   Center,
   Heading,
   HStack,
-  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { QRCodeSVG } from 'qrcode.react';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card } from '@/components';
+import { Card, CustomSkeleton } from '@/components';
 import { Pages } from '@/modules';
 
 import { AddressCopy } from '../../../components/addressCopy';
@@ -47,118 +45,111 @@ const CardDetails = (props: CardDetailsProps) => {
         </Text>
       </Box>
 
-      <Skeleton
-        hidden={!vault.isLoading}
-        w="full"
-        h={450}
-        startColor="dark.100"
-        endColor="dark.300"
-        borderRadius={10}
-      />
-
-      <Card hidden={vault.isLoading} p={8}>
-        <VStack spacing={9} w="full">
-          <HStack spacing={6} w="full">
-            <Center>
-              <Avatar
-                variant="roundedSquare"
-                size="lg"
-                p={10}
-                bgColor="grey.900"
-                color="white"
-                name={vault.name}
-              />
-            </Center>
-            <Box>
-              <Heading mb={3} variant="title-xl">
-                {vault?.name}
-              </Heading>
-
-              <Text variant="description" maxW="250px">
-                {vault?.description}
-              </Text>
-            </Box>
-          </HStack>
-
-          <HStack
-            w="full"
-            spacing={5}
-            justifyContent="flex-start"
-            alignItems="flex-start"
-          >
-            <VStack spacing={4} justifyContent="flex-start">
-              <Box p={3} backgroundColor={'white'} borderRadius={10}>
-                <QRCodeSVG
-                  value={vault.predicateAddress!}
-                  fgColor="black"
-                  bgColor="white"
-                  style={{
-                    borderRadius: 10,
-                    width: 180,
-                    height: 180,
-                  }}
+      <CustomSkeleton isLoaded={!vault.isLoading}>
+        <Card p={8}>
+          <VStack spacing={9} w="full">
+            <HStack spacing={6} w="full">
+              <Center>
+                <Avatar
+                  variant="roundedSquare"
+                  size="lg"
+                  p={10}
+                  bgColor="grey.900"
+                  color="white"
+                  name={vault.name}
                 />
+              </Center>
+              <Box>
+                <Heading mb={3} variant="title-xl">
+                  {vault?.name}
+                </Heading>
+
+                <Text variant="description" maxW="250px">
+                  {vault?.description}
+                </Text>
               </Box>
-              <AddressCopy w="full" address={vault.predicateAddress!} />
-            </VStack>
-            <VStack spacing={5}>
-              <Box width="100%">
-                <HStack width="100%" spacing={2}>
-                  <HStack spacing={2}>
-                    <Heading variant="title-xl">
-                      {visebleBalance ? '*****' : balance}
-                    </Heading>
-                    <Text variant="description" fontSize="md">
-                      {!visebleBalance && biggerAsset?.slug}
-                    </Text>
+            </HStack>
+
+            <HStack
+              w="full"
+              spacing={5}
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <VStack spacing={4} justifyContent="flex-start">
+                <Box p={3} backgroundColor={'white'} borderRadius={10}>
+                  <QRCodeSVG
+                    value={vault.predicateAddress!}
+                    fgColor="black"
+                    bgColor="white"
+                    style={{
+                      borderRadius: 10,
+                      width: 180,
+                      height: 180,
+                    }}
+                  />
+                </Box>
+                <AddressCopy w="full" address={vault.predicateAddress!} />
+              </VStack>
+              <VStack spacing={5}>
+                <Box width="100%">
+                  <HStack width="100%" spacing={2}>
+                    <HStack spacing={2}>
+                      <Heading variant="title-xl">
+                        {visebleBalance ? '*****' : balance}
+                      </Heading>
+                      <Text variant="description" fontSize="md">
+                        {!visebleBalance && biggerAsset?.slug}
+                      </Text>
+                    </HStack>
+                    <Box
+                      display="flex"
+                      width="18%"
+                      justifyContent="center"
+                      alignItems="center"
+                      onClick={() => setVisibleBalance(!visebleBalance)}
+                    >
+                      {visebleBalance ? (
+                        <ViewIcon boxSize={6} />
+                      ) : (
+                        <ViewOffIcon boxSize={6} />
+                      )}
+                    </Box>
                   </HStack>
-                  <Box
-                    display="flex"
-                    width="18%"
-                    justifyContent="center"
-                    alignItems="center"
-                    onClick={() => setVisibleBalance(!visebleBalance)}
+                  <Text variant="description">Vault balance</Text>
+                </Box>
+                <VStack spacing={2} alignItems="flex-start">
+                  <Button
+                    minW={130}
+                    variant="primary"
+                    onClick={() => openFaucet(vault.predicateAddress!)}
                   >
-                    {visebleBalance ? (
-                      <ViewIcon boxSize={6} />
-                    ) : (
-                      <ViewOffIcon boxSize={6} />
-                    )}
-                  </Box>
-                </HStack>
-                <Text variant="description">Vault balance</Text>
-              </Box>
-              <VStack spacing={2} alignItems="flex-start">
-                <Button
-                  minW={130}
-                  variant="primary"
-                  onClick={() => openFaucet(vault.predicateAddress!)}
-                >
-                  Deposit
-                </Button>
-                <Text variant="description" fontSize="xs">
-                  Add assets to the vault. <br /> Choose the asset you prefer.
-                </Text>
+                    Deposit
+                  </Button>
+                  <Text variant="description" fontSize="xs">
+                    Add assets to the vault. <br /> Choose the asset you prefer.
+                  </Text>
+                </VStack>
+                <VStack spacing={2} alignItems="flex-start">
+                  <Button
+                    onClick={() =>
+                      navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                    }
+                    isDisabled={!vault?.hasBalance}
+                    minW={130}
+                    variant="primary"
+                  >
+                    Send
+                  </Button>
+                  <Text variant="description" fontSize="xs">
+                    Send single or batch <br /> payments with multi assets.
+                  </Text>
+                </VStack>
               </VStack>
-              <VStack spacing={2} alignItems="flex-start">
-                <Button
-                  onClick={() =>
-                    navigate(Pages.createTransaction({ vaultId: vault.id! }))
-                  }
-                  isDisabled={!vault?.hasBalance}
-                  minW={130}
-                  variant="primary"
-                >
-                  Send
-                </Button>
-                <Text variant="description" fontSize="xs">
-                  Send single or batch <br /> payments with multi assets.
-                </Text>
-              </VStack>
-            </VStack>
-          </HStack>
-        </VStack>
-      </Card>
+            </HStack>
+          </VStack>
+        </Card>
+      </CustomSkeleton>
     </Box>
   );
 };

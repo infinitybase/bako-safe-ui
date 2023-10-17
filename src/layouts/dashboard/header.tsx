@@ -5,13 +5,14 @@ import {
   Flex,
   HStack,
   Icon,
+  Skeleton,
   Text,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { ArrowDownIcon, QuestionIcon } from '@/components';
-import { Pages, useFuelAccount } from '@/modules';
+import { ExitIcon, QuestionIcon } from '@/components';
+import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -28,25 +29,37 @@ const TopBarItem = chakra(SpacedBox, {
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    cursor: 'pointer',
   },
 });
 
 /* TODO: create props with data user */
 const UserBox = () => {
   const { formattedAccount, avatar } = useFuelAccount();
+  const avatarImage = useLoadImage(avatar);
+  const { discconnect } = useDisconnect();
+
   return (
     <Flex w="100%" display="flex" alignItems="center">
       <Box mr={4}>
-        <Avatar name={formattedAccount} src={avatar} />
+        {avatarImage.isLoading ? (
+          <Skeleton
+            w="48px"
+            h="48px"
+            startColor="dark.100"
+            endColor="dark.300"
+            borderRadius={5}
+          />
+        ) : (
+          <Avatar variant="roundedSquare" src={avatar} />
+        )}
       </Box>
       <Box mr={9}>
         <Text fontWeight="semibold" color="grey.200">
           {formattedAccount}
         </Text>
       </Box>
-      <Box hidden={true}>
-        <Icon color="grey.200" as={ArrowDownIcon} />
+      <Box onClick={() => discconnect()} cursor="pointer">
+        <Icon color="grey.200" fontSize="lg" as={ExitIcon} />
       </Box>
     </Flex>
   );
