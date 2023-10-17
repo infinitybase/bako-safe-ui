@@ -31,7 +31,6 @@ function AssetSelect(props: Props) {
         isInvalid={props.isInvalid}
         placeholder=" "
       >
-        <option>Select asset</option>
         {assets.map((asset) => (
           <option key={asset.assetId} value={asset.assetId}>
             {asset.slug} - {asset.name}
