@@ -10,7 +10,7 @@ const useUserTransactionsRequest = () => {
     () =>
       TransactionService.getUserTransactions({
         // limit: 20,
-        orderBy: 'created_at',
+        orderBy: 'createdAt',
         sort: SortOption.DESC,
         allOfUser: true,
       }),
