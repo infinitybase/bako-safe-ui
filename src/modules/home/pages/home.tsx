@@ -71,7 +71,7 @@ const HomePage = () => {
             </Box>
           </HStack>
           <CustomSkeleton isLoaded={!isLoading}>
-            <HStack spacing={6} w="full">
+            <HStack spacing={6} w="full" h="full">
               <ActionCard.Container
                 onClick={() => navigate(Pages.userVaults())}
               >
