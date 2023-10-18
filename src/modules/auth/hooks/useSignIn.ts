@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -5,6 +6,9 @@ import { useFuel, useFuelAccount, useGetCurrentAccount } from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
+
+const FUEL_CONNECTOR_NAME = 'Fuel Wallet';
+// const FUELET_CONNECTOR_NAME = 'Fuelet Wallet';
 
 const useSignIn = () => {
   const navigate = useNavigate();
@@ -69,6 +73,14 @@ const useSignIn = () => {
   const redirectToWalletLink = () =>
     window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
 
+  const isFuelConnector = fuel?.connectorName === FUEL_CONNECTOR_NAME;
+
+  useEffect(() => {
+    fuel?.selectConnector(FUEL_CONNECTOR_NAME).catch(() => {
+      fuel?.selectConnector('');
+    });
+  }, [fuel]);
+
   return {
     connect,
     goToApp,
@@ -77,7 +89,7 @@ const useSignIn = () => {
     isConnecting:
       isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
-    hasFuel: !!fuel,
+    hasFuel: !!fuel && isFuelConnector,
     redirectToWalletLink,
   };
 };
