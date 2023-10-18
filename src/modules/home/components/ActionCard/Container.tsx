@@ -14,7 +14,14 @@ const Container = ({
   ...rest
 }: ActionCardContainerProps) => {
   return (
-    <Card w="100%" cursor={isUpcoming ? '' : 'pointer'} {...rest}>
+    <Card
+      w="full"
+      h="full"
+      display="flex"
+      overflow="hidden"
+      cursor={isUpcoming ? '' : 'pointer'}
+      {...rest}
+    >
       <HStack>{children}</HStack>
     </Card>
   );

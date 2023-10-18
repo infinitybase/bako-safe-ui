@@ -8,7 +8,11 @@ interface ActionCardTitleProps {
 
 const Title = ({ children, isUpcoming }: ActionCardTitleProps) => {
   return (
-    <Flex mb={1.5} alignItems="center">
+    <Flex
+      mb={1.5}
+      alignItems={{ md: 'flex-start', lg: 'center' }}
+      flexDir={{ md: 'column', lg: 'row' }}
+    >
       <Text
         variant="subtitle"
         fontSize="lg"
@@ -18,7 +22,7 @@ const Title = ({ children, isUpcoming }: ActionCardTitleProps) => {
         {children}
       </Text>
       {isUpcoming && (
-        <Badge h="5" variant="warning" ml={3}>
+        <Badge h="5" variant="warning" ml={{ md: 0, lg: 3 }}>
           Upcoming
         </Badge>
       )}
