@@ -5,6 +5,8 @@ import { AuthRoute, Pages } from '@/modules/core';
 import { HomePage } from '@/modules/home/pages';
 import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
 
+import { UserTransactionsPage } from '../transactions/pages/user-transactions';
+
 const homeRoutes = (
   <Route element={<DashboardLayoutRouter />}>
     <Route
@@ -28,6 +30,14 @@ const homeRoutes = (
       element={
         <AuthRoute>
           <UserVaultsPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.userTransactions()}
+      element={
+        <AuthRoute>
+          <UserTransactionsPage />
         </AuthRoute>
       }
     />
