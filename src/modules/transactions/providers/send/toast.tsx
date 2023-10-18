@@ -6,26 +6,18 @@ import {
   Icon,
   Text,
   ToastId,
-  useToast,
 } from '@chakra-ui/react';
 import React, { useRef } from 'react';
 
 import { ErrorIcon } from '@/components';
-import { sumEthAsset, Transaction } from '@/modules';
-import { TransactionSendNotification } from '@/modules/transactions/components/notification';
+import { Transaction } from '@/modules/core';
+import { useNotification } from '@/modules/notification';
+import { sumEthAsset } from '@/modules/transactions';
 
 type TransactionToastRef = Record<Transaction['id'], ToastId>;
 
 const useTransactionToast = () => {
-  const toast = useToast({
-    containerStyle: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      flexDirection: 'column',
-    },
-    position: 'top-right',
-    render: (props) => <TransactionSendNotification {...props} />,
-  });
+  const toast = useNotification();
   const transactionsToastRef = useRef<TransactionToastRef>({});
 
   const loading = (transaction: Transaction) => {
