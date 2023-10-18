@@ -12,7 +12,7 @@ const useVaultTransactionsRequest = (id: string) => {
     [VAULT_TRANSACTIONS_QUERY_KEY, id],
     () =>
       TransactionService.getVaultTransactions({
-        orderBy: 'created_at',
+        orderBy: 'createdAt',
         sort: SortOption.DESC,
         predicateId: [id],
       }),
