@@ -89,7 +89,7 @@ const UserVaultsPage = () => {
       </HStack>
 
       <CustomSkeleton isLoaded={!loadingVaults}>
-        <HStack w="full" spacing={6}>
+        <HStack w="full" h="full" spacing={6}>
           <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
