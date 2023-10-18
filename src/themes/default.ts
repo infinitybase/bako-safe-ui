@@ -16,6 +16,9 @@ const defaultTheme = extendTheme({
         bg: 'dark.500',
         color: '#FFFFFF',
       },
+      '#chakra-toast-manager-top-right': {
+        mt: 20,
+      },
     }),
   },
 });

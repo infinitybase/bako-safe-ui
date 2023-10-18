@@ -1,4 +1,3 @@
-import { Vault } from 'bsafe';
 import { useMutation, UseMutationOptions } from 'react-query';
 
 import { BsafeProvider } from '@/modules/core';
@@ -6,16 +5,17 @@ import {
   GetTransactionResponse,
   TransactionService,
 } from '@/modules/transactions/services';
+import { VaultService } from '@/modules/vault';
 
 export interface SendTransferParams {
   transaction: GetTransactionResponse;
-  predicate: Vault;
 }
 
-const sendTransfer = async ({ transaction, predicate }: SendTransferParams) => {
+const sendTransfer = async ({ transaction }: SendTransferParams) => {
   try {
+    const predicate = await VaultService.getById(transaction.predicateID);
     const transactionInstance = await BsafeProvider.instanceTransaction({
-      predicate: Object.create(predicate),
+      predicate: BsafeProvider.instanceVault(predicate),
       assets: transaction.assets,
       witnesses: transaction.witnesses
         .filter((witness) => !!witness.signature)

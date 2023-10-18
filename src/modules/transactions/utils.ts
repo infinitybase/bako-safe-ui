@@ -1,9 +1,13 @@
+import { bn } from 'fuels';
+
 import {
+  AssetModel,
+  NativeAssetId,
   Transaction,
   TransactionStatus,
   Witness,
   WitnessStatus,
-} from '@/modules';
+} from '@/modules/core';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;
 
@@ -52,3 +56,9 @@ export const waitingSignatures = ({
     return !isSigned && !isDeclined && !isCompleted && !isReproved;
   }).length;
 };
+
+export const sumEthAsset = (assets: AssetModel[]) =>
+  assets
+    .filter((a) => a.assetID === NativeAssetId)
+    .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
+    .format();
