@@ -31,13 +31,11 @@ const Container = (props: ContainerProps) => {
   );
 };
 
-interface TransactionSendNotificationProps extends UseToastOptions {
+interface NotificationProps extends UseToastOptions {
   onClose: () => void;
 }
 
-const TransactionSendNotification = (
-  props: TransactionSendNotificationProps,
-) => (
+const Notification = (props: NotificationProps) => (
   <Container onClose={props.onClose} leftIcon={props.icon}>
     <Text color="grey.200" fontWeight="semibold">
       {props.title}
@@ -46,4 +44,4 @@ const TransactionSendNotification = (
   </Container>
 );
 
-export { TransactionSendNotification };
+export { Notification };
