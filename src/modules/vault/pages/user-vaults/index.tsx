@@ -100,12 +100,12 @@ const UserVaultsPage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container isUpcoming={true}>
-            <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
+          <ActionCard.Container
+            onClick={() => navigate(Pages.userTransactions())}
+          >
+            <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>
-              <ActionCard.Title isUpcoming={true}>
-                Transactions
-              </ActionCard.Title>
+              <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
                 Manage Transactions Across All Vaults in One Place.
               </ActionCard.Description>
