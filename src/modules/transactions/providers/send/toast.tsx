@@ -73,7 +73,7 @@ const useTransactionToast = () => {
     }
   };
 
-  const error = (transaction: Transaction) => {
+  const error = (transaction: Transaction, message?: string) => {
     const toastId = transactionsToastRef.current[transaction.id];
 
     if (toastId) {
@@ -81,6 +81,11 @@ const useTransactionToast = () => {
         duration: 5000,
         title: 'Error on send your transaction',
         icon: <Icon fontSize="2xl" color="error.600" as={ErrorIcon} />,
+        description: message && (
+          <Text variant="description" wordBreak="break-word">
+            {message}
+          </Text>
+        ),
       });
       removeToast(transaction);
     }

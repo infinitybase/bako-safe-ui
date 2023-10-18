@@ -21,6 +21,7 @@ const Container = (props: ContainerProps) => {
       backgroundColor="dark.200"
       whiteSpace="nowrap"
       overflow="hidden"
+      position="relative"
       onClick={() => setHide(!hide)}
     >
       {props.leftIcon}

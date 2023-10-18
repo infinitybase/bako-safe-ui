@@ -9,6 +9,7 @@ const useNotification = (options?: UseToastOptions) => {
       display: 'flex',
       alignItems: 'flex-end',
       flexDirection: 'column',
+      minW: 'min-content',
     },
     position: 'top-right',
     render: (props) => <Notification {...props} />,
