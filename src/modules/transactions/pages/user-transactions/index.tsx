@@ -1,6 +1,3 @@
-// import { VaultCard } from '../../components';
-// import { useUserVaults } from '../../hooks/user-vaults';
-
 import {
   Box,
   Breadcrumb,
@@ -29,8 +26,9 @@ import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
+  const allFromUser = true;
   const { transactionRequest, filter, inView, account, navigate } =
-    useTransactionList();
+    useTransactionList(allFromUser);
 
   return (
     <VStack w="full" spacing={6}>
@@ -73,7 +71,7 @@ const UserTransactionsPage = () => {
                 fontWeight="semibold"
                 href="#"
               >
-                Vaults
+                My Transactions
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -103,7 +101,7 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container>
+        <ActionCard.Container cursor="auto">
           <ActionCard.Icon icon={GoArrowSwitch} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
