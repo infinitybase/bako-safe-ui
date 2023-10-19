@@ -168,10 +168,7 @@ const UserTransactionsPage = () => {
         spacing={5}
         maxH="calc(100% - 140px)"
         overflowY="scroll"
-        css={{
-          '&::-webkit-scrollbar': { width: '0' }, // Hide the scrollbar in WebKit browsers,
-          scrollbarWidth: 'none', // Hide the scrollbar in Firefox
-        }}
+        css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       >
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
