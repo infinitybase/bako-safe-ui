@@ -58,7 +58,7 @@ const UserTransactionsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                href="/home"
+                onClick={() => navigate(Pages.home())}
               >
                 Home
               </BreadcrumbLink>
