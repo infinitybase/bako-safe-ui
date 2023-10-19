@@ -1,3 +1,4 @@
+import { CheckIcon } from '@chakra-ui/icons';
 import {
   Box,
   HStack,
@@ -6,9 +7,9 @@ import {
   Text,
   useClipboard,
 } from '@chakra-ui/react';
-import React from 'react';
 
 import { CopyIcon } from '@/components/icons';
+import { useNotification } from '@/modules/notification';
 
 interface Props extends StackProps {
   address: string;
@@ -16,6 +17,7 @@ interface Props extends StackProps {
 
 function AddressCopy({ address, ...rest }: Props) {
   const clipboard = useClipboard(address);
+  const toast = useNotification();
 
   const isValid = !!address && address.length > 0;
 
@@ -29,7 +31,16 @@ function AddressCopy({ address, ...rest }: Props) {
       borderRadius={10}
       justifyContent="center"
       backgroundColor="dark.100"
-      onClick={() => clipboard.onCopy()}
+      onClick={() => {
+        clipboard.onCopy();
+        toast({
+          position: 'top-right',
+          duration: 3000,
+          isClosable: false,
+          title: 'Copied to clipboard',
+          icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
+        });
+      }}
       {...rest}
     >
       <Icon color="grey.200" fontSize="md" as={CopyIcon} />
