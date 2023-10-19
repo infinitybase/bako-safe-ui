@@ -91,9 +91,12 @@ const TransactionsVaultPage = () => {
         spacing={5}
         maxH="calc(100% - 140px)"
         overflowY="scroll"
+        css={{
+          '&::-webkit-scrollbar': { width: '0' }, // Hide the scrollbar in WebKit browsers,
+          scrollbarWidth: 'none', // Hide the scrollbar in Firefox
+        }}
         pb={10}
       >
-        {/*{true && <CustomSkeleton isLoaded={false} />}*/}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}
