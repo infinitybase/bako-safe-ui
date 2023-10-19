@@ -10,7 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { ChartBulletIcon, ReplaceIcon } from '@/components';
+import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
 
 interface VaultBoxPropx {
   name: string;
@@ -48,26 +48,31 @@ const VaultBox = (props: VaultBoxPropx) => {
     name,
     address,
     fullName,
-    onChangeVault,
+    isLoading,
     hasBalance,
+    onChangeVault,
     onCreateTransaction,
   } = props;
 
   return (
     <Box w="100%">
       <HStack width="100%" alignItems="center" spacing={5} mb={5}>
-        <Avatar
-          variant="roundedSquare"
-          bgColor="dark.150"
-          color="white"
-          name={fullName}
-        />
+        <CustomSkeleton w="min-content" isLoaded={!isLoading}>
+          <Avatar
+            variant="roundedSquare"
+            bgColor="dark.150"
+            color="white"
+            name={fullName}
+          />
+        </CustomSkeleton>
         <Box w="100%" maxW="100%">
           <Flex alignItems="center" justifyContent="space-between">
             <Box maxW="48%">
-              <Heading variant="title-md" noOfLines={1}>
-                {name}
-              </Heading>
+              <CustomSkeleton borderRadius={2} isLoaded={!isLoading}>
+                <Heading variant="title-md" noOfLines={1}>
+                  {name}
+                </Heading>
+              </CustomSkeleton>
             </Box>
             <Box ml={2}>
               <Button
@@ -82,7 +87,14 @@ const VaultBox = (props: VaultBoxPropx) => {
             </Box>
           </Flex>
           <Box mt={1}>
-            <Text variant="description">{address}</Text>
+            <CustomSkeleton
+              w="full"
+              minH="20px"
+              borderRadius={2}
+              isLoaded={!isLoading}
+            >
+              <Text variant="description">{address}</Text>
+            </CustomSkeleton>
           </Box>
         </Box>
       </HStack>

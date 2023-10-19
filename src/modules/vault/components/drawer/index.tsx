@@ -62,8 +62,8 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
               Vault
             </Heading>
             <Text maxWidth={300} variant="description">
-              Setting Sail on a Journey to Unlock the Potential of User-Centered
-              Design.
+              Select a vault to go to the home page. You can search for a
+              specific vault by name.
             </Text>
           </VStack>
         </DrawerHeader>
