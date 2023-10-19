@@ -96,10 +96,10 @@ const CardDetails = (props: CardDetailsProps) => {
                   <HStack width="100%" spacing={2}>
                     <HStack spacing={2}>
                       <Heading variant="title-xl">
-                        {visebleBalance ? '*****' : balance}
+                        {visebleBalance ? balance : '*****'}
                       </Heading>
                       <Text variant="description" fontSize="md">
-                        {!visebleBalance && biggerAsset?.slug}
+                        {visebleBalance ? biggerAsset?.slug : 'ETH'}
                       </Text>
                     </HStack>
                     <Box

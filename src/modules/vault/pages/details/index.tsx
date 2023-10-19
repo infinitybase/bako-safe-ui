@@ -106,6 +106,7 @@ const VaultDetailsPage = () => {
       <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
         <CardDetails vault={vault} store={store} />
         <AmountDetails
+          store={store}
           vaultAddress={vault.predicateAddress!}
           assets={assets}
           isLoading={vault.isLoading}

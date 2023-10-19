@@ -1,3 +1,4 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -80,11 +81,33 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       mb={2}
                     >
                       <Text variant="description">Vault balance</Text>
-                      <Heading variant="title-xl">
-                        {`${biggerAsset?.amount ?? 0} ${
-                          biggerAsset?.slug ?? 'ETH'
-                        }`}
-                      </Heading>
+                      <HStack spacing={2}>
+                        <HStack spacing={2}>
+                          <Heading variant="title-xl">
+                            {store.visebleBalance
+                              ? biggerAsset?.amount ?? 0
+                              : '*****'}
+                          </Heading>
+                          <Text variant="description" fontSize="md">
+                            {biggerAsset?.slug ?? 'ETH'}
+                          </Text>
+                        </HStack>
+                        <Box
+                          display="flex"
+                          width="18%"
+                          justifyContent="center"
+                          alignItems="center"
+                          onClick={() =>
+                            store.setVisibleBalance(!store.visebleBalance)
+                          }
+                        >
+                          {store.visebleBalance ? (
+                            <ViewIcon boxSize={6} />
+                          ) : (
+                            <ViewOffIcon boxSize={6} />
+                          )}
+                        </Box>
+                      </HStack>
                     </HStack>
                   </Box>
 

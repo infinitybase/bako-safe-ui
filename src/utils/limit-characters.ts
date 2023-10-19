@@ -1,3 +1,6 @@
+/***
+ TODO: Remove this and use AddressUtils.format.
+ ***/
 const limitCharacters = (text: string, limit: number) => {
   if (text.length > limit) {
     return text.slice(0, limit) + '...';
