@@ -45,6 +45,8 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   const onSelectVault = (vaultId: string) => {
     props.onClose();
+    queryClient.invalidateQueries('vault/pagination');
+    setSearch('');
     navigate(Pages.detailsVault({ vaultId }));
   };
 
