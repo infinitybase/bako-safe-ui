@@ -19,6 +19,7 @@ import { useTransactionToast } from './toast';
 interface TransactionSendContextType {
   isExecuting: (transaction: Transaction) => boolean;
   executeTransaction: (transaction: Transaction) => void;
+  retryTransaction: (transaction: Transaction) => void;
   clearAll: () => void;
 }
 
@@ -45,7 +46,10 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       refetetchTransactionList();
     },
     onError: (error, { transaction }) => {
-      const errorMessage = (error as any)?.response?.errors?.[0]?.message;
+      const errorMessage =
+        (error as any)?.response?.errors?.[0]?.message ??
+        (error as any).message;
+
       toast.error(transaction, errorMessage);
       refetetchTransactionList();
     },
@@ -62,6 +66,12 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     sendTransaction({ transaction });
   };
 
+  const retryTransaction = (transaction: Transaction) => {
+    toast.loading(transaction);
+    transactionsRef.current.push(transaction);
+    sendTransaction({ transaction });
+  };
+
   const clearAll = () => {
     transactionsRef.current = [];
     toast.closeAll();
@@ -73,6 +83,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
         clearAll,
         isExecuting,
         executeTransaction,
+        retryTransaction,
       }}
     >
       {props.children}

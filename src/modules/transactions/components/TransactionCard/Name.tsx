@@ -6,9 +6,9 @@ interface TransactionCardNameProps {
 }
 
 const Name = ({ children }: TransactionCardNameProps) => (
-  <HStack w={200} ml={0} textAlign="left">
+  <HStack w={200} ml={-2} textAlign="left">
     <Box>
-      <Heading variant="title-md" color="grey.200">
+      <Heading variant="title-md" color="grey.200" noOfLines={1}>
         {children}
       </Heading>
       <Text variant="description" fontSize="sm" color="grey.500">

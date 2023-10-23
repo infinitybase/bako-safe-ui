@@ -21,14 +21,13 @@ interface TransactionActionsProps {
 const Actions = ({ transaction, status }: TransactionActionsProps) => {
   const { isOpen } = useAccordionItemState();
 
-  const { isSigned, isDeclined, isCompleted, isReproved, isPending } = status;
+  const { isSigned, isDeclined, isCompleted, isReproved } = status;
   const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
     useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
-  const userDidntAnswer =
-    !isSigned && !isDeclined && (isCompleted || isReproved);
+  const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
   return (
     <>
@@ -39,17 +38,20 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
           <Icon as={SuccessIcon} />
         </Badge>
       )}
+
       {isDeclined && (
         <Badge h={6} variant="error">
           You declined
           <Icon as={ErrorIcon} />
         </Badge>
       )}
-      {userDidntAnswer && (
+
+      {notAnswered && (
         <Badge h={6} variant="info">
           {`You didn't sign`}
         </Badge>
       )}
+
       {awaitingAnswer && (
         <HStack>
           <Button

@@ -1,3 +1,4 @@
+import { bn } from 'fuels';
 import { useMutation, UseMutationOptions } from 'react-query';
 
 import { BsafeProvider } from '@/modules/core';
@@ -14,8 +15,23 @@ export interface SendTransferParams {
 const sendTransfer = async ({ transaction }: SendTransferParams) => {
   try {
     const predicate = await VaultService.getById(transaction.predicateID);
+    const vault = BsafeProvider.instanceVault(predicate);
+    const balances = await vault.getBalances();
+    const hasAssets = transaction.assets.every((asset) => {
+      const assetBalance = balances.find(
+        (balance) => balance.assetId === asset.assetID,
+      );
+
+      if (!assetBalance) return false;
+
+      return assetBalance.amount.gte(bn.parseUnits(asset.amount));
+    });
+
+    if (!hasAssets)
+      throw new Error('Insufficient assets to send this transaction');
+
     const transactionInstance = await BsafeProvider.instanceTransaction({
-      predicate: BsafeProvider.instanceVault(predicate),
+      predicate: vault,
       assets: transaction.assets,
       witnesses: transaction.witnesses
         .filter((witness) => !!witness.signature)
