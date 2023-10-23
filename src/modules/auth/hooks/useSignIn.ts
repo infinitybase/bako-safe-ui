@@ -8,7 +8,7 @@ import { Pages, useConnect, useIsConnected } from '@/modules/core';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
 const FUEL_CONNECTOR_NAME = 'Fuel Wallet';
-const FUELET_CONNECTOR_NAME = 'Fuelet Wallet';
+// const FUELET_CONNECTOR_NAME = 'Fuelet Wallet';
 
 const useSignIn = () => {
   const navigate = useNavigate();
@@ -78,15 +78,13 @@ const useSignIn = () => {
   useEffect(() => {
     if (!fuel) return;
 
-    const hasFueletConnector = fuel.hasConnector(FUELET_CONNECTOR_NAME);
+    const hasFuelConnector = fuel.hasConnector(FUEL_CONNECTOR_NAME);
 
-    if (hasFueletConnector) {
-      fuel.removeConnector(FUELET_CONNECTOR_NAME);
+    if (fuel.connectorName !== FUEL_CONNECTOR_NAME && hasFuelConnector) {
+      fuel
+        .selectConnector(FUEL_CONNECTOR_NAME)
+        .catch(() => fuel.selectConnector(''));
     }
-
-    fuel
-      .selectConnector(FUEL_CONNECTOR_NAME)
-      .catch(() => fuel.selectConnector(''));
   }, [fuel]);
 
   return {
