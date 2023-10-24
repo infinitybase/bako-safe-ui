@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules';
@@ -11,6 +12,10 @@ const useHome = () => {
   const homeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
   const transactionsRequest = useUserTransactionsRequest();
   const count = homeVaultsRequest?.data?.total ?? 0;
+
+  useEffect(() => {
+    document.getElementById('top')?.scrollIntoView();
+  }, []);
 
   return {
     account,

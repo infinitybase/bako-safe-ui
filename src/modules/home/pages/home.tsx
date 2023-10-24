@@ -50,7 +50,7 @@ const HomePage = () => {
   const hasVaults = recentVaults && recentVaults?.length;
 
   return (
-    <VStack w="full" spacing={6}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       {!hasVaults ? (
         <CustomSkeleton isLoaded={!isLoading}>
           <EmptyVault />
