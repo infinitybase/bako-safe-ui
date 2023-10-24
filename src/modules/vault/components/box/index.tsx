@@ -9,6 +9,7 @@ import {
   SkeletonText,
   Text,
 } from '@chakra-ui/react';
+import { FiPlusSquare } from 'react-icons/fi';
 
 import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
 
@@ -105,7 +106,7 @@ const VaultBox = (props: VaultBoxPropx) => {
           fontWeight="bold"
           onClick={onCreateTransaction}
           isDisabled={!hasBalance}
-          leftIcon={<ChartBulletIcon mr={2} fontSize={22} />}
+          leftIcon={<FiPlusSquare fontSize={22} />}
         >
           Create transaction
         </Button>
