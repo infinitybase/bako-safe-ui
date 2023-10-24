@@ -81,7 +81,12 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
           </FormControl>
         </Box>
 
-        <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
+        <DrawerBody
+          py={8}
+          borderTop="1px"
+          borderTopColor="dark.100"
+          css={{ '::-webkit-scrollbar': { width: 0 }, scrollbarWidth: 'none' }}
+        >
           {isSuccess && !vaults.length && (
             <Text variant="variant">
               We {"couldn't"} find any results for <b>“{search.value}”</b> in

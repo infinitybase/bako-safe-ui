@@ -15,6 +15,7 @@ import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
+import { SettingsSigners } from '../../components/SettingsSigners';
 
 const VaultSettingsPage = () => {
   const { vault, store, navigate } = useVaultDetails();
@@ -32,12 +33,11 @@ const VaultSettingsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href={Pages.home()}
+              onClick={() => navigate(Pages.home())}
             >
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbItem>
             <BreadcrumbLink
               fontSize="sm"
@@ -48,13 +48,14 @@ const VaultSettingsPage = () => {
               Settings
             </BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbItem>
             <BreadcrumbLink
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href={Pages.detailsVault({ vaultId: vault.id! })}
+              onClick={() =>
+                navigate(Pages.detailsVault({ vaultId: vault.id! }))
+              }
             >
               {vault.name}
             </BreadcrumbLink>
@@ -78,8 +79,9 @@ const VaultSettingsPage = () => {
         </Button>
       </HStack>
 
-      <VStack mb={14} alignItems="flex-start" w="100%" spacing={5}>
+      <VStack mb={14} alignItems="flex-start" w="100%" spacing={12}>
         <SettingsOverview vault={vault} store={store} />
+        <SettingsSigners vault={vault} />
       </VStack>
     </Box>
   );
