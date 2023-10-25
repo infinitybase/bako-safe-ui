@@ -27,7 +27,10 @@ const UserVaultsPage = () => {
   const {
     navigate,
     vaultsRequest: { vaults, loadingVaults },
+    transactionsRequest: { transactions },
   } = useUserVaults();
+
+  const hasTransactions = transactions?.length;
 
   return (
     <VStack w="full" spacing={6}>
@@ -100,12 +103,20 @@ const UserVaultsPage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container isUpcoming={true}>
-            <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
+          <ActionCard.Container
+            isUpcoming={hasTransactions ? false : true}
+            onClick={() => {
+              return hasTransactions
+                ? navigate(Pages.userTransactions())
+                : null;
+            }}
+          >
+            <ActionCard.Icon
+              icon={GoArrowSwitch}
+              isUpcoming={hasTransactions ? false : true}
+            />
             <Box>
-              <ActionCard.Title isUpcoming={true}>
-                Transactions
-              </ActionCard.Title>
+              <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
                 Manage Transactions Across All Vaults in One Place.
               </ActionCard.Description>
