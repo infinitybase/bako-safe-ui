@@ -128,10 +128,7 @@ const HomePage = () => {
           </Box>
           <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
             {recentVaults?.map(
-              (
-                { id, name, predicateAddress, completeAddress, description },
-                index,
-              ) => {
+              ({ id, name, predicateAddress, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -148,7 +145,7 @@ const HomePage = () => {
                           name={name}
                           title={description}
                           address={predicateAddress}
-                          members={completeAddress}
+                          members={members!}
                           onClick={() =>
                             navigate(Pages.detailsVault({ vaultId: id }))
                           }
