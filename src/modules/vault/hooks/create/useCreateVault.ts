@@ -54,7 +54,6 @@ const useCreateVault = () => {
       addresses,
       minSigners: Number(data.minSigners),
       description: data.description,
-      owner: account,
       provider: await fuel.getProvider(),
     });
   });
