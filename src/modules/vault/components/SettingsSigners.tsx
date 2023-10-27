@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 
 import { Card, CustomSkeleton } from '@/components';
-import { User } from '@/modules/core/models/user';
 
 import { AddressUtils } from '../../core/utils/address';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -42,7 +41,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={2} variant="warning" h={5}>
-          Required signers {vault?.minSigners}/{vault?.signers.length}
+          Required signers {vault?.minSigners}/{vault?.signers?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
@@ -52,44 +51,42 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           gap={6}
           mb={16}
         >
-          {signers.map(
-            (asset: { address: User; isOwner: boolean }, index: number) => {
-              return (
-                <CustomSkeleton isLoaded={!vault.isFetching} key={index}>
-                  <SignerCard>
-                    <HStack spacing={4} w="full">
-                      <Image
-                        borderRadius={10}
-                        src={asset.address.avatar}
-                        boxSize="38px"
-                      />
-                      <VStack
-                        h="full"
-                        minH={51}
-                        spacing={1}
-                        justifyContent="center"
-                        alignItems="start"
+          {signers?.map((signer, index: number) => {
+            return (
+              <CustomSkeleton isLoaded={!vault.isFetching} key={index}>
+                <SignerCard>
+                  <HStack spacing={4} w="full">
+                    <Image
+                      borderRadius={10}
+                      src={signer.avatar}
+                      boxSize="38px"
+                    />
+                    <VStack
+                      h="full"
+                      minH={51}
+                      spacing={1}
+                      justifyContent="center"
+                      alignItems="start"
+                    >
+                      {signer?.isOwner && (
+                        <Badge py={0} variant="success">
+                          owner
+                        </Badge>
+                      )}
+                      <Text
+                        color="grey.200"
+                        fontWeight="semibold"
+                        fontSize="lg"
+                        noOfLines={1}
                       >
-                        {asset?.isOwner && (
-                          <Badge py={0} variant="success">
-                            owner
-                          </Badge>
-                        )}
-                        <Text
-                          color="grey.200"
-                          fontWeight="semibold"
-                          fontSize="lg"
-                          noOfLines={1}
-                        >
-                          {AddressUtils.format(asset?.address.address)}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </SignerCard>
-                </CustomSkeleton>
-              );
-            },
-          )}
+                        {AddressUtils.format(signer.address)}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                </SignerCard>
+              </CustomSkeleton>
+            );
+          })}
         </Grid>
       </VStack>
     </Box>
