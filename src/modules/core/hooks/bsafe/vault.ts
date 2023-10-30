@@ -22,8 +22,6 @@ const useBsafeVault = (id: string) => {
     },
   );
 
-  console.log({ data });
-
   return {
     vault: data,
     ...rest,
