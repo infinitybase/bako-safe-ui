@@ -40,7 +40,7 @@ const Sidebar = () => {
 
       {/*/!* VAULT INFOS *!/*/}
       <VaultBox
-        name={String(`${vaultRequest.predicate?.name.slice(0, 9)}...`)}
+        name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
         fullName={String(vaultRequest.predicate?.name)}
         address={
           AddressUtils.format(vaultRequest?.predicate?.predicateAddress ?? '')!

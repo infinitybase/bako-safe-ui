@@ -20,9 +20,7 @@ const useSidebar = () => {
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(
-    vaultDetailsRequest.predicate?.predicateInstance,
-  );
+  const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
   const pendingTransactions = useMemo(() => {
     return (

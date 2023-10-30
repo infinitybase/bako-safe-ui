@@ -1,4 +1,7 @@
-import { IPayloadVault, Vault } from 'bsafe';
+import { Vault } from 'bsafe';
+import { Provider } from 'fuels';
+
+import { useFuel } from '@/modules';
 
 import { useBsafeMutation, useBsafeQuery } from './utils';
 
@@ -14,10 +17,12 @@ const useBsafeVault = (id: string) => {
       return Vault.create({
         id,
         token: context.auth.token,
-        address: context.auth.token,
+        address: context.auth.address,
       });
     },
   );
+
+  console.log({ data });
 
   return {
     vault: data,
@@ -30,16 +35,36 @@ interface UseCreateBsafeVaultParams {
   onError: () => void;
 }
 
+interface UseCreateBsafeVaultPayload {
+  name: string;
+  description: string;
+  addresses: string[];
+  minSigners: number;
+}
+
 const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
+  const [fuel] = useFuel();
+
   const { mutate, ...mutation } = useBsafeMutation<
     Vault,
     unknown,
-    Omit<IPayloadVault, 'BSAFEAuth'>
+    UseCreateBsafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
+      const netowrk = await fuel.network();
+      const provider = await Provider.create(netowrk.url);
+
       return Vault.create({
-        ...params,
+        name: params.name,
+        description: params.description!,
+        provider: provider,
+        configurable: {
+          chainId: provider.getChainId(),
+          network: provider.url,
+          SIGNATURES_COUNT: params.minSigners,
+          SIGNERS: params.addresses,
+        },
         BSAFEAuth: auth,
       });
     },

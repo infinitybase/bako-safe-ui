@@ -1,4 +1,3 @@
-import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +7,6 @@ import {
   useFuel,
   useFuelAccount,
   useToast,
-  VaultUtils,
 } from '@/modules';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
@@ -51,21 +49,13 @@ const useCreateVault = () => {
   });
 
   const handleCreateVault = form.handleSubmit(async (data) => {
-    const netowrk = await fuel.network();
-    const provider = await Provider.create(netowrk.url);
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
     bsafeVault.create({
       name: data.name,
-      description: data.description,
-      provider: provider,
-      configurable: {
-        chainId: provider.getChainId(),
-        network: provider.url,
-        SIGNATURES_COUNT: Number(data.minSigners),
-        SIGNERS: VaultUtils.makeSubscribers(addresses),
-        HASH_PREDICATE: VaultUtils.makeHashPredicate(),
-      },
+      description: data.description!,
+      minSigners: Number(data.minSigners),
+      addresses,
     });
   });
 
