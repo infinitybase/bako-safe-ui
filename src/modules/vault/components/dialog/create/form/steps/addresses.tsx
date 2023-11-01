@@ -17,13 +17,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
 import { Dialog, UserAddIcon } from '@/components';
 import { ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
+import { useCreateContact } from '@/modules/addressBook/hooks/create';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -38,14 +38,16 @@ const VaultAddressesStep = ({
   templates,
   setTemplate,
 }: VaultAddressesStepProps) => {
-  const [openContactDialog, setOpenContactDialog] = useState(false);
+  const { contactDialogIsOpen, handleCloseDialog, handleOpenDialog } =
+    useCreateContact();
 
   return (
     <>
       <CreateContactDialog
-        onClose={() => setOpenContactDialog(false)}
-        isOpen={openContactDialog}
+        isOpen={contactDialogIsOpen}
+        onClose={handleCloseDialog}
       />
+
       <TabPanel p={0}>
         <Dialog.Section
           hidden={!templates.length}
@@ -145,10 +147,7 @@ const VaultAddressesStep = ({
                     </FormHelperText>
                     <Text color="grey.200" fontSize={12}>
                       Do you wanna{' '}
-                      <Link
-                        color="brand.500"
-                        onClick={() => setOpenContactDialog(true)}
-                      >
+                      <Link color="brand.500" onClick={handleOpenDialog}>
                         add
                       </Link>{' '}
                       this address in your address book?
