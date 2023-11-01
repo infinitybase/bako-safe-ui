@@ -8,19 +8,19 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { UseCreateContactReturn } from '@/modules/addressBook/create';
+import { UseCreateContactReturn } from '@/modules/addressBook/hooks/create';
 
 export interface CreateContactFormProps {
   form: UseCreateContactReturn['form'];
 }
 
 interface FieldParams {
-  name: 'address' | 'name';
+  name: 'address' | 'nickname';
   label: string;
 }
 
 const fields: FieldParams[] = [
-  { name: 'name', label: 'Name or Label' },
+  { name: 'nickname', label: 'Name or Label' },
   { name: 'address', label: 'Address' },
 ];
 
