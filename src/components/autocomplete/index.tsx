@@ -83,9 +83,9 @@ function AutoComplete<T>({
         )}
       </InputGroup>
 
-      <Box hidden={!isInvalid}>
+      {isInvalid && (
         <FormHelperText color="error.500">{errorMessage}</FormHelperText>
-      </Box>
+      )}
 
       {showResultList && (
         <Box
@@ -115,15 +115,15 @@ function AutoComplete<T>({
                 }}
               >
                 {!options.length ? (
-                  <Text>No items found matching your search.</Text>
+                  <Text>No items found matching your search</Text>
                 ) : (
                   options.map((option, index) => (
                     <Box
-                      key={index}
                       w="full"
                       p={2}
                       borderRadius={10}
                       cursor="pointer"
+                      key={index}
                       onClick={() => {
                         onChange;
                         setIsOpen(false);

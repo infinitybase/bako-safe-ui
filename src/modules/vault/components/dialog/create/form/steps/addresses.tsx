@@ -108,7 +108,7 @@ const VaultAddressesStep = ({
               key={id}
               name={`addresses.${index}.value`}
               render={({ field, fieldState }) => (
-                <AutoComplete
+                <AutoComplete<AddressBook>
                   value={index === 0 ? field.value : undefined}
                   label={index === 0 ? 'Your address' : `Address ${index + 1}`}
                   isInvalid={fieldState.invalid}
@@ -119,13 +119,7 @@ const VaultAddressesStep = ({
                   isLoading={findContactsRequest.isLoading}
                   options={findContactsRequest?.data ?? []}
                   actionIcon={RemoveIcon}
-                  action={
-                    index === 0
-                      ? undefined
-                      : () => {
-                          if (index > 0) addresses.remove(index);
-                        }
-                  }
+                  action={index > 0 ? () => addresses.remove(index) : undefined}
                   fieldsToShow={(option: AddressBook) =>
                     `${option.nickname} - ${option.user.address}`
                   }
@@ -133,68 +127,8 @@ const VaultAddressesStep = ({
               )}
               control={form.control}
             />
-
-            // <Controller
-            //   key={id}
-            //   name={`addresses.${index}.value`}
-            //   render={({ field, fieldState }) => {
-            //     return (
-            //       <FormControl isInvalid={fieldState.invalid}>
-            //         <InputGroup>
-            //           <Input
-            //             value={field.value}
-            //             onChange={field.onChange}
-            //             disabled={index === 0}
-            //             placeholder=" "
-            //           />
-            //           <FormLabel color="grey.500">
-            //             {index === 0 ? 'Your address' : `Address ${index + 1}`}
-            //           </FormLabel>
-            //           {index > 0 && (
-            //             <InputRightElement
-            //               px={2}
-            //               top="1px"
-            //               right="1px"
-            //               borderRadius={10}
-            //               bgColor="dark.200"
-            //               h="calc(100% - 2px)"
-            //             >
-            //               <Icon
-            //                 as={RemoveIcon}
-            //                 fontSize="md"
-            //                 cursor="pointer"
-            //                 onClick={() => {
-            //                   if (index > 0) {
-            //                     addresses.remove(index);
-            //                   }
-            //                 }}
-            //               />
-            //             </InputRightElement>
-            //           )}
-            //         </InputGroup>
-            //         {/* <FormHelperText color="error.500">
-            //           {fieldState.error?.message}
-            //         </FormHelperText> */}
-
-            //         {index > 0 && (
-            //           <AutoComplete index={index} isLoading={false} />
-            //         )}
-
-            //         {index > 0 && !fieldState.error && (
-            //           <Text color="grey.200" fontSize={12}>
-            //             Do you wanna{' '}
-            //             <Link color="brand.500" onClick={handleOpenDialog}>
-            //               add
-            //             </Link>{' '}
-            //             this address in your address book?
-            //           </Text>
-            //         )}
-            //       </FormControl>
-            //     );
-            //   }}
-            //   control={form.control}
-            // />
           ))}
+
           <Button
             border="none"
             bgColor="dark.100"
