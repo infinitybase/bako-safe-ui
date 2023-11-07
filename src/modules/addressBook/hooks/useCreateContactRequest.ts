@@ -4,7 +4,7 @@ import {
   AddressBookService,
   CreateContactPayload,
   CreateContactResponse,
-} from '../../services';
+} from '../services';
 
 const useCreateContactRequest = (
   options?: UseMutationOptions<

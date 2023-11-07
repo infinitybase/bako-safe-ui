@@ -1,6 +1,7 @@
 import { Icon } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import debounce from 'lodash.debounce';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { MdOutlineError } from 'react-icons/md';
 
@@ -9,17 +10,13 @@ import { useNotification } from '@/modules/notification';
 
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
+import { useFindContactsRequest } from './useFindContactsRequest';
 
-export enum TabState {
-  INFO,
-  ADDRESSES,
-  SUCCESS,
-}
+export type UseCreateContactReturn = ReturnType<typeof useContact>;
 
-export type UseCreateContactReturn = ReturnType<typeof useCreateContact>;
-
-const useCreateContact = () => {
+const useContact = () => {
   const [contactDialogIsOpen, setContactDialogIsOpen] = useState(false);
+
   const toast = useNotification();
 
   const handleCloseDialog = () => setContactDialogIsOpen(false);
@@ -89,17 +86,30 @@ const useCreateContact = () => {
     },
   });
 
+  const debouncedSearchHandler = useCallback(
+    debounce((event: ChangeEvent<HTMLInputElement>) => {
+      findContactsRequest.mutate({ q: event.target.value });
+    }, 300),
+    [],
+  );
+
+  const findContactsRequest = useFindContactsRequest();
+
   const handleCreateContact = form.handleSubmit(async (data) => {
     createContactRequest.mutate(data);
   });
 
   return {
     form: { ...form, handleCreateContact },
+    search: {
+      handler: debouncedSearchHandler,
+    },
     createContactRequest,
+    findContactsRequest,
     contactDialogIsOpen,
     handleCloseDialog,
     handleOpenDialog,
   };
 };
 
-export { useCreateContact };
+export { useContact };

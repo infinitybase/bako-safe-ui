@@ -7,23 +7,17 @@ import {
   FormLabel,
   Heading,
   HStack,
-  Icon,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Link,
   Select,
   TabPanel,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
-import { TbTrash as RemoveIcon } from 'react-icons/tb';
 
 import { Dialog, UserAddIcon } from '@/components';
+import { AutoComplete } from '@/components/autocomplete';
 import { ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
-import { useCreateContact } from '@/modules/addressBook/hooks/create';
+import { useContact } from '@/modules/addressBook/hooks/';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -38,8 +32,13 @@ const VaultAddressesStep = ({
   templates,
   setTemplate,
 }: VaultAddressesStepProps) => {
-  const { contactDialogIsOpen, handleCloseDialog, handleOpenDialog } =
-    useCreateContact();
+  const {
+    contactDialogIsOpen,
+    handleCloseDialog,
+    // handleOpenDialog,
+    findContactsRequest,
+    search,
+  } = useContact();
 
   return (
     <>
@@ -107,56 +106,84 @@ const VaultAddressesStep = ({
             <Controller
               key={id}
               name={`addresses.${index}.value`}
-              render={({ field, fieldState }) => {
-                return (
-                  <FormControl isInvalid={fieldState.invalid}>
-                    <InputGroup>
-                      <Input
-                        value={field.value}
-                        onChange={field.onChange}
-                        disabled={index === 0}
-                        placeholder=" "
-                      />
-                      <FormLabel color="grey.500">
-                        {index === 0 ? 'Your address' : `Address ${index + 1}`}
-                      </FormLabel>
-                      {index > 0 && (
-                        <InputRightElement
-                          px={2}
-                          top="1px"
-                          right="1px"
-                          borderRadius={10}
-                          bgColor="dark.200"
-                          h="calc(100% - 2px)"
-                        >
-                          <Icon
-                            as={RemoveIcon}
-                            fontSize="md"
-                            cursor="pointer"
-                            onClick={() => {
-                              if (index > 0) {
-                                addresses.remove(index);
-                              }
-                            }}
-                          />
-                        </InputRightElement>
-                      )}
-                    </InputGroup>
-                    <FormHelperText color="error.500">
-                      {fieldState.error?.message}
-                    </FormHelperText>
-                    <Text color="grey.200" fontSize={12}>
-                      Do you wanna{' '}
-                      <Link color="brand.500" onClick={handleOpenDialog}>
-                        add
-                      </Link>{' '}
-                      this address in your address book?
-                    </Text>
-                  </FormControl>
-                );
-              }}
+              render={({ field, fieldState }) => (
+                <AutoComplete
+                  value={index === 0 ? field.value : undefined}
+                  isInvalid={fieldState.invalid}
+                  onChange={field.onChange}
+                  onInputChange={search.handler}
+                  errorMessage={fieldState.error?.message}
+                  onRemove={() => {
+                    if (index > 0) addresses.remove(index);
+                  }}
+                  index={index}
+                  isLoading={findContactsRequest.isLoading}
+                  options={findContactsRequest?.data ?? []}
+                />
+              )}
               control={form.control}
             />
+
+            // <Controller
+            //   key={id}
+            //   name={`addresses.${index}.value`}
+            //   render={({ field, fieldState }) => {
+            //     return (
+            //       <FormControl isInvalid={fieldState.invalid}>
+            //         <InputGroup>
+            //           <Input
+            //             value={field.value}
+            //             onChange={field.onChange}
+            //             disabled={index === 0}
+            //             placeholder=" "
+            //           />
+            //           <FormLabel color="grey.500">
+            //             {index === 0 ? 'Your address' : `Address ${index + 1}`}
+            //           </FormLabel>
+            //           {index > 0 && (
+            //             <InputRightElement
+            //               px={2}
+            //               top="1px"
+            //               right="1px"
+            //               borderRadius={10}
+            //               bgColor="dark.200"
+            //               h="calc(100% - 2px)"
+            //             >
+            //               <Icon
+            //                 as={RemoveIcon}
+            //                 fontSize="md"
+            //                 cursor="pointer"
+            //                 onClick={() => {
+            //                   if (index > 0) {
+            //                     addresses.remove(index);
+            //                   }
+            //                 }}
+            //               />
+            //             </InputRightElement>
+            //           )}
+            //         </InputGroup>
+            //         {/* <FormHelperText color="error.500">
+            //           {fieldState.error?.message}
+            //         </FormHelperText> */}
+
+            //         {index > 0 && (
+            //           <AutoComplete index={index} isLoading={false} />
+            //         )}
+
+            //         {index > 0 && !fieldState.error && (
+            //           <Text color="grey.200" fontSize={12}>
+            //             Do you wanna{' '}
+            //             <Link color="brand.500" onClick={handleOpenDialog}>
+            //               add
+            //             </Link>{' '}
+            //             this address in your address book?
+            //           </Text>
+            //         )}
+            //       </FormControl>
+            //     );
+            //   }}
+            //   control={form.control}
+            // />
           ))}
           <Button
             border="none"

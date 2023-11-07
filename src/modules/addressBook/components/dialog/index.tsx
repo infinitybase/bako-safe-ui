@@ -1,10 +1,10 @@
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
+import { useContact } from '@/modules/addressBook/hooks';
 
-import { useCreateContact } from '../../hooks/create';
 import { CreateContactForm } from '../../pages/create/form';
 
 const CreateContactDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const { form } = useCreateContact();
+  const { form } = useContact();
 
   // TODO: Replace this hard coded variable
   const isEdit = false;
