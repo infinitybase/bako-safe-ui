@@ -24,6 +24,7 @@ import { useVaultDrawer } from './hook';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
+  onSelect?: (vaultId: string) => void;
 }
 
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
@@ -35,12 +36,13 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   } = useVaultDrawer({
     onClose: props.onClose,
     isOpen: props.isOpen,
+    onSelect: props.onSelect,
   });
 
   return (
     <Drawer
       {...props}
-      size="sm"
+      size="xl"
       onClose={drawer.onClose}
       variant="glassmorphic"
       placement="left"

@@ -22,8 +22,8 @@ const Pages = {
   //template
   createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
-  //faucet
-  faucet: pageRoute('/faucet/:id'),
+  //dapp
+  dapp: pageRoute('/dapp'),
 };
 
 export { Pages };

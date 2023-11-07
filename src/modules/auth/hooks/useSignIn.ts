@@ -2,7 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuel, useFuelAccount, useGetCurrentAccount } from '@/modules';
+import {
+  useFuel,
+  useFuelAccount,
+  useGetCurrentAccount,
+  useQueryParams,
+} from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
@@ -12,12 +17,12 @@ const FUEL_CONNECTOR_NAME = 'Fuel Wallet';
 
 const useSignIn = () => {
   const navigate = useNavigate();
-
   const [fuel] = useFuel();
   const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
+  const { location, url } = useQueryParams();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar }) => {
@@ -37,7 +42,10 @@ const useSignIn = () => {
       ]);
       setAccount(account!);
       setAvatar(avatar!);
-      navigate(Pages.home());
+
+      url
+        ? navigate(`${Pages.dapp()}${location.search}&address=${account}`)
+        : navigate(Pages.home());
     },
   });
 
