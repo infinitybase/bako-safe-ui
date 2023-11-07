@@ -1,10 +1,12 @@
 import {
   Box,
+  ComponentWithAs,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
   Icon,
+  IconProps,
   Input,
   InputGroup,
   InputRightElement,
@@ -14,43 +16,41 @@ import {
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 
-import { AddressBook } from '@/modules/core/models/addressBook';
-
-import { RemoveIcon } from '../icons';
-
-interface AutoCompleteProps {
+interface AutoCompleteProps<T> {
   isLoading: boolean;
   isInvalid: boolean;
-  index: number;
-  options: AddressBook[];
+  options: T[];
   value?: string;
+  label: string;
+  isDisabled: boolean;
   errorMessage?: string;
+  actionIcon?: ComponentWithAs<'svg', IconProps>;
+  action?: () => void;
   onChange: () => void;
-  onRemove: () => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  fieldsToShow: (model: T) => string;
 }
 
-const AutoComplete = ({
-  index,
+function AutoComplete<T>({
   isLoading,
   isInvalid,
-  onChange,
+  isDisabled,
   options,
-  onInputChange,
-  onRemove,
   value,
+  label,
   errorMessage,
-}: AutoCompleteProps) => {
+  actionIcon,
+  action,
+  fieldsToShow,
+  onChange,
+  onInputChange,
+}: AutoCompleteProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const showResultList = isOpen && index > 0 && !isInvalid;
+  const showResultList = isOpen && !isDisabled && !isInvalid;
 
   useEffect(() => {
-    if (isLoading || options.length) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
+    setIsOpen(isLoading || options.length ? true : false);
   }, [isLoading, options]);
 
   return (
@@ -58,16 +58,13 @@ const AutoComplete = ({
       <InputGroup>
         <Input
           {...(value ? { value: value } : {})}
-          // onChange={onChange}
           onChange={onInputChange}
-          // onChange={(e) => console.log(`>>>>>`, e.target.value)}
-          disabled={index === 0}
+          disabled={isDisabled ?? false}
           placeholder=" "
         />
-        <FormLabel color="grey.500">
-          {index === 0 ? 'Your address' : `Address ${index + 1}`}
-        </FormLabel>
-        {index > 0 && (
+        <FormLabel color="grey.500">{label}</FormLabel>
+
+        {action && (
           <InputRightElement
             px={2}
             top="1px"
@@ -77,16 +74,18 @@ const AutoComplete = ({
             h="calc(100% - 2px)"
           >
             <Icon
-              as={RemoveIcon}
+              as={actionIcon}
               fontSize="md"
               cursor="pointer"
-              onClick={onRemove}
+              onClick={action}
             />
           </InputRightElement>
         )}
       </InputGroup>
 
-      <FormHelperText color="error.500">{errorMessage}</FormHelperText>
+      <Box hidden={!isInvalid}>
+        <FormHelperText color="error.500">{errorMessage}</FormHelperText>
+      </Box>
 
       {showResultList && (
         <Box
@@ -97,10 +96,10 @@ const AutoComplete = ({
           borderWidth={1}
           borderRadius={10}
           padding={2}
-          mt={2}
-          w="full"
-          zIndex={200}
           position="absolute"
+          zIndex={200}
+          w="full"
+          mt={2}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             {isLoading ? (
@@ -115,25 +114,33 @@ const AutoComplete = ({
                   scrollbarWidth: 'none',
                 }}
               >
-                {options.map((option, index) => (
-                  <Box
-                    key={index}
-                    w="full"
-                    p={2}
-                    borderRadius={10}
-                    cursor="pointer"
-                    onClick={onChange}
-                    _hover={{ background: 'dark.150' }}
-                  >
-                    <Text
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      // noOfLines={2}
+                {!options.length ? (
+                  <Text>No items found matching your search.</Text>
+                ) : (
+                  options.map((option, index) => (
+                    <Box
+                      key={index}
                       w="full"
-                    >{`${option.nickname} - ${option.user.address}`}</Text>
-                  </Box>
-                ))}
+                      p={2}
+                      borderRadius={10}
+                      cursor="pointer"
+                      onClick={() => {
+                        onChange;
+                        setIsOpen(false);
+                      }}
+                      _hover={{ background: 'dark.150' }}
+                    >
+                      <Text
+                        whiteSpace="nowrap"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        w="full"
+                      >
+                        {fieldsToShow(option)}
+                      </Text>
+                    </Box>
+                  ))
+                )}
               </VStack>
             )}
           </Flex>
@@ -141,6 +148,6 @@ const AutoComplete = ({
       )}
     </FormControl>
   );
-};
+}
 
 export { AutoComplete };

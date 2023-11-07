@@ -13,11 +13,12 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog, UserAddIcon } from '@/components';
+import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useContact } from '@/modules/addressBook/hooks/';
+import { AddressBook } from '@/modules/core/models/addressBook';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -109,16 +110,25 @@ const VaultAddressesStep = ({
               render={({ field, fieldState }) => (
                 <AutoComplete
                   value={index === 0 ? field.value : undefined}
+                  label={index === 0 ? 'Your address' : `Address ${index + 1}`}
                   isInvalid={fieldState.invalid}
+                  isDisabled={index === 0}
                   onChange={field.onChange}
                   onInputChange={search.handler}
                   errorMessage={fieldState.error?.message}
-                  onRemove={() => {
-                    if (index > 0) addresses.remove(index);
-                  }}
-                  index={index}
                   isLoading={findContactsRequest.isLoading}
                   options={findContactsRequest?.data ?? []}
+                  actionIcon={RemoveIcon}
+                  action={
+                    index === 0
+                      ? undefined
+                      : () => {
+                          if (index > 0) addresses.remove(index);
+                        }
+                  }
+                  fieldsToShow={(option: AddressBook) =>
+                    `${option.nickname} - ${option.user.address}`
+                  }
                 />
               )}
               control={form.control}
