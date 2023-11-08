@@ -15,10 +15,9 @@ import { Controller } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
-import { ITemplate, UseCreateVaultReturn } from '@/modules';
+import { AddressUtils, ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useContact } from '@/modules/addressBook/hooks/';
-import { AddressBook } from '@/modules/core/models/addressBook';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -36,7 +35,7 @@ const VaultAddressesStep = ({
   const {
     contactDialogIsOpen,
     handleCloseDialog,
-    // handleOpenDialog,
+    handleOpenDialog,
     findContactsRequest,
     search,
   } = useContact();
@@ -103,31 +102,53 @@ const VaultAddressesStep = ({
         />
 
         <VStack spacing={6}>
-          {addresses.fields.map(({ id }, index) => (
-            <Controller
-              key={id}
-              name={`addresses.${index}.value`}
-              render={({ field, fieldState }) => (
-                <AutoComplete<AddressBook>
-                  value={index === 0 ? field.value : undefined}
-                  label={index === 0 ? 'Your address' : `Address ${index + 1}`}
-                  isInvalid={fieldState.invalid}
-                  isDisabled={index === 0}
-                  onChange={field.onChange}
-                  onInputChange={search.handler}
-                  errorMessage={fieldState.error?.message}
-                  isLoading={findContactsRequest.isLoading}
-                  options={findContactsRequest?.data ?? []}
-                  actionIcon={RemoveIcon}
-                  action={index > 0 ? () => addresses.remove(index) : undefined}
-                  fieldsToShow={(option: AddressBook) =>
-                    `${option.nickname} - ${option.user.address}`
-                  }
-                />
-              )}
-              control={form.control}
-            />
-          ))}
+          {addresses.fields.map(({ id }, index) => {
+            const first = index === 0;
+
+            return (
+              <Controller
+                key={id}
+                name={`addresses.${index}.value`}
+                render={({ field, fieldState }) => {
+                  return (
+                    <>
+                      <AutoComplete
+                        value={field.value}
+                        label={first ? 'Your address' : `Address ${index + 1}`}
+                        isInvalid={fieldState.invalid}
+                        isDisabled={first}
+                        onChange={(selected) => {
+                          field.onChange(selected);
+                          findContactsRequest.reset();
+                        }}
+                        onInputChange={search.handler}
+                        errorMessage={fieldState.error?.message}
+                        isLoading={findContactsRequest.isLoading}
+                        options={
+                          findContactsRequest?.data?.map((contact) => ({
+                            value: contact.user.address,
+                            label: `${contact.nickname} - ${AddressUtils.format(
+                              contact.user.address,
+                            )}`,
+                          })) ?? []
+                        }
+                        rightAction={{
+                          ...(first
+                            ? {}
+                            : {
+                                icon: RemoveIcon!,
+                                handler: () => addresses.remove(index),
+                              }),
+                        }}
+                        bottomAction={first ? undefined : handleOpenDialog}
+                      />
+                    </>
+                  );
+                }}
+                control={form.control}
+              />
+            );
+          })}
 
           <Button
             border="none"

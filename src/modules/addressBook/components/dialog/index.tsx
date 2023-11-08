@@ -4,10 +4,12 @@ import { useContact } from '@/modules/addressBook/hooks';
 import { CreateContactForm } from '../../pages/create/form';
 
 const CreateContactDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const { form } = useContact();
+  const { form, address } = useContact();
 
-  // TODO: Replace this hard coded variable
-  const isEdit = false;
+  // TODO: Replace this hard coded var
+  const name = '';
+
+  const isEdit = !!address && !!name;
 
   return (
     <Dialog.Modal {...props}>
@@ -22,7 +24,7 @@ const CreateContactDialog = (props: Omit<DialogModalProps, 'children'>) => {
       />
 
       <Dialog.Body maxW={420}>
-        <CreateContactForm form={form} />
+        <CreateContactForm form={form} address={address} />
       </Dialog.Body>
 
       <Dialog.Actions maxW={420}>

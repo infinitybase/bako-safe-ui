@@ -8,30 +8,20 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { UseCreateContactReturn } from '@/modules/addressBook/hooks/create';
+import { UseCreateContactReturn } from '@/modules/addressBook/hooks';
 
 export interface CreateContactFormProps {
   form: UseCreateContactReturn['form'];
+  address?: string;
 }
 
-interface FieldParams {
-  name: 'address' | 'nickname';
-  label: string;
-}
-
-const fields: FieldParams[] = [
-  { name: 'nickname', label: 'Name or Label' },
-  { name: 'address', label: 'Address' },
-];
-
-const CreateContactForm = ({ form }: CreateContactFormProps) => (
-  <TabPanel p={0}>
-    <VStack spacing={6}>
-      {fields.map(({ name, label }, index) => (
+const CreateContactForm = ({ form, address }: CreateContactFormProps) => {
+  return (
+    <TabPanel p={0}>
+      <VStack spacing={6}>
         <Controller
-          key={index}
           control={form.control}
-          name={name}
+          name="nickname"
           render={({ field, fieldState }) => (
             <FormControl isInvalid={fieldState.invalid}>
               <Input
@@ -39,16 +29,34 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => (
                 onChange={field.onChange}
                 placeholder=" "
               />
-              <FormLabel>{label}</FormLabel>
+              <FormLabel>Name or Label</FormLabel>
               <FormHelperText color="error.500">
                 {fieldState.error?.message}
               </FormHelperText>
             </FormControl>
           )}
         />
-      ))}
-    </VStack>
-  </TabPanel>
-);
+
+        <Controller
+          control={form.control}
+          name="address"
+          render={({ field, fieldState }) => (
+            <FormControl isInvalid={fieldState.invalid}>
+              <Input
+                value={address ?? field.value}
+                onChange={field.onChange}
+                placeholder=" "
+              />
+              <FormLabel>Address</FormLabel>
+              <FormHelperText color="error.500">
+                {fieldState.error?.message}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
+      </VStack>
+    </TabPanel>
+  );
+};
 
 export { CreateContactForm };

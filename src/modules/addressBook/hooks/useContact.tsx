@@ -8,6 +8,7 @@ import { MdOutlineError } from 'react-icons/md';
 import { IApiError } from '@/config';
 import { useNotification } from '@/modules/notification';
 
+import { useAddressBookStore } from '../store';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useFindContactsRequest } from './useFindContactsRequest';
@@ -16,11 +17,15 @@ export type UseCreateContactReturn = ReturnType<typeof useContact>;
 
 const useContact = () => {
   const [contactDialogIsOpen, setContactDialogIsOpen] = useState(false);
+  const { address, setAddress } = useAddressBookStore();
 
   const toast = useNotification();
 
   const handleCloseDialog = () => setContactDialogIsOpen(false);
-  const handleOpenDialog = () => setContactDialogIsOpen(true);
+  const handleOpenDialog = (address?: string) => {
+    if (address) setAddress(address);
+    setContactDialogIsOpen(true);
+  };
 
   const { form } = useCreateContactForm();
 
@@ -88,7 +93,9 @@ const useContact = () => {
 
   const debouncedSearchHandler = useCallback(
     debounce((event: ChangeEvent<HTMLInputElement>) => {
-      findContactsRequest.mutate({ q: event.target.value });
+      if (event.target.value.length) {
+        findContactsRequest.mutate({ q: event.target.value });
+      }
     }, 300),
     [],
   );
@@ -101,9 +108,8 @@ const useContact = () => {
 
   return {
     form: { ...form, handleCreateContact },
-    search: {
-      handler: debouncedSearchHandler,
-    },
+    search: { handler: debouncedSearchHandler },
+    address,
     createContactRequest,
     findContactsRequest,
     contactDialogIsOpen,

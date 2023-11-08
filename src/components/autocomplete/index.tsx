@@ -10,28 +10,40 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 
-interface AutoCompleteProps<T> {
+import { AddressUtils } from '@/modules';
+
+interface AutoCompleteOption {
+  value: string;
+  label: string;
+}
+
+interface RightAction {
+  icon?: ComponentWithAs<'svg', IconProps>;
+  handler?: () => void;
+}
+
+interface AutoCompleteProps {
   isLoading: boolean;
   isInvalid: boolean;
-  options: T[];
+  options: AutoCompleteOption[];
   value?: string;
   label: string;
   isDisabled: boolean;
   errorMessage?: string;
-  actionIcon?: ComponentWithAs<'svg', IconProps>;
-  action?: () => void;
-  onChange: () => void;
+  rightAction?: RightAction;
+  bottomAction?: (value: string) => void;
+  onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  fieldsToShow: (model: T) => string;
 }
 
-function AutoComplete<T>({
+function AutoComplete({
   isLoading,
   isInvalid,
   isDisabled,
@@ -39,15 +51,31 @@ function AutoComplete<T>({
   value,
   label,
   errorMessage,
-  actionIcon,
-  action,
-  fieldsToShow,
+  rightAction,
+  bottomAction,
   onChange,
   onInputChange,
-}: AutoCompleteProps<T>) {
+}: AutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSelection, setHasSelection] = useState(false);
+  const [inputValue, setInputValue] = useState(value ?? '');
 
-  const showResultList = isOpen && !isDisabled && !isInvalid;
+  const isContact = (value: string) => {
+    return value.includes('-') || value.includes('...');
+  };
+
+  const showResultList =
+    isOpen && !isDisabled && !hasSelection && inputValue.length > 0;
+  // && !isInvalid;
+
+  const showRightAction = !!rightAction?.handler;
+  const showBottomAction =
+    bottomAction &&
+    !isContact(inputValue) &&
+    !isInvalid &&
+    !showResultList &&
+    inputValue.length > 0 &&
+    AddressUtils.isValid(inputValue);
 
   useEffect(() => {
     setIsOpen(isLoading || options.length ? true : false);
@@ -57,14 +85,21 @@ function AutoComplete<T>({
     <FormControl isInvalid={isInvalid}>
       <InputGroup>
         <Input
-          {...(value ? { value: value } : {})}
-          onChange={onInputChange}
-          disabled={isDisabled ?? false}
+          // {...(value ? { value } : {})}
+          value={inputValue}
           placeholder=" "
+          disabled={isDisabled ?? false}
+          onBlur={() => setIsOpen(false)}
+          autoComplete="off"
+          onChange={(e) => {
+            setHasSelection(false);
+            onInputChange?.(e);
+            setInputValue(e.target.value);
+          }}
         />
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {action && (
+        {showRightAction && (
           <InputRightElement
             px={2}
             top="1px"
@@ -74,17 +109,29 @@ function AutoComplete<T>({
             h="calc(100% - 2px)"
           >
             <Icon
-              as={actionIcon}
+              as={rightAction.icon}
               fontSize="md"
               cursor="pointer"
-              onClick={action}
+              onClick={rightAction.handler}
             />
           </InputRightElement>
         )}
       </InputGroup>
 
-      {isInvalid && (
+      {isInvalid && !showResultList && (
         <FormHelperText color="error.500">{errorMessage}</FormHelperText>
+      )}
+
+      {showBottomAction && (
+        <Box mt={2}>
+          <Text color="grey.200" fontSize={12}>
+            Do you wanna{' '}
+            <Link color="brand.500" onClick={() => bottomAction?.(inputValue)}>
+              add
+            </Link>{' '}
+            this address in your address book?
+          </Text>
+        </Box>
       )}
 
       {showResultList && (
@@ -102,47 +149,53 @@ function AutoComplete<T>({
           mt={2}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
-            {isLoading ? (
-              <Spinner color="brand.500" size="sm" />
-            ) : (
-              <VStack
-                w="full"
-                maxH={180}
-                overflowY="scroll"
-                css={{
-                  '&::-webkit-scrollbar': { width: '0' },
-                  scrollbarWidth: 'none',
-                }}
-              >
-                {!options.length ? (
-                  <Text>No items found matching your search</Text>
-                ) : (
-                  options.map((option, index) => (
-                    <Box
-                      w="full"
-                      p={2}
-                      borderRadius={10}
-                      cursor="pointer"
-                      key={index}
-                      onClick={() => {
-                        onChange;
-                        setIsOpen(false);
-                      }}
-                      _hover={{ background: 'dark.150' }}
-                    >
-                      <Text
-                        whiteSpace="nowrap"
-                        overflow="hidden"
-                        textOverflow="ellipsis"
-                        w="full"
-                      >
-                        {fieldsToShow(option)}
-                      </Text>
-                    </Box>
-                  ))
-                )}
-              </VStack>
+            {isLoading && (
+              <Box p={2}>
+                <Spinner color="brand.500" size="sm" />
+              </Box>
             )}
+
+            <VStack
+              hidden={isLoading}
+              w="full"
+              maxH={180}
+              overflowY="scroll"
+              css={{
+                '&::-webkit-scrollbar': { width: '0' },
+                scrollbarWidth: 'none',
+              }}
+            >
+              {!options.length && (
+                <Text>No items found matching your search</Text>
+              )}
+
+              {options.length &&
+                options.map(({ value, label }) => (
+                  <Box
+                    key={value}
+                    onMouseDown={() => {
+                      setInputValue(label);
+                      setHasSelection(true);
+                      onChange(value);
+                      setIsOpen(false);
+                    }}
+                    w="full"
+                    p={2}
+                    borderRadius={10}
+                    cursor="pointer"
+                    _hover={{ background: 'dark.150' }}
+                  >
+                    <Text
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      w="full"
+                    >
+                      {label}
+                    </Text>
+                  </Box>
+                ))}
+            </VStack>
           </Flex>
         </Box>
       )}
