@@ -1,13 +1,39 @@
 import socket from './useSocketConfig';
+export enum SocketEvents {
+  //auth
+  CONNECTION = 'connection',
+  DISCONNECT = 'disconnect',
+  USER_CONNECTED = '[USER_CONNECTED]',
 
-export enum SocketChannel {
+  //popup transfer
+  TRANSACTION_REQUESTED = '[TRANSACTION_REQUESTED]',
+  TRANSACTION_APPROVED = '[TRANSACTION_APPROVED]',
+
+  //popup auth
+  AUTH_CONFIRMED = '[AUTH_CONFIRMED]',
+  AUTH_REJECTED = '[AUTH_REJECTED]',
+}
+export enum UserTypes {
+  WALLET = '[WALLET]',
   POPUP_AUTH = '[POPUP_AUTH]',
   POPUP_TRANSFER = '[POPUP_TRANSFER]',
-  WALLET = '[WALLET]',
+}
+
+export interface ISocketConnectParams {
+  username: string;
+  param: UserTypes;
+  callbacks?: { [key: string]: (data: any) => void };
+}
+
+export interface ISocketEmitMessageParams {
+  event: SocketEvents;
+  to: string;
+  content: { [key: string]: string };
+  callback?: () => void;
 }
 
 export const useSocket = () => {
-  const connect = (username: string, param: SocketChannel) => {
+  const connect = ({ username, param, callbacks }: ISocketConnectParams) => {
     /* 
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
@@ -18,6 +44,12 @@ export const useSocket = () => {
       data: new Date(),
     };
     socket.connect();
+
+    if (callbacks) {
+      Object.keys(callbacks).forEach((key) => {
+        socket.on(key, callbacks[key]);
+      });
+    }
   };
 
   /* 
@@ -26,20 +58,19 @@ export const useSocket = () => {
       - servidor repassa a mensagem para todos os clientes conectados
     do servidor io.use
     */
-  const emitMessage = (
-    destino: string,
-    content: { [key: string]: string; channel: string; to: string },
-    callback: () => void,
-  ) => {
-    console.log('[message]', destino, content);
-    const { channel, to, ...rest } = content;
+  const emitMessage = ({
+    to,
+    event,
+    content,
+    callback,
+  }: ISocketEmitMessageParams) => {
     socket.emit(
-      channel,
+      event,
       {
-        content: rest,
+        content,
         to,
       },
-      setTimeout(callback, 1000),
+      setTimeout(callback!, 1000),
     );
   };
 

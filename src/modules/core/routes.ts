@@ -23,7 +23,8 @@ const Pages = {
   createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
   //dapp
-  dapp: pageRoute('/dapp'),
+  dappAuth: pageRoute('/dapp'),
+  dappTransaction: pageRoute('/dapp/transaction'),
 };
 
 export { Pages };

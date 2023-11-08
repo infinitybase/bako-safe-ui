@@ -44,7 +44,7 @@ const useSignIn = () => {
       setAvatar(avatar!);
 
       url
-        ? navigate(`${Pages.dapp()}${location.search}&address=${account}`)
+        ? navigate(`${Pages.dappAuth()}${location.search}&address=${account}`)
         : navigate(Pages.home());
     },
   });
@@ -74,7 +74,6 @@ const useSignIn = () => {
       });
     } catch (e) {
       setInvalidAccount(true);
-      console.log({ e });
     }
   };
 

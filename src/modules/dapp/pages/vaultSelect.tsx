@@ -4,7 +4,7 @@ import { VaultDrawer } from '@/modules/vault';
 
 import { useAuthSocket } from '../hooks';
 
-const DappPage = () => {
+const VaultSelect = () => {
   const { emitEvent } = useAuthSocket();
 
   return (
@@ -25,9 +25,7 @@ const DappPage = () => {
             window.close();
           }}
           onSelect={(id: string) => {
-            emitEvent({
-              vaultId: id,
-            });
+            emitEvent(id);
           }}
           vaultId={undefined!}
         />
@@ -36,4 +34,4 @@ const DappPage = () => {
   );
 };
 
-export { DappPage };
+export { VaultSelect };

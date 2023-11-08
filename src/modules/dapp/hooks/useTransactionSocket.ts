@@ -2,27 +2,26 @@ import { useMemo } from 'react';
 
 import { SocketEvents, useQueryParams, UserTypes, useSocket } from '@/modules';
 
-export interface AuthSocketEvent {
-  sessionId: string;
-  address: string;
-}
-
-export const useAuthSocket = () => {
+export const useTransactionSocket = () => {
   const { connect, emitMessage } = useSocket();
   const { sessionId, address } = useQueryParams();
-
+  const callbacks: { [key: string]: (data: any) => void } = {
+    [SocketEvents.USER_CONNECTED]: (data: any) => {
+      console.log('USER_CONNECTED', data);
+    },
+  };
   useMemo(() => {
     connect({
       username: sessionId!,
-      param: UserTypes.POPUP_AUTH,
+      param: UserTypes.POPUP_TRANSFER,
+      callbacks,
     });
   }, [connect, sessionId]);
 
-  const emitEvent = (vaultId: string) => {
+  const emitEvent = () => {
     return emitMessage({
-      event: SocketEvents.AUTH_CONFIRMED,
+      event: SocketEvents.TRANSACTION_APPROVED,
       content: {
-        vaultId,
         sessionId: sessionId!,
         address: address!,
       },

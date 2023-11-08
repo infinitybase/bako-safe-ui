@@ -10,4 +10,8 @@ socket.on('connect_error', (err) => {
   }
 });
 
+socket.onAny((event, ...args) => {
+  console.log('[ON_ANY_EVENTS]', event, args);
+});
+
 export default socket;
