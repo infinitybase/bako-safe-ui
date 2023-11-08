@@ -15,7 +15,7 @@ export interface CreateContactFormProps {
   address?: string;
 }
 
-const CreateContactForm = ({ form, address }: CreateContactFormProps) => {
+const CreateContactForm = ({ form }: CreateContactFormProps) => {
   return (
     <TabPanel p={0}>
       <VStack spacing={6}>
@@ -43,7 +43,7 @@ const CreateContactForm = ({ form, address }: CreateContactFormProps) => {
           render={({ field, fieldState }) => (
             <FormControl isInvalid={fieldState.invalid}>
               <Input
-                value={address ?? field.value}
+                value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
               />

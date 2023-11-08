@@ -7,8 +7,10 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Link,
   Select,
   TabPanel,
+  Text,
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
@@ -33,19 +35,16 @@ const VaultAddressesStep = ({
   setTemplate,
 }: VaultAddressesStepProps) => {
   const {
-    contactDialogIsOpen,
-    handleCloseDialog,
     handleOpenDialog,
     findContactsRequest,
     search,
+    form: contactForm,
+    contactDialog,
   } = useContact();
 
   return (
     <>
-      <CreateContactDialog
-        isOpen={contactDialogIsOpen}
-        onClose={handleCloseDialog}
-      />
+      <CreateContactDialog form={contactForm} dialog={contactDialog} />
 
       <TabPanel p={0}>
         <Dialog.Section
@@ -140,7 +139,24 @@ const VaultAddressesStep = ({
                                 handler: () => addresses.remove(index),
                               }),
                         }}
-                        bottomAction={first ? undefined : handleOpenDialog}
+                        bottomAction={
+                          first ? undefined : (
+                            <Box mt={2}>
+                              <Text color="grey.200" fontSize={12}>
+                                Do you wanna{' '}
+                                <Link
+                                  color="brand.500"
+                                  onClick={() =>
+                                    handleOpenDialog?.(field.value)
+                                  }
+                                >
+                                  add
+                                </Link>{' '}
+                                this address in your address book?
+                              </Text>
+                            </Box>
+                          )
+                        }
                       />
                     </>
                   );

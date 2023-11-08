@@ -10,12 +10,11 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Link,
   Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 
 import { AddressUtils } from '@/modules';
 
@@ -38,7 +37,7 @@ interface AutoCompleteProps {
   isDisabled: boolean;
   errorMessage?: string;
   rightAction?: RightAction;
-  bottomAction?: (value: string) => void;
+  bottomAction?: ReactNode;
   onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -66,7 +65,6 @@ function AutoComplete({
 
   const showResultList =
     isOpen && !isDisabled && !hasSelection && inputValue.length > 0;
-  // && !isInvalid;
 
   const showRightAction = !!rightAction?.handler;
   const showBottomAction =
@@ -85,13 +83,13 @@ function AutoComplete({
     <FormControl isInvalid={isInvalid}>
       <InputGroup>
         <Input
-          // {...(value ? { value } : {})}
           value={inputValue}
           placeholder=" "
           disabled={isDisabled ?? false}
           onBlur={() => setIsOpen(false)}
           autoComplete="off"
           onChange={(e) => {
+            onChange(e.target.value);
             setHasSelection(false);
             onInputChange?.(e);
             setInputValue(e.target.value);
@@ -122,17 +120,7 @@ function AutoComplete({
         <FormHelperText color="error.500">{errorMessage}</FormHelperText>
       )}
 
-      {showBottomAction && (
-        <Box mt={2}>
-          <Text color="grey.200" fontSize={12}>
-            Do you wanna{' '}
-            <Link color="brand.500" onClick={() => bottomAction?.(inputValue)}>
-              add
-            </Link>{' '}
-            this address in your address book?
-          </Text>
-        </Box>
-      )}
+      {showBottomAction && bottomAction}
 
       {showResultList && (
         <Box

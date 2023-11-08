@@ -1,14 +1,13 @@
-import { Icon } from '@chakra-ui/react';
+import { Icon, useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { MdOutlineError } from 'react-icons/md';
 
 import { IApiError } from '@/config';
 import { useNotification } from '@/modules/notification';
 
-import { useAddressBookStore } from '../store';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useFindContactsRequest } from './useFindContactsRequest';
@@ -16,18 +15,15 @@ import { useFindContactsRequest } from './useFindContactsRequest';
 export type UseCreateContactReturn = ReturnType<typeof useContact>;
 
 const useContact = () => {
-  const [contactDialogIsOpen, setContactDialogIsOpen] = useState(false);
-  const { address, setAddress } = useAddressBookStore();
+  const contactDialog = useDisclosure();
 
   const toast = useNotification();
-
-  const handleCloseDialog = () => setContactDialogIsOpen(false);
-  const handleOpenDialog = (address?: string) => {
-    if (address) setAddress(address);
-    setContactDialogIsOpen(true);
-  };
-
   const { form } = useCreateContactForm();
+
+  const handleOpenDialog = (address?: string) => {
+    if (address) form.setValue('address', address);
+    contactDialog.onOpen();
+  };
 
   const successToast = ({
     description,
@@ -67,7 +63,7 @@ const useContact = () => {
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: () => {
-      handleCloseDialog();
+      contactDialog.onClose();
       successToast({
         title: 'Nice!',
         description:
@@ -109,11 +105,9 @@ const useContact = () => {
   return {
     form: { ...form, handleCreateContact },
     search: { handler: debouncedSearchHandler },
-    address,
     createContactRequest,
     findContactsRequest,
-    contactDialogIsOpen,
-    handleCloseDialog,
+    contactDialog,
     handleOpenDialog,
   };
 };

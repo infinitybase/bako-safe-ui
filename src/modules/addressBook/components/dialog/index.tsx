@@ -1,18 +1,22 @@
-import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
-import { useContact } from '@/modules/addressBook/hooks';
+import { Dialog, SquarePlusIcon } from '@/components';
 
+import { UseCreateContactReturn } from '../../hooks';
 import { CreateContactForm } from '../../pages/create/form';
 
-const CreateContactDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const { form, address } = useContact();
+interface CreateContactDialogProps {
+  form: UseCreateContactReturn['form'];
+  dialog: UseCreateContactReturn['contactDialog'];
+}
 
+const CreateContactDialog = ({ form, dialog }: CreateContactDialogProps) => {
   // TODO: Replace this hard coded var
   const name = '';
 
+  const address = form.watch('address');
   const isEdit = !!address && !!name;
 
   return (
-    <Dialog.Modal {...props}>
+    <Dialog.Modal onClose={dialog.onClose} isOpen={dialog.isOpen}>
       <Dialog.Header
         maxW={420}
         title={isEdit ? 'Edit address' : 'Add to address book'}
@@ -24,11 +28,11 @@ const CreateContactDialog = (props: Omit<DialogModalProps, 'children'>) => {
       />
 
       <Dialog.Body maxW={420}>
-        <CreateContactForm form={form} address={address} />
+        <CreateContactForm form={form} />
       </Dialog.Body>
 
       <Dialog.Actions maxW={420}>
-        <Dialog.SecondaryAction onClick={props.onClose}>
+        <Dialog.SecondaryAction onClick={dialog.onClose}>
           cancel
         </Dialog.SecondaryAction>
 
