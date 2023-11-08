@@ -8,10 +8,10 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { UseCreateContactReturn } from '@/modules/addressBook/hooks';
+import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
 
 export interface CreateContactFormProps {
-  form: UseCreateContactReturn['form'];
+  form: UseAddressBookReturn['form'];
   address?: string;
 }
 
