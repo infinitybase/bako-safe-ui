@@ -52,7 +52,7 @@ const AddressBookPage = () => {
         isLoading={
           createContactRequest.isLoading || updateContactRequest.isLoading
         }
-        isEdit={!!contactToEdit}
+        isEdit={!!contactToEdit?.id}
       />
 
       {!!hasContacts && contactToDelete.nickname && (
