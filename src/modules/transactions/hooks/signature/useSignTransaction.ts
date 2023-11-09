@@ -1,10 +1,10 @@
+import { TransactionStatus } from 'bsafe';
 import { useEffect, useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';
 import {
   invalidateQueries,
   Transaction,
-  TransactionStatus,
   useToast,
   useWalletSignMessage,
 } from '@/modules/core';
@@ -39,6 +39,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const refetetchTransactionList = () =>
     invalidateQueries([
+      'bsafe',
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
@@ -77,7 +78,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   useEffect(() => {
     if (!transaction) return;
 
-    if (transaction.status === TransactionStatus.PENDING) {
+    if (transaction.status === TransactionStatus.PENDING_SENDER) {
       transactionSendContext.executeTransaction(transaction);
     }
   }, [transaction]);
@@ -90,7 +91,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     isLoading:
       request.isLoading ||
       signMessageRequest.isLoading ||
-      transaction.status === TransactionStatus.PENDING,
+      transaction.status === TransactionStatus.PROCESS_ON_CHAIN,
     isSuccess: request.isSuccess,
   };
 };

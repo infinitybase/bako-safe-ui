@@ -1,16 +1,14 @@
+import { Badge, Box, CircularProgress, Text, VStack } from '@chakra-ui/react';
+import { TransactionStatus } from 'bsafe';
+
+import { Transaction, TransactionState, WitnessStatus } from '@/modules/core';
+
 interface TransactionCardStatusProps {
   status: TransactionState;
   transaction: Transaction;
 }
-import { Badge, Box, CircularProgress, Text, VStack } from '@chakra-ui/react';
 
-import {
-  Transaction,
-  TransactionState,
-  TransactionStatus,
-  WitnessStatus,
-} from '@/modules/core';
-
+/* TODO: Fix this to use BSAFE SDK */
 const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
 
@@ -20,7 +18,12 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
 
   const signatureStatus = `${signaturesCount}/${transaction.predicate.minSigners} Sgd`;
 
-  if (transaction.status === TransactionStatus.PENDING) {
+  if (
+    [
+      TransactionStatus.PROCESS_ON_CHAIN,
+      TransactionStatus.PENDING_SENDER,
+    ].includes(transaction.status)
+  ) {
     return (
       <Box minW={100}>
         <CircularProgress

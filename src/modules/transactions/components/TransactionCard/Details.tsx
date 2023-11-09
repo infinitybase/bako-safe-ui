@@ -10,19 +10,14 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { ITransaction, TransactionStatus } from 'bsafe';
 import React, { useMemo } from 'react';
 
 import { DoubleArrowIcon } from '@/components';
-import {
-  AddressUtils,
-  AssetModel,
-  assetsMap,
-  Transaction,
-  TransactionStatus,
-} from '@/modules/core';
+import { AddressUtils, AssetModel, assetsMap } from '@/modules/core';
 
 interface TransactionDetailsProps {
-  transaction: Transaction;
+  transaction: ITransaction;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -94,7 +89,12 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={asset.amount}
-                asset={asset}
+                asset={{
+                  assetID: asset.assetId,
+                  amount: asset.amount,
+                  to: asset.to,
+                  transactionID: transaction.id,
+                }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
               />
             ))}
@@ -102,7 +102,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
 
           <Box
             mt={10}
-            hidden={transaction.status !== TransactionStatus.DONE}
+            hidden={transaction.status !== TransactionStatus.SUCCESS}
             borderColor="dark.100"
             borderTopWidth={1}
           >
@@ -120,7 +120,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
         bgColor="dark.100"
         variant="secondary"
         onClick={handleViewInExplorer}
-        hidden={transaction.status !== TransactionStatus.DONE}
+        hidden={transaction.status !== TransactionStatus.SUCCESS}
       >
         View on Explorer
       </Button>

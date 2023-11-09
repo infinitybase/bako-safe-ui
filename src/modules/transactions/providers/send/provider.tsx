@@ -1,3 +1,4 @@
+import { ITransaction } from 'bsafe';
 import React, {
   createContext,
   PropsWithChildren,
@@ -5,11 +6,10 @@ import React, {
   useRef,
 } from 'react';
 
-import { invalidateQueries, Transaction } from '@/modules/core';
+import { invalidateQueries, useBsafeTransactionSend } from '@/modules/core';
 import {
   TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
-  useTransactionSendRequest,
 } from '@/modules/transactions/hooks';
 import { USER_TRANSACTIONS_QUERY_KEY } from '@/modules/transactions/hooks/list';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
@@ -17,8 +17,8 @@ import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 import { useTransactionToast } from './toast';
 
 interface TransactionSendContextType {
-  isExecuting: (transaction: Transaction) => boolean;
-  executeTransaction: (transaction: Transaction) => void;
+  isExecuting: (transaction: ITransaction) => boolean;
+  executeTransaction: (transaction: ITransaction) => void;
   clearAll: () => void;
 }
 
@@ -29,32 +29,33 @@ const TransactionSendContext = createContext<TransactionSendContextType>(
 const TransactionSendProvider = (props: PropsWithChildren) => {
   const toast = useTransactionToast();
 
-  const transactionsRef = useRef<Transaction[]>([]);
+  const transactionsRef = useRef<ITransaction[]>([]);
 
   const refetetchTransactionList = () =>
     invalidateQueries([
+      'bsafe',
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
 
-  const { mutate: sendTransaction } = useTransactionSendRequest({
+  const { mutate: sendTransaction, variables } = useBsafeTransactionSend({
     onSuccess: (transaction) => {
       toast.success(transaction);
       refetetchTransactionList();
     },
-    onError: (error, { transaction }) => {
+    onError: (error) => {
       const errorMessage = (error as any)?.response?.errors?.[0]?.message;
-      toast.error(transaction, errorMessage);
+      toast.error(variables!.transaction, errorMessage);
       refetetchTransactionList();
     },
   });
 
-  const isExecuting = (transaction: Transaction) =>
+  const isExecuting = (transaction: ITransaction) =>
     !!transactionsRef.current.find((data) => data.id === transaction.id);
 
-  const executeTransaction = (transaction: Transaction) => {
+  const executeTransaction = (transaction: ITransaction) => {
     if (isExecuting(transaction)) return;
 
     toast.loading(transaction);

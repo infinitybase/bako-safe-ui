@@ -18,7 +18,9 @@ const useVaultDetails = () => {
 
   const { predicate, predicateInstance, isLoading, isFetching } =
     useVaultDetailsRequest(params.vaultId!);
-  const vaultTransactionsRequest = useVaultTransactionsRequest(params.vaultId!);
+  const vaultTransactionsRequest = useVaultTransactionsRequest(
+    predicateInstance!,
+  );
 
   const {
     assets,
@@ -70,7 +72,7 @@ const useVaultDetails = () => {
       hasBalance,
       transactions: {
         ...vaultTransactionsRequest,
-        vaultTransactions: vaultTransactionsRequest.data,
+        vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
       },
     },

@@ -1,3 +1,5 @@
+import { TransactionStatus as BSAFETransactionStatus } from 'bsafe';
+
 import { AssetModel } from './asset';
 import { Predicate } from './predicate';
 import { Witness } from './witness';
@@ -26,7 +28,7 @@ export interface Transaction {
   name: string;
   txData: string;
   hash: string;
-  status: TransactionStatus;
+  status: BSAFETransactionStatus;
   sendTime: string;
   gasUsed: string;
   resume: string;

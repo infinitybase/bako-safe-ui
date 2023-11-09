@@ -1,26 +1,27 @@
-import { useQuery } from 'react-query';
+import { Vault } from 'bsafe';
 
-import {
-  SortOption,
-  TransactionService,
-} from '@/modules/transactions/services';
+import { useBsafeTransactionList } from '@/modules/core';
+import { SortOption } from '@/modules/transactions/services';
 
 const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 
-const useVaultTransactionsRequest = (id: string) => {
-  return useQuery(
-    [VAULT_TRANSACTIONS_QUERY_KEY, id],
-    () =>
-      TransactionService.getVaultTransactions({
-        orderBy: 'createdAt',
-        sort: SortOption.DESC,
-        predicateId: [id],
-      }),
-    {
-      enabled: !!id,
-      refetchOnWindowFocus: false,
+const useVaultTransactionsRequest = (vault: Vault) => {
+  const { data, ...query } = useBsafeTransactionList({
+    vault,
+    filter: {
+      orderBy: 'createdAt',
+      sort: SortOption.DESC,
     },
-  );
+  });
+
+  return {
+    transactions: data?.map((transaction) => ({
+      ...transaction.BSAFETransaction,
+      predicate: vault.BSAFEVault,
+    })),
+    transactionsIntance: data,
+    ...query,
+  };
 };
 
 export { useVaultTransactionsRequest, VAULT_TRANSACTIONS_QUERY_KEY };
