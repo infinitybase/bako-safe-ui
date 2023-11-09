@@ -6,6 +6,7 @@ interface CreatedBy {
 interface Contact {
   id: string;
   address: string;
+  avatar: string;
 }
 
 export interface AddressBook {
