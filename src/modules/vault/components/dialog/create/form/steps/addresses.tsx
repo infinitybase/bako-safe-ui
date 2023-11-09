@@ -19,7 +19,7 @@ import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { AddressUtils, ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
-import { useContact } from '@/modules/addressBook/hooks/';
+import { useAddressBook } from '@/modules/addressBook/hooks/';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -37,14 +37,20 @@ const VaultAddressesStep = ({
   const {
     handleOpenDialog,
     findContactsRequest,
+    createContactRequest,
     search,
     form: contactForm,
     contactDialog,
-  } = useContact();
+  } = useAddressBook();
 
   return (
     <>
-      <CreateContactDialog form={contactForm} dialog={contactDialog} />
+      <CreateContactDialog
+        form={contactForm}
+        dialog={contactDialog}
+        isLoading={createContactRequest.isLoading}
+        isEdit={false}
+      />
 
       <TabPanel p={0}>
         <Dialog.Section
@@ -147,7 +153,7 @@ const VaultAddressesStep = ({
                                 <Link
                                   color="brand.500"
                                   onClick={() =>
-                                    handleOpenDialog?.(field.value)
+                                    handleOpenDialog?.({ address: field.value })
                                   }
                                 >
                                   add

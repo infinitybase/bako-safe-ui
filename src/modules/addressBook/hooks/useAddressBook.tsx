@@ -1,58 +1,75 @@
 import { Icon, useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
+import { invalidateQueries } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
+import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useFindContactsRequest } from './useFindContactsRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
+interface DialogProps {
+  address?: string;
+  nickname?: string;
+  contactToEdit?: string;
+}
+
 const useAddressBook = () => {
+  const [contactToEdit, setContactToEdit] = useState({ id: '' });
+  const [contactToDelete, setContactToDelete] = useState({
+    id: '',
+    nickname: '',
+  });
+  const navigate = useNavigate();
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
-  const navigate = useNavigate();
   const toast = useNotification();
   const { form } = useCreateContactForm();
   const findContactsRequest = useFindContactsRequest();
   const listContactsRequest = useListContactsRequest();
+  const deleteContactRequest = useDeleteContactRequest({
+    onSuccess: () => {
+      deleteContactDialog.onClose();
+      invalidateQueries(['contacts/by-user']);
+      successToast({
+        title: 'Success!',
+        description: 'Your contact was deleted...',
+      });
+    },
+  });
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
+      invalidateQueries(['contacts/by-user']);
+
       successToast({
         title: 'Nice!',
         description:
           'Next time you can use it just by typing this name label or address...',
       });
     },
-    // onError: (error) => {
-    //   const errorDescription = (
-    //     (error as AxiosError)?.response?.data as IApiError
-    //   )?.detail;
-
-    //   errorToast({ description: errorDescription });
-
-    //   if (errorDescription?.includes('label')) {
-    //     form.setError('nickname', { message: 'Duplicated label' });
-    //   }
-
-    //   if (errorDescription?.includes('address')) {
-    //     form.setError('address', { message: 'Duplicated address' });
-    //   }
-    // },
+    onError: () => {
+      errorToast({
+        title: 'Error!',
+        description: 'There was an error. Check your data and try again.',
+      });
+    },
   });
   const createContactRequest = useCreateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
+      invalidateQueries(['contacts/by-user']);
       successToast({
         title: 'Nice!',
         description:
@@ -76,8 +93,20 @@ const useAddressBook = () => {
     },
   });
 
-  const handleOpenDialog = (address?: string) => {
+  const handleOpenDialog = ({
+    address,
+    nickname,
+    contactToEdit,
+  }: DialogProps) => {
+    form.clearErrors('address');
+    form.clearErrors('nickname');
+    form.setValue('address', '');
+    form.setValue('nickname', '');
+
+    setContactToEdit({ id: contactToEdit ?? '' });
     if (address) form.setValue('address', address);
+    if (nickname) form.setValue('nickname', nickname);
+
     contactDialog.onOpen();
   };
 
@@ -131,22 +160,32 @@ const useAddressBook = () => {
   });
 
   const handleUpdateContact = form.handleSubmit(async (data) => {
-    updateContactRequest.mutate(data);
+    updateContactRequest.mutate({ ...data, id: contactToEdit.id });
   });
 
+  const handleDeleteContact = async (id: string) => {
+    deleteContactRequest.mutate(id);
+  };
+
   return {
-    form: { ...form, handleCreateContact, handleUpdateContact },
-    search: { handler: debouncedSearchHandler },
     listContactsRequest: {
       ...listContactsRequest,
       contacts: listContactsRequest.data,
     },
     createContactRequest,
     findContactsRequest,
+    deleteContactRequest,
+    updateContactRequest,
+    form: { ...form, handleCreateContact, handleUpdateContact },
+    search: { handler: debouncedSearchHandler },
     contactDialog,
     deleteContactDialog,
     navigate,
     handleOpenDialog,
+    handleDeleteContact,
+    contactToEdit,
+    contactToDelete,
+    setContactToDelete,
   };
 };
 
