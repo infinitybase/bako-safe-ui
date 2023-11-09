@@ -13,9 +13,8 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
-import { GoCopy } from 'react-icons/go';
 
-import { Card } from '@/components';
+import { Card, CopyIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
 import { useNotification } from '@/modules/notification';
@@ -59,7 +58,7 @@ export const VaultCard = ({
           <IconButton
             aria-label="Copy"
             variant="icon"
-            icon={<Icon as={GoCopy} color="grey.200" />}
+            icon={<Icon as={CopyIcon} color="grey.200" fontSize={17} />}
             onClick={(e) => {
               e.stopPropagation();
               clipboard.onCopy();
