@@ -67,6 +67,7 @@ interface UseBsafeSendTransactionParams {
 }
 
 interface BSAFETransactionSendVariables {
+  /* TODO: Send a transfer here */
   transaction: ITransaction;
   auth?: IBSAFEAuth;
 }
@@ -82,6 +83,7 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
       });
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
       await transfer.send();
+      await transfer.wait();
       return transfer.BSAFETransaction;
     },
     {
