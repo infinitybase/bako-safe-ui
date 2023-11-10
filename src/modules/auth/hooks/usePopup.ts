@@ -10,9 +10,9 @@ const useQueryParams = () => {
     const address = searchParams.get('address');
     const isNew = searchParams.get('new');
     const name = searchParams.get('name');
-    const url = searchParams.get('url');
+    const origin = searchParams.get('origin');
 
-    return { sessionId, address, isNew, name, url };
+    return { sessionId, address, isNew, name, origin };
   }, [location]);
 
   return { ...queryParams, location };

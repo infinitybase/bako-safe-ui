@@ -14,6 +14,7 @@ export const useTransactionSocket = () => {
     connect({
       username: sessionId!,
       param: UserTypes.POPUP_TRANSFER,
+      sessionId: sessionId!,
       callbacks,
     });
   }, [connect, sessionId]);

@@ -22,7 +22,7 @@ const useSignIn = () => {
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
-  const { location, url } = useQueryParams();
+  const { location, origin } = useQueryParams();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar }) => {
@@ -43,7 +43,7 @@ const useSignIn = () => {
       setAccount(account!);
       setAvatar(avatar!);
 
-      url
+      origin
         ? navigate(`${Pages.dappAuth()}${location.search}&address=${account}`)
         : navigate(Pages.home());
     },

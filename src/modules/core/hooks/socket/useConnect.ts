@@ -22,6 +22,7 @@ export enum UserTypes {
 export interface ISocketConnectParams {
   username: string;
   param: UserTypes;
+  sessionId: string;
   callbacks?: { [key: string]: (data: any) => void };
 }
 
@@ -33,7 +34,12 @@ export interface ISocketEmitMessageParams {
 }
 
 export const useSocket = () => {
-  const connect = ({ username, param, callbacks }: ISocketConnectParams) => {
+  const connect = ({
+    username,
+    param,
+    callbacks,
+    sessionId,
+  }: ISocketConnectParams) => {
     /* 
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
@@ -42,6 +48,7 @@ export const useSocket = () => {
     socket.auth = {
       username: `${param}${username}`,
       data: new Date(),
+      sessionId,
     };
     socket.connect();
 
