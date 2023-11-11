@@ -1,7 +1,3 @@
-interface TransactionCardStatusProps {
-  status: TransactionState;
-  transaction: Transaction;
-}
 import {
   Badge,
   Box,
@@ -11,6 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { TransactionStatus } from 'bsafe';
 
 import {
   Transaction,
@@ -18,6 +15,11 @@ import {
   TransactionStatus,
   WitnessStatus,
 } from '@/modules/core';
+
+interface TransactionCardStatusProps {
+  status: TransactionState;
+  transaction: Transaction;
+}
 
 import { useSignTransaction } from '../../hooks/signature';
 
@@ -33,7 +35,12 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
 
   const signatureStatus = `${signaturesCount}/${transaction.predicate.minSigners} Sgd`;
 
-  if (transaction.status === TransactionStatus.PENDING) {
+  if (
+    [
+      TransactionStatus.PROCESS_ON_CHAIN,
+      TransactionStatus.PENDING_SENDER,
+    ].includes(transaction.status)
+  ) {
     return (
       <Box minW={100}>
         <CircularProgress

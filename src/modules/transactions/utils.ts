@@ -1,20 +1,27 @@
+import { TransactionStatus } from 'bsafe';
 import { bn } from 'fuels';
 
 import {
   AssetModel,
   NativeAssetId,
   Transaction,
-  TransactionStatus,
   Witness,
   WitnessStatus,
 } from '@/modules/core';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;
 
-export interface TransactionStatusParams extends Transaction {
+export interface TransactionStatusParams {
   account: string;
+  predicate: {
+    addresses: string[];
+    minSigners: number;
+  };
+  witnesses: Witness[];
+  status: TransactionStatus;
 }
 
+/* TODO: Fix this to use BSAFE SDK */
 export const transactionStatus = ({
   predicate,
   witnesses,
@@ -22,20 +29,22 @@ export const transactionStatus = ({
   ...transaction
 }: TransactionStatusParams) => {
   const { minSigners } = predicate;
-  const vaultMembersCount = predicate.addresses.length;
-  const signatureCount = witnesses.filter((t) => t.status === DONE).length;
-  const witness = witnesses.find((t: Witness) => t.account === account);
-  const howManyDeclined = witnesses.filter((w) => w.status === REJECTED).length;
+  // const vaultMembersCount = predicate.addresses.length;
+  const vaultMembersCount = predicate?.addresses?.length ?? 0;
+  const signatureCount = witnesses?.filter((t) => t.status === DONE).length;
+  const witness = witnesses?.find((t) => t.account === account);
+  const howManyDeclined = witnesses?.filter((w) => w.status === REJECTED)
+    .length;
 
   return {
     isCompleted:
       signatureCount >= minSigners ||
-      transaction.status === TransactionStatus.DONE,
+      transaction.status === TransactionStatus.SUCCESS,
     isDeclined: witness?.status === REJECTED,
     isSigned: witness?.status === DONE,
     isPending: witness?.status !== PENDING,
     isReproved: vaultMembersCount - howManyDeclined < minSigners,
-    isError: transaction.status === TransactionStatus.ERROR,
+    isError: transaction.status === TransactionStatus.FAILED,
   };
 };
 
@@ -50,7 +59,15 @@ export const waitingSignatures = ({
 }: WaitingSignaturesParams) => {
   return transactions.filter((transaction) => {
     const { isCompleted, isSigned, isDeclined, isReproved } = transactionStatus(
-      { ...transaction, account },
+      {
+        predicate: {
+          addresses: transaction.predicate.addresses,
+          minSigners: transaction.predicate.minSigners,
+        },
+        account,
+        witnesses: transaction.witnesses,
+        status: transaction.status,
+      },
     );
 
     return !isSigned && !isDeclined && !isCompleted && !isReproved;

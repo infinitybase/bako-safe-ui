@@ -21,12 +21,7 @@ import {
   PendingIcon,
   SquarePlusIcon,
 } from '@/components';
-import {
-  Pages,
-  TransactionCard,
-  transactionStatus,
-  waitingSignatures,
-} from '@/modules';
+import { Pages, TransactionCard, transactionStatus } from '@/modules';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { useVaultDetails } from '@/modules/vault/hooks';
 import { limitCharacters } from '@/utils';
@@ -132,11 +127,11 @@ const VaultDetailsPage = () => {
           hidden={!vault.transactions.isFetching}
         />
         <Badge hidden={vault.transactions.isFetching} h={6} variant="warning">
-          <Icon as={PendingIcon} />
-          {`${waitingSignatures({
-            account,
-            transactions: vaultTransactions ?? [],
-          })} waiting for your signature`}
+          <Icon as={PendingIcon} />2 waiting for your signature
+          {/*{`${waitingSignatures({*/}
+          {/*  account,*/}
+          {/*  transactions: vaultTransactions ?? [],*/}
+          {/*})} waiting for your signature`}*/}
         </Badge>
       </HStack>
 
@@ -157,12 +152,20 @@ const VaultDetailsPage = () => {
                 details={<TransactionCard.Details transaction={transaction} />}
               >
                 <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
                 </TransactionCard.CreationDate>
                 <TransactionCard.Assets />
-                <TransactionCard.Amount assets={transaction.assets} />
+                <TransactionCard.Amount
+                  assets={
+                    transaction?.assets.map((asset) => ({
+                      amount: asset.amount,
+                      assetID: asset.assetId,
+                      to: asset.to,
+                    })) ?? []
+                  }
+                />
                 <TransactionCard.Name>
-                  {limitCharacters(transaction.name, 20)}
+                  {limitCharacters(transaction?.name ?? '', 20)}
                 </TransactionCard.Name>
                 <TransactionCard.Status
                   transaction={transaction}

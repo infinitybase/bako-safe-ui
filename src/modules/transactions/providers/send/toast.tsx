@@ -7,6 +7,7 @@ import {
   Text,
   ToastId,
 } from '@chakra-ui/react';
+import { ITransaction } from 'bsafe';
 import React, { useRef } from 'react';
 
 import { ErrorIcon } from '@/components';
@@ -20,7 +21,7 @@ const useTransactionToast = () => {
   const toast = useNotification();
   const transactionsToastRef = useRef<TransactionToastRef>({});
 
-  const loading = (transaction: Transaction) => {
+  const loading = (transaction: ITransaction) => {
     transactionsToastRef.current[transaction.id] = toast({
       position: 'top-right',
       duration: 100000,
@@ -37,7 +38,14 @@ const useTransactionToast = () => {
       description: (
         <>
           <Text variant="description">
-            ETH {sumEthAsset(transaction.assets)}
+            ETH{' '}
+            {sumEthAsset(
+              transaction.assets.map((transaction) => ({
+                amount: transaction.amount,
+                assetID: transaction.assetId,
+                to: transaction.to,
+              })),
+            )}
           </Text>
           <Text variant="description">{transaction.name}</Text>
         </>
@@ -45,7 +53,7 @@ const useTransactionToast = () => {
     });
   };
 
-  const success = (transaction: Transaction) => {
+  const success = (transaction: ITransaction) => {
     const toastId = transactionsToastRef.current[transaction.id];
 
     if (toastId) {
@@ -73,7 +81,7 @@ const useTransactionToast = () => {
     }
   };
 
-  const error = (transaction: Transaction, message?: string) => {
+  const error = (transaction: ITransaction, message?: string) => {
     const toastId = transactionsToastRef.current[transaction.id];
 
     if (toastId) {
@@ -91,7 +99,7 @@ const useTransactionToast = () => {
     }
   };
 
-  const removeToast = (transaction: Transaction) => {
+  const removeToast = (transaction: ITransaction) => {
     delete transactionsToastRef.current[transaction.id];
   };
 

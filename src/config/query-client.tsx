@@ -9,7 +9,15 @@ interface BsafeQueryClientProviderProps {
   children: React.ReactNode;
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    mutations: {
+      variables: {
+        teste: '',
+      },
+    },
+  },
+});
 
 const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
   const [fuel] = useFuel();

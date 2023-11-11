@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Pages,
-  useCreateVaultRequest,
+  useCreateBsafeVault,
   useFuel,
   useFuelAccount,
   useToast,
@@ -26,14 +26,16 @@ const useCreateVault = () => {
   const [fuel] = useFuel();
 
   const navigate = useNavigate();
+  const toast = useToast();
+
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
-  const toast = useToast();
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
-  const request = useCreateVaultRequest({
+
+  const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
-      setVaultId(data.id);
+      setVaultId(data.BSAFEVaultId);
       setTab(TabState.SUCCESS);
     },
     onError: () => {
@@ -49,13 +51,11 @@ const useCreateVault = () => {
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
-    request.createVault({
+    bsafeVault.create({
       name: data.name,
-      addresses,
+      description: data.description!,
       minSigners: Number(data.minSigners),
-      description: data.description,
-      owner: account,
-      provider: await fuel.getProvider(),
+      addresses,
     });
   });
 
@@ -80,14 +80,12 @@ const useCreateVault = () => {
   };
 
   const onDeposit = async () => {
-    if (request.data) {
+    if (bsafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${
-          request.data.predicateAddress
-        }`,
+        `${import.meta.env.VITE_FAUCET}?address=${bsafeVault.data.address}`,
         '_BLANK',
       );
-      navigate(Pages.detailsVault({ vaultId: request.data.id }));
+      navigate(Pages.detailsVault({ vaultId: bsafeVault.data.BSAFEVaultId }));
     }
   };
 
@@ -139,7 +137,7 @@ const useCreateVault = () => {
       set: setTab,
       isLast: tab === TabState.ADDRESSES,
     },
-    request,
+    bsafeVault,
     navigate,
     onDeposit,
     setFormWithTemplate,
