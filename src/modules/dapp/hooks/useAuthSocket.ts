@@ -16,6 +16,7 @@ export const useAuthSocket = () => {
       username: sessionId!,
       param: UserTypes.POPUP_AUTH,
       sessionId: sessionId!,
+      origin: origin!,
     });
   }, [connect, sessionId]);
 

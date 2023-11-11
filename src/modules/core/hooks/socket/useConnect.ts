@@ -23,6 +23,11 @@ export interface ISocketConnectParams {
   username: string;
   param: UserTypes;
   sessionId: string;
+  origin: string;
+  connectionAlert?: {
+    event: string;
+    content: { [key: string]: string };
+  };
   callbacks?: { [key: string]: (data: any) => void };
 }
 
@@ -35,20 +40,21 @@ export interface ISocketEmitMessageParams {
 
 export const useSocket = () => {
   const connect = ({
-    username,
     param,
     callbacks,
     sessionId,
+    origin,
   }: ISocketConnectParams) => {
     /* 
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
-    console.log('[CONNECT]: connection caller');
+    console.log('CONNETION_CALLER');
     socket.auth = {
-      username: `${param}${username}`,
+      username: `${param}`,
       data: new Date(),
       sessionId,
+      origin,
     };
     socket.connect();
 
