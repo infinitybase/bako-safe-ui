@@ -106,7 +106,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       fontSize="lg"
                       noOfLines={1}
                     >
-                      {AddressUtils.format(signer.address)}
+                      {signer.nickname ?? AddressUtils.format(signer.address)}
                     </Text>
                   </VStack>
                 </HStack>

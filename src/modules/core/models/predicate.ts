@@ -6,6 +6,7 @@ export interface PredicateMember {
   avatar: string;
   address: string;
   isOwner?: boolean;
+  nickname?: string;
 }
 
 export interface Owner {
