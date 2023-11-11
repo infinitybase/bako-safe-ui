@@ -19,6 +19,7 @@ import { useTransactionToast } from './toast';
 interface TransactionSendContextType {
   isExecuting: (transaction: ITransaction) => boolean;
   executeTransaction: (transaction: ITransaction) => void;
+
   clearAll: () => void;
 }
 

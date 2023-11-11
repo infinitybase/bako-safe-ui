@@ -24,6 +24,7 @@ import { useVaultDrawer } from './hook';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
+  onSelect?: (vaultId: string) => void;
 }
 
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
@@ -35,12 +36,13 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   } = useVaultDrawer({
     onClose: props.onClose,
     isOpen: props.isOpen,
+    onSelect: props.onSelect,
   });
 
   return (
     <Drawer
       {...props}
-      size="sm"
+      size="xl"
       onClose={drawer.onClose}
       variant="glassmorphic"
       placement="left"
@@ -81,7 +83,12 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
           </FormControl>
         </Box>
 
-        <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
+        <DrawerBody
+          py={8}
+          borderTop="1px"
+          borderTopColor="dark.100"
+          css={{ '::-webkit-scrollbar': { width: 0 }, scrollbarWidth: 'none' }}
+        >
           {isSuccess && !vaults.length && (
             <Text variant="variant">
               We {"couldn't"} find any results for <b>“{search.value}”</b> in

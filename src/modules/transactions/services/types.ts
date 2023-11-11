@@ -33,6 +33,7 @@ export interface GetTransactionParams {
   page?: number;
   orderBy?: string;
   sort?: SortOption;
+  allOfUser?: boolean;
 }
 
 export interface GetUserTransactionsParams {

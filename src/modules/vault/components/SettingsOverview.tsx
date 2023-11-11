@@ -19,7 +19,6 @@ import { Pages } from '@/modules/core';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
-import { SettingsSigners } from './SettingsSigners';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
@@ -168,10 +167,6 @@ const SettingsOverview = (props: CardDetailsProps) => {
           </HStack>
         </Card>
       </CustomSkeleton>
-
-      <Box mt={8}>
-        <SettingsSigners vault={vault} />
-      </Box>
     </Box>
   );
 };

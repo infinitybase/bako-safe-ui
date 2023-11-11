@@ -67,6 +67,10 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
+  const retryTransaction = async () => {
+    transactionSendContext.retryTransaction(transaction);
+  };
+
   const declineTransaction = async (transactionId: string) => {
     await request.mutateAsync({
       id: transactionId,
@@ -87,6 +91,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     request,
     signMessageRequest,
     confirmTransaction,
+    retryTransaction,
     declineTransaction,
     isLoading:
       request.isLoading ||

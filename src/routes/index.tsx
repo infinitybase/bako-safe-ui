@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes } from 'react-router-dom';
 
 import {
+  dappRoutes,
   exampleRoutes,
-  faucetRoutes,
   homeRoutes,
   signinRoutes,
   templateRoutes,
@@ -15,7 +15,7 @@ const routes = (
     {exampleRoutes}
     {signinRoutes}
     {homeRoutes}
-    {faucetRoutes}
+    {dappRoutes}
     {vaultRoutes}
     {templateRoutes}
     {transactionRoutes}

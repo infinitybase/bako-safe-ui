@@ -35,7 +35,8 @@ const VaultDetailsPage = () => {
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
-  const hasTransactions = !loadingVaultTransactions && !!vaultTransactions;
+  const hasTransactions =
+    !loadingVaultTransactions && vaultTransactions?.length;
 
   if (!vault) return null;
 
@@ -49,7 +50,7 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href={Pages.home()}
+              onClick={() => navigate(Pages.home())}
             >
               Home
             </BreadcrumbLink>
@@ -60,7 +61,7 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              href={Pages.userVaults()}
+              onClick={() => navigate(Pages.userVaults())}
             >
               Vaults
             </BreadcrumbLink>

@@ -17,7 +17,7 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.REJECTED,
 }
 
-const useTransactionList = () => {
+const useTransactionList = (allFromUser = false) => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
@@ -25,13 +25,14 @@ const useTransactionList = () => {
 
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
+  const vaultRequest = useVaultDetailsRequest(params.vaultId!);
+  const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
+    ...(allFromUser ? { allOfUser: true } : {}),
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
-  const vaultRequest = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
 
   useEffect(() => {
     if (inView.inView && !transactionRequest.isFetching) {

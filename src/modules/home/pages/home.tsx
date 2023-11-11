@@ -7,6 +7,7 @@ import {
   GridItem,
   HStack,
   Icon,
+  Link,
   Spacer,
   Text,
   VStack,
@@ -48,9 +49,10 @@ const HomePage = () => {
 
   const isLoading = loadingRecentVaults || loadingTransactions;
   const hasVaults = recentVaults && recentVaults?.length;
+  const hasTransactions = transactions?.length;
 
   return (
-    <VStack w="full" spacing={6}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       {!hasVaults ? (
         <CustomSkeleton isLoaded={!isLoading}>
           <EmptyVault />
@@ -89,12 +91,20 @@ const HomePage = () => {
                 </Box>
               </ActionCard.Container>
 
-              <ActionCard.Container isUpcoming={true}>
-                <ActionCard.Icon isUpcoming={true} icon={GoArrowSwitch} />
+              <ActionCard.Container
+                isUpcoming={hasTransactions ? false : true}
+                onClick={() => {
+                  return hasTransactions
+                    ? navigate(Pages.userTransactions())
+                    : null;
+                }}
+              >
+                <ActionCard.Icon
+                  icon={GoArrowSwitch}
+                  isUpcoming={hasTransactions ? false : true}
+                />
                 <Box>
-                  <ActionCard.Title isUpcoming={true}>
-                    Transactions
-                  </ActionCard.Title>
+                  <ActionCard.Title>Transactions</ActionCard.Title>
                   <ActionCard.Description>
                     Manage Transactions Across All Vaults in One Place.
                   </ActionCard.Description>
@@ -203,6 +213,12 @@ const HomePage = () => {
                   })} waiting for your signature`}
                 </Badge>
                 <Spacer />
+                <Link
+                  color="brand.500"
+                  onClick={() => navigate(Pages.userTransactions())}
+                >
+                  View all
+                </Link>
               </HStack>
               <TransactionCard.List spacing={4} mt={6} mb={12}>
                 {transactions?.map((transaction) => {
