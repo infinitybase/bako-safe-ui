@@ -1,18 +1,26 @@
 import socket from './useSocketConfig';
-export enum SocketEvents {
+
+export enum WalletEnumEvents {
+  //accounts
+  ACCOUNTS = 'accounts',
+  CURRENT_ACCOUNT = 'currentAccount',
+
+  // transfer
+  TRANSACTION_CREATED = '[TRANSACTION_CREATED]',
+  TRANSACTION_SEND = '[TRANSACTION_SEND]',
+
   //auth
-  CONNECTION = 'connection',
-  DISCONNECT = 'disconnect',
-  USER_CONNECTED = '[USER_CONNECTED]',
-
-  //popup transfer
-  TRANSACTION_REQUESTED = '[TRANSACTION_REQUESTED]',
-  TRANSACTION_APPROVED = '[TRANSACTION_APPROVED]',
-
-  //popup auth
   AUTH_CONFIRMED = '[AUTH_CONFIRMED]',
   AUTH_REJECTED = '[AUTH_REJECTED]',
+
+  //connections
+  CONNECTION = 'connection',
+  POPUP_TRANSFER = '[POPUP_TRANSFER]_connected',
+
+  //default
+  DEFAULT = 'message',
 }
+
 export enum UserTypes {
   WALLET = '[WALLET]',
   POPUP_AUTH = '[POPUP_AUTH]',
@@ -32,7 +40,7 @@ export interface ISocketConnectParams {
 }
 
 export interface ISocketEmitMessageParams {
-  event: SocketEvents;
+  event: WalletEnumEvents;
   to: string;
   content: { [key: string]: string };
   callback?: () => void;

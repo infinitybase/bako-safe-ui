@@ -1,28 +1,37 @@
 import { Vault } from 'bsafe';
-import { useMemo } from 'react';
+import { TransactionRequestLike } from 'fuels';
+import { useMemo, useState } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useQueryParams, UserTypes, useSocket } from '@/modules';
+import {
+  useQueryParams,
+  UserTypes,
+  useSocket,
+  WalletEnumEvents,
+} from '@/modules';
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export const useTransactionSocket = () => {
-  const { connect } = useSocket();
+  const { connect, emitMessage } = useSocket();
   const { sessionId, origin } = useQueryParams();
+  const [vault, setVault] = useState<Vault>();
+  const [FUELTransaction, setFUELTransaction] =
+    useState<TransactionRequestLike>();
+
   const callbacks: { [key: string]: (data: any) => void } = {
     // eslint-disable-next-line prettier/prettier
     message: async (params: any) => {
       const { type, data } = params;
       const { address, transaction } = data;
-      if (type === 'transactionSend') {
-        console.log(address, !!transaction);
-        const vault = await Vault.create({
-          predicateAddress: address,
-          token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
-          address: CookiesConfig.getCookie(ADDRESS)!,
-        });
-        console.log('vault', vault);
-        const tx = await vault.BSAFEIncludeTransaction(transaction);
-        console.log('tx', tx);
+      if (type === WalletEnumEvents.TRANSACTION_SEND) {
+        setVault(
+          await Vault.create({
+            predicateAddress: address,
+            token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
+            address: CookiesConfig.getCookie(ADDRESS)!,
+          }),
+        );
+        setFUELTransaction(transaction);
       }
     },
   };
@@ -36,19 +45,30 @@ export const useTransactionSocket = () => {
     });
   }, [connect, sessionId]);
 
-  const emitEvent = () => {
-    // return emitMessage({
-    //   event: SocketEvents.TRANSACTION_APPROVED,
-    //   content: {
-    //     sessionId: sessionId!,
-    //     address: address!,
-    //   },
-    //   to: `${UserTypes.WALLET}${sessionId!}`,
-    //   callback: () => {
-    //     window.close();
-    //   },
-    // });
+  const confirmTransaction = async () => {
+    const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
+    console.log('[TRANSACTION_TX]: ', tx);
+    if (!tx) return;
+    console.log('[enviando mensagem]');
+    emitMessage({
+      event: WalletEnumEvents.TRANSACTION_CREATED,
+      content: {
+        sessionId: sessionId!,
+        address: CookiesConfig.getCookie(ADDRESS)!,
+        origin: origin!,
+        hash: tx.getHashTxId()!,
+      },
+      to: `${sessionId!}:${origin!}`,
+      callback: () => {
+        window.close();
+      },
+    });
+    return;
   };
 
-  return { emitEvent };
+  const init = () => {
+    return;
+  };
+
+  return { init, confirmTransaction, vault, FUELTransaction };
 };

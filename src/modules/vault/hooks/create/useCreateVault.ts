@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Pages,
   useCreateBsafeVault,
-  useFuel,
   useFuelAccount,
   useToast,
 } from '@/modules';
@@ -23,7 +22,6 @@ export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
   const { account } = useFuelAccount();
-  const [fuel] = useFuel();
 
   const navigate = useNavigate();
   const toast = useToast();

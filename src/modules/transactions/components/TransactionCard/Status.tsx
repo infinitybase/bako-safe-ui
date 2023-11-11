@@ -9,12 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bsafe';
 
-import {
-  Transaction,
-  TransactionState,
-  TransactionStatus,
-  WitnessStatus,
-} from '@/modules/core';
+import { Transaction, TransactionState, WitnessStatus } from '@/modules/core';
 
 interface TransactionCardStatusProps {
   status: TransactionState;

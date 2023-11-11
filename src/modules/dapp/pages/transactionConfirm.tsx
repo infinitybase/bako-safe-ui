@@ -1,4 +1,5 @@
 import { Box, Button, Card } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth';
@@ -7,7 +8,7 @@ import { Pages } from '@/modules/core';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
-  const { emitEvent } = useTransactionSocket();
+  const { init, confirmTransaction } = useTransactionSocket();
   const { sessionId } = useQueryParams();
   const navigate = useNavigate();
 
@@ -15,6 +16,10 @@ const TransactionConfirm = () => {
     window.close();
     navigate(Pages.home());
   }
+
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <Box display="flex" alignItems="center" justifyContent="center" h="100vh">
@@ -28,12 +33,7 @@ const TransactionConfirm = () => {
         flexDirection="column"
         alignItems="center"
       >
-        <Button
-          variant="primary"
-          onClick={() => {
-            emitEvent();
-          }}
-        ></Button>
+        <Button variant="primary" onClick={confirmTransaction}></Button>
       </Card>
     </Box>
   );
