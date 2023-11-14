@@ -75,9 +75,18 @@ export const useTransactionSocket = () => {
     return;
   };
 
+  const cancelTransaction = () => window.close();
+
   const init = () => {
     return;
   };
 
-  return { init, confirmTransaction, vault, FUELTransaction, summary };
+  return {
+    init,
+    vault,
+    summary,
+    FUELTransaction,
+    confirmTransaction,
+    cancelTransaction,
+  };
 };

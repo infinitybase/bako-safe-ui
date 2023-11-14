@@ -16,13 +16,19 @@ import { Card, Dialog, SquarePlusIcon } from '@/components';
 import { DappRightArrow } from '@/components/icons/dapp-right-arrow';
 import { DappWarning } from '@/components/icons/dapp-warning';
 import { useQueryParams } from '@/modules/auth';
-import { Pages } from '@/modules/core';
+import { AddressUtils, Pages } from '@/modules/core';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
-  const { init, confirmTransaction, vault } = useTransactionSocket();
+  const {
+    init,
+    confirmTransaction,
+    cancelTransaction,
+    vault,
+    summary: { transactionSummary, mainOperation },
+  } = useTransactionSocket();
   const { sessionId } = useQueryParams();
   const navigate = useNavigate();
 
@@ -34,6 +40,10 @@ const TransactionConfirm = () => {
   useEffect(() => {
     init();
   }, []);
+
+  useEffect(() => {
+    console.log({ mainOperation });
+  }, [mainOperation]);
 
   return (
     <Box w="full" px={6} py={8}>
@@ -129,10 +139,12 @@ const TransactionConfirm = () => {
                 variant="roundedSquare"
               />
               <Text textAlign="center" variant="title">
-                Main Account
+                {mainOperation?.from?.address === vault?.BSAFEVault.addresses
+                  ? vault?.name
+                  : 'Unknown'}
               </Text>
               <Text textAlign="center" variant="description">
-                q2898iuewi...2928
+                {AddressUtils.format(mainOperation?.from?.address ?? '')}
               </Text>
             </Center>
           </Card>
@@ -170,10 +182,12 @@ const TransactionConfirm = () => {
                 variant="roundedSquare"
               />
               <Text textAlign="center" variant="title">
-                Unknown
+                {mainOperation?.to?.address === vault?.BSAFEVault.addresses
+                  ? vault?.name
+                  : 'Unknown'}
               </Text>
               <Text textAlign="center" variant="description">
-                q2898iuewi...2928
+                {AddressUtils.format(mainOperation?.to?.address ?? '')}
               </Text>
             </Center>
           </Card>
@@ -198,14 +212,16 @@ const TransactionConfirm = () => {
 
       <Card display="flex" justifyContent="space-between">
         <Text variant="subtitle">Gas Fee (ETH)</Text>
-        <Text variant="subtitle">0.000348001</Text>
+        <Text variant="subtitle">{transactionSummary?.fee.format()}</Text>
       </Card>
 
       <Divider borderColor="dark.100" mb={7} />
 
       {/* Actions */}
       <Dialog.Actions maxW={420}>
-        <Dialog.SecondaryAction size="lg">Reject</Dialog.SecondaryAction>
+        <Dialog.SecondaryAction size="lg" onClick={cancelTransaction}>
+          Reject
+        </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           size="lg"
           leftIcon={<SquarePlusIcon fontSize="lg" />}
