@@ -1,8 +1,8 @@
 import { Box, BoxProps, Center } from '@chakra-ui/react';
 
 export const DAPP_CONTAINER_SIZES = {
-  width: 400,
-  height: 600,
+  width: 500,
+  height: 750,
 };
 
 interface ContainerProps extends BoxProps {}
