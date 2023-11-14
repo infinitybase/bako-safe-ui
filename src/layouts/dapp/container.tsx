@@ -9,9 +9,10 @@ interface ContainerProps extends BoxProps {}
 
 const Container = (props: ContainerProps) => {
   return (
-    <Center w="100vw" h="100vh">
+    <Center alignItems="flex-start" bgColor="dark.400" w="100vw" h="100vh">
       <Box
         {...props}
+        w="full"
         maxW={DAPP_CONTAINER_SIZES.width}
         maxH={DAPP_CONTAINER_SIZES.height}
       >
