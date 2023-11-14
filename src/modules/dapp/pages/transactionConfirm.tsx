@@ -22,7 +22,7 @@ const TransactionConfirm = () => {
   }, []);
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" h="100vh">
+    <Box display="flex" alignItems="center" justifyContent="center">
       <Card
         w="full"
         maxW={{ base: 'xs', md: 'md' }}
