@@ -4,7 +4,13 @@ import { colors } from '@/themes/colors';
 import { components } from '@/themes/components';
 import { fonts } from '@/themes/fonts';
 
+const breakpoints = {
+  md: '42em',
+  lg: '72em',
+};
+
 const defaultTheme = extendTheme({
+  breakpoints,
   fonts,
   colors,
   components: {
@@ -15,6 +21,9 @@ const defaultTheme = extendTheme({
       body: {
         bg: 'dark.500',
         color: '#FFFFFF',
+      },
+      '#chakra-toast-manager-top-right': {
+        mt: 20,
       },
     }),
   },

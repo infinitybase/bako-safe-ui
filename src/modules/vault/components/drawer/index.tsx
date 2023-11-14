@@ -62,8 +62,8 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
               Vault
             </Heading>
             <Text maxWidth={300} variant="description">
-              Setting Sail on a Journey to Unlock the Potential of User-Centered
-              Design.
+              Select a vault to go to the home page. You can search for a
+              specific vault by name.
             </Text>
           </VStack>
         </DrawerHeader>
@@ -81,7 +81,12 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
           </FormControl>
         </Box>
 
-        <DrawerBody py={8} borderTop="1px" borderTopColor="dark.100">
+        <DrawerBody
+          py={8}
+          borderTop="1px"
+          borderTopColor="dark.100"
+          css={{ '::-webkit-scrollbar': { width: 0 }, scrollbarWidth: 'none' }}
+        >
           {isSuccess && !vaults.length && (
             <Text variant="variant">
               We {"couldn't"} find any results for <b>“{search.value}”</b> in

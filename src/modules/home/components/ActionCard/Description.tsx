@@ -7,7 +7,7 @@ interface ActionCardDescriptionProps {
 
 const Description = ({ children }: ActionCardDescriptionProps) => {
   return (
-    <Box>
+    <Box maxW={{ md: 180, lg: 300 }}>
       <Text variant="description">{children}</Text>
     </Box>
   );

@@ -2,6 +2,12 @@ import { create } from 'zustand';
 
 import { Asset } from '../../core/utils/assets/types';
 
+const IS_VISIBLE_KEY = '@bsafe/balance-is-visible';
+
+const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
+const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
+  localStorage.setItem(IS_VISIBLE_KEY, isVisible);
+
 interface State {
   biggerAsset: Asset | null;
   setBiggerAsset: (asset: Asset | null) => void;
@@ -14,8 +20,11 @@ interface State {
 const useVaultState = create<State>((set) => ({
   biggerAsset: null,
   setBiggerAsset: (asset) => set({ biggerAsset: asset }),
-  visebleBalance: false,
-  setVisibleBalance: (visible) => set({ visebleBalance: visible }),
+  visebleBalance: isVisibleBalance(),
+  setVisibleBalance: (visible) => {
+    set({ visebleBalance: visible });
+    setIsVisibleBalance(visible ? 'true' : 'false');
+  },
   assets: [],
   setAssets: (assets) => set({ assets }),
 }));

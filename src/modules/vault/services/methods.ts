@@ -1,5 +1,6 @@
 import { api } from '@/config';
 import { IPagination, PaginationParams, Predicate } from '@/modules/core';
+import { SortOption } from '@/modules/transactions/services';
 
 export interface GetAllPredicatesPayload extends PaginationParams {
   q?: string;
@@ -7,6 +8,8 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   signer?: string;
   provider?: string;
   owner?: string;
+  orderBy?: string;
+  sort?: SortOption;
 }
 
 export type GetPredicateResponse = Predicate;

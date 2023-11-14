@@ -1,37 +1,32 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules';
 import { useUserTransactionsRequest } from '@/modules/transactions/hooks';
-import { useUserVaultRequest } from '@/modules/vault';
+import { useHomeVaultsRequest } from '@/modules/vault';
 
 const useHome = () => {
   const navigate = useNavigate();
   const { account } = useFuelAccount();
-  const vaultsRequest = useUserVaultRequest();
+  const vaultsPerPage = 8;
+  const homeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
   const transactionsRequest = useUserTransactionsRequest();
+  const count = homeVaultsRequest?.data?.total ?? 0;
 
-  const vaults = useMemo(() => {
-    const max = 8;
-    const userPredicates = vaultsRequest.data;
-    const count = userPredicates?.length ?? 0;
-    const extraCount = count <= max ? 0 : count - max;
-    const recentVaults =
-      count <= max ? userPredicates : userPredicates?.slice(0, max);
-
-    return {
-      recentVaults,
-      extraCount,
-      vaultsMax: max,
-    };
-  }, [vaultsRequest.data]);
+  useEffect(() => {
+    document.getElementById('top')?.scrollIntoView();
+  }, []);
 
   return {
     account,
     vaultsRequest: {
-      ...vaultsRequest,
-      vaults,
-      loadingRecentVaults: vaultsRequest.isLoading,
+      ...homeVaultsRequest,
+      vaults: {
+        recentVaults: homeVaultsRequest.data?.data,
+        vaultsMax: vaultsPerPage,
+        extraCount: count <= vaultsPerPage ? 0 : count - vaultsPerPage,
+      },
+      loadingRecentVaults: homeVaultsRequest.isFetching,
     },
     transactionsRequest: {
       ...transactionsRequest,

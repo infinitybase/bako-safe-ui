@@ -38,6 +38,7 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
     <HStack
       p={5}
       spacing={8}
+      w="full"
       borderTopWidth={1}
       borderColor="transparent"
       {...props}
@@ -48,7 +49,7 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
       </HStack>
 
       <HStack>
-        <Box mt={0.5}>
+        <Box mt={0.5} w={110}>
           <Heading textAlign="center" variant="title-md" color="grey.200">
             - {asset?.amount}
           </Heading>

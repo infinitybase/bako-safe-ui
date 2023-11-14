@@ -22,9 +22,10 @@ const formatList = (list: Asset[]) => {
 };
 
 export interface AmountDetailsProps {
+  store: UseVaultDetailsReturn['store'];
   assets: UseVaultDetailsReturn['assets'];
-  vaultAddress: string;
   isLoading: boolean;
+  vaultAddress: string;
 }
 
 const AssetCard = chakra(Card, {
@@ -37,7 +38,9 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
-  const { assets, vaultAddress, isLoading } = props;
+  const { store, assets, isLoading, vaultAddress } = props;
+  const { visebleBalance } = store;
+
   const isBig = assets?.value ? formatList(assets.value) : 0;
 
   return (
@@ -136,7 +139,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                         fontWeight="semibold"
                         fontSize="lg"
                       >
-                        {balance}
+                        {visebleBalance ? balance : '*****'}
                       </Text>
                       <Text variant="description" fontSize="md">
                         {assetsMap[asset.assetId].slug}

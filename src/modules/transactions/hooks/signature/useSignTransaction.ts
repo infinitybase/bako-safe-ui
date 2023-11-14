@@ -2,16 +2,15 @@ import { useEffect, useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';
 import {
-  BsafeProvider,
   invalidateQueries,
   Transaction,
   TransactionStatus,
   useToast,
   useWalletSignMessage,
 } from '@/modules/core';
-import { VAULT_TRANSACTIONS_QUERY_KEY, VaultService } from '@/modules/vault';
+import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
-import { useTransactionSendRequest } from '../details';
+import { useTransactionSend } from '../../providers';
 import {
   TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
@@ -32,6 +31,7 @@ export interface UseSignTransactionOptions {
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useToast();
   const { account } = useFuelAccount();
+  const transactionSendContext = useTransactionSend();
 
   const transaction = useMemo(() => {
     return options.transaction;
@@ -54,17 +54,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     onError: () => toast.error('Message sign rejected'),
   });
 
-  const transactionSendRequest = useTransactionSendRequest({
-    onSuccess: () => {
-      toast.success('Transaction success.');
-      refetetchTransactionList();
-    },
-    onError: () => {
-      toast.error('Error send your transaction');
-      refetetchTransactionList();
-    },
-  });
-
   const confirmTransaction = async (params: SignTransactionParams) => {
     const signedMessage = await signMessageRequest.mutateAsync(
       JSON.stringify(params),
@@ -77,6 +66,10 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
+  const retryTransaction = async () => {
+    transactionSendContext.retryTransaction(transaction);
+  };
+
   const declineTransaction = async (transactionId: string) => {
     await request.mutateAsync({
       id: transactionId,
@@ -85,22 +78,11 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
-  const sendTransaction = async () => {
-    const predicate = await VaultService.getById(transaction.predicateID);
-    transactionSendRequest.mutate({
-      transaction,
-      predicate: BsafeProvider.instanceVault(predicate),
-    });
-  };
-
   useEffect(() => {
     if (!transaction) return;
 
-    if (
-      transaction.status === TransactionStatus.PENDING &&
-      !transactionSendRequest.isLoading
-    ) {
-      sendTransaction();
+    if (transaction.status === TransactionStatus.PENDING) {
+      transactionSendContext.executeTransaction(transaction);
     }
   }, [transaction]);
 
@@ -108,12 +90,12 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     request,
     signMessageRequest,
     confirmTransaction,
+    retryTransaction,
     declineTransaction,
-    transactionSendRequest,
     isLoading:
       request.isLoading ||
       signMessageRequest.isLoading ||
-      transactionSendRequest.isLoading,
+      transaction.status === TransactionStatus.PENDING,
     isSuccess: request.isSuccess,
   };
 };

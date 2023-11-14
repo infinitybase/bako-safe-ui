@@ -14,7 +14,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
     .format();
 
   return (
-    <HStack w={110} ml={6} textAlign="left">
+    <HStack w={110} ml={0} textAlign="left">
       <Box mt={0.5}>
         <Heading variant="title-md" color="grey.200">
           {ethAmount}

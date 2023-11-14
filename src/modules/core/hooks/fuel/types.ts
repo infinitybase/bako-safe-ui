@@ -6,4 +6,5 @@ export enum FuelQueryKeys {
   WALLET = 'fuel/wallet',
   PROVIDER = 'fuel/provider',
   NETWORK = 'fuel/netowrk',
+  CURRENT_CONNECTOR = 'fuel/current-connector',
 }
