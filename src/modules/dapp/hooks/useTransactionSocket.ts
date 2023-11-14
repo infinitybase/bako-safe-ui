@@ -1,14 +1,16 @@
 import { Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import {
+  useDidMountEffect,
   useQueryParams,
   UserTypes,
   useSocket,
   WalletEnumEvents,
 } from '@/modules';
+import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummary';
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export const useTransactionSocket = () => {
@@ -17,6 +19,7 @@ export const useTransactionSocket = () => {
   const [vault, setVault] = useState<Vault>();
   const [FUELTransaction, setFUELTransaction] =
     useState<TransactionRequestLike>();
+  const summary = useTransactionSummary();
 
   const callbacks: { [key: string]: (data: any) => void } = {
     // eslint-disable-next-line prettier/prettier
@@ -24,18 +27,24 @@ export const useTransactionSocket = () => {
       const { type, data } = params;
       const { address, transaction } = data;
       if (type === WalletEnumEvents.TRANSACTION_SEND) {
-        setVault(
-          await Vault.create({
-            predicateAddress: address,
-            token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
-            address: CookiesConfig.getCookie(ADDRESS)!,
-          }),
-        );
+        const bsafeVault = await Vault.create({
+          predicateAddress: address,
+          token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
+          address: CookiesConfig.getCookie(ADDRESS)!,
+        });
+
+        summary.getTransactionSummary({
+          providerUrl: bsafeVault.provider.url,
+          transactionLike: transaction,
+        });
+
+        setVault(bsafeVault);
         setFUELTransaction(transaction);
       }
     },
   };
-  useMemo(() => {
+
+  useDidMountEffect(() => {
     connect({
       username: sessionId!,
       param: UserTypes.POPUP_TRANSFER,
@@ -43,7 +52,7 @@ export const useTransactionSocket = () => {
       origin: origin!,
       callbacks,
     });
-  }, [connect, sessionId]);
+  }, [callbacks, connect, origin, sessionId]);
 
   const confirmTransaction = async () => {
     const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
@@ -70,5 +79,5 @@ export const useTransactionSocket = () => {
     return;
   };
 
-  return { init, confirmTransaction, vault, FUELTransaction };
+  return { init, confirmTransaction, vault, FUELTransaction, summary };
 };
