@@ -1,5 +1,4 @@
 import {
-  Alert,
   Avatar,
   Box,
   Center,
@@ -14,9 +13,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, Dialog, SquarePlusIcon } from '@/components';
 import { DappRightArrow } from '@/components/icons/dapp-right-arrow';
-import { DappWarning } from '@/components/icons/dapp-warning';
+import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
 import { AddressUtils, Pages } from '@/modules/core';
+import {
+  DappConnectionAlert,
+  DappConnectionDetail,
+} from '@/modules/dapp/components';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
 import { useTransactionSocket } from '../hooks';
@@ -46,17 +49,16 @@ const TransactionConfirm = () => {
   }, [mainOperation]);
 
   return (
-    <Box w="full" px={6} py={8}>
-      {/* Header */}
-      <Box w="full" mb={7}>
-        <Dialog.Header
+    <Dapp.Content>
+      <Dapp.Section>
+        <Dapp.Header
           title="Create transaction"
           description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
         />
-      </Box>
+      </Dapp.Section>
 
       {/* Vault */}
-      <Box w="full" mb={7}>
+      <Dapp.Section>
         {vault && (
           <VaultDrawerBox
             name={vault.name}
@@ -65,53 +67,23 @@ const TransactionConfirm = () => {
             isActive
           />
         )}
-      </Box>
+      </Dapp.Section>
 
       <Divider borderColor="dark.100" mb={7} />
 
       {/* DApp infos */}
-      <Box w="full" mb={7}>
-        <Card py={4}>
-          <Text variant="description">Requesting a transaction from:</Text>
-          <Divider borderColor="dark.100" my={4} />
-          <HStack alignItems="flex-start" spacing={4}>
-            <Avatar
-              variant="roundedSquare"
-              bgColor="dark.150"
-              color="white"
-              name="EA"
-            />
-            <Box w="full">
-              <Text variant="subtitle">E21 -app</Text>
-              <Text fontSize="sm" fontWeight="normal" color="brand.600">
-                localhost:5173
-              </Text>
-            </Box>
-          </HStack>
-        </Card>
-      </Box>
+      <Dapp.Section>
+        <DappConnectionDetail
+          title="E21 - app"
+          origin="http://localhost:5432"
+          faviconUrl=""
+        />
+      </Dapp.Section>
 
       {/* Alert */}
-      <Box w="full" mb={7}>
-        <Alert
-          px={6}
-          py={4}
-          bgColor="#FDD8351A"
-          borderWidth={1}
-          borderRadius={8}
-          borderColor="#FDD8351A"
-        >
-          <Icon fontSize="2xl" as={DappWarning} />
-          <Box w="full" ml={4}>
-            <Text variant="subtitle" color="#FDD835">
-              Double check it!
-            </Text>
-            <Text fontSize="sm" fontWeight="normal" color="grey.200">
-              localhost:5173
-            </Text>
-          </Box>
-        </Alert>
-      </Box>
+      <Dapp.Section>
+        <DappConnectionAlert origin="http://localhost:5432" />
+      </Dapp.Section>
 
       <Divider borderColor="dark.100" mb={7} />
 
@@ -230,7 +202,7 @@ const TransactionConfirm = () => {
           Create transaction
         </Dialog.PrimaryAction>
       </Dialog.Actions>
-    </Box>
+    </Dapp.Content>
   );
 };
 

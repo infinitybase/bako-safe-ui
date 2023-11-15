@@ -1,0 +1,17 @@
+import { Text } from '@chakra-ui/react';
+import React from 'react';
+
+import { Card } from '@/components';
+
+export interface FeeProps {
+  fee: string;
+}
+
+const Fee = ({ fee }: FeeProps) => (
+  <Card display="flex" justifyContent="space-between">
+    <Text variant="subtitle">Gas Fee (ETH)</Text>
+    <Text variant="subtitle">{fee}</Text>
+  </Card>
+);
+
+export { Fee };
