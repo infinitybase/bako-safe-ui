@@ -8,6 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Address } from 'fuels';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,8 +46,8 @@ const TransactionConfirm = () => {
   }, []);
 
   useEffect(() => {
-    console.log({ mainOperation });
-  }, [mainOperation]);
+    console.log({ transactionSummary });
+  }, [transactionSummary]);
 
   return (
     <Dapp.Content>
@@ -154,12 +155,17 @@ const TransactionConfirm = () => {
                 variant="roundedSquare"
               />
               <Text textAlign="center" variant="title">
-                {mainOperation?.to?.address === vault?.BSAFEVault.addresses
+                {mainOperation?.to?.address &&
+                Address.fromB256(mainOperation.to.address).toString() ===
+                  vault?.address.toString()
                   ? vault?.name
                   : 'Unknown'}
               </Text>
               <Text textAlign="center" variant="description">
-                {AddressUtils.format(mainOperation?.to?.address ?? '')}
+                {mainOperation?.to?.address &&
+                  AddressUtils.format(
+                    Address.fromB256(mainOperation.to.address).toString(),
+                  )}
               </Text>
             </Center>
           </Card>
