@@ -9,11 +9,19 @@ interface ContainerProps extends BoxProps {}
 
 const Container = (props: ContainerProps) => {
   return (
-    <Center w="100vw" h="100vh">
+    <Center
+      w="100vw"
+      h="100vh"
+      overflowX="hidden"
+      css={{
+        '&::-webkit-scrollbar': { width: '0' },
+        scrollbarWidth: 'none',
+      }}
+    >
       <Box
-        {...props}
         maxW={DAPP_CONTAINER_SIZES.width}
         maxH={DAPP_CONTAINER_SIZES.height}
+        {...props}
       >
         {props.children}
       </Box>

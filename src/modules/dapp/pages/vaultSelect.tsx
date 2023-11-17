@@ -1,35 +1,11 @@
-import { Box, Card } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
-import { VaultDrawer } from '@/modules/vault';
-
-import { useAuthSocket } from '../hooks';
+import { VaultConnector } from './VaultConnector';
 
 const VaultSelect = () => {
-  const { emitEvent } = useAuthSocket();
-
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" h="100vh">
-      <Card
-        w="full"
-        maxW={{ base: 'xs', md: 'md' }}
-        p={20}
-        bgColor="dark.300"
-        display="flex"
-        justifyContent="center"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <VaultDrawer
-          isOpen={true}
-          onClose={() => {
-            window.close();
-          }}
-          onSelect={(id: string) => {
-            emitEvent(id);
-          }}
-          vaultId={undefined!}
-        />
-      </Card>
+    <Box display="flex" justifyContent="center" h="100vh" w="full">
+      <VaultConnector />
     </Box>
   );
 };

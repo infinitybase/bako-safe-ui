@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   useQueryParams,
@@ -14,7 +14,8 @@ export interface AuthSocketEvent {
 
 export const useAuthSocket = () => {
   const { connect, emitMessage } = useSocket();
-  const { sessionId, address, origin } = useQueryParams();
+  const { sessionId, address, origin, currentVault } = useQueryParams();
+  const [selectedVaultId, setSelectedVaultId] = useState('');
 
   useMemo(() => {
     connect({
@@ -41,5 +42,10 @@ export const useAuthSocket = () => {
     });
   };
 
-  return { emitEvent };
+  return {
+    emitEvent,
+    selectedVaultId,
+    setSelectedVaultId,
+    currentVault,
+  };
 };
