@@ -40,23 +40,23 @@ const useVaultDetails = () => {
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];
 
-    return predicate.addresses
-      .map((address) => ({
-        address,
-        isOwner: address === predicate.owner,
+    return predicate.members
+      ?.map((member) => ({
+        ...member,
+        isOwner: member.address === predicate.owner.address,
       }))
-      .sort((address) => (address.isOwner ? -1 : 0));
+      .sort((member) => (member.isOwner ? -1 : 0));
   }, [predicate]);
 
   const completeSignersOrdination = useMemo(() => {
     if (!predicate) return [];
 
-    return predicate.completeAddress
-      ?.map((address) => ({
-        address,
-        isOwner: address.address === predicate.owner,
+    return predicate.members
+      ?.map((member) => ({
+        ...member,
+        isOwner: member.address === predicate.owner.address,
       }))
-      .sort((address) => (address.isOwner ? -1 : 0));
+      .sort((member) => (member.isOwner ? -1 : 0));
   }, [predicate]);
 
   return {

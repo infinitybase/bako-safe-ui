@@ -18,7 +18,7 @@ export type GetAllPredicateResponse = Predicate[];
 export type GetAllPredicatePaginationResponse = IPagination<Predicate>;
 export type CreatePredicatePayload = Omit<
   Predicate,
-  'id' | 'transactions' | 'completeAddress'
+  'id' | 'transactions' | 'completeAddress' | 'owner'
 >;
 
 export class VaultService {
