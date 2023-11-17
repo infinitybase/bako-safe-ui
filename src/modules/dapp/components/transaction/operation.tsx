@@ -1,7 +1,9 @@
-import { VStack } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Operation } from '@fuel-ts/providers';
 import { Vault } from 'bsafe';
+import { bn } from 'fuels';
 
+import { assetsMap } from '@/modules';
 import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 
@@ -16,17 +18,28 @@ const DappTransactionOperation = ({
   operation,
   isLoading,
 }: OperationProps) => {
-  const { to, from } = operation ?? {};
+  const { to, from, assetsSent } = operation ?? {};
+  const assets = assetsSent?.map((asset) => {
+    const assetData = assetsMap[asset.assetId];
+
+    return {
+      icon: assetData.icon,
+      amount: bn(asset.amount).format(),
+      assetId: asset.assetId,
+      name: assetData.name,
+      slug: assetData.slug,
+    };
+  });
 
   if (!to || !from || !vault || isLoading) {
     return null;
   }
 
   return (
-    <VStack w="full" spacing={0} mb={7}>
+    <Box w="full" mb={7}>
       <DappTransactionFromTo to={from} from={to} vault={vault} />
-      <DappTransactionAsset asset="" />
-    </VStack>
+      {assets && <DappTransactionAsset assets={assets} />}
+    </Box>
   );
 };
 

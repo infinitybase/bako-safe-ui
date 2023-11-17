@@ -85,12 +85,12 @@ const TransactionConfirm = () => {
 
       {/* Transaction Summary */}
       <DappTransaction.Operation
-        isLoading={isLoadingTransactionSummary}
-        operation={mainOperation}
         vault={{
           name: vault?.BSAFEVault.name ?? '',
           predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
         }}
+        operation={mainOperation}
+        isLoading={isLoadingTransactionSummary}
       />
 
       <DappTransaction.Fee fee={transactionSummary?.fee.format()} />

@@ -2,29 +2,45 @@ import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 
 import { Card } from '@/components';
+import { AddressUtils } from '@/modules';
 
 export interface FeeProps {
-  asset: string;
+  assets: {
+    icon?: string;
+    amount: string;
+    assetId: string;
+    name: string;
+    slug: string;
+  }[];
 }
 
-const DappTransactionAsset = ({ asset }: FeeProps) => {
+const DappTransactionAsset = ({ assets }: FeeProps) => {
   return (
-    <Card as={HStack} w="full" borderTopRadius={0}>
-      <Avatar
-        mb={2}
-        name="U"
-        color="white"
-        bgColor="dark.150"
-        variant="roundedSquare"
-      />
-      <Box w="full">
-        <Text variant="subtitle">Token</Text>
-        <Text variant="description">q2898iuewi...2928</Text>
-      </Box>
-      <Box minW="max-content">
-        <Text variant="subtitle">1.0987 TKN</Text>
-      </Box>
-    </Card>
+    <Box w="full">
+      {assets.map((asset) => (
+        <Card key={asset.assetId} as={HStack} w="full" borderTopRadius={0}>
+          <Avatar
+            color="white"
+            size={asset.icon ? 'sm' : 'md'}
+            bgColor={asset.icon ? 'transparent' : 'dark.150'}
+            variant="roundedSquare"
+            src={asset.icon}
+            name={asset.name}
+          />
+          <Box w="full">
+            <Text variant="subtitle">{asset.name}</Text>
+            <Text variant="description">
+              {AddressUtils.format(asset.assetId)}
+            </Text>
+          </Box>
+          <Box minW="max-content">
+            <Text variant="subtitle">
+              {asset.amount} {asset.slug}
+            </Text>
+          </Box>
+        </Card>
+      ))}
+    </Box>
   );
 };
 
