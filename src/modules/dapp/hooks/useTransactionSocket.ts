@@ -15,7 +15,7 @@ const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export const useTransactionSocket = () => {
   const { connect, emitMessage } = useSocket();
-  const { sessionId, origin } = useQueryParams();
+  const { sessionId, origin, name } = useQueryParams();
   const [vault, setVault] = useState<Vault>();
   const [FUELTransaction, setFUELTransaction] =
     useState<TransactionRequestLike>();
@@ -88,5 +88,9 @@ export const useTransactionSocket = () => {
     FUELTransaction,
     confirmTransaction,
     cancelTransaction,
+    connection: {
+      name,
+      origin,
+    },
   };
 };

@@ -21,6 +21,7 @@ const TransactionConfirm = () => {
     confirmTransaction,
     cancelTransaction,
     vault,
+    connection,
     summary: {
       transactionSummary,
       mainOperation,
@@ -69,15 +70,15 @@ const TransactionConfirm = () => {
       {/* DApp infos */}
       <Dapp.Section>
         <DappConnectionDetail
-          title="E21 - app"
-          origin="http://localhost:5432"
+          title={connection.name!}
+          origin={connection.origin!}
           faviconUrl=""
         />
       </Dapp.Section>
 
       {/* Alert */}
       <Dapp.Section>
-        <DappConnectionAlert origin="http://localhost:5432" />
+        <DappConnectionAlert origin={connection.origin!} />
       </Dapp.Section>
 
       <Divider borderColor="dark.100" mb={7} />
