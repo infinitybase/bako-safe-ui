@@ -1,7 +1,9 @@
-import { Fee } from './fee';
+import { DappTransactionFee } from './fee';
+import { DappTransactionOperation } from './operation';
 
 const DappTransaction = {
-  Fee,
+  Fee: DappTransactionFee,
+  Operation: DappTransactionOperation,
 };
 
 export { DappTransaction };

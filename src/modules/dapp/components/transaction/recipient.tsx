@@ -14,7 +14,12 @@ interface RecipientProps {
   chain?: ChainName;
 }
 
-const Recipient = ({ type, address, vaultName, isSender }: RecipientProps) => {
+const DappTransactionRecipient = ({
+  type,
+  address,
+  vaultName,
+  isSender,
+}: RecipientProps) => {
   const isContract = type === AddressType.contract;
   const title = vaultName || 'Unknown';
 
@@ -50,4 +55,4 @@ const Recipient = ({ type, address, vaultName, isSender }: RecipientProps) => {
   );
 };
 
-export { Recipient };
+export { DappTransactionRecipient };

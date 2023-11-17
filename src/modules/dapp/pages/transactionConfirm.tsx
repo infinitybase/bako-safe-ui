@@ -1,25 +1,15 @@
-import {
-  Avatar,
-  Box,
-  Center,
-  Divider,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { Address } from 'fuels';
+import { Divider } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, Dialog, SquarePlusIcon } from '@/components';
-import { DappRightArrow } from '@/components/icons/dapp-right-arrow';
+import { Dialog, SquarePlusIcon } from '@/components';
 import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
-import { AddressUtils, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import {
   DappConnectionAlert,
   DappConnectionDetail,
+  DappTransaction,
 } from '@/modules/dapp/components';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
@@ -89,109 +79,15 @@ const TransactionConfirm = () => {
       <Divider borderColor="dark.100" mb={7} />
 
       {/* Transaction Summary */}
-      <VStack w="full" spacing={0} mb={7}>
-        <HStack w="full" position="relative" spacing={0}>
-          <Card
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            borderBottomRadius={0}
-            py={4}
-            w="full"
-          >
-            <Text variant="description" textAlign="center">
-              From:
-            </Text>
-            <Divider borderColor="dark.100" mt={2} mb={4} />
-            <Center flexDirection="column">
-              <Avatar
-                mb={2}
-                name="EA"
-                color="white"
-                bgColor="dark.150"
-                variant="roundedSquare"
-              />
-              <Text textAlign="center" variant="title">
-                {mainOperation?.from?.address === vault?.BSAFEVault.addresses
-                  ? vault?.name
-                  : 'Unknown'}
-              </Text>
-              <Text textAlign="center" variant="description">
-                {AddressUtils.format(mainOperation?.from?.address ?? '')}
-              </Text>
-            </Center>
-          </Card>
-          <Box
-            px={4}
-            py={3}
-            left="50%"
-            right="50%"
-            width="min-content"
-            bgColor="dark.150"
-            position="absolute"
-            transform="translate(-50%)"
-            borderRadius={10}
-          >
-            <Icon as={DappRightArrow} color="grey.200" />
-          </Box>
-          <Card
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            borderBottomRadius={0}
-            py={4}
-            w="full"
-          >
-            <Text variant="description" textAlign="center">
-              To:
-            </Text>
-            <Divider borderColor="dark.100" mt={2} mb={4} />
-            <Center flexDirection="column">
-              <Avatar
-                mb={2}
-                name="EA"
-                color="white"
-                bgColor="dark.150"
-                variant="roundedSquare"
-              />
-              <Text textAlign="center" variant="title">
-                {mainOperation?.to?.address &&
-                Address.fromB256(mainOperation.to.address).toString() ===
-                  vault?.address.toString()
-                  ? vault?.name
-                  : 'Unknown'}
-              </Text>
-              <Text textAlign="center" variant="description">
-                {mainOperation?.to?.address &&
-                  AddressUtils.format(
-                    Address.fromB256(mainOperation.to.address).toString(),
-                  )}
-              </Text>
-            </Center>
-          </Card>
-        </HStack>
-        <Card as={HStack} w="full" borderTopRadius={0}>
-          <Avatar
-            mb={2}
-            name="U"
-            color="white"
-            bgColor="dark.150"
-            variant="roundedSquare"
-          />
-          <Box w="full">
-            <Text variant="subtitle">Token</Text>
-            <Text variant="description">q2898iuewi...2928</Text>
-          </Box>
-          <Box minW="max-content">
-            <Text variant="subtitle">1.0987 TKN</Text>
-          </Box>
-        </Card>
-      </VStack>
+      <DappTransaction.Operation
+        operation={mainOperation}
+        vault={{
+          name: vault?.BSAFEVault.name ?? '',
+          predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
+        }}
+      />
 
-      <Card display="flex" justifyContent="space-between">
-        <Text variant="subtitle">Gas Fee (ETH)</Text>
-        <Text variant="subtitle">{transactionSummary?.fee.format()}</Text>
-      </Card>
+      <DappTransaction.Fee fee={transactionSummary?.fee.format()} />
 
       <Divider borderColor="dark.100" mb={7} />
 
