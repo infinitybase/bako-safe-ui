@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { Pages } from '@/modules/core';
-import { User } from '@/modules/core/models/user';
 
 import { AddressUtils } from '../../core/utils/address';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -51,80 +50,70 @@ const SignersDetails = (props: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={1} variant="warning">
-          Required signers {vault?.minSigners}/{vault?.signers.length}
+          Required signers {vault?.minSigners}/{vault?.signers?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
-        {signers.map(
-          (asset: { address: User; isOwner: boolean }, index: number) => {
-            if (isBig > 0 && index > 3) return;
-            if (isBig > 0 && index == 3) {
-              return (
-                <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-                  <SignerCard borderStyle="dashed">
-                    <HStack
-                      w="100%"
-                      spacing={0}
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      flexDirection="column"
-                      cursor="pointer"
-                      onClick={() =>
-                        navigate(Pages.vaultSettings({ vaultId: vault.id! }))
-                      }
-                    >
-                      <Text
-                        variant="description"
-                        fontSize="lg"
-                        fontWeight="bold"
-                      >
-                        +{isBig + 1}
-                      </Text>
-                      <Text variant="description" fontSize="md">
-                        View all
-                      </Text>
-                    </HStack>
-                  </SignerCard>
-                </CustomSkeleton>
-              );
-            }
+        {signers?.map((signer, index: number) => {
+          if (isBig > 0 && index > 3) return;
+          if (isBig > 0 && index == 3) {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-                <SignerCard key={index}>
-                  <HStack spacing={4} w="full">
-                    <Image
-                      borderRadius={10}
-                      src={asset.address.avatar}
-                      boxSize="38px"
-                    />
-                    <VStack
-                      h="full"
-                      minH={51}
-                      spacing={1}
-                      justifyContent="center"
-                      alignItems="start"
-                    >
-                      {asset?.isOwner && (
-                        <Badge py={0} variant="success">
-                          owner
-                        </Badge>
-                      )}
-                      <Text
-                        color="grey.200"
-                        fontWeight="semibold"
-                        fontSize="lg"
-                        noOfLines={1}
-                      >
-                        {AddressUtils.format(asset?.address.address)}
-                      </Text>
-                    </VStack>
+                <SignerCard borderStyle="dashed">
+                  <HStack
+                    w="100%"
+                    spacing={0}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    flexDirection="column"
+                    cursor="pointer"
+                    onClick={() =>
+                      navigate(Pages.vaultSettings({ vaultId: vault.id! }))
+                    }
+                  >
+                    <Text variant="description" fontSize="lg" fontWeight="bold">
+                      +{isBig + 1}
+                    </Text>
+                    <Text variant="description" fontSize="md">
+                      View all
+                    </Text>
                   </HStack>
                 </SignerCard>
               </CustomSkeleton>
             );
-          },
-        )}
+          }
+          return (
+            <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
+              <SignerCard key={index}>
+                <HStack spacing={4} w="full">
+                  <Image borderRadius={10} src={signer.avatar} boxSize="38px" />
+                  <VStack
+                    h="full"
+                    minH={51}
+                    spacing={1}
+                    justifyContent="center"
+                    alignItems="start"
+                  >
+                    {signer?.isOwner && (
+                      <Badge py={0} variant="success">
+                        owner
+                      </Badge>
+                    )}
+                    <Text
+                      color="grey.200"
+                      fontWeight="semibold"
+                      fontSize="lg"
+                      noOfLines={1}
+                    >
+                      {signer.nickname ?? AddressUtils.format(signer.address)}
+                    </Text>
+                  </VStack>
+                </HStack>
+              </SignerCard>
+            </CustomSkeleton>
+          );
+        })}
       </VStack>
     </Box>
   );

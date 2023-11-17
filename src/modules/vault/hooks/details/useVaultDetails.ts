@@ -38,6 +38,7 @@ const useVaultDetails = () => {
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];
 
+
     return (
       predicate.addresses
         ?.map((address) => ({

@@ -55,7 +55,6 @@ const useCreateVault = () => {
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
-      addresses,
     });
   });
 

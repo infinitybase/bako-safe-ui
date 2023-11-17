@@ -13,7 +13,6 @@ import {
 export interface CreatePredicateParams {
   name: string;
   description?: string;
-  owner: string;
   addresses: string[];
   minSigners: number;
   provider: Provider;
@@ -45,7 +44,6 @@ const useCreateVaultRequest = (
       description: params.description ?? '',
       minSigners: params.minSigners,
       addresses: params.addresses,
-      owner: params.owner,
       bytes: predicateBIN,
       abi: JSON.stringify(predicateABI),
       configurable: JSON.stringify(vault.getConfigurable()),

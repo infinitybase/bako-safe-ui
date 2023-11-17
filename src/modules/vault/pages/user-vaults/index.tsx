@@ -123,12 +123,10 @@ const UserVaultsPage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container isUpcoming={true}>
-            <ActionCard.Icon icon={CgList} isUpcoming={true} />
+          <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+            <ActionCard.Icon icon={CgList} />
             <Box>
-              <ActionCard.Title isUpcoming={true}>
-                Address book
-              </ActionCard.Title>
+              <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
                 Access and Manage Your Contacts for Easy Transfers and Vault
                 Creation.
@@ -150,25 +148,21 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-        {vaults?.map(
-          ({ id, name, predicateAddress, completeAddress, description }) => {
-            return (
-              <GridItem key={id}>
-                <CustomSkeleton isLoaded={!loadingVaults}>
-                  <VaultCard
-                    name={name}
-                    title={description}
-                    address={predicateAddress}
-                    members={completeAddress}
-                    onClick={() =>
-                      navigate(Pages.detailsVault({ vaultId: id }))
-                    }
-                  />
-                </CustomSkeleton>
-              </GridItem>
-            );
-          },
-        )}
+        {vaults?.map(({ id, name, predicateAddress, members, description }) => {
+          return (
+            <GridItem key={id}>
+              <CustomSkeleton isLoaded={!loadingVaults}>
+                <VaultCard
+                  name={name}
+                  title={description}
+                  address={predicateAddress}
+                  members={members!}
+                  onClick={() => navigate(Pages.detailsVault({ vaultId: id }))}
+                />
+              </CustomSkeleton>
+            </GridItem>
+          );
+        })}
       </Grid>
     </VStack>
   );
