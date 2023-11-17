@@ -1,4 +1,4 @@
-import { Divider } from '@chakra-ui/react';
+import { Divider, VStack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,7 +72,6 @@ const TransactionConfirm = () => {
         <DappConnectionDetail
           title={connection.name!}
           origin={connection.origin!}
-          faviconUrl=""
         />
       </Dapp.Section>
 
@@ -84,16 +83,23 @@ const TransactionConfirm = () => {
       <Divider borderColor="dark.100" mb={7} />
 
       {/* Transaction Summary */}
-      <DappTransaction.Operation
-        vault={{
-          name: vault?.BSAFEVault.name ?? '',
-          predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
-        }}
-        operation={mainOperation}
-        isLoading={isLoadingTransactionSummary}
-      />
+      <VStack spacing={1}>
+        {(isLoadingTransactionSummary || !transactionSummary) && (
+          <DappTransaction.OperationSkeleton />
+        )}
+        {transactionSummary?.operations?.map((operation, index) => (
+          <DappTransaction.Operation
+            key={`${index}operation`}
+            vault={{
+              name: vault?.BSAFEVault.name ?? '',
+              predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
+            }}
+            operation={operation}
+          />
+        ))}
+      </VStack>
 
-      <DappTransaction.Fee fee={transactionSummary?.fee.format()} />
+      <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
 
       <Divider borderColor="dark.100" mb={7} />
 

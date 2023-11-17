@@ -10,6 +10,7 @@ interface FromToProps {
   to: OperationTransactionAddress;
   from: OperationTransactionAddress;
   vault: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  hasAssets?: boolean;
 }
 
 const FromToContainer = chakra(HStack, {
@@ -20,7 +21,7 @@ const FromToContainer = chakra(HStack, {
   },
 });
 
-const DappTransactionFromTo = ({ to, from, vault }: FromToProps) => {
+const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
   return (
     <FromToContainer>
       <DappTransactionRecipient
@@ -29,6 +30,7 @@ const DappTransactionFromTo = ({ to, from, vault }: FromToProps) => {
         chain={from.chain}
         vault={vault}
         address={from.address}
+        fullBorderRadius={!hasAssets}
       />
       <Box
         px={4}
@@ -48,6 +50,7 @@ const DappTransactionFromTo = ({ to, from, vault }: FromToProps) => {
         chain={to.chain}
         vault={vault}
         address={to.address}
+        fullBorderRadius={!hasAssets}
       />
     </FromToContainer>
   );

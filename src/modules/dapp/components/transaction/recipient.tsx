@@ -14,6 +14,7 @@ interface RecipientProps {
   vault?: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
   /* TODO: Check chain name to show is ETH or Fuel */
   chain?: ChainName;
+  fullBorderRadius?: boolean;
 }
 
 export const RecipientCard = chakra(Card, {
@@ -23,7 +24,6 @@ export const RecipientCard = chakra(Card, {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-    borderBottomRadius: 0,
     minH: 181,
   },
 });
@@ -33,6 +33,7 @@ const DappTransactionRecipient = ({
   address,
   vault,
   isSender,
+  fullBorderRadius,
 }: RecipientProps) => {
   const isValidAddress = isBech32(address) || isB256(address);
   const bech32Address = isValidAddress
@@ -44,7 +45,7 @@ const DappTransactionRecipient = ({
   const title = isVault ? vault?.name : 'Unknown';
 
   return (
-    <RecipientCard>
+    <RecipientCard borderBottomRadius={fullBorderRadius ? 10 : 0}>
       <Text variant="description" textAlign="center">
         {isSender ? 'From' : 'To'}
         {isContract && '(Contract)'}
