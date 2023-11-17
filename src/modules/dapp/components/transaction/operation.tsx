@@ -24,12 +24,7 @@ const DappTransactionOperation = ({
 
   return (
     <VStack w="full" spacing={0} mb={7}>
-      <DappTransactionFromTo
-        to={from}
-        from={to}
-        vault={vault}
-        isLoading={isLoading}
-      />
+      <DappTransactionFromTo to={from} from={to} vault={vault} />
       <DappTransactionAsset asset="" />
     </VStack>
   );

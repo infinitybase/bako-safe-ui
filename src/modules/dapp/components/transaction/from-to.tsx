@@ -1,4 +1,4 @@
-import { Box, HStack, Icon } from '@chakra-ui/react';
+import { Box, chakra, HStack, Icon } from '@chakra-ui/react';
 import { OperationTransactionAddress } from '@fuel-ts/providers';
 import { Vault } from 'bsafe';
 import React from 'react';
@@ -10,19 +10,25 @@ interface FromToProps {
   to: OperationTransactionAddress;
   from: OperationTransactionAddress;
   vault: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
-  isLoading?: boolean;
 }
+
+const FromToContainer = chakra(HStack, {
+  baseStyle: {
+    gap: 0,
+    w: 'full',
+    position: 'relative',
+  },
+});
 
 const DappTransactionFromTo = ({ to, from, vault }: FromToProps) => {
   return (
-    <HStack w="full" position="relative" spacing={0}>
+    <FromToContainer>
       <DappTransactionRecipient
         isSender
         type={from.type}
         chain={from.chain}
+        vault={vault}
         address={from.address}
-        isVault={vault.predicateAddress === from.address}
-        vaultName={vault.name}
       />
       <Box
         px={4}
@@ -40,11 +46,10 @@ const DappTransactionFromTo = ({ to, from, vault }: FromToProps) => {
       <DappTransactionRecipient
         type={to.type}
         chain={to.chain}
-        vaultName={vault.name}
+        vault={vault}
         address={to.address}
-        isVault={vault.predicateAddress === to.address}
       />
-    </HStack>
+    </FromToContainer>
   );
 };
 

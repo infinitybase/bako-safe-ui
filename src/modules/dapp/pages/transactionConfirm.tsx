@@ -21,7 +21,11 @@ const TransactionConfirm = () => {
     confirmTransaction,
     cancelTransaction,
     vault,
-    summary: { transactionSummary, mainOperation },
+    summary: {
+      transactionSummary,
+      mainOperation,
+      isLoading: isLoadingTransactionSummary,
+    },
   } = useTransactionSocket();
   const { sessionId } = useQueryParams();
   const navigate = useNavigate();
@@ -80,6 +84,7 @@ const TransactionConfirm = () => {
 
       {/* Transaction Summary */}
       <DappTransaction.Operation
+        isLoading={isLoadingTransactionSummary}
         operation={mainOperation}
         vault={{
           name: vault?.BSAFEVault.name ?? '',
