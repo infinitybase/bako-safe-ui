@@ -3,7 +3,8 @@ import { Route } from 'react-router-dom';
 import { DAPPLayout } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { TransactionConfirm, VaultSelect } from './pages';
+import { TransactionConfirm } from './pages';
+import { VaultConnector } from './pages/VaultConnector';
 
 const dappRoutes = (
   <>
@@ -12,7 +13,7 @@ const dappRoutes = (
         index
         element={
           <DAPPLayout.Container>
-            <VaultSelect />
+            <VaultConnector />
           </DAPPLayout.Container>
         }
       />

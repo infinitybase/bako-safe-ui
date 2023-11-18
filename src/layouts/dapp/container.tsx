@@ -1,4 +1,4 @@
-import { Box, BoxProps, Center } from '@chakra-ui/react';
+import { Box, BoxProps, Flex } from '@chakra-ui/react';
 
 export const DAPP_CONTAINER_SIZES = {
   width: 500,
@@ -9,7 +9,8 @@ interface ContainerProps extends BoxProps {}
 
 const Container = (props: ContainerProps) => {
   return (
-    <Center
+    <Flex
+      justifyContent="center"
       w="100vw"
       h="100vh"
       overflowX="hidden"
@@ -25,7 +26,7 @@ const Container = (props: ContainerProps) => {
       >
         {props.children}
       </Box>
-    </Center>
+    </Flex>
   );
 };
 

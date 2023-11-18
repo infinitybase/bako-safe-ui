@@ -7,6 +7,8 @@ import {
   WalletEnumEvents,
 } from '@/modules';
 
+import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
+
 export interface AuthSocketEvent {
   sessionId: string;
   address: string;
@@ -14,8 +16,11 @@ export interface AuthSocketEvent {
 
 export const useAuthSocket = () => {
   const { connect, emitMessage } = useSocket();
-  const { sessionId, address, origin, currentVault } = useQueryParams();
+  const { sessionId, address, origin } = useQueryParams();
   const [selectedVaultId, setSelectedVaultId] = useState('');
+  const [emittingEvent, setEmittingEvent] = useState(false);
+
+  const getCurrentVaultRequest = useGetCurrentVaultRequest(sessionId!);
 
   useMemo(() => {
     connect({
@@ -27,6 +32,8 @@ export const useAuthSocket = () => {
   }, [connect, sessionId]);
 
   const emitEvent = (vaultId: string) => {
+    setEmittingEvent(true);
+
     return emitMessage({
       event: WalletEnumEvents.AUTH_CONFIRMED,
       content: {
@@ -38,6 +45,7 @@ export const useAuthSocket = () => {
       to: `${UserTypes.WALLET}${sessionId!}`,
       callback: () => {
         window.close();
+        setEmittingEvent(false);
       },
     });
   };
@@ -46,6 +54,7 @@ export const useAuthSocket = () => {
     emitEvent,
     selectedVaultId,
     setSelectedVaultId,
-    currentVault,
+    currentVault: getCurrentVaultRequest?.data,
+    emittingEvent,
   };
 };
