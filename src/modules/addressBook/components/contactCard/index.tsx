@@ -1,7 +1,6 @@
 import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
-  AvatarGroup,
   Box,
   CardProps,
   Divider,
@@ -14,53 +13,58 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Card, CopyIcon } from '@/components';
+import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
-import { User } from '@/modules/core/models/user';
 import { useNotification } from '@/modules/notification';
 
-interface VaultCardProps extends CardProps {
-  name: string;
+import { UseAddressBookReturn } from '../../hooks';
+
+interface ContactCardProps extends CardProps {
+  nickname: string;
   address: string;
-  members: User[];
+  avatar: string;
+  dialog: UseAddressBookReturn['deleteContactDialog'];
+  handleDelete: () => void;
+  handleEdit: () => void;
 }
 
-export const VaultCard = ({
-  name,
+const ContactCard = ({
+  nickname,
   address,
-  members,
+  avatar,
+  handleDelete,
+  handleEdit,
   ...rest
-}: VaultCardProps) => {
+}: ContactCardProps) => {
   const clipboard = useClipboard(address);
   const toast = useNotification();
 
   return (
-    <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
+    <Card bg="dark.300" w="100%" zIndex={100} {...rest}>
       <VStack alignItems="flex-start">
         <HStack w="100%" justifyContent="space-between" mb={1}>
           <HStack>
-            <Avatar
-              variant="roundedSquare"
-              name={name}
-              color="white"
-              bg="grey.900"
-            />
+            <Avatar variant="roundedSquare" src={avatar} key={address} />
+
             <Box ml={2}>
               <Heading variant="title-md" color="grey.200" noOfLines={1}>
-                {name}
+                {nickname}
               </Heading>
               <Text variant="description" color="grey.500">
                 {AddressUtils.format(address)}
               </Text>
             </Box>
           </HStack>
+        </HStack>
 
+        <Divider borderColor="dark.100" my={1} />
+
+        <HStack>
           <IconButton
             aria-label="Copy"
             variant="icon"
-            icon={<Icon as={CopyIcon} color="grey.200" fontSize={17} />}
-            onClick={(e) => {
-              e.stopPropagation();
+            icon={<Icon as={CopyIcon} color="grey.200" fontSize={18} />}
+            onClick={() => {
               clipboard.onCopy();
               toast({
                 position: 'top-right',
@@ -71,29 +75,24 @@ export const VaultCard = ({
               });
             }}
           />
+
+          <IconButton
+            aria-label="Edit"
+            variant="icon"
+            icon={<Icon as={EditIcon} color="grey.200" fontSize={18} />}
+            onClick={handleEdit}
+          />
+
+          <IconButton
+            aria-label="Delete"
+            variant="icon"
+            icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
+            onClick={handleDelete}
+          />
         </HStack>
-
-        <Divider borderColor="dark.100" my={1} />
-
-        <Box>
-          <Text variant="description">Members</Text>
-          <AvatarGroup
-            variant="roundedSquare"
-            max={5}
-            mt={1}
-            size="sm"
-            spacing={-2}
-          >
-            {members.map((member) => (
-              <Avatar
-                variant="roundedSquare"
-                src={member.avatar}
-                key={member.address}
-              />
-            ))}
-          </AvatarGroup>
-        </Box>
       </VStack>
     </Card>
   );
 };
+
+export { ContactCard };

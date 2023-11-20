@@ -1,3 +1,4 @@
+export * from './alert';
 export * from './arrow-down';
 export * from './chart-bullet';
 export * from './copy';

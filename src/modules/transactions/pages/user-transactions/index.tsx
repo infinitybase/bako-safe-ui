@@ -111,10 +111,10 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container isUpcoming={true}>
-          <ActionCard.Icon icon={CgList} isUpcoming={true} />
+        <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+          <ActionCard.Icon icon={CgList} />
           <Box>
-            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
+            <ActionCard.Title>Address book</ActionCard.Title>
             <ActionCard.Description>
               Access and Manage Your Contacts for Easy Transfers and Vault
               Creation.

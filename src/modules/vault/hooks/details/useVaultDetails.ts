@@ -38,6 +38,7 @@ const useVaultDetails = () => {
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];
 
+
     return (
       predicate.addresses
         ?.map((address) => ({
@@ -46,6 +47,7 @@ const useVaultDetails = () => {
         }))
         .sort((address) => (address.isOwner ? -1 : 0)) ?? []
     );
+
   }, [predicate]);
 
   const completeSignersOrdination = useMemo(() => {
@@ -59,6 +61,7 @@ const useVaultDetails = () => {
         }))
         .sort((address) => (address.isOwner ? -1 : 0)) ?? []
     );
+
   }, [predicate]);
 
   return {
