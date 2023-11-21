@@ -2,7 +2,9 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
   Center,
+  Divider,
   Heading,
   HStack,
   Icon,
@@ -14,6 +16,7 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import React, { useMemo } from 'react';
 
 import { DoubleArrowIcon } from '@/components';
+import { AlertIcon } from '@/components/icons/alert';
 import { AddressUtils, AssetModel, assetsMap } from '@/modules/core';
 
 interface TransactionDetailsProps {
@@ -85,6 +88,62 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
               Transaction breakdown
             </Text>
           </Box>
+
+          <Card
+            bgColor="dark.300"
+            borderColor="dark.100"
+            borderRadius={10}
+            px={5}
+            py={4}
+            borderWidth="1px"
+          >
+            <Text fontSize="sm" color="grey.500">
+              Requesting a transaction from:
+            </Text>
+
+            <Divider borderColor="dark.100" mt={3} mb={5} />
+
+            <HStack width="100%" alignItems="center" spacing={4}>
+              <Avatar
+                variant="roundedSquare"
+                color="white"
+                bgColor="dark.150"
+                // TODO: Add dynamic name
+                name="Static Name"
+              />
+              <VStack alignItems="flex-start" spacing={0}>
+                {/* TODO: Add dynamic name */}
+                <Text variant="subtitle">Static Name</Text>
+                <Text color="brand.500" variant="description">
+                  {/* TODO: Add dynamic name */}
+                  localhost:5173
+                </Text>
+              </VStack>
+            </HStack>
+          </Card>
+
+          <HStack
+            bg="warning.700"
+            borderColor="warning.700"
+            borderWidth="1px"
+            borderRadius={10}
+            mt={8}
+            py={4}
+            px={8}
+          >
+            <Icon as={AlertIcon} color="warning.600" fontSize={28} />
+
+            <VStack spacing={0} alignItems="flex-start" ml={2}>
+              <Text fontWeight="bold" color="warning.600">
+                Double check it!
+              </Text>
+              <Text color="grey.200">
+                When I hear the buzz of the little world...
+              </Text>
+            </VStack>
+          </HStack>
+
+          <Divider borderColor="dark.100" mt={8} />
 
           <VStack alignItems="flex-start">
             {transaction.assets.map((asset, index) => (
