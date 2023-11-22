@@ -1,4 +1,4 @@
-import { TransactionStatus } from 'bsafe';
+import { IPredicate, TransactionStatus } from 'bsafe';
 import { bn } from 'fuels';
 
 import {
@@ -13,10 +13,7 @@ const { REJECTED, DONE, PENDING } = WitnessStatus;
 
 export interface TransactionStatusParams {
   account: string;
-  predicate: {
-    addresses: string[];
-    minSigners: number;
-  };
+  predicate: IPredicate;
   witnesses: Witness[];
   status: TransactionStatus;
 }
@@ -30,7 +27,7 @@ export const transactionStatus = ({
 }: TransactionStatusParams) => {
   const { minSigners } = predicate;
   // const vaultMembersCount = predicate.addresses.length;
-  const vaultMembersCount = predicate?.addresses?.length ?? 0;
+  const vaultMembersCount = predicate?.members?.length;
   const signatureCount = witnesses?.filter((t) => t.status === DONE).length;
   const witness = witnesses?.find((t) => t.account === account);
   const howManyDeclined = witnesses?.filter((w) => w.status === REJECTED)

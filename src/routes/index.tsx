@@ -2,6 +2,7 @@ import { BrowserRouter, Routes } from 'react-router-dom';
 
 import {
   dappRoutes,
+  addressBookRoutes,
   exampleRoutes,
   homeRoutes,
   signinRoutes,
@@ -19,6 +20,7 @@ const routes = (
     {vaultRoutes}
     {templateRoutes}
     {transactionRoutes}
+    {addressBookRoutes}
   </>
 );
 

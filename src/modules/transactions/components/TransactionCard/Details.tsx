@@ -67,7 +67,7 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
       </Center>
 
       <Text color="grey.200" fontSize="md">
-        {AddressUtils.format(asset.to)}
+        {asset.recipientNickname ?? AddressUtils.format(asset.to)}
       </Text>
     </HStack>
   );

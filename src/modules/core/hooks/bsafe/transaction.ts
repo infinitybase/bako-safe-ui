@@ -76,13 +76,15 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
   return useBsafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction, auth }: BSAFETransactionSendVariables) => {
+      console.log(transaction);
       const vault = await Vault.create({
-        id: transaction.predicateID,
+        id: transaction.predicateId,
         token: auth!.token,
         address: auth!.address,
       });
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-      await transfer.send();
+      console.log(transfer);
+      console.log(await transfer.send());
       await transfer.wait();
       return transfer.BSAFETransaction;
     },
