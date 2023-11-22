@@ -34,7 +34,6 @@ const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 

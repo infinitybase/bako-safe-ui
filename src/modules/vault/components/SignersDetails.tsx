@@ -10,9 +10,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { Pages } from '@/modules/core';
+import { AddressUtils, Pages } from '@/modules/core';
 
-import { AddressUtils } from '../../core/utils/address';
 import { UseVaultDetailsReturn } from '../hooks/details';
 
 export interface SignersDetailsProps {
@@ -50,7 +49,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={1} variant="warning">
-          Required signers {vault?.minSigners}/{vault?.signers?.length}
+          Required signers {vault?.minSigners}/{vault.members?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
@@ -87,7 +86,11 @@ const SignersDetails = (props: SignersDetailsProps) => {
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <SignerCard key={index}>
                 <HStack spacing={4} w="full">
-                  <Image borderRadius={10} src={signer.avatar} boxSize="38px" />
+                  <Image
+                    borderRadius={10}
+                    src={signer.address.avatar}
+                    boxSize="38px"
+                  />
                   <VStack
                     h="full"
                     minH={51}
@@ -106,7 +109,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       fontSize="lg"
                       noOfLines={1}
                     >
-                      {signer.nickname ?? AddressUtils.format(signer.address)}
+                      {/* todo: add nickname on bsafe sdk */}
+                      {signer.address.nickname ??
+                        AddressUtils.format(signer.address.address)}
                     </Text>
                   </VStack>
                 </HStack>

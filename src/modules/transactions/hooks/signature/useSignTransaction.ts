@@ -56,9 +56,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const confirmTransaction = async (params: SignTransactionParams) => {
-    const signedMessage = await signMessageRequest.mutateAsync(
-      JSON.stringify(params),
-    );
+    console.log(params.txId);
+    const signedMessage = await signMessageRequest.mutateAsync(params.txId);
     await request.mutateAsync({
       account,
       confirm: true,
