@@ -228,7 +228,11 @@ const HomePage = () => {
                         }
                       >
                         <TransactionCard.VaultInfo
-                          vault={transaction.predicate}
+                          vault={
+                            recentVaults.filter(
+                              (v) => v.id === transaction.resume.predicate.id,
+                            )[0]
+                          }
                         />
                         <TransactionCard.CreationDate>
                           {format(
@@ -237,7 +241,9 @@ const HomePage = () => {
                           )}
                         </TransactionCard.CreationDate>
                         <TransactionCard.Assets />
-                        <TransactionCard.Amount assets={transaction.assets} />
+                        <TransactionCard.Amount
+                          assets={transaction.resume.outputs}
+                        />
                         <TransactionCard.Name>
                           {limitCharacters(transaction.name, 20)}
                         </TransactionCard.Name>

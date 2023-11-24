@@ -10,9 +10,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bsafe';
-import React, { useMemo } from 'react';
-
+import { TransactionStatus, ITransaction } from 'bsafe';
+import { useMemo } from 'react';
 import { DoubleArrowIcon } from '@/components';
 import { AddressUtils, AssetModel, assetsMap } from '@/modules/core';
 
@@ -25,7 +24,7 @@ interface AssetBoxInfoProps extends StackProps {
 }
 
 const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
-  const assetInfo = useMemo(() => assetsMap[asset.assetID], [asset.assetID]);
+  const assetInfo = useMemo(() => assetsMap[asset.assetId], [asset.assetId]);
 
   if (!assetInfo) return null;
 
@@ -72,8 +71,8 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
 
 const Details = ({ transaction }: TransactionDetailsProps) => {
   const handleViewInExplorer = async () => {
-    const resume = JSON.parse(transaction.resume);
-    window.open(resume.block, '_BLANK');
+    const resume = transaction.resume;
+    //window.open(resume.block, '_BLANK');
   };
 
   return (
@@ -91,7 +90,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
               <AssetBoxInfo
                 key={asset.amount}
                 asset={{
-                  assetID: asset.assetId,
+                  assetId: asset.assetId,
                   amount: asset.amount,
                   to: asset.to,
                   transactionID: transaction.id,

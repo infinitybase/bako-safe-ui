@@ -31,6 +31,12 @@ export class TransactionService {
     );
     return data;
   }
+  static async getByHash(hash: string) {
+    const { data } = await api.get<GetTransactionResponse>(
+      `/transaction/by-hash/${hash}`,
+    );
+    return data;
+  }
 
   static async signer(payload: SignerTransactionPayload) {
     const { id, ...body } = payload;

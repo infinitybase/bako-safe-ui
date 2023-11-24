@@ -51,9 +51,9 @@ const MeTransactionsPage = () => {
           // const userSigned = transaction?.witnesses?.some(signature => signer(signature, `${transaction.hash}`));
           const assets = transaction.assets.reduce(
             (accumulator, asset) => {
-              const { assetID, amount } = asset;
+              const { assetId, amount } = asset;
               const existingItem = accumulator.find(
-                (item) => item.assetID === assetID,
+                (item) => item.assetId === assetId,
               );
               if (existingItem) {
                 existingItem.amount = bn
@@ -71,14 +71,15 @@ const MeTransactionsPage = () => {
             [] as typeof transaction.assets,
           );
           const isFullSigned =
-            transaction?.witnesses?.length >= transaction.predicate?.minSigners;
+            transaction?.witnesses?.length >=
+            transaction.resume.requiredSigners;
 
           return (
             <Flex
               onClick={() =>
                 navigate(
                   Pages.detailsTransaction({
-                    vaultId: transaction.predicateID,
+                    vaultId: transaction.predicateId,
                     transactionId: transaction.id,
                   }),
                 )
@@ -108,7 +109,7 @@ const MeTransactionsPage = () => {
                     <Text fontSize="sm" color="gray">
                       Predicate:
                     </Text>
-                    {transaction.predicate.name}
+                    {'transaction.predicate.name'}
                   </Text>
                 </Box>
                 <Box flex={1}>
@@ -119,7 +120,7 @@ const MeTransactionsPage = () => {
                     {assets.map((asset) => (
                       <Box key={`${asset.amount}${asset.to}`}>
                         <Badge backgroundColor="dark.500" color="gray">
-                          {asset.amount} {assetsMap[asset.assetID].slug}{' '}
+                          {asset.amount} {assetsMap[asset.assetId].slug}{' '}
                         </Badge>
                       </Box>
                     ))}
@@ -139,7 +140,7 @@ const MeTransactionsPage = () => {
                   <Box mb={2}>
                     <Text fontSize="sm" color="gray">
                       Signatures ({transaction.witnesses.length}/
-                      {transaction.predicate.minSigners}):
+                      {transaction.resume.requiredSigners}):
                     </Text>
                   </Box>
                   <Progress
@@ -147,7 +148,7 @@ const MeTransactionsPage = () => {
                     max={100}
                     value={calculateSignatures(
                       transaction.witnesses.length,
-                      transaction.predicate.minSigners,
+                      transaction.resume.requiredSigners,
                     )}
                     backgroundColor="gray"
                     colorScheme={isFullSigned ? 'brand' : 'yellow'}
