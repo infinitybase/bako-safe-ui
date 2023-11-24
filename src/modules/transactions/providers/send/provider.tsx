@@ -47,7 +47,6 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       refetetchTransactionList();
     },
     onError: (error) => {
-      console.log(error.message);
       const errorMessage = error.message;
       toast.error(variables!.transaction, errorMessage);
       refetetchTransactionList();

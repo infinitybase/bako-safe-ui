@@ -55,7 +55,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const confirmTransaction = async (params: SignTransactionParams) => {
-    console.log(params.txId);
     const signedMessage = await signMessageRequest.mutateAsync(params.txId);
     await request.mutateAsync({
       account,

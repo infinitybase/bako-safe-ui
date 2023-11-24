@@ -231,7 +231,10 @@ const HomePage = () => {
                           vault={
                             recentVaults.filter(
                               (v) => v.id === transaction.resume.predicate.id,
-                            )[0]
+                            )[0] || {
+                              name: 'Vault',
+                              description: 'Vault description',
+                            }
                           }
                         />
                         <TransactionCard.CreationDate>

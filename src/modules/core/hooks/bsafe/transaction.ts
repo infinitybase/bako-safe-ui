@@ -112,8 +112,7 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
       await validateBalance(vault, transaction.assets);
 
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-      console.log(transfer);
-      console.log(await transfer.send());
+      await transfer.send();
       await transfer.wait();
       return transfer.BSAFETransaction;
     },
