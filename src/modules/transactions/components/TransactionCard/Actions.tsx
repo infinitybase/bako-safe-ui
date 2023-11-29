@@ -9,13 +9,13 @@ import {
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
-import { Transaction, TransactionState } from '@/modules/core';
-
+import { TransactionState } from '@/modules/core';
+import { ITransaction } from 'bsafe';
 import { useSignTransaction } from '../../hooks/signature';
 
 interface TransactionActionsProps {
   status: TransactionState;
-  transaction?: Transaction;
+  transaction?: ITransaction;
 }
 
 const Actions = ({ transaction, status }: TransactionActionsProps) => {
@@ -67,7 +67,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
               confirmTransaction({
                 txId: transaction.hash,
                 transactionID: transaction.id,
-                predicateID: transaction.predicateID,
+                predicateID: transaction.predicateId,
               });
             }}
           >

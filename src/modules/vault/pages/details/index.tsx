@@ -34,7 +34,6 @@ const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
@@ -159,7 +158,7 @@ const VaultDetailsPage = () => {
                   assets={
                     transaction?.assets.map((asset) => ({
                       amount: asset.amount,
-                      assetID: asset.assetId,
+                      assetId: asset.assetId,
                       to: asset.to,
                     })) ?? []
                   }

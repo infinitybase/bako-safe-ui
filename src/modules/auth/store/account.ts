@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils/address';
 
 interface State {
   account: string;

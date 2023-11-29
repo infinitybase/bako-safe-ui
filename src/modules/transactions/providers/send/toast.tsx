@@ -8,14 +8,13 @@ import {
   ToastId,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 import { ErrorIcon } from '@/components';
-import { Transaction } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 import { sumEthAsset } from '@/modules/transactions';
 
-type TransactionToastRef = Record<Transaction['id'], ToastId>;
+type TransactionToastRef = Record<ITransaction['id'], ToastId>;
 
 const useTransactionToast = () => {
   const toast = useNotification();
@@ -42,7 +41,7 @@ const useTransactionToast = () => {
             {sumEthAsset(
               transaction.assets.map((transaction) => ({
                 amount: transaction.amount,
-                assetID: transaction.assetId,
+                assetId: transaction.assetId,
                 to: transaction.to,
               })),
             )}
@@ -66,8 +65,9 @@ const useTransactionToast = () => {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                const resume = JSON.parse(transaction.resume);
-                window.open(resume.block, '_BLANK');
+                const resume = transaction.resume;
+                console.log(resume);
+                //window.open(resume.block, '_BLANK');
               }}
               variant="primary"
               size="xs"
