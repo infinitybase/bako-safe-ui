@@ -1,13 +1,19 @@
 import { Box, Card, CardProps, HStack, Text } from '@chakra-ui/react';
+import { format, parseISO } from 'date-fns';
 
 import { Notification } from '@/modules/core';
 
 interface NotificationCardProps extends CardProps {
   notification: Notification;
+  onNotificationClick: (path: string) => void;
 }
 
-const NotificationCard = ({ notification, ...rest }: NotificationCardProps) => {
-  const { title, read, description, createdAt } = notification;
+const NotificationCard = ({
+  notification,
+  onNotificationClick,
+  ...rest
+}: NotificationCardProps) => {
+  const { title, read, description, createdAt, redirect } = notification;
 
   return (
     <Card
@@ -17,6 +23,7 @@ const NotificationCard = ({ notification, ...rest }: NotificationCardProps) => {
       borderColor="dark.100"
       borderWidth="1px"
       borderRadius={10}
+      onClick={() => onNotificationClick(redirect)}
       px={6}
       py={4}
       {...rest}
@@ -30,7 +37,7 @@ const NotificationCard = ({ notification, ...rest }: NotificationCardProps) => {
 
       <Box mb={2}>
         <Text variant="description" fontSize={14}>
-          {createdAt}
+          {format(parseISO(createdAt), 'EEE, do MMM, h:mm a')}
         </Text>
       </Box>
 
