@@ -1,10 +1,13 @@
 import { useDisclosure } from '@chakra-ui/react';
-import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { NotificationStatus } from '@/modules/core';
+
+import { useListNotificationsRequest } from './useListNotificationsRequest';
+import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
+import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -12,84 +15,52 @@ interface UseAppNotificationsParams {
   onSelect?: (vaultId: string) => void;
 }
 
-export enum NotificationFilter {
-  ALL = '',
-  UNREAD = NotificationStatus.UNREAD,
-  READ = NotificationStatus.READ,
-}
-
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
+  const navigate = useNavigate();
   const drawer = useDisclosure();
   const inView = useInView({ delay: 300 });
 
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<NotificationFilter>(
-    NotificationFilter.ALL,
-  );
+  const notificationsListRequest = useListNotificationsRequest();
+  const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
+  const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
 
-  // TODO: Add dynamic value
-  const unreadCounter = 9;
+  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
 
-  // const notificationsListRequest = useNotificationsListRequest(
-  //   { q: search },
-  //   props.isOpen,
-  // );
-
-  // const setNotificationAsReadRequest = useSetNotificationAsReadRequest();
-
-  const debouncedSearchHandler = useCallback(
-    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
-      if (typeof event === 'string') {
-        setSearch(event);
-        return;
-      }
-
-      setSearch(event.target.value);
-    }, 300),
-    [],
-  );
-
-  // useEffect(() => {
-  //   if (inView.inView && !notificationsListRequest.isLoading) {
-  //     notificationsListRequest.fetchNextPage();
-  //   }
-  // }, [
-  //   inView.inView,
-  //   notificationsListRequest.isLoading,
-  //   notificationsListRequest.fetchNextPage,
-  //   // notificationsListRequest,
-  // ]);
-
-  // const onNotificationClick = (notificationId: string) => {
-  //   queryClient.invalidateQueries('notifications/pagination');
-  //   setSearch('');
-  //   // TODO: setRead function
-  //   setNotificationAsReadRequest.mutate({ notificationId });
-  // };
+  const onNotificationClick = (path: string) => {
+    queryClient.invalidateQueries([
+      'notifications/pagination',
+      'notifications/counter',
+    ]);
+    navigate(path);
+    if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
+    // TODO: close dialog
+  };
 
   const onCloseDrawer = () => {
     props?.onClose?.();
     queryClient.invalidateQueries('notifications/pagination');
-    setSearch('');
   };
+
+  useEffect(() => {
+    if (inView.inView && !notificationsListRequest.isLoading) {
+      notificationsListRequest.fetchNextPage();
+    }
+  }, [
+    inView.inView,
+    notificationsListRequest.isLoading,
+    notificationsListRequest.fetchNextPage,
+  ]);
 
   return {
     drawer: {
       ...drawer,
       onClose: onCloseDrawer,
     },
-    search: {
-      value: search,
-      handler: debouncedSearchHandler,
-    },
     inView,
     unreadCounter,
-    filter: {
-      set: setFilter,
-      value: filter,
-    },
-    // request: notificationsListRequest,
-    // onNotificationClick,
+    notificationsListRequest,
+    navigate,
+    onNotificationClick,
   };
 };
 
