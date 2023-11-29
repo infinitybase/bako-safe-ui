@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 
-import {
-  useQueryParams,
-  UserTypes,
-  useSocket,
-  WalletEnumEvents,
-} from '@/modules';
+import { SocketEvents, useQueryParams, UserTypes, useSocket } from '@/modules';
 
 export interface AuthSocketEvent {
   sessionId: string;
@@ -27,7 +22,7 @@ export const useAuthSocket = () => {
 
   const emitEvent = (vaultId: string) => {
     return emitMessage({
-      event: WalletEnumEvents.AUTH_CONFIRMED,
+      event: SocketEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
         sessionId: sessionId!,
