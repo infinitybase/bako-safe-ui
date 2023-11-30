@@ -15,8 +15,6 @@ export interface CreateContactFormProps {
 }
 
 const CreateContactForm = ({ form }: CreateContactFormProps) => {
-  console.log('🚀 ~ file: index.tsx:19 ~ CreateContactForm ~ form:', form);
-
   return (
     <VStack spacing={6}>
       <Controller

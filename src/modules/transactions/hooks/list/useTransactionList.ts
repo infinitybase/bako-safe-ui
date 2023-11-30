@@ -10,6 +10,8 @@ import {
 } from '@/modules';
 import { TransactionStatus } from '@/modules/core';
 
+import { useTransactionState } from '../../states';
+
 export enum StatusFilter {
   ALL = '',
   PENDING = TransactionStatus.AWAIT,
@@ -22,19 +24,24 @@ const useTransactionList = (allFromUser = false) => {
   const navigate = useNavigate();
   const inView = useInView();
   const { account } = useFuelAccount();
-
-  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+  const [filter, setFilter] = useState<StatusFilter | undefined>(
+    StatusFilter.ALL,
+  );
+  const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
     ...(allFromUser ? { allOfUser: true } : {}),
+    ...(selectedTransaction?.id ? { id: selectedTransaction.id } : {}),
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
 
   useEffect(() => {
+    if (selectedTransaction.id) setFilter(undefined);
+
     if (inView.inView && !transactionRequest.isFetching) {
       transactionRequest.fetchNextPage();
     }
@@ -42,6 +49,8 @@ const useTransactionList = (allFromUser = false) => {
 
   return {
     transactionRequest,
+    selectedTransaction,
+    setSelectedTransaction,
     vaultRequest: vaultRequest,
     vaultAssets,
     navigate,
@@ -52,6 +61,7 @@ const useTransactionList = (allFromUser = false) => {
     },
     inView,
     account,
+    defaultIndex: selectedTransaction?.id ? [0] : [],
   };
 };
 

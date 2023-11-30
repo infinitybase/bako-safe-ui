@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { SocketEvents, useQueryParams, UserTypes, useSocket } from '@/modules';
+
+import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
 export interface AuthSocketEvent {
   sessionId: string;
@@ -10,6 +12,10 @@ export interface AuthSocketEvent {
 export const useAuthSocket = () => {
   const { connect, emitMessage } = useSocket();
   const { sessionId, address, origin } = useQueryParams();
+  const [selectedVaultId, setSelectedVaultId] = useState('');
+  const [emittingEvent, setEmittingEvent] = useState(false);
+
+  const getCurrentVaultRequest = useGetCurrentVaultRequest(sessionId!);
 
   useMemo(() => {
     connect({
@@ -21,6 +27,8 @@ export const useAuthSocket = () => {
   }, [connect, sessionId]);
 
   const emitEvent = (vaultId: string) => {
+    setEmittingEvent(true);
+
     return emitMessage({
       event: SocketEvents.AUTH_CONFIRMED,
       content: {
@@ -32,9 +40,16 @@ export const useAuthSocket = () => {
       to: `${UserTypes.WALLET}${sessionId!}`,
       callback: () => {
         window.close();
+        setEmittingEvent(false);
       },
     });
   };
 
-  return { emitEvent };
+  return {
+    emitEvent,
+    selectedVaultId,
+    setSelectedVaultId,
+    currentVault: getCurrentVaultRequest?.data,
+    emittingEvent,
+  };
 };
