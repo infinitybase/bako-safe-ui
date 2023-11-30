@@ -3,11 +3,10 @@ export enum NotificationStatus {
   READ = 'READ',
 }
 
-export interface NotificationSummary {
-  vaultId: string;
-  vaultName: string;
-  transactionId?: string;
-  transactionName?: string;
+export enum NotificationsQueryKey {
+  PAGINATED_LIST = 'notifications/pagination',
+  READ_ALL = 'notifications/read-all',
+  UNREAD_COUNTER = 'notifications/unread-counter',
 }
 
 export enum NotificationTitle {
@@ -16,6 +15,13 @@ export enum NotificationTitle {
   TRANSACTION_DECLINED = 'Transaction Declined',
   TRANSACTION_SIGNED = 'Transaction Signed',
   NEW_VAULT_CREATED = 'New Vault Created',
+}
+
+export interface NotificationSummary {
+  vaultId: string;
+  vaultName: string;
+  transactionId?: string;
+  transactionName?: string;
 }
 
 export interface Notification {
