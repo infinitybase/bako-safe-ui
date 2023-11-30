@@ -4,6 +4,7 @@ import {
   Transaction,
   TransactionStatus,
 } from '@/modules/core';
+import { ITransaction } from 'bsafe';
 
 export enum SortOption {
   ASC = 'ASC',
@@ -75,13 +76,13 @@ export interface CloseTransactionPayload {
   transactionResult: string;
 }
 
-export type GetTransactionResponse = Transaction;
-export type GetTransactionsResponse = Transaction[];
-export type GetTransactionsPaginationResponse = IPagination<Transaction>;
-export type GetUserTransactionsResponse = Transaction[];
-export type GetVaultTransactionsResponse = Transaction[];
-export type GetTransactionByAddressesResponse = Transaction[];
-export type CreateTransactionResponse = Transaction;
-export type SignerTransactionResponse = Transaction;
+export type GetTransactionResponse = ITransaction;
+export type GetTransactionsResponse = ITransaction[];
+export type GetTransactionsPaginationResponse = IPagination<ITransaction>;
+export type GetUserTransactionsResponse = ITransaction[];
+export type GetVaultTransactionsResponse = ITransaction[];
+export type GetTransactionByAddressesResponse = ITransaction[];
+export type CreateTransactionResponse = ITransaction;
+export type SignerTransactionResponse = ITransaction;
 export type TransferAsset = AssetModel;
 export type TransactionDetailUI = TransactionDetails;

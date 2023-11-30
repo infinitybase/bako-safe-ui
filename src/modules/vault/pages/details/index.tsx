@@ -158,7 +158,7 @@ const VaultDetailsPage = () => {
                   assets={
                     transaction?.assets.map((asset) => ({
                       amount: asset.amount,
-                      assetID: asset.assetId,
+                      assetId: asset.assetId,
                       to: asset.to,
                     })) ?? []
                   }

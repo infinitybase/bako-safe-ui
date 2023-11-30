@@ -1,5 +1,4 @@
-import { Transaction } from './transaction';
-
+import { ITransaction } from 'bsafe';
 export enum WitnessStatus {
   REJECTED = 'REJECTED',
   DONE = 'DONE',
@@ -11,6 +10,6 @@ export interface Witness {
   signature?: string;
   account: string;
   transactionID: string;
-  transaction: Transaction;
+  transaction: ITransaction;
   status: WitnessStatus;
 }

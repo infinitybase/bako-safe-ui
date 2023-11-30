@@ -1,11 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import {
-  useQueryParams,
-  UserTypes,
-  useSocket,
-  WalletEnumEvents,
-} from '@/modules';
+import { SocketEvents, useQueryParams, UserTypes, useSocket } from '@/modules';
 
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
@@ -35,7 +30,7 @@ export const useAuthSocket = () => {
     setEmittingEvent(true);
 
     return emitMessage({
-      event: WalletEnumEvents.AUTH_CONFIRMED,
+      event: SocketEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
         sessionId: sessionId!,

@@ -15,11 +15,7 @@ const useVaultTransactionsRequest = (vault: Vault) => {
   });
 
   return {
-    transactions: data?.map((transaction) => ({
-      ...transaction.BSAFETransaction,
-      predicate: vault.BSAFEVault,
-    })),
-    transactionsIntance: data,
+    transactions: data,
     ...query,
   };
 };

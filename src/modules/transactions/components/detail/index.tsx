@@ -47,7 +47,7 @@ function BodyTransactionDetails({
       !!transaction &&
         !transferData?.assigned &&
         !transferData?.isDone &&
-        !!transaction.predicateID &&
+        !!transaction.predicateId &&
         transferData?.isSigner,
     );
 
@@ -99,10 +99,10 @@ function BodyTransactionDetails({
         <TransactionList
           assets={
             transferData?.transfers?.map((transfer) => ({
-              assetId: transfer.assetID,
-              name: assetsMap[transfer.assetID].name,
+              assetId: transfer.assetId,
+              name: assetsMap[transfer.assetId].name,
               amount: transfer.amount,
-              slug: assetsMap[transfer.assetID].slug,
+              slug: assetsMap[transfer.assetId].slug,
               to: transfer.to,
             })) ?? []
           }
@@ -174,9 +174,9 @@ function BodyTransactionDetails({
             colorScheme="brand"
             onClick={() => {
               signin(
-                transaction?.hash,
+                transaction.resume.hash,
                 transaction?.id,
-                transaction?.predicateID,
+                transaction.resume.predicate.id,
               );
             }}
             disabled={isLoading || isLoadingRequest}

@@ -30,7 +30,7 @@ const useTransactionList = (allFromUser = false) => {
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultRequest.predicate?.predicateInstance);
+  const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
     ...(allFromUser ? { allOfUser: true } : {}),

@@ -40,7 +40,7 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const toast = useNotification();
   const clipboard = useClipboard(asset.to);
-  const assetInfo = useMemo(() => assetsMap[asset.assetID], [asset.assetID]);
+  const assetInfo = useMemo(() => assetsMap[asset.assetId], [asset.assetId]);
 
   if (!assetInfo) return null;
 
@@ -147,8 +147,8 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const handleViewInExplorer = async () => {
-    const resume = JSON.parse(transaction.resume);
-    window.open(resume.block, '_BLANK');
+    const resume = transaction.resume;
+    //window.open(resume.block, '_BLANK');
   };
 
   return (
@@ -232,7 +232,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
                 asset={{
                   to,
                   amount,
-                  assetID: assetId,
+                  assetId: assetId,
                   transactionID: transaction.id,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
