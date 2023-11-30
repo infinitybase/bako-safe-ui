@@ -1,12 +1,14 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 
+import { NotificationsQueryKey } from '@/modules/core';
+
 import { NotificationService, SetAllAsReadResponse } from '../services';
 
 const useSetNotificationsAsReadRequest = (
   options?: UseMutationOptions<SetAllAsReadResponse, unknown, unknown>,
 ) => {
   return useMutation(
-    'notification/set-all-as-read',
+    NotificationsQueryKey.READ_ALL,
     NotificationService.setAllAsRead,
     options,
   );

@@ -19,9 +19,11 @@ import { CustomSkeleton, ErrorIcon } from '@/components';
 import { useAppNotifications } from '../../hooks';
 import { NotificationCard } from '../notificationCard';
 
-interface NotificationsDrawerProps extends Omit<DrawerProps, 'children'> {}
+interface NotificationsDrawerProps extends Omit<DrawerProps, 'children'> {
+  onSelect?: (vaultId: string) => void;
+}
 
-const NotificationsDrawer = (props: NotificationsDrawerProps) => {
+const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
   const {
     unreadCounter,
     inView,
@@ -31,15 +33,26 @@ const NotificationsDrawer = (props: NotificationsDrawerProps) => {
       isFetching,
       isLoading,
     },
-    onNotificationClick,
-  } = useAppNotifications();
+    onSelectNotification,
+    drawer,
+  } = useAppNotifications({
+    onClose: props.onClose,
+    isOpen: props.isOpen,
+    onSelect: props.onSelect,
+  });
 
   return (
-    <Drawer size="sm" variant="glassmorphic" placement="right" {...props}>
+    <Drawer
+      {...props}
+      size="sm"
+      variant="glassmorphic"
+      placement="right"
+      onClose={drawer.onClose}
+    >
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={props.onClose} spacing={2}>
+          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
             <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close
@@ -90,7 +103,7 @@ const NotificationsDrawer = (props: NotificationsDrawerProps) => {
                 <NotificationCard
                   key={notification.id}
                   notification={notification}
-                  onNotificationClick={onNotificationClick}
+                  onSelectNotification={onSelectNotification}
                 />
               </CustomSkeleton>
             ))}

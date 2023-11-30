@@ -1,10 +1,13 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { NotificationSummary, Pages } from '@/modules/core';
+import {
+  NotificationsQueryKey,
+  NotificationSummary,
+  Pages,
+} from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
 import { useListNotificationsRequest } from './useListNotificationsRequest';
@@ -24,13 +27,13 @@ export interface TransactionRedirect {
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const navigate = useNavigate();
-  const drawer = useDisclosure();
   const inView = useInView({ delay: 300 });
-  const notificationsListRequest = useListNotificationsRequest();
+  const notificationsListRequest = useListNotificationsRequest(props?.isOpen);
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
-  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
   const { setSelectedTransaction } = useTransactionState();
+
+  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
 
   const onCloseDrawer = () => {
     props?.onClose?.();
@@ -38,14 +41,16 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
 
     queryClient.invalidateQueries([
-      'notifications/pagination',
-      'notifications/counter',
+      NotificationsQueryKey.UNREAD_COUNTER,
+      NotificationsQueryKey.PAGINATED_LIST,
     ]);
   };
 
-  const onNotificationClick = (summary: NotificationSummary) => {
-    const isTransaction = summary?.transactionId;
+  const onSelectNotification = (summary: NotificationSummary) => {
     const { transactionId, transactionName, vaultId } = summary;
+    const isTransaction = summary?.transactionId;
+
+    onCloseDrawer();
 
     if (isTransaction)
       setSelectedTransaction({ name: transactionName, id: transactionId });
@@ -54,7 +59,6 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       ? Pages.transactions({ vaultId })
       : Pages.detailsVault({ vaultId });
 
-    onCloseDrawer();
     navigate(page);
   };
 
@@ -69,12 +73,15 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   ]);
 
   return {
-    drawer: { ...drawer, onClose: onCloseDrawer },
+    drawer: {
+      onSelectNotification: props?.onSelect ?? onSelectNotification,
+      onClose: onCloseDrawer,
+    },
     inView,
     unreadCounter,
     notificationsListRequest,
     navigate,
-    onNotificationClick,
+    onSelectNotification,
   };
 };
 

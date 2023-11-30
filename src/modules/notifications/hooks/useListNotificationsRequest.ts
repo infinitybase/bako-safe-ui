@@ -1,14 +1,15 @@
 import { SortOption } from 'bsafe';
 import { useInfiniteQuery } from 'react-query';
 
-import { GetAllNotificationsPayload, NotificationService } from '../services';
+import { NotificationsQueryKey } from '@/modules/core';
 
-const useListNotificationsRequest = (filter?: GetAllNotificationsPayload) => {
+import { NotificationService } from '../services';
+
+const useListNotificationsRequest = (enabled?: boolean) => {
   const { data, ...query } = useInfiniteQuery(
-    'notifications/pagination',
+    NotificationsQueryKey.PAGINATED_LIST,
     ({ pageParam }) =>
       NotificationService.getAllWithPagination({
-        ...filter,
         perPage: 5,
         page: pageParam || 0,
         orderBy: 'createdAt',
@@ -17,6 +18,7 @@ const useListNotificationsRequest = (filter?: GetAllNotificationsPayload) => {
     {
       getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
         currentPage !== totalPages ? nextPage : undefined,
+      enabled,
     },
   );
 

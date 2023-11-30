@@ -7,12 +7,12 @@ import { notificationDescription } from '../../utils';
 
 interface NotificationCardProps extends CardProps {
   notification: Notification;
-  onNotificationClick: (summary: NotificationSummary) => void;
+  onSelectNotification: (summary: NotificationSummary) => void;
 }
 
 const NotificationCard = ({
   notification: { title, read, summary, createdAt },
-  onNotificationClick,
+  onSelectNotification,
   ...rest
 }: NotificationCardProps) => {
   return (
@@ -23,7 +23,7 @@ const NotificationCard = ({
       borderColor="dark.100"
       borderWidth="1px"
       borderRadius={10}
-      onClick={() => onNotificationClick(summary)}
+      onClick={() => onSelectNotification(summary)}
       px={6}
       py={4}
       {...rest}
