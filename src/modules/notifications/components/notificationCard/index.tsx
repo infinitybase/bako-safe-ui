@@ -3,9 +3,14 @@ import { format, parseISO } from 'date-fns';
 
 import { Notification } from '@/modules/core';
 
+import { TransactionRedirect } from '../../hooks';
+
 interface NotificationCardProps extends CardProps {
   notification: Notification;
-  onNotificationClick: (path: string) => void;
+  onNotificationClick: (
+    path: string,
+    transaction?: TransactionRedirect,
+  ) => void;
 }
 
 const NotificationCard = ({
@@ -14,6 +19,16 @@ const NotificationCard = ({
   ...rest
 }: NotificationCardProps) => {
   const { title, read, description, createdAt, redirect } = notification;
+  const separator = '/transactions/';
+  const isTransaction = redirect.includes(separator);
+  const transactionName = description.match(/'([^']+)'/);
+
+  const transaction = isTransaction
+    ? {
+        id: redirect.split(separator)[1],
+        name: transactionName ? transactionName[1] : '',
+      }
+    : undefined;
 
   return (
     <Card
@@ -23,7 +38,12 @@ const NotificationCard = ({
       borderColor="dark.100"
       borderWidth="1px"
       borderRadius={10}
-      onClick={() => onNotificationClick(redirect)}
+      onClick={() => {
+        onNotificationClick(
+          !isTransaction ? redirect : redirect.replace(/\/[^/]+$/, ''),
+          transaction,
+        );
+      }}
       px={6}
       py={4}
       {...rest}

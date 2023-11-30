@@ -68,7 +68,7 @@ const NotificationsDrawer = (props: NotificationsDrawerProps) => {
 
         <DrawerBody
           py={8}
-          // borderTop="1px"
+          borderTop="1px"
           borderTopColor="dark.100"
           css={{
             '::-webkit-scrollbar': { width: 0 },

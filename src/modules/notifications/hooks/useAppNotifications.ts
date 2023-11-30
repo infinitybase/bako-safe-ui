@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import { useTransactionState } from '@/modules/transactions/states';
 
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
@@ -15,6 +16,11 @@ interface UseAppNotificationsParams {
   onSelect?: (vaultId: string) => void;
 }
 
+export interface TransactionRedirect {
+  id?: string;
+  name?: string;
+}
+
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const navigate = useNavigate();
   const drawer = useDisclosure();
@@ -23,14 +29,21 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const notificationsListRequest = useListNotificationsRequest();
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
+  const { setSelectedTransaction } = useTransactionState();
 
   const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
 
-  const onNotificationClick = (path: string) => {
+  const onNotificationClick = (
+    path: string,
+    transaction?: TransactionRedirect,
+  ) => {
     queryClient.invalidateQueries([
       'notifications/pagination',
       'notifications/counter',
     ]);
+
+    if (transaction?.id) setSelectedTransaction(transaction);
+
     navigate(path);
     if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
     // TODO: close dialog
