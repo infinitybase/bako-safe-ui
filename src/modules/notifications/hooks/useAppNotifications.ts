@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import { NotificationSummary, Pages } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
 import { useListNotificationsRequest } from './useListNotificationsRequest';
@@ -25,33 +26,36 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const navigate = useNavigate();
   const drawer = useDisclosure();
   const inView = useInView({ delay: 300 });
-
   const notificationsListRequest = useListNotificationsRequest();
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
+  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
   const { setSelectedTransaction } = useTransactionState();
 
-  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
+  const onCloseDrawer = () => {
+    props?.onClose?.();
 
-  const onNotificationClick = (
-    path: string,
-    transaction?: TransactionRedirect,
-  ) => {
+    if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
+
     queryClient.invalidateQueries([
       'notifications/pagination',
       'notifications/counter',
     ]);
-
-    if (transaction?.id) setSelectedTransaction(transaction);
-
-    navigate(path);
-    if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
-    // TODO: close dialog
   };
 
-  const onCloseDrawer = () => {
-    props?.onClose?.();
-    queryClient.invalidateQueries('notifications/pagination');
+  const onNotificationClick = (summary: NotificationSummary) => {
+    const isTransaction = summary?.transactionId;
+    const { transactionId, transactionName, vaultId } = summary;
+
+    if (isTransaction)
+      setSelectedTransaction({ name: transactionName, id: transactionId });
+
+    const page = isTransaction
+      ? Pages.transactions({ vaultId })
+      : Pages.detailsVault({ vaultId });
+
+    onCloseDrawer();
+    navigate(page);
   };
 
   useEffect(() => {
@@ -65,10 +69,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   ]);
 
   return {
-    drawer: {
-      ...drawer,
-      onClose: onCloseDrawer,
-    },
+    drawer: { ...drawer, onClose: onCloseDrawer },
     inView,
     unreadCounter,
     notificationsListRequest,

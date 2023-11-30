@@ -1,35 +1,20 @@
 import { Box, Card, CardProps, HStack, Text } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
 
-import { Notification } from '@/modules/core';
+import { Notification, NotificationSummary } from '@/modules/core';
 
-import { TransactionRedirect } from '../../hooks';
+import { notificationDescription } from '../../utils';
 
 interface NotificationCardProps extends CardProps {
   notification: Notification;
-  onNotificationClick: (
-    path: string,
-    transaction?: TransactionRedirect,
-  ) => void;
+  onNotificationClick: (summary: NotificationSummary) => void;
 }
 
 const NotificationCard = ({
-  notification,
+  notification: { title, read, summary, createdAt },
   onNotificationClick,
   ...rest
 }: NotificationCardProps) => {
-  const { title, read, description, createdAt, redirect } = notification;
-  const separator = '/transactions/';
-  const isTransaction = redirect.includes(separator);
-  const transactionName = description.match(/'([^']+)'/);
-
-  const transaction = isTransaction
-    ? {
-        id: redirect.split(separator)[1],
-        name: transactionName ? transactionName[1] : '',
-      }
-    : undefined;
-
   return (
     <Card
       w="100%"
@@ -38,12 +23,7 @@ const NotificationCard = ({
       borderColor="dark.100"
       borderWidth="1px"
       borderRadius={10}
-      onClick={() => {
-        onNotificationClick(
-          !isTransaction ? redirect : redirect.replace(/\/[^/]+$/, ''),
-          transaction,
-        );
-      }}
+      onClick={() => onNotificationClick(summary)}
       px={6}
       py={4}
       {...rest}
@@ -62,7 +42,7 @@ const NotificationCard = ({
       </Box>
 
       <Text color="grey.500" variant="description" fontSize={14} noOfLines={2}>
-        {description}
+        {notificationDescription(title, summary)}
       </Text>
     </Card>
   );

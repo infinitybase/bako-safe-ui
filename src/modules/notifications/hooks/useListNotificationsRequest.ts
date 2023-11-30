@@ -1,3 +1,4 @@
+import { SortOption } from 'bsafe';
 import { useInfiniteQuery } from 'react-query';
 
 import { GetAllNotificationsPayload, NotificationService } from '../services';
@@ -10,12 +11,12 @@ const useListNotificationsRequest = (filter?: GetAllNotificationsPayload) => {
         ...filter,
         perPage: 5,
         page: pageParam || 0,
+        orderBy: 'createdAt',
+        sort: SortOption.DESC,
       }),
     {
-      getNextPageParam: (lastPage) =>
-        lastPage.currentPage !== lastPage.totalPages
-          ? lastPage.nextPage
-          : undefined,
+      getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
+        currentPage !== totalPages ? nextPage : undefined,
     },
   );
 

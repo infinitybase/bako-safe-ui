@@ -1,13 +1,10 @@
 import { create } from 'zustand';
 
-export interface SelectedTransaction {
-  id?: string;
-  name?: string;
-}
+import { TransactionRedirect } from '@/modules/notifications/hooks';
 
 interface State {
-  selectedTransaction: SelectedTransaction;
-  setSelectedTransaction: (selectedTransaction: SelectedTransaction) => void;
+  selectedTransaction: TransactionRedirect;
+  setSelectedTransaction: (selectedTransaction: TransactionRedirect) => void;
 }
 
 const useTransactionState = create<State>((set) => ({

@@ -3,11 +3,25 @@ export enum NotificationStatus {
   READ = 'READ',
 }
 
+export interface NotificationSummary {
+  vaultId: string;
+  vaultName: string;
+  transactionId?: string;
+  transactionName?: string;
+}
+
+export enum NotificationTitle {
+  TRANSACTION_CREATED = 'Transaction Created',
+  TRANSACTION_COMPLETED = 'Transaction Completed',
+  TRANSACTION_DECLINED = 'Transaction Declined',
+  TRANSACTION_SIGNED = 'Transaction Signed',
+  NEW_VAULT_CREATED = 'New Vault Created',
+}
+
 export interface Notification {
   id: string;
-  title: string;
-  createdAt: string;
-  description: string;
-  redirect: string;
+  title: NotificationTitle;
+  summary: NotificationSummary;
   read: boolean;
+  createdAt: string;
 }
