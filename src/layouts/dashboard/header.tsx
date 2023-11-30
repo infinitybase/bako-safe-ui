@@ -15,7 +15,8 @@ import logo from '@/assets/logo.svg';
 import { ExitIcon, NotificationIcon, QuestionIcon } from '@/components';
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
-import { useAppNotifications } from '@/modules/notifications/hooks';
+
+import { useSidebar } from './hook';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -70,7 +71,7 @@ const UserBox = () => {
 
 const Header = () => {
   const navigate = useNavigate();
-  const { drawer, unreadCounter } = useAppNotifications();
+  const { drawer, unreadCounter } = useSidebar();
 
   return (
     <Flex
@@ -97,7 +98,7 @@ const Header = () => {
           <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
 
-        <TopBarItem cursor="pointer" onClick={drawer.onOpen}>
+        <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
           <Icon
             color="grey.200"
             as={NotificationIcon}
@@ -115,7 +116,6 @@ const Header = () => {
               top={-1.5}
               right={-2.5}
             >
-              {/* TODO: Add dynamic value */}
               <Text fontSize="xs">+{unreadCounter}</Text>
             </Center>
           )}
