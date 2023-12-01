@@ -23,10 +23,7 @@ const useTransactionSummary = () => {
   return {
     ...mutation,
     mainOperation: data?.operations[0],
-    transactionSummary: {
-      ...data,
-      operations: [operation2, data?.operations[0]],
-    },
+    transactionSummary: data,
     getTransactionSummary: mutate,
   };
 };
