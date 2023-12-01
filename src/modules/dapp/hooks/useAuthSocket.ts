@@ -25,7 +25,7 @@ export const useAuthSocket = () => {
       event: SocketEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
-        name,
+        name: name ?? origin!,
         sessionId: sessionId!,
         address: address!,
         origin: origin!,
