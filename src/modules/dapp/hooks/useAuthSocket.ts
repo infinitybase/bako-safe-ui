@@ -9,7 +9,7 @@ export interface AuthSocketEvent {
 
 export const useAuthSocket = () => {
   const { connect, emitMessage } = useSocket();
-  const { sessionId, address, origin } = useQueryParams();
+  const { sessionId, address, origin, name } = useQueryParams();
 
   useMemo(() => {
     connect({
@@ -25,6 +25,7 @@ export const useAuthSocket = () => {
       event: SocketEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
+        name,
         sessionId: sessionId!,
         address: address!,
         origin: origin!,
