@@ -25,22 +25,22 @@ export const useTransactionSocket = () => {
     message: async (params: any) => {
       const { type, data } = params;
       const { address, transaction } = data;
-      console.log('[TRANSACTION_REQUESTED]: ', {
-        data,
-        type,
-      });
+      // console.log('[TRANSACTION_REQUESTED]: ', {
+      //   data,
+      //   type,
+      // });
       if (type === BSAFEConnectorEvents.TRANSACTION_SEND) {
         const bsafeVault = await Vault.create({
           predicateAddress: address,
           token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
           address: CookiesConfig.getCookie(ADDRESS)!,
         });
-        console.log('[VAULT]: ', bsafeVault);
+        //console.log('[VAULT]: ', bsafeVault);
         summary.getTransactionSummary({
           providerUrl: bsafeVault.provider.url,
           transactionLike: transaction,
         });
-        console.log('[VAULT]: ', bsafeVault);
+        //console.log('[VAULT]: ', bsafeVault);
         setVault(bsafeVault);
         setFUELTransaction(transaction);
       }
@@ -59,10 +59,10 @@ export const useTransactionSocket = () => {
 
   const confirmTransaction = async () => {
     const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
-    console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
-    console.log('[TRANSACTION_TX]: ', tx);
+    //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
+    //console.log('[TRANSACTION_TX]: ', tx);
     if (!tx) return;
-    console.log('[enviando mensagem]');
+    //console.log('[enviando mensagem]');
     emitMessage({
       event: BSAFEConnectorEvents.TRANSACTION_CREATED,
       content: {
