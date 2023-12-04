@@ -71,7 +71,7 @@ export const useSocket = () => {
         content,
         to,
       },
-      setTimeout(callback!, 1000),
+      setTimeout(callback!, 10000),
     );
   };
 
