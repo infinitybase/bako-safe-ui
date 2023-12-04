@@ -1,10 +1,9 @@
-import { Vault } from 'bsafe';
+import { BSAFEConnectorEvents, Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import {
-  SocketEvents,
   useDidMountEffect,
   useQueryParams,
   UserTypes,
@@ -30,7 +29,7 @@ export const useTransactionSocket = () => {
         data,
         type,
       });
-      if (type === SocketEvents.TRANSACTION_SEND) {
+      if (type === BSAFEConnectorEvents.TRANSACTION_SEND) {
         const bsafeVault = await Vault.create({
           predicateAddress: address,
           token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
@@ -65,7 +64,7 @@ export const useTransactionSocket = () => {
     if (!tx) return;
     console.log('[enviando mensagem]');
     emitMessage({
-      event: SocketEvents.TRANSACTION_CREATED,
+      event: BSAFEConnectorEvents.TRANSACTION_CREATED,
       content: {
         sessionId: sessionId!,
         address: CookiesConfig.getCookie(ADDRESS)!,

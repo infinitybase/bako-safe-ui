@@ -1,6 +1,7 @@
+import { BSAFEConnectorEvents } from 'bsafe';
 import { useMemo } from 'react';
 
-import { SocketEvents, useQueryParams, UserTypes, useSocket } from '@/modules';
+import { useQueryParams, UserTypes, useSocket } from '@/modules';
 
 export interface AuthSocketEvent {
   sessionId: string;
@@ -22,7 +23,7 @@ export const useAuthSocket = () => {
 
   const emitEvent = (vaultId: string) => {
     return emitMessage({
-      event: SocketEvents.AUTH_CONFIRMED,
+      event: BSAFEConnectorEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
         name: name ?? origin!,
