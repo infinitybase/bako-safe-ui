@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
-const { VITE_SOCKET_URL } = import.meta.env;
+const { VITE_API_URL } = import.meta.env;
 
-const URL = VITE_SOCKET_URL;
+const URL = VITE_API_URL;
 const socket = io(URL, { autoConnect: false });
 
 socket.on('connect_error', (err) => {
