@@ -9,7 +9,7 @@ import { useSignIn } from '../hooks';
 import { useFuelAccount } from '../store';
 
 const SigninPage = () => {
-  const { isConnecting, goToApp, hasFuel, redirectToWalletLink } = useSignIn();
+  const { isConnecting, goToApp } = useSignIn();
   const { invalidAccount, setInvalidAccount } = useFuelAccount();
   const { getAccount } = useGetCurrentAccount();
   const { error } = useToast();
@@ -24,10 +24,8 @@ const SigninPage = () => {
   }, [invalidAccount]);
 
   const pageSections = {
-    description: hasFuel
-      ? 'Click the button bellow to connect your wallet to BSAFE.'
-      : 'You need to use the fuel wallet to connect.',
-    action: hasFuel ? (
+    description: 'Click the button bellow to connect your wallet to BSAFE.',
+    action: (
       <Button
         size="lg"
         color="dark.500"
@@ -41,18 +39,6 @@ const SigninPage = () => {
         leftIcon={<AttachmentIcon />}
       >
         Connect Wallet
-      </Button>
-    ) : (
-      <Button
-        size="lg"
-        color="grey.200"
-        bgColor="dark.100"
-        variant="secondary"
-        borderColor="dark.100"
-        leftIcon={<AttachmentIcon />}
-        onClick={redirectToWalletLink}
-      >
-        Fuel Wallet
       </Button>
     ),
   };
