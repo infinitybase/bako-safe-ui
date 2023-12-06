@@ -136,7 +136,7 @@ import {
   withDefaultSize,
   withDefaultVariant,
   wrapPointerEventHandler
-} from "./chunk-O3DAPKTQ.js";
+} from "./chunk-EZ23NLKT.js";
 import {
   _extends,
   init_extends
@@ -144,10 +144,10 @@ import {
 import {
   require_jsx_runtime
 } from "./chunk-M6YSMIHL.js";
+import "./chunk-B2HLYT6M.js";
 import {
   require_react
 } from "./chunk-XCERESLX.js";
-import "./chunk-B2HLYT6M.js";
 import {
   __commonJS,
   __esm,
@@ -1603,6 +1603,13 @@ var useIsomorphicLayoutEffect = isBrowser2 ? import_react11.useLayoutEffect : im
 var import_react12 = __toESM(require_react(), 1);
 var LazyContext = (0, import_react12.createContext)({ strict: false });
 
+// node_modules/framer-motion/dist/es/render/dom/utils/camel-to-dash.mjs
+var camelToDash = (str) => str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+
+// node_modules/framer-motion/dist/es/animation/optimized-appear/data-id.mjs
+var optimizedAppearDataId = "framerAppearId";
+var optimizedAppearDataAttribute = "data-" + camelToDash(optimizedAppearDataId);
+
 // node_modules/framer-motion/dist/es/motion/utils/use-visual-element.mjs
 function useVisualElement(Component2, visualState, props, createVisualElement2) {
   const { visualElement: parent } = (0, import_react13.useContext)(MotionContext);
@@ -1625,12 +1632,12 @@ function useVisualElement(Component2, visualState, props, createVisualElement2) 
   (0, import_react13.useInsertionEffect)(() => {
     visualElement && visualElement.update(props, presenceContext);
   });
-  const canHandoff = (0, import_react13.useRef)(Boolean(window.HandoffAppearAnimations));
+  const wantsHandoff = (0, import_react13.useRef)(Boolean(props[optimizedAppearDataAttribute]));
   useIsomorphicLayoutEffect(() => {
     if (!visualElement)
       return;
     visualElement.render();
-    if (canHandoff.current && visualElement.animationState) {
+    if (wantsHandoff.current && visualElement.animationState) {
       visualElement.animationState.animateChanges();
     }
   });
@@ -1638,11 +1645,13 @@ function useVisualElement(Component2, visualState, props, createVisualElement2) 
     if (!visualElement)
       return;
     visualElement.updateFeatures();
-    if (!canHandoff.current && visualElement.animationState) {
+    if (!wantsHandoff.current && visualElement.animationState) {
       visualElement.animationState.animateChanges();
     }
-    window.HandoffAppearAnimations = void 0;
-    canHandoff.current = false;
+    if (wantsHandoff.current) {
+      window.HandoffAppearAnimations = false;
+      wantsHandoff.current = false;
+    }
   });
   return visualElement;
 }
@@ -2376,9 +2385,6 @@ function createUseRender(forwardMotionProps = false) {
   };
   return useRender;
 }
-
-// node_modules/framer-motion/dist/es/render/dom/utils/camel-to-dash.mjs
-var camelToDash = (str) => str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
 // node_modules/framer-motion/dist/es/render/html/utils/render.mjs
 function renderHTML(element, { style, vars }, styleProp, projection) {
@@ -3144,10 +3150,6 @@ function resolveVariant(visualElement, definition, custom) {
   const props = visualElement.getProps();
   return resolveVariantFromProps(props, definition, custom !== void 0 ? custom : props.custom, getCurrent(visualElement), getVelocity(visualElement));
 }
-
-// node_modules/framer-motion/dist/es/animation/optimized-appear/data-id.mjs
-var optimizedAppearDataId = "framerAppearId";
-var optimizedAppearDataAttribute = "data-" + camelToDash(optimizedAppearDataId);
 
 // node_modules/framer-motion/dist/es/utils/errors.mjs
 var warning = noop2;
@@ -4623,7 +4625,7 @@ var MotionValue = class {
    * @internal
    */
   constructor(init, options = {}) {
-    this.version = "10.16.7";
+    this.version = "10.16.12";
     this.timeDelta = 0;
     this.lastUpdated = 0;
     this.canTrackVelocity = false;
@@ -4990,15 +4992,26 @@ function animateTarget(visualElement, definition, { delay: delay2 = 0, transitio
     const valueTransition = {
       delay: delay2,
       elapsed: 0,
-      ...transition2
+      ...getValueTransition(transition2 || {}, key)
     };
+    let canSkipHandoff = true;
     if (window.HandoffAppearAnimations && !value.hasAnimated) {
       const appearId = visualElement.getProps()[optimizedAppearDataAttribute];
       if (appearId) {
+        canSkipHandoff = false;
         valueTransition.elapsed = window.HandoffAppearAnimations(appearId, key, value, frame);
         valueTransition.syncStart = true;
       }
     }
+    let canSkip = canSkipHandoff && valueTarget === value.get();
+    if (valueTransition.type === "spring" && (value.getVelocity() || valueTransition.velocity)) {
+      canSkip = false;
+    }
+    if (value.animation) {
+      canSkip = false;
+    }
+    if (canSkip)
+      continue;
     value.start(animateMotionValue(key, value, valueTarget, visualElement.shouldReduceMotion && transformProps.has(key) ? { type: false } : valueTransition));
     const animation = value.animation;
     if (isWillChangeMotionValue(willChange)) {
@@ -7883,7 +7896,7 @@ function updateMotionValuesFromProps(element, next, prev) {
         willChange.add(key);
       }
       if (true) {
-        warnOnce(nextValue.version === "10.16.7", `Attempting to mix Framer Motion versions ${nextValue.version} with 10.16.7 may not work as expected.`);
+        warnOnce(nextValue.version === "10.16.12", `Attempting to mix Framer Motion versions ${nextValue.version} with 10.16.12 may not work as expected.`);
       }
     } else if (isMotionValue(prevValue)) {
       element.addValue(key, motionValue(nextValue, { owner: element }));

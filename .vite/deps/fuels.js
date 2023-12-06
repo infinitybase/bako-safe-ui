@@ -192,7 +192,6 @@ import {
   processGqlReceipt,
   processGraphqlStatus,
   randomBytes2,
-  require_buffer,
   returnZeroScript,
   ripemd160,
   scrypt2,
@@ -208,8 +207,14 @@ import {
   toNumber,
   transactionRequestify,
   withdrawScript
-} from "./chunk-ZNHFE3DJ.js";
+} from "./chunk-MXJCDWBI.js";
 import "./chunk-6EEL643C.js";
+import {
+  require_crypto
+} from "./chunk-6QAH7EPR.js";
+import {
+  require_buffer
+} from "./chunk-Y3VRTV4G.js";
 import {
   __commonJS,
   __privateAdd,
@@ -3308,19 +3313,6 @@ var require_utils2 = __commonJS({
       return new BN2(bytes, "hex", "le");
     }
     utils.intFromLE = intFromLE;
-  }
-});
-
-// browser-external:crypto
-var require_crypto = __commonJS({
-  "browser-external:crypto"(exports, module) {
-    module.exports = Object.create(new Proxy({}, {
-      get(_, key) {
-        if (key !== "__esModule" && key !== "__proto__" && key !== "constructor" && key !== "splice") {
-          console.warn(`Module "crypto" has been externalized for browser compatibility. Cannot access "crypto.${key}" in client code. See http://vitejs.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.`);
-        }
-      }
-    }));
   }
 });
 
