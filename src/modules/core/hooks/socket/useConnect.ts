@@ -1,31 +1,6 @@
+import { BSAFEConnectorEvents } from 'bsafe';
+
 import socket from './useSocketConfig';
-
-export enum WalletEnumEvents {
-  //accounts
-  ACCOUNTS = 'accounts',
-  CURRENT_ACCOUNT = 'currentAccount',
-
-  // transfer
-  TRANSACTION_CREATED = '[TRANSACTION_CREATED]',
-  TRANSACTION_SEND = '[TRANSACTION_SEND]',
-
-  //auth
-  AUTH_CONFIRMED = '[AUTH_CONFIRMED]',
-  AUTH_REJECTED = '[AUTH_REJECTED]',
-
-  //connections
-  CONNECTION = 'connection',
-  POPUP_TRANSFER = '[POPUP_TRANSFER]_connected',
-
-  //default
-  DEFAULT = 'message',
-}
-
-export enum UserTypes {
-  WALLET = '[WALLET]',
-  POPUP_AUTH = '[POPUP_AUTH]',
-  POPUP_TRANSFER = '[POPUP_TRANSFER]',
-}
 
 export interface ISocketConnectParams {
   username: string;
@@ -38,9 +13,13 @@ export interface ISocketConnectParams {
   };
   callbacks?: { [key: string]: (data: any) => void };
 }
-
+export enum UserTypes {
+  WALLET = '[WALLET]',
+  POPUP_AUTH = '[POPUP_AUTH]',
+  POPUP_TRANSFER = '[POPUP_TRANSFER]',
+}
 export interface ISocketEmitMessageParams {
-  event: WalletEnumEvents;
+  event: BSAFEConnectorEvents;
   to: string;
   content: { [key: string]: string };
   callback?: () => void;
@@ -57,7 +36,7 @@ export const useSocket = () => {
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
-    console.log('CONNETION_CALLER');
+    console.log('CONNECTION_CALLER');
     socket.auth = {
       username: `${param}`,
       data: new Date(),
@@ -85,13 +64,14 @@ export const useSocket = () => {
     content,
     callback,
   }: ISocketEmitMessageParams) => {
+    console.log('[MESSAGE_EVENT]: ', event);
     socket.emit(
       event,
       {
         content,
         to,
       },
-      setTimeout(callback!, 1000),
+      setTimeout(callback!, 3000),
     );
   };
 

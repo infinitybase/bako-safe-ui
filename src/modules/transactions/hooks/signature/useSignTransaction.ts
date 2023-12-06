@@ -1,10 +1,9 @@
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus, ITransaction } from 'bsafe';
 import { useEffect, useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';
 import {
   invalidateQueries,
-  Transaction,
   useToast,
   useWalletSignMessage,
 } from '@/modules/core';
@@ -25,7 +24,7 @@ export interface SignTransactionParams {
 }
 
 export interface UseSignTransactionOptions {
-  transaction: Transaction;
+  transaction: ITransaction;
 }
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
@@ -56,9 +55,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const confirmTransaction = async (params: SignTransactionParams) => {
-    const signedMessage = await signMessageRequest.mutateAsync(
-      JSON.stringify(params),
-    );
+    const signedMessage = await signMessageRequest.mutateAsync(params.txId);
     await request.mutateAsync({
       account,
       confirm: true,
@@ -68,7 +65,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   };
 
   const retryTransaction = async () => {
-    transactionSendContext.retryTransaction(transaction);
+    transactionSendContext.executeTransaction(transaction);
   };
 
   const declineTransaction = async (transactionId: string) => {

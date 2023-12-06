@@ -111,10 +111,10 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container isUpcoming={true}>
-          <ActionCard.Icon icon={CgList} isUpcoming={true} />
+        <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+          <ActionCard.Icon icon={CgList} />
           <Box>
-            <ActionCard.Title isUpcoming={true}>Address book</ActionCard.Title>
+            <ActionCard.Title>Address book</ActionCard.Title>
             <ActionCard.Description>
               Access and Manage Your Contacts for Easy Transfers and Vault
               Creation.
@@ -183,7 +183,7 @@ const UserTransactionsPage = () => {
                 {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>
               <TransactionCard.Assets />
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount assets={transaction.resume.outputs} />
               <TransactionCard.Name>
                 {limitCharacters(transaction.name, 20)}
               </TransactionCard.Name>

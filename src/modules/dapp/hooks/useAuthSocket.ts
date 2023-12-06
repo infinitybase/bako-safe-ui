@@ -1,11 +1,6 @@
-import { useMemo, useState } from 'react';
+import { BSAFEConnectorEvents } from 'bsafe';
 
-import {
-  useQueryParams,
-  UserTypes,
-  useSocket,
-  WalletEnumEvents,
-} from '@/modules';
+import { useQueryParams, UserTypes, useSocket } from '@/modules';
 
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
@@ -16,7 +11,8 @@ export interface AuthSocketEvent {
 
 export const useAuthSocket = () => {
   const { connect, emitMessage } = useSocket();
-  const { sessionId, address, origin } = useQueryParams();
+
+  const { sessionId, address, origin, name } = useQueryParams();
   const [selectedVaultId, setSelectedVaultId] = useState('');
   const [emittingEvent, setEmittingEvent] = useState(false);
 
@@ -35,9 +31,10 @@ export const useAuthSocket = () => {
     setEmittingEvent(true);
 
     return emitMessage({
-      event: WalletEnumEvents.AUTH_CONFIRMED,
+      event: BSAFEConnectorEvents.AUTH_CONFIRMED,
       content: {
         vaultId,
+        name: name ?? origin!,
         sessionId: sessionId!,
         address: address!,
         origin: origin!,

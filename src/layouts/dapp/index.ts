@@ -1,7 +1,13 @@
 import { Container } from './container';
+import { Content } from './content';
+import { Header } from './header';
+import { Section } from './section';
 
-const DAPPLayout = {
-  Container: Container,
+const Dapp = {
+  Container,
+  Section,
+  Content,
+  Header,
 };
 
-export { DAPPLayout };
+export { Dapp };
