@@ -183,7 +183,7 @@ const UserTransactionsPage = () => {
                 {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>
               <TransactionCard.Assets />
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount assets={transaction.resume.outputs} />
               <TransactionCard.Name>
                 {limitCharacters(transaction.name, 20)}
               </TransactionCard.Name>

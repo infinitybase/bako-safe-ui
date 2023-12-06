@@ -11,7 +11,6 @@ import {
   Icon,
   StackProps,
   Text,
-  useClipboard,
   VStack,
 } from '@chakra-ui/react';
 import { ITransaction, TransactionStatus } from 'bsafe';
@@ -20,7 +19,6 @@ import { FaPlay } from 'react-icons/fa';
 
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import { AddressUtils, AssetModel, assetsMap } from '@/modules/core';
-import { useNotification } from '@/modules/notification';
 
 interface TransactionDetailsProps {
   transaction: ITransaction;
@@ -32,15 +30,8 @@ interface AssetBoxInfoProps extends StackProps {
   hasToken?: boolean;
 }
 
-const AssetBoxInfo = ({
-  asset,
-  hasToken,
-  isContract,
-  ...props
-}: AssetBoxInfoProps) => {
-  const toast = useNotification();
-  const clipboard = useClipboard(asset.to);
-  const assetInfo = useMemo(() => assetsMap[asset.assetID], [asset.assetID]);
+const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
+  const assetInfo = useMemo(() => assetsMap[asset.assetId], [asset.assetId]);
 
   if (!assetInfo) return null;
 
@@ -147,8 +138,8 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const handleViewInExplorer = async () => {
-    const resume = JSON.parse(transaction.resume);
-    window.open(resume.block, '_BLANK');
+    const resume = transaction.resume;
+    //window.open(resume.block, '_BLANK');
   };
 
   return (
@@ -226,19 +217,16 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
           )}
 
           <VStack alignItems="flex-start">
-            {transaction.assets.map(({ amount, assetId, to }, index) => (
+            {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
-                key={index}
+                key={asset.amount}
                 asset={{
-                  to,
-                  amount,
-                  assetID: assetId,
+                  assetId: asset.assetId,
+                  amount: asset.amount,
+                  to: asset.to,
                   transactionID: transaction.id,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
-                // TODO: Add dynamic values
-                isContract={true}
-                hasToken={true}
               />
             ))}
           </VStack>

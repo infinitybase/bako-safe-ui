@@ -1,10 +1,9 @@
 import { Route } from 'react-router-dom';
 
-import { DAPPLayout } from '@/layouts';
+import { Container } from '@/layouts/dapp/container';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { TransactionConfirm } from './pages';
-import { VaultConnector } from './pages/VaultConnector';
+import { TransactionConfirm, VaultConnector } from './pages';
 
 const dappRoutes = (
   <>
@@ -12,9 +11,9 @@ const dappRoutes = (
       <Route
         index
         element={
-          <DAPPLayout.Container>
+          <Container>
             <VaultConnector />
-          </DAPPLayout.Container>
+          </Container>
         }
       />
     </Route>
@@ -22,11 +21,9 @@ const dappRoutes = (
     <Route
       path={Pages.dappTransaction()}
       element={
-        <DAPPLayout.Container>
-          <AuthRoute>
-            <TransactionConfirm />
-          </AuthRoute>
-        </DAPPLayout.Container>
+        <AuthRoute>
+          <TransactionConfirm />
+        </AuthRoute>
       }
     />
   </>

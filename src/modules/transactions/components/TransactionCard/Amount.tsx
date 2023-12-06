@@ -1,15 +1,16 @@
 import { Box, Heading, HStack, Text } from '@chakra-ui/react';
 import { bn } from 'fuels';
 
-import { AssetModel, NativeAssetId } from '@/modules/core';
+import { NativeAssetId } from '@/modules/core';
+import { ITransferAsset } from 'bsafe';
 
 interface TransactionCardAmountProps {
-  assets: AssetModel[];
+  assets: ITransferAsset[];
 }
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
   const ethAmount = assets
-    .filter((a) => a.assetID === NativeAssetId)
+    .filter((a) => a.assetId === NativeAssetId)
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
     .format();
 

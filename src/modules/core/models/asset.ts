@@ -1,7 +1,7 @@
 export interface AssetModel {
   to: string;
   recipientNickname?: string;
-  assetID: string;
+  assetId: string;
   amount: string;
   transactionID?: string;
 }

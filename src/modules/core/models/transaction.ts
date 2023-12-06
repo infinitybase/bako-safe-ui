@@ -1,8 +1,12 @@
-import { TransactionStatus as BSAFETransactionStatus } from 'bsafe';
+import {
+  TransactionStatus as BSAFETransactionStatus,
+  IAsset,
+  ITransactionResume,
+} from 'bsafe';
 
 import { AssetModel } from './asset';
 import { Predicate } from './predicate';
-import { Witness } from './witness';
+import { IWitnesses } from 'bsafe';
 
 export enum TransactionStatus {
   AWAIT = 'AWAIT',
@@ -24,16 +28,16 @@ export interface TransactionState {
 export interface Transaction {
   id: string;
   predicateAdress: string;
-  predicateID: string;
+  predicateId: string;
   name: string;
   txData: string;
   hash: string;
   status: BSAFETransactionStatus;
   sendTime: string;
   gasUsed: string;
-  resume: string;
-  assets: AssetModel[];
-  witnesses: Witness[];
+  resume: ITransactionResume;
+  assets: IAsset[];
+  witnesses: IWitnesses[];
   predicate: Predicate;
   createdAt: Date;
 }

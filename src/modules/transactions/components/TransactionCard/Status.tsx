@@ -7,13 +7,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus, ITransaction } from 'bsafe';
 
-import { Transaction, TransactionState, WitnessStatus } from '@/modules/core';
+import { TransactionState, WitnessStatus } from '@/modules/core';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
-  transaction: Transaction;
+  transaction: ITransaction;
 }
 
 import { useSignTransaction } from '../../hooks/signature';
@@ -28,7 +28,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
     (w) => w?.status === WitnessStatus.DONE,
   ).length;
 
-  const signatureStatus = `${signaturesCount}/${transaction.predicate.minSigners} Sgd`;
+  const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
 
   if (
     [

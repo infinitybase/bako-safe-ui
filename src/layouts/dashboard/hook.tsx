@@ -25,7 +25,7 @@ const useSidebar = () => {
   const pendingTransactions = useMemo(() => {
     return (
       transactionListRequest.data
-        ?.filter((transaction) => transaction.predicateID === params.vaultId)
+        ?.filter((transaction) => transaction.predicateId === params.vaultId)
         .map((transaction) => transaction.witnesses)
         .flat()
         .filter((witness) => witness.status === WitnessStatus.PENDING)

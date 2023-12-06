@@ -4,9 +4,13 @@ import {
   IPayloadTransfer,
   ITransaction,
   Vault,
+  Asset,
+  IAsset,
+  ITransferAsset,
 } from 'bsafe';
-
+import { TransactionService } from '@/modules/transactions/services';
 import { useBsafeMutation, useBsafeQuery } from './utils';
+import { bn } from 'fuels';
 
 const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bsafe', 'transaction'],
@@ -54,8 +58,10 @@ const useBsafeTransactionList = ({
   return useBsafeQuery(
     TRANSACTION_QUERY_KEYS.VAULT(vault?.BSAFEVaultId, filter),
     async () => {
-      const transactions = await vault.BSAFEGetTransactions(filter);
-      return transactions;
+      return await TransactionService.getTransactions({
+        predicateId: [vault?.BSAFEVaultId],
+        ...filter,
+      });
     },
     { enabled: !!vault },
   );
@@ -72,19 +78,41 @@ interface BSAFETransactionSendVariables {
   auth?: IBSAFEAuth;
 }
 
+const validateBalance = async (vault: Vault, _coins: ITransferAsset[]) => {
+  const balances = await vault.getBalances();
+  const coins = await Asset.assetsGroupById(
+    balances.map((item) => {
+      return {
+        assetId: item.assetId,
+        amount: item.amount.format(),
+        to: '',
+      };
+    }),
+  );
+
+  const _coinsTransaction = await Asset.assetsGroupById(_coins);
+
+  Object.entries(_coinsTransaction).map(([key, value]) => {
+    if (bn(coins[key]).lt(value)) {
+      throw new Error(`Insufficient balance for ${key}`);
+    }
+  });
+};
+
 const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
   return useBsafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction, auth }: BSAFETransactionSendVariables) => {
-      console.log(transaction);
       const vault = await Vault.create({
         id: transaction.predicateId,
         token: auth!.token,
         address: auth!.address,
       });
+
+      await validateBalance(vault, transaction.assets);
+
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-      console.log(transfer);
-      console.log(await transfer.send());
+      await transfer.send();
       await transfer.wait();
       return transfer.BSAFETransaction;
     },

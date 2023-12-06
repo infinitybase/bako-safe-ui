@@ -1,6 +1,9 @@
 import { useMutation } from 'react-query';
 
-import { FuelTransactionService, TransactionSimulateParams } from '../services';
+import {
+  FuelTransactionService,
+  TransactionSimulateParams,
+} from '../services/fuel-transaction';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -20,10 +23,7 @@ const useTransactionSummary = () => {
   return {
     ...mutation,
     mainOperation: data?.operations[0],
-    transactionSummary: {
-      ...data,
-      operations: [operation2, data?.operations[0]],
-    },
+    transactionSummary: data,
     getTransactionSummary: mutate,
   };
 };
