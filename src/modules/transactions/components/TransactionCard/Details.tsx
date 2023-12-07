@@ -11,29 +11,54 @@ import {
   Icon,
   StackProps,
   Text,
+  useClipboard,
   VStack,
 } from '@chakra-ui/react';
+import { AddressType } from '@fuel-wallet/types';
 import { ITransaction, TransactionStatus } from 'bsafe';
+import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
+import { FaArrowRightLong } from 'react-icons/fa6';
 
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
-import { AddressUtils, AssetModel, assetsMap } from '@/modules/core';
+import {
+  AddressUtils,
+  AssetModel,
+  assetsMap,
+  TransactionState,
+} from '@/modules/core';
+import { useNotification } from '@/modules/notification';
 
 interface TransactionDetailsProps {
   transaction: ITransaction;
+  status?: TransactionState;
 }
 
 interface AssetBoxInfoProps extends StackProps {
-  asset: AssetModel;
-  isContract?: boolean;
+  asset?: AssetModel;
+  contractAddress?: string;
   hasToken?: boolean;
 }
 
-const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
-  const assetInfo = useMemo(() => assetsMap[asset.assetId], [asset.assetId]);
+const AssetBoxInfo = ({
+  asset,
+  contractAddress,
+  hasToken,
+  ...props
+}: AssetBoxInfoProps) => {
+  const toast = useNotification();
+  const isContract = !!contractAddress;
+  const clipboard = useClipboard(
+    isContract ? contractAddress : asset?.to ?? '',
+  );
 
-  if (!assetInfo) return null;
+  const assetInfo = useMemo(
+    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    [asset?.assetId],
+  );
+
+  const contractWithoutToken = isContract && !hasToken;
 
   return (
     <HStack
@@ -44,35 +69,36 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
       borderColor="transparent"
       {...props}
     >
-      {!isContract ||
-        (hasToken ? (
-          <>
+      {contractWithoutToken ? (
+        <Text fontWeight="semibold" color="grey.200">
+          Contract execution
+        </Text>
+      ) : (
+        <>
+          {assetInfo && (
             <HStack spacing={4}>
               <Avatar name={assetInfo.slug} size="28px" src={assetInfo.icon} />
               <Text color="grey.500">{assetInfo.slug}</Text>
             </HStack>
+          )}
 
-            <HStack>
-              <Box mt={0.5} w={110}>
-                <Heading textAlign="center" variant="title-md" color="grey.200">
-                  - {asset?.amount}
-                </Heading>
-                <Text
-                  textAlign="center"
-                  variant="description"
-                  fontSize="sm"
-                  color="grey.500"
-                >
-                  Amount sent
-                </Text>
-              </Box>
-            </HStack>
-          </>
-        ) : (
-          <Text fontWeight="semibold" color="grey.200">
-            Contract execution
-          </Text>
-        ))}
+          <HStack>
+            <Box mt={0.5} w={110}>
+              <Heading textAlign="center" variant="title-md" color="grey.200">
+                - {asset?.amount}
+              </Heading>
+              <Text
+                textAlign="center"
+                variant="description"
+                fontSize="sm"
+                color="grey.500"
+              >
+                Amount sent
+              </Text>
+            </Box>
+          </HStack>
+        </>
+      )}
 
       <Center
         p={3}
@@ -82,7 +108,13 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
         <Icon
           color={isContract ? 'grey.200' : 'black'}
           fontSize="xs"
-          as={isContract ? FaPlay : DoubleArrowIcon}
+          as={
+            !isContract
+              ? DoubleArrowIcon
+              : contractWithoutToken
+              ? FaArrowRightLong
+              : FaPlay
+          }
         />
       </Center>
 
@@ -90,7 +122,7 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
             <Text color="grey.200" fontSize="md" ml={1}>
-              {AddressUtils.format(asset.to, 8)}
+              {AddressUtils.format(contractAddress, 8)}
             </Text>
             <Icon
               color="grey.500"
@@ -118,34 +150,35 @@ const AssetBoxInfo = ({ asset, ...props }: AssetBoxInfoProps) => {
         </VStack>
       )}
 
-      {!isContract && (
+      {!isContract && !!asset && (
         <Text color="grey.200" fontSize="md">
-          {asset.recipientNickname ?? AddressUtils.format(asset.to)}
+          {asset?.recipientNickname ?? AddressUtils.format(asset.to)}
         </Text>
       )}
     </HStack>
   );
 };
 
-const Details = ({ transaction }: TransactionDetailsProps) => {
-  // TODO: Remove this when task is completed
-  transaction.summary = {
-    name: 'Transaction Name',
-    origin: 'http://localhost:5173',
-  };
-
-  const fromConnector = transaction?.summary;
+const Details = ({ transaction, status }: TransactionDetailsProps) => {
+  const fromConnector = !!transaction?.summary;
+  const mainOperation = transaction?.summary?.operations?.[0];
+  const isContract = mainOperation?.to?.type === AddressType.contract;
+  const hasToken = !!mainOperation?.assetsSent?.length;
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
+  const notSigned = !status?.isDeclined && !status?.isSigned;
 
   const handleViewInExplorer = async () => {
-    const resume = transaction.resume;
-    //window.open(resume.block, '_BLANK');
+    const { hash } = transaction;
+    window.open(
+      `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${hash}`,
+      '_BLANK',
+    );
   };
 
   return (
     <VStack>
       <HStack pt={5} w="full">
-        <Box hidden={!transaction?.assets?.length}>
+        <Box>
           <Box mb={4}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -155,10 +188,10 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
           {fromConnector && (
             <>
               <Card
-                // bgColor="dark.300"
-                bgColor={isPending ? 'warning.800' : 'dark.300'}
-                // borderColor="dark.100"
-                borderColor={isPending ? 'warning.500' : 'dark.100'}
+                bgColor={isPending && notSigned ? 'warning.800' : 'dark.300'}
+                borderColor={
+                  isPending && notSigned ? 'warning.500' : 'dark.100'
+                }
                 borderRadius={10}
                 px={5}
                 py={4}
@@ -175,13 +208,13 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
                     variant="roundedSquare"
                     color="white"
                     bgColor="dark.150"
-                    src={transaction.summary.image}
-                    name={transaction.summary.name}
+                    src={transaction.summary?.image}
+                    name={transaction.summary?.name}
                   />
                   <VStack alignItems="flex-start" spacing={0}>
-                    <Text variant="subtitle">{transaction.summary.name}</Text>
+                    <Text variant="subtitle">{transaction.summary?.name}</Text>
                     <Text color="brand.500" variant="description">
-                      {transaction.summary.origin.split('//')[1]}
+                      {transaction.summary?.origin.split('//')[1]}
                     </Text>
                   </VStack>
                 </HStack>
@@ -189,7 +222,7 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
             </>
           )}
 
-          {isPending && (
+          {isPending && notSigned && fromConnector && (
             <>
               <HStack
                 bg="warning.700"
@@ -227,11 +260,21 @@ const Details = ({ transaction }: TransactionDetailsProps) => {
                   transactionID: transaction.id,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
+                hasToken={hasToken}
               />
             ))}
+            {isContract && !transaction.assets.length && (
+              <AssetBoxInfo
+                contractAddress={Address.fromB256(
+                  mainOperation.to?.address ?? '',
+                ).toString()}
+                borderColor={'transparent'}
+                hasToken={hasToken}
+              />
+            )}
           </VStack>
 
-          <Divider borderColor="dark.100" />
+          {/* <Divider borderColor="dark.100" /> */}
 
           <Box
             mt={10}

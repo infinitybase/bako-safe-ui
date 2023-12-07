@@ -21,7 +21,7 @@ export enum UserTypes {
 export interface ISocketEmitMessageParams {
   event: BSAFEConnectorEvents;
   to: string;
-  content: { [key: string]: string };
+  content: { [key: string]: unknown };
   callback?: () => void;
 }
 

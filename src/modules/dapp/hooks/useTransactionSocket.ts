@@ -70,6 +70,7 @@ export const useTransactionSocket = () => {
         address: CookiesConfig.getCookie(ADDRESS)!,
         origin: origin!,
         hash: tx.getHashTxId()!,
+        operations: summary.transactionSummary?.operations ?? {},
       },
       to: `${sessionId!}:${origin!}`,
       callback: () => {
