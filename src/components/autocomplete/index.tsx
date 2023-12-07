@@ -38,6 +38,7 @@ interface AutoCompleteProps {
   errorMessage?: string;
   rightAction?: RightAction;
   bottomAction?: ReactNode;
+  index?: number;
   onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -52,19 +53,25 @@ function AutoComplete({
   errorMessage,
   rightAction,
   bottomAction,
+  index,
   onChange,
   onInputChange,
 }: AutoCompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasSelection, setHasSelection] = useState(false);
   const [inputValue, setInputValue] = useState(value ?? '');
+  const [currentIndex, setCurrentIndex] = useState<number>();
 
   const isContact = (value: string) => {
     return value.includes('-') || value.includes('...');
   };
 
   const showResultList =
-    isOpen && !isDisabled && !hasSelection && inputValue.length > 0;
+    isOpen &&
+    !isDisabled &&
+    !hasSelection &&
+    inputValue.length > 0 &&
+    currentIndex === index;
 
   const showRightAction = !!rightAction?.handler;
   const showBottomAction =
@@ -86,8 +93,12 @@ function AutoComplete({
           value={inputValue}
           placeholder=" "
           disabled={isDisabled ?? false}
-          onBlur={() => setIsOpen(false)}
           autoComplete="off"
+          onBlur={() => {
+            setIsOpen(false);
+            setCurrentIndex(undefined);
+          }}
+          onFocus={() => setCurrentIndex(typeof index === 'number' ? index : 0)}
           onChange={(e) => {
             onChange(e.target.value);
             setHasSelection(false);
