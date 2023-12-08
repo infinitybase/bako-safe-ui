@@ -66,8 +66,12 @@ const useTransactionToast = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 const resume = transaction.resume;
-                console.log(resume);
-                //window.open(resume.block, '_BLANK');
+                window.open(
+                  `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${
+                    resume.hash
+                  }`,
+                  '_BLANK',
+                );
               }}
               variant="primary"
               size="xs"
