@@ -1,16 +1,17 @@
 import {
+  Asset,
   IBSAFEAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
-  Vault,
-  Asset,
-  IAsset,
   ITransferAsset,
+  Vault,
 } from 'bsafe';
-import { TransactionService } from '@/modules/transactions/services';
-import { useBsafeMutation, useBsafeQuery } from './utils';
 import { bn } from 'fuels';
+
+import { TransactionService } from '@/modules/transactions/services';
+
+import { useBsafeMutation, useBsafeQuery } from './utils';
 
 const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bsafe', 'transaction'],
