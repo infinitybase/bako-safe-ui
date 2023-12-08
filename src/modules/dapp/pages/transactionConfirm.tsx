@@ -64,6 +64,7 @@ const TransactionConfirm = () => {
       <Divider borderColor="dark.100" mb={7} />
 
       {/* DApp infos */}
+
       <Dapp.Section>
         <DappConnectionDetail
           title={connection.name!}

@@ -2,12 +2,12 @@ import { Route } from 'react-router-dom';
 
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { TransactionConfirm, VaultSelect } from './pages';
+import { TransactionConfirm, VaultConnector } from './pages';
 
 const dappRoutes = (
   <>
     <Route path={Pages.dappAuth()}>
-      <Route index element={<VaultSelect />} />
+      <Route index element={<VaultConnector />} />
     </Route>
 
     <Route
