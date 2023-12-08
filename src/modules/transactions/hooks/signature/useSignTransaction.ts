@@ -1,4 +1,4 @@
-import { TransactionStatus, ITransaction } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bsafe';
 import { useEffect, useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';

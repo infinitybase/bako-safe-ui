@@ -40,7 +40,7 @@ const DeleteContactDialog = ({
               <Icon
                 position="relative"
                 as={AlertIcon}
-                color="grey.200"
+                color="error.600"
                 fontSize={52}
               />
             </Center>

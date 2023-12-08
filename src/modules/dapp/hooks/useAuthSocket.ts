@@ -3,6 +3,9 @@ import { useMemo, useState } from 'react';
 
 import { BSAFEConnectorEvents } from 'bsafe';
 
+import { useMemo, useState } from 'react';
+
+
 import { useQueryParams, UserTypes, useSocket } from '@/modules';
 
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
@@ -20,7 +23,6 @@ export const useAuthSocket = () => {
   const [emittingEvent, setEmittingEvent] = useState(false);
 
   const getCurrentVaultRequest = useGetCurrentVaultRequest(sessionId!);
-
 
   useMemo(() => {
     connect({
