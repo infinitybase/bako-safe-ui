@@ -30,6 +30,7 @@ export interface GetTransactionParams {
   to?: string;
   hash?: string;
   status?: TransactionStatus[] | string[];
+  id?: string;
   perPage?: number;
   page?: number;
   orderBy?: string;

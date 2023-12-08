@@ -14,6 +14,7 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
+
 import { AddressType } from '@fuel-wallet/types';
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { Address } from 'fuels';
@@ -28,6 +29,7 @@ import {
   assetsMap,
   TransactionState,
 } from '@/modules/core';
+
 import { useNotification } from '@/modules/notification';
 
 interface TransactionDetailsProps {
@@ -76,10 +78,12 @@ const AssetBoxInfo = ({
       ) : (
         <>
           {assetInfo && (
+
             <HStack spacing={4}>
               <Avatar name={assetInfo.slug} size="28px" src={assetInfo.icon} />
               <Text color="grey.500">{assetInfo.slug}</Text>
             </HStack>
+
           )}
 
           <HStack>
@@ -108,6 +112,7 @@ const AssetBoxInfo = ({
         <Icon
           color={isContract ? 'grey.200' : 'black'}
           fontSize="xs"
+
           as={
             !isContract
               ? DoubleArrowIcon
@@ -153,6 +158,7 @@ const AssetBoxInfo = ({
       {!isContract && !!asset && (
         <Text color="grey.200" fontSize="md">
           {asset?.recipientNickname ?? AddressUtils.format(asset.to)}
+
         </Text>
       )}
     </HStack>
@@ -166,6 +172,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   const hasToken = !!mainOperation?.assetsSent?.length;
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
   const notSigned = !status?.isDeclined && !status?.isSigned;
+
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -192,6 +199,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                 borderColor={
                   isPending && notSigned ? 'warning.500' : 'dark.100'
                 }
+
                 borderRadius={10}
                 px={5}
                 py={4}
@@ -215,6 +223,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                     <Text variant="subtitle">{transaction.summary?.name}</Text>
                     <Text color="brand.500" variant="description">
                       {transaction.summary?.origin.split('//')[1]}
+
                     </Text>
                   </VStack>
                 </HStack>
@@ -223,6 +232,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           )}
 
           {isPending && notSigned && fromConnector && (
+
             <>
               <HStack
                 bg="warning.700"
@@ -252,7 +262,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           <VStack alignItems="flex-start">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
-                key={asset.amount}
+                key={index}
                 asset={{
                   assetId: asset.assetId,
                   amount: asset.amount,
@@ -275,6 +285,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </VStack>
 
           {/* <Divider borderColor="dark.100" /> */}
+
 
           <Box
             mt={10}

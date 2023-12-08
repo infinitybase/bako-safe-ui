@@ -5,6 +5,7 @@ import { AuthRoute, Pages } from '@/modules/core';
 
 import { TransactionConfirm, VaultConnector } from './pages';
 
+
 const dappRoutes = (
   <>
     <Route path={Pages.dappAuth()}>
