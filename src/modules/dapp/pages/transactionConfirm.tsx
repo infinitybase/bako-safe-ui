@@ -20,6 +20,7 @@ const TransactionConfirm = () => {
     init,
     confirmTransaction,
     cancelTransaction,
+    confirmingTransaction,
     vault,
     connection,
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
@@ -107,6 +108,7 @@ const TransactionConfirm = () => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           size="lg"
+          isLoading={confirmingTransaction}
           leftIcon={<SquarePlusIcon fontSize="lg" />}
           onClick={confirmTransaction}
         >

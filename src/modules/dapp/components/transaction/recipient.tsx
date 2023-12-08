@@ -24,7 +24,8 @@ export const RecipientCard = chakra(Card, {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-    minH: 181,
+    minH: '100%',
+    alignSelf: 'stretch',
   },
 });
 
