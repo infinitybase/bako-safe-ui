@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 
 import { useQueryParams, UserTypes, useSocket } from '@/modules';
 
-import { useGetCurrentVaultRequest } from './useGetCurrentVaultResquest';
+import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
 export interface AuthSocketEvent {
   sessionId: string;
