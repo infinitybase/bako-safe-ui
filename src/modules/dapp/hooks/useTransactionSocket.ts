@@ -1,3 +1,4 @@
+import { useBoolean } from '@chakra-ui/react';
 import { BSAFEConnectorEvents, Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
@@ -13,6 +14,8 @@ import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummar
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export const useTransactionSocket = () => {
+  const [confirmingTransaction, confirmingTransctionHandlers] = useBoolean();
+
   const { connect, emitMessage } = useSocket();
   const { sessionId, origin, name } = useQueryParams();
   const [vault, setVault] = useState<Vault>();
@@ -58,6 +61,8 @@ export const useTransactionSocket = () => {
   }, [callbacks, connect, origin, sessionId]);
 
   const confirmTransaction = async () => {
+    confirmingTransctionHandlers.on();
+
     const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
     //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
     //console.log('[TRANSACTION_TX]: ', tx);
@@ -74,6 +79,7 @@ export const useTransactionSocket = () => {
       },
       to: `${sessionId!}:${origin!}`,
       callback: () => {
+        confirmingTransctionHandlers.off();
         window.close();
       },
     });
@@ -97,5 +103,6 @@ export const useTransactionSocket = () => {
       name,
       origin,
     },
+    confirmingTransaction,
   };
 };
