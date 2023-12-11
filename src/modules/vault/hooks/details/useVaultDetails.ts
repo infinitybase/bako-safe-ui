@@ -48,25 +48,11 @@ const useVaultDetails = () => {
     );
   }, [predicate]);
 
-  const completeSignersOrdination = useMemo(() => {
-    if (!predicate) return [];
-
-    return (
-      predicate.members
-        ?.map((address) => ({
-          address,
-          isOwner: address.address === predicate.owner.address,
-        }))
-        .sort((address) => (address.isOwner ? -1 : 0)) ?? []
-    );
-  }, [predicate]);
-
   return {
     vault: {
       ...predicate,
       configurable,
       signers: signersOrdination,
-      completeSigners: completeSignersOrdination,
       isLoading,
       isFetching,
       hasBalance,
