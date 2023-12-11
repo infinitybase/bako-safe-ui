@@ -65,7 +65,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   };
 
   const retryTransaction = async () => {
-    transactionSendContext.executeTransaction(transaction);
+    return transactionSendContext.executeTransaction(transaction);
   };
 
   const declineTransaction = async (transactionId: string) => {

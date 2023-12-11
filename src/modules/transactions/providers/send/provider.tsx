@@ -1,10 +1,5 @@
 import { ITransaction } from 'bsafe';
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useRef,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
 import { invalidateQueries, useBsafeTransactionSend } from '@/modules/core';
 import {
@@ -57,7 +52,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     !!transactionsRef.current.find((data) => data.id === transaction.id);
 
   const executeTransaction = (transaction: ITransaction) => {
-    if (isExecuting(transaction)) return;
+    toast.close(transaction.id);
     transactionsRef.current.push(transaction);
     toast.loading(transaction);
     sendTransaction({ transaction });
