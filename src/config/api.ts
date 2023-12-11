@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { useFuelAccount } from '@/modules';
+import { useTransactionToast } from '@/modules/transactions/providers/send/toast';
 
 import { CookieName, CookiesConfig } from './cookies';
 
@@ -49,6 +50,7 @@ api.interceptors.response.use(
   async (config) => config,
   async (error) => {
     const unauthorizedError = error.response?.status === 401;
+    const toast = useTransactionToast();
 
     if (unauthorizedError) {
       useFuelAccount.getState().setAccount('');
@@ -56,6 +58,8 @@ api.interceptors.response.use(
         CookieName.ACCESS_TOKEN,
         CookieName.ADDRESS,
       ]);
+
+      toast.closeAll();
     }
 
     return Promise.reject(error);
