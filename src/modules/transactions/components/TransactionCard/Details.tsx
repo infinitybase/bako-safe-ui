@@ -274,8 +274,6 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             )}
           </VStack>
 
-          {/* <Divider borderColor="dark.100" /> */}
-
           <Box
             mt={10}
             hidden={transaction.status !== TransactionStatus.SUCCESS}
