@@ -1,10 +1,6 @@
-import {
-  AssetModel,
-  IPagination,
-  Transaction,
-  TransactionStatus,
-} from '@/modules/core';
-import { ITransaction } from 'bsafe';
+import { ITransaction, ITransactionResume } from 'bsafe';
+
+import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 
 export enum SortOption {
   ASC = 'ASC',
@@ -83,6 +79,6 @@ export type GetUserTransactionsResponse = ITransaction[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
 export type CreateTransactionResponse = ITransaction;
-export type SignerTransactionResponse = ITransaction;
+export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;
 export type TransactionDetailUI = TransactionDetails;

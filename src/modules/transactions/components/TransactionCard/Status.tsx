@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionStatus, ITransaction } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState, WitnessStatus } from '@/modules/core';
 
@@ -69,25 +69,24 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
         <Text variant="description" fontSize="sm" color="grey.500">
           Transfer status
         </Text>
+        {isError && (
+          <Button
+            h={7}
+            variant="secondary"
+            px={3}
+            bgColor="dark.100"
+            border="none"
+            isLoading={isLoading}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              retryTransaction();
+            }}
+          >
+            Retry
+          </Button>
+        )}
       </VStack>
-      {isError && (
-        <Button
-          h={7}
-          variant="secondary"
-          px={3}
-          bgColor="dark.100"
-          border="none"
-          isLoading={isLoading}
-          isDisabled={isLoading}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            retryTransaction();
-          }}
-        >
-          Retry
-        </Button>
-      )}
     </HStack>
   );
 };

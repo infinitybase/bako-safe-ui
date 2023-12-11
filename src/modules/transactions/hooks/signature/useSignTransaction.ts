@@ -79,7 +79,10 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   useEffect(() => {
     if (!transaction) return;
 
-    if (transaction.status === TransactionStatus.PENDING_SENDER) {
+    if (
+      transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
+      transaction.status === TransactionStatus.PENDING_SENDER
+    ) {
       transactionSendContext.executeTransaction(transaction);
     }
   }, [transaction]);

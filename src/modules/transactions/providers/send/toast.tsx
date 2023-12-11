@@ -81,13 +81,12 @@ const useTransactionToast = () => {
           </Box>
         ),
       });
-      removeToast(transaction);
+      removeToast(transaction.id);
     }
   };
 
-  const error = (transaction: ITransaction, message?: string) => {
-    const toastId = transactionsToastRef.current[transaction.id];
-
+  const error = (transaction: string, message?: string) => {
+    const toastId = transactionsToastRef.current[transaction];
     if (toastId) {
       toast.update(toastId, {
         duration: 5000,
@@ -103,8 +102,8 @@ const useTransactionToast = () => {
     }
   };
 
-  const removeToast = (transaction: ITransaction) => {
-    delete transactionsToastRef.current[transaction.id];
+  const removeToast = (transaction: string) => {
+    delete transactionsToastRef.current[transaction];
   };
 
   const closeAll = () => toast.closeAll({ positions: ['top-right'] });

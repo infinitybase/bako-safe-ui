@@ -40,11 +40,11 @@ export class TransactionService {
 
   static async signer(payload: SignerTransactionPayload) {
     const { id, ...body } = payload;
-    const response = await api.put<SignerTransactionResponse>(
+    const { data } = await api.put<SignerTransactionResponse>(
       `/transaction/signer/${id}`,
       body,
     );
-    return response.data ?? {};
+    return data;
   }
 
   static async close(id: string, payload: CloseTransactionPayload) {
