@@ -33,6 +33,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const transactionSendContext = useTransactionSend();
 
   const transaction = useMemo(() => {
+    console.log(options.transaction);
     return options.transaction;
   }, [options.transaction]);
 
@@ -79,10 +80,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   useEffect(() => {
     if (!transaction) return;
 
-    if (
-      transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
-      transaction.status === TransactionStatus.PENDING_SENDER
-    ) {
+    if (transaction.status === TransactionStatus.PROCESS_ON_CHAIN) {
       transactionSendContext.executeTransaction(transaction);
     }
   }, [transaction]);
