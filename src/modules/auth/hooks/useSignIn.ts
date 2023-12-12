@@ -15,7 +15,7 @@ import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
 const useSignIn = () => {
   const navigate = useNavigate();
-  const drawer = useDisclosure();
+  const connectorDrawer = useDisclosure();
 
   const [fuel] = useFuel();
   const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
@@ -65,6 +65,15 @@ const useSignIn = () => {
     },
   });
 
+  const redirectToWalletLink = () =>
+    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
+
+  const selectConnector = async (connector: string) => {
+    await fuel.selectConnector(connector);
+    connectorDrawer.onClose();
+    goToApp();
+  };
+
   const goToApp = async () => {
     try {
       const connected = await connect();
@@ -83,9 +92,6 @@ const useSignIn = () => {
     }
   };
 
-  const redirectToWalletLink = () =>
-    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
-
   return {
     connect,
     goToApp,
@@ -94,8 +100,12 @@ const useSignIn = () => {
     isConnecting:
       isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
-    connectors,
-    drawer,
+    connectors: {
+      items: connectors,
+      drawer: connectorDrawer,
+      select: selectConnector,
+      has: !!connectors.length,
+    },
     hasFuel,
     redirectToWalletLink,
   };

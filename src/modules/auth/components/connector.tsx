@@ -23,11 +23,12 @@ import { Card, ErrorIcon, FueletIcon, FuelIcon } from '@/components';
 
 interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
   connectors: FuelWalletConnector[];
-  onSelect: () => void;
+  onSelect: (connector: string) => void;
 }
 
 interface ConnectorCardProps {
   connector: FuelWalletConnector;
+  onClick: (connector: string) => void;
 }
 
 const connectorIcons = {
@@ -36,7 +37,7 @@ const connectorIcons = {
 };
 
 const CardConnector = (props: ConnectorCardProps) => {
-  const { connector } = props;
+  const { connector, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
     const icon = connectorIcons[connector.name];
@@ -48,7 +49,7 @@ const CardConnector = (props: ConnectorCardProps) => {
           size="sm"
           bgColor="transparent"
           variant="roundedSquare"
-          src="https://assets-global.website-files.com/62e273f312d561347ce33306/6400d0b82c501d62b75963ff_Fuel%20New.png"
+          src={connector.imageUrl}
           name={connector.name}
         />
       );
@@ -62,7 +63,14 @@ const CardConnector = (props: ConnectorCardProps) => {
   }, [connector]);
 
   return (
-    <Card as={HStack} gap={4} w="100%" bgColor="dark.300" cursor="pointer">
+    <Card
+      as={HStack}
+      w="100%"
+      gap={4}
+      cursor="pointer"
+      bgColor="dark.300"
+      onClick={() => onClick(connector.name)}
+    >
       {ConnectorIcon}
       <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
         {connector.name}
@@ -72,7 +80,7 @@ const CardConnector = (props: ConnectorCardProps) => {
 };
 
 const DrawerConnector = (props: DrawerConnectorProps) => {
-  const { connectors, ...drawerProps } = props;
+  const { connectors, onSelect, ...drawerProps } = props;
 
   return (
     <Drawer {...drawerProps} size="sm" variant="glassmorphic" placement="right">
@@ -100,7 +108,11 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
         <DrawerBody>
           <VStack spacing={4}>
             {connectors.map((connector) => (
-              <CardConnector key={connector.name} connector={connector} />
+              <CardConnector
+                key={connector.name}
+                connector={connector}
+                onClick={onSelect}
+              />
             ))}
           </VStack>
         </DrawerBody>
@@ -113,7 +125,12 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
             <Text variant="description">
               Fuel is the {`world's`} fastest modular execution layer.
             </Text>
-            <Link color="brand.500" fontSize="xs" onClick={console.log}>
+            <Link
+              fontSize="xs"
+              color="brand.500"
+              href="https://www.fuel.network/"
+              target="_blank"
+            >
               Learn more about Fuel
             </Link>
           </VStack>
