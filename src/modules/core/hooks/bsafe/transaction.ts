@@ -5,6 +5,7 @@ import {
   IPayloadTransfer,
   ITransaction,
   ITransferAsset,
+  TransactionStatus,
   Vault,
 } from 'bsafe';
 import { bn } from 'fuels';
@@ -117,7 +118,16 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
       await validateBalance(vault, transaction.assets, transaction.id);
 
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-      await transfer.wait();
+
+      if (
+        transfer.BSAFETransaction.status === TransactionStatus.PROCESS_ON_CHAIN
+      ) {
+        await transfer.wait();
+      }
+      if (transfer.BSAFETransaction.status === TransactionStatus.FAILED) {
+        await transfer.send();
+      }
+
       return transfer.BSAFETransaction;
     },
     {
