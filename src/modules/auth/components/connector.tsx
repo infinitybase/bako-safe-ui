@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Divider,
   Drawer,
   DrawerBody,
@@ -15,17 +16,63 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import { FuelWalletConnector } from '@fuel-wallet/types';
+import React, { useMemo } from 'react';
 
 import { Card, ErrorIcon, FueletIcon, FuelIcon } from '@/components';
 
-interface DrawerConnector extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
-  connectors: [];
+interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
+  connectors: FuelWalletConnector[];
   onSelect: () => void;
 }
 
-const DrawerConnector = (props: DrawerConnector) => {
-  const { ...drawerProps } = props;
+interface ConnectorCardProps {
+  connector: FuelWalletConnector;
+}
+
+const connectorIcons = {
+  'Fuel Wallet': FuelIcon,
+  'Fuelet Wallet': FueletIcon,
+};
+
+const CardConnector = (props: ConnectorCardProps) => {
+  const { connector } = props;
+
+  const ConnectorIcon = useMemo(() => {
+    const icon = connectorIcons[connector.name];
+
+    if (connector.imageUrl) {
+      return (
+        <Avatar
+          color="white"
+          size="sm"
+          bgColor="transparent"
+          variant="roundedSquare"
+          src="https://assets-global.website-files.com/62e273f312d561347ce33306/6400d0b82c501d62b75963ff_Fuel%20New.png"
+          name={connector.name}
+        />
+      );
+    }
+
+    if (icon) {
+      return <Icon as={icon} fontSize="4xl" />;
+    }
+
+    return null;
+  }, [connector]);
+
+  return (
+    <Card as={HStack} gap={4} w="100%" bgColor="dark.300" cursor="pointer">
+      {ConnectorIcon}
+      <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
+        {connector.name}
+      </Heading>
+    </Card>
+  );
+};
+
+const DrawerConnector = (props: DrawerConnectorProps) => {
+  const { connectors, ...drawerProps } = props;
 
   return (
     <Drawer {...drawerProps} size="sm" variant="glassmorphic" placement="right">
@@ -52,30 +99,9 @@ const DrawerConnector = (props: DrawerConnector) => {
 
         <DrawerBody>
           <VStack spacing={4}>
-            <Card
-              as={HStack}
-              gap={4}
-              w="100%"
-              bgColor="dark.300"
-              cursor="pointer"
-            >
-              <Icon as={FuelIcon} fontSize="4xl" />
-              <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
-                Fuel Wallet
-              </Heading>
-            </Card>
-            <Card
-              as={HStack}
-              gap={4}
-              w="100%"
-              bgColor="dark.300"
-              cursor="pointer"
-            >
-              <Icon as={FueletIcon} fontSize="4xl" />
-              <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
-                Fuelet
-              </Heading>
-            </Card>
+            {connectors.map((connector) => (
+              <CardConnector key={connector.name} connector={connector} />
+            ))}
           </VStack>
         </DrawerBody>
 

@@ -9,7 +9,7 @@ import { useSignIn } from '../hooks';
 import { useFuelAccount } from '../store';
 
 const SigninPage = () => {
-  const { isConnecting, goToApp } = useSignIn();
+  const { isConnecting, goToApp, connectors } = useSignIn();
   const { invalidAccount, setInvalidAccount } = useFuelAccount();
   const { getAccount } = useGetCurrentAccount();
   const { error } = useToast();
@@ -47,7 +47,7 @@ const SigninPage = () => {
     <SigninContainer>
       <DrawerConnector
         isOpen
-        connectors={[]}
+        connectors={connectors}
         onClose={console.log}
         onSelect={console.log}
       />
