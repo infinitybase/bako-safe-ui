@@ -1,6 +1,7 @@
 export * from './alert';
 export * from './arrow-down';
 export * from './chart-bullet';
+export * from './connectors';
 export * from './copy';
 export * from './dapp-right-arrow';
 export * from './dapp-warning';

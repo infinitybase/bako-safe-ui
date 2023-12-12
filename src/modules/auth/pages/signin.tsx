@@ -2,7 +2,7 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
 import React, { useEffect, useMemo } from 'react';
 
-import { SigninContainer } from '@/modules/auth/components';
+import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
 import { useGetCurrentAccount, useToast } from '@/modules/core';
 
 import { useSignIn } from '../hooks';
@@ -45,6 +45,12 @@ const SigninPage = () => {
 
   return (
     <SigninContainer>
+      <DrawerConnector
+        isOpen
+        connectors={[]}
+        onClose={console.log}
+        onSelect={console.log}
+      />
       <Box textAlign="center" mb={2}>
         <Text fontSize="4xl" fontWeight="bold" color="brand.500">
           Hey!
