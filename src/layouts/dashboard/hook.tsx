@@ -10,6 +10,7 @@ import {
   useVaultDetailsRequest,
   WitnessStatus,
 } from '@/modules';
+import { useAppNotifications } from '@/modules/notifications/hooks';
 
 const useSidebar = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const useSidebar = () => {
   const params = useParams<{ vaultId: string }>();
   const drawer = useDisclosure();
   const { account } = useFuelAccount();
+  const { unreadCounter } = useAppNotifications();
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
@@ -59,6 +61,7 @@ const useSidebar = () => {
       hasTransactions: !!transactionListRequest.data?.length,
     },
     vaultRequest: vaultDetailsRequest,
+    unreadCounter,
   };
 };
 

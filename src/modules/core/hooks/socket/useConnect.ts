@@ -21,7 +21,7 @@ export enum UserTypes {
 export interface ISocketEmitMessageParams {
   event: BSAFEConnectorEvents;
   to: string;
-  content: { [key: string]: string };
+  content: { [key: string]: unknown };
   callback?: () => void;
 }
 
@@ -36,7 +36,6 @@ export const useSocket = () => {
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
-    console.log('CONNECTION_CALLER');
     socket.auth = {
       username: `${param}`,
       data: new Date(),
@@ -64,7 +63,6 @@ export const useSocket = () => {
     content,
     callback,
   }: ISocketEmitMessageParams) => {
-    console.log('[MESSAGE_EVENT]: ', event);
     socket.emit(
       event,
       {

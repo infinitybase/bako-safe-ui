@@ -219,12 +219,16 @@ const HomePage = () => {
               </HStack>
               <TransactionCard.List spacing={4} mt={6} mb={12}>
                 {transactions?.map((transaction) => {
+                  const status = transactionStatus({ ...transaction, account });
                   return (
                     <CustomSkeleton isLoaded={!isLoading} key={transaction.id}>
                       <TransactionCard.Container
-                        status={transactionStatus({ ...transaction, account })}
+                        status={status}
                         details={
-                          <TransactionCard.Details transaction={transaction} />
+                          <TransactionCard.Details
+                            transaction={transaction}
+                            status={status}
+                          />
                         }
                       >
                         <TransactionCard.VaultInfo

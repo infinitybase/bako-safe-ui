@@ -1,10 +1,5 @@
 import { ITransaction } from 'bsafe';
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useRef,
-} from 'react';
+import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
 import { invalidateQueries, useBsafeTransactionSend } from '@/modules/core';
 import {
@@ -41,14 +36,14 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
 
-  const { mutate: sendTransaction, variables } = useBsafeTransactionSend({
+  const { mutate: sendTransaction } = useBsafeTransactionSend({
     onSuccess: (transaction) => {
       toast.success(transaction);
       refetetchTransactionList();
     },
     onError: (error) => {
-      const errorMessage = error.message;
-      toast.error(variables!.transaction, errorMessage);
+      const [errorMessage, id] = error.message.split(':');
+      toast.error(id, errorMessage);
       refetetchTransactionList();
     },
   });
@@ -57,10 +52,9 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     !!transactionsRef.current.find((data) => data.id === transaction.id);
 
   const executeTransaction = (transaction: ITransaction) => {
-    if (isExecuting(transaction)) return;
-
-    toast.loading(transaction);
+    toast.close(transaction.id);
     transactionsRef.current.push(transaction);
+    toast.loading(transaction);
     sendTransaction({ transaction });
   };
 

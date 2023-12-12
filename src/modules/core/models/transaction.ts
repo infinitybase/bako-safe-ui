@@ -1,12 +1,11 @@
 import {
-  TransactionStatus as BSAFETransactionStatus,
   IAsset,
   ITransactionResume,
+  IWitnesses,
+  TransactionStatus as BSAFETransactionStatus,
 } from 'bsafe';
 
-import { AssetModel } from './asset';
 import { Predicate } from './predicate';
-import { IWitnesses } from 'bsafe';
 
 export enum TransactionStatus {
   AWAIT = 'AWAIT',

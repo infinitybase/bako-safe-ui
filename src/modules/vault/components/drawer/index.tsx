@@ -42,7 +42,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   return (
     <Drawer
       {...props}
-      size="xl"
+      size="sm"
       onClose={drawer.onClose}
       variant="glassmorphic"
       placement="left"

@@ -6,11 +6,12 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
+import { ITransaction } from 'bsafe';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
-import { ITransaction } from 'bsafe';
+
 import { useSignTransaction } from '../../hooks/signature';
 
 interface TransactionActionsProps {

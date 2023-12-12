@@ -119,6 +119,7 @@ const VaultAddressesStep = ({
                     <>
                       <AutoComplete
                         value={field.value}
+                        index={index}
                         label={first ? 'Your address' : `Address ${index + 1}`}
                         isInvalid={fieldState.invalid}
                         isDisabled={first}

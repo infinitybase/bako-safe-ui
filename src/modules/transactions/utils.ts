@@ -1,8 +1,8 @@
 import {
+  ITransaction,
   ITransactionResume,
   IWitnesses,
   TransactionStatus,
-  ITransaction,
 } from 'bsafe';
 import { bn } from 'fuels';
 
