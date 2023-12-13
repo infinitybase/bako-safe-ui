@@ -23,7 +23,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         w="full"
         maxW={420}
         title="Create Transaction"
-        description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
       <Dialog.Body maxW={420}>
