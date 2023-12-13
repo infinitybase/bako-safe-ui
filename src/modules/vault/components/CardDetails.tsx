@@ -143,10 +143,10 @@ const CardDetails = (props: CardDetailsProps) => {
                     variant="primary"
                     onClick={() => openFaucet(vault.predicateAddress!)}
                   >
-                    Deposit
+                    Faucet
                   </Button>
                   <Text variant="description" fontSize="xs">
-                    Add assets to the vault. <br /> Choose the asset you prefer.
+                    Use the faucet to add assets to the vault.
                   </Text>
                 </VStack>
                 <VStack spacing={2} alignItems="flex-start">

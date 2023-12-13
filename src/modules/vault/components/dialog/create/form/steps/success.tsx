@@ -43,11 +43,11 @@ const VaultSuccessStep = ({
         <HStack w="full" justifyContent="space-between">
           <Box w="full" maxW={190}>
             <Text variant="description">
-              Unlock Vault Features: Start Your First Deposit
+              Unlock Vault Features: Use the faucet
             </Text>
           </Box>
           <Button onClick={onDeposit} variant="primary" size="sm">
-            First deposit
+            Give me Ether
           </Button>
         </HStack>
         <HStack w="full" justifyContent="space-between">
