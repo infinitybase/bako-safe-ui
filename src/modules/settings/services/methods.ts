@@ -10,11 +10,8 @@ export type UpdateSettingsPayload = {
 export type UpdateSettingsResponse = boolean;
 
 export class SettingsService {
-  static async updateSettings(payload: UpdateSettingsPayload) {
-    const { data } = await api.put<UpdateSettingsResponse>(
-      `/user/${payload.id}`,
-      payload,
-    );
+  static async updateSettings({ id, ...rest }: UpdateSettingsPayload) {
+    const { data } = await api.put<UpdateSettingsResponse>(`/user/${id}`, rest);
     return data;
   }
 }

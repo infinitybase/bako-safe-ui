@@ -30,6 +30,7 @@ export type SignInPayload = {
 export type SignInResponse = {
   accessToken: string;
   avatar: string;
+  id: string;
 };
 
 export class UserService {

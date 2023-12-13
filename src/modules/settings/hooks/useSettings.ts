@@ -1,5 +1,6 @@
 import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useSidebar } from '@/layouts/dashboard/hook';
 
 import { useUpdateSettingsRequest } from './';
 import { useSettingsForm } from './useSettingsForm';
@@ -12,13 +13,26 @@ interface UseAppNotificationsParams {
 
 const useSettings = (props?: UseAppNotificationsParams) => {
   const { form } = useSettingsForm();
-  const updateSettingsRequest = useUpdateSettingsRequest();
+  const { drawer } = useSidebar();
+  const updateSettingsRequest = useUpdateSettingsRequest({
+    onSuccess: () => {
+      onCloseDrawer();
+      // deleteContactDialog.onClose();
+      // invalidateQueries(['contacts/by-user']);
+      // successToast({
+      //   title: 'Success!',
+      //   description: 'Your contact was deleted...',
+      // });
+    },
+  });
 
   const onCloseDrawer = () => {
     props?.onClose?.();
 
     form.setValue('name', '');
     form.setValue('email', '');
+
+    drawer.onClose();
 
     // TODO: Update field "first_login" to false (only if it is first login)
 

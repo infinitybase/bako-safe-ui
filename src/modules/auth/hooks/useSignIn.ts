@@ -21,7 +21,7 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar }) => {
+    onSuccess: ({ accessToken, avatar, id }) => {
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
@@ -34,6 +34,10 @@ const useSignIn = () => {
         {
           name: CookieName.AVATAR,
           value: avatar!,
+        },
+        {
+          name: CookieName.USER_ID,
+          value: id,
         },
       ]);
       setAccount(account!);
