@@ -128,9 +128,9 @@ const VaultDetailsPage = () => {
           trackColor="dark.100"
           color="brand.500"
           isIndeterminate
-          hidden={!vault.transactions.isFetching}
+          hidden={!vault.transactions.isLoading}
         />
-        <Badge hidden={vault.transactions.isFetching} h={6} variant="warning">
+        <Badge hidden={vault.transactions.isLoading} h={6} variant="warning">
           <Icon as={PendingIcon} />
           {`${waitingSignatures({
             account,

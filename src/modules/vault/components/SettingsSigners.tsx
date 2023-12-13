@@ -52,7 +52,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
         >
           {signers?.map((signer, index: number) => {
             return (
-              <CustomSkeleton isLoaded={!vault.isFetching} key={index}>
+              <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <SignerCard>
                   <HStack spacing={4} w="full">
                     <Image

@@ -40,11 +40,7 @@ const HomePage = () => {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
     },
-    transactionsRequest: {
-      transactions,
-      loadingTransactions,
-      isFetching: isFetchingTransactions,
-    },
+    transactionsRequest: { transactions, loadingTransactions },
   } = useHome();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
@@ -196,13 +192,13 @@ const HomePage = () => {
                   Transactions
                 </Text>
                 <CircularProgress
-                  hidden={!isFetchingTransactions}
+                  hidden={!loadingTransactions}
                   size="20px"
                   color="brand.500"
                   trackColor="dark.100"
                   isIndeterminate
                 />
-                <Badge h={6} variant="warning" hidden={isFetchingTransactions}>
+                <Badge h={6} variant="warning" hidden={loadingTransactions}>
                   <Icon as={PendingIcon} />
                   {`${waitingSignatures({
                     account,
