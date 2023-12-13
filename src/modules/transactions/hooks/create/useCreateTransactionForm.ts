@@ -19,7 +19,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       amount: yup
         .string()
         .required('Amount is required.')
-        .test('has-balance', 'Not found balance.', (amount, context) => {
+        .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
           return params.validateBalance(parent.asset, amount);
         })
