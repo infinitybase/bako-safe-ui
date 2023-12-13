@@ -23,30 +23,34 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           const { parent } = context;
           return params.validateBalance(parent.asset, amount);
         })
-        .test('has-total-balance', 'Not found balance.', (_amount, context) => {
-          const { from, parent } = context;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const [, schema] = from;
-          const transactions = schema.value.transactions as {
-            asset: string;
-            amount: string;
-            to: string;
-          }[];
+        .test(
+          'has-total-balance',
+          'Not enough balance.',
+          (_amount, context) => {
+            const { from, parent } = context;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const [, schema] = from;
+            const transactions = schema.value.transactions as {
+              asset: string;
+              amount: string;
+              to: string;
+            }[];
 
-          const coinBalance = params
-            .getCoinAmount(parent.asset)
-            .sub(bn.parseUnits('0.000000001'));
-          const tranasctionsBalance = transactions
-            .filter((transaction) => transaction.asset === parent.asset)
-            .reduce(
-              (currentValue, transaction) =>
-                currentValue.add(bn.parseUnits(transaction.amount)),
-              bn(0),
-            );
+            const coinBalance = params
+              .getCoinAmount(parent.asset)
+              .sub(bn.parseUnits('0.000000001'));
+            const tranasctionsBalance = transactions
+              .filter((transaction) => transaction.asset === parent.asset)
+              .reduce(
+                (currentValue, transaction) =>
+                  currentValue.add(bn.parseUnits(transaction.amount)),
+                bn(0),
+              );
 
-          return tranasctionsBalance.lte(coinBalance);
-        }),
+            return tranasctionsBalance.lte(coinBalance);
+          },
+        ),
       to: yup
         .string()
         .required('Address is required.')
