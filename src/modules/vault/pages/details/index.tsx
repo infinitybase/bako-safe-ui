@@ -1,30 +1,29 @@
 import {
-  Badge,
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  CircularProgress,
   Heading,
   HStack,
   Icon,
   Text,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { useMemo } from 'react';
 
 import {
   Card,
   CustomSkeleton,
   HomeIcon,
   NotFoundIcon,
-  PendingIcon,
   SquarePlusIcon,
 } from '@/components';
 import {
   Pages,
   TransactionCard,
   transactionStatus,
+  WaitingSignatureBadge,
   waitingSignatures,
 } from '@/modules';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -39,6 +38,16 @@ const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+
+  const pendingTransactionSignature = useMemo(
+    () =>
+      waitingSignatures({
+        account,
+        transactions: vaultTransactions ?? [],
+      }),
+    [vaultTransactions, account],
+  );
+
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
@@ -123,20 +132,11 @@ const VaultDetailsPage = () => {
         >
           Transactions
         </Text>
-        <CircularProgress
-          size="20px"
-          trackColor="dark.100"
-          color="brand.500"
-          isIndeterminate
-          hidden={!vault.transactions.isLoading}
+        <WaitingSignatureBadge
+          account={account}
+          isLoading={vault.transactions.isLoading}
+          transactions={vaultTransactions}
         />
-        <Badge hidden={vault.transactions.isLoading} h={6} variant="warning">
-          <Icon as={PendingIcon} />
-          {`${waitingSignatures({
-            account,
-            transactions: vaultTransactions ?? [],
-          })} waiting for your signature`}
-        </Badge>
       </HStack>
 
       {hasTransactions ? (
@@ -200,7 +200,7 @@ const VaultDetailsPage = () => {
             </Box>
             <Box mb={5}>
               <Heading color="brand.500" fontSize="4xl">
-                Anything to show here.
+                Nothing to show here.
               </Heading>
             </Box>
             <Box maxW={400} mb={8}>

@@ -1,8 +1,6 @@
 import {
-  Badge,
   Box,
   Button,
-  CircularProgress,
   Grid,
   GridItem,
   HStack,
@@ -17,13 +15,9 @@ import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
-import { CustomSkeleton, HomeIcon, PendingIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules';
-import {
-  TransactionCard,
-  transactionStatus,
-  waitingSignatures,
-} from '@/modules/transactions';
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { Pages, WaitingSignatureBadge } from '@/modules';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { limitCharacters } from '@/utils';
 
@@ -191,20 +185,11 @@ const HomePage = () => {
                 >
                   Transactions
                 </Text>
-                <CircularProgress
-                  hidden={!loadingTransactions}
-                  size="20px"
-                  color="brand.500"
-                  trackColor="dark.100"
-                  isIndeterminate
+                <WaitingSignatureBadge
+                  account={account}
+                  isLoading={loadingTransactions}
+                  transactions={transactions}
                 />
-                <Badge h={6} variant="warning" hidden={loadingTransactions}>
-                  <Icon as={PendingIcon} />
-                  {`${waitingSignatures({
-                    account,
-                    transactions: transactions ?? [],
-                  })} waiting for your signature`}
-                </Badge>
                 <Spacer />
                 <Link
                   color="brand.500"
