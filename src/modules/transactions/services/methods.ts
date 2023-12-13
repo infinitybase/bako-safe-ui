@@ -83,6 +83,12 @@ export class TransactionService {
     return data;
   }
 
+  static async send(BSAFETransactionId: string) {
+    const { data } = await api.post(`/transaction/send/${BSAFETransactionId}`);
+
+    return data;
+  }
+
   static async getVaultTransactions(params: GetVaultTransactionsParams) {
     const { data } = await api.get<GetVaultTransactionsResponse>(
       `/transaction`,

@@ -5,16 +5,24 @@ import { useQuery } from 'react-query';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
+import { VaultService } from '../../services';
 import { useVaultState } from '../../states';
 
 const balancesToAssets = async (predicate?: Vault) => {
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
+  const currentETH = await VaultService.hasReservedCoins(
+    predicate.BSAFEVaultId,
+  );
+
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
+    const hasETH = balance.assetId === NativeAssetId && currentETH;
     return {
-      amount: balance.amount.format(),
+      amount: hasETH
+        ? balance.amount.sub(currentETH).format()
+        : balance.amount.format(),
       slug: assetInfos?.slug ?? 'UKN',
       name: assetInfos?.name ?? 'Unknown',
       assetId: balance.assetId,
