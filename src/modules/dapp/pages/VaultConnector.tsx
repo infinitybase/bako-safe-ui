@@ -103,7 +103,6 @@ const VaultConnector = () => {
               colorScheme="dark"
               onChange={(e) => {
                 setSelectedVaultId('');
-                console.log(`>>>>>`, selectedVaultId);
                 search.handler(e);
               }}
             />
