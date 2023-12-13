@@ -18,7 +18,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal {...props} onClose={handleClose}>
+    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
         w="full"
         maxW={420}
