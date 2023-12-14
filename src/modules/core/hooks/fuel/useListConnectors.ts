@@ -47,8 +47,6 @@ const useDefaultConnectors = () => {
     };
   });
 
-  console.log({ defaultConnectors, connectors });
-
   return {
     connectors: defaultConnectors,
     ...query,
