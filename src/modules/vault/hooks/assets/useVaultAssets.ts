@@ -1,4 +1,4 @@
-import { Vault } from 'bsafe';
+import { defaultConfigurable, Vault } from 'bsafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -94,7 +94,12 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0).format();
       }
 
-      return bn(bn.parseUnits(balance.amount!)).format({ precision: 3 });
+      return (
+        bn(bn.parseUnits(balance.amount!))
+          .sub(bn(10000000))
+          //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
+          .format({ precision: 5 })
+      );
     },
     [assets],
   );
