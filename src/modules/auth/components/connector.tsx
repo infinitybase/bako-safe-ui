@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Divider,
   Drawer,
   DrawerBody,
@@ -16,32 +17,31 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { FuelWalletConnector } from '@fuel-wallet/types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { Card, ErrorIcon, FueletIcon, FuelIcon } from '@/components';
+import { Card, ErrorIcon } from '@/components';
+
+type ConnectorType = {
+  name: string;
+  icon?: React.ElementType;
+  imageUrl?: string;
+  isEnabled?: boolean;
+};
 
 interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
-  connectors: FuelWalletConnector[];
+  connectors: ConnectorType[];
   onSelect: (connector: string) => void;
 }
 
 interface ConnectorCardProps {
-  connector: FuelWalletConnector;
+  connector: ConnectorType;
   onClick: (connector: string) => void;
 }
-
-const connectorIcons = {
-  'Fuel Wallet': FuelIcon,
-  'Fuelet Wallet': FueletIcon,
-};
 
 const CardConnector = (props: ConnectorCardProps) => {
   const { connector, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
-    const icon = connectorIcons[connector.name];
-
     if (connector.imageUrl) {
       return (
         <Avatar
@@ -55,22 +55,38 @@ const CardConnector = (props: ConnectorCardProps) => {
       );
     }
 
-    if (icon) {
-      return <Icon as={icon} fontSize="4xl" />;
+    if (connector.icon) {
+      return <Icon as={connector.icon} fontSize="4xl" />;
     }
 
     return null;
   }, [connector]);
+
+  const selectConnector = useCallback(() => {
+    if (!connector.isEnabled) return;
+    onClick(connector.name);
+  }, [connector.isEnabled, connector.name, onClick]);
 
   return (
     <Card
       as={HStack}
       w="100%"
       gap={4}
-      cursor="pointer"
+      cursor={connector.isEnabled ? 'pointer' : 'initial'}
       bgColor="dark.300"
-      onClick={() => onClick(connector.name)}
+      onClick={selectConnector}
+      position="relative"
     >
+      <Box
+        w="full"
+        h="full"
+        top={0}
+        left={0}
+        hidden={connector.isEnabled}
+        position="absolute"
+        borderRadius={10}
+        backgroundColor="#121212a8"
+      />
       {ConnectorIcon}
       <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
         {connector.name}
