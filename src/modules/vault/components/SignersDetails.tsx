@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { Pages } from '@/modules/core';
+import { AddressUtils, Pages } from '@/modules/core';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 
@@ -113,7 +113,8 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       isTruncated
                     >
                       {/* todo: add nickname on bsafe sdk */}
-                      {signer.address.nickname ?? signer.address.address}
+                      {signer.address.nickname ??
+                        AddressUtils.format(signer.address.address, 8)}
                     </Text>
                   </VStack>
                 </HStack>
