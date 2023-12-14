@@ -31,7 +31,7 @@ const SignerCard = chakra(Card, {
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
   const signerColumnsAmount = 3;
-  const signers = vault.completeSigners ?? vault.signers;
+  const signers = vault.members;
 
   return (
     <Box>
@@ -57,7 +57,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
                   <HStack spacing={4} w="full">
                     <Image
                       borderRadius={10}
-                      src={signer.address.avatar}
+                      src={signer.avatar}
                       boxSize="38px"
                     />
                     <VStack
@@ -67,7 +67,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
                       justifyContent="center"
                       alignItems="start"
                     >
-                      {signer?.isOwner && (
+                      {signer?.id === vault.owner?.id && (
                         <Badge py={0} variant="success">
                           owner
                         </Badge>
@@ -78,8 +78,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
                         fontSize="lg"
                         noOfLines={1}
                       >
-                        {signer.address.nickname ??
-                          AddressUtils.format(signer.address.address)}
+                        {signer.nickname ?? AddressUtils.format(signer.address)}
                       </Text>
                     </VStack>
                   </HStack>
