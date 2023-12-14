@@ -33,7 +33,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const transactionSendContext = useTransactionSend();
 
   const transaction = useMemo(() => {
-    console.log(options.transaction);
+    // console.log(options.transaction);
     return options.transaction;
   }, [options.transaction]);
 
