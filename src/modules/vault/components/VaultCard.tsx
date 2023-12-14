@@ -47,7 +47,7 @@ export const VaultCard = ({
             />
             <Box ml={2}>
               <Heading
-                maxW={{ lg: 28, xl: 130, '2xl': 180 }}
+                maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
                 variant="title-md"
                 color="grey.200"
                 isTruncated
