@@ -19,7 +19,7 @@ const AccordionItem = ({
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
-        <VStack w="full" alignItems="flex-start" spacing={0}>
+        <VStack w="full" py={5} px={5} alignItems="flex-start" spacing={0}>
           <HStack w="full">
             <Box w="full" flex={2}>
               <Heading fontSize="md" color="grey.200">
@@ -36,9 +36,7 @@ const AccordionItem = ({
           }
         </VStack>
       </Box>
-      <AccordionPanel p={0} pt={5}>
-        {children}
-      </AccordionPanel>
+      <AccordionPanel px={5}>{children}</AccordionPanel>
     </>
   );
 };

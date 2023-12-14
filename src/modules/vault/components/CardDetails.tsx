@@ -110,7 +110,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
                 <AddressCopy w="full" address={vault.predicateAddress!} />
               </VStack>
-              <VStack spacing={5}>
+              <VStack spacing={5} alignItems="flex-start">
                 <Box width="100%">
                   <HStack width="100%" spacing={2}>
                     <HStack spacing={2}>

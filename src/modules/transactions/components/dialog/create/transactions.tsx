@@ -127,8 +127,6 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           <AccordionItem
             key={field.id}
             mb={6}
-            py={5}
-            px={5}
             borderWidth={1}
             borderStyle="dashed"
             borderColor="dark.100"
