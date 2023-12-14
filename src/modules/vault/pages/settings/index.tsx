@@ -56,6 +56,8 @@ const VaultSettingsPage = () => {
               onClick={() =>
                 navigate(Pages.detailsVault({ vaultId: vault.id! }))
               }
+              isTruncated
+              maxW={640}
             >
               {vault.name}
             </BreadcrumbLink>
