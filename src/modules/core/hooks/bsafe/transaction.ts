@@ -118,17 +118,19 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
       await validateBalance(vault, transaction.assets, transaction.id);
 
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-
-      if (
-        transfer.BSAFETransaction.status === TransactionStatus.PROCESS_ON_CHAIN
-      ) {
-        await transfer.wait();
-      }
+      // console.log('[TRANSFER_ON_REQUEST_SEND]: ', {
+      //   transfer,
+      //   transaction,
+      //   sending:
+      //     transfer.BSAFETransaction.status ===
+      //     TransactionStatus.PROCESS_ON_CHAIN,
+      //   failed: transfer.BSAFETransaction.status === TransactionStatus.FAILED,
+      // });
       if (transfer.BSAFETransaction.status === TransactionStatus.FAILED) {
-        await transfer.send();
+        await TransactionService.send(transfer.BSAFETransactionId);
       }
-
-      return transfer.BSAFETransaction;
+      await transfer.wait();
+      return (await vault.BSAFEGetTransaction(transaction.id)).BSAFETransaction;
     },
     {
       onSuccess: options.onSuccess,
