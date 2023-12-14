@@ -45,6 +45,11 @@ const useDefaultConnectors = () => {
         const fuelConnector = connectors?.find(
           (c) => c.name === connector.name,
         );
+        console.log({
+          ...connector,
+          imageUrl: fuelConnector?.imageUrl,
+          isEnabled: !!fuelConnector,
+        });
         return {
           ...connector,
           imageUrl: fuelConnector?.imageUrl,
