@@ -73,7 +73,12 @@ const CardDetails = (props: CardDetailsProps) => {
                 />
               </Center>
               <Box>
-                <Heading mb={3} variant="title-xl">
+                <Heading
+                  mb={3}
+                  variant="title-xl"
+                  maxW={280}
+                  isTruncated={!vault?.name?.includes(' ')}
+                >
                   {vault?.name}
                 </Heading>
 

@@ -18,7 +18,6 @@ import { Card, CopyIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
 import { useNotification } from '@/modules/notification';
-import { limitName } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
@@ -47,8 +46,13 @@ export const VaultCard = ({
               bg="grey.900"
             />
             <Box ml={2}>
-              <Heading variant="title-md" color="grey.200" noOfLines={1}>
-                {limitName(name)}
+              <Heading
+                maxW={{ lg: 28, xl: 130, '2xl': 180 }}
+                variant="title-md"
+                color="grey.200"
+                isTruncated
+              >
+                {name}
               </Heading>
               <Text variant="description" color="grey.500">
                 {AddressUtils.format(address)}
@@ -85,12 +89,8 @@ export const VaultCard = ({
             size="sm"
             spacing={-2}
           >
-            {members.map((member) => (
-              <Avatar
-                variant="roundedSquare"
-                src={member.avatar}
-                key={member.address}
-              />
+            {members.map(({ avatar, address }) => (
+              <Avatar variant="roundedSquare" src={avatar} key={address} />
             ))}
           </AvatarGroup>
         </Box>

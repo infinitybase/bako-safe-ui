@@ -31,7 +31,7 @@ const SignerCard = chakra(Card, {
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
   const signerColumnsAmount = 3;
-  const signers = vault.members;
+  const members = vault.members;
 
   return (
     <Box>
@@ -50,35 +50,56 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           gap={6}
           mb={16}
         >
-          {signers?.map((signer, index: number) => {
+          {members?.map((member, index: number) => {
+            const hasNickname = member?.nickname;
+            const isOwner = vault.owner?.id === member.id;
+
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-                <SignerCard>
+                <SignerCard key={index}>
                   <HStack spacing={4} w="full">
                     <Image
                       borderRadius={10}
-                      src={signer.avatar}
+                      src={member?.avatar}
                       boxSize="38px"
                     />
                     <VStack
                       h="full"
                       minH={51}
-                      spacing={1}
+                      maxW={600}
+                      spacing={0}
                       justifyContent="center"
                       alignItems="start"
                     >
-                      {signer?.id === vault.owner?.id && (
-                        <Badge py={0} variant="success">
-                          owner
-                        </Badge>
-                      )}
+                      <HStack>
+                        {hasNickname && (
+                          <Text
+                            fontSize="lg"
+                            color="grey.200"
+                            fontWeight="semibold"
+                            maxW={isOwner ? 100 : 150}
+                            isTruncated
+                          >
+                            {member?.nickname}
+                          </Text>
+                        )}
+                        {isOwner && (
+                          <Badge py={0} variant="success">
+                            owner
+                          </Badge>
+                        )}
+                      </HStack>
+
                       <Text
-                        color="grey.200"
-                        fontWeight="semibold"
-                        fontSize="lg"
-                        noOfLines={1}
+                        maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+                        fontSize="md"
+                        color={hasNickname ? 'grey.500' : 'grey.200'}
+                        fontWeight={hasNickname ? 'regular' : 'bold'}
+                        textOverflow="ellipsis"
+                        isTruncated
                       >
-                        {signer.nickname ?? AddressUtils.format(signer.address)}
+                        {/* todo: add nickname on bsafe sdk */}
+                        {AddressUtils.format(member?.address ?? '')}
                       </Text>
                     </VStack>
                   </HStack>

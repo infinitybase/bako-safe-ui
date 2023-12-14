@@ -36,6 +36,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
 
   if (!vault) return null;
 
+  const owner = vault.members?.find((member) => member.id === vault.owner?.id);
+  const notOwners =
+    vault.members?.filter((member) => member.id !== vault.owner?.id) ?? [];
+
+  const members = [owner, ...notOwners];
+
   return (
     <Box>
       <HStack alignItems="flex-start" mb={5} w="full" spacing={2}>
@@ -47,8 +53,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
         </Badge>
       </HStack>
       <VStack spacing={5}>
-        {vault.members?.map((member, index: number) => {
+        {members?.map((member, index: number) => {
+          const hasNickname = member?.nickname;
+          const isOwner = member?.id === owner?.id;
+
           if (isBig > 0 && index > 3) return;
+
           if (isBig > 0 && index == 3) {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
@@ -81,30 +91,48 @@ const SignersDetails = (props: SignersDetailsProps) => {
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <SignerCard key={index}>
                 <HStack spacing={4} w="full">
-                  <Image borderRadius={10} src={member.avatar} boxSize="38px" />
+                  <Image
+                    borderRadius={10}
+                    src={member?.avatar}
+                    boxSize="38px"
+                  />
                   <VStack
                     h="full"
                     minH={51}
                     maxW={600}
-                    spacing={1}
+                    spacing={0}
                     justifyContent="center"
                     alignItems="start"
                   >
-                    {member.id === vault.owner?.id && (
-                      <Badge py={0} variant="success">
-                        owner
-                      </Badge>
-                    )}
+                    <HStack>
+                      {hasNickname && (
+                        <Text
+                          fontSize="lg"
+                          color="grey.200"
+                          fontWeight="semibold"
+                          maxW={isOwner ? 100 : 150}
+                          isTruncated
+                        >
+                          {member?.nickname}
+                        </Text>
+                      )}
+                      {isOwner && (
+                        <Badge py={0} variant="success">
+                          owner
+                        </Badge>
+                      )}
+                    </HStack>
+
                     <Text
                       maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-                      fontSize="lg"
-                      color="grey.200"
-                      fontWeight="semibold"
+                      fontSize="md"
+                      color={hasNickname ? 'grey.500' : 'grey.200'}
+                      fontWeight={hasNickname ? 'regular' : 'bold'}
                       textOverflow="ellipsis"
                       isTruncated
                     >
                       {/* todo: add nickname on bsafe sdk */}
-                      {member?.nickname ?? AddressUtils.format(member.address)}
+                      {AddressUtils.format(member?.address ?? '')}
                     </Text>
                   </VStack>
                 </HStack>
