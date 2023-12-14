@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { FueletIcon, FuelIcon } from '@/components';
@@ -39,25 +38,16 @@ const useListConnectors = () => {
 const useDefaultConnectors = () => {
   const { connectors, ...query } = useListConnectors();
 
-  const defaultConnectors = useMemo(
-    () =>
-      DEFAULT_CONNECTORS.map((connector) => {
-        const fuelConnector = connectors?.find(
-          (c) => c.name === connector.name,
-        );
-        console.log({
-          ...connector,
-          imageUrl: fuelConnector?.imageUrl,
-          isEnabled: !!fuelConnector,
-        });
-        return {
-          ...connector,
-          imageUrl: fuelConnector?.imageUrl,
-          isEnabled: !!fuelConnector,
-        };
-      }),
-    [connectors],
-  );
+  const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
+    const fuelConnector = connectors?.find((c) => c.name === connector.name);
+    return {
+      ...connector,
+      imageUrl: fuelConnector?.imageUrl,
+      isEnabled: !!fuelConnector,
+    };
+  });
+
+  console.log({ defaultConnectors, connectors });
 
   return {
     connectors: defaultConnectors,
