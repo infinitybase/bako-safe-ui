@@ -16,6 +16,7 @@ import {
 import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { limitName } from '@/utils';
 
 import { UseAddressBookReturn } from '../../hooks';
 
@@ -48,7 +49,7 @@ const ContactCard = ({
 
             <Box ml={2}>
               <Heading variant="title-md" color="grey.200" noOfLines={1}>
-                {nickname}
+                {limitName(nickname)}
               </Heading>
               <Text variant="description" color="grey.500">
                 {AddressUtils.format(address)}

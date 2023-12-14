@@ -18,6 +18,7 @@ import { Card, CopyIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
 import { useNotification } from '@/modules/notification';
+import { limitName } from '@/utils';
 
 interface VaultCardProps extends CardProps {
   name: string;
@@ -47,7 +48,7 @@ export const VaultCard = ({
             />
             <Box ml={2}>
               <Heading variant="title-md" color="grey.200" noOfLines={1}>
-                {name}
+                {limitName(name)}
               </Heading>
               <Text variant="description" color="grey.500">
                 {AddressUtils.format(address)}
