@@ -74,7 +74,7 @@ const TransactionConfirm = () => {
         <DappConnectionAlert />
       </Dapp.Section>
 
-      <Divider borderColor="dark.100" mb={7} />
+      <Divider w="full" borderColor="dark.100" mb={7} />
 
       {/* Transaction Summary */}
       <VStack spacing={1}>
@@ -95,10 +95,10 @@ const TransactionConfirm = () => {
 
       <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
 
-      <Divider borderColor="dark.100" mb={7} />
+      <Divider w="full" borderColor="dark.100" mb={7} />
 
       {/* Actions */}
-      <Dialog.Actions maxW={420}>
+      <Dialog.Actions w="full">
         <Dialog.SecondaryAction size="lg" onClick={cancelTransaction}>
           Reject
         </Dialog.SecondaryAction>
