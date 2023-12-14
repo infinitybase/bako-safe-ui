@@ -1,5 +1,4 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -10,6 +9,7 @@ import {
   useQueryParams,
 } from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
+import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
@@ -24,9 +24,7 @@ const useSignIn = () => {
   const { getAccount, account } = useGetCurrentAccount();
   const { location, origin } = useQueryParams();
 
-  const connectors = useMemo(() => {
-    return fuel ? fuel.listConnectors() : [];
-  }, [fuel]);
+  const { connectors } = useDefaultConnectors();
 
   const hasFuel = !!fuel;
 
@@ -104,7 +102,7 @@ const useSignIn = () => {
       items: connectors,
       drawer: connectorDrawer,
       select: selectConnector,
-      has: !!connectors.length,
+      has: !!connectors?.length,
     },
     hasFuel,
     redirectToWalletLink,
