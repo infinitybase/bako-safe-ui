@@ -18,7 +18,7 @@ const useListNotificationsRequest = (enabled?: boolean) => {
     {
       getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
         currentPage !== totalPages ? nextPage : undefined,
-      enabled,
+      enabled: enabled || false,
     },
   );
 

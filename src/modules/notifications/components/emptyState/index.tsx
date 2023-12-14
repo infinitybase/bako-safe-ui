@@ -9,7 +9,7 @@ const NotificationsEmptyState = () => {
         w="full"
         h={'100%'}
         p={20}
-        bgColor="dark.300"
+        bgColor="transparent"
         display="flex"
         justifyContent="center"
         flexDirection="column"
