@@ -32,15 +32,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
   const navigate = useNavigate();
   const { vault } = props;
 
-  const formatList = (list: { address: string; isOwner: boolean }[]) => {
-    return list.length - 4;
-  };
-
-  const isBig = formatList(vault?.signers || []);
+  const isBig = !vault?.members ? 0 : vault?.members.length - 4;
 
   if (!vault) return null;
-
-  const signers = vault.completeSigners ?? vault.signers;
 
   return (
     <Box>
@@ -53,7 +47,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
         </Badge>
       </HStack>
       <VStack spacing={5}>
-        {signers?.map((signer, index: number) => {
+        {vault.members?.map((member, index: number) => {
           if (isBig > 0 && index > 3) return;
           if (isBig > 0 && index == 3) {
             return (
@@ -82,15 +76,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
               </CustomSkeleton>
             );
           }
+
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <SignerCard key={index}>
                 <HStack spacing={4} w="full">
-                  <Image
-                    borderRadius={10}
-                    src={signer.address.avatar}
-                    boxSize="38px"
-                  />
+                  <Image borderRadius={10} src={member.avatar} boxSize="38px" />
                   <VStack
                     h="full"
                     minH={51}
@@ -99,7 +90,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                     justifyContent="center"
                     alignItems="start"
                   >
-                    {signer?.isOwner && (
+                    {member.id === vault.owner?.id && (
                       <Badge py={0} variant="success">
                         owner
                       </Badge>
@@ -113,8 +104,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       isTruncated
                     >
                       {/* todo: add nickname on bsafe sdk */}
-                      {signer.address.nickname ??
-                        AddressUtils.format(signer.address.address, 8)}
+                      {member?.nickname ?? AddressUtils.format(member.address)}
                     </Text>
                   </VStack>
                 </HStack>
