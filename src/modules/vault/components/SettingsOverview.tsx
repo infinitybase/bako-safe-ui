@@ -56,7 +56,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   />
                 </Center>
                 <Box>
-                  <Heading mb={1} variant="title-xl">
+                  <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
                     {vault?.name}
                   </Heading>
 
