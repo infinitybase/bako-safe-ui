@@ -21,7 +21,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal {...props} onClose={handleCancel}>
+    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={420}
         hidden={steps.step?.hide}

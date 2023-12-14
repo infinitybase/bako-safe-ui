@@ -9,7 +9,7 @@ const TemplatePage = () => {
   const { steps, onClose } = useSteps();
 
   return (
-    <Dialog.Modal isOpen={true} onClose={onClose}>
+    <Dialog.Modal isOpen={true} onClose={onClose} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={420}
         hidden={steps[step].hiddeTitle}

@@ -21,7 +21,7 @@ const NotificationsEmptyState = () => {
 
         <Box mb={5}>
           <Heading color="brand.500" fontSize="4xl" textAlign={'center'}>
-            Anything to show here.
+            Nothing to show here.
           </Heading>
         </Box>
 
