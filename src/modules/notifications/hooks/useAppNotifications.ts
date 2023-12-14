@@ -10,6 +10,7 @@ import {
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
+import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
@@ -32,18 +33,18 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
+  const { unreadCounter, setUnreadCounter } = useNotificationsStore();
 
-  const unreadCounter = unreadNotificationsRequest.data?.total ?? 0;
+  const onCloseDrawer = async () => {
+    const hasUnread = !!unreadCounter;
 
-  const onCloseDrawer = () => {
+    setUnreadCounter(0);
     props?.onClose?.();
 
-    if (unreadCounter > 0) setNotificationAsReadRequest.mutate({});
+    queryClient.invalidateQueries(NotificationsQueryKey.PAGINATED_LIST);
+    queryClient.invalidateQueries(NotificationsQueryKey.UNREAD_COUNTER);
 
-    queryClient.invalidateQueries([
-      NotificationsQueryKey.UNREAD_COUNTER,
-      NotificationsQueryKey.PAGINATED_LIST,
-    ]);
+    if (hasUnread) setNotificationAsReadRequest.mutate({});
   };
 
   const onSelectNotification = (summary: NotificationSummary) => {
@@ -72,6 +73,10 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     notificationsListRequest.fetchNextPage,
   ]);
 
+  useEffect(() => {
+    setUnreadCounter(unreadNotificationsRequest?.data?.total ?? 0);
+  }, [unreadNotificationsRequest?.data]);
+
   return {
     drawer: {
       onSelectNotification: props?.onSelect ?? onSelectNotification,
@@ -79,6 +84,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     },
     inView,
     unreadCounter,
+    setUnreadCounter,
     notificationsListRequest,
     navigate,
     onSelectNotification,

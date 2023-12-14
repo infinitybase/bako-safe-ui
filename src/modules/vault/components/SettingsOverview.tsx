@@ -40,7 +40,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!vault.isFetching}>
+      <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={8} bg="dark.200" borderColor="dark.100">
           <HStack>
             <VStack spacing={9} w="full">

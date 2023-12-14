@@ -26,7 +26,7 @@ const useHome = () => {
         vaultsMax: vaultsPerPage,
         extraCount: count <= vaultsPerPage ? 0 : count - vaultsPerPage,
       },
-      loadingRecentVaults: homeVaultsRequest.isFetching,
+      loadingRecentVaults: homeVaultsRequest.isLoading,
     },
     transactionsRequest: {
       ...transactionsRequest,

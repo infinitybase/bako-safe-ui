@@ -25,7 +25,7 @@ const useVaultDetails = () => {
   const {
     assets,
     ethBalance,
-    isFetching: isLoadingAssets,
+    isLoading: isLoadingAssets,
     hasBalance,
     hasAssets,
   } = useVaultAssets(predicateInstance);

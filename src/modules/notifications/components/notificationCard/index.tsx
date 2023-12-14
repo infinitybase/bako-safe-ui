@@ -41,7 +41,7 @@ const NotificationCard = ({
         </Text>
       </Box>
 
-      <Text color="grey.500" variant="description" fontSize={14} noOfLines={2}>
+      <Text color="grey.500" variant="description" fontSize={14}>
         {notificationDescription(title, summary)}
       </Text>
     </Card>

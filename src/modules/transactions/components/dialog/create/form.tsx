@@ -13,17 +13,19 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, UserAddIcon } from '@/components';
+import { delay } from '@/modules/core';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 export interface CreateTransactionFormProps {
   form: UseCreateTransaction['form'];
   assets: UseCreateTransaction['assets'];
+  accordion: UseCreateTransaction['accordion'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
 }
 
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
-  const { form, assets, transactionsFields } = props;
+  const { form, assets, transactionsFields, accordion } = props;
 
   return (
     <Box w="full">
@@ -60,6 +62,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       <TransactionAccordions
         form={form}
         assets={assets}
+        accordion={accordion}
         transactions={transactionsFields}
       />
 
@@ -70,9 +73,10 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
           variant="secondary"
           bgColor="dark.100"
           border="none"
-          onClick={() =>
-            transactionsFields.append({ amount: '', asset: '', to: '' })
-          }
+          onClick={() => {
+            transactionsFields.append({ amount: '', asset: '', to: '' });
+            delay(() => accordion.open(transactionsFields.fields.length), 100);
+          }}
         >
           Add new recipient
         </Button>
