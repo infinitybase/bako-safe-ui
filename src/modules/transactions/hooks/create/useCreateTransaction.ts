@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -16,10 +17,26 @@ interface UseCreateTransactionParams {
   onClose: () => void;
 }
 
+const useTransactionAccordion = () => {
+  const [accordionIndex, setAccordionIndex] = useState(0);
+
+  const close = useCallback(() => setAccordionIndex(-1), []);
+
+  const open = useCallback((index: number) => setAccordionIndex(index), []);
+
+  return {
+    open,
+    close,
+    index: accordionIndex,
+  };
+};
+
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
   const toast = useToast();
+
+  const accordion = useTransactionAccordion();
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -86,6 +103,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     vault: vaultDetails,
     assets: vaultAssets,
     navigate,
+    accordion,
     handleClose,
   };
 };

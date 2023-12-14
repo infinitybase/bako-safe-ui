@@ -21,6 +21,7 @@ import { TransactionAccordion } from './accordion';
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
   assets: UseCreateTransaction['assets'];
+  accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
 }
 
@@ -108,10 +109,10 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { form, transactions, assets } = props;
+  const { form, transactions, assets, accordion } = props;
 
   return (
-    <Accordion allowMultiple>
+    <Accordion index={accordion.index}>
       {transactions.fields.map((field, index) => {
         const transaction = form.watch(`transactions.${index}`);
         const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
@@ -126,49 +127,45 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           <AccordionItem
             key={field.id}
             mb={6}
-            py={5}
-            px={5}
             borderWidth={1}
             borderStyle="dashed"
             borderColor="dark.100"
             borderRadius={10}
             backgroundColor="dark.300"
           >
-            {({ isExpanded }) => (
-              <TransactionAccordion.Item
-                title={`Recipient ${index + 1}`}
-                actions={
-                  <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction />
-                    <TransactionAccordion.DeleteAction
-                      isDisabled={props.transactions.fields.length === 1}
-                      onClick={() => props.transactions.remove(index)}
-                    />
-                  </TransactionAccordion.Actions>
-                }
-                resume={
-                  !hasEmptyField && (
-                    <Text fontSize="sm" color="grey.500">
-                      <b>
-                        {transaction.amount} {assetSlug}
-                      </b>{' '}
-                      to <b> {AddressUtils.format(transaction.to)}</b>
-                    </Text>
-                  )
-                }
-                isExpanded={isExpanded}
-              >
-                <TransactionFormField
-                  form={form}
-                  index={index}
-                  assets={assets}
-                />
+            <TransactionAccordion.Item
+              title={`Recipient ${index + 1}`}
+              actions={
+                <TransactionAccordion.Actions>
+                  <TransactionAccordion.EditAction
+                    onClick={() => accordion.open(index)}
+                  />
+                  <TransactionAccordion.DeleteAction
+                    isDisabled={props.transactions.fields.length === 1}
+                    onClick={() => props.transactions.remove(index)}
+                  />
+                </TransactionAccordion.Actions>
+              }
+              resume={
+                !hasEmptyField && (
+                  <Text fontSize="sm" color="grey.500">
+                    <b>
+                      {transaction.amount} {assetSlug}
+                    </b>{' '}
+                    to <b> {AddressUtils.format(transaction.to)}</b>
+                  </Text>
+                )
+              }
+            >
+              <TransactionFormField index={index} form={form} assets={assets} />
 
-                <Center mt={9}>
-                  <TransactionAccordion.ConfirmAction isDisabled={isDisabled} />
-                </Center>
-              </TransactionAccordion.Item>
-            )}
+              <Center mt={9}>
+                <TransactionAccordion.ConfirmAction
+                  onClick={() => accordion.close()}
+                  isDisabled={isDisabled}
+                />
+              </Center>
+            </TransactionAccordion.Item>
           </AccordionItem>
         );
       })}

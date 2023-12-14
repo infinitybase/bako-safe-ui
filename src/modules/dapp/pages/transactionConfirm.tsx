@@ -37,10 +37,6 @@ const TransactionConfirm = () => {
     init();
   }, []);
 
-  useEffect(() => {
-    console.log({ transactionSummary });
-  }, [transactionSummary]);
-
   return (
     <Dapp.Content>
       <Dapp.Section>

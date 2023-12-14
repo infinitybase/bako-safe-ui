@@ -79,14 +79,14 @@ const AmountDetails = (props: AmountDetailsProps) => {
                   fontSize="sm"
                   fontWeight="medium"
                 >
-                  Make your first deposit to see your assets here
+                  To check your assets, start by using the faucet.
                 </Text>
               </Box>
               <Button
                 variant="primary"
                 onClick={() => openFaucet(vaultAddress)}
               >
-                Make a deposit
+                Use the faucet
               </Button>
             </AssetCard>
           </CustomSkeleton>

@@ -27,7 +27,8 @@ const EmptyVault = () => {
       </Box>
       <Box maxW={400} mb={8}>
         <Text color="white" fontSize="md" textAlign="center" fontWeight="bold">
-          You {"don't"} have any vaults. {"Let's"} create your very first one?
+          Your vaults are entirely free on Fuel. {`Let's`} create your very
+          first one?
         </Text>
       </Box>
       <Button

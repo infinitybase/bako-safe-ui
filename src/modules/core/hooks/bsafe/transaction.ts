@@ -1,16 +1,18 @@
 import {
+  Asset,
   IBSAFEAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
-  Vault,
-  Asset,
-  IAsset,
   ITransferAsset,
+  TransactionStatus,
+  Vault,
 } from 'bsafe';
-import { TransactionService } from '@/modules/transactions/services';
-import { useBsafeMutation, useBsafeQuery } from './utils';
 import { bn } from 'fuels';
+
+import { TransactionService } from '@/modules/transactions/services';
+
+import { useBsafeMutation, useBsafeQuery } from './utils';
 
 const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bsafe', 'transaction'],
@@ -78,7 +80,11 @@ interface BSAFETransactionSendVariables {
   auth?: IBSAFEAuth;
 }
 
-const validateBalance = async (vault: Vault, _coins: ITransferAsset[]) => {
+const validateBalance = async (
+  vault: Vault,
+  _coins: ITransferAsset[],
+  id: string,
+) => {
   const balances = await vault.getBalances();
   const coins = await Asset.assetsGroupById(
     balances.map((item) => {
@@ -94,7 +100,7 @@ const validateBalance = async (vault: Vault, _coins: ITransferAsset[]) => {
 
   Object.entries(_coinsTransaction).map(([key, value]) => {
     if (bn(coins[key]).lt(value)) {
-      throw new Error(`Insufficient balance for ${key}`);
+      throw new Error(`Insufficient balance for ${key}:${id}`);
     }
   });
 };
@@ -109,11 +115,19 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
         address: auth!.address,
       });
 
-      await validateBalance(vault, transaction.assets);
+      await validateBalance(vault, transaction.assets, transaction.id);
 
       const transfer = await vault.BSAFEGetTransaction(transaction.id);
-      await transfer.send();
-      await transfer.wait();
+
+      if (
+        transfer.BSAFETransaction.status === TransactionStatus.PROCESS_ON_CHAIN
+      ) {
+        await transfer.wait();
+      }
+      if (transfer.BSAFETransaction.status === TransactionStatus.FAILED) {
+        await transfer.send();
+      }
+
       return transfer.BSAFETransaction;
     },
     {

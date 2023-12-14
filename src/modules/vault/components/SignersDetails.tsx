@@ -85,6 +85,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                   <VStack
                     h="full"
                     minH={51}
+                    maxW={600}
                     spacing={1}
                     justifyContent="center"
                     alignItems="start"
@@ -95,10 +96,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       </Badge>
                     )}
                     <Text
+                      maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+                      fontSize="lg"
                       color="grey.200"
                       fontWeight="semibold"
-                      fontSize="lg"
-                      noOfLines={1}
+                      textOverflow="ellipsis"
+                      isTruncated
                     >
                       {/* todo: add nickname on bsafe sdk */}
                       {member?.nickname ?? AddressUtils.format(member.address)}

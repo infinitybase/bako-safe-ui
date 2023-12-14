@@ -75,6 +75,7 @@ const VaultAddressesStep = ({
           <FormControl>
             <Select
               placeholder=" "
+              isDisabled={!templates.length}
               onChange={(item) => setTemplate(item.target.value)}
             >
               {templates.length > 0 &&
@@ -143,7 +144,19 @@ const VaultAddressesStep = ({
                             ? {}
                             : {
                                 icon: RemoveIcon!,
-                                handler: () => addresses.remove(index),
+                                handler: () => {
+                                  const minSigners =
+                                    form.getValues('minSigners');
+                                  const addressesLength =
+                                    addresses.fields.length - 1;
+                                  if (Number(minSigners) > addressesLength) {
+                                    form.setValue(
+                                      'minSigners',
+                                      String(addressesLength),
+                                    );
+                                  }
+                                  addresses.remove(index);
+                                },
                               }),
                         }}
                         bottomAction={
@@ -177,7 +190,10 @@ const VaultAddressesStep = ({
             border="none"
             bgColor="dark.100"
             variant="secondary"
-            onClick={addresses.append}
+            onClick={() => {
+              addresses.append();
+              form.setValue('minSigners', String(addresses.fields.length + 1));
+            }}
             leftIcon={<UserAddIcon />}
           >
             Add address
