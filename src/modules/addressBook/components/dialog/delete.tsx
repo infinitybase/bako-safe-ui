@@ -31,7 +31,11 @@ const DeleteContactDialog = ({
   handleDelete,
 }: DeleteContactDialogProps) => {
   return (
-    <Dialog.Modal onClose={dialog.onClose} isOpen={dialog.isOpen}>
+    <Dialog.Modal
+      onClose={dialog.onClose}
+      isOpen={dialog.isOpen}
+      closeOnOverlayClick={false}
+    >
       <Dialog.Body maxW={420} justifyContent="center">
         <VStack>
           <Flex alignItems="center" justifyContent="center" position="relative">

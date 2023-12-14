@@ -85,7 +85,7 @@ const AssetBoxInfo = ({
           <HStack>
             <Box mt={0.5} w={110}>
               <Heading textAlign="center" variant="title-md" color="grey.200">
-                - {asset?.amount}
+                {asset?.amount}
               </Heading>
               <Text
                 textAlign="center"

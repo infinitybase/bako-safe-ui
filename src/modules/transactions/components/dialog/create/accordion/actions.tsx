@@ -13,8 +13,10 @@ import React from 'react';
 
 import { EditIcon, RemoveIcon } from '@/components';
 
-const AccordionEditAction = () => {
-  const { onOpen, isOpen } = useAccordionItemState();
+type AccordionActionProp = Pick<ButtonProps, 'onClick' | 'isDisabled'>;
+
+const AccordionEditAction = (props: AccordionActionProp) => {
+  const { isOpen } = useAccordionItemState();
 
   return (
     <IconButton
@@ -27,23 +29,22 @@ const AccordionEditAction = () => {
       aria-label="Edit transaction"
       icon={<Icon fontSize="xl" color="grey.200" as={EditIcon} />}
       isDisabled={isOpen}
-      onClick={onOpen}
+      onClick={props.onClick}
     >
       <AccordionButton />
     </IconButton>
   );
 };
 
-const AccordionConfirmAction = (props: ButtonProps) => {
-  const { onClose } = useAccordionItemState();
-
+const AccordionConfirmAction = (props: AccordionActionProp) => {
   return (
     <Button
       maxW="fit-content"
       variant="secondary"
       bgColor="dark.100"
       border="none"
-      onClick={onClose}
+      isDisabled={props.isDisabled}
+      onClick={props.onClick}
       _hover={{}}
       {...props}
     >

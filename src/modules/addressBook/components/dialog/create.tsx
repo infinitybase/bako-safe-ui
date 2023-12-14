@@ -17,7 +17,11 @@ const CreateContactDialog = ({
   isEdit,
 }: CreateContactDialogProps) => {
   return (
-    <Dialog.Modal onClose={dialog.onClose} isOpen={dialog.isOpen}>
+    <Dialog.Modal
+      onClose={dialog.onClose}
+      isOpen={dialog.isOpen}
+      closeOnOverlayClick={false}
+    >
       <Dialog.Header
         maxW={420}
         title={isEdit ? 'Edit address' : 'Add to address book'}
@@ -34,7 +38,7 @@ const CreateContactDialog = ({
 
       <Dialog.Actions maxW={420}>
         <Dialog.SecondaryAction onClick={dialog.onClose}>
-          cancel
+          Cancel
         </Dialog.SecondaryAction>
 
         <Dialog.PrimaryAction

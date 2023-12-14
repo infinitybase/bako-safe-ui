@@ -54,7 +54,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
       )}
 
       {awaitingAnswer && (
-        <HStack>
+        <HStack minW={140}>
           <Button
             h={9}
             px={3}
