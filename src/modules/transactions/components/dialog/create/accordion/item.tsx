@@ -6,7 +6,7 @@ interface AccordionItemProps {
   actions: React.ReactNode;
   resume: React.ReactNode;
   children: React.ReactNode;
-  isExpanded: boolean;
+  isExpanded?: boolean;
 }
 
 const AccordionItem = ({

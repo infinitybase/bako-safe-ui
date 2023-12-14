@@ -9,8 +9,8 @@ const currencyMask = createNumberMask({
   thousandsSeparatorSymbol: '',
   allowDecimal: true,
   decimalSymbol: '.',
-  decimalLimit: 7, // how many digits allowed after the decimal
-  integerLimit: 7, // limit length of integer numbers
+  decimalLimit: 9, // how many digits allowed after the decimal
+  integerLimit: 9, // limit length of integer numbers
   allowNegative: false,
   allowLeadingZeroes: false,
 });

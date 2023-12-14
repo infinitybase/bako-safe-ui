@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
 import { transactionStatus } from '@/modules';
+import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import {
   TransactionCard,
   TransactionFilter,
@@ -127,6 +128,7 @@ const TransactionsVaultPage = () => {
         key={defaultIndex.join(',')}
         pb={10}
       >
+        {!transactionRequest?.transactions.length && <EmptyTransaction />}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}

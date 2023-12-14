@@ -1,6 +1,5 @@
 import {
   Badge,
-  Box,
   Button,
   CircularProgress,
   HStack,
@@ -29,28 +28,22 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   ).length;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
+  const isPending = [
+    TransactionStatus.PROCESS_ON_CHAIN,
+    TransactionStatus.PENDING_SENDER,
+  ].includes(transaction.status);
 
-  if (
-    [
-      TransactionStatus.PROCESS_ON_CHAIN,
-      TransactionStatus.PENDING_SENDER,
-    ].includes(transaction.status)
-  ) {
-    return (
-      <Box minW={100}>
+  return (
+    <HStack w={220} ml={6}>
+      {isPending && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
           isIndeterminate
           color="brand.500"
         />
-      </Box>
-    );
-  }
-
-  return (
-    <HStack w={220} ml={6}>
-      <VStack minW={100} spacing={0}>
+      )}
+      <VStack hidden={isPending} minW={100} spacing={0} justifyContent="center">
         <Badge
           h={5}
           variant={

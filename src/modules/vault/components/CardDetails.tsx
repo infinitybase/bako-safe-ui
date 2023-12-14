@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { QRCodeSVG } from 'qrcode.react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
@@ -25,6 +26,8 @@ export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
 }
 
+const MAX_DESCRIPTION_CHARS = 80;
+
 const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
@@ -34,6 +37,16 @@ const CardDetails = (props: CardDetailsProps) => {
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
+
+  const vaultDescription = useMemo(() => {
+    if (!vault?.description) return '';
+
+    let description = vault.description;
+    if (description.length > MAX_DESCRIPTION_CHARS) {
+      description = description.substring(0, MAX_DESCRIPTION_CHARS) + '...';
+    }
+    return description;
+  }, [vault]);
 
   if (!vault) return;
 
@@ -64,8 +77,14 @@ const CardDetails = (props: CardDetailsProps) => {
                   {vault?.name}
                 </Heading>
 
-                <Text variant="description" maxW="250px">
-                  {vault?.description}
+                <Text
+                  maxW="250px"
+                  variant="description"
+                  textOverflow="ellipsis"
+                  noOfLines={2}
+                  isTruncated
+                >
+                  {vaultDescription}
                 </Text>
               </Box>
             </HStack>
@@ -124,10 +143,10 @@ const CardDetails = (props: CardDetailsProps) => {
                     variant="primary"
                     onClick={() => openFaucet(vault.predicateAddress!)}
                   >
-                    Deposit
+                    Faucet
                   </Button>
                   <Text variant="description" fontSize="xs">
-                    Add assets to the vault. <br /> Choose the asset you prefer.
+                    Use the faucet to add assets to the vault.
                   </Text>
                 </VStack>
                 <VStack spacing={2} alignItems="flex-start">
