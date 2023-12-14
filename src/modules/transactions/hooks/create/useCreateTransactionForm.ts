@@ -37,9 +37,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
               to: string;
             }[];
 
-            const coinBalance = params
-              .getCoinAmount(parent.asset)
-              .sub(bn.parseUnits('0.000000001'));
+            const coinBalance = params.getCoinAmount(parent.asset);
             const tranasctionsBalance = transactions
               .filter((transaction) => transaction.asset === parent.asset)
               .reduce(
