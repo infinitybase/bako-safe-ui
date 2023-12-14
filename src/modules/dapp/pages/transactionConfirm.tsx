@@ -42,7 +42,7 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         <Dapp.Header
           title="Create transaction"
-          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+          description="Enhance your security by sending transactions and executing contracts through BSafe."
         />
       </Dapp.Section>
 
@@ -71,7 +71,7 @@ const TransactionConfirm = () => {
 
       {/* Alert */}
       <Dapp.Section>
-        <DappConnectionAlert origin={connection.origin!} />
+        <DappConnectionAlert />
       </Dapp.Section>
 
       <Divider borderColor="dark.100" mb={7} />
