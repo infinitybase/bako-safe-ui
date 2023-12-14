@@ -95,8 +95,6 @@ const TransactionConfirm = () => {
 
       <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
 
-      <Divider w="full" borderColor="dark.100" mb={7} />
-
       {/* Actions */}
       <Dialog.Actions w="full">
         <Dialog.SecondaryAction size="lg" onClick={cancelTransaction}>
