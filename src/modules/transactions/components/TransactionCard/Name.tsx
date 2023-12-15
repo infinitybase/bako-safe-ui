@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Text } from '@chakra-ui/react';
+import { Box, Center, Heading, Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
 interface TransactionCardNameProps {
@@ -6,16 +6,21 @@ interface TransactionCardNameProps {
 }
 
 const Name = ({ children }: TransactionCardNameProps) => (
-  <HStack w={200} ml={-2} textAlign="left">
-    <Box>
-      <Heading variant="title-md" color="grey.200" noOfLines={1}>
+  <Center flexDir="column" w="full">
+    <Box maxW={140}>
+      <Heading
+        variant="title-md"
+        color="grey.200"
+        textOverflow="ellipsis"
+        noOfLines={1}
+      >
         {children}
       </Heading>
-      <Text variant="description" fontSize="sm" color="grey.500">
-        Transaction
-      </Text>
     </Box>
-  </HStack>
+    <Text variant="description" fontSize="sm" color="grey.500">
+      Transaction
+    </Text>
+  </Center>
 );
 
 export { Name };

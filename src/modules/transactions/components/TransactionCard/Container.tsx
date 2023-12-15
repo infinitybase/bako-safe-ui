@@ -45,6 +45,8 @@ const Container = ({
           spacing={10}
           _hover={{ bgColor: 'transparent' }}
           alignItems="center"
+          display="grid"
+          gridTemplateColumns="1fr 1fr 1fr 1fr 1fr 5fr"
         >
           {children}
         </HStack>

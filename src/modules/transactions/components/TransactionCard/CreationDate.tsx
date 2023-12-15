@@ -7,7 +7,7 @@ interface TransactionCardCreationDateProps {
 
 const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
   return (
-    <Flex w={110}>
+    <Flex maxW={110}>
       <Text variant="subtitle" fontWeight="semibold" color="grey.200">
         {children}
       </Text>
