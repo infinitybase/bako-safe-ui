@@ -8,7 +8,7 @@ interface TransactionVaultInfoProps {
 }
 
 const VaultInfo = ({ vault }: TransactionVaultInfoProps) => (
-  <HStack w={240}>
+  <HStack w={250}>
     <Avatar
       variant="roundedSquare"
       name={vault.name}

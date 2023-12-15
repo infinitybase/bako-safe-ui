@@ -7,7 +7,7 @@ interface TransactionCardCreationDateProps {
 
 const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
   return (
-    <Center justifyContent="flex-start">
+    <Center w={100} justifyContent="flex-start">
       <Text variant="subtitle" fontWeight="semibold" color="grey.200">
         {children}
       </Text>

@@ -22,7 +22,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
     .format();
 
   return (
-    <HStack alignItems="center" justifyContent="flex-start" w={150} ml={0}>
+    <HStack alignItems="center" justifyContent="flex-start" w={250} ml={0}>
       <AvatarGroup max={2}>
         <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} />
       </AvatarGroup>

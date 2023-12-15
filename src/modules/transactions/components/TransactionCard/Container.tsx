@@ -31,7 +31,7 @@ const Container = ({
 
   const childrens = React.Children.toArray(children);
   const gridTemplateColumns =
-    childrens.length === 7 ? '1fr 1fr 1fr 2fr 1fr 4fr' : '1fr 1fr 1fr 1fr 4fr';
+    childrens.length === 7 ? '2fr 1fr 1fr 2fr 2fr 4fr' : '1fr 1fr 2fr 2fr 4fr';
 
   return (
     <Card
