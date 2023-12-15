@@ -176,7 +176,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   };
 
   return (
-    <VStack>
+    <VStack maxW={450} w="full">
       <HStack pt={5} w="full">
         <Box>
           <Box mb={4}>
