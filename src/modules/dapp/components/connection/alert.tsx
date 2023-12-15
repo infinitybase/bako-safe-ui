@@ -3,11 +3,7 @@ import React from 'react';
 
 import { DappWarning } from '@/components/icons/dapp-warning';
 
-export interface DappConnectionAlertProps {
-  origin: string;
-}
-
-const DappConnectionAlert = (props: DappConnectionAlertProps) => (
+const DappConnectionAlert = () => (
   <Alert
     px={6}
     py={4}
@@ -22,7 +18,8 @@ const DappConnectionAlert = (props: DappConnectionAlertProps) => (
         Double check it!
       </Text>
       <Text fontSize="sm" fontWeight="normal" color="grey.200">
-        {props.origin}
+        Please carefully review this externally created transaction before
+        approving it.
       </Text>
     </Box>
   </Alert>

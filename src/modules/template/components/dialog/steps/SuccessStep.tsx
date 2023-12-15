@@ -34,7 +34,6 @@ const SuccesStep = () => {
         <Button
           m={4}
           variant="primary"
-          background="grey.500"
           color="grey.300"
           onClick={() => {
             steps[step].onSubmit({} as ITemplatePayload);

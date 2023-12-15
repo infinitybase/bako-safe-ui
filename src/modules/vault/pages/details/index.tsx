@@ -10,7 +10,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useMemo } from 'react';
 
 import {
   Card,
@@ -24,7 +23,7 @@ import {
   TransactionCard,
   transactionStatus,
   WaitingSignatureBadge,
-  waitingSignatures,
+  // waitingSignatures,
 } from '@/modules';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { useVaultDetails } from '@/modules/vault/hooks';
@@ -39,14 +38,14 @@ const VaultDetailsPage = () => {
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
-  const pendingTransactionSignature = useMemo(
-    () =>
-      waitingSignatures({
-        account,
-        transactions: vaultTransactions ?? [],
-      }),
-    [vaultTransactions, account],
-  );
+  // const pendingTransactionSignature = useMemo(
+  //   () =>
+  //     waitingSignatures({
+  //       account,
+  //       transactions: vaultTransactions ?? [],
+  //     }),
+  //   [vaultTransactions, account],
+  // );
 
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
@@ -86,6 +85,8 @@ const VaultDetailsPage = () => {
               color="grey.200"
               fontWeight="semibold"
               href="#"
+              isTruncated
+              maxW={640}
             >
               {vault.name}
             </BreadcrumbLink>

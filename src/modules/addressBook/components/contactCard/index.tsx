@@ -47,7 +47,18 @@ const ContactCard = ({
             <Avatar variant="roundedSquare" src={avatar} key={address} />
 
             <Box ml={2}>
-              <Heading variant="title-md" color="grey.200" noOfLines={1}>
+              <Heading
+                variant="title-md"
+                color="grey.200"
+                maxW={{
+                  sm: 148,
+                  md: 148,
+                  lg: 148,
+                  xl: 172,
+                  '2xl': 240,
+                }}
+                isTruncated
+              >
                 {nickname}
               </Heading>
               <Text variant="description" color="grey.500">

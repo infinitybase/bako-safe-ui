@@ -22,7 +22,7 @@ const CreateTemplateForm = () => {
 
       <Dialog.Actions maxW={420} hidden={steps[step].hiddeFooter}>
         <Dialog.SecondaryAction onClick={onClose}>
-          cancel
+          Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           hidden={steps[step].hiddeFooter}

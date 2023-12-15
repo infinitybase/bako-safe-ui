@@ -240,7 +240,8 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                     Double check it!
                   </Text>
                   <Text color="grey.200">
-                    When I hear the buzz of the little world...
+                    Please carefully review this externally created transaction
+                    before approving it.
                   </Text>
                 </VStack>
               </HStack>

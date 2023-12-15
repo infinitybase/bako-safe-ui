@@ -42,7 +42,7 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         <Dapp.Header
           title="Create transaction"
-          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+          description="Enhance your security by sending transactions and executing contracts through BSafe."
         />
       </Dapp.Section>
 
@@ -71,10 +71,10 @@ const TransactionConfirm = () => {
 
       {/* Alert */}
       <Dapp.Section>
-        <DappConnectionAlert origin={connection.origin!} />
+        <DappConnectionAlert />
       </Dapp.Section>
 
-      <Divider borderColor="dark.100" mb={7} />
+      <Divider w="full" borderColor="dark.100" mb={7} />
 
       {/* Transaction Summary */}
       <VStack spacing={1}>
@@ -95,10 +95,8 @@ const TransactionConfirm = () => {
 
       <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
 
-      <Divider borderColor="dark.100" mb={7} />
-
       {/* Actions */}
-      <Dialog.Actions maxW={420}>
+      <Dialog.Actions w="full">
         <Dialog.SecondaryAction size="lg" onClick={cancelTransaction}>
           Reject
         </Dialog.SecondaryAction>
