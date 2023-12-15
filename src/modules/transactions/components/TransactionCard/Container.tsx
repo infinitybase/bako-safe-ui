@@ -4,10 +4,11 @@ import {
   AccordionPanel,
   Box,
   CardProps,
+  Grid,
   HStack,
   VStack,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { Card } from '@/components';
 import { TransactionState } from '@/modules/core';
@@ -28,6 +29,10 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
+  const childrens = React.Children.toArray(children);
+  const gridTemplateColumns =
+    childrens.length === 7 ? '1fr 1fr 1fr 2fr 1fr 4fr' : '1fr 1fr 1fr 1fr 4fr';
+
   return (
     <Card
       py={4}
@@ -44,11 +49,10 @@ const Container = ({
           w="full"
           spacing={10}
           _hover={{ bgColor: 'transparent' }}
-          alignItems="center"
-          display="grid"
-          gridTemplateColumns="1fr 1fr 1fr 1fr 1fr 5fr"
         >
-          {children}
+          <Grid w="full" gap={4} templateColumns={gridTemplateColumns}>
+            {children}
+          </Grid>
         </HStack>
 
         <Box w="full">

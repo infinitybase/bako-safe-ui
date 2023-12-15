@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Center, Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
 interface TransactionCardCreationDateProps {
@@ -7,11 +7,11 @@ interface TransactionCardCreationDateProps {
 
 const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
   return (
-    <Flex maxW={110}>
+    <Center justifyContent="flex-start">
       <Text variant="subtitle" fontWeight="semibold" color="grey.200">
         {children}
       </Text>
-    </Flex>
+    </Center>
   );
 };
 

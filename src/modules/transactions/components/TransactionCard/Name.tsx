@@ -6,8 +6,8 @@ interface TransactionCardNameProps {
 }
 
 const Name = ({ children }: TransactionCardNameProps) => (
-  <Center flexDir="column" w="full">
-    <Box maxW={140}>
+  <Center alignItems="flex-start" flexDir="column" w="full">
+    <Box maxW={200}>
       <Heading
         variant="title-md"
         color="grey.200"
