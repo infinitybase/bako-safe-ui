@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Center,
   chakra,
   Flex,
   HStack,
@@ -8,11 +9,16 @@ import {
   Skeleton,
   Text,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { ExitIcon, QuestionIcon } from '@/components';
+import { ExitIcon, NotificationIcon, QuestionIcon } from '@/components';
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
+import { NotificationsDrawer } from '@/modules/notifications/components';
+import { useAppNotifications } from '@/modules/notifications/hooks';
+
+import { useSidebar } from './hook';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -67,6 +73,14 @@ const UserBox = () => {
 
 const Header = () => {
   const navigate = useNavigate();
+  const { drawer } = useSidebar();
+  const { unreadCounter, setUnreadCounter } = useAppNotifications();
+
+  // Bug fix to unread counter that keeps previous state after redirect
+  useEffect(() => {
+    setUnreadCounter(0);
+    setUnreadCounter(unreadCounter);
+  }, []);
 
   return (
     <Flex
@@ -78,6 +92,8 @@ const Header = () => {
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
+      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+
       <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
         <img width={90} src={logo} alt="" />
       </SpacedBox>
@@ -90,9 +106,30 @@ const Header = () => {
         >
           <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
-        {/*<TopBarItem>*/}
-        {/*  <Icon color="grey.200" as={NotificationIcon} />*/}
-        {/*</TopBarItem>*/}
+
+        <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
+          <Icon
+            color="grey.200"
+            as={NotificationIcon}
+            fontSize={30}
+            position="absolute"
+          />
+
+          {unreadCounter > 0 && (
+            <Center
+              px={1}
+              py={0}
+              bg="error.600"
+              borderRadius={10}
+              position="relative"
+              top={-1.5}
+              right={-2.5}
+            >
+              <Text fontSize="xs">+{unreadCounter}</Text>
+            </Center>
+          )}
+        </TopBarItem>
+
         <TopBarItem>
           <UserBox />
         </TopBarItem>

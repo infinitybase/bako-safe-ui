@@ -13,9 +13,8 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
-import { GoCopy } from 'react-icons/go';
 
-import { Card } from '@/components';
+import { Card, CopyIcon } from '@/components';
 import { AddressUtils } from '@/modules/core';
 import { User } from '@/modules/core/models/user';
 import { useNotification } from '@/modules/notification';
@@ -47,7 +46,12 @@ export const VaultCard = ({
               bg="grey.900"
             />
             <Box ml={2}>
-              <Heading variant="title-md" color="grey.200" noOfLines={1}>
+              <Heading
+                maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
+                variant="title-md"
+                color="grey.200"
+                isTruncated
+              >
                 {name}
               </Heading>
               <Text variant="description" color="grey.500">
@@ -59,7 +63,7 @@ export const VaultCard = ({
           <IconButton
             aria-label="Copy"
             variant="icon"
-            icon={<Icon as={GoCopy} color="grey.200" />}
+            icon={<Icon as={CopyIcon} color="grey.200" fontSize={17} />}
             onClick={(e) => {
               e.stopPropagation();
               clipboard.onCopy();
@@ -85,12 +89,8 @@ export const VaultCard = ({
             size="sm"
             spacing={-2}
           >
-            {members.map((member) => (
-              <Avatar
-                variant="roundedSquare"
-                src={member.avatar}
-                key={member.address}
-              />
+            {members.map(({ avatar, address }) => (
+              <Avatar variant="roundedSquare" src={avatar} key={address} />
             ))}
           </AvatarGroup>
         </Box>

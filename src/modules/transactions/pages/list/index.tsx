@@ -7,11 +7,14 @@ import {
   Heading,
   HStack,
   Icon,
+  Text,
 } from '@chakra-ui/react';
+import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
 import { transactionStatus } from '@/modules';
+import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import {
   TransactionCard,
   TransactionFilter,
@@ -21,7 +24,15 @@ import { limitCharacters } from '@/utils';
 import { StatusFilter, useTransactionList } from '../../hooks';
 
 const TransactionsVaultPage = () => {
-  const { transactionRequest, filter, inView, account } = useTransactionList();
+  const {
+    transactionRequest,
+    filter,
+    inView,
+    account,
+    selectedTransaction,
+    setSelectedTransaction,
+    defaultIndex,
+  } = useTransactionList();
 
   return (
     <Box w="full" height="100%" maxH="100%" overflowY="hidden">
@@ -69,8 +80,11 @@ const TransactionsVaultPage = () => {
 
       {/* FILTER */}
       <TransactionFilter.Control
-        value={filter.value}
-        onChange={(value) => filter.set(value as StatusFilter)}
+        value={filter.value!}
+        onChange={(value) => {
+          setSelectedTransaction({});
+          filter.set(value as StatusFilter);
+        }}
       >
         <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
         <TransactionFilter.Field
@@ -81,7 +95,25 @@ const TransactionsVaultPage = () => {
           value={StatusFilter.DECLINED}
           label="Declined"
         />
-        <TransactionFilter.Field value={StatusFilter.PENDING} label="Pending" />
+        <TransactionFilter.Field
+          value={TransactionStatus.AWAIT_REQUIREMENTS}
+          label="Pending"
+        />
+
+        {selectedTransaction.id && (
+          <HStack spacing={2}>
+            <Text color="brand.500">{selectedTransaction.name}</Text>
+            <Box
+              onClick={() => {
+                setSelectedTransaction({});
+                filter.set(StatusFilter.ALL);
+              }}
+              cursor="pointer"
+            >
+              <Icon as={ErrorIcon} color="brand.500" />
+            </Box>
+          </HStack>
+        )}
       </TransactionFilter.Control>
 
       {/* TRANSACTION LIST */}
@@ -92,8 +124,11 @@ const TransactionsVaultPage = () => {
         maxH="calc(100% - 140px)"
         overflowY="scroll"
         css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
+        openIndex={defaultIndex}
+        key={defaultIndex.join(',')}
         pb={10}
       >
+        {!transactionRequest?.transactions.length && <EmptyTransaction />}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}
@@ -107,7 +142,7 @@ const TransactionsVaultPage = () => {
                 {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>
               <TransactionCard.Assets />
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount assets={transaction.resume.outputs} />
               <TransactionCard.Name>
                 {limitCharacters(transaction.name, 20)}
               </TransactionCard.Name>

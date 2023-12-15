@@ -7,20 +7,21 @@ import {
   Text,
   ToastId,
 } from '@chakra-ui/react';
-import React, { useRef } from 'react';
+import { ITransaction } from 'bsafe';
+import { useRef } from 'react';
 
 import { ErrorIcon } from '@/components';
-import { Transaction } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 import { sumEthAsset } from '@/modules/transactions';
 
-type TransactionToastRef = Record<Transaction['id'], ToastId>;
+type TransactionToastRef = Record<ITransaction['id'], ToastId>;
 
 const useTransactionToast = () => {
   const toast = useNotification();
   const transactionsToastRef = useRef<TransactionToastRef>({});
 
-  const loading = (transaction: Transaction) => {
+  const loading = (transaction: ITransaction) => {
+    if (toast.isActive(transaction.id)) return;
     transactionsToastRef.current[transaction.id] = toast({
       position: 'top-right',
       duration: 100000,
@@ -37,7 +38,14 @@ const useTransactionToast = () => {
       description: (
         <>
           <Text variant="description">
-            ETH {sumEthAsset(transaction.assets)}
+            ETH{' '}
+            {sumEthAsset(
+              transaction.assets.map((transaction) => ({
+                amount: transaction.amount,
+                assetId: transaction.assetId,
+                to: transaction.to,
+              })),
+            )}
           </Text>
           <Text variant="description">{transaction.name}</Text>
         </>
@@ -45,7 +53,7 @@ const useTransactionToast = () => {
     });
   };
 
-  const success = (transaction: Transaction) => {
+  const success = (transaction: ITransaction) => {
     const toastId = transactionsToastRef.current[transaction.id];
 
     if (toastId) {
@@ -58,8 +66,13 @@ const useTransactionToast = () => {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                const resume = JSON.parse(transaction.resume);
-                window.open(resume.block, '_BLANK');
+                const resume = transaction.resume;
+                window.open(
+                  `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${
+                    resume.hash
+                  }`,
+                  '_BLANK',
+                );
               }}
               variant="primary"
               size="xs"
@@ -69,13 +82,11 @@ const useTransactionToast = () => {
           </Box>
         ),
       });
-      removeToast(transaction);
     }
   };
 
-  const error = (transaction: Transaction, message?: string) => {
-    const toastId = transactionsToastRef.current[transaction.id];
-
+  const error = (transaction: string, message?: string) => {
+    const toastId = transactionsToastRef.current[transaction];
     if (toastId) {
       toast.update(toastId, {
         duration: 5000,
@@ -87,21 +98,22 @@ const useTransactionToast = () => {
           </Text>
         ),
       });
-      removeToast(transaction);
     }
   };
 
-  const removeToast = (transaction: Transaction) => {
-    delete transactionsToastRef.current[transaction.id];
-  };
-
   const closeAll = () => toast.closeAll({ positions: ['top-right'] });
-
+  const close = (transaction: string) => {
+    const toastId = transactionsToastRef.current[transaction];
+    if (toastId) {
+      toast.close(toastId);
+    }
+  };
   return {
     error,
     loading,
     success,
     closeAll,
+    close,
   };
 };
 

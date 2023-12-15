@@ -1,23 +1,32 @@
-import { useEffect } from 'react';
+import { useDisclosure } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuel, useFuelAccount, useGetCurrentAccount } from '@/modules';
+import {
+  useFuel,
+  useFuelAccount,
+  useGetCurrentAccount,
+  useQueryParams,
+} from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
+import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
-const FUEL_CONNECTOR_NAME = 'Fuel Wallet';
-// const FUELET_CONNECTOR_NAME = 'Fuelet Wallet';
-
 const useSignIn = () => {
   const navigate = useNavigate();
+  const connectorDrawer = useDisclosure();
 
   const [fuel] = useFuel();
   const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
+  const { location, origin } = useQueryParams();
+
+  const { connectors } = useDefaultConnectors();
+
+  const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar }) => {
@@ -37,7 +46,10 @@ const useSignIn = () => {
       ]);
       setAccount(account!);
       setAvatar(avatar!);
-      navigate(Pages.home());
+
+      origin
+        ? navigate(`${Pages.dappAuth()}${location.search}&address=${account}`)
+        : navigate(Pages.home());
     },
   });
 
@@ -50,6 +62,15 @@ const useSignIn = () => {
       });
     },
   });
+
+  const redirectToWalletLink = () =>
+    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
+
+  const selectConnector = async (connector: string) => {
+    await fuel.selectConnector(connector);
+    connectorDrawer.onClose();
+    goToApp();
+  };
 
   const goToApp = async () => {
     try {
@@ -66,26 +87,8 @@ const useSignIn = () => {
       });
     } catch (e) {
       setInvalidAccount(true);
-      console.log({ e });
     }
   };
-
-  const redirectToWalletLink = () =>
-    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
-
-  const isFuelConnector = fuel?.connectorName === FUEL_CONNECTOR_NAME;
-
-  useEffect(() => {
-    if (!fuel) return;
-
-    const hasFuelConnector = fuel.hasConnector(FUEL_CONNECTOR_NAME);
-
-    if (fuel.connectorName !== FUEL_CONNECTOR_NAME && hasFuelConnector) {
-      fuel
-        .selectConnector(FUEL_CONNECTOR_NAME)
-        .catch(() => fuel.selectConnector(''));
-    }
-  }, [fuel]);
 
   return {
     connect,
@@ -95,7 +98,13 @@ const useSignIn = () => {
     isConnecting:
       isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
-    hasFuel: !!fuel && isFuelConnector,
+    connectors: {
+      items: connectors,
+      drawer: connectorDrawer,
+      select: selectConnector,
+      has: !!connectors?.length,
+    },
+    hasFuel,
     redirectToWalletLink,
   };
 };

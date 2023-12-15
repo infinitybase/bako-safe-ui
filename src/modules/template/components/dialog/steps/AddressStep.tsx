@@ -106,7 +106,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
           w="full"
           maxW={300}
           title="Min signatures required?"
-          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+          description="Set the minimum number of signatures to approve a transfer."
         />
 
         <Box w="full" maxW={90} mb={3}>

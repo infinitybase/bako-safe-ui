@@ -9,6 +9,7 @@ const Pages = {
   detailsVault: pageRoute<{ vaultId: string }>('/vault/:vaultId'),
   vaultSettings: pageRoute<{ vaultId: string }>('/vault/:vaultId/settings'),
   userVaults: pageRoute('/vault/me'),
+  addressBook: pageRoute('/addressBook'),
   userTransactions: pageRoute('/transaction/me'),
   transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
   createTransaction: pageRoute<{ vaultId: string }>(
@@ -22,8 +23,9 @@ const Pages = {
   //template
   createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
-  //faucet
-  faucet: pageRoute('/faucet/:id'),
+  //dapp
+  dappAuth: pageRoute('/dapp'),
+  dappTransaction: pageRoute('/dapp/transaction'),
 };
 
 export { Pages };

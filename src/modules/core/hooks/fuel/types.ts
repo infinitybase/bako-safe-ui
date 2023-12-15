@@ -7,4 +7,5 @@ export enum FuelQueryKeys {
   PROVIDER = 'fuel/provider',
   NETWORK = 'fuel/netowrk',
   CURRENT_CONNECTOR = 'fuel/current-connector',
+  LIST_CONNECTOR = 'fuel/list-connector',
 }

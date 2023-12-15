@@ -10,7 +10,9 @@ const useHome = () => {
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
   const homeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
-  const transactionsRequest = useUserTransactionsRequest();
+  const transactionsRequest = useUserTransactionsRequest({
+    limit: 6,
+  });
   const count = homeVaultsRequest?.data?.total ?? 0;
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const useHome = () => {
         vaultsMax: vaultsPerPage,
         extraCount: count <= vaultsPerPage ? 0 : count - vaultsPerPage,
       },
-      loadingRecentVaults: homeVaultsRequest.isFetching,
+      loadingRecentVaults: homeVaultsRequest.isLoading,
     },
     transactionsRequest: {
       ...transactionsRequest,

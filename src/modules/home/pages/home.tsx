@@ -1,8 +1,6 @@
 import {
-  Badge,
   Box,
   Button,
-  CircularProgress,
   Grid,
   GridItem,
   HStack,
@@ -17,13 +15,9 @@ import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
-import { CustomSkeleton, HomeIcon, PendingIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules';
-import {
-  TransactionCard,
-  transactionStatus,
-  waitingSignatures,
-} from '@/modules/transactions';
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { Pages, WaitingSignatureBadge } from '@/modules';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { limitCharacters } from '@/utils';
 
@@ -40,11 +34,7 @@ const HomePage = () => {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
     },
-    transactionsRequest: {
-      transactions,
-      loadingTransactions,
-      isFetching: isFetchingTransactions,
-    },
+    transactionsRequest: { transactions, loadingTransactions },
   } = useHome();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
@@ -111,12 +101,12 @@ const HomePage = () => {
                 </Box>
               </ActionCard.Container>
 
-              <ActionCard.Container isUpcoming={true}>
-                <ActionCard.Icon icon={CgList} isUpcoming={true} />
+              <ActionCard.Container
+                onClick={() => navigate(Pages.addressBook())}
+              >
+                <ActionCard.Icon icon={CgList} />
                 <Box>
-                  <ActionCard.Title isUpcoming={true}>
-                    Address book
-                  </ActionCard.Title>
+                  <ActionCard.Title>Address book</ActionCard.Title>
                   <ActionCard.Description>
                     Access and Manage Your Contacts for Easy Transfers and Vault
                     Creation.
@@ -138,10 +128,7 @@ const HomePage = () => {
           </Box>
           <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
             {recentVaults?.map(
-              (
-                { id, name, predicateAddress, completeAddress, description },
-                index,
-              ) => {
+              ({ id, name, predicateAddress, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -158,7 +145,7 @@ const HomePage = () => {
                           name={name}
                           title={description}
                           address={predicateAddress}
-                          members={completeAddress}
+                          members={members!}
                           onClick={() =>
                             navigate(Pages.detailsVault({ vaultId: id }))
                           }
@@ -198,20 +185,11 @@ const HomePage = () => {
                 >
                   Transactions
                 </Text>
-                <CircularProgress
-                  hidden={!isFetchingTransactions}
-                  size="20px"
-                  color="brand.500"
-                  trackColor="dark.100"
-                  isIndeterminate
+                <WaitingSignatureBadge
+                  account={account}
+                  isLoading={loadingTransactions}
+                  transactions={transactions}
                 />
-                <Badge h={6} variant="warning" hidden={isFetchingTransactions}>
-                  <Icon as={PendingIcon} />
-                  {`${waitingSignatures({
-                    account,
-                    transactions: transactions ?? [],
-                  })} waiting for your signature`}
-                </Badge>
                 <Spacer />
                 <Link
                   color="brand.500"
@@ -222,16 +200,27 @@ const HomePage = () => {
               </HStack>
               <TransactionCard.List spacing={4} mt={6} mb={12}>
                 {transactions?.map((transaction) => {
+                  const status = transactionStatus({ ...transaction, account });
                   return (
                     <CustomSkeleton isLoaded={!isLoading} key={transaction.id}>
                       <TransactionCard.Container
-                        status={transactionStatus({ ...transaction, account })}
+                        status={status}
                         details={
-                          <TransactionCard.Details transaction={transaction} />
+                          <TransactionCard.Details
+                            transaction={transaction}
+                            status={status}
+                          />
                         }
                       >
                         <TransactionCard.VaultInfo
-                          vault={transaction.predicate}
+                          vault={
+                            recentVaults.filter(
+                              (v) => v.id === transaction.resume.predicate.id,
+                            )[0] || {
+                              name: 'Vault',
+                              description: 'Vault description',
+                            }
+                          }
                         />
                         <TransactionCard.CreationDate>
                           {format(
@@ -240,7 +229,9 @@ const HomePage = () => {
                           )}
                         </TransactionCard.CreationDate>
                         <TransactionCard.Assets />
-                        <TransactionCard.Amount assets={transaction.assets} />
+                        <TransactionCard.Amount
+                          assets={transaction.resume.outputs}
+                        />
                         <TransactionCard.Name>
                           {limitCharacters(transaction.name, 20)}
                         </TransactionCard.Name>

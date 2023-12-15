@@ -7,12 +7,14 @@ import { queryClient } from '@/config';
 import { Pages, useVaultListRequest } from '@/modules';
 
 interface UseVaultDrawerParams {
-  onClose: () => void;
+  onClose?: () => void;
   isOpen?: boolean;
+  onSelect?: (vaultId: string) => void;
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const navigate = useNavigate();
+  const { onSelect } = props;
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
 
@@ -44,21 +46,21 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   ]);
 
   const onSelectVault = (vaultId: string) => {
-    props.onClose();
+    props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
     setSearch('');
     navigate(Pages.detailsVault({ vaultId }));
   };
 
   const onCloseDrawer = () => {
-    props.onClose();
+    props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
     setSearch('');
   };
 
   return {
     drawer: {
-      onSelectVault,
+      onSelectVault: onSelect ?? onSelectVault,
       onClose: onCloseDrawer,
     },
     search: {

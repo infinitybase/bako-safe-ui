@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 
-import { Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
 
 import { SigninPage } from './pages';
 

@@ -16,47 +16,36 @@ const useVaultDetails = () => {
   const store = useVaultState();
   const inView = useInView();
 
-  const { predicate, isLoading, isFetching } = useVaultDetailsRequest(
-    params.vaultId!,
+  const { predicate, predicateInstance, isLoading, isFetching } =
+    useVaultDetailsRequest(params.vaultId!);
+  const vaultTransactionsRequest = useVaultTransactionsRequest(
+    predicateInstance!,
   );
-  const vaultTransactionsRequest = useVaultTransactionsRequest(params.vaultId!);
 
   const {
     assets,
     ethBalance,
-    isFetching: isLoadingAssets,
+    isLoading: isLoadingAssets,
     hasBalance,
     hasAssets,
-  } = useVaultAssets(predicate?.predicateInstance);
+  } = useVaultAssets(predicateInstance);
 
-  const configurable = useMemo(() => {
-    const configurableJSON = predicate?.configurable;
-
-    if (!configurableJSON) return null;
-
-    return JSON.parse(configurableJSON);
-  }, [predicate?.configurable]);
+  const configurable = useMemo(
+    () => predicateInstance?.getConfigurable(),
+    [predicateInstance],
+  );
 
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];
 
-    return predicate.addresses
-      .map((address) => ({
-        address,
-        isOwner: address === predicate.owner,
-      }))
-      .sort((address) => (address.isOwner ? -1 : 0));
-  }, [predicate]);
-
-  const completeSignersOrdination = useMemo(() => {
-    if (!predicate) return [];
-
-    return predicate.completeAddress
-      ?.map((address) => ({
-        address,
-        isOwner: address.address === predicate.owner,
-      }))
-      .sort((address) => (address.isOwner ? -1 : 0));
+    return (
+      predicate.addresses
+        ?.map((address) => ({
+          address,
+          isOwner: address === predicate.owner.address,
+        }))
+        .sort((address) => (address.isOwner ? -1 : 0)) ?? []
+    );
   }, [predicate]);
 
   return {
@@ -64,13 +53,12 @@ const useVaultDetails = () => {
       ...predicate,
       configurable,
       signers: signersOrdination,
-      completeSigners: completeSignersOrdination,
       isLoading,
       isFetching,
       hasBalance,
       transactions: {
         ...vaultTransactionsRequest,
-        vaultTransactions: vaultTransactionsRequest.data,
+        vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
       },
     },

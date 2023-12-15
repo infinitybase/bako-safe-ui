@@ -12,7 +12,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     addresses,
     onDeposit,
     steps,
-    request,
+    bsafeVault,
     handleCancel,
     setFormWithTemplate,
     onSaveTemplate,
@@ -21,7 +21,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal {...props} onClose={handleCancel}>
+    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={420}
         hidden={steps.step?.hide}
@@ -51,7 +51,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onClick={steps.step?.onContinue}
           leftIcon={<SquarePlusIcon />}
           isDisabled={steps.step?.disable}
-          isLoading={request.isLoading}
+          isLoading={bsafeVault.isLoading}
         >
           Continue
         </Dialog.PrimaryAction>

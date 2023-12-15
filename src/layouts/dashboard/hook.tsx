@@ -20,14 +20,12 @@ const useSidebar = () => {
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(
-    vaultDetailsRequest.predicate?.predicateInstance,
-  );
+  const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
   const pendingTransactions = useMemo(() => {
     return (
       transactionListRequest.data
-        ?.filter((transaction) => transaction.predicateID === params.vaultId)
+        ?.filter((transaction) => transaction.predicateId === params.vaultId)
         .map((transaction) => transaction.witnesses)
         .flat()
         .filter((witness) => witness.status === WitnessStatus.PENDING)

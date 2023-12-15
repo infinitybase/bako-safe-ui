@@ -40,7 +40,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!vault.isFetching}>
+      <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={8} bg="dark.200" borderColor="dark.100">
           <HStack>
             <VStack spacing={9} w="full">
@@ -56,7 +56,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   />
                 </Center>
                 <Box>
-                  <Heading mb={1} variant="title-xl">
+                  <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
                     {vault?.name}
                   </Heading>
 
