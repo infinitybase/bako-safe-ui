@@ -15,13 +15,16 @@ const Pages = {
   createTransaction: pageRoute<{ vaultId: string }>(
     '/vault/:vaultId/transactions/create',
   ),
+
+  //template
+  createTemplate: pageRoute<{ vaultId: string }>(
+    '/vault/:vaultId/template/create',
+  ),
+
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
     '/vault/:vaultId/transactions/:transactionId',
   ),
   signatures: pageRoute('/signatures'),
-
-  //template
-  createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
   //dapp
   dappAuth: pageRoute('/dapp'),

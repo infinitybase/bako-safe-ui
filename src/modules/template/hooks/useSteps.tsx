@@ -92,9 +92,8 @@ const useSteps = () => {
       minSigners: 1,
     });
     resetSteps();
-    const vaultId = location?.pathname.replace('/template/', '');
-
-    vaultId.length > 0 ? navigate(`/vault/${vaultId}`) : navigate(-1);
+    const vaultId = location?.pathname.replace('/template/create', '');
+    navigate(vaultId);
   };
 
   return { steps, handleSubmit, form, addresses: addressesFieldArray, onClose };

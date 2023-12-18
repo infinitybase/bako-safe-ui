@@ -1,12 +1,11 @@
 import { BrowserRouter, Routes } from 'react-router-dom';
 
 import {
-  dappRoutes,
   addressBookRoutes,
+  dappRoutes,
   exampleRoutes,
   homeRoutes,
   signinRoutes,
-  templateRoutes,
   transactionRoutes,
   vaultRoutes,
 } from '@/modules';
@@ -18,7 +17,6 @@ const routes = (
     {homeRoutes}
     {dappRoutes}
     {vaultRoutes}
-    {templateRoutes}
     {transactionRoutes}
     {addressBookRoutes}
   </>
