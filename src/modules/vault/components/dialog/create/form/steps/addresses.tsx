@@ -218,7 +218,7 @@ const VaultAddressesStep = ({
             <Controller
               name="minSigners"
               control={form.control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormControl>
                   <Select
                     pt={2}
@@ -235,6 +235,18 @@ const VaultAddressesStep = ({
                         </option>
                       ))}
                   </Select>
+                  <FormHelperText
+                    color="error.500"
+                    style={{
+                      display: 'flex',
+                      position: 'absolute',
+                      left: '-300px',
+                      minWidth: '400px',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {fieldState.error?.message}
+                  </FormHelperText>
                 </FormControl>
               )}
             />

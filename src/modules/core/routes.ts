@@ -12,6 +12,11 @@ const Pages = {
   addressBook: pageRoute('/addressBook'),
   userTransactions: pageRoute('/transaction/me'),
   transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
+
+  //template
+  createTemplate: pageRoute<{ vaultId: string }>(
+    '/vault/:vaultId/template/create',
+  ),
   createTransaction: pageRoute<{ vaultId: string }>(
     '/vault/:vaultId/transactions/create',
   ),
@@ -19,9 +24,6 @@ const Pages = {
     '/vault/:vaultId/transactions/:transactionId',
   ),
   signatures: pageRoute('/signatures'),
-
-  //template
-  createTemplate: pageRoute<{ vaultId: string }>('/template/:vaultId'),
 
   //dapp
   dappAuth: pageRoute('/dapp'),
