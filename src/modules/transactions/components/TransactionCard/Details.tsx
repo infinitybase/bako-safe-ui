@@ -19,7 +19,6 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
-import { FaArrowRightLong } from 'react-icons/fa6';
 
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import {
@@ -83,7 +82,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={110}>
+            <Box mt={0.5} w={115}>
               <Heading textAlign="center" variant="title-md" color="grey.200">
                 {asset?.amount}
               </Heading>
@@ -108,13 +107,7 @@ const AssetBoxInfo = ({
         <Icon
           color={isContract ? 'grey.200' : 'black'}
           fontSize="xs"
-          as={
-            !isContract
-              ? DoubleArrowIcon
-              : contractWithoutToken
-              ? FaArrowRightLong
-              : FaPlay
-          }
+          as={!isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
 
@@ -176,9 +169,9 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   };
 
   return (
-    <VStack maxW={450} w="full">
+    <VStack maxW={600} w="full">
       <HStack pt={5} w="full">
-        <Box>
+        <Box w="full">
           <Box mb={4}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -250,7 +243,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </>
           )}
 
-          <VStack alignItems="flex-start">
+          <VStack w="full" alignItems="flex-start">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={index}
@@ -276,6 +269,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </VStack>
 
           <Box
+            w="full"
             mt={10}
             hidden={transaction.status !== TransactionStatus.SUCCESS}
             borderColor="dark.100"
@@ -290,15 +284,16 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
       </HStack>
-      <Button
-        border="none"
-        bgColor="dark.100"
-        variant="secondary"
-        onClick={handleViewInExplorer}
-        hidden={transaction.status !== TransactionStatus.SUCCESS}
-      >
-        View on Explorer
-      </Button>
+      {transaction.status !== TransactionStatus.SUCCESS && (
+        <Button
+          border="none"
+          bgColor="dark.100"
+          variant="secondary"
+          onClick={handleViewInExplorer}
+        >
+          View on Explorer
+        </Button>
+      )}
     </VStack>
   );
 };
