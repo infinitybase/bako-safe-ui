@@ -41,6 +41,7 @@ const Container = ({
       as={AccordionItem}
       bgColor={missingSignature ? 'warning.800' : 'dark.300'}
       borderColor={missingSignature ? 'warning.500' : 'dark.100'}
+      minW="min-content"
       {...rest}
     >
       <VStack justifyContent="flex-start" gap={0} w="full">

@@ -1,14 +1,13 @@
 import { Avatar, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Predicate } from '@/modules/core';
-import { limitCharacters } from '@/utils';
 
 interface TransactionVaultInfoProps {
   vault: Predicate;
 }
 
 const VaultInfo = ({ vault }: TransactionVaultInfoProps) => (
-  <HStack w={250}>
+  <HStack w={235}>
     <Avatar
       variant="roundedSquare"
       name={vault.name}
@@ -20,12 +19,24 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => (
       fontSize="sm"
     />
     <VStack ml={1} alignItems="flex-start" spacing={0}>
-      <Heading variant="title-md" color="grey.200" mt={0}>
-        {limitCharacters(vault.name, 20)}
+      <Heading
+        maxW={180}
+        variant="title-md"
+        color="grey.200"
+        mt={0}
+        isTruncated
+      >
+        {vault.name}
       </Heading>
       {vault?.description && (
-        <Text variant="description" fontSize="sm" color="grey.500">
-          {limitCharacters(vault.description, 24)}
+        <Text
+          maxW={180}
+          variant="description"
+          fontSize="sm"
+          color="grey.500"
+          isTruncated
+        >
+          {vault.description}
         </Text>
       )}
     </VStack>

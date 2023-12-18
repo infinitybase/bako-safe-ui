@@ -179,6 +179,9 @@ const UserTransactionsPage = () => {
               status={transactionStatus({ ...transaction, account })}
               details={<TransactionCard.Details transaction={transaction} />}
             >
+              {transaction.predicate && (
+                <TransactionCard.VaultInfo vault={transaction.predicate} />
+              )}
               <TransactionCard.CreationDate>
                 {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>

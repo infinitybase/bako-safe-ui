@@ -30,7 +30,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
   return (
-    <HStack justifySelf="end">
+    <HStack minW={140} justifySelf="end">
       {isSigned && (
         <Badge h={6} variant="success">
           You signed
