@@ -100,7 +100,7 @@ const VaultDetailsPage = () => {
             setTemplateFormInitial({
               minSigners: vault.minSigners!,
               addresses:
-                vault.signers! && vault.signers.map((signer) => signer.address),
+                vault.members! && vault.members.map((signer) => signer.address),
             });
             navigate(
               Pages.createTemplate({
