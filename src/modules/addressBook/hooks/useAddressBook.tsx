@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { IApiError } from '@/config';
 import { invalidateQueries } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { UseCreateVaultReturn } from '@/modules/vault';
 
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
@@ -25,12 +26,17 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = () => {
+const useAddressBook = (
+  addressesFieldArray: UseCreateVaultReturn['addresses'],
+) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [contactToDelete, setContactToDelete] = useState({
     id: '',
     nickname: '',
   });
+
+  // const { addressesFieldArray, form: vaultForm } = useCreateVaultForm();
+
   const navigate = useNavigate();
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
@@ -67,7 +73,10 @@ const useAddressBook = () => {
     },
   });
   const createContactRequest = useCreateContactRequest({
-    onSuccess: () => {
+    onSuccess: ({ nickname }) => {
+      // Set the updated array back using setValue
+      const contactAddress = form.getValues('address');
+      addressesFieldArray.update({ address: contactAddress, value: nickname });
       contactDialog.onClose();
       invalidateQueries(['contacts/by-user']);
       successToast({

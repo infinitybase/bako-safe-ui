@@ -113,6 +113,20 @@ const useCreateVault = () => {
     form.trigger();
   };
 
+  const updateAddress = ({
+    address,
+    value,
+  }: {
+    address: string;
+    value: string;
+  }) => {
+    const index = addressesFieldArray.fields.findIndex(
+      (field) => field.value === address,
+    );
+    addressesFieldArray.update(index, { value });
+    form.trigger();
+  };
+
   const hasAddress = (address: string, index: number) => {
     return addressesFieldArray.fields.some(({ value }, _index) => {
       return index !== _index && value === address;
@@ -129,6 +143,7 @@ const useCreateVault = () => {
       remove: removeAddress,
       append: appendAddress,
       has: hasAddress,
+      update: updateAddress,
     },
     tabs: {
       tab,

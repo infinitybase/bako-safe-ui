@@ -41,7 +41,7 @@ const VaultAddressesStep = ({
     search,
     form: contactForm,
     contactDialog,
-  } = useAddressBook();
+  } = useAddressBook(addresses);
 
   return (
     <>

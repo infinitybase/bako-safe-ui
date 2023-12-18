@@ -16,6 +16,8 @@ const CreateContactDialog = ({
   isLoading,
   isEdit,
 }: CreateContactDialogProps) => {
+  const { handleUpdateContact, handleCreateContact } = form;
+
   return (
     <Dialog.Modal
       onClose={dialog.onClose}
@@ -44,7 +46,7 @@ const CreateContactDialog = ({
         <Dialog.PrimaryAction
           type="submit"
           leftIcon={<SquarePlusIcon />}
-          onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
+          onClick={isEdit ? handleUpdateContact : handleCreateContact}
           isDisabled={isLoading}
           isLoading={isLoading}
         >
