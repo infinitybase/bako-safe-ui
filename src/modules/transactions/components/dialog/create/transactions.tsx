@@ -57,25 +57,7 @@ const TransactionFormField = ({
         isEdit={false}
       />
       <VStack spacing={5}>
-        {/* <Controller
-        name={`transactions.${index}.to`}
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-            />
-            <FormLabel>Recipient 1 address</FormLabel>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
-      /> */}
         <Controller
-          // key={id}
           name={`transactions.${index}.to`}
           control={form.control}
           render={({ field, fieldState }) => {
@@ -83,7 +65,7 @@ const TransactionFormField = ({
               <AutoComplete
                 value={field.value}
                 index={index}
-                label={`Recipient 1 address`}
+                label={`Recipient ${index + 1} address`}
                 isInvalid={fieldState.invalid}
                 isDisabled={false}
                 onChange={(selected) => {

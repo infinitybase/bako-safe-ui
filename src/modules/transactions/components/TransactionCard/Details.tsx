@@ -252,6 +252,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                   amount: asset.amount,
                   to: asset.to,
                   transactionID: transaction.id,
+                  recipientNickname: asset?.recipientNickname,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
                 hasToken={hasToken}
@@ -284,7 +285,8 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
       </HStack>
-      {transaction.status !== TransactionStatus.SUCCESS && (
+
+      {transaction.status === TransactionStatus.SUCCESS && (
         <Button
           border="none"
           bgColor="dark.100"
