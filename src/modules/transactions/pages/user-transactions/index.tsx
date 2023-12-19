@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  CircularProgress,
   Heading,
   HStack,
   Icon,
@@ -21,7 +20,11 @@ import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { limitCharacters } from '@/utils';
 
-import { TransactionCard, TransactionFilter } from '../../components';
+import {
+  TransactionCard,
+  TransactionFilter,
+  WaitingSignatureBadge,
+} from '../../components';
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
@@ -129,12 +132,10 @@ const UserTransactionsPage = () => {
           <Heading variant="title-xl" color="grey.200">
             Transactions
           </Heading>
-          <CircularProgress
-            hidden={!transactionRequest.isFetching}
-            size="20px"
-            color="brand.500"
-            trackColor="dark.100"
-            isIndeterminate
+          <WaitingSignatureBadge
+            account={account}
+            isLoading={transactionRequest.isLoading}
+            transactions={transactionRequest.transactions}
           />
         </HStack>
 
