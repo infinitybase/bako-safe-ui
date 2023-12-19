@@ -10,7 +10,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -70,6 +69,7 @@ function AutoComplete({
     isOpen &&
     !isDisabled &&
     !hasSelection &&
+    !isLoading &&
     inputValue.length > 0 &&
     currentIndex === index;
 
@@ -148,12 +148,6 @@ function AutoComplete({
           mt={2}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
-            {isLoading && (
-              <Box p={2}>
-                <Spinner color="brand.500" size="sm" />
-              </Box>
-            )}
-
             <VStack
               hidden={isLoading}
               w="full"
@@ -164,11 +158,7 @@ function AutoComplete({
                 scrollbarWidth: 'none',
               }}
             >
-              {!options.length && (
-                <Text>No items found matching your search</Text>
-              )}
-
-              {options.length &&
+              {options.length > 0 &&
                 options.map(({ value, label }) => (
                   <Box
                     key={value}
