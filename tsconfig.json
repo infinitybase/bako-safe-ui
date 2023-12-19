@@ -1,0 +1,14 @@
+{
+  "extends": "@fuels/ts-config/base.json",
+  "compilerOptions": {
+    /* Paths */
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "types": ["@fuel-wallet/sdk"]
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
