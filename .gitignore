@@ -14,7 +14,7 @@ dist-ssr
 *.local
 .vite
 
-#Env
+# Env
 .env.development
 
 # Editor directories and files
