@@ -1,3 +1,0 @@
-# BSAFE UI
-
-WIP
