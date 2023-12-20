@@ -8,7 +8,7 @@ import {
   useTransactionListRequest,
   useVaultAssets,
   useVaultDetailsRequest,
-  WitnessStatus,
+  waitingSignatures,
 } from '@/modules';
 
 const useSidebar = () => {
@@ -23,14 +23,10 @@ const useSidebar = () => {
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
   const pendingTransactions = useMemo(() => {
-    return (
-      transactionListRequest.data
-        ?.filter((transaction) => transaction.predicateId === params.vaultId)
-        .map((transaction) => transaction.witnesses)
-        .flat()
-        .filter((witness) => witness.status === WitnessStatus.PENDING)
-        .filter((transaction) => transaction.account === account).length ?? 0
-    );
+    return waitingSignatures({
+      account,
+      transactions: transactionListRequest.data ?? [],
+    });
   }, [account, params.vaultId, transactionListRequest.data]);
 
   const checkPathname = (path: string) => location.pathname === path;
