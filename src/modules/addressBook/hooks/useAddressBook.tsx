@@ -1,15 +1,13 @@
-import { Icon, useDisclosure } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useState } from 'react';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineError } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { invalidateQueries } from '@/modules/core';
-import { useNotification } from '@/modules/notification';
 
+import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
@@ -25,19 +23,25 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
+const initialContact = { id: '', nickname: '' };
+
 const useAddressBook = () => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
-  const [contactToDelete, setContactToDelete] = useState({
-    id: '',
-    nickname: '',
-  });
-  const navigate = useNavigate();
+  const [contactToDelete, setContactToDelete] = useState(initialContact);
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
-  const toast = useNotification();
+  const navigate = useNavigate();
+  const { successToast, errorToast, createAndUpdateSuccessToast } =
+    useContactToast();
+
+  // FORM
   const { form } = useCreateContactForm();
+
+  // QUERIES
   const findContactsRequest = useFindContactsRequest();
   const listContactsRequest = useListContactsRequest();
+
+  // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
     onSuccess: () => {
       deleteContactDialog.onClose();
@@ -48,33 +52,21 @@ const useAddressBook = () => {
       });
     },
   });
+
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
       invalidateQueries(['contacts/by-user']);
-
-      successToast({
-        title: 'Nice!',
-        description:
-          'Next time you can use it just by typing this name label or address...',
-      });
+      createAndUpdateSuccessToast();
     },
-    onError: () => {
-      errorToast({
-        title: 'Error!',
-        description: 'There was an error. Check your data and try again.',
-      });
-    },
+    onError: () => errorToast({}),
   });
+
   const createContactRequest = useCreateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
       invalidateQueries(['contacts/by-user']);
-      successToast({
-        title: 'Nice!',
-        description:
-          'Next time you can use it just by typing this name label or address...',
-      });
+      createAndUpdateSuccessToast();
     },
     onError: (error) => {
       const errorDescription = (
@@ -116,42 +108,6 @@ const useAddressBook = () => {
     contactDialog.onOpen();
   };
 
-  const successToast = ({
-    description,
-    title,
-  }: {
-    description?: string;
-    title?: string;
-  }) =>
-    toast({
-      status: 'success',
-      duration: 4000,
-      isClosable: false,
-      title: title ?? 'Success!',
-      description: description ?? '',
-      icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
-      ),
-    });
-
-  const errorToast = ({
-    description,
-    title,
-  }: {
-    description?: string;
-    title?: string;
-  }) => {
-    return toast({
-      status: 'error',
-      duration: 4000,
-      isClosable: false,
-      title: title ?? 'Error!',
-      description:
-        description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-    });
-  };
-
   const debouncedSearchHandler = useCallback(
     debounce((event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.value.length) {
@@ -186,11 +142,11 @@ const useAddressBook = () => {
     search: { handler: debouncedSearchHandler },
     contactDialog,
     deleteContactDialog,
+    contactToEdit,
+    contactToDelete,
     navigate,
     handleOpenDialog,
     handleDeleteContact,
-    contactToEdit,
-    contactToDelete,
     setContactToDelete,
   };
 };
