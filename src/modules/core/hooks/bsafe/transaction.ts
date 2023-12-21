@@ -50,7 +50,7 @@ const useBsafeCreateTransaction = ({
 
 interface UseBsafeListTransactionParams {
   vault: Vault;
-  filter?: IListTransactions;
+  filter?: IListTransactions & { limit: number };
 }
 
 const useBsafeTransactionList = ({
