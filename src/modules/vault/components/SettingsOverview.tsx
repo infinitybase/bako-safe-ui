@@ -122,7 +122,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         Faucet
                       </Button>
                       <Text variant="description" fontSize="xs">
-                        Use the faucet to add assets to the vault
+                        Use the faucet to <br />
+                        add assets to the vault
                       </Text>
                     </VStack>
 
