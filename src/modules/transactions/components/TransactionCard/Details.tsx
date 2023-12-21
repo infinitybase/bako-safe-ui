@@ -198,8 +198,8 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   };
 
   return (
-    <VStack maxW={600} w="full">
-      <HStack pt={5} w="full">
+    <VStack w="full">
+      <HStack pt={5} alignSelf="flex-start" maxW={600} w="full">
         <Box w="full">
           <Box mb={4}>
             <Text color="grey.200" fontWeight="medium">

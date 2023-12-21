@@ -18,6 +18,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { limitCharacters } from '@/utils';
 
 import {
@@ -171,6 +172,8 @@ const UserTransactionsPage = () => {
         overflowY="scroll"
         css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       >
+        {!transactionRequest.isLoading &&
+          !transactionRequest?.transactions.length && <EmptyTransaction />}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}

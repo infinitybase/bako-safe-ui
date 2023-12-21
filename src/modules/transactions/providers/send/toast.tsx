@@ -77,7 +77,7 @@ const useTransactionToast = () => {
               variant="primary"
               size="xs"
             >
-              View in explorer
+              View on explorer
             </Button>
           </Box>
         ),
