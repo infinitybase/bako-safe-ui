@@ -17,9 +17,10 @@ import { Controller } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
-import { AddressUtils, ITemplate, UseCreateVaultReturn } from '@/modules';
+import { invalidateQueries, ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useAddressBook } from '@/modules/addressBook/hooks/';
+import { CONTACTS_PAGINATE_LIST_QUERY_KEY } from '@/modules/addressBook/hooks/useListPaginatedContactsRequest';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -37,10 +38,13 @@ const VaultAddressesStep = ({
   const {
     handleOpenDialog,
     findContactsRequest,
+    contactsPaginatedRequest,
     createContactRequest,
+    contactsPaginatedRequest: { contacts },
     search,
     form: contactForm,
     contactDialog,
+    inView,
   } = useAddressBook();
 
   return (
@@ -124,21 +128,21 @@ const VaultAddressesStep = ({
                         label={first ? 'Your address' : `Address ${index + 1}`}
                         isInvalid={fieldState.invalid}
                         isDisabled={first}
+                        onInputChange={search.handler}
+                        selected={addresses.fields.map((a) => a.value)}
                         onChange={(selected) => {
                           field.onChange(selected);
+                          invalidateQueries([CONTACTS_PAGINATE_LIST_QUERY_KEY]);
                           findContactsRequest.reset();
                         }}
-                        onInputChange={search.handler}
                         errorMessage={fieldState.error?.message}
-                        isLoading={findContactsRequest.isLoading}
-                        options={
-                          findContactsRequest?.data?.map((contact) => ({
-                            value: contact.user.address,
-                            label: `${contact.nickname} - ${AddressUtils.format(
-                              contact.user.address,
-                            )}`,
-                          })) ?? []
+                        isLoading={
+                          contactsPaginatedRequest.isLoading ||
+                          findContactsRequest.isLoading
                         }
+                        isFetching={contactsPaginatedRequest.isFetching}
+                        inView={inView}
+                        options={findContactsRequest?.data ?? contacts ?? []}
                         rightAction={{
                           ...(first
                             ? {}

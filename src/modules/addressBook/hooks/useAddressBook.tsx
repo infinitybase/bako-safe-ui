@@ -1,7 +1,8 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
@@ -13,6 +14,7 @@ import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useFindContactsRequest } from './useFindContactsRequest';
 import { useListContactsRequest } from './useListContactsRequest';
+import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
@@ -23,13 +25,15 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const initialContact = { id: '', nickname: '' };
-
 const useAddressBook = () => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
-  const [contactToDelete, setContactToDelete] = useState(initialContact);
+  const [contactToDelete, setContactToDelete] = useState({
+    id: '',
+    nickname: '',
+  });
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
+  const inView = useInView({ delay: 300 });
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
@@ -40,6 +44,8 @@ const useAddressBook = () => {
   // QUERIES
   const findContactsRequest = useFindContactsRequest();
   const listContactsRequest = useListContactsRequest();
+  // TODO: add dynamic value to enabled param
+  const contactsPaginatedRequest = useListPaginatedContactsRequest(true);
 
   // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
@@ -129,6 +135,16 @@ const useAddressBook = () => {
     deleteContactRequest.mutate(id);
   };
 
+  useEffect(() => {
+    if (inView.inView && !contactsPaginatedRequest.isLoading) {
+      contactsPaginatedRequest.fetchNextPage();
+    }
+  }, [
+    inView.inView,
+    contactsPaginatedRequest.isLoading,
+    contactsPaginatedRequest.fetchNextPage,
+  ]);
+
   return {
     listContactsRequest: {
       ...listContactsRequest,
@@ -138,12 +154,14 @@ const useAddressBook = () => {
     findContactsRequest,
     deleteContactRequest,
     updateContactRequest,
+    contactsPaginatedRequest,
     form: { ...form, handleCreateContact, handleUpdateContact },
     search: { handler: debouncedSearchHandler },
     contactDialog,
     deleteContactDialog,
     contactToEdit,
     contactToDelete,
+    inView,
     navigate,
     handleOpenDialog,
     handleDeleteContact,
