@@ -1,18 +1,20 @@
 import {
   Accordion,
   AccordionItem,
+  Box,
   Center,
   FormControl,
   FormHelperText,
   FormLabel,
-  Input,
+  Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
+import { AutoComplete } from '@/components/autocomplete';
+import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
@@ -37,74 +39,118 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+  const {
+    contactsPaginatedRequest: { contacts, isSuccess },
+    search,
+    handleOpenDialog,
+    form: contactForm,
+    contactDialog,
+    createContactRequest,
+    inView,
+  } = useAddressBook();
 
   return (
-    <VStack spacing={5}>
-      <Controller
-        name={`transactions.${index}.to`}
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-            />
-            <FormLabel>Recipient 1 address</FormLabel>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
+    <>
+      <CreateContactDialog
+        form={contactForm}
+        dialog={contactDialog}
+        isLoading={createContactRequest.isLoading}
+        isEdit={false}
       />
-      <Controller
-        name={`transactions.${index}.asset`}
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <AssetSelect
-            isInvalid={fieldState.invalid}
-            assets={assets.assets}
-            name={`transaction.${index}.asset`}
-            value={field.value}
-            onChange={field.onChange}
-            helperText={
-              <FormHelperText
-                color={fieldState.invalid ? 'error.500' : 'grey.200'}
-              >
-                {fieldState.error?.message ??
-                  'Select the asset you want to send'}
-              </FormHelperText>
-            }
-          />
-        )}
-      />
-      <Controller
-        name={`transactions.${index}.amount`}
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <FormControl>
-            <AmountInput
-              placeholder=" "
-              value={field.value}
-              onChange={field.onChange}
+      <VStack spacing={5}>
+        <Controller
+          name={`transactions.${index}.to`}
+          control={form.control}
+          render={({ field, fieldState }) => {
+            return (
+              <AutoComplete
+                inView={inView}
+                value={field.value}
+                index={index}
+                label={`Recipient ${index + 1} address`}
+                isInvalid={fieldState.invalid}
+                isDisabled={false}
+                onInputChange={search.handler}
+                onChange={(selected) => field.onChange(selected)}
+                errorMessage={fieldState.error?.message}
+                isLoading={!isSuccess}
+                options={
+                  contacts &&
+                  contacts?.map(({ user, nickname }) => ({
+                    value: user.address,
+                    label: `${nickname} - ${AddressUtils.format(user.address)}`,
+                  }))
+                }
+                rightAction={{}}
+                bottomAction={
+                  <Box mt={2}>
+                    <Text color="grey.200" fontSize={12}>
+                      Do you wanna{' '}
+                      <Link
+                        color="brand.500"
+                        onClick={() =>
+                          handleOpenDialog?.({ address: field.value })
+                        }
+                      >
+                        add
+                      </Link>{' '}
+                      this address in your address book?
+                    </Text>
+                  </Box>
+                }
+              />
+            );
+          }}
+        />
+        <Controller
+          name={`transactions.${index}.asset`}
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <AssetSelect
               isInvalid={fieldState.invalid}
+              assets={assets.assets}
+              name={`transaction.${index}.asset`}
+              value={field.value}
+              onChange={field.onChange}
+              helperText={
+                <FormHelperText
+                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
+                >
+                  {fieldState.error?.message ??
+                    'Select the asset you want to send'}
+                </FormHelperText>
+              }
             />
-            <FormLabel color="gray">Amount</FormLabel>
-            <FormHelperText>
-              {asset && (
-                <Text>
-                  Balance: {assets.getAssetInfo(asset)?.slug}{' '}
-                  {assets.getCoinBalance(asset)}
-                </Text>
-              )}
-            </FormHelperText>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
-      />
-    </VStack>
+          )}
+        />
+        <Controller
+          name={`transactions.${index}.amount`}
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <FormControl>
+              <AmountInput
+                placeholder=" "
+                value={field.value}
+                onChange={field.onChange}
+                isInvalid={fieldState.invalid}
+              />
+              <FormLabel color="gray">Amount</FormLabel>
+              <FormHelperText>
+                {asset && (
+                  <Text>
+                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
+                    {assets.getCoinBalance(asset)}
+                  </Text>
+                )}
+              </FormHelperText>
+              <FormHelperText color="error.500">
+                {fieldState.error?.message}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
+      </VStack>
+    </>
   );
 };
 

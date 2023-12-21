@@ -58,6 +58,7 @@ const AssetBoxInfo = ({
   );
 
   const contractWithoutToken = isContract && !hasToken;
+  const nickname = asset?.recipientNickname;
 
   return (
     <HStack
@@ -144,9 +145,37 @@ const AssetBoxInfo = ({
       )}
 
       {!isContract && !!asset && (
-        <Text color="grey.200" fontSize="md">
-          {asset?.recipientNickname ?? AddressUtils.format(asset.to)}
-        </Text>
+        <VStack
+          h="full"
+          minH={51}
+          maxW={600}
+          spacing={0}
+          justifyContent="center"
+          alignItems="start"
+        >
+          {!!nickname && (
+            <Text
+              fontSize="lg"
+              color="grey.200"
+              fontWeight="semibold"
+              maxW={220}
+              isTruncated
+            >
+              {nickname}
+            </Text>
+          )}
+
+          <Text
+            maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+            fontSize="md"
+            color={nickname ? 'grey.500' : 'grey.200'}
+            fontWeight={nickname ? 'regular' : 'bold'}
+            textOverflow="ellipsis"
+            isTruncated
+          >
+            {AddressUtils.format(asset.to ?? '')}
+          </Text>
+        </VStack>
       )}
     </HStack>
   );
@@ -252,6 +281,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                   amount: asset.amount,
                   to: asset.to,
                   transactionID: transaction.id,
+                  recipientNickname: asset?.recipientNickname,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
                 hasToken={hasToken}
@@ -284,6 +314,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
       </HStack>
+
       {transaction.status === TransactionStatus.SUCCESS && (
         <Button
           border="none"

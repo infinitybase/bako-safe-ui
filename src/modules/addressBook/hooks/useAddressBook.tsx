@@ -1,20 +1,19 @@
-import { Icon, useDisclosure } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineError } from 'react-icons/md';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { invalidateQueries } from '@/modules/core';
-import { useNotification } from '@/modules/notification';
 
+import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
-import { useFindContactsRequest } from './useFindContactsRequest';
 import { useListContactsRequest } from './useListContactsRequest';
+import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
@@ -27,17 +26,28 @@ interface DialogProps {
 
 const useAddressBook = () => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
+  const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
     id: '',
     nickname: '',
   });
-  const navigate = useNavigate();
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
-  const toast = useNotification();
+  const inView = useInView({ delay: 300 });
+  const navigate = useNavigate();
+  const { successToast, errorToast, createAndUpdateSuccessToast } =
+    useContactToast();
+
+  // FORM
   const { form } = useCreateContactForm();
-  const findContactsRequest = useFindContactsRequest();
+
+  // QUERIES
   const listContactsRequest = useListContactsRequest();
+  const contactsPaginatedRequest = useListPaginatedContactsRequest({
+    q: search,
+  });
+
+  // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
     onSuccess: () => {
       deleteContactDialog.onClose();
@@ -48,46 +58,40 @@ const useAddressBook = () => {
       });
     },
   });
+
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
       invalidateQueries(['contacts/by-user']);
-
-      successToast({
-        title: 'Nice!',
-        description:
-          'Next time you can use it just by typing this name label or address...',
-      });
+      createAndUpdateSuccessToast();
     },
-    onError: () => {
-      errorToast({
-        title: 'Error!',
-        description: 'There was an error. Check your data and try again.',
-      });
-    },
+    onError: () => errorToast({}),
   });
+
   const createContactRequest = useCreateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
       invalidateQueries(['contacts/by-user']);
-      successToast({
-        title: 'Nice!',
-        description:
-          'Next time you can use it just by typing this name label or address...',
-      });
+      createAndUpdateSuccessToast();
     },
     onError: (error) => {
       const errorDescription = (
         (error as AxiosError)?.response?.data as IApiError
       )?.detail;
 
-      errorToast({ description: errorDescription });
-
       if (errorDescription?.includes('label')) {
+        errorToast({
+          title: 'Duplicated name',
+          description: 'You already have this name in your address book',
+        });
         form.setError('nickname', { message: 'Duplicated label' });
       }
 
       if (errorDescription?.includes('address')) {
+        errorToast({
+          title: 'Duplicated address',
+          description: 'You already have this address in your address book',
+        });
         form.setError('address', { message: 'Duplicated address' });
       }
     },
@@ -110,47 +114,14 @@ const useAddressBook = () => {
     contactDialog.onOpen();
   };
 
-  const successToast = ({
-    description,
-    title,
-  }: {
-    description?: string;
-    title?: string;
-  }) =>
-    toast({
-      status: 'success',
-      duration: 4000,
-      isClosable: false,
-      title: title ?? 'Success!',
-      description: description ?? '',
-      icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
-      ),
-    });
-
-  const errorToast = ({
-    description,
-    title,
-  }: {
-    description?: string;
-    title?: string;
-  }) => {
-    return toast({
-      status: 'error',
-      duration: 4000,
-      isClosable: false,
-      title: title ?? 'Error!',
-      description:
-        description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-    });
-  };
-
   const debouncedSearchHandler = useCallback(
-    debounce((event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target.value.length) {
-        findContactsRequest.mutate({ q: event.target.value });
+    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
+      if (typeof event === 'string') {
+        setSearch(event);
+        return;
       }
+
+      setSearch(event.target.value);
     }, 300),
     [],
   );
@@ -167,24 +138,35 @@ const useAddressBook = () => {
     deleteContactRequest.mutate(id);
   };
 
+  useEffect(() => {
+    if (inView.inView && !contactsPaginatedRequest.isLoading) {
+      contactsPaginatedRequest.fetchNextPage();
+    }
+  }, [
+    inView.inView,
+    contactsPaginatedRequest.isLoading,
+    contactsPaginatedRequest.fetchNextPage,
+  ]);
+
   return {
     listContactsRequest: {
       ...listContactsRequest,
       contacts: listContactsRequest.data,
     },
     createContactRequest,
-    findContactsRequest,
     deleteContactRequest,
     updateContactRequest,
+    contactsPaginatedRequest,
     form: { ...form, handleCreateContact, handleUpdateContact },
-    search: { handler: debouncedSearchHandler },
+    search: { value: search, handler: debouncedSearchHandler },
     contactDialog,
     deleteContactDialog,
+    contactToEdit,
+    contactToDelete,
+    inView,
     navigate,
     handleOpenDialog,
     handleDeleteContact,
-    contactToEdit,
-    contactToDelete,
     setContactToDelete,
   };
 };

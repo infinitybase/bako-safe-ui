@@ -36,11 +36,13 @@ const VaultAddressesStep = ({
 }: VaultAddressesStepProps) => {
   const {
     handleOpenDialog,
-    findContactsRequest,
+    contactsPaginatedRequest,
     createContactRequest,
+    contactsPaginatedRequest: { contacts },
     search,
     form: contactForm,
     contactDialog,
+    inView,
   } = useAddressBook();
 
   return (
@@ -124,20 +126,26 @@ const VaultAddressesStep = ({
                         label={first ? 'Your address' : `Address ${index + 1}`}
                         isInvalid={fieldState.invalid}
                         isDisabled={first}
-                        onChange={(selected) => {
-                          field.onChange(selected);
-                          findContactsRequest.reset();
-                        }}
                         onInputChange={search.handler}
+                        onChange={(selected) => field.onChange(selected)}
                         errorMessage={fieldState.error?.message}
-                        isLoading={findContactsRequest.isLoading}
+                        isLoading={!contactsPaginatedRequest.isSuccess}
+                        inView={inView}
                         options={
-                          findContactsRequest?.data?.map((contact) => ({
-                            value: contact.user.address,
-                            label: `${contact.nickname} - ${AddressUtils.format(
-                              contact.user.address,
-                            )}`,
-                          })) ?? []
+                          contacts &&
+                          contacts
+                            ?.filter(
+                              ({ user }) =>
+                                !addresses.fields
+                                  .map((a) => a.value)
+                                  ?.includes(user.address),
+                            )
+                            ?.map(({ user, nickname }) => ({
+                              value: user.address,
+                              label: `${nickname} - ${AddressUtils.format(
+                                user.address,
+                              )}`,
+                            }))
                         }
                         rightAction={{
                           ...(first
