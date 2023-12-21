@@ -96,8 +96,12 @@ const TransactionConfirm = () => {
       <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
 
       {/* Actions */}
-      <Dialog.Actions w="full">
-        <Dialog.SecondaryAction size="lg" onClick={cancelTransaction}>
+      <Dialog.Actions hidden={isLoadingTransactionSummary} w="full">
+        <Dialog.SecondaryAction
+          size="lg"
+          onClick={cancelTransaction}
+          disabled={confirmingTransaction}
+        >
           Reject
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
