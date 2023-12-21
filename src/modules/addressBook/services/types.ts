@@ -24,7 +24,7 @@ export interface FindContactsParams {
 }
 
 export interface GetPaginatedContactsParams {
-  // q?: string;
+  q?: string;
   perPage?: number;
   page?: number;
   orderBy?: string;

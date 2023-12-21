@@ -12,7 +12,6 @@ import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
-import { useFindContactsRequest } from './useFindContactsRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
@@ -27,6 +26,7 @@ interface DialogProps {
 
 const useAddressBook = () => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
+  const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
     id: '',
     nickname: '',
@@ -42,10 +42,10 @@ const useAddressBook = () => {
   const { form } = useCreateContactForm();
 
   // QUERIES
-  const findContactsRequest = useFindContactsRequest();
   const listContactsRequest = useListContactsRequest();
-  // TODO: add dynamic value to enabled param
-  const contactsPaginatedRequest = useListPaginatedContactsRequest(true);
+  const contactsPaginatedRequest = useListPaginatedContactsRequest({
+    q: search,
+  });
 
   // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
@@ -115,10 +115,13 @@ const useAddressBook = () => {
   };
 
   const debouncedSearchHandler = useCallback(
-    debounce((event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target.value.length) {
-        findContactsRequest.mutate({ q: event.target.value });
+    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
+      if (typeof event === 'string') {
+        setSearch(event);
+        return;
       }
+
+      setSearch(event.target.value);
     }, 300),
     [],
   );
@@ -151,12 +154,11 @@ const useAddressBook = () => {
       contacts: listContactsRequest.data,
     },
     createContactRequest,
-    findContactsRequest,
     deleteContactRequest,
     updateContactRequest,
     contactsPaginatedRequest,
     form: { ...form, handleCreateContact, handleUpdateContact },
-    search: { handler: debouncedSearchHandler },
+    search: { value: search, handler: debouncedSearchHandler },
     contactDialog,
     deleteContactDialog,
     contactToEdit,

@@ -40,12 +40,13 @@ const TransactionFormField = ({
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
   const {
-    findContactsRequest,
+    contactsPaginatedRequest: { contacts, isSuccess },
     search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
     createContactRequest,
+    inView,
   } = useAddressBook();
 
   return (
@@ -63,25 +64,22 @@ const TransactionFormField = ({
           render={({ field, fieldState }) => {
             return (
               <AutoComplete
+                inView={inView}
                 value={field.value}
                 index={index}
                 label={`Recipient ${index + 1} address`}
                 isInvalid={fieldState.invalid}
                 isDisabled={false}
-                onChange={(selected) => {
-                  field.onChange(selected);
-                  findContactsRequest.reset();
-                }}
                 onInputChange={search.handler}
+                onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
-                isLoading={findContactsRequest.isLoading}
+                isLoading={!isSuccess}
                 options={
-                  findContactsRequest?.data?.map((contact) => ({
-                    value: contact.user.address,
-                    label: `${contact.nickname} - ${AddressUtils.format(
-                      contact.user.address,
-                    )}`,
-                  })) ?? []
+                  contacts &&
+                  contacts?.map(({ user, nickname }) => ({
+                    value: user.address,
+                    label: `${nickname} - ${AddressUtils.format(user.address)}`,
+                  }))
                 }
                 rightAction={{}}
                 bottomAction={

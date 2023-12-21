@@ -14,21 +14,26 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
+import { ChangeEvent, ReactNode, useState } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { AddressBook, AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules';
 
 interface RightAction {
   icon?: ComponentWithAs<'svg', IconProps>;
   handler?: () => void;
 }
 
+interface AutocompleteOption {
+  value: string;
+  label: string;
+}
+
 interface AutoCompleteProps {
   isLoading: boolean;
-  isFetching: boolean;
   isInvalid: boolean;
-  options: AddressBook[];
+  options: AutocompleteOption[];
+  // selected?: string[];
   value?: string;
   label: string;
   isDisabled: boolean;
@@ -37,14 +42,12 @@ interface AutoCompleteProps {
   bottomAction?: ReactNode;
   index?: number;
   inView: InViewHookResponse;
-  selected?: string[];
   onChange: (value: string) => void;
-  onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onInputChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
 }
 
 function AutoComplete({
   isLoading,
-  isFetching,
   isInvalid,
   isDisabled,
   options,
@@ -53,41 +56,28 @@ function AutoComplete({
   errorMessage,
   rightAction,
   bottomAction,
-  selected,
   index,
   inView,
   onChange,
   onInputChange,
 }: AutoCompleteProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value ?? '');
   const [currentIndex, setCurrentIndex] = useState<number>();
 
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
 
-  const optionsList = options
-    ?.filter(({ user }) => !selected?.includes(user.address))
-    ?.map(({ user, nickname }) => ({
-      value: user.address,
-      label: `${nickname} - ${AddressUtils.format(user.address)}`,
-    }));
-
-  const showOptionsList = isOpen && currentIndex === index;
-
-  console.log(`🚀`, isOpen, currentIndex === index);
+  const showOptionsList =
+    currentIndex === index && !isLoading && options.length > 0;
 
   const showBottomAction =
     bottomAction &&
     !isContact(inputValue) &&
     !isInvalid &&
+    !isLoading &&
     !showOptionsList &&
     inputValue.length > 0 &&
     AddressUtils.isValid(inputValue);
-
-  useEffect(() => {
-    setIsOpen(options.length ? true : false);
-  }, [isLoading, options]);
 
   return (
     <FormControl isInvalid={isInvalid}>
@@ -98,24 +88,21 @@ function AutoComplete({
           disabled={isDisabled || false}
           autoComplete="off"
           onBlur={() => {
-            setIsOpen(false);
             setCurrentIndex(undefined);
-            // setEnabled(false)
           }}
           onFocus={() => {
+            if (!inputValue) onInputChange?.('');
             setCurrentIndex(typeof index === 'number' ? index : 0);
-            // setEnabled(true)
           }}
           onChange={(e) => {
             onChange(e.target.value);
-            setIsOpen(false);
             onInputChange?.(e);
             setInputValue(e.target.value);
           }}
         />
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {!!rightAction?.handler && (
+        {
           <InputRightElement
             px={3}
             top="1px"
@@ -124,7 +111,7 @@ function AutoComplete({
             bgColor="dark.200"
             h="calc(100% - 2px)"
           >
-            {isFetching || isLoading ? (
+            {isLoading && currentIndex === index ? (
               <CircularProgress
                 trackColor="dark.100"
                 size={18}
@@ -132,15 +119,17 @@ function AutoComplete({
                 color="brand.500"
               />
             ) : (
-              <Icon
-                as={rightAction.icon}
-                fontSize="md"
-                cursor="pointer"
-                onClick={rightAction.handler}
-              />
+              !!rightAction?.handler && (
+                <Icon
+                  as={rightAction.icon}
+                  fontSize="md"
+                  cursor="pointer"
+                  onClick={rightAction.handler}
+                />
+              )
             )}
           </InputRightElement>
-        )}
+        }
       </InputGroup>
 
       {isInvalid && !showOptionsList && (
@@ -163,43 +152,41 @@ function AutoComplete({
           zIndex={200}
           w="full"
           mt={2}
+          pb={0}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
-              hidden={isLoading}
               w="full"
-              maxH={180}
+              maxH={194}
               overflowY="scroll"
               css={{
                 '&::-webkit-scrollbar': { width: '0' },
                 scrollbarWidth: 'none',
               }}
             >
-              {optionsList.length > 0 &&
-                optionsList.map(({ value, label }) => (
-                  <Box
-                    key={value}
+              {options.map(({ value, label }) => (
+                <Box
+                  key={value}
+                  w="full"
+                  p={2}
+                  borderRadius={10}
+                  cursor="pointer"
+                  _hover={{ background: 'dark.150' }}
+                  onMouseDown={() => {
+                    setInputValue(label);
+                    onChange(value);
+                  }}
+                >
+                  <Text
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
                     w="full"
-                    p={2}
-                    borderRadius={10}
-                    cursor="pointer"
-                    _hover={{ background: 'dark.150' }}
-                    onMouseDown={() => {
-                      setInputValue(label);
-                      onChange(value);
-                      setIsOpen(false);
-                    }}
                   >
-                    <Text
-                      whiteSpace="nowrap"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      w="full"
-                    >
-                      {label}
-                    </Text>
-                  </Box>
-                ))}
+                    {label}
+                  </Text>
+                </Box>
+              ))}
               <Box ref={inView.ref} />
             </VStack>
           </Flex>

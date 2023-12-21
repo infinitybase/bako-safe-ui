@@ -1,27 +1,29 @@
 import { SortOption } from 'bsafe';
 import { useInfiniteQuery } from 'react-query';
 
-import { AddressBookService } from '../services';
+import { AddressBookService, GetPaginatedContactsParams } from '../services';
 
-export const CONTACTS_PAGINATE_LIST_QUERY_KEY = 'transactions/pagination';
+export const CONTACTS_PAGINATE_LIST_QUERY_KEY = 'contacts/pagination';
 
-const useListPaginatedContactsRequest = (enabled: boolean) => {
+const useListPaginatedContactsRequest = (
+  filter: GetPaginatedContactsParams,
+) => {
   const { data, ...query } = useInfiniteQuery(
-    [CONTACTS_PAGINATE_LIST_QUERY_KEY],
+    [CONTACTS_PAGINATE_LIST_QUERY_KEY, filter],
     ({ pageParam }) =>
       AddressBookService.listWithPagination({
+        ...filter,
         perPage: 5,
         page: pageParam || 0,
         orderBy: 'nickname',
         sort: SortOption.ASC,
       }),
     {
-      enabled,
-      refetchOnWindowFocus: false,
       getNextPageParam: (lastPage) =>
         lastPage.currentPage !== lastPage.totalPages
           ? lastPage.nextPage
           : undefined,
+      refetchOnWindowFocus: false,
     },
   );
 
