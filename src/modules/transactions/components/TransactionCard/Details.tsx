@@ -29,8 +29,16 @@ import {
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
+type TransactionUI = Omit<ITransaction, 'assets'> & {
+  assets: {
+    assetId: string;
+    amount: string;
+    to: string;
+    recipientNickname?: string;
+  }[];
+};
 interface TransactionDetailsProps {
-  transaction: ITransaction;
+  transaction: TransactionUI;
   status?: TransactionState;
 }
 
