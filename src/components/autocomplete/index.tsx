@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ChangeEvent, ReactNode, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
 import { AddressUtils } from '@/modules';
@@ -63,21 +63,37 @@ function AutoComplete({
 }: AutoCompleteProps) {
   const [inputValue, setInputValue] = useState(value ?? '');
   const [currentIndex, setCurrentIndex] = useState<number>();
+  const [showBottomActionDelayed, setShowBottomActionDelayed] =
+    useState<boolean>(false);
 
+  const isCurrent = currentIndex === index;
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
-
-  const showOptionsList =
-    currentIndex === index && !isLoading && options.length > 0;
-
+  const showOptionsList = isCurrent && !isLoading && options.length > 0;
+  const loading = isCurrent && isLoading;
   const showBottomAction =
-    bottomAction &&
-    !isContact(inputValue) &&
+    !loading &&
     !isInvalid &&
-    !isLoading &&
+    bottomAction &&
     !showOptionsList &&
     inputValue.length > 0 &&
-    AddressUtils.isValid(inputValue);
+    !isContact(inputValue) &&
+    AddressUtils.isValid(inputValue) &&
+    !options.map((o) => o.value).includes(inputValue);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (showBottomAction) {
+      timer = setTimeout(() => {
+        setShowBottomActionDelayed(true);
+      }, 500);
+    } else {
+      setShowBottomActionDelayed(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [showBottomAction]);
 
   return (
     <FormControl isInvalid={isInvalid}>
@@ -87,14 +103,15 @@ function AutoComplete({
           placeholder=" "
           disabled={isDisabled || false}
           autoComplete="off"
-          onBlur={() => {
-            setCurrentIndex(undefined);
-          }}
+          onBlur={() => setCurrentIndex(undefined)}
           onFocus={() => {
             if (!inputValue) onInputChange?.('');
             setCurrentIndex(typeof index === 'number' ? index : 0);
           }}
           onChange={(e) => {
+            const emptyOrInvalidAddress =
+              !e.target.value || !AddressUtils.isValid(e.target.value);
+            if (emptyOrInvalidAddress) setShowBottomActionDelayed(false);
             onChange(e.target.value);
             onInputChange?.(e);
             setInputValue(e.target.value);
@@ -102,7 +119,7 @@ function AutoComplete({
         />
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {
+        {index && (
           <InputRightElement
             px={3}
             top="1px"
@@ -111,7 +128,7 @@ function AutoComplete({
             bgColor="dark.200"
             h="calc(100% - 2px)"
           >
-            {isLoading && currentIndex === index ? (
+            {loading && currentIndex === index ? (
               <CircularProgress
                 trackColor="dark.100"
                 size={18}
@@ -129,7 +146,7 @@ function AutoComplete({
               )
             )}
           </InputRightElement>
-        }
+        )}
       </InputGroup>
 
       {isInvalid && !showOptionsList && (
@@ -137,7 +154,7 @@ function AutoComplete({
       )}
 
       {/* ACTION THAT CAN DYNAMICALLY APPEARS BELOW THE INPUT */}
-      {showBottomAction && bottomAction}
+      {showBottomActionDelayed && bottomAction}
 
       {showOptionsList && (
         <Box
