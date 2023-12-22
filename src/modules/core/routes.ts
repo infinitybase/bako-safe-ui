@@ -17,13 +17,10 @@ const Pages = {
   createTemplate: pageRoute<{ vaultId: string }>(
     '/vault/:vaultId/template/create',
   ),
+
+  //transaction
   createTransaction: pageRoute<{ vaultId: string }>(
     '/vault/:vaultId/transactions/create',
-  ),
-
-  //template
-  createTemplate: pageRoute<{ vaultId: string }>(
-    '/vault/:vaultId/template/create',
   ),
 
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
