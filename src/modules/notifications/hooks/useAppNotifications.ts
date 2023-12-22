@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { queryClient } from '@/config';
+import { useFuelAccount } from '@/modules/auth';
 import {
+  invalidateQueries,
   NotificationsQueryKey,
   NotificationSummary,
   Pages,
@@ -27,9 +28,13 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
+  const { account } = useFuelAccount();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
-  const notificationsListRequest = useListNotificationsRequest(props?.isOpen);
+  const notificationsListRequest = useListNotificationsRequest(
+    account,
+    props?.isOpen,
+  );
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
@@ -41,8 +46,10 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     setUnreadCounter(0);
     props?.onClose?.();
 
-    queryClient.invalidateQueries(NotificationsQueryKey.PAGINATED_LIST);
-    queryClient.invalidateQueries(NotificationsQueryKey.UNREAD_COUNTER);
+    await invalidateQueries([
+      NotificationsQueryKey.PAGINATED_LIST,
+      NotificationsQueryKey.UNREAD_COUNTER,
+    ]);
 
     if (hasUnread) setNotificationAsReadRequest.mutate({});
   };
