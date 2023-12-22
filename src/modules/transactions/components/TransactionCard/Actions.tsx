@@ -3,7 +3,6 @@ import {
   Button,
   HStack,
   Icon,
-  Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
@@ -31,8 +30,7 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
   return (
-    <>
-      <Spacer />
+    <HStack minW={140} justifySelf="end">
       {isSigned && (
         <Badge h={6} variant="success">
           You signed
@@ -97,9 +95,8 @@ const Actions = ({ transaction, status }: TransactionActionsProps) => {
         fontSize="xl"
         color="grey.200"
         cursor="pointer"
-        ml={-5}
       />
-    </>
+    </HStack>
   );
 };
 

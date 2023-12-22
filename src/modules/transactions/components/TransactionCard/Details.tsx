@@ -19,7 +19,6 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
-import { FaArrowRightLong } from 'react-icons/fa6';
 
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import {
@@ -30,8 +29,16 @@ import {
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
+type TransactionUI = Omit<ITransaction, 'assets'> & {
+  assets: {
+    assetId: string;
+    amount: string;
+    to: string;
+    recipientNickname?: string;
+  }[];
+};
 interface TransactionDetailsProps {
-  transaction: ITransaction;
+  transaction: TransactionUI;
   status?: TransactionState;
 }
 
@@ -59,6 +66,7 @@ const AssetBoxInfo = ({
   );
 
   const contractWithoutToken = isContract && !hasToken;
+  const nickname = asset?.recipientNickname;
 
   return (
     <HStack
@@ -83,7 +91,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={110}>
+            <Box mt={0.5} w={115}>
               <Heading textAlign="center" variant="title-md" color="grey.200">
                 {asset?.amount}
               </Heading>
@@ -108,13 +116,7 @@ const AssetBoxInfo = ({
         <Icon
           color={isContract ? 'grey.200' : 'black'}
           fontSize="xs"
-          as={
-            !isContract
-              ? DoubleArrowIcon
-              : contractWithoutToken
-              ? FaArrowRightLong
-              : FaPlay
-          }
+          as={!isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
 
@@ -151,9 +153,37 @@ const AssetBoxInfo = ({
       )}
 
       {!isContract && !!asset && (
-        <Text color="grey.200" fontSize="md">
-          {asset?.recipientNickname ?? AddressUtils.format(asset.to)}
-        </Text>
+        <VStack
+          h="full"
+          minH={51}
+          maxW={600}
+          spacing={0}
+          justifyContent="center"
+          alignItems="start"
+        >
+          {!!nickname && (
+            <Text
+              fontSize="lg"
+              color="grey.200"
+              fontWeight="semibold"
+              maxW={220}
+              isTruncated
+            >
+              {nickname}
+            </Text>
+          )}
+
+          <Text
+            maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+            fontSize="md"
+            color={nickname ? 'grey.500' : 'grey.200'}
+            fontWeight={nickname ? 'regular' : 'bold'}
+            textOverflow="ellipsis"
+            isTruncated
+          >
+            {AddressUtils.format(asset.to ?? '')}
+          </Text>
+        </VStack>
       )}
     </HStack>
   );
@@ -176,9 +206,9 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   };
 
   return (
-    <VStack>
-      <HStack pt={5} w="full">
-        <Box>
+    <VStack w="full">
+      <HStack pt={5} alignSelf="flex-start" maxW={600} w="full">
+        <Box w="full">
           <Box mb={4}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -250,7 +280,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </>
           )}
 
-          <VStack alignItems="flex-start">
+          <VStack w="full" alignItems="flex-start">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={index}
@@ -259,6 +289,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                   amount: asset.amount,
                   to: asset.to,
                   transactionID: transaction.id,
+                  recipientNickname: asset?.recipientNickname,
                 }}
                 borderColor={index > 0 ? 'dark.100' : 'transparent'}
                 hasToken={hasToken}
@@ -276,6 +307,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </VStack>
 
           <Box
+            w="full"
             mt={10}
             hidden={transaction.status !== TransactionStatus.SUCCESS}
             borderColor="dark.100"
@@ -290,15 +322,17 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
       </HStack>
-      <Button
-        border="none"
-        bgColor="dark.100"
-        variant="secondary"
-        onClick={handleViewInExplorer}
-        hidden={transaction.status !== TransactionStatus.SUCCESS}
-      >
-        View on Explorer
-      </Button>
+
+      {transaction.status === TransactionStatus.SUCCESS && (
+        <Button
+          border="none"
+          bgColor="dark.100"
+          variant="secondary"
+          onClick={handleViewInExplorer}
+        >
+          View on Explorer
+        </Button>
+      )}
     </VStack>
   );
 };

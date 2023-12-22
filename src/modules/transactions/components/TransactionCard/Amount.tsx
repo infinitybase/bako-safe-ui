@@ -1,8 +1,15 @@
-import { Box, Heading, HStack, Text } from '@chakra-ui/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Heading,
+  HStack,
+  Text,
+} from '@chakra-ui/react';
+import { ITransferAsset } from 'bsafe';
 import { bn } from 'fuels';
 
-import { NativeAssetId } from '@/modules/core';
-import { ITransferAsset } from 'bsafe';
+import { assetsMap, NativeAssetId } from '@/modules/core';
 
 interface TransactionCardAmountProps {
   assets: ITransferAsset[];
@@ -15,8 +22,11 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
     .format();
 
   return (
-    <HStack w={110} ml={0} textAlign="left">
-      <Box mt={0.5}>
+    <HStack alignItems="center" justifyContent="flex-start" w={250} ml={0}>
+      <AvatarGroup max={2}>
+        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} />
+      </AvatarGroup>
+      <Box w="full" mt={0.5} textAlign="left">
         <Heading variant="title-md" color="grey.200">
           {ethAmount}
         </Heading>

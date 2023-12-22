@@ -34,7 +34,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   ].includes(transaction.status);
 
   return (
-    <HStack w={220} ml={6}>
+    <HStack justifyContent="center" ml={6}>
       {isPending && (
         <CircularProgress
           trackColor="dark.100"

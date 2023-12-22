@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  CircularProgress,
   Heading,
   HStack,
   Icon,
@@ -19,9 +18,14 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { limitCharacters } from '@/utils';
 
-import { TransactionCard, TransactionFilter } from '../../components';
+import {
+  TransactionCard,
+  TransactionFilter,
+  WaitingSignatureBadge,
+} from '../../components';
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
@@ -129,12 +133,10 @@ const UserTransactionsPage = () => {
           <Heading variant="title-xl" color="grey.200">
             Transactions
           </Heading>
-          <CircularProgress
-            hidden={!transactionRequest.isFetching}
-            size="20px"
-            color="brand.500"
-            trackColor="dark.100"
-            isIndeterminate
+          <WaitingSignatureBadge
+            account={account}
+            isLoading={transactionRequest.isLoading}
+            transactions={transactionRequest.transactions}
           />
         </HStack>
 
@@ -170,6 +172,8 @@ const UserTransactionsPage = () => {
         overflowY="scroll"
         css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       >
+        {!transactionRequest.isLoading &&
+          !transactionRequest?.transactions.length && <EmptyTransaction />}
         {transactionRequest.transactions.map((transaction) => (
           <CustomSkeleton
             key={transaction.id}
@@ -179,6 +183,9 @@ const UserTransactionsPage = () => {
               status={transactionStatus({ ...transaction, account })}
               details={<TransactionCard.Details transaction={transaction} />}
             >
+              {transaction.predicate && (
+                <TransactionCard.VaultInfo vault={transaction.predicate} />
+              )}
               <TransactionCard.CreationDate>
                 {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>
