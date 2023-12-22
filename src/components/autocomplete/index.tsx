@@ -70,7 +70,7 @@ function AutoComplete({
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
   const showOptionsList = isCurrent && !isLoading && options.length > 0;
-  const loading = isCurrent && isLoading;
+  const loading = isLoading && isCurrent;
   const showBottomAction =
     !loading &&
     !isInvalid &&
@@ -111,7 +111,9 @@ function AutoComplete({
           onChange={(e) => {
             const emptyOrInvalidAddress =
               !e.target.value || !AddressUtils.isValid(e.target.value);
+
             if (emptyOrInvalidAddress) setShowBottomActionDelayed(false);
+
             onChange(e.target.value);
             onInputChange?.(e);
             setInputValue(e.target.value);
@@ -119,7 +121,7 @@ function AutoComplete({
         />
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {index && (
+        {!isDisabled && (
           <InputRightElement
             px={3}
             top="1px"
@@ -128,7 +130,7 @@ function AutoComplete({
             bgColor="dark.200"
             h="calc(100% - 2px)"
           >
-            {loading && currentIndex === index ? (
+            {loading ? (
               <CircularProgress
                 trackColor="dark.100"
                 size={18}
