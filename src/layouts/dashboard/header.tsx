@@ -13,6 +13,7 @@ import {
   Skeleton,
   Text,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ import {
 } from '@/components';
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
+import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
 
 import { useSidebar } from './hook';
@@ -127,7 +129,14 @@ const UserBox = () => {
 
 const Header = () => {
   const navigate = useNavigate();
-  const { drawer, unreadCounter } = useSidebar();
+  const { drawer } = useSidebar();
+  const { unreadCounter, setUnreadCounter } = useAppNotifications();
+
+  // Bug fix to unread counter that keeps previous state after redirect
+  useEffect(() => {
+    setUnreadCounter(0);
+    setUnreadCounter(unreadCounter);
+  }, []);
 
   return (
     <Flex

@@ -65,7 +65,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   };
 
   const retryTransaction = async () => {
-    transactionSendContext.executeTransaction(transaction);
+    return transactionSendContext.executeTransaction(transaction);
   };
 
   const declineTransaction = async (transactionId: string) => {
@@ -79,7 +79,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   useEffect(() => {
     if (!transaction) return;
 
-    if (transaction.status === TransactionStatus.PENDING_SENDER) {
+    if (transaction.status === TransactionStatus.PROCESS_ON_CHAIN) {
       transactionSendContext.executeTransaction(transaction);
     }
   }, [transaction]);

@@ -4,6 +4,7 @@ import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 import { CreateTransactionPage } from '@/modules/transactions';
 
+import { CreateTemplatePage } from '../template/hooks/useTemplatePage';
 import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const vaultRoutes = (
@@ -13,6 +14,14 @@ const vaultRoutes = (
       element={
         <AuthRoute>
           <VaultDetailsPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.createTemplate()}
+      element={
+        <AuthRoute>
+          <CreateTemplatePage />
         </AuthRoute>
       }
     />

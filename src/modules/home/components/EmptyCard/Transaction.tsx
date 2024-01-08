@@ -18,7 +18,7 @@ const EmptyTransaction = () => {
       </Box>
       <Box mb={5}>
         <Heading color="brand.500" fontSize="4xl">
-          Anything to show here.
+          Nothing to show here.
         </Heading>
       </Box>
       <Box maxW={400} mb={8}>

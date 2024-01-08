@@ -1,10 +1,11 @@
+import { ITransaction, ITransactionResume } from 'bsafe';
+
 import {
   AssetModel,
   IPagination,
-  Transaction,
+  Predicate,
   TransactionStatus,
 } from '@/modules/core';
-import { ITransaction } from 'bsafe';
 
 export enum SortOption {
   ASC = 'ASC',
@@ -76,13 +77,18 @@ export interface CloseTransactionPayload {
   transactionResult: string;
 }
 
+type TransactionWithVault = ITransaction & {
+  predicate?: Predicate;
+};
+
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = ITransaction[];
-export type GetTransactionsPaginationResponse = IPagination<ITransaction>;
-export type GetUserTransactionsResponse = ITransaction[];
+export type GetTransactionsPaginationResponse =
+  IPagination<TransactionWithVault>;
+export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
 export type CreateTransactionResponse = ITransaction;
-export type SignerTransactionResponse = ITransaction;
+export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;
 export type TransactionDetailUI = TransactionDetails;

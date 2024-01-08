@@ -36,11 +36,13 @@ const VaultAddressesStep = ({
 }: VaultAddressesStepProps) => {
   const {
     handleOpenDialog,
-    findContactsRequest,
+    contactsPaginatedRequest,
     createContactRequest,
+    contactsPaginatedRequest: { contacts },
     search,
     form: contactForm,
     contactDialog,
+    inView,
   } = useAddressBook();
 
   return (
@@ -75,6 +77,7 @@ const VaultAddressesStep = ({
           <FormControl>
             <Select
               placeholder=" "
+              isDisabled={!templates.length}
               onChange={(item) => setTemplate(item.target.value)}
             >
               {templates.length > 0 &&
@@ -123,27 +126,45 @@ const VaultAddressesStep = ({
                         label={first ? 'Your address' : `Address ${index + 1}`}
                         isInvalid={fieldState.invalid}
                         isDisabled={first}
-                        onChange={(selected) => {
-                          field.onChange(selected);
-                          findContactsRequest.reset();
-                        }}
                         onInputChange={search.handler}
+                        onChange={(selected) => field.onChange(selected)}
                         errorMessage={fieldState.error?.message}
-                        isLoading={findContactsRequest.isLoading}
+                        isLoading={!contactsPaginatedRequest.isSuccess}
+                        inView={inView}
                         options={
-                          findContactsRequest?.data?.map((contact) => ({
-                            value: contact.user.address,
-                            label: `${contact.nickname} - ${AddressUtils.format(
-                              contact.user.address,
-                            )}`,
-                          })) ?? []
+                          contacts &&
+                          contacts
+                            ?.filter(
+                              ({ user }) =>
+                                !addresses.fields
+                                  .map((a) => a.value)
+                                  ?.includes(user.address),
+                            )
+                            ?.map(({ user, nickname }) => ({
+                              value: user.address,
+                              label: `${nickname} - ${AddressUtils.format(
+                                user.address,
+                              )}`,
+                            }))
                         }
                         rightAction={{
                           ...(first
                             ? {}
                             : {
                                 icon: RemoveIcon!,
-                                handler: () => addresses.remove(index),
+                                handler: () => {
+                                  const minSigners =
+                                    form.getValues('minSigners');
+                                  const addressesLength =
+                                    addresses.fields.length - 1;
+                                  if (Number(minSigners) > addressesLength) {
+                                    form.setValue(
+                                      'minSigners',
+                                      String(addressesLength),
+                                    );
+                                  }
+                                  addresses.remove(index);
+                                },
                               }),
                         }}
                         bottomAction={
@@ -177,7 +198,10 @@ const VaultAddressesStep = ({
             border="none"
             bgColor="dark.100"
             variant="secondary"
-            onClick={addresses.append}
+            onClick={() => {
+              addresses.append();
+              form.setValue('minSigners', String(addresses.fields.length + 1));
+            }}
             leftIcon={<UserAddIcon />}
           >
             Add address
@@ -202,7 +226,7 @@ const VaultAddressesStep = ({
             <Controller
               name="minSigners"
               control={form.control}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormControl>
                   <Select
                     pt={2}
@@ -219,6 +243,18 @@ const VaultAddressesStep = ({
                         </option>
                       ))}
                   </Select>
+                  <FormHelperText
+                    color="error.500"
+                    style={{
+                      display: 'flex',
+                      position: 'absolute',
+                      left: '-300px',
+                      minWidth: '400px',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {fieldState.error?.message}
+                  </FormHelperText>
                 </FormControl>
               )}
             />

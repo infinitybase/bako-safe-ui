@@ -1,3 +1,4 @@
+import { useDisclosure } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -8,17 +9,24 @@ import {
   useQueryParams,
 } from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
+import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
 const useSignIn = () => {
   const navigate = useNavigate();
+  const connectorDrawer = useDisclosure();
+
   const [fuel] = useFuel();
   const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
   const { isConnected } = useIsConnected();
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
   const { location, origin } = useQueryParams();
+
+  const { connectors } = useDefaultConnectors();
+
+  const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar, id }) => {
@@ -59,6 +67,15 @@ const useSignIn = () => {
     },
   });
 
+  const redirectToWalletLink = () =>
+    window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
+
+  const selectConnector = async (connector: string) => {
+    await fuel.selectConnector(connector);
+    connectorDrawer.onClose();
+    goToApp();
+  };
+
   const goToApp = async () => {
     try {
       const connected = await connect();
@@ -85,6 +102,14 @@ const useSignIn = () => {
     isConnecting:
       isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
+    connectors: {
+      items: connectors,
+      drawer: connectorDrawer,
+      select: selectConnector,
+      has: !!connectors?.length,
+    },
+    hasFuel,
+    redirectToWalletLink,
   };
 };
 

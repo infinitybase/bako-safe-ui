@@ -57,8 +57,8 @@ const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
   return (
     <Box w="full" mb={7}>
       <DappTransactionFromTo
-        to={from}
-        from={to}
+        to={to}
+        from={from}
         vault={vault}
         hasAssets={hasAssets}
       />

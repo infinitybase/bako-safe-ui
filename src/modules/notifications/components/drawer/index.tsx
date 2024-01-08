@@ -17,10 +17,11 @@ import {
 import { CustomSkeleton, ErrorIcon } from '@/components';
 
 import { useAppNotifications } from '../../hooks';
+import { NotificationsEmptyState } from '../emptyState';
 import { NotificationCard } from '../notificationCard';
 
 interface NotificationsDrawerProps extends Omit<DrawerProps, 'children'> {
-  onSelect?: (vaultId: string) => void;
+  // onSelect?: (vaultId: string) => void;
 }
 
 const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
@@ -38,8 +39,12 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
   } = useAppNotifications({
     onClose: props.onClose,
     isOpen: props.isOpen,
-    onSelect: props.onSelect,
+    // onSelect: props.onSelect,
   });
+
+  const loading = isFetching || isLoading;
+  const emptyState =
+    isSuccess && !isLoading && !isFetching && notifications?.length === 0;
 
   return (
     <Drawer
@@ -73,40 +78,38 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
               )}
             </HStack>
             <Text maxWidth={300} variant="description">
-              Setting Sail on a Journey to Unlock the Potential of User-Centered
-              Design.
+              {`Stay informed about all the activities happening in the vaults you're a part of.`}
             </Text>
           </VStack>
         </DrawerHeader>
 
         <DrawerBody
-          py={8}
           borderTop="1px"
           borderTopColor="dark.100"
+          py={isSuccess && !notifications.length ? 0 : 8}
           css={{
             '::-webkit-scrollbar': { width: 0 },
             scrollbarWidth: 'none',
           }}
         >
-          {isSuccess && !notifications.length && (
-            <Text variant="variant">
-              We {"couldn't"} find any notification.
-            </Text>
-          )}
-          <VStack spacing={8}>
-            {!notifications.length && isFetching && (
-              <CustomSkeleton h="90px" w="full" />
-            )}
+          {emptyState && <NotificationsEmptyState />}
 
-            {notifications.map((notification) => (
-              <CustomSkeleton key={notification.id} isLoaded={!isLoading}>
+          <VStack spacing={8}>
+            {loading &&
+              Array(3)
+                .fill('')
+                .map((_, i) => <CustomSkeleton key={i} h={32} w="full" />)}
+
+            {!loading &&
+              !emptyState &&
+              notifications.length > 0 &&
+              notifications.map((notification) => (
                 <NotificationCard
                   key={notification.id}
                   notification={notification}
                   onSelectNotification={onSelectNotification}
                 />
-              </CustomSkeleton>
-            ))}
+              ))}
             <Box ref={inView.ref} />
           </VStack>
         </DrawerBody>

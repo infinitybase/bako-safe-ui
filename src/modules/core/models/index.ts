@@ -1,3 +1,4 @@
+export * from './addressBook';
 export * from './asset';
 export * from './notification';
 export * from './predicate';

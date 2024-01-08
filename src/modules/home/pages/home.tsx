@@ -1,8 +1,6 @@
 import {
-  Badge,
   Box,
   Button,
-  CircularProgress,
   Grid,
   GridItem,
   HStack,
@@ -17,13 +15,9 @@ import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
-import { CustomSkeleton, HomeIcon, PendingIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules';
-import {
-  TransactionCard,
-  transactionStatus,
-  waitingSignatures,
-} from '@/modules/transactions';
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { Pages, WaitingSignatureBadge } from '@/modules';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { limitCharacters } from '@/utils';
 
@@ -40,11 +34,7 @@ const HomePage = () => {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
     },
-    transactionsRequest: {
-      transactions,
-      loadingTransactions,
-      isFetching: isFetchingTransactions,
-    },
+    transactionsRequest: { transactions, loadingTransactions },
   } = useHome();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
@@ -195,20 +185,11 @@ const HomePage = () => {
                 >
                   Transactions
                 </Text>
-                <CircularProgress
-                  hidden={!isFetchingTransactions}
-                  size="20px"
-                  color="brand.500"
-                  trackColor="dark.100"
-                  isIndeterminate
+                <WaitingSignatureBadge
+                  account={account}
+                  isLoading={loadingTransactions}
+                  transactions={transactions}
                 />
-                <Badge h={6} variant="warning" hidden={isFetchingTransactions}>
-                  <Icon as={PendingIcon} />
-                  {`${waitingSignatures({
-                    account,
-                    transactions: transactions ?? [],
-                  })} waiting for your signature`}
-                </Badge>
                 <Spacer />
                 <Link
                   color="brand.500"
@@ -231,16 +212,11 @@ const HomePage = () => {
                           />
                         }
                       >
-                        <TransactionCard.VaultInfo
-                          vault={
-                            recentVaults.filter(
-                              (v) => v.id === transaction.resume.predicate.id,
-                            )[0] || {
-                              name: 'Vault',
-                              description: 'Vault description',
-                            }
-                          }
-                        />
+                        {transaction.predicate && (
+                          <TransactionCard.VaultInfo
+                            vault={transaction.predicate}
+                          />
+                        )}
                         <TransactionCard.CreationDate>
                           {format(
                             new Date(transaction.createdAt),

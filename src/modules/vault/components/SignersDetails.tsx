@@ -1,18 +1,11 @@
-import {
-  Badge,
-  Box,
-  chakra,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Badge, Box, chakra, HStack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { AddressUtils, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
+import { CardMember } from './CardMember';
 
 export interface SignersDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -32,15 +25,15 @@ const SignersDetails = (props: SignersDetailsProps) => {
   const navigate = useNavigate();
   const { vault } = props;
 
-  const formatList = (list: { address: string; isOwner: boolean }[]) => {
-    return list.length - 4;
-  };
-
-  const isBig = formatList(vault?.signers || []);
+  const isBig = !vault?.members ? 0 : vault?.members.length - 4;
 
   if (!vault) return null;
 
-  const signers = vault.completeSigners ?? vault.signers;
+  const owner = vault.members?.find((member) => member.id === vault.owner?.id);
+  const notOwners =
+    vault.members?.filter((member) => member.id !== vault.owner?.id) ?? [];
+
+  const members = [owner, ...notOwners];
 
   return (
     <Box>
@@ -53,8 +46,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
         </Badge>
       </HStack>
       <VStack spacing={5}>
-        {signers?.map((signer, index: number) => {
+        {members?.map((member, index: number) => {
           if (isBig > 0 && index > 3) return;
+
           if (isBig > 0 && index == 3) {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
@@ -82,40 +76,10 @@ const SignersDetails = (props: SignersDetailsProps) => {
               </CustomSkeleton>
             );
           }
+
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <SignerCard key={index}>
-                <HStack spacing={4} w="full">
-                  <Image
-                    borderRadius={10}
-                    src={signer.address.avatar}
-                    boxSize="38px"
-                  />
-                  <VStack
-                    h="full"
-                    minH={51}
-                    spacing={1}
-                    justifyContent="center"
-                    alignItems="start"
-                  >
-                    {signer?.isOwner && (
-                      <Badge py={0} variant="success">
-                        owner
-                      </Badge>
-                    )}
-                    <Text
-                      color="grey.200"
-                      fontWeight="semibold"
-                      fontSize="lg"
-                      noOfLines={1}
-                    >
-                      {/* todo: add nickname on bsafe sdk */}
-                      {signer.address.nickname ??
-                        AddressUtils.format(signer.address.address)}
-                    </Text>
-                  </VStack>
-                </HStack>
-              </SignerCard>
+              <CardMember member={member!} isOwner={member?.id === owner?.id} />
             </CustomSkeleton>
           );
         })}

@@ -11,6 +11,7 @@ const useVaultTransactionsRequest = (vault: Vault) => {
     filter: {
       orderBy: 'createdAt',
       sort: SortOption.DESC,
+      limit: 6,
     },
   });
 

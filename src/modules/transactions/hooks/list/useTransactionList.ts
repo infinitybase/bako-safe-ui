@@ -42,10 +42,19 @@ const useTransactionList = (allFromUser = false) => {
   useEffect(() => {
     if (selectedTransaction.id) setFilter(undefined);
 
-    if (inView.inView && !transactionRequest.isFetching) {
+    if (
+      inView.inView &&
+      !transactionRequest.isFetching &&
+      transactionRequest.hasNextPage
+    ) {
+      console.log('Fetched');
       transactionRequest.fetchNextPage();
     }
-  }, [inView.inView]);
+  }, [
+    inView.inView,
+    transactionRequest.isFetching,
+    transactionRequest.hasNextPage,
+  ]);
 
   return {
     transactionRequest,

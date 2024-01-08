@@ -21,6 +21,7 @@ const useTransactionToast = () => {
   const transactionsToastRef = useRef<TransactionToastRef>({});
 
   const loading = (transaction: ITransaction) => {
+    if (toast.isActive(transaction.id)) return;
     transactionsToastRef.current[transaction.id] = toast({
       position: 'top-right',
       duration: 100000,
@@ -76,18 +77,16 @@ const useTransactionToast = () => {
               variant="primary"
               size="xs"
             >
-              View in explorer
+              View on explorer
             </Button>
           </Box>
         ),
       });
-      removeToast(transaction);
     }
   };
 
-  const error = (transaction: ITransaction, message?: string) => {
-    const toastId = transactionsToastRef.current[transaction.id];
-
+  const error = (transaction: string, message?: string) => {
+    const toastId = transactionsToastRef.current[transaction];
     if (toastId) {
       toast.update(toastId, {
         duration: 5000,
@@ -99,21 +98,22 @@ const useTransactionToast = () => {
           </Text>
         ),
       });
-      removeToast(transaction);
     }
   };
 
-  const removeToast = (transaction: ITransaction) => {
-    delete transactionsToastRef.current[transaction.id];
-  };
-
   const closeAll = () => toast.closeAll({ positions: ['top-right'] });
-
+  const close = (transaction: string) => {
+    const toastId = transactionsToastRef.current[transaction];
+    if (toastId) {
+      toast.close(toastId);
+    }
+  };
   return {
     error,
     loading,
     success,
     closeAll,
+    close,
   };
 };
 

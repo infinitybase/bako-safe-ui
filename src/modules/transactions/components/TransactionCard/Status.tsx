@@ -1,13 +1,12 @@
 import {
   Badge,
-  Box,
   Button,
   CircularProgress,
   HStack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionStatus, ITransaction } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState, WitnessStatus } from '@/modules/core';
 
@@ -29,28 +28,22 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   ).length;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
+  const isPending = [
+    TransactionStatus.PROCESS_ON_CHAIN,
+    TransactionStatus.PENDING_SENDER,
+  ].includes(transaction.status);
 
-  if (
-    [
-      TransactionStatus.PROCESS_ON_CHAIN,
-      TransactionStatus.PENDING_SENDER,
-    ].includes(transaction.status)
-  ) {
-    return (
-      <Box minW={100}>
+  return (
+    <HStack justifyContent="center" ml={6}>
+      {isPending && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
           isIndeterminate
           color="brand.500"
         />
-      </Box>
-    );
-  }
-
-  return (
-    <HStack w={220} ml={6}>
-      <VStack minW={100} spacing={0}>
+      )}
+      <VStack hidden={isPending} minW={100} spacing={0} justifyContent="center">
         <Badge
           h={5}
           variant={
@@ -69,25 +62,24 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
         <Text variant="description" fontSize="sm" color="grey.500">
           Transfer status
         </Text>
+        {isError && (
+          <Button
+            h={7}
+            variant="secondary"
+            px={3}
+            bgColor="dark.100"
+            border="none"
+            isLoading={isLoading}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              retryTransaction();
+            }}
+          >
+            Retry
+          </Button>
+        )}
       </VStack>
-      {isError && (
-        <Button
-          h={7}
-          variant="secondary"
-          px={3}
-          bgColor="dark.100"
-          border="none"
-          isLoading={isLoading}
-          isDisabled={isLoading}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            retryTransaction();
-          }}
-        >
-          Retry
-        </Button>
-      )}
     </HStack>
   );
 };

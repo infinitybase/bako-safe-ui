@@ -4,12 +4,12 @@ import { SortOption, TransactionService } from '../../services';
 
 const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
 
-const useUserTransactionsRequest = () => {
+const useUserTransactionsRequest = (options?: { limit?: number }) => {
   return useQuery(
     [USER_TRANSACTIONS_QUERY_KEY],
     () =>
       TransactionService.getUserTransactions({
-        // limit: 20,
+        limit: options?.limit ?? undefined,
         orderBy: 'createdAt',
         sort: SortOption.DESC,
         allOfUser: true,

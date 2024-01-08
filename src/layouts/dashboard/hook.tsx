@@ -8,9 +8,8 @@ import {
   useTransactionListRequest,
   useVaultAssets,
   useVaultDetailsRequest,
-  WitnessStatus,
+  waitingSignatures,
 } from '@/modules';
-import { useAppNotifications } from '@/modules/notifications/hooks';
 
 const useSidebar = () => {
   const navigate = useNavigate();
@@ -18,21 +17,16 @@ const useSidebar = () => {
   const params = useParams<{ vaultId: string }>();
   const drawer = useDisclosure();
   const { account } = useFuelAccount();
-  const { unreadCounter } = useAppNotifications();
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
   const pendingTransactions = useMemo(() => {
-    return (
-      transactionListRequest.data
-        ?.filter((transaction) => transaction.predicateId === params.vaultId)
-        .map((transaction) => transaction.witnesses)
-        .flat()
-        .filter((witness) => witness.status === WitnessStatus.PENDING)
-        .filter((transaction) => transaction.account === account).length ?? 0
-    );
+    return waitingSignatures({
+      account,
+      transactions: transactionListRequest.data ?? [],
+    });
   }, [account, params.vaultId, transactionListRequest.data]);
 
   const checkPathname = (path: string) => location.pathname === path;
@@ -61,7 +55,6 @@ const useSidebar = () => {
       hasTransactions: !!transactionListRequest.data?.length,
     },
     vaultRequest: vaultDetailsRequest,
-    unreadCounter,
   };
 };
 

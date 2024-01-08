@@ -1,15 +1,20 @@
-import { Dialog } from '@/components';
+import { Dialog, DialogModalProps } from '@/components';
 
 import { CreateTemplateForm } from '../components/dialog';
-import { useSteps } from '../hooks';
+import { IStep } from '../hooks';
 import { useTemplateStore } from '../store';
 
-const TemplatePage = () => {
+const TemplatePage = (
+  props: Omit<DialogModalProps, 'children'> & {
+    steps: IStep[];
+    step: number;
+  },
+) => {
   const { step } = useTemplateStore();
-  const { steps, onClose } = useSteps();
+  const { onClose, steps } = props;
 
   return (
-    <Dialog.Modal isOpen={true} onClose={onClose}>
+    <Dialog.Modal isOpen={true} onClose={onClose} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={420}
         hidden={steps[step].hiddeTitle}

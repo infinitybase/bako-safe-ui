@@ -1,11 +1,9 @@
 import {
-  Badge,
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  CircularProgress,
   Heading,
   HStack,
   Icon,
@@ -18,14 +16,14 @@ import {
   CustomSkeleton,
   HomeIcon,
   NotFoundIcon,
-  PendingIcon,
   SquarePlusIcon,
 } from '@/components';
 import {
   Pages,
   TransactionCard,
   transactionStatus,
-  waitingSignatures,
+  WaitingSignatureBadge,
+  // waitingSignatures,
 } from '@/modules';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import { useVaultDetails } from '@/modules/vault/hooks';
@@ -39,6 +37,16 @@ const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
   const { vault, store, assets, navigate, account, inView } = useVaultDetails();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+
+  // const pendingTransactionSignature = useMemo(
+  //   () =>
+  //     waitingSignatures({
+  //       account,
+  //       transactions: vaultTransactions ?? [],
+  //     }),
+  //   [vaultTransactions, account],
+  // );
+
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
@@ -77,6 +85,8 @@ const VaultDetailsPage = () => {
               color="grey.200"
               fontWeight="semibold"
               href="#"
+              isTruncated
+              maxW={640}
             >
               {vault.name}
             </BreadcrumbLink>
@@ -90,7 +100,7 @@ const VaultDetailsPage = () => {
             setTemplateFormInitial({
               minSigners: vault.minSigners!,
               addresses:
-                vault.signers! && vault.signers.map((signer) => signer.address),
+                vault.members! && vault.members.map((signer) => signer.address),
             });
             navigate(
               Pages.createTemplate({
@@ -123,20 +133,11 @@ const VaultDetailsPage = () => {
         >
           Transactions
         </Text>
-        <CircularProgress
-          size="20px"
-          trackColor="dark.100"
-          color="brand.500"
-          isIndeterminate
-          hidden={!vault.transactions.isFetching}
+        <WaitingSignatureBadge
+          account={account}
+          isLoading={vault.transactions.isLoading}
+          transactions={vaultTransactions}
         />
-        <Badge hidden={vault.transactions.isFetching} h={6} variant="warning">
-          <Icon as={PendingIcon} />
-          {`${waitingSignatures({
-            account,
-            transactions: vaultTransactions ?? [],
-          })} waiting for your signature`}
-        </Badge>
       </HStack>
 
       {hasTransactions ? (
@@ -200,7 +201,7 @@ const VaultDetailsPage = () => {
             </Box>
             <Box mb={5}>
               <Heading color="brand.500" fontSize="4xl">
-                Anything to show here.
+                Nothing to show here.
               </Heading>
             </Box>
             <Box maxW={400} mb={8}>

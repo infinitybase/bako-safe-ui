@@ -1,3 +1,5 @@
+import { BN } from 'fuels';
+
 import { api } from '@/config';
 import { IPagination, PaginationParams, Predicate } from '@/modules/core';
 import { SortOption } from '@/modules/transactions/services';
@@ -66,5 +68,13 @@ export class VaultService {
       },
     });
     return data;
+  }
+
+  static async hasReservedCoins(predicate: string) {
+    const { data } = await api.get<string>(
+      `/predicate/reserved-coins/${predicate}`,
+    );
+
+    return new BN(data);
   }
 }

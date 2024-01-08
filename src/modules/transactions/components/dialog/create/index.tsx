@@ -6,24 +6,31 @@ import { useCreateTransaction } from '@/modules';
 import { CreateTransactionForm } from './form';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const { form, assets, transactionsFields, transactionRequest, handleClose } =
-    useCreateTransaction({
-      onClose: props.onClose,
-    });
+  const {
+    form,
+    assets,
+    transactionsFields,
+    transactionRequest,
+    accordion,
+    handleClose,
+  } = useCreateTransaction({
+    onClose: props.onClose,
+  });
 
   return (
-    <Dialog.Modal {...props} onClose={handleClose}>
+    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
         w="full"
         maxW={420}
         title="Create Transaction"
-        description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+        description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
       <Dialog.Body maxW={420}>
         <CreateTransactionForm
           form={form}
           assets={assets}
+          accordion={accordion}
           transactionsFields={transactionsFields}
         />
       </Dialog.Body>
