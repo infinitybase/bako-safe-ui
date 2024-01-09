@@ -31,6 +31,8 @@ export type SignInResponse = {
   accessToken: string;
   avatar: string;
   id: string;
+  notify: boolean;
+  firstLogin: boolean;
 };
 
 export class UserService {

@@ -43,10 +43,6 @@ const useSignIn = () => {
           name: CookieName.AVATAR,
           value: avatar!,
         },
-        {
-          name: CookieName.USER_ID,
-          value: id,
-        },
       ]);
       setAccount(account!);
       setAvatar(avatar!);
