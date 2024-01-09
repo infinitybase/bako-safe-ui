@@ -21,7 +21,7 @@ const redirectPathBuilder = (
   const isRedirectToPrevious = !!location.state?.from;
 
   if (isDapp && isRedirectToPrevious) {
-    return `${location.state.from}`;
+    return location.state.from;
   }
 
   if (isDapp) {
