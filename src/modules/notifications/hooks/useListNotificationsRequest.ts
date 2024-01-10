@@ -5,9 +5,9 @@ import { NotificationsQueryKey } from '@/modules/core';
 
 import { NotificationService } from '../services';
 
-const useListNotificationsRequest = (enabled?: boolean) => {
+const useListNotificationsRequest = (account: string, enabled?: boolean) => {
   const { data, ...query } = useInfiniteQuery(
-    NotificationsQueryKey.PAGINATED_LIST,
+    [NotificationsQueryKey.PAGINATED_LIST, account],
     ({ pageParam }) =>
       NotificationService.getAllWithPagination({
         perPage: 5,
@@ -18,7 +18,7 @@ const useListNotificationsRequest = (enabled?: boolean) => {
     {
       getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
         currentPage !== totalPages ? nextPage : undefined,
-      enabled: enabled || false,
+      enabled,
       refetchOnWindowFocus: false,
     },
   );
