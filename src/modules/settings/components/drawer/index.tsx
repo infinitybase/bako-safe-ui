@@ -25,24 +25,17 @@ import { ErrorIcon } from '@/components';
 
 import { useSettings } from '../../hooks';
 
-// import { useAppNotifications } from '../../hooks';
-// import { NotificationCard } from '../notificationCard';
-
 interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
-  onSelect?: (vaultId: string) => void;
+  onOpen: () => void;
 }
 
 const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const {
-    drawer,
     form,
     handleSubmitSettings,
     updateSettingsRequest: { isLoading },
-  } = useSettings({
-    onClose: props.onClose,
-    // isOpen: props.isOpen,
-    // onSelect: props.onSelect,
-  });
+    onCloseDrawer,
+  } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
 
   return (
     <Drawer
@@ -50,12 +43,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       size="sm"
       variant="glassmorphic"
       placement="right"
-      onClose={drawer.onClose}
+      onClose={onCloseDrawer}
+      isOpen={props.isOpen}
     >
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
+          <HStack cursor="pointer" onClick={onCloseDrawer} spacing={2}>
             <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close
@@ -134,25 +128,22 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
             <Controller
               control={form.control}
               name="notify"
-              render={({ field }) => {
-                console.log(field.value);
-                return (
-                  <RadioGroup
-                    name={field.name}
-                    value={field.value ?? 'false'}
-                    onChange={field.onChange}
-                  >
-                    <VStack>
-                      <Radio value="true" size="md">
-                        Sounds good
-                      </Radio>
-                      <Radio value="false" size="md">
-                        Nope, thanks
-                      </Radio>
-                    </VStack>
-                  </RadioGroup>
-                );
-              }}
+              render={({ field }) => (
+                <RadioGroup
+                  name={field.name}
+                  value={field.value ?? 'false'}
+                  onChange={field.onChange}
+                >
+                  <VStack>
+                    <Radio value="true" size="md">
+                      Sounds good
+                    </Radio>
+                    <Radio value="false" size="md">
+                      Nope, thanks
+                    </Radio>
+                  </VStack>
+                </RadioGroup>
+              )}
             />
 
             <Divider borderColor="dark.100" mb={5} mt={4} />
@@ -162,7 +153,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 variant="secondary"
                 bgColor="dark.100"
                 border="none"
-                onClick={drawer.onClose}
+                onClick={onCloseDrawer}
               >
                 Cancel
               </Button>

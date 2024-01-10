@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
   Skeleton,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
@@ -54,11 +55,15 @@ const UserBox = () => {
   const { formattedAccount, avatar } = useFuelAccount();
   const avatarImage = useLoadImage(avatar);
   const { discconnect } = useDisconnect();
-  const { drawer } = useSidebar();
+  const settingsDrawer = useDisclosure();
 
   return (
     <>
-      <SettingsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <SettingsDrawer
+        isOpen={settingsDrawer.isOpen}
+        onClose={settingsDrawer.onClose}
+        onOpen={settingsDrawer.onOpen}
+      />
 
       <Popover>
         <PopoverTrigger>
@@ -100,7 +105,7 @@ const UserBox = () => {
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
               cursor={'pointer'}
-              onClick={drawer.onOpen}
+              onClick={settingsDrawer.onOpen}
               p={5}
             >
               <HStack>

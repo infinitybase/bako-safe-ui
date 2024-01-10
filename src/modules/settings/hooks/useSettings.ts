@@ -1,62 +1,81 @@
+import { useEffect } from 'react';
+
 import { queryClient } from '@/config';
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useSidebar } from '@/layouts/dashboard/hook';
+import { useFuelAccount } from '@/modules/auth';
+import { SettingsQueryKey } from '@/modules/core';
 
 import { useUpdateSettingsRequest } from './';
+import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';
+import { useSettingsToast } from './useSettingsToast';
 
-interface UseAppNotificationsParams {
+interface UseSettingsProps {
+  onOpen?: () => void;
   onClose?: () => void;
-  // isOpen?: boolean;
-  // onSelect?: (vaultId: string) => void;
 }
 
-const useSettings = (props?: UseAppNotificationsParams) => {
+const { MY_SETTINGS } = SettingsQueryKey;
+
+const useSettings = ({ onOpen, onClose }: UseSettingsProps) => {
+  const { account } = useFuelAccount();
   const { form } = useSettingsForm();
-  const { drawer } = useSidebar();
-  const updateSettingsRequest = useUpdateSettingsRequest({
-    onSuccess: () => {
-      onCloseDrawer();
-      // deleteContactDialog.onClose();
-      // invalidateQueries(['contacts/by-user']);
-      // successToast({
-      //   title: 'Success!',
-      //   description: 'Your contact was deleted...',
-      // });
-    },
-  });
+  const { successToast } = useSettingsToast();
+  const mySettingsRequest = useMySettingsRequest(account);
+  const updateSettingsRequest = useUpdateSettingsRequest();
+
+  const user = mySettingsRequest.data;
+  const firstLogin = user?.first_login;
 
   const onCloseDrawer = () => {
-    props?.onClose?.();
+    onClose?.();
 
-    form.setValue('name', '');
-    form.setValue('email', '');
+    if (firstLogin && user) {
+      updateSettingsRequest.mutate(
+        { first_login: false, id: user.id },
+        { onSuccess: () => queryClient.invalidateQueries([MY_SETTINGS]) },
+      );
+    }
 
-    drawer.onClose();
-
-    // TODO: Update field "first_login" to false (only if it is first login)
-
-    queryClient.invalidateQueries([
-      // NotificationsQueryKey.UNREAD_COUNTER,
-      // NotificationsQueryKey.PAGINATED_LIST,
-    ]);
+    form.setValue('name', user?.name ?? '');
+    form.setValue('email', user?.email ?? '');
+    form.setValue('notify', String(user?.notify ?? '') ?? 'false');
   };
 
   const handleSubmitSettings = form.handleSubmit(async (data) => {
-    updateSettingsRequest.mutate({
-      ...data,
-      notify: data.notify ?? 'false',
-      id: CookiesConfig.getCookie(CookieName.USER_ID)!,
-    });
+    if (user) {
+      updateSettingsRequest.mutate(
+        {
+          ...data,
+          id: user.id,
+          notify: data?.notify ?? 'false',
+          ...(firstLogin ? { first_login: false } : {}),
+        },
+        {
+          onSuccess: async () => {
+            queryClient.invalidateQueries([MY_SETTINGS]);
+            onClose?.();
+            successToast({});
+          },
+        },
+      );
+    }
   });
+
+  useEffect(() => {
+    if (firstLogin) onOpen?.();
+
+    // TODO: Move this to field values
+    form.setValue('name', user?.name ?? '');
+    form.setValue('email', user?.email ?? '');
+    form.setValue('notify', String(user?.notify ?? '') ?? 'false');
+  }, [firstLogin, user]);
 
   return {
     handleSubmitSettings,
+    mySettingsRequest,
     updateSettingsRequest,
     form,
-    drawer: {
-      onClose: onCloseDrawer,
-    },
+    onCloseDrawer,
   };
 };
 
