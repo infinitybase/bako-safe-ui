@@ -66,7 +66,7 @@ const useCreateVaultForm = (account?: string) => {
       name: '',
       description: '',
       minSigners: '1',
-      addresses: [{ value: account }],
+      addresses: [{ value: account as string }],
     },
   });
 
