@@ -11,9 +11,11 @@ const dappRoutes = (
       <Route
         index
         element={
-          <Container>
-            <VaultConnector />
-          </Container>
+          <AuthRoute>
+            <Container>
+              <VaultConnector />
+            </Container>
+          </AuthRoute>
         }
       />
     </Route>

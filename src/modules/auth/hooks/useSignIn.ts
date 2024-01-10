@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Location, useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import {
@@ -12,6 +12,24 @@ import { Pages, useConnect, useIsConnected } from '@/modules/core';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
+
+const redirectPathBuilder = (
+  isDapp: boolean,
+  location: Location,
+  account: string,
+) => {
+  const isRedirectToPrevious = !!location.state?.from;
+
+  if (isDapp && isRedirectToPrevious) {
+    return location.state.from;
+  }
+
+  if (isDapp) {
+    return `${Pages.dappAuth()}${location.search}&address=${account}`;
+  }
+
+  return Pages.home();
+};
 
 const useSignIn = () => {
   const navigate = useNavigate();
@@ -47,9 +65,7 @@ const useSignIn = () => {
       setAccount(account!);
       setAvatar(avatar!);
 
-      origin
-        ? navigate(`${Pages.dappAuth()}${location.search}&address=${account}`)
-        : navigate(Pages.home());
+      navigate(redirectPathBuilder(!!origin, location, account!));
     },
   });
 
