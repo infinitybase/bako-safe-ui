@@ -6,6 +6,7 @@ export enum CookieName {
   ACCESS_TOKEN = `bsafe/token`,
   ADDRESS = `bsafe/address`,
   AVATAR = `bsafe/avatar`,
+  WORKSPACE = `bsafe/workspace`,
 }
 
 interface Cookie {

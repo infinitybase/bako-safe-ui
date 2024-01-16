@@ -1,4 +1,5 @@
 import { api } from '@/config';
+import { Workspace } from '@/modules/workspace/hooks/useWorkspace';
 
 export enum Encoder {
   FUEL = 'fuel',
@@ -30,6 +31,7 @@ export type SignInPayload = {
 export type SignInResponse = {
   accessToken: string;
   avatar: string;
+  workspace: Workspace;
 };
 
 export class UserService {

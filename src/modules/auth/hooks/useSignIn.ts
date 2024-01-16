@@ -10,6 +10,7 @@ import {
 } from '@/modules';
 import { Pages, useConnect, useIsConnected } from '@/modules/core';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
@@ -41,13 +42,14 @@ const useSignIn = () => {
   const { connect, isConnecting } = useConnect();
   const { getAccount, account } = useGetCurrentAccount();
   const { location, origin } = useQueryParams();
+  const { setCurrentWorkspace } = useWorkspace();
 
   const { connectors } = useDefaultConnectors();
 
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar }) => {
+    onSuccess: ({ accessToken, avatar, workspace }) => {
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
@@ -61,9 +63,14 @@ const useSignIn = () => {
           name: CookieName.AVATAR,
           value: avatar!,
         },
+        {
+          name: CookieName.WORKSPACE,
+          value: JSON.stringify(workspace),
+        },
       ]);
       setAccount(account!);
       setAvatar(avatar!);
+      setCurrentWorkspace(workspace);
 
       navigate(redirectPathBuilder(!!origin, location, account!));
     },
