@@ -22,6 +22,7 @@ import {
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
 
@@ -76,15 +77,50 @@ const UserBox = () => {
   );
 };
 
+const WorkspaceBox = () => {
+  const {
+    currentWorkspace: { name, avatar },
+  } = useWorkspace();
+
+  // TODO: Add dynamic values
+  const workspaceIsSelected = !name.includes('singleWorkspace[');
+
+  return (
+    <Flex w="full" alignItems="center" justifyContent="space-between">
+      <Flex>
+        {workspaceIsSelected ? (
+          <HStack spacing={4}>
+            <Avatar variant="roundedSquare" src={avatar} />
+            <Box w={150}>
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                isTruncated
+                maxW={150}
+              >
+                {name}
+              </Text>
+              <Text fontSize="sm" color="grey.500">
+                Current workspace
+              </Text>
+            </Box>
+          </HStack>
+        ) : (
+          <Text fontWeight="semibold" color="grey.200">
+            Access workspace
+          </Text>
+        )}
+      </Flex>
+
+      <ReplaceIcon color="grey.200" fontSize={20} />
+    </Flex>
+  );
+};
+
 const Header = () => {
   const navigate = useNavigate();
   const { drawer } = useSidebar();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-
-  // TODO: Add dynamic values
-  const workspaceIsSelected = true;
-  const workspaceAvatar = 'https://app.bsafe.pro/icons/16965892169343.png';
-  const workspaceLabel = 'Workspace Label Workspace label';
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -115,34 +151,7 @@ const Header = () => {
           w={310}
           px={6}
         >
-          <Flex w="full" alignItems="center" justifyContent="space-between">
-            <Flex>
-              {workspaceIsSelected ? (
-                <HStack spacing={4}>
-                  <Avatar variant="roundedSquare" src={workspaceAvatar} />
-                  <Box w={150}>
-                    <Text
-                      fontWeight="semibold"
-                      color="grey.200"
-                      isTruncated={true}
-                      maxW={150}
-                    >
-                      {workspaceLabel}
-                    </Text>
-                    <Text fontSize="sm" color="grey.500">
-                      Current workspace
-                    </Text>
-                  </Box>
-                </HStack>
-              ) : (
-                <Text fontWeight="semibold" color="grey.200">
-                  Access workspace
-                </Text>
-              )}
-            </Flex>
-
-            <ReplaceIcon color="grey.200" fontSize={20} />
-          </Flex>
+          <WorkspaceBox />
         </TopBarItem>
 
         <TopBarItem
