@@ -13,7 +13,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { ExitIcon, NotificationIcon, QuestionIcon } from '@/components';
+import {
+  ExitIcon,
+  NotificationIcon,
+  QuestionIcon,
+  ReplaceIcon,
+} from '@/components';
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -76,6 +81,11 @@ const Header = () => {
   const { drawer } = useSidebar();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
+  // TODO: Add dynamic values
+  const workspaceIsSelected = true;
+  const workspaceAvatar = 'https://app.bsafe.pro/icons/16965892169343.png';
+  const workspaceLabel = 'Workspace Label Workspace label';
+
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
     setUnreadCounter(0);
@@ -99,6 +109,42 @@ const Header = () => {
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
+        <TopBarItem
+          onClick={() => alert('workspace')}
+          cursor="pointer"
+          w={310}
+          px={6}
+        >
+          <Flex w="full" alignItems="center" justifyContent="space-between">
+            <Flex>
+              {workspaceIsSelected ? (
+                <HStack spacing={4}>
+                  <Avatar variant="roundedSquare" src={workspaceAvatar} />
+                  <Box w={150}>
+                    <Text
+                      fontWeight="semibold"
+                      color="grey.200"
+                      isTruncated={true}
+                      maxW={150}
+                    >
+                      {workspaceLabel}
+                    </Text>
+                    <Text fontSize="sm" color="grey.500">
+                      Current workspace
+                    </Text>
+                  </Box>
+                </HStack>
+              ) : (
+                <Text fontWeight="semibold" color="grey.200">
+                  Access workspace
+                </Text>
+              )}
+            </Flex>
+
+            <ReplaceIcon color="grey.200" fontSize={20} />
+          </Flex>
+        </TopBarItem>
+
         <TopBarItem
           onClick={() =>
             window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
