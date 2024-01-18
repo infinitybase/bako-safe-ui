@@ -6,3 +6,4 @@ export * from './example';
 export * from './home';
 export * from './transactions';
 export * from './vault';
+export * from './workspace';

@@ -8,6 +8,7 @@ import {
   signinRoutes,
   transactionRoutes,
   vaultRoutes,
+  workspaceRoutes,
 } from '@/modules';
 
 const routes = (
@@ -19,6 +20,7 @@ const routes = (
     {vaultRoutes}
     {transactionRoutes}
     {addressBookRoutes}
+    {workspaceRoutes}
   </>
 );
 
