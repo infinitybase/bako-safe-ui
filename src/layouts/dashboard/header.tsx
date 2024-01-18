@@ -19,9 +19,16 @@ import {
   QuestionIcon,
   ReplaceIcon,
 } from '@/components';
-import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
+import {
+  Pages,
+  useDisconnect,
+  useFuelAccount,
+  useLoadImage,
+  Workspace,
+} from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
+import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
@@ -77,18 +84,22 @@ const UserBox = () => {
   );
 };
 
-const WorkspaceBox = () => {
-  const {
-    currentWorkspace: { name, avatar },
-  } = useWorkspace();
-
-  // TODO: Add dynamic values
-  const workspaceIsSelected = !name.includes('singleWorkspace[');
+const WorkspaceBox = ({
+  currentWorkspace,
+}: {
+  currentWorkspace: Workspace;
+}) => {
+  const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
   return (
     <Flex w="full" alignItems="center" justifyContent="space-between">
       <Flex>
-        {workspaceIsSelected ? (
+        {isMyWorkspace && (
+          <Text fontWeight="semibold" color="grey.200">
+            Access workspace
+          </Text>
+        )}
+        {!isMyWorkspace && (
           <HStack spacing={4}>
             <Avatar variant="roundedSquare" src={avatar} />
             <Box w={150}>
@@ -105,10 +116,6 @@ const WorkspaceBox = () => {
               </Text>
             </Box>
           </HStack>
-        ) : (
-          <Text fontWeight="semibold" color="grey.200">
-            Access workspace
-          </Text>
         )}
       </Flex>
 
@@ -120,6 +127,7 @@ const WorkspaceBox = () => {
 const Header = () => {
   const navigate = useNavigate();
   const { drawer } = useSidebar();
+  const { currentWorkspace, workspaceDialog } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -139,6 +147,7 @@ const Header = () => {
       borderBottomColor="dark.100"
     >
       <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <SelectWorkspaceDialog dialog={workspaceDialog} />
 
       <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
         <img width={90} src={logo} alt="" />
@@ -146,12 +155,12 @@ const Header = () => {
 
       <HStack spacing={0} height="100%">
         <TopBarItem
-          onClick={() => alert('workspace')}
+          onClick={workspaceDialog.onOpen}
           cursor="pointer"
           w={310}
           px={6}
         >
-          <WorkspaceBox />
+          <WorkspaceBox currentWorkspace={currentWorkspace} />
         </TopBarItem>
 
         <TopBarItem
