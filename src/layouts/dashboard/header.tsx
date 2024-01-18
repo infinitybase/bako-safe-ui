@@ -127,7 +127,12 @@ const WorkspaceBox = ({
 const Header = () => {
   const navigate = useNavigate();
   const { drawer } = useSidebar();
-  const { currentWorkspace, workspaceDialog } = useWorkspace();
+  const {
+    currentWorkspace,
+    workspaceDialog,
+    userWorkspacesRequest: { data: userWorkspaces },
+    handleWorkspaceSelection,
+  } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -147,7 +152,11 @@ const Header = () => {
       borderBottomColor="dark.100"
     >
       <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
-      <SelectWorkspaceDialog dialog={workspaceDialog} />
+      <SelectWorkspaceDialog
+        dialog={workspaceDialog}
+        userWorkspaces={userWorkspaces ?? []}
+        onSelect={handleWorkspaceSelection}
+      />
 
       <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
         <img width={90} src={logo} alt="" />

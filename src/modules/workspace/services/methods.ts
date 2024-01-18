@@ -10,8 +10,17 @@ export interface CreateWorkspacePayload {
   permissions?: IPermissions;
 }
 
+export interface SelectWorkspacePayload {
+  workspace_id: string;
+  address: string;
+  token: string;
+}
+
 export type ListUserWorkspacesResponse = Workspace[];
 export type CreateWorkspaceResponse = Workspace;
+export type SelectWorkspaceResponse = {
+  workspace: Workspace;
+};
 
 export class WorkspaceService {
   static async list(userAddress: string) {
@@ -24,6 +33,15 @@ export class WorkspaceService {
   static async create(payload: CreateWorkspacePayload) {
     const { data } = await api.post<CreateWorkspaceResponse>(
       `/workspace`,
+      payload,
+    );
+
+    return data;
+  }
+
+  static async select(payload: SelectWorkspacePayload) {
+    const { data } = await api.put<SelectWorkspaceResponse>(
+      `/auth/workspace`,
       payload,
     );
 
