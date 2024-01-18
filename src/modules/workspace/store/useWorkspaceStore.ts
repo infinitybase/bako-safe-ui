@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 
-import { Workspace } from '../hooks';
+import { Nullable, Workspace } from '@/modules/core';
 
 interface WorkspaceState {
-  currentWorkspace: Workspace;
+  currentWorkspace: Nullable<Workspace>;
   setCurrentWorkspace: (workspace: Workspace) => void;
 }
 
 const useWorkspaceStore = create<WorkspaceState>((set) => ({
-  currentWorkspace: {} as Workspace,
+  currentWorkspace: null,
   setCurrentWorkspace: (currentWorkspace) => set({ currentWorkspace }),
 }));
 
