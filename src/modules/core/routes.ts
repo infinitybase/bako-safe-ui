@@ -31,6 +31,9 @@ const Pages = {
   //dapp
   dappAuth: pageRoute('/dapp'),
   dappTransaction: pageRoute('/dapp/transaction'),
+
+  //workspace
+  createWorkspace: pageRoute('/workspace/create'),
 };
 
 export { Pages };
