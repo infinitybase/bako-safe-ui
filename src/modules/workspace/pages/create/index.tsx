@@ -50,7 +50,8 @@ const CreateWorkspaceForm = ({
 );
 
 const CreateWorkspacePage = () => {
-  const { request, form, tabs, handleClose } = useCreateWorkspace();
+  const { request, form, tabs, handleClose, handleGoToWorkspace } =
+    useCreateWorkspace();
 
   return (
     <Dialog.Modal isOpen onClose={handleClose}>
@@ -73,7 +74,10 @@ const CreateWorkspacePage = () => {
               <CreateWorkspaceForm form={form} />
             </TabPanel>
             <TabPanel>
-              <SuccesStep />
+              <SuccesStep
+                onGoToWorkspace={handleGoToWorkspace}
+                onConfigureMembers={handleClose}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>

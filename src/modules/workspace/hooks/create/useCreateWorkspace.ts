@@ -22,6 +22,9 @@ const useCreateWorkspace = () => {
 
   const handleClose = () => navigate(-1);
 
+  /* TODO: add path to workspace */
+  const handleGoToWorkspace = () => navigate(-1);
+
   const handleCreateWorkspace = form.handleSubmit(async (data) => {
     await request.mutateAsync({
       name: data.name,
@@ -34,6 +37,7 @@ const useCreateWorkspace = () => {
   return {
     request,
     handleClose,
+    handleGoToWorkspace,
     form: {
       ...form,
       handleCreateWorkspace,
