@@ -6,7 +6,7 @@ import { WorkspaceService } from '../services';
 
 const useUserWorkspacesRequest = (account: string) => {
   return useQuery(
-    [WorkspacesQueryKey.BY_USER],
+    [WorkspacesQueryKey.LIST_BY_USER],
     () => WorkspaceService.list(account),
     {
       refetchOnWindowFocus: false,

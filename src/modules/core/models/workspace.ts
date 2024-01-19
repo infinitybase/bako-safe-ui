@@ -12,6 +12,14 @@ export interface IPermissions {
   };
 }
 
+export interface Member {
+  name: string | null;
+  avatar: string;
+  address: string;
+}
+
+export interface Owner extends Member {}
+
 export interface Workspace {
   id: string;
   name: string;
@@ -19,8 +27,12 @@ export interface Workspace {
   avatar: string;
   permissions: IPermissions;
   single: boolean;
+  owner: Owner;
+  members: Member[];
+  predicates: number;
 }
 
 export enum WorkspacesQueryKey {
-  BY_USER = 'workspaces/by-user',
+  LIST_BY_USER = 'workspaces/list-by-user',
+  SELECT = 'workspaces/select',
 }
