@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { useTab } from '@/modules';
 
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
@@ -14,9 +15,7 @@ export enum TabState {
 
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
-
-  const [tab, setTab] = useState(TabState.ON_BOARDING);
-
+  const tabs = useTab<TabState>(TabState.ON_BOARDING);
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
 
@@ -31,7 +30,7 @@ const useCreateWorkspace = () => {
       description: data.description,
     });
 
-    setTab(TabState.SUCCESS);
+    tabs.set(TabState.SUCCESS);
   });
 
   return {
@@ -42,13 +41,7 @@ const useCreateWorkspace = () => {
       ...form,
       handleCreateWorkspace,
     },
-    tabs: {
-      tab,
-      set: setTab,
-      is: (value: TabState) => tab === value,
-      tabsLength: Object.keys(TabState).filter((value) => isNaN(Number(value)))
-        .length,
-    },
+    tabs,
   };
 };
 

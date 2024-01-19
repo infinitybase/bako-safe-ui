@@ -4,16 +4,18 @@ import React from 'react';
 import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
 import { useChangeMember } from '@/modules/workspace/hooks/members';
 
+/* TODO: Move to components folder */
 const MemberAddressForm = () => {
   return <>Address here</>;
 };
 
+/* TODO: Move to components folder */
 const MemberPermissionForm = () => {
   return <>Permission here</>;
 };
 
 const CreateMemberPage = () => {
-  const { form, request, handleClose } = useChangeMember();
+  const { form, request, handleClose, tabs } = useChangeMember();
 
   const TabsPanels = (
     <TabPanels>
@@ -36,9 +38,9 @@ const CreateMemberPage = () => {
 
       <Dialog.Body maxW={420}>
         <Box mb={12}>
-          <StepProgress length={3} value={0} />
+          <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
-        <Tabs index={1} colorScheme="green">
+        <Tabs index={tabs.tab} colorScheme="green">
           {TabsPanels}
         </Tabs>
       </Dialog.Body>

@@ -3,4 +3,5 @@ export * from './fuel';
 export * from './socket';
 export * from './useIsMount';
 export * from './useLoadImage';
+export * from './useTab';
 export * from './useToast';

@@ -69,7 +69,7 @@ const CreateWorkspacePage = () => {
 
       <Dialog.Body maxW={tabs.is(TabState.ON_BOARDING) ? 540 : 420}>
         <Box hidden={!tabs.is(TabState.FORM)} mb={12}>
-          <StepProgress length={tabs.tabsLength} value={tabs.tab} />
+          <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
           <TabPanels>
