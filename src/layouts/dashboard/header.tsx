@@ -6,17 +6,29 @@ import {
   Flex,
   HStack,
   Icon,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { ExitIcon, NotificationIcon, QuestionIcon } from '@/components';
+import {
+  ExitIcon,
+  NotificationIcon,
+  QuestionIcon,
+  SettingsIcon,
+} from '@/components';
 import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
+import { SettingsDrawer } from '@/modules/settings/components/drawer';
 
 import { useSidebar } from './hook';
 
@@ -43,31 +55,80 @@ const UserBox = () => {
   const { formattedAccount, avatar } = useFuelAccount();
   const avatarImage = useLoadImage(avatar);
   const { discconnect } = useDisconnect();
+  const settingsDrawer = useDisclosure();
 
   return (
-    <Flex w="100%" display="flex" alignItems="center">
-      <Box mr={4}>
-        {avatarImage.isLoading ? (
-          <Skeleton
-            w="48px"
-            h="48px"
-            startColor="dark.100"
-            endColor="dark.300"
-            borderRadius={5}
-          />
-        ) : (
-          <Avatar variant="roundedSquare" src={avatar} />
-        )}
-      </Box>
-      <Box mr={9}>
-        <Text fontWeight="semibold" color="grey.200">
-          {formattedAccount}
-        </Text>
-      </Box>
-      <Box onClick={() => discconnect()} cursor="pointer">
-        <Icon color="grey.200" fontSize="lg" as={ExitIcon} />
-      </Box>
-    </Flex>
+    <>
+      <SettingsDrawer
+        isOpen={settingsDrawer.isOpen}
+        onClose={settingsDrawer.onClose}
+        onOpen={settingsDrawer.onOpen}
+      />
+
+      <Popover>
+        <PopoverTrigger>
+          <Flex w="100%" alignItems="center" cursor={'pointer'}>
+            <Box mr={4}>
+              {avatarImage.isLoading ? (
+                <Skeleton
+                  w="48px"
+                  h="48px"
+                  startColor="dark.100"
+                  endColor="dark.300"
+                  borderRadius={5}
+                />
+              ) : (
+                <Avatar variant="roundedSquare" src={avatar} />
+              )}
+            </Box>
+
+            <Box mr={9}>
+              <Text fontWeight="semibold" color="grey.200">
+                {formattedAccount}
+              </Text>
+            </Box>
+
+            <Icon color="grey.200" fontSize="lg" as={FaChevronDown} />
+          </Flex>
+        </PopoverTrigger>
+
+        <PopoverContent
+          bg={'dark.300'}
+          border={'none'}
+          w="100%"
+          m={0}
+          p={0}
+          boxShadow="lg"
+        >
+          <PopoverBody>
+            <Box
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              onClick={settingsDrawer.onOpen}
+              p={5}
+            >
+              <HStack>
+                <Icon color="grey.200" w={6} h={6} as={SettingsIcon} />
+                <Text color="grey.200" fontWeight={'bold'}>
+                  Settings
+                </Text>
+              </HStack>
+              <Text color="grey.500">Personalize Your Preferences.</Text>
+            </Box>
+
+            <Box borderTop={'1px solid'} borderTopColor={'dark.100'} p={4}>
+              <HStack cursor={'pointer'} onClick={() => discconnect()}>
+                <Icon color="grey.200" fontSize="xl" as={ExitIcon} />
+                <Text color="grey.200" fontWeight={'bold'}>
+                  Logout
+                </Text>
+              </HStack>
+            </Box>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 };
 

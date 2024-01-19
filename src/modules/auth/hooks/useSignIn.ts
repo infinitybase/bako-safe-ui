@@ -47,7 +47,7 @@ const useSignIn = () => {
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar }) => {
+    onSuccess: ({ accessToken, avatar, id }) => {
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
