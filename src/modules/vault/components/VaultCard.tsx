@@ -15,14 +15,13 @@ import {
 } from '@chakra-ui/react';
 
 import { Card, CopyIcon } from '@/components';
-import { AddressUtils } from '@/modules/core';
-import { User } from '@/modules/core/models/user';
+import { AddressUtils, PredicateMember } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
 interface VaultCardProps extends CardProps {
   name: string;
   address: string;
-  members: User[];
+  members: PredicateMember[];
 }
 
 export const VaultCard = ({
