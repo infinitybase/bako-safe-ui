@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { DappWarning } from '@/components';
+import { DappWarning, SquarePlusIcon } from '@/components';
 
 interface OnboardingStepProps {
   onConfirm: () => void;
@@ -102,8 +102,13 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       >
         Cancel
       </Button>
-      <Button color="grey.300" variant="primary" onClick={props.onConfirm}>
-        Conclude
+      <Button
+        color="grey.300"
+        variant="primary"
+        onClick={props.onConfirm}
+        leftIcon={<SquarePlusIcon fontSize={18} />}
+      >
+        Create workspace
       </Button>
     </HStack>
   </Center>

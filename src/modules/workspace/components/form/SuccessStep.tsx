@@ -8,7 +8,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { VaultSuccessIcon } from '@/components';
+import { SquarePlusIcon, VaultSuccessIcon } from '@/components';
 
 interface SuccessStepProps {
   onConfigureMembers: () => void;
@@ -43,6 +43,7 @@ const SuccesStep = (props: SuccessStepProps) => (
         color="grey.300"
         variant="primary"
         onClick={props.onGoToWorkspace}
+        leftIcon={<SquarePlusIcon fontSize={18} />}
       >
         Conclude
       </Button>

@@ -58,7 +58,7 @@ const CreateWorkspacePage = () => {
     useCreateWorkspace();
 
   return (
-    <Dialog.Modal isOpen onClose={handleClose}>
+    <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
       {tabs.is(TabState.FORM) && (
         <Dialog.Header
           maxW={420}
