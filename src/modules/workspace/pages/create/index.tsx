@@ -15,8 +15,12 @@ import { Controller } from 'react-hook-form';
 
 import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
 
-import { SuccesStep } from '../../components';
-import { UseCreateWorkspace, useCreateWorkspace } from '../../hooks/create';
+import { OnboardingStep, SuccesStep } from '../../components';
+import {
+  TabState,
+  UseCreateWorkspace,
+  useCreateWorkspace,
+} from '../../hooks/create';
 
 const CreateWorkspaceForm = ({
   form,
@@ -55,7 +59,7 @@ const CreateWorkspacePage = () => {
 
   return (
     <Dialog.Modal isOpen onClose={handleClose}>
-      {tabs.isForm && (
+      {tabs.is(TabState.FORM) && (
         <Dialog.Header
           maxW={420}
           title="Create Workspace"
@@ -63,13 +67,18 @@ const CreateWorkspacePage = () => {
         />
       )}
 
-      <Dialog.Body maxW={420}>
-        <Box hidden={!tabs.isForm} mb={12}>
+      <Dialog.Body maxW={tabs.is(TabState.ON_BOARDING) ? 540 : 420}>
+        <Box hidden={!tabs.is(TabState.FORM)} mb={12}>
           <StepProgress length={tabs.tabsLength} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
           <TabPanels>
-            <TabPanel>asd</TabPanel>
+            <TabPanel>
+              <OnboardingStep
+                onCancel={handleClose}
+                onConfirm={() => tabs.set(TabState.FORM)}
+              />
+            </TabPanel>
             <TabPanel>
               <CreateWorkspaceForm form={form} />
             </TabPanel>
@@ -83,7 +92,7 @@ const CreateWorkspacePage = () => {
         </Tabs>
       </Dialog.Body>
 
-      <Dialog.Actions hidden={!tabs.isForm} maxW={420}>
+      <Dialog.Actions hidden={!tabs.is(TabState.FORM)} maxW={420}>
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>

@@ -15,7 +15,7 @@ export enum TabState {
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
 
-  const [tab, setTab] = useState(TabState.FORM);
+  const [tab, setTab] = useState(TabState.ON_BOARDING);
 
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
@@ -45,7 +45,7 @@ const useCreateWorkspace = () => {
     tabs: {
       tab,
       set: setTab,
-      isForm: tab === TabState.FORM,
+      is: (value: TabState) => tab === value,
       tabsLength: Object.keys(TabState).filter((value) => isNaN(Number(value)))
         .length,
     },
