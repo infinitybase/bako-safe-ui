@@ -1,11 +1,9 @@
 import { Box, HStack } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 
-import { TabState } from '@/modules';
-
 export interface StepProgressProps {
   length: number;
-  value: TabState;
+  value: number;
 }
 
 const StepProgress = ({ value, length }: StepProgressProps) => {
