@@ -1,11 +1,12 @@
 import { Route } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
-import { ExamplePage } from '@/modules/example';
+
+import { CreateWorkspacePage } from './pages';
 
 const workspaceRoutes = (
   <Route>
-    <Route path={Pages.createWorkspace()} element={<ExamplePage />} />
+    <Route path={Pages.createWorkspace()} element={<CreateWorkspacePage />} />
   </Route>
 );
 
