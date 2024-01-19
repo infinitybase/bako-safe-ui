@@ -135,6 +135,8 @@ const Header = () => {
   } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
+  const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
+
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
     setUnreadCounter(0);
@@ -156,6 +158,7 @@ const Header = () => {
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
         onSelect={handleWorkspaceSelection}
+        onCreate={handleGoToCreateWorkspace}
       />
 
       <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>

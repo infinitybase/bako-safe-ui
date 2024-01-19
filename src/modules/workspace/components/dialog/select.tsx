@@ -10,12 +10,14 @@ interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
   userWorkspaces: Workspace[];
   onSelect: (workspace: Workspace) => void;
+  onCreate: () => void;
 }
 
 const SelectWorkspaceDialog = ({
   dialog,
-  userWorkspaces,
   onSelect,
+  userWorkspaces,
+  onCreate,
 }: SelectWorkspaceDialogProps) => {
   return (
     <Dialog.Modal
@@ -66,7 +68,7 @@ const SelectWorkspaceDialog = ({
               h="full"
               type="submit"
               leftIcon={<SquarePlusIcon fontSize={18} />}
-              onClick={() => alert('Create workspace')}
+              onClick={onCreate}
             >
               {'Create workspace'}
             </Dialog.PrimaryAction>

@@ -45,7 +45,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         <Box w="100%" maxW="80px">
           <Badge variant="success">Admin</Badge>
         </Box>
-        <Text>
+        <Text color="grey.200" fontSize="md">
           Manage members, create new vaults, create transaction and access
           everything.
         </Text>
@@ -54,7 +54,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         <Box w="100%" maxW="80px">
           <Badge variant="blue">Manager</Badge>
         </Box>
-        <Text>
+        <Text color="grey.200" fontSize="md">
           Can create new vaults, create transaction and access all vaults in the
           workspace.
         </Text>
@@ -63,7 +63,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         <Box w="100%" maxW="80px">
           <Badge variant="warning">Viewer</Badge>
         </Box>
-        <Text>
+        <Text color="grey.200" fontSize="md">
           Can only access and view the contents of all vaults in the workspace.
         </Text>
       </HStack>
