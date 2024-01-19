@@ -3,17 +3,18 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 const schema = yup.object({
-  name: yup.string().required('Name is required.'),
-  description: yup.string().optional(),
+  address: yup.string().required('Address is required.'),
+  permission: yup.string().required('Permission is required.'),
 });
+
 const useChangeMemberForm = () =>
   useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
-      description: '',
+      address: '',
+      permission: '',
     },
   });
 
