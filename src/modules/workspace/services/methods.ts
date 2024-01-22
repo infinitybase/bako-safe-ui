@@ -21,9 +21,8 @@ export interface UpdateWorkspacePermissionsPayload {
 }
 
 export interface SelectWorkspacePayload {
-  workspace_id: string;
-  address: string;
-  token: string;
+  workspace: string;
+  user: string;
 }
 
 export type ListUserWorkspacesResponse = Workspace[];

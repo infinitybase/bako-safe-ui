@@ -66,12 +66,16 @@ const useSignIn = () => {
           value: avatar!,
         },
         {
+          name: CookieName.SINGLE_WORKSPACE,
+          value: JSON.stringify(workspace),
+        },
+        {
           name: CookieName.WORKSPACE,
           value: JSON.stringify(workspace),
         },
         {
           name: CookieName.PERMISSIONS,
-          value: JSON.stringify(workspace.permissions[user_id]),
+          value: JSON.stringify(workspace.permissions),
         },
       ]);
       setAccount(account!);
