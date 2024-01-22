@@ -13,6 +13,8 @@ import { SquarePlusIcon, VaultSuccessIcon } from '../icons';
 interface SuccessStepProps {
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
+  primaryAction?: string;
+  secondaryAction?: string;
   showAction?: boolean;
   title: string;
   description: string;
@@ -22,6 +24,8 @@ const FeedbackSuccess = ({
   title,
   showAction,
   description,
+  primaryAction,
+  secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
 }: SuccessStepProps) => (
@@ -43,17 +47,17 @@ const FeedbackSuccess = ({
         border="none"
         bgColor="dark.100"
         variant="secondary"
-        onClick={onPrimaryAction}
+        onClick={onSecondaryAction}
       >
-        Configure Members
+        {secondaryAction}
       </Button>
       <Button
         color="grey.300"
         variant="primary"
-        onClick={onSecondaryAction}
+        onClick={onPrimaryAction}
         leftIcon={<SquarePlusIcon fontSize={18} />}
       >
-        Conclude
+        {primaryAction}
       </Button>
     </HStack>
   </Center>

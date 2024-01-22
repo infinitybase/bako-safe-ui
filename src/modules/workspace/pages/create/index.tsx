@@ -13,9 +13,14 @@ import {
 import React from 'react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
+import {
+  Dialog,
+  FeedbackSuccess,
+  SquarePlusIcon,
+  StepProgress,
+} from '@/components';
 
-import { OnboardingStep, SuccesStep } from '../../components';
+import { OnboardingStep } from '../../components';
 import {
   TabState,
   UseCreateWorkspace,
@@ -54,8 +59,14 @@ const CreateWorkspaceForm = ({
 );
 
 const CreateWorkspacePage = () => {
-  const { request, form, tabs, handleClose, handleGoToWorkspace } =
-    useCreateWorkspace();
+  const {
+    form,
+    tabs,
+    request,
+    handleClose,
+    handleGoToWorkspace,
+    handleConfigureMembers,
+  } = useCreateWorkspace();
 
   return (
     <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
@@ -83,9 +94,15 @@ const CreateWorkspacePage = () => {
               <CreateWorkspaceForm form={form} />
             </TabPanel>
             <TabPanel>
-              <SuccesStep
-                onGoToWorkspace={handleGoToWorkspace}
-                onConfigureMembers={handleClose}
+              <FeedbackSuccess
+                title="All set!!"
+                description="The vault template is now ready for use whenever you need to stramline
+        your workflow!"
+                primaryAction="Conclude"
+                secondaryAction="Configure Members"
+                onPrimaryAction={handleGoToWorkspace}
+                onSecondaryAction={handleConfigureMembers}
+                showAction
               />
             </TabPanel>
           </TabPanels>

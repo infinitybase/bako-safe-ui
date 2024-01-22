@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   defaultPermissions,
   EnumUtils,
+  Pages,
   PermissionRoles,
   useTab,
 } from '@/modules/core';
@@ -36,7 +37,8 @@ const useChangeMember = () => {
   const memberRequest = useChangeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
 
-  const handleClose = () => navigate(-1);
+  const handleClose = () =>
+    navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
 
   const handleAddMember = memberForm.handleSubmit((data) => {
     const workspace = workspaceRequest.workspace!;

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { EnumUtils, useTab } from '@/modules';
+import { EnumUtils, Pages, useTab } from '@/modules';
 
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
@@ -24,22 +24,29 @@ const useCreateWorkspace = () => {
 
   const handleClose = () => navigate(-1);
 
-  /* TODO: add path to workspace */
-  const handleGoToWorkspace = () => navigate(-1);
+  const handleGoToWorkspace = () =>
+    navigate(Pages.workspace({ workspaceId: request.data!.id }));
+
+  const handleConfigureMembers = () =>
+    navigate(Pages.membersWorkspace({ workspaceId: request.data!.id }));
 
   const handleCreateWorkspace = form.handleSubmit(async (data) => {
-    await request.mutateAsync({
-      name: data.name,
-      description: data.description,
-    });
-
-    tabs.set(TabState.SUCCESS);
+    request.mutate(
+      {
+        name: data.name,
+        description: data.description,
+      },
+      {
+        onSuccess: () => tabs.set(TabState.SUCCESS),
+      },
+    );
   });
 
   return {
     request,
     handleClose,
     handleGoToWorkspace,
+    handleConfigureMembers,
     form: {
       ...form,
       handleCreateWorkspace,
