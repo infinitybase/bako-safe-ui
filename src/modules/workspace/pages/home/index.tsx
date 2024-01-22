@@ -1,7 +1,7 @@
 import { Text } from '@chakra-ui/react';
 
 const WorkspacePage = () => {
-  return <Text>OK</Text>;
+  return <Text>Workspace home</Text>;
 };
 
 export { WorkspacePage };
