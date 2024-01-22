@@ -5,16 +5,19 @@ import { useTab } from '@/modules/core';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import { useChangeMemberRequest } from './useChangeMemberRequest';
 
-export enum TabState {
-  ADDRESS,
-  PERMISSION,
-  SUCCESS,
+export enum MemberTabState {
+  ADDRESS = 0,
+  PERMISSION = 1,
+  SUCCESS = 2,
 }
 
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
-  const tabs = useTab<TabState>(TabState.ADDRESS);
+  const tabs = useTab<MemberTabState>({
+    tabs: Object.values(MemberTabState) as number[],
+    defaultTab: MemberTabState.ADDRESS,
+  });
 
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string }>();

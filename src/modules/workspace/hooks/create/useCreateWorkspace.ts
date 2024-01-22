@@ -15,7 +15,10 @@ export enum TabState {
 
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
-  const tabs = useTab<TabState>(TabState.ON_BOARDING);
+  const tabs = useTab({
+    tabs: Object.values(TabState) as number[],
+    defaultTab: TabState.ON_BOARDING,
+  });
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
 
