@@ -13,6 +13,7 @@ export interface IPermissions {
 }
 
 export interface Member {
+  id: string;
   name: string | null;
   avatar: string;
   address: string;
@@ -31,6 +32,44 @@ export interface Workspace {
   members: Member[];
   predicates: number;
 }
+
+export const defaultPermissions = {
+  [PermissionRoles.OWNER]: {
+    OWNER: ['*'],
+    ADMIN: ['*'],
+    MANAGER: ['*'],
+    SIGNER: ['*'],
+    VIEWER: ['*'],
+  },
+  [PermissionRoles.SIGNER]: {
+    OWNER: [''],
+    ADMIN: [''],
+    MANAGER: [''],
+    SIGNER: [''],
+    VIEWER: [''],
+  },
+  [PermissionRoles.ADMIN]: {
+    OWNER: [''],
+    ADMIN: [''],
+    MANAGER: [''],
+    SIGNER: [''],
+    VIEWER: [''],
+  },
+  [PermissionRoles.MANAGER]: {
+    OWNER: [''],
+    ADMIN: [''],
+    MANAGER: [''],
+    SIGNER: [''],
+    VIEWER: [''],
+  },
+  [PermissionRoles.VIEWER]: {
+    OWNER: [''],
+    ADMIN: [''],
+    MANAGER: [''],
+    SIGNER: [''],
+    VIEWER: ['*'],
+  },
+};
 
 export const WorkspacesQueryKey = {
   DEFAULT: 'workspace',

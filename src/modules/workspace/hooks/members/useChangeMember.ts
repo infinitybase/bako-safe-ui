@@ -1,6 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { EnumUtils, useTab } from '@/modules/core';
+import {
+  defaultPermissions,
+  EnumUtils,
+  PermissionRoles,
+  useTab,
+} from '@/modules/core';
 
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
@@ -19,7 +24,7 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
-  const params = useParams<{ workspaceId: string }>();
+  const params = useParams<{ workspaceId: string; memberId: string }>();
 
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
@@ -38,13 +43,32 @@ const useChangeMember = () => {
     const members = workspace.members.map((member) => member.address) ?? [];
 
     memberRequest.mutate([...members, data.address], {
-      onSuccess: () => tabs.set(MemberTabState.PERMISSION),
+      onSuccess: () => {
+        tabs.set(MemberTabState.PERMISSION);
+        workspaceRequest.refetch();
+      },
     });
   });
 
   const handleAddPermission = permissionForm.handleSubmit((data) => {
-    console.log({ permission: data });
-    tabs.set(MemberTabState.SUCCESS);
+    const workspace = workspaceRequest.workspace!;
+    const memberAddress = memberForm.getValues('address');
+    const member = workspace.members.find(
+      (member) => member.address === memberAddress,
+    );
+    const permission = data.permission as PermissionRoles;
+
+    if (!member) return;
+
+    permissionsRequest.mutate(
+      {
+        ...workspace.permissions,
+        [member.id]: defaultPermissions[permission],
+      },
+      {
+        onSuccess: () => tabs.set(MemberTabState.SUCCESS),
+      },
+    );
   });
 
   const clearSteps = () => {

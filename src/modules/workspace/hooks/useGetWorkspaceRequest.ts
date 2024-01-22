@@ -7,7 +7,7 @@ const useGetWorkspaceRequest = (workspaceId: string) => {
   const { data, ...request } = useQuery(
     WorkspacesQueryKey.GET(workspaceId),
     () => WorkspaceService.getById(workspaceId),
-    { enabled: !!workspaceId },
+    { enabled: !!workspaceId, refetchOnWindowFocus: false },
   );
 
   return {
