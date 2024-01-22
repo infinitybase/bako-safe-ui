@@ -5,4 +5,10 @@ import { WorkspaceService } from '@/modules/workspace/services';
 const useChangeMemberRequest = () =>
   useMutation('workspace/update/members', WorkspaceService.updateMembers);
 
-export { useChangeMemberRequest };
+const useChangePermissionsRequest = () =>
+  useMutation(
+    'workspace/update/permissions',
+    WorkspaceService.updatePermissions,
+  );
+
+export { useChangeMemberRequest, useChangePermissionsRequest };

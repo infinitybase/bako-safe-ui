@@ -30,7 +30,7 @@ import {
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface MemberAddressForm {
-  form: UseChangeMember['form'];
+  form: UseChangeMember['form']['memberForm'];
 }
 
 /* TODO: Move to components folder */
@@ -68,7 +68,7 @@ const MemberAddressForm = ({ form }: MemberAddressForm) => {
 };
 
 interface MemberPermissionForm {
-  form: UseChangeMember['form'];
+  form: UseChangeMember['form']['permissionForm'];
 }
 
 /* TODO: Move to components folder */
@@ -126,16 +126,16 @@ const MemberPermissionForm = ({ form }: MemberPermissionForm) => {
 };
 
 const CreateMemberPage = () => {
-  const { form, request, handleClose, tabs } = useChangeMember();
-  const { formState } = form;
+  const { form, handleClose, tabs } = useChangeMember();
+  const { formState, memberForm, permissionForm } = form;
 
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <MemberAddressForm form={form} />
+        <MemberAddressForm form={memberForm} />
       </TabPanel>
       <TabPanel p={0}>
-        <MemberPermissionForm form={form} />
+        <MemberPermissionForm form={permissionForm} />
       </TabPanel>
       <TabPanel p={0}>
         <FeedbackSuccess
@@ -175,7 +175,7 @@ const CreateMemberPage = () => {
           onClick={formState?.handlePrimaryAction}
           leftIcon={<SquarePlusIcon />}
           isDisabled={!formState?.isValid}
-          isLoading={request.isLoading}
+          isLoading={formState?.isLoading}
         >
           {formState.primaryAction}
         </Dialog.PrimaryAction>
