@@ -7,12 +7,18 @@ import {
   HStack,
 } from '@chakra-ui/react';
 
-export interface DialogActionsProps extends BoxProps {}
+export interface DialogActionsProps extends BoxProps {
+  hideDivider?: boolean;
+}
 export interface DialogActionProps extends ButtonProps {}
 
-const DialogActions = ({ children, ...rest }: DialogActionsProps) => (
+const DialogActions = ({
+  children,
+  hideDivider,
+  ...rest
+}: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Divider borderColor="dark.100" my={9} />
+    <Divider hidden={hideDivider} borderColor="dark.100" my={9} />
     <HStack spacing={4} justifyContent="center">
       {children}
     </HStack>

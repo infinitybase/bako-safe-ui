@@ -33,11 +33,11 @@ const useChangeMember = () => {
 
   const formState = {
     [MemberTabState.ADDRESS]: {
-      isValid: !form.formState.errors?.address?.message,
+      isValid: !!form.watch('address'),
       handleSubmit: () => tabs.set(MemberTabState.PERMISSION),
     },
     [MemberTabState.PERMISSION]: {
-      isValid: !form.formState.errors?.permission?.message,
+      isValid: !!form.watch('permission'),
       handleSubmit: () => handleAddMember,
     },
   };

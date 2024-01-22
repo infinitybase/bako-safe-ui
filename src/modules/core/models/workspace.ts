@@ -6,8 +6,10 @@ export enum PermissionRoles {
   VIEWER = 'VIEWER',
 }
 
+export type UserAddress = string;
+
 export interface IPermissions {
-  [key: string]: {
+  [key: UserAddress]: {
     [key in PermissionRoles]: string[];
   };
 }

@@ -3,7 +3,7 @@ import React from 'react';
 
 export interface DialogSectionProps extends Omit<StackProps, 'title'> {
   title: React.ReactNode;
-  description: string;
+  description?: string;
 }
 
 const DialogSection = ({
@@ -13,7 +13,7 @@ const DialogSection = ({
 }: DialogSectionProps) => (
   <VStack spacing={4} alignItems="flex-start" {...stackProps}>
     {title}
-    <Text variant="description">{description}</Text>
+    {description && <Text variant="description">{description}</Text>}
   </VStack>
 );
 
