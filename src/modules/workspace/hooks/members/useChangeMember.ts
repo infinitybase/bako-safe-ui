@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
+import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangeMemberRequest,
@@ -17,23 +18,28 @@ export enum MemberTabState {
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
+  const navigate = useNavigate();
+  const params = useParams<{ workspaceId: string }>();
+
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
     defaultTab: MemberTabState.ADDRESS,
   });
-
-  const navigate = useNavigate();
-  const params = useParams<{ workspaceId: string }>();
   const { memberForm, permissionForm } = useChangeMemberForm();
 
-  const memberRequest = useChangeMemberRequest();
-  const permissionsRequest = useChangePermissionsRequest();
+  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
+  const memberRequest = useChangeMemberRequest(params.workspaceId!);
+  const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
 
   const handleClose = () => navigate(-1);
 
   const handleAddMember = memberForm.handleSubmit((data) => {
-    console.log({ member: data });
-    tabs.set(MemberTabState.PERMISSION);
+    const workspace = workspaceRequest.workspace!;
+    const members = workspace.members.map((member) => member.address) ?? [];
+
+    memberRequest.mutate([...members, data.address], {
+      onSuccess: () => tabs.set(MemberTabState.PERMISSION),
+    });
   });
 
   const handleAddPermission = permissionForm.handleSubmit((data) => {
@@ -49,7 +55,7 @@ const useChangeMember = () => {
 
   const formState = {
     [MemberTabState.ADDRESS]: {
-      isValid: !!memberForm.watch('address'),
+      isValid: memberForm.formState.isValid,
       primaryAction: 'Continue',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleAddMember,
@@ -57,7 +63,7 @@ const useChangeMember = () => {
       isLoading: memberRequest.isLoading,
     },
     [MemberTabState.PERMISSION]: {
-      isValid: !!permissionForm.watch('permission'),
+      isValid: permissionForm.formState.isValid,
       primaryAction: 'Add member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleAddPermission,

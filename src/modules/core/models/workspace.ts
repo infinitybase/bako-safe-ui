@@ -6,10 +6,8 @@ export enum PermissionRoles {
   VIEWER = 'VIEWER',
 }
 
-export type UserAddress = string;
-
 export interface IPermissions {
-  [key: UserAddress]: {
+  [key: string]: {
     [key in PermissionRoles]: string[];
   };
 }
@@ -34,7 +32,23 @@ export interface Workspace {
   predicates: number;
 }
 
-export enum WorkspacesQueryKey {
-  LIST_BY_USER = 'workspaces/list-by-user',
-  SELECT = 'workspaces/select',
-}
+export const WorkspacesQueryKey = {
+  DEFAULT: 'workspace',
+  LIST_BY_USER: () => [WorkspacesQueryKey.DEFAULT, 'list-by-user'],
+  SELECT: () => [WorkspacesQueryKey.DEFAULT, 'select'],
+  GET: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'by-id',
+    workspaceId,
+  ],
+  ADD_MEMBER: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'add-member',
+    workspaceId,
+  ],
+  UPDATE_PERMISSION: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'update-permission',
+    workspaceId,
+  ],
+};

@@ -2,8 +2,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { AddressUtils } from '@/modules/core';
+
 const memberSchema = yup.object({
-  address: yup.string().required('Address is required.'),
+  // TODO: Move address validation to ./src/modules/core/utils/address
+  address: yup
+    .string()
+    .required('Empty address')
+    .test('is-valid-address', 'Invalid address', (address) =>
+      AddressUtils.isValid(address),
+    ),
 });
 
 const permissionSchema = yup.object({

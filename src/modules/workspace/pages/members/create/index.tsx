@@ -56,9 +56,9 @@ const MemberAddressForm = ({ form }: MemberAddressForm) => {
             onInputChange={field.onChange}
             onChange={field.onChange}
             errorMessage={fieldState.error?.message}
+            isInvalid={fieldState.invalid}
             options={[]}
             isLoading={false}
-            isInvalid={false}
             isDisabled={false}
           />
         )}
@@ -95,12 +95,11 @@ const MemberPermissionForm = ({ form }: MemberPermissionForm) => {
           >
             <Stack>
               {WorkspacePermissionUtils.permissionsValues.map((permission) => (
-                <>
+                <React.Fragment key={permission.value}>
                   <Radio
                     my={2}
                     borderWidth={1}
                     borderColor="grey.500"
-                    key={permission.value}
                     value={permission.value}
                   >
                     <HStack>
@@ -115,7 +114,7 @@ const MemberPermissionForm = ({ form }: MemberPermissionForm) => {
                     </HStack>
                   </Radio>
                   <Divider borderColor="dark.100" />
-                </>
+                </React.Fragment>
               ))}
             </Stack>
           </RadioGroup>
@@ -159,7 +158,7 @@ const CreateMemberPage = () => {
         <Box hidden={tabs.is(MemberTabState.SUCCESS)} mb={12}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
-        <Tabs index={tabs.tab} colorScheme="green">
+        <Tabs index={tabs.tab} isLazy colorScheme="green">
           {TabsPanels}
         </Tabs>
       </Dialog.Body>

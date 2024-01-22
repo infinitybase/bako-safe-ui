@@ -30,6 +30,7 @@ export type ListUserWorkspacesResponse = Workspace[];
 export type CreateWorkspaceResponse = Workspace;
 export type UpdateWorkspaceMembersResponse = Workspace;
 export type UpdateWorkspacePermissionsResponse = Workspace;
+export type GetWorkspaceByIdResponse = Workspace;
 export type SelectWorkspaceResponse = {
   workspace: Workspace;
 };
@@ -73,6 +74,14 @@ export class WorkspaceService {
     const { data } = await api.put<UpdateWorkspacePermissionsResponse>(
       `/workspace/${payload.id}/permissions`,
       { permissions: payload.permissions },
+    );
+
+    return data;
+  }
+
+  static async getById(workspaceId: string) {
+    const { data } = await api.get<GetWorkspaceByIdResponse>(
+      `/workspace/${workspaceId}`,
     );
 
     return data;

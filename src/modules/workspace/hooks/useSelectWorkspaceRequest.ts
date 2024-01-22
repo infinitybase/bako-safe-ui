@@ -8,7 +8,7 @@ const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
 ) => {
   return useMutation(
-    WorkspacesQueryKey.SELECT,
+    WorkspacesQueryKey.SELECT(),
     WorkspaceService.select,
     options,
   );
