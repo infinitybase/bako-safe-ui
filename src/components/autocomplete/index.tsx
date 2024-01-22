@@ -41,7 +41,7 @@ interface AutoCompleteProps {
   rightAction?: RightAction;
   bottomAction?: ReactNode;
   index?: number;
-  inView: InViewHookResponse;
+  inView?: InViewHookResponse;
   onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
 }
@@ -206,7 +206,7 @@ function AutoComplete({
                   </Text>
                 </Box>
               ))}
-              <Box ref={inView.ref} />
+              <Box ref={inView?.ref} />
             </VStack>
           </Flex>
         </Box>

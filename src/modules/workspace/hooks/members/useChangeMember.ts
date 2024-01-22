@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useTab } from '@/modules/core';
+import { EnumUtils, useTab } from '@/modules/core';
 
 import { useChangeMemberForm } from './useChangeMemberForm';
 import { useChangeMemberRequest } from './useChangeMemberRequest';
@@ -15,7 +15,7 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const tabs = useTab<MemberTabState>({
-    tabs: Object.values(MemberTabState) as number[],
+    tabs: EnumUtils.toNumberArray(MemberTabState),
     defaultTab: MemberTabState.ADDRESS,
   });
 
@@ -26,7 +26,21 @@ const useChangeMember = () => {
 
   const handleClose = () => navigate(-1);
 
-  const handleAddMember = form.handleSubmit(console.log);
+  const handleAddMember = form.handleSubmit((data) => {
+    console.log({ data });
+    tabs.set(MemberTabState.SUCCESS);
+  });
+
+  const formState = {
+    [MemberTabState.ADDRESS]: {
+      isValid: !form.formState.errors?.address?.message,
+      handleSubmit: () => tabs.set(MemberTabState.PERMISSION),
+    },
+    [MemberTabState.PERMISSION]: {
+      isValid: !form.formState.errors?.permission?.message,
+      handleSubmit: () => handleAddMember,
+    },
+  };
 
   return {
     tabs,
@@ -35,7 +49,7 @@ const useChangeMember = () => {
     handleClose,
     form: {
       ...form,
-      handleAddMember,
+      formState: formState[tabs.tab],
     },
   };
 };

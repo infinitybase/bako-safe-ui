@@ -1,12 +1,49 @@
-import { Box, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Heading, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import React from 'react';
+import { Controller } from 'react-hook-form';
 
 import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
-import { useChangeMember } from '@/modules/workspace/hooks/members';
+import { AutoComplete } from '@/components/autocomplete';
+import {
+  UseChangeMember,
+  useChangeMember,
+} from '@/modules/workspace/hooks/members';
 
-/* TODO: Move to components folder */
-const MemberAddressForm = () => {
-  return <>Address here</>;
+interface MemberAddressForm {
+  form: UseChangeMember['form'];
+}
+
+const MemberAddressForm = ({ form }: MemberAddressForm) => {
+  return (
+    <Box w="full">
+      <Dialog.Section
+        title={
+          <Heading fontSize="md" color="grey.200">
+            Member address
+          </Heading>
+        }
+        description="Who it will be a new member in your workspace?"
+        mb={8}
+      />
+      <Controller
+        name="address"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <AutoComplete
+            label="Name or address"
+            value={field.value}
+            onInputChange={field.onChange}
+            onChange={field.onChange}
+            errorMessage={fieldState.error?.message}
+            options={[]}
+            isLoading={false}
+            isInvalid={false}
+            isDisabled={false}
+          />
+        )}
+      />
+    </Box>
+  );
 };
 
 /* TODO: Move to components folder */
@@ -16,13 +53,14 @@ const MemberPermissionForm = () => {
 
 const CreateMemberPage = () => {
   const { form, request, handleClose, tabs } = useChangeMember();
+  const { formState } = form;
 
   const TabsPanels = (
     <TabPanels>
-      <TabPanel>
-        <MemberAddressForm />
+      <TabPanel p={0}>
+        <MemberAddressForm form={form} />
       </TabPanel>
-      <TabPanel>
+      <TabPanel p={0}>
         <MemberPermissionForm />
       </TabPanel>
     </TabPanels>
@@ -50,9 +88,9 @@ const CreateMemberPage = () => {
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          onClick={form.handleAddMember}
+          onClick={formState?.handleSubmit}
           leftIcon={<SquarePlusIcon />}
-          isDisabled={request.isLoading}
+          isDisabled={!formState?.isValid}
           isLoading={request.isLoading}
         >
           Continue

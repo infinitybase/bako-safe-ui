@@ -34,6 +34,7 @@ const Pages = {
 
   //workspace
   createWorkspace: pageRoute('/workspace/create'),
+  membersWorkspace: pageRoute('/workspace/members'),
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
 };
 

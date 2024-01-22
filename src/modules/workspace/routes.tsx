@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { CreateWorkspacePage } from './pages';
+import { CreateMemberPage, CreateWorkspacePage } from './pages';
 import { WorkspacePage } from './pages/home';
 
 const workspaceRoutes = (
@@ -13,6 +13,14 @@ const workspaceRoutes = (
       element={
         <AuthRoute>
           <CreateWorkspacePage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.membersWorkspace()}
+      element={
+        <AuthRoute>
+          <CreateMemberPage />
         </AuthRoute>
       }
     />

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { useTab } from '@/modules';
+import { EnumUtils, useTab } from '@/modules';
 
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
@@ -16,7 +16,7 @@ export enum TabState {
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
   const tabs = useTab({
-    tabs: Object.values(TabState) as number[],
+    tabs: EnumUtils.toNumberArray(TabState),
     defaultTab: TabState.ON_BOARDING,
   });
   const form = useCreateWorkspaceForm();
