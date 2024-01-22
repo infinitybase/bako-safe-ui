@@ -26,6 +26,14 @@ const useChangeMember = () => {
 
   const handleClose = () => navigate(-1);
 
+  const clearSteps = () => {
+    tabs.set(MemberTabState.ADDRESS);
+    form.reset({
+      address: '',
+      permission: '',
+    });
+  };
+
   const handleAddMember = form.handleSubmit((data) => {
     console.log({ data });
     tabs.set(MemberTabState.SUCCESS);
@@ -34,11 +42,24 @@ const useChangeMember = () => {
   const formState = {
     [MemberTabState.ADDRESS]: {
       isValid: !!form.watch('address'),
-      handleSubmit: () => tabs.set(MemberTabState.PERMISSION),
+      primaryAction: 'Continue',
+      secondaryAction: 'Cancel',
+      handlePrimaryAction: () => tabs.set(MemberTabState.PERMISSION),
+      handleSecondaryAction: handleClose,
     },
     [MemberTabState.PERMISSION]: {
       isValid: !!form.watch('permission'),
-      handleSubmit: () => handleAddMember,
+      primaryAction: 'Add member',
+      secondaryAction: 'Cancel',
+      handlePrimaryAction: handleAddMember,
+      handleSecondaryAction: handleClose,
+    },
+    [MemberTabState.SUCCESS]: {
+      isValid: true,
+      primaryAction: 'Conclude',
+      secondaryAction: 'Add another member',
+      handlePrimaryAction: handleClose,
+      handleSecondaryAction: clearSteps,
     },
   };
 

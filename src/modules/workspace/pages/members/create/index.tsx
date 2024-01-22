@@ -15,7 +15,12 @@ import {
 import React from 'react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog, SquarePlusIcon, StepProgress } from '@/components';
+import {
+  Dialog,
+  FeedbackSuccess,
+  SquarePlusIcon,
+  StepProgress,
+} from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import {
   MemberTabState,
@@ -132,6 +137,12 @@ const CreateMemberPage = () => {
       <TabPanel p={0}>
         <MemberPermissionForm form={form} />
       </TabPanel>
+      <TabPanel p={0}>
+        <FeedbackSuccess
+          title="New member added!"
+          description="To view all the members added to your workspace, click on settings on the workspace home page."
+        />
+      </TabPanel>
     </TabPanels>
   );
 
@@ -141,10 +152,11 @@ const CreateMemberPage = () => {
         maxW={420}
         title="Add Member"
         description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
+        hidden={tabs.is(MemberTabState.SUCCESS)}
       />
 
       <Dialog.Body mb={9} maxW={420}>
-        <Box mb={12}>
+        <Box hidden={tabs.is(MemberTabState.SUCCESS)} mb={12}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
@@ -156,16 +168,16 @@ const CreateMemberPage = () => {
         maxW={420}
         hideDivider={tabs.is(MemberTabState.PERMISSION)}
       >
-        <Dialog.SecondaryAction onClick={handleClose}>
-          Cancel
+        <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
+          {formState?.secondaryAction}
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          onClick={formState?.handleSubmit}
+          onClick={formState?.handlePrimaryAction}
           leftIcon={<SquarePlusIcon />}
           isDisabled={!formState?.isValid}
           isLoading={request.isLoading}
         >
-          Continue
+          {formState.primaryAction}
         </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
