@@ -36,7 +36,7 @@ interface AutoCompleteProps {
   // selected?: string[];
   value?: string;
   label: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   errorMessage?: string;
   rightAction?: RightAction;
   bottomAction?: ReactNode;

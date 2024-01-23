@@ -4,6 +4,7 @@ import {
   Divider,
   Heading,
   HStack,
+  Link,
   Radio,
   RadioGroup,
   Stack,
@@ -22,6 +23,8 @@ import {
   StepProgress,
 } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
+import { CreateContactDialog } from '@/modules/addressBook';
+import { AddressUtils } from '@/modules/core';
 import {
   MemberTabState,
   UseChangeMember,
@@ -31,10 +34,41 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
+  addressBook: UseChangeMember['addressBook'];
 }
 
 /* TODO: Move to components folder */
-const MemberAddressForm = ({ form }: MemberAddressForm) => {
+const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
+  const { contacts } = addressBook.contactsPaginatedRequest;
+
+  const options =
+    contacts &&
+    contacts
+      ?.filter(({ user }) => !form.getValues('address')?.includes(user.address))
+      ?.map(({ user, nickname }) => ({
+        value: user.address,
+        label: `${nickname} - ${AddressUtils.format(user.address)}`,
+      }));
+
+  const bottomAction = (
+    <Box mt={2}>
+      <Text color="grey.200" fontSize={12}>
+        Do you wanna{' '}
+        <Link
+          color="brand.500"
+          onClick={() =>
+            addressBook.handleOpenDialog?.({
+              address: form.getValues('address'),
+            })
+          }
+        >
+          add
+        </Link>{' '}
+        this address in your address book?
+      </Text>
+    </Box>
+  );
+
   return (
     <Box w="full">
       <Dialog.Section
@@ -51,15 +85,17 @@ const MemberAddressForm = ({ form }: MemberAddressForm) => {
         control={form.control}
         render={({ field, fieldState }) => (
           <AutoComplete
+            index={0}
             label="Name or address"
             value={field.value}
-            onInputChange={field.onChange}
+            onInputChange={addressBook.search.handler}
             onChange={field.onChange}
             errorMessage={fieldState.error?.message}
             isInvalid={fieldState.invalid}
-            options={[]}
-            isLoading={false}
-            isDisabled={false}
+            options={options}
+            isLoading={!addressBook.contactsPaginatedRequest.isSuccess}
+            bottomAction={bottomAction}
+            inView={addressBook.inView}
           />
         )}
       />
@@ -125,13 +161,13 @@ const MemberPermissionForm = ({ form }: MemberPermissionForm) => {
 };
 
 const CreateMemberPage = () => {
-  const { form, handleClose, tabs } = useChangeMember();
+  const { form, handleClose, tabs, addressBook } = useChangeMember();
   const { formState, memberForm, permissionForm } = form;
 
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <MemberAddressForm form={memberForm} />
+        <MemberAddressForm form={memberForm} addressBook={addressBook} />
       </TabPanel>
       <TabPanel p={0}>
         <MemberPermissionForm form={permissionForm} />
@@ -147,6 +183,13 @@ const CreateMemberPage = () => {
 
   return (
     <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
+      <CreateContactDialog
+        form={addressBook.form}
+        dialog={addressBook.contactDialog}
+        isLoading={addressBook.createContactRequest.isLoading}
+        isEdit={false}
+      />
+
       <Dialog.Header
         maxW={420}
         title="Add Member"

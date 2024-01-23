@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
@@ -31,7 +32,9 @@ const useChangeMember = () => {
     tabs: EnumUtils.toNumberArray(MemberTabState),
     defaultTab: MemberTabState.ADDRESS,
   });
+
   const { memberForm, permissionForm } = useChangeMemberForm();
+  const addressBook = useAddressBook();
 
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
@@ -106,6 +109,7 @@ const useChangeMember = () => {
   return {
     tabs,
     params,
+    addressBook,
     memberRequest,
     permissionsRequest,
     handleClose,
