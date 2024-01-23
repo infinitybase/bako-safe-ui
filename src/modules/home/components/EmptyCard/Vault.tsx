@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { NotFoundIcon, SquarePlusIcon } from '@/components';
 import { Pages } from '@/modules/core';
 
-const EmptyVault = () => {
+interface EmptyVaultProps {
+  title?: string;
+  description?: string;
+}
+
+const EmptyVault = (props?: EmptyVaultProps) => {
   const navigate = useNavigate();
 
   return (
@@ -22,13 +27,14 @@ const EmptyVault = () => {
       </Box>
       <Box mb={5}>
         <Heading color="brand.500" fontSize="4xl">
-          {"Let's"} Begin!
+          {props?.title ?? `Let's Begin!`}
         </Heading>
       </Box>
       <Box maxW={400} mb={8}>
         <Text color="white" fontSize="md" textAlign="center" fontWeight="bold">
-          Your vaults are entirely free on Fuel. {`Let's`} create your very
-          first one?
+          {props?.description ??
+            `Your vaults are entirely free on Fuel. Let's create your very
+          first one?`}
         </Text>
       </Box>
       <Button

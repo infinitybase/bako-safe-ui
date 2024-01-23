@@ -75,7 +75,7 @@ const useSignIn = () => {
         },
         {
           name: CookieName.PERMISSIONS,
-          value: JSON.stringify(workspace.permissions),
+          value: JSON.stringify(workspace.permissions[user_id]),
         },
       ]);
       setAccount(account!);
