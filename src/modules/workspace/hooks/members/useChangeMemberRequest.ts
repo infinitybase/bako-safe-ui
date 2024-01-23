@@ -1,18 +1,26 @@
 import { useMutation } from 'react-query';
 
-import { IPermissions, WorkspacesQueryKey } from '@/modules/core';
-import { WorkspaceService } from '@/modules/workspace/services';
+import { WorkspacesQueryKey } from '@/modules/core';
+import {
+  IncludeWorkspaceMemberPayload,
+  UpdateWorkspacePermissionsPayload,
+  WorkspaceService,
+} from '@/modules/workspace/services';
 
-const useChangeMemberRequest = (workspaceId: string) =>
-  useMutation(WorkspacesQueryKey.ADD_MEMBER(workspaceId), (members: string[]) =>
-    WorkspaceService.updateMembers({ id: workspaceId, members }),
+const useIncludeMemberRequest = (workspaceId: string) =>
+  useMutation(
+    WorkspacesQueryKey.ADD_MEMBER(workspaceId),
+    (userAddress: IncludeWorkspaceMemberPayload['address']) =>
+      WorkspaceService.includeMember({ id: workspaceId, address: userAddress }),
   );
+
+type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;
 
 const useChangePermissionsRequest = (workspaceId: string) =>
   useMutation(
     WorkspacesQueryKey.UPDATE_PERMISSION(workspaceId),
-    (permissions: IPermissions) =>
-      WorkspaceService.updatePermissions({ id: workspaceId, permissions }),
+    (payload: ChangePermissionPayload) =>
+      WorkspaceService.updatePermissions({ id: workspaceId, ...payload }),
   );
 
-export { useChangeMemberRequest, useChangePermissionsRequest };
+export { useChangePermissionsRequest, useIncludeMemberRequest };

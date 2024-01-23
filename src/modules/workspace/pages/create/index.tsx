@@ -84,16 +84,16 @@ const CreateWorkspacePage = () => {
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
           <TabPanels>
-            <TabPanel>
+            <TabPanel p={0}>
               <OnboardingStep
                 onCancel={handleClose}
                 onConfirm={() => tabs.set(TabState.FORM)}
               />
             </TabPanel>
-            <TabPanel>
+            <TabPanel p={0}>
               <CreateWorkspaceForm form={form} />
             </TabPanel>
-            <TabPanel>
+            <TabPanel p={0}>
               <FeedbackSuccess
                 title="All set!!"
                 description="The vault template is now ready for use whenever you need to stramline

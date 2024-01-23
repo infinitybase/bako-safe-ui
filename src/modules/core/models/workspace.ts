@@ -12,6 +12,10 @@ export interface IPermissions {
   };
 }
 
+export type IPermission = {
+  [key in PermissionRoles]: string[];
+};
+
 export interface Member {
   id: string;
   name: string | null;

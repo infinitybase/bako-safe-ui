@@ -11,8 +11,8 @@ import {
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
-  useChangeMemberRequest,
   useChangePermissionsRequest,
+  useIncludeMemberRequest,
 } from './useChangeMemberRequest';
 
 export enum MemberTabState {
@@ -33,18 +33,15 @@ const useChangeMember = () => {
   });
   const { memberForm, permissionForm } = useChangeMemberForm();
 
+  const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
-  const memberRequest = useChangeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
 
   const handleClose = () =>
     navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
 
   const handleAddMember = memberForm.handleSubmit((data) => {
-    const workspace = workspaceRequest.workspace!;
-    const members = workspace.members.map((member) => member.address) ?? [];
-
-    memberRequest.mutate([...members, data.address], {
+    memberRequest.mutate(data.address, {
       onSuccess: () => {
         tabs.set(MemberTabState.PERMISSION);
         workspaceRequest.refetch();
@@ -64,8 +61,8 @@ const useChangeMember = () => {
 
     permissionsRequest.mutate(
       {
-        ...workspace.permissions,
-        [member.id]: defaultPermissions[permission],
+        member: member.id,
+        permissions: defaultPermissions[permission],
       },
       {
         onSuccess: () => tabs.set(MemberTabState.SUCCESS),

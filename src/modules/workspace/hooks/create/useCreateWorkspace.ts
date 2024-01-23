@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { EnumUtils, Pages, useTab } from '@/modules';
+import { EnumUtils, Pages, useFuelAccount, useTab } from '@/modules';
 
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
@@ -15,10 +15,14 @@ export enum TabState {
 
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
+
+  const { account } = useFuelAccount();
+
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(TabState),
     defaultTab: TabState.ON_BOARDING,
   });
+
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
 
@@ -35,6 +39,7 @@ const useCreateWorkspace = () => {
       {
         name: data.name,
         description: data.description,
+        members: [account],
       },
       {
         onSuccess: () => tabs.set(TabState.SUCCESS),

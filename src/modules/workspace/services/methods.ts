@@ -1,9 +1,9 @@
 import { api } from '@/config';
-import { IPermissions, Workspace } from '@/modules/core';
+import { IPermission, IPermissions, Workspace } from '@/modules/core';
 
 export interface CreateWorkspacePayload {
   name: string;
-  members?: string[];
+  members: string[];
   description?: string;
   avatar?: string;
   single?: boolean;
@@ -15,9 +15,15 @@ export interface UpdateWorkspaceMembersPayload {
   members: string[];
 }
 
+export interface IncludeWorkspaceMemberPayload {
+  id: Workspace['id'];
+  address: string;
+}
+
 export interface UpdateWorkspacePermissionsPayload {
   id: Workspace['id'];
-  permissions: IPermissions;
+  member: string;
+  permissions: IPermission;
 }
 
 export interface SelectWorkspacePayload {
@@ -28,6 +34,7 @@ export interface SelectWorkspacePayload {
 export type ListUserWorkspacesResponse = Workspace[];
 export type CreateWorkspaceResponse = Workspace;
 export type UpdateWorkspaceMembersResponse = Workspace;
+export type IncludeWorkspaceMemberResponse = Workspace;
 export type UpdateWorkspacePermissionsResponse = Workspace;
 export type GetWorkspaceByIdResponse = Workspace;
 export type SelectWorkspaceResponse = {
@@ -69,10 +76,20 @@ export class WorkspaceService {
     return data;
   }
 
+  static async includeMember(payload: IncludeWorkspaceMemberPayload) {
+    const { id, address } = payload;
+    const { data } = await api.post<IncludeWorkspaceMemberResponse>(
+      `/workspace/${id}/members/${address}/include`,
+    );
+
+    return data;
+  }
+
   static async updatePermissions(payload: UpdateWorkspacePermissionsPayload) {
+    const { id, permissions, member } = payload;
     const { data } = await api.put<UpdateWorkspacePermissionsResponse>(
-      `/workspace/${payload.id}/permissions`,
-      { permissions: payload.permissions },
+      `/workspace/${id}/permissions/${member}`,
+      { permissions },
     );
 
     return data;
