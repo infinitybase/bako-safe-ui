@@ -37,6 +37,10 @@ const Pages = {
   membersWorkspace: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/members',
   ),
+  updateMemberWorkspace: pageRoute<{
+    workspaceId: string;
+    memberId: string;
+  }>('/workspace/:workspaceId/members/:memberId'),
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
 };
 

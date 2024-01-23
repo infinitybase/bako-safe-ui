@@ -27,17 +27,28 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 const useChangeMember = () => {
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string; memberId: string }>();
+  const isEditMember = !!params.memberId;
 
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
-    defaultTab: MemberTabState.ADDRESS,
+    defaultTab: isEditMember
+      ? MemberTabState.PERMISSION
+      : MemberTabState.ADDRESS,
   });
 
-  const { memberForm, permissionForm } = useChangeMemberForm();
+  const { memberForm, permissionForm, setMemberValuesByWorkspace } =
+    useChangeMemberForm();
   const addressBook = useAddressBook();
 
+  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!, {
+    onSuccess: (workspace) => {
+      if (!isEditMember) return;
+
+      setMemberValuesByWorkspace(workspace, params.memberId);
+    },
+  });
+
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
-  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
 
   const handleClose = () =>
