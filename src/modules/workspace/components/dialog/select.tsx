@@ -45,7 +45,7 @@ const SelectWorkspaceDialog = ({
           <VStack
             spacing={8}
             w="full"
-            maxH={478}
+            maxH={430}
             my={6}
             overflow="scroll"
             css={{
