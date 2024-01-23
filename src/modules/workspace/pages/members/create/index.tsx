@@ -40,11 +40,12 @@ interface MemberAddressForm {
 /* TODO: Move to components folder */
 const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const { contacts } = addressBook.contactsPaginatedRequest;
+  const address = form.watch('address');
 
   const options =
     contacts &&
     contacts
-      ?.filter(({ user }) => !form.getValues('address')?.includes(user.address))
+      ?.filter(({ user }) => !!address?.includes(user.address))
       ?.map(({ user, nickname }) => ({
         value: user.address,
         label: `${nickname} - ${AddressUtils.format(user.address)}`,
