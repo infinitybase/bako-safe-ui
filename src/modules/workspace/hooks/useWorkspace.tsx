@@ -6,13 +6,19 @@ import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth';
-import { Pages, Predicate, Workspace } from '@/modules/core';
+import {
+  Pages,
+  PermissionRoles,
+  Predicate,
+  Transaction,
+  Workspace,
+} from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
 import { useSelectWorkspaceRequest } from './useSelectWorkspaceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
 
-const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE } = CookieName;
+const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE, USER_ID } = CookieName;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
@@ -268,16 +274,22 @@ const workspaceVaults: Predicate[] = [
   },
 ];
 
+const workspaceTransactions: Transaction[] = [];
+
 const useWorkspace = () => {
   const { account } = useFuelAccount();
   const workspaceDialog = useDisclosure();
   const toast = useNotification();
   const navigate = useNavigate();
+  const singleCookie = CookiesConfig.getCookie(SINGLE_WORKSPACE);
   const currentCookie = CookiesConfig.getCookie(WORKSPACE);
+  const permissionsCookie = CookiesConfig.getCookie(PERMISSIONS);
   const currentWorkspace: Workspace = currentCookie
     ? JSON.parse(currentCookie)
     : {};
-  const singleCookie = CookiesConfig.getCookie(SINGLE_WORKSPACE);
+  const currentPermissions: Workspace = permissionsCookie
+    ? JSON.parse(permissionsCookie)
+    : {};
   const singleWorkspace = singleCookie
     ? JSON.parse(CookiesConfig.getCookie(SINGLE_WORKSPACE)!)
     : {};
@@ -295,6 +307,7 @@ const useWorkspace = () => {
       return;
     }
 
+    // TODO: Validate if this setter is necessary
     CookiesConfig.setCookies([
       {
         name: WORKSPACE,
@@ -302,17 +315,31 @@ const useWorkspace = () => {
       },
       {
         name: PERMISSIONS,
-        value: JSON.stringify(selectedWorkspace.permissions),
+        value: JSON.stringify(
+          selectedWorkspace.permissions[CookiesConfig.getCookie(USER_ID)!],
+        ),
       },
     ]);
 
     selectWorkspaceRequest.mutate(
       {
         workspace: selectedWorkspace.id,
-        user: CookiesConfig.getCookie(CookieName.USER_ID)!,
+        user: CookiesConfig.getCookie(USER_ID)!,
       },
       {
         onSuccess: ({ workspace }) => {
+          console.log('🚀 ~ handleWorkspaceSelection ~ workspace:', workspace);
+          // CookiesConfig.setCookies([
+          //   {
+          //     name: WORKSPACE,
+          //     value: JSON.stringify(workspace),
+          //   },
+          //   {
+          //     name: PERMISSIONS,
+          //     value: JSON.stringify(workspace.permissions),
+          //   },
+          // ]);
+
           if (!workspace.single) {
             toast({
               status: 'success',
@@ -346,7 +373,15 @@ const useWorkspace = () => {
     );
   };
 
+  const hasPermission = (requiredRoles: PermissionRoles[]) => {
+    const isValid =
+      requiredRoles.filter((p) => currentPermissions[p].includes('*')).length >
+      0;
+    return isValid;
+  };
+
   return {
+    account,
     currentWorkspace,
     singleWorkspace,
     userWorkspacesRequest,
@@ -361,6 +396,13 @@ const useWorkspace = () => {
       extraCount:
         vaultsCounter <= vaultsPerPage ? 0 : vaultsCounter - vaultsPerPage,
     },
+    workspaceTransactions: {
+      // TODO: Keep first option after workspaceVaultsRequest is implemented
+      // recentTransactions: workspaceTransactionsRequest.data?.data,
+      recentTransactions: workspaceTransactions,
+    },
+    currentPermissions,
+    hasPermission,
   };
 };
 

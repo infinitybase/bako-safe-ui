@@ -11,9 +11,12 @@ import {
   GridItem,
   Heading,
   HStack,
+  Link,
+  Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -26,22 +29,37 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
+import {
+  TransactionCard,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { limitCharacters } from '@/utils';
 
 import { useWorkspace } from '../../hooks';
 
+const { ADMIN, MANAGER } = PermissionRoles;
+
 const WorkspacePage = () => {
   const {
+    account,
     navigate,
     currentWorkspace,
     workspaceVaults: { vaultsMax, extraCount, recentVaults },
+    workspaceTransactions: { recentTransactions },
+    hasPermission,
   } = useWorkspace();
 
-  const loadingWorkspaceVaults = false;
   const hasVaults = recentVaults.length;
+  const hasTransactions = recentTransactions.length > 0;
+  // TODO: Replace with dynamic data
+  const loadingWorkspaceVaults = false;
+  const loadingWorkspaceTransactions = false;
 
   return (
     <VStack w="full" spacing={6}>
@@ -94,26 +112,32 @@ const WorkspacePage = () => {
         </HStack>
 
         <HStack spacing={3}>
-          <Button
-            variant="primary"
-            fontWeight="semibold"
-            fontSize={15}
-            leftIcon={<SettingsIcon fontSize={18} />}
-            px={3}
-            bg="dark.100"
-            color="grey.200"
-            onClick={() => navigate(Pages.home())}
-          >
-            Settings
-          </Button>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            onClick={() => navigate(Pages.createVault())}
-          >
-            Create vault
-          </Button>
+          {hasPermission([ADMIN]) && (
+            <Button
+              variant="primary"
+              fontWeight="semibold"
+              fontSize={15}
+              leftIcon={<SettingsIcon fontSize={18} />}
+              px={3}
+              bg="dark.100"
+              color="grey.200"
+              // TODO: Add action
+              // onClick={() => navigate(Pages.home())}
+            >
+              Members
+            </Button>
+          )}
+
+          {hasPermission([ADMIN, MANAGER]) && (
+            <Button
+              variant="primary"
+              fontWeight="bold"
+              leftIcon={<FaRegPlusSquare />}
+              onClick={() => navigate(Pages.createVault())}
+            >
+              Create vault
+            </Button>
+          )}
         </HStack>
       </HStack>
 
@@ -233,7 +257,7 @@ const WorkspacePage = () => {
           />
         </CustomSkeleton>
       ) : (
-        <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
+        <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
           {recentVaults?.map(
             ({ id, name, predicateAddress, members, description }, index) => {
               const lastCard = index === vaultsMax - 1;
@@ -264,6 +288,96 @@ const WorkspacePage = () => {
             },
           )}
         </Grid>
+      )}
+
+      <HStack w="full" spacing={4}>
+        <Text
+          variant="subtitle"
+          fontWeight="semibold"
+          fontSize="xl"
+          color="grey.200"
+        >
+          Transactions
+        </Text>
+
+        {hasTransactions && (
+          <HStack>
+            <WaitingSignatureBadge
+              account={account}
+              isLoading={loadingWorkspaceTransactions}
+              transactions={recentTransactions}
+            />
+            <Spacer />
+            <Link
+              color="brand.500"
+              onClick={() => navigate(Pages.userTransactions())}
+            >
+              View all
+            </Link>
+          </HStack>
+        )}
+      </HStack>
+
+      {/* TRANSACTION LIST */}
+      {!hasTransactions ? (
+        <CustomSkeleton isLoaded={!loadingWorkspaceTransactions}>
+          <EmptyTransaction />
+        </CustomSkeleton>
+      ) : (
+        <Box w="full" mt={4} pb={10}>
+          <TransactionCard.List spacing={4} mt={6} mb={12}>
+            {recentTransactions?.map((transaction) => {
+              const status = transactionStatus({ ...transaction, account });
+
+              return (
+                <CustomSkeleton
+                  isLoaded={!loadingWorkspaceTransactions}
+                  key={transaction.id}
+                >
+                  <TransactionCard.Container
+                    status={status}
+                    details={
+                      <TransactionCard.Details
+                        transaction={transaction}
+                        status={status}
+                      />
+                    }
+                  >
+                    {transaction.predicate && (
+                      <TransactionCard.VaultInfo
+                        vault={transaction.predicate}
+                      />
+                    )}
+                    <TransactionCard.CreationDate>
+                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                    </TransactionCard.CreationDate>
+                    <TransactionCard.Assets />
+                    <TransactionCard.Amount
+                      assets={transaction.resume.outputs}
+                    />
+                    <TransactionCard.Name>
+                      {limitCharacters(transaction.name, 20)}
+                    </TransactionCard.Name>
+                    <TransactionCard.Status
+                      transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
+                    />
+                    <TransactionCard.Actions
+                      transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
+                    />
+                  </TransactionCard.Container>
+                </CustomSkeleton>
+              );
+            })}
+          </TransactionCard.List>
+        </Box>
       )}
     </VStack>
   );

@@ -4,8 +4,8 @@ import { Dialog, SquarePlusIcon } from '@/components';
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
+import { SelectionEmptyState } from '../';
 import { WorkspaceCard } from '../card';
-import { SelectionEmptyState } from '../emptyState';
 
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
