@@ -39,7 +39,6 @@ const useCreateWorkspace = () => {
       {
         name: data.name,
         description: data.description,
-        members: [account],
       },
       {
         onSuccess: () => tabs.set(TabState.SUCCESS),

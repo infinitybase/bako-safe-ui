@@ -3,7 +3,7 @@ import { IPermission, IPermissions, Workspace } from '@/modules/core';
 
 export interface CreateWorkspacePayload {
   name: string;
-  members: string[];
+  members?: string[];
   description?: string;
   avatar?: string;
   single?: boolean;

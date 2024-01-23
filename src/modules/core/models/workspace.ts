@@ -40,21 +40,21 @@ export interface Workspace {
 export const defaultPermissions = {
   [PermissionRoles.OWNER]: {
     OWNER: ['*'],
-    ADMIN: ['*'],
-    MANAGER: ['*'],
-    SIGNER: ['*'],
-    VIEWER: ['*'],
-  },
-  [PermissionRoles.SIGNER]: {
-    OWNER: [''],
     ADMIN: [''],
     MANAGER: [''],
     SIGNER: [''],
     VIEWER: [''],
   },
-  [PermissionRoles.ADMIN]: {
+  [PermissionRoles.SIGNER]: {
     OWNER: [''],
     ADMIN: [''],
+    MANAGER: [''],
+    SIGNER: ['*'],
+    VIEWER: [''],
+  },
+  [PermissionRoles.ADMIN]: {
+    OWNER: [''],
+    ADMIN: ['*'],
     MANAGER: [''],
     SIGNER: [''],
     VIEWER: [''],
@@ -62,7 +62,7 @@ export const defaultPermissions = {
   [PermissionRoles.MANAGER]: {
     OWNER: [''],
     ADMIN: [''],
-    MANAGER: [''],
+    MANAGER: ['*'],
     SIGNER: [''],
     VIEWER: [''],
   },
