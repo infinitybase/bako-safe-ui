@@ -1,4 +1,4 @@
-import { Icon } from '@chakra-ui/icons';
+import { Icon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -53,13 +53,16 @@ const WorkspacePage = () => {
     workspaceVaults: { vaultsMax, extraCount, recentVaults },
     workspaceTransactions: { recentTransactions },
     hasPermission,
+    visibleBalance,
+    setVisibleBalance,
   } = useWorkspace();
 
   const hasVaults = recentVaults.length;
   const hasTransactions = recentTransactions.length > 0;
-  // TODO: Replace with dynamic data
+  // TODO: Replace mocks bellow with dynamic data
   const loadingWorkspaceVaults = false;
   const loadingWorkspaceTransactions = false;
+  const balance = '0.00';
 
   return (
     <VStack w="full" spacing={6}>
@@ -143,9 +146,16 @@ const WorkspacePage = () => {
 
       <HStack w="full" spacing={6}>
         {/* WORKSPACE OVERVIEW */}
-        <Card w="full" h="full" p={8} bg="dark.200" borderColor="dark.100">
-          <VStack h="full" w="full" alignItems="flex-start">
-            <HStack spacing={6} w="full">
+        <Card
+          w="full"
+          maxW="50%"
+          h="full"
+          p={8}
+          bg="dark.200"
+          borderColor="dark.100"
+        >
+          <VStack h="full" alignItems="flex-start">
+            <HStack w="full" spacing={6}>
               <Avatar
                 variant="roundedSquare"
                 name={currentWorkspace.name}
@@ -154,42 +164,95 @@ const WorkspacePage = () => {
                 size={'lg'}
                 p={10}
               />
-              <Box>
-                <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
+              <Box maxW="55%">
+                <Heading mb={1} variant="title-xl" isTruncated>
                   {currentWorkspace.name}
                 </Heading>
-                <Box maxW={420}>
-                  <Text variant="description">
+                <Box>
+                  <Text variant="description" noOfLines={2}>
                     {currentWorkspace?.description}
                   </Text>
                 </Box>
               </Box>
+
+              <Spacer />
+
+              <VStack w={150} alignItems="flex-end" spacing={0}>
+                <HStack spacing={2}>
+                  <HStack spacing={2} justifyContent="flex-end">
+                    <Box
+                      cursor="pointer"
+                      onClick={() => setVisibleBalance((previous) => !previous)}
+                    >
+                      {visibleBalance ? (
+                        <ViewOffIcon boxSize={5} />
+                      ) : (
+                        <ViewIcon boxSize={5} />
+                      )}
+                    </Box>
+                    <Heading variant="title-xl">
+                      {visibleBalance ? balance : '*****'}
+                    </Heading>
+                    <Heading variant="title-xl" fontWeight="normal">
+                      ETH
+                    </Heading>
+                  </HStack>
+                </HStack>
+
+                <Text variant="description">Workspace balance</Text>
+              </VStack>
             </HStack>
 
             <Divider borderColor="dark.100" mt={4} mb={3} />
 
-            <VStack h="full" alignItems="flex-start" spacing={4}>
+            <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
               <Text
                 fontWeight="semibold"
                 color="grey.200"
               >{`Workspace's balance breakdown`}</Text>
               <Card
+                w="full"
                 h="full"
-                w={200}
                 p={8}
-                bg="dark.200"
                 borderColor="dark.100"
-              ></Card>
+                borderStyle="dashed"
+              >
+                <VStack spacing={1}>
+                  <Text fontWeight="bold" color="grey.200">
+                    First thing first...
+                  </Text>
+                  <Text color="grey.500">
+                    First of all you need to <strong>create a vault!</strong>
+                  </Text>
+                  <Button
+                    variant="primary"
+                    fontWeight="semibold"
+                    fontSize={15}
+                    px={3}
+                    mt={2}
+                    bg="dark.100"
+                    color="grey.200"
+                    // TODO: Add action here!
+                    // onClick={() => navigate(Pages.home())}
+                  >
+                    {`Let's do it!`}
+                  </Button>
+                </VStack>
+              </Card>
             </VStack>
           </VStack>
         </Card>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxH={380} spacing={4}>
+        <VStack w="full" maxH={400} spacing={4}>
           {/* TODO: Fix redirection path */}
           <ActionCard.Container
             w="full"
-            onClick={() => navigate(Pages.userVaults())}
+            onClick={() =>
+              navigate(
+                Pages.workspaceVaults({ workspaceId: currentWorkspace.id }),
+              )
+            }
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box w="full">
@@ -201,21 +264,13 @@ const WorkspacePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
-            // isUpcoming={hasTransactions ? false : true}
-            //  TODO: Replace with dynamic data
-            isUpcoming={false}
-            // onClick={() => {
-            //   return hasTransactions
-            //     ? navigate(Pages.userTransactions())
-            //     : null;
-            // }}
+          // onClick={() => {
+          //   return hasTransactions
+          //     ? navigate(Pages.userTransactions())
+          //     : null;
+          // }}
           >
-            <ActionCard.Icon
-              icon={GoArrowSwitch}
-              // isUpcoming={hasTransactions ? false : true}
-              // TODO: Replace with dynamic data
-              isUpcoming={false}
-            />
+            <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description maxWidth={{}}>
@@ -320,7 +375,7 @@ const WorkspacePage = () => {
 
       {/* TRANSACTION LIST */}
       {!hasTransactions ? (
-        <CustomSkeleton isLoaded={!loadingWorkspaceTransactions}>
+        <CustomSkeleton isLoaded={!loadingWorkspaceTransactions} pb={10}>
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
