@@ -295,7 +295,7 @@ const useWorkspace = () => {
   const singleWorkspace = singleCookie
     ? JSON.parse(CookiesConfig.getCookie(SINGLE_WORKSPACE)!)
     : {};
-  const userWorkspacesRequest = useUserWorkspacesRequest(account);
+  const userWorkspacesRequest = useUserWorkspacesRequest();
   const selectWorkspaceRequest = useSelectWorkspaceRequest();
 
   const vaultsPerPage = 8;

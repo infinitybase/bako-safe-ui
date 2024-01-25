@@ -29,6 +29,7 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { WorkspaceSettingsDrawer } from '@/modules';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
@@ -66,6 +67,11 @@ const WorkspacePage = () => {
 
   return (
     <VStack w="full" spacing={6}>
+      <WorkspaceSettingsDrawer
+        isOpen={true}
+        onClose={console.log}
+        workspace={currentWorkspace}
+      />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button

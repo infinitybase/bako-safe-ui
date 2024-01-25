@@ -1,4 +1,4 @@
-import { PermissionRoles } from '@/modules/core';
+import { Member, PermissionRoles, Workspace } from '@/modules/core';
 
 interface PermissionDTO {
   title: string;
@@ -7,8 +7,30 @@ interface PermissionDTO {
   value: PermissionRoles;
 }
 
+type PermissionKey = keyof typeof PermissionRoles;
+
+type PermissionDetails = {
+  [key in PermissionKey]: {
+    title: string;
+    variant: string;
+    description: string;
+  };
+};
+
 class WorkspacePermissionUtils {
-  static permissions = {
+  static hiddenPermissions = [PermissionRoles.OWNER, PermissionRoles.SIGNER];
+
+  static permissions: PermissionDetails = {
+    [PermissionRoles.OWNER]: {
+      title: 'Owner',
+      description: '',
+      variant: 'success',
+    },
+    [PermissionRoles.SIGNER]: {
+      title: 'Signer',
+      description: '',
+      variant: 'warning',
+    },
     [PermissionRoles.ADMIN]: {
       title: 'Admin',
       description:
@@ -29,12 +51,27 @@ class WorkspacePermissionUtils {
     },
   };
 
-  static permissionsValues: PermissionDTO[] = Object.keys(this.permissions).map(
-    (permission) => ({
+  static permissionsValues: PermissionDTO[] = Object.keys(this.permissions)
+    .filter(
+      (permission) =>
+        !this.hiddenPermissions.includes(permission as PermissionRoles),
+    )
+    .map((permission) => ({
       ...this.permissions[permission],
       value: permission,
-    }),
-  );
+    }));
+
+  static getPermissionInWorkspace(workspace: Workspace, member: Member) {
+    const permission = workspace.permissions[member.id];
+    const permissionRole = Object.keys(permission)
+      .filter((role) => permission[role].includes('*'))
+      .at(0);
+    const permissionValue = this.permissions[permissionRole || ''];
+
+    if (!permissionValue) return null;
+
+    return permissionValue;
+  }
 }
 
 export { WorkspacePermissionUtils };

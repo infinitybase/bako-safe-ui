@@ -42,10 +42,9 @@ export type SelectWorkspaceResponse = {
 };
 
 export class WorkspaceService {
-  static async list(userAddress: string) {
-    const { data } = await api.get<ListUserWorkspacesResponse>(
-      `/workspace/by-user/${userAddress}`,
-    );
+  static async list() {
+    const { data } =
+      await api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
 
     return data;
   }

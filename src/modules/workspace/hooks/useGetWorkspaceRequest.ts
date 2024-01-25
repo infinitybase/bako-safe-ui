@@ -11,7 +11,11 @@ const useGetWorkspaceRequest = (
   const { data, ...request } = useQuery(
     WorkspacesQueryKey.GET(workspaceId),
     () => WorkspaceService.getById(workspaceId),
-    { ...options, enabled: !!workspaceId, refetchOnWindowFocus: false },
+    {
+      ...options,
+      enabled: !!workspaceId || options?.enabled,
+      refetchOnWindowFocus: false,
+    },
   );
 
   return {

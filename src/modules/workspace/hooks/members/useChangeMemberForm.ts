@@ -43,17 +43,16 @@ const useChangeMemberForm = () => {
   ) => {
     const member = workspace.members
       .filter((member) => member.id === memberId)
-      .map((member) => member.address)
-      .toString();
+      .map((member) => member.address);
     const permission = workspace.permissions[memberId];
-    const permissionRole = Object.keys(permission)
-      .filter((role) => permission[role].includes('*'))
-      .toString();
+    const permissionRole = Object.keys(permission).filter((role) =>
+      permission[role].includes('*'),
+    );
 
-    permissionForm.setValue('permission', permissionRole, {
+    permissionForm.setValue('permission', permissionRole[0], {
       shouldValidate: true,
     });
-    memberForm.setValue('address', member, { shouldValidate: true });
+    memberForm.setValue('address', member[0], { shouldValidate: true });
   };
 
   return { memberForm, permissionForm, setMemberValuesByWorkspace };

@@ -4,10 +4,10 @@ import { WorkspacesQueryKey } from '@/modules/core/models/workspace';
 
 import { WorkspaceService } from '../services';
 
-const useUserWorkspacesRequest = (account: string) => {
+const useUserWorkspacesRequest = () => {
   return useQuery(
     WorkspacesQueryKey.LIST_BY_USER(),
-    () => WorkspaceService.list(account),
+    () => WorkspaceService.list(),
     {
       refetchOnWindowFocus: false,
     },
