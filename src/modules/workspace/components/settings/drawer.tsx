@@ -20,8 +20,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, ErrorIcon } from '@/components';
-import { useGetWorkspaceRequest } from '@/modules';
 import { AddressUtils, Pages, Workspace } from '@/modules/core';
+import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface WorkspaceSettingsDrawerProps
