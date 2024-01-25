@@ -29,7 +29,6 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
-import { WorkspaceSettingsDrawer } from '@/modules';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
@@ -40,6 +39,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
 import { useWorkspace } from '../../hooks';
@@ -56,6 +56,7 @@ const WorkspacePage = () => {
     hasPermission,
     visibleBalance,
     setVisibleBalance,
+    workspaceDialog,
   } = useWorkspace();
 
   const hasVaults = recentVaults.length;
@@ -68,8 +69,8 @@ const WorkspacePage = () => {
   return (
     <VStack w="full" spacing={6}>
       <WorkspaceSettingsDrawer
-        isOpen={true}
-        onClose={console.log}
+        isOpen={workspaceDialog.isOpen}
+        onClose={workspaceDialog.onClose}
         workspace={currentWorkspace}
       />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
@@ -130,8 +131,7 @@ const WorkspacePage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              // TODO: Add action
-              // onClick={() => navigate(Pages.home())}
+              onClick={workspaceDialog.onOpen}
             >
               Members
             </Button>
