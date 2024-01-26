@@ -1,4 +1,4 @@
-import { Member, PermissionRoles, Workspace } from '@/modules/core';
+import { Member, PermissionRoles, Workspace } from '@/modules/core/models';
 
 interface PermissionDTO {
   title: string;

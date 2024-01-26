@@ -1,6 +1,8 @@
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter, DefaultLayoutRouter } from '../../layouts';
+import { DashboardLayoutRouter } from '@/layouts/dashboard';
+import { DefaultLayoutRouter } from '@/layouts/default';
+
 import { AuthRoute, Pages } from '../core';
 import { MeTransactionsPage, TransactionsVaultPage } from './pages';
 

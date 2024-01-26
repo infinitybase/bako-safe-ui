@@ -7,7 +7,9 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
+import { Pages } from '@/modules/core';
+import { AddressUtils } from '@/modules/core/utils';
+import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 
 import { useSidebar } from './hook';
 

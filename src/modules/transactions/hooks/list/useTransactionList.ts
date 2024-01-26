@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useFuelAccount,
-  useTransactionListPaginationRequest,
-  useVaultAssets,
-  useVaultDetailsRequest,
-} from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 import { useTransactionState } from '../../states';
+import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 
 export enum StatusFilter {
   ALL = '',

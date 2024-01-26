@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
 import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';

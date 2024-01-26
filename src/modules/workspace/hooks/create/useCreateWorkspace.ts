@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
-import { EnumUtils, Pages, useFuelAccount, useTab } from '@/modules';
+import { Pages } from '@/modules/core';
+import { useTab } from '@/modules/core/hooks';
+import { EnumUtils } from '@/modules/core/utils';
 
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
@@ -15,8 +17,6 @@ export enum TabState {
 
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
-
-  const { account } = useFuelAccount();
 
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(TabState),

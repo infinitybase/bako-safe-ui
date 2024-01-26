@@ -10,7 +10,12 @@ import { useFuelAccount } from '@/modules/auth/store';
 import { useNotification } from '@/modules/notification';
 
 import { Pages } from '../../core';
-import { PermissionRoles, Workspace } from '../../core/models';
+import {
+  PermissionRoles,
+  Predicate,
+  Transaction,
+  Workspace,
+} from '../../core/models';
 import { useSelectWorkspaceRequest } from './useSelectWorkspaceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
 

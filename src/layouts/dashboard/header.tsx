@@ -19,13 +19,10 @@ import {
   QuestionIcon,
   ReplaceIcon,
 } from '@/components';
-import {
-  Pages,
-  useDisconnect,
-  useFuelAccount,
-  useLoadImage,
-  Workspace,
-} from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { Pages } from '@/modules/core';
+import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
+import { Workspace } from '@/modules/core/models';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';

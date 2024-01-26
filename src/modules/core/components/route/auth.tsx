@@ -1,7 +1,9 @@
 import React from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
-import { Pages, useFuelAccount, useWorkspace } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { Pages } from '@/modules/core';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 export interface AuthRouteProps {
   children: React.ReactNode;
