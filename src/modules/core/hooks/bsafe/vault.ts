@@ -1,7 +1,7 @@
 import { Vault } from 'bsafe';
 import { Provider } from 'fuels';
 
-import { useFuel } from '@/modules';
+import { useFuel } from '@/modules/core/hooks';
 
 import { useBsafeMutation, useBsafeQuery } from './utils';
 

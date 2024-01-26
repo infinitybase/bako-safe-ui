@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Pages,
-  useCreateBsafeVault,
-  useFuelAccount,
-  useToast,
-} from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useCreateBsafeVault, useToast } from '@/modules/core/hooks';
+import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 

@@ -4,12 +4,8 @@ import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import {
-  useDidMountEffect,
-  useQueryParams,
-  UserTypes,
-  useSocket,
-} from '@/modules';
+import { useQueryParams } from '@/modules/auth/hooks';
+import { useDidMountEffect, UserTypes, useSocket } from '@/modules/core/hooks';
 import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummary';
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
 

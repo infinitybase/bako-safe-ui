@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { Pages } from '@/modules';
+import { Pages } from '@/modules/core/routes';
 
 import { AddressCopy } from '../../../components/addressCopy';
 import { UseVaultDetailsReturn } from '../hooks/details';

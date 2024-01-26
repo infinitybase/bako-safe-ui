@@ -18,14 +18,13 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { Pages } from '@/modules/core/routes';
+import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
-  Pages,
   TransactionCard,
   transactionStatus,
   WaitingSignatureBadge,
-  // waitingSignatures,
-} from '@/modules';
-import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
+} from '@/modules/transactions';
 import { useVaultDetails } from '@/modules/vault/hooks';
 import { limitCharacters } from '@/utils';
 

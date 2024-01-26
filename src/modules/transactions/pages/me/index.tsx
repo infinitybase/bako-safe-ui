@@ -14,7 +14,8 @@ import {
 import { bn } from 'fuels';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-import { assetsMap, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core';
+import { assetsMap } from '@/modules/core/utils';
 
 import { useMeTransactions } from '../../hooks';
 

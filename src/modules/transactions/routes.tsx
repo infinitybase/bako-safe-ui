@@ -3,7 +3,8 @@ import { Route } from 'react-router-dom';
 import { DashboardLayoutRouter } from '@/layouts/dashboard';
 import { DefaultLayoutRouter } from '@/layouts/default';
 
-import { AuthRoute, Pages } from '../core';
+import { AuthRoute } from '../core/components';
+import { Pages } from '../core/routes';
 import { MeTransactionsPage, TransactionsVaultPage } from './pages';
 
 const transactionRoutes = (

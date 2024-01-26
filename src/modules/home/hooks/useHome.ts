@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
 import { useUserTransactionsRequest } from '@/modules/transactions/hooks';
 import { useHomeVaultsRequest } from '@/modules/vault';
 

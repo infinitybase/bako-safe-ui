@@ -17,7 +17,7 @@ import {
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 interface RightAction {
   icon?: ComponentWithAs<'svg', IconProps>;

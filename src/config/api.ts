@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
 
 import { CookieName, CookiesConfig } from './cookies';
 

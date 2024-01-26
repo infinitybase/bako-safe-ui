@@ -16,9 +16,14 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { Pages, useWorkspace, WaitingSignatureBadge } from '@/modules';
-import { TransactionCard, transactionStatus } from '@/modules/transactions';
+import { Pages } from '@/modules/core/routes';
+import {
+  TransactionCard,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';

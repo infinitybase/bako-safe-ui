@@ -7,10 +7,9 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
-import { UseCreateVaultReturn } from '@/modules';
+import { UseCreateVaultReturn } from '@/modules/vault/hooks';
 
 export interface VaultInfoStepProps {
   form: UseCreateVaultReturn['form'];

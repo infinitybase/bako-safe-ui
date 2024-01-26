@@ -2,14 +2,16 @@ import { useDisclosure } from '@chakra-ui/react';
 import { Location, useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useQueryParams } from '@/modules/auth/hooks';
+import { useFuelAccount } from '@/modules/auth/store';
 import {
+  useConnect,
   useFuel,
-  useFuelAccount,
   useGetCurrentAccount,
-  useQueryParams,
-} from '@/modules';
-import { Pages, useConnect, useIsConnected } from '@/modules/core';
+  useIsConnected,
+} from '@/modules/core/hooks';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { Pages } from '@/modules/core/routes';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 

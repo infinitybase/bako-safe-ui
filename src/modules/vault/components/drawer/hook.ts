@@ -4,7 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { Pages, useVaultListRequest } from '@/modules';
+import { Pages } from '@/modules/core/routes';
+import { useVaultListRequest } from '@/modules/vault/hooks';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;

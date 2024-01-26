@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client';
 
 import App from '@/App';
 import { BsafeQueryClientProvider } from '@/config';
-import { TransactionSendProvider } from '@/modules';
+import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
 BSafe.setup({

@@ -2,8 +2,8 @@ import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 import React from 'react';
 
 import { StepProgress } from '@/components';
-import { UseCreateVaultDialogReturn } from '@/modules';
 import { useFindTemplate } from '@/modules/template/hooks';
+import { UseCreateVaultDialogReturn } from '@/modules/vault';
 
 import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
 
