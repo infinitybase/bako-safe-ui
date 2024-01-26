@@ -3,14 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   invalidateQueries,
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
-  TRANSACTION_LIST_QUERY_KEY,
   useBsafeCreateTransaction,
-  USER_TRANSACTIONS_QUERY_KEY,
   useToast,
-} from '@/modules';
+} from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
+import {
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  USER_TRANSACTIONS_QUERY_KEY,
+} from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 interface UseCreateTransactionParams {
