@@ -1,8 +1,7 @@
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter, DefaultLayoutRouter } from '@/layouts';
-import { AuthRoute, Pages } from '@/modules/core';
-
+import { DashboardLayoutRouter, DefaultLayoutRouter } from '../../layouts';
+import { AuthRoute, Pages } from '../core';
 import { MeTransactionsPage, TransactionsVaultPage } from './pages';
 
 const transactionRoutes = (

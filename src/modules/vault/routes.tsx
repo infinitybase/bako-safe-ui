@@ -1,8 +1,7 @@
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter } from '@/layouts';
-import { AuthRoute, Pages } from '@/modules/core';
-
+import { DashboardLayoutRouter } from '../../layouts';
+import { AuthRoute, Pages } from '../core';
 import { CreateTemplatePage } from '../template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '../transactions';
 import { VaultDetailsPage, VaultSettingsPage } from './pages';

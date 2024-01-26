@@ -6,7 +6,7 @@ import {
 } from 'bsafe';
 import { bn } from 'fuels';
 
-import { AssetModel, NativeAssetId, WitnessStatus } from '@/modules/core';
+import { AssetModel, NativeAssetId, WitnessStatus } from '../core';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;
 

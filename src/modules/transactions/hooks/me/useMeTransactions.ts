@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { SignatureUtils } from '@/modules';
-import { useFuelAccount } from '@/modules/auth';
+import { useFuelAccount } from '@/modules/auth/store';
+import { SignatureUtils } from '@/modules/core';
 
 import { useMeTransactionsRequest } from './useMeTransactionsRequest';
 

@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { TransactionService } from '@/modules/transactions/services';
+import { TransactionService } from '../../services';
 
 const useMeTransactionsRequest = (predicateId: string) => {
   return useQuery(['transaction/by-predicateId', predicateId], async () =>
