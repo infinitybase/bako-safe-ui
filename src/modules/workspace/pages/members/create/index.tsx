@@ -45,7 +45,12 @@ const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const options =
     contacts &&
     contacts
-      ?.filter(({ user }) => !!address?.includes(user.address))
+      ?.filter(
+        ({ user, nickname }) =>
+          !!address &&
+          (user.address.includes(address) ||
+            nickname.toLowerCase().includes(address.toLowerCase())),
+      )
       ?.map(({ user, nickname }) => ({
         value: user.address,
         label: `${nickname} - ${AddressUtils.format(user.address)}`,
