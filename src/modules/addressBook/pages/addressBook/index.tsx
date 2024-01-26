@@ -15,7 +15,8 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
+import { useWorkspace } from '@/modules/workspace';
 
 import {
   AddressBookEmptyState,
@@ -24,6 +25,8 @@ import {
   DeleteContactDialog,
 } from '../../components';
 import { useAddressBook } from '../../hooks';
+
+const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
 const AddressBookPage = () => {
   const {
@@ -41,6 +44,7 @@ const AddressBookPage = () => {
     handleDeleteContact,
     contactToEdit,
   } = useAddressBook();
+  const { hasPermission } = useWorkspace();
 
   const hasContacts = contacts?.length;
 
@@ -110,16 +114,18 @@ const AddressBookPage = () => {
             </Breadcrumb>
           </HStack>
 
-          <Box>
-            <Button
-              variant="primary"
-              fontWeight="bold"
-              leftIcon={<FaRegPlusSquare />}
-              onClick={() => handleOpenDialog({})}
-            >
-              Add new favorite
-            </Button>
-          </Box>
+          {hasPermission([OWNER, ADMIN, MANAGER]) && (
+            <Box>
+              <Button
+                variant="primary"
+                fontWeight="bold"
+                leftIcon={<FaRegPlusSquare />}
+                onClick={() => handleOpenDialog({})}
+              >
+                Add new favorite
+              </Button>
+            </Box>
+          )}
         </HStack>
 
         {/* USER CONTACTS */}
@@ -146,6 +152,11 @@ const AddressBookPage = () => {
                         address={user.address}
                         avatar={user.avatar}
                         dialog={deleteContactDialog}
+                        showActionButtons={hasPermission([
+                          OWNER,
+                          ADMIN,
+                          MANAGER,
+                        ])}
                         handleEdit={() =>
                           handleOpenDialog({
                             address: user.address,

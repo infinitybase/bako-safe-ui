@@ -44,7 +44,7 @@ import { limitCharacters } from '@/utils';
 
 import { useWorkspace } from '../../hooks';
 
-const { ADMIN, MANAGER } = PermissionRoles;
+const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
   const {
@@ -64,7 +64,6 @@ const WorkspacePage = () => {
   // TODO: Replace mocks bellow with dynamic data
   const loadingWorkspaceVaults = false;
   const loadingWorkspaceTransactions = false;
-  const balance = '0.00';
 
   return (
     <VStack w="full" spacing={6}>
@@ -122,7 +121,7 @@ const WorkspacePage = () => {
         </HStack>
 
         <HStack spacing={3}>
-          {hasPermission([ADMIN]) && (
+          {hasPermission([OWNER, ADMIN]) && (
             <Button
               variant="primary"
               fontWeight="semibold"
@@ -137,12 +136,16 @@ const WorkspacePage = () => {
             </Button>
           )}
 
-          {hasPermission([ADMIN, MANAGER]) && (
+          {hasPermission([OWNER, ADMIN, MANAGER]) && (
             <Button
               variant="primary"
               fontWeight="bold"
               leftIcon={<FaRegPlusSquare />}
-              onClick={() => navigate(Pages.createVault())}
+              onClick={() =>
+                navigate(
+                  Pages.createVault({ workspaceId: currentWorkspace.id }),
+                )
+              }
             >
               Create vault
             </Button>
@@ -170,7 +173,7 @@ const WorkspacePage = () => {
                 size={'lg'}
                 p={10}
               />
-              <Box maxW="55%">
+              <Box maxW="70%">
                 <Heading mb={1} variant="title-xl" isTruncated>
                   {currentWorkspace.name}
                 </Heading>
@@ -183,30 +186,17 @@ const WorkspacePage = () => {
 
               <Spacer />
 
-              <VStack w={150} alignItems="flex-end" spacing={0}>
-                <HStack spacing={2}>
-                  <HStack spacing={2} justifyContent="flex-end">
-                    <Box
-                      cursor="pointer"
-                      onClick={() => setVisibleBalance((previous) => !previous)}
-                    >
-                      {visibleBalance ? (
-                        <ViewOffIcon boxSize={5} />
-                      ) : (
-                        <ViewIcon boxSize={5} />
-                      )}
-                    </Box>
-                    <Heading variant="title-xl">
-                      {visibleBalance ? balance : '*****'}
-                    </Heading>
-                    <Heading variant="title-xl" fontWeight="normal">
-                      ETH
-                    </Heading>
-                  </HStack>
-                </HStack>
-
-                <Text variant="description">Workspace balance</Text>
-              </VStack>
+              <Box
+                cursor="pointer"
+                onClick={() => setVisibleBalance((previous) => !previous)}
+                alignSelf="flex-start"
+              >
+                {visibleBalance ? (
+                  <ViewOffIcon boxSize={5} />
+                ) : (
+                  <ViewIcon boxSize={5} />
+                )}
+              </Box>
             </HStack>
 
             <Divider borderColor="dark.100" mt={4} mb={3} />
@@ -223,26 +213,14 @@ const WorkspacePage = () => {
                 borderColor="dark.100"
                 borderStyle="dashed"
               >
-                <VStack spacing={1}>
+                <VStack h="full" spacing={1} justifyContent="center">
                   <Text fontWeight="bold" color="grey.200">
                     First thing first...
                   </Text>
-                  <Text color="grey.500">
-                    First of all you need to <strong>create a vault!</strong>
+                  <Text color="grey.500" maxW={340} textAlign="center">
+                    {`You don't have any vaults yet. Create a vault to start to
+                    save your assets.`}
                   </Text>
-                  <Button
-                    variant="primary"
-                    fontWeight="semibold"
-                    fontSize={15}
-                    px={3}
-                    mt={2}
-                    bg="dark.100"
-                    color="grey.200"
-                    // TODO: Add action here!
-                    // onClick={() => navigate(Pages.home())}
-                  >
-                    {`Let's do it!`}
-                  </Button>
                 </VStack>
               </Card>
             </VStack>
@@ -251,13 +229,10 @@ const WorkspacePage = () => {
 
         {/* ACTION CARDS */}
         <VStack w="full" maxH={400} spacing={4}>
-          {/* TODO: Fix redirection path */}
           <ActionCard.Container
             w="full"
             onClick={() =>
-              navigate(
-                Pages.workspaceVaults({ workspaceId: currentWorkspace.id }),
-              )
+              navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
             }
           >
             <ActionCard.Icon icon={VaultIcon} />
@@ -270,11 +245,9 @@ const WorkspacePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
-          // onClick={() => {
-          //   return hasTransactions
-          //     ? navigate(Pages.userTransactions())
-          //     : null;
-          // }}
+          // onClick={() =>
+          //   navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
+          // }
           >
             <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>
@@ -285,7 +258,15 @@ const WorkspacePage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
             <ActionCard.Icon icon={CgList} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
@@ -313,8 +294,9 @@ const WorkspacePage = () => {
       {!hasVaults ? (
         <CustomSkeleton isLoaded={!loadingWorkspaceVaults}>
           <EmptyVault
-            title="Anything to show here."
-            description="It seems like this workspace has no vaults. Would you like to make one now?"
+            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
+            description="Your vaults are entirely free on Fuel. You need
+            create a vault to start to save your assets."
           />
         </CustomSkeleton>
       ) : (
@@ -330,7 +312,13 @@ const WorkspacePage = () => {
                     {lastCard && hasMore ? (
                       <ExtraVaultCard
                         extra={extraCount}
-                        onClick={() => navigate(Pages.userVaults())}
+                        onClick={() =>
+                          navigate(
+                            Pages.userVaults({
+                              workspaceId: currentWorkspace.id,
+                            }),
+                          )
+                        }
                       />
                     ) : (
                       <VaultCard
@@ -339,7 +327,12 @@ const WorkspacePage = () => {
                         address={predicateAddress}
                         members={members!}
                         onClick={() =>
-                          navigate(Pages.detailsVault({ vaultId: id }))
+                          navigate(
+                            Pages.detailsVault({
+                              workspaceId: currentWorkspace.id,
+                              vaultId: id,
+                            }),
+                          )
                         }
                       />
                     )}
@@ -351,36 +344,40 @@ const WorkspacePage = () => {
         </Grid>
       )}
 
-      <HStack w="full" spacing={4}>
-        <Text
-          variant="subtitle"
-          fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
-        >
-          Transactions
-        </Text>
-
-        {hasTransactions && (
-          <HStack>
-            <WaitingSignatureBadge
-              account={account}
-              isLoading={loadingWorkspaceTransactions}
-              transactions={recentTransactions}
-            />
-            <Spacer />
-            <Link
-              color="brand.500"
-              onClick={() => navigate(Pages.userTransactions())}
+      {hasVaults && (
+        <HStack w="full" spacing={4}>
+          {
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="xl"
+              color="grey.200"
             >
-              View all
-            </Link>
-          </HStack>
-        )}
-      </HStack>
+              Transactions
+            </Text>
+          }
+
+          {hasTransactions && (
+            <HStack>
+              <WaitingSignatureBadge
+                account={account}
+                isLoading={loadingWorkspaceTransactions}
+                transactions={recentTransactions}
+              />
+              <Spacer />
+              <Link
+                color="brand.500"
+                onClick={() => navigate(Pages.userTransactions())}
+              >
+                View all
+              </Link>
+            </HStack>
+          )}
+        </HStack>
+      )}
 
       {/* TRANSACTION LIST */}
-      {!hasTransactions ? (
+      {!hasTransactions && hasVaults ? (
         <CustomSkeleton isLoaded={!loadingWorkspaceTransactions} pb={10}>
           <EmptyTransaction />
         </CustomSkeleton>

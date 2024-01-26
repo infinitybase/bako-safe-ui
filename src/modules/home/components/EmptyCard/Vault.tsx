@@ -7,10 +7,13 @@ import { Pages } from '@/modules/core';
 interface EmptyVaultProps {
   title?: string;
   description?: string;
+  showActionButton?: boolean;
 }
 
 const EmptyVault = (props?: EmptyVaultProps) => {
   const navigate = useNavigate();
+
+  const showActionButton = props?.showActionButton ?? true;
 
   return (
     <Card
@@ -37,13 +40,15 @@ const EmptyVault = (props?: EmptyVaultProps) => {
           first one?`}
         </Text>
       </Box>
-      <Button
-        leftIcon={<SquarePlusIcon />}
-        variant="primary"
-        onClick={() => navigate(Pages.createVault())}
-      >
-        Create my first vault
-      </Button>
+      {showActionButton && (
+        <Button
+          leftIcon={<SquarePlusIcon />}
+          variant="primary"
+          onClick={() => navigate(Pages.createVault())}
+        >
+          Create my first vault
+        </Button>
+      )}
     </Card>
   );
 };

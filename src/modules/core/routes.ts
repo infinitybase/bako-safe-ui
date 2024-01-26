@@ -5,12 +5,24 @@ const Pages = {
   exampleHome: pageRoute('/example/home'),
   index: pageRoute('/'),
   home: pageRoute('/home'),
-  createVault: pageRoute('/home/vault'),
-  detailsVault: pageRoute<{ vaultId: string }>('/vault/:vaultId'),
+  // createVault: pageRoute('/home/vault'),
+  createVault: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/vault',
+  ),
+  detailsVault: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId',
+  ),
   vaultSettings: pageRoute<{ vaultId: string }>('/vault/:vaultId/settings'),
-  userVaults: pageRoute('/vault/me'),
-  addressBook: pageRoute('/addressBook'),
+  userVaults: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/vault/me',
+  ),
+  // userVaults: pageRoute('/workspace/:workspaceId/vault/me'),
+
+  addressBook: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/addressBook',
+  ),
   userTransactions: pageRoute('/transaction/me'),
+
   transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
 
   //template
@@ -42,6 +54,9 @@ const Pages = {
     memberId: string;
   }>('/workspace/:workspaceId/members/:memberId'),
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
+  workspaceTransactions: pageRoute<{ workspaceId: string }>(
+    'workspace/:WorkspaceId/transaction/me',
+  ),
 };
 
 export { Pages };
