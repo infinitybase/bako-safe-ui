@@ -28,3 +28,4 @@ dist-ssr
 *.sln
 *.sw?
 src/dev
+pnpm-lock.yaml
