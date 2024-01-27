@@ -24,6 +24,7 @@ interface ContactCardProps extends CardProps {
   address: string;
   avatar: string;
   dialog: UseAddressBookReturn['deleteContactDialog'];
+  showActionButtons: boolean;
   handleDelete: () => void;
   handleEdit: () => void;
 }
@@ -32,6 +33,7 @@ const ContactCard = ({
   nickname,
   address,
   avatar,
+  showActionButtons,
   handleDelete,
   handleEdit,
   ...rest
@@ -45,7 +47,6 @@ const ContactCard = ({
         <HStack w="100%" justifyContent="space-between" mb={1}>
           <HStack>
             <Avatar variant="roundedSquare" src={avatar} key={address} />
-
             <Box ml={2}>
               <Heading
                 variant="title-md"
@@ -86,20 +87,22 @@ const ContactCard = ({
               });
             }}
           />
-
-          <IconButton
-            aria-label="Edit"
-            variant="icon"
-            icon={<Icon as={EditIcon} color="grey.200" fontSize={18} />}
-            onClick={handleEdit}
-          />
-
-          <IconButton
-            aria-label="Delete"
-            variant="icon"
-            icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
-            onClick={handleDelete}
-          />
+          {showActionButtons && (
+            <>
+              <IconButton
+                aria-label="Edit"
+                variant="icon"
+                icon={<Icon as={EditIcon} color="grey.200" fontSize={18} />}
+                onClick={handleEdit}
+              />
+              <IconButton
+                aria-label="Delete"
+                variant="icon"
+                icon={<Icon as={RemoveIcon} color="grey.200" fontSize={18} />}
+                onClick={handleDelete}
+              />
+            </>
+          )}
         </HStack>
       </VStack>
     </Card>
