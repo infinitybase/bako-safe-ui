@@ -79,7 +79,19 @@ const SignersDetails = (props: SignersDetailsProps) => {
 
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <CardMember member={member!} isOwner={member?.id === owner?.id} />
+              <CardMember
+                member={{
+                  ...member,
+                  nickname:
+                    vault.workspace?.addressBook.find(
+                      (a) => a.user.id === member?.id,
+                    )?.nickname ??
+                    member?.nickname ??
+                    '',
+                }}
+                // member={member!}
+                isOwner={member?.id === owner?.id}
+              />
             </CustomSkeleton>
           );
         })}
