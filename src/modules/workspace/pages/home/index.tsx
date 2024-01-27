@@ -59,7 +59,7 @@ const WorkspacePage = () => {
     workspaceDialog,
   } = useWorkspace();
 
-  const hasVaults = recentVaults.length;
+  const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions.length > 0;
   // TODO: Replace mocks bellow with dynamic data
   const loadingWorkspaceVaults = false;
