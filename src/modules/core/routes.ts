@@ -31,8 +31,8 @@ const Pages = {
   ),
 
   //transaction
-  createTransaction: pageRoute<{ vaultId: string }>(
-    '/vault/:vaultId/transactions/create',
+  createTransaction: pageRoute<{ vaultId: string; workspaceId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/transactions/create',
   ),
 
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(

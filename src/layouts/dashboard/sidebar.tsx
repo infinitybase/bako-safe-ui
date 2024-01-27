@@ -52,7 +52,10 @@ const Sidebar = () => {
         hasBalance={vaultAssets.hasBalance}
         onCreateTransaction={() => {
           route.navigate(
-            Pages.createTransaction({ vaultId: route.params.vaultId! }),
+            Pages.createTransaction({
+              workspaceId: route.params.workspaceId!,
+              vaultId: route.params.vaultId!,
+            }),
           );
         }}
       />
