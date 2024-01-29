@@ -26,6 +26,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { useVaultDetails } from '@/modules/vault/hooks';
+import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { AmountDetails } from '../../components/AmountDetails';
@@ -34,7 +35,9 @@ import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
-  const { vault, store, assets, navigate, account, inView } = useVaultDetails();
+  const { params, vault, store, assets, navigate, account, inView } =
+    useVaultDetails();
+  const { currentWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
   // const pendingTransactionSignature = useMemo(
@@ -66,6 +69,23 @@ const VaultDetailsPage = () => {
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
+
+          {!currentWorkspace.single && (
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() =>
+                  navigate(
+                    Pages.workspace({ workspaceId: currentWorkspace.id }),
+                  )
+                }
+              >
+                {currentWorkspace.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          )}
 
           <BreadcrumbItem>
             <BreadcrumbLink
@@ -219,7 +239,12 @@ const VaultDetailsPage = () => {
               leftIcon={<SquarePlusIcon />}
               isDisabled={!vault?.hasBalance}
               onClick={() =>
-                navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                navigate(
+                  Pages.createTransaction({
+                    workspaceId: params.workspaceId!,
+                    vaultId: vault.id!,
+                  }),
+                )
               }
             >
               Create transaction

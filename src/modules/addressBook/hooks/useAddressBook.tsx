@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { invalidateQueries } from '@/modules/core';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
@@ -37,6 +38,7 @@ const useAddressBook = () => {
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
+  const { currentWorkspace } = useWorkspace();
 
   // FORM
   const { form } = useCreateContactForm();
@@ -45,6 +47,7 @@ const useAddressBook = () => {
   const listContactsRequest = useListContactsRequest();
   const contactsPaginatedRequest = useListPaginatedContactsRequest({
     q: search,
+    includePersonal: !currentWorkspace.single,
   });
 
   // MUTATIONS

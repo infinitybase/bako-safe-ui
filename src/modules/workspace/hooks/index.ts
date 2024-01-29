@@ -4,3 +4,4 @@ export * from './useGetWorkspaceRequest';
 export * from './useSelectWorkspaceRequest';
 export * from './useUserWorkspacesRequest';
 export * from './useWorkspace';
+export * from './useWorkspaceHomeRequest';

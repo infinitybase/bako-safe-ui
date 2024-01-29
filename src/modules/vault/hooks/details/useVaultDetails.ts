@@ -11,7 +11,7 @@ import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 const useVaultDetails = () => {
   const navigate = useNavigate();
-  const params = useParams<{ vaultId: string }>();
+  const params = useParams<{ workspaceId: string; vaultId: string }>();
   const { account } = useFuelAccount();
   const store = useVaultState();
   const inView = useInView();
@@ -72,6 +72,7 @@ const useVaultDetails = () => {
     navigate,
     account,
     store,
+    params,
   };
 };
 

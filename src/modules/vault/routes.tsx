@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import { Pages } from '../core';
 import { CreateTemplatePage } from '../template/hooks/useTemplatePage';
-import { CreateTransactionPage } from '../transactions';
+// import { CreateTransactionPage } from '../transactions';
 import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const AuthRoute = React.lazy(async () => {
@@ -14,6 +14,11 @@ const AuthRoute = React.lazy(async () => {
 const DashboardLayoutRouter = React.lazy(async () => {
   const newVar = await import('@/layouts');
   return { default: newVar.DashboardLayoutRouter };
+});
+
+const CreateTransactionPage = React.lazy(async () => {
+  const newVar = await import('../transactions');
+  return { default: newVar.CreateTransactionPage };
 });
 
 const vaultRoutes = (

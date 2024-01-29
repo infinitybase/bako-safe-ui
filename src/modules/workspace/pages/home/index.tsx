@@ -60,7 +60,7 @@ const WorkspacePage = () => {
   } = useWorkspace();
 
   const hasVaults = recentVaults?.length ?? 0;
-  const hasTransactions = recentTransactions.length > 0;
+  const hasTransactions = recentTransactions && recentTransactions?.length > 0;
   // TODO: Replace mocks bellow with dynamic data
   const loadingWorkspaceVaults = false;
   const loadingWorkspaceTransactions = false;
@@ -369,7 +369,13 @@ const WorkspacePage = () => {
               <Spacer />
               <Link
                 color="brand.500"
-                onClick={() => navigate(Pages.userTransactions())}
+                onClick={() =>
+                  navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
+                }
               >
                 View all
               </Link>

@@ -34,6 +34,7 @@ const UserTransactionsPage = () => {
   const { transactionRequest, filter, inView, account, navigate } =
     useTransactionList();
   const { currentWorkspace } = useWorkspace();
+
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>

@@ -12,7 +12,9 @@ const Pages = {
   detailsVault: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId',
   ),
-  vaultSettings: pageRoute<{ vaultId: string }>('/vault/:vaultId/settings'),
+  vaultSettings: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/settings',
+  ),
   userVaults: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/vault/me',
   ),
@@ -20,6 +22,14 @@ const Pages = {
 
   addressBook: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/address-book',
+  ),
+
+  userTransactions: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/transaction/me',
+  ),
+
+  transactions: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/transactions',
   ),
 
   //template
@@ -35,12 +45,6 @@ const Pages = {
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
     '/vault/:vaultId/transactions/:transactionId',
   ),
-
-  userTransactions: pageRoute<{
-    workspaceId: string;
-  }>('/workspace/:workspaceId/transaction/me'),
-
-  transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
 
   signatures: pageRoute('/signatures'),
 
@@ -58,9 +62,9 @@ const Pages = {
     memberId: string;
   }>('/workspace/:workspaceId/members/:memberId'),
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
-  workspaceTransactions: pageRoute<{ workspaceId: string }>(
-    'workspace/:WorkspaceId/transaction/me',
-  ),
+  // workspaceTransactions: pageRoute<{ workspaceId: string }>(
+  //   'workspace/:WorkspaceId/transaction/me',
+  // ),
 };
 
 export { Pages };

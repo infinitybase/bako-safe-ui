@@ -68,7 +68,11 @@ const HomePage = () => {
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
-                onClick={() => navigate(Pages.createVault())}
+                onClick={() =>
+                  navigate(
+                    Pages.createVault({ workspaceId: currentWorkspace.id }),
+                  )
+                }
               >
                 Create vault
               </Button>
@@ -96,7 +100,11 @@ const HomePage = () => {
                 isUpcoming={hasTransactions ? false : true}
                 onClick={() => {
                   return hasTransactions
-                    ? navigate(Pages.userTransactions())
+                    ? navigate(
+                        Pages.userTransactions({
+                          workspaceId: currentWorkspace.id,
+                        }),
+                      )
                     : null;
                 }}
               >

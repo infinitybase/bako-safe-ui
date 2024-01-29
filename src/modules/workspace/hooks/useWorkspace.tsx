@@ -8,18 +8,16 @@ import { useNavigate } from 'react-router-dom';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useNotification } from '@/modules/notification';
-import { useHomeVaultsRequest } from '@/modules/vault';
 
 import { Pages } from '../../core';
-import { PermissionRoles, Transaction, Workspace } from '../../core/models';
+import { PermissionRoles, Workspace } from '../../core/models';
 import { useSelectWorkspaceRequest } from './useSelectWorkspaceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
+import { useWorkspaceHomeRequest } from './useWorkspaceHomeRequest';
 
 const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE, USER_ID } = CookieName;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
-
-const workspaceTransactions: Transaction[] = [];
 
 const useWorkspace = () => {
   const [visibleBalance, setVisibleBalance] = useState(false);
@@ -42,11 +40,9 @@ const useWorkspace = () => {
   const userWorkspacesRequest = useUserWorkspacesRequest();
   const selectWorkspaceRequest = useSelectWorkspaceRequest();
   const vaultsPerPage = 8;
-  const workspaceHomeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
+  const workspaceHomeRequest = useWorkspaceHomeRequest();
 
-  // TODO: Keep first one after request is implemented
-  // const vaultsCounter = workspaceHomeVaultsRequest?.data?.total ?? 0;
-  const vaultsCounter = 9;
+  const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = (selectedWorkspace: Workspace) => {
     if (selectedWorkspace.id === currentWorkspace.id) return;
@@ -118,16 +114,15 @@ const useWorkspace = () => {
     workspaceDialog,
     handleWorkspaceSelection,
     navigate,
+    workspaceHomeRequest,
     workspaceVaults: {
-      recentVaults: workspaceHomeVaultsRequest.data?.data,
+      recentVaults: workspaceHomeRequest.data?.predicates?.data,
       vaultsMax: vaultsPerPage,
       extraCount:
         vaultsCounter <= vaultsPerPage ? 0 : vaultsCounter - vaultsPerPage,
     },
     workspaceTransactions: {
-      // TODO: Keep first option after workspaceVaultsRequest is implemented
-      // recentTransactions: workspaceTransactionsRequest.data?.data,
-      recentTransactions: workspaceTransactions,
+      recentTransactions: workspaceHomeRequest.data?.transactions?.data,
     },
     currentPermissions,
     hasPermission,

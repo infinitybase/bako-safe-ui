@@ -78,6 +78,7 @@ export const defaultPermissions = {
 export const WorkspacesQueryKey = {
   DEFAULT: 'workspace',
   LIST_BY_USER: () => [WorkspacesQueryKey.DEFAULT, 'list-by-user'],
+  HOME: () => [WorkspacesQueryKey.DEFAULT, 'home'],
   SELECT: () => [WorkspacesQueryKey.DEFAULT, 'select'],
   GET: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,

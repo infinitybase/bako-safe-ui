@@ -31,9 +31,10 @@ const UserVaultsPage = () => {
     transactionsRequest: { transactions },
   } = useUserVaults();
 
+  const { currentWorkspace } = useWorkspace();
+
   const hasTransactions = transactions?.length;
 
-  const { currentWorkspace } = useWorkspace();
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>

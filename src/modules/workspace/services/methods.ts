@@ -1,5 +1,12 @@
 import { api } from '@/config';
-import { IPermission, IPermissions, Workspace } from '@/modules/core';
+import {
+  IPagination,
+  IPermission,
+  IPermissions,
+  Predicate,
+  Transaction,
+  Workspace,
+} from '@/modules/core';
 
 export interface CreateWorkspacePayload {
   name: string;
@@ -8,6 +15,11 @@ export interface CreateWorkspacePayload {
   avatar?: string;
   single?: boolean;
   permissions?: IPermissions;
+}
+
+export interface WorkspaceHomeResponse {
+  predicates: IPagination<Predicate>;
+  transactions: IPagination<Transaction>;
 }
 
 export interface UpdateWorkspaceMembersPayload {
@@ -45,6 +57,12 @@ export class WorkspaceService {
   static async list() {
     const { data } =
       await api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
+
+    return data;
+  }
+
+  static async home() {
+    const { data } = await api.get<WorkspaceHomeResponse>(`/user/me`);
 
     return data;
   }
