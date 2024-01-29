@@ -1,7 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
@@ -68,18 +67,18 @@ const useWorkspace = () => {
       {
         onSuccess: ({ workspace }) => {
           if (!workspace.single) {
-            toast({
-              status: 'success',
-              duration: 2000,
-              title: 'Selected workspace!',
-              icon: (
-                <Icon
-                  fontSize="2xl"
-                  color="brand.500"
-                  as={BsFillCheckCircleFill}
-                />
-              ),
-            });
+            // toast({
+            //   status: 'success',
+            //   duration: 2000,
+            //   title: 'Selected workspace!',
+            //   icon: (
+            //     <Icon
+            //       fontSize="2xl"
+            //       color="brand.500"
+            //       as={BsFillCheckCircleFill}
+            //     />
+            //   ),
+            // });
 
             workspaceDialog.onClose();
             navigate(Pages.workspace({ workspaceId: workspace.id }));
