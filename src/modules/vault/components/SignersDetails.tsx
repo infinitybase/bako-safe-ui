@@ -87,13 +87,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
               <CardMember
                 member={{
                   ...member,
-                  nickname:
-                    vault.workspace?.addressBook.find(
-                      (a: { user: { id: string | undefined } }) =>
-                        a.user.id === member?.id,
-                    )?.nickname ??
-                    member?.nickname ??
-                    '',
+                  nickname: member?.nickname ?? '',
+                  avatar: member?.avatar ?? '',
+                  address: member?.address ?? '',
                 }}
                 // member={member!}
                 isOwner={member?.id === owner?.id}
