@@ -1,10 +1,11 @@
+import { ITransaction } from 'bsafe';
+
 import { api } from '@/config';
 import {
   IPagination,
   IPermission,
   IPermissions,
   Predicate,
-  Transaction,
   Workspace,
 } from '@/modules/core';
 
@@ -19,7 +20,7 @@ export interface CreateWorkspacePayload {
 
 export interface WorkspaceHomeResponse {
   predicates: IPagination<Predicate>;
-  transactions: IPagination<Transaction>;
+  transactions: IPagination<ITransaction & { predicate: Predicate }>;
 }
 
 export interface UpdateWorkspaceMembersPayload {
