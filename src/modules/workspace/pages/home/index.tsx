@@ -57,13 +57,13 @@ const WorkspacePage = () => {
     visibleBalance,
     setVisibleBalance,
     workspaceDialog,
+    workspaceHomeRequest,
   } = useWorkspace();
 
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
-  // TODO: Replace mocks bellow with dynamic data
-  const loadingWorkspaceVaults = false;
-  const loadingWorkspaceTransactions = false;
+  const loadingWorkspaceVaults = workspaceHomeRequest.isLoading;
+  const loadingWorkspaceTransactions = workspaceHomeRequest.isLoading;
 
   return (
     <VStack w="full" spacing={6}>
