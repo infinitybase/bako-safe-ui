@@ -22,7 +22,11 @@ class FuelTransactionService {
     const transactionRequest = ScriptTransactionRequest.from(transactionLike);
 
     return getTransactionSummaryFromRequest({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       transactionRequest: transactionRequestify(transactionRequest),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       provider,
     });
   }
