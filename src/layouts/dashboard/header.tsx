@@ -24,6 +24,7 @@ import {
   NotificationIcon,
   QuestionIcon,
   ReplaceIcon,
+  SettingsIcon,
 } from '@/components';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
@@ -31,9 +32,9 @@ import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
+import { SettingsDrawer } from '@/modules/settings/components/drawer';
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspace } from '@/modules/workspace/hooks';
-
 
 import { useSidebar } from './hook';
 
