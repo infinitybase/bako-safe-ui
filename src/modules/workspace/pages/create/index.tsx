@@ -22,7 +22,7 @@ import {
 
 import { OnboardingStep } from '../../components';
 import {
-  TabState,
+  CreateWorkspaceTabState,
   UseCreateWorkspace,
   useCreateWorkspace,
 } from '../../hooks/create';
@@ -70,7 +70,7 @@ const CreateWorkspacePage = () => {
 
   return (
     <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
-      {tabs.is(TabState.FORM) && (
+      {tabs.is(CreateWorkspaceTabState.FORM) && (
         <Dialog.Header
           maxW={420}
           title="Create Workspace"
@@ -78,8 +78,10 @@ const CreateWorkspacePage = () => {
         />
       )}
 
-      <Dialog.Body maxW={tabs.is(TabState.ON_BOARDING) ? 540 : 420}>
-        <Box hidden={!tabs.is(TabState.FORM)} mb={12}>
+      <Dialog.Body
+        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 420}
+      >
+        <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={12}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
@@ -87,7 +89,7 @@ const CreateWorkspacePage = () => {
             <TabPanel p={0}>
               <OnboardingStep
                 onCancel={handleClose}
-                onConfirm={() => tabs.set(TabState.FORM)}
+                onConfirm={() => tabs.set(CreateWorkspaceTabState.FORM)}
               />
             </TabPanel>
             <TabPanel p={0}>
@@ -109,7 +111,10 @@ const CreateWorkspacePage = () => {
         </Tabs>
       </Dialog.Body>
 
-      <Dialog.Actions hidden={!tabs.is(TabState.FORM)} maxW={420}>
+      <Dialog.Actions
+        hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+        maxW={420}
+      >
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>

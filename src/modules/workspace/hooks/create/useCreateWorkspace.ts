@@ -9,7 +9,7 @@ import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
 
 export type UseCreateWorkspace = ReturnType<typeof useCreateWorkspace>;
 
-export enum TabState {
+export enum CreateWorkspaceTabState {
   ON_BOARDING,
   FORM,
   SUCCESS,
@@ -19,8 +19,8 @@ const useCreateWorkspace = () => {
   const navigate = useNavigate();
 
   const tabs = useTab({
-    tabs: EnumUtils.toNumberArray(TabState),
-    defaultTab: TabState.ON_BOARDING,
+    tabs: EnumUtils.toNumberArray(CreateWorkspaceTabState),
+    defaultTab: CreateWorkspaceTabState.ON_BOARDING,
   });
 
   const form = useCreateWorkspaceForm();
@@ -41,7 +41,7 @@ const useCreateWorkspace = () => {
         description: data.description,
       },
       {
-        onSuccess: () => tabs.set(TabState.SUCCESS),
+        onSuccess: () => tabs.set(CreateWorkspaceTabState.SUCCESS),
       },
     );
   });
