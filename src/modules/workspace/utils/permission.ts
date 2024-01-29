@@ -63,6 +63,9 @@ class WorkspacePermissionUtils {
 
   static getPermissionInWorkspace(workspace: Workspace, member: Member) {
     const permission = workspace.permissions[member.id];
+
+    if (!permission) return null;
+
     const permissionRole = Object.keys(permission)
       .filter((role) => permission[role].includes('*'))
       .at(0);

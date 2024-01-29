@@ -53,8 +53,8 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
               {AddressUtils.format(member.address)}
             </Text>
           </Box>
-          <Badge fontSize="xs" p={1} variant={permission.variant}>
-            {permission.title}
+          <Badge fontSize="xs" p={1} variant={permission?.variant}>
+            {permission?.title}
           </Badge>
         </Center>
         <Button
@@ -154,21 +154,22 @@ const WorkspaceSettingsDrawer = ({
           </Flex>
 
           <VStack w="full">
-            {request.workspace?.members.map((member) => (
-              <MemberCard
-                key={member.id}
-                member={member}
-                workspace={request.workspace!}
-                onEdit={(memberId) =>
-                  navigate(
-                    Pages.updateMemberWorkspace({
-                      workspaceId: workspace.id,
-                      memberId,
-                    }),
-                  )
-                }
-              />
-            ))}
+            {!!request.workspace?.members &&
+              request.workspace?.members.map((member) => (
+                <MemberCard
+                  key={member.id}
+                  member={member}
+                  workspace={request.workspace!}
+                  onEdit={(memberId) =>
+                    navigate(
+                      Pages.updateMemberWorkspace({
+                        workspaceId: workspace.id,
+                        memberId,
+                      }),
+                    )
+                  }
+                />
+              ))}
           </VStack>
         </DrawerBody>
       </DrawerContent>
