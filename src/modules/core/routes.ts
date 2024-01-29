@@ -19,7 +19,7 @@ const Pages = {
   // userVaults: pageRoute('/workspace/:workspaceId/vault/me'),
 
   addressBook: pageRoute<{ workspaceId: string }>(
-    '/workspace/:workspaceId/addressBook',
+    '/workspace/:workspaceId/address-book',
   ),
   userTransactions: pageRoute('/transaction/me'),
 
