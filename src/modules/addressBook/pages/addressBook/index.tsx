@@ -44,7 +44,7 @@ const AddressBookPage = () => {
     handleDeleteContact,
     contactToEdit,
   } = useAddressBook();
-  const { hasPermission } = useWorkspace();
+  const { hasPermission, currentWorkspace } = useWorkspace();
 
   const hasContacts = contacts?.length;
 
@@ -95,9 +95,13 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  href={Pages.home()}
+                  href={
+                    currentWorkspace.single
+                      ? Pages.home()
+                      : Pages.workspace({ workspaceId: currentWorkspace.id })
+                  }
                 >
-                  Home
+                  {currentWorkspace.single ? 'Home' : currentWorkspace.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
