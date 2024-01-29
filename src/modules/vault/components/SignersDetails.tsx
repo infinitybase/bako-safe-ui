@@ -62,7 +62,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
                     flexDirection="column"
                     cursor="pointer"
                     onClick={() =>
-                      navigate(Pages.vaultSettings({ vaultId: vault.id! }))
+                      navigate(
+                        Pages.vaultSettings({
+                          vaultId: vault.id!,
+                          workspaceId: '',
+                        }),
+                      )
                     }
                   >
                     <Text variant="description" fontSize="lg" fontWeight="bold">
@@ -84,7 +89,8 @@ const SignersDetails = (props: SignersDetailsProps) => {
                   ...member,
                   nickname:
                     vault.workspace?.addressBook.find(
-                      (a) => a.user.id === member?.id,
+                      (a: { user: { id: string | undefined } }) =>
+                        a.user.id === member?.id,
                     )?.nickname ??
                     member?.nickname ??
                     '',

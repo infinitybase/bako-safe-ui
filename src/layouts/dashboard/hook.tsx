@@ -2,6 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { useWorkspace } from '@/modules';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import { useTransactionListRequest } from '@/modules/transactions/hooks';
@@ -14,7 +15,7 @@ const useSidebar = () => {
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
   const { account } = useFuelAccount();
-
+  const { currentWorkspace } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const transactionListRequest = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
@@ -36,10 +37,16 @@ const useSidebar = () => {
       }),
     ),
     settings: checkPathname(
-      Pages.vaultSettings({ vaultId: params?.vaultId ?? '' }),
+      Pages.vaultSettings({
+        vaultId: params?.vaultId ?? '',
+        workspaceId: currentWorkspace.id,
+      }),
     ),
     transactions: checkPathname(
-      Pages.transactions({ vaultId: params?.vaultId ?? '' }),
+      Pages.transactions({
+        vaultId: params?.vaultId ?? '',
+        workspaceId: currentWorkspace.id,
+      }),
     ),
   };
 

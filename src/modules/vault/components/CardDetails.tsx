@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { Pages } from '@/modules/core/routes';
+import { useWorkspace } from '@/modules/workspace';
 
 import { AddressCopy } from '../../../components/addressCopy';
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -33,7 +34,7 @@ const CardDetails = (props: CardDetailsProps) => {
 
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
-
+  const { currentWorkspace } = useWorkspace();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
@@ -157,7 +158,12 @@ const CardDetails = (props: CardDetailsProps) => {
                 <VStack spacing={2} alignItems="flex-start">
                   <Button
                     onClick={() =>
-                      navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                      navigate(
+                        Pages.createTransaction({
+                          vaultId: vault.id!,
+                          workspaceId: currentWorkspace.id,
+                        }),
+                      )
                     }
                     isDisabled={!vault?.hasBalance}
                     minW={130}
