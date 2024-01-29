@@ -51,7 +51,13 @@ const UserTransactionsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => navigate(Pages.home())}
+            onClick={() =>
+              currentWorkspace.single
+                ? navigate(Pages.home())
+                : navigate(
+                    Pages.workspace({ workspaceId: currentWorkspace.id }),
+                  )
+            }
           >
             Back home
           </Button>
@@ -68,6 +74,23 @@ const UserTransactionsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!currentWorkspace.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+                  }
+                >
+                  {currentWorkspace.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
 
             <BreadcrumbItem>
               <BreadcrumbLink
