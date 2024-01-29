@@ -16,6 +16,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { ITransaction } from 'bsafe';
 import { format } from 'date-fns';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
@@ -425,14 +426,14 @@ const WorkspacePage = () => {
                       {limitCharacters(transaction.name, 20)}
                     </TransactionCard.Name>
                     <TransactionCard.Status
-                      transaction={transaction}
+                      transaction={transaction as unknown as ITransaction}
                       status={transactionStatus({
                         ...transaction,
                         account,
                       })}
                     />
                     <TransactionCard.Actions
-                      transaction={transaction}
+                      transaction={transaction as unknown as ITransaction}
                       status={transactionStatus({
                         ...transaction,
                         account,
