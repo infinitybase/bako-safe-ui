@@ -1,11 +1,19 @@
 import axios from 'axios';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
 
 import { CookieName, CookiesConfig } from './cookies';
 
 const { VITE_API_URL } = import.meta.env;
-const { ACCESS_TOKEN, ADDRESS } = CookieName;
+const {
+  ACCESS_TOKEN,
+  ADDRESS,
+  AVATAR,
+  USER_ID,
+  SINGLE_WORKSPACE,
+  WORKSPACE,
+  PERMISSIONS,
+} = CookieName;
 
 export enum ApiUnauthorizedErrorsTitles {
   MISSING_CREDENTIALS = 'Missing credentials',
@@ -53,8 +61,13 @@ api.interceptors.response.use(
     if (unauthorizedError) {
       useFuelAccount.getState().setAccount('');
       CookiesConfig.removeCookies([
-        CookieName.ACCESS_TOKEN,
-        CookieName.ADDRESS,
+        ACCESS_TOKEN,
+        ADDRESS,
+        AVATAR,
+        USER_ID,
+        SINGLE_WORKSPACE,
+        WORKSPACE,
+        PERMISSIONS,
       ]);
     }
 

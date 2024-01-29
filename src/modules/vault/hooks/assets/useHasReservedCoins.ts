@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { VaultService } from '@/modules';
+import { VaultService } from '../../services';
 
 export const useHasReservedCoins = (address: string) => {
   return useQuery(

@@ -19,6 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
+import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import {
@@ -30,9 +31,9 @@ import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const allFromUser = true;
   const { transactionRequest, filter, inView, account, navigate } =
-    useTransactionList(allFromUser);
+    useTransactionList();
+  const { currentWorkspace } = useWorkspace();
 
   return (
     <VStack w="full" spacing={6}>
@@ -50,7 +51,13 @@ const UserTransactionsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => navigate(Pages.home())}
+            onClick={() =>
+              currentWorkspace.single
+                ? navigate(Pages.home())
+                : navigate(
+                    Pages.workspace({ workspaceId: currentWorkspace.id }),
+                  )
+            }
           >
             Back home
           </Button>
@@ -67,6 +74,23 @@ const UserTransactionsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!currentWorkspace.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+                  }
+                >
+                  {currentWorkspace.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -95,7 +119,15 @@ const UserTransactionsPage = () => {
 
       {/* ACTION BUTTONS */}
       <HStack w="full" spacing={6}>
-        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.userVaults({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -115,7 +147,15 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.addressBook({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={CgList} />
           <Box>
             <ActionCard.Title>Address book</ActionCard.Title>

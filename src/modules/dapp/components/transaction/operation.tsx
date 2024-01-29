@@ -4,7 +4,7 @@ import { Vault } from 'bsafe';
 import { bn } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
-import { assetsMap } from '@/modules';
+import { assetsMap } from '@/modules/core/utils';
 import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';

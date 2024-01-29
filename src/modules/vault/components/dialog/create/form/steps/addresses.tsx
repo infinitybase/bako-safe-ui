@@ -17,9 +17,11 @@ import { Controller } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
-import { AddressUtils, ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useAddressBook } from '@/modules/addressBook/hooks/';
+import { ITemplate } from '@/modules/core/models';
+import { AddressUtils } from '@/modules/core/utils';
+import { UseCreateVaultReturn } from '@/modules/vault';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];

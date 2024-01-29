@@ -1,4 +1,5 @@
 import { api } from '@/config';
+import { Workspace } from '@/modules/core';
 
 export enum Encoder {
   FUEL = 'fuel',
@@ -30,6 +31,8 @@ export type SignInPayload = {
 export type SignInResponse = {
   accessToken: string;
   avatar: string;
+  user_id: string;
+  workspace: Workspace;
   id: string;
   notify: boolean;
   firstLogin: boolean;

@@ -8,7 +8,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { Pages, useFuel, useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { Pages, useFuel } from '@/modules/core';
 
 import { TabEnum } from './types';
 

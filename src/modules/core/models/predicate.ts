@@ -1,5 +1,6 @@
 import { Transaction } from './transaction';
 import { User } from './user';
+import { Owner } from './workspace';
 
 export interface PredicateMember {
   id: string;
@@ -7,11 +8,6 @@ export interface PredicateMember {
   address: string;
   isOwner?: boolean;
   nickname?: string;
-}
-
-export interface Owner {
-  id: string;
-  address: string;
 }
 
 export interface Predicate {

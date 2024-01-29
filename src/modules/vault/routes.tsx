@@ -1,14 +1,19 @@
+import React from 'react';
 import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
-import { CreateTransactionPage } from '@/modules/transactions';
+import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
+import { CreateTransactionPage } from '@/modules/transactions/pages';
 
-import { CreateTemplatePage } from '../template/hooks/useTemplatePage';
 import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const vaultRoutes = (
-  <Route element={<DashboardLayoutRouter hasSideBar />}>
+  <Route
+    Component={() => {
+      return <DashboardLayoutRouter hasSideBar />;
+    }}
+  >
     <Route
       path={Pages.detailsVault()}
       element={

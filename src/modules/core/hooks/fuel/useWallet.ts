@@ -1,6 +1,7 @@
 import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
-import { useFuel, useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useFuel } from '@/modules/core/hooks';
 
 import { FuelQueryKeys } from './types';
 

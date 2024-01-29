@@ -4,7 +4,9 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { Pages, useVaultListRequest } from '@/modules';
+import { Pages } from '@/modules/core/routes';
+import { useVaultListRequest } from '@/modules/vault/hooks';
+import { useWorkspace } from '@/modules/workspace';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
@@ -17,7 +19,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const { onSelect } = props;
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
-
+  const { currentWorkspace } = useWorkspace();
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
     props.isOpen,
@@ -49,7 +51,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
     setSearch('');
-    navigate(Pages.detailsVault({ vaultId }));
+    navigate(Pages.detailsVault({ vaultId, workspaceId: currentWorkspace.id }));
   };
 
   const onCloseDrawer = () => {

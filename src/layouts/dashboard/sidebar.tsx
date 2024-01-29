@@ -7,7 +7,9 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
+import { Pages } from '@/modules/core';
+import { AddressUtils } from '@/modules/core/utils';
+import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 
 import { useSidebar } from './hook';
 
@@ -50,7 +52,10 @@ const Sidebar = () => {
         hasBalance={vaultAssets.hasBalance}
         onCreateTransaction={() => {
           route.navigate(
-            Pages.createTransaction({ vaultId: route.params.vaultId! }),
+            Pages.createTransaction({
+              workspaceId: route.params.workspaceId!,
+              vaultId: route.params.vaultId!,
+            }),
           );
         }}
       />
@@ -63,7 +68,10 @@ const Sidebar = () => {
           isActive={menuItems.home}
           onClick={() =>
             route.navigate(
-              Pages.detailsVault({ vaultId: route.params.vaultId! }),
+              Pages.detailsVault({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >
@@ -80,7 +88,10 @@ const Sidebar = () => {
           onClick={() =>
             transactionListRequest.hasTransactions &&
             route.navigate(
-              Pages.transactions({ vaultId: route.params.vaultId! }),
+              Pages.transactions({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >
@@ -104,7 +115,10 @@ const Sidebar = () => {
           isActive={menuItems.settings}
           onClick={() =>
             route.navigate(
-              Pages.vaultSettings({ vaultId: route.params.vaultId! }),
+              Pages.vaultSettings({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >

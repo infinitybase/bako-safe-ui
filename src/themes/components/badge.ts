@@ -24,6 +24,12 @@ const info = defineStyle({
   borderColor: 'rgba(73, 248, 174, 0.1)',
 });
 
+const blue = defineStyle({
+  bgColor: 'rgba(57,73,171,0.1)',
+  color: '#3949AB',
+  borderColor: 'rgba(57,73,171,0.1)',
+});
+
 const baseStyle = defineStyle({
   fontSize: 'xs',
   fontWeight: 'normal',
@@ -34,6 +40,7 @@ const baseStyle = defineStyle({
   alignItems: 'center',
   gap: 2,
   borderRadius: 8,
+  maxWidth: 'min-content',
 });
 
 const Badge = defineStyleConfig({
@@ -43,6 +50,7 @@ const Badge = defineStyleConfig({
     success,
     warning,
     info,
+    blue,
   },
 });
 

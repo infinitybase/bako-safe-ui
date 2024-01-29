@@ -13,15 +13,15 @@ import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
-import { transactionStatus } from '@/modules';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import {
   TransactionCard,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { limitCharacters } from '@/utils';
+import { limitCharacters } from '@/utils/limit-characters';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
+import { transactionStatus } from '../../utils';
 
 const TransactionsVaultPage = () => {
   const {

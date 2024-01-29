@@ -1,7 +1,8 @@
 import { BSAFEConnectorEvents } from 'bsafe';
 import { useMemo, useState } from 'react';
 
-import { useQueryParams, UserTypes, useSocket } from '@/modules';
+import { useQueryParams } from '@/modules/auth/hooks';
+import { UserTypes, useSocket } from '@/modules/core/hooks';
 
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { Pages } from '@/modules/core';
+import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -29,7 +30,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store } = props;
   const { biggerAsset } = store;
-
+  const { currentWorkspace } = useWorkspace();
   if (!vault) return;
 
   return (
@@ -133,7 +134,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         variant="primary"
                         onClick={() =>
                           navigate(
-                            Pages.createTransaction({ vaultId: vault.id! }),
+                            Pages.createTransaction({
+                              vaultId: vault.id!,
+                              workspaceId: currentWorkspace?.id,
+                            }),
                           )
                         }
                       >

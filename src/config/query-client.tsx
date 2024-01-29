@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { useFuel } from '@/modules';
+import { useFuel } from '@/modules/core/hooks';
 import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
 interface BsafeQueryClientProviderProps {

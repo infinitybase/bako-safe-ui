@@ -23,12 +23,18 @@ import {
   ExitIcon,
   NotificationIcon,
   QuestionIcon,
+  ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { Pages } from '@/modules/core';
+import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
+import { Workspace } from '@/modules/core/models';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
+import { SelectWorkspaceDialog } from '@/modules/workspace/components';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
 
@@ -132,10 +138,58 @@ const UserBox = () => {
   );
 };
 
+const WorkspaceBox = ({
+  currentWorkspace,
+}: {
+  currentWorkspace: Workspace;
+}) => {
+  const { avatar, name, single: isMyWorkspace } = currentWorkspace;
+
+  return (
+    <Flex w="full" alignItems="center" justifyContent="space-between">
+      <Flex>
+        {isMyWorkspace && (
+          <Text fontWeight="semibold" color="grey.200">
+            Access workspace
+          </Text>
+        )}
+        {!isMyWorkspace && (
+          <HStack spacing={4}>
+            <Avatar variant="roundedSquare" src={avatar} />
+            <Box w={150}>
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                isTruncated
+                maxW={150}
+              >
+                {name}
+              </Text>
+              <Text fontSize="sm" color="grey.500">
+                Current workspace
+              </Text>
+            </Box>
+          </HStack>
+        )}
+      </Flex>
+
+      <ReplaceIcon color="grey.200" fontSize={20} />
+    </Flex>
+  );
+};
+
 const Header = () => {
   const navigate = useNavigate();
   const { drawer } = useSidebar();
+  const {
+    currentWorkspace,
+    workspaceDialog,
+    userWorkspacesRequest: { data: userWorkspaces },
+    handleWorkspaceSelection,
+  } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
+
+  const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -154,12 +208,27 @@ const Header = () => {
       borderBottomColor="dark.100"
     >
       <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <SelectWorkspaceDialog
+        dialog={workspaceDialog}
+        userWorkspaces={userWorkspaces ?? []}
+        onSelect={handleWorkspaceSelection}
+        onCreate={handleGoToCreateWorkspace}
+      />
 
       <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
         <img width={90} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
+        <TopBarItem
+          onClick={workspaceDialog.onOpen}
+          cursor="pointer"
+          w={310}
+          px={6}
+        >
+          <WorkspaceBox currentWorkspace={currentWorkspace} />
+        </TopBarItem>
+
         <TopBarItem
           onClick={() =>
             window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')

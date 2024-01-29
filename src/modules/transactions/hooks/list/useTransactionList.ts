@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useFuelAccount,
-  useTransactionListPaginationRequest,
-  useVaultAssets,
-  useVaultDetailsRequest,
-} from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 import { useTransactionState } from '../../states';
+import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 
 export enum StatusFilter {
   ALL = '',
@@ -19,7 +16,7 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.DECLINED,
 }
 
-const useTransactionList = (allFromUser = false) => {
+const useTransactionList = () => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
@@ -33,7 +30,6 @@ const useTransactionList = (allFromUser = false) => {
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
-    ...(allFromUser ? { allOfUser: true } : {}),
     ...(selectedTransaction?.id ? { id: selectedTransaction.id } : {}),
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,

@@ -19,6 +19,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspace } from '@/modules/workspace';
 
 import { VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults';
@@ -29,6 +30,8 @@ const UserVaultsPage = () => {
     vaultsRequest: { vaults, loadingVaults },
     transactionsRequest: { transactions },
   } = useUserVaults();
+
+  const { currentWorkspace } = useWorkspace();
 
   const hasTransactions = transactions?.length;
 
@@ -48,7 +51,13 @@ const UserVaultsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => navigate(Pages.home())}
+            onClick={() =>
+              currentWorkspace.single
+                ? navigate(Pages.home())
+                : navigate(
+                    Pages.workspace({ workspaceId: currentWorkspace.id }),
+                  )
+            }
           >
             Back home
           </Button>
@@ -65,6 +74,23 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!currentWorkspace.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+                  }
+                >
+                  {currentWorkspace.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -93,7 +119,15 @@ const UserVaultsPage = () => {
 
       <CustomSkeleton isLoaded={!loadingVaults}>
         <HStack w="full" h="full" spacing={6}>
-          <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.userVaults({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
               <ActionCard.Title>Vaults</ActionCard.Title>
@@ -107,7 +141,11 @@ const UserVaultsPage = () => {
             isUpcoming={hasTransactions ? false : true}
             onClick={() => {
               return hasTransactions
-                ? navigate(Pages.userTransactions())
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
                 : null;
             }}
           >
@@ -123,7 +161,15 @@ const UserVaultsPage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
             <ActionCard.Icon icon={CgList} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
@@ -157,7 +203,14 @@ const UserVaultsPage = () => {
                   title={description}
                   address={predicateAddress}
                   members={members!}
-                  onClick={() => navigate(Pages.detailsVault({ vaultId: id }))}
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: id,
+                        workspaceId: currentWorkspace.id,
+                      }),
+                    )
+                  }
                 />
               </CustomSkeleton>
             </GridItem>

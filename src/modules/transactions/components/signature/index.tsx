@@ -3,7 +3,8 @@ import { ITransaction } from 'bsafe';
 import { useMemo } from 'react';
 
 import { PendingIcon } from '@/components';
-import { waitingSignatures } from '@/modules';
+
+import { waitingSignatures } from '../../utils';
 
 interface WaitingSignatureBadgeProps {
   account: string;

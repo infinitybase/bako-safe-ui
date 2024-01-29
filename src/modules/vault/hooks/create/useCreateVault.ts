@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Pages,
-  useCreateBsafeVault,
-  useFuelAccount,
-  useToast,
-} from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useCreateBsafeVault, useToast } from '@/modules/core/hooks';
+import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 
@@ -30,7 +27,6 @@ const useCreateVault = () => {
   const [vaultId, setVaultId] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
-
   const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
       setVaultId(data.BSAFEVaultId);
@@ -83,7 +79,12 @@ const useCreateVault = () => {
         `${import.meta.env.VITE_FAUCET}?address=${bsafeVault.data.address}`,
         '_BLANK',
       );
-      navigate(Pages.detailsVault({ vaultId: bsafeVault.data.BSAFEVaultId }));
+      navigate(
+        Pages.detailsVault({
+          vaultId: bsafeVault.data.BSAFEVaultId,
+          workspaceId: '',
+        }),
+      );
     }
   };
 

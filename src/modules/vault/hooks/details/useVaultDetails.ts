@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
 import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
@@ -11,7 +11,7 @@ import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 const useVaultDetails = () => {
   const navigate = useNavigate();
-  const params = useParams<{ vaultId: string }>();
+  const params = useParams<{ workspaceId: string; vaultId: string }>();
   const { account } = useFuelAccount();
   const store = useVaultState();
   const inView = useInView();
@@ -72,6 +72,7 @@ const useVaultDetails = () => {
     navigate,
     account,
     store,
+    params,
   };
 };
 

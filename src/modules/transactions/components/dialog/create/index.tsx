@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
-import { useCreateTransaction } from '@/modules';
+import { useCreateTransaction } from '@/modules/transactions/hooks';
 
 import { CreateTransactionForm } from './form';
 

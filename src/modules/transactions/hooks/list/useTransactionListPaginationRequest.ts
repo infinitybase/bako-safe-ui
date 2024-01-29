@@ -27,7 +27,6 @@ const useTransactionListPaginationRequest = (
         sort: SortOption.DESC,
       }),
     {
-      enabled: !!params.predicateId || !!params.allOfUser,
       getNextPageParam: (lastPage) =>
         lastPage.currentPage !== lastPage.totalPages
           ? lastPage.nextPage

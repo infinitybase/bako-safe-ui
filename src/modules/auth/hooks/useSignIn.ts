@@ -2,14 +2,16 @@ import { useDisclosure } from '@chakra-ui/react';
 import { Location, useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useQueryParams } from '@/modules/auth/hooks';
+import { useFuelAccount } from '@/modules/auth/store';
 import {
+  useConnect,
   useFuel,
-  useFuelAccount,
   useGetCurrentAccount,
-  useQueryParams,
-} from '@/modules';
-import { Pages, useConnect, useIsConnected } from '@/modules/core';
+  useIsConnected,
+} from '@/modules/core/hooks';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { Pages } from '@/modules/core/routes';
 
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
@@ -47,7 +49,9 @@ const useSignIn = () => {
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, id }) => {
+
+    onSuccess: ({ accessToken, avatar, user_id, workspace }) => {
+
       CookiesConfig.setCookies([
         {
           name: CookieName.ACCESS_TOKEN,
@@ -58,8 +62,24 @@ const useSignIn = () => {
           value: account!,
         },
         {
+          name: CookieName.USER_ID,
+          value: user_id,
+        },
+        {
           name: CookieName.AVATAR,
           value: avatar!,
+        },
+        {
+          name: CookieName.SINGLE_WORKSPACE,
+          value: JSON.stringify(workspace),
+        },
+        {
+          name: CookieName.WORKSPACE,
+          value: JSON.stringify(workspace),
+        },
+        {
+          name: CookieName.PERMISSIONS,
+          value: JSON.stringify(workspace.permissions[user_id]),
         },
       ]);
       setAccount(account!);

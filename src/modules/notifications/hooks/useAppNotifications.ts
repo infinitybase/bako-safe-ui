@@ -15,6 +15,7 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
+import { useWorkspace } from '@/modules/workspace';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -39,7 +40,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
   const { unreadCounter, setUnreadCounter } = useNotificationsStore();
-
+  const { currentWorkspace } = useWorkspace();
   const onCloseDrawer = async () => {
     const hasUnread = !!unreadCounter;
 
@@ -64,8 +65,8 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       setSelectedTransaction({ name: transactionName, id: transactionId });
 
     const page = isTransaction
-      ? Pages.transactions({ vaultId })
-      : Pages.detailsVault({ vaultId });
+      ? Pages.transactions({ vaultId, workspaceId: currentWorkspace.id })
+      : Pages.detailsVault({ vaultId, workspaceId: currentWorkspace.id });
 
     navigate(page);
   };

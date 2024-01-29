@@ -13,6 +13,7 @@ import { HomeIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
+import { useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
@@ -20,7 +21,7 @@ import { SettingsSigners } from '../../components/SettingsSigners';
 const VaultSettingsPage = () => {
   const { vault, store, navigate } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
-
+  const { currentWorkspace } = useWorkspace();
   if (!vault) return null;
 
   return (
@@ -54,7 +55,12 @@ const VaultSettingsPage = () => {
               color="grey.200"
               fontWeight="semibold"
               onClick={() =>
-                navigate(Pages.detailsVault({ vaultId: vault.id! }))
+                navigate(
+                  Pages.detailsVault({
+                    vaultId: vault.id!,
+                    workspaceId: currentWorkspace?.id,
+                  }),
+                )
               }
               isTruncated
               maxW={640}

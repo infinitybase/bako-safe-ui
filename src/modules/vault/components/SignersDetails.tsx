@@ -62,7 +62,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
                     flexDirection="column"
                     cursor="pointer"
                     onClick={() =>
-                      navigate(Pages.vaultSettings({ vaultId: vault.id! }))
+                      navigate(
+                        Pages.vaultSettings({
+                          vaultId: vault.id!,
+                          workspaceId: '',
+                        }),
+                      )
                     }
                   >
                     <Text variant="description" fontSize="lg" fontWeight="bold">
@@ -79,7 +84,16 @@ const SignersDetails = (props: SignersDetailsProps) => {
 
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <CardMember member={member!} isOwner={member?.id === owner?.id} />
+              <CardMember
+                member={{
+                  ...member,
+                  nickname: member?.nickname ?? '',
+                  avatar: member?.avatar ?? '',
+                  address: member?.address ?? '',
+                }}
+                // member={member!}
+                isOwner={member?.id === owner?.id}
+              />
             </CustomSkeleton>
           );
         })}

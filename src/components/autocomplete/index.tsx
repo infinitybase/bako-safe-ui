@@ -17,7 +17,7 @@ import {
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 interface RightAction {
   icon?: ComponentWithAs<'svg', IconProps>;
@@ -36,12 +36,12 @@ interface AutoCompleteProps {
   // selected?: string[];
   value?: string;
   label: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   errorMessage?: string;
   rightAction?: RightAction;
   bottomAction?: ReactNode;
   index?: number;
-  inView: InViewHookResponse;
+  inView?: InViewHookResponse;
   onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
 }
@@ -206,7 +206,7 @@ function AutoComplete({
                   </Text>
                 </Box>
               ))}
-              <Box ref={inView.ref} />
+              <Box ref={inView?.ref} />
             </VStack>
           </Flex>
         </Box>
