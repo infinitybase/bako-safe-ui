@@ -19,6 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
+import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import {
@@ -30,10 +31,9 @@ import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const allFromUser = true;
   const { transactionRequest, filter, inView, account, navigate } =
-    useTransactionList(allFromUser);
-
+    useTransactionList();
+  const { currentWorkspace } = useWorkspace();
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
@@ -95,7 +95,15 @@ const UserTransactionsPage = () => {
 
       {/* ACTION BUTTONS */}
       <HStack w="full" spacing={6}>
-        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.userVaults({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -115,7 +123,15 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.addressBook({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={CgList} />
           <Box>
             <ActionCard.Title>Address book</ActionCard.Title>

@@ -21,9 +21,6 @@ const Pages = {
   addressBook: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/addressBook',
   ),
-  userTransactions: pageRoute('/transaction/me'),
-
-  transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
 
   //template
   createTemplate: pageRoute<{ vaultId: string }>(
@@ -38,6 +35,13 @@ const Pages = {
   detailsTransaction: pageRoute<{ vaultId: string; transactionId: string }>(
     '/vault/:vaultId/transactions/:transactionId',
   ),
+
+  userTransactions: pageRoute<{
+    workspaceId: string;
+  }>('/workspace/:workspaceId/transaction/me'),
+
+  transactions: pageRoute<{ vaultId: string }>('/vault/:vaultId/transactions'),
+
   signatures: pageRoute('/signatures'),
 
   //dapp

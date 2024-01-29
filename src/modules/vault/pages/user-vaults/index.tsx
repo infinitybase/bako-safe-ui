@@ -19,6 +19,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspace } from '@/modules/workspace';
 
 import { VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults';
@@ -32,6 +33,7 @@ const UserVaultsPage = () => {
 
   const hasTransactions = transactions?.length;
 
+  const { currentWorkspace } = useWorkspace();
   return (
     <VStack w="full" spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
@@ -93,7 +95,15 @@ const UserVaultsPage = () => {
 
       <CustomSkeleton isLoaded={!loadingVaults}>
         <HStack w="full" h="full" spacing={6}>
-          <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.userVaults({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
               <ActionCard.Title>Vaults</ActionCard.Title>
@@ -107,7 +117,11 @@ const UserVaultsPage = () => {
             isUpcoming={hasTransactions ? false : true}
             onClick={() => {
               return hasTransactions
-                ? navigate(Pages.userTransactions())
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
                 : null;
             }}
           >
@@ -123,7 +137,15 @@ const UserVaultsPage = () => {
             </Box>
           </ActionCard.Container>
 
-          <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
             <ActionCard.Icon icon={CgList} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
@@ -157,7 +179,14 @@ const UserVaultsPage = () => {
                   title={description}
                   address={predicateAddress}
                   members={members!}
-                  onClick={() => navigate(Pages.detailsVault({ vaultId: id }))}
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: id,
+                        workspaceId: currentWorkspace.id,
+                      }),
+                    )
+                  }
                 />
               </CustomSkeleton>
             </GridItem>

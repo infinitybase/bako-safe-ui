@@ -4,11 +4,13 @@ import { useFuelAccount } from '@/modules/auth';
 
 import { VaultService } from '../services';
 
+const VAULT_LIST_QUERY_KEY = 'predicate/by-address';
+
 const useUserVaultRequest = () => {
   const { account } = useFuelAccount();
 
   return useQuery(
-    ['predicate/by-address', account],
+    [VAULT_LIST_QUERY_KEY, account],
     () => VaultService.getAll(),
     {
       refetchOnWindowFocus: false,
@@ -16,4 +18,4 @@ const useUserVaultRequest = () => {
   );
 };
 
-export { useUserVaultRequest };
+export { useUserVaultRequest, VAULT_LIST_QUERY_KEY };

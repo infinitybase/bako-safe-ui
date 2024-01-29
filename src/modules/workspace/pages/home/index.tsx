@@ -245,9 +245,11 @@ const WorkspacePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
-          // onClick={() =>
-          //   navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
-          // }
+            onClick={() =>
+              navigate(
+                Pages.userTransactions({ workspaceId: currentWorkspace.id }),
+              )
+            }
           >
             <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>

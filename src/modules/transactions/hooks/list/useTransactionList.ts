@@ -16,7 +16,7 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.DECLINED,
 }
 
-const useTransactionList = (allFromUser = false) => {
+const useTransactionList = () => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
@@ -30,7 +30,6 @@ const useTransactionList = (allFromUser = false) => {
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
-    ...(allFromUser ? { allOfUser: true } : {}),
     ...(selectedTransaction?.id ? { id: selectedTransaction.id } : {}),
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
