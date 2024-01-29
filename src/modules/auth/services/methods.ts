@@ -33,6 +33,9 @@ export type SignInResponse = {
   avatar: string;
   user_id: string;
   workspace: Workspace;
+  id: string;
+  notify: boolean;
+  firstLogin: boolean;
 };
 
 export class UserService {
