@@ -1,4 +1,9 @@
-import { Member, PermissionRoles, Workspace } from '@/modules/core/models';
+import {
+  IPermission,
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '@/modules/core/models';
 
 interface PermissionDTO {
   title: string;
@@ -74,6 +79,15 @@ class WorkspacePermissionUtils {
     if (!permissionValue) return null;
 
     return permissionValue;
+  }
+
+  static hasPermissions(permissions: IPermission, roles: PermissionRoles[]) {
+    const permissionRoles = Object.keys(permissions);
+    const permission = roles.filter((role) => {
+      return permissionRoles.includes(role) && permissions[role].includes('*');
+    });
+
+    return !!permission && !!permission.length;
   }
 }
 
