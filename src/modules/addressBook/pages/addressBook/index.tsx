@@ -95,13 +95,20 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  href={
-                    currentWorkspace.single
-                      ? Pages.home()
-                      : Pages.workspace({ workspaceId: currentWorkspace.id })
-                  }
+                  href={Pages.home()}
                 >
-                  {currentWorkspace.single ? 'Home' : currentWorkspace.name}
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+
+              <BreadcrumbItem hidden={currentWorkspace.single}>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  href={Pages.workspace({ workspaceId: currentWorkspace.id })}
+                >
+                  {currentWorkspace.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
