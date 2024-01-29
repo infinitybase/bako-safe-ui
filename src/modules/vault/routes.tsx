@@ -1,28 +1,19 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { Pages } from '../core';
-import { CreateTemplatePage } from '../template/hooks/useTemplatePage';
-// import { CreateTransactionPage } from '../transactions';
+import { DashboardLayoutRouter } from '@/layouts';
+import { AuthRoute, Pages } from '@/modules/core';
+import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
+import { CreateTransactionPage } from '@/modules/transactions/pages';
+
 import { VaultDetailsPage, VaultSettingsPage } from './pages';
 
-const AuthRoute = React.lazy(async () => {
-  const newVar = await import('@/modules/core');
-  return { default: newVar.AuthRoute };
-});
-
-const DashboardLayoutRouter = React.lazy(async () => {
-  const newVar = await import('@/layouts');
-  return { default: newVar.DashboardLayoutRouter };
-});
-
-const CreateTransactionPage = React.lazy(async () => {
-  const newVar = await import('../transactions');
-  return { default: newVar.CreateTransactionPage };
-});
-
 const vaultRoutes = (
-  <Route element={<DashboardLayoutRouter hasSideBar />}>
+  <Route
+    Component={() => {
+      return <DashboardLayoutRouter hasSideBar />;
+    }}
+  >
     <Route
       path={Pages.detailsVault()}
       element={
