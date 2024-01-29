@@ -20,7 +20,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, ErrorIcon } from '@/components';
-import { AddressUtils, Pages, Workspace } from '@/modules/core';
+import { AddressUtils, Member, Pages, Workspace } from '@/modules/core';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
@@ -29,11 +29,55 @@ interface WorkspaceSettingsDrawerProps
   workspace: Workspace;
 }
 
+interface MemberCardProps {
+  member: Member;
+  workspace: Workspace;
+  onEdit: (memberId: string) => void;
+}
+
+const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
+  const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
+    workspace!,
+    member,
+  );
+
+  return (
+    <Card w="full" bgColor="dark.300" key={member.id}>
+      <HStack w="full" justifyContent="space-between">
+        <Center>
+          <Box mr={4}>
+            <Text fontWeight="semibold" color="grey.200">
+              {member.name}
+            </Text>
+            <Text fontWeight="semibold" color="grey.200">
+              {AddressUtils.format(member.address)}
+            </Text>
+          </Box>
+          <Badge fontSize="xs" p={1} variant={permission.variant}>
+            {permission.title}
+          </Badge>
+        </Center>
+        <Button
+          size="sm"
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() => onEdit(member.id)}
+        >
+          Edit
+        </Button>
+      </HStack>
+    </Card>
+  );
+};
+
 const WorkspaceSettingsDrawer = ({
   workspace,
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
+
+  // TODO: Remove this and use workspace received on props
   const request = useGetWorkspaceRequest(workspace.id, {
     enabled: drawerProps.isOpen,
   });
@@ -108,50 +152,23 @@ const WorkspaceSettingsDrawer = ({
               Add new member
             </Button>
           </Flex>
-          <VStack w="full">
-            {request.workspace?.members.map((member) => {
-              const permission =
-                WorkspacePermissionUtils.getPermissionInWorkspace(
-                  request.workspace!,
-                  member,
-                );
 
-              return (
-                <Card w="full" bgColor="dark.300" key={member.id}>
-                  <HStack w="full" justifyContent="space-between">
-                    <Center>
-                      <Box mr={4}>
-                        <Text fontWeight="semibold" color="grey.200">
-                          {member.name}
-                        </Text>
-                        <Text fontWeight="semibold" color="grey.200">
-                          {AddressUtils.format(member.address)}
-                        </Text>
-                      </Box>
-                      <Badge fontSize="xs" p={1} variant={permission.variant}>
-                        {permission.title}
-                      </Badge>
-                    </Center>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      bgColor="dark.100"
-                      border="none"
-                      onClick={() => {
-                        navigate(
-                          Pages.updateMemberWorkspace({
-                            workspaceId: workspace.id,
-                            memberId: member.id,
-                          }),
-                        );
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  </HStack>
-                </Card>
-              );
-            })}
+          <VStack w="full">
+            {request.workspace?.members.map((member) => (
+              <MemberCard
+                key={member.id}
+                member={member}
+                workspace={request.workspace!}
+                onEdit={(memberId) =>
+                  navigate(
+                    Pages.updateMemberWorkspace({
+                      workspaceId: workspace.id,
+                      memberId,
+                    }),
+                  )
+                }
+              />
+            ))}
           </VStack>
         </DrawerBody>
       </DrawerContent>
