@@ -50,7 +50,10 @@ const useWorkspace = () => {
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        navigate(Pages.workspace({ workspaceId: workspace.id }));
+
+        if (!workspace.single) {
+          navigate(Pages.workspace({ workspaceId: workspace.id }));
+        }
       },
       onError: () => {
         toast({
