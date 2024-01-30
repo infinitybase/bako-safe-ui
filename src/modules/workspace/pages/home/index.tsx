@@ -361,7 +361,7 @@ const WorkspacePage = () => {
           }
 
           {hasTransactions && (
-            <HStack>
+            <HStack w="full">
               <WaitingSignatureBadge
                 account={account}
                 isLoading={loadingWorkspaceTransactions}
@@ -391,8 +391,8 @@ const WorkspacePage = () => {
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
-        <Box w="full" mt={4} pb={10}>
-          <TransactionCard.List spacing={4} mt={6} mb={12}>
+        <Box w="full" pb={10}>
+          <TransactionCard.List spacing={4} mb={12}>
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
               const isSigner = !!transaction.predicate?.members?.find(
