@@ -1,5 +1,6 @@
 export * from './addressBook';
 export * from './asset';
+export * from './home';
 export * from './notification';
 export * from './predicate';
 export * from './settings';

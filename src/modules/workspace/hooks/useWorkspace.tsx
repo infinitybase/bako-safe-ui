@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
+import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 
 import { Pages } from '../../core';
 import { PermissionRoles, Workspace } from '../../core/models';
 import { useSelectWorkspace } from './select';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
-import { useWorkspaceHomeRequest } from './useWorkspaceHomeRequest';
 
 const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE } = CookieName;
 
@@ -37,8 +37,8 @@ const useWorkspace = () => {
     ? JSON.parse(CookiesConfig.getCookie(SINGLE_WORKSPACE)!)
     : {};
   const userWorkspacesRequest = useUserWorkspacesRequest();
+  const workspaceHomeRequest = useHomeDataRequest();
   const vaultsPerPage = 8;
-  const workspaceHomeRequest = useWorkspaceHomeRequest();
 
   const { selectWorkspace } = useSelectWorkspace();
 

@@ -77,12 +77,12 @@ export interface CloseTransactionPayload {
   transactionResult: string;
 }
 
-type TransactionWithVault = ITransaction & {
+export type TransactionWithVault = ITransaction & {
   predicate?: Predicate;
 };
 
 export type GetTransactionResponse = ITransaction;
-export type GetTransactionsResponse = ITransaction[];
+export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
   IPagination<TransactionWithVault>;
 export type GetUserTransactionsResponse = TransactionWithVault[];

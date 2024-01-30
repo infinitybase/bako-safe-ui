@@ -21,6 +21,7 @@ interface VaultBoxPropx {
   onCreateTransaction: () => void;
   isLoading?: boolean;
   hasBalance?: boolean;
+  hasPermission?: boolean;
 }
 
 const VaultBoxSkeleton = () => (
@@ -51,6 +52,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     fullName,
     isLoading,
     hasBalance,
+    hasPermission,
     onChangeVault,
     onCreateTransaction,
   } = props;
@@ -99,18 +101,20 @@ const VaultBox = (props: VaultBoxPropx) => {
           </Box>
         </Box>
       </HStack>
-      <Box w="100%">
-        <Button
-          w="100%"
-          variant="primary"
-          fontWeight="bold"
-          onClick={onCreateTransaction}
-          isDisabled={!hasBalance}
-          leftIcon={<FiPlusSquare fontSize={22} />}
-        >
-          Create transaction
-        </Button>
-      </Box>
+      {hasPermission && (
+        <Box w="100%">
+          <Button
+            w="100%"
+            variant="primary"
+            fontWeight="bold"
+            onClick={onCreateTransaction}
+            isDisabled={!hasBalance}
+            leftIcon={<FiPlusSquare fontSize={22} />}
+          >
+            Create transaction
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
