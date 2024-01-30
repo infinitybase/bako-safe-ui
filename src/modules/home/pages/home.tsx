@@ -229,6 +229,9 @@ const HomePage = () => {
               <TransactionCard.List spacing={4} mt={6} mb={12}>
                 {transactions?.map((transaction) => {
                   const status = transactionStatus({ ...transaction, account });
+                  const isSigner = !!transaction.predicate?.members?.find(
+                    (member) => member.address === account,
+                  );
 
                   return (
                     <CustomSkeleton isLoaded={!isLoading} key={transaction.id}>
@@ -268,6 +271,7 @@ const HomePage = () => {
                         />
                         <TransactionCard.Actions
                           transaction={transaction}
+                          isSigner={isSigner}
                           status={transactionStatus({
                             ...transaction,
                             account,

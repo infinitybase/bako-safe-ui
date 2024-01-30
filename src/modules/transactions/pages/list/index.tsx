@@ -129,34 +129,41 @@ const TransactionsVaultPage = () => {
         pb={10}
       >
         {!transactionRequest?.transactions.length && <EmptyTransaction />}
-        {transactionRequest.transactions.map((transaction) => (
-          <CustomSkeleton
-            key={transaction.id}
-            isLoaded={!transactionRequest.isLoading}
-          >
-            <TransactionCard.Container
-              status={transactionStatus({ ...transaction, account })}
-              details={<TransactionCard.Details transaction={transaction} />}
+        {transactionRequest.transactions.map((transaction) => {
+          const isSigner = !!transaction.predicate?.members?.find(
+            (member) => member.address === account,
+          );
+
+          return (
+            <CustomSkeleton
+              key={transaction.id}
+              isLoaded={!transactionRequest.isLoading}
             >
-              <TransactionCard.CreationDate>
-                {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-              </TransactionCard.CreationDate>
-              <TransactionCard.Assets />
-              <TransactionCard.Amount assets={transaction.resume.outputs} />
-              <TransactionCard.Name>
-                {limitCharacters(transaction.name, 20)}
-              </TransactionCard.Name>
-              <TransactionCard.Status
-                transaction={transaction}
+              <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
-              />
-              <TransactionCard.Actions
-                transaction={transaction}
-                status={transactionStatus({ ...transaction, account })}
-              />
-            </TransactionCard.Container>
-          </CustomSkeleton>
-        ))}
+                details={<TransactionCard.Details transaction={transaction} />}
+              >
+                <TransactionCard.CreationDate>
+                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                </TransactionCard.CreationDate>
+                <TransactionCard.Assets />
+                <TransactionCard.Amount assets={transaction.resume.outputs} />
+                <TransactionCard.Name>
+                  {limitCharacters(transaction.name, 20)}
+                </TransactionCard.Name>
+                <TransactionCard.Status
+                  transaction={transaction}
+                  status={transactionStatus({ ...transaction, account })}
+                />
+                <TransactionCard.Actions
+                  isSigner={isSigner}
+                  transaction={transaction}
+                  status={transactionStatus({ ...transaction, account })}
+                />
+              </TransactionCard.Container>
+            </CustomSkeleton>
+          );
+        })}
         <Box ref={inView.ref} />
       </TransactionCard.List>
     </Box>

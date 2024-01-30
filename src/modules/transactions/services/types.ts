@@ -82,7 +82,7 @@ type TransactionWithVault = ITransaction & {
 };
 
 export type GetTransactionResponse = ITransaction;
-export type GetTransactionsResponse = ITransaction[];
+export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
   IPagination<TransactionWithVault>;
 export type GetUserTransactionsResponse = TransactionWithVault[];

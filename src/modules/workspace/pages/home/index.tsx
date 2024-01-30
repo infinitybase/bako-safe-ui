@@ -395,6 +395,9 @@ const WorkspacePage = () => {
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
+              const isSigner = !!transaction.predicate?.members?.find(
+                (member) => member.address === account,
+              );
 
               return (
                 <CustomSkeleton
@@ -433,6 +436,7 @@ const WorkspacePage = () => {
                       })}
                     />
                     <TransactionCard.Actions
+                      isSigner={isSigner}
                       transaction={transaction as unknown as ITransaction}
                       status={transactionStatus({
                         ...transaction,
