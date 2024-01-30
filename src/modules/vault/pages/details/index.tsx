@@ -124,6 +124,7 @@ const VaultDetailsPage = () => {
             navigate(
               Pages.createTemplate({
                 vaultId: vault.id!,
+                workspaceId: params.workspaceId!,
               }),
             );
           }}

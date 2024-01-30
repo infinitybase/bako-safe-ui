@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules/auth/store';
 import { useCreateBsafeVault, useToast } from '@/modules/core/hooks';
@@ -21,6 +21,7 @@ const useCreateVault = () => {
   const { account } = useFuelAccount();
 
   const navigate = useNavigate();
+  const params = useParams<{ workspaceId: string }>();
   const toast = useToast();
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
@@ -101,6 +102,7 @@ const useCreateVault = () => {
     navigate(
       Pages.createTemplate({
         vaultId,
+        workspaceId: params.workspaceId!,
       }),
     );
   };
