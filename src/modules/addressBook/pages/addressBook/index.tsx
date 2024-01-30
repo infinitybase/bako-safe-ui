@@ -83,7 +83,13 @@ const AddressBookPage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              onClick={() => navigate(Pages.home())}
+              onClick={() =>
+                currentWorkspace.single
+                  ? navigate(Pages.home())
+                  : navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+              }
             >
               Back home
             </Button>
