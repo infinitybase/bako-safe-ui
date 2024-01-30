@@ -19,7 +19,7 @@ import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate } = useVaultDetails();
+  const { vault, store, navigate, params } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
   const { currentWorkspace } = useWorkspace();
   if (!vault) return null;
@@ -80,7 +80,12 @@ const VaultSettingsPage = () => {
               addresses:
                 vault.signers! && vault.signers.map((signer) => signer.address),
             });
-            navigate(Pages.createTemplate());
+            navigate(
+              Pages.createTemplate({
+                vaultId: params.vaultId!,
+                workspaceId: params.workspaceId!,
+              }),
+            );
           }}
         >
           Set as template

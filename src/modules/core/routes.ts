@@ -33,8 +33,8 @@ const Pages = {
   ),
 
   //template
-  createTemplate: pageRoute<{ vaultId: string }>(
-    '/vault/:vaultId/template/create',
+  createTemplate: pageRoute<{ vaultId: string; workspaceId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/template/create',
   ),
 
   //transaction

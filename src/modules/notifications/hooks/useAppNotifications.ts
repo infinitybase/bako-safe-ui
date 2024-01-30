@@ -10,12 +10,12 @@ import {
   Pages,
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
-import { useWorkspace } from '@/modules/workspace';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
