@@ -70,8 +70,8 @@ const useWorkspace = () => {
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const isValid =
-      requiredRoles.filter((p) => currentPermissions[p].includes('*')).length >
-      0;
+      requiredRoles.filter((p) => (currentPermissions[p] ?? []).includes('*'))
+        .length > 0;
     return isValid;
   };
 

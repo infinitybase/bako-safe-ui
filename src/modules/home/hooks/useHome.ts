@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useListContactsRequest } from '@/modules/addressBook/hooks';
 import { useFuelAccount } from '@/modules/auth/store';
 import { TRANSACTION_LIST_QUERY_KEY } from '@/modules/transactions/hooks';
 import { VAULT_LIST_QUERY_KEY } from '@/modules/vault';
@@ -13,7 +15,19 @@ const useHome = () => {
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
+  const { isLoading: loadingContacts, data: contacts } =
+    useListContactsRequest();
+
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
+
+  if (!loadingContacts) {
+    CookiesConfig.setCookies([
+      {
+        name: CookieName.SINGLE_CONTACTS,
+        value: JSON.stringify(contacts),
+      },
+    ]);
+  }
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();

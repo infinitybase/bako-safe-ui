@@ -11,6 +11,7 @@ const {
   AVATAR,
   USER_ID,
   SINGLE_WORKSPACE,
+  SINGLE_CONTACTS,
   WORKSPACE,
   PERMISSIONS,
 } = CookieName;
@@ -65,6 +66,7 @@ api.interceptors.response.use(
         ADDRESS,
         AVATAR,
         USER_ID,
+        SINGLE_CONTACTS,
         SINGLE_WORKSPACE,
         WORKSPACE,
         PERMISSIONS,
