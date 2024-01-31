@@ -10,6 +10,7 @@ import { useNotification } from '@/modules/notification';
 
 import { Pages } from '../../core';
 import { PermissionRoles, Workspace } from '../../core/models';
+import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useSelectWorkspaceRequest } from './useSelectWorkspaceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
 import { useWorkspaceHomeRequest } from './useWorkspaceHomeRequest';
@@ -40,6 +41,7 @@ const useWorkspace = () => {
   const selectWorkspaceRequest = useSelectWorkspaceRequest();
   const vaultsPerPage = 8;
   const workspaceHomeRequest = useWorkspaceHomeRequest();
+  const worksapceBalance = useGetWorkspaceBalanceRequest();
 
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
@@ -123,6 +125,7 @@ const useWorkspace = () => {
     workspaceTransactions: {
       recentTransactions: workspaceHomeRequest.data?.transactions?.data,
     },
+    worksapceBalance,
     currentPermissions,
     hasPermission,
     visibleBalance,

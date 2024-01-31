@@ -95,4 +95,5 @@ export const WorkspacesQueryKey = {
     'update-permission',
     workspaceId,
   ],
+  GET_BALANCE: () => [WorkspacesQueryKey.DEFAULT, 'balance'],
 };

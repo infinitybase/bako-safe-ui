@@ -43,7 +43,6 @@ const useTransactionList = () => {
       !transactionRequest.isFetching &&
       transactionRequest.hasNextPage
     ) {
-      console.log('Fetched');
       transactionRequest.fetchNextPage();
     }
   }, [

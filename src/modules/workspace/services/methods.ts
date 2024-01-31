@@ -53,6 +53,10 @@ export type GetWorkspaceByIdResponse = Workspace;
 export type SelectWorkspaceResponse = {
   workspace: Workspace;
 };
+export type GetWorkspaceBalanceResponse = {
+  balance: string;
+  balanceUSD: string;
+};
 
 export class WorkspaceService {
   static async list() {
@@ -117,6 +121,13 @@ export class WorkspaceService {
     const { data } = await api.get<GetWorkspaceByIdResponse>(
       `/workspace/${workspaceId}`,
     );
+
+    return data;
+  }
+
+  static async getBalance() {
+    const { data } =
+      await api.get<GetWorkspaceBalanceResponse>(`/workspace/balance`);
 
     return data;
   }

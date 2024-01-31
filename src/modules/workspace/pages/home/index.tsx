@@ -59,6 +59,7 @@ const WorkspacePage = () => {
     setVisibleBalance,
     workspaceDialog,
     workspaceHomeRequest,
+    worksapceBalance,
   } = useWorkspace();
 
   const hasVaults = recentVaults?.length ?? 0;
@@ -174,7 +175,7 @@ const WorkspacePage = () => {
                 size={'lg'}
                 p={10}
               />
-              <Box maxW="70%">
+              <Box maxW="40%">
                 <Heading mb={1} variant="title-xl" isTruncated>
                   {currentWorkspace.name}
                 </Heading>
@@ -190,13 +191,28 @@ const WorkspacePage = () => {
               <Box
                 cursor="pointer"
                 onClick={() => setVisibleBalance((previous) => !previous)}
-                alignSelf="flex-start"
+                flexDirection="row"
               >
-                {visibleBalance ? (
-                  <ViewOffIcon boxSize={5} />
-                ) : (
-                  <ViewIcon boxSize={5} />
-                )}
+                <HStack spacing={2}>
+                  <Heading variant="title-xl">
+                    {(visibleBalance && worksapceBalance.balance?.balanceUSD) ??
+                      0}
+                  </Heading>
+                  <Text variant="description" fontSize="md">
+                    {visibleBalance && 'USD'}
+                  </Text>
+                  {visibleBalance ? (
+                    <Box
+                      flexDirection="row"
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                    >
+                      <ViewOffIcon boxSize={5} />
+                    </Box>
+                  ) : (
+                    <ViewIcon boxSize={5} />
+                  )}
+                </HStack>
               </Box>
             </HStack>
 
