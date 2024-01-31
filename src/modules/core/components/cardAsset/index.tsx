@@ -1,13 +1,6 @@
-import {
-  Avatar,
-  Card,
-  CardProps,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Card, CardProps, Text, VStack } from '@chakra-ui/react';
 
-import { Asset, NativeAssetId, assetsMap } from '../../utils';
+import { Asset, assetsMap, NativeAssetId } from '../../utils';
 
 interface AssetCardProps extends CardProps {
   asset: Asset;
@@ -42,15 +35,15 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
 
         <VStack flex={1} spacing={1.5} alignItems="flex-start">
           <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
-            {asset.amount}
+            {asset.amount ?? defaultAsset.amount}
           </Text>
 
           <Text color="grey.500" fontSize={15} noOfLines={2}>
-            {asset.name}
+            {asset.name ?? defaultAsset.name}
           </Text>
 
           <Text fontWeight="bold" fontSize={15} color="grey.200">
-            {asset.slug}
+            {asset.slug ?? defaultAsset.slug}
           </Text>
         </VStack>
       </VStack>
