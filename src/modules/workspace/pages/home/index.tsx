@@ -477,6 +477,7 @@ const WorkspacePage = () => {
                         ...transaction,
                         account,
                       })}
+                      isSigner={false}
                     />
                   </TransactionCard.Container>
                 </CustomSkeleton>
