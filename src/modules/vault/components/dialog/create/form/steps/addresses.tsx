@@ -18,10 +18,10 @@ import { Controller } from 'react-hook-form';
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog } from '@/modules/addressBook/components';
-import { useAddressBook } from '@/modules/addressBook/hooks/';
+import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
 import { ITemplate } from '@/modules/core/models';
-import { AddressUtils } from '@/modules/core/utils';
-import { UseCreateVaultReturn } from '@/modules/vault';
+import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { AddressBookUtils } from '@/utils/address-book';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -135,7 +135,7 @@ const VaultAddressesStep = ({
                         inView={inView}
                         options={
                           contacts &&
-                          contacts
+                          AddressBookUtils.removeDuplicates(contacts)
                             ?.filter(
                               ({ user }) =>
                                 !addresses.fields
@@ -144,9 +144,10 @@ const VaultAddressesStep = ({
                             )
                             ?.map(({ user, nickname }) => ({
                               value: user.address,
-                              label: `${nickname} - ${AddressUtils.format(
+                              label: AddressBookUtils.formatForAutocomplete(
+                                nickname,
                                 user.address,
-                              )}`,
+                              ),
                             }))
                         }
                         rightAction={{
