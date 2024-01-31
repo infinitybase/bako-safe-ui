@@ -4,6 +4,7 @@ import { Pages } from '@/modules/core';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 
+import { useSelectWorkspace } from '../select';
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
 
@@ -25,14 +26,25 @@ const useCreateWorkspace = () => {
 
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
+  const { selectWorkspace } = useSelectWorkspace();
 
   const handleClose = () => navigate(-1);
 
-  const handleGoToWorkspace = () =>
-    navigate(Pages.workspace({ workspaceId: request.data!.id }));
+  const handleGoToWorkspace = () => {
+    selectWorkspace(request.data!, {
+      onSelect: (workspace) => {
+        navigate(Pages.workspace({ workspaceId: workspace.id }));
+      },
+    });
+  };
 
-  const handleConfigureMembers = () =>
-    navigate(Pages.membersWorkspace({ workspaceId: request.data!.id }));
+  const handleConfigureMembers = () => {
+    selectWorkspace(request.data!, {
+      onSelect: (workspace) => {
+        navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
+      },
+    });
+  };
 
   const handleCreateWorkspace = form.handleSubmit(async (data) => {
     request.mutate(

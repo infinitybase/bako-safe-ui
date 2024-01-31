@@ -3,21 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useFuelAccount } from '@/modules/auth/store';
-import {
-  TRANSACTION_LIST_QUERY_KEY,
-  useUserTransactionsRequest,
-} from '@/modules/transactions/hooks';
-import { useHomeVaultsRequest, VAULT_LIST_QUERY_KEY } from '@/modules/vault';
+import { TRANSACTION_LIST_QUERY_KEY } from '@/modules/transactions/hooks';
+import { VAULT_LIST_QUERY_KEY } from '@/modules/vault';
+
+import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
   const navigate = useNavigate();
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
-  const homeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
-  const transactionsRequest = useUserTransactionsRequest({
-    limit: 6,
-  });
-  const count = homeVaultsRequest?.data?.total ?? 0;
+  const homeDataRequest = useHomeDataRequest();
+  const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -30,18 +26,19 @@ const useHome = () => {
   return {
     account,
     vaultsRequest: {
-      ...homeVaultsRequest,
+      ...homeDataRequest,
       vaults: {
-        recentVaults: homeVaultsRequest.data?.data,
+        recentVaults: homeDataRequest.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
-        extraCount: count <= vaultsPerPage ? 0 : count - vaultsPerPage,
+        extraCount:
+          vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: homeVaultsRequest.isLoading,
+      loadingRecentVaults: homeDataRequest.isLoading,
     },
     transactionsRequest: {
-      ...transactionsRequest,
-      transactions: transactionsRequest.data?.slice(0, 6),
-      loadingTransactions: transactionsRequest.isLoading,
+      ...homeDataRequest,
+      transactions: homeDataRequest.data?.transactions?.data,
+      loadingTransactions: homeDataRequest.isLoading,
     },
     navigate,
   };

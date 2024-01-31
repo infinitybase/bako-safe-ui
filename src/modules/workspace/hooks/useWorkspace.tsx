@@ -6,16 +6,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
+import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 
 import { Pages } from '../../core';
 import { PermissionRoles, Workspace } from '../../core/models';
+import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
-import { useSelectWorkspaceRequest } from './useSelectWorkspaceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
-import { useWorkspaceHomeRequest } from './useWorkspaceHomeRequest';
 
-const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE, USER_ID } = CookieName;
+const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE } = CookieName;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
@@ -38,66 +38,36 @@ const useWorkspace = () => {
     ? JSON.parse(CookiesConfig.getCookie(SINGLE_WORKSPACE)!)
     : {};
   const userWorkspacesRequest = useUserWorkspacesRequest();
-  const selectWorkspaceRequest = useSelectWorkspaceRequest();
+  const workspaceHomeRequest = useHomeDataRequest();
   const vaultsPerPage = 8;
-  const workspaceHomeRequest = useWorkspaceHomeRequest();
   const worksapceBalance = useGetWorkspaceBalanceRequest();
+
+  const { selectWorkspace } = useSelectWorkspace();
 
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = (selectedWorkspace: Workspace) => {
+  const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
     if (selectedWorkspace.id === currentWorkspace.id) return;
 
-    CookiesConfig.setCookies([
-      {
-        name: WORKSPACE,
-        value: JSON.stringify(selectedWorkspace),
-      },
-      {
-        name: PERMISSIONS,
-        value: JSON.stringify(
-          selectedWorkspace.permissions[CookiesConfig.getCookie(USER_ID)!],
-        ),
-      },
-    ]);
+    selectWorkspace(selectedWorkspace, {
+      onSelect: (workspace) => {
+        workspaceDialog.onClose();
 
-    selectWorkspaceRequest.mutate(
-      {
-        workspace: selectedWorkspace.id,
-        user: CookiesConfig.getCookie(USER_ID)!,
+        if (!workspace.single) {
+          navigate(Pages.workspace({ workspaceId: workspace.id }));
+        }
       },
-      {
-        onSuccess: ({ workspace }) => {
-          if (!workspace.single) {
-            // toast({
-            //   status: 'success',
-            //   duration: 2000,
-            //   title: 'Selected workspace!',
-            //   icon: (
-            //     <Icon
-            //       fontSize="2xl"
-            //       color="brand.500"
-            //       as={BsFillCheckCircleFill}
-            //     />
-            //   ),
-            // });
-
-            workspaceDialog.onClose();
-            navigate(Pages.workspace({ workspaceId: workspace.id }));
-          }
-        },
-        onError: () => {
-          toast({
-            status: 'error',
-            duration: 4000,
-            isClosable: false,
-            title: 'Error!',
-            description: 'Try again, please...',
-            icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-          });
-        },
+      onError: () => {
+        toast({
+          status: 'error',
+          duration: 4000,
+          isClosable: false,
+          title: 'Error!',
+          description: 'Try again, please...',
+          icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+        });
       },
-    );
+    });
   };
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {

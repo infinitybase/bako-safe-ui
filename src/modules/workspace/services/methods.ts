@@ -66,11 +66,6 @@ export class WorkspaceService {
     return data;
   }
 
-  static async home() {
-    const { data } = await api.get<WorkspaceHomeResponse>(`/user/me`);
-
-    return data;
-  }
   static async create(payload: CreateWorkspacePayload) {
     const { data } = await api.post<CreateWorkspaceResponse>(
       `/workspace`,

@@ -83,7 +83,13 @@ const AddressBookPage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              onClick={() => navigate(Pages.home())}
+              onClick={() =>
+                currentWorkspace.single
+                  ? navigate(Pages.home())
+                  : navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+              }
             >
               Back home
             </Button>
@@ -95,7 +101,7 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  href={Pages.home()}
+                  onClick={() => navigate(Pages.home())}
                 >
                   Home
                 </BreadcrumbLink>
@@ -106,7 +112,11 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  href={Pages.workspace({ workspaceId: currentWorkspace.id })}
+                  onClick={() =>
+                    navigate(
+                      Pages.workspace({ workspaceId: currentWorkspace.id }),
+                    )
+                  }
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>

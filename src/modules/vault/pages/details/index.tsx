@@ -124,6 +124,7 @@ const VaultDetailsPage = () => {
             navigate(
               Pages.createTemplate({
                 vaultId: vault.id!,
+                workspaceId: params.workspaceId!,
               }),
             );
           }}
@@ -166,42 +167,51 @@ const VaultDetailsPage = () => {
           spacing={5}
           maxH="calc(100% - 82px)"
         >
-          {vaultTransactions.map((transaction) => (
-            <CustomSkeleton
-              key={transaction.id}
-              isLoaded={!loadingVaultTransactions}
-            >
-              <TransactionCard.Container
-                status={transactionStatus({ ...transaction, account })}
-                details={<TransactionCard.Details transaction={transaction} />}
+          {vaultTransactions.map((transaction) => {
+            const isSigner = !!transaction.predicate?.members?.find(
+              (member) => member.address === account,
+            );
+
+            return (
+              <CustomSkeleton
+                key={transaction.id}
+                isLoaded={!loadingVaultTransactions}
               >
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
-                <TransactionCard.Assets />
-                <TransactionCard.Amount
-                  assets={
-                    transaction?.assets.map((asset) => ({
-                      amount: asset.amount,
-                      assetId: asset.assetId,
-                      to: asset.to,
-                    })) ?? []
+                <TransactionCard.Container
+                  status={transactionStatus({ ...transaction, account })}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
                   }
-                />
-                <TransactionCard.Name>
-                  {limitCharacters(transaction?.name ?? '', 20)}
-                </TransactionCard.Name>
-                <TransactionCard.Status
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-                <TransactionCard.Actions
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-              </TransactionCard.Container>
-            </CustomSkeleton>
-          ))}
+                >
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount
+                    assets={
+                      transaction?.assets.map((asset) => ({
+                        amount: asset.amount,
+                        assetId: asset.assetId,
+                        to: asset.to,
+                      })) ?? []
+                    }
+                  />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction?.name ?? '', 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              </CustomSkeleton>
+            );
+          })}
           {!vault.transactions.isLoading && <Box ref={inView.ref} />}
         </TransactionCard.List>
       ) : (
