@@ -30,7 +30,13 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
-import { Pages, PermissionRoles } from '@/modules/core';
+import {
+  AssetCard,
+  assetsMap,
+  NativeAssetId,
+  Pages,
+  PermissionRoles,
+} from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
@@ -207,10 +213,10 @@ const WorkspacePage = () => {
                       alignItems={'center'}
                       justifyContent={'center'}
                     >
-                      <ViewOffIcon boxSize={5} />
+                      <ViewIcon boxSize={5} />
                     </Box>
                   ) : (
-                    <ViewIcon boxSize={5} />
+                    <ViewOffIcon boxSize={5} />
                   )}
                 </HStack>
               </Box>
@@ -223,23 +229,40 @@ const WorkspacePage = () => {
                 fontWeight="semibold"
                 color="grey.200"
               >{`Workspace's balance breakdown`}</Text>
-              <Card
-                w="full"
-                h="full"
-                p={8}
-                borderColor="dark.100"
-                borderStyle="dashed"
-              >
-                <VStack h="full" spacing={1} justifyContent="center">
-                  <Text fontWeight="bold" color="grey.200">
-                    First thing first...
-                  </Text>
-                  <Text color="grey.500" maxW={340} textAlign="center">
-                    {`You don't have any vaults yet. Create a vault to start to
+              {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ? (
+                <Card
+                  w="full"
+                  h="full"
+                  p={8}
+                  borderColor="dark.100"
+                  borderStyle="dashed"
+                >
+                  <VStack h="full" spacing={1} justifyContent="center">
+                    <Text fontWeight="bold" color="grey.200">
+                      First thing first...
+                    </Text>
+                    <Text color="grey.500" maxW={340} textAlign="center">
+                      {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
-                  </Text>
+                    </Text>
+                  </VStack>
+                </Card>
+              ) : (
+                <VStack h="full" spacing={1} justifyContent="center">
+                  {/*todo: 
+                      - update service with typing returning the assets -> Asset[]
+                      - implement a recursive function to render the diferent assets, and make to dynamic data
+                  */}
+                  <AssetCard
+                    asset={{
+                      ...assetsMap[NativeAssetId],
+                      assetId: NativeAssetId,
+                      amount: worksapceBalance.balance.balance,
+                    }}
+                    borderColor="dark.100"
+                  />
                 </VStack>
-              </Card>
+              )}
             </VStack>
           </VStack>
         </Card>
@@ -377,7 +400,7 @@ const WorkspacePage = () => {
           }
 
           {hasTransactions && (
-            <HStack w="full">
+            <HStack>
               <WaitingSignatureBadge
                 account={account}
                 isLoading={loadingWorkspaceTransactions}
@@ -407,13 +430,10 @@ const WorkspacePage = () => {
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
-        <Box w="full" pb={10}>
-          <TransactionCard.List spacing={4} mb={12}>
+        <Box w="full" mt={4} pb={10}>
+          <TransactionCard.List spacing={4} mt={6} mb={12}>
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
-              const isSigner = !!transaction.predicate?.members?.find(
-                (member) => member.address === account,
-              );
 
               return (
                 <CustomSkeleton
@@ -452,7 +472,6 @@ const WorkspacePage = () => {
                       })}
                     />
                     <TransactionCard.Actions
-                      isSigner={isSigner}
                       transaction={transaction as unknown as ITransaction}
                       status={transactionStatus({
                         ...transaction,

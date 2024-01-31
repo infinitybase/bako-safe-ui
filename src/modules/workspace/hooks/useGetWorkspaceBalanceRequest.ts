@@ -23,7 +23,11 @@ const useGetWorkspaceBalanceRequest = (
   );
 
   return {
-    balance: data,
+    balance: {
+      ...data,
+      balance: data?.balance,
+      balanceUSD: data?.balanceUSD,
+    },
     ...request,
   };
 };
