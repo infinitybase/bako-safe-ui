@@ -229,7 +229,8 @@ const WorkspacePage = () => {
                 fontWeight="semibold"
                 color="grey.200"
               >{`Workspace's balance breakdown`}</Text>
-              {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ? (
+              {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
+              !worksapceBalance.balance ? (
                 <Card
                   w="full"
                   h="full"
