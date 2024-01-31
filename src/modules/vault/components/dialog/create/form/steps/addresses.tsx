@@ -47,6 +47,18 @@ const VaultAddressesStep = ({
     inView,
   } = useAddressBook();
 
+  const options =
+    contacts &&
+    AddressBookUtils.removeDuplicates(contacts)
+      ?.filter(
+        ({ user }) =>
+          !addresses.fields.map((a) => a.value)?.includes(user.address),
+      )
+      ?.map(({ user, nickname }) => ({
+        value: user.address,
+        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+      }));
+
   return (
     <>
       <CreateContactDialog
@@ -133,23 +145,7 @@ const VaultAddressesStep = ({
                         errorMessage={fieldState.error?.message}
                         isLoading={!contactsPaginatedRequest.isSuccess}
                         inView={inView}
-                        options={
-                          contacts &&
-                          AddressBookUtils.removeDuplicates(contacts)
-                            ?.filter(
-                              ({ user }) =>
-                                !addresses.fields
-                                  .map((a) => a.value)
-                                  ?.includes(user.address),
-                            )
-                            ?.map(({ user, nickname }) => ({
-                              value: user.address,
-                              label: AddressBookUtils.formatForAutocomplete(
-                                nickname,
-                                user.address,
-                              ),
-                            }))
-                        }
+                        options={options}
                         rightAction={{
                           ...(first
                             ? {}

@@ -17,6 +17,7 @@ import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import { AddressBookUtils } from '@/utils/address-book';
 
 import { TransactionAccordion } from './accordion';
 
@@ -49,6 +50,13 @@ const TransactionFormField = ({
     inView,
   } = useAddressBook();
 
+  const options =
+    contacts &&
+    AddressBookUtils.removeDuplicates(contacts)?.map(({ user, nickname }) => ({
+      value: user.address,
+      label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+    }));
+
   return (
     <>
       <CreateContactDialog
@@ -74,13 +82,7 @@ const TransactionFormField = ({
                 onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
                 isLoading={!isSuccess}
-                options={
-                  contacts &&
-                  contacts?.map(({ user, nickname }) => ({
-                    value: user.address,
-                    label: `${nickname} - ${AddressUtils.format(user.address)}`,
-                  }))
-                }
+                options={options}
                 rightAction={{}}
                 bottomAction={
                   <Box mt={2}>

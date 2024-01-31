@@ -1,16 +1,14 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
+import { SignersDetailsProps } from '@/modules/core/models';
+import { AddressBookUtils } from '@/utils/address-book';
 
-import { UseVaultDetailsReturn } from '../hooks/details';
 import { CardMember } from './CardMember';
-
-export interface SignersDetailsProps {
-  vault: UseVaultDetailsReturn['vault'];
-}
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
+
   const signerColumnsAmount = 3;
   const members = vault.members;
 
@@ -35,8 +33,16 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <CardMember
-                  member={member}
                   isOwner={vault.owner?.id === member.id}
+                  member={{
+                    ...member,
+                    nickname: member
+                      ? AddressBookUtils.getNickname(
+                          member.id,
+                          vault.workspace.addressBook,
+                        )
+                      : '',
+                  }}
                 />
               </CustomSkeleton>
             );

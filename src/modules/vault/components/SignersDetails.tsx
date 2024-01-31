@@ -2,14 +2,11 @@ import { Badge, Box, chakra, HStack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { Pages } from '@/modules/core';
+import { SignersDetailsProps } from '@/modules/core/models';
+import { Pages } from '@/modules/core/routes';
+import { AddressBookUtils } from '@/utils/address-book';
 
-import { UseVaultDetailsReturn } from '../hooks/details';
 import { CardMember } from './CardMember';
-
-export interface SignersDetailsProps {
-  vault: UseVaultDetailsReturn['vault'];
-}
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -47,9 +44,11 @@ const SignersDetails = (props: SignersDetailsProps) => {
       </HStack>
       <VStack spacing={5}>
         {members?.map((member, index: number) => {
-          if (isBig > 0 && index > 3) return;
+          const max = 3;
 
-          if (isBig > 0 && index == 3) {
+          if (isBig > 0 && index > max) return;
+
+          if (isBig > 0 && index == max) {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <SignerCard borderStyle="dashed">
@@ -85,14 +84,18 @@ const SignersDetails = (props: SignersDetailsProps) => {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <CardMember
+                isOwner={member?.id === owner?.id}
                 member={{
                   ...member,
-                  nickname: member?.nickname ?? '',
+                  nickname: member
+                    ? AddressBookUtils.getNickname(
+                        member.id,
+                        vault.workspace.addressBook,
+                      )
+                    : '',
                   avatar: member?.avatar ?? '',
                   address: member?.address ?? '',
                 }}
-                // member={member!}
-                isOwner={member?.id === owner?.id}
               />
             </CustomSkeleton>
           );
