@@ -1,10 +1,6 @@
 import { IPredicate } from 'bsafe';
 
-import {
-  Owner,
-  WorkspaceContact,
-  WorkspaceOnVault,
-} from '@/modules/core/models/workspace';
+import { Owner, WorkspaceContact } from '@/modules/core/models/workspace';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 
 import { Transaction } from './transaction';
@@ -44,5 +40,5 @@ export type PredicateWithWorkspace = IPredicate & {
 };
 
 export interface SignersDetailsProps {
-  vault: UseVaultDetailsReturn['vault'] & WorkspaceOnVault;
+  vault: UseVaultDetailsReturn['vault'];
 }
