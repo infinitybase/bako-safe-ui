@@ -2,7 +2,7 @@ import { Badge, Box, chakra, HStack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { SignersDetailsProps } from '@/modules/core/models';
+import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 import { AddressBookUtils } from '@/utils/address-book';
 
@@ -30,6 +30,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
   const notOwners =
     vault.members?.filter((member) => member.id !== vault.owner?.id) ?? [];
 
+  // Order members with owner in first position
   const members = [owner, ...notOwners];
 
   return (

@@ -25,9 +25,9 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useVaultDetails } from '@/modules/vault/hooks';
-import { useWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
+import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
+import { limitCharacters } from '@/utils/limit-characters';
 
 import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';

@@ -23,6 +23,11 @@ export interface Member {
   address: string;
 }
 
+export interface WorkspaceContact {
+  nickname: string;
+  user: { id: string };
+}
+
 export interface Owner extends Member {}
 
 export interface Workspace {

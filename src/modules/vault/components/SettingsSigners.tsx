@@ -1,7 +1,7 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
-import { SignersDetailsProps } from '@/modules/core/models';
+import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { AddressBookUtils } from '@/utils/address-book';
 
 import { CardMember } from './CardMember';

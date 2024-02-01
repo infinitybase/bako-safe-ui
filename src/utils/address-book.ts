@@ -1,5 +1,6 @@
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AddressBook } from '@/modules/core/models/addressBook';
+import { WorkspaceContact } from '@/modules/core/models/workspace';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 const { SINGLE_CONTACTS, SINGLE_WORKSPACE } = CookieName;
@@ -9,7 +10,7 @@ export class AddressBookUtils {
     return `${nickname} - ${AddressUtils.format(address)}`;
   }
 
-  static getNickname(userId: string, workspaceContacts: AddressBook[]) {
+  static getNickname(userId: string, workspaceContacts: WorkspaceContact[]) {
     const workspaceContact = workspaceContacts.find(
       ({ user }) => user.id === userId,
     );
