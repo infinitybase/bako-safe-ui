@@ -42,6 +42,13 @@ export interface Workspace {
   predicates: number;
 }
 
+export interface WorkspaceOnVault {
+  workspace: {
+    id: string;
+    addressBook: WorkspaceContact[];
+  };
+}
+
 export const defaultPermissions = {
   [PermissionRoles.OWNER]: {
     OWNER: ['*'],

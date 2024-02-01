@@ -1,6 +1,11 @@
 import { IPredicate } from 'bsafe';
 
-import { Owner, WorkspaceContact } from '@/modules/core/models/workspace';
+import {
+  Owner,
+  WorkspaceContact,
+  WorkspaceOnVault,
+} from '@/modules/core/models/workspace';
+import { UseVaultDetailsReturn } from '@/modules/vault';
 
 import { Transaction } from './transaction';
 import { User } from './user';
@@ -39,21 +44,5 @@ export type PredicateWithWorkspace = IPredicate & {
 };
 
 export interface SignersDetailsProps {
-  vault: {
-    id: string;
-    isLoading: boolean;
-    minSigners: number;
-    owner: {
-      id: string;
-    };
-    members: {
-      id: string;
-      avatar: string;
-      address: string;
-    }[];
-    workspace: {
-      id: string;
-      addressBook: WorkspaceContact[];
-    };
-  };
+  vault: UseVaultDetailsReturn['vault'] & WorkspaceOnVault;
 }
