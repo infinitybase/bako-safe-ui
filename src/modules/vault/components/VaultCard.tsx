@@ -1,37 +1,40 @@
-import { CheckIcon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   AvatarGroup,
+  Badge,
   Box,
   CardProps,
   Divider,
   Heading,
   HStack,
-  Icon,
-  IconButton,
+  Spacer,
   Text,
-  useClipboard,
   VStack,
 } from '@chakra-ui/react';
 
-import { Card, CopyIcon } from '@/components';
-import { AddressUtils, PredicateMember } from '@/modules/core';
-import { useNotification } from '@/modules/notification';
+import { Card } from '@/components';
+import { HandbagIcon } from '@/components/icons/handbag';
+import { PredicateMember } from '@/modules/core/models/predicate';
+import { PermissionRoles } from '@/modules/core/models/workspace';
+import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+// import { useNotification } from '@/modules/notification';
 
 interface VaultCardProps extends CardProps {
   name: string;
-  address: string;
+  // address: string;
+  role: PermissionRoles;
   members: PredicateMember[];
 }
 
 export const VaultCard = ({
   name,
-  address,
+  // address,
+  role,
   members,
   ...rest
 }: VaultCardProps) => {
-  const clipboard = useClipboard(address);
-  const toast = useNotification();
+  const permissions = WorkspacePermissionUtils.permissions[role ?? 'VIEWER'];
 
   return (
     <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
@@ -44,7 +47,14 @@ export const VaultCard = ({
               color="white"
               bg="grey.900"
             />
-            <Box ml={2}>
+            <VStack ml={2} alignItems="flex-start" spacing={1}>
+              <HStack>
+                <Icon as={HandbagIcon} fontSize="md" color="grey.200" />
+                <Text color="grey.200" fontSize="sm">
+                  Workspace Name
+                </Text>
+              </HStack>
+
               <Heading
                 maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
                 variant="title-md"
@@ -53,46 +63,37 @@ export const VaultCard = ({
               >
                 {name}
               </Heading>
-              <Text variant="description" color="grey.500">
-                {AddressUtils.format(address)}
-              </Text>
-            </Box>
+            </VStack>
           </HStack>
-
-          <IconButton
-            aria-label="Copy"
-            variant="icon"
-            icon={<Icon as={CopyIcon} color="grey.200" fontSize={17} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              clipboard.onCopy();
-              toast({
-                position: 'top-right',
-                duration: 2000,
-                isClosable: false,
-                title: 'Copied to clipboard',
-                icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
-              });
-            }}
-          />
         </HStack>
 
         <Divider borderColor="dark.100" my={1} />
 
-        <Box>
-          <Text variant="description">Members</Text>
-          <AvatarGroup
-            variant="roundedSquare"
-            max={5}
-            mt={1}
-            size="sm"
-            spacing={-2}
-          >
-            {members.map(({ avatar, address }) => (
-              <Avatar variant="roundedSquare" src={avatar} key={address} />
-            ))}
-          </AvatarGroup>
-        </Box>
+        <HStack w="full">
+          <Box>
+            <Text variant="description">Members</Text>
+            <AvatarGroup
+              variant="roundedSquare"
+              max={5}
+              mt={1}
+              size="sm"
+              spacing={-2}
+            >
+              {members.map(({ avatar, address }) => (
+                <Avatar variant="roundedSquare" src={avatar} key={address} />
+              ))}
+            </AvatarGroup>
+          </Box>
+
+          <Spacer />
+
+          <VStack spacing={1} alignItems="flex-end">
+            <Text variant="description">Role</Text>
+            <Badge h={6} variant={permissions.variant}>
+              {permissions.title}
+            </Badge>
+          </VStack>
+        </HStack>
       </VStack>
     </Card>
   );
