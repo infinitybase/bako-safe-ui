@@ -8,6 +8,7 @@ export enum CookieName {
   AVATAR = `bsafe/avatar`,
   USER_ID = `bsafe/user_id`,
   SINGLE_WORKSPACE = `bsafe/single_workspace`,
+  SINGLE_CONTACTS = `bsafe/single_contacts`,
   WORKSPACE = `bsafe/workspace`,
   PERMISSIONS = `bsafe/permissions`,
 }

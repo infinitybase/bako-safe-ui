@@ -3,6 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules/auth/store';
+import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
 import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
@@ -50,7 +51,7 @@ const useVaultDetails = () => {
 
   return {
     vault: {
-      ...predicate,
+      ...(predicate as PredicateWithWorkspace),
       configurable,
       signers: signersOrdination,
       isLoading,

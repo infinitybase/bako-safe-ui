@@ -12,6 +12,6 @@ interface Contact {
 export interface AddressBook {
   id: string;
   nickname: string;
-  createdBy: CreatedBy;
+  owner: CreatedBy;
   user: Contact;
 }

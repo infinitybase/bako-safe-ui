@@ -24,13 +24,13 @@ import {
 } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog } from '@/modules/addressBook';
-import { AddressUtils } from '@/modules/core';
 import {
   MemberTabState,
   UseChangeMember,
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { AddressBookUtils } from '@/utils/address-book';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
@@ -44,7 +44,7 @@ const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
 
   const options =
     contacts &&
-    contacts
+    AddressBookUtils.removeDuplicates(contacts)
       ?.filter(
         ({ user, nickname }) =>
           !!address &&
@@ -53,7 +53,7 @@ const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
       )
       ?.map(({ user, nickname }) => ({
         value: user.address,
-        label: `${nickname} - ${AddressUtils.format(user.address)}`,
+        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
       }));
 
   const bottomAction = (

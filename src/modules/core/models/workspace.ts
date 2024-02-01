@@ -23,6 +23,11 @@ export interface Member {
   address: string;
 }
 
+export interface WorkspaceContact {
+  nickname: string;
+  user: { id: string };
+}
+
 export interface Owner extends Member {}
 
 export interface Workspace {
@@ -35,6 +40,13 @@ export interface Workspace {
   owner: Owner;
   members: Member[];
   predicates: number;
+}
+
+export interface WorkspaceOnVault {
+  workspace: {
+    id: string;
+    addressBook: WorkspaceContact[];
+  };
 }
 
 export const defaultPermissions = {
