@@ -8,6 +8,7 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 
 import { Pages } from '../../core';
 import { PermissionRoles, Workspace } from '../../core/models';
@@ -41,6 +42,7 @@ const useWorkspace = () => {
   const workspaceHomeRequest = useHomeDataRequest();
   const vaultsPerPage = 8;
   const worksapceBalance = useGetWorkspaceBalanceRequest();
+  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const { selectWorkspace } = useSelectWorkspace();
 
@@ -100,6 +102,7 @@ const useWorkspace = () => {
     hasPermission,
     visibleBalance,
     setVisibleBalance,
+    pendingSignerTransactions,
   };
 };
 

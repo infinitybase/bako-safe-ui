@@ -35,8 +35,16 @@ import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
-  const { params, vault, store, assets, navigate, account, inView } =
-    useVaultDetails();
+  const {
+    params,
+    vault,
+    store,
+    assets,
+    navigate,
+    account,
+    inView,
+    pendingSignerTransactions,
+  } = useVaultDetails();
   const { currentWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
@@ -154,9 +162,8 @@ const VaultDetailsPage = () => {
           Transactions
         </Text>
         <WaitingSignatureBadge
-          account={account}
-          isLoading={vault.transactions.isLoading}
-          transactions={vaultTransactions}
+          isLoading={pendingSignerTransactions.isLoading}
+          quantity={pendingSignerTransactions.data!}
         />
       </HStack>
 

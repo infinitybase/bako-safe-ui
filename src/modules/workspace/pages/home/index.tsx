@@ -66,6 +66,7 @@ const WorkspacePage = () => {
     workspaceDialog,
     workspaceHomeRequest,
     worksapceBalance,
+    pendingSignerTransactions,
   } = useWorkspace();
 
   const hasVaults = recentVaults?.length ?? 0;
@@ -403,9 +404,8 @@ const WorkspacePage = () => {
           {hasTransactions && (
             <HStack>
               <WaitingSignatureBadge
-                account={account}
-                isLoading={loadingWorkspaceTransactions}
-                transactions={recentTransactions}
+                isLoading={pendingSignerTransactions.isLoading}
+                quantity={pendingSignerTransactions.data!}
               />
               <Spacer />
               <Link

@@ -40,6 +40,7 @@ const HomePage = () => {
       loadingRecentVaults,
     },
     transactionsRequest: { transactions, loadingTransactions },
+    pendingSignerTransactions,
   } = useHome();
 
   const { currentWorkspace } = useWorkspace();
@@ -214,9 +215,8 @@ const HomePage = () => {
                   Transactions
                 </Text>
                 <WaitingSignatureBadge
-                  account={account}
-                  isLoading={loadingTransactions}
-                  transactions={transactions}
+                  isLoading={pendingSignerTransactions.isLoading}
+                  quantity={pendingSignerTransactions.data!}
                 />
                 <Spacer />
                 <Link

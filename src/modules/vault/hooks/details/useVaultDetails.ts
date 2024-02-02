@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useFuelAccount } from '@/modules/auth/store';
 import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
@@ -16,6 +17,7 @@ const useVaultDetails = () => {
   const { account } = useFuelAccount();
   const store = useVaultState();
   const inView = useInView();
+  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const { predicate, predicateInstance, isLoading, isFetching } =
     useVaultDetailsRequest(params.vaultId!);
@@ -74,6 +76,7 @@ const useVaultDetails = () => {
     account,
     store,
     params,
+    pendingSignerTransactions,
   };
 };
 

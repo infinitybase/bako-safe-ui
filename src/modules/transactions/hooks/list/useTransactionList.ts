@@ -7,6 +7,7 @@ import { useFuelAccount } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 import { useTransactionState } from '../../states';
+import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 
 export enum StatusFilter {
@@ -26,6 +27,7 @@ const useTransactionList = () => {
   );
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
+  const pendingSignerTransactions = useTransactionsSignaturePending();
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
@@ -66,6 +68,7 @@ const useTransactionList = () => {
     inView,
     account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
+    pendingSignerTransactions,
   };
 };
 

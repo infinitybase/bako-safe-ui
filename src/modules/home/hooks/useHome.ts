@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { queryClient } from '@/config';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
-import { TRANSACTION_LIST_QUERY_KEY } from '@/modules/transactions/hooks';
+import {
+  TRANSACTION_LIST_QUERY_KEY,
+  useTransactionsSignaturePending,
+} from '@/modules/transactions/hooks/list';
 import { VAULT_LIST_QUERY_KEY } from '@/modules/vault';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
@@ -17,6 +20,7 @@ const useHome = () => {
   useListContactsRequest();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
+  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -44,6 +48,7 @@ const useHome = () => {
       loadingTransactions: homeDataRequest.isLoading,
     },
     navigate,
+    pendingSignerTransactions,
   };
 };
 

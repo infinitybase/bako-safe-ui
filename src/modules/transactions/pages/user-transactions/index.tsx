@@ -31,8 +31,14 @@ import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const { transactionRequest, filter, inView, account, navigate } =
-    useTransactionList();
+  const {
+    transactionRequest,
+    filter,
+    inView,
+    account,
+    navigate,
+    pendingSignerTransactions,
+  } = useTransactionList();
   const { currentWorkspace } = useWorkspace();
 
   return (
@@ -174,9 +180,8 @@ const UserTransactionsPage = () => {
             Transactions
           </Heading>
           <WaitingSignatureBadge
-            account={account}
-            isLoading={transactionRequest.isLoading}
-            transactions={transactionRequest.transactions}
+            isLoading={pendingSignerTransactions.isLoading}
+            quantity={pendingSignerTransactions.data!}
           />
         </HStack>
 
