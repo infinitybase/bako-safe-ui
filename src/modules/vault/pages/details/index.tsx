@@ -124,6 +124,13 @@ const VaultDetailsPage = () => {
           bgColor="dark.100"
           border="none"
           onClick={() => {
+            if (
+              !vault.id ||
+              !vault.minSigners ||
+              !vault.members ||
+              !params.workspaceId
+            )
+              return;
             setTemplateFormInitial({
               minSigners: vault.minSigners!,
               addresses:
