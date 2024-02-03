@@ -1,14 +1,12 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter } from '@/layouts';
-// import { DashboardLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts/dashboard';
 import { DefaultLayoutRouter } from '@/layouts/default';
-import { AuthRoute } from '@/modules';
+import { AuthRoute } from '@/modules/core/components/route/auth';
 
-// import { AuthRoute } from '../core/components';
 import { Pages } from '../core/routes';
-import { MeTransactionsPage, TransactionsVaultPage } from './pages';
+import { TransactionsVaultPage } from './pages/list';
+import { MeTransactionsPage } from './pages/me';
 
 const transactionRoutes = (
   <Route>
