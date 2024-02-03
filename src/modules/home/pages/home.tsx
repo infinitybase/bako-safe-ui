@@ -11,6 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -38,16 +39,21 @@ const HomePage = () => {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
+      refetchVaults,
     },
     transactionsRequest: { transactions, loadingTransactions },
     pendingSignerTransactions,
   } = useHome();
 
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, workspaceHomeRequest } = useWorkspace();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
   const hasVaults = recentVaults && recentVaults?.length;
   const hasTransactions = transactions?.length;
+
+  useEffect(() => {
+    refetchVaults();
+  }, [refetchVaults, workspaceHomeRequest.data]);
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
@@ -151,40 +157,44 @@ const HomePage = () => {
             </Text>
           </Box>
           <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
-            {recentVaults?.map(
-              ({ id, name, predicateAddress, members, description }, index) => {
-                const lastCard = index === vaultsMax - 1;
-                const hasMore = extraCount > 0;
+            {hasVaults &&
+              recentVaults?.map(
+                (
+                  { id, name, predicateAddress, members, description },
+                  index,
+                ) => {
+                  const lastCard = index === vaultsMax - 1;
+                  const hasMore = extraCount > 0;
 
-                return (
-                  <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!isLoading}>
-                      {lastCard && hasMore ? (
-                        <ExtraVaultCard
-                          extra={extraCount}
-                          onClick={() => navigate(Pages.userVaults())}
-                        />
-                      ) : (
-                        <VaultCard
-                          name={name}
-                          title={description}
-                          address={predicateAddress}
-                          members={members!}
-                          onClick={() =>
-                            navigate(
-                              Pages.detailsVault({
-                                workspaceId: currentWorkspace.id,
-                                vaultId: id,
-                              }),
-                            )
-                          }
-                        />
-                      )}
-                    </CustomSkeleton>
-                  </GridItem>
-                );
-              },
-            )}
+                  return (
+                    <GridItem key={id}>
+                      <CustomSkeleton isLoaded={!isLoading}>
+                        {lastCard && hasMore ? (
+                          <ExtraVaultCard
+                            extra={extraCount}
+                            onClick={() => navigate(Pages.userVaults())}
+                          />
+                        ) : (
+                          <VaultCard
+                            name={name}
+                            title={description}
+                            address={predicateAddress}
+                            members={members!}
+                            onClick={() =>
+                              navigate(
+                                Pages.detailsVault({
+                                  workspaceId: currentWorkspace.id,
+                                  vaultId: id,
+                                }),
+                              )
+                            }
+                          />
+                        )}
+                      </CustomSkeleton>
+                    </GridItem>
+                  );
+                },
+              )}
           </Grid>
           {/* TRANSACTION LIST */}
           {transactions && transactions.length <= 0 ? (

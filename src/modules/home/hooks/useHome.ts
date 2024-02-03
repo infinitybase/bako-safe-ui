@@ -41,6 +41,8 @@ const useHome = () => {
           vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
       loadingRecentVaults: homeDataRequest.isLoading,
+      refetchVaults: homeDataRequest.refetch,
+      allHomeData: homeDataRequest,
     },
     transactionsRequest: {
       ...homeDataRequest,

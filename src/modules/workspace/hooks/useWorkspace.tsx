@@ -56,7 +56,13 @@ const useWorkspace = () => {
         workspaceDialog.onClose();
 
         if (!workspace.single) {
-          navigate(Pages.workspace({ workspaceId: workspace.id }));
+          try {
+            navigate(Pages.workspace({ workspaceId: workspace.id }));
+          } finally {
+            workspaceHomeRequest.refetch();
+          }
+        } else {
+          workspaceHomeRequest.refetch();
         }
       },
       onError: () => {
