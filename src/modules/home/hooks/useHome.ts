@@ -42,7 +42,6 @@ const useHome = () => {
       },
       loadingRecentVaults: homeDataRequest.isLoading,
       refetchVaults: homeDataRequest.refetch,
-      allHomeData: homeDataRequest,
     },
     transactionsRequest: {
       ...homeDataRequest,
