@@ -305,7 +305,7 @@ const WorkspacePage = () => {
       ) : (
         <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
           {recentVaults?.map(
-            ({ id, name, predicateAddress, members, description }, index) => {
+            ({ id, name, workspace, members, description }, index) => {
               const lastCard = index === vaultsMax - 1;
               const hasMore = extraCount > 0;
 
@@ -326,8 +326,8 @@ const WorkspacePage = () => {
                     ) : (
                       <VaultCard
                         name={name}
+                        workspace={workspace}
                         title={description}
-                        address={predicateAddress}
                         members={members!}
                         onClick={() =>
                           navigate(

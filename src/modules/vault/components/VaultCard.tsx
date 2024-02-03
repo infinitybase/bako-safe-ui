@@ -15,26 +15,29 @@ import {
 
 import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { PredicateMember } from '@/modules/core/models/predicate';
-import { PermissionRoles } from '@/modules/core/models/workspace';
+import { Member, Workspace } from '@/modules/core/models/workspace';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
-// import { useNotification } from '@/modules/notification';
 
 interface VaultCardProps extends CardProps {
   name: string;
-  // address: string;
-  role: PermissionRoles;
   members: PredicateMember[];
+  workspace: Workspace;
 }
 
 export const VaultCard = ({
   name,
-  // address,
-  role,
+  workspace,
   members,
   ...rest
 }: VaultCardProps) => {
-  const permissions = WorkspacePermissionUtils.permissions[role ?? 'VIEWER'];
+  const role = WorkspacePermissionUtils.getPermissionInWorkspace(workspace!, {
+    id: CookiesConfig.getCookie(CookieName.USER_ID),
+  } as Member);
+
+  const permissions =
+    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
 
   return (
     <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
@@ -48,13 +51,14 @@ export const VaultCard = ({
               bg="grey.900"
             />
             <VStack ml={2} alignItems="flex-start" spacing={1}>
-              <HStack>
-                <Icon as={HandbagIcon} fontSize="md" color="grey.200" />
-                <Text color="grey.200" fontSize="sm">
-                  Workspace Name
-                </Text>
-              </HStack>
-
+              {!workspace.single && (
+                <HStack>
+                  <Icon as={HandbagIcon} fontSize="md" color="grey.200" />
+                  <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
+                    {workspace?.name}
+                  </Text>
+                </HStack>
+              )}
               <Heading
                 maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
                 variant="title-md"
@@ -71,7 +75,7 @@ export const VaultCard = ({
 
         <HStack w="full">
           <Box>
-            <Text variant="description">Members</Text>
+            <Text variant="description">Signers</Text>
             <AvatarGroup
               variant="roundedSquare"
               max={5}
@@ -89,8 +93,8 @@ export const VaultCard = ({
 
           <VStack spacing={1} alignItems="flex-end">
             <Text variant="description">Role</Text>
-            <Badge h={6} variant={permissions.variant}>
-              {permissions.title}
+            <Badge h={6} variant={permissions?.variant ?? 'warning'}>
+              {permissions?.title ?? 'Signer'}
             </Badge>
           </VStack>
         </HStack>
