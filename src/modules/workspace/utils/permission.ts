@@ -52,7 +52,7 @@ class WorkspacePermissionUtils {
       title: 'Viewer',
       description:
         'Can only access and view the contents of all vaults in the workspace.',
-      variant: 'warning',
+      variant: 'grey',
     },
   };
 
