@@ -60,9 +60,11 @@ const useWorkspace = () => {
             navigate(Pages.workspace({ workspaceId: workspace.id }));
           } finally {
             workspaceHomeRequest.refetch();
+            //Após mudar para o workspace ele carrega novamente as informações do workspace.
           }
         } else {
           workspaceHomeRequest.refetch();
+          // Caso seja um workspace sem nenhum vault, ao redirecionar para home, ele carrega os dados novamente.
         }
       },
       onError: () => {

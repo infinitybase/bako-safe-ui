@@ -157,44 +157,40 @@ const HomePage = () => {
             </Text>
           </Box>
           <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
-            {hasVaults &&
-              recentVaults?.map(
-                (
-                  { id, name, predicateAddress, members, description },
-                  index,
-                ) => {
-                  const lastCard = index === vaultsMax - 1;
-                  const hasMore = extraCount > 0;
+            {recentVaults?.map(
+              ({ id, name, predicateAddress, members, description }, index) => {
+                const lastCard = index === vaultsMax - 1;
+                const hasMore = extraCount > 0;
 
-                  return (
-                    <GridItem key={id}>
-                      <CustomSkeleton isLoaded={!isLoading}>
-                        {lastCard && hasMore ? (
-                          <ExtraVaultCard
-                            extra={extraCount}
-                            onClick={() => navigate(Pages.userVaults())}
-                          />
-                        ) : (
-                          <VaultCard
-                            name={name}
-                            title={description}
-                            address={predicateAddress}
-                            members={members!}
-                            onClick={() =>
-                              navigate(
-                                Pages.detailsVault({
-                                  workspaceId: currentWorkspace.id,
-                                  vaultId: id,
-                                }),
-                              )
-                            }
-                          />
-                        )}
-                      </CustomSkeleton>
-                    </GridItem>
-                  );
-                },
-              )}
+                return (
+                  <GridItem key={id}>
+                    <CustomSkeleton isLoaded={!isLoading}>
+                      {lastCard && hasMore ? (
+                        <ExtraVaultCard
+                          extra={extraCount}
+                          onClick={() => navigate(Pages.userVaults())}
+                        />
+                      ) : (
+                        <VaultCard
+                          name={name}
+                          title={description}
+                          address={predicateAddress}
+                          members={members!}
+                          onClick={() =>
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: currentWorkspace.id,
+                                vaultId: id,
+                              }),
+                            )
+                          }
+                        />
+                      )}
+                    </CustomSkeleton>
+                  </GridItem>
+                );
+              },
+            )}
           </Grid>
           {/* TRANSACTION LIST */}
           {transactions && transactions.length <= 0 ? (
