@@ -1,14 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { queryClient } from '@/config';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
-import {
-  TRANSACTION_LIST_QUERY_KEY,
-  useTransactionsSignaturePending,
-} from '@/modules/transactions/hooks/list';
-import { VAULT_LIST_QUERY_KEY } from '@/modules/vault';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
 
@@ -24,10 +19,6 @@ const useHome = () => {
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
-    queryClient.invalidateQueries([
-      TRANSACTION_LIST_QUERY_KEY,
-      VAULT_LIST_QUERY_KEY,
-    ]);
   }, []);
 
   return {

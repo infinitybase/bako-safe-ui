@@ -11,7 +11,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -39,21 +38,16 @@ const HomePage = () => {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
       loadingRecentVaults,
-      refetchVaults,
     },
     transactionsRequest: { transactions, loadingTransactions },
     pendingSignerTransactions,
   } = useHome();
 
-  const { currentWorkspace, workspaceHomeRequest } = useWorkspace();
+  const { currentWorkspace } = useWorkspace();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
   const hasVaults = recentVaults && recentVaults?.length;
   const hasTransactions = transactions?.length;
-
-  useEffect(() => {
-    refetchVaults();
-  }, [refetchVaults, workspaceHomeRequest.data]);
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>

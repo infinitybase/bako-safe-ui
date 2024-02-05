@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,6 +40,7 @@ const useWorkspace = () => {
     : {};
   const userWorkspacesRequest = useUserWorkspacesRequest();
   const workspaceHomeRequest = useHomeDataRequest();
+
   const vaultsPerPage = 8;
   const worksapceBalance = useGetWorkspaceBalanceRequest();
   const pendingSignerTransactions = useTransactionsSignaturePending();
@@ -54,17 +55,9 @@ const useWorkspace = () => {
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-
+        workspaceHomeRequest.refetch();
         if (!workspace.single) {
-          try {
-            navigate(Pages.workspace({ workspaceId: workspace.id }));
-          } finally {
-            workspaceHomeRequest.refetch();
-            //Após mudar para o workspace ele carrega novamente as informações do workspace.
-          }
-        } else {
-          workspaceHomeRequest.refetch();
-          // Caso seja um workspace sem nenhum vault, ao redirecionar para home, ele carrega os dados novamente.
+          navigate(Pages.workspace({ workspaceId: workspace.id }));
         }
       },
       onError: () => {
@@ -87,6 +80,7 @@ const useWorkspace = () => {
     return isValid;
   };
 
+  // todo: add an variable to verify all requests are in progress, and on the UI show a loading spinner using skeleton
   return {
     account,
     currentWorkspace,
