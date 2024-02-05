@@ -16,7 +16,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, ErrorIcon } from '@/components';
@@ -44,12 +43,23 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
   return (
     <Card w="full" bgColor="dark.300" key={member.id}>
       <HStack w="full" justifyContent="space-between">
-        <Center>
-          <Box mr={4}>
+        <Center gap={3}>
+          <Avatar
+            size="md"
+            fontSize="md"
+            color="white"
+            bg="grey.900"
+            variant="roundedSquare"
+            name={member.name ?? member.address}
+          />
+          <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
               {member.name}
             </Text>
-            <Text fontWeight="semibold" color="grey.200">
+            <Text
+              fontWeight="normal"
+              color={!member.name ? 'grey.200' : 'grey.500'}
+            >
               {AddressUtils.format(member.address)}
             </Text>
           </Box>
