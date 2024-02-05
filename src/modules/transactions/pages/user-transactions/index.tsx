@@ -16,7 +16,7 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useWorkspace } from '@/modules/workspace';
@@ -39,7 +39,8 @@ const UserTransactionsPage = () => {
     navigate,
     pendingSignerTransactions,
   } = useTransactionList();
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { VIEWER } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6}>
@@ -113,6 +114,7 @@ const UserTransactionsPage = () => {
 
         <Box>
           <Button
+            isDisabled={hasPermission([VIEWER])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}

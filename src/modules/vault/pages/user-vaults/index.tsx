@@ -17,7 +17,7 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -31,7 +31,8 @@ const UserVaultsPage = () => {
     transactionsRequest: { transactions },
   } = useUserVaults();
 
-  const { currentWorkspace } = useWorkspace();
+  const { VIEWER } = PermissionRoles;
+  const { currentWorkspace, hasPermission } = useWorkspace();
 
   const hasTransactions = transactions?.length;
 
@@ -110,6 +111,7 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
+            isDisabled={hasPermission([VIEWER])}
             onClick={() => navigate(Pages.createVault())}
           >
             Create vault
