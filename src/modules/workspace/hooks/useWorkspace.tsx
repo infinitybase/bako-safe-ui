@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,6 +56,7 @@ const useWorkspace = () => {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
         workspaceHomeRequest.refetch();
+        pendingSignerTransactions.refetch();
         if (!workspace.single) {
           navigate(Pages.workspace({ workspaceId: workspace.id }));
         }
