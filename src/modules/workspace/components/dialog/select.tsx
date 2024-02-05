@@ -43,12 +43,11 @@ const SelectWorkspaceDialog = ({
           )}
 
           <VStack
-            spacing={8}
+            spacing={7}
             w="full"
             maxH={340}
-            my={6}
             overflowY="scroll"
-            paddingRight={4}
+            paddingRight={6}
             css={{
               '&::-webkit-scrollbar': {
                 width: '5px',
