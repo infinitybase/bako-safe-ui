@@ -17,12 +17,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useWorkspace } from '@/modules/workspace';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
-import { useUserVaults } from '../../hooks/user-vaults';
+import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
 
 const UserVaultsPage = () => {
   const {
@@ -61,7 +61,6 @@ const UserVaultsPage = () => {
           >
             Back home
           </Button>
-
           <Breadcrumb ml={8}>
             <BreadcrumbItem>
               <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
@@ -74,7 +73,6 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-
             {!currentWorkspace.single && (
               <BreadcrumbItem>
                 <BreadcrumbLink
@@ -91,7 +89,6 @@ const UserVaultsPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
-
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -136,7 +133,6 @@ const UserVaultsPage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-
           <ActionCard.Container
             isUpcoming={hasTransactions ? false : true}
             onClick={() => {
@@ -160,7 +156,6 @@ const UserVaultsPage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-
           <ActionCard.Container
             onClick={() =>
               navigate(
@@ -194,14 +189,14 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-        {vaults?.map(({ id, name, predicateAddress, members, description }) => {
+        {vaults?.map(({ id, name, workspace, members, description }) => {
           return (
             <GridItem key={id}>
               <CustomSkeleton isLoaded={!loadingVaults}>
                 <VaultCard
                   name={name}
+                  workspace={workspace}
                   title={description}
-                  address={predicateAddress}
                   members={members!}
                   onClick={() =>
                     navigate(

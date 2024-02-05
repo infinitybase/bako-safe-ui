@@ -1,7 +1,8 @@
 import { BN } from 'fuels';
 
 import { api } from '@/config';
-import { IPagination, PaginationParams, Predicate } from '@/modules/core';
+import { Predicate, Workspace } from '@/modules/core/models';
+import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
 
 export interface GetAllPredicatesPayload extends PaginationParams {
@@ -14,9 +15,11 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   sort?: SortOption;
 }
 
+export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
+
 export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;
-export type GetAllPredicateResponse = Predicate[];
+export type GetAllPredicateResponse = PredicateAndWorkspace[];
 export type GetAllPredicatePaginationResponse = IPagination<Predicate>;
 export type CreatePredicatePayload = Omit<
   Predicate,

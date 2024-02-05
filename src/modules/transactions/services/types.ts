@@ -1,11 +1,7 @@
 import { ITransaction, ITransactionResume } from 'bsafe';
 
-import {
-  AssetModel,
-  IPagination,
-  Predicate,
-  TransactionStatus,
-} from '@/modules/core';
+import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
 export enum SortOption {
   ASC = 'ASC',
@@ -78,7 +74,7 @@ export interface CloseTransactionPayload {
 }
 
 export type TransactionWithVault = ITransaction & {
-  predicate?: Predicate;
+  predicate?: PredicateAndWorkspace;
 };
 
 export type GetTransactionResponse = ITransaction;
