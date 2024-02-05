@@ -8,7 +8,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { SquarePlusIcon, VaultSuccessIcon } from '../icons';
+import { VaultSuccessIcon } from '../icons';
 
 interface SuccessStepProps {
   onPrimaryAction?: () => void;
@@ -41,7 +41,7 @@ const FeedbackSuccess = ({
         {description}
       </Heading>
     </Box>
-    <Divider hidden={!showAction} m={4} borderColor="dark.100" />
+    <Divider hidden={!showAction} my={8} borderColor="dark.100" />
     <HStack hidden={!showAction} spacing={4} justifyContent="center">
       <Button
         border="none"
@@ -52,10 +52,10 @@ const FeedbackSuccess = ({
         {secondaryAction}
       </Button>
       <Button
-        color="grey.300"
-        variant="primary"
+        border="none"
+        bgColor="dark.100"
+        variant="secondary"
         onClick={onPrimaryAction}
-        leftIcon={<SquarePlusIcon fontSize={18} />}
       >
         {primaryAction}
       </Button>

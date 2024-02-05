@@ -12,9 +12,15 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { DappWarning, SquarePlusIcon } from '@/components';
+import { DappWarning, SquarePlusIcon, StepProgress } from '@/components';
 
 interface OnboardingStepProps {
+  tabs: {
+    tab: number;
+    is: (value: number) => boolean;
+    set: React.Dispatch<React.SetStateAction<number>>;
+    length: number;
+  };
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -22,7 +28,7 @@ interface OnboardingStepProps {
 const OnboardingStep = (props: OnboardingStepProps) => (
   <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={48} as={DappWarning} />
+      <Icon fontSize={100} as={DappWarning} />
     </Box>
     <Box mb={5}>
       <Heading>Heads up!!</Heading>
@@ -33,8 +39,11 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         to understand how they function.
       </Text>
     </Box>
+    <Box w="100%" my={5}>
+      <StepProgress value={props.tabs.tab} length={props.tabs.length} />
+    </Box>
     <Box mb={5}>
-      <Text color="grey.200" fontSize="md" textAlign="center">
+      <Text color="grey.200" fontSize="md" textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
         same vaults and address book. Within a workspace, you can assign users
         different levels of permission, including:
@@ -46,17 +55,22 @@ const OnboardingStep = (props: OnboardingStepProps) => (
           <Badge variant="success">Admin</Badge>
         </Box>
         <Text color="grey.200" fontSize="md">
-          Manage members, create new vaults, create transaction and access
-          everything.
+          <Text as="span" fontWeight="bold">
+            Manage members, create new vaults, create transactions
+          </Text>{' '}
+          and access everything.
         </Text>
       </HStack>
       <HStack>
         <Box w="100%" maxW="80px">
           <Badge variant="warning">Manager</Badge>
         </Box>
+
         <Text color="grey.200" fontSize="md">
-          Can create new vaults, create transaction and access all vaults in the
-          workspace.
+          <Text as="span" fontWeight="bold">
+            Can create new vaults, create transaction and access all vaults
+          </Text>{' '}
+          in the workspace.
         </Text>
       </HStack>
       <HStack>
@@ -64,16 +78,15 @@ const OnboardingStep = (props: OnboardingStepProps) => (
           <Badge variant="gray">Viewer</Badge>
         </Box>
         <Text color="grey.200" fontSize="md">
-          Can only access and view the contents of all vaults in the workspace.
+          Can only{' '}
+          <Text as="span" fontWeight="bold">
+            access and view
+          </Text>{' '}
+          the contents of all vaults in the workspace.
         </Text>
       </HStack>
     </VStack>
-    <Box mb={5}>
-      <Text color="grey.200" fontSize="md" textAlign="center">
-        Additionally, as the vault creator (owner), you will have the ability to
-        add and remove new members, as well as edit their permissions.
-      </Text>
-    </Box>
+
     <Box mb={5}>
       <Alert
         color="#FDD835"
@@ -82,13 +95,9 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         borderRadius={8}
         borderColor="#FDD8351A"
       >
-        <Text>
-          <b>Important</b>: The members of the workspace are not automatically
-          signers in a vault, and being a signer of a vault does not make
-          someone a member of the workspace. These are separate entities with
-          independent controls. If individuals are not members of the workspace,
-          signers will only have access to the specific vaults they are assigned
-          to, which will be displayed in their personal workspace.
+        <Text fontSize="lg">
+          <b>Important Note</b>: Membership in the workspace ≠ signatory rights
+          in a vault. They are separate entities with separate controls.
         </Text>
       </Alert>
     </Box>
