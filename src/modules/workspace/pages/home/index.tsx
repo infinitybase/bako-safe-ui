@@ -205,8 +205,8 @@ const WorkspacePage = () => {
                     {(visibleBalance && worksapceBalance.balance?.balanceUSD) ??
                       0}
                   </Heading>
-                  <Text variant="description" fontSize="md">
-                    {visibleBalance && 'USD'}
+                  <Text variant="description" fontSize="md" mr={1}>
+                    {visibleBalance ? 'USD' : '******'}
                   </Text>
                   {visibleBalance ? (
                     <Box
