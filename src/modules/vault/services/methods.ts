@@ -15,7 +15,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   sort?: SortOption;
 }
 
-type PredicateAndWorkspace = Predicate & { workspace: Workspace };
+export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
 
 export type GetPredicateResponse = Predicate;
 export type CreatePredicateResponse = Predicate;

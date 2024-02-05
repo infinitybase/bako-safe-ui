@@ -2,10 +2,10 @@ import { Icon } from '@chakra-ui/icons';
 import { Avatar, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { HandbagIcon } from '@/components/icons/handbag';
-import { Predicate } from '@/modules/core';
+import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
 interface TransactionVaultInfoProps {
-  vault: Predicate;
+  vault: PredicateAndWorkspace;
 }
 
 const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
@@ -24,7 +24,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
       <VStack ml={1} alignItems="flex-start" spacing={0}>
         {!vault.workspace.single && (
           <HStack>
-            <Icon as={HandbagIcon} fontSize="md" color="grey.200" />
+            <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
             <Text maxW={40} color="grey.200" fontSize="sm" isTruncated>
               {vault.workspace?.name}
             </Text>
