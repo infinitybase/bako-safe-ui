@@ -19,6 +19,7 @@ import {
   SquarePlusIcon,
   StepProgress,
 } from '@/components';
+import { TrashIcon } from '@/components/icons/trash';
 import {
   AddressUtils,
   EditMembersForm,
@@ -94,12 +95,13 @@ export const EditMemberPage = () => {
 
   const TabsPanels = (
     <TabPanels>
+      <TabPanel></TabPanel>
       <TabPanel p={0}>
         <EditMembersForm form={permissionForm} />
       </TabPanel>
       <TabPanel p={0}>
         <FeedbackSuccess
-          title="New member added!"
+          title={formState.title}
           description="To view all the members added to your workspace, click on settings on the workspace home page."
         />
       </TabPanel>
@@ -114,12 +116,32 @@ export const EditMemberPage = () => {
         description="Manage roles, remove or adjust permissions as needed."
       />
 
-      <Dialog.Body mb={9} maxW={420}>
-        <Tabs>
+      <Dialog.Body
+        mb={9}
+        maxW={500}
+        pr={12}
+        maxH={600}
+        overflowY="scroll"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            height: '5px' /* Adjust the height of the scrollbar */,
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '20px',
+            height: '20px' /* Adjust the height of the scrollbar thumb */,
+          },
+        }}
+      >
+        <Tabs hidden={tabs.is(MemberTabState.SUCCESS)}>
           <MemberTab />
         </Tabs>
         <Box
-          hidden={tabs.is(MemberTabState.SUCCESS || MemberTabState.PERMISSION)}
+          hidden={
+            tabs.is(MemberTabState.PERMISSION) ||
+            tabs.is(MemberTabState.SUCCESS)
+          }
           mb={12}
         >
           <StepProgress length={tabs.length} value={tabs.tab} />
@@ -127,21 +149,34 @@ export const EditMemberPage = () => {
         <Tabs index={tabs.tab} isLazy colorScheme="green">
           {TabsPanels}
         </Tabs>
-      </Dialog.Body>
 
-      <Dialog.Actions maxW={420}>
-        <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
-          {formState?.secondaryAction}
-        </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
-          onClick={formState?.handlePrimaryAction}
-          leftIcon={<SquarePlusIcon />}
-          isDisabled={!formState?.isValid}
-          isLoading={formState?.isLoading}
-        >
-          {formState.primaryAction}
-        </Dialog.PrimaryAction>
-      </Dialog.Actions>
+        <Dialog.Actions maxW={420}>
+          <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
+            {formState?.secondaryAction}
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction
+            onClick={formState?.handlePrimaryAction}
+            leftIcon={<SquarePlusIcon />}
+            isDisabled={!formState?.isValid}
+            isLoading={formState?.isLoading}
+          >
+            {formState.primaryAction}
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
+        <Dialog.Actions maxW={420}>
+          {formState.tertiaryAction && (
+            <Dialog.TertiaryAction
+              display="block"
+              onClick={formState.handleTertiaryAction}
+              leftIcon={<TrashIcon />}
+              isDisabled={!formState?.tertiaryAction}
+              isLoading={formState?.isLoading}
+            >
+              {formState.tertiaryAction}
+            </Dialog.TertiaryAction>
+          )}
+        </Dialog.Actions>
+      </Dialog.Body>
     </Dialog.Modal>
   );
 };

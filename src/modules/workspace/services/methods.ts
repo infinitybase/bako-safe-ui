@@ -133,8 +133,8 @@ export class WorkspaceService {
 
   static async deleteMember(payload: DeleteWorkspaceMemberPayload) {
     const { id, member } = payload;
-    const { data } = await api.delete<UpdateWorkspaceMembersResponse>(
-      `/${id}/members/${member}/remove`,
+    const { data } = await api.post<UpdateWorkspaceMembersResponse>(
+      `/workspace/${id}/members/${member}/remove`,
     );
 
     return data;
