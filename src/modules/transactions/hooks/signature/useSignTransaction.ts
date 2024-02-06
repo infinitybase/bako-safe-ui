@@ -1,16 +1,17 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
+import { randomBytes } from 'ethers';
 import { useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';
 import {
   HomeQueryKey,
   invalidateQueries,
-  useToast,
   useWalletSignMessage,
 } from '@/modules/core';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
+import { useTransactionToast } from '../../providers/send/toast';
 import {
   TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
@@ -29,7 +30,7 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
-  const toast = useToast();
+  const toast = useTransactionToast();
   const { account } = useFuelAccount();
   const transactionSendContext = useTransactionSend();
 
@@ -60,7 +61,9 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const request = useSignTransactionRequest({
     onSuccess: () => refetetchTransactionList(),
-    onError: () => toast.error('Error on sign transaction'),
+    onError: () => {
+      toast.generalError(randomBytes.toString(), 'Inválid signature');
+    },
   });
 
   const signMessageRequest = useWalletSignMessage({
