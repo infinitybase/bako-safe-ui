@@ -7,8 +7,8 @@ import {
   StepProgress,
 } from '@/components';
 import { CreateContactDialog } from '@/modules/addressBook';
-import { EditMembersForm } from '@/modules/workspace/components';
-import { MemberAddressForm } from '@/modules/workspace/components/form/CreateMembersForm';
+import { MemberAddressForm } from '@/modules/workspace/components';
+import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
 import {
   MemberTabState,
   useChangeMember,
@@ -24,7 +24,7 @@ const CreateMemberPage = () => {
         <MemberAddressForm form={memberForm} addressBook={addressBook} />
       </TabPanel>
       <TabPanel p={0}>
-        <EditMembersForm form={permissionForm} />
+        <MemberPermissionForm form={permissionForm} />
       </TabPanel>
       <TabPanel p={0}>
         <FeedbackSuccess

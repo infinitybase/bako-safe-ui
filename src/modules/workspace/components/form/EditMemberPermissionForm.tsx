@@ -1,15 +1,13 @@
 import {
   Badge,
   Box,
-  Divider,
+  Flex,
   Heading,
-  HStack,
   Radio,
   RadioGroup,
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog } from '@/components';
@@ -25,12 +23,13 @@ export const EditMembersForm = ({ form }: EditMembersForm) => {
   return (
     <Box w="full">
       <Dialog.Section
+        spacing={1}
         title={
           <Heading fontSize="md" color="grey.200">
-            Choose the user Permission
+            Edit user permission
           </Heading>
         }
-        description=""
+        description="Select the role for this user"
         mb={8}
       />
       <Controller
@@ -44,26 +43,75 @@ export const EditMembersForm = ({ form }: EditMembersForm) => {
           >
             <Stack>
               {WorkspacePermissionUtils.permissionsValues.map((permission) => (
-                <React.Fragment key={permission.value}>
-                  <Radio
-                    my={2}
-                    borderWidth={1}
-                    borderColor="grey.500"
-                    value={permission.value}
+                <Box
+                  border="1px"
+                  p={3}
+                  borderRadius="lg"
+                  borderColor={
+                    field.value === permission.value ? 'green.500' : 'dark.100'
+                  }
+                  key={permission.value}
+                >
+                  <Box w="full" maxW="90px">
+                    <Radio
+                      my={2}
+                      border="1px"
+                      borderColor="grey.500"
+                      value={permission.value}
+                    >
+                      <Badge variant={permission.variant}>
+                        {permission.title}
+                      </Badge>
+                    </Radio>
+                  </Box>
+                  <Flex
+                    align="start"
+                    direction="column"
+                    justify="space-between"
                   >
-                    <HStack>
-                      <Box w="full" maxW="80px">
-                        <Badge variant={permission.variant}>
-                          {permission.title}
-                        </Badge>
-                      </Box>
-                      <Text variant="description">
-                        {permission.description}
-                      </Text>
-                    </HStack>
-                  </Radio>
-                  <Divider borderColor="dark.100" />
-                </React.Fragment>
+                    <Text>
+                      {permission.title === 'Viewer' && (
+                        <Text variant="description">
+                          Can{' '}
+                          <Text
+                            as="span"
+                            fontWeight="semibold"
+                            color="grey.200"
+                          >
+                            only access and view
+                          </Text>{' '}
+                          the contents of all vaults in the workspace.
+                        </Text>
+                      )}
+                      {permission.title === 'Manager' && (
+                        <Text variant="description">
+                          <Text
+                            as="span"
+                            fontWeight="semibold"
+                            color="grey.200"
+                          >
+                            Can create new vaults, create transaction and access
+                            all vaults
+                          </Text>{' '}
+                          and manage members in the workspace.
+                        </Text>
+                      )}
+                      {permission.title === 'Admin' && (
+                        <Text variant="description">
+                          <Text
+                            as="span"
+                            fontWeight="semibold"
+                            color="grey.200"
+                          >
+                            Manage members, create new vaults, create
+                            transaction
+                          </Text>{' '}
+                          and access everything.
+                        </Text>
+                      )}
+                    </Text>
+                  </Flex>
+                </Box>
               ))}
             </Stack>
           </RadioGroup>
