@@ -99,8 +99,10 @@ export class TransactionService {
     return data;
   }
 
-  static async getTransactionsSignaturePending() {
-    const { data } = await api.get<number>(`/transaction/pending`);
+  static async getTransactionsSignaturePending(predicateId?: string[]) {
+    const { data } = await api.get<number>(`/transaction/pending`, {
+      params: { predicateId },
+    });
     return data;
   }
 }

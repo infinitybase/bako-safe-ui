@@ -40,6 +40,7 @@ const useWorkspace = () => {
     : {};
   const userWorkspacesRequest = useUserWorkspacesRequest();
   const workspaceHomeRequest = useHomeDataRequest();
+
   const vaultsPerPage = 8;
   const worksapceBalance = useGetWorkspaceBalanceRequest();
   const pendingSignerTransactions = useTransactionsSignaturePending();
@@ -54,7 +55,8 @@ const useWorkspace = () => {
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-
+        workspaceHomeRequest.refetch();
+        pendingSignerTransactions.refetch();
         if (!workspace.single) {
           navigate(Pages.workspace({ workspaceId: workspace.id }));
         }
@@ -79,6 +81,7 @@ const useWorkspace = () => {
     return isValid;
   };
 
+  // todo: add an variable to verify all requests are in progress, and on the UI show a loading spinner using skeleton
   return {
     account,
     currentWorkspace,
