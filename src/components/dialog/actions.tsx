@@ -33,4 +33,13 @@ const DialogSecondaryAction = (props: DialogActionProps) => (
   <Button variant="secondary" bgColor="dark.100" border="none" {...props} />
 );
 
-export { DialogActions, DialogPrimaryAction, DialogSecondaryAction };
+const DialogTertiaryAction = (props: DialogActionProps) => (
+  <Button variant="tertiary" bgColor="" border="none" {...props} />
+);
+
+export {
+  DialogActions,
+  DialogPrimaryAction,
+  DialogSecondaryAction,
+  DialogTertiaryAction,
+};
