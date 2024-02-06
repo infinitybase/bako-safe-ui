@@ -250,7 +250,7 @@ const WorkspacePage = () => {
                   </VStack>
                 </Card>
               ) : (
-                <VStack h="full" spacing={1} justifyContent="center">
+                <VStack w="full" h="full" spacing={1} justifyContent="center">
                   {/*todo: 
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
