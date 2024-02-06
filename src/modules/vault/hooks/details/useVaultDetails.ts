@@ -41,8 +41,6 @@ const useVaultDetails = () => {
     [predicateInstance],
   );
 
-  useMemo(() => pendingSignerTransactions.refetch(), [params.vaultId]);
-
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];
 
