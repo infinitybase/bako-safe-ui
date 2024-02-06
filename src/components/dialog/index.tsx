@@ -16,7 +16,7 @@ const Dialog = {
   Actions: DialogActions,
   PrimaryAction: DialogPrimaryAction,
   SecondaryAction: DialogSecondaryAction,
-  TertiaryACtion: DialogTertiaryAction,
+  TertiaryAction: DialogTertiaryAction,
   Section: DialogSection,
 };
 

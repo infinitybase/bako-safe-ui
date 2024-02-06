@@ -65,31 +65,11 @@ const useChangeMember = () => {
     });
   });
 
-  const handleAddPermission = permissionForm.handleSubmit((data) => {
+  const handlePermissions = permissionForm.handleSubmit((data) => {
     const workspace = workspaceRequest.workspace!;
     const memberAddress = memberForm.getValues('address');
     const member = workspace.members.find(
       (member) => member.address === memberAddress,
-    );
-    const permission = data.permission as PermissionRoles;
-
-    if (!member) return;
-
-    permissionsRequest.mutate(
-      {
-        member: member.id,
-        permissions: defaultPermissions[permission],
-      },
-      {
-        onSuccess: () => tabs.set(MemberTabState.SUCCESS),
-      },
-    );
-  });
-
-  const handleEditPermission = editForm.handleSubmit((data) => {
-    const workspace = workspaceRequest.workspace!;
-    const member = workspace.members.find(
-      (member) => member.id === params.memberId,
     );
     const permission = data.permission as PermissionRoles;
 
@@ -139,19 +119,20 @@ const useChangeMember = () => {
       handlePrimaryAction: handleAddMember,
       handleSecondaryAction: handleClose,
       isLoading: memberRequest.isLoading,
+      title: 'Add member',
+      tertiaryAction: undefined,
+      handleTertiaryAction: undefined,
     },
     [MemberTabState.PERMISSION]: {
       isValid: permissionForm.formState.isValid || editForm.formState.isValid,
-      title: isEditMember ? 'Edit member' : 'Add member',
       primaryAction: isEditMember ? 'Update user' : 'Add member',
       secondaryAction: 'Cancel',
-      tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
-      handlePrimaryAction: isEditMember
-        ? handleEditPermission
-        : handleAddPermission,
+      handlePrimaryAction: handlePermissions,
       handleSecondaryAction: handleClose,
-      handleTertiaryAction: handleDeleteMember,
       isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
+      title: isEditMember ? 'Edit member' : 'Add member',
+      tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
+      handleTertiaryAction: handleDeleteMember,
     },
     [MemberTabState.SUCCESS]: {
       isValid: true,
@@ -160,6 +141,9 @@ const useChangeMember = () => {
       handlePrimaryAction: handleClose,
       handleSecondaryAction: clearSteps,
       isLoading: false,
+      title: isEditMember ? 'Member updated' : 'Member added',
+      tertiaryAction: undefined,
+      handleTertiaryAction: undefined,
     },
   };
 

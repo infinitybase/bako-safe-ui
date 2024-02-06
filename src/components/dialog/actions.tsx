@@ -34,7 +34,7 @@ const DialogSecondaryAction = (props: DialogActionProps) => (
 );
 
 const DialogTertiaryAction = (props: DialogActionProps) => (
-  <Button variant="tertiary" bgColor="" border="none" {...props} />
+  <Button variant="tertiary" bgColor="error.900" border="none" {...props} />
 );
 
 export {
