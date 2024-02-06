@@ -209,10 +209,11 @@ const VaultAddressesStep = ({
 
         <Divider borderColor="dark.100" my={9} />
 
-        <HStack>
+        <HStack position="relative">
           <Dialog.Section
             w="full"
             maxW={300}
+            mb={5}
             title={
               <Heading fontSize="md" color="grey.200">
                 Min signatures required?
@@ -247,7 +248,7 @@ const VaultAddressesStep = ({
                     style={{
                       display: 'flex',
                       position: 'absolute',
-                      left: '-300px',
+                      left: '-309px',
                       minWidth: '400px',
                       marginBottom: '20px',
                     }}

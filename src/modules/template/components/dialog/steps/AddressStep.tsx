@@ -105,6 +105,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
         <Dialog.Section
           w="full"
           maxW={300}
+          mb={5}
           title="Min signatures required?"
           description="Set the minimum number of signatures to approve a transfer."
         />
@@ -136,7 +137,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                   style={{
                     display: 'flex',
                     position: 'absolute',
-                    left: '-300px',
+                    left: '-309px',
                     minWidth: '400px',
                     marginBottom: '20px',
                   }}
