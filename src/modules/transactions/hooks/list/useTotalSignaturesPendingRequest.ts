@@ -1,13 +1,13 @@
 import { useQuery } from 'react-query';
 
-import { HomeQueryKey } from '@/modules/core/models/home';
-
 import { TransactionService } from '../../services';
 
+const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
+
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
-  return useQuery([HomeQueryKey.FULL_DATA()], () => {
+  return useQuery([PENDING_TRANSACTIONS_QUERY_KEY], () => {
     return TransactionService.getTransactionsSignaturePending(predicateId);
   });
 };
 
-export { useTransactionsSignaturePending };
+export { PENDING_TRANSACTIONS_QUERY_KEY, useTransactionsSignaturePending };

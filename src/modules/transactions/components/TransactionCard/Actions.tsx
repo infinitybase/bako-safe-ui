@@ -69,11 +69,7 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction({
-                txId: transaction.hash,
-                transactionID: transaction.id,
-                predicateID: transaction.predicateId,
-              });
+              confirmTransaction();
             }}
           >
             Sign

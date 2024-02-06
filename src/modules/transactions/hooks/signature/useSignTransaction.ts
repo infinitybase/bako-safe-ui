@@ -1,8 +1,9 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useFuelAccount } from '@/modules/auth';
 import {
+  HomeQueryKey,
   invalidateQueries,
   useToast,
   useWalletSignMessage,
@@ -32,21 +33,33 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const { account } = useFuelAccount();
   const transactionSendContext = useTransactionSend();
 
-  const transaction = useMemo(() => {
+  useMemo(() => {
+    const transaction = options.transaction;
+
+    const toSend =
+      !!transaction &&
+      transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+      !transactionSendContext.isExecuting(transaction);
+
+    if (toSend) {
+      transactionSendContext.executeTransaction(transaction);
+    }
     return options.transaction;
   }, [options.transaction]);
 
-  const refetetchTransactionList = () =>
+  const refetetchTransactionList = () => {
     invalidateQueries([
       'bsafe',
+      ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
+  };
 
   const request = useSignTransactionRequest({
-    onSuccess: refetetchTransactionList,
+    onSuccess: () => refetetchTransactionList(),
     onError: () => toast.error('Error on sign transaction'),
   });
 
@@ -54,18 +67,20 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     onError: () => toast.error('Message sign rejected'),
   });
 
-  const confirmTransaction = async (params: SignTransactionParams) => {
-    const signedMessage = await signMessageRequest.mutateAsync(params.txId);
+  const confirmTransaction = async () => {
+    const signedMessage = await signMessageRequest.mutateAsync(
+      options.transaction.hash,
+    );
     await request.mutateAsync({
       account,
       confirm: true,
       signer: signedMessage,
-      id: params.transactionID,
+      id: options.transaction.id,
     });
   };
 
   const retryTransaction = async () => {
-    return transactionSendContext.executeTransaction(transaction);
+    return transactionSendContext.executeTransaction(options.transaction);
   };
 
   const declineTransaction = async (transactionId: string) => {
@@ -76,14 +91,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
-  useEffect(() => {
-    if (!transaction) return;
-
-    if (transaction.status === TransactionStatus.PROCESS_ON_CHAIN) {
-      transactionSendContext.executeTransaction(transaction);
-    }
-  }, [transaction]);
-
   return {
     request,
     signMessageRequest,
@@ -93,7 +100,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     isLoading:
       request.isLoading ||
       signMessageRequest.isLoading ||
-      transaction.status === TransactionStatus.PROCESS_ON_CHAIN,
+      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN,
     isSuccess: request.isSuccess,
   };
 };
