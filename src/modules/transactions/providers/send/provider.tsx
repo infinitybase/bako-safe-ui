@@ -38,6 +38,9 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
 
   const { mutate: sendTransaction } = useBsafeTransactionSend({
     onSuccess: (transaction) => {
+      transactionsRef.current = transactionsRef.current.filter(
+        (data) => data.id !== transaction.id,
+      );
       toast.success(transaction);
       refetetchTransactionList();
     },
