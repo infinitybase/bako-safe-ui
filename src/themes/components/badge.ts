@@ -57,7 +57,7 @@ const Badge = defineStyleConfig({
     warning,
     info,
     gray,
-    blue,
+    // blue,
     grey,
   },
 });
