@@ -107,5 +107,10 @@ export const WorkspacesQueryKey = {
     'update-permission',
     workspaceId,
   ],
+  DELETE_MEMBER: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'delete-member',
+    workspaceId,
+  ],
   GET_BALANCE: () => [WorkspacesQueryKey.DEFAULT, 'balance'],
 };
