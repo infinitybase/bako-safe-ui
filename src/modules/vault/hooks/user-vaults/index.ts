@@ -1,1 +1,1 @@
-export * from './useUserVVaults';
+export * from './useUserVaults';

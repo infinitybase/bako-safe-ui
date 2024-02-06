@@ -17,13 +17,16 @@ const useVaultDetails = () => {
   const { account } = useFuelAccount();
   const store = useVaultState();
   const inView = useInView();
-  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const { predicate, predicateInstance, isLoading, isFetching } =
     useVaultDetailsRequest(params.vaultId!);
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
   );
+
+  const pendingSignerTransactions = useTransactionsSignaturePending([
+    params.vaultId!,
+  ]);
 
   const {
     assets,
@@ -37,6 +40,8 @@ const useVaultDetails = () => {
     () => predicateInstance?.getConfigurable(),
     [predicateInstance],
   );
+
+  useMemo(() => pendingSignerTransactions.refetch(), [params.vaultId]);
 
   const signersOrdination = useMemo(() => {
     if (!predicate) return [];

@@ -14,10 +14,10 @@ import {
 import { bn } from 'fuels';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-import { Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
 import { assetsMap } from '@/modules/core/utils';
 
-import { useMeTransactions } from '../../hooks';
+import { useMeTransactions } from '../../hooks/me/useMeTransactions';
 
 const MeTransactionsPage = () => {
   const { transactionsRequest, navigate, calculateSignatures } =

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { useUserTransactionsRequest } from '@/modules/transactions';
+import { useUserTransactionsRequest } from '@/modules/transactions/hooks';
 
 import { useUserVaultRequest } from '../useUserVaultRequest';
 

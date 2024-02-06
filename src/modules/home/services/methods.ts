@@ -1,9 +1,9 @@
 import { api } from '@/config';
-import { IPagination, Predicate } from '@/modules/core';
+import { IPagination, Predicate, Workspace } from '@/modules/core';
 import { TransactionWithVault } from '@/modules/transactions/services';
 
 export interface HomeDataResponse {
-  predicates: IPagination<Predicate>;
+  predicates: IPagination<Predicate & { workspace: Workspace }>;
   transactions: IPagination<TransactionWithVault>;
 }
 
