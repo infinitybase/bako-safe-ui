@@ -50,10 +50,6 @@ const VaultDetailsPage = () => {
   const { currentWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
-  useMemo(() => {
-    invalidateQueries(HomeQueryKey.FULL_DATA());
-  }, [vault.id]);
-
   // const pendingTransactionSignature = useMemo(
   //   () =>
   //     waitingSignatures({
