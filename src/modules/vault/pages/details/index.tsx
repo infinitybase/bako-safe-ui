@@ -10,6 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { useMemo } from 'react';
 
 import {
   Card,
@@ -18,6 +19,7 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { HomeQueryKey, invalidateQueries } from '@/modules';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
@@ -47,6 +49,10 @@ const VaultDetailsPage = () => {
   } = useVaultDetails();
   const { currentWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+
+  useMemo(() => {
+    invalidateQueries(HomeQueryKey.FULL_DATA());
+  }, [vault.id]);
 
   // const pendingTransactionSignature = useMemo(
   //   () =>
