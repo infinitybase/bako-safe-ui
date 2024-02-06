@@ -13,6 +13,7 @@ import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
+  useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
 
@@ -20,6 +21,8 @@ export enum MemberTabState {
   ADDRESS = 0,
   PERMISSION = 1,
   SUCCESS = 2,
+  EDIT = 3,
+  EDIT_SUCCESS = 4,
 }
 
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
@@ -36,7 +39,7 @@ const useChangeMember = () => {
       : MemberTabState.ADDRESS,
   });
 
-  const { memberForm, permissionForm, setMemberValuesByWorkspace } =
+  const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
     useChangeMemberForm();
   const addressBook = useAddressBook();
 
@@ -50,6 +53,7 @@ const useChangeMember = () => {
 
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
+  const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
 
   const handleClose = () =>
     navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
@@ -84,6 +88,45 @@ const useChangeMember = () => {
     );
   });
 
+  const handleEditPermission = editForm.handleSubmit((data) => {
+    const workspace = workspaceRequest.workspace!;
+    const member = workspace.members.find(
+      (member) => member.id === params.memberId,
+    );
+    const permission = data.permission as PermissionRoles;
+
+    if (!member) return;
+
+    permissionsRequest.mutate(
+      {
+        member: member.id,
+        permissions: defaultPermissions[permission],
+      },
+      {
+        onSuccess: () => tabs.set(MemberTabState.EDIT_SUCCESS),
+      },
+    );
+  });
+
+  const handleDeleteMember = () => {
+    const workspace = workspaceRequest.workspace!;
+    const member = workspace.members.find(
+      (member) => member.id === params.memberId,
+    );
+
+    if (!member) return;
+
+    deleteRequest.mutate(
+      {
+        id: workspace.id,
+        member: member.id,
+      },
+      {
+        onSuccess: () => handleClose(),
+      },
+    );
+  };
+
   const clearSteps = () => {
     tabs.set(MemberTabState.ADDRESS);
     memberForm.setValue('address', '');
@@ -107,6 +150,16 @@ const useChangeMember = () => {
       handleSecondaryAction: handleClose,
       isLoading: permissionsRequest.isLoading,
     },
+    [MemberTabState.EDIT]: {
+      isValid: editForm.formState.isValid,
+      primaryAction: 'Update user',
+      secondaryAction: 'Cancel',
+      tertiaryAction: 'Remove from workspace',
+      handlePrimaryAction: handleEditPermission,
+      handleSecondaryAction: handleClose,
+      handleTertiaryAction: handleDeleteMember,
+      isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
+    },
     [MemberTabState.SUCCESS]: {
       isValid: true,
       primaryAction: 'Conclude',
@@ -127,6 +180,7 @@ const useChangeMember = () => {
     form: {
       memberForm,
       permissionForm,
+      editForm,
       formState: formState[tabs.tab],
     },
   };

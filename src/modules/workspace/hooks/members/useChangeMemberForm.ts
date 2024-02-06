@@ -18,6 +18,10 @@ const permissionSchema = yup.object({
   permission: yup.string().required('Permission is required.'),
 });
 
+const editSchema = yup.object({
+  permission: yup.string().required('Permission is required.'),
+});
+
 const useChangeMemberForm = () => {
   const memberForm = useForm({
     mode: 'onChange',
@@ -32,6 +36,15 @@ const useChangeMemberForm = () => {
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(permissionSchema),
+    defaultValues: {
+      permission: '',
+    },
+  });
+
+  const editForm = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(editSchema),
     defaultValues: {
       permission: '',
     },
@@ -53,9 +66,12 @@ const useChangeMemberForm = () => {
       shouldValidate: true,
     });
     memberForm.setValue('address', member[0], { shouldValidate: true });
+    editForm.setValue('permission', permissionRole[0], {
+      shouldValidate: true,
+    });
   };
 
-  return { memberForm, permissionForm, setMemberValuesByWorkspace };
+  return { memberForm, permissionForm, editForm, setMemberValuesByWorkspace };
 };
 
 export { useChangeMemberForm };
