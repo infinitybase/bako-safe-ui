@@ -26,7 +26,7 @@ export const EditMembersForm = ({ form }: EditMembersForm) => {
         spacing={1}
         title={
           <Heading fontSize="md" color="grey.200">
-            Edit user permission
+            {}
           </Heading>
         }
         description="Select the role for this user"

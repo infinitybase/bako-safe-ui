@@ -1,19 +1,28 @@
 import {
   Avatar,
   Badge,
+  Box,
   Card,
   Center,
   Flex,
   HStack,
+  TabPanel,
+  TabPanels,
   Tabs,
   Text,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
-import { Dialog, FeedbackSuccess, SquarePlusIcon } from '@/components';
+import {
+  Dialog,
+  FeedbackSuccess,
+  SquarePlusIcon,
+  StepProgress,
+} from '@/components';
 import {
   AddressUtils,
   EditMembersForm,
+  MemberTabState,
   useGetWorkspaceRequest,
 } from '@/modules';
 import { useChangeMember } from '@/modules/workspace/hooks';
@@ -81,7 +90,21 @@ const MemberTab = () => {
 
 export const EditMemberPage = () => {
   const { form, handleClose, tabs } = useChangeMember();
-  const { formState, editForm } = form;
+  const { formState, permissionForm } = form;
+
+  const TabsPanels = (
+    <TabPanels>
+      <TabPanel p={0}>
+        <EditMembersForm form={permissionForm} />
+      </TabPanel>
+      <TabPanel p={0}>
+        <FeedbackSuccess
+          title="New member added!"
+          description="To view all the members added to your workspace, click on settings on the workspace home page."
+        />
+      </TabPanel>
+    </TabPanels>
+  );
 
   return (
     <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
@@ -95,14 +118,14 @@ export const EditMemberPage = () => {
         <Tabs>
           <MemberTab />
         </Tabs>
+        <Box
+          hidden={tabs.is(MemberTabState.SUCCESS || MemberTabState.PERMISSION)}
+          mb={12}
+        >
+          <StepProgress length={tabs.length} value={tabs.tab} />
+        </Box>
         <Tabs index={tabs.tab} isLazy colorScheme="green">
-          <EditMembersForm form={editForm} />
-        </Tabs>
-        <Tabs>
-          <FeedbackSuccess
-            title="Member edited successfully!"
-            description="To view all the members in your workspace, click on members in workspace home page."
-          />
+          {TabsPanels}
         </Tabs>
       </Dialog.Body>
 

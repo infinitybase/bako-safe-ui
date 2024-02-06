@@ -21,8 +21,6 @@ export enum MemberTabState {
   ADDRESS = 0,
   PERMISSION = 1,
   SUCCESS = 2,
-  EDIT = 3,
-  EDIT_SUCCESS = 4,
 }
 
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
@@ -103,7 +101,7 @@ const useChangeMember = () => {
         permissions: defaultPermissions[permission],
       },
       {
-        onSuccess: () => tabs.set(MemberTabState.EDIT_SUCCESS),
+        onSuccess: () => tabs.set(MemberTabState.SUCCESS),
       },
     );
   });
@@ -143,19 +141,14 @@ const useChangeMember = () => {
       isLoading: memberRequest.isLoading,
     },
     [MemberTabState.PERMISSION]: {
-      isValid: permissionForm.formState.isValid,
-      primaryAction: 'Add member',
+      isValid: permissionForm.formState.isValid || editForm.formState.isValid,
+      title: isEditMember ? 'Edit member' : 'Add member',
+      primaryAction: isEditMember ? 'Update user' : 'Add member',
       secondaryAction: 'Cancel',
-      handlePrimaryAction: handleAddPermission,
-      handleSecondaryAction: handleClose,
-      isLoading: permissionsRequest.isLoading,
-    },
-    [MemberTabState.EDIT]: {
-      isValid: editForm.formState.isValid,
-      primaryAction: 'Update user',
-      secondaryAction: 'Cancel',
-      tertiaryAction: 'Remove from workspace',
-      handlePrimaryAction: handleEditPermission,
+      tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
+      handlePrimaryAction: isEditMember
+        ? handleEditPermission
+        : handleAddPermission,
       handleSecondaryAction: handleClose,
       handleTertiaryAction: handleDeleteMember,
       isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
