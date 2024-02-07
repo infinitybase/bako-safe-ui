@@ -70,15 +70,18 @@ const MemberTab = () => {
             alignItems="start"
             justifyContent="space-between"
           >
-            <Text fontWeight="semibold" color="grey.200">
-              {member?.name}
-            </Text>
-            <Text
-              fontWeight={!member?.name ? 'semibold' : 'normal'}
-              color={!member?.name ? 'grey.200' : 'grey.500'}
-            >
-              {AddressUtils.format(member?.address ?? '')}
-            </Text>
+            {member?.name ? (
+              <Text fontWeight="semibold" color="grey.200">
+                {member?.name}
+              </Text>
+            ) : (
+              <Text
+                fontWeight={!member?.name ? 'semibold' : 'normal'}
+                color={!member?.name ? 'grey.200' : 'grey.500'}
+              >
+                {AddressUtils.format(member?.address ?? '')}
+              </Text>
+            )}
             <Badge fontSize="xs" p={1} variant={permission?.variant}>
               {permission?.title}
             </Badge>
