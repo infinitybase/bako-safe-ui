@@ -5,7 +5,6 @@ import { AuthRoute, Pages } from '@/modules/core';
 
 import { CreateMemberPage, CreateWorkspacePage } from './pages';
 import { WorkspacePage } from './pages/home';
-import { EditMemberPage } from './pages/members/edit';
 
 const workspaceRoutes = (
   <Route>
@@ -22,14 +21,6 @@ const workspaceRoutes = (
       element={
         <AuthRoute>
           <CreateMemberPage />
-        </AuthRoute>
-      }
-    />
-    <Route
-      path={Pages.updateMemberWorkspace()}
-      element={
-        <AuthRoute>
-          <EditMemberPage />
         </AuthRoute>
       }
     />

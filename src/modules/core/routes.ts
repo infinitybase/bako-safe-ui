@@ -54,13 +54,9 @@ const Pages = {
 
   //workspace
   createWorkspace: pageRoute('/workspace/create'),
-  membersWorkspace: pageRoute<{ workspaceId: string }>(
-    '/workspace/:workspaceId/members',
+  membersWorkspace: pageRoute<{ workspaceId: string; memberId?: string }>(
+    '/workspace/:workspaceId/members/:memberId',
   ),
-  updateMemberWorkspace: pageRoute<{
-    workspaceId: string;
-    memberId: string;
-  }>('/workspace/:workspaceId/members/:memberId'),
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
   // workspaceTransactions: pageRoute<{ workspaceId: string }>(
   //   'workspace/:WorkspaceId/transaction/me',

@@ -122,6 +122,7 @@ const useChangeMember = () => {
       title: 'Add member',
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
+      isEditMember,
     },
     [MemberTabState.PERMISSION]: {
       isValid: permissionForm.formState.isValid || editForm.formState.isValid,
@@ -133,6 +134,7 @@ const useChangeMember = () => {
       title: isEditMember ? 'Edit member' : 'Add member',
       tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
       handleTertiaryAction: handleDeleteMember,
+      isEditMember,
     },
     [MemberTabState.SUCCESS]: {
       isValid: true,
@@ -144,6 +146,7 @@ const useChangeMember = () => {
       title: isEditMember ? 'Member updated' : 'Member added',
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
+      isEditMember,
     },
   };
 
@@ -154,6 +157,11 @@ const useChangeMember = () => {
     memberRequest,
     permissionsRequest,
     handleClose,
+    dialog: {
+      title: isEditMember ? 'Edit member' : 'Add member',
+      description: isEditMember ? 'Edit member' : 'Add member',
+      hiddenAlgumacoisa: isEditMember,
+    },
     form: {
       memberForm,
       permissionForm,

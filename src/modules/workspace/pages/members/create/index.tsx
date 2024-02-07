@@ -7,17 +7,15 @@ import {
   StepProgress,
 } from '@/components';
 import { CreateContactDialog } from '@/modules/addressBook';
-import {
-  EditMembersForm,
-  MemberAddressForm,
-} from '@/modules/workspace/components';
+import { MemberAddressForm } from '@/modules/workspace/components';
+import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
 import {
   MemberTabState,
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
 
 const CreateMemberPage = () => {
-  const { form, handleClose, tabs, addressBook } = useChangeMember();
+  const { form, handleClose, tabs, addressBook, dialog } = useChangeMember();
   const { formState, memberForm, permissionForm } = form;
 
   const TabsPanels = (
@@ -26,7 +24,7 @@ const CreateMemberPage = () => {
         <MemberAddressForm form={memberForm} addressBook={addressBook} />
       </TabPanel>
       <TabPanel p={0}>
-        <EditMembersForm form={permissionForm} />
+        <MemberPermissionForm form={permissionForm} />
       </TabPanel>
       <TabPanel p={0}>
         <FeedbackSuccess
@@ -45,10 +43,9 @@ const CreateMemberPage = () => {
         isLoading={addressBook.createContactRequest.isLoading}
         isEdit={false}
       />
-
       <Dialog.Header
         maxW={420}
-        title="Add Member"
+        title={dialog.title}
         description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
         hidden={tabs.is(MemberTabState.SUCCESS)}
       />
