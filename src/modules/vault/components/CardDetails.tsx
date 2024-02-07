@@ -19,7 +19,7 @@ import { Pages } from '@/modules/core/routes';
 import { useWorkspace } from '@/modules/workspace';
 
 import { AddressCopy } from '../../../components/addressCopy';
-import { UseVaultDetailsReturn } from '../hooks/details';
+import { useVaultDetails, UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 
 export interface CardDetailsProps {
@@ -35,6 +35,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace } = useWorkspace();
+  const { vault: vaultDetails } = useVaultDetails();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
@@ -165,15 +166,24 @@ const CardDetails = (props: CardDetailsProps) => {
                         }),
                       )
                     }
-                    isDisabled={!vault?.hasBalance}
+                    isDisabled={
+                      !vault?.hasBalance ||
+                      vaultDetails.transactions.isPendingSigner
+                    }
                     minW={130}
                     variant="primary"
                   >
                     Send
                   </Button>
-                  <Text variant="description" fontSize="xs">
-                    Send single or batch <br /> payments with multi assets.
-                  </Text>
+                  {vault.transactions.isPendingSigner ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      This vault has pending transactions.
+                    </Text>
+                  ) : (
+                    <Text variant="description" fontSize="xs">
+                      Send single or batch <br /> payments with multi assets.
+                    </Text>
+                  )}
                 </VStack>
               </VStack>
             </HStack>

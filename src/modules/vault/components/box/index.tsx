@@ -20,6 +20,7 @@ interface VaultBoxPropx {
   onChangeVault: () => void;
   onCreateTransaction: () => void;
   isLoading?: boolean;
+  isPending?: boolean;
   hasBalance?: boolean;
   hasPermission?: boolean;
 }
@@ -51,6 +52,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     address,
     fullName,
     isLoading,
+    isPending,
     hasBalance,
     hasPermission,
     onChangeVault,
@@ -108,11 +110,16 @@ const VaultBox = (props: VaultBoxPropx) => {
             variant="primary"
             fontWeight="bold"
             onClick={onCreateTransaction}
-            isDisabled={!hasBalance}
+            isDisabled={!hasBalance || isPending}
             leftIcon={<FiPlusSquare fontSize={22} />}
           >
             Create transaction
           </Button>
+          {isPending && (
+            <Text variant="description" mt={2} color="error.500">
+              This vault has pending transactions.
+            </Text>
+          )}
         </Box>
       )}
     </Box>

@@ -28,6 +28,10 @@ const useVaultDetails = () => {
     params.vaultId!,
   ]);
 
+  useMemo(() => {
+    pendingSignerTransactions.refetch();
+  }, [predicate, params]);
+
   const {
     assets,
     ethBalance,
@@ -66,6 +70,7 @@ const useVaultDetails = () => {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
+        isPendingSigner: Number(pendingSignerTransactions.data) > 0 ?? false,
       },
     },
     assets: {
