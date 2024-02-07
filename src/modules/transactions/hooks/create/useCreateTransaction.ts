@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useListContactsRequest } from '@/modules/addressBook';
 import {
   invalidateQueries,
   useBsafeCreateTransaction,
@@ -17,6 +18,10 @@ import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+}
+
+interface NickRecord {
+  [key: string]: string;
 }
 
 const useTransactionAccordion = () => {
@@ -37,8 +42,22 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
   const toast = useToast();
-
   const accordion = useTransactionAccordion();
+  const { data } = useListContactsRequest();
+
+  const [nicks, setNicks] = useState<NickRecord>({});
+
+  //Transaction
+  useMemo(() => {
+    if (data) {
+      const nicks: NickRecord = data.reduce((acc, contact) => {
+        acc[contact.user.address] = contact.nickname;
+        return acc;
+      }, {});
+      //Adding nicknames to the state for use in TransactionsAccordion
+      setNicks(nicks);
+    }
+  }, [data]);
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -104,6 +123,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     vault: vaultDetails,
     assets: vaultAssets,
+    nicks,
     navigate,
     accordion,
     handleClose,
