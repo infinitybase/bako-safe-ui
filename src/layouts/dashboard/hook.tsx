@@ -17,15 +17,15 @@ const useSidebar = () => {
   const { account } = useFuelAccount();
   const { currentWorkspace } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
-  const transactionListRequest = useTransactionListRequest(params.vaultId!);
+  const { data: transactions } = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
   const pendingTransactions = useMemo(() => {
     return waitingSignatures({
       account,
-      transactions: transactionListRequest.data ?? [],
+      transactions: transactions ?? [],
     });
-  }, [account, params.vaultId, transactionListRequest.data]);
+  }, [account, params.vaultId, transactions]);
 
   const checkPathname = (path: string) => location.pathname === path;
 
@@ -59,9 +59,9 @@ const useSidebar = () => {
     menuItems,
     vaultAssets,
     transactionListRequest: {
-      ...transactionListRequest,
+      ...transactions,
       pendingTransactions,
-      hasTransactions: !!transactionListRequest.data?.length,
+      hasTransactions: !!transactions?.length,
     },
     vaultRequest: vaultDetailsRequest,
   };

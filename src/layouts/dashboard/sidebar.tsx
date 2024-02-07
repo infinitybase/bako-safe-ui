@@ -7,7 +7,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { useWorkspace } from '@/modules';
+import { useVaultDetails, useWorkspace } from '@/modules';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
@@ -25,6 +25,8 @@ const Sidebar = () => {
     vaultRequest,
     transactionListRequest,
   } = useSidebar();
+
+  const { vault } = useVaultDetails();
 
   const { hasPermission } = useWorkspace();
 
@@ -55,6 +57,7 @@ const Sidebar = () => {
         isLoading={vaultRequest.isLoading}
         onChangeVault={drawer.onOpen}
         hasBalance={vaultAssets.hasBalance}
+        isPending={vault.transactions.isPendingSigner}
         hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
         onCreateTransaction={() => {
           route.navigate(
