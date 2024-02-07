@@ -16,11 +16,16 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, ErrorIcon } from '@/components';
-import { AddressUtils, Member, Pages, Workspace } from '@/modules/core';
+import {
+  AddressUtils,
+  Member,
+  Pages,
+  PermissionRoles,
+  Workspace,
+} from '@/modules/core';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
@@ -41,6 +46,11 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
     member,
   );
 
+  //TODO: Use this validation to delete button
+  const isEditable =
+    WorkspacePermissionUtils.permissions[PermissionRoles.OWNER].title !==
+    permission.title;
+
   return (
     <Card w="full" bgColor="dark.300" key={member.id}>
       <HStack w="full" justifyContent="space-between">
@@ -57,15 +67,17 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             {permission?.title}
           </Badge>
         </Center>
-        <Button
-          size="sm"
-          variant="secondary"
-          bgColor="dark.100"
-          border="none"
-          onClick={() => onEdit(member.id)}
-        >
-          Edit
-        </Button>
+        {isEditable && (
+          <Button
+            size="sm"
+            variant="secondary"
+            bgColor="dark.100"
+            border="none"
+            onClick={() => onEdit(member.id)}
+          >
+            Edit
+          </Button>
+        )}
       </HStack>
     </Card>
   );
