@@ -1,4 +1,3 @@
-import { TransactionStatus } from 'bsafe';
 import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -25,14 +24,13 @@ const useVaultDetails = () => {
     predicateInstance!,
   );
 
-  const isPendingSignerInVault = !!vaultTransactionsRequest.transactions?.find(
-    (transactions) =>
-      transactions.status === TransactionStatus.AWAIT_REQUIREMENTS,
-  );
-
   const pendingSignerTransactions = useTransactionsSignaturePending([
     params.vaultId!,
   ]);
+
+  useMemo(() => {
+    pendingSignerTransactions.refetch();
+  }, [predicate, params]);
 
   const {
     assets,
@@ -72,7 +70,7 @@ const useVaultDetails = () => {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
-        isPendingSigner: isPendingSignerInVault,
+        isPendingSigner: Number(pendingSignerTransactions.data) > 0 ?? false,
       },
     },
     assets: {

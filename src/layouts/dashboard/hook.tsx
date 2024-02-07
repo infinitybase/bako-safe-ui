@@ -5,8 +5,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useWorkspace } from '@/modules';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
-import { useTransactionListRequest } from '@/modules/transactions/hooks';
-import { waitingSignatures } from '@/modules/transactions/utils';
+import {
+  useTransactionListRequest,
+  useTransactionsSignaturePending,
+} from '@/modules/transactions/hooks';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 const useSidebar = () => {
@@ -20,11 +22,12 @@ const useSidebar = () => {
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
 
-  const pendingTransactions = useMemo(() => {
-    return waitingSignatures({
-      account,
-      transactions: transactions ?? [],
-    });
+  const pendingSignerTransactions = useTransactionsSignaturePending([
+    params.vaultId!,
+  ]);
+
+  useMemo(() => {
+    pendingSignerTransactions.refetch();
   }, [account, params.vaultId, transactions]);
 
   const checkPathname = (path: string) => location.pathname === path;
@@ -60,7 +63,7 @@ const useSidebar = () => {
     vaultAssets,
     transactionListRequest: {
       ...transactions,
-      pendingTransactions,
+      pendingTransactions: Number(pendingSignerTransactions.data) > 0 ?? false,
       hasTransactions: !!transactions?.length,
     },
     vaultRequest: vaultDetailsRequest,
