@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
@@ -16,6 +17,30 @@ const useHome = () => {
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
+
+  const [firstRender, setFirstRender] = useState<boolean>(false);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.WORKSPACE)!,
+    ).id;
+
+    if (
+      firstRender &&
+      homeDataRequest.data?.workspace.id !== workspacesInCookie
+    ) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (
+      !firstRender &&
+      homeDataRequest.data?.workspace.id === workspacesInCookie
+    ) {
+      setHasSkeleton(false);
+    }
+  }, [homeDataRequest.data?.workspace.id]);
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -40,6 +65,9 @@ const useHome = () => {
       loadingTransactions: homeDataRequest.isLoading,
     },
     navigate,
+    setFirstRender,
+    hasSkeleton,
+    firstRender,
     pendingSignerTransactions,
   };
 };

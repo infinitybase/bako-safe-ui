@@ -11,6 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -41,6 +42,8 @@ const HomePage = () => {
     },
     transactionsRequest: { transactions, loadingTransactions },
     pendingSignerTransactions,
+    setFirstRender,
+    hasSkeleton,
   } = useHome();
 
   const { currentWorkspace } = useWorkspace();
@@ -49,10 +52,19 @@ const HomePage = () => {
   const hasVaults = recentVaults && recentVaults?.length;
   const hasTransactions = transactions?.length;
 
+  useEffect(() => {
+    setFirstRender(false);
+    console.log('alo');
+  }, []);
+
+  useEffect(() => {
+    console.log('has', hasSkeleton);
+  }, [hasSkeleton]);
+
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       {!hasVaults ? (
-        <CustomSkeleton isLoaded={!isLoading}>
+        <CustomSkeleton isLoaded={hasSkeleton}>
           <EmptyVault />
         </CustomSkeleton>
       ) : (
@@ -79,7 +91,7 @@ const HomePage = () => {
               </Button>
             </Box>
           </HStack>
-          <CustomSkeleton isLoaded={!isLoading}>
+          <CustomSkeleton isLoaded={hasSkeleton}>
             <HStack spacing={6} w="full" h="full">
               <ActionCard.Container
                 onClick={() =>
@@ -158,7 +170,7 @@ const HomePage = () => {
 
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!isLoading}>
+                    <CustomSkeleton isLoaded={hasSkeleton}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           extra={extraCount}
@@ -199,7 +211,7 @@ const HomePage = () => {
                   Transactions
                 </Text>
               </HStack>
-              <CustomSkeleton isLoaded={!isLoading}>
+              <CustomSkeleton isLoaded={hasSkeleton}>
                 <EmptyTransaction />
               </CustomSkeleton>
             </VStack>
@@ -234,7 +246,7 @@ const HomePage = () => {
                   );
 
                   return (
-                    <CustomSkeleton isLoaded={!isLoading} key={transaction.id}>
+                    <CustomSkeleton isLoaded={hasSkeleton} key={transaction.id}>
                       <TransactionCard.Container
                         status={status}
                         details={
