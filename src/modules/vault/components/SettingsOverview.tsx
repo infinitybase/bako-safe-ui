@@ -24,11 +24,12 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+  blockedTransfers: boolean;
 }
 
 const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
-  const { vault, store } = props;
+  const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
   const { currentWorkspace } = useWorkspace();
   if (!vault) return;
@@ -132,6 +133,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       <Button
                         minW={130}
                         variant="primary"
+                        isDisabled={!vault?.hasBalance || blockedTransfers}
                         onClick={() =>
                           navigate(
                             Pages.createTransaction({
@@ -143,9 +145,16 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       >
                         Send
                       </Button>
-                      <Text variant="description" fontSize="xs">
-                        Send single or batch <br /> payments with multi assets.
-                      </Text>
+                      {blockedTransfers ? (
+                        <Text variant="description" mt={2} color="error.500">
+                          This vault has pending transactions.
+                        </Text>
+                      ) : (
+                        <Text variant="description" fontSize="xs">
+                          Send single or batch <br /> payments with multi
+                          assets.
+                        </Text>
+                      )}
                     </VStack>
                   </HStack>
                 </VStack>

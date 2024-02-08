@@ -93,7 +93,11 @@ const VaultSettingsPage = () => {
       </HStack>
 
       <VStack mb={14} alignItems="flex-start" w="100%" spacing={12}>
-        <SettingsOverview vault={vault} store={store} />
+        <SettingsOverview
+          vault={vault}
+          store={store}
+          blockedTransfers={vault.transactions.isPendingSigner}
+        />
         <SettingsSigners vault={vault} />
       </VStack>
     </Box>
