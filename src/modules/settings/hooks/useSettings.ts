@@ -54,7 +54,10 @@ const useSettings = ({ onOpen, onClose }: UseSettingsProps) => {
           onSuccess: async () => {
             queryClient.invalidateQueries([MY_SETTINGS]);
             onClose?.();
-            successToast({});
+            successToast({
+              title: 'Settings updated',
+              description: 'Your settings have been updated successfully.',
+            });
           },
         },
       );

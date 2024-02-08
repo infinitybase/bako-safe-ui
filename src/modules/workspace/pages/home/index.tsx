@@ -205,8 +205,8 @@ const WorkspacePage = () => {
                     {(visibleBalance && worksapceBalance.balance?.balanceUSD) ??
                       0}
                   </Heading>
-                  <Text variant="description" fontSize="md">
-                    {visibleBalance && 'USD'}
+                  <Text variant="description" fontSize="md" mr={1}>
+                    {visibleBalance ? 'USD' : '******'}
                   </Text>
                   {visibleBalance ? (
                     <Box
@@ -250,7 +250,7 @@ const WorkspacePage = () => {
                   </VStack>
                 </Card>
               ) : (
-                <VStack h="full" spacing={1} justifyContent="center">
+                <VStack w="full" h="full" spacing={1} justifyContent="center">
                   {/*todo: 
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data

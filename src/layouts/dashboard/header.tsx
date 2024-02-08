@@ -149,8 +149,16 @@ const WorkspaceBox = ({
     <Flex w="full" alignItems="center" justifyContent="space-between">
       <Flex>
         {isMyWorkspace && (
-          <Text fontWeight="semibold" color="grey.200">
-            Access workspace
+          <Text
+            fontWeight="semibold"
+            color="grey.200"
+            border="2px"
+            padding={2}
+            borderRadius="lg"
+            borderColor="grey.500"
+            _hover={{ opacity: 0.8 }}
+          >
+            Choose a workspace
           </Text>
         )}
         {!isMyWorkspace && (

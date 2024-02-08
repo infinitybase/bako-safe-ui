@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
@@ -25,6 +24,7 @@ const workspaceRoutes = (
         </AuthRoute>
       }
     />
+
     <Route
       path={Pages.updateMemberWorkspace()}
       element={

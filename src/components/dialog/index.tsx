@@ -2,6 +2,7 @@ import {
   DialogActions,
   DialogPrimaryAction,
   DialogSecondaryAction,
+  DialogTertiaryAction,
 } from './actions';
 import { DialogBody } from './body';
 import { DialogHeader } from './header';
@@ -15,8 +16,9 @@ const Dialog = {
   Actions: DialogActions,
   PrimaryAction: DialogPrimaryAction,
   SecondaryAction: DialogSecondaryAction,
+  TertiaryAction: DialogTertiaryAction,
   Section: DialogSection,
 };
 
-export type { DialogModalProps };
 export { Dialog };
+export type { DialogModalProps };
