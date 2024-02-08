@@ -24,7 +24,7 @@ export class SettingsService {
   }
 
   static async getSettings() {
-    const { data } = await api.get<GetSettingsResponse>(`/user/me`);
+    const { data } = await api.get<GetSettingsResponse>(`/user/info`);
     return data;
   }
 }

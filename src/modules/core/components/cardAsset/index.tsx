@@ -12,6 +12,7 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
     assetId: NativeAssetId,
     amount: `0`,
   };
+
   return (
     <Card
       bgColor="dark.300"
@@ -21,11 +22,19 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
       borderRadius={10}
       px={6}
       py={4}
-      w={140}
-      h={170}
+      w="full"
+      h={130}
       {...rest}
     >
-      <VStack spacing={1} alignItems="start" justifyContent="space-between">
+      <VStack
+        h="full"
+        spacing={1}
+        display="flex"
+        alignItems="center"
+        flexDirection="row"
+        justifyContent="center"
+        gap={4}
+      >
         <Avatar
           w={10}
           h={10}
@@ -34,10 +43,6 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
         />
 
         <VStack flex={1} spacing={1.5} alignItems="flex-start">
-          <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
-            {asset.amount ?? defaultAsset.amount}
-          </Text>
-
           <Text color="grey.500" fontSize={15} noOfLines={2}>
             {asset.name ?? defaultAsset.name}
           </Text>
@@ -46,6 +51,10 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
             {asset.slug ?? defaultAsset.slug}
           </Text>
         </VStack>
+
+        <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
+          {asset.amount ?? defaultAsset.amount}
+        </Text>
       </VStack>
     </Card>
   );

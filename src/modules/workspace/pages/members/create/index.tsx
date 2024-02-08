@@ -1,20 +1,17 @@
 import {
+  Avatar,
   Badge,
   Box,
-  Divider,
-  Heading,
+  Card,
+  Center,
+  Flex,
   HStack,
-  Link,
-  Radio,
-  RadioGroup,
-  Stack,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
-import { Controller } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import {
   Dialog,
@@ -22,161 +19,92 @@ import {
   SquarePlusIcon,
   StepProgress,
 } from '@/components';
-import { AutoComplete } from '@/components/autocomplete';
+import { TrashIcon } from '@/components/icons/trash';
 import { CreateContactDialog } from '@/modules/addressBook';
+import { AddressUtils } from '@/modules/core';
+import { MemberAddressForm } from '@/modules/workspace/components';
+import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
+import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import {
   MemberTabState,
-  UseChangeMember,
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
-import { AddressBookUtils } from '@/utils/address-book';
 
-interface MemberAddressForm {
-  form: UseChangeMember['form']['memberForm'];
-  addressBook: UseChangeMember['addressBook'];
-}
+const MemberTab = () => {
+  const { workspaceId, memberId } = useParams();
 
-/* TODO: Move to components folder */
-const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { contacts } = addressBook.contactsPaginatedRequest;
-  const address = form.watch('address');
+  const request = useGetWorkspaceRequest(workspaceId ?? '');
+  const workspace = request.workspace;
+  const member = request.workspace?.members.find(
+    (member) => member.id === memberId,
+  );
 
-  const options =
-    contacts &&
-    AddressBookUtils.removeDuplicates(contacts)
-      ?.filter(
-        ({ user, nickname }) =>
-          !!address &&
-          (user.address.includes(address) ||
-            nickname.toLowerCase().includes(address.toLowerCase())),
-      )
-      ?.map(({ user, nickname }) => ({
-        value: user.address,
-        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-      }));
-
-  const bottomAction = (
-    <Box mt={2}>
-      <Text color="grey.200" fontSize={12}>
-        Do you wanna{' '}
-        <Link
-          color="brand.500"
-          onClick={() =>
-            addressBook.handleOpenDialog?.({
-              address: form.getValues('address'),
-            })
-          }
-        >
-          add
-        </Link>{' '}
-        this address in your address book?
-      </Text>
-    </Box>
+  const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
+    workspace!,
+    member!,
   );
 
   return (
-    <Box w="full">
-      <Dialog.Section
-        title={
-          <Heading fontSize="md" color="grey.200">
-            Member address
-          </Heading>
-        }
-        description="Who it will be a new member in your workspace?"
-        mb={8}
-      />
-      <Controller
-        name="address"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <AutoComplete
-            index={0}
-            label="Name or address"
-            value={field.value}
-            onInputChange={addressBook.search.handler}
-            onChange={field.onChange}
-            errorMessage={fieldState.error?.message}
-            isInvalid={fieldState.invalid}
-            options={options}
-            isLoading={!addressBook.contactsPaginatedRequest.isSuccess}
-            bottomAction={bottomAction}
-            inView={addressBook.inView}
+    <Card
+      w="full"
+      bgColor="dark.300"
+      p={4}
+      mb={5}
+      border="1px"
+      borderColor="dark.100"
+      key={member?.id}
+    >
+      <HStack w="full" justifyContent="space-between">
+        <Center gap={4}>
+          <Avatar
+            size="md"
+            fontSize="md"
+            color="white"
+            bg="grey.900"
+            variant="roundedSquare"
+            name={member?.name ?? member?.address}
           />
-        )}
-      />
-    </Box>
-  );
-};
-
-interface MemberPermissionForm {
-  form: UseChangeMember['form']['permissionForm'];
-}
-
-/* TODO: Move to components folder */
-const MemberPermissionForm = ({ form }: MemberPermissionForm) => {
-  return (
-    <Box w="full">
-      <Dialog.Section
-        title={
-          <Heading fontSize="md" color="grey.200">
-            Choose the user Permission
-          </Heading>
-        }
-        description=""
-        mb={8}
-      />
-      <Controller
-        name="permission"
-        control={form.control}
-        render={({ field }) => (
-          <RadioGroup
-            value={field.value}
-            onChange={field.onChange}
-            defaultValue={field.value}
+          <Flex
+            mr={1}
+            h="14"
+            direction="column"
+            alignItems="start"
+            justifyContent="space-between"
           >
-            <Stack>
-              {WorkspacePermissionUtils.permissionsValues.map((permission) => (
-                <React.Fragment key={permission.value}>
-                  <Radio
-                    my={2}
-                    borderWidth={1}
-                    borderColor="grey.500"
-                    value={permission.value}
-                  >
-                    <HStack>
-                      <Box w="full" maxW="80px">
-                        <Badge variant={permission.variant}>
-                          {permission.title}
-                        </Badge>
-                      </Box>
-                      <Text variant="description">
-                        {permission.description}
-                      </Text>
-                    </HStack>
-                  </Radio>
-                  <Divider borderColor="dark.100" />
-                </React.Fragment>
-              ))}
-            </Stack>
-          </RadioGroup>
-        )}
-      />
-    </Box>
+            {member?.name ? (
+              <Text fontWeight="semibold" color="grey.200">
+                {member?.name}
+              </Text>
+            ) : (
+              <Text
+                fontWeight={!member?.name ? 'semibold' : 'normal'}
+                color={!member?.name ? 'grey.200' : 'grey.500'}
+              >
+                {AddressUtils.format(member?.address ?? '')}
+              </Text>
+            )}
+            <Badge fontSize="xs" p={1} variant={permission?.variant}>
+              {permission?.title}
+            </Badge>
+          </Flex>
+        </Center>
+      </HStack>
+    </Card>
   );
 };
 
 const CreateMemberPage = () => {
-  const { form, handleClose, tabs, addressBook } = useChangeMember();
+  const { form, handleClose, tabs, addressBook, dialog } = useChangeMember();
   const { formState, memberForm, permissionForm } = form;
 
   const TabsPanels = (
     <TabPanels>
-      <TabPanel p={0}>
+      {/* <TabPanel p={0}>
         <MemberAddressForm form={memberForm} addressBook={addressBook} />
-      </TabPanel>
+      </TabPanel> */}
       <TabPanel p={0}>
-        <MemberPermissionForm form={permissionForm} />
+        <MemberPermissionForm form={permissionForm} formState={formState} />
       </TabPanel>
       <TabPanel p={0}>
         <FeedbackSuccess
@@ -197,37 +125,81 @@ const CreateMemberPage = () => {
       />
 
       <Dialog.Header
-        maxW={420}
-        title="Add Member"
-        description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
-        hidden={tabs.is(MemberTabState.SUCCESS)}
+        maxW={500}
+        title={dialog.title}
+        description={dialog.description}
+        hidden={tabs.is(MemberTabState.FEEDBACK)}
       />
 
-      <Dialog.Body mb={9} maxW={420}>
-        <Box hidden={tabs.is(MemberTabState.SUCCESS)} mb={12}>
-          <StepProgress length={tabs.length} value={tabs.tab} />
-        </Box>
+      {formState.isEditMember && (
+        <Tabs
+          maxW={500}
+          w="full"
+          pr={12}
+          hidden={tabs.is(MemberTabState.FEEDBACK)}
+        >
+          <MemberTab />
+        </Tabs>
+      )}
+
+      {!formState.isEditMember && !tabs.is(MemberTabState.FEEDBACK) && (
+        <>
+          <Box maxW={500} w={500} mb={10} pr={12}>
+            <StepProgress length={tabs.length} value={tabs.tab} />
+          </Box>
+          <MemberAddressForm form={memberForm} addressBook={addressBook} />
+        </>
+      )}
+
+      <Dialog.Body
+        mb={8}
+        maxW={500}
+        pr={12}
+        maxH={520}
+        overflowY="scroll"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            height: '5px' /* Adjust the height of the scrollbar */,
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '20px',
+            height: '20px' /* Adjust the height of the scrollbar thumb */,
+          },
+        }}
+      >
         <Tabs index={tabs.tab} isLazy colorScheme="green">
           {TabsPanels}
         </Tabs>
-      </Dialog.Body>
 
-      <Dialog.Actions
-        maxW={420}
-        hideDivider={tabs.is(MemberTabState.PERMISSION)}
-      >
-        <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
-          {formState?.secondaryAction}
-        </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
-          onClick={formState?.handlePrimaryAction}
-          leftIcon={<SquarePlusIcon />}
-          isDisabled={!formState?.isValid}
-          isLoading={formState?.isLoading}
-        >
-          {formState.primaryAction}
-        </Dialog.PrimaryAction>
-      </Dialog.Actions>
+        <Dialog.Actions maxW={500}>
+          <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
+            {formState?.secondaryAction}
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction
+            onClick={formState?.handlePrimaryAction}
+            leftIcon={<SquarePlusIcon />}
+            isDisabled={!formState?.isValid}
+            isLoading={formState?.isLoading}
+          >
+            {formState.primaryAction}
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
+        <Dialog.Actions maxW={500}>
+          {formState.tertiaryAction && (
+            <Dialog.TertiaryAction
+              display="block"
+              onClick={formState.handleTertiaryAction}
+              leftIcon={<TrashIcon />}
+              isDisabled={!formState?.tertiaryAction}
+              isLoading={formState?.isLoading}
+            >
+              {formState.tertiaryAction}
+            </Dialog.TertiaryAction>
+          )}
+        </Dialog.Actions>
+      </Dialog.Body>
     </Dialog.Modal>
   );
 };

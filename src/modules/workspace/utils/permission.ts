@@ -52,7 +52,7 @@ class WorkspacePermissionUtils {
       title: 'Viewer',
       description:
         'Can only access and view the contents of all vaults in the workspace.',
-      variant: 'grey',
+      variant: 'gray',
     },
   };
 
@@ -67,7 +67,7 @@ class WorkspacePermissionUtils {
     }));
 
   static getPermissionInWorkspace(workspace: Workspace, member: Member) {
-    const permission = workspace.permissions[member.id];
+    const permission = workspace?.permissions[member.id];
 
     if (!permission) return null;
 

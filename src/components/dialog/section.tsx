@@ -11,7 +11,7 @@ const DialogSection = ({
   description,
   ...stackProps
 }: DialogSectionProps) => (
-  <VStack spacing={4} alignItems="flex-start" {...stackProps}>
+  <VStack spacing={1} alignItems="flex-start" {...stackProps}>
     {title}
     {description && <Text variant="description">{description}</Text>}
   </VStack>

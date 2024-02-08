@@ -10,7 +10,6 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import {
@@ -74,7 +73,7 @@ const CreateWorkspacePage = () => {
         <Dialog.Header
           maxW={420}
           title="Create Workspace"
-          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+          description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
         />
       )}
 
@@ -88,6 +87,7 @@ const CreateWorkspacePage = () => {
           <TabPanels>
             <TabPanel p={0}>
               <OnboardingStep
+                tabs={tabs}
                 onCancel={handleClose}
                 onConfirm={() => tabs.set(CreateWorkspaceTabState.FORM)}
               />
@@ -98,10 +98,10 @@ const CreateWorkspacePage = () => {
             <TabPanel p={0}>
               <FeedbackSuccess
                 title="All set!!"
-                description="The vault template is now ready for use whenever you need to stramline
+                description="The vault template is now ready for use whenever you need to streamline
         your workflow!"
-                primaryAction="Conclude"
-                secondaryAction="Configure Members"
+                primaryAction="Go to my workspace"
+                secondaryAction="Members Settings"
                 onPrimaryAction={handleGoToWorkspace}
                 onSecondaryAction={handleConfigureMembers}
                 showAction
