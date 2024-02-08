@@ -24,6 +24,15 @@ const workspaceRoutes = (
         </AuthRoute>
       }
     />
+
+    <Route
+      path={Pages.updateMemberWorkspace()}
+      element={
+        <AuthRoute>
+          <CreateMemberPage />
+        </AuthRoute>
+      }
+    />
     <Route element={<DashboardLayoutRouter />}>
       <Route
         path={Pages.workspace()}
