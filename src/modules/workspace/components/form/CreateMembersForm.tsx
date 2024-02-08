@@ -1,7 +1,6 @@
-import { Box, Heading, Link, Text } from '@chakra-ui/react';
+import { Box, Divider, Link, Text } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { AddressBookUtils } from '@/utils';
 
@@ -51,8 +50,8 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   );
 
   return (
-    <Box w="full">
-      <Dialog.Section
+    <Box w="full" maxW={500} pr={12}>
+      {/* <Dialog.Section
         title={
           <Heading fontSize="md" color="grey.200">
             Member address
@@ -60,7 +59,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
         }
         description="Who it will be a new member in your workspace?"
         mb={8}
-      />
+      /> */}
       <Controller
         name="address"
         control={form.control}
@@ -80,6 +79,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
           />
         )}
       />
+      <Divider borderColor="dark.100" my={9} />
     </Box>
   );
 };

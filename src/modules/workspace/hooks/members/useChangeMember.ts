@@ -7,6 +7,7 @@ import {
   Pages,
   PermissionRoles,
   useTab,
+  Workspace,
 } from '@/modules/core';
 
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
@@ -18,9 +19,8 @@ import {
 } from './useChangeMemberRequest';
 
 export enum MemberTabState {
-  ADDRESS = 0,
-  PERMISSION = 1,
-  SUCCESS = 2,
+  FORM = 0,
+  FEEDBACK = 1,
 }
 
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
@@ -32,9 +32,7 @@ const useChangeMember = () => {
 
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
-    defaultTab: isEditMember
-      ? MemberTabState.PERMISSION
-      : MemberTabState.ADDRESS,
+    defaultTab: MemberTabState.FORM,
   });
 
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
@@ -56,32 +54,62 @@ const useChangeMember = () => {
   const handleClose = () =>
     navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
 
-  const handleAddMember = memberForm.handleSubmit((data) => {
-    memberRequest.mutate(data.address, {
-      onSuccess: () => {
-        tabs.set(MemberTabState.PERMISSION);
-        workspaceRequest.refetch();
-      },
-    });
-  });
+  // const handleAddMember = memberForm.handleSubmit((data) => {
+  //   memberRequest.mutate(data.address, {
+  //     onSuccess: () => {
+  //       tabs.set(MemberTabState.FORM);
+  //       workspaceRequest.refetch();
+  //     },
+  //   });
+  // });
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
-    const workspace = workspaceRequest.workspace!;
     const memberAddress = memberForm.getValues('address');
+    const permission = data.permission as PermissionRoles;
+
+    // If has memberAddress it means that comes from the memberForm(creation)
+    if (memberAddress) {
+      memberRequest.mutate(memberAddress, {
+        onSettled: (data?: Workspace) => {
+          workspaceRequest.refetch().then(() => {
+            const newMember = data?.members.find(
+              (member) => member.address === memberAddress,
+            );
+            if (newMember) {
+              permissionsRequest.mutate(
+                {
+                  member: newMember.id,
+                  permissions: defaultPermissions[permission],
+                },
+                {
+                  onSuccess: () => {
+                    tabs.set(MemberTabState.FEEDBACK);
+                    workspaceRequest.refetch();
+                  },
+                },
+              );
+            }
+          });
+        },
+      });
+    }
+
+    const workspace = workspaceRequest.workspace!;
     const member = workspace.members.find(
       (member) => member.address === memberAddress,
     );
-    const permission = data.permission as PermissionRoles;
-
+    // If !member and !memberAddress it means that comes from the editForm
     if (!member) return;
-
     permissionsRequest.mutate(
       {
         member: member.id,
         permissions: defaultPermissions[permission],
       },
       {
-        onSuccess: () => tabs.set(MemberTabState.SUCCESS),
+        onSuccess: () => {
+          tabs.set(MemberTabState.FEEDBACK);
+          workspaceRequest.refetch();
+        },
       },
     );
   });
@@ -106,37 +134,37 @@ const useChangeMember = () => {
   };
 
   const clearSteps = () => {
-    tabs.set(MemberTabState.ADDRESS);
+    tabs.set(MemberTabState.FORM);
     memberForm.setValue('address', '');
     permissionForm.setValue('permission', '');
   };
 
   const formState = {
-    [MemberTabState.ADDRESS]: {
-      isValid: memberForm.formState.isValid,
-      primaryAction: 'Continue',
-      secondaryAction: 'Cancel',
-      handlePrimaryAction: handleAddMember,
-      handleSecondaryAction: handleClose,
-      isLoading: memberRequest.isLoading,
-      title: 'Add member',
-      tertiaryAction: undefined,
-      handleTertiaryAction: undefined,
-      isEditMember,
-    },
-    [MemberTabState.PERMISSION]: {
+    // [MemberTabState.ADDRESS]: {
+    //   isValid: memberForm.formState.isValid,
+    //   primaryAction: 'Continue',
+    //   secondaryAction: 'Cancel',
+    //   handlePrimaryAction: handleAddMember,
+    //   handleSecondaryAction: handleClose,
+    //   isLoading: memberRequest.isLoading,
+    //   title: 'Add member',
+    //   tertiaryAction: undefined,
+    //   handleTertiaryAction: undefined,
+    //   isEditMember,
+    // },
+    [MemberTabState.FORM]: {
       isValid: permissionForm.formState.isValid || editForm.formState.isValid,
       primaryAction: isEditMember ? 'Update user' : 'Add member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handlePermissions,
       handleSecondaryAction: handleClose,
       isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
-      title: isEditMember ? 'Edit member' : 'Add member',
+      title: isEditMember ? 'Edit member' : 'User permission',
       tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
       handleTertiaryAction: handleDeleteMember,
       isEditMember,
     },
-    [MemberTabState.SUCCESS]: {
+    [MemberTabState.FEEDBACK]: {
       isValid: true,
       primaryAction: 'Conclude',
       secondaryAction: 'Add another member',
@@ -159,8 +187,9 @@ const useChangeMember = () => {
     handleClose,
     dialog: {
       title: isEditMember ? 'Edit member' : 'Add member',
-      description: isEditMember ? 'Edit member' : 'Add member',
-      hiddenAlgumacoisa: isEditMember,
+      description: isEditMember
+        ? 'Manage roles, remove or adjust permissions as needed'
+        : 'Add members, manage roles, remove or adjust permissions as needed',
     },
     form: {
       memberForm,
