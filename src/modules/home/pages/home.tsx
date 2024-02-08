@@ -11,7 +11,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -38,33 +37,21 @@ const HomePage = () => {
     navigate,
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
-      loadingRecentVaults,
     },
-    transactionsRequest: { transactions, loadingTransactions },
+    transactionsRequest: { transactions },
     pendingSignerTransactions,
-    setFirstRender,
     hasSkeleton,
   } = useHome();
 
   const { currentWorkspace } = useWorkspace();
 
-  const isLoading = loadingRecentVaults || loadingTransactions;
   const hasVaults = recentVaults && recentVaults?.length;
   const hasTransactions = transactions?.length;
-
-  useEffect(() => {
-    setFirstRender(false);
-    console.log('alo');
-  }, []);
-
-  useEffect(() => {
-    console.log('has', hasSkeleton);
-  }, [hasSkeleton]);
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       {!hasVaults ? (
-        <CustomSkeleton isLoaded={hasSkeleton}>
+        <CustomSkeleton isLoaded={!hasSkeleton}>
           <EmptyVault />
         </CustomSkeleton>
       ) : (
@@ -91,7 +78,7 @@ const HomePage = () => {
               </Button>
             </Box>
           </HStack>
-          <CustomSkeleton isLoaded={hasSkeleton}>
+          <CustomSkeleton isLoaded={!hasSkeleton}>
             <HStack spacing={6} w="full" h="full">
               <ActionCard.Container
                 onClick={() =>
@@ -170,7 +157,7 @@ const HomePage = () => {
 
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={hasSkeleton}>
+                    <CustomSkeleton isLoaded={!hasSkeleton}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           extra={extraCount}
@@ -211,7 +198,7 @@ const HomePage = () => {
                   Transactions
                 </Text>
               </HStack>
-              <CustomSkeleton isLoaded={hasSkeleton}>
+              <CustomSkeleton isLoaded={!hasSkeleton}>
                 <EmptyTransaction />
               </CustomSkeleton>
             </VStack>

@@ -18,14 +18,13 @@ const useHome = () => {
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
-  const [firstRender, setFirstRender] = useState<boolean>(false);
+  const [firstRender, setFirstRender] = useState<boolean>(true);
   const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
 
   useMemo(() => {
     const workspacesInCookie = JSON.parse(
       CookiesConfig.getCookie(CookieName.WORKSPACE)!,
     ).id;
-
     if (
       firstRender &&
       homeDataRequest.data?.workspace.id !== workspacesInCookie
