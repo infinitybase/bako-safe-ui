@@ -22,6 +22,11 @@ export interface TransactionDetails {
   isSigner: boolean;
 }
 
+export interface ITransactionPending {
+  ofUser: number;
+  transactionsBlocked: boolean;
+}
+
 export interface GetTransactionParams {
   predicateId?: string[];
   to?: string;
@@ -84,6 +89,7 @@ export type GetTransactionsPaginationResponse =
 export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
+export type GetTransactionPendingResponse = ITransactionPending;
 export type CreateTransactionResponse = ITransaction;
 export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;

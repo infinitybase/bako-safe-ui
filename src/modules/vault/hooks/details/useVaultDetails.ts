@@ -70,7 +70,8 @@ const useVaultDetails = () => {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
-        isPendingSigner: Number(pendingSignerTransactions.data) > 0 ?? false,
+        isPendingSigner:
+          pendingSignerTransactions.data?.transactionsBlocked ?? false,
       },
     },
     assets: {

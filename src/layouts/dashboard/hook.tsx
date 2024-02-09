@@ -63,7 +63,8 @@ const useSidebar = () => {
     vaultAssets,
     transactionListRequest: {
       ...transactions,
-      pendingTransactions: Number(pendingSignerTransactions.data) > 0 ?? false,
+      pendingTransactions:
+        pendingSignerTransactions.data?.transactionsBlocked ?? false,
       hasTransactions: !!transactions?.length,
     },
     vaultRequest: vaultDetailsRequest,
