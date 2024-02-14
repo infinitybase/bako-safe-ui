@@ -43,6 +43,7 @@ const AddressBookPage = () => {
     setContactToDelete,
     handleDeleteContact,
     contactToEdit,
+    hasSkeleton,
   } = useAddressBook();
   const { hasPermission, currentWorkspace } = useWorkspace();
 
@@ -167,7 +168,7 @@ const AddressBookPage = () => {
               {contacts?.map(({ id, nickname, user }) => {
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!loadingContacts}>
+                    <CustomSkeleton isLoaded={!hasSkeleton}>
                       <ContactCard
                         nickname={nickname}
                         address={user.address}

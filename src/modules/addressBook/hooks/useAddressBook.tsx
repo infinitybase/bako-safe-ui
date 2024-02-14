@@ -1,7 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,13 +32,15 @@ const useAddressBook = () => {
     id: '',
     nickname: '',
   });
+  const [firsRender, setFirstRender] = useState(true);
+  const [hasSkeleton, setHasSkeleton] = useState(false);
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
   const inView = useInView({ delay: 300 });
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, workspaceHomeRequest } = useWorkspace();
 
   // FORM
   const { form } = useCreateContactForm();
@@ -151,6 +153,19 @@ const useAddressBook = () => {
     contactsPaginatedRequest.fetchNextPage,
   ]);
 
+  useMemo(() => {
+    if (firsRender && contactsPaginatedRequest.isLoading) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    setTimeout(() => {
+      if (!firsRender && contactsPaginatedRequest.isSuccess) {
+        setHasSkeleton(false);
+      }
+    }, 1000);
+  }, [contactsPaginatedRequest.contacts]);
+
   return {
     listContactsRequest: {
       ...listContactsRequest,
@@ -171,6 +186,7 @@ const useAddressBook = () => {
     handleOpenDialog,
     handleDeleteContact,
     setContactToDelete,
+    hasSkeleton,
   };
 };
 
