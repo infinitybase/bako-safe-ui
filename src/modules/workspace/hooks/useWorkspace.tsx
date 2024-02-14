@@ -1,8 +1,8 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
@@ -22,6 +22,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = () => {
   const [visibleBalance, setVisibleBalance] = useState(false);
+  const { workspaceId } = useParams();
   const { account } = useFuelAccount();
   const workspaceDialog = useDisclosure();
   const toast = useNotification();
@@ -50,7 +51,9 @@ const useWorkspace = () => {
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === currentWorkspace.id) return;
+    if (selectedWorkspace.id === currentWorkspace.id) {
+      return;
+    }
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
@@ -74,6 +77,31 @@ const useWorkspace = () => {
     });
   };
 
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+
+  useMemo(() => {
+    // const workspaceInCookie = JSON.parse(
+    //   CookiesConfig.getCookie(WORKSPACE)!,
+    // ).id;
+    if (
+      firstRender &&
+      workspaceId !== workspaceHomeRequest.data?.workspace.id
+    ) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (
+      !firstRender &&
+      workspaceId === workspaceHomeRequest.data?.workspace.id
+    ) {
+      setTimeout(() => {
+        setHasSkeleton(false);
+      }, 1000);
+    }
+  }, [workspaceHomeRequest.data?.workspace.id]);
+
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const isValid =
       requiredRoles.filter((p) => (currentPermissions[p] ?? []).includes('*'))
@@ -91,6 +119,7 @@ const useWorkspace = () => {
     handleWorkspaceSelection,
     navigate,
     workspaceHomeRequest,
+    workspaceId,
     workspaceVaults: {
       recentVaults: workspaceHomeRequest.data?.predicates?.data,
       vaultsMax: vaultsPerPage,
@@ -105,6 +134,7 @@ const useWorkspace = () => {
     hasPermission,
     visibleBalance,
     setVisibleBalance,
+    hasSkeleton,
     pendingSignerTransactions,
   };
 };
