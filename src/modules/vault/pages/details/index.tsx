@@ -45,7 +45,7 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, hasSkeleton } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
 
   // const pendingTransactionSignature = useMemo(
@@ -187,10 +187,7 @@ const VaultDetailsPage = () => {
             );
 
             return (
-              <CustomSkeleton
-                key={transaction.id}
-                isLoaded={!loadingVaultTransactions}
-              >
+              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
@@ -229,7 +226,8 @@ const VaultDetailsPage = () => {
           {!vault.transactions.isLoading && <Box ref={inView.ref} />}
         </TransactionCard.List>
       ) : (
-        !loadingVaultTransactions && (
+        !hasTransactions &&
+        !!vaultTransactions && (
           <Card
             w="full"
             p={20}
