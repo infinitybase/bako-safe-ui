@@ -40,7 +40,7 @@ const useAddressBook = () => {
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const { currentWorkspace, workspaceHomeRequest } = useWorkspace();
+  const { currentWorkspace } = useWorkspace();
 
   // FORM
   const { form } = useCreateContactForm();
@@ -163,7 +163,7 @@ const useAddressBook = () => {
       if (!firsRender && contactsPaginatedRequest.isSuccess) {
         setHasSkeleton(false);
       }
-    }, 1000);
+    }, 500);
   }, [contactsPaginatedRequest.contacts]);
 
   return {
