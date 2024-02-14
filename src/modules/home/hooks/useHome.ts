@@ -5,6 +5,7 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
 
@@ -13,6 +14,7 @@ const useHome = () => {
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
+  const { workspaceHomeRequest } = useWorkspace();
   useListContactsRequest();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
@@ -33,13 +35,20 @@ const useHome = () => {
       setFirstRender(false);
     }
 
-    if (
-      !firstRender &&
-      homeDataRequest.data?.workspace.id === workspacesInCookie
-    ) {
-      setHasSkeleton(false);
-    }
-  }, [homeDataRequest.data?.workspace.id]);
+    setTimeout(() => {
+      if (
+        (!firstRender &&
+          homeDataRequest.data?.workspace.id === workspacesInCookie) ||
+        (!firstRender &&
+          workspaceHomeRequest.data?.workspace.id === workspacesInCookie)
+      ) {
+        setHasSkeleton(false);
+      }
+    }, 500);
+  }, [
+    homeDataRequest.data?.workspace.id,
+    workspaceHomeRequest.data?.workspace.id,
+  ]);
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -63,6 +72,7 @@ const useHome = () => {
       transactions: homeDataRequest.data?.transactions?.data,
       loadingTransactions: homeDataRequest.isLoading,
     },
+    homeRequest: homeDataRequest,
     navigate,
     setFirstRender,
     hasSkeleton,
