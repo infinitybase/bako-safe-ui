@@ -13,7 +13,7 @@ const CustomSkeleton = ({
   <Skeleton
     w="100%"
     speed={1}
-    startColor="dark.200"
+    startColor="brand.500"
     endColor="dark.500"
     isLoaded={isLoaded}
     borderRadius={10}
