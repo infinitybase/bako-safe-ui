@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
+import { PermissionRoles } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -28,13 +29,14 @@ export interface CardDetailsProps {
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
+const { VIEWER } = PermissionRoles;
 
 const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, hasPermission } = useWorkspace();
   const { vault: vaultDetails } = useVaultDetails();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
@@ -168,6 +170,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     }
                     isDisabled={
                       !vault?.hasBalance ||
+                      hasPermission([VIEWER]) ||
                       vaultDetails.transactions.isPendingSigner
                     }
                     minW={130}
@@ -178,6 +181,10 @@ const CardDetails = (props: CardDetailsProps) => {
                   {vault.transactions.isPendingSigner ? (
                     <Text variant="description" fontSize="xs" color="error.500">
                       This vault has pending transactions.
+                    </Text>
+                  ) : hasPermission([VIEWER]) ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      You dont have permission to send transactions.
                     </Text>
                   ) : (
                     <Text variant="description" fontSize="xs">

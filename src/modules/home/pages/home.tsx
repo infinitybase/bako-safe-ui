@@ -16,6 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import {
   TransactionCard,
@@ -23,7 +24,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
-import { useWorkspace } from '@/modules/workspace';
+import { useSelectWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
@@ -44,6 +45,7 @@ const HomePage = () => {
   } = useHome();
 
   const { currentWorkspace } = useWorkspace();
+  const { selectWorkspace } = useSelectWorkspace();
 
   const isLoading = loadingRecentVaults || loadingTransactions;
   const hasVaults = recentVaults && recentVaults?.length;
@@ -156,6 +158,19 @@ const HomePage = () => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
+                const handleVaultSelection = () => {
+                  selectWorkspace(workspace, {
+                    onSelect: (workspace: Workspace) => {
+                      navigate(
+                        Pages.detailsVault({
+                          workspaceId: workspace.id,
+                          vaultId: id,
+                        }),
+                      );
+                    },
+                  });
+                };
+
                 return (
                   <GridItem key={id}>
                     <CustomSkeleton isLoaded={!isLoading}>
@@ -170,14 +185,7 @@ const HomePage = () => {
                           workspace={workspace}
                           title={description}
                           members={members!}
-                          onClick={() =>
-                            navigate(
-                              Pages.detailsVault({
-                                workspaceId: currentWorkspace.id,
-                                vaultId: id,
-                              }),
-                            )
-                          }
+                          onClick={handleVaultSelection}
                         />
                       )}
                     </CustomSkeleton>
