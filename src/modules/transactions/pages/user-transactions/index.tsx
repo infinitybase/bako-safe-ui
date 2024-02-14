@@ -38,6 +38,7 @@ const UserTransactionsPage = () => {
     account,
     navigate,
     pendingSignerTransactions,
+    hasSkeleton,
   } = useTransactionList();
   const { currentWorkspace } = useWorkspace();
 
@@ -225,10 +226,7 @@ const UserTransactionsPage = () => {
           );
 
           return (
-            <CustomSkeleton
-              key={transaction.id}
-              isLoaded={!transactionRequest.isLoading}
-            >
+            <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}

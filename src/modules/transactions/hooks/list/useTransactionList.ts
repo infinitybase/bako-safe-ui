@@ -1,5 +1,5 @@
 import { TransactionStatus } from 'bsafe';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -36,6 +36,22 @@ const useTransactionList = () => {
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
+  // const { homeRequest } = useHome();
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+
+  useMemo(() => {
+    if (firstRender && transactionRequest.status === 'loading') {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    setTimeout(() => {
+      if (!firstRender && transactionRequest.status === 'success') {
+        setHasSkeleton(false);
+      }
+    }, 500);
+  }, [transactionRequest.status]);
 
   useEffect(() => {
     if (selectedTransaction.id) setFilter(undefined);
@@ -69,6 +85,7 @@ const useTransactionList = () => {
     account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     pendingSignerTransactions,
+    hasSkeleton,
   };
 };
 
