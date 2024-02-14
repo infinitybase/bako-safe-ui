@@ -15,7 +15,10 @@ const useUnreadNotificationsCounterRequest = () => {
         perPage: 5,
         page: 0,
       }),
-    { refetchInterval: Number(VITE_NOTIFICATIONS_REFRESH) },
+    {
+      refetchInterval: Number(VITE_NOTIFICATIONS_REFRESH),
+      refetchOnWindowFocus: true,
+    },
   );
 };
 

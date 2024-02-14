@@ -5,6 +5,7 @@ import {
   CreateTransactionPayload,
   CreateTransactionResponse,
   GetTransactionParams,
+  GetTransactionPendingResponse,
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
   GetTransactionsResponse,
@@ -100,9 +101,12 @@ export class TransactionService {
   }
 
   static async getTransactionsSignaturePending(predicateId?: string[]) {
-    const { data } = await api.get<number>(`/transaction/pending`, {
-      params: { predicateId },
-    });
+    const { data } = await api.get<GetTransactionPendingResponse>(
+      `/transaction/pending`,
+      {
+        params: { predicateId },
+      },
+    );
     return data;
   }
 }

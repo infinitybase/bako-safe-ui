@@ -38,6 +38,10 @@ export interface UpdateWorkspacePermissionsPayload {
   member: string;
   permissions: IPermission;
 }
+export interface DeleteWorkspaceMemberPayload {
+  id: Workspace['id'];
+  member: string;
+}
 
 export interface SelectWorkspacePayload {
   workspace: string;
@@ -123,6 +127,15 @@ export class WorkspaceService {
   static async getBalance() {
     const { data } =
       await api.get<GetWorkspaceBalanceResponse>(`/workspace/balance`);
+
+    return data;
+  }
+
+  static async deleteMember(payload: DeleteWorkspaceMemberPayload) {
+    const { id, member } = payload;
+    const { data } = await api.post<UpdateWorkspaceMembersResponse>(
+      `/workspace/${id}/members/${member}/remove`,
+    );
 
     return data;
   }

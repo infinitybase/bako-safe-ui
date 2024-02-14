@@ -170,7 +170,7 @@ const VaultDetailsPage = () => {
         </Text>
         <WaitingSignatureBadge
           isLoading={pendingSignerTransactions.isLoading}
-          quantity={pendingSignerTransactions.data!}
+          quantity={pendingSignerTransactions.data?.ofUser ?? 0}
         />
       </HStack>
 

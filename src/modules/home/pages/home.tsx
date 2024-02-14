@@ -224,7 +224,7 @@ const HomePage = () => {
                 const isSigner = !!transaction.predicate?.members?.find(
                   (member) => member.address === account,
                 );
-
+                
                 return (
                   <TransactionCard.Container
                     key={transaction.id}

@@ -37,7 +37,7 @@ const SelectWorkspaceDialog = ({
       <Dialog.Body maxW={480}>
         <VStack spacing={2}>
           {!listIsEmpty && (
-            <VStack spacing={0}>
+            <VStack overflow="visible" spacing={0}>
               <Text fontSize="3xl" fontWeight="bold" color="brand.500">
                 Select your workspace
               </Text>
@@ -48,14 +48,21 @@ const SelectWorkspaceDialog = ({
           )}
 
           <VStack
-            spacing={8}
+            spacing={7}
             w="full"
-            maxH={430}
-            my={6}
-            overflow="scroll"
+            maxH={340}
+            overflowY="scroll"
+            paddingRight={6}
             css={{
-              '&::-webkit-scrollbar': { width: '0' },
-              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': {
+                width: '5px',
+                height: '5px' /* Adjust the height of the scrollbar */,
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#2C2C2C',
+                borderRadius: '20px',
+                height: '20px' /* Adjust the height of the scrollbar thumb */,
+              },
             }}
           >
             {listIsEmpty ? (

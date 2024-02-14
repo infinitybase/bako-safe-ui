@@ -2,6 +2,7 @@ import { useMutation } from 'react-query';
 
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
+  DeleteWorkspaceMemberPayload,
   IncludeWorkspaceMemberPayload,
   UpdateWorkspacePermissionsPayload,
   WorkspaceService,
@@ -23,4 +24,14 @@ const useChangePermissionsRequest = (workspaceId: string) =>
       WorkspaceService.updatePermissions({ id: workspaceId, ...payload }),
   );
 
-export { useChangePermissionsRequest, useIncludeMemberRequest };
+const useDeleteMemberRequest = (workspaceId: string) =>
+  useMutation(
+    WorkspacesQueryKey.DELETE_MEMBER(workspaceId),
+    (payload: DeleteWorkspaceMemberPayload) =>
+      WorkspaceService.deleteMember({ id: payload.id, member: payload.member }),
+  );
+export {
+  useChangePermissionsRequest,
+  useDeleteMemberRequest,
+  useIncludeMemberRequest,
+};
