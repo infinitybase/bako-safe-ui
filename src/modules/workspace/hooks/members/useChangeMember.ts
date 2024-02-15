@@ -11,6 +11,7 @@ import {
   useTab,
   Workspace,
 } from '@/modules/core';
+import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
@@ -37,6 +38,7 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
+  const { successToast } = useSettingsToast();
   const params = useParams<{ workspaceId: string; memberId: string }>();
   const isEditMember = !!params.memberId;
   const [memberPermissions, setMemberPermissions] =
@@ -137,6 +139,10 @@ const useChangeMember = () => {
         onSuccess: () => {
           tabs.set(MemberTabState.SUCCESS);
           workspaceRequest.refetch();
+          successToast({
+            title: 'Success!',
+            description: 'Your member permissions were updated.',
+          });
         },
       },
     );
@@ -156,7 +162,13 @@ const useChangeMember = () => {
         member: member.id,
       },
       {
-        onSuccess: () => handleClose(),
+        onSuccess: () => {
+          handleClose(),
+            successToast({
+              title: 'Success!',
+              description: 'Your member was deleted from this workspace.',
+            });
+        },
       },
     );
   };
