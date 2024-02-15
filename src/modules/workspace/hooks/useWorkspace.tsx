@@ -81,9 +81,6 @@ const useWorkspace = () => {
   const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
 
   useMemo(() => {
-    // const workspaceInCookie = JSON.parse(
-    //   CookiesConfig.getCookie(WORKSPACE)!,
-    // ).id;
     if (
       firstRender &&
       workspaceId !== workspaceHomeRequest.data?.workspace.id
@@ -96,11 +93,14 @@ const useWorkspace = () => {
       !firstRender &&
       workspaceId === workspaceHomeRequest.data?.workspace.id
     ) {
-      setTimeout(() => {
-        setHasSkeleton(false);
-      }, 1000);
+      setHasSkeleton(false);
     }
-  }, [workspaceHomeRequest.data?.workspace.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    workspaceHomeRequest.isLoading,
+    workspaceHomeRequest.isFetching,
+    workspaceHomeRequest.isSuccess,
+  ]);
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const isValid =

@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -40,6 +41,7 @@ import {
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
+import { useHome } from '@/modules/home/hooks/useHome';
 import {
   TransactionCard,
   transactionStatus,
@@ -64,15 +66,16 @@ const WorkspacePage = () => {
     visibleBalance,
     setVisibleBalance,
     workspaceDialog,
-    workspaceHomeRequest,
     worksapceBalance,
     pendingSignerTransactions,
+    hasSkeleton,
   } = useWorkspace();
+  const { goHome } = useHome();
 
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
-  const loadingWorkspaceVaults = workspaceHomeRequest.isLoading;
-  const loadingWorkspaceTransactions = workspaceHomeRequest.isLoading;
+
+  useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 
   return (
     <VStack w="full" spacing={6}>
@@ -95,7 +98,7 @@ const WorkspacePage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => navigate(Pages.home())}
+            onClick={() => goHome()}
           >
             Back home
           </Button>
@@ -107,7 +110,7 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => navigate(Pages.home())}
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>
@@ -128,198 +131,225 @@ const WorkspacePage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
-
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <Button
-              variant="primary"
-              fontWeight="semibold"
-              fontSize={15}
-              leftIcon={<SettingsIcon fontSize={18} />}
-              px={3}
-              bg="dark.100"
-              color="grey.200"
-              onClick={workspaceDialog.onOpen}
-            >
-              Members
-            </Button>
+            <CustomSkeleton isLoaded={!hasSkeleton}>
+              <Button
+                variant="primary"
+                fontWeight="semibold"
+                fontSize={15}
+                leftIcon={<SettingsIcon fontSize={18} />}
+                px={3}
+                bg="dark.100"
+                color="grey.200"
+                onClick={workspaceDialog.onOpen}
+              >
+                Members
+              </Button>
+            </CustomSkeleton>
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <Button
-              variant="primary"
-              fontWeight="bold"
-              leftIcon={<FaRegPlusSquare />}
-              onClick={() =>
-                navigate(
-                  Pages.createVault({ workspaceId: currentWorkspace.id }),
-                )
-              }
-            >
-              Create vault
-            </Button>
+            <CustomSkeleton isLoaded={!hasSkeleton}>
+              <Button
+                variant="primary"
+                fontWeight="bold"
+                leftIcon={<FaRegPlusSquare />}
+                onClick={() =>
+                  navigate(
+                    Pages.createVault({ workspaceId: currentWorkspace.id }),
+                  )
+                }
+              >
+                Create vault
+              </Button>
+            </CustomSkeleton>
           )}
         </HStack>
       </HStack>
 
       <HStack w="full" spacing={6}>
         {/* WORKSPACE OVERVIEW */}
-        <Card
+        <CustomSkeleton
+          isLoaded={!hasSkeleton}
+          style={{ padding: 0, margin: 0 }}
           w="full"
-          maxW="50%"
           h="full"
-          p={8}
-          bg="dark.200"
-          borderColor="dark.100"
         >
-          <VStack h="full" alignItems="flex-start">
-            <HStack w="full" spacing={6}>
-              <Avatar
-                variant="roundedSquare"
-                name={currentWorkspace.name}
-                bg="grey.900"
-                color="white"
-                size={'lg'}
-                p={10}
-              />
-              <Box maxW="40%">
-                <Heading mb={1} variant="title-xl" isTruncated>
-                  {currentWorkspace.name}
-                </Heading>
-                <Box>
-                  <Text variant="description" noOfLines={2}>
-                    {currentWorkspace?.description}
-                  </Text>
-                </Box>
-              </Box>
-
-              <Spacer />
-
-              <Box
-                cursor="pointer"
-                onClick={() => setVisibleBalance((previous) => !previous)}
-                flexDirection="row"
-              >
-                <HStack spacing={2}>
-                  <Heading variant="title-xl">
-                    {(visibleBalance && worksapceBalance.balance?.balanceUSD) ??
-                      0}
+          <Card w="full" h="full" p={8} bg="dark.200" borderColor="dark.100">
+            <VStack h="full" alignItems="flex-start">
+              <HStack w="full" spacing={6}>
+                <Avatar
+                  variant="roundedSquare"
+                  name={currentWorkspace.name}
+                  bg="grey.900"
+                  color="white"
+                  size={'lg'}
+                  p={10}
+                />
+                <Box maxW="40%">
+                  <Heading mb={1} variant="title-xl" isTruncated>
+                    {currentWorkspace.name}
                   </Heading>
-                  <Text variant="description" fontSize="md" mr={1}>
-                    {visibleBalance ? 'USD' : '******'}
-                  </Text>
-                  {visibleBalance ? (
-                    <Box
-                      flexDirection="row"
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                    >
-                      <ViewIcon boxSize={5} />
-                    </Box>
-                  ) : (
-                    <ViewOffIcon boxSize={5} />
-                  )}
-                </HStack>
-              </Box>
-            </HStack>
+                  <Box>
+                    <Text variant="description" noOfLines={2}>
+                      {currentWorkspace?.description}
+                    </Text>
+                  </Box>
+                </Box>
 
-            <Divider borderColor="dark.100" mt={4} mb={3} />
+                <CustomSkeleton
+                  isLoaded={!worksapceBalance.isLoading}
+                  display={'flex'}
+                  justifyContent={'flex-end'}
+                >
+                  <Box
+                    cursor="pointer"
+                    onClick={() => setVisibleBalance((previous) => !previous)}
+                    flexDirection="row"
+                  >
+                    <HStack spacing={2}>
+                      <Heading variant="title-xl">
+                        {(visibleBalance &&
+                          worksapceBalance.balance?.balanceUSD) ??
+                          0}
+                      </Heading>
+                      <Text variant="description" fontSize="md" mr={1}>
+                        {visibleBalance ? 'USD' : '******'}
+                      </Text>
+                      {visibleBalance ? (
+                        <Box
+                          flexDirection="row"
+                          alignItems={'center'}
+                          justifyContent={'center'}
+                        >
+                          <ViewIcon boxSize={5} />
+                        </Box>
+                      ) : (
+                        <ViewOffIcon boxSize={5} />
+                      )}
+                    </HStack>
+                  </Box>
+                </CustomSkeleton>
+              </HStack>
 
-            <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
-              <Text
-                fontWeight="semibold"
-                color="grey.200"
-              >{`Workspace's balance breakdown`}</Text>
-              {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
-              !worksapceBalance.balance ? (
-                <Card
+              <Divider borderColor="dark.100" mt={4} mb={3} />
+
+              <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
+                <Text
+                  fontWeight="semibold"
+                  color="grey.200"
+                >{`Workspace's balance breakdown`}</Text>
+                <CustomSkeleton
+                  isLoaded={!worksapceBalance.isLoading}
                   w="full"
                   h="full"
-                  p={8}
-                  borderColor="dark.100"
-                  borderStyle="dashed"
                 >
-                  <VStack h="full" spacing={1} justifyContent="center">
-                    <Text fontWeight="bold" color="grey.200">
-                      First thing first...
-                    </Text>
-                    <Text color="grey.500" maxW={340} textAlign="center">
-                      {`You don't have any vaults yet. Create a vault to start to
+                  {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
+                  !worksapceBalance.balance ? (
+                    <Card
+                      w="full"
+                      h="full"
+                      p={8}
+                      borderColor="dark.100"
+                      borderStyle="dashed"
+                    >
+                      <VStack h="full" spacing={1} justifyContent="center">
+                        <Text fontWeight="bold" color="grey.200">
+                          First thing first...
+                        </Text>
+                        <Text color="grey.500" maxW={340} textAlign="center">
+                          {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
-                    </Text>
-                  </VStack>
-                </Card>
-              ) : (
-                <VStack w="full" h="full" spacing={1} justifyContent="center">
-                  {/*todo: 
+                        </Text>
+                      </VStack>
+                    </Card>
+                  ) : (
+                    <VStack
+                      w="full"
+                      h="full"
+                      spacing={1}
+                      justifyContent="center"
+                    >
+                      {/*todo: 
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
-                  <AssetCard
-                    asset={{
-                      ...assetsMap[NativeAssetId],
-                      assetId: NativeAssetId,
-                      amount: worksapceBalance.balance.balance,
-                    }}
-                    borderColor="dark.100"
-                  />
-                </VStack>
-              )}
+                      <AssetCard
+                        asset={{
+                          ...assetsMap[NativeAssetId],
+                          assetId: NativeAssetId,
+                          amount: worksapceBalance.balance.balance,
+                        }}
+                        borderColor="dark.100"
+                      />
+                    </VStack>
+                  )}
+                </CustomSkeleton>
+              </VStack>
             </VStack>
-          </VStack>
-        </Card>
+          </Card>
+        </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxH={400} spacing={4}>
-          <ActionCard.Container
-            w="full"
-            onClick={() =>
-              navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box w="full">
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description maxWidth={{}}>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
+        <VStack w="full" maxH={450} spacing={4}>
+          <CustomSkeleton isLoaded={!hasSkeleton}>
+            <ActionCard.Container
+              w="full"
+              onClick={() =>
+                navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
+              }
+            >
+              <ActionCard.Icon icon={VaultIcon} />
+              <Box w="full">
+                <ActionCard.Title>Vaults</ActionCard.Title>
+                <ActionCard.Description maxWidth={{}}>
+                  Access and Manage All Your Vaults in One Place.
+                </ActionCard.Description>
+              </Box>
+            </ActionCard.Container>
+          </CustomSkeleton>
 
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.userTransactions({ workspaceId: currentWorkspace.id }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={GoArrowSwitch} />
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description maxWidth={{}}>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
+          <CustomSkeleton isLoaded={!hasSkeleton}>
+            <ActionCard.Container
+              onClick={() =>
+                navigate(
+                  Pages.userTransactions({
+                    workspaceId: currentWorkspace.id,
+                  }),
+                )
+              }
+            >
+              <ActionCard.Icon icon={GoArrowSwitch} />
+              <Box>
+                <ActionCard.Title>Transactions</ActionCard.Title>
+                <ActionCard.Description maxWidth={{}}>
+                  Manage Transactions Across All Vaults in One Place.
+                </ActionCard.Description>
+              </Box>
+            </ActionCard.Container>
+          </CustomSkeleton>
 
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: currentWorkspace.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={CgList} />
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description maxWidth={{}}>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
+          <CustomSkeleton isLoaded={!hasSkeleton}>
+            <ActionCard.Container
+              onClick={() =>
+                navigate(
+                  Pages.addressBook({
+                    workspaceId: currentWorkspace.id,
+                  }),
+                )
+              }
+            >
+              <ActionCard.Icon icon={CgList} />
+              <Box>
+                <ActionCard.Title>Address book</ActionCard.Title>
+                <ActionCard.Description maxWidth={{}}>
+                  Access and Manage Your Contacts for Easy Transfers and Vault
+                  Creation.
+                </ActionCard.Description>
+              </Box>
+            </ActionCard.Container>
+          </CustomSkeleton>
         </VStack>
       </HStack>
 
@@ -335,58 +365,58 @@ const WorkspacePage = () => {
         </Text>
       </Box>
 
-      {!hasVaults ? (
-        <CustomSkeleton isLoaded={!loadingWorkspaceVaults}>
+      <CustomSkeleton isLoaded={!hasSkeleton}>
+        {!hasVaults ? (
           <EmptyVault
             showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
             description="Your vaults are entirely free on Fuel. You need
             create a vault to start to save your assets."
           />
-        </CustomSkeleton>
-      ) : (
-        <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
-          {recentVaults?.map(
-            ({ id, name, workspace, members, description }, index) => {
-              const lastCard = index === vaultsMax - 1;
-              const hasMore = extraCount > 0;
+        ) : (
+          <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
+            {recentVaults?.map(
+              ({ id, name, workspace, members, description }, index) => {
+                const lastCard = index === vaultsMax - 1;
+                const hasMore = extraCount > 0;
 
-              return (
-                <GridItem key={id}>
-                  <CustomSkeleton isLoaded={!loadingWorkspaceVaults}>
-                    {lastCard && hasMore ? (
-                      <ExtraVaultCard
-                        extra={extraCount}
-                        onClick={() =>
-                          navigate(
-                            Pages.userVaults({
-                              workspaceId: currentWorkspace.id,
-                            }),
-                          )
-                        }
-                      />
-                    ) : (
-                      <VaultCard
-                        name={name}
-                        workspace={workspace}
-                        title={description}
-                        members={members!}
-                        onClick={() =>
-                          navigate(
-                            Pages.detailsVault({
-                              workspaceId: currentWorkspace.id,
-                              vaultId: id,
-                            }),
-                          )
-                        }
-                      />
-                    )}
-                  </CustomSkeleton>
-                </GridItem>
-              );
-            },
-          )}
-        </Grid>
-      )}
+                return (
+                  <GridItem key={id}>
+                    <CustomSkeleton isLoaded={!hasSkeleton}>
+                      {lastCard && hasMore ? (
+                        <ExtraVaultCard
+                          extra={extraCount}
+                          onClick={() =>
+                            navigate(
+                              Pages.userVaults({
+                                workspaceId: currentWorkspace.id,
+                              }),
+                            )
+                          }
+                        />
+                      ) : (
+                        <VaultCard
+                          name={name}
+                          workspace={workspace}
+                          title={description}
+                          members={members!}
+                          onClick={() =>
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: currentWorkspace.id,
+                                vaultId: id,
+                              }),
+                            )
+                          }
+                        />
+                      )}
+                    </CustomSkeleton>
+                  </GridItem>
+                );
+              },
+            )}
+          </Grid>
+        )}
+      </CustomSkeleton>
 
       {hasVaults && (
         <HStack w="full" spacing={4}>
@@ -427,7 +457,7 @@ const WorkspacePage = () => {
 
       {/* TRANSACTION LIST */}
       {!hasTransactions && hasVaults ? (
-        <CustomSkeleton isLoaded={!loadingWorkspaceTransactions} pb={10}>
+        <CustomSkeleton isLoaded={!hasSkeleton} pb={10}>
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
@@ -437,10 +467,7 @@ const WorkspacePage = () => {
               const status = transactionStatus({ ...transaction, account });
 
               return (
-                <CustomSkeleton
-                  isLoaded={!loadingWorkspaceTransactions}
-                  key={transaction.id}
-                >
+                <CustomSkeleton isLoaded={!hasSkeleton} key={transaction.id}>
                   <TransactionCard.Container
                     status={status}
                     details={
