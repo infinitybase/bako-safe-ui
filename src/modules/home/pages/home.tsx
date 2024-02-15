@@ -53,6 +53,62 @@ const HomePage = () => {
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
+      <CustomSkeleton isLoaded={!isLoading}>
+        <HStack spacing={6} w="full" h="full">
+          <ActionCard.Container
+            onClick={() =>
+              navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+
+          <ActionCard.Container
+            isUpcoming={hasTransactions ? false : true}
+            onClick={() => {
+              return hasTransactions
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
+                : null;
+            }}
+          >
+            <ActionCard.Icon
+              icon={GoArrowSwitch}
+              isUpcoming={hasTransactions ? false : true}
+            />
+            <Box>
+              <ActionCard.Title>Transactions</ActionCard.Title>
+              <ActionCard.Description>
+                Manage Transactions Across All Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+
+          <ActionCard.Container
+            onClick={() =>
+              navigate(Pages.addressBook({ workspaceId: currentWorkspace.id }))
+            }
+          >
+            <ActionCard.Icon icon={CgList} />
+            <Box>
+              <ActionCard.Title>Address book</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage Your Contacts for Easy Transfers and Vault
+                Creation.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </HStack>
+      </CustomSkeleton>
       {!hasVaults ? (
         <CustomSkeleton isLoaded={!isLoading}>
           <EmptyVault />
@@ -81,66 +137,7 @@ const HomePage = () => {
               </Button>
             </Box>
           </HStack>
-          <CustomSkeleton isLoaded={!isLoading}>
-            <HStack spacing={6} w="full" h="full">
-              <ActionCard.Container
-                onClick={() =>
-                  navigate(
-                    Pages.userVaults({ workspaceId: currentWorkspace.id }),
-                  )
-                }
-              >
-                <ActionCard.Icon icon={VaultIcon} />
-                <Box>
-                  <ActionCard.Title>Vaults</ActionCard.Title>
-                  <ActionCard.Description>
-                    Access and Manage All Your Vaults in One Place.
-                  </ActionCard.Description>
-                </Box>
-              </ActionCard.Container>
 
-              <ActionCard.Container
-                isUpcoming={hasTransactions ? false : true}
-                onClick={() => {
-                  return hasTransactions
-                    ? navigate(
-                        Pages.userTransactions({
-                          workspaceId: currentWorkspace.id,
-                        }),
-                      )
-                    : null;
-                }}
-              >
-                <ActionCard.Icon
-                  icon={GoArrowSwitch}
-                  isUpcoming={hasTransactions ? false : true}
-                />
-                <Box>
-                  <ActionCard.Title>Transactions</ActionCard.Title>
-                  <ActionCard.Description>
-                    Manage Transactions Across All Vaults in One Place.
-                  </ActionCard.Description>
-                </Box>
-              </ActionCard.Container>
-
-              <ActionCard.Container
-                onClick={() =>
-                  navigate(
-                    Pages.addressBook({ workspaceId: currentWorkspace.id }),
-                  )
-                }
-              >
-                <ActionCard.Icon icon={CgList} />
-                <Box>
-                  <ActionCard.Title>Address book</ActionCard.Title>
-                  <ActionCard.Description>
-                    Access and Manage Your Contacts for Easy Transfers and Vault
-                    Creation.
-                  </ActionCard.Description>
-                </Box>
-              </ActionCard.Container>
-            </HStack>
-          </CustomSkeleton>
           {/* RECENT VAULTS */}
           <Box mt={4} alignSelf="flex-start">
             <Text
