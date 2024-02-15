@@ -198,30 +198,28 @@ const UserVaultsPage = () => {
       )}
 
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-        {
-          !!vaults?.map(({ id, name, workspace, members, description }) => {
-            return (
-              <GridItem key={id}>
-                <CustomSkeleton isLoaded={!loadingVaults}>
-                  <VaultCard
-                    name={name}
-                    workspace={workspace}
-                    title={description}
-                    members={members!}
-                    onClick={() =>
-                      navigate(
-                        Pages.detailsVault({
-                          vaultId: id,
-                          workspaceId: currentWorkspace.id,
-                        }),
-                      )
-                    }
-                  />
-                </CustomSkeleton>
-              </GridItem>
-            );
-          })
-        }
+        {vaults?.map(({ id, name, workspace, members, description }) => {
+          return (
+            <GridItem key={id}>
+              <CustomSkeleton isLoaded={!loadingVaults}>
+                <VaultCard
+                  name={name}
+                  workspace={workspace}
+                  title={description}
+                  members={members!}
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: id,
+                        workspaceId: currentWorkspace.id,
+                      }),
+                    )
+                  }
+                />
+              </CustomSkeleton>
+            </GridItem>
+          );
+        })}
       </Grid>
     </VStack>
   );
