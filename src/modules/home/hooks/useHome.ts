@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { invalidateQueries } from '@/modules/core';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
-import { HomeQueryKey, Pages } from '@/modules/core';
+import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useHomeDataRequest } from './useHomeDataRequest';

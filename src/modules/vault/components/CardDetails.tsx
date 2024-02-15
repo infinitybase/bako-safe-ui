@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { PermissionRoles } from '@/modules/core';
+import { AddressUtils, PermissionRoles } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -33,7 +33,6 @@ const { VIEWER } = PermissionRoles;
 
 const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
-
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
@@ -117,7 +116,10 @@ const CardDetails = (props: CardDetailsProps) => {
                     }}
                   />
                 </Box>
-                <AddressCopy w="full" address={vault.predicateAddress!} />
+                <AddressCopy
+                  w="full"
+                  address={AddressUtils.format(vault.predicateAddress)!}
+                />
               </VStack>
               <VStack spacing={5} alignItems="flex-start">
                 <Box width="100%">
