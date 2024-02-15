@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useContactToast } from '@/modules';
 import { useFuelAccount } from '@/modules/auth/store';
-import { useCreateBsafeVault, useToast } from '@/modules/core/hooks';
+import { useCreateBsafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
@@ -23,7 +24,7 @@ const useCreateVault = () => {
 
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string }>();
-  const toast = useToast();
+  const { errorToast } = useContactToast();
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
@@ -36,11 +37,9 @@ const useCreateVault = () => {
       setTab(TabState.SUCCESS);
     },
     onError: () => {
-      toast.show({
-        status: 'error',
-        title: 'Error on create vault',
-        position: 'bottom',
-        isClosable: true,
+      errorToast({
+        title: 'Error on vault creation!',
+        description: 'An error occurred while creating the vault',
       });
     },
   });
