@@ -60,6 +60,7 @@ export type SelectWorkspaceResponse = {
 export type GetWorkspaceBalanceResponse = {
   balance: string;
   balanceUSD: string;
+  workspaceId: string;
 };
 
 export class WorkspaceService {

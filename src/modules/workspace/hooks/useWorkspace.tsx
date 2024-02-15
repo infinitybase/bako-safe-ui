@@ -6,12 +6,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
+import { invalidateQueries } from '@/modules/core/utils';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 
 import { Pages } from '../../core';
-import { PermissionRoles, Workspace } from '../../core/models';
+import {
+  PermissionRoles,
+  Workspace,
+  WorkspacesQueryKey,
+} from '../../core/models';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
@@ -48,6 +53,11 @@ const useWorkspace = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
+  const goWorkspace = (workspaceId: string) => {
+    invalidateQueries(WorkspacesQueryKey.FULL_DATA());
+    navigate(Pages.workspace({ workspaceId }));
+  };
+
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
@@ -61,7 +71,7 @@ const useWorkspace = () => {
         workspaceHomeRequest.refetch();
         pendingSignerTransactions.refetch();
         if (!workspace.single) {
-          navigate(Pages.workspace({ workspaceId: workspace.id }));
+          goWorkspace(workspace.id);
         }
       },
       onError: () => {
@@ -79,6 +89,7 @@ const useWorkspace = () => {
 
   const [firstRender, setFirstRender] = useState<boolean>(true);
   const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(false);
 
   useMemo(() => {
     if (
@@ -100,6 +111,29 @@ const useWorkspace = () => {
     workspaceHomeRequest.isLoading,
     workspaceHomeRequest.isFetching,
     workspaceHomeRequest.isSuccess,
+  ]);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.WORKSPACE)!,
+    ).id;
+
+    if (workspacesInCookie !== worksapceBalance.balance?.workspaceId) {
+      setHasSkeletonBalance(true);
+    }
+
+    if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
+      setHasSkeletonBalance(false);
+    }
+
+    // console.log('[WORKSPACE]: ', {
+    //   HEADER: workspaceId,
+    //   REQ_ATUAL: worksapceBalance.balance?.workspaceId,
+    // });
+  }, [
+    worksapceBalance.isLoading,
+    worksapceBalance.isFetching,
+    worksapceBalance.isSuccess,
   ]);
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
@@ -135,7 +169,9 @@ const useWorkspace = () => {
     visibleBalance,
     setVisibleBalance,
     hasSkeleton,
+    hasSkeletonBalance,
     pendingSignerTransactions,
+    goWorkspace,
   };
 };
 

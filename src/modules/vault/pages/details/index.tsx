@@ -46,7 +46,7 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace, hasSkeleton } = useWorkspace();
+  const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   // const pendingTransactionSignature = useMemo(
@@ -85,11 +85,7 @@ const VaultDetailsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
-                }
+                onClick={() => goWorkspace(currentWorkspace.id)}
               >
                 {currentWorkspace.name}
               </BreadcrumbLink>

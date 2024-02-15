@@ -5,6 +5,7 @@ import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 
 import { useSelectWorkspace } from '../select';
+import { useWorkspace } from '../useWorkspace';
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
 
@@ -18,7 +19,7 @@ export enum CreateWorkspaceTabState {
 
 const useCreateWorkspace = () => {
   const navigate = useNavigate();
-
+  const { goWorkspace } = useWorkspace();
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(CreateWorkspaceTabState),
     defaultTab: CreateWorkspaceTabState.ON_BOARDING,
@@ -33,7 +34,7 @@ const useCreateWorkspace = () => {
   const handleGoToWorkspace = () => {
     selectWorkspace(request.data!, {
       onSelect: (workspace) => {
-        navigate(Pages.workspace({ workspaceId: workspace.id }));
+        goWorkspace(workspace.id);
       },
     });
   };

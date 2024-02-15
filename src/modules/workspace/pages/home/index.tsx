@@ -69,6 +69,8 @@ const WorkspacePage = () => {
     worksapceBalance,
     pendingSignerTransactions,
     hasSkeleton,
+    goWorkspace,
+    hasSkeletonBalance,
   } = useWorkspace();
   const { goHome } = useHome();
 
@@ -120,11 +122,7 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
-                }
+                onClick={() => goWorkspace(currentWorkspace.id)}
               >
                 {currentWorkspace.name}
               </BreadcrumbLink>
@@ -199,7 +197,7 @@ const WorkspacePage = () => {
                 </Box>
 
                 <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
+                  isLoaded={!hasSkeletonBalance}
                   display={'flex'}
                   justifyContent={'flex-end'}
                 >
@@ -241,7 +239,7 @@ const WorkspacePage = () => {
                   color="grey.200"
                 >{`Workspace's balance breakdown`}</Text>
                 <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
+                  isLoaded={!hasSkeletonBalance}
                   w="full"
                   h="full"
                 >

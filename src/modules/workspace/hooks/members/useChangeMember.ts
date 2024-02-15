@@ -1,16 +1,16 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
-  Pages,
   PermissionRoles,
   useTab,
   Workspace,
 } from '@/modules/core';
 
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
+import { useWorkspace } from '../useWorkspace';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
@@ -26,7 +26,7 @@ export enum MemberTabState {
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
-  const navigate = useNavigate();
+  const { goWorkspace } = useWorkspace();
   const params = useParams<{ workspaceId: string; memberId: string }>();
   const isEditMember = !!params.memberId;
 
@@ -51,8 +51,7 @@ const useChangeMember = () => {
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
   const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
 
-  const handleClose = () =>
-    navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
+  const handleClose = () => goWorkspace(params.workspaceId!);
 
   // const handleAddMember = memberForm.handleSubmit((data) => {
   //   memberRequest.mutate(data.address, {

@@ -33,7 +33,7 @@ const UserVaultsPage = () => {
   } = useUserVaults();
 
   const { VIEWER } = PermissionRoles;
-  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
 
   const hasTransactions = transactions?.length;
@@ -57,9 +57,7 @@ const UserVaultsPage = () => {
             onClick={() =>
               currentWorkspace.single
                 ? goHome()
-                : navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
+                : goWorkspace(currentWorkspace.id)
             }
           >
             Back home
@@ -82,11 +80,7 @@ const UserVaultsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
-                  }
+                  onClick={() => goWorkspace(currentWorkspace.id)}
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>

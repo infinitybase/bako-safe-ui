@@ -13,7 +13,7 @@ const useGetWorkspaceBalanceRequest = (
   >,
 ) => {
   const { data, ...request } = useQuery(
-    WorkspacesQueryKey.GET_BALANCE(),
+    [WorkspacesQueryKey.DEFAULT, WorkspacesQueryKey.GET_BALANCE()],
     () => WorkspaceService.getBalance(),
     {
       ...options,
@@ -27,6 +27,7 @@ const useGetWorkspaceBalanceRequest = (
       ...data,
       balance: data?.balance,
       balanceUSD: data?.balanceUSD,
+      workspaceId: data?.workspaceId,
     },
     ...request,
   };

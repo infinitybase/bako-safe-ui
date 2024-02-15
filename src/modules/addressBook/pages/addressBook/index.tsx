@@ -46,7 +46,7 @@ const AddressBookPage = () => {
     contactToEdit,
     hasSkeleton,
   } = useAddressBook();
-  const { hasPermission, currentWorkspace } = useWorkspace();
+  const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
@@ -89,9 +89,7 @@ const AddressBookPage = () => {
               onClick={() =>
                 currentWorkspace.single
                   ? goHome()
-                  : navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
+                  : goWorkspace(currentWorkspace.id)
               }
             >
               Back home
@@ -115,11 +113,7 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
-                  }
+                  onClick={() => goWorkspace(currentWorkspace.id)}
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>
