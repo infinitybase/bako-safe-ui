@@ -112,5 +112,11 @@ export const WorkspacesQueryKey = {
     'delete-member',
     workspaceId,
   ],
-  GET_BALANCE: () => [WorkspacesQueryKey.DEFAULT, 'balance'],
+  PENDING_TRANSACTIONS: () => 'pending-transactions',
+  GET_BALANCE: () => 'balance',
+  FULL_DATA: () => [
+    WorkspacesQueryKey.DEFAULT,
+    WorkspacesQueryKey.GET_BALANCE(),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(),
+  ],
 };

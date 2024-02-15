@@ -19,7 +19,11 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+
+import { useHome } from '@/modules/home/hooks/useHome';
+
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
+
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
@@ -33,7 +37,8 @@ const UserVaultsPage = () => {
   } = useUserVaults();
 
   const { VIEWER } = PermissionRoles;
-  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
+  const { goHome } = useHome();
 
   const hasTransactions = transactions?.length;
 
@@ -55,10 +60,8 @@ const UserVaultsPage = () => {
             color="grey.200"
             onClick={() =>
               currentWorkspace.single
-                ? navigate(Pages.home())
-                : navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
+                ? goHome()
+                : goWorkspace(currentWorkspace.id)
             }
           >
             Back home
@@ -70,7 +73,7 @@ const UserVaultsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                href="/home"
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>
@@ -81,11 +84,7 @@ const UserVaultsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
-                  }
+                  onClick={() => goWorkspace(currentWorkspace.id)}
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>
@@ -117,68 +116,66 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton isLoaded={!loadingVaults}>
-        <HStack w="full" h="full" spacing={6}>
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId: currentWorkspace.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-          <ActionCard.Container
+      <HStack w="full" spacing={6}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.userVaults({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
+          <ActionCard.Icon icon={VaultIcon} />
+          <Box>
+            <ActionCard.Title>Vaults</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage All Your Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container
+          isUpcoming={hasTransactions ? false : true}
+          onClick={() => {
+            return hasTransactions
+              ? navigate(
+                  Pages.userTransactions({
+                    workspaceId: currentWorkspace.id,
+                  }),
+                )
+              : null;
+          }}
+        >
+          <ActionCard.Icon
+            icon={GoArrowSwitch}
             isUpcoming={hasTransactions ? false : true}
-            onClick={() => {
-              return hasTransactions
-                ? navigate(
-                    Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
-                    }),
-                  )
-                : null;
-            }}
-          >
-            <ActionCard.Icon
-              icon={GoArrowSwitch}
-              isUpcoming={hasTransactions ? false : true}
-            />
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: currentWorkspace.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={CgList} />
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </HStack>
-      </CustomSkeleton>
+          />
+          <Box>
+            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Description>
+              Manage Transactions Across All Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.addressBook({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
+          <ActionCard.Icon icon={CgList} />
+          <Box>
+            <ActionCard.Title>Address book</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage Your Contacts for Easy Transfers and Vault
+              Creation.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+      </HStack>
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
@@ -191,6 +188,7 @@ const UserVaultsPage = () => {
           Vaults
         </Text>
       </Box>
+
       {!vaults?.length && (
         <CustomSkeleton isLoaded={!loadingVaults}>
           <EmptyVault />

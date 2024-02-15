@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { invalidateQueries } from '@/modules/core';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
+import { HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
@@ -16,6 +19,42 @@ const useHome = () => {
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
+
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+    ).id;
+    if (
+      firstRender &&
+      homeDataRequest.data?.workspace.id !== workspacesInCookie
+    ) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (
+      !firstRender &&
+      homeDataRequest.data?.workspace.id === workspacesInCookie
+    ) {
+      setHasSkeleton(false);
+      setFirstRender(false);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    homeDataRequest.isLoading,
+    homeDataRequest.isFetching,
+    homeDataRequest.isSuccess,
+    homeDataRequest.data,
+  ]);
+
+  const goHome = () => {
+    invalidateQueries(HomeQueryKey.FULL_DATA());
+    navigate(Pages.home());
+  };
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -39,7 +78,10 @@ const useHome = () => {
       transactions: homeDataRequest.data?.transactions?.data,
       loadingTransactions: homeDataRequest.isLoading,
     },
+    homeRequest: homeDataRequest,
     navigate,
+    goHome,
+    hasSkeleton,
     pendingSignerTransactions,
   };
 };

@@ -2,7 +2,7 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-import { useContactToast } from '@/modules';
+import { useContactToast } from '@/modules/addressBook';
 import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
 import { useGetCurrentAccount } from '@/modules/core';
 

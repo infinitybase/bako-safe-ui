@@ -5,7 +5,7 @@ import { HomeQueryKey } from '@/modules/core/models';
 import { HomeService } from '../services';
 
 const useHomeDataRequest = () => {
-  return useQuery(HomeQueryKey.FULL_DATA(), () => HomeService.home(), {
+  return useQuery(HomeQueryKey.DEFAULT, () => HomeService.home(), {
     refetchOnWindowFocus: false,
   });
 };

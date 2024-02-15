@@ -11,14 +11,17 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
+import { ActionCard } from '@/modules/home/components/ActionCard';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
-import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useHome } from '@/modules/home/hooks/useHome';
+
 import { useWorkspace } from '@/modules/workspace';
 
 import {
@@ -46,9 +49,15 @@ const AddressBookPage = () => {
     setContactToDelete,
     handleDeleteContact,
     contactToEdit,
+    hasSkeleton,
   } = useAddressBook();
-  const { hasPermission, currentWorkspace } = useWorkspace();
+  const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
+  const {
+    goHome,
+    transactionsRequest: { transactions },
+  } = useHome();
 
+  const hasTransactions = transactions?.length;
   const hasContacts = contacts?.length;
 
   return (
@@ -88,10 +97,8 @@ const AddressBookPage = () => {
               color="grey.200"
               onClick={() =>
                 currentWorkspace.single
-                  ? navigate(Pages.home())
-                  : navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
+                  ? goHome()
+                  : goWorkspace(currentWorkspace.id)
               }
             >
               Back home
@@ -104,7 +111,7 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => navigate(Pages.home())}
+                  onClick={() => goHome()}
                 >
                   Home
                 </BreadcrumbLink>
@@ -115,11 +122,7 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
-                  }
+                  onClick={() => goWorkspace(currentWorkspace.id)}
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>
@@ -152,88 +155,85 @@ const AddressBookPage = () => {
           )}
         </HStack>
 
-        <CustomSkeleton isLoaded={!loadingContacts}>
-          <HStack w="full" h="full" spacing={6}>
-            <ActionCard.Container
-              onClick={() =>
-                navigate(
-                  Pages.userVaults({
-                    workspaceId: currentWorkspace.id,
-                  }),
-                )
-              }
-            >
-              <ActionCard.Icon icon={VaultIcon} />
-              <Box>
-                <ActionCard.Title>Vaults</ActionCard.Title>
-                <ActionCard.Description>
-                  Access and Manage All Your Vaults in One Place.
-                </ActionCard.Description>
-              </Box>
-            </ActionCard.Container>
-            <ActionCard.Container
-              isUpcoming={hasContacts ? false : true}
-              onClick={() => {
-                return hasContacts
-                  ? navigate(
-                      Pages.userTransactions({
-                        workspaceId: currentWorkspace.id,
-                      }),
-                    )
-                  : null;
-              }}
-            >
-              <ActionCard.Icon
-                icon={GoArrowSwitch}
-                isUpcoming={hasContacts ? false : true}
-              />
-              <Box>
-                <ActionCard.Title>Transactions</ActionCard.Title>
-                <ActionCard.Description>
-                  Manage Transactions Across All Vaults in One Place.
-                </ActionCard.Description>
-              </Box>
-            </ActionCard.Container>
-            <ActionCard.Container
-              onClick={() =>
-                navigate(
-                  Pages.addressBook({
-                    workspaceId: currentWorkspace.id,
-                  }),
-                )
-              }
-            >
-              <ActionCard.Icon icon={CgList} />
-              <Box>
-                <ActionCard.Title>Address book</ActionCard.Title>
-                <ActionCard.Description>
-                  Access and Manage Your Contacts for Easy Transfers and Vault
-                  Creation.
-                </ActionCard.Description>
-              </Box>
-            </ActionCard.Container>
-          </HStack>
-        </CustomSkeleton>
+        <HStack w="full" spacing={6}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.userVaults({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+          <ActionCard.Container
+            isUpcoming={hasTransactions ? false : true}
+            onClick={() => {
+              return hasTransactions
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
+                : null;
+            }}
+          >
+            <ActionCard.Icon
+              icon={GoArrowSwitch}
+              isUpcoming={hasTransactions ? false : true}
+            />
+            <Box>
+              <ActionCard.Title>Transactions</ActionCard.Title>
+              <ActionCard.Description>
+                Manage Transactions Across All Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={CgList} />
+            <Box>
+              <ActionCard.Title>Address book</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage Your Contacts for Easy Transfers and Vault
+                Creation.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </HStack>
 
+        <Box mt={4} mb={-2} alignSelf="flex-start">
+          <Text
+            variant="subtitle"
+            fontWeight="semibold"
+            fontSize="xl"
+            color="grey.200"
+          >
+            Address book
+          </Text>
+        </Box>
         {/* USER CONTACTS */}
         {!!hasContacts && (
           <>
-            <Box mt={4} mb={-2} alignSelf="flex-start">
-              <Text
-                variant="subtitle"
-                fontWeight="semibold"
-                fontSize="xl"
-                color="grey.200"
-              >
-                Address book
-              </Text>
-            </Box>
-
             <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
               {contacts?.map(({ id, nickname, user }) => {
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!loadingContacts}>
+                    <CustomSkeleton isLoaded={!hasSkeleton}>
                       <ContactCard
                         nickname={nickname}
                         address={user.address}

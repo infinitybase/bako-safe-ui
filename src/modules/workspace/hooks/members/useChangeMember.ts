@@ -15,6 +15,7 @@ import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
+import { useWorkspace } from '../useWorkspace';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
@@ -37,8 +38,9 @@ interface MemberPermission {
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
-  const navigate = useNavigate();
+  const { goWorkspace } = useWorkspace();
   const { successToast } = useSettingsToast();
+
   const params = useParams<{ workspaceId: string; memberId: string }>();
   const isEditMember = !!params.memberId;
   const [memberPermissions, setMemberPermissions] =
@@ -81,8 +83,7 @@ const useChangeMember = () => {
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
   const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
 
-  const handleClose = () =>
-    navigate(Pages.workspace({ workspaceId: params.workspaceId! }));
+  const handleClose = () => goWorkspace(params.workspaceId!);
 
   // const handleAddMember = memberForm.handleSubmit((data) => {
   //   memberRequest.mutate(data.address, {

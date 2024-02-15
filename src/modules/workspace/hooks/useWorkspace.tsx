@@ -1,17 +1,22 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
+import { invalidateQueries } from '@/modules/core/utils';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 
 import { Pages } from '../../core';
-import { PermissionRoles, Workspace } from '../../core/models';
+import {
+  PermissionRoles,
+  Workspace,
+  WorkspacesQueryKey,
+} from '../../core/models';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
@@ -22,6 +27,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = () => {
   const [visibleBalance, setVisibleBalance] = useState(false);
+  const { workspaceId } = useParams();
   const { account } = useFuelAccount();
   const workspaceDialog = useDisclosure();
   const toast = useNotification();
@@ -47,10 +53,17 @@ const useWorkspace = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
+  const goWorkspace = (workspaceId: string) => {
+    invalidateQueries(WorkspacesQueryKey.FULL_DATA());
+    navigate(Pages.workspace({ workspaceId }));
+  };
+
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === currentWorkspace.id) return;
+    if (selectedWorkspace.id === currentWorkspace.id) {
+      return;
+    }
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
@@ -58,7 +71,7 @@ const useWorkspace = () => {
         workspaceHomeRequest.refetch();
         pendingSignerTransactions.refetch();
         if (!workspace.single) {
-          navigate(Pages.workspace({ workspaceId: workspace.id }));
+          goWorkspace(workspace.id);
         }
       },
       onError: () => {
@@ -73,6 +86,55 @@ const useWorkspace = () => {
       },
     });
   };
+
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(false);
+
+  useMemo(() => {
+    if (
+      firstRender &&
+      workspaceId !== workspaceHomeRequest.data?.workspace.id
+    ) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (
+      !firstRender &&
+      workspaceId === workspaceHomeRequest.data?.workspace.id
+    ) {
+      setHasSkeleton(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    workspaceHomeRequest.isLoading,
+    workspaceHomeRequest.isFetching,
+    workspaceHomeRequest.isSuccess,
+  ]);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.WORKSPACE)!,
+    ).id;
+
+    if (workspacesInCookie !== worksapceBalance.balance?.workspaceId) {
+      setHasSkeletonBalance(true);
+    }
+
+    if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
+      setHasSkeletonBalance(false);
+    }
+
+    // console.log('[WORKSPACE]: ', {
+    //   HEADER: workspaceId,
+    //   REQ_ATUAL: worksapceBalance.balance?.workspaceId,
+    // });
+  }, [
+    worksapceBalance.isLoading,
+    worksapceBalance.isFetching,
+    worksapceBalance.isSuccess,
+  ]);
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const isValid =
@@ -91,6 +153,7 @@ const useWorkspace = () => {
     handleWorkspaceSelection,
     navigate,
     workspaceHomeRequest,
+    workspaceId,
     workspaceVaults: {
       recentVaults: workspaceHomeRequest.data?.predicates?.data,
       vaultsMax: vaultsPerPage,
@@ -105,7 +168,10 @@ const useWorkspace = () => {
     hasPermission,
     visibleBalance,
     setVisibleBalance,
+    hasSkeleton,
+    hasSkeletonBalance,
     pendingSignerTransactions,
+    goWorkspace,
   };
 };
 

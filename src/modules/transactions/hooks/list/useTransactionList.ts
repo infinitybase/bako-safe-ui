@@ -1,8 +1,9 @@
 import { TransactionStatus } from 'bsafe';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
@@ -36,6 +37,24 @@ const useTransactionList = () => {
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
+  // const { homeRequest } = useHome();
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+    ).id;
+
+    if (firstRender && transactionRequest.status === 'isLoading') {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (!firstRender && transactionRequest.status === 'success') {
+      setHasSkeleton(false);
+    }
+  }, [transactionRequest.status]);
 
   useEffect(() => {
     if (selectedTransaction.id) setFilter(undefined);
@@ -69,6 +88,7 @@ const useTransactionList = () => {
     account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     pendingSignerTransactions,
+    hasSkeleton,
   };
 };
 

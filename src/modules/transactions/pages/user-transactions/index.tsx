@@ -19,6 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
@@ -38,8 +39,10 @@ const UserTransactionsPage = () => {
     account,
     navigate,
     pendingSignerTransactions,
+    hasSkeleton,
   } = useTransactionList();
-  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
+  const { goHome } = useHome();
   const { VIEWER } = PermissionRoles;
 
   return (
@@ -60,10 +63,8 @@ const UserTransactionsPage = () => {
             color="grey.200"
             onClick={() =>
               currentWorkspace.single
-                ? navigate(Pages.home())
-                : navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
+                ? goHome()
+                : goWorkspace(currentWorkspace.id)
             }
           >
             Back home
@@ -76,7 +77,7 @@ const UserTransactionsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => navigate(Pages.home())}
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>
@@ -88,11 +89,7 @@ const UserTransactionsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() =>
-                    navigate(
-                      Pages.workspace({ workspaceId: currentWorkspace.id }),
-                    )
-                  }
+                  onClick={() => goWorkspace(currentWorkspace.id)}
                 >
                   {currentWorkspace.name}
                 </BreadcrumbLink>
@@ -227,10 +224,7 @@ const UserTransactionsPage = () => {
           );
 
           return (
-            <CustomSkeleton
-              key={transaction.id}
-              isLoaded={!transactionRequest.isLoading}
-            >
+            <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}

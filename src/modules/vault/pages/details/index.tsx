@@ -19,6 +19,7 @@ import {
   SquarePlusIcon,
 } from '@/components';
 import { Pages } from '@/modules/core/routes';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
   TransactionCard,
@@ -45,17 +46,9 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-
-  // const pendingTransactionSignature = useMemo(
-  //   () =>
-  //     waitingSignatures({
-  //       account,
-  //       transactions: vaultTransactions ?? [],
-  //     }),
-  //   [vaultTransactions, account],
-  // );
+  const { goHome } = useHome();
 
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
@@ -72,7 +65,7 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
             >
               Home
             </BreadcrumbLink>
@@ -84,11 +77,7 @@ const VaultDetailsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() =>
-                  navigate(
-                    Pages.workspace({ workspaceId: currentWorkspace.id }),
-                  )
-                }
+                onClick={() => goWorkspace(currentWorkspace.id)}
               >
                 {currentWorkspace.name}
               </BreadcrumbLink>
@@ -187,10 +176,7 @@ const VaultDetailsPage = () => {
             );
 
             return (
-              <CustomSkeleton
-                key={transaction.id}
-                isLoaded={!loadingVaultTransactions}
-              >
+              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
@@ -229,7 +215,8 @@ const VaultDetailsPage = () => {
           {!vault.transactions.isLoading && <Box ref={inView.ref} />}
         </TransactionCard.List>
       ) : (
-        !loadingVaultTransactions && (
+        !hasTransactions &&
+        !!vaultTransactions && (
           <Card
             w="full"
             p={20}

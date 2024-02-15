@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from 'react-query';
 
-import { invalidateQueries } from '@/modules';
+import { invalidateQueries } from '@/modules/core';
 
 import {
   GetTransactionParams,

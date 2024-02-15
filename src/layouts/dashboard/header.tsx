@@ -27,9 +27,10 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useFuelAccount } from '@/modules/auth/store';
-import { Pages } from '@/modules/core';
 import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
+import { Pages } from '@/modules/core/routes';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -196,7 +197,7 @@ const Header = () => {
     handleWorkspaceSelection,
   } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-
+  const { goHome } = useHome();
   const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -223,7 +224,12 @@ const Header = () => {
         onCreate={handleGoToCreateWorkspace}
       />
 
-      <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
+      <SpacedBox
+        cursor="pointer"
+        onClick={() => {
+          goHome();
+        }}
+      >
         <img width={90} src={logo} alt="" />
       </SpacedBox>
 

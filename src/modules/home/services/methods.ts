@@ -5,6 +5,7 @@ import { TransactionWithVault } from '@/modules/transactions/services';
 export interface HomeDataResponse {
   predicates: IPagination<Predicate & { workspace: Workspace }>;
   transactions: IPagination<TransactionWithVault>;
+  workspace: Workspace;
 }
 
 export class HomeService {

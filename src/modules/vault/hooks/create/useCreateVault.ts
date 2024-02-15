@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useContactToast } from '@/modules';
+import { useContactToast } from '@/modules/addressBook/hooks';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useCreateBsafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
