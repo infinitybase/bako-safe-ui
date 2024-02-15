@@ -28,7 +28,7 @@ const useCreateWorkspace = () => {
   const request = useCreateWorkspaceRequest();
   const { selectWorkspace } = useSelectWorkspace();
 
-  const handleClose = () => navigate(-1);
+  const handleClose = () => navigate(Pages.home());
 
   const handleGoToWorkspace = () => {
     selectWorkspace(request.data!, {
