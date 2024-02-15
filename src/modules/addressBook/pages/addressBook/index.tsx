@@ -11,10 +11,14 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CgList } from 'react-icons/cg';
+import { FaRegPlusSquare } from 'react-icons/fa';
+import { GoArrowSwitch } from 'react-icons/go';
+import { IoChevronBack } from 'react-icons/io5';
+import { ActionCard } from '@/modules/home/components/ActionCard';
+
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace';
@@ -144,6 +148,67 @@ const AddressBookPage = () => {
               </Button>
             </Box>
           )}
+        </HStack>
+
+        <HStack w="full" spacing={6}>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.userVaults({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+          <ActionCard.Container
+            isUpcoming={true ? false : true}
+            onClick={() => {
+              return true
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
+                : null;
+            }}
+          >
+            <ActionCard.Icon
+              icon={GoArrowSwitch}
+              isUpcoming={true ? false : true}
+            />
+            <Box>
+              <ActionCard.Title>Transactions</ActionCard.Title>
+              <ActionCard.Description>
+                Manage Transactions Across All Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+          <ActionCard.Container
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: currentWorkspace.id,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={CgList} />
+            <Box>
+              <ActionCard.Title>Address book</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage Your Contacts for Easy Transfers and Vault
+                Creation.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
         </HStack>
 
         {/* USER CONTACTS */}

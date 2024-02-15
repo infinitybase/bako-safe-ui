@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { invalidateQueries } from '@/modules';
@@ -25,7 +25,7 @@ const useHome = () => {
 
   useMemo(() => {
     const workspacesInCookie = JSON.parse(
-      CookiesConfig.getCookie(CookieName.WORKSPACE)!,
+      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
     ).id;
     if (
       firstRender &&
@@ -40,12 +40,15 @@ const useHome = () => {
       homeDataRequest.data?.workspace.id === workspacesInCookie
     ) {
       setHasSkeleton(false);
+      setFirstRender(false);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     homeDataRequest.isLoading,
     homeDataRequest.isFetching,
     homeDataRequest.isSuccess,
+    homeDataRequest.data,
   ]);
 
   const goHome = () => {

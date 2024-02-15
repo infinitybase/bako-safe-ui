@@ -112,68 +112,66 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton isLoaded={!loadingVaults}>
-        <HStack w="full" h="full" spacing={6}>
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId: currentWorkspace.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-          <ActionCard.Container
+      <HStack w="full" spacing={6}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.userVaults({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
+          <ActionCard.Icon icon={VaultIcon} />
+          <Box>
+            <ActionCard.Title>Vaults</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage All Your Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container
+          isUpcoming={hasTransactions ? false : true}
+          onClick={() => {
+            return hasTransactions
+              ? navigate(
+                  Pages.userTransactions({
+                    workspaceId: currentWorkspace.id,
+                  }),
+                )
+              : null;
+          }}
+        >
+          <ActionCard.Icon
+            icon={GoArrowSwitch}
             isUpcoming={hasTransactions ? false : true}
-            onClick={() => {
-              return hasTransactions
-                ? navigate(
-                    Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
-                    }),
-                  )
-                : null;
-            }}
-          >
-            <ActionCard.Icon
-              icon={GoArrowSwitch}
-              isUpcoming={hasTransactions ? false : true}
-            />
-            <Box>
-              <ActionCard.Title>Transactions</ActionCard.Title>
-              <ActionCard.Description>
-                Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-          <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId: currentWorkspace.id,
-                }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={CgList} />
-            <Box>
-              <ActionCard.Title>Address book</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage Your Contacts for Easy Transfers and Vault
-                Creation.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </HStack>
-      </CustomSkeleton>
+          />
+          <Box>
+            <ActionCard.Title>Transactions</ActionCard.Title>
+            <ActionCard.Description>
+              Manage Transactions Across All Vaults in One Place.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.addressBook({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
+          <ActionCard.Icon icon={CgList} />
+          <Box>
+            <ActionCard.Title>Address book</ActionCard.Title>
+            <ActionCard.Description>
+              Access and Manage Your Contacts for Easy Transfers and Vault
+              Creation.
+            </ActionCard.Description>
+          </Box>
+        </ActionCard.Container>
+      </HStack>
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
@@ -186,30 +184,32 @@ const UserVaultsPage = () => {
           Vaults
         </Text>
       </Box>
-      <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-        {vaults?.map(({ id, name, workspace, members, description }) => {
-          return (
-            <GridItem key={id}>
-              <CustomSkeleton isLoaded={!loadingVaults}>
-                <VaultCard
-                  name={name}
-                  workspace={workspace}
-                  title={description}
-                  members={members!}
-                  onClick={() =>
-                    navigate(
-                      Pages.detailsVault({
-                        vaultId: id,
-                        workspaceId: currentWorkspace.id,
-                      }),
-                    )
-                  }
-                />
-              </CustomSkeleton>
-            </GridItem>
-          );
-        })}
-      </Grid>
+      <CustomSkeleton isLoaded={!loadingVaults}>
+        <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
+          {vaults
+            ? vaults?.map(({ id, name, workspace, members, description }) => {
+                return (
+                  <GridItem key={id}>
+                    <VaultCard
+                      name={name}
+                      workspace={workspace}
+                      title={description}
+                      members={members!}
+                      onClick={() =>
+                        navigate(
+                          Pages.detailsVault({
+                            vaultId: id,
+                            workspaceId: currentWorkspace.id,
+                          }),
+                        )
+                      }
+                    />
+                  </GridItem>
+                );
+              })
+            : null}
+        </Grid>
+      </CustomSkeleton>
     </VStack>
   );
 };

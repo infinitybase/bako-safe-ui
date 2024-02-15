@@ -57,11 +57,14 @@ export type GetWorkspaceByIdResponse = Workspace;
 export type SelectWorkspaceResponse = {
   workspace: Workspace;
 };
-export type GetWorkspaceBalanceResponse = {
+
+export type IWroskapceBalance = {
   balance: string;
   balanceUSD: string;
   workspaceId: string;
 };
+
+export type GetWorkspaceBalanceResponse = IWroskapceBalance;
 
 export class WorkspaceService {
   static async list() {
