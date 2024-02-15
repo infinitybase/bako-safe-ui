@@ -8,9 +8,9 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { VaultSuccessIcon } from '../icons';
+import { DeleteUserIcon } from '../icons/delete-user';
 
-interface SuccessStepProps {
+interface DeleteStepProps {
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
   primaryAction?: string;
@@ -20,7 +20,7 @@ interface SuccessStepProps {
   description: string;
 }
 
-const FeedbackSuccess = ({
+const FeedbackDelete = ({
   title,
   showAction,
   description,
@@ -28,13 +28,13 @@ const FeedbackSuccess = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
-}: SuccessStepProps) => (
+}: DeleteStepProps) => (
   <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={100} as={VaultSuccessIcon} />
+      <Icon fontSize={100} as={DeleteUserIcon} />
     </Box>
     <Box mb={5}>
-      <Heading color="brand.600">{title}</Heading>
+      <Heading color="error.500">{title}</Heading>
     </Box>
     <Box maxW={310} mb={5}>
       <Heading color="grey.200" fontSize="md" textAlign="center">
@@ -53,7 +53,7 @@ const FeedbackSuccess = ({
       </Button>
       <Button
         border="none"
-        bgColor="brand.600"
+        bgColor="error.500"
         variant="primary"
         onClick={onPrimaryAction}
       >
@@ -63,4 +63,4 @@ const FeedbackSuccess = ({
   </Center>
 );
 
-export { FeedbackSuccess };
+export { FeedbackDelete };

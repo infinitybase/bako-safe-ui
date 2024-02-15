@@ -15,7 +15,9 @@ import { useParams } from 'react-router-dom';
 
 import {
   Dialog,
+  FeedbackDelete,
   FeedbackSuccess,
+  FeedbackUpdate,
   SquarePlusIcon,
   StepProgress,
 } from '@/components';
@@ -107,10 +109,43 @@ const CreateMemberPage = () => {
         <MemberPermissionForm form={permissionForm} formState={formState} />
       </TabPanel>
       <TabPanel p={0}>
-        <FeedbackSuccess
-          title="New member added!"
-          description="To view all the members added to your workspace, click on settings on the workspace home page."
-        />
+        {tabs.is(MemberTabState.SUCCESS) && (
+          <FeedbackSuccess
+            showAction
+            title={formState.title}
+            description="To view all the members added to your workspace, click on settings on the workspace home page."
+            primaryAction={formState.primaryAction}
+            secondaryAction={formState.secondaryAction}
+            onPrimaryAction={formState.handlePrimaryAction}
+            onSecondaryAction={formState.handleSecondaryAction}
+          />
+        )}
+      </TabPanel>
+      <TabPanel p={0}>
+        {tabs.is(MemberTabState.UPDATE) && (
+          <FeedbackUpdate
+            title={formState.title}
+            description={formState.description ?? ''}
+            showAction
+            primaryAction={formState.primaryAction}
+            secondaryAction={formState.secondaryAction}
+            onPrimaryAction={formState.handlePrimaryAction}
+            onSecondaryAction={formState.handleSecondaryAction}
+          />
+        )}
+      </TabPanel>
+      <TabPanel p={0}>
+        {tabs.is(MemberTabState.DELETE) && (
+          <FeedbackDelete
+            title={formState.title}
+            description={formState.description ?? ''}
+            showAction
+            primaryAction={formState.primaryAction}
+            secondaryAction={formState.secondaryAction}
+            onPrimaryAction={formState.handlePrimaryAction}
+            onSecondaryAction={formState.handleSecondaryAction}
+          />
+        )}
       </TabPanel>
     </TabPanels>
   );
@@ -128,7 +163,7 @@ const CreateMemberPage = () => {
         maxW={500}
         title={dialog.title}
         description={dialog.description}
-        hidden={tabs.is(MemberTabState.FEEDBACK)}
+        hidden={!tabs.is(MemberTabState.FORM)}
       />
 
       {formState.isEditMember && (
@@ -136,13 +171,13 @@ const CreateMemberPage = () => {
           maxW={500}
           w="full"
           pr={12}
-          hidden={tabs.is(MemberTabState.FEEDBACK)}
+          hidden={!tabs.is(MemberTabState.FORM)}
         >
           <MemberTab />
         </Tabs>
       )}
 
-      {!formState.isEditMember && !tabs.is(MemberTabState.FEEDBACK) && (
+      {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
           <Box maxW={500} w={500} mb={10} pr={12}>
             <StepProgress length={tabs.length} value={tabs.tab} />
@@ -173,32 +208,38 @@ const CreateMemberPage = () => {
           {TabsPanels}
         </Tabs>
 
-        <Dialog.Actions maxW={500}>
-          <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
-            {formState?.secondaryAction}
-          </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction
-            onClick={formState?.handlePrimaryAction}
-            leftIcon={<SquarePlusIcon />}
-            isDisabled={!formState?.isValid}
-            isLoading={formState?.isLoading}
-          >
-            {formState.primaryAction}
-          </Dialog.PrimaryAction>
-        </Dialog.Actions>
-        <Dialog.Actions maxW={500}>
-          {formState.tertiaryAction && (
-            <Dialog.TertiaryAction
-              display="block"
-              onClick={formState.handleTertiaryAction}
-              leftIcon={<TrashIcon />}
-              isDisabled={!formState?.tertiaryAction}
-              isLoading={formState?.isLoading}
-            >
-              {formState.tertiaryAction}
-            </Dialog.TertiaryAction>
-          )}
-        </Dialog.Actions>
+        {tabs.is(MemberTabState.FORM) && (
+          <>
+            <Dialog.Actions maxW={500}>
+              <Dialog.SecondaryAction
+                onClick={formState?.handleSecondaryAction}
+              >
+                {formState?.secondaryAction}
+              </Dialog.SecondaryAction>
+              <Dialog.PrimaryAction
+                onClick={formState?.handlePrimaryAction}
+                leftIcon={<SquarePlusIcon />}
+                isDisabled={!formState?.isValid}
+                isLoading={formState?.isLoading}
+              >
+                {formState.primaryAction}
+              </Dialog.PrimaryAction>
+            </Dialog.Actions>
+            <Dialog.Actions maxW={500}>
+              {formState.tertiaryAction && (
+                <Dialog.TertiaryAction
+                  display="block"
+                  onClick={formState.handleTertiaryAction}
+                  leftIcon={<TrashIcon />}
+                  isDisabled={!formState?.tertiaryAction}
+                  isLoading={formState?.isLoading}
+                >
+                  {formState.tertiaryAction}
+                </Dialog.TertiaryAction>
+              )}
+            </Dialog.Actions>
+          </>
+        )}
       </Dialog.Body>
     </Dialog.Modal>
   );

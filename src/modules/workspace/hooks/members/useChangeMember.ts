@@ -1,15 +1,19 @@
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
+  Member,
   Pages,
   PermissionRoles,
   useTab,
   Workspace,
 } from '@/modules/core';
+import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
+import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
@@ -20,15 +24,25 @@ import {
 
 export enum MemberTabState {
   FORM = 0,
-  FEEDBACK = 1,
+  SUCCESS = 1,
+  UPDATE = 2,
+  DELETE = 3,
+}
+
+interface MemberPermission {
+  oldPermission: string;
+  newPermission: string;
 }
 
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
+  const { successToast } = useSettingsToast();
   const params = useParams<{ workspaceId: string; memberId: string }>();
   const isEditMember = !!params.memberId;
+  const [memberPermissions, setMemberPermissions] =
+    useState<MemberPermission>();
 
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
@@ -46,6 +60,22 @@ const useChangeMember = () => {
       setMemberValuesByWorkspace(workspace, params.memberId);
     },
   });
+  const role = WorkspacePermissionUtils.getPermissionInWorkspace(
+    workspaceRequest.workspace!,
+    {
+      id: params.memberId,
+    } as Member,
+  );
+
+  const permissions =
+    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
+
+  useMemo(() => {
+    setMemberPermissions({
+      oldPermission: permissions?.title?.toUpperCase() ?? '',
+      newPermission: permissionForm.watch('permission'),
+    });
+  }, [permissionForm.watch('permission'), permissions.title]);
 
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
@@ -83,7 +113,7 @@ const useChangeMember = () => {
                 },
                 {
                   onSuccess: () => {
-                    tabs.set(MemberTabState.FEEDBACK);
+                    tabs.set(MemberTabState.SUCCESS);
                     workspaceRequest.refetch();
                   },
                 },
@@ -107,8 +137,12 @@ const useChangeMember = () => {
       },
       {
         onSuccess: () => {
-          tabs.set(MemberTabState.FEEDBACK);
+          tabs.set(MemberTabState.SUCCESS);
           workspaceRequest.refetch();
+          successToast({
+            title: 'Success!',
+            description: 'Your member permissions were updated.',
+          });
         },
       },
     );
@@ -128,9 +162,23 @@ const useChangeMember = () => {
         member: member.id,
       },
       {
-        onSuccess: () => handleClose(),
+        onSuccess: () => {
+          handleClose(),
+            successToast({
+              title: 'Success!',
+              description: 'Your member was deleted from this workspace.',
+            });
+        },
       },
     );
+  };
+
+  const handleSetUpdateStep = () => {
+    tabs.set(MemberTabState.UPDATE);
+  };
+
+  const handleSetDeleteStep = () => {
+    tabs.set(MemberTabState.DELETE);
   };
 
   const clearSteps = () => {
@@ -156,15 +204,18 @@ const useChangeMember = () => {
       isValid: permissionForm.formState.isValid || editForm.formState.isValid,
       primaryAction: isEditMember ? 'Update user' : 'Add member',
       secondaryAction: 'Cancel',
-      handlePrimaryAction: handlePermissions,
+      handlePrimaryAction: isEditMember
+        ? handleSetUpdateStep
+        : handlePermissions,
       handleSecondaryAction: handleClose,
       isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
       title: isEditMember ? 'Edit member' : 'User permission',
+      description: undefined,
       tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
-      handleTertiaryAction: handleDeleteMember,
+      handleTertiaryAction: handleSetDeleteStep,
       isEditMember,
     },
-    [MemberTabState.FEEDBACK]: {
+    [MemberTabState.SUCCESS]: {
       isValid: true,
       primaryAction: 'Conclude',
       secondaryAction: 'Add another member',
@@ -172,6 +223,34 @@ const useChangeMember = () => {
       handleSecondaryAction: clearSteps,
       isLoading: false,
       title: isEditMember ? 'Member updated' : 'Member added',
+      description: undefined,
+      tertiaryAction: undefined,
+      handleTertiaryAction: undefined,
+      isEditMember,
+    },
+    [MemberTabState.UPDATE]: {
+      isValid: true,
+      primaryAction: 'Update user',
+      secondaryAction: 'Cancel',
+      handlePrimaryAction: handlePermissions,
+      handleSecondaryAction: clearSteps,
+      isLoading: false,
+      title: 'Update user',
+      description: `You are changing user permissions from ${memberPermissions?.oldPermission} to ${memberPermissions?.newPermission}. Are you sure you want to update the user?`,
+      tertiaryAction: undefined,
+      handleTertiaryAction: undefined,
+      isEditMember,
+    },
+    [MemberTabState.DELETE]: {
+      isValid: true,
+      primaryAction: 'Remove user',
+      secondaryAction: 'Cancel',
+      handlePrimaryAction: handleDeleteMember,
+      handleSecondaryAction: clearSteps,
+      isLoading: false,
+      title: 'Remove user',
+      description:
+        'Are you sure you want to remove this user from this workspace? ',
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
       isEditMember,
