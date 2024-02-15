@@ -63,7 +63,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
       <HStack>
         <Box w="100%" maxW="80px">
-          <Badge variant="warning">Manager</Badge>
+          <Badge variant="blue">Manager</Badge>
         </Box>
 
         <Text color="grey.200" fontSize="md">
