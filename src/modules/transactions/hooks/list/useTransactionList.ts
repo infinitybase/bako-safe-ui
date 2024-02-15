@@ -46,7 +46,7 @@ const useTransactionList = () => {
       CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
     ).id;
 
-    if (firstRender && transactionRequest.status === 'isLoading') {
+    if (firstRender && transactionRequest.status === 'loading') {
       setHasSkeleton(true);
       setFirstRender(false);
     }

@@ -34,17 +34,6 @@ const TransactionsVaultPage = () => {
     defaultIndex,
   } = useTransactionList();
 
-  const emptyTransactions = () => {
-    return new Array(5).fill(0).map((_, index) => {
-      return (
-        <EmptyTransaction
-          title="No transactions"
-          description="You haven't made any transactions yet."
-        />
-      );
-    });
-  };
-
   return (
     <Box w="full" height="100%" maxH="100%" overflowY="hidden">
       {/* BREADCRUMB */}
@@ -139,7 +128,6 @@ const TransactionsVaultPage = () => {
         key={defaultIndex.join(',')}
         pb={10}
       >
-        {!transactionRequest?.transactions.length && emptyTransactions()}
         {transactionRequest.transactions.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
             (member) => member.address === account,
