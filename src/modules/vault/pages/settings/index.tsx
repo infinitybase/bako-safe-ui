@@ -11,6 +11,7 @@ import {
 
 import { HomeIcon } from '@/components';
 import { Pages } from '@/modules/core';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
 import { useWorkspace } from '@/modules/workspace';
@@ -21,6 +22,7 @@ import { SettingsSigners } from '../../components/SettingsSigners';
 const VaultSettingsPage = () => {
   const { vault, store, navigate, params } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
+  const { goHome } = useHome();
   const { currentWorkspace } = useWorkspace();
   if (!vault) return null;
 
@@ -34,7 +36,7 @@ const VaultSettingsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
             >
               Home
             </BreadcrumbLink>

@@ -45,12 +45,11 @@ const HomePage = () => {
 
   const { currentWorkspace } = useWorkspace();
 
-  // const hasVaults = recentVaults && recentVaults?.length;
   const hasTransactions = transactions?.length;
 
-  useEffect(() => {
-    console.log('alou', hasSkeleton);
-  }, [hasSkeleton]);
+  // useEffect(() => {
+  //   console.log('alou', hasSkeleton);
+  // }, [hasSkeleton]);
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
@@ -207,7 +206,7 @@ const HomePage = () => {
             </Text>
             <WaitingSignatureBadge
               isLoading={pendingSignerTransactions.isLoading}
-              quantity={pendingSignerTransactions.data!}
+              quantity={pendingSignerTransactions.data?.ofUser ?? 0}
             />
             <Spacer />
             <Link
@@ -224,7 +223,7 @@ const HomePage = () => {
                 const isSigner = !!transaction.predicate?.members?.find(
                   (member) => member.address === account,
                 );
-                
+
                 return (
                   <TransactionCard.Container
                     key={transaction.id}

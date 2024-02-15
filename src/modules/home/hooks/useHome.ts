@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { invalidateQueries } from '@/modules';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useFuelAccount } from '@/modules/auth/store';
+import { HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
-import { useWorkspace } from '@/modules/workspace';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
 
@@ -14,7 +15,6 @@ const useHome = () => {
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
-  const { workspaceHomeRequest } = useWorkspace();
   useListContactsRequest();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
@@ -35,20 +35,23 @@ const useHome = () => {
       setFirstRender(false);
     }
 
-    setTimeout(() => {
-      if (
-        (!firstRender &&
-          homeDataRequest.data?.workspace.id === workspacesInCookie) ||
-        (!firstRender &&
-          workspaceHomeRequest.data?.workspace.id === workspacesInCookie)
-      ) {
-        setHasSkeleton(false);
-      }
-    }, 500);
+    if (
+      !firstRender &&
+      homeDataRequest.data?.workspace.id === workspacesInCookie
+    ) {
+      setHasSkeleton(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    homeDataRequest.data?.workspace.id,
-    workspaceHomeRequest.data?.workspace.id,
+    homeDataRequest.isLoading,
+    homeDataRequest.isFetching,
+    homeDataRequest.isSuccess,
   ]);
+
+  const goHome = () => {
+    invalidateQueries(HomeQueryKey.FULL_DATA());
+    navigate(Pages.home());
+  };
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -74,9 +77,8 @@ const useHome = () => {
     },
     homeRequest: homeDataRequest,
     navigate,
-    setFirstRender,
+    goHome,
     hasSkeleton,
-    firstRender,
     pendingSignerTransactions,
   };
 };

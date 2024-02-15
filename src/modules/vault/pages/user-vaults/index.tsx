@@ -19,6 +19,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
@@ -33,6 +34,7 @@ const UserVaultsPage = () => {
 
   const { VIEWER } = PermissionRoles;
   const { currentWorkspace, hasPermission } = useWorkspace();
+  const { goHome } = useHome();
 
   const hasTransactions = transactions?.length;
 
@@ -54,7 +56,7 @@ const UserVaultsPage = () => {
             color="grey.200"
             onClick={() =>
               currentWorkspace.single
-                ? navigate(Pages.home())
+                ? goHome()
                 : navigate(
                     Pages.workspace({ workspaceId: currentWorkspace.id }),
                   )
@@ -69,7 +71,7 @@ const UserVaultsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                href="/home"
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>

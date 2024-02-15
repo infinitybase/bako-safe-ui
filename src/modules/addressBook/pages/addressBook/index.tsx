@@ -16,6 +16,7 @@ import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace';
 
 import {
@@ -46,6 +47,7 @@ const AddressBookPage = () => {
     hasSkeleton,
   } = useAddressBook();
   const { hasPermission, currentWorkspace } = useWorkspace();
+  const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
 
@@ -86,7 +88,7 @@ const AddressBookPage = () => {
               color="grey.200"
               onClick={() =>
                 currentWorkspace.single
-                  ? navigate(Pages.home())
+                  ? goHome()
                   : navigate(
                       Pages.workspace({ workspaceId: currentWorkspace.id }),
                     )
@@ -102,7 +104,7 @@ const AddressBookPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => navigate(Pages.home())}
+                  onClick={() => goHome()}
                 >
                   Home
                 </BreadcrumbLink>

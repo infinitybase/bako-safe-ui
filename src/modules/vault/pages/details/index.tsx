@@ -19,6 +19,7 @@ import {
   SquarePlusIcon,
 } from '@/components';
 import { Pages } from '@/modules/core/routes';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
   TransactionCard,
@@ -47,7 +48,7 @@ const VaultDetailsPage = () => {
   } = useVaultDetails();
   const { currentWorkspace, hasSkeleton } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-
+  const { goHome } = useHome();
   // const pendingTransactionSignature = useMemo(
   //   () =>
   //     waitingSignatures({
@@ -72,7 +73,7 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
             >
               Home
             </BreadcrumbLink>
