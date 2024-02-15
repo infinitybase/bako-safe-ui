@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
-import { Pages } from '@/modules/core';
+import { AddressUtils, Pages } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -175,7 +175,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 />
               </Box>
 
-              <AddressCopy w="full" address={vault.predicateAddress!} />
+              <AddressCopy
+                w="full"
+                address={AddressUtils.format(vault.predicateAddress)!}
+              />
             </VStack>
           </HStack>
         </Card>
