@@ -77,7 +77,7 @@ const useChangeMember = () => {
       oldPermission: permissions?.title?.toUpperCase() ?? '',
       newPermission: permissionForm.watch('permission'),
     });
-  }, [permissionForm.watch('permission'), permissions.title]);
+  }, [permissionForm.watch('permission')]);
 
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
