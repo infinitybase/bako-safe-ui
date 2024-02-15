@@ -8,9 +8,9 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { VaultSuccessIcon } from '../icons';
+import { UserIcon } from '../icons/user';
 
-interface SuccessStepProps {
+interface UpdateStepProps {
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
   primaryAction?: string;
@@ -20,7 +20,7 @@ interface SuccessStepProps {
   description: string;
 }
 
-const FeedbackSuccess = ({
+const FeedbackUpdate = ({
   title,
   showAction,
   description,
@@ -28,10 +28,10 @@ const FeedbackSuccess = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
-}: SuccessStepProps) => (
+}: UpdateStepProps) => (
   <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={100} as={VaultSuccessIcon} />
+      <Icon fontSize={100} as={UserIcon} />
     </Box>
     <Box mb={5}>
       <Heading color="brand.600">{title}</Heading>
@@ -63,4 +63,4 @@ const FeedbackSuccess = ({
   </Center>
 );
 
-export { FeedbackSuccess };
+export { FeedbackUpdate };

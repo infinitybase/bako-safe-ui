@@ -8,7 +8,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useHome } from '@/modules';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages, useFuel } from '@/modules/core';
 

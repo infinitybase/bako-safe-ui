@@ -2,7 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { useWorkspace } from '@/modules';
+import { useWorkspace } from '@/modules/workspace/hooks';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import {

@@ -46,10 +46,6 @@ const HomePage = () => {
 
   const hasTransactions = transactions?.length;
 
-  // useEffect(() => {
-  //   console.log('alou', hasSkeleton);
-  // }, [hasSkeleton]);
-
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between">
@@ -129,16 +125,18 @@ const HomePage = () => {
         </HStack>
       </CustomSkeleton>
       {/* RECENT VAULTS */}
-      <Box mt={4} alignSelf="flex-start">
-        <Text
-          variant="subtitle"
-          fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
-        >
-          Recently used vaults
-        </Text>
-      </Box>
+      {recentVaults?.length && (
+        <Box mt={4} alignSelf="flex-start">
+          <Text
+            variant="subtitle"
+            fontWeight="semibold"
+            fontSize="xl"
+            color="grey.200"
+          >
+            Recently used vaults
+          </Text>
+        </Box>
+      )}
       <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
         {recentVaults?.map(
           ({ id, name, workspace, members, description }, index) => {
@@ -178,16 +176,18 @@ const HomePage = () => {
       {/* TRANSACTION LIST */}
       {transactions && transactions.length <= 0 ? (
         <VStack w="full" spacing={6}>
-          <HStack w="full" spacing={4}>
-            <Text
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize="xl"
-              color="grey.200"
-            >
-              Transactions
-            </Text>
-          </HStack>
+          {transactions.length && (
+            <HStack w="full" spacing={4}>
+              <Text
+                variant="subtitle"
+                fontWeight="semibold"
+                fontSize="xl"
+                color="grey.200"
+              >
+                Transactions
+              </Text>
+            </HStack>
+          )}
           <CustomSkeleton isLoaded={!hasSkeleton}>
             <EmptyTransaction />
           </CustomSkeleton>

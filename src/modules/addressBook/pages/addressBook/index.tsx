@@ -21,6 +21,7 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
+
 import { useWorkspace } from '@/modules/workspace';
 
 import {
@@ -51,8 +52,12 @@ const AddressBookPage = () => {
     hasSkeleton,
   } = useAddressBook();
   const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
-  const { goHome } = useHome();
+  const {
+    goHome,
+    transactionsRequest: { transactions },
+  } = useHome();
 
+  const hasTransactions = transactions?.length;
   const hasContacts = contacts?.length;
 
   return (
@@ -169,9 +174,9 @@ const AddressBookPage = () => {
             </Box>
           </ActionCard.Container>
           <ActionCard.Container
-            isUpcoming={true ? false : true}
+            isUpcoming={hasTransactions ? false : true}
             onClick={() => {
-              return true
+              return hasTransactions
                 ? navigate(
                     Pages.userTransactions({
                       workspaceId: currentWorkspace.id,
@@ -182,7 +187,7 @@ const AddressBookPage = () => {
           >
             <ActionCard.Icon
               icon={GoArrowSwitch}
-              isUpcoming={true ? false : true}
+              isUpcoming={hasTransactions ? false : true}
             />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
@@ -211,20 +216,19 @@ const AddressBookPage = () => {
           </ActionCard.Container>
         </HStack>
 
+        <Box mt={4} mb={-2} alignSelf="flex-start">
+          <Text
+            variant="subtitle"
+            fontWeight="semibold"
+            fontSize="xl"
+            color="grey.200"
+          >
+            Address book
+          </Text>
+        </Box>
         {/* USER CONTACTS */}
         {!!hasContacts && (
           <>
-            <Box mt={4} mb={-2} alignSelf="flex-start">
-              <Text
-                variant="subtitle"
-                fontWeight="semibold"
-                fontSize="xl"
-                color="grey.200"
-              >
-                Address book
-              </Text>
-            </Box>
-
             <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
               {contacts?.map(({ id, nickname, user }) => {
                 return (

@@ -49,14 +49,6 @@ const VaultDetailsPage = () => {
   const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
-  // const pendingTransactionSignature = useMemo(
-  //   () =>
-  //     waitingSignatures({
-  //       account,
-  //       transactions: vaultTransactions ?? [],
-  //     }),
-  //   [vaultTransactions, account],
-  // );
 
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;

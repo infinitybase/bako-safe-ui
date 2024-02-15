@@ -19,7 +19,11 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+
 import { useHome } from '@/modules/home/hooks/useHome';
+
+import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
+
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
@@ -184,32 +188,37 @@ const UserVaultsPage = () => {
           Vaults
         </Text>
       </Box>
-      <CustomSkeleton isLoaded={!loadingVaults}>
-        <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
-          {vaults
-            ? vaults?.map(({ id, name, workspace, members, description }) => {
-                return (
-                  <GridItem key={id}>
-                    <VaultCard
-                      name={name}
-                      workspace={workspace}
-                      title={description}
-                      members={members!}
-                      onClick={() =>
-                        navigate(
-                          Pages.detailsVault({
-                            vaultId: id,
-                            workspaceId: currentWorkspace.id,
-                          }),
-                        )
-                      }
-                    />
-                  </GridItem>
-                );
-              })
-            : null}
-        </Grid>
-      </CustomSkeleton>
+
+      {!vaults?.length && (
+        <CustomSkeleton isLoaded={!loadingVaults}>
+          <EmptyVault />
+        </CustomSkeleton>
+      )}
+
+      <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
+        {vaults?.map(({ id, name, workspace, members, description }) => {
+          return (
+            <GridItem key={id}>
+              <CustomSkeleton isLoaded={!loadingVaults}>
+                <VaultCard
+                  name={name}
+                  workspace={workspace}
+                  title={description}
+                  members={members!}
+                  onClick={() =>
+                    navigate(
+                      Pages.detailsVault({
+                        vaultId: id,
+                        workspaceId: currentWorkspace.id,
+                      }),
+                    )
+                  }
+                />
+              </CustomSkeleton>
+            </GridItem>
+          );
+        })}
+      </Grid>
     </VStack>
   );
 };

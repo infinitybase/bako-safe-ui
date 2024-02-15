@@ -1,12 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useListContactsRequest } from '@/modules/addressBook';
-import {
-  invalidateQueries,
-  useBsafeCreateTransaction,
-  useToast,
-} from '@/modules/core';
+import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
+import { invalidateQueries, useBsafeCreateTransaction } from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import {
@@ -41,7 +37,7 @@ const useTransactionAccordion = () => {
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
-  const toast = useToast();
+  const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
   const { data } = useListContactsRequest();
 
@@ -75,11 +71,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const transactionRequest = useBsafeCreateTransaction({
     vault: vaultDetails.predicateInstance!,
     onSuccess: () => {
-      toast.show({
-        status: 'success',
-        title: 'Transaction created',
-        position: 'bottom',
-        isClosable: true,
+      successToast({
+        title: 'Transaction created!',
+        description: 'Your transaction was successfully created...',
       });
       invalidateQueries([
         TRANSACTION_LIST_QUERY_KEY,
@@ -89,11 +83,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       handleClose();
     },
     onError: () => {
-      toast.show({
-        status: 'error',
-        title: 'Error on create transaction.',
-        position: 'bottom',
-        isClosable: true,
+      errorToast({
+        title: 'There was an error creating the transaction',
+        description: 'Please try again later',
       });
     },
   });

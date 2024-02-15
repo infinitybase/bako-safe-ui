@@ -7,7 +7,8 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { useVaultDetails, useWorkspace } from '@/modules';
+import { useVaultDetails } from '@/modules/vault';
+import { useWorkspace } from '@/modules/workspace';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
@@ -90,12 +91,8 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           isActive={menuItems.transactions}
-          cursor={
-            transactionListRequest.hasTransactions ? 'pointer' : 'not-allowed'
-          }
-          opacity={transactionListRequest.hasTransactions ? '1' : '0.6'}
+          cursor={'pointer'}
           onClick={() =>
-            transactionListRequest.hasTransactions &&
             route.navigate(
               Pages.transactions({
                 workspaceId: route.params.workspaceId!,
