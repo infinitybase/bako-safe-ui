@@ -1,15 +1,18 @@
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
+  Member,
   Pages,
   PermissionRoles,
   useTab,
   Workspace,
 } from '@/modules/core';
 
+import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
@@ -25,12 +28,19 @@ export enum MemberTabState {
   DELETE = 3,
 }
 
+interface MemberPermission {
+  oldPermission: string;
+  newPermission: string;
+}
+
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string; memberId: string }>();
   const isEditMember = !!params.memberId;
+  const [memberPermissions, setMemberPermissions] =
+    useState<MemberPermission>();
 
   const tabs = useTab<MemberTabState>({
     tabs: EnumUtils.toNumberArray(MemberTabState),
@@ -48,6 +58,22 @@ const useChangeMember = () => {
       setMemberValuesByWorkspace(workspace, params.memberId);
     },
   });
+  const role = WorkspacePermissionUtils.getPermissionInWorkspace(
+    workspaceRequest.workspace!,
+    {
+      id: params.memberId,
+    } as Member,
+  );
+
+  const permissions =
+    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
+
+  useMemo(() => {
+    setMemberPermissions({
+      oldPermission: permissions?.title?.toUpperCase() ?? '',
+      newPermission: permissionForm.watch('permission'),
+    });
+  }, [permissionForm.watch('permission'), permissions.title]);
 
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
@@ -198,7 +224,7 @@ const useChangeMember = () => {
       handleSecondaryAction: clearSteps,
       isLoading: false,
       title: 'Update user',
-      description: `You are changing user permissions from Admin to Viewer. Are you sure you want to update the user?`,
+      description: `You are changing user permissions from ${memberPermissions?.oldPermission} to ${memberPermissions?.newPermission}. Are you sure you want to update the user?`,
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
       isEditMember,
