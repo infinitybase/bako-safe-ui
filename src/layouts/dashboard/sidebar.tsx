@@ -90,12 +90,8 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           isActive={menuItems.transactions}
-          cursor={
-            transactionListRequest.hasTransactions ? 'pointer' : 'not-allowed'
-          }
-          opacity={transactionListRequest.hasTransactions ? '1' : '0.6'}
+          cursor={'pointer'}
           onClick={() =>
-            transactionListRequest.hasTransactions &&
             route.navigate(
               Pages.transactions({
                 workspaceId: route.params.workspaceId!,
