@@ -31,8 +31,6 @@ const Sidebar = () => {
 
   const { hasPermission } = useWorkspace();
 
-  console.log(route.params.workspaceId);
-
   return (
     <Box
       w="100%"
