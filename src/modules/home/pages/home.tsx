@@ -23,7 +23,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
-import { useWorkspace } from '@/modules/workspace';
+import { useSelectWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
@@ -43,7 +43,7 @@ const HomePage = () => {
   } = useHome();
 
   const { currentWorkspace } = useWorkspace();
-
+  const { selectWorkspace } = useSelectWorkspace();
   const hasTransactions = transactions?.length;
 
   return (
@@ -157,14 +157,15 @@ const HomePage = () => {
                       workspace={workspace}
                       title={description}
                       members={members!}
-                      onClick={() =>
+                      onClick={() => {
+                        selectWorkspace(workspace);
                         navigate(
                           Pages.detailsVault({
                             workspaceId: currentWorkspace.id,
                             vaultId: id,
                           }),
-                        )
-                      }
+                        );
+                      }}
                     />
                   )}
                 </GridItem>

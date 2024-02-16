@@ -27,7 +27,7 @@ const useSelectWorkspace = () => {
 
   const selectWorkspace = (
     workspace: Workspace,
-    options: UseSelectWorkspaceOptions,
+    options?: UseSelectWorkspaceOptions,
   ) => {
     const user = CookiesConfig.getCookie(USER_ID)!;
 
@@ -48,8 +48,8 @@ const useSelectWorkspace = () => {
         user: CookiesConfig.getCookie(USER_ID)!,
       },
       {
-        onSuccess: ({ workspace }) => options.onSelect(workspace),
-        onError: options.onError,
+        onSuccess: ({ workspace }) => options?.onSelect(workspace),
+        onError: options?.onError,
       },
     );
   };
