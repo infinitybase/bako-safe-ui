@@ -18,18 +18,13 @@ import {
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
 import { useHome } from '@/modules/home';
-import { Predicate, Workspace } from '@/modules/core/models';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
-  onSelect?: (
-    vaultId: Predicate & {
-      workspace: Workspace;
-    },
-  ) => void;
+  onSelect?: (vaultId: string) => void;
 }
 
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
@@ -41,7 +36,6 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   } = useVaultDrawer({
     onClose: props.onClose,
     isOpen: props.isOpen,
-    onSelect: props.onSelect,
   });
   const {
     vaultsRequest: {
@@ -109,18 +103,24 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
-            {vaults?.map((vault) => (
-              <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
-                <VaultDrawerBox
-                  name={vault.name}
-                  address={vault.predicateAddress}
-                  isActive={vaultId === vault.id}
-                  description={vault.description}
-                  onClick={() => drawer.onSelectVault(vault)}
-                />
-              </CustomSkeleton>
-            ))}
+            {vaults?.map((vault) => {
+              const workspaceVault = recentVaults?.find(
+                (workspaceVault) => workspaceVault.id === vault.id,
+              );
 
+              return (
+                <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
+                  <VaultDrawerBox
+                    name={vault.name}
+                    address={vault.predicateAddress}
+                    isActive={vaultId === vault.id}
+                    description={vault.description}
+                    workspace={workspaceVault?.workspace}
+                    onClick={() => drawer.onSelectVault(vault)}
+                  />
+                </CustomSkeleton>
+              );
+            })}
             <Box ref={inView.ref} />
           </VStack>
         </DrawerBody>

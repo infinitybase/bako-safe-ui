@@ -46,7 +46,6 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
   const hasTransactions = transactions?.length;
 
-
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between">
@@ -86,15 +85,21 @@ const HomePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
+            isUpcoming={hasTransactions ? false : true}
             onClick={() => {
-              navigate(
-                Pages.userTransactions({
-                  workspaceId: currentWorkspace.id,
-                }),
-              );
+              return hasTransactions
+                ? navigate(
+                    Pages.userTransactions({
+                      workspaceId: currentWorkspace.id,
+                    }),
+                  )
+                : null;
             }}
           >
-            <ActionCard.Icon icon={GoArrowSwitch} />
+            <ActionCard.Icon
+              icon={GoArrowSwitch}
+              isUpcoming={hasTransactions ? false : true}
+            />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
