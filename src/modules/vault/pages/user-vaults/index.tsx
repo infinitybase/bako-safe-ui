@@ -19,11 +19,8 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
-
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
@@ -33,14 +30,11 @@ const UserVaultsPage = () => {
   const {
     navigate,
     vaultsRequest: { vaults, loadingVaults },
-    transactionsRequest: { transactions },
   } = useUserVaults();
 
   const { VIEWER } = PermissionRoles;
   const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
-
-  const hasTransactions = transactions?.length;
 
   return (
     <VStack w="full" spacing={6}>
@@ -135,21 +129,15 @@ const UserVaultsPage = () => {
           </Box>
         </ActionCard.Container>
         <ActionCard.Container
-          isUpcoming={hasTransactions ? false : true}
           onClick={() => {
-            return hasTransactions
-              ? navigate(
-                  Pages.userTransactions({
-                    workspaceId: currentWorkspace.id,
-                  }),
-                )
-              : null;
+            navigate(
+              Pages.userTransactions({
+                workspaceId: currentWorkspace.id,
+              }),
+            );
           }}
         >
-          <ActionCard.Icon
-            icon={GoArrowSwitch}
-            isUpcoming={hasTransactions ? false : true}
-          />
+          <ActionCard.Icon icon={GoArrowSwitch} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
             <ActionCard.Description>

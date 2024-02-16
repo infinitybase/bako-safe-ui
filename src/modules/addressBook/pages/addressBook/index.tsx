@@ -11,17 +11,15 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
-import { ActionCard } from '@/modules/home/components/ActionCard';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-
 import { useWorkspace } from '@/modules/workspace';
 
 import {
@@ -52,12 +50,8 @@ const AddressBookPage = () => {
     hasSkeleton,
   } = useAddressBook();
   const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
-  const {
-    goHome,
-    transactionsRequest: { transactions },
-  } = useHome();
+  const { goHome } = useHome();
 
-  const hasTransactions = transactions?.length;
   const hasContacts = contacts?.length;
 
   return (
@@ -174,21 +168,15 @@ const AddressBookPage = () => {
             </Box>
           </ActionCard.Container>
           <ActionCard.Container
-            isUpcoming={hasTransactions ? false : true}
             onClick={() => {
-              return hasTransactions
-                ? navigate(
-                    Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
-                    }),
-                  )
-                : null;
+              navigate(
+                Pages.userTransactions({
+                  workspaceId: currentWorkspace.id,
+                }),
+              );
             }}
           >
-            <ActionCard.Icon
-              icon={GoArrowSwitch}
-              isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
