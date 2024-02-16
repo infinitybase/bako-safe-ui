@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useFuelAccount } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
@@ -42,10 +41,6 @@ const useTransactionList = () => {
   const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
 
   useMemo(() => {
-    const workspacesInCookie = JSON.parse(
-      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
-    ).id;
-
     if (firstRender && transactionRequest.status === 'loading') {
       setHasSkeleton(true);
       setFirstRender(false);

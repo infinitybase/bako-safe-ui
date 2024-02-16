@@ -29,7 +29,6 @@ export interface CardDetailsProps {
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
-const { VIEWER } = PermissionRoles;
 
 const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
@@ -40,6 +39,16 @@ const CardDetails = (props: CardDetailsProps) => {
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
+  const reqPerm = [
+    PermissionRoles.ADMIN,
+    PermissionRoles.OWNER,
+    PermissionRoles.MANAGER,
+    PermissionRoles.SIGNER,
+  ];
+  const makeTransactionsPerm = useMemo(() => {
+    const as = hasPermission(reqPerm);
+    return as;
+  }, [vault.id, balance]);
 
   const vaultDescription = useMemo(() => {
     if (!vault?.description) return '';
@@ -172,7 +181,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     }
                     isDisabled={
                       !vault?.hasBalance ||
-                      hasPermission([VIEWER]) ||
+                      !makeTransactionsPerm ||
                       vaultDetails.transactions.isPendingSigner
                     }
                     minW={130}
@@ -184,7 +193,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     <Text variant="description" fontSize="xs" color="error.500">
                       This vault has pending transactions.
                     </Text>
-                  ) : hasPermission([VIEWER]) ? (
+                  ) : !makeTransactionsPerm ? (
                     <Text variant="description" fontSize="xs" color="error.500">
                       You dont have permission to send transactions.
                     </Text>
