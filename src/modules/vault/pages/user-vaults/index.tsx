@@ -19,11 +19,9 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
-
+import { useHome } from '@/modules/home/hooks/useHome';
+import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';
@@ -39,6 +37,7 @@ const UserVaultsPage = () => {
   const { VIEWER } = PermissionRoles;
   const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
+  const { selectWorkspace } = useSelectWorkspace();
 
   const hasTransactions = transactions?.length;
 
@@ -205,14 +204,15 @@ const UserVaultsPage = () => {
                   workspace={workspace}
                   title={description}
                   members={members!}
-                  onClick={() =>
+                  onClick={() => {
+                    selectWorkspace(workspace);
                     navigate(
                       Pages.detailsVault({
                         vaultId: id,
                         workspaceId: currentWorkspace.id,
                       }),
-                    )
-                  }
+                    );
+                  }}
                 />
               </CustomSkeleton>
             </GridItem>
