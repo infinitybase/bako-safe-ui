@@ -27,7 +27,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = () => {
   const [visibleBalance, setVisibleBalance] = useState(false);
-  const { workspaceId } = useParams();
+  const { workspaceId, vaultId } = useParams();
   const { account } = useFuelAccount();
   const workspaceDialog = useDisclosure();
   const toast = useNotification();
@@ -138,8 +138,12 @@ const useWorkspace = () => {
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const isValid =
-      requiredRoles.filter((p) => (currentPermissions[p] ?? []).includes('*'))
-        .length > 0;
+      requiredRoles.filter(
+        (p) =>
+          (currentPermissions[p] ?? []).includes('*') ||
+          (currentPermissions[p] ?? []).includes(vaultId),
+      ).length > 0;
+
     return isValid;
   };
 
