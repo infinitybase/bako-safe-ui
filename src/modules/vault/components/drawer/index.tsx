@@ -18,13 +18,18 @@ import {
 import React from 'react';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
+import { Predicate, Workspace } from '@/modules/core/models';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
-  onSelect?: (vaultId: string) => void;
+  onSelect?: (
+    vaultId: Predicate & {
+      workspace: Workspace;
+    },
+  ) => void;
 }
 
 const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
@@ -106,7 +111,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                   address={vault.predicateAddress}
                   isActive={vaultId === vault.id}
                   description={vault.description}
-                  onClick={() => drawer.onSelectVault(vault.id)}
+                  onClick={() => drawer.onSelectVault(vault)}
                 />
               </CustomSkeleton>
             ))}

@@ -13,7 +13,6 @@ import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
-import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import {
   TransactionCard,
   TransactionFilter,
