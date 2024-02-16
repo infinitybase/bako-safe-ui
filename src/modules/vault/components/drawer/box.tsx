@@ -1,17 +1,20 @@
+import { Icon } from '@chakra-ui/icons';
 import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Card, CardProps } from '@/components';
-import { AddressUtils } from '@/modules/core';
+import { HandbagIcon } from '@/components/icons/handbag';
+import { Workspace } from '@/modules/core';
 
 interface VaultDrawerBoxProps extends CardProps {
   isActive?: boolean;
   name: string;
   address: string;
   description?: string;
+  workspace?: Workspace;
 }
 
 const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, address, description, ...rest } = props;
+  const { isActive, name, description, workspace, ...rest } = props;
 
   return (
     <Card
@@ -35,13 +38,19 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
           name={name}
         />
         <VStack alignItems="flex-start" spacing={0}>
+          <HStack>
+            <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
+            <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
+              {workspace?.name}
+            </Text>
+          </HStack>
           <Text variant="subtitle">{name}</Text>
-          <Text variant="description">{AddressUtils.format(address)}</Text>
         </VStack>
       </HStack>
       <Box>
         <Text variant="description" noOfLines={2}>
-          {description ?? ''}
+          {description ??
+            'A dedicated vault to support the operational needs and data management of our HR department.'}
         </Text>
       </Box>
     </Card>

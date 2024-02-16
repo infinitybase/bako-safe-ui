@@ -2,7 +2,6 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { useWorkspace } from '@/modules/workspace/hooks';
 import { useFuelAccount } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import {
@@ -10,6 +9,7 @@ import {
   useTransactionsSignaturePending,
 } from '@/modules/transactions/hooks';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 const useSidebar = () => {
   const navigate = useNavigate();
