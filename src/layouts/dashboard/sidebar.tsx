@@ -7,11 +7,11 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { useVaultDetails } from '@/modules/vault';
-import { useWorkspace } from '@/modules/workspace';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
+import { useVaultDetails } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
 

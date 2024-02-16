@@ -17,27 +17,42 @@ import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { PredicateMember } from '@/modules/core/models/predicate';
-import { Member, Workspace } from '@/modules/core/models/workspace';
+import {
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '@/modules/core/models/workspace';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface VaultCardProps extends CardProps {
+  id: string;
   name: string;
   members: PredicateMember[];
   workspace: Workspace;
 }
-
 export const VaultCard = ({
+  id,
   name,
   workspace,
   members,
   ...rest
 }: VaultCardProps) => {
+  const memberInCookieId = CookiesConfig.getCookie(CookieName.USER_ID)!;
   const role = WorkspacePermissionUtils.getPermissionInWorkspace(workspace!, {
-    id: CookiesConfig.getCookie(CookieName.USER_ID),
+    id: memberInCookieId,
   } as Member);
 
   const permissions =
     WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
+
+  const isSigner = workspace.permissions[memberInCookieId].SIGNER.includes(id);
+
+  const _role =
+    permissions?.title ===
+      WorkspacePermissionUtils.permissions[PermissionRoles.VIEWER].title &&
+    isSigner
+      ? PermissionRoles.SIGNER
+      : role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return (
     <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
@@ -93,8 +108,13 @@ export const VaultCard = ({
 
           <VStack spacing={1} alignItems="flex-end">
             <Text variant="description">Role</Text>
-            <Badge h={6} variant={permissions?.variant ?? 'warning'}>
-              {permissions?.title ?? 'Signer'}
+            <Badge
+              h={6}
+              variant={
+                WorkspacePermissionUtils.permissions[_role].variant ?? 'warning'
+              }
+            >
+              {WorkspacePermissionUtils.permissions[_role]?.title}
             </Badge>
           </VStack>
         </HStack>
