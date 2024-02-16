@@ -49,8 +49,7 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
       </HStack>
       <Box>
         <Text variant="description" noOfLines={2}>
-          {description ??
-            'A dedicated vault to support the operational needs and data management of our HR department.'}
+          {description ?? ''}
         </Text>
       </Box>
     </Card>
