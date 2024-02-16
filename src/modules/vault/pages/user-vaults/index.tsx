@@ -22,7 +22,6 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
-
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { VaultCard } from '../../components';

@@ -3,8 +3,8 @@ import { UseQueryOptions } from 'react-query/types/react/types';
 
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
-  WorkspaceService,
   IWroskapceBalance,
+  WorkspaceService,
 } from '@/modules/workspace/services';
 
 const useGetWorkspaceBalanceRequest = (
