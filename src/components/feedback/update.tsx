@@ -17,13 +17,16 @@ interface UpdateStepProps {
   secondaryAction?: string;
   showAction?: boolean;
   title: string;
-  description: string;
+  description?: string;
+  oldPermission?: string;
+  newPermission?: string;
 }
 
 const FeedbackUpdate = ({
   title,
   showAction,
-  description,
+  oldPermission,
+  newPermission,
   primaryAction,
   secondaryAction,
   onPrimaryAction,
@@ -37,8 +40,15 @@ const FeedbackUpdate = ({
       <Heading color="brand.600">{title}</Heading>
     </Box>
     <Box maxW={310} mb={5}>
-      <Heading color="grey.200" fontSize="md" textAlign="center">
-        {description}
+      <Heading
+        color="grey.200"
+        fontSize="md"
+        fontWeight="medium"
+        textAlign="center"
+      >
+        You are changing user permissions from <strong>{oldPermission}</strong>{' '}
+        to <strong>{newPermission}.</strong> Are you sure you want to update the
+        user?
       </Heading>
     </Box>
     <Divider hidden={!showAction} my={8} borderColor="dark.100" />

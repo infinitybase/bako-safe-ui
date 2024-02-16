@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
   Member,
-  Pages,
   PermissionRoles,
   useTab,
   Workspace,
@@ -214,6 +213,8 @@ const useChangeMember = () => {
       description: undefined,
       tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
       handleTertiaryAction: handleSetDeleteStep,
+      oldPermission: undefined,
+      newPermission: undefined,
       isEditMember,
     },
     [MemberTabState.SUCCESS]: {
@@ -227,6 +228,8 @@ const useChangeMember = () => {
       description: undefined,
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
+      oldPermission: undefined,
+      newPermission: undefined,
       isEditMember,
     },
     [MemberTabState.UPDATE]: {
@@ -237,9 +240,11 @@ const useChangeMember = () => {
       handleSecondaryAction: clearSteps,
       isLoading: false,
       title: 'Update user',
-      description: `You are changing user permissions from ${memberPermissions?.oldPermission} to ${memberPermissions?.newPermission}. Are you sure you want to update the user?`,
+      description: undefined,
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
+      oldPermission: memberPermissions?.oldPermission,
+      newPermission: memberPermissions?.newPermission,
       isEditMember,
     },
     [MemberTabState.DELETE]: {
@@ -254,6 +259,8 @@ const useChangeMember = () => {
         'Are you sure you want to remove this user from this workspace? ',
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
+      oldPermission: undefined,
+      newPermission: undefined,
       isEditMember,
     },
   };
