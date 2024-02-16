@@ -11,11 +11,12 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
-import { AddressUtils, Pages } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -31,7 +32,19 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, hasPermission } = useWorkspace();
+
+  const reqPerm = [
+    PermissionRoles.ADMIN,
+    PermissionRoles.OWNER,
+    PermissionRoles.MANAGER,
+    PermissionRoles.SIGNER,
+  ];
+  const makeTransactionsPerm = useMemo(() => {
+    const as = hasPermission(reqPerm);
+    return as;
+  }, [vault.id]);
+
   if (!vault) return;
 
   return (
@@ -133,7 +146,11 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       <Button
                         minW={130}
                         variant="primary"
-                        isDisabled={!vault?.hasBalance || blockedTransfers}
+                        isDisabled={
+                          !vault?.hasBalance ||
+                          blockedTransfers ||
+                          !makeTransactionsPerm
+                        }
                         onClick={() =>
                           navigate(
                             Pages.createTransaction({
@@ -148,6 +165,14 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       {blockedTransfers ? (
                         <Text variant="description" mt={2} color="error.500">
                           This vault has pending transactions.
+                        </Text>
+                      ) : !makeTransactionsPerm ? (
+                        <Text
+                          variant="description"
+                          fontSize="xs"
+                          color="error.500"
+                        >
+                          You dont have permission to send transactions.
                         </Text>
                       ) : (
                         <Text variant="description" fontSize="xs">

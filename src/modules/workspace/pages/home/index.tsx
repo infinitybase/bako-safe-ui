@@ -393,6 +393,7 @@ const WorkspacePage = () => {
                         />
                       ) : (
                         <VaultCard
+                          id={id}
                           name={name}
                           workspace={workspace}
                           title={description}
