@@ -55,7 +55,7 @@ const DeleteContactDialog = ({
           </Box>
 
           <Text maxW={360} color="grey.200" textAlign="center" display="flex">
-            {`Are you sure you wanna delete ${contactToDelete.nickname} from your address book?`}
+            {`Are you sure you wanna delete "${contactToDelete.nickname}" from your address book?`}
           </Text>
         </VStack>
       </Dialog.Body>
