@@ -125,12 +125,21 @@ const CreateMemberPage = () => {
         {tabs.is(MemberTabState.UPDATE) && (
           <FeedbackUpdate
             title={formState.title}
-            description={formState.description ?? ''}
             showAction
             primaryAction={formState.primaryAction}
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
+            newPermission={
+              WorkspacePermissionUtils.permissions[
+                formState.newPermission ?? ''
+              ].title
+            }
+            oldPermission={
+              WorkspacePermissionUtils.permissions[
+                formState.oldPermission ?? ''
+              ].title
+            }
           />
         )}
       </TabPanel>
@@ -138,12 +147,12 @@ const CreateMemberPage = () => {
         {tabs.is(MemberTabState.DELETE) && (
           <FeedbackDelete
             title={formState.title}
-            description={formState.description ?? ''}
             showAction
             primaryAction={formState.primaryAction}
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
+            description={formState.description}
           />
         )}
       </TabPanel>

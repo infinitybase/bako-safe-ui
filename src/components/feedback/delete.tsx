@@ -17,7 +17,7 @@ interface DeleteStepProps {
   secondaryAction?: string;
   showAction?: boolean;
   title: string;
-  description: string;
+  description?: string;
 }
 
 const FeedbackDelete = ({
@@ -37,7 +37,12 @@ const FeedbackDelete = ({
       <Heading color="error.500">{title}</Heading>
     </Box>
     <Box maxW={310} mb={5}>
-      <Heading color="grey.200" fontSize="md" textAlign="center">
+      <Heading
+        color="grey.200"
+        fontSize="md"
+        fontWeight="medium"
+        textAlign="center"
+      >
         {description}
       </Heading>
     </Box>
