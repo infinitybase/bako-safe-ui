@@ -15,9 +15,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
+import { useHome } from '@/modules/home';
 import { Predicate, Workspace } from '@/modules/core/models';
 
 import { VaultDrawerBox } from './box';
@@ -43,6 +43,11 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     isOpen: props.isOpen,
     onSelect: props.onSelect,
   });
+  const {
+    vaultsRequest: {
+      vaults: { recentVaults },
+    },
+  } = useHome();
 
   return (
     <Drawer
@@ -115,6 +120,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                 />
               </CustomSkeleton>
             ))}
+
             <Box ref={inView.ref} />
           </VStack>
         </DrawerBody>
