@@ -1,5 +1,5 @@
 import { Icon } from '@chakra-ui/icons';
-import { useDisclosure } from '@chakra-ui/react';
+import { useDisclosure, useTimeout } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -88,8 +88,15 @@ const useWorkspace = () => {
   };
 
   const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
-  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(false);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
+  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(true);
+
+  useTimeout(() => {
+    setHasSkeleton(false);
+    setFirstRender(false);
+  }, 3000);
+
+  useTimeout(() => setHasSkeletonBalance(false), 10000);
 
   useMemo(() => {
     if (
@@ -122,10 +129,7 @@ const useWorkspace = () => {
       setHasSkeletonBalance(true);
     }
 
-    if (
-      workspacesInCookie === worksapceBalance.balance?.workspaceId &&
-      worksapceBalance.isSuccess
-    ) {
+    if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
       setHasSkeletonBalance(false);
     }
 
