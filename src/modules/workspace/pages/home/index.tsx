@@ -279,6 +279,7 @@ const WorkspacePage = () => {
                           assetId: NativeAssetId,
                           amount: worksapceBalance.balance.balance,
                         }}
+                        visibleBalance={visibleBalance}
                         borderColor="dark.100"
                       />
                     </VStack>

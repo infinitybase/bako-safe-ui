@@ -4,9 +4,10 @@ import { Asset, assetsMap, NativeAssetId } from '../../utils';
 
 interface AssetCardProps extends CardProps {
   asset: Asset;
+  visibleBalance?: boolean;
 }
 
-const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
+const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
   const defaultAsset = {
     ...assetsMap[NativeAssetId],
     assetId: NativeAssetId,
@@ -52,9 +53,15 @@ const AssetCard = ({ asset, ...rest }: AssetCardProps) => {
           </Text>
         </VStack>
 
-        <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
-          {asset.amount ?? defaultAsset.amount}
-        </Text>
+        {visibleBalance ? (
+          <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
+            {asset.amount ?? defaultAsset.amount}
+          </Text>
+        ) : (
+          <Text variant="description" fontSize="md" mr={1}>
+            ******
+          </Text>
+        )}
       </VStack>
     </Card>
   );

@@ -122,7 +122,10 @@ const useWorkspace = () => {
       setHasSkeletonBalance(true);
     }
 
-    if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
+    if (
+      workspacesInCookie === worksapceBalance.balance?.workspaceId ||
+      worksapceBalance.isSuccess
+    ) {
       setHasSkeletonBalance(false);
     }
 
