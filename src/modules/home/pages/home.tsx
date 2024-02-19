@@ -227,6 +227,7 @@ const HomePage = () => {
 
                 return (
                   <TransactionCard.Container
+                    mb={4}
                     key={transaction.id}
                     status={status}
                     details={
