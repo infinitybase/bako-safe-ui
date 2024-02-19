@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
 import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -77,7 +76,7 @@ const WorkspacePage = () => {
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
 
-  useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
+  // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 
   return (
     <VStack w="full" spacing={6}>
