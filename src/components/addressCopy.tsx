@@ -13,10 +13,11 @@ import { useNotification } from '@/modules/notification';
 
 interface Props extends StackProps {
   address: string;
+  addressToCopy: string;
 }
 
-function AddressCopy({ address, ...rest }: Props) {
-  const clipboard = useClipboard(address);
+function AddressCopy({ address, addressToCopy, ...rest }: Props) {
+  const clipboard = useClipboard(addressToCopy);
   const toast = useNotification();
 
   const isValid = !!address && address.length > 0;

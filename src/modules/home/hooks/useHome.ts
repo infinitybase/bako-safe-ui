@@ -1,3 +1,4 @@
+import { useTimeout } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +21,11 @@ const useHome = () => {
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
+
+  useTimeout(() => {
+    setHasSkeleton(false), setFirstRender(false);
+  }, 5000);
 
   useMemo(() => {
     const workspacesInCookie = JSON.parse(

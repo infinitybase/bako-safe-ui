@@ -128,6 +128,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 <AddressCopy
                   w="full"
                   address={AddressUtils.format(vault.predicateAddress)!}
+                  addressToCopy={vault.predicateAddress!}
                 />
               </VStack>
               <VStack spacing={5} alignItems="flex-start">
