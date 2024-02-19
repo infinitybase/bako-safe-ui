@@ -203,6 +203,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
               <AddressCopy
                 w="full"
                 address={AddressUtils.format(vault.predicateAddress)!}
+                addressToCopy={vault.predicateAddress!}
               />
             </VStack>
           </HStack>
