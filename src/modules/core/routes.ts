@@ -32,6 +32,7 @@ const Pages = {
     '/workspace/:workspaceId/vault/:vaultId/transactions',
   ),
 
+
   //template
   createTemplate: pageRoute<{ vaultId: string; workspaceId: string }>(
     '/workspace/:workspaceId/vault/:vaultId/template/create',
