@@ -34,7 +34,7 @@ const FeedbackSuccess = ({
       <Icon fontSize={100} as={VaultSuccessIcon} />
     </Box>
     <Box mb={5}>
-      <Heading color="brand.600">{title}</Heading>
+      <Heading color="brand.500">{title}</Heading>
     </Box>
     <Box maxW={310} mb={5}>
       <Heading color="grey.200" fontSize="md" textAlign="center">
@@ -53,7 +53,7 @@ const FeedbackSuccess = ({
       </Button>
       <Button
         border="none"
-        bgColor="brand.600"
+        bgColor="brand.500"
         variant="primary"
         onClick={onPrimaryAction}
       >

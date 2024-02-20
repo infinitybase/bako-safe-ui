@@ -22,7 +22,7 @@ const SuccesStep = () => {
           <Icon fontSize={100} as={VaultSuccessIcon} />
         </Box>
         <Box mb={5}>
-          <Heading color="brand.600">All set!!</Heading>
+          <Heading color="brand.500">All set!!</Heading>
         </Box>
         <Box mb={5}>
           <Heading color="grey.200" fontSize="md" textAlign="center">

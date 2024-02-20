@@ -37,7 +37,7 @@ const FeedbackUpdate = ({
       <Icon fontSize={100} as={UserIcon} />
     </Box>
     <Box mb={5}>
-      <Heading color="brand.600">{title}</Heading>
+      <Heading color="brand.500">{title}</Heading>
     </Box>
     <Box maxW={310} mb={5}>
       <Heading
@@ -63,7 +63,7 @@ const FeedbackUpdate = ({
       </Button>
       <Button
         border="none"
-        bgColor="brand.600"
+        bgColor="brand.500"
         variant="primary"
         onClick={onPrimaryAction}
       >
