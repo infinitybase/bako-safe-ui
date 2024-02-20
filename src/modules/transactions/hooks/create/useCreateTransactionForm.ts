@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];

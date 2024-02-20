@@ -1,19 +1,64 @@
-import { useEffect } from 'react';
+import { useTimeout } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
-import { useUserTransactionsRequest } from '@/modules/transactions/hooks';
-import { useHomeVaultsRequest } from '@/modules/vault';
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
+import { useFuelAccount } from '@/modules/auth/store';
+import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
+
+import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
   const navigate = useNavigate();
   const { account } = useFuelAccount();
   const vaultsPerPage = 8;
-  const homeVaultsRequest = useHomeVaultsRequest(vaultsPerPage);
-  const transactionsRequest = useUserTransactionsRequest({
-    limit: 6,
-  });
-  const count = homeVaultsRequest?.data?.total ?? 0;
+  const homeDataRequest = useHomeDataRequest();
+  useListContactsRequest();
+
+  const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
+  const pendingSignerTransactions = useTransactionsSignaturePending();
+
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
+
+  useTimeout(() => {
+    setHasSkeleton(false), setFirstRender(false);
+  }, 5000);
+
+  useMemo(() => {
+    const workspacesInCookie = JSON.parse(
+      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+    ).id;
+    if (
+      firstRender &&
+      homeDataRequest.data?.workspace.id !== workspacesInCookie
+    ) {
+      setHasSkeleton(true);
+      setFirstRender(false);
+    }
+
+    if (
+      !firstRender &&
+      homeDataRequest.data?.workspace.id === workspacesInCookie
+    ) {
+      setHasSkeleton(false);
+      setFirstRender(false);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    homeDataRequest.isLoading,
+    homeDataRequest.isFetching,
+    homeDataRequest.isSuccess,
+    homeDataRequest.data,
+  ]);
+
+  const goHome = () => {
+    invalidateQueries(HomeQueryKey.FULL_DATA());
+    navigate(Pages.home());
+  };
 
   useEffect(() => {
     document.getElementById('top')?.scrollIntoView();
@@ -22,20 +67,26 @@ const useHome = () => {
   return {
     account,
     vaultsRequest: {
-      ...homeVaultsRequest,
+      ...homeDataRequest,
       vaults: {
-        recentVaults: homeVaultsRequest.data?.data,
+        recentVaults: homeDataRequest.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
-        extraCount: count <= vaultsPerPage ? 0 : count - vaultsPerPage,
+        extraCount:
+          vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: homeVaultsRequest.isLoading,
+      loadingRecentVaults: homeDataRequest.isLoading,
+      refetchVaults: homeDataRequest.refetch,
     },
     transactionsRequest: {
-      ...transactionsRequest,
-      transactions: transactionsRequest.data?.slice(0, 6),
-      loadingTransactions: transactionsRequest.isLoading,
+      ...homeDataRequest,
+      transactions: homeDataRequest.data?.transactions?.data,
+      loadingTransactions: homeDataRequest.isLoading,
     },
+    homeRequest: homeDataRequest,
     navigate,
+    goHome,
+    hasSkeleton,
+    pendingSignerTransactions,
   };
 };
 

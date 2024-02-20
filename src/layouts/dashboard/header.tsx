@@ -6,17 +6,36 @@ import {
   Flex,
   HStack,
   Icon,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { ExitIcon, NotificationIcon, QuestionIcon } from '@/components';
-import { Pages, useDisconnect, useFuelAccount, useLoadImage } from '@/modules';
+import {
+  ExitIcon,
+  NotificationIcon,
+  QuestionIcon,
+  ReplaceIcon,
+  SettingsIcon,
+} from '@/components';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
+import { Workspace } from '@/modules/core/models';
+import { Pages } from '@/modules/core/routes';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
+import { SettingsDrawer } from '@/modules/settings/components/drawer';
+import { SelectWorkspaceDialog } from '@/modules/workspace/components';
+import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
 
@@ -43,30 +62,127 @@ const UserBox = () => {
   const { formattedAccount, avatar } = useFuelAccount();
   const avatarImage = useLoadImage(avatar);
   const { discconnect } = useDisconnect();
+  const settingsDrawer = useDisclosure();
 
   return (
-    <Flex w="100%" display="flex" alignItems="center">
-      <Box mr={4}>
-        {avatarImage.isLoading ? (
-          <Skeleton
-            w="48px"
-            h="48px"
-            startColor="dark.100"
-            endColor="dark.300"
-            borderRadius={5}
-          />
-        ) : (
-          <Avatar variant="roundedSquare" src={avatar} />
+    <>
+      <SettingsDrawer
+        isOpen={settingsDrawer.isOpen}
+        onClose={settingsDrawer.onClose}
+        onOpen={settingsDrawer.onOpen}
+      />
+
+      <Popover>
+        <PopoverTrigger>
+          <Flex w="100%" alignItems="center" cursor={'pointer'}>
+            <Box mr={4}>
+              {avatarImage.isLoading ? (
+                <Skeleton
+                  w="48px"
+                  h="48px"
+                  startColor="dark.100"
+                  endColor="dark.300"
+                  borderRadius={5}
+                />
+              ) : (
+                <Avatar variant="roundedSquare" src={avatar} />
+              )}
+            </Box>
+
+            <Box mr={9}>
+              <Text fontWeight="semibold" color="grey.200">
+                {formattedAccount}
+              </Text>
+            </Box>
+
+            <Icon color="grey.200" fontSize="lg" as={FaChevronDown} />
+          </Flex>
+        </PopoverTrigger>
+
+        <PopoverContent
+          bg={'dark.300'}
+          border={'none'}
+          w="100%"
+          m={0}
+          p={0}
+          boxShadow="lg"
+        >
+          <PopoverBody>
+            <Box
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              onClick={settingsDrawer.onOpen}
+              p={5}
+            >
+              <HStack>
+                <Icon color="grey.200" w={6} h={6} as={SettingsIcon} />
+                <Text color="grey.200" fontWeight={'bold'}>
+                  Settings
+                </Text>
+              </HStack>
+              <Text color="grey.500">Personalize Your Preferences.</Text>
+            </Box>
+
+            <Box borderTop={'1px solid'} borderTopColor={'dark.100'} p={4}>
+              <HStack cursor={'pointer'} onClick={() => discconnect()}>
+                <Icon color="grey.200" fontSize="xl" as={ExitIcon} />
+                <Text color="grey.200" fontWeight={'bold'}>
+                  Logout
+                </Text>
+              </HStack>
+            </Box>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </>
+  );
+};
+
+const WorkspaceBox = ({
+  currentWorkspace,
+}: {
+  currentWorkspace: Workspace;
+}) => {
+  const { avatar, name, single: isMyWorkspace } = currentWorkspace;
+
+  return (
+    <Flex w="full" alignItems="center" justifyContent="space-between">
+      <Flex>
+        {isMyWorkspace && (
+          <Text
+            fontWeight="semibold"
+            color="grey.200"
+            border="2px"
+            padding={2}
+            borderRadius="lg"
+            borderColor="grey.500"
+            _hover={{ opacity: 0.8 }}
+          >
+            Choose a workspace
+          </Text>
         )}
-      </Box>
-      <Box mr={9}>
-        <Text fontWeight="semibold" color="grey.200">
-          {formattedAccount}
-        </Text>
-      </Box>
-      <Box onClick={() => discconnect()} cursor="pointer">
-        <Icon color="grey.200" fontSize="lg" as={ExitIcon} />
-      </Box>
+        {!isMyWorkspace && (
+          <HStack spacing={4}>
+            <Avatar variant="roundedSquare" src={avatar} />
+            <Box w={150}>
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                isTruncated
+                maxW={150}
+              >
+                {name}
+              </Text>
+              <Text fontSize="sm" color="grey.500">
+                Current workspace
+              </Text>
+            </Box>
+          </HStack>
+        )}
+      </Flex>
+
+      <ReplaceIcon color="grey.200" fontSize={20} />
     </Flex>
   );
 };
@@ -74,7 +190,15 @@ const UserBox = () => {
 const Header = () => {
   const navigate = useNavigate();
   const { drawer } = useSidebar();
+  const {
+    currentWorkspace,
+    workspaceDialog,
+    userWorkspacesRequest: { data: userWorkspaces },
+    handleWorkspaceSelection,
+  } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
+  const { goHome } = useHome();
+  const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -93,12 +217,32 @@ const Header = () => {
       borderBottomColor="dark.100"
     >
       <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <SelectWorkspaceDialog
+        dialog={workspaceDialog}
+        userWorkspaces={userWorkspaces ?? []}
+        onSelect={handleWorkspaceSelection}
+        onCreate={handleGoToCreateWorkspace}
+      />
 
-      <SpacedBox cursor="pointer" onClick={() => navigate(Pages.home())}>
+      <SpacedBox
+        cursor="pointer"
+        onClick={() => {
+          goHome();
+        }}
+      >
         <img width={90} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
+        <TopBarItem
+          onClick={workspaceDialog.onOpen}
+          cursor="pointer"
+          w={310}
+          px={6}
+        >
+          <WorkspaceBox currentWorkspace={currentWorkspace} />
+        </TopBarItem>
+
         <TopBarItem
           onClick={() =>
             window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')

@@ -11,16 +11,19 @@ import {
 
 import { HomeIcon } from '@/components';
 import { Pages } from '@/modules/core';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
+import { useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate } = useVaultDetails();
+  const { vault, store, navigate, params } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
-
+  const { goHome } = useHome();
+  const { currentWorkspace } = useWorkspace();
   if (!vault) return null;
 
   return (
@@ -33,7 +36,7 @@ const VaultSettingsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
             >
               Home
             </BreadcrumbLink>
@@ -54,7 +57,12 @@ const VaultSettingsPage = () => {
               color="grey.200"
               fontWeight="semibold"
               onClick={() =>
-                navigate(Pages.detailsVault({ vaultId: vault.id! }))
+                navigate(
+                  Pages.detailsVault({
+                    vaultId: vault.id!,
+                    workspaceId: currentWorkspace?.id,
+                  }),
+                )
               }
               isTruncated
               maxW={640}
@@ -74,7 +82,12 @@ const VaultSettingsPage = () => {
               addresses:
                 vault.signers! && vault.signers.map((signer) => signer.address),
             });
-            navigate(Pages.createTemplate());
+            navigate(
+              Pages.createTemplate({
+                vaultId: params.vaultId!,
+                workspaceId: params.workspaceId!,
+              }),
+            );
           }}
         >
           Set as template
@@ -82,7 +95,11 @@ const VaultSettingsPage = () => {
       </HStack>
 
       <VStack mb={14} alignItems="flex-start" w="100%" spacing={12}>
-        <SettingsOverview vault={vault} store={store} />
+        <SettingsOverview
+          vault={vault}
+          store={store}
+          blockedTransfers={vault.transactions.isPendingSigner}
+        />
         <SettingsSigners vault={vault} />
       </VStack>
     </Box>

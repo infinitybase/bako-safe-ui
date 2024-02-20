@@ -16,7 +16,11 @@ import { AmountInput } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  UseCreateTransaction,
+  useCreateTransaction,
+} from '@/modules/transactions/hooks';
+import { AddressBookUtils } from '@/utils/address-book';
 
 import { TransactionAccordion } from './accordion';
 
@@ -49,6 +53,13 @@ const TransactionFormField = ({
     inView,
   } = useAddressBook();
 
+  const options =
+    contacts &&
+    AddressBookUtils.removeDuplicates(contacts)?.map(({ user, nickname }) => ({
+      value: user.address,
+      label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+    }));
+
   return (
     <>
       <CreateContactDialog
@@ -74,13 +85,7 @@ const TransactionFormField = ({
                 onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
                 isLoading={!isSuccess}
-                options={
-                  contacts &&
-                  contacts?.map(({ user, nickname }) => ({
-                    value: user.address,
-                    label: `${nickname} - ${AddressUtils.format(user.address)}`,
-                  }))
-                }
+                options={options}
                 rightAction={{}}
                 bottomAction={
                   <Box mt={2}>
@@ -155,6 +160,7 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
+  const { nicks } = useCreateTransaction();
   const { form, transactions, assets, accordion } = props;
 
   return (
@@ -198,7 +204,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                     <b>
                       {transaction.amount} {assetSlug}
                     </b>{' '}
-                    to <b> {AddressUtils.format(transaction.to)}</b>
+                    to{' '}
+                    <b>
+                      {' '}
+                      {nicks[transaction.to] ??
+                        AddressUtils.format(transaction.to)}
+                    </b>
                   </Text>
                 )
               }

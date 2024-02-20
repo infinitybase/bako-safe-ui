@@ -4,19 +4,27 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { Pages, useVaultListRequest } from '@/modules';
+import { Predicate, Workspace } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { useVaultListRequest } from '@/modules/vault/hooks';
+import { useSelectWorkspace, useWorkspace } from '@/modules/workspace/hooks';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
   isOpen?: boolean;
-  onSelect?: (vaultId: string) => void;
+  onSelect?: (
+    vault: Predicate & {
+      workspace: Workspace;
+    },
+  ) => void;
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const navigate = useNavigate();
-  const { onSelect } = props;
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
+  const { currentWorkspace } = useWorkspace();
+  const { selectWorkspace } = useSelectWorkspace();
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
@@ -45,11 +53,21 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     vaultListRequestRequest.fetchNextPage,
   ]);
 
-  const onSelectVault = (vaultId: string) => {
+  const onSelectVault = (
+    vault: Predicate & {
+      workspace: Workspace;
+    },
+  ) => {
     props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
     setSearch('');
-    navigate(Pages.detailsVault({ vaultId }));
+    selectWorkspace(vault.workspace);
+    navigate(
+      Pages.detailsVault({
+        vaultId: vault.id,
+        workspaceId: currentWorkspace.id,
+      }),
+    );
   };
 
   const onCloseDrawer = () => {
@@ -60,7 +78,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   return {
     drawer: {
-      onSelectVault: onSelect ?? onSelectVault,
+      onSelectVault: onSelectVault,
       onClose: onCloseDrawer,
     },
     search: {

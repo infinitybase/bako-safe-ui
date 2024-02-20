@@ -1,9 +1,12 @@
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter, DefaultLayoutRouter } from '@/layouts';
-import { AuthRoute, Pages } from '@/modules/core';
+import { DashboardLayoutRouter } from '@/layouts/dashboard';
+import { DefaultLayoutRouter } from '@/layouts/default';
+import { AuthRoute } from '@/modules/core/components/route/auth';
 
-import { MeTransactionsPage, TransactionsVaultPage } from './pages';
+import { Pages } from '../core/routes';
+import { TransactionsVaultPage } from './pages/list';
+import { MeTransactionsPage } from './pages/me';
 
 const transactionRoutes = (
   <Route>
@@ -17,7 +20,7 @@ const transactionRoutes = (
         }
       />
     </Route>
-    <Route element={<DashboardLayoutRouter hasSideBar />}>
+    <Route Component={() => <DashboardLayoutRouter hasSideBar />}>
       <Route
         path={Pages.transactions()}
         element={

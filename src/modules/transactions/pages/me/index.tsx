@@ -14,21 +14,23 @@ import {
 import { bn } from 'fuels';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
-import { assetsMap, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { assetsMap } from '@/modules/core/utils';
+import { useHome } from '@/modules/home/hooks/useHome';
 
-import { useMeTransactions } from '../../hooks';
+import { useMeTransactions } from '../../hooks/me/useMeTransactions';
 
 const MeTransactionsPage = () => {
   const { transactionsRequest, navigate, calculateSignatures } =
     useMeTransactions();
-
+  const { goHome } = useHome();
   return (
     <Card mb={4} bg="dark.500" minW={700} boxShadow="xl" minH={550}>
       <CardHeader>
         <Flex width="100%" alignItems="center">
           <Box pt={2}>
             <Icon
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
               cursor="pointer"
               color="gray"
               fontSize="4xl"

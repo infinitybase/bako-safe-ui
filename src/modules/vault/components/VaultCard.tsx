@@ -1,38 +1,58 @@
-import { CheckIcon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   AvatarGroup,
+  Badge,
   Box,
   CardProps,
   Divider,
   Heading,
   HStack,
-  Icon,
-  IconButton,
+  Spacer,
   Text,
-  useClipboard,
   VStack,
 } from '@chakra-ui/react';
 
-import { Card, CopyIcon } from '@/components';
-import { AddressUtils } from '@/modules/core';
-import { User } from '@/modules/core/models/user';
-import { useNotification } from '@/modules/notification';
+import { Card } from '@/components';
+import { HandbagIcon } from '@/components/icons/handbag';
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { PredicateMember } from '@/modules/core/models/predicate';
+import {
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '@/modules/core/models/workspace';
+import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface VaultCardProps extends CardProps {
+  id: string;
   name: string;
-  address: string;
-  members: User[];
+  members: PredicateMember[];
+  workspace: Workspace;
 }
-
 export const VaultCard = ({
+  id,
   name,
-  address,
+  workspace,
   members,
   ...rest
 }: VaultCardProps) => {
-  const clipboard = useClipboard(address);
-  const toast = useNotification();
+  const memberInCookieId = CookiesConfig.getCookie(CookieName.USER_ID)!;
+  const role = WorkspacePermissionUtils.getPermissionInWorkspace(workspace!, {
+    id: memberInCookieId,
+  } as Member);
+
+  const permissions =
+    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
+
+  const isSigner = workspace.permissions[memberInCookieId].SIGNER.includes(id);
+
+  const _role =
+    permissions?.title ===
+      WorkspacePermissionUtils.permissions[PermissionRoles.VIEWER].title &&
+    isSigner
+      ? PermissionRoles.SIGNER
+      : role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return (
     <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
@@ -45,7 +65,15 @@ export const VaultCard = ({
               color="white"
               bg="grey.900"
             />
-            <Box ml={2}>
+            <VStack ml={2} alignItems="flex-start" spacing={1}>
+              {!workspace.single && (
+                <HStack>
+                  <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
+                  <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
+                    {workspace?.name}
+                  </Text>
+                </HStack>
+              )}
               <Heading
                 maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
                 variant="title-md"
@@ -54,46 +82,42 @@ export const VaultCard = ({
               >
                 {name}
               </Heading>
-              <Text variant="description" color="grey.500">
-                {AddressUtils.format(address)}
-              </Text>
-            </Box>
+            </VStack>
           </HStack>
-
-          <IconButton
-            aria-label="Copy"
-            variant="icon"
-            icon={<Icon as={CopyIcon} color="grey.200" fontSize={17} />}
-            onClick={(e) => {
-              e.stopPropagation();
-              clipboard.onCopy();
-              toast({
-                position: 'top-right',
-                duration: 2000,
-                isClosable: false,
-                title: 'Copied to clipboard',
-                icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
-              });
-            }}
-          />
         </HStack>
 
         <Divider borderColor="dark.100" my={1} />
 
-        <Box>
-          <Text variant="description">Members</Text>
-          <AvatarGroup
-            variant="roundedSquare"
-            max={5}
-            mt={1}
-            size="sm"
-            spacing={-2}
-          >
-            {members.map(({ avatar, address }) => (
-              <Avatar variant="roundedSquare" src={avatar} key={address} />
-            ))}
-          </AvatarGroup>
-        </Box>
+        <HStack w="full">
+          <Box>
+            <Text variant="description">Signers</Text>
+            <AvatarGroup
+              variant="roundedSquare"
+              max={5}
+              mt={1}
+              size="sm"
+              spacing={-2}
+            >
+              {members.map(({ avatar, address }) => (
+                <Avatar variant="roundedSquare" src={avatar} key={address} />
+              ))}
+            </AvatarGroup>
+          </Box>
+
+          <Spacer />
+
+          <VStack spacing={1} alignItems="flex-end">
+            <Text variant="description">Role</Text>
+            <Badge
+              h={6}
+              variant={
+                WorkspacePermissionUtils.permissions[_role].variant ?? 'warning'
+              }
+            >
+              {WorkspacePermissionUtils.permissions[_role]?.title}
+            </Badge>
+          </VStack>
+        </HStack>
       </VStack>
     </Card>
   );

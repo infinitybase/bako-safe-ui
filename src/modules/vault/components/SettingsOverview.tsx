@@ -11,11 +11,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
-import { Pages } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
+import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -23,12 +25,25 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+  blockedTransfers: boolean;
 }
 
 const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
-  const { vault, store } = props;
+  const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
+  const { currentWorkspace, hasPermission } = useWorkspace();
+
+  const reqPerm = [
+    PermissionRoles.ADMIN,
+    PermissionRoles.OWNER,
+    PermissionRoles.MANAGER,
+    PermissionRoles.SIGNER,
+  ];
+  const makeTransactionsPerm = useMemo(() => {
+    const as = hasPermission(reqPerm);
+    return as;
+  }, [vault.id]);
 
   if (!vault) return;
 
@@ -131,17 +146,40 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       <Button
                         minW={130}
                         variant="primary"
+                        isDisabled={
+                          !vault?.hasBalance ||
+                          blockedTransfers ||
+                          !makeTransactionsPerm
+                        }
                         onClick={() =>
                           navigate(
-                            Pages.createTransaction({ vaultId: vault.id! }),
+                            Pages.createTransaction({
+                              vaultId: vault.id!,
+                              workspaceId: currentWorkspace?.id,
+                            }),
                           )
                         }
                       >
                         Send
                       </Button>
-                      <Text variant="description" fontSize="xs">
-                        Send single or batch <br /> payments with multi assets.
-                      </Text>
+                      {blockedTransfers ? (
+                        <Text variant="description" mt={2} color="error.500">
+                          This vault has pending transactions.
+                        </Text>
+                      ) : !makeTransactionsPerm ? (
+                        <Text
+                          variant="description"
+                          fontSize="xs"
+                          color="error.500"
+                        >
+                          You dont have permission to send transactions.
+                        </Text>
+                      ) : (
+                        <Text variant="description" fontSize="xs">
+                          Send single or batch <br /> payments with multi
+                          assets.
+                        </Text>
+                      )}
                     </VStack>
                   </HStack>
                 </VStack>
@@ -162,7 +200,11 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 />
               </Box>
 
-              <AddressCopy w="full" address={vault.predicateAddress!} />
+              <AddressCopy
+                w="full"
+                address={AddressUtils.format(vault.predicateAddress)!}
+                addressToCopy={vault.predicateAddress!}
+              />
             </VStack>
           </HStack>
         </Card>

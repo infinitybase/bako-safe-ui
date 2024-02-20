@@ -1,3 +1,8 @@
+import { IPredicate } from 'bsafe';
+
+import { Owner, WorkspaceOnVault } from '@/modules/core/models/workspace';
+import { UseVaultDetailsReturn } from '@/modules/vault';
+
 import { Transaction } from './transaction';
 import { User } from './user';
 
@@ -7,11 +12,6 @@ export interface PredicateMember {
   address: string;
   isOwner?: boolean;
   nickname?: string;
-}
-
-export interface Owner {
-  id: string;
-  address: string;
 }
 
 export interface Predicate {
@@ -30,4 +30,10 @@ export interface Predicate {
   chainId?: number;
   members?: PredicateMember[];
   transactions: Transaction[];
+}
+
+export type PredicateWithWorkspace = IPredicate & WorkspaceOnVault;
+
+export interface SignersDetailsProps {
+  vault: UseVaultDetailsReturn['vault'];
 }

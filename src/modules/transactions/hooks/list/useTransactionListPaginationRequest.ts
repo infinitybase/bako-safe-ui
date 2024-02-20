@@ -1,10 +1,13 @@
 import { useInfiniteQuery } from 'react-query';
 
+import { invalidateQueries } from '@/modules/core';
+
 import {
   GetTransactionParams,
   SortOption,
   TransactionService,
 } from '../../services';
+import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
@@ -27,7 +30,7 @@ const useTransactionListPaginationRequest = (
         sort: SortOption.DESC,
       }),
     {
-      enabled: !!params.predicateId || !!params.allOfUser,
+      onSuccess: () => invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]),
       getNextPageParam: (lastPage) =>
         lastPage.currentPage !== lastPage.totalPages
           ? lastPage.nextPage

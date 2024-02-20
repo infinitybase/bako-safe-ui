@@ -16,9 +16,11 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { Pages } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
+import { useHome } from '@/modules/home/hooks/useHome';
+import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import {
@@ -30,9 +32,18 @@ import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const allFromUser = true;
-  const { transactionRequest, filter, inView, account, navigate } =
-    useTransactionList(allFromUser);
+  const {
+    transactionRequest,
+    filter,
+    inView,
+    account,
+    navigate,
+    pendingSignerTransactions,
+    hasSkeleton,
+  } = useTransactionList();
+  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
+  const { goHome } = useHome();
+  const { VIEWER } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6}>
@@ -50,7 +61,11 @@ const UserTransactionsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => navigate(Pages.home())}
+            onClick={() =>
+              currentWorkspace.single
+                ? goHome()
+                : goWorkspace(currentWorkspace.id)
+            }
           >
             Back home
           </Button>
@@ -62,11 +77,24 @@ const UserTransactionsPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => navigate(Pages.home())}
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!currentWorkspace.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(currentWorkspace.id)}
+                >
+                  {currentWorkspace.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -83,6 +111,7 @@ const UserTransactionsPage = () => {
 
         <Box>
           <Button
+            isDisabled={hasPermission([VIEWER])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
@@ -95,7 +124,15 @@ const UserTransactionsPage = () => {
 
       {/* ACTION BUTTONS */}
       <HStack w="full" spacing={6}>
-        <ActionCard.Container onClick={() => navigate(Pages.userVaults())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.userVaults({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={VaultIcon} />
           <Box>
             <ActionCard.Title>Vaults</ActionCard.Title>
@@ -115,7 +152,15 @@ const UserTransactionsPage = () => {
           </Box>
         </ActionCard.Container>
 
-        <ActionCard.Container onClick={() => navigate(Pages.addressBook())}>
+        <ActionCard.Container
+          onClick={() =>
+            navigate(
+              Pages.addressBook({
+                workspaceId: currentWorkspace.id,
+              }),
+            )
+          }
+        >
           <ActionCard.Icon icon={CgList} />
           <Box>
             <ActionCard.Title>Address book</ActionCard.Title>
@@ -134,9 +179,8 @@ const UserTransactionsPage = () => {
             Transactions
           </Heading>
           <WaitingSignatureBadge
-            account={account}
-            isLoading={transactionRequest.isLoading}
-            transactions={transactionRequest.transactions}
+            isLoading={pendingSignerTransactions.isLoading}
+            quantity={pendingSignerTransactions.data?.ofUser ?? 0}
           />
         </HStack>
 
@@ -174,37 +218,41 @@ const UserTransactionsPage = () => {
       >
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
-        {transactionRequest.transactions.map((transaction) => (
-          <CustomSkeleton
-            key={transaction.id}
-            isLoaded={!transactionRequest.isLoading}
-          >
-            <TransactionCard.Container
-              status={transactionStatus({ ...transaction, account })}
-              details={<TransactionCard.Details transaction={transaction} />}
-            >
-              {transaction.predicate && (
-                <TransactionCard.VaultInfo vault={transaction.predicate} />
-              )}
-              <TransactionCard.CreationDate>
-                {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-              </TransactionCard.CreationDate>
-              <TransactionCard.Assets />
-              <TransactionCard.Amount assets={transaction.resume.outputs} />
-              <TransactionCard.Name>
-                {limitCharacters(transaction.name, 20)}
-              </TransactionCard.Name>
-              <TransactionCard.Status
-                transaction={transaction}
+        {transactionRequest.transactions.map((transaction) => {
+          const isSigner = !!transaction.predicate?.members?.find(
+            (member) => member.address === account,
+          );
+
+          return (
+            <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
+              <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
-              />
-              <TransactionCard.Actions
-                transaction={transaction}
-                status={transactionStatus({ ...transaction, account })}
-              />
-            </TransactionCard.Container>
-          </CustomSkeleton>
-        ))}
+                details={<TransactionCard.Details transaction={transaction} />}
+              >
+                {transaction.predicate && (
+                  <TransactionCard.VaultInfo vault={transaction.predicate} />
+                )}
+                <TransactionCard.CreationDate>
+                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                </TransactionCard.CreationDate>
+                <TransactionCard.Assets />
+                <TransactionCard.Amount assets={transaction.resume.outputs} />
+                <TransactionCard.Name>
+                  {limitCharacters(transaction.name, 20)}
+                </TransactionCard.Name>
+                <TransactionCard.Status
+                  transaction={transaction}
+                  status={transactionStatus({ ...transaction, account })}
+                />
+                <TransactionCard.Actions
+                  isSigner={isSigner}
+                  transaction={transaction}
+                  status={transactionStatus({ ...transaction, account })}
+                />
+              </TransactionCard.Container>
+            </CustomSkeleton>
+          );
+        })}
         <Box ref={inView.ref} />
       </TransactionCard.List>
     </VStack>

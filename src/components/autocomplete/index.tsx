@@ -17,7 +17,7 @@ import {
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 interface RightAction {
   icon?: ComponentWithAs<'svg', IconProps>;
@@ -36,12 +36,12 @@ interface AutoCompleteProps {
   // selected?: string[];
   value?: string;
   label: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   errorMessage?: string;
   rightAction?: RightAction;
   bottomAction?: ReactNode;
   index?: number;
-  inView: InViewHookResponse;
+  inView?: InViewHookResponse;
   onChange: (value: string) => void;
   onInputChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
 }
@@ -70,7 +70,7 @@ function AutoComplete({
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
   const showOptionsList = isCurrent && !isLoading && options.length > 0;
-  const loading = isCurrent && isLoading;
+  const loading = isLoading && isCurrent;
   const showBottomAction =
     !loading &&
     !isInvalid &&
@@ -111,7 +111,9 @@ function AutoComplete({
           onChange={(e) => {
             const emptyOrInvalidAddress =
               !e.target.value || !AddressUtils.isValid(e.target.value);
+
             if (emptyOrInvalidAddress) setShowBottomActionDelayed(false);
+
             onChange(e.target.value);
             onInputChange?.(e);
             setInputValue(e.target.value);
@@ -119,7 +121,7 @@ function AutoComplete({
         />
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {index && (
+        {!isDisabled && (
           <InputRightElement
             px={3}
             top="1px"
@@ -128,7 +130,7 @@ function AutoComplete({
             bgColor="dark.200"
             h="calc(100% - 2px)"
           >
-            {loading && currentIndex === index ? (
+            {loading ? (
               <CircularProgress
                 trackColor="dark.100"
                 size={18}
@@ -204,7 +206,7 @@ function AutoComplete({
                   </Text>
                 </Box>
               ))}
-              <Box ref={inView.ref} />
+              <Box ref={inView?.ref} />
             </VStack>
           </Flex>
         </Box>

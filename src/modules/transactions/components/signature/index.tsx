@@ -1,29 +1,16 @@
 import { Badge, CircularProgress, Icon } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
-import { useMemo } from 'react';
 
 import { PendingIcon } from '@/components';
-import { waitingSignatures } from '@/modules';
 
 interface WaitingSignatureBadgeProps {
-  account: string;
   isLoading?: boolean;
-  transactions: ITransaction[] | undefined;
+  quantity: number;
 }
 
 const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
-  const { isLoading, account, transactions = [] } = props;
+  const { isLoading, quantity } = props;
 
-  const pendingSignatures = useMemo(
-    () =>
-      waitingSignatures({
-        account,
-        transactions,
-      }),
-    [transactions, account],
-  );
-
-  const has = pendingSignatures > 0;
+  const has = quantity > 0;
 
   if (isLoading) {
     return (
@@ -43,7 +30,7 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   return (
     <Badge h={6} variant="warning">
       <Icon as={PendingIcon} />
-      {`${pendingSignatures} waiting for your signature`}
+      {`${quantity} waiting for your signature`}
     </Badge>
   );
 };

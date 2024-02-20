@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  Pages,
-  useCreateBsafeVault,
-  useFuelAccount,
-  useToast,
-} from '@/modules';
+import { useContactToast } from '@/modules/addressBook/hooks';
+import { useFuelAccount } from '@/modules/auth/store';
+import { useCreateBsafeVault } from '@/modules/core/hooks';
+import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -24,24 +23,23 @@ const useCreateVault = () => {
   const { account } = useFuelAccount();
 
   const navigate = useNavigate();
-  const toast = useToast();
+  const params = useParams<{ workspaceId: string }>();
+  const { errorToast } = useContactToast();
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
-
+  const { currentWorkspace } = useWorkspace();
   const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
       setVaultId(data.BSAFEVaultId);
       setTab(TabState.SUCCESS);
     },
     onError: () => {
-      toast.show({
-        status: 'error',
-        title: 'Error on create vault',
-        position: 'bottom',
-        isClosable: true,
+      errorToast({
+        title: 'Error on vault creation!',
+        description: 'An error occurred while creating the vault',
       });
     },
   });
@@ -83,7 +81,12 @@ const useCreateVault = () => {
         `${import.meta.env.VITE_FAUCET}?address=${bsafeVault.data.address}`,
         '_BLANK',
       );
-      navigate(Pages.detailsVault({ vaultId: bsafeVault.data.BSAFEVaultId }));
+      navigate(
+        Pages.detailsVault({
+          vaultId: bsafeVault.data.BSAFEVaultId,
+          workspaceId: currentWorkspace.id,
+        }),
+      );
     }
   };
 
@@ -100,6 +103,7 @@ const useCreateVault = () => {
     navigate(
       Pages.createTemplate({
         vaultId,
+        workspaceId: params.workspaceId!,
       }),
     );
   };

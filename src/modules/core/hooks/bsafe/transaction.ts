@@ -1,14 +1,11 @@
 import {
-  Asset,
   IBSAFEAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
-  ITransferAsset,
   TransactionStatus,
   Vault,
 } from 'bsafe';
-import { bn } from 'fuels';
 
 import { TransactionService } from '@/modules/transactions/services';
 
@@ -80,30 +77,30 @@ interface BSAFETransactionSendVariables {
   auth?: IBSAFEAuth;
 }
 
-const validateBalance = async (
-  vault: Vault,
-  _coins: ITransferAsset[],
-  id: string,
-) => {
-  const balances = await vault.getBalances();
-  const coins = await Asset.assetsGroupById(
-    balances.map((item) => {
-      return {
-        assetId: item.assetId,
-        amount: item.amount.format(),
-        to: '',
-      };
-    }),
-  );
+// const validateBalance = async (
+//   vault: Vault,
+//   _coins: ITransferAsset[],
+//   id: string,
+// ) => {
+//   const balances = await vault.getBalances();
+//   const coins = await Asset.assetsGroupById(
+//     balances.map((item) => {
+//       return {
+//         assetId: item.assetId,
+//         amount: item.amount.format(),
+//         to: '',
+//       };
+//     }),
+//   );
 
-  const _coinsTransaction = await Asset.assetsGroupById(_coins);
+//   const _coinsTransaction = await Asset.assetsGroupById(_coins);
 
-  Object.entries(_coinsTransaction).map(([key, value]) => {
-    if (bn(coins[key]).lt(value)) {
-      throw new Error(`Insufficient balance for ${key}:${id}`);
-    }
-  });
-};
+//   Object.entries(_coinsTransaction).map(([key, value]) => {
+//     if (bn(coins[key]).lt(value)) {
+//       throw new Error(`Insufficient balance for ${key}:${id}`);
+//     }
+//   });
+// };
 
 const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
   return useBsafeMutation(

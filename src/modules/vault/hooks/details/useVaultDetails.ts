@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
@@ -11,7 +13,7 @@ import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 const useVaultDetails = () => {
   const navigate = useNavigate();
-  const params = useParams<{ vaultId: string }>();
+  const params = useParams<{ workspaceId: string; vaultId: string }>();
   const { account } = useFuelAccount();
   const store = useVaultState();
   const inView = useInView();
@@ -21,6 +23,14 @@ const useVaultDetails = () => {
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
   );
+
+  const pendingSignerTransactions = useTransactionsSignaturePending([
+    params.vaultId!,
+  ]);
+
+  useMemo(() => {
+    pendingSignerTransactions.refetch();
+  }, [predicate, params]);
 
   const {
     assets,
@@ -50,7 +60,7 @@ const useVaultDetails = () => {
 
   return {
     vault: {
-      ...predicate,
+      ...(predicate as PredicateWithWorkspace),
       configurable,
       signers: signersOrdination,
       isLoading,
@@ -60,6 +70,8 @@ const useVaultDetails = () => {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
+        isPendingSigner:
+          pendingSignerTransactions.data?.transactionsBlocked ?? false,
       },
     },
     assets: {
@@ -72,6 +84,8 @@ const useVaultDetails = () => {
     navigate,
     account,
     store,
+    params,
+    pendingSignerTransactions,
   };
 };
 

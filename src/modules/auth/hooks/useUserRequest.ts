@@ -1,6 +1,6 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { useFuel } from '@/modules';
+import { useFuel } from '@/modules/core/hooks';
 
 import {
   CreateUserPayload,

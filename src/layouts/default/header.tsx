@@ -8,7 +8,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { Pages, useFuel, useFuelAccount } from '@/modules';
+import { useFuelAccount } from '@/modules/auth/store';
+import { Pages, useFuel } from '@/modules/core';
+import { useHome } from '@/modules/home/hooks/useHome';
 
 import { TabEnum } from './types';
 
@@ -18,6 +20,7 @@ const Header = () => {
 
   const [fuel] = useFuel();
   const { account } = useFuelAccount();
+  const { goHome } = useHome();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;
 
@@ -47,7 +50,7 @@ const Header = () => {
             cursor="pointer"
             onClick={() => {
               setTab(TabEnum.VAULTS);
-              navigate(Pages.home());
+              goHome();
             }}
           >
             <Flex mr={2} alignItems="center">

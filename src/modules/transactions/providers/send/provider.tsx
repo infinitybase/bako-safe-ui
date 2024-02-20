@@ -1,7 +1,11 @@
-import { ITransaction } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bsafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
-import { invalidateQueries, useBsafeTransactionSend } from '@/modules/core';
+import {
+  HomeQueryKey,
+  invalidateQueries,
+  useBsafeTransactionSend,
+} from '@/modules/core';
 import {
   TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
@@ -14,7 +18,7 @@ import { useTransactionToast } from './toast';
 interface TransactionSendContextType {
   isExecuting: (transaction: ITransaction) => boolean;
   executeTransaction: (transaction: ITransaction) => void;
-
+  validateResult: (transaction: ITransaction) => void;
   clearAll: () => void;
 }
 
@@ -27,19 +31,34 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
 
   const transactionsRef = useRef<ITransaction[]>([]);
 
-  const refetetchTransactionList = () =>
+  const refetetchTransactionList = () => {
     invalidateQueries([
       'bsafe',
+      ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
+  };
+
+  const validateResult = (transaction: ITransaction) => {
+    if (transaction.status == TransactionStatus.SUCCESS) {
+      toast.success(transaction);
+    }
+
+    if (transaction.status == TransactionStatus.FAILED) {
+      toast.error(transaction.id, 'Transaction failed');
+    }
+  };
 
   const { mutate: sendTransaction } = useBsafeTransactionSend({
     onSuccess: (transaction) => {
-      toast.success(transaction);
+      transactionsRef.current = transactionsRef.current.filter(
+        (data) => data.id !== transaction.id,
+      );
       refetetchTransactionList();
+      validateResult(transaction);
     },
     onError: (error) => {
       const [errorMessage, id] = error.message.split(':');
@@ -52,10 +71,11 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     !!transactionsRef.current.find((data) => data.id === transaction.id);
 
   const executeTransaction = (transaction: ITransaction) => {
-    toast.close(transaction.id);
-    transactionsRef.current.push(transaction);
-    toast.loading(transaction);
-    sendTransaction({ transaction });
+    if (!isExecuting(transaction)) {
+      transactionsRef.current.push(transaction);
+      toast.loading(transaction);
+      sendTransaction({ transaction });
+    }
   };
 
   const clearAll = () => {
@@ -69,6 +89,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
         clearAll,
         isExecuting,
         executeTransaction,
+        validateResult,
       }}
     >
       {props.children}

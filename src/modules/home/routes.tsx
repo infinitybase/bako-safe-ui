@@ -8,7 +8,11 @@ import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
 import { UserTransactionsPage } from '../transactions/pages/user-transactions';
 
 const homeRoutes = (
-  <Route element={<DashboardLayoutRouter />}>
+  <Route
+    Component={() => {
+      return <DashboardLayoutRouter />;
+    }}
+  >
     <Route
       path={Pages.home()}
       element={

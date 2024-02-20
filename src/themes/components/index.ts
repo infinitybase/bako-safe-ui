@@ -6,6 +6,7 @@ import { Form } from './form';
 import { Heading } from './heading';
 import { Input, Textarea } from './input';
 import { Link } from './link';
+import { Radio } from './radio';
 import { Select } from './select';
 import { Skeleton } from './skeleton';
 import { Text } from './text';
@@ -24,6 +25,7 @@ const components = {
   Select,
   Text,
   Skeleton,
+  Radio,
 };
 
 export { components };

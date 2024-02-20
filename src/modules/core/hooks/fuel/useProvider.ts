@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 
-import { useFuel } from '@/modules';
+import { useFuel } from '@/modules/core/hooks';
 import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
 const useProvider = () => {

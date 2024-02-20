@@ -1,20 +1,23 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  invalidateQueries,
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
-  TRANSACTION_LIST_QUERY_KEY,
-  useBsafeCreateTransaction,
-  USER_TRANSACTIONS_QUERY_KEY,
-  useToast,
-} from '@/modules';
+import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
+import { invalidateQueries, useBsafeCreateTransaction } from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
+import {
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  USER_TRANSACTIONS_QUERY_KEY,
+} from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+}
+
+interface NickRecord {
+  [key: string]: string;
 }
 
 const useTransactionAccordion = () => {
@@ -34,9 +37,23 @@ const useTransactionAccordion = () => {
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
-  const toast = useToast();
-
+  const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
+  const { data } = useListContactsRequest();
+
+  const [nicks, setNicks] = useState<NickRecord>({});
+
+  //Transaction
+  useMemo(() => {
+    if (data) {
+      const nicks: NickRecord = data.reduce((acc, contact) => {
+        acc[contact.user.address] = contact.nickname;
+        return acc;
+      }, {});
+      //Adding nicknames to the state for use in TransactionsAccordion
+      setNicks(nicks);
+    }
+  }, [data]);
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -54,11 +71,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const transactionRequest = useBsafeCreateTransaction({
     vault: vaultDetails.predicateInstance!,
     onSuccess: () => {
-      toast.show({
-        status: 'success',
-        title: 'Transaction created',
-        position: 'bottom',
-        isClosable: true,
+      successToast({
+        title: 'Transaction created!',
+        description: 'Your transaction was successfully created...',
       });
       invalidateQueries([
         TRANSACTION_LIST_QUERY_KEY,
@@ -68,11 +83,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       handleClose();
     },
     onError: () => {
-      toast.show({
-        status: 'error',
-        title: 'Error on create transaction.',
-        position: 'bottom',
-        isClosable: true,
+      errorToast({
+        title: 'There was an error creating the transaction',
+        description: 'Please try again later',
       });
     },
   });
@@ -102,6 +115,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     vault: vaultDetails,
     assets: vaultAssets,
+    nicks,
     navigate,
     accordion,
     handleClose,

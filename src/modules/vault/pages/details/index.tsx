@@ -18,16 +18,17 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { Pages } from '@/modules/core/routes';
+import { useHome } from '@/modules/home/hooks/useHome';
+import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
-  Pages,
   TransactionCard,
   transactionStatus,
   WaitingSignatureBadge,
-  // waitingSignatures,
-} from '@/modules';
-import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
-import { useVaultDetails } from '@/modules/vault/hooks';
-import { limitCharacters } from '@/utils';
+} from '@/modules/transactions';
+import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
+import { limitCharacters } from '@/utils/limit-characters';
 
 import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
@@ -35,17 +36,19 @@ import { SignersDetails } from '../../components/SignersDetails';
 
 const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
-  const { vault, store, assets, navigate, account, inView } = useVaultDetails();
+  const {
+    params,
+    vault,
+    store,
+    assets,
+    navigate,
+    account,
+    inView,
+    pendingSignerTransactions,
+  } = useVaultDetails();
+  const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-
-  // const pendingTransactionSignature = useMemo(
-  //   () =>
-  //     waitingSignatures({
-  //       account,
-  //       transactions: vaultTransactions ?? [],
-  //     }),
-  //   [vaultTransactions, account],
-  // );
+  const { goHome } = useHome();
 
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
@@ -62,11 +65,24 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.home())}
+              onClick={() => goHome()}
             >
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
+
+          {!currentWorkspace.single && (
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() => goWorkspace(currentWorkspace.id)}
+              >
+                {currentWorkspace.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          )}
 
           <BreadcrumbItem>
             <BreadcrumbLink
@@ -97,6 +113,13 @@ const VaultDetailsPage = () => {
           bgColor="dark.100"
           border="none"
           onClick={() => {
+            if (
+              !vault.id ||
+              !vault.minSigners ||
+              !vault.members ||
+              !params.workspaceId
+            )
+              return;
             setTemplateFormInitial({
               minSigners: vault.minSigners!,
               addresses:
@@ -105,6 +128,7 @@ const VaultDetailsPage = () => {
             navigate(
               Pages.createTemplate({
                 vaultId: vault.id!,
+                workspaceId: params.workspaceId!,
               }),
             );
           }}
@@ -134,9 +158,8 @@ const VaultDetailsPage = () => {
           Transactions
         </Text>
         <WaitingSignatureBadge
-          account={account}
-          isLoading={vault.transactions.isLoading}
-          transactions={vaultTransactions}
+          isLoading={pendingSignerTransactions.isLoading}
+          quantity={pendingSignerTransactions.data?.ofUser ?? 0}
         />
       </HStack>
 
@@ -147,46 +170,53 @@ const VaultDetailsPage = () => {
           spacing={5}
           maxH="calc(100% - 82px)"
         >
-          {vaultTransactions.map((transaction) => (
-            <CustomSkeleton
-              key={transaction.id}
-              isLoaded={!loadingVaultTransactions}
-            >
-              <TransactionCard.Container
-                status={transactionStatus({ ...transaction, account })}
-                details={<TransactionCard.Details transaction={transaction} />}
-              >
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
-                <TransactionCard.Assets />
-                <TransactionCard.Amount
-                  assets={
-                    transaction?.assets.map((asset) => ({
-                      amount: asset.amount,
-                      assetId: asset.assetId,
-                      to: asset.to,
-                    })) ?? []
+          {vaultTransactions.map((transaction) => {
+            const isSigner = !!transaction.predicate?.members?.find(
+              (member) => member.address === account,
+            );
+
+            return (
+              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
+                <TransactionCard.Container
+                  status={transactionStatus({ ...transaction, account })}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
                   }
-                />
-                <TransactionCard.Name>
-                  {limitCharacters(transaction?.name ?? '', 20)}
-                </TransactionCard.Name>
-                <TransactionCard.Status
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-                <TransactionCard.Actions
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-              </TransactionCard.Container>
-            </CustomSkeleton>
-          ))}
+                >
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount
+                    assets={
+                      transaction?.assets.map((asset) => ({
+                        amount: asset.amount,
+                        assetId: asset.assetId,
+                        to: asset.to,
+                      })) ?? []
+                    }
+                  />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction?.name ?? '', 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              </CustomSkeleton>
+            );
+          })}
           {!vault.transactions.isLoading && <Box ref={inView.ref} />}
         </TransactionCard.List>
       ) : (
-        !loadingVaultTransactions && (
+        !hasTransactions &&
+        !!vaultTransactions && (
           <Card
             w="full"
             p={20}
@@ -220,7 +250,12 @@ const VaultDetailsPage = () => {
               leftIcon={<SquarePlusIcon />}
               isDisabled={!vault?.hasBalance}
               onClick={() =>
-                navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                navigate(
+                  Pages.createTransaction({
+                    workspaceId: params.workspaceId!,
+                    vaultId: vault.id!,
+                  }),
+                )
               }
             >
               Create transaction

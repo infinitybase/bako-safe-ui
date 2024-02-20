@@ -24,6 +24,24 @@ const info = defineStyle({
   borderColor: 'rgba(73, 248, 174, 0.1)',
 });
 
+const blue = defineStyle({
+  bgColor: 'rgba(57,73,171,0.1)',
+  color: '#3949AB',
+  borderColor: 'rgba(57,73,171,0.1)',
+});
+
+const gray = defineStyle({
+  bgColor: 'rgba(245,246,250,0.1)',
+  color: '#F5F6FA',
+  borderColor: 'rgba(245,246,250,0.1)',
+});
+
+const grey = defineStyle({
+  bgColor: 'rgba(44,44,44,0.8)',
+  color: 'grey.200',
+  borderColor: 'rgba(73,248,174,0.1)',
+});
+
 const baseStyle = defineStyle({
   fontSize: 'xs',
   fontWeight: 'normal',
@@ -34,6 +52,7 @@ const baseStyle = defineStyle({
   alignItems: 'center',
   gap: 2,
   borderRadius: 8,
+  maxWidth: 'min-content',
 });
 
 const Badge = defineStyleConfig({
@@ -43,6 +62,9 @@ const Badge = defineStyleConfig({
     success,
     warning,
     info,
+    gray,
+    blue,
+    grey,
   },
 });
 

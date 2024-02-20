@@ -15,10 +15,12 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { Pages } from '@/modules';
+import { AddressUtils, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { useWorkspace } from '@/modules/workspace';
 
 import { AddressCopy } from '../../../components/addressCopy';
-import { UseVaultDetailsReturn } from '../hooks/details';
+import { useVaultDetails, UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 
 export interface CardDetailsProps {
@@ -30,13 +32,23 @@ const MAX_DESCRIPTION_CHARS = 80;
 
 const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
-
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
-
+  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { vault: vaultDetails } = useVaultDetails();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
+  const reqPerm = [
+    PermissionRoles.ADMIN,
+    PermissionRoles.OWNER,
+    PermissionRoles.MANAGER,
+    PermissionRoles.SIGNER,
+  ];
+  const makeTransactionsPerm = useMemo(() => {
+    const as = hasPermission(reqPerm);
+    return as;
+  }, [vault.id, balance]);
 
   const vaultDescription = useMemo(() => {
     if (!vault?.description) return '';
@@ -113,7 +125,11 @@ const CardDetails = (props: CardDetailsProps) => {
                     }}
                   />
                 </Box>
-                <AddressCopy w="full" address={vault.predicateAddress!} />
+                <AddressCopy
+                  w="full"
+                  address={AddressUtils.format(vault.predicateAddress)!}
+                  addressToCopy={vault.predicateAddress!}
+                />
               </VStack>
               <VStack spacing={5} alignItems="flex-start">
                 <Box width="100%">
@@ -157,17 +173,36 @@ const CardDetails = (props: CardDetailsProps) => {
                 <VStack spacing={2} alignItems="flex-start">
                   <Button
                     onClick={() =>
-                      navigate(Pages.createTransaction({ vaultId: vault.id! }))
+                      navigate(
+                        Pages.createTransaction({
+                          vaultId: vault.id!,
+                          workspaceId: currentWorkspace.id,
+                        }),
+                      )
                     }
-                    isDisabled={!vault?.hasBalance}
+                    isDisabled={
+                      !vault?.hasBalance ||
+                      !makeTransactionsPerm ||
+                      vaultDetails.transactions.isPendingSigner
+                    }
                     minW={130}
                     variant="primary"
                   >
                     Send
                   </Button>
-                  <Text variant="description" fontSize="xs">
-                    Send single or batch <br /> payments with multi assets.
-                  </Text>
+                  {vault.transactions.isPendingSigner ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      This vault has pending transactions.
+                    </Text>
+                  ) : !makeTransactionsPerm ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      You dont have permission to send transactions.
+                    </Text>
+                  ) : (
+                    <Text variant="description" fontSize="xs">
+                      Send single or batch <br /> payments with multi assets.
+                    </Text>
+                  )}
                 </VStack>
               </VStack>
             </HStack>

@@ -101,6 +101,23 @@ const useTransactionToast = () => {
     }
   };
 
+  // todo: upgrade this function to use of all feedbacks
+  const generalError = (id: string, title: string, message?: string) => {
+    if (toast.isActive(id)) return;
+    transactionsToastRef.current[id] = toast({
+      position: 'top-right',
+      duration: 5000,
+      isClosable: true,
+      title: title,
+      icon: <Icon fontSize="2xl" color="error.600" as={ErrorIcon} />,
+      description: (
+        <>
+          <Text variant="description">{message}</Text>
+        </>
+      ),
+    });
+  };
+
   const closeAll = () => toast.closeAll({ positions: ['top-right'] });
   const close = (transaction: string) => {
     const toastId = transactionsToastRef.current[transaction];
@@ -114,6 +131,7 @@ const useTransactionToast = () => {
     success,
     closeAll,
     close,
+    generalError,
   };
 };
 

@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 const schema = yup
   .object({
@@ -66,7 +66,7 @@ const useCreateVaultForm = (account?: string) => {
       name: '',
       description: '',
       minSigners: '1',
-      addresses: [{ value: account }],
+      addresses: [{ value: account as string }],
     },
   });
 

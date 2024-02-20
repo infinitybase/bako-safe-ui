@@ -1,8 +1,7 @@
 import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
-import React from 'react';
 
 import { Card } from '@/components';
-import { AddressUtils } from '@/modules';
+import { AddressUtils } from '@/modules/core/utils';
 
 export interface FeeProps {
   assets: {

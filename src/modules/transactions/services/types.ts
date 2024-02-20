@@ -1,11 +1,7 @@
 import { ITransaction, ITransactionResume } from 'bsafe';
 
-import {
-  AssetModel,
-  IPagination,
-  Predicate,
-  TransactionStatus,
-} from '@/modules/core';
+import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
 export enum SortOption {
   ASC = 'ASC',
@@ -24,6 +20,11 @@ export interface TransactionDetails {
   isDone: boolean;
   fuelRedirect: string;
   isSigner: boolean;
+}
+
+export interface ITransactionPending {
+  ofUser: number;
+  transactionsBlocked: boolean;
 }
 
 export interface GetTransactionParams {
@@ -77,17 +78,18 @@ export interface CloseTransactionPayload {
   transactionResult: string;
 }
 
-type TransactionWithVault = ITransaction & {
-  predicate?: Predicate;
+export type TransactionWithVault = ITransaction & {
+  predicate?: PredicateAndWorkspace;
 };
 
 export type GetTransactionResponse = ITransaction;
-export type GetTransactionsResponse = ITransaction[];
+export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
   IPagination<TransactionWithVault>;
 export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
+export type GetTransactionPendingResponse = ITransactionPending;
 export type CreateTransactionResponse = ITransaction;
 export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;

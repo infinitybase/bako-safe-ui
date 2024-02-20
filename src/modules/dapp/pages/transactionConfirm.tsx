@@ -1,16 +1,15 @@
 import { Divider, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
-import { Pages } from '@/modules/core';
 import {
   DappConnectionAlert,
   DappConnectionDetail,
   DappTransaction,
 } from '@/modules/dapp/components';
+import { useHome } from '@/modules/home/hooks/useHome';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
 import { useTransactionSocket } from '../hooks';
@@ -26,11 +25,12 @@ const TransactionConfirm = () => {
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
   } = useTransactionSocket();
   const { sessionId } = useQueryParams();
-  const navigate = useNavigate();
+
+  const { goHome } = useHome();
 
   if (!sessionId) {
     window.close();
-    navigate(Pages.home());
+    goHome();
   }
 
   useEffect(() => {

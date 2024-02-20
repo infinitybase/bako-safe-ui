@@ -17,9 +17,11 @@ import { Controller } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
-import { AddressUtils, ITemplate, UseCreateVaultReturn } from '@/modules';
 import { CreateContactDialog } from '@/modules/addressBook/components';
-import { useAddressBook } from '@/modules/addressBook/hooks/';
+import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
+import { ITemplate } from '@/modules/core/models';
+import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { AddressBookUtils } from '@/utils/address-book';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -44,6 +46,18 @@ const VaultAddressesStep = ({
     contactDialog,
     inView,
   } = useAddressBook();
+
+  const options =
+    contacts &&
+    AddressBookUtils.removeDuplicates(contacts)
+      ?.filter(
+        ({ user }) =>
+          !addresses.fields.map((a) => a.value)?.includes(user.address),
+      )
+      ?.map(({ user, nickname }) => ({
+        value: user.address,
+        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+      }));
 
   return (
     <>
@@ -131,22 +145,7 @@ const VaultAddressesStep = ({
                         errorMessage={fieldState.error?.message}
                         isLoading={!contactsPaginatedRequest.isSuccess}
                         inView={inView}
-                        options={
-                          contacts &&
-                          contacts
-                            ?.filter(
-                              ({ user }) =>
-                                !addresses.fields
-                                  .map((a) => a.value)
-                                  ?.includes(user.address),
-                            )
-                            ?.map(({ user, nickname }) => ({
-                              value: user.address,
-                              label: `${nickname} - ${AddressUtils.format(
-                                user.address,
-                              )}`,
-                            }))
-                        }
+                        options={options}
                         rightAction={{
                           ...(first
                             ? {}
@@ -210,10 +209,11 @@ const VaultAddressesStep = ({
 
         <Divider borderColor="dark.100" my={9} />
 
-        <HStack>
+        <HStack position="relative">
           <Dialog.Section
             w="full"
             maxW={300}
+            mb={5}
             title={
               <Heading fontSize="md" color="grey.200">
                 Min signatures required?
@@ -248,7 +248,7 @@ const VaultAddressesStep = ({
                     style={{
                       display: 'flex',
                       position: 'absolute',
-                      left: '-300px',
+                      left: '-309px',
                       minWidth: '400px',
                       marginBottom: '20px',
                     }}

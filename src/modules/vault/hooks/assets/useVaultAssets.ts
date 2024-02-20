@@ -1,4 +1,4 @@
-import { defaultConfigurable, Vault } from 'bsafe';
+import { Vault } from 'bsafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';

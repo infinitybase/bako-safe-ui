@@ -7,9 +7,15 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { AddressUtils, Pages, VaultBox, VaultDrawer } from '@/modules';
+import { Pages, PermissionRoles } from '@/modules/core';
+import { AddressUtils } from '@/modules/core/utils';
+import { useVaultDetails } from '@/modules/vault';
+import { VaultBox, VaultDrawer } from '@/modules/vault/components';
+import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
+
+const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
 const Sidebar = () => {
   const {
@@ -20,6 +26,10 @@ const Sidebar = () => {
     vaultRequest,
     transactionListRequest,
   } = useSidebar();
+
+  const { vault } = useVaultDetails();
+
+  const { hasPermission } = useWorkspace();
 
   return (
     <Box
@@ -48,9 +58,14 @@ const Sidebar = () => {
         isLoading={vaultRequest.isLoading}
         onChangeVault={drawer.onOpen}
         hasBalance={vaultAssets.hasBalance}
+        isPending={vault.transactions.isPendingSigner}
+        hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
         onCreateTransaction={() => {
           route.navigate(
-            Pages.createTransaction({ vaultId: route.params.vaultId! }),
+            Pages.createTransaction({
+              workspaceId: route.params.workspaceId!,
+              vaultId: route.params.vaultId!,
+            }),
           );
         }}
       />
@@ -63,7 +78,10 @@ const Sidebar = () => {
           isActive={menuItems.home}
           onClick={() =>
             route.navigate(
-              Pages.detailsVault({ vaultId: route.params.vaultId! }),
+              Pages.detailsVault({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >
@@ -73,14 +91,13 @@ const Sidebar = () => {
 
         <SidebarMenu.Container
           isActive={menuItems.transactions}
-          cursor={
-            transactionListRequest.hasTransactions ? 'pointer' : 'not-allowed'
-          }
-          opacity={transactionListRequest.hasTransactions ? '1' : '0.6'}
+          cursor={'pointer'}
           onClick={() =>
-            transactionListRequest.hasTransactions &&
             route.navigate(
-              Pages.transactions({ vaultId: route.params.vaultId! }),
+              Pages.transactions({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >
@@ -104,7 +121,10 @@ const Sidebar = () => {
           isActive={menuItems.settings}
           onClick={() =>
             route.navigate(
-              Pages.vaultSettings({ vaultId: route.params.vaultId! }),
+              Pages.vaultSettings({
+                workspaceId: route.params.workspaceId!,
+                vaultId: route.params.vaultId!,
+              }),
             )
           }
         >
