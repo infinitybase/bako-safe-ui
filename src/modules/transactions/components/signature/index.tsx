@@ -28,7 +28,7 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   }
 
   return (
-    <Badge h={6} variant="warning">
+    <Badge h={6} variant="darkWarning">
       <Icon as={PendingIcon} />
       {`${quantity} waiting for your signature`}
     </Badge>

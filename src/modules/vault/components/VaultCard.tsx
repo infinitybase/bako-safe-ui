@@ -55,7 +55,7 @@ export const VaultCard = ({
       : role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return (
-    <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
+    <Card bg="grey.800" w="100%" cursor="pointer" zIndex={100} {...rest}>
       <VStack alignItems="flex-start">
         <HStack w="100%" justifyContent="space-between" mb={1}>
           <HStack>
@@ -63,13 +63,13 @@ export const VaultCard = ({
               variant="roundedSquare"
               name={name}
               color="white"
-              bg="grey.900"
+              bg="grey.600"
             />
             <VStack ml={2} alignItems="flex-start" spacing={1}>
               {!workspace.single && (
                 <HStack>
-                  <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
-                  <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
+                  <Icon as={HandbagIcon} fontSize={14} color="grey.400" />
+                  <Text maxW={48} color="grey.400" fontSize="sm" isTruncated>
                     {workspace?.name}
                   </Text>
                 </HStack>
@@ -86,7 +86,7 @@ export const VaultCard = ({
           </HStack>
         </HStack>
 
-        <Divider borderColor="dark.100" my={1} />
+        <Divider borderColor="grey.600" my={1} />
 
         <HStack w="full">
           <Box>
