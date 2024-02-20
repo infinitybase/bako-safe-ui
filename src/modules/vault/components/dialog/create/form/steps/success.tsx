@@ -9,7 +9,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 
 import { VaultSuccessIcon } from '@/components';
 import { UseCreateVaultDialogReturn } from '@/modules/vault/hooks';
@@ -30,7 +29,7 @@ const VaultSuccessStep = ({
           <Icon fontSize={100} as={VaultSuccessIcon} />
         </Box>
         <Box mb={5}>
-          <Heading color="brand.600">All set!!</Heading>
+          <Heading color="brand.500">All set!!</Heading>
         </Box>
         <Box mb={5}>
           <Heading color="grey.200" fontSize="md" textAlign="center">

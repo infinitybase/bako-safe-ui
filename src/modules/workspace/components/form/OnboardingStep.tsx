@@ -63,7 +63,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
       <HStack>
         <Box w="100%" maxW="80px">
-          <Badge variant="blue">Manager</Badge>
+          <Badge variant="yellow">Manager</Badge>
         </Box>
 
         <Text color="grey.200" fontSize="md">
@@ -75,7 +75,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
       <HStack>
         <Box w="100%" maxW="80px">
-          <Badge variant="gray">Viewer</Badge>
+          <Badge variant="blue">Viewer</Badge>
         </Box>
         <Text color="grey.200" fontSize="md">
           Can only{' '}

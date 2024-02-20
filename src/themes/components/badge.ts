@@ -31,9 +31,15 @@ const info = defineStyle({
 });
 
 const blue = defineStyle({
-  bgColor: 'rgba(57,73,171,0.1)',
-  color: '#3949AB',
-  borderColor: 'rgba(57,73,171,0.1)',
+  bgColor: 'rgba(50,200,217,0.1)',
+  color: '#32C8D9',
+  borderColor: 'rgba(50,200,217,0.25)',
+});
+
+const yellow = defineStyle({
+  bgColor: 'rgba(227, 175, 19, 0.1)',
+  color: 'brand.500',
+  borderColor: 'rgba(227, 175, 19, 0.25)',
 });
 
 const gray = defineStyle({
@@ -70,6 +76,7 @@ const Badge = defineStyleConfig({
     info,
     gray,
     blue,
+    yellow,
     grey,
     darkWarning,
   },
