@@ -11,12 +11,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -193,7 +193,7 @@ const AddressBookPage = () => {
               )
             }
           >
-            <ActionCard.Icon icon={CgList} />
+            <ActionCard.Icon icon={AddressBookIcon} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
