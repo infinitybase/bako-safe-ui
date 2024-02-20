@@ -1,4 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { defaultConnectors } from '@fuel-wallet/sdk';
+import { FuelProvider } from '@fuels/react';
 import { BSafe } from 'bsafe';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -9,9 +11,9 @@ import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
 BSafe.setup({
-  api_url: import.meta.env.VITE_API_URL,
-  bsafe_url: import.meta.env.VERCEL_URL || window.location.origin,
-  provider: import.meta.env.VITE_NETWORK,
+  API_URL: import.meta.env.VITE_API_URL,
+  BSAFE_URL: import.meta.env.VERCEL_URL || window.location.origin,
+  PROVIDER: import.meta.env.VITE_NETWORK,
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -19,7 +21,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BsafeQueryClientProvider>
       <ChakraProvider theme={defaultTheme}>
         <TransactionSendProvider>
-          <App />
+          <FuelProvider
+            fuelConfig={{
+              connectors: defaultConnectors(),
+            }}
+          >
+            <App />
+          </FuelProvider>
         </TransactionSendProvider>
       </ChakraProvider>
     </BsafeQueryClientProvider>

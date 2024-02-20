@@ -1,6 +1,5 @@
+import { useFuel } from '@fuels/react';
 import { useMutation, UseMutationOptions } from 'react-query';
-
-import { useFuel } from '@/modules/core/hooks';
 
 import {
   CreateUserPayload,
@@ -25,7 +24,7 @@ const useCreateUserRequest = (
 const useSignInRequest = (
   options?: UseMutationOptions<SignInResponse, unknown, UseSignInRequestParams>,
 ) => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   return useMutation(
     'auth/sign-in',
