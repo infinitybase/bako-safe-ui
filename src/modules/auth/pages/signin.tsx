@@ -32,6 +32,13 @@ const SigninPage = () => {
         variant="solid"
         backgroundColor="brand.500"
         colorScheme="brand"
+        backgroundSize="200% 100%"
+        backgroundPosition="100% 0"
+        transition="background-position .5s"
+        _hover={{
+          transform: 'scale(1.05)',
+          transition: 'ease-in-out .3s',
+        }}
         isLoading={isConnecting}
         loadingText="Connecting.."
         onClick={connectors.drawer.onOpen}
@@ -63,7 +70,12 @@ const SigninPage = () => {
         connectors={connectors.items}
       />
       <Box textAlign="center" mb={2}>
-        <Text fontSize="4xl" fontWeight="bold" color="brand.500">
+        <Text
+          fontSize="4xl"
+          fontWeight="bold"
+          bgGradient="linear(to-r, brand.500, brand.800)"
+          bgClip="text"
+        >
           Hey!
         </Text>
       </Box>
