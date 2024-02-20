@@ -30,7 +30,6 @@ import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
-import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 
@@ -40,7 +39,6 @@ const VaultDetailsPage = () => {
     params,
     vault,
     store,
-    assets,
     navigate,
     account,
     inView,
@@ -139,12 +137,7 @@ const VaultDetailsPage = () => {
 
       <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
         <CardDetails vault={vault} store={store} />
-        <AmountDetails
-          store={store}
-          vaultAddress={vault.predicateAddress!}
-          assets={assets}
-          isLoading={vault.isLoading}
-        />
+
         <SignersDetails vault={vault} />
       </HStack>
 
