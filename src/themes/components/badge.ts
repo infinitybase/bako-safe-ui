@@ -7,15 +7,21 @@ const success = defineStyle({
 });
 
 const error = defineStyle({
-  bgColor: 'error.900',
+  bgColor: 'rgba(240, 93, 72, 0.1)',
   color: 'error.500',
-  borderColor: 'error.900',
+  borderColor: 'rgba(240, 93, 72, 0.25)',
 });
 
 const warning = defineStyle({
   bgColor: 'warning.900',
   color: 'warning.500',
   borderColor: 'warning.900',
+});
+
+const darkWarning = defineStyle({
+  bgColor: 'rgba(241, 101, 23, 0.1)',
+  color: 'warning.650',
+  borderColor: 'rgba(241, 101, 23, 0.25)',
 });
 
 const info = defineStyle({
@@ -65,6 +71,7 @@ const Badge = defineStyleConfig({
     gray,
     blue,
     grey,
+    darkWarning,
   },
 });
 
