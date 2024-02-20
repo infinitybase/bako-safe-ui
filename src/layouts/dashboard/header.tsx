@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-import logo from '@/assets/bako-logo.svg';
+import logo from '@/assets/bakoLogoWhite.svg';
 import {
   ExitIcon,
   NotificationIcon,
@@ -251,7 +251,7 @@ const Header = () => {
           goHome();
         }}
       >
-        <img width={150} src={logo} alt="" />
+        <img width={95} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
