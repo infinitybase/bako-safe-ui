@@ -26,7 +26,8 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { useAuthStore } from '@/modules/auth/store';
+import { AddressUtils } from '@/modules';
+import { useAuth } from '@/modules/auth/hooks';
 import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
@@ -59,10 +60,15 @@ const TopBarItem = chakra(SpacedBox, {
 
 /* TODO: create props with data user */
 const UserBox = () => {
-  const { formattedAccount, avatar } = useAuthStore();
-  const avatarImage = useLoadImage(avatar);
+  const auth = useAuth();
+  const avatarImage = useLoadImage(auth.avatar);
   const { discconnect } = useDisconnect();
   const settingsDrawer = useDisclosure();
+
+  const logout = async () => {
+    await discconnect();
+    auth.handlers.logout();
+  };
 
   return (
     <>
@@ -85,13 +91,13 @@ const UserBox = () => {
                   borderRadius={5}
                 />
               ) : (
-                <Avatar variant="roundedSquare" src={avatar} />
+                <Avatar variant="roundedSquare" src={auth.avatar} />
               )}
             </Box>
 
             <Box mr={9}>
               <Text fontWeight="semibold" color="grey.200">
-                {formattedAccount}
+                {AddressUtils.format(auth.account)}
               </Text>
             </Box>
 
@@ -125,7 +131,7 @@ const UserBox = () => {
             </Box>
 
             <Box borderTop={'1px solid'} borderTopColor={'dark.100'} p={4}>
-              <HStack cursor={'pointer'} onClick={() => discconnect()}>
+              <HStack cursor={'pointer'} onClick={logout}>
                 <Icon color="grey.200" fontSize="xl" as={ExitIcon} />
                 <Text color="grey.200" fontWeight={'bold'}>
                   Logout
