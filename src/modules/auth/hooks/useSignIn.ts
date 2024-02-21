@@ -2,9 +2,8 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useIsConnected } from '@fuels/react';
 import { Location, useNavigate } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useQueryParams } from '@/modules/auth/hooks';
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
 
@@ -33,7 +32,7 @@ const useSignIn = () => {
   const connectorDrawer = useDisclosure();
 
   const { fuel } = useFuel();
-  const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
+  const auth = useAuth();
   const { isConnected } = useIsConnected();
   const { account } = useAccount();
   const { location, origin } = useQueryParams();
@@ -44,39 +43,14 @@ const useSignIn = () => {
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar, user_id, workspace }) => {
-      CookiesConfig.setCookies([
-        {
-          name: CookieName.ACCESS_TOKEN,
-          value: accessToken,
-        },
-        {
-          name: CookieName.ADDRESS,
-          value: account!,
-        },
-        {
-          name: CookieName.USER_ID,
-          value: user_id,
-        },
-        {
-          name: CookieName.AVATAR,
-          value: avatar!,
-        },
-        {
-          name: CookieName.SINGLE_WORKSPACE,
-          value: JSON.stringify(workspace),
-        },
-        {
-          name: CookieName.WORKSPACE,
-          value: JSON.stringify(workspace),
-        },
-        {
-          name: CookieName.PERMISSIONS,
-          value: JSON.stringify(workspace.permissions[user_id]),
-        },
-      ]);
-      setAccount(account!);
-      setAvatar(avatar!);
-
+      auth.handlers.authenticate({
+        userId: user_id,
+        avatar: avatar!,
+        account: account!,
+        accessToken: accessToken,
+        singleWorkspace: workspace.id,
+        permissions: workspace.permissions,
+      });
       navigate(redirectPathBuilder(!!origin, location, account!));
     },
   });
@@ -114,11 +88,12 @@ const useSignIn = () => {
         provider: network!.url,
       });
     } catch (e) {
-      setInvalidAccount(true);
+      auth.handlers.setInvalidAccount(true);
     }
   };
 
   return {
+    auth,
     goToApp,
     signInRequest,
     isConnected,

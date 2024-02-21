@@ -5,7 +5,7 @@ import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { invalidateQueries } from '@/modules/core/utils';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
@@ -28,7 +28,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 const useWorkspace = () => {
   const [visibleBalance, setVisibleBalance] = useState(false);
   const { workspaceId, vaultId } = useParams();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const workspaceDialog = useDisclosure();
   const toast = useNotification();
   const navigate = useNavigate();

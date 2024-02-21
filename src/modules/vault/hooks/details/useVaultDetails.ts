@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useVaultState } from '@/modules/vault/states';
@@ -14,7 +14,7 @@ import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 const useVaultDetails = () => {
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const store = useVaultState();
   const inView = useInView();
 

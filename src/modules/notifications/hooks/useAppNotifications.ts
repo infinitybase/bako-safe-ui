@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -29,7 +29,7 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const notificationsListRequest = useListNotificationsRequest(

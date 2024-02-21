@@ -26,7 +26,7 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
@@ -59,7 +59,7 @@ const TopBarItem = chakra(SpacedBox, {
 
 /* TODO: create props with data user */
 const UserBox = () => {
-  const { formattedAccount, avatar } = useFuelAccount();
+  const { formattedAccount, avatar } = useAuthStore();
   const avatarImage = useLoadImage(avatar);
   const { discconnect } = useDisconnect();
   const settingsDrawer = useDisclosure();

@@ -2,7 +2,7 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
 import { useMemo } from 'react';
 
-import { useFuelAccount } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import {
   HomeQueryKey,
   invalidateQueries,
@@ -31,7 +31,7 @@ export interface UseSignTransactionOptions {
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const transactionSendContext = useTransactionSend();
 
   useMemo(() => {

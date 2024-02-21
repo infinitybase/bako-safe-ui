@@ -7,11 +7,9 @@ import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
 import { useGetCurrentAccount } from '@/modules/core';
 
 import { useSignIn } from '../hooks';
-import { useFuelAccount } from '../store';
 
 const SigninPage = () => {
-  const { isConnecting, connectors, redirectToWalletLink } = useSignIn();
-  const { invalidAccount, setInvalidAccount } = useFuelAccount();
+  const { isConnecting, connectors, redirectToWalletLink, auth } = useSignIn();
   const { getAccount } = useGetCurrentAccount();
   const { errorToast } = useContactToast();
 
@@ -20,13 +18,13 @@ const SigninPage = () => {
   }, []);
 
   useMemo(() => {
-    invalidAccount &&
+    auth.isInvalidAccount &&
       errorToast({
         title: 'Invalid Account',
         description: 'You need to use the fuel wallet to connect.',
       });
-    setInvalidAccount(false);
-  }, [invalidAccount]);
+    auth.handlers.setInvalidAccount(false);
+  }, [auth.isInvalidAccount]);
 
   const pageSections = {
     description: connectors.has

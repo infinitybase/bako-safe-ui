@@ -1,31 +1,56 @@
 import { create } from 'zustand';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { AddressUtils } from '@/modules/core/utils/address';
+import { AddressUtils, IPermissions } from '@/modules/core';
 
-interface State {
-  account: string;
-  formattedAccount: string;
+type SingleAuthentication = {
   avatar: string;
-  invalidAccount: boolean;
-  setAccount: (account: string) => void;
-  setAvatar: (avatar: string) => void;
-  setInvalidAccount: (isInalid: boolean) => void;
-}
-const { ADDRESS, AVATAR } = CookieName;
+  account: string;
+  workspace: string;
+};
 
-const useFuelAccount = create<State>((set) => ({
-  account: CookiesConfig.getCookie(ADDRESS)!,
-  formattedAccount: AddressUtils.format(CookiesConfig.getCookie(ADDRESS)!)!,
-  avatar: CookiesConfig.getCookie(AVATAR)!,
+type WorkspaceAuthentication = {
+  workspace: string;
+  permissions: IPermissions;
+};
+
+type State = {
+  avatar: string;
+  account: string;
+  workspaces: { single: string; workspace?: string };
+  invalidAccount: boolean;
+  formattedAccount: string;
+  permissions?: IPermissions;
+};
+
+type Actions = {
+  setInvalidAccount: (isInalid: boolean) => void;
+  singleAuthentication: (params: SingleAuthentication) => void;
+  workspaceAuthentication: (params: WorkspaceAuthentication) => void;
+};
+
+type Store = State & Actions;
+
+const useAuthStore = create<Store>((set) => ({
+  account: CookiesConfig.getCookie(CookieName.ADDRESS)!,
+  workspaces: { single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)! },
+  formattedAccount: AddressUtils.format(
+    CookiesConfig.getCookie(CookieName.ADDRESS)!,
+  )!,
+  avatar: CookiesConfig.getCookie(CookieName.AVATAR)!,
   invalidAccount: false,
   setInvalidAccount: (invalidAccount) => set({ invalidAccount }),
-  setAvatar: (avatar) => set({ avatar }),
-  setAccount: (account) =>
+  singleAuthentication: (params) =>
     set({
-      account,
-      formattedAccount: AddressUtils.format(account),
+      avatar: params.avatar,
+      account: params.account,
+      workspaces: { single: params.workspace },
     }),
+  workspaceAuthentication: (params) =>
+    set((store) => ({
+      permissions: params.permissions,
+      workspaces: { ...store.workspaces, workspace: params.workspace },
+    })),
 }));
 
-export { useFuelAccount };
+export { useAuthStore };

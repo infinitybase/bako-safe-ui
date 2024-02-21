@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 
 import { CookieName, CookiesConfig } from './cookies';
 
@@ -60,7 +60,7 @@ api.interceptors.response.use(
     const unauthorizedError = error.response?.status === 401;
 
     if (unauthorizedError) {
-      useFuelAccount.getState().setAccount('');
+      useAuthStore.getState().setAccount('');
       CookiesConfig.removeCookies([
         ACCESS_TOKEN,
         ADDRESS,

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
@@ -12,7 +12,7 @@ import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
   const navigate = useNavigate();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
   useListContactsRequest();

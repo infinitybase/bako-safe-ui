@@ -3,7 +3,7 @@ import { MutationKey, QueryKey } from 'react-query/types/core/types';
 import { UseMutationOptions } from 'react-query/types/react/types';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { authCredentials, useFuelAccount } from '@/modules/auth';
+import { authCredentials, useAuthStore } from '@/modules/auth';
 
 import {
   BsafeMutationFunction,
@@ -15,7 +15,7 @@ const removeCredentialsWhenUnathorized = (error: any) => {
   const unauthorizedError = error.response?.status === 401;
 
   if (unauthorizedError) {
-    useFuelAccount.getState().setAccount('');
+    useAuthStore.getState().setAccount('');
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };

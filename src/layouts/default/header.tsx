@@ -9,7 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 
@@ -20,7 +20,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { fuel } = useFuel();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const { goHome } = useHome();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;

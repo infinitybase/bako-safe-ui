@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
@@ -10,7 +10,7 @@ export interface AuthRouteProps {
 }
 
 const AuthRoute = (props: AuthRouteProps) => {
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
   const { handleWorkspaceSelection, singleWorkspace } = useWorkspace();

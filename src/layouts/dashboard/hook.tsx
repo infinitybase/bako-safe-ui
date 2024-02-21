@@ -2,7 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import {
   useTransactionListRequest,
@@ -16,7 +16,7 @@ const useSidebar = () => {
   const location = useLocation();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const { currentWorkspace } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
