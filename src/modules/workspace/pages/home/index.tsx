@@ -67,9 +67,9 @@ const WorkspacePage = () => {
     workspaceDialog,
     worksapceBalance,
     pendingSignerTransactions,
-    hasSkeleton,
+    workspaceHomeRequest,
     goWorkspace,
-    hasSkeletonBalance,
+    //hasSkeletonBalance,
   } = useWorkspace();
   const { goHome } = useHome();
 
@@ -130,7 +130,7 @@ const WorkspacePage = () => {
         </HStack>
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="semibold"
@@ -147,7 +147,7 @@ const WorkspacePage = () => {
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="bold"
@@ -164,7 +164,7 @@ const WorkspacePage = () => {
       <HStack w="full" spacing={6}>
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!hasSkeleton}
+          isLoaded={!workspaceHomeRequest.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -192,7 +192,7 @@ const WorkspacePage = () => {
                 </Box>
 
                 <CustomSkeleton
-                  isLoaded={!hasSkeletonBalance}
+                  isLoaded={!worksapceBalance.isLoading}
                   display={'flex'}
                   justifyContent={'flex-end'}
                 >
@@ -234,7 +234,7 @@ const WorkspacePage = () => {
                   color="grey.200"
                 >{`Workspace's balance breakdown`}</Text>
                 <CustomSkeleton
-                  isLoaded={!hasSkeletonBalance}
+                  isLoaded={!worksapceBalance.isLoading}
                   w="full"
                   h="full"
                 >
@@ -287,7 +287,7 @@ const WorkspacePage = () => {
 
         {/* ACTION CARDS */}
         <VStack w="full" maxH={450} spacing={4}>
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
               onClick={() => navigate(Pages.userVaults({ workspaceId }))}
@@ -302,7 +302,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -322,7 +322,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -357,7 +357,7 @@ const WorkspacePage = () => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!hasSkeleton}>
+      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
         {!hasVaults ? (
           <EmptyVault
             showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
@@ -373,7 +373,7 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!hasSkeleton}>
+                    <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           extra={extraCount}
@@ -450,7 +450,7 @@ const WorkspacePage = () => {
 
       {/* TRANSACTION LIST */}
       {!hasTransactions && hasVaults ? (
-        <CustomSkeleton isLoaded={!hasSkeleton} pb={10}>
+        <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
@@ -460,7 +460,10 @@ const WorkspacePage = () => {
               const status = transactionStatus({ ...transaction, account });
 
               return (
-                <CustomSkeleton isLoaded={!hasSkeleton} key={transaction.id}>
+                <CustomSkeleton
+                  isLoaded={!workspaceHomeRequest.isLoading}
+                  key={transaction.id}
+                >
                   <TransactionCard.Container
                     status={status}
                     details={
