@@ -418,7 +418,7 @@ const WorkspacePage = () => {
       </CustomSkeleton>
 
       {hasVaults && (
-        <HStack w="full" spacing={4}>
+        <HStack w="full" mt={4} spacing={4}>
           {
             <Text
               variant="subtitle"
