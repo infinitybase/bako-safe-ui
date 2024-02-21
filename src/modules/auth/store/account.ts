@@ -29,6 +29,7 @@ type Actions = {
   setInvalidAccount: (isInalid: boolean) => void;
   singleAuthentication: (params: SingleAuthentication) => void;
   workspaceAuthentication: (params: WorkspaceAuthentication) => void;
+  workspaceAuthenticationSingle: () => void;
 };
 
 type Store = State & Actions;
@@ -58,6 +59,12 @@ const useAuthStore = create<Store>((set) => ({
       permissions: params.permissions,
       workspaces: { ...store.workspaces, current: params.workspace },
     })),
+  workspaceAuthenticationSingle: () => {
+    set((store) => ({
+      permissions: {},
+      workspaces: { ...store.workspaces, current: store.workspaces.single },
+    }));
+  },
 }));
 
 export { useAuthStore };

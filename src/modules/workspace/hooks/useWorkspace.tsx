@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
-import { useDisclosure, useTimeout } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useDisclosure } from '@chakra-ui/react';
+import { useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -77,38 +77,38 @@ const useWorkspace = () => {
     });
   };
 
-  const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
-  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(true);
+  // const [firstRender, setFirstRender] = useState<boolean>(true);
+  // const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
+  // const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(true);
 
-  useTimeout(() => {
-    setHasSkeleton(false);
-    setFirstRender(false);
-  }, 3000);
+  // useTimeout(() => {
+  //   setHasSkeleton(false);
+  //   setFirstRender(false);
+  // }, 3000);
 
-  useTimeout(() => setHasSkeletonBalance(false), 10000);
+  // useTimeout(() => setHasSkeletonBalance(false), 10000);
 
-  useMemo(() => {
-    if (
-      firstRender &&
-      workspaceId !== workspaceHomeRequest.data?.workspace.id
-    ) {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
+  // useMemo(() => {
+  //   if (
+  //     firstRender &&
+  //     workspaceId !== workspaceHomeRequest.data?.workspace.id
+  //   ) {
+  //     setHasSkeleton(true);
+  //     setFirstRender(false);
+  //   }
 
-    if (
-      !firstRender &&
-      workspaceId === workspaceHomeRequest.data?.workspace.id
-    ) {
-      setHasSkeleton(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    workspaceHomeRequest.isLoading,
-    workspaceHomeRequest.isFetching,
-    workspaceHomeRequest.isSuccess,
-  ]);
+  //   if (
+  //     !firstRender &&
+  //     workspaceId === workspaceHomeRequest.data?.workspace.id
+  //   ) {
+  //     setHasSkeleton(false);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   workspaceHomeRequest.isLoading,
+  //   workspaceHomeRequest.isFetching,
+  //   workspaceHomeRequest.isSuccess,
+  // ]);
 
   // useMemo(() => {
   //   const workspacesInCookie = JSON.parse(
@@ -172,8 +172,6 @@ const useWorkspace = () => {
     hasPermission,
     visibleBalance,
     setVisibleBalance,
-    hasSkeleton,
-    hasSkeletonBalance,
     pendingSignerTransactions,
     goWorkspace,
   };

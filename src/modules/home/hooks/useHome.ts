@@ -12,6 +12,7 @@ import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
   const auth = useAuth();
+
   const navigate = useNavigate();
   const { account } = useAuthStore();
   const vaultsPerPage = 8;
@@ -57,6 +58,7 @@ const useHome = () => {
 
   const goHome = () => {
     invalidateQueries(HomeQueryKey.FULL_DATA());
+    auth.handlers.authenticateWorkspaceSingle();
     navigate(Pages.home());
   };
 

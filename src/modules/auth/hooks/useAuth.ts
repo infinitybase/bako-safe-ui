@@ -60,11 +60,16 @@ const useAuth = () => {
     });
   };
 
+  const authenticateWorkspaceSingle = () => {
+    store.workspaceAuthenticationSingle();
+  };
+
   return {
     handlers: {
       authenticate,
       authenticateWorkspace,
       setInvalidAccount: store.setInvalidAccount,
+      authenticateWorkspaceSingle,
     },
     isSingleWorkspace: store.workspaces.single === store.workspaces.single,
     userId: store.userId,
