@@ -117,14 +117,14 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'pending-transactions',
   ],
-  GET_BALANCE: () => (workspaceId: string) => [
+  GET_BALANCE: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
     workspaceId,
-    'baance',
+    'balance',
   ],
-  FULL_DATA: () => [
+  FULL_DATA: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    WorkspacesQueryKey.GET_BALANCE(),
-    WorkspacesQueryKey.PENDING_TRANSACTIONS(),
+    WorkspacesQueryKey.GET_BALANCE(workspaceId),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
   ],
 };
