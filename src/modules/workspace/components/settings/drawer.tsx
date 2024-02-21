@@ -165,7 +165,7 @@ const WorkspaceSettingsDrawer = ({
               onClick={() => {
                 navigate(
                   Pages.membersWorkspace({
-                    workspaceId: request.workspace?.id,
+                    workspaceId: request.workspace?.id ?? '',
                   }),
                 );
               }}

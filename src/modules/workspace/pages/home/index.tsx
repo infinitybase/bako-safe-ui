@@ -75,6 +75,7 @@ const WorkspacePage = () => {
 
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
+  const workspaceId = currentWorkspace?.id ?? '';
 
   // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 
@@ -120,9 +121,9 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(currentWorkspace.id)}
+                onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace.name}
+                {currentWorkspace?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -151,11 +152,7 @@ const WorkspacePage = () => {
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
-                onClick={() =>
-                  navigate(
-                    Pages.createVault({ workspaceId: currentWorkspace.id }),
-                  )
-                }
+                onClick={() => navigate(Pages.createVault({ workspaceId }))}
               >
                 Create vault
               </Button>
@@ -177,7 +174,7 @@ const WorkspacePage = () => {
               <HStack w="full" spacing={6}>
                 <Avatar
                   variant="roundedSquare"
-                  name={currentWorkspace.name}
+                  name={currentWorkspace?.name}
                   bg="grey.900"
                   color="white"
                   size={'lg'}
@@ -185,7 +182,7 @@ const WorkspacePage = () => {
                 />
                 <Box maxW="40%">
                   <Heading mb={1} variant="title-xl" isTruncated>
-                    {currentWorkspace.name}
+                    {currentWorkspace?.name}
                   </Heading>
                   <Box>
                     <Text variant="description" noOfLines={2}>
@@ -293,9 +290,7 @@ const WorkspacePage = () => {
           <CustomSkeleton isLoaded={!hasSkeleton}>
             <ActionCard.Container
               w="full"
-              onClick={() =>
-                navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
-              }
+              onClick={() => navigate(Pages.userVaults({ workspaceId }))}
             >
               <ActionCard.Icon icon={VaultIcon} />
               <Box w="full">
@@ -312,7 +307,7 @@ const WorkspacePage = () => {
               onClick={() =>
                 navigate(
                   Pages.userTransactions({
-                    workspaceId: currentWorkspace.id,
+                    workspaceId,
                   }),
                 )
               }
@@ -332,7 +327,7 @@ const WorkspacePage = () => {
               onClick={() =>
                 navigate(
                   Pages.addressBook({
-                    workspaceId: currentWorkspace.id,
+                    workspaceId,
                   }),
                 )
               }
@@ -385,7 +380,7 @@ const WorkspacePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.userVaults({
-                                workspaceId: currentWorkspace.id,
+                                workspaceId,
                               }),
                             )
                           }
@@ -400,7 +395,7 @@ const WorkspacePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.detailsVault({
-                                workspaceId: currentWorkspace.id,
+                                workspaceId,
                                 vaultId: id,
                               }),
                             )
@@ -441,7 +436,7 @@ const WorkspacePage = () => {
                 onClick={() =>
                   navigate(
                     Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
+                      workspaceId,
                     }),
                   )
                 }
