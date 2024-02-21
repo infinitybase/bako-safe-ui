@@ -40,7 +40,7 @@ const HomePage = () => {
     },
     transactionsRequest: { transactions },
     pendingSignerTransactions,
-    hasSkeleton,
+    homeRequest,
   } = useHome();
 
   const {
@@ -72,7 +72,7 @@ const HomePage = () => {
           </Button>
         </Box>
       </HStack>
-      <CustomSkeleton isLoaded={!hasSkeleton}>
+      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
         <HStack spacing={6} w="full" h="full">
           <ActionCard.Container
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -146,7 +146,7 @@ const HomePage = () => {
             const hasMore = extraCount > 0;
 
             return (
-              <CustomSkeleton isLoaded={!hasSkeleton} key={id}>
+              <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
                 <GridItem>
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
@@ -192,7 +192,7 @@ const HomePage = () => {
               </Text>
             </HStack>
           )}
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!homeRequest.isLoading}>
             <EmptyTransaction />
           </CustomSkeleton>
         </VStack>
@@ -220,7 +220,7 @@ const HomePage = () => {
             </Link>
           </HStack>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {transactions?.map((transaction) => {
                 const status = transactionStatus({ ...transaction, account });
                 const isSigner = !!transaction.predicate?.members?.find(

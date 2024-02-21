@@ -1,5 +1,4 @@
-import { useTimeout } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
@@ -21,40 +20,6 @@ const useHome = () => {
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
-
-  const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
-
-  useTimeout(() => {
-    setHasSkeleton(false);
-    setFirstRender(false);
-  }, 5000);
-
-  useMemo(() => {
-    const singleWorkspaceId = auth.workspaces.single;
-    if (
-      firstRender &&
-      homeDataRequest.data?.workspace.id !== singleWorkspaceId
-    ) {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
-
-    if (
-      !firstRender &&
-      homeDataRequest.data?.workspace.id === singleWorkspaceId
-    ) {
-      setHasSkeleton(false);
-      setFirstRender(false);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    homeDataRequest.isLoading,
-    homeDataRequest.isFetching,
-    homeDataRequest.isSuccess,
-    homeDataRequest.data,
-  ]);
 
   const goHome = () => {
     invalidateQueries(HomeQueryKey.FULL_DATA());
@@ -87,7 +52,6 @@ const useHome = () => {
     homeRequest: homeDataRequest,
     navigate,
     goHome,
-    hasSkeleton,
     pendingSignerTransactions,
   };
 };
