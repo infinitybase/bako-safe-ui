@@ -1,12 +1,12 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { CookieName } from '@/config/cookies';
+//import { CookieName } from '@/config/cookies';
 import { useAuth } from '@/modules/auth/hooks';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core/models/workspace';
 
 import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
 
-const { WORKSPACE, PERMISSIONS, USER_ID } = CookieName;
+//const { WORKSPACE, PERMISSIONS, USER_ID } = CookieName;
 
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,

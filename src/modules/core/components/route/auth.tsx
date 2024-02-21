@@ -1,9 +1,9 @@
 import React from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
-import { useWorkspace } from '@/modules/workspace/hooks';
+//import { useWorkspace } from '@/modules/workspace/hooks';
 
 export interface AuthRouteProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ export interface AuthRouteProps {
 const AuthRoute = (props: AuthRouteProps) => {
   const { account } = useAuthStore();
   const { search, pathname } = useLocation();
-  const { workspaceId } = useParams();
-  const { handleWorkspaceSelection, singleWorkspace } = useWorkspace();
+  // const { workspaceId } = useParams();
+  // const { handleWorkspaceSelection } = useWorkspace();
 
   if (!account) {
     return (
@@ -24,9 +24,9 @@ const AuthRoute = (props: AuthRouteProps) => {
     );
   }
 
-  if (!workspaceId) {
-    handleWorkspaceSelection(singleWorkspace);
-  }
+  // if (!workspaceId) {
+  //   handleWorkspaceSelection(singleWorkspace);
+  // }
 
   return props.children;
 };

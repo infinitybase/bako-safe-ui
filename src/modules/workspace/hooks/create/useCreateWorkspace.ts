@@ -32,7 +32,7 @@ const useCreateWorkspace = () => {
   const handleClose = () => navigate(Pages.home());
 
   const handleGoToWorkspace = () => {
-    selectWorkspace(request.data!, {
+    selectWorkspace(request?.data.id!, {
       onSelect: (workspace) => {
         goWorkspace(workspace.id);
       },
