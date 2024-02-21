@@ -83,7 +83,6 @@ const WorkspacePage = () => {
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
-        workspace={currentWorkspace}
       />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
@@ -268,7 +267,7 @@ const WorkspacePage = () => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      {/*todo: 
+                      {/*todo:
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}

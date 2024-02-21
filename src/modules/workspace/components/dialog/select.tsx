@@ -24,7 +24,7 @@ const SelectWorkspaceDialog = ({
   const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
 
-  const loggedWorkspace = workspaces.workspace;
+  const loggedWorkspace = workspaces.current;
 
   return (
     <Dialog.Modal

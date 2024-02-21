@@ -48,11 +48,11 @@ const useWorkspace = () => {
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === auth.workspaces.workspace) {
+    if (selectedWorkspace.id === auth.workspaces.current) {
       return;
     }
 
-    selectWorkspace(selectedWorkspace, {
+    selectWorkspace(selectedWorkspace.id, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
         workspaceHomeRequest.refetch();

@@ -28,7 +28,7 @@ const useGetWorkspaceRequest = (
 const useGetCurrentWorkspace = () => {
   const { workspaces } = useAuth();
 
-  return useGetWorkspaceRequest(workspaces.workspace);
+  return useGetWorkspaceRequest(workspaces.current);
 };
 
 const useGetSingleWorkspace = () => {

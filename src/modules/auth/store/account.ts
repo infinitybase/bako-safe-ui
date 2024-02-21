@@ -19,7 +19,7 @@ type State = {
   avatar: string;
   account: string;
   userId: string;
-  workspaces: { single: string; workspace: string };
+  workspaces: { single: string; current: string };
   invalidAccount: boolean;
   formattedAccount: string;
   permissions?: IPermissions;
@@ -38,7 +38,7 @@ const useAuthStore = create<Store>((set) => ({
   userId: CookiesConfig.getCookie(CookieName.USER_ID)!,
   workspaces: {
     single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
-    workspace: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+    current: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
   },
   formattedAccount: AddressUtils.format(
     CookiesConfig.getCookie(CookieName.ADDRESS)!,
@@ -51,12 +51,12 @@ const useAuthStore = create<Store>((set) => ({
       userId: params.userId,
       avatar: params.avatar,
       account: params.account,
-      workspaces: { single: params.workspace, workspace: params.workspace },
+      workspaces: { single: params.workspace, current: params.workspace },
     }),
   workspaceAuthentication: (params) =>
     set((store) => ({
       permissions: params.permissions,
-      workspaces: { ...store.workspaces, workspace: params.workspace },
+      workspaces: { ...store.workspaces, current: params.workspace },
     })),
 }));
 

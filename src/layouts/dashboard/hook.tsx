@@ -2,7 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth/store';
+import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
 import {
   useTransactionListRequest,
@@ -12,11 +12,11 @@ import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
 const useSidebar = () => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
-  const { account } = useAuthStore();
   const { currentWorkspace } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
@@ -28,7 +28,7 @@ const useSidebar = () => {
 
   useMemo(() => {
     pendingSignerTransactions.refetch();
-  }, [account, params.vaultId, transactions]);
+  }, [auth.account, params.vaultId, transactions]);
 
   const checkPathname = (path: string) => location.pathname === path;
 

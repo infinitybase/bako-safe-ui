@@ -33,8 +33,8 @@ const useSelectWorkspace = () => {
   ) => {
     mutate(
       {
-        workspace: workspace,
         user: auth.userId,
+        workspace: workspace,
       },
       {
         onSuccess: ({ workspace }) => {
