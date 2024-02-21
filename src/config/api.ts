@@ -60,7 +60,7 @@ api.interceptors.response.use(
     const unauthorizedError = error.response?.status === 401;
 
     if (unauthorizedError) {
-      useAuthStore.getState().setAccount('');
+      useAuthStore.getState().logout();
       CookiesConfig.removeCookies([
         ACCESS_TOKEN,
         ADDRESS,

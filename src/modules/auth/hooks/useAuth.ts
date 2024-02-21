@@ -64,8 +64,20 @@ const useAuth = () => {
     store.workspaceAuthenticationSingle();
   };
 
+  const logout = () => {
+    CookiesConfig.removeCookies([
+      CookieName.ADDRESS,
+      CookieName.AVATAR,
+      CookieName.USER_ID,
+      CookieName.ACCESS_TOKEN,
+      CookieName.SINGLE_WORKSPACE,
+    ]);
+    store.logout();
+  };
+
   return {
     handlers: {
+      logout,
       authenticate,
       authenticateWorkspace,
       setInvalidAccount: store.setInvalidAccount,

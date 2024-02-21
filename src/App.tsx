@@ -1,25 +1,20 @@
 import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules';
 import { AppRoutes } from '@/routes';
 
-import { useAuthStore } from './modules/auth/store';
 import { invalidateQueries } from './modules/core/utils';
 import { useTransactionSend } from './modules/transactions';
 
 function App() {
   const { fuel } = useFuel();
-  const { setAccount, account } = useAuthStore();
+  const auth = useAuth();
   const transactionSend = useTransactionSend();
 
   useEffect(() => {
     function clearAll() {
-      setAccount('');
-      CookiesConfig.removeCookies([
-        CookieName.ACCESS_TOKEN,
-        CookieName.ADDRESS,
-      ]);
+      auth.handlers.logout();
       invalidateQueries();
       transactionSend.clearAll();
     }
@@ -30,7 +25,7 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
-      if (currentAccount === account) return;
+      if (currentAccount === auth.account) return;
       clearAll();
     }
 
@@ -41,7 +36,7 @@ function App() {
       fuel?.off(fuel?.events.connection, onConnection);
       fuel?.off(fuel?.events.currentAccount, onCurrentAccount);
     };
-  }, [fuel, setAccount]);
+  }, [fuel, auth.account]);
 
   return <AppRoutes />;
 }

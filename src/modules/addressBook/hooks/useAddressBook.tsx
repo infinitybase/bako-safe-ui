@@ -49,7 +49,7 @@ const useAddressBook = () => {
   const listContactsRequest = useListContactsRequest();
   const contactsPaginatedRequest = useListPaginatedContactsRequest({
     q: search,
-    includePersonal: !currentWorkspace.single,
+    includePersonal: !currentWorkspace?.single,
   });
 
   // MUTATIONS
