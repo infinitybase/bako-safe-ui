@@ -135,7 +135,7 @@ const useWorkspace = () => {
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     const permissions = auth.userPermission;
 
-    if (!permissions) return;
+    if (!permissions) return false;
 
     const isValid =
       requiredRoles.filter(

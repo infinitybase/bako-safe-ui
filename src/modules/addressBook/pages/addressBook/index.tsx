@@ -53,6 +53,7 @@ const AddressBookPage = () => {
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
+  const workspaceId = currentWorkspace?.id ?? '';
 
   return (
     <>
@@ -90,9 +91,7 @@ const AddressBookPage = () => {
               bg="dark.100"
               color="grey.200"
               onClick={() =>
-                currentWorkspace.single
-                  ? goHome()
-                  : goWorkspace(currentWorkspace.id)
+                currentWorkspace?.single ? goHome() : goWorkspace(workspaceId)
               }
             >
               Back home
@@ -111,15 +110,17 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={currentWorkspace.single}>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goWorkspace(currentWorkspace.id)}
-                >
-                  {currentWorkspace.name}
-                </BreadcrumbLink>
+              <BreadcrumbItem hidden={currentWorkspace?.single}>
+                {currentWorkspace && (
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goWorkspace(currentWorkspace.id)}
+                  >
+                    {currentWorkspace.name}
+                  </BreadcrumbLink>
+                )}
               </BreadcrumbItem>
 
               <BreadcrumbItem>
@@ -154,7 +155,7 @@ const AddressBookPage = () => {
             onClick={() =>
               navigate(
                 Pages.userVaults({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               )
             }
@@ -171,7 +172,7 @@ const AddressBookPage = () => {
             onClick={() => {
               navigate(
                 Pages.userTransactions({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               );
             }}
@@ -188,7 +189,7 @@ const AddressBookPage = () => {
             onClick={() =>
               navigate(
                 Pages.addressBook({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               )
             }
