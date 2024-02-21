@@ -42,13 +42,13 @@ const useSidebar = () => {
     settings: checkPathname(
       Pages.vaultSettings({
         vaultId: params?.vaultId ?? '',
-        workspaceId: currentWorkspace.id,
+        workspaceId: currentWorkspace?.id ?? '',
       }),
     ),
     transactions: checkPathname(
       Pages.transactions({
         vaultId: params?.vaultId ?? '',
-        workspaceId: currentWorkspace.id,
+        workspaceId: currentWorkspace?.id ?? '',
       }),
     ),
   };

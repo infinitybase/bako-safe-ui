@@ -1,7 +1,4 @@
 import { api } from '@/config';
-import { CookieName, CookiesConfig } from '@/config/cookies';
-
-const { SINGLE_CONTACTS, WORKSPACE } = CookieName;
 
 import {
   CreateContactPayload,
@@ -50,11 +47,12 @@ export class AddressBookService {
   static async list() {
     const { data } = await api.get<ListContactsResponse>('/address-book');
 
-    if (JSON.parse(CookiesConfig.getCookie(WORKSPACE)!)?.single) {
-      CookiesConfig.setCookies([
-        { name: SINGLE_CONTACTS, value: JSON.stringify(data) },
-      ]);
-    }
+    // TODO: review this
+    // if (JSON.parse(CookiesConfig.getCookie(WORKSPACE)!)?.single) {
+    //   CookiesConfig.setCookies([
+    //     { name: SINGLE_CONTACTS, value: JSON.stringify(data) },
+    //   ]);
+    // }
 
     return data;
   }

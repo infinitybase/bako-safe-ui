@@ -142,8 +142,10 @@ const UserBox = () => {
 const WorkspaceBox = ({
   currentWorkspace,
 }: {
-  currentWorkspace: Workspace;
+  currentWorkspace?: Workspace;
 }) => {
+  if (!currentWorkspace) return null;
+
   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
   return (
