@@ -44,7 +44,6 @@ const useWorkspace = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   const goWorkspace = (workspaceId: string) => {
-    // invalidateQueries(WorkspacesQueryKey.FULL_DATA());
     navigate(Pages.workspace({ workspaceId }));
   };
 

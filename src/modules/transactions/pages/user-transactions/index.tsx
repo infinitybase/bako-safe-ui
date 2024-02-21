@@ -62,9 +62,9 @@ const UserTransactionsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              currentWorkspace.single
+              currentWorkspace?.single
                 ? goHome()
-                : goWorkspace(currentWorkspace.id)
+                : goWorkspace(currentWorkspace?.id ?? '')
             }
           >
             Back home
@@ -83,15 +83,15 @@ const UserTransactionsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!currentWorkspace.single && (
+            {!currentWorkspace?.single && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(currentWorkspace.id)}
+                  onClick={() => goWorkspace(currentWorkspace!.id)}
                 >
-                  {currentWorkspace.name}
+                  {currentWorkspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -128,7 +128,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: currentWorkspace.id,
+                workspaceId: currentWorkspace?.id ?? '',
               }),
             )
           }
@@ -156,7 +156,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: currentWorkspace.id,
+                workspaceId: currentWorkspace?.id ?? '',
               }),
             )
           }
