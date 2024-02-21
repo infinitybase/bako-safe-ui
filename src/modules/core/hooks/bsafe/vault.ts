@@ -54,6 +54,7 @@ const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
       return Vault.create({
         name: params.name,
         description: params.description!,
+        // @ts-ignore
         provider: provider,
         configurable: {
           chainId: provider.getChainId(),
