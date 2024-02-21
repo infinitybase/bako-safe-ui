@@ -1,7 +1,6 @@
+import { useFuel } from '@fuels/react';
 import { Vault } from 'bsafe';
 import { Provider } from 'fuels';
-
-import { useFuel } from '@/modules/core/hooks';
 
 import { useBsafeMutation, useBsafeQuery } from './utils';
 
@@ -40,7 +39,7 @@ interface UseCreateBsafeVaultPayload {
 }
 
 const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const { mutate, ...mutation } = useBsafeMutation<
     Vault,
@@ -49,7 +48,7 @@ const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
-      const netowrk = await fuel.network();
+      const netowrk = await fuel.currentNetwork();
       const provider = await Provider.create(netowrk.url);
 
       return Vault.create({

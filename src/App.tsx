@@ -1,15 +1,15 @@
+import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AppRoutes } from '@/routes';
 
 import { useFuelAccount } from './modules/auth/store';
-import { useFuel } from './modules/core/hooks';
 import { invalidateQueries } from './modules/core/utils';
 import { useTransactionSend } from './modules/transactions';
 
 function App() {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
   const { setAccount, account } = useFuelAccount();
   const transactionSend = useTransactionSend();
 

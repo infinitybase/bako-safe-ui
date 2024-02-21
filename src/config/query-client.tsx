@@ -1,8 +1,8 @@
+import { useFuel } from '@fuels/react';
 import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { useFuel } from '@/modules/core/hooks';
 import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
 interface BsafeQueryClientProviderProps {
@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
 });
 
 const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   function onCurrentAccount() {
     queryClient.invalidateQueries([FuelQueryKeys.CURRENT_ACCOUNT]);
@@ -44,13 +44,13 @@ const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
   }
 
   useEffect(() => {
-    fuel?.on(fuel?.events.network, onNetwork);
+    fuel?.on(fuel?.events.networks, onNetwork);
     fuel?.on(fuel?.events.accounts, onAccount);
     fuel?.on(fuel?.events.connection, onConnection);
     fuel?.on(fuel?.events.currentAccount, onCurrentAccount);
 
     return () => {
-      fuel?.on(fuel?.events.network, onNetwork);
+      fuel?.on(fuel?.events.networks, onNetwork);
       fuel?.on(fuel?.events.accounts, onAccount);
       fuel?.on(fuel?.events.connection, onConnection);
       fuel?.on(fuel?.events.currentAccount, onCurrentAccount);

@@ -18,18 +18,18 @@ BSafe.setup({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BsafeQueryClientProvider>
-      <ChakraProvider theme={defaultTheme}>
-        <TransactionSendProvider>
-          <FuelProvider
-            fuelConfig={{
-              connectors: defaultConnectors(),
-            }}
-          >
+    <ChakraProvider theme={defaultTheme}>
+      <FuelProvider
+        fuelConfig={{
+          connectors: defaultConnectors(),
+        }}
+      >
+        <BsafeQueryClientProvider>
+          <TransactionSendProvider>
             <App />
-          </FuelProvider>
-        </TransactionSendProvider>
-      </ChakraProvider>
-    </BsafeQueryClientProvider>
+          </TransactionSendProvider>
+        </BsafeQueryClientProvider>
+      </FuelProvider>
+    </ChakraProvider>
   </React.StrictMode>,
 );

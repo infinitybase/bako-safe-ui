@@ -24,7 +24,8 @@ const useHome = () => {
   const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
 
   useTimeout(() => {
-    setHasSkeleton(false), setFirstRender(false);
+    setHasSkeleton(false);
+    setFirstRender(false);
   }, 5000);
 
   useMemo(() => {

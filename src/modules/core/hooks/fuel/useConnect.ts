@@ -1,7 +1,7 @@
+import { useFuel } from '@fuels/react';
 import { useMutation } from 'react-query';
 
 import { FuelQueryKeys } from './types';
-import { useFuel } from './useFuel';
 
 export interface UseConnectParams {
   onConnect?: () => void;
@@ -9,7 +9,7 @@ export interface UseConnectParams {
 }
 
 const useConnect = (params?: UseConnectParams) => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const mutation = useMutation(
     FuelQueryKeys.CONNECT,
@@ -30,7 +30,7 @@ const useConnect = (params?: UseConnectParams) => {
 };
 
 const useDisconnect = () => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const mutation = useMutation(FuelQueryKeys.DISCONNECT, () => {
     return fuel?.disconnect();
