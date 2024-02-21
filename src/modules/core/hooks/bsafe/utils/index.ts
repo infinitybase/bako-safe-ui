@@ -15,7 +15,7 @@ const removeCredentialsWhenUnathorized = (error: any) => {
   const unauthorizedError = error.response?.status === 401;
 
   if (unauthorizedError) {
-    useAuthStore.getState().setAccount('');
+    useAuthStore.getState().logout();
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };

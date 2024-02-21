@@ -41,6 +41,9 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const { setSelectedTransaction } = useTransactionState();
   const { unreadCounter, setUnreadCounter } = useNotificationsStore();
   const { currentWorkspace } = useWorkspace();
+
+  const workspaceId = currentWorkspace?.id ?? '';
+
   const onCloseDrawer = async () => {
     const hasUnread = !!unreadCounter;
 
@@ -65,8 +68,8 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       setSelectedTransaction({ name: transactionName, id: transactionId });
 
     const page = isTransaction
-      ? Pages.transactions({ vaultId, workspaceId: currentWorkspace.id })
-      : Pages.detailsVault({ vaultId, workspaceId: currentWorkspace.id });
+      ? Pages.transactions({ vaultId, workspaceId })
+      : Pages.detailsVault({ vaultId, workspaceId });
 
     navigate(page);
   };

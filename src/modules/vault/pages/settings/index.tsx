@@ -60,7 +60,7 @@ const VaultSettingsPage = () => {
                 navigate(
                   Pages.detailsVault({
                     vaultId: vault.id!,
-                    workspaceId: currentWorkspace?.id,
+                    workspaceId: currentWorkspace?.id ?? '',
                   }),
                 )
               }

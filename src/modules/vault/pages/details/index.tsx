@@ -46,10 +46,11 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
+  const { currentWorkspace, goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
 
+  const workspaceId = currentWorkspace?.id ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
@@ -71,15 +72,15 @@ const VaultDetailsPage = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          {!currentWorkspace.single && (
+          {!currentWorkspace?.single && (
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(currentWorkspace.id)}
+                onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace.name}
+                {currentWorkspace?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           )}
@@ -176,7 +177,10 @@ const VaultDetailsPage = () => {
             );
 
             return (
-              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
+              <CustomSkeleton
+                key={transaction.id}
+                isLoaded={!loadingVaultTransactions}
+              >
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={

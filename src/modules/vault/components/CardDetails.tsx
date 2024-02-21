@@ -39,6 +39,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
+  const workspaceId = currentWorkspace?.id ?? '';
   const reqPerm = [
     PermissionRoles.ADMIN,
     PermissionRoles.OWNER,
@@ -176,7 +177,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       navigate(
                         Pages.createTransaction({
                           vaultId: vault.id!,
-                          workspaceId: currentWorkspace.id,
+                          workspaceId,
                         }),
                       )
                     }

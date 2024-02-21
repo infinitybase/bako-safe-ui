@@ -17,7 +17,7 @@ export class AddressBookUtils {
 
     if (workspaceContact) return workspaceContact.nickname;
 
-    return [];
+    return undefined;
     // const singleCookie = CookiesConfig.getCookie(SINGLE_CONTACTS);
     // const singleAddressBook: AddressBook[] = JSON.parse(singleCookie ?? '[]');
     //

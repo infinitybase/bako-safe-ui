@@ -34,6 +34,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const { biggerAsset } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
 
+  const workspaceId = currentWorkspace?.id ?? '';
+
   const reqPerm = [
     PermissionRoles.ADMIN,
     PermissionRoles.OWNER,
@@ -155,7 +157,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                           navigate(
                             Pages.createTransaction({
                               vaultId: vault.id!,
-                              workspaceId: currentWorkspace?.id,
+                              workspaceId,
                             }),
                           )
                         }

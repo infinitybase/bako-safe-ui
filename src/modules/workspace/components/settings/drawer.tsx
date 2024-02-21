@@ -184,7 +184,7 @@ const WorkspaceSettingsDrawer = ({
                   onEdit={(memberId) =>
                     navigate(
                       Pages.updateMemberWorkspace({
-                        workspaceId: workspace.id,
+                        workspaceId: request.workspace!.id,
                         memberId,
                       }),
                     )

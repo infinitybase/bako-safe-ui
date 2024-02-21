@@ -7,7 +7,6 @@ import { useCreateBsafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
-import { useWorkspace } from '@/modules/workspace';
 
 import { useCreateVaultForm } from './useCreateVaultForm';
 
@@ -30,7 +29,7 @@ const useCreateVault = () => {
   const [vaultId, setVaultId] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
-  const { currentWorkspace } = useWorkspace();
+
   const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
       setVaultId(data.BSAFEVaultId);
@@ -84,7 +83,7 @@ const useCreateVault = () => {
       navigate(
         Pages.detailsVault({
           vaultId: bsafeVault.data.BSAFEVaultId,
-          workspaceId: currentWorkspace.id,
+          workspaceId: params.workspaceId!,
         }),
       );
     }
