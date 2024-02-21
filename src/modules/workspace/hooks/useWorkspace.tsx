@@ -37,6 +37,9 @@ const useWorkspace = () => {
   const worksapceBalance = useGetWorkspaceBalanceRequest();
   const pendingSignerTransactions = useTransactionsSignaturePending();
   const workspaceRequest = useGetCurrentWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
 
   const { selectWorkspace } = useSelectWorkspace();
 
@@ -48,7 +51,7 @@ const useWorkspace = () => {
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === auth.workspaces.current) {
+    if (selectedWorkspace.id === current) {
       return;
     }
 

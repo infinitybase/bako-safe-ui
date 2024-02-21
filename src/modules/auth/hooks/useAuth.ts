@@ -66,6 +66,7 @@ const useAuth = () => {
       authenticateWorkspace,
       setInvalidAccount: store.setInvalidAccount,
     },
+    isSingleWorkspace: store.workspaces.single === store.workspaces.single,
     userId: store.userId,
     account: store.account,
     workspaces: store.workspaces,
