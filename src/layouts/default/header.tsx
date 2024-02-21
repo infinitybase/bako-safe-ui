@@ -1,4 +1,5 @@
 import { Box, Flex, Icon, Text } from '@chakra-ui/react';
+import { useFuel } from '@fuels/react';
 import { useState } from 'react';
 import {
   MdEdit as EditIcon,
@@ -9,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
 import { useFuelAccount } from '@/modules/auth/store';
-import { Pages, useFuel } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 
 import { TabEnum } from './types';
@@ -18,7 +19,7 @@ const Header = () => {
   const [tab, setTab] = useState<TabEnum>(TabEnum.VAULTS);
   const navigate = useNavigate();
 
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
   const { account } = useFuelAccount();
   const { goHome } = useHome();
 

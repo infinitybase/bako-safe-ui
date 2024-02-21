@@ -1,9 +1,6 @@
-import { useQuery } from 'react-query';
+import { useConnectors } from '@fuels/react';
 
 import { FueletIcon, FuelIcon } from '@/components';
-import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
-
-import { useFuel } from './useFuel';
 
 const DEFAULT_CONNECTORS = [
   {
@@ -16,34 +13,16 @@ const DEFAULT_CONNECTORS = [
   },
 ];
 
-const useListConnectors = () => {
-  const [fuel] = useFuel();
-
-  const query = useQuery(
-    FuelQueryKeys.LIST_CONNECTOR,
-    () => {
-      return fuel.listConnectors();
-    },
-    {
-      enabled: !!fuel,
-    },
-  );
-
-  return {
-    connectors: query.data,
-    ...query,
-  };
-};
-
 const useDefaultConnectors = () => {
-  const { connectors, ...query } = useListConnectors();
+  const { connectors, ...query } = useConnectors();
 
   const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
     const fuelConnector = connectors?.find((c) => c.name === connector.name);
+
     return {
       ...connector,
-      imageUrl: fuelConnector?.imageUrl,
-      isEnabled: !!fuelConnector,
+      imageUrl: undefined,
+      isEnabled: !!fuelConnector && fuelConnector.installed,
     };
   });
 
@@ -53,4 +32,4 @@ const useDefaultConnectors = () => {
   };
 };
 
-export { DEFAULT_CONNECTORS, useDefaultConnectors, useListConnectors };
+export { DEFAULT_CONNECTORS, useDefaultConnectors };

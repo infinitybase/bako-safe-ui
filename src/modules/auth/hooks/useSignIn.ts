@@ -1,15 +1,10 @@
 import { useDisclosure } from '@chakra-ui/react';
+import { useAccount, useFuel, useIsConnected } from '@fuels/react';
 import { Location, useNavigate } from 'react-router-dom';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useFuelAccount } from '@/modules/auth/store';
-import {
-  useConnect,
-  useFuel,
-  useGetCurrentAccount,
-  useIsConnected,
-} from '@/modules/core/hooks';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
 
@@ -37,11 +32,10 @@ const useSignIn = () => {
   const navigate = useNavigate();
   const connectorDrawer = useDisclosure();
 
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
   const { setAccount, setAvatar, setInvalidAccount } = useFuelAccount();
   const { isConnected } = useIsConnected();
-  const { connect, isConnecting } = useConnect();
-  const { getAccount, account } = useGetCurrentAccount();
+  const { account } = useAccount();
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
@@ -108,12 +102,12 @@ const useSignIn = () => {
 
   const goToApp = async () => {
     try {
-      const connected = await connect();
+      const connected = await fuel.connect();
 
       if (!connected) return;
 
-      const network = await fuel.network();
-      const account = await getAccount();
+      const network = await fuel.currentNetwork();
+      const account = await fuel.currentAccount();
 
       createUserRequest.mutate({
         address: account!,
@@ -125,12 +119,10 @@ const useSignIn = () => {
   };
 
   return {
-    connect,
     goToApp,
     signInRequest,
     isConnected,
-    isConnecting:
-      isConnecting || signInRequest.isLoading || createUserRequest.isLoading,
+    isConnecting: signInRequest.isLoading || createUserRequest.isLoading,
     createUserRequest,
     connectors: {
       items: connectors,

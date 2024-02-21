@@ -1,16 +1,15 @@
+import { useFuel } from '@fuels/react';
 import { useQuery } from 'react-query';
-
-import { useFuel } from '@/modules/core/hooks';
 
 import { FuelQueryKeys } from './types';
 
 const useNetwork = () => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const { data, ...query } = useQuery(
     FuelQueryKeys.NETWORK,
     async () => {
-      return fuel.network();
+      return fuel.currentNetwork();
     },
     {
       enabled: !!fuel,
