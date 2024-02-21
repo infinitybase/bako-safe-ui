@@ -26,13 +26,11 @@ import {
   PermissionRoles,
   Workspace,
 } from '@/modules/core';
-import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
+import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface WorkspaceSettingsDrawerProps
-  extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
-  workspace: Workspace;
-}
+  extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
 
 interface MemberCardProps {
   member: Member;
@@ -95,15 +93,11 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
 };
 
 const WorkspaceSettingsDrawer = ({
-  workspace,
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
 
-  // TODO: Remove this and use workspace received on props
-  const request = useGetWorkspaceRequest(workspace.id, {
-    enabled: drawerProps.isOpen,
-  });
+  const request = useGetCurrentWorkspace();
 
   return (
     <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
@@ -169,7 +163,11 @@ const WorkspaceSettingsDrawer = ({
               bgColor="dark.100"
               border="none"
               onClick={() => {
-                navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
+                navigate(
+                  Pages.membersWorkspace({
+                    workspaceId: request.workspace?.id,
+                  }),
+                );
               }}
             >
               Add new member

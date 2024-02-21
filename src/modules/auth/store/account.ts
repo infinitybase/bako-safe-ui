@@ -56,7 +56,7 @@ const useAuthStore = create<Store>((set) => ({
   workspaceAuthentication: (params) =>
     set((store) => ({
       permissions: params.permissions,
-      workspaces: { ...store.workspaces, workspace: params.workspace },
+      workspaces: { ...store.workspaces, current: params.workspace },
     })),
 }));
 
