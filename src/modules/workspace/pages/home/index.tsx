@@ -359,7 +359,7 @@ const WorkspacePage = () => {
           fontSize="xl"
           color="grey.200"
         >
-          {`Workspace's vaults`}
+          Recently used vaults
         </Text>
       </Box>
 
