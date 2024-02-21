@@ -234,8 +234,8 @@ const CreateMemberPage = () => {
                 {formState.primaryAction}
               </Dialog.PrimaryAction>
             </Dialog.Actions>
-            <Dialog.Actions maxW={500}>
-              {formState.tertiaryAction && (
+            {formState.tertiaryAction && (
+              <Dialog.Actions maxW={500}>
                 <Dialog.TertiaryAction
                   display="block"
                   onClick={formState.handleTertiaryAction}
@@ -245,8 +245,8 @@ const CreateMemberPage = () => {
                 >
                   {formState.tertiaryAction}
                 </Dialog.TertiaryAction>
-              )}
-            </Dialog.Actions>
+              </Dialog.Actions>
+            )}
           </>
         )}
       </Dialog.Body>
