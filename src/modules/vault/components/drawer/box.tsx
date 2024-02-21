@@ -15,7 +15,8 @@ interface VaultDrawerBoxProps extends CardProps {
 }
 
 const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, description, workspace, ...rest } = props;
+  const { isActive, name, description, workspace, isSingleWorkspace, ...rest } =
+    props;
 
   return (
     <Card
