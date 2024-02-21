@@ -6,6 +6,7 @@ import { AddressUtils, IPermissions } from '@/modules/core';
 type SingleAuthentication = {
   avatar: string;
   account: string;
+  userId: string;
   workspace: string;
 };
 
@@ -17,7 +18,8 @@ type WorkspaceAuthentication = {
 type State = {
   avatar: string;
   account: string;
-  workspaces: { single: string; workspace?: string };
+  userId: string;
+  workspaces: { single: string; workspace: string };
   invalidAccount: boolean;
   formattedAccount: string;
   permissions?: IPermissions;
@@ -33,7 +35,11 @@ type Store = State & Actions;
 
 const useAuthStore = create<Store>((set) => ({
   account: CookiesConfig.getCookie(CookieName.ADDRESS)!,
-  workspaces: { single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)! },
+  userId: CookiesConfig.getCookie(CookieName.USER_ID)!,
+  workspaces: {
+    single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+    workspace: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+  },
   formattedAccount: AddressUtils.format(
     CookiesConfig.getCookie(CookieName.ADDRESS)!,
   )!,
@@ -42,9 +48,10 @@ const useAuthStore = create<Store>((set) => ({
   setInvalidAccount: (invalidAccount) => set({ invalidAccount }),
   singleAuthentication: (params) =>
     set({
+      userId: params.userId,
       avatar: params.avatar,
       account: params.account,
-      workspaces: { single: params.workspace },
+      workspaces: { single: params.workspace, workspace: params.workspace },
     }),
   workspaceAuthentication: (params) =>
     set((store) => ({

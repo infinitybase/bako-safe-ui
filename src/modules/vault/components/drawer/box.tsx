@@ -3,7 +3,6 @@ import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Card, CardProps } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { Workspace } from '@/modules/core';
 
 interface VaultDrawerBoxProps extends CardProps {
@@ -12,14 +11,11 @@ interface VaultDrawerBoxProps extends CardProps {
   address: string;
   description?: string;
   workspace?: Workspace;
+  isSingleWorkspace?: boolean;
 }
 
 const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
   const { isActive, name, description, workspace, ...rest } = props;
-
-  const isSingleWorkspace =
-    workspace?.id ===
-    JSON.parse(CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!).id;
 
   return (
     <Card

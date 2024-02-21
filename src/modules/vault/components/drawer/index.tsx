@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
+import { useAuth } from '@/modules/auth/hooks';
 import { useHome } from '@/modules/home';
 
 import { VaultDrawerBox } from './box';
@@ -42,6 +43,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
       vaults: { recentVaults },
     },
   } = useHome();
+  const auth = useAuth();
 
   return (
     <Drawer
@@ -111,7 +113,9 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                     address={vault.predicateAddress}
                     isActive={vaultId === vault.id}
                     description={vault.description}
-                    workspace={vault?.workspace}
+                    isSingleWorkspace={
+                      vault.workspace.id === auth.workspaces.single
+                    }
                     onClick={() => drawer.onSelectVault(vault)}
                   />
                 </CustomSkeleton>

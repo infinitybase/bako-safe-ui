@@ -15,6 +15,8 @@ type AuthenticateParams = {
 const useAuth = () => {
   const store = useAuthStore();
 
+  const userPermission = store.permissions?.[store.userId];
+
   const authenticate = (params: AuthenticateParams) => {
     CookiesConfig.setCookies([
       {
@@ -39,6 +41,7 @@ const useAuth = () => {
       },
     ]);
     store.singleAuthentication({
+      userId: params.userId,
       avatar: params.avatar,
       account: params.account,
       workspace: params.singleWorkspace,
@@ -48,15 +51,16 @@ const useAuth = () => {
   const authenticateWorkspace = () => {};
 
   return {
-    account: store.account,
-    workspaces: store.workspaces,
-    permissions: store.permissions,
-    isInvalidAccount: store.invalidAccount,
     handlers: {
       authenticate,
       authenticateWorkspace,
       setInvalidAccount: store.setInvalidAccount,
     },
+    account: store.account,
+    workspaces: store.workspaces,
+    permissions: store.permissions,
+    isInvalidAccount: store.invalidAccount,
+    userPermission,
   };
 };
 

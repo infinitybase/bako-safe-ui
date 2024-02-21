@@ -94,26 +94,34 @@ export const WorkspacesQueryKey = {
   SELECT: () => [WorkspacesQueryKey.DEFAULT, 'select'],
   GET: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'by-id',
     workspaceId,
+    'by-id',
   ],
   ADD_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'add-member',
     workspaceId,
+    'add-member',
   ],
   UPDATE_PERMISSION: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'update-permission',
     workspaceId,
+    'update-permission',
   ],
   DELETE_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'delete-member',
     workspaceId,
+    'delete-member',
   ],
-  PENDING_TRANSACTIONS: () => 'pending-transactions',
-  GET_BALANCE: () => 'balance',
+  PENDING_TRANSACTIONS: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    workspaceId,
+    'pending-transactions',
+  ],
+  GET_BALANCE: () => (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    workspaceId,
+    'baance',
+  ],
   FULL_DATA: () => [
     WorkspacesQueryKey.DEFAULT,
     WorkspacesQueryKey.GET_BALANCE(),

@@ -2,8 +2,8 @@ import { useTimeout } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
+import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
 import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
@@ -11,6 +11,7 @@ import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/li
 import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const { account } = useAuthStore();
   const vaultsPerPage = 8;
@@ -29,12 +30,10 @@ const useHome = () => {
   }, 5000);
 
   useMemo(() => {
-    const workspacesInCookie = JSON.parse(
-      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
-    ).id;
+    const singleWorkspaceId = auth.workspaces.single;
     if (
       firstRender &&
-      homeDataRequest.data?.workspace.id !== workspacesInCookie
+      homeDataRequest.data?.workspace.id !== singleWorkspaceId
     ) {
       setHasSkeleton(true);
       setFirstRender(false);
@@ -42,7 +41,7 @@ const useHome = () => {
 
     if (
       !firstRender &&
-      homeDataRequest.data?.workspace.id === workspacesInCookie
+      homeDataRequest.data?.workspace.id === singleWorkspaceId
     ) {
       setHasSkeleton(false);
       setFirstRender(false);

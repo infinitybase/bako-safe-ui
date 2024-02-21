@@ -1,7 +1,7 @@
 import { Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules/auth/hooks';
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
@@ -21,11 +21,10 @@ const SelectWorkspaceDialog = ({
   userWorkspaces,
   onCreate,
 }: SelectWorkspaceDialogProps) => {
+  const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
 
-  const loggedWorkspace = JSON.parse(
-    CookiesConfig.getCookie(CookieName.WORKSPACE)!,
-  ).id;
+  const loggedWorkspace = workspaces.workspace;
 
   return (
     <Dialog.Modal
