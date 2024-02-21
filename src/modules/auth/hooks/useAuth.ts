@@ -12,6 +12,11 @@ type AuthenticateParams = {
   singleWorkspace: string;
 };
 
+type AuthenticateWorkspaceParams = {
+  permissions: IPermissions;
+  workspace: string;
+};
+
 const useAuth = () => {
   const store = useAuthStore();
 
@@ -48,7 +53,12 @@ const useAuth = () => {
     });
   };
 
-  const authenticateWorkspace = () => {};
+  const authenticateWorkspace = (params: AuthenticateWorkspaceParams) => {
+    store.workspaceAuthentication({
+      permissions: params.permissions,
+      workspace: params.workspace,
+    });
+  };
 
   return {
     handlers: {
@@ -56,6 +66,7 @@ const useAuth = () => {
       authenticateWorkspace,
       setInvalidAccount: store.setInvalidAccount,
     },
+    userId: store.userId,
     account: store.account,
     workspaces: store.workspaces,
     permissions: store.permissions,
