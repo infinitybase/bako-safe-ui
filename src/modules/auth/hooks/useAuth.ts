@@ -90,6 +90,7 @@ const useAuth = () => {
     permissions: store.permissions,
     isInvalidAccount: store.invalidAccount,
     userPermission,
+    avatar: store.avatar,
   };
 };
 
