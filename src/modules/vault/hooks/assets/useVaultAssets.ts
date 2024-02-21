@@ -1,3 +1,4 @@
+import { useProvider } from '@fuels/react';
 import { Vault } from 'bsafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -35,6 +36,7 @@ const balancesToAssets = async (predicate?: Vault) => {
 
 function useVaultAssets(predicate?: Vault) {
   const { setVisibleBalance, setBiggerAsset } = useVaultState();
+  const { provider } = useProvider();
 
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', predicate],
@@ -94,9 +96,15 @@ function useVaultAssets(predicate?: Vault) {
         return bn(0).format();
       }
 
+      /**
+       * TODO: calculate exact gas fee, get resource to spend in provider
+       * https://github.com/FuelLabs/fuels-wallet/blob/15358f509596d823f201a2bfd3721d4e26fc52cc/packages/app/src/systems/Transaction/services/transaction.tsx#L270-L289C15
+       * **/
+      const gasConfig = provider?.getGasConfig();
+
       return (
         bn(bn.parseUnits(balance.amount!))
-          .sub(bn(10000000))
+          .sub(gasConfig?.minGasPrice || bn.parseUnits('0.00001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
           .format({ precision: 5 })
       );
