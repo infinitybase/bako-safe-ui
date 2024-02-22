@@ -3,6 +3,7 @@ import {
   Box,
   Center,
   chakra,
+  CircularProgress,
   Flex,
   HStack,
   Icon,
@@ -146,10 +147,22 @@ const UserBox = () => {
 };
 
 const WorkspaceBox = ({
+  isLoading,
   currentWorkspace,
 }: {
   currentWorkspace?: Workspace;
+  isLoading?: boolean;
 }) => {
+  if (isLoading)
+    return (
+      <CircularProgress
+        trackColor="dark.100"
+        size={18}
+        isIndeterminate
+        color="brand.500"
+      />
+    );
+
   if (!currentWorkspace) return null;
 
   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
@@ -228,7 +241,7 @@ const Header = () => {
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
-        onSelect={handleWorkspaceSelection}
+        onSelect={handleWorkspaceSelection.handler}
         onCreate={handleGoToCreateWorkspace}
       />
 
@@ -248,7 +261,10 @@ const Header = () => {
           w={310}
           px={6}
         >
-          <WorkspaceBox currentWorkspace={currentWorkspace} />
+          <WorkspaceBox
+            currentWorkspace={currentWorkspace.workspace}
+            isLoading={currentWorkspace.isLoading}
+          />
         </TopBarItem>
 
         <TopBarItem

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { AddressUtils, IPermissions } from '@/modules/core';
+import { AddressUtils, IPermission } from '@/modules/core';
 
 type SingleAuthentication = {
   avatar: string;
@@ -12,7 +12,7 @@ type SingleAuthentication = {
 
 type WorkspaceAuthentication = {
   workspace: string;
-  permissions: IPermissions;
+  permissions: IPermission;
 };
 
 type State = {
@@ -22,7 +22,7 @@ type State = {
   workspaces: { single: string; current: string };
   invalidAccount: boolean;
   formattedAccount: string;
-  permissions?: IPermissions;
+  permissions?: IPermission;
 };
 
 type Actions = {
@@ -62,7 +62,7 @@ const useAuthStore = create<Store>((set) => ({
     })),
   workspaceAuthenticationSingle: () => {
     set((store) => ({
-      permissions: {},
+      permissions: undefined,
       workspaces: { ...store.workspaces, current: store.workspaces.single },
     }));
   },
@@ -71,7 +71,7 @@ const useAuthStore = create<Store>((set) => ({
       userId: '',
       avatar: '',
       account: '',
-      permissions: {},
+      permissions: undefined,
       workspaces: { single: '', current: '' },
     }),
 }));

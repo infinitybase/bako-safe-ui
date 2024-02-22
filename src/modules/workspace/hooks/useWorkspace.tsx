@@ -10,7 +10,7 @@ import { useNotification } from '@/modules/notification';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 
 import { Pages } from '../../core';
-import { PermissionRoles, Workspace } from '../../core/models';
+import { PermissionRoles } from '../../core/models';
 import { useGetCurrentWorkspace } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
@@ -41,7 +41,7 @@ const useWorkspace = () => {
     workspaces: { current },
   } = useAuth();
 
-  const { selectWorkspace } = useSelectWorkspace();
+  const { selectWorkspace, isSelecting } = useSelectWorkspace();
 
   const goWorkspace = (workspaceId: string) => {
     navigate(Pages.workspace({ workspaceId }));
@@ -49,12 +49,12 @@ const useWorkspace = () => {
 
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === current) {
+  const handleWorkspaceSelection = async (selectedWorkspace: string) => {
+    if (selectedWorkspace === current) {
       return;
     }
 
-    selectWorkspace(selectedWorkspace.id, {
+    selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
         workspaceHomeRequest.refetch();
@@ -133,7 +133,7 @@ const useWorkspace = () => {
   // ]);
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
-    const permissions = auth.userPermission;
+    const permissions = auth.permissions;
 
     if (!permissions) return false;
 
@@ -150,11 +150,17 @@ const useWorkspace = () => {
   // todo: add an variable to verify all requests are in progress, and on the UI show a loading spinner using skeleton
   return {
     account: auth.account,
-    currentWorkspace: workspaceRequest.workspace,
+    currentWorkspace: {
+      workspace: workspaceRequest.workspace,
+      isLoading: workspaceRequest.isLoading,
+    },
     currentPermissions: auth.permissions,
     userWorkspacesRequest,
     workspaceDialog,
-    handleWorkspaceSelection,
+    handleWorkspaceSelection: {
+      handler: handleWorkspaceSelection,
+      isSelecting,
+    },
     navigate,
     workspaceHomeRequest,
     workspaceId,

@@ -35,7 +35,7 @@ export interface Workspace {
   name: string;
   description?: string;
   avatar: string;
-  permissions: IPermissions;
+  permissions: IPermission;
   single: boolean;
   owner: Owner;
   members: Member[];

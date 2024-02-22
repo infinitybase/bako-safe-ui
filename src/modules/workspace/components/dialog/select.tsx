@@ -11,8 +11,9 @@ import { WorkspaceCard } from '../card';
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
   userWorkspaces: Workspace[];
-  onSelect: (workspace: Workspace) => void;
+  onSelect: (workspace: string) => void;
   onCreate: () => void;
+  isLoading?: boolean;
 }
 
 const SelectWorkspaceDialog = ({
@@ -73,7 +74,9 @@ const SelectWorkspaceDialog = ({
                   workspace={w}
                   counter={{ members: w.members.length, vaults: w.predicates }}
                   onClick={() => {
-                    w.id !== loggedWorkspace ? onSelect(w) : dialog.onClose();
+                    w.id !== loggedWorkspace
+                      ? onSelect(w.id)
+                      : dialog.onClose();
                   }}
                 />
               ))

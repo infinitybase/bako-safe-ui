@@ -1,5 +1,5 @@
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { IPermissions } from '@/modules/core';
+import { IPermission } from '@/modules/core';
 
 import { useAuthStore } from '../store';
 
@@ -8,19 +8,17 @@ type AuthenticateParams = {
   avatar: string;
   account: string;
   accessToken: string;
-  permissions: IPermissions;
+  permissions: IPermission;
   singleWorkspace: string;
 };
 
 type AuthenticateWorkspaceParams = {
-  permissions: IPermissions;
+  permissions: IPermission;
   workspace: string;
 };
 
 const useAuth = () => {
   const store = useAuthStore();
-
-  const userPermission = store.permissions?.[store.userId];
 
   const authenticate = (params: AuthenticateParams) => {
     CookiesConfig.setCookies([
@@ -83,14 +81,13 @@ const useAuth = () => {
       setInvalidAccount: store.setInvalidAccount,
       authenticateWorkspaceSingle,
     },
-    isSingleWorkspace: store.workspaces.single === store.workspaces.single,
+    avatar: store.avatar,
     userId: store.userId,
     account: store.account,
     workspaces: store.workspaces,
     permissions: store.permissions,
     isInvalidAccount: store.invalidAccount,
-    userPermission,
-    avatar: store.avatar,
+    isSingleWorkspace: store.workspaces.single === store.workspaces.single,
   };
 };
 

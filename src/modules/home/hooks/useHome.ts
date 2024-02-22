@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { queryClient } from '@/config';
+import { useSelectWorkspace } from '@/modules';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
-import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
+import { HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
@@ -20,11 +22,18 @@ const useHome = () => {
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
+  const { selectWorkspace } = useSelectWorkspace();
 
   const goHome = () => {
-    invalidateQueries(HomeQueryKey.FULL_DATA());
-    auth.handlers.authenticateWorkspaceSingle();
-    navigate(Pages.home());
+    selectWorkspace(auth.workspaces.single, {
+      onSelect: async () => {
+        auth.handlers.authenticateWorkspaceSingle();
+        await queryClient.invalidateQueries(
+          HomeQueryKey.FULL_DATA(auth.workspaces.single),
+        );
+        navigate(Pages.home());
+      },
+    });
   };
 
   useEffect(() => {
