@@ -42,6 +42,7 @@ const UserTransactionsPage = () => {
     pendingSignerTransactions,
     hasSkeleton,
   } = useTransactionList();
+
   const { hasPermission, goWorkspace } = useWorkspace();
   const {
     isSingleWorkspace,

@@ -223,7 +223,13 @@ const HomePage = () => {
             <Spacer />
             <Link
               color="brand.500"
-              onClick={() => navigate(Pages.userTransactions())}
+              onClick={() =>
+                navigate(
+                  Pages.userTransactions({
+                    workspaceId: single,
+                  }),
+                )
+              }
             >
               View all
             </Link>

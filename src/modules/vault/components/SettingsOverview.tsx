@@ -33,6 +33,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
+
   const { hasPermission } = useWorkspace();
   const {
     workspaces: { current },

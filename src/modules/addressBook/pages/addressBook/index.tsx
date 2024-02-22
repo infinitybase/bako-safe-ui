@@ -51,12 +51,14 @@ const AddressBookPage = () => {
     contactToEdit,
     hasSkeleton,
   } = useAddressBook();
+
   const { hasPermission, goWorkspace } = useWorkspace();
   const {
     workspaces: { current, single },
     isSingleWorkspace,
   } = useAuth();
   const { workspace } = useGetCurrentWorkspace();
+
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
