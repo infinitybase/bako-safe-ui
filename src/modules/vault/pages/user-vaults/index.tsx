@@ -35,7 +35,7 @@ const UserVaultsPage = () => {
     vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
 
-  const { VIEWER } = PermissionRoles;
+  const { VIEWER, MANAGER, OWNER, ADMIN } = PermissionRoles;
   const { hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
   const { selectWorkspace } = useSelectWorkspace();
@@ -188,7 +188,9 @@ const UserVaultsPage = () => {
 
       {!vaults?.length && (
         <CustomSkeleton isLoaded={!loadingVaults}>
-          <EmptyVault />
+          <EmptyVault
+            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
+          />
         </CustomSkeleton>
       )}
 

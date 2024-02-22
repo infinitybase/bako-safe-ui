@@ -17,12 +17,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { useAuth } from '@/modules/auth';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useWorkspace } from '@/modules/workspace';
-import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
+import { useGetCurrentWorkspace } from '@/modules/workspace/hooks/useGetWorkspaceRequest';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import {
   AddressBookEmptyState,

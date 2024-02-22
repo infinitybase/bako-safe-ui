@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -76,22 +76,25 @@ const useWorkspace = () => {
     });
   };
 
-  const hasPermission = (requiredRoles: PermissionRoles[]) => {
-    if (auth.isSingleWorkspace) return true;
+  const hasPermission = useCallback(
+    (requiredRoles: PermissionRoles[]) => {
+      if (auth.isSingleWorkspace) return true;
 
-    const permissions = auth.permissions;
+      const permissions = auth.permissions;
 
-    if (!permissions) return false;
+      if (!permissions) return false;
 
-    const isValid =
-      requiredRoles.filter(
-        (p) =>
-          (permissions[p] ?? []).includes('*') ||
-          (permissions[p] ?? []).includes(vaultId!),
-      ).length > 0;
+      const isValid =
+        requiredRoles.filter(
+          (p) =>
+            (permissions[p] ?? []).includes('*') ||
+            (permissions[p] ?? []).includes(vaultId!),
+        ).length > 0;
 
-    return isValid;
-  };
+      return isValid;
+    },
+    [auth.isSingleWorkspace, auth.permissions, vaultId],
+  );
 
   return {
     account: auth.account,

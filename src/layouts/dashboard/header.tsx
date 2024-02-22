@@ -28,11 +28,11 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { AddressUtils } from '@/modules';
 import { useAuth } from '@/modules/auth/hooks';
 import { useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';

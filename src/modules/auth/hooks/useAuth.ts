@@ -91,7 +91,7 @@ const useAuth = () => {
     workspaces: store.workspaces,
     permissions: store.permissions,
     isInvalidAccount: store.invalidAccount,
-    isSingleWorkspace: store.workspaces.single === store.workspaces.single,
+    isSingleWorkspace: store.workspaces.current === store.workspaces.single,
   };
 };
 
