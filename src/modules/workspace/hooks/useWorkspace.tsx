@@ -133,6 +133,8 @@ const useWorkspace = () => {
   // ]);
 
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
+    if (auth.isSingleWorkspace) return true;
+
     const permissions = auth.permissions;
 
     if (!permissions) return false;
