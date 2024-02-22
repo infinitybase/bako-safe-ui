@@ -52,7 +52,7 @@ const UserTransactionsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
-  const { VIEWER } = PermissionRoles;
+  const { VIEWER, OWNER, MANAGER } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6}>
@@ -118,7 +118,7 @@ const UserTransactionsPage = () => {
 
         <Box>
           <Button
-            isDisabled={hasPermission([VIEWER])}
+            isDisabled={!hasPermission([OWNER, MANAGER])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}

@@ -111,7 +111,7 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            isDisabled={hasPermission([VIEWER])}
+            isDisabled={!hasPermission([OWNER, MANAGER])}
             onClick={() => navigate(Pages.createVault())}
           >
             Create vault
