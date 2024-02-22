@@ -2,8 +2,17 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
 import { useMemo } from 'react';
 
+
+import { useFuelAccount } from '@/modules/auth';
+import {
+  HomeQueryKey,
+  invalidateQueries,
+  useWalletSignMessage,
+} from '@/modules/core';
+import { useHome } from '@/modules/home';
 import { useAuthStore } from '@/modules/auth';
 import { invalidateQueries, useWalletSignMessage } from '@/modules/core';
+
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
@@ -29,6 +38,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
   const { account } = useAuthStore();
   const transactionSendContext = useTransactionSend();
+  const { transactionsRequest } = useHome();
 
   useMemo(() => {
     const transaction = options.transaction;
@@ -44,19 +54,22 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     return options.transaction;
   }, [options.transaction]);
 
-  const refetetchTransactionList = () => {
+  const refetchTransactionList = () => {
     invalidateQueries([
       'bsafe',
-      // ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+      ...HomeQueryKey.FULL_DATA(),
     ]);
   };
 
   const request = useSignTransactionRequest({
-    onSuccess: () => refetetchTransactionList(),
+    onSuccess: () => {
+      refetchTransactionList();
+      transactionsRequest.refetch();
+    },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Inválid signature');
     },
