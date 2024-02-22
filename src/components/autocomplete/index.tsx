@@ -80,6 +80,7 @@ function AutoComplete({
     inputValue.length > 0 &&
     !isContact(inputValue) &&
     AddressUtils.isValid(inputValue) &&
+    options &&
     !options.map((o) => o.value).includes(inputValue);
 
   useEffect(() => {
