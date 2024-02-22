@@ -124,6 +124,9 @@ const TransactionFormField = ({
             <FormControl>
               <AmountInput
                 placeholder=" "
+                isDisabled={
+                  form.getValues(`transactions.${index}.asset`) === ''
+                }
                 value={field.value}
                 onChange={field.onChange}
                 isInvalid={fieldState.invalid}

@@ -505,7 +505,11 @@ const WorkspacePage = () => {
                         ...transaction,
                         account,
                       })}
-                      isSigner={false}
+                      isSigner={
+                        !!transaction.witnesses.find(
+                          (w) => w.account === account,
+                        )
+                      } // here
                     />
                   </TransactionCard.Container>
                 </CustomSkeleton>
