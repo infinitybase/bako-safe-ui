@@ -1,21 +1,15 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
-import { useGetCurrentAccount } from '@/modules/core';
 
 import { useSignIn } from '../hooks';
 
 const SigninPage = () => {
   const { isConnecting, connectors, redirectToWalletLink, auth } = useSignIn();
-  const { getAccount } = useGetCurrentAccount();
   const { errorToast } = useContactToast();
-
-  useEffect(() => {
-    getAccount();
-  }, []);
 
   useMemo(() => {
     auth.isInvalidAccount &&

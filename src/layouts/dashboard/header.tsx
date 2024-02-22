@@ -15,6 +15,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +30,7 @@ import {
 } from '@/components';
 import { AddressUtils } from '@/modules';
 import { useAuth } from '@/modules/auth/hooks';
-import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
+import { useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -59,15 +60,14 @@ const TopBarItem = chakra(SpacedBox, {
   },
 });
 
-/* TODO: create props with data user */
 const UserBox = () => {
   const auth = useAuth();
   const avatarImage = useLoadImage(auth.avatar);
-  const { discconnect } = useDisconnect();
+  const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
 
   const logout = async () => {
-    await discconnect();
+    await fuel.disconnect();
     auth.handlers.logout();
   };
 

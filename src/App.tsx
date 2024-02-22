@@ -13,7 +13,7 @@ function App() {
   const transactionSend = useTransactionSend();
 
   useEffect(() => {
-    function clearAll() {
+    async function clearAll() {
       auth.handlers.logout();
       invalidateQueries();
       transactionSend.clearAll();
@@ -26,6 +26,7 @@ function App() {
 
     function onCurrentAccount(currentAccount: string) {
       if (currentAccount === auth.account) return;
+      console.log('👉 User disconnected');
       clearAll();
     }
 
