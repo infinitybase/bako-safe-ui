@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
 import { useAuth } from '@/modules/auth/hooks';
@@ -15,6 +15,10 @@ const AuthRoute = (props: AuthRouteProps) => {
   const { workspaceId } = useParams();
   const { handleWorkspaceSelection } = useWorkspace();
 
+  useEffect(() => {
+    handleWorkspaceSelection.handler(workspaceId ?? auth.workspaces.single);
+  }, [workspaceId]);
+
   if (!auth.account) {
     return (
       <Navigate
@@ -23,10 +27,6 @@ const AuthRoute = (props: AuthRouteProps) => {
       />
     );
   }
-
-  // if (!workspaceId) {
-  //   handleWorkspaceSelection.handler(auth.workspaces.single);
-  // }
 
   if (handleWorkspaceSelection.isSelecting) {
     return null;

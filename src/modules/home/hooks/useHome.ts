@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useSelectWorkspace } from '@/modules';
 import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
 import { HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
+import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
 

@@ -50,15 +50,15 @@ const useWorkspace = () => {
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: string) => {
-    if (selectedWorkspace === current) {
+    if (selectedWorkspace === current || isSelecting) {
       return;
     }
+
+    await workspaceRequest.refetch();
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        workspaceHomeRequest.refetch();
-        pendingSignerTransactions.refetch();
         if (!workspace.single) {
           goWorkspace(workspace.id);
         }

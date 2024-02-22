@@ -46,7 +46,10 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace, goWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+    goWorkspace,
+  } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
 
@@ -90,7 +93,13 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.userVaults())}
+              onClick={() =>
+                navigate(
+                  Pages.userVaults({
+                    workspaceId,
+                  }),
+                )
+              }
             >
               Vaults
             </BreadcrumbLink>

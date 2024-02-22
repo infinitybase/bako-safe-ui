@@ -160,14 +160,17 @@ const HomePage = () => {
                       workspace={workspace}
                       title={description}
                       members={members!}
-                      onClick={() => {
-                        selectWorkspace(workspace.id);
-                        navigate(
-                          Pages.detailsVault({
-                            workspaceId: current,
-                            vaultId: id,
-                          }),
-                        );
+                      onClick={async () => {
+                        selectWorkspace(workspace.id, {
+                          onSelect: (_workspace) => {
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: _workspace.id,
+                                vaultId: id,
+                              }),
+                            );
+                          },
+                        });
                       }}
                     />
                   )}

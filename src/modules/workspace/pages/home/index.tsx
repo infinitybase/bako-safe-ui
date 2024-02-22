@@ -58,7 +58,7 @@ const WorkspacePage = () => {
   const {
     account,
     navigate,
-    currentWorkspace,
+    currentWorkspace: { workspace: currentWorkspace },
     workspaceVaults: { vaultsMax, extraCount, recentVaults },
     workspaceTransactions: { recentTransactions },
     hasPermission,
