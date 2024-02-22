@@ -25,17 +25,20 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
+      console.log('👉 User disconnected', {
+        currentAccount,
+        authAccount: auth.account,
+      });
       if (currentAccount === auth.account) return;
-      console.log('👉 User disconnected');
       clearAll();
     }
 
-    fuel?.on(fuel?.events.connection, onConnection);
-    fuel?.on(fuel?.events.currentAccount, onCurrentAccount);
+    fuel.on(fuel.events.connection, onConnection);
+    fuel.on(fuel.events.currentAccount, onCurrentAccount);
 
     return () => {
-      fuel?.off(fuel?.events.connection, onConnection);
-      fuel?.off(fuel?.events.currentAccount, onCurrentAccount);
+      fuel.off(fuel.events.connection, onConnection);
+      fuel.off(fuel.events.currentAccount, onCurrentAccount);
     };
   }, [fuel, auth.account]);
 
