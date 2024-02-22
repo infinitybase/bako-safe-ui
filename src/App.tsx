@@ -40,7 +40,7 @@ function App() {
       fuel.off(fuel.events.connection, onConnection);
       fuel.off(fuel.events.currentAccount, onCurrentAccount);
     };
-  }, [fuel, auth.account]);
+  }, [fuel]);
 
   return <AppRoutes />;
 }
