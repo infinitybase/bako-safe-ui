@@ -1,14 +1,14 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
+import { useAddressBook } from '@/modules/addressBook';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
-import { AddressBookUtils } from '@/utils/address-book';
 
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
+  const { contactByAddress } = useAddressBook();
   if (!vault) return null;
-
   const signerColumnsAmount = 3;
   const members = vault.members;
 
@@ -36,12 +36,8 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
                   isOwner={vault.owner?.id === member.id}
                   member={{
                     ...member,
-                    nickname: member
-                      ? AddressBookUtils.getNickname(
-                          member.id,
-                          vault.workspace.addressBook,
-                        )
-                      : '',
+                    nickname:
+                      contactByAddress(member.address)?.nickname ?? undefined,
                   }}
                 />
               </CustomSkeleton>

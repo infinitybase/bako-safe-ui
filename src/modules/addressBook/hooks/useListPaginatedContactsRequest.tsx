@@ -1,18 +1,19 @@
 import { useQuery } from 'react-query';
 
-import { WorkspaceContact } from '@/modules/core';
+import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
 import { AddressBookUtils } from '@/utils';
 
 import { AddressBookService, GetPaginatedContactsParams } from '../services';
 
-export const CONTACTS_PAGINATE_LIST_QUERY_KEY = 'contacts/pagination';
+//export const CONTACTS_PAGINATE_LIST_QUERY_KEY = 'contacts/pagination';
 
 const useListPaginatedContactsRequest = (
   contacts: WorkspaceContact[],
   filter: GetPaginatedContactsParams,
+  workspace: string,
 ) => {
   const { data, ...query } = useQuery(
-    [CONTACTS_PAGINATE_LIST_QUERY_KEY, filter.q],
+    AddressBookQueryKey.LIST_BY_USER_PAGINATED(workspace, filter.q ?? ''),
     () =>
       AddressBookService.search(
         {

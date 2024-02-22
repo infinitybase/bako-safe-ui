@@ -2,7 +2,7 @@ import { Box, Divider, Link, Text } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutoComplete } from '@/components/autocomplete';
-import { AddressBookUtils } from '@/utils';
+import { useAddressBook } from '@/modules/addressBook';
 
 import { UseChangeMember } from '../../hooks';
 
@@ -13,22 +13,7 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { contacts } = addressBook.contactsPaginatedRequest;
-  const address = form.watch('address');
-
-  const options =
-    contacts &&
-    AddressBookUtils.removeDuplicates(contacts)
-      ?.filter(
-        ({ user, nickname }) =>
-          !!address &&
-          (user.address.includes(address) ||
-            nickname.toLowerCase().includes(address.toLowerCase())),
-      )
-      ?.map(({ user, nickname }) => ({
-        value: user.address,
-        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-      }));
+  const { paginatedContacts } = useAddressBook();
 
   const bottomAction = (
     <Box mt={2}>
@@ -51,15 +36,6 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
 
   return (
     <Box w="full" maxW={500} pr={12}>
-      {/* <Dialog.Section
-        title={
-          <Heading fontSize="md" color="grey.200">
-            Member address
-          </Heading>
-        }
-        description="Who it will be a new member in your workspace?"
-        mb={8}
-      /> */}
       <Controller
         name="address"
         control={form.control}
@@ -72,8 +48,8 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
             onChange={field.onChange}
             errorMessage={fieldState.error?.message}
             isInvalid={fieldState.invalid}
-            options={options}
-            isLoading={!addressBook.contactsPaginatedRequest.isSuccess}
+            options={paginatedContacts.data!}
+            isLoading={!paginatedContacts.isSuccess}
             bottomAction={bottomAction}
             inView={addressBook.inView}
           />

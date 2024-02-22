@@ -49,12 +49,6 @@ const useAddressBook = () => {
 
   useWorkspace(); // dont remove
 
-  useListContactsRequest(current, !!workspaceId && !!vaultId, vaultId);
-
-  useListPaginatedContactsRequest(contacts, {
-    q: search,
-  });
-
   // FORM
   const { form } = useCreateContactForm();
 
@@ -63,6 +57,9 @@ const useAddressBook = () => {
     onSuccess: () => {
       deleteContactDialog.onClose();
       invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
+      invalidateQueries(
+        AddressBookQueryKey.LIST_BY_USER_PAGINATED(current, search),
+      );
       successToast({
         title: 'Success!',
         description: 'Your contact was deleted...',
@@ -171,11 +168,17 @@ const useAddressBook = () => {
     contactByAddress,
     setContactToDelete,
     handleDeleteContact,
-    useListPaginatedContactsRequest,
+    useListPaginatedContactsRequest: useListContactsRequest(
+      current,
+      !!workspaceId && !!vaultId,
+      vaultId,
+    ),
     form: { ...form, handleCreateContact, handleUpdateContact },
-    paginatedContacts: useListPaginatedContactsRequest(contacts, {
-      q: search,
-    }),
+    paginatedContacts: useListPaginatedContactsRequest(
+      contacts,
+      { q: search },
+      current,
+    ),
   };
 };
 

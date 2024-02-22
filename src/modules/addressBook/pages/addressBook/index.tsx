@@ -37,7 +37,6 @@ const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 const AddressBookPage = () => {
   const {
     navigate,
-    //listContactsRequest: { contacts, isLoading: loadingContacts },
     contactDialog,
     handleOpenDialog,
     deleteContactDialog,

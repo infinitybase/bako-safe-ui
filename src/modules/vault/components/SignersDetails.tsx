@@ -20,7 +20,7 @@ const SignerCard = chakra(Card, {
 
 const SignersDetails = (props: SignersDetailsProps) => {
   const navigate = useNavigate();
-  const { contacts } = useAddressBook();
+  const { contactByAddress } = useAddressBook();
   const { vault } = props;
 
   const isBig = !vault?.members ? 0 : vault?.members.length - 4;
@@ -89,9 +89,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
                 isOwner={member?.id === owner?.id}
                 member={{
                   ...member,
-                  nickname: contacts.find(
-                    (contact) => contact.user.id === member?.id,
-                  )?.nickname,
+                  nickname: member?.address
+                    ? contactByAddress(member?.address)?.nickname ?? undefined
+                    : undefined,
                   avatar: member?.avatar ?? '',
                   address: member?.address ?? '',
                 }}
