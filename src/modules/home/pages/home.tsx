@@ -44,7 +44,7 @@ const HomePage = () => {
   } = useHome();
 
   const {
-    workspaces: { current },
+    workspaces: { current, single },
   } = useAuth();
 
   const { selectWorkspace } = useSelectWorkspace();
@@ -151,7 +151,13 @@ const HomePage = () => {
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
                       extra={extraCount}
-                      onClick={() => navigate(Pages.userVaults())}
+                      onClick={() =>
+                        navigate(
+                          Pages.userVaults({
+                            workspaceId: single,
+                          }),
+                        )
+                      }
                     />
                   ) : (
                     <VaultCard

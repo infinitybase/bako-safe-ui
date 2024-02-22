@@ -204,13 +204,15 @@ const UserVaultsPage = () => {
                   title={description}
                   members={members!}
                   onClick={() => {
-                    selectWorkspace(workspace.id);
-                    navigate(
-                      Pages.detailsVault({
-                        vaultId: id,
-                        workspaceId: current,
-                      }),
-                    );
+                    selectWorkspace(workspace.id, {
+                      onSelect: (_workspace) =>
+                        navigate(
+                          Pages.detailsVault({
+                            vaultId: id,
+                            workspaceId: _workspace.id,
+                          }),
+                        ),
+                    });
                   }}
                 />
               </CustomSkeleton>
