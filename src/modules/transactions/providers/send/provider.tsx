@@ -48,12 +48,17 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   };
 
   const validateResult = (transaction: ITransaction) => {
+    refetetchTransactionList();
     if (transaction.status == TransactionStatus.SUCCESS) {
       toast.success(transaction);
     }
 
     if (transaction.status == TransactionStatus.FAILED) {
       toast.error(transaction.id, 'Transaction failed');
+    }
+
+    if (transaction.status == TransactionStatus.PROCESS_ON_CHAIN) {
+      toast.loading(transaction);
     }
   };
 

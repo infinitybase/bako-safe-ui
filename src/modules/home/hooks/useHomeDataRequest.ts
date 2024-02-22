@@ -12,7 +12,8 @@ const useHomeDataRequest = () => {
     HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current),
     () => HomeService.home(),
     {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
+      //refetchInterval: 10000,
     },
   );
 };

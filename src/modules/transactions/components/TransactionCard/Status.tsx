@@ -33,7 +33,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
 
   return (
     <HStack justifyContent="center" ml={6}>
-      {isPending && (
+      {isLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}

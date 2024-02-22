@@ -125,6 +125,7 @@ export const WorkspacesQueryKey = {
   ],
   FULL_DATA: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
+    WorkspacesQueryKey.HOME(),
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
     WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
   ],
