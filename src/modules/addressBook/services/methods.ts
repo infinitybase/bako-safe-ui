@@ -1,7 +1,5 @@
 import { api } from '@/config';
-import { CookieName, CookiesConfig } from '@/config/cookies';
-
-const { SINGLE_CONTACTS, WORKSPACE } = CookieName;
+import { WorkspaceContact } from '@/modules/core';
 
 import {
   CreateContactPayload,
@@ -47,16 +45,33 @@ export class AddressBookService {
     return data;
   }
 
-  static async list() {
-    const { data } = await api.get<ListContactsResponse>('/address-book');
-
-    if (JSON.parse(CookiesConfig.getCookie(WORKSPACE)!)?.single) {
-      CookiesConfig.setCookies([
-        { name: SINGLE_CONTACTS, value: JSON.stringify(data) },
-      ]);
-    }
+  static async list(includePersonal: boolean = false) {
+    const { data } = await api.get<ListContactsResponse>(
+      `/address-book?includePersonal=${includePersonal}`,
+    );
 
     return data;
+  }
+
+  static search(
+    params: GetPaginatedContactsParams,
+    contacts: WorkspaceContact[],
+  ): WorkspaceContact[] {
+    const { q, includePersonal, perPage } = params;
+    const query = q?.toLowerCase() ?? '';
+
+    return contacts
+      .filter((contact) => {
+        const nickname = contact.nickname.toLowerCase();
+        const address = contact.user.address.toLowerCase();
+
+        return (
+          nickname.includes(query) ||
+          address.includes(query) ||
+          (includePersonal && contact.nickname.toLowerCase().includes(query))
+        );
+      })
+      .slice(0, perPage);
   }
 
   static async listWithPagination(params: GetPaginatedContactsParams) {

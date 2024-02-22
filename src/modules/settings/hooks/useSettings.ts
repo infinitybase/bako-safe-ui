@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { queryClient } from '@/config';
-import { useFuelAccount } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import { SettingsQueryKey } from '@/modules/core';
 
 import { useUpdateSettingsRequest } from './';
@@ -17,7 +17,7 @@ interface UseSettingsProps {
 const { MY_SETTINGS } = SettingsQueryKey;
 
 const useSettings = ({ onOpen, onClose }: UseSettingsProps) => {
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const { form } = useSettingsForm();
   const { successToast } = useSettingsToast();
   const mySettingsRequest = useMySettingsRequest(account);

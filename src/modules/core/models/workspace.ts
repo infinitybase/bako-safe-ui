@@ -24,8 +24,9 @@ export interface Member {
 }
 
 export interface WorkspaceContact {
+  id: string;
   nickname: string;
-  user: { id: string };
+  user: { id: string; address: string; avatar: string };
 }
 
 export interface Owner extends Member {}
@@ -35,7 +36,7 @@ export interface Workspace {
   name: string;
   description?: string;
   avatar: string;
-  permissions: IPermissions;
+  permissions: IPermission;
   single: boolean;
   owner: Owner;
   members: Member[];
@@ -94,29 +95,37 @@ export const WorkspacesQueryKey = {
   SELECT: () => [WorkspacesQueryKey.DEFAULT, 'select'],
   GET: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'by-id',
     workspaceId,
+    'by-id',
   ],
   ADD_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'add-member',
     workspaceId,
+    'add-member',
   ],
   UPDATE_PERMISSION: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'update-permission',
     workspaceId,
+    'update-permission',
   ],
   DELETE_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'delete-member',
     workspaceId,
+    'delete-member',
   ],
-  PENDING_TRANSACTIONS: () => 'pending-transactions',
-  GET_BALANCE: () => 'balance',
-  FULL_DATA: () => [
+  PENDING_TRANSACTIONS: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    WorkspacesQueryKey.GET_BALANCE(),
-    WorkspacesQueryKey.PENDING_TRANSACTIONS(),
+    workspaceId,
+    'pending-transactions',
+  ],
+  GET_BALANCE: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    workspaceId,
+    'balance',
+  ],
+  FULL_DATA: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    WorkspacesQueryKey.GET_BALANCE(workspaceId),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
   ],
 };

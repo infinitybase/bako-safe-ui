@@ -2,6 +2,7 @@ import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
 import { useMemo } from 'react';
 
+
 import { useFuelAccount } from '@/modules/auth';
 import {
   HomeQueryKey,
@@ -9,6 +10,9 @@ import {
   useWalletSignMessage,
 } from '@/modules/core';
 import { useHome } from '@/modules/home';
+import { useAuthStore } from '@/modules/auth';
+import { invalidateQueries, useWalletSignMessage } from '@/modules/core';
+
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
@@ -32,7 +36,7 @@ export interface UseSignTransactionOptions {
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const transactionSendContext = useTransactionSend();
   const { transactionsRequest } = useHome();
 

@@ -17,10 +17,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useWorkspace } from '@/modules/workspace';
+import { useGetCurrentWorkspace } from '@/modules/workspace/hooks/useGetWorkspaceRequest';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import {
   AddressBookEmptyState,
@@ -35,7 +37,6 @@ const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 const AddressBookPage = () => {
   const {
     navigate,
-    listContactsRequest: { contacts, isLoading: loadingContacts },
     contactDialog,
     handleOpenDialog,
     deleteContactDialog,
@@ -48,11 +49,20 @@ const AddressBookPage = () => {
     handleDeleteContact,
     contactToEdit,
     hasSkeleton,
+    contacts,
   } = useAddressBook();
-  const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
+
+  const { hasPermission, goWorkspace } = useWorkspace();
+  const {
+    workspaces: { current, single },
+    isSingleWorkspace,
+  } = useAuth();
+  const { workspace } = useGetCurrentWorkspace();
+
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
+  const workspaceId = current ?? '';
 
   return (
     <>
@@ -89,11 +99,7 @@ const AddressBookPage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              onClick={() =>
-                currentWorkspace.single
-                  ? goHome()
-                  : goWorkspace(currentWorkspace.id)
-              }
+              onClick={() => (single ? goHome() : goWorkspace(workspaceId))}
             >
               Back home
             </Button>
@@ -111,15 +117,17 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={currentWorkspace.single}>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goWorkspace(currentWorkspace.id)}
-                >
-                  {currentWorkspace.name}
-                </BreadcrumbLink>
+              <BreadcrumbItem hidden={isSingleWorkspace}>
+                {current && (
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goWorkspace(single)}
+                  >
+                    {workspace?.name}
+                  </BreadcrumbLink>
+                )}
               </BreadcrumbItem>
 
               <BreadcrumbItem>
@@ -154,7 +162,7 @@ const AddressBookPage = () => {
             onClick={() =>
               navigate(
                 Pages.userVaults({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               )
             }
@@ -171,7 +179,7 @@ const AddressBookPage = () => {
             onClick={() => {
               navigate(
                 Pages.userTransactions({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               );
             }}
@@ -188,7 +196,7 @@ const AddressBookPage = () => {
             onClick={() =>
               navigate(
                 Pages.addressBook({
-                  workspaceId: currentWorkspace.id,
+                  workspaceId,
                 }),
               )
             }
@@ -252,7 +260,7 @@ const AddressBookPage = () => {
           </>
         )}
 
-        {!hasContacts && !loadingContacts && (
+        {!hasContacts && (
           <AddressBookEmptyState action={() => handleOpenDialog({})} />
         )}
       </VStack>

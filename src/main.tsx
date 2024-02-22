@@ -16,12 +16,6 @@ BSafe.setup({
   PROVIDER: import.meta.env.VITE_NETWORK,
 });
 
-console.log({
-  API_URL: import.meta.env.VITE_API_URL,
-  BSAFE_URL: import.meta.env.VERCEL_URL || window.location.origin,
-  PROVIDER: import.meta.env.VITE_NETWORK,
-});
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>

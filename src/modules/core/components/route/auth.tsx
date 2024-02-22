@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAddressBook } from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth/hooks';
 import { Pages } from '@/modules/core';
-import { useWorkspace } from '@/modules/workspace/hooks';
+import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 export interface AuthRouteProps {
   children: React.ReactNode;
 }
 
 const AuthRoute = (props: AuthRouteProps) => {
-  const { account } = useFuelAccount();
+  const auth = useAuth();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
-  const { handleWorkspaceSelection, singleWorkspace } = useWorkspace();
+  const { handleWorkspaceSelection } = useWorkspace();
+  useAddressBook();
 
-  if (!account) {
+  useEffect(() => {
+    handleWorkspaceSelection.handler(workspaceId ?? auth.workspaces.single);
+  }, [workspaceId]);
+
+  if (!auth.account) {
     return (
       <Navigate
         to={`${Pages.index()}${search}`}
@@ -24,8 +30,8 @@ const AuthRoute = (props: AuthRouteProps) => {
     );
   }
 
-  if (!workspaceId) {
-    handleWorkspaceSelection(singleWorkspace);
+  if (handleWorkspaceSelection.isSelecting) {
+    return null;
   }
 
   return props.children;

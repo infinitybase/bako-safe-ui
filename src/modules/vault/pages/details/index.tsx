@@ -18,6 +18,7 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -27,6 +28,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
+import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
@@ -46,10 +48,15 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
   } = useVaultDetails();
-  const { currentWorkspace, hasSkeleton, goWorkspace } = useWorkspace();
+  const { goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
+  const {
+    workspaces: { current, single },
+  } = useAuth();
+  const { workspace } = useGetCurrentWorkspace();
 
+  const workspaceId = current ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
@@ -71,15 +78,15 @@ const VaultDetailsPage = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          {!currentWorkspace.single && (
+          {single && (
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(currentWorkspace.id)}
+                onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace.name}
+                {workspace?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           )}
@@ -89,7 +96,13 @@ const VaultDetailsPage = () => {
               fontSize="sm"
               color="grey.200"
               fontWeight="semibold"
-              onClick={() => navigate(Pages.userVaults())}
+              onClick={() =>
+                navigate(
+                  Pages.userVaults({
+                    workspaceId,
+                  }),
+                )
+              }
             >
               Vaults
             </BreadcrumbLink>
@@ -176,7 +189,10 @@ const VaultDetailsPage = () => {
             );
 
             return (
-              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
+              <CustomSkeleton
+                key={transaction.id}
+                isLoaded={!loadingVaultTransactions}
+              >
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={

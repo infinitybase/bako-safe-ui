@@ -1,6 +1,8 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
+import { queryClient } from '@/config';
+import { useAuth } from '@/modules/auth/hooks';
 import {
   HomeQueryKey,
   invalidateQueries,
@@ -27,6 +29,7 @@ const TransactionSendContext = createContext<TransactionSendContextType>(
 );
 
 const TransactionSendProvider = (props: PropsWithChildren) => {
+  const auth = useAuth();
   const toast = useTransactionToast();
 
   const transactionsRef = useRef<ITransaction[]>([]);
@@ -34,12 +37,14 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   const refetetchTransactionList = () => {
     invalidateQueries([
       'bsafe',
-      ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
       TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
+    queryClient.invalidateQueries(
+      HomeQueryKey.FULL_DATA(auth.workspaces.current),
+    );
   };
 
   const validateResult = (transaction: ITransaction) => {

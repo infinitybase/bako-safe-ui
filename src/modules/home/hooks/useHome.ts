@@ -1,69 +1,40 @@
-import { useTimeout } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
-import { useFuelAccount } from '@/modules/auth/store';
-import { HomeQueryKey, invalidateQueries, Pages } from '@/modules/core';
+import { queryClient } from '@/config';
+import { useAuth } from '@/modules/auth/hooks';
+import { useAuthStore } from '@/modules/auth/store';
+import { AddressBookQueryKey, HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
+import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
 
 const useHome = () => {
+  const auth = useAuth();
+
   const navigate = useNavigate();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
-  useListContactsRequest();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
-
-  const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
-
-  useTimeout(() => {
-    setHasSkeleton(false);
-    setFirstRender(false);
-  }, 5000);
-
-  useMemo(() => {
-    const workspacesInCookie = JSON.parse(
-      CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
-    ).id;
-    if (
-      firstRender &&
-      homeDataRequest.data?.workspace.id !== workspacesInCookie
-    ) {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
-
-    if (
-      !firstRender &&
-      homeDataRequest.data?.workspace.id === workspacesInCookie
-    ) {
-      setHasSkeleton(false);
-      setFirstRender(false);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    homeDataRequest.isLoading,
-    homeDataRequest.isFetching,
-    homeDataRequest.isSuccess,
-    homeDataRequest.data,
-  ]);
+  const { selectWorkspace } = useSelectWorkspace();
 
   const goHome = () => {
-    invalidateQueries(HomeQueryKey.FULL_DATA());
-    navigate(Pages.home());
+    selectWorkspace(auth.workspaces.single, {
+      onSelect: async () => {
+        auth.handlers.authenticateWorkspaceSingle();
+        await queryClient.invalidateQueries(
+          HomeQueryKey.FULL_DATA(auth.workspaces.single),
+        );
+        await queryClient.invalidateQueries(
+          AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
+        );
+        navigate(Pages.home());
+      },
+    });
   };
-
-  useEffect(() => {
-    document.getElementById('top')?.scrollIntoView();
-  }, []);
 
   return {
     account,
@@ -86,7 +57,6 @@ const useHome = () => {
     homeRequest: homeDataRequest,
     navigate,
     goHome,
-    hasSkeleton,
     pendingSignerTransactions,
   };
 };

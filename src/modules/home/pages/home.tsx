@@ -16,6 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core/routes';
 import {
   TransactionCard,
@@ -23,7 +24,7 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
-import { useSelectWorkspace, useWorkspace } from '@/modules/workspace';
+import { useSelectWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
@@ -39,10 +40,13 @@ const HomePage = () => {
     },
     transactionsRequest: { transactions },
     pendingSignerTransactions,
-    hasSkeleton,
+    homeRequest,
   } = useHome();
 
-  const { currentWorkspace } = useWorkspace();
+  const {
+    workspaces: { current, single },
+  } = useAuth();
+
   const { selectWorkspace } = useSelectWorkspace();
   const hasTransactions = transactions?.length;
 
@@ -61,19 +65,17 @@ const HomePage = () => {
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
             onClick={() =>
-              navigate(Pages.createVault({ workspaceId: currentWorkspace.id }))
+              navigate(Pages.createVault({ workspaceId: current }))
             }
           >
             Create vault
           </Button>
         </Box>
       </HStack>
-      <CustomSkeleton isLoaded={!hasSkeleton}>
+      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
         <HStack spacing={6} w="full" h="full">
           <ActionCard.Container
-            onClick={() =>
-              navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
-            }
+            onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -90,7 +92,7 @@ const HomePage = () => {
               return hasTransactions
                 ? navigate(
                     Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
+                      workspaceId: current,
                     }),
                   )
                 : null;
@@ -110,7 +112,7 @@ const HomePage = () => {
 
           <ActionCard.Container
             onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: currentWorkspace.id }))
+              navigate(Pages.addressBook({ workspaceId: current }))
             }
           >
             <ActionCard.Icon icon={CgList} />
@@ -144,12 +146,18 @@ const HomePage = () => {
             const hasMore = extraCount > 0;
 
             return (
-              <CustomSkeleton isLoaded={!hasSkeleton} key={id}>
+              <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
                 <GridItem>
                   {lastCard && hasMore ? (
                     <ExtraVaultCard
                       extra={extraCount}
-                      onClick={() => navigate(Pages.userVaults())}
+                      onClick={() =>
+                        navigate(
+                          Pages.userVaults({
+                            workspaceId: single,
+                          }),
+                        )
+                      }
                     />
                   ) : (
                     <VaultCard
@@ -158,14 +166,17 @@ const HomePage = () => {
                       workspace={workspace}
                       title={description}
                       members={members!}
-                      onClick={() => {
-                        selectWorkspace(workspace);
-                        navigate(
-                          Pages.detailsVault({
-                            workspaceId: currentWorkspace.id,
-                            vaultId: id,
-                          }),
-                        );
+                      onClick={async () => {
+                        selectWorkspace(workspace.id, {
+                          onSelect: async (_workspace) => {
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: _workspace.id,
+                                vaultId: id,
+                              }),
+                            );
+                          },
+                        });
                       }}
                     />
                   )}
@@ -190,7 +201,7 @@ const HomePage = () => {
               </Text>
             </HStack>
           )}
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!homeRequest.isLoading}>
             <EmptyTransaction />
           </CustomSkeleton>
         </VStack>
@@ -212,13 +223,19 @@ const HomePage = () => {
             <Spacer />
             <Link
               color="brand.500"
-              onClick={() => navigate(Pages.userTransactions())}
+              onClick={() =>
+                navigate(
+                  Pages.userTransactions({
+                    workspaceId: single,
+                  }),
+                )
+              }
             >
               View all
             </Link>
           </HStack>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {transactions?.map((transaction) => {
                 const status = transactionStatus({ ...transaction, account });
                 const isSigner = !!transaction.predicate?.members?.find(

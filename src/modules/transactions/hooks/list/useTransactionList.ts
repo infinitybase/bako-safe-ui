@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 import { useTransactionState } from '../../states';
@@ -21,7 +21,7 @@ const useTransactionList = () => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter | undefined>(
     StatusFilter.ALL,
   );
