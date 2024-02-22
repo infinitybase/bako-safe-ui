@@ -17,10 +17,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useWorkspace } from '@/modules/workspace';
+import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 
 import {
   AddressBookEmptyState,
@@ -50,10 +52,15 @@ const AddressBookPage = () => {
     hasSkeleton,
   } = useAddressBook();
   const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
+  const {
+    workspaces: { current, single },
+    isSingleWorkspace,
+  } = useAuth();
+  const { workspace } = useGetCurrentWorkspace();
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
-  const workspaceId = currentWorkspace?.id ?? '';
+  const workspaceId = current ?? '';
 
   return (
     <>
@@ -90,9 +97,7 @@ const AddressBookPage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              onClick={() =>
-                currentWorkspace?.single ? goHome() : goWorkspace(workspaceId)
-              }
+              onClick={() => (single ? goHome() : goWorkspace(workspaceId))}
             >
               Back home
             </Button>
@@ -110,15 +115,15 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={currentWorkspace?.single}>
+              <BreadcrumbItem hidden={isSingleWorkspace}>
                 {currentWorkspace && (
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(currentWorkspace.id)}
+                    onClick={() => goWorkspace(single)}
                   >
-                    {currentWorkspace.name}
+                    {workspace?.name}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

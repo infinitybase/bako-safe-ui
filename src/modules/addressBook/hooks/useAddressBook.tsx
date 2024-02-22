@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { IApiError } from '@/config';
+import { useAuth } from '@/modules/auth';
 import { invalidateQueries } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -40,7 +41,10 @@ const useAddressBook = () => {
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    workspaces: { single },
+  } = useAuth();
+  useWorkspace(); // dont remove
 
   // FORM
   const { form } = useCreateContactForm();
@@ -49,7 +53,7 @@ const useAddressBook = () => {
   const listContactsRequest = useListContactsRequest();
   const contactsPaginatedRequest = useListPaginatedContactsRequest({
     q: search,
-    includePersonal: !currentWorkspace?.single,
+    includePersonal: !single,
   });
 
   // MUTATIONS
