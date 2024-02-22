@@ -71,8 +71,6 @@ api.interceptors.response.use(
         WORKSPACE,
         PERMISSIONS,
       ]);
-
-      window.location.href = '/';
     }
 
     return Promise.reject(error);
