@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { useAddressBook } from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 
@@ -21,6 +22,10 @@ const SignerCard = chakra(Card, {
 const SignersDetails = (props: SignersDetailsProps) => {
   const navigate = useNavigate();
   const { contactByAddress } = useAddressBook();
+  const {
+    workspaces: { current },
+  } = useAuth();
+
   const { vault } = props;
 
   const isBig = !vault?.members ? 0 : vault?.members.length - 4;
@@ -66,7 +71,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       navigate(
                         Pages.vaultSettings({
                           vaultId: vault.id!,
-                          workspaceId: '',
+                          workspaceId: current,
                         }),
                       )
                     }
