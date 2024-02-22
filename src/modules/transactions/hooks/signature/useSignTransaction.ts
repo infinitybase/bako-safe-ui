@@ -5,12 +5,10 @@ import { useEffect, useMemo } from 'react';
 import { queryClient } from '@/config';
 import { useAuth, useAuthStore } from '@/modules/auth';
 import { HomeQueryKey, useWalletSignMessage } from '@/modules/core';
-import { useWalletSignMessage } from '@/modules/core';
 import { useHome } from '@/modules/home';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
-
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 
 export interface SignTransactionParams {
