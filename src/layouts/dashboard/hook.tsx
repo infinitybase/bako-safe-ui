@@ -9,7 +9,6 @@ import {
   useTransactionsSignaturePending,
 } from '@/modules/transactions/hooks';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
-import { useWorkspace } from '@/modules/workspace/hooks';
 
 const useSidebar = () => {
   const auth = useAuth();
@@ -17,11 +16,12 @@ const useSidebar = () => {
   const location = useLocation();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
-  const { currentWorkspace } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
-
+  const {
+    workspaces: { current },
+  } = useAuth();
   const pendingSignerTransactions = useTransactionsSignaturePending([
     params.vaultId!,
   ]);
@@ -42,13 +42,13 @@ const useSidebar = () => {
     settings: checkPathname(
       Pages.vaultSettings({
         vaultId: params?.vaultId ?? '',
-        workspaceId: currentWorkspace?.id ?? '',
+        workspaceId: current ?? '',
       }),
     ),
     transactions: checkPathname(
       Pages.transactions({
         vaultId: params?.vaultId ?? '',
-        workspaceId: currentWorkspace?.id ?? '',
+        workspaceId: current ?? '',
       }),
     ),
   };

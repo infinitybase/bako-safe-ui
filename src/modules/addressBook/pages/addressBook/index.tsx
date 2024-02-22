@@ -51,7 +51,7 @@ const AddressBookPage = () => {
     contactToEdit,
     hasSkeleton,
   } = useAddressBook();
-  const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
+  const { hasPermission, goWorkspace } = useWorkspace();
   const {
     workspaces: { current, single },
     isSingleWorkspace,
@@ -116,7 +116,7 @@ const AddressBookPage = () => {
               </BreadcrumbItem>
 
               <BreadcrumbItem hidden={isSingleWorkspace}>
-                {currentWorkspace && (
+                {current && (
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"

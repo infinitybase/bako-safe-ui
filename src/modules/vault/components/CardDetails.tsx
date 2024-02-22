@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { AddressUtils, PermissionRoles } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspace } from '@/modules/workspace';
@@ -34,12 +35,16 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
-  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { hasPermission } = useWorkspace();
   const { vault: vaultDetails } = useVaultDetails();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
-  const workspaceId = currentWorkspace?.id ?? '';
+  const {
+    workspaces: { current },
+  } = useAuth();
+
+  const workspaceId = current ?? '';
   const reqPerm = [
     PermissionRoles.ADMIN,
     PermissionRoles.OWNER,

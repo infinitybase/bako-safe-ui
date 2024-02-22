@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth';
+import { useAuth, useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -10,7 +10,6 @@ import {
   Pages,
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
-import { useWorkspace } from '@/modules/workspace';
 
 import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
@@ -40,9 +39,12 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
   const { unreadCounter, setUnreadCounter } = useNotificationsStore();
-  const { currentWorkspace } = useWorkspace();
+  // const { currentWorkspace } = useWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
 
-  const workspaceId = currentWorkspace?.id ?? '';
+  const workspaceId = current ?? '';
 
   const onCloseDrawer = async () => {
     const hasUnread = !!unreadCounter;

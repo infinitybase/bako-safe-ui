@@ -30,6 +30,7 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
   assetsMap,
@@ -69,13 +70,16 @@ const WorkspacePage = () => {
     pendingSignerTransactions,
     workspaceHomeRequest,
     goWorkspace,
-    //hasSkeletonBalance,
   } = useWorkspace();
   const { goHome } = useHome();
 
+  const {
+    workspaces: { current },
+  } = useAuth();
+
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
-  const workspaceId = currentWorkspace?.id ?? '';
+  const workspaceId = current ?? '';
 
   // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 

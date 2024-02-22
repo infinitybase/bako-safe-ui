@@ -16,11 +16,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useWorkspace } from '@/modules/workspace';
+import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import {
@@ -41,7 +42,14 @@ const UserTransactionsPage = () => {
     pendingSignerTransactions,
     hasSkeleton,
   } = useTransactionList();
-  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
+  const { hasPermission, goWorkspace } = useWorkspace();
+  const {
+    isSingleWorkspace,
+    workspaces: { current },
+  } = useAuth();
+
+  const { workspace } = useGetCurrentWorkspace();
+
   const { goHome } = useHome();
   const { VIEWER } = PermissionRoles;
 
@@ -62,9 +70,7 @@ const UserTransactionsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              currentWorkspace?.single
-                ? goHome()
-                : goWorkspace(currentWorkspace?.id ?? '')
+              isSingleWorkspace ? goHome() : goWorkspace(current ?? '')
             }
           >
             Back home
@@ -83,15 +89,15 @@ const UserTransactionsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!currentWorkspace?.single && (
+            {!isSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(currentWorkspace!.id)}
+                  onClick={() => goWorkspace(current)}
                 >
-                  {currentWorkspace?.name}
+                  {workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -128,7 +134,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: currentWorkspace?.id ?? '',
+                workspaceId: current ?? '',
               }),
             )
           }
@@ -156,7 +162,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: currentWorkspace?.id ?? '',
+                workspaceId: current ?? '',
               }),
             )
           }
