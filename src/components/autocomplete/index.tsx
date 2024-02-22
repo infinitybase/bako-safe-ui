@@ -69,7 +69,8 @@ function AutoComplete({
   const isCurrent = currentIndex === index;
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
-  const showOptionsList = isCurrent && !isLoading && options.length > 0;
+  const showOptionsList =
+    isCurrent && !isLoading && options && options.length > 0;
   const loading = isLoading && isCurrent;
   const showBottomAction =
     !loading &&

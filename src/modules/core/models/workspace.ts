@@ -24,8 +24,9 @@ export interface Member {
 }
 
 export interface WorkspaceContact {
+  id: string;
   nickname: string;
-  user: { id: string };
+  user: { id: string; address: string; avatar: string };
 }
 
 export interface Owner extends Member {}

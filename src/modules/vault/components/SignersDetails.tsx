@@ -2,9 +2,9 @@ import { Badge, Box, chakra, HStack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
+import { useAddressBook } from '@/modules/addressBook';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
-import { AddressBookUtils } from '@/utils/address-book';
 
 import { CardMember } from './CardMember';
 
@@ -20,6 +20,7 @@ const SignerCard = chakra(Card, {
 
 const SignersDetails = (props: SignersDetailsProps) => {
   const navigate = useNavigate();
+  const { contacts } = useAddressBook();
   const { vault } = props;
 
   const isBig = !vault?.members ? 0 : vault?.members.length - 4;
@@ -88,12 +89,9 @@ const SignersDetails = (props: SignersDetailsProps) => {
                 isOwner={member?.id === owner?.id}
                 member={{
                   ...member,
-                  nickname: member
-                    ? AddressBookUtils.getNickname(
-                        member.id,
-                        vault.workspace.addressBook,
-                      )
-                    : '',
+                  nickname: contacts.find(
+                    (contact) => contact.user.id === member?.id,
+                  )?.nickname,
                   avatar: member?.avatar ?? '',
                   address: member?.address ?? '',
                 }}

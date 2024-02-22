@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useListContactsRequest } from '@/modules/addressBook/hooks/useListContactsRequest';
 import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
-import { HomeQueryKey, Pages } from '@/modules/core';
+import { AddressBookQueryKey, HomeQueryKey, Pages } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useSelectWorkspace } from '@/modules/workspace';
 
@@ -18,7 +16,6 @@ const useHome = () => {
   const { account } = useAuthStore();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
-  useListContactsRequest();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
   const pendingSignerTransactions = useTransactionsSignaturePending();
@@ -31,14 +28,13 @@ const useHome = () => {
         await queryClient.invalidateQueries(
           HomeQueryKey.FULL_DATA(auth.workspaces.single),
         );
+        await queryClient.invalidateQueries(
+          AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
+        );
         navigate(Pages.home());
       },
     });
   };
-
-  useEffect(() => {
-    document.getElementById('top')?.scrollIntoView();
-  }, []);
 
   return {
     account,

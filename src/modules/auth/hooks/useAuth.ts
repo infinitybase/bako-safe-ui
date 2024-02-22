@@ -73,6 +73,10 @@ const useAuth = () => {
     store.logout();
   };
 
+  // useEffect(() => {
+  //   console.log(store.workspaces.current);
+  // }, [store.workspaces.current]);
+
   return {
     handlers: {
       logout,

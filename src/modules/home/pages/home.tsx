@@ -168,7 +168,7 @@ const HomePage = () => {
                       members={members!}
                       onClick={async () => {
                         selectWorkspace(workspace.id, {
-                          onSelect: (_workspace) => {
+                          onSelect: async (_workspace) => {
                             navigate(
                               Pages.detailsVault({
                                 workspaceId: _workspace.id,

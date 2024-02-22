@@ -1,35 +1,37 @@
-import { SortOption } from 'bsafe';
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from 'react-query';
+
+import { WorkspaceContact } from '@/modules/core';
+import { AddressBookUtils } from '@/utils';
 
 import { AddressBookService, GetPaginatedContactsParams } from '../services';
 
 export const CONTACTS_PAGINATE_LIST_QUERY_KEY = 'contacts/pagination';
 
 const useListPaginatedContactsRequest = (
+  contacts: WorkspaceContact[],
   filter: GetPaginatedContactsParams,
 ) => {
-  const { data, ...query } = useInfiniteQuery(
-    [CONTACTS_PAGINATE_LIST_QUERY_KEY, filter],
-    ({ pageParam }) =>
-      AddressBookService.listWithPagination({
-        ...filter,
-        perPage: 5,
-        page: pageParam || 0,
-        orderBy: 'nickname',
-        sort: SortOption.ASC,
-      }),
-    {
-      getNextPageParam: (lastPage) =>
-        lastPage.currentPage !== lastPage.totalPages
-          ? lastPage.nextPage
-          : undefined,
-      refetchOnWindowFocus: false,
-    },
+  const { data, ...query } = useQuery(
+    [CONTACTS_PAGINATE_LIST_QUERY_KEY, filter.q],
+    () =>
+      AddressBookService.search(
+        {
+          ...filter,
+          perPage: 5,
+        },
+        contacts,
+      ),
   );
 
   return {
     ...query,
-    contacts: data?.pages.map((page) => page.data).flat() ?? [],
+
+    data: data?.map(({ nickname, user }) => {
+      return {
+        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+        value: user.address,
+      };
+    }),
   };
 };
 

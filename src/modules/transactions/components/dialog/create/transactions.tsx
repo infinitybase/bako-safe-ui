@@ -16,11 +16,7 @@ import { AmountInput } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
-import {
-  UseCreateTransaction,
-  useCreateTransaction,
-} from '@/modules/transactions/hooks';
-import { AddressBookUtils } from '@/utils/address-book';
+import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -44,21 +40,14 @@ const TransactionFormField = ({
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
   const {
-    contactsPaginatedRequest: { contacts, isSuccess },
     search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
     createContactRequest,
     inView,
+    paginatedContacts,
   } = useAddressBook();
-
-  const options =
-    contacts &&
-    AddressBookUtils.removeDuplicates(contacts)?.map(({ user, nickname }) => ({
-      value: user.address,
-      label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-    }));
 
   return (
     <>
@@ -84,8 +73,8 @@ const TransactionFormField = ({
                 onInputChange={search.handler}
                 onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
-                isLoading={!isSuccess}
-                options={options}
+                isLoading={!paginatedContacts.isSuccess}
+                options={paginatedContacts.data!}
                 rightAction={{}}
                 bottomAction={
                   <Box mt={2}>
@@ -160,7 +149,8 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { nicks } = useCreateTransaction();
+  //const { nicks } = useCreateTransaction();
+  const { contactByAddress } = useAddressBook();
   const { form, transactions, assets, accordion } = props;
 
   return (
@@ -207,7 +197,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                     to{' '}
                     <b>
                       {' '}
-                      {nicks[transaction.to] ??
+                      {contactByAddress(transaction.to)?.nickname ??
                         AddressUtils.format(transaction.to)}
                     </b>
                   </Text>

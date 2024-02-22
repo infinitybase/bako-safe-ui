@@ -37,7 +37,7 @@ const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 const AddressBookPage = () => {
   const {
     navigate,
-    listContactsRequest: { contacts, isLoading: loadingContacts },
+    //listContactsRequest: { contacts, isLoading: loadingContacts },
     contactDialog,
     handleOpenDialog,
     deleteContactDialog,
@@ -50,6 +50,7 @@ const AddressBookPage = () => {
     handleDeleteContact,
     contactToEdit,
     hasSkeleton,
+    contacts,
   } = useAddressBook();
 
   const { hasPermission, goWorkspace } = useWorkspace();
@@ -260,7 +261,7 @@ const AddressBookPage = () => {
           </>
         )}
 
-        {!hasContacts && !loadingContacts && (
+        {!hasContacts && (
           <AddressBookEmptyState action={() => handleOpenDialog({})} />
         )}
       </VStack>

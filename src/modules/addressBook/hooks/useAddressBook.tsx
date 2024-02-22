@@ -1,15 +1,16 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { useAuth } from '@/modules/auth';
-import { invalidateQueries } from '@/modules/core';
+import { AddressBookQueryKey, invalidateQueries } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
+import { useAddressBookStore } from '../store/useAddressBookStore';
 import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
@@ -33,34 +34,35 @@ const useAddressBook = () => {
     id: '',
     nickname: '',
   });
-  const [firsRender, setFirstRender] = useState(true);
-  const [hasSkeleton, setHasSkeleton] = useState(false);
+
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
+  const { workspaceId, vaultId } = useParams();
   const inView = useInView({ delay: 300 });
   const navigate = useNavigate();
+  const { contacts } = useAddressBookStore();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
   const {
-    workspaces: { single },
+    workspaces: { current },
   } = useAuth();
+
   useWorkspace(); // dont remove
+
+  useListContactsRequest(current, !!workspaceId && !!vaultId, vaultId);
+
+  useListPaginatedContactsRequest(contacts, {
+    q: search,
+  });
 
   // FORM
   const { form } = useCreateContactForm();
-
-  // QUERIES
-  const listContactsRequest = useListContactsRequest();
-  const contactsPaginatedRequest = useListPaginatedContactsRequest({
-    q: search,
-    includePersonal: !single,
-  });
 
   // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
     onSuccess: () => {
       deleteContactDialog.onClose();
-      invalidateQueries(['contacts/by-user']);
+      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
       successToast({
         title: 'Success!',
         description: 'Your contact was deleted...',
@@ -71,7 +73,7 @@ const useAddressBook = () => {
   const updateContactRequest = useUpdateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
-      invalidateQueries(['contacts/by-user']);
+      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
       createAndUpdateSuccessToast();
     },
     onError: () => errorToast({}),
@@ -80,7 +82,7 @@ const useAddressBook = () => {
   const createContactRequest = useCreateContactRequest({
     onSuccess: () => {
       contactDialog.onClose();
-      invalidateQueries(['contacts/by-user']);
+      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
       createAndUpdateSuccessToast();
     },
     onError: (error) => {
@@ -123,6 +125,10 @@ const useAddressBook = () => {
     contactDialog.onOpen();
   };
 
+  const contactByAddress = (address: string) => {
+    return contacts.find(({ user }) => user.address === address);
+  };
+
   const debouncedSearchHandler = useCallback(
     debounce((event: string | ChangeEvent<HTMLInputElement>) => {
       if (typeof event === 'string') {
@@ -147,50 +153,29 @@ const useAddressBook = () => {
     deleteContactRequest.mutate(id);
   };
 
-  useEffect(() => {
-    if (inView.inView && !contactsPaginatedRequest.isLoading) {
-      contactsPaginatedRequest.fetchNextPage();
-    }
-  }, [
-    inView.inView,
-    contactsPaginatedRequest.isLoading,
-    contactsPaginatedRequest.fetchNextPage,
-  ]);
-
-  useMemo(() => {
-    if (firsRender && contactsPaginatedRequest.isLoading) {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
-
-    setTimeout(() => {
-      if (!firsRender && contactsPaginatedRequest.isSuccess) {
-        setHasSkeleton(false);
-      }
-    }, 500);
-  }, [contactsPaginatedRequest.contacts]);
-
   return {
-    listContactsRequest: {
-      ...listContactsRequest,
-      contacts: listContactsRequest.data,
-    },
+    inView,
+    contacts,
+    contactToEdit,
+    contactDialog,
+    contactToDelete,
+    hasSkeleton: false,
+    deleteContactDialog,
     createContactRequest,
     deleteContactRequest,
     updateContactRequest,
-    contactsPaginatedRequest,
-    form: { ...form, handleCreateContact, handleUpdateContact },
     search: { value: search, handler: debouncedSearchHandler },
-    contactDialog,
-    deleteContactDialog,
-    contactToEdit,
-    contactToDelete,
-    inView,
+    //functions
     navigate,
     handleOpenDialog,
-    handleDeleteContact,
+    contactByAddress,
     setContactToDelete,
-    hasSkeleton,
+    handleDeleteContact,
+    useListPaginatedContactsRequest,
+    form: { ...form, handleCreateContact, handleUpdateContact },
+    paginatedContacts: useListPaginatedContactsRequest(contacts, {
+      q: search,
+    }),
   };
 };
 

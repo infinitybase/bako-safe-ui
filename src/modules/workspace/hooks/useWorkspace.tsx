@@ -76,62 +76,6 @@ const useWorkspace = () => {
     });
   };
 
-  // const [firstRender, setFirstRender] = useState<boolean>(true);
-  // const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
-  // const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(true);
-
-  // useTimeout(() => {
-  //   setHasSkeleton(false);
-  //   setFirstRender(false);
-  // }, 3000);
-
-  // useTimeout(() => setHasSkeletonBalance(false), 10000);
-
-  // useMemo(() => {
-  //   if (
-  //     firstRender &&
-  //     workspaceId !== workspaceHomeRequest.data?.workspace.id
-  //   ) {
-  //     setHasSkeleton(true);
-  //     setFirstRender(false);
-  //   }
-
-  //   if (
-  //     !firstRender &&
-  //     workspaceId === workspaceHomeRequest.data?.workspace.id
-  //   ) {
-  //     setHasSkeleton(false);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   workspaceHomeRequest.isLoading,
-  //   workspaceHomeRequest.isFetching,
-  //   workspaceHomeRequest.isSuccess,
-  // ]);
-
-  // useMemo(() => {
-  //   const workspacesInCookie = JSON.parse(
-  //     CookiesConfig.getCookie(CookieName.WORKSPACE)!,
-  //   ).id;
-  //
-  //   if (workspacesInCookie !== worksapceBalance.balance?.workspaceId) {
-  //     setHasSkeletonBalance(true);
-  //   }
-  //
-  //   if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
-  //     setHasSkeletonBalance(false);
-  //   }
-  //
-  //   // console.log('[WORKSPACE]: ', {
-  //   //   HEADER: workspaceId,
-  //   //   REQ_ATUAL: worksapceBalance.balance?.workspaceId,
-  //   // });
-  // }, [
-  //   worksapceBalance.isLoading,
-  //   worksapceBalance.isFetching,
-  //   worksapceBalance.isSuccess,
-  // ]);
-
   const hasPermission = (requiredRoles: PermissionRoles[]) => {
     if (auth.isSingleWorkspace) return true;
 
@@ -149,7 +93,6 @@ const useWorkspace = () => {
     return isValid;
   };
 
-  // todo: add an variable to verify all requests are in progress, and on the UI show a loading spinner using skeleton
   return {
     account: auth.account,
     currentWorkspace: {
