@@ -17,7 +17,9 @@ const useSidebar = () => {
   const location = useLocation();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+  } = useWorkspace();
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);

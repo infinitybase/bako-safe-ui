@@ -3,11 +3,7 @@ import { randomBytes } from 'ethers';
 import { useMemo } from 'react';
 
 import { useAuthStore } from '@/modules/auth';
-import {
-  HomeQueryKey,
-  invalidateQueries,
-  useWalletSignMessage,
-} from '@/modules/core';
+import { invalidateQueries, useWalletSignMessage } from '@/modules/core';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
@@ -51,7 +47,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const refetetchTransactionList = () => {
     invalidateQueries([
       'bsafe',
-      ...HomeQueryKey.FULL_DATA(),
+      // ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,

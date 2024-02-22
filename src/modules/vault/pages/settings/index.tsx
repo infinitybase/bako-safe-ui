@@ -23,7 +23,9 @@ const VaultSettingsPage = () => {
   const { vault, store, navigate, params } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
   const { goHome } = useHome();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+  } = useWorkspace();
   if (!vault) return null;
 
   return (

@@ -40,7 +40,9 @@ const useAddressBook = () => {
   const navigate = useNavigate();
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+  } = useWorkspace();
 
   // FORM
   const { form } = useCreateContactForm();

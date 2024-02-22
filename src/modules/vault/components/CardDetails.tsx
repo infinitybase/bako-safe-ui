@@ -34,7 +34,10 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
-  const { currentWorkspace, hasPermission } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+    hasPermission,
+  } = useWorkspace();
   const { vault: vaultDetails } = useVaultDetails();
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,

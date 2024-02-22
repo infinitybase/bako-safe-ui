@@ -40,7 +40,9 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
   const { unreadCounter, setUnreadCounter } = useNotificationsStore();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+  } = useWorkspace();
 
   const workspaceId = currentWorkspace?.id ?? '';
 

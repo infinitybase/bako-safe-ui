@@ -49,7 +49,11 @@ const AddressBookPage = () => {
     contactToEdit,
     hasSkeleton,
   } = useAddressBook();
-  const { hasPermission, currentWorkspace, goWorkspace } = useWorkspace();
+  const {
+    currentWorkspace: { workspace: currentWorkspace },
+    goWorkspace,
+    hasPermission,
+  } = useWorkspace();
   const { goHome } = useHome();
 
   const hasContacts = contacts?.length;
