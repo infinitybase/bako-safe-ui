@@ -119,7 +119,7 @@ export const WorkspacesQueryKey = {
   ],
   TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
     workspaceId: string,
-    status: string | TransactionStatus[] | string[],
+    status?: string | TransactionStatus[] | string[],
   ) => [
     WorkspacesQueryKey.DEFAULT,
     'transaction-list-pagination',
@@ -137,7 +137,7 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'balance',
   ],
-  FULL_DATA: (workspaceId: string, status: string, vaultId?: string) => [
+  FULL_DATA: (workspaceId: string, status?: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
     WorkspacesQueryKey.HOME(),
     HomeQueryKey.FULL_DATA(workspaceId),
