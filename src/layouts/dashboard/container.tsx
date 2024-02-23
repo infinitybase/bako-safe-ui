@@ -12,6 +12,7 @@ const Container = ({ children, ...props }: ContainerProps) => {
     <ContainerChakra
       maxWidth="full"
       h="100vh"
+      bgColor="grey.850"
       display="flex"
       flexDirection="column"
       backgroundImage={HomeBackground}

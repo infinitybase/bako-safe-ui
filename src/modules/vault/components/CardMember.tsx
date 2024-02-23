@@ -17,7 +17,7 @@ const SignerCard = chakra(Card, {
     w: 'full',
     py: 5,
     px: 6,
-    bgColor: 'dark.300',
+    bg: 'transparent',
     flex: 1,
   },
 });
@@ -26,18 +26,19 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   const hasNickname = member?.nickname;
 
   return (
-    <SignerCard>
+    <SignerCard borderColor="grey.600">
       <HStack spacing={4} w="full">
         <Image borderRadius={10} src={member?.avatar} boxSize="38px" />
-        <VStack
+        <HStack
           h="full"
-          minH={51}
+          minH={55}
           maxW={600}
+          w="full"
           spacing={0}
-          justifyContent="center"
-          alignItems="start"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          <HStack>
+          <VStack align="flex-start" spacing={0} justifyContent="center">
             {hasNickname && (
               <Text
                 fontSize="lg"
@@ -49,25 +50,26 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
                 {member?.nickname}
               </Text>
             )}
-            {isOwner && (
-              <Badge py={0} variant="success">
-                owner
-              </Badge>
-            )}
-          </HStack>
 
-          <Text
-            maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-            fontSize="md"
-            color={hasNickname ? 'grey.500' : 'grey.200'}
-            fontWeight={hasNickname ? 'regular' : 'bold'}
-            textOverflow="ellipsis"
-            isTruncated
-          >
-            {/* todo: add nickname on bsafe sdk */}
-            {AddressUtils.format(member?.address ?? '')}
-          </Text>
-        </VStack>
+            <Text
+              maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+              fontSize="md"
+              color={hasNickname ? 'grey.500' : 'grey.200'}
+              fontWeight={hasNickname ? 'regular' : 'bold'}
+              textOverflow="ellipsis"
+              isTruncated
+            >
+              {/* todo: add nickname on bsafe sdk */}
+              {AddressUtils.format(member?.address ?? '')}
+            </Text>
+          </VStack>
+
+          {isOwner && (
+            <Badge py={0} variant="success">
+              Owner
+            </Badge>
+          )}
+        </HStack>
       </HStack>
     </SignerCard>
   );

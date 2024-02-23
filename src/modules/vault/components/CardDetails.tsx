@@ -1,4 +1,4 @@
-import { PlusSquareIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -14,6 +14,11 @@ import { bn } from 'fuels';
 import { useMemo } from 'react';
 
 import { Card, CustomSkeleton } from '@/components';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { HandbagIcon } from '@/components/icons/handbag';
+import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { useAuth } from '@/modules/auth';
 import { AssetCard, assetsMap, NativeAssetId } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -32,6 +37,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace } = useWorkspace();
+  const { isSingleWorkspace } = useAuth();
 
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
@@ -61,7 +67,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW="600">
+    <Box w="full" maxW="680">
       <Box mb={5} w="full">
         <Text color="grey.400" fontWeight="semibold" fontSize="20px">
           Balance
@@ -70,30 +76,58 @@ const CardDetails = (props: CardDetailsProps) => {
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={8} bgColor="grey.800">
-          <VStack spacing={9} w="full">
+          <VStack spacing={4} w="full">
             <HStack
               w="full"
               display="flex"
               alignItems="center"
               justify="space-between"
             >
-              <Center display="flex" gap={6} alignItems="flex-start">
+              <Center
+                w="fit-content"
+                display="flex"
+                gap={6}
+                alignItems="flex-start"
+              >
                 <Avatar
+                  position="relative"
                   variant="roundedSquare"
                   size="lg"
-                  p={10}
-                  bgColor="grey.600"
-                  color="white"
+                  p={14}
+                  bgColor="grey.200"
+                  color="grey.800"
+                  fontWeight="bold"
                   name={vault.name}
-                />
+                >
+                  <Box
+                    position="absolute"
+                    borderRadius="md"
+                    w={24}
+                    h={24}
+                    border="3px solid white"
+                  />
+                </Avatar>
                 <Box>
                   <Heading
                     variant="title-xl"
-                    maxW={200}
+                    w="max"
                     isTruncated={!vault?.name?.includes(' ')}
                   >
                     {vault?.name}
                   </Heading>
+                  {!isSingleWorkspace && (
+                    <Text
+                      alignItems="center"
+                      variant="description"
+                      textOverflow="ellipsis"
+                      noOfLines={2}
+                      isTruncated
+                      mb={2}
+                    >
+                      <HandbagIcon w={4} h={4} mr={2} />
+                      {currentWorkspace.workspace?.name}
+                    </Text>
+                  )}
 
                   <Text
                     maxW="200px"
@@ -107,32 +141,72 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
               </Center>
 
-              <VStack spacing={5} alignItems="flex-end">
-                <Box width="50%">
-                  <HStack width="100%" spacing={2} alignItems="center">
-                    <HStack spacing={2}>
-                      <Heading variant="title-xl" ml={3}>
+              <VStack spacing={4} alignItems="flex-end">
+                <Box width="auto">
+                  <HStack
+                    minW={20}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <HStack
+                      w="full"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-around"
+                      spacing={2}
+                    >
+                      <Heading variant="title-xl">
                         {visebleBalance ? balance : '-----'}
                       </Heading>
                       <Box
-                        width="5"
+                        w="auto"
+                        _hover={{
+                          cursor: 'pointer',
+                          opacity: 0.8,
+                        }}
                         onClick={() => setVisibleBalance(!visebleBalance)}
                       >
                         {visebleBalance ? (
-                          <ViewIcon boxSize={4} />
+                          <EyeOpenIcon boxSize={7} />
                         ) : (
-                          <ViewOffIcon boxSize={4} />
+                          <EyeCloseIcon boxSize={5} />
                         )}
                       </Box>
                     </HStack>
+                    <Text
+                      w={20}
+                      display="flex"
+                      align="center"
+                      justifyContent="space-around"
+                      variant="description"
+                      fontWeight="semibold"
+                      _hover={{
+                        cursor: 'pointer',
+                        color: 'grey.200',
+                      }}
+                    >
+                      Update
+                      <RefreshIcon
+                        _hover={{
+                          cursor: 'pointer',
+                          color: 'grey.200',
+                        }}
+                        w={5}
+                        h={5}
+                      />
+                    </Text>
                   </HStack>
-                  <Text variant="description">Vault balance</Text>
                 </Box>
                 <VStack spacing={2} alignItems="flex-end">
                   <Button
                     minW={180}
+                    h={12}
                     variant="primary"
                     onClick={() => openFaucet(vault.predicateAddress!)}
+                    _hover={{
+                      opacity: 0.8,
+                    }}
                     leftIcon={<PlusSquareIcon w={6} h={6} />}
                   >
                     Faucet
@@ -175,7 +249,7 @@ const CardDetails = (props: CardDetailsProps) => {
               </VStack>
             </HStack>
 
-            <Divider borderColor="grey.400" />
+            <Divider w="full" borderColor="grey.400" />
 
             {/* <HStack
               w="full"
@@ -206,7 +280,7 @@ const CardDetails = (props: CardDetailsProps) => {
             <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
               <Text
                 fontWeight="semibold"
-                color="grey.200"
+                color="grey.450"
               >{`Workspace's balance breakdown`}</Text>
               <CustomSkeleton
                 isLoaded={!currentWorkspace.isLoading}
@@ -244,7 +318,6 @@ const CardDetails = (props: CardDetailsProps) => {
                         amount: balance,
                       }}
                       visibleBalance={visebleBalance}
-                      borderColor="dark.100"
                     />
                   </VStack>
                 )}

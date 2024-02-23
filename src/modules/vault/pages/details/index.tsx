@@ -61,7 +61,7 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full">
+    <Box w="full" pr={8}>
       <HStack mb={9} w="full" justifyContent="space-between">
         <Breadcrumb>
           <BreadcrumbItem>
@@ -120,8 +120,9 @@ const VaultDetailsPage = () => {
           </BreadcrumbItem>
         </Breadcrumb>
         <Button
-          variant="secondary"
-          bgColor="dark.100"
+          color="dark.200"
+          bgColor="grey.200"
+          fontWeight="medium"
           border="none"
           onClick={() => {
             if (
