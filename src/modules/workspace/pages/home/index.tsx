@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
 import { format } from 'date-fns';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
@@ -30,6 +29,7 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
 import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
@@ -340,7 +340,7 @@ const WorkspacePage = () => {
                 )
               }
             >
-              <ActionCard.Icon icon={CgList} />
+              <ActionCard.Icon icon={AddressBookIcon} />
               <Box>
                 <ActionCard.Title>Address book</ActionCard.Title>
                 <ActionCard.Description maxWidth={{}}>
