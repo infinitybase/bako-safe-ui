@@ -83,7 +83,7 @@ const WorkspacePage = () => {
 
   // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 
-  if (currentWorkspace?.single) {
+  if (!currentWorkspace || currentWorkspace.single) {
     return null;
   }
 
