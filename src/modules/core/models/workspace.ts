@@ -113,6 +113,11 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'delete-member',
   ],
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'transaction-list-pagination',
+    workspaceId,
+  ],
   PENDING_TRANSACTIONS: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
     workspaceId,
@@ -128,5 +133,6 @@ export const WorkspacesQueryKey = {
     WorkspacesQueryKey.HOME(),
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
     WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(workspaceId),
   ],
 };
