@@ -48,7 +48,6 @@ const HomePage = () => {
   } = useAuth();
 
   const { selectWorkspace } = useSelectWorkspace();
-  const hasTransactions = transactions?.length;
 
   return (
     <VStack id="top" w="full" scrollMargin={20} spacing={6}>

@@ -2,6 +2,7 @@ import { Box, Button, Card, Heading, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { NotFoundIcon, SquarePlusIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
 
 interface EmptyVaultProps {
@@ -12,6 +13,9 @@ interface EmptyVaultProps {
 
 const EmptyVault = (props?: EmptyVaultProps) => {
   const navigate = useNavigate();
+  const {
+    workspaces: { current },
+  } = useAuth();
 
   const showActionButton = props?.showActionButton ?? true;
 
@@ -44,7 +48,13 @@ const EmptyVault = (props?: EmptyVaultProps) => {
         <Button
           leftIcon={<SquarePlusIcon />}
           variant="primary"
-          onClick={() => navigate(Pages.createVault())}
+          onClick={() =>
+            navigate(
+              Pages.createVault({
+                workspaceId: current,
+              }),
+            )
+          }
         >
           Create my first vault
         </Button>

@@ -52,7 +52,7 @@ const UserTransactionsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
-  const { VIEWER, OWNER, MANAGER } = PermissionRoles;
+  const { OWNER, MANAGER } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6}>
@@ -122,7 +122,13 @@ const UserTransactionsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() => navigate(Pages.createVault())}
+            onClick={() =>
+              navigate(
+                Pages.createVault({
+                  workspaceId: current,
+                }),
+              )
+            }
           >
             Create vault
           </Button>

@@ -35,7 +35,7 @@ const UserVaultsPage = () => {
     vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
 
-  const { VIEWER, MANAGER, OWNER, ADMIN } = PermissionRoles;
+  const { MANAGER, OWNER, ADMIN } = PermissionRoles;
   const { hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
   const { selectWorkspace } = useSelectWorkspace();
@@ -112,7 +112,13 @@ const UserVaultsPage = () => {
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
             isDisabled={!hasPermission([OWNER, MANAGER])}
-            onClick={() => navigate(Pages.createVault())}
+            onClick={() =>
+              navigate(
+                Pages.createVault({
+                  workspaceId: current,
+                }),
+              )
+            }
           >
             Create vault
           </Button>
