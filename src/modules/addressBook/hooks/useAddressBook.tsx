@@ -27,7 +27,7 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = () => {
+const useAddressBook = (isSingleIncluded?: boolean) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
@@ -156,7 +156,6 @@ const useAddressBook = () => {
     contactToEdit,
     contactDialog,
     contactToDelete,
-    hasSkeleton: false,
     deleteContactDialog,
     createContactRequest,
     deleteContactRequest,
@@ -170,7 +169,7 @@ const useAddressBook = () => {
     handleDeleteContact,
     useListPaginatedContactsRequest: useListContactsRequest(
       current,
-      single !== workspaceId,
+      isSingleIncluded ?? single !== workspaceId,
       vaultId,
     ),
     form: { ...form, handleCreateContact, handleUpdateContact },

@@ -1,3 +1,4 @@
+import { AddressBookQueryKey } from './addressBook';
 import { HomeQueryKey } from './home';
 
 export enum PermissionRoles {
@@ -138,5 +139,6 @@ export const WorkspacesQueryKey = {
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
     WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId, vaultId),
     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(workspaceId),
+    AddressBookQueryKey.LIST_BY_USER(workspaceId, vaultId),
   ],
 };

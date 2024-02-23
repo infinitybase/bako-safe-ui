@@ -36,6 +36,10 @@ const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
 const AddressBookPage = () => {
   const {
+    workspaces: { current, single },
+    isSingleWorkspace,
+  } = useAuth();
+  const {
     navigate,
     contactDialog,
     handleOpenDialog,
@@ -48,15 +52,14 @@ const AddressBookPage = () => {
     setContactToDelete,
     handleDeleteContact,
     contactToEdit,
-    hasSkeleton,
     contacts,
-  } = useAddressBook();
+    useListPaginatedContactsRequest,
+  } = useAddressBook(isSingleWorkspace);
+
+  const { isLoading: hasSkeleton } = useListPaginatedContactsRequest;
 
   const { hasPermission, goWorkspace } = useWorkspace();
-  const {
-    workspaces: { current, single },
-    isSingleWorkspace,
-  } = useAuth();
+
   const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
