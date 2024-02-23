@@ -52,7 +52,7 @@ const VaultDetailsPage = () => {
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   const {
-    workspaces: { current, single },
+    workspaces: { current },
   } = useAuth();
   const { workspace } = useGetCurrentWorkspace();
 
@@ -78,7 +78,7 @@ const VaultDetailsPage = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          {single && (
+          {!workspace?.single && (
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
