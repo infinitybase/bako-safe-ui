@@ -189,14 +189,14 @@ const CreateMemberPage = () => {
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
           <Box maxW={500} w={500} mb={10} pr={12}>
-            <StepProgress length={tabs.length} value={tabs.tab} />
+            <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
         </>
       )}
 
       <Dialog.Body
-        mb={8}
+        mb={7}
         maxW={500}
         pr={12}
         maxH={520}
@@ -216,40 +216,38 @@ const CreateMemberPage = () => {
         <Tabs index={tabs.tab} isLazy colorScheme="green">
           {TabsPanels}
         </Tabs>
+      </Dialog.Body>
 
-        {tabs.is(MemberTabState.FORM) && (
-          <>
-            <Dialog.Actions maxW={500}>
-              <Dialog.SecondaryAction
-                onClick={formState?.handleSecondaryAction}
-              >
-                {formState?.secondaryAction}
-              </Dialog.SecondaryAction>
-              <Dialog.PrimaryAction
-                onClick={formState?.handlePrimaryAction}
-                leftIcon={<SquarePlusIcon />}
-                isDisabled={!formState?.isValid}
+      {tabs.is(MemberTabState.FORM) && (
+        <>
+          <Dialog.Actions maxW={500} pr={12}>
+            <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
+              {formState?.secondaryAction}
+            </Dialog.SecondaryAction>
+            <Dialog.PrimaryAction
+              onClick={formState?.handlePrimaryAction}
+              leftIcon={<SquarePlusIcon />}
+              isDisabled={!formState?.isValid}
+              isLoading={formState?.isLoading}
+            >
+              {formState.primaryAction}
+            </Dialog.PrimaryAction>
+          </Dialog.Actions>
+          {formState.tertiaryAction && (
+            <Dialog.Actions maxW={500} pr={12}>
+              <Dialog.TertiaryAction
+                display="block"
+                onClick={formState.handleTertiaryAction}
+                leftIcon={<TrashIcon />}
+                isDisabled={!formState?.tertiaryAction}
                 isLoading={formState?.isLoading}
               >
-                {formState.primaryAction}
-              </Dialog.PrimaryAction>
+                {formState.tertiaryAction}
+              </Dialog.TertiaryAction>
             </Dialog.Actions>
-            <Dialog.Actions maxW={500}>
-              {formState.tertiaryAction && (
-                <Dialog.TertiaryAction
-                  display="block"
-                  onClick={formState.handleTertiaryAction}
-                  leftIcon={<TrashIcon />}
-                  isDisabled={!formState?.tertiaryAction}
-                  isLoading={formState?.isLoading}
-                >
-                  {formState.tertiaryAction}
-                </Dialog.TertiaryAction>
-              )}
-            </Dialog.Actions>
-          </>
-        )}
-      </Dialog.Body>
+          )}
+        </>
+      )}
     </Dialog.Modal>
   );
 };

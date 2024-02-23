@@ -68,7 +68,13 @@ export const VaultCard = ({
             <VStack ml={2} alignItems="flex-start" spacing={1}>
               {!workspace.single && (
                 <HStack>
-                  <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
+                  <Icon
+                    w={4}
+                    h={4}
+                    as={HandbagIcon}
+                    fontSize={14}
+                    color="grey.200"
+                  />
                   <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
                     {workspace?.name}
                   </Text>
