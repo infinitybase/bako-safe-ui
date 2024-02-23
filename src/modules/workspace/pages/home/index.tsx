@@ -259,7 +259,7 @@ const WorkspacePage = () => {
                         <Text fontWeight="bold" color="grey.200">
                           First thing first...
                         </Text>
-                        <Text color="grey.500" maxW={340} textAlign="center">
+                        <Text color="white" maxW={340} textAlign="center">
                           {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
                         </Text>
