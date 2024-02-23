@@ -10,11 +10,11 @@ import {
 } from '@chakra-ui/react';
 
 import { HomeIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
-import { useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
@@ -23,7 +23,10 @@ const VaultSettingsPage = () => {
   const { vault, store, navigate, params } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
   const { goHome } = useHome();
-  const { currentWorkspace } = useWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
+
   if (!vault) return null;
 
   return (
@@ -60,7 +63,7 @@ const VaultSettingsPage = () => {
                 navigate(
                   Pages.detailsVault({
                     vaultId: vault.id!,
-                    workspaceId: currentWorkspace?.id,
+                    workspaceId: current ?? '',
                   }),
                 )
               }

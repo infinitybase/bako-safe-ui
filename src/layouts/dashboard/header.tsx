@@ -3,6 +3,7 @@ import {
   Box,
   Center,
   chakra,
+  CircularProgress,
   Flex,
   HStack,
   Icon,
@@ -14,6 +15,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -26,10 +28,11 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { useFuelAccount } from '@/modules/auth/store';
-import { useDisconnect, useLoadImage } from '@/modules/core/hooks';
+import { useAuth } from '@/modules/auth/hooks';
+import { useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -57,12 +60,16 @@ const TopBarItem = chakra(SpacedBox, {
   },
 });
 
-/* TODO: create props with data user */
 const UserBox = () => {
-  const { formattedAccount, avatar } = useFuelAccount();
-  const avatarImage = useLoadImage(avatar);
-  const { discconnect } = useDisconnect();
+  const auth = useAuth();
+  const avatarImage = useLoadImage(auth.avatar);
+  const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
+
+  const logout = async () => {
+    await fuel.disconnect();
+    auth.handlers.logout();
+  };
 
   return (
     <>
@@ -85,13 +92,13 @@ const UserBox = () => {
                   borderRadius={5}
                 />
               ) : (
-                <Avatar variant="roundedSquare" src={avatar} />
+                <Avatar variant="roundedSquare" src={auth.avatar} />
               )}
             </Box>
 
             <Box mr={9}>
               <Text fontWeight="semibold" color="grey.200">
-                {formattedAccount}
+                {AddressUtils.format(auth.account)}
               </Text>
             </Box>
 
@@ -125,7 +132,7 @@ const UserBox = () => {
             </Box>
 
             <Box borderTop={'1px solid'} borderTopColor={'dark.100'} p={4}>
-              <HStack cursor={'pointer'} onClick={() => discconnect()}>
+              <HStack cursor={'pointer'} onClick={logout}>
                 <Icon color="grey.200" fontSize="xl" as={ExitIcon} />
                 <Text color="grey.200" fontWeight={'bold'}>
                   Logout
@@ -140,10 +147,24 @@ const UserBox = () => {
 };
 
 const WorkspaceBox = ({
+  isLoading,
   currentWorkspace,
 }: {
-  currentWorkspace: Workspace;
+  currentWorkspace?: Workspace;
+  isLoading?: boolean;
 }) => {
+  if (isLoading)
+    return (
+      <CircularProgress
+        trackColor="dark.100"
+        size={18}
+        isIndeterminate
+        color="brand.500"
+      />
+    );
+
+  if (!currentWorkspace) return null;
+
   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
   return (
@@ -220,7 +241,7 @@ const Header = () => {
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
-        onSelect={handleWorkspaceSelection}
+        onSelect={handleWorkspaceSelection.handler}
         onCreate={handleGoToCreateWorkspace}
       />
 
@@ -240,7 +261,10 @@ const Header = () => {
           w={310}
           px={6}
         >
-          <WorkspaceBox currentWorkspace={currentWorkspace} />
+          <WorkspaceBox
+            currentWorkspace={currentWorkspace.workspace}
+            isLoading={currentWorkspace.isLoading}
+          />
         </TopBarItem>
 
         <TopBarItem

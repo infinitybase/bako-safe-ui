@@ -30,6 +30,7 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
   assetsMap,
@@ -58,7 +59,7 @@ const WorkspacePage = () => {
   const {
     account,
     navigate,
-    currentWorkspace,
+    currentWorkspace: { workspace: currentWorkspace },
     workspaceVaults: { vaultsMax, extraCount, recentVaults },
     workspaceTransactions: { recentTransactions },
     hasPermission,
@@ -67,23 +68,30 @@ const WorkspacePage = () => {
     workspaceDialog,
     worksapceBalance,
     pendingSignerTransactions,
-    hasSkeleton,
+    workspaceHomeRequest,
     goWorkspace,
-    hasSkeletonBalance,
   } = useWorkspace();
   const { goHome } = useHome();
 
+  const {
+    workspaces: { current },
+  } = useAuth();
+
   const hasVaults = recentVaults?.length ?? 0;
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
+  const workspaceId = current ?? '';
 
   // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
+
+  if (!currentWorkspace || currentWorkspace.single) {
+    return null;
+  }
 
   return (
     <VStack w="full" spacing={6}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
-        workspace={currentWorkspace}
       />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
@@ -121,16 +129,16 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(currentWorkspace.id)}
+                onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace.name}
+                {currentWorkspace?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="semibold"
@@ -147,16 +155,12 @@ const WorkspacePage = () => {
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!hasSkeleton}>
+            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
-                onClick={() =>
-                  navigate(
-                    Pages.createVault({ workspaceId: currentWorkspace.id }),
-                  )
-                }
+                onClick={() => navigate(Pages.createVault({ workspaceId }))}
               >
                 Create vault
               </Button>
@@ -168,7 +172,7 @@ const WorkspacePage = () => {
       <HStack w="full" spacing={6}>
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!hasSkeleton}
+          isLoaded={!workspaceHomeRequest.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -178,7 +182,7 @@ const WorkspacePage = () => {
               <HStack w="full" spacing={6}>
                 <Avatar
                   variant="roundedSquare"
-                  name={currentWorkspace.name}
+                  name={currentWorkspace?.name}
                   bg="grey.900"
                   color="white"
                   size={'lg'}
@@ -186,7 +190,7 @@ const WorkspacePage = () => {
                 />
                 <Box maxW="40%">
                   <Heading mb={1} variant="title-xl" isTruncated>
-                    {currentWorkspace.name}
+                    {currentWorkspace?.name}
                   </Heading>
                   <Box>
                     <Text variant="description" noOfLines={2}>
@@ -196,7 +200,7 @@ const WorkspacePage = () => {
                 </Box>
 
                 <CustomSkeleton
-                  isLoaded={!hasSkeletonBalance}
+                  isLoaded={!worksapceBalance.isLoading}
                   display={'flex'}
                   justifyContent={'flex-end'}
                 >
@@ -238,7 +242,7 @@ const WorkspacePage = () => {
                   color="grey.200"
                 >{`Workspace's balance breakdown`}</Text>
                 <CustomSkeleton
-                  isLoaded={!hasSkeletonBalance}
+                  isLoaded={!worksapceBalance.isLoading}
                   w="full"
                   h="full"
                 >
@@ -268,7 +272,7 @@ const WorkspacePage = () => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      {/*todo: 
+                      {/*todo:
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
@@ -291,12 +295,10 @@ const WorkspacePage = () => {
 
         {/* ACTION CARDS */}
         <VStack w="full" maxH={450} spacing={4}>
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
-              onClick={() =>
-                navigate(Pages.userVaults({ workspaceId: currentWorkspace.id }))
-              }
+              onClick={() => navigate(Pages.userVaults({ workspaceId }))}
             >
               <ActionCard.Icon icon={VaultIcon} />
               <Box w="full">
@@ -308,12 +310,12 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
                   Pages.userTransactions({
-                    workspaceId: currentWorkspace.id,
+                    workspaceId,
                   }),
                 )
               }
@@ -328,12 +330,12 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!hasSkeleton}>
+          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
                   Pages.addressBook({
-                    workspaceId: currentWorkspace.id,
+                    workspaceId,
                   }),
                 )
               }
@@ -363,7 +365,7 @@ const WorkspacePage = () => {
         </Text>
       </Box>
 
-      <CustomSkeleton isLoaded={!hasSkeleton}>
+      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
         {!hasVaults ? (
           <EmptyVault
             showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
@@ -379,14 +381,14 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!hasSkeleton}>
+                    <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           extra={extraCount}
                           onClick={() =>
                             navigate(
                               Pages.userVaults({
-                                workspaceId: currentWorkspace.id,
+                                workspaceId,
                               }),
                             )
                           }
@@ -401,7 +403,7 @@ const WorkspacePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.detailsVault({
-                                workspaceId: currentWorkspace.id,
+                                workspaceId,
                                 vaultId: id,
                               }),
                             )
@@ -442,7 +444,7 @@ const WorkspacePage = () => {
                 onClick={() =>
                   navigate(
                     Pages.userTransactions({
-                      workspaceId: currentWorkspace.id,
+                      workspaceId,
                     }),
                   )
                 }
@@ -456,7 +458,7 @@ const WorkspacePage = () => {
 
       {/* TRANSACTION LIST */}
       {!hasTransactions && hasVaults ? (
-        <CustomSkeleton isLoaded={!hasSkeleton} pb={10}>
+        <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
           <EmptyTransaction />
         </CustomSkeleton>
       ) : (
@@ -466,7 +468,10 @@ const WorkspacePage = () => {
               const status = transactionStatus({ ...transaction, account });
 
               return (
-                <CustomSkeleton isLoaded={!hasSkeleton} key={transaction.id}>
+                <CustomSkeleton
+                  isLoaded={!workspaceHomeRequest.isLoading}
+                  key={transaction.id}
+                >
                   <TransactionCard.Container
                     status={status}
                     details={
@@ -504,7 +509,11 @@ const WorkspacePage = () => {
                         ...transaction,
                         account,
                       })}
-                      isSigner={false}
+                      isSigner={
+                        !!transaction.witnesses.find(
+                          (w) => w.account === account,
+                        )
+                      } // here
                     />
                   </TransactionCard.Container>
                 </CustomSkeleton>

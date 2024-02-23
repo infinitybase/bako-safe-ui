@@ -337,7 +337,7 @@ const ExamplePage = () => {
           w="full"
           maxW={420}
           title="Modal example"
-          description="Setting Sail on a Journey to Unlock the Potential of User-Centered Design."
+          description="You can view the details, members, and their roles in your workspace."
         />
 
         <Dialog.Body maxW={420}>

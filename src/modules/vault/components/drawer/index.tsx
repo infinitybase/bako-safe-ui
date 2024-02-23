@@ -109,9 +109,10 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}
+                    workspace={vault.workspace}
                     isActive={vaultId === vault.id}
                     description={vault.description}
-                    workspace={vault?.workspace}
+                    isSingleWorkspace={vault.workspace.single}
                     onClick={() => drawer.onSelectVault(vault)}
                   />
                 </CustomSkeleton>

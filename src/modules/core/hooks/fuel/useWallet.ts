@@ -1,7 +1,7 @@
 import { useFuel } from '@fuels/react';
 import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
-import { useFuelAccount } from '@/modules/auth/store';
+import { useAuthStore } from '@/modules/auth/store';
 
 import { FuelQueryKeys } from './types';
 
@@ -18,7 +18,7 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const { account: currentAccount } = useFuelAccount();
+  const { account: currentAccount } = useAuthStore();
 
   return useWallet(currentAccount);
 };

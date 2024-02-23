@@ -3,6 +3,8 @@ import { SortOption } from 'bsafe';
 import { IPagination } from '@/modules/core';
 import { AddressBook } from '@/modules/core/models/';
 
+import { WorkspaceContact } from '../../core/models/workspace';
+
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;
 export type FindContactsResponse = AddressBook[];
@@ -32,4 +34,4 @@ export interface GetPaginatedContactsParams {
   sort?: SortOption;
 }
 
-export type GetPaginatedContactsResponse = IPagination<AddressBook>;
+export type GetPaginatedContactsResponse = IPagination<WorkspaceContact>;

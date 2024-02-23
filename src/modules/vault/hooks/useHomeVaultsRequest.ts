@@ -1,12 +1,12 @@
 import { useQuery } from 'react-query';
 
-import { useFuelAccount } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import { SortOption } from '@/modules/transactions/services';
 
 import { VaultService } from '../services';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
 
   return useQuery(['predicate/home', account], () =>
     VaultService.getAllWithPagination({

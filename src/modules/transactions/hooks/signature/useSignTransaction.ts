@@ -1,19 +1,21 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth';
+import { queryClient } from '@/config';
+import { useAuth, useAuthStore } from '@/modules/auth';
 import {
-  HomeQueryKey,
   invalidateQueries,
   useWalletSignMessage,
+  WorkspacesQueryKey,
 } from '@/modules/core';
+import { useHome } from '@/modules/home';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import {
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
@@ -31,8 +33,14 @@ export interface UseSignTransactionOptions {
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
+  const {
+    workspaces: { current },
+  } = useAuth();
+  const { vaultId } = useParams();
+
   const transactionSendContext = useTransactionSend();
+  const { transactionsRequest, homeRequest } = useHome();
 
   useMemo(() => {
     const transaction = options.transaction;
@@ -48,19 +56,27 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     return options.transaction;
   }, [options.transaction]);
 
-  const refetetchTransactionList = () => {
+  const refetchTransactionList = useCallback(() => {
     invalidateQueries([
       'bsafe',
-      ...HomeQueryKey.FULL_DATA(),
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
-      TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
-  };
+    // queryClient.invalidateQueries(
+    //   WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+    // );
+    queryClient.invalidateQueries(
+      WorkspacesQueryKey.FULL_DATA(current, vaultId),
+    );
+    transactionsRequest.refetch();
+    homeRequest.refetch();
+  }, [current, homeRequest, transactionsRequest]);
 
   const request = useSignTransactionRequest({
-    onSuccess: () => refetetchTransactionList(),
+    onSuccess: () => {
+      refetchTransactionList();
+    },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Inválid signature');
     },
@@ -94,6 +110,21 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   };
 
+  useEffect(() => {
+    if (
+      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+      (!homeRequest.isRefetching || !homeRequest.isFetching)
+    ) {
+      refetchTransactionList();
+    }
+  }, [
+    homeRequest.isFetching,
+    homeRequest.isRefetching,
+    homeRequest.isSuccess,
+    options.transaction.status,
+    refetchTransactionList,
+  ]);
+
   return {
     request,
     signMessageRequest,
@@ -103,7 +134,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     isLoading:
       request.isLoading ||
       signMessageRequest.isLoading ||
-      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN,
+      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
+      options.transaction.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,
   };
 };

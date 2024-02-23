@@ -1,12 +1,17 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { invalidateQueries, useBsafeCreateTransaction } from '@/modules/core';
+import { useAddressBookStore } from '@/modules/addressBook/store/useAddressBookStore';
+import { useAuth } from '@/modules/auth';
+import {
+  invalidateQueries,
+  useBsafeCreateTransaction,
+  WorkspacesQueryKey,
+} from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import {
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
@@ -14,10 +19,6 @@ import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 interface UseCreateTransactionParams {
   onClose: () => void;
-}
-
-interface NickRecord {
-  [key: string]: string;
 }
 
 const useTransactionAccordion = () => {
@@ -39,21 +40,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const params = useParams<{ vaultId: string }>();
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-  const { data } = useListContactsRequest();
-
-  const [nicks, setNicks] = useState<NickRecord>({});
-
-  //Transaction
-  useMemo(() => {
-    if (data) {
-      const nicks: NickRecord = data.reduce((acc, contact) => {
-        acc[contact.user.address] = contact.nickname;
-        return acc;
-      }, {});
-      //Adding nicknames to the state for use in TransactionsAccordion
-      setNicks(nicks);
-    }
-  }, [data]);
+  const {
+    workspaces: { current },
+  } = useAuth();
+  const { contacts } = useAddressBookStore();
+  useListContactsRequest(current, true, params.vaultId);
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -77,9 +68,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       });
       invalidateQueries([
         TRANSACTION_LIST_QUERY_KEY,
-        TRANSACTION_LIST_PAGINATION_QUERY_KEY,
         USER_TRANSACTIONS_QUERY_KEY,
       ]);
+      invalidateQueries(
+        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+      );
       handleClose();
     },
     onError: () => {
@@ -115,7 +108,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     vault: vaultDetails,
     assets: vaultAssets,
-    nicks,
+    nicks: contacts,
     navigate,
     accordion,
     handleClose,

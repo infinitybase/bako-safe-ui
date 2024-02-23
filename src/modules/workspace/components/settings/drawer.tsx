@@ -19,6 +19,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, ErrorIcon } from '@/components';
+import { useAddressBook } from '@/modules/addressBook';
 import {
   AddressUtils,
   Member,
@@ -26,13 +27,11 @@ import {
   PermissionRoles,
   Workspace,
 } from '@/modules/core';
-import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
+import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface WorkspaceSettingsDrawerProps
-  extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
-  workspace: Workspace;
-}
+  extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
 
 interface MemberCardProps {
   member: Member;
@@ -45,6 +44,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
     workspace!,
     member,
   );
+  const { contactByAddress } = useAddressBook();
 
   //TODO: Use this validation to delete button
   const isEditable =
@@ -61,7 +61,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
-            name={member.name ?? member.address}
+            name={contactByAddress(member.address!)?.nickname ?? member.address}
           />
           <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
@@ -71,7 +71,8 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
               fontWeight="normal"
               color={!member.name ? 'grey.200' : 'grey.500'}
             >
-              {AddressUtils.format(member.address)}
+              {contactByAddress(member.address!)?.nickname ??
+                AddressUtils.format(member.address)}
             </Text>
           </Box>
           <Badge fontSize="xs" p={1} variant={permission?.variant}>
@@ -95,15 +96,11 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
 };
 
 const WorkspaceSettingsDrawer = ({
-  workspace,
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
 
-  // TODO: Remove this and use workspace received on props
-  const request = useGetWorkspaceRequest(workspace.id, {
-    enabled: drawerProps.isOpen,
-  });
+  const request = useGetCurrentWorkspace();
 
   return (
     <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
@@ -124,8 +121,8 @@ const WorkspaceSettingsDrawer = ({
               Workspace settings
             </Heading>
             <Text variant="description">
-              Setting Sail on a Journey to Unlock the Potential of User-Centered
-              Design.
+              You can view the details, members, and their roles in your
+              workspace.
             </Text>
           </VStack>
         </DrawerHeader>
@@ -169,7 +166,11 @@ const WorkspaceSettingsDrawer = ({
               bgColor="dark.100"
               border="none"
               onClick={() => {
-                navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
+                navigate(
+                  Pages.membersWorkspace({
+                    workspaceId: request.workspace?.id ?? '',
+                  }),
+                );
               }}
             >
               Add new member
@@ -186,7 +187,7 @@ const WorkspaceSettingsDrawer = ({
                   onEdit={(memberId) =>
                     navigate(
                       Pages.updateMemberWorkspace({
-                        workspaceId: workspace.id,
+                        workspaceId: request.workspace!.id,
                         memberId,
                       }),
                     )

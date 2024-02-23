@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { UseQueryOptions } from 'react-query/types/react/types';
 
+import { useAuth } from '@/modules/auth';
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
   IWroskapceBalance,
@@ -15,8 +16,11 @@ const useGetWorkspaceBalanceRequest = (
     string[]
   >,
 ) => {
+  const {
+    workspaces: { current },
+  } = useAuth();
   const { data, ...request } = useQuery(
-    [WorkspacesQueryKey.DEFAULT, WorkspacesQueryKey.GET_BALANCE()],
+    WorkspacesQueryKey.GET_BALANCE(current),
     () => WorkspaceService.getBalance(),
     {
       ...options,
