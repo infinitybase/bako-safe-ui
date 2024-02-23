@@ -25,10 +25,6 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
-      console.log('👉 User disconnected', {
-        currentAccount,
-        authAccount: auth.account,
-      });
       if (currentAccount === auth.account) return;
       clearAll();
     }

@@ -83,6 +83,10 @@ const WorkspacePage = () => {
 
   // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
 
+  if (currentWorkspace?.single) {
+    return null;
+  }
+
   return (
     <VStack w="full" spacing={6}>
       <WorkspaceSettingsDrawer
