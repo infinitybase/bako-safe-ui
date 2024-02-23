@@ -95,7 +95,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         borderRadius={8}
         borderColor="#FDD8351A"
       >
-        <Text fontSize="md">
+        <Text fontSize="lg">
           <b>Important Note</b>: Membership in the workspace ≠ signatory rights
           in a vault. They are separate entities with separate controls.
         </Text>
