@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
-import { useHome } from '@/modules/home';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
@@ -37,11 +36,6 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     onClose: props.onClose,
     isOpen: props.isOpen,
   });
-  const {
-    vaultsRequest: {
-      vaults: { recentVaults },
-    },
-  } = useHome();
 
   return (
     <Drawer
@@ -103,7 +97,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
-            {recentVaults?.map((vault) => {
+            {vaults?.map((vault) => {
               return (
                 <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
                   <VaultDrawerBox
