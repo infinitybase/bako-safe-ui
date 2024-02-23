@@ -2,7 +2,7 @@ import { createIcon } from '@chakra-ui/react';
 
 const HandbagIcon = createIcon({
   displayName: 'QuestionIcon',
-  viewBox: '0 0 12 12',
+  viewBox: '0 0 12 13',
   defaultProps: {
     fontSize: 26,
   },

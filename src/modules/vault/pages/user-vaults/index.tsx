@@ -17,10 +17,12 @@ import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
+import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
@@ -33,10 +35,16 @@ const UserVaultsPage = () => {
     vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
 
-  const { VIEWER } = PermissionRoles;
-  const { currentWorkspace, hasPermission, goWorkspace } = useWorkspace();
+  const { MANAGER, OWNER, ADMIN } = PermissionRoles;
+  const { hasPermission, goWorkspace } = useWorkspace();
   const { goHome } = useHome();
   const { selectWorkspace } = useSelectWorkspace();
+  const {
+    workspaces: { current, single },
+    isSingleWorkspace,
+  } = useAuth();
+
+  const { workspace } = useGetCurrentWorkspace();
 
   return (
     <VStack w="full" spacing={6}>
@@ -55,9 +63,7 @@ const UserVaultsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              currentWorkspace.single
-                ? goHome()
-                : goWorkspace(currentWorkspace.id)
+              current == single ? goHome() : goWorkspace(current)
             }
           >
             Back home
@@ -74,15 +80,16 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!currentWorkspace.single && (
+            {!isSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(currentWorkspace.id)}
+                  onClick={() => goWorkspace(current)} //
                 >
-                  {currentWorkspace.name}
+                  {workspace?.name}
+                  {/* use request of workspace  */}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -104,8 +111,14 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            isDisabled={hasPermission([VIEWER])}
-            onClick={() => navigate(Pages.createVault())}
+            isDisabled={!hasPermission([OWNER, MANAGER])}
+            onClick={() =>
+              navigate(
+                Pages.createVault({
+                  workspaceId: current,
+                }),
+              )
+            }
           >
             Create vault
           </Button>
@@ -117,7 +130,7 @@ const UserVaultsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: currentWorkspace.id,
+                workspaceId: current,
               }),
             )
           }
@@ -134,7 +147,7 @@ const UserVaultsPage = () => {
           onClick={() => {
             navigate(
               Pages.userTransactions({
-                workspaceId: currentWorkspace.id,
+                workspaceId: current,
               }),
             );
           }}
@@ -151,7 +164,7 @@ const UserVaultsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: currentWorkspace.id,
+                workspaceId: current,
               }),
             )
           }
@@ -181,7 +194,9 @@ const UserVaultsPage = () => {
 
       {!vaults?.length && (
         <CustomSkeleton isLoaded={!loadingVaults}>
-          <EmptyVault />
+          <EmptyVault
+            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
+          />
         </CustomSkeleton>
       )}
 
@@ -197,13 +212,15 @@ const UserVaultsPage = () => {
                   title={description}
                   members={members!}
                   onClick={() => {
-                    selectWorkspace(workspace);
-                    navigate(
-                      Pages.detailsVault({
-                        vaultId: id,
-                        workspaceId: currentWorkspace.id,
-                      }),
-                    );
+                    selectWorkspace(workspace.id, {
+                      onSelect: (_workspace) =>
+                        navigate(
+                          Pages.detailsVault({
+                            vaultId: id,
+                            workspaceId: _workspace.id,
+                          }),
+                        ),
+                    });
                   }}
                 />
               </CustomSkeleton>

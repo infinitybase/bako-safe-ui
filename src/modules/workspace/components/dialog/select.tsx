@@ -1,7 +1,7 @@
 import { Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules/auth/hooks';
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
@@ -11,8 +11,9 @@ import { WorkspaceCard } from '../card';
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
   userWorkspaces: Workspace[];
-  onSelect: (workspace: Workspace) => void;
+  onSelect: (workspace: string) => void;
   onCreate: () => void;
+  isLoading?: boolean;
 }
 
 const SelectWorkspaceDialog = ({
@@ -21,11 +22,10 @@ const SelectWorkspaceDialog = ({
   userWorkspaces,
   onCreate,
 }: SelectWorkspaceDialogProps) => {
+  const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
 
-  const loggedWorkspace = JSON.parse(
-    CookiesConfig.getCookie(CookieName.WORKSPACE)!,
-  ).id;
+  const loggedWorkspace = workspaces.current;
 
   return (
     <Dialog.Modal
@@ -50,9 +50,11 @@ const SelectWorkspaceDialog = ({
           <VStack
             spacing={7}
             w="full"
-            maxH={340}
+            h={340}
             overflowY="scroll"
             paddingRight={6}
+            marginTop={6}
+            marginBottom={8}
             css={{
               '&::-webkit-scrollbar': {
                 width: '5px',
@@ -74,7 +76,9 @@ const SelectWorkspaceDialog = ({
                   workspace={w}
                   counter={{ members: w.members.length, vaults: w.predicates }}
                   onClick={() => {
-                    w.id !== loggedWorkspace ? onSelect(w) : dialog.onClose();
+                    w.id !== loggedWorkspace
+                      ? onSelect(w.id)
+                      : dialog.onClose();
                   }}
                 />
               ))

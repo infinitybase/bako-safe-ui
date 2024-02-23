@@ -1,32 +1,24 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
-import { useGetCurrentAccount } from '@/modules/core';
 
 import { useSignIn } from '../hooks';
-import { useFuelAccount } from '../store';
 
 const SigninPage = () => {
-  const { isConnecting, connectors, redirectToWalletLink } = useSignIn();
-  const { invalidAccount, setInvalidAccount } = useFuelAccount();
-  const { getAccount } = useGetCurrentAccount();
+  const { isConnecting, connectors, redirectToWalletLink, auth } = useSignIn();
   const { errorToast } = useContactToast();
 
-  useEffect(() => {
-    getAccount();
-  }, []);
-
   useMemo(() => {
-    invalidAccount &&
+    auth.isInvalidAccount &&
       errorToast({
         title: 'Invalid Account',
         description: 'You need to use the fuel wallet to connect.',
       });
-    setInvalidAccount(false);
-  }, [invalidAccount]);
+    auth.handlers.setInvalidAccount(false);
+  }, [auth.isInvalidAccount]);
 
   const pageSections = {
     description: connectors.has

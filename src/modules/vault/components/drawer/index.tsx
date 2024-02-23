@@ -103,19 +103,16 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
-            {vaults?.map((vault) => {
-              const workspaceVault = recentVaults?.find(
-                (workspaceVault) => workspaceVault.id === vault.id,
-              );
-
+            {recentVaults?.map((vault) => {
               return (
                 <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}
+                    workspace={vault.workspace}
                     isActive={vaultId === vault.id}
                     description={vault.description}
-                    workspace={workspaceVault?.workspace}
+                    isSingleWorkspace={vault.workspace.single}
                     onClick={() => drawer.onSelectVault(vault)}
                   />
                 </CustomSkeleton>

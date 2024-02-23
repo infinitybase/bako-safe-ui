@@ -20,7 +20,6 @@ import {
   UseCreateTransaction,
   useCreateTransaction,
 } from '@/modules/transactions/hooks';
-import { AddressBookUtils } from '@/utils/address-book';
 
 import { TransactionAccordion } from './accordion';
 
@@ -44,21 +43,14 @@ const TransactionFormField = ({
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
   const {
-    contactsPaginatedRequest: { contacts, isSuccess },
+    createContactRequest,
     search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
-    createContactRequest,
+    paginatedContacts,
     inView,
   } = useAddressBook();
-
-  const options =
-    contacts &&
-    AddressBookUtils.removeDuplicates(contacts)?.map(({ user, nickname }) => ({
-      value: user.address,
-      label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-    }));
 
   return (
     <>
@@ -84,8 +76,8 @@ const TransactionFormField = ({
                 onInputChange={search.handler}
                 onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
-                isLoading={!isSuccess}
-                options={options}
+                isLoading={!paginatedContacts.isSuccess}
+                options={paginatedContacts.data!}
                 rightAction={{}}
                 bottomAction={
                   <Box mt={2}>
@@ -113,7 +105,7 @@ const TransactionFormField = ({
           render={({ field, fieldState }) => (
             <AssetSelect
               isInvalid={fieldState.invalid}
-              assets={assets.assets}
+              assets={assets!.assets!}
               name={`transaction.${index}.asset`}
               value={field.value}
               onChange={field.onChange}

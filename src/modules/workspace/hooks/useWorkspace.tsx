@@ -1,75 +1,64 @@
 import { Icon } from '@chakra-ui/icons';
-import { useDisclosure, useTimeout } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useDisclosure } from '@chakra-ui/react';
+import { useCallback, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useFuelAccount } from '@/modules/auth/store';
-import { invalidateQueries } from '@/modules/core/utils';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list/useTotalSignaturesPendingRequest';
 
 import { Pages } from '../../core';
-import {
-  PermissionRoles,
-  Workspace,
-  WorkspacesQueryKey,
-} from '../../core/models';
+import { PermissionRoles } from '../../core/models';
+import { useGetCurrentWorkspace } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
 
-const { WORKSPACE, PERMISSIONS, SINGLE_WORKSPACE } = CookieName;
+const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = () => {
-  const [visibleBalance, setVisibleBalance] = useState(false);
-  const { workspaceId, vaultId } = useParams();
-  const { account } = useFuelAccount();
-  const workspaceDialog = useDisclosure();
-  const toast = useNotification();
   const navigate = useNavigate();
-  const singleCookie = CookiesConfig.getCookie(SINGLE_WORKSPACE);
-  const currentCookie = CookiesConfig.getCookie(WORKSPACE);
-  const permissionsCookie = CookiesConfig.getCookie(PERMISSIONS);
-  const currentWorkspace: Workspace = currentCookie
-    ? JSON.parse(currentCookie)
-    : {};
-  const currentPermissions: Workspace = permissionsCookie
-    ? JSON.parse(permissionsCookie)
-    : {};
-  const singleWorkspace = singleCookie
-    ? JSON.parse(CookiesConfig.getCookie(SINGLE_WORKSPACE)!)
-    : {};
-  const userWorkspacesRequest = useUserWorkspacesRequest();
-  const workspaceHomeRequest = useHomeDataRequest();
+  const { workspaceId, vaultId } = useParams();
 
-  const vaultsPerPage = 8;
+  const auth = useAuth();
+
+  const [visibleBalance, setVisibleBalance] = useState(false);
+
+  const toast = useNotification();
+  const workspaceDialog = useDisclosure();
+
+  const workspaceHomeRequest = useHomeDataRequest();
+  const userWorkspacesRequest = useUserWorkspacesRequest();
+
   const worksapceBalance = useGetWorkspaceBalanceRequest();
   const pendingSignerTransactions = useTransactionsSignaturePending();
+  const workspaceRequest = useGetCurrentWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
 
-  const { selectWorkspace } = useSelectWorkspace();
+  const { selectWorkspace, isSelecting } = useSelectWorkspace();
 
   const goWorkspace = (workspaceId: string) => {
-    invalidateQueries(WorkspacesQueryKey.FULL_DATA());
     navigate(Pages.workspace({ workspaceId }));
   };
 
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = async (selectedWorkspace: Workspace) => {
-    if (selectedWorkspace.id === currentWorkspace.id) {
+  const handleWorkspaceSelection = async (selectedWorkspace: string) => {
+    if (selectedWorkspace === current || isSelecting) {
       return;
     }
+
+    await workspaceRequest.refetch();
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        workspaceHomeRequest.refetch();
-        pendingSignerTransactions.refetch();
         if (!workspace.single) {
           goWorkspace(workspace.id);
         }
@@ -87,100 +76,55 @@ const useWorkspace = () => {
     });
   };
 
-  const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(true);
-  const [hasSkeletonBalance, setHasSkeletonBalance] = useState<boolean>(true);
+  const hasPermission = useCallback(
+    (requiredRoles: PermissionRoles[]) => {
+      if (auth.isSingleWorkspace) return true;
 
-  useTimeout(() => {
-    setHasSkeleton(false);
-    setFirstRender(false);
-  }, 3000);
+      const permissions = auth.permissions;
 
-  useTimeout(() => setHasSkeletonBalance(false), 10000);
+      if (!permissions) return false;
 
-  useMemo(() => {
-    if (
-      firstRender &&
-      workspaceId !== workspaceHomeRequest.data?.workspace.id
-    ) {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
+      const isValid =
+        requiredRoles.filter(
+          (p) =>
+            (permissions[p] ?? []).includes('*') ||
+            (permissions[p] ?? []).includes(vaultId!),
+        ).length > 0;
 
-    if (
-      !firstRender &&
-      workspaceId === workspaceHomeRequest.data?.workspace.id
-    ) {
-      setHasSkeleton(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    workspaceHomeRequest.isLoading,
-    workspaceHomeRequest.isFetching,
-    workspaceHomeRequest.isSuccess,
-  ]);
+      return isValid;
+    },
+    [auth.isSingleWorkspace, auth.permissions, vaultId],
+  );
 
-  useMemo(() => {
-    const workspacesInCookie = JSON.parse(
-      CookiesConfig.getCookie(CookieName.WORKSPACE)!,
-    ).id;
-
-    if (workspacesInCookie !== worksapceBalance.balance?.workspaceId) {
-      setHasSkeletonBalance(true);
-    }
-
-    if (workspacesInCookie === worksapceBalance.balance?.workspaceId) {
-      setHasSkeletonBalance(false);
-    }
-
-    // console.log('[WORKSPACE]: ', {
-    //   HEADER: workspaceId,
-    //   REQ_ATUAL: worksapceBalance.balance?.workspaceId,
-    // });
-  }, [
-    worksapceBalance.isLoading,
-    worksapceBalance.isFetching,
-    worksapceBalance.isSuccess,
-  ]);
-
-  const hasPermission = (requiredRoles: PermissionRoles[]) => {
-    const isValid =
-      requiredRoles.filter(
-        (p) =>
-          (currentPermissions[p] ?? []).includes('*') ||
-          (currentPermissions[p] ?? []).includes(vaultId),
-      ).length > 0;
-
-    return isValid;
-  };
-
-  // todo: add an variable to verify all requests are in progress, and on the UI show a loading spinner using skeleton
   return {
-    account,
-    currentWorkspace,
-    singleWorkspace,
+    account: auth.account,
+    currentWorkspace: {
+      workspace: workspaceRequest.workspace,
+      isLoading: workspaceRequest.isLoading,
+    },
+    currentPermissions: auth.permissions,
     userWorkspacesRequest,
     workspaceDialog,
-    handleWorkspaceSelection,
+    handleWorkspaceSelection: {
+      handler: handleWorkspaceSelection,
+      isSelecting,
+    },
     navigate,
     workspaceHomeRequest,
     workspaceId,
     workspaceVaults: {
       recentVaults: workspaceHomeRequest.data?.predicates?.data,
-      vaultsMax: vaultsPerPage,
+      vaultsMax: VAULTS_PER_PAGE,
       extraCount:
-        vaultsCounter <= vaultsPerPage ? 0 : vaultsCounter - vaultsPerPage,
+        vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
     workspaceTransactions: {
       recentTransactions: workspaceHomeRequest.data?.transactions?.data,
     },
     worksapceBalance,
-    currentPermissions,
     hasPermission,
     visibleBalance,
     setVisibleBalance,
-    hasSkeleton,
-    hasSkeletonBalance,
     pendingSignerTransactions,
     goWorkspace,
   };

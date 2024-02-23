@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
+import { useAuth } from '@/modules/auth';
 import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -32,7 +33,13 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
-  const { currentWorkspace, hasPermission } = useWorkspace();
+
+  const { hasPermission } = useWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
+
+  const workspaceId = current ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,
@@ -155,7 +162,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                           navigate(
                             Pages.createTransaction({
                               vaultId: vault.id!,
-                              workspaceId: currentWorkspace?.id,
+                              workspaceId,
                             }),
                           )
                         }

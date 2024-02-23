@@ -21,7 +21,6 @@ import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
 import { ITemplate } from '@/modules/core/models';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
-import { AddressBookUtils } from '@/utils/address-book';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -38,26 +37,13 @@ const VaultAddressesStep = ({
 }: VaultAddressesStepProps) => {
   const {
     handleOpenDialog,
-    contactsPaginatedRequest,
+    paginatedContacts,
     createContactRequest,
-    contactsPaginatedRequest: { contacts },
     search,
     form: contactForm,
     contactDialog,
     inView,
   } = useAddressBook();
-
-  const options =
-    contacts &&
-    AddressBookUtils.removeDuplicates(contacts)
-      ?.filter(
-        ({ user }) =>
-          !addresses.fields.map((a) => a.value)?.includes(user.address),
-      )
-      ?.map(({ user, nickname }) => ({
-        value: user.address,
-        label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-      }));
 
   return (
     <>
@@ -143,9 +129,9 @@ const VaultAddressesStep = ({
                         onInputChange={search.handler}
                         onChange={(selected) => field.onChange(selected)}
                         errorMessage={fieldState.error?.message}
-                        isLoading={!contactsPaginatedRequest.isSuccess}
+                        isLoading={!paginatedContacts.isSuccess}
                         inView={inView}
-                        options={options}
+                        options={paginatedContacts.data!}
                         rightAction={{
                           ...(first
                             ? {}

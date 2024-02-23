@@ -11,10 +11,12 @@ interface VaultDrawerBoxProps extends CardProps {
   address: string;
   description?: string;
   workspace?: Workspace;
+  isSingleWorkspace?: boolean;
 }
 
 const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, description, workspace, ...rest } = props;
+  const { isActive, name, description, workspace, isSingleWorkspace, ...rest } =
+    props;
 
   return (
     <Card
@@ -38,12 +40,14 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
           name={name}
         />
         <VStack alignItems="flex-start" spacing={0}>
-          <HStack>
-            <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
-            <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
-              {workspace?.name}
-            </Text>
-          </HStack>
+          {!isSingleWorkspace && (
+            <HStack>
+              <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
+              <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
+                {workspace?.name}
+              </Text>
+            </HStack>
+          )}
           <Text variant="subtitle">{name}</Text>
         </VStack>
       </HStack>

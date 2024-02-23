@@ -1,11 +1,12 @@
 import { useMutation, UseMutationOptions } from 'react-query';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
+//import { CookieName } from '@/config/cookies';
+import { useAuth } from '@/modules/auth/hooks';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core/models/workspace';
 
 import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
 
-const { WORKSPACE, PERMISSIONS, USER_ID } = CookieName;
+//const { WORKSPACE, PERMISSIONS, USER_ID } = CookieName;
 
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
@@ -24,31 +25,25 @@ interface UseSelectWorkspaceOptions {
 
 const useSelectWorkspace = () => {
   const { mutate, isLoading, data, ...request } = useSelectWorkspaceRequest();
+  const auth = useAuth();
 
   const selectWorkspace = (
-    workspace: Workspace,
+    workspace: string,
     options?: UseSelectWorkspaceOptions,
   ) => {
-    const user = CookiesConfig.getCookie(USER_ID)!;
-
-    CookiesConfig.setCookies([
-      {
-        name: WORKSPACE,
-        value: JSON.stringify(workspace),
-      },
-      {
-        name: PERMISSIONS,
-        value: JSON.stringify(workspace.permissions[user]),
-      },
-    ]);
-
     mutate(
       {
-        workspace: workspace.id,
-        user: CookiesConfig.getCookie(USER_ID)!,
+        user: auth.userId,
+        workspace: workspace,
       },
       {
-        onSuccess: ({ workspace }) => options?.onSelect(workspace),
+        onSuccess: ({ workspace }) => {
+          options?.onSelect(workspace);
+          auth.handlers.authenticateWorkspace({
+            permissions: workspace.permissions,
+            workspace: workspace.id,
+          });
+        },
         onError: options?.onError,
       },
     );

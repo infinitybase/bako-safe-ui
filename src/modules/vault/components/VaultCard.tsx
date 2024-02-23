@@ -15,7 +15,7 @@ import {
 
 import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import {
   Member,
@@ -37,15 +37,15 @@ export const VaultCard = ({
   members,
   ...rest
 }: VaultCardProps) => {
-  const memberInCookieId = CookiesConfig.getCookie(CookieName.USER_ID)!;
+  const auth = useAuth();
   const role = WorkspacePermissionUtils.getPermissionInWorkspace(workspace!, {
-    id: memberInCookieId,
+    id: auth.userId,
   } as Member);
 
   const permissions =
     WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
 
-  const isSigner = workspace.permissions[memberInCookieId].SIGNER.includes(id);
+  const isSigner = workspace.permissions[auth.userId].SIGNER.includes(id);
 
   const _role =
     permissions?.title ===
@@ -68,7 +68,13 @@ export const VaultCard = ({
             <VStack ml={2} alignItems="flex-start" spacing={1}>
               {!workspace.single && (
                 <HStack>
-                  <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
+                  <Icon
+                    w={4}
+                    h={4}
+                    as={HandbagIcon}
+                    fontSize={14}
+                    color="grey.200"
+                  />
                   <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
                     {workspace?.name}
                   </Text>

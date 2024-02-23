@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from 'react-query';
 
-import { invalidateQueries } from '@/modules/core';
+import { useAuth } from '@/modules/auth';
+import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 
 import {
   GetTransactionParams,
@@ -14,13 +15,15 @@ type UseTransactionListPaginationParams = Omit<
   'perPage' | 'page'
 >;
 
-const TRANSACTION_LIST_PAGINATION_QUERY_KEY = 'transactions/pagination';
-
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
+  const {
+    workspaces: { current },
+  } = useAuth();
+
   const { data, ...query } = useInfiniteQuery(
-    [TRANSACTION_LIST_PAGINATION_QUERY_KEY, params],
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
         ...params,
@@ -44,7 +47,4 @@ const useTransactionListPaginationRequest = (
   };
 };
 
-export {
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
-  useTransactionListPaginationRequest,
-};
+export { useTransactionListPaginationRequest };

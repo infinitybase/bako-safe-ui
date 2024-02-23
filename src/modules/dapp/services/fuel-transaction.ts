@@ -23,7 +23,6 @@ class FuelTransactionService {
 
     return getTransactionSummaryFromRequest({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       transactionRequest: transactionRequestify(transactionRequest),
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error

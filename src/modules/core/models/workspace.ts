@@ -1,3 +1,6 @@
+import { AddressBookQueryKey } from './addressBook';
+import { HomeQueryKey } from './home';
+
 export enum PermissionRoles {
   OWNER = 'OWNER', // owner of the workspace, THIS ROLE CAN'T BE CHANGED
   ADMIN = 'ADMIN',
@@ -24,8 +27,9 @@ export interface Member {
 }
 
 export interface WorkspaceContact {
+  id: string;
   nickname: string;
-  user: { id: string };
+  user: { id: string; address: string; avatar: string };
 }
 
 export interface Owner extends Member {}
@@ -35,7 +39,7 @@ export interface Workspace {
   name: string;
   description?: string;
   avatar: string;
-  permissions: IPermissions;
+  permissions: IPermission;
   single: boolean;
   owner: Owner;
   members: Member[];
@@ -94,29 +98,47 @@ export const WorkspacesQueryKey = {
   SELECT: () => [WorkspacesQueryKey.DEFAULT, 'select'],
   GET: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'by-id',
     workspaceId,
+    'by-id',
   ],
   ADD_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'add-member',
     workspaceId,
+    'add-member',
   ],
   UPDATE_PERMISSION: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
-    'update-permission',
     workspaceId,
+    'update-permission',
   ],
   DELETE_MEMBER: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
+    workspaceId,
     'delete-member',
+  ],
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    'transaction-list-pagination',
     workspaceId,
   ],
-  PENDING_TRANSACTIONS: () => 'pending-transactions',
-  GET_BALANCE: () => 'balance',
-  FULL_DATA: () => [
+  PENDING_TRANSACTIONS: (workspaceId: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
-    WorkspacesQueryKey.GET_BALANCE(),
-    WorkspacesQueryKey.PENDING_TRANSACTIONS(),
+    workspaceId,
+    'pending-transactions',
+    vaultId,
+  ],
+  GET_BALANCE: (workspaceId: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    workspaceId,
+    'balance',
+  ],
+  FULL_DATA: (workspaceId: string, vaultId?: string) => [
+    WorkspacesQueryKey.DEFAULT,
+    WorkspacesQueryKey.HOME(),
+    HomeQueryKey.FULL_DATA(workspaceId),
+    WorkspacesQueryKey.GET_BALANCE(workspaceId),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId, vaultId),
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(workspaceId),
+    AddressBookQueryKey.LIST_BY_USER(workspaceId, vaultId),
   ],
 };

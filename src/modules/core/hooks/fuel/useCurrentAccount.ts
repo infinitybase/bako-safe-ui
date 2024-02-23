@@ -1,10 +1,10 @@
+import { useFuel } from '@fuels/react';
 import { useMutation, useQuery } from 'react-query';
 
 import { FuelQueryKeys } from './types';
-import { useFuel } from './useFuel';
 
 const useCurrentAccount = () => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const { data, ...query } = useQuery(
     FuelQueryKeys.CURRENT_ACCOUNT,
@@ -23,7 +23,7 @@ const useCurrentAccount = () => {
 };
 
 const useGetCurrentAccount = () => {
-  const [fuel] = useFuel();
+  const { fuel } = useFuel();
 
   const { data, mutateAsync, ...query } = useMutation(
     FuelQueryKeys.CURRENT_ACCOUNT,

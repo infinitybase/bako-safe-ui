@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { ITransaction, TransactionStatus } from 'bsafe';
 
-import { TransactionState, WitnessStatus } from '@/modules/core';
+import { TransactionState } from '@/modules/core';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
@@ -23,9 +23,8 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
     transaction: transaction!,
   });
 
-  const signaturesCount = transaction.witnesses.filter(
-    (w) => w?.status === WitnessStatus.DONE,
-  ).length;
+  const signaturesCount =
+    transaction!.resume?.witnesses!.filter((w) => !!w).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [
@@ -35,7 +34,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
 
   return (
     <HStack justifyContent="center" ml={6}>
-      {isPending && (
+      {isLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}

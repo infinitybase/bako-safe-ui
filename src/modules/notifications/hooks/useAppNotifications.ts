@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useFuelAccount } from '@/modules/auth';
+import { useAuth, useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -10,7 +10,6 @@ import {
   Pages,
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
-import { useWorkspace } from '@/modules/workspace';
 
 import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
@@ -29,7 +28,7 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useFuelAccount();
+  const { account } = useAuthStore();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const notificationsListRequest = useListNotificationsRequest(
@@ -40,7 +39,14 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
   const { unreadCounter, setUnreadCounter } = useNotificationsStore();
-  const { currentWorkspace } = useWorkspace();
+
+  // const { currentWorkspace } = useWorkspace();
+  const {
+    workspaces: { current },
+  } = useAuth();
+
+  const workspaceId = current ?? '';
+
   const onCloseDrawer = async () => {
     const hasUnread = !!unreadCounter;
 
@@ -65,8 +71,8 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       setSelectedTransaction({ name: transactionName, id: transactionId });
 
     const page = isTransaction
-      ? Pages.transactions({ vaultId, workspaceId: currentWorkspace.id })
-      : Pages.detailsVault({ vaultId, workspaceId: currentWorkspace.id });
+      ? Pages.transactions({ vaultId, workspaceId })
+      : Pages.detailsVault({ vaultId, workspaceId });
 
     navigate(page);
   };
