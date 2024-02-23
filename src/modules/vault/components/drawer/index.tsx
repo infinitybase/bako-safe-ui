@@ -43,7 +43,6 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
       vaults: { recentVaults },
     },
   } = useHome();
-  const auth = useAuth();
 
   return (
     <Drawer
@@ -111,11 +110,10 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}
+                    workspace={vault.workspace}
                     isActive={vaultId === vault.id}
                     description={vault.description}
-                    isSingleWorkspace={
-                      vault.workspace.id === auth.workspaces.single
-                    }
+                    isSingleWorkspace={vault.workspace.single}
                     onClick={() => drawer.onSelectVault(vault)}
                   />
                 </CustomSkeleton>
