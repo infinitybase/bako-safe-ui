@@ -13,7 +13,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, UserAddIcon } from '@/components';
-import { delay } from '@/modules/core';
+import { delay, NativeAssetId } from '@/modules/core';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
@@ -74,7 +74,11 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
           bgColor="dark.100"
           border="none"
           onClick={() => {
-            transactionsFields.append({ amount: '', asset: '', to: '' });
+            transactionsFields.append({
+              amount: '',
+              asset: NativeAssetId,
+              to: '',
+            });
             delay(() => accordion.open(transactionsFields.fields.length), 100);
           }}
         >
