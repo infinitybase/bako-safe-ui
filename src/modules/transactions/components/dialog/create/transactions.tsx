@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
@@ -42,7 +43,6 @@ const TransactionFormField = ({
   assets,
   index,
 }: TransctionFormFieldProps) => {
-  const asset = form.watch(`transactions.${index}.asset`);
   const {
     contactsPaginatedRequest: { contacts, isSuccess },
     search,
@@ -59,6 +59,12 @@ const TransactionFormField = ({
       value: user.address,
       label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
     }));
+
+  const asset = assets.assets![0];
+
+  useEffect(() => {
+    form.setValue(`transactions.${index}.asset`, asset.assetId);
+  }, []);
 
   return (
     <>
@@ -82,7 +88,7 @@ const TransactionFormField = ({
                 isInvalid={fieldState.invalid}
                 isDisabled={false}
                 onInputChange={search.handler}
-                onChange={(selected) => field.onChange(selected)}
+                onChange={field.onChange}
                 errorMessage={fieldState.error?.message}
                 isLoading={!isSuccess}
                 options={options}
@@ -110,21 +116,18 @@ const TransactionFormField = ({
         <Controller
           name={`transactions.${index}.asset`}
           control={form.control}
+          defaultValue={asset.assetId}
           render={({ field, fieldState }) => (
             <AssetSelect
+              inView={inView}
+              value={asset.name}
+              index={index}
+              label="Select the asset you want to send"
               isInvalid={fieldState.invalid}
-              assets={assets.assets}
-              name={`transaction.${index}.asset`}
-              value={field.value}
+              assets={assets.assets![0]}
               onChange={field.onChange}
-              helperText={
-                <FormHelperText
-                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
-                >
-                  {fieldState.error?.message ??
-                    'Select the asset you want to send'}
-                </FormHelperText>
-              }
+              isDisabled={false}
+              onInputChange={search.handler}
             />
           )}
         />
@@ -143,8 +146,8 @@ const TransactionFormField = ({
               <FormHelperText>
                 {asset && (
                   <Text>
-                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
-                    {assets.getCoinBalance(asset)}
+                    Balance: {asset?.slug}{' '}
+                    {assets.getCoinBalance(asset.assetId)}
                   </Text>
                 )}
               </FormHelperText>
