@@ -12,6 +12,5 @@ export const HomeQueryKey = {
   FULL_DATA: (workspaceId: string) => [
     HomeQueryKey.DEFAULT,
     HomeQueryKey.HOME_WORKSPACE(workspaceId),
-    HomeQueryKey.PENDING_TRANSACTIONS,
   ],
 };

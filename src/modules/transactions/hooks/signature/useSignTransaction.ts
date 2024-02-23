@@ -1,11 +1,11 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
 import { useCallback, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useAuth, useAuthStore } from '@/modules/auth';
 import {
-  HomeQueryKey,
   invalidateQueries,
   useWalletSignMessage,
   WorkspacesQueryKey,
@@ -37,6 +37,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const {
     workspaces: { current },
   } = useAuth();
+  const { vaultId } = useParams();
 
   const transactionSendContext = useTransactionSend();
   const { transactionsRequest, homeRequest } = useHome();
@@ -62,11 +63,12 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
     ]);
+    // queryClient.invalidateQueries(
+    //   WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+    // );
     queryClient.invalidateQueries(
-      WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+      WorkspacesQueryKey.FULL_DATA(current, vaultId),
     );
-    queryClient.invalidateQueries([HomeQueryKey.PENDING_TRANSACTIONS]);
-    queryClient.invalidateQueries(HomeQueryKey.FULL_DATA(current));
     transactionsRequest.refetch();
     homeRequest.refetch();
   }, [current, homeRequest, transactionsRequest]);

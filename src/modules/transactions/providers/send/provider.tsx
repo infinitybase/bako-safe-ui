@@ -1,10 +1,10 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth/hooks';
 import {
-  HomeQueryKey,
   invalidateQueries,
   useBsafeTransactionSend,
   WorkspacesQueryKey,
@@ -29,7 +29,7 @@ const TransactionSendContext = createContext<TransactionSendContextType>(
 const TransactionSendProvider = (props: PropsWithChildren) => {
   const auth = useAuth();
   const toast = useTransactionToast();
-
+  const { vaultId } = useParams();
   const transactionsRef = useRef<ITransaction[]>([]);
 
   const refetetchTransactionList = () => {
@@ -45,7 +45,10 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       ),
     );
     queryClient.invalidateQueries(
-      HomeQueryKey.FULL_DATA(auth.workspaces.current),
+      WorkspacesQueryKey.PENDING_TRANSACTIONS(auth.workspaces.current, vaultId),
+    );
+    queryClient.invalidateQueries(
+      WorkspacesQueryKey.FULL_DATA(auth.workspaces.current, vaultId),
     );
   };
 

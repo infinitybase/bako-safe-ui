@@ -1,3 +1,5 @@
+import { HomeQueryKey } from './home';
+
 export enum PermissionRoles {
   OWNER = 'OWNER', // owner of the workspace, THIS ROLE CAN'T BE CHANGED
   ADMIN = 'ADMIN',
@@ -118,21 +120,23 @@ export const WorkspacesQueryKey = {
     'transaction-list-pagination',
     workspaceId,
   ],
-  PENDING_TRANSACTIONS: (workspaceId: string) => [
+  PENDING_TRANSACTIONS: (workspaceId: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
     workspaceId,
     'pending-transactions',
+    vaultId,
   ],
   GET_BALANCE: (workspaceId: string) => [
     WorkspacesQueryKey.DEFAULT,
     workspaceId,
     'balance',
   ],
-  FULL_DATA: (workspaceId: string) => [
+  FULL_DATA: (workspaceId: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
     WorkspacesQueryKey.HOME(),
+    HomeQueryKey.FULL_DATA(workspaceId),
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
-    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId, vaultId),
     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(workspaceId),
   ],
 };

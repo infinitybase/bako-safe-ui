@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
-import { AddressBookQueryKey, HomeQueryKey, Pages } from '@/modules/core';
+import { AddressBookQueryKey, Pages, WorkspacesQueryKey } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useSelectWorkspace } from '@/modules/workspace';
 
@@ -14,6 +14,7 @@ const useHome = () => {
 
   const navigate = useNavigate();
   const { account } = useAuthStore();
+  const { vaultId } = useParams();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
 
@@ -26,7 +27,7 @@ const useHome = () => {
       onSelect: async () => {
         auth.handlers.authenticateWorkspaceSingle();
         await queryClient.invalidateQueries(
-          HomeQueryKey.FULL_DATA(auth.workspaces.single),
+          WorkspacesQueryKey.FULL_DATA(auth.workspaces.single, vaultId),
         );
         await queryClient.invalidateQueries(
           AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
