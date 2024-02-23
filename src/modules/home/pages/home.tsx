@@ -87,21 +87,15 @@ const HomePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
-            //isUpcoming={hasTransactions ? false : true}
             onClick={() => {
-              return hasTransactions
-                ? navigate(
-                    Pages.userTransactions({
-                      workspaceId: current,
-                    }),
-                  )
-                : null;
+              return navigate(
+                Pages.userTransactions({
+                  workspaceId: current,
+                }),
+              );
             }}
           >
-            <ActionCard.Icon
-              icon={GoArrowSwitch}
-              //isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon icon={GoArrowSwitch} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
