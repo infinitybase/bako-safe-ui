@@ -152,7 +152,6 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  //const { nicks } = useCreateTransaction();
   const { contactByAddress } = useAddressBook();
   const { form, transactions, assets, accordion } = props;
 

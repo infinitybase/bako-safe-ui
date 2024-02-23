@@ -27,7 +27,7 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = (includePersonal?: boolean) => {
+const useAddressBook = () => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
@@ -44,7 +44,7 @@ const useAddressBook = (includePersonal?: boolean) => {
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
   const {
-    workspaces: { current },
+    workspaces: { current, single },
   } = useAuth();
 
   useWorkspace(); // dont remove
@@ -170,7 +170,7 @@ const useAddressBook = (includePersonal?: boolean) => {
     handleDeleteContact,
     useListPaginatedContactsRequest: useListContactsRequest(
       current,
-      includePersonal ?? (!!workspaceId && !!vaultId),
+      single !== workspaceId,
       vaultId,
     ),
     form: { ...form, handleCreateContact, handleUpdateContact },

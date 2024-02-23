@@ -14,6 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';

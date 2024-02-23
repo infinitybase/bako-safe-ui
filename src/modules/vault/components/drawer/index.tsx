@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
-import { useAuth } from '@/modules/auth/hooks';
 import { useHome } from '@/modules/home';
 
 import { VaultDrawerBox } from './box';

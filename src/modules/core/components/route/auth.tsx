@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
-import { useAddressBook } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth/hooks';
 import { Pages } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
@@ -15,7 +14,6 @@ const AuthRoute = (props: AuthRouteProps) => {
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
   const { handleWorkspaceSelection } = useWorkspace();
-  useAddressBook();
 
   useEffect(() => {
     handleWorkspaceSelection.handler(workspaceId ?? auth.workspaces.single);
