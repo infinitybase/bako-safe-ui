@@ -9,6 +9,7 @@ import {
   TransactionService,
 } from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
+import { StatusFilter } from './useTransactionList';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
@@ -22,10 +23,11 @@ const useTransactionListPaginationRequest = (
     workspaces: { current },
   } = useAuth();
 
+  console.log(params.status);
   const { data, ...query } = useInfiniteQuery(
     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       current,
-      params.status!,
+      params.status as StatusFilter,
     ),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({

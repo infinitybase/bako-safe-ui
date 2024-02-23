@@ -3,6 +3,8 @@ import { ITransaction, ITransactionResume } from 'bsafe';
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
+import { StatusFilter } from '../hooks';
+
 export enum SortOption {
   ASC = 'ASC',
   DESC = 'DESC',
@@ -31,7 +33,7 @@ export interface GetTransactionParams {
   predicateId?: string[];
   to?: string;
   hash?: string;
-  status?: TransactionStatus[] | string[] | string;
+  status?: StatusFilter[] | string;
   id?: string;
   perPage?: number;
   page?: number;

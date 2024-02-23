@@ -1,6 +1,5 @@
 import { AddressBookQueryKey } from './addressBook';
 import { HomeQueryKey } from './home';
-import { TransactionStatus } from './transaction';
 
 export enum PermissionRoles {
   OWNER = 'OWNER', // owner of the workspace, THIS ROLE CAN'T BE CHANGED
@@ -119,7 +118,7 @@ export const WorkspacesQueryKey = {
   ],
   TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
     workspaceId: string,
-    status?: string | TransactionStatus[] | string[],
+    status?: string,
   ) => [
     WorkspacesQueryKey.DEFAULT,
     'transaction-list-pagination',
