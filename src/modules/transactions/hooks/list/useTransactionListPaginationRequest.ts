@@ -23,7 +23,10 @@ const useTransactionListPaginationRequest = (
   } = useAuth();
 
   const { data, ...query } = useInfiniteQuery(
-    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      current,
+      params.status!,
+    ),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
         ...params,

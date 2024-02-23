@@ -1,5 +1,6 @@
 import { AddressBookQueryKey } from './addressBook';
 import { HomeQueryKey } from './home';
+import { TransactionStatus } from './transaction';
 
 export enum PermissionRoles {
   OWNER = 'OWNER', // owner of the workspace, THIS ROLE CAN'T BE CHANGED
@@ -116,10 +117,14 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'delete-member',
   ],
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY: (workspaceId: string) => [
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
+    workspaceId: string,
+    status: string | TransactionStatus[] | string[],
+  ) => [
     WorkspacesQueryKey.DEFAULT,
     'transaction-list-pagination',
     workspaceId,
+    status,
   ],
   PENDING_TRANSACTIONS: (workspaceId: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
@@ -132,13 +137,16 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'balance',
   ],
-  FULL_DATA: (workspaceId: string, vaultId?: string) => [
+  FULL_DATA: (workspaceId: string, status: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
     WorkspacesQueryKey.HOME(),
     HomeQueryKey.FULL_DATA(workspaceId),
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
     WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId, vaultId),
-    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(workspaceId),
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      workspaceId,
+      status,
+    ),
     AddressBookQueryKey.LIST_BY_USER(workspaceId, vaultId),
   ],
 };

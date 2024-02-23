@@ -22,9 +22,7 @@ const useTransactionList = () => {
   const navigate = useNavigate();
   const inView = useInView();
   const { account } = useAuthStore();
-  const [filter, setFilter] = useState<StatusFilter | undefined>(
-    StatusFilter.ALL,
-  );
+  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.COMPLETED);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const pendingSignerTransactions = useTransactionsSignaturePending();
