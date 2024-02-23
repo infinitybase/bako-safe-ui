@@ -123,7 +123,7 @@ const AddressBookPage = () => {
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(single)}
+                    onClick={() => goWorkspace(current)}
                   >
                     {workspace?.name}
                   </BreadcrumbLink>
