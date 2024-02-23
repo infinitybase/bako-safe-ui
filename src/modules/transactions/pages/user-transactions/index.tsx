@@ -210,7 +210,6 @@ const UserTransactionsPage = () => {
               value={StatusFilter.COMPLETED}
               label="Completed"
             />
-            {}
             <TransactionFilter.Field
               value={StatusFilter.DECLINED}
               label="Declined"

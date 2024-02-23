@@ -9,7 +9,6 @@ import {
   useBsafeTransactionSend,
   WorkspacesQueryKey,
 } from '@/modules/core';
-import {} from '@/modules/transactions/';
 import { TRANSACTION_LIST_QUERY_KEY } from '@/modules/transactions/hooks';
 import { USER_TRANSACTIONS_QUERY_KEY } from '@/modules/transactions/hooks/list';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
