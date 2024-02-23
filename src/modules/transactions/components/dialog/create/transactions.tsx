@@ -186,7 +186,10 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   />
                   <TransactionAccordion.DeleteAction
                     isDisabled={props.transactions.fields.length === 1}
-                    onClick={() => props.transactions.remove(index)}
+                    onClick={() => {
+                      transactions.remove(index);
+                      accordion.close();
+                    }}
                   />
                 </TransactionAccordion.Actions>
               }
