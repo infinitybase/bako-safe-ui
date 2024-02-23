@@ -13,7 +13,7 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { paginatedContacts } = useAddressBook();
+  const { paginatedContacts } = useAddressBook(true);
 
   const bottomAction = (
     <Box mt={2}>

@@ -27,7 +27,7 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = () => {
+const useAddressBook = (includePersonal?: boolean) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
@@ -170,7 +170,7 @@ const useAddressBook = () => {
     handleDeleteContact,
     useListPaginatedContactsRequest: useListContactsRequest(
       current,
-      !!workspaceId && !!vaultId,
+      includePersonal ?? (!!workspaceId && !!vaultId),
       vaultId,
     ),
     form: { ...form, handleCreateContact, handleUpdateContact },
