@@ -8,6 +8,7 @@ import {
   HomeQueryKey,
   invalidateQueries,
   useWalletSignMessage,
+  WorkspacesQueryKey,
 } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
@@ -15,7 +16,6 @@ import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import {
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
   TRANSACTION_LIST_QUERY_KEY,
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
@@ -61,8 +61,10 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
-      TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
+    queryClient.invalidateQueries(
+      WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+    );
     queryClient.invalidateQueries([HomeQueryKey.PENDING_TRANSACTIONS]);
     queryClient.invalidateQueries(HomeQueryKey.FULL_DATA(current));
     transactionsRequest.refetch();

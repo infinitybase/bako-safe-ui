@@ -1,5 +1,5 @@
 import { TransactionStatus } from 'bsafe';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -36,36 +36,36 @@ const useTransactionList = () => {
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
-  // const { homeRequest } = useHome();
-  const [firstRender, setFirstRender] = useState<boolean>(true);
-  const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+  // // const { homeRequest } = useHome();
+  // const [firstRender, setFirstRender] = useState<boolean>(true);
+  // const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
 
-  useMemo(() => {
-    if (firstRender && transactionRequest.status === 'loading') {
-      setHasSkeleton(true);
-      setFirstRender(false);
-    }
+  // useMemo(() => {
+  //   if (firstRender && transactionRequest.status === 'loading') {
+  //     setHasSkeleton(true);
+  //     setFirstRender(false);
+  //   }
 
-    if (!firstRender && transactionRequest.status === 'success') {
-      setHasSkeleton(false);
-    }
-  }, [transactionRequest.status]);
+  //   if (!firstRender && transactionRequest.status === 'success') {
+  //     setHasSkeleton(false);
+  //   }
+  // }, [transactionRequest.status]);
 
-  useEffect(() => {
-    if (selectedTransaction.id) setFilter(undefined);
+  // useEffect(() => {
+  //   if (selectedTransaction.id) setFilter(undefined);
 
-    if (
-      inView.inView &&
-      !transactionRequest.isFetching &&
-      transactionRequest.hasNextPage
-    ) {
-      transactionRequest.fetchNextPage();
-    }
-  }, [
-    inView.inView,
-    transactionRequest.isFetching,
-    transactionRequest.hasNextPage,
-  ]);
+  //   if (
+  //     inView.inView &&
+  //     !transactionRequest.isFetching &&
+  //     transactionRequest.hasNextPage
+  //   ) {
+  //     transactionRequest.fetchNextPage();
+  //   }
+  // }, [
+  //   inView.inView,
+  //   transactionRequest.isFetching,
+  //   transactionRequest.hasNextPage,
+  // ]);
 
   return {
     transactionRequest,
@@ -83,7 +83,7 @@ const useTransactionList = () => {
     account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     pendingSignerTransactions,
-    hasSkeleton,
+    hasSkeleton: false,
   };
 };
 

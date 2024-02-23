@@ -7,11 +7,9 @@ import {
   HomeQueryKey,
   invalidateQueries,
   useBsafeTransactionSend,
+  WorkspacesQueryKey,
 } from '@/modules/core';
-import {
-  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
-  TRANSACTION_LIST_QUERY_KEY,
-} from '@/modules/transactions/hooks';
+import { TRANSACTION_LIST_QUERY_KEY } from '@/modules/transactions/hooks';
 import { USER_TRANSACTIONS_QUERY_KEY } from '@/modules/transactions/hooks/list';
 import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
@@ -40,8 +38,12 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       TRANSACTION_LIST_QUERY_KEY,
       USER_TRANSACTIONS_QUERY_KEY,
       VAULT_TRANSACTIONS_QUERY_KEY,
-      TRANSACTION_LIST_PAGINATION_QUERY_KEY,
     ]);
+    invalidateQueries(
+      WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+        auth.workspaces.current,
+      ),
+    );
     queryClient.invalidateQueries(
       HomeQueryKey.FULL_DATA(auth.workspaces.current),
     );
