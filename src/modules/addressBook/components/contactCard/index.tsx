@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 
 import { Card, CopyIcon, EditIcon, RemoveIcon } from '@/components';
-import { AddressUtils } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
 import { UseAddressBookReturn } from '../../hooks';
@@ -42,9 +41,9 @@ const ContactCard = ({
   const toast = useNotification();
 
   return (
-    <Card bg="dark.300" w="100%" zIndex={100} {...rest}>
+    <Card display="flex" w="100%" bg="dark.300" zIndex={100} {...rest}>
       <VStack alignItems="flex-start">
-        <HStack w="100%" justifyContent="space-between" mb={1}>
+        <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
             <Avatar variant="roundedSquare" src={avatar} key={address} />
             <Box ml={2}>
@@ -62,8 +61,12 @@ const ContactCard = ({
               >
                 {nickname}
               </Heading>
-              <Text variant="description" color="grey.500">
-                {AddressUtils.format(address)}
+              <Text
+                variant="description"
+                color="grey.500"
+                wordBreak="break-word"
+              >
+                {address}
               </Text>
             </Box>
           </HStack>

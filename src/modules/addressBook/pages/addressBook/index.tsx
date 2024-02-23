@@ -225,11 +225,25 @@ const AddressBookPage = () => {
         {/* USER CONTACTS */}
         {!!hasContacts && (
           <>
-            <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
+            <Grid
+              w="full"
+              templateColumns={{
+                sm: 'repeat(1, 1fr)',
+                md: 'repeat(2, 1fr)',
+                xl: 'repeat(3, 1fr)',
+                '2xl': 'repeat(4, 1fr)',
+              }}
+              gap={6}
+              pb={28}
+            >
               {contacts?.map(({ id, nickname, user }) => {
                 return (
-                  <GridItem key={id}>
-                    <CustomSkeleton isLoaded={!hasSkeleton}>
+                  <GridItem key={id} display="flex">
+                    <CustomSkeleton
+                      isLoaded={!hasSkeleton}
+                      display="flex"
+                      flex={1}
+                    >
                       <ContactCard
                         nickname={nickname}
                         address={user.address}
