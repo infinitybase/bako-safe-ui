@@ -1,14 +1,24 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { queryClient } from '@/config';
 import { useAuth, useAuthStore } from '@/modules/auth';
-import { HomeQueryKey, useWalletSignMessage } from '@/modules/core';
+import {
+  HomeQueryKey,
+  invalidateQueries,
+  useWalletSignMessage,
+} from '@/modules/core';
 import { useHome } from '@/modules/home';
+import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
+import {
+  TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+  TRANSACTION_LIST_QUERY_KEY,
+  USER_TRANSACTIONS_QUERY_KEY,
+} from '../list';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 
 export interface SignTransactionParams {
@@ -45,12 +55,19 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     return options.transaction;
   }, [options.transaction]);
 
-  const refetchTransactionList = () => {
+  const refetchTransactionList = useCallback(() => {
+    invalidateQueries([
+      'bsafe',
+      TRANSACTION_LIST_QUERY_KEY,
+      USER_TRANSACTIONS_QUERY_KEY,
+      VAULT_TRANSACTIONS_QUERY_KEY,
+      TRANSACTION_LIST_PAGINATION_QUERY_KEY,
+    ]);
     queryClient.invalidateQueries([HomeQueryKey.PENDING_TRANSACTIONS]);
     queryClient.invalidateQueries(HomeQueryKey.FULL_DATA(current));
     transactionsRequest.refetch();
     homeRequest.refetch();
-  };
+  }, [current, homeRequest, transactionsRequest]);
 
   const request = useSignTransactionRequest({
     onSuccess: () => {
