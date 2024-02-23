@@ -10,14 +10,16 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  UseCreateTransaction,
+  useCreateTransaction,
+} from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -39,16 +41,16 @@ const TransactionFormField = ({
   assets,
   index,
 }: TransctionFormFieldProps) => {
+  const asset = form.watch(`transactions.${index}.asset`);
   const {
+    createContactRequest,
     search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
-    createContactRequest,
-    inView,
     paginatedContacts,
+    inView,
   } = useAddressBook();
-
 
   return (
     <>
@@ -72,7 +74,7 @@ const TransactionFormField = ({
                 isInvalid={fieldState.invalid}
                 isDisabled={false}
                 onInputChange={search.handler}
-                onChange={field.onChange}
+                onChange={(selected) => field.onChange(selected)}
                 errorMessage={fieldState.error?.message}
                 isLoading={!paginatedContacts.isSuccess}
                 options={paginatedContacts.data!}
@@ -100,18 +102,21 @@ const TransactionFormField = ({
         <Controller
           name={`transactions.${index}.asset`}
           control={form.control}
-          defaultValue={asset.assetId}
           render={({ field, fieldState }) => (
             <AssetSelect
-              inView={inView}
-              value={asset.name}
-              index={index}
-              label="Select the asset you want to send"
               isInvalid={fieldState.invalid}
-              assets={assets.assets![0]}
+              assets={assets!.assets!}
+              name={`transaction.${index}.asset`}
+              value={field.value}
               onChange={field.onChange}
-              isDisabled={false}
-              onInputChange={search.handler}
+              helperText={
+                <FormHelperText
+                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
+                >
+                  {fieldState.error?.message ??
+                    'Select the asset you want to send'}
+                </FormHelperText>
+              }
             />
           )}
         />
@@ -122,9 +127,6 @@ const TransactionFormField = ({
             <FormControl>
               <AmountInput
                 placeholder=" "
-                isDisabled={
-                  form.getValues(`transactions.${index}.asset`) === ''
-                }
                 value={field.value}
                 onChange={field.onChange}
                 isInvalid={fieldState.invalid}
@@ -133,8 +135,8 @@ const TransactionFormField = ({
               <FormHelperText>
                 {asset && (
                   <Text>
-                    Balance: {asset?.slug}{' '}
-                    {assets.getCoinBalance(asset.assetId)}
+                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
+                    {assets.getCoinBalance(asset)}
                   </Text>
                 )}
               </FormHelperText>
@@ -150,7 +152,7 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { contactByAddress } = useAddressBook();
+  const { nicks } = useCreateTransaction();
   const { form, transactions, assets, accordion } = props;
 
   return (
@@ -197,7 +199,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                     to{' '}
                     <b>
                       {' '}
-                      {contactByAddress(transaction.to)?.nickname ??
+                      {nicks[transaction.to] ??
                         AddressUtils.format(transaction.to)}
                     </b>
                   </Text>
