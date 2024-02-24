@@ -63,7 +63,7 @@ const SigninContainer = (props: SigninContainerProps) => {
             style={{
               position: 'absolute',
               top: '52%',
-              left: '28.6%', // Para centralizar a imagem no meio da caixa
+              left: '30%', // Para centralizar a imagem no meio da caixa
               transform: 'translate(-50%, -50%)', // Para
               width: '45%',
               height: '75%',
