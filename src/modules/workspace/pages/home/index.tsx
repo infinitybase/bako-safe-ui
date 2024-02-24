@@ -1,4 +1,4 @@
-import { Icon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -6,6 +6,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Center,
   Divider,
   Grid,
   GridItem,
@@ -30,6 +31,9 @@ import {
   VaultIcon,
 } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
@@ -88,7 +92,7 @@ const WorkspacePage = () => {
   }
 
   return (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={6} px={12}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -145,9 +149,12 @@ const WorkspacePage = () => {
                 fontSize={15}
                 leftIcon={<SettingsIcon fontSize={18} />}
                 px={3}
-                bg="dark.100"
-                color="grey.200"
+                bg="grey.200"
+                color="dark.300"
                 onClick={workspaceDialog.onOpen}
+                _hover={{
+                  opacity: 0.8,
+                }}
               >
                 Members
               </Button>
@@ -160,6 +167,9 @@ const WorkspacePage = () => {
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
+                _hover={{
+                  opacity: 0.8,
+                }}
                 onClick={() => navigate(Pages.createVault({ workspaceId }))}
               >
                 Create vault
@@ -177,69 +187,175 @@ const WorkspacePage = () => {
           w="full"
           h="full"
         >
-          <Card w="full" h="full" p={8} bg="dark.200" borderColor="dark.100">
-            <VStack h="full" alignItems="flex-start">
-              <HStack w="full" spacing={6}>
-                <Avatar
-                  variant="roundedSquare"
-                  name={currentWorkspace?.name}
-                  bg="grey.900"
-                  color="white"
-                  size={'lg'}
-                  p={10}
-                />
-                <Box maxW="40%">
-                  <Heading mb={1} variant="title-xl" isTruncated>
-                    {currentWorkspace?.name}
-                  </Heading>
+          <Card p={8} bgColor="grey.800">
+            <VStack spacing={6} w="full">
+              <HStack
+                w="full"
+                display="flex"
+                alignItems="center"
+                justify="space-between"
+              >
+                <Center
+                  w="fit-content"
+                  display="flex"
+                  gap={6}
+                  alignItems="flex-start"
+                >
+                  <Avatar
+                    position="relative"
+                    variant="roundedSquare"
+                    size="lg"
+                    p={14}
+                    bgColor="grey.200"
+                    color="grey.800"
+                    fontWeight="bold"
+                    name={currentWorkspace.name}
+                  >
+                    <Box
+                      position="absolute"
+                      borderRadius="md"
+                      w={24}
+                      h={24}
+                      border="3px solid white"
+                    />
+                  </Avatar>
                   <Box>
-                    <Text variant="description" noOfLines={2}>
-                      {currentWorkspace?.description}
+                    <Heading variant="title-xl" w="max">
+                      {currentWorkspace?.name}
+                    </Heading>
+
+                    <Text
+                      maxW="200px"
+                      variant="description"
+                      textOverflow="ellipsis"
+                      noOfLines={2}
+                      isTruncated
+                    >
+                      {currentWorkspace.description}
                     </Text>
                   </Box>
-                </Box>
+                </Center>
 
-                <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
-                  display={'flex'}
-                  justifyContent={'flex-end'}
-                >
-                  <Box
-                    cursor="pointer"
-                    onClick={() => setVisibleBalance((previous) => !previous)}
-                    flexDirection="row"
-                  >
-                    <HStack spacing={2}>
-                      <Heading variant="title-xl">
-                        {(visibleBalance &&
-                          worksapceBalance.balance?.balanceUSD) ??
-                          0}
-                      </Heading>
-                      <Text variant="description" fontSize="md" mr={1}>
-                        {visibleBalance ? 'USD' : '******'}
-                      </Text>
-                      {visibleBalance ? (
+                <VStack spacing={4} alignItems="flex-end">
+                  <Box width="auto">
+                    <HStack
+                      minW={20}
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                    >
+                      <HStack
+                        w="full"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-around"
+                        spacing={2}
+                      >
+                        <Heading variant="title-xl">
+                          {visibleBalance
+                            ? worksapceBalance.balance.balance
+                            : '-----'}
+                        </Heading>
                         <Box
-                          flexDirection="row"
-                          alignItems={'center'}
-                          justifyContent={'center'}
+                          w="auto"
+                          _hover={{
+                            cursor: 'pointer',
+                            opacity: 0.8,
+                          }}
+                          onClick={() => setVisibleBalance(!visibleBalance)}
                         >
-                          <ViewIcon boxSize={5} />
+                          {visibleBalance ? (
+                            <EyeOpenIcon boxSize={7} />
+                          ) : (
+                            <EyeCloseIcon boxSize={5} />
+                          )}
                         </Box>
-                      ) : (
-                        <ViewOffIcon boxSize={5} />
-                      )}
+                      </HStack>
+                      <Text
+                        w={20}
+                        display="flex"
+                        align="center"
+                        justifyContent="space-around"
+                        variant="description"
+                        fontWeight="semibold"
+                        _hover={{
+                          cursor: 'pointer',
+                          color: 'grey.200',
+                        }}
+                      >
+                        Update
+                        <RefreshIcon
+                          _hover={{
+                            cursor: 'pointer',
+                            color: 'grey.200',
+                          }}
+                          w={5}
+                          h={5}
+                        />
+                      </Text>
                     </HStack>
                   </Box>
-                </CustomSkeleton>
+                  <VStack spacing={2} alignItems="flex-end">
+                    <Button
+                      minW={180}
+                      h={12}
+                      variant="primary"
+                      onClick={() =>
+                        //TODO: implement the faucet to workspace
+                        // openFaucet(currentWorkspace.predicateAddress!)
+                        console.log('Validate faucet for workspace')
+                      }
+                      _hover={{
+                        opacity: 0.8,
+                      }}
+                      leftIcon={<PlusSquareIcon w={6} h={6} />}
+                    >
+                      Faucet
+                    </Button>
+                  </VStack>
+                  {/* <VStack spacing={2} alignItems="flex-start">
+                  <Button
+                    onClick={() =>
+                      navigate(
+                        Pages.createTransaction({
+                          vaultId: vault.id!,
+                          workspaceId,
+                        }),
+                      )
+                    }
+                    isDisabled={
+                      !vault?.hasBalance ||
+                      !makeTransactionsPerm ||
+                      vaultDetails.transactions.isPendingSigner
+                    }
+                    minW={130}
+                    variant="primary"
+                  >
+                    Send
+                  </Button>
+                  {vault.transactions.isPendingSigner ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      This vault has pending transactions.
+                    </Text>
+                  ) : !makeTransactionsPerm ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      You dont have permission to send transactions.
+                    </Text>
+                  ) : (
+                    <Text variant="description" fontSize="xs">
+                      Send single or batch <br /> payments with multi assets.
+                    </Text>
+                  )}
+                </VStack> */}
+                </VStack>
               </HStack>
 
-              <Divider borderColor="dark.100" mt={4} mb={3} />
+              <Divider w="full" borderColor="grey.400" />
 
               <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
                 <Text
                   fontWeight="semibold"
-                  color="grey.200"
+                  color="grey.450"
                 >{`Workspace's balance breakdown`}</Text>
                 <CustomSkeleton
                   isLoaded={!worksapceBalance.isLoading}
@@ -247,7 +363,7 @@ const WorkspacePage = () => {
                   h="full"
                 >
                   {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
-                  !worksapceBalance.balance ? (
+                  !worksapceBalance.balance.balance ? (
                     <Card
                       w="full"
                       h="full"
@@ -272,7 +388,7 @@ const WorkspacePage = () => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      {/*todo:
+                      {/*todo: 
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
@@ -283,7 +399,6 @@ const WorkspacePage = () => {
                           amount: worksapceBalance.balance.balance,
                         }}
                         visibleBalance={visibleBalance}
-                        borderColor="dark.100"
                       />
                     </VStack>
                   )}
@@ -294,7 +409,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxH={450} spacing={4}>
+        <VStack w="full" maxW={500} maxH={450} spacing={4}>
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"

@@ -55,7 +55,17 @@ export const VaultCard = ({
       : role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return (
-    <Card bg="grey.800" w="100%" cursor="pointer" zIndex={100} {...rest}>
+    <Card
+      bg="grey.800"
+      w="100%"
+      cursor="pointer"
+      _hover={{
+        transform: 'scale(1.03)',
+        transition: 'ease .3s',
+      }}
+      zIndex={100}
+      {...rest}
+    >
       <VStack alignItems="flex-start">
         <HStack w="100%" justifyContent="space-between" mb={1}>
           <HStack>
