@@ -1,4 +1,4 @@
-import { Divider, HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
@@ -29,41 +29,55 @@ const SelectWorkspaceDialog = ({
 
   return (
     <Dialog.Modal
+      size={!listIsEmpty ? 'xl' : '2xl'}
       onClose={dialog.onClose}
-      hideCloseButton={true}
+      hideCloseButton={listIsEmpty ? true : false}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
     >
-      <Dialog.Body maxW={480}>
+      <Dialog.Body position="relative" justifyItems="center" maxW={480}>
         <VStack spacing={2}>
           {!listIsEmpty && (
-            <VStack overflow="visible" spacing={0}>
-              <Text fontSize="3xl" fontWeight="bold" color="brand.500">
+            <VStack
+              w="full"
+              h={24}
+              align="flex-start"
+              position="absolute"
+              overflow="visible"
+              justifyContent="space-evenly"
+              top={-10}
+              spacing={0}
+            >
+              <Text fontSize="2xl" fontWeight="bold" color="white">
                 Select your workspace
               </Text>
-              <Text fontSize="sm" fontWeight="bold">
-                {`We're thrilled to have you here.`}
+              <Text fontSize="md" variant="description" fontWeight="normal">
+                {`We're thrilled. Select your workspace to have you here. `}
               </Text>
             </VStack>
           )}
 
           <VStack
-            spacing={7}
+            spacing={5}
             w="full"
-            h={340}
+            minH={300}
+            maxH={380}
             overflowY="scroll"
-            paddingRight={6}
-            marginTop={6}
-            marginBottom={8}
-            css={{
+            marginTop={16}
+            py={4}
+            pr={4}
+            borderTop="1px solid"
+            borderBottom="1px solid"
+            borderColor="grey.100"
+            sx={{
               '&::-webkit-scrollbar': {
                 width: '5px',
-                height: '5px' /* Adjust the height of the scrollbar */,
+                maxHeight: '330px',
               },
               '&::-webkit-scrollbar-thumb': {
                 backgroundColor: '#2C2C2C',
-                borderRadius: '20px',
-                height: '20px' /* Adjust the height of the scrollbar thumb */,
+                borderRadius: '30px',
+                height: '10px' /* Adjust the height of the scrollbar thumb */,
               },
             }}
           >
@@ -84,24 +98,37 @@ const SelectWorkspaceDialog = ({
               ))
             )}
           </VStack>
-
-          {listIsEmpty && <Divider borderColor="dark.100" mt={0} mb={6} />}
-
-          <HStack spacing={4} h={10}>
-            <Dialog.SecondaryAction
-              h="full"
-              size="lg"
-              borderColor={'transparent'}
-              outline={'none'}
-              onClick={dialog.onClose}
-            >
-              Cancel
-            </Dialog.SecondaryAction>
+          <HStack
+            w={!listIsEmpty ? 'full' : 'fit-content'}
+            spacing={4}
+            mt={4}
+            h={12}
+          >
+            {listIsEmpty && (
+              <Dialog.SecondaryAction
+                h="full"
+                size="lg"
+                bgColor="transparent"
+                outlineColor="white"
+                outline="1px solid"
+                onClick={dialog.onClose}
+                _hover={{
+                  outlineColor: 'brand.500',
+                  color: 'brand.500',
+                }}
+              >
+                Cancel
+              </Dialog.SecondaryAction>
+            )}
             <Dialog.PrimaryAction
               h="full"
+              w="full"
               type="submit"
               leftIcon={<SquarePlusIcon fontSize={18} />}
               onClick={onCreate}
+              _hover={{
+                opacity: 0.8,
+              }}
             >
               Create workspace
             </Dialog.PrimaryAction>
