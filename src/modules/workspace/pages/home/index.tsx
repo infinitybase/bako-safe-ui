@@ -1,4 +1,4 @@
-import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -236,7 +236,7 @@ const WorkspacePage = () => {
                   </Box>
                 </Center>
 
-                <VStack spacing={4} alignItems="flex-end">
+                <VStack spacing={4} alignSelf="flex-start">
                   <Box width="auto">
                     <HStack
                       minW={20}
@@ -295,24 +295,7 @@ const WorkspacePage = () => {
                       </Text>
                     </HStack>
                   </Box>
-                  <VStack spacing={2} alignItems="flex-end">
-                    <Button
-                      minW={180}
-                      h={12}
-                      variant="primary"
-                      onClick={() =>
-                        //TODO: implement the faucet to workspace
-                        // openFaucet(currentWorkspace.predicateAddress!)
-                        console.log('Validate faucet for workspace')
-                      }
-                      _hover={{
-                        opacity: 0.8,
-                      }}
-                      leftIcon={<PlusSquareIcon w={6} h={6} />}
-                    >
-                      Faucet
-                    </Button>
-                  </VStack>
+
                   {/* <VStack spacing={2} alignItems="flex-start">
                   <Button
                     onClick={() =>
