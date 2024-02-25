@@ -7,7 +7,7 @@ const inputActiveStyle = {
     // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
     '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
   '~ .chakra-input__right-element': {
-    background: 'dark.300',
+    background: 'dark.200',
   },
 };
 
@@ -26,6 +26,7 @@ const baseStyle = defineStyle({
     color: 'grey.200',
     fontSize: 'md',
     borderColor: `dark.100`,
+    boxShadow: 'none',
     borderWidth: 1,
     pt: 5,
     pb: 1,
@@ -34,6 +35,9 @@ const baseStyle = defineStyle({
     borderRadius: 10,
     _hover: {
       borderColor: `dark.100`,
+    },
+    _blur: {
+      background: 'grey.200',
     },
     _invalid: inputInvalidStyle,
     _focus: inputActiveStyle,
@@ -50,7 +54,7 @@ const baseStyle = defineStyle({
 const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
-    colorScheme: 'dark',
+    colorScheme: 'grey',
   },
   variants: {
     custom: baseStyle,

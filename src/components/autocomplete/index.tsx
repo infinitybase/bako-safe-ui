@@ -129,8 +129,9 @@ function AutoComplete({
             top="1px"
             right="1px"
             borderRadius={10}
-            bgColor="dark.200"
-            h="calc(100% - 2px)"
+            bgColor="dark.600"
+            h="calc(100% - 3px)"
+            w={10}
           >
             {loading ? (
               <CircularProgress
