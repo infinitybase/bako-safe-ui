@@ -3,11 +3,13 @@ import { Box, Heading, StackProps, Text, VStack } from '@chakra-ui/react';
 interface DialogHeaderProps extends StackProps {
   title: string;
   description: string;
+  descriptionFontSize?: string;
 }
 
 const DialogHeader = ({
   title,
   description,
+  descriptionFontSize,
   ...stackProps
 }: DialogHeaderProps) => (
   <VStack w="full" mb={12} spacing={3} alignItems="flex-start" {...stackProps}>
@@ -15,7 +17,9 @@ const DialogHeader = ({
       {title}
     </Heading>
     <Box maxW={500}>
-      <Text variant="description">{description}</Text>
+      <Text fontSize={descriptionFontSize} variant="description">
+        {description}
+      </Text>
     </Box>
   </VStack>
 );
