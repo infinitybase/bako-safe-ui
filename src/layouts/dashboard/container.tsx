@@ -16,6 +16,7 @@ const Container = ({ children, ...props }: ContainerProps) => {
       display="flex"
       flexDirection="column"
       backgroundImage={HomeBackground}
+      backgroundSize={'cover'}
       backgroundRepeat={'no-repeat'}
       p={0}
       {...props}

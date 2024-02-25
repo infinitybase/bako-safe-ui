@@ -9,9 +9,9 @@ import {
   StackProps,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import React from 'react';
 
-import { EditIcon, RemoveIcon } from '@/components';
+import { RemoveIcon } from '@/components';
+import { EditIcon } from '@/components/icons/edit-icon';
 
 type AccordionActionProp = Pick<ButtonProps, 'onClick' | 'isDisabled'>;
 
@@ -40,15 +40,16 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
   return (
     <Button
       maxW="fit-content"
-      variant="secondary"
-      bgColor="dark.100"
+      bgColor="brand.500"
       border="none"
       isDisabled={props.isDisabled}
       onClick={props.onClick}
-      _hover={{}}
+      _hover={{
+        opacity: !props.isDisabled && 0.8,
+      }}
       {...props}
     >
-      Confirm recipient
+      Confirm
       <AccordionButton hidden />
     </Button>
   );

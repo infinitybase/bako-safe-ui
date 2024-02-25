@@ -13,7 +13,7 @@ const DialogHeader = ({
   ...stackProps
 }: DialogHeaderProps) => (
   <VStack w="full" mb={12} spacing={3} alignItems="flex-start" {...stackProps}>
-    <Heading fontSize="2xl" color="grey.200">
+    <Heading fontSize="3xl" color="white">
       {title}
     </Heading>
     <Box maxW={500}>
