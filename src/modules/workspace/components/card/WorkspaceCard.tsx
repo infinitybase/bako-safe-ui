@@ -12,7 +12,7 @@ import { Workspace } from '@/modules/core';
 interface NotificationCardProps extends CardProps {
   workspace: Workspace;
   counter: {
-    vaults: number;
+    vaults: number | [];
     members: number;
   };
 }
