@@ -28,11 +28,14 @@ const useDefaultConnectors = () => {
 
   const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
     const fuelConnector = connectors?.find((c) => c.name === connector.name);
+    const hasWebAuthn = !!window.navigator.credentials;
     const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
     return {
       ...connector,
       imageUrl: undefined,
-      isEnabled: (!!fuelConnector && fuelConnector.installed) || isWebAuthn,
+      isEnabled:
+        (!!fuelConnector && fuelConnector.installed) ||
+        (isWebAuthn && hasWebAuthn),
     };
   });
 

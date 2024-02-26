@@ -89,7 +89,7 @@ export class UserService {
 
   static async createHardwareId() {
     const localStorage = window.localStorage;
-    console.log('[called]');
+
     return localStorage.setItem(
       localStorageKeys.HARDWARE_ID,
       crypto.randomUUID(),

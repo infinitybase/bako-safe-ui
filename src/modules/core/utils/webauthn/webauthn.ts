@@ -50,6 +50,7 @@ export async function createAccount(username: string, challenge: string) {
       timeout: 60000,
     },
   });
+
   console.log(credential);
   const response = (credential as any).response;
   console.log('[REG]', response);
