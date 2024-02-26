@@ -4,6 +4,8 @@ import React from 'react';
 import logo from '@/assets/bakoLogoDark.svg';
 import bakoSymbol from '@/assets/bakoSymbol.svg';
 
+import { SigninContainerBackground } from './background';
+
 interface SigninContainerProps {
   children: React.ReactNode;
 }
@@ -11,19 +13,7 @@ interface SigninContainerProps {
 const SigninContainer = (props: SigninContainerProps) => {
   return (
     <>
-      <Box
-        zIndex="0"
-        w="100vw"
-        h="100vh"
-        display="flex"
-        alignItems="center"
-        flexDirection="column"
-        justifyContent="center"
-        backgroundImage="url('backgroundHome.png')"
-        backgroundSize="cover"
-        backgroundPosition="unset"
-        style={{ filter: 'blur(12px)' }} // Adicionando o desfoque aqui
-      />
+      <SigninContainerBackground />
       <Box
         position="absolute"
         zIndex={1}
