@@ -52,6 +52,7 @@ export type SignInPayload = {
 
 export type SignInResponse = {
   accessToken: string;
+  address: string;
   avatar: string;
   user_id: string;
   workspace: Workspace;
