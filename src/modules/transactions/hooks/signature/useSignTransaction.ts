@@ -67,7 +67,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     //   WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
     // );
     queryClient.invalidateQueries(
-      WorkspacesQueryKey.FULL_DATA(current, vaultId),
+      WorkspacesQueryKey.FULL_DATA(current, vaultId!),
     );
     transactionsRequest.refetch();
     homeRequest.refetch();

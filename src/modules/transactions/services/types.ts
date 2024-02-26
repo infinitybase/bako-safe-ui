@@ -31,7 +31,7 @@ export interface GetTransactionParams {
   predicateId?: string[];
   to?: string;
   hash?: string;
-  status?: TransactionStatus[] | string[];
+  status?: TransactionStatus[] | string[] | string;
   id?: string;
   perPage?: number;
   page?: number;
