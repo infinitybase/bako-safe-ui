@@ -99,7 +99,15 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
   const { connectors, onSelect, ...drawerProps } = props;
 
   return (
-    <Drawer {...drawerProps} size="sm" variant="glassmorphic" placement="right">
+    <Drawer
+      {...drawerProps}
+      size={{
+        base: 'full',
+        sm: 'sm',
+      }}
+      variant="glassmorphic"
+      placement="right"
+    >
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
