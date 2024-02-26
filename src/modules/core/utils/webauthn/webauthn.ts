@@ -42,7 +42,6 @@ export async function createAccount(username: string, challenge: string) {
       ],
       authenticatorSelection: {
         userVerification: 'required',
-        authenticatorAttachment: 'platform',
         residentKey: 'preferred',
         requireResidentKey: false,
       },
@@ -109,7 +108,7 @@ export async function signChallange(
         {
           id: fromBase64(id),
           type: 'public-key',
-          transports: ['internal'],
+          transports: ['hybrid', 'internal'],
         },
       ],
       userVerification: 'required',
