@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Divider,
   Flex,
   Heading,
   Radio,
@@ -39,6 +40,7 @@ export const MemberPermissionForm = ({
 }: MemberPermissionForm) => {
   return (
     <Box w="full">
+      <Divider mb={5} mt={1} />
       <Dialog.Section
         title={
           <Heading fontSize="md" color="grey.200">
@@ -61,76 +63,46 @@ export const MemberPermissionForm = ({
               {WorkspacePermissionUtils.permissionsValues.map((permission) => (
                 <RadioCard
                   border="1px"
+                  bgColor="grey.850"
                   p={3}
-                  borderRadius="lg"
+                  my={1}
+                  borderRadius="xl"
                   borderColor={
-                    field.value === permission.value ? 'green.500' : 'dark.100'
+                    field.value === permission.value ? 'brand.500' : 'grey.400'
                   }
                   key={permission.value}
-                  position="relative"
                 >
                   <Radio
-                    my={2}
-                    border="1px"
+                    my={1}
+                    border="none"
                     display="flow"
                     borderColor="grey.500"
                     value={permission.value}
+                    _checked={{
+                      borderColor: 'none',
+                      display: 'none',
+                    }}
                   >
                     <Box w="full">
                       <Badge
-                        top={-1.5}
-                        left={6}
+                        top={-0.5}
+                        maxW={20}
+                        py={0.5}
                         position="absolute"
+                        justifyContent="center"
+                        px={6}
                         variant={permission.variant}
                       >
                         {permission.title}
                       </Badge>
                       <Flex
-                        mt={3}
+                        mt={2}
                         align="start"
                         direction="column"
                         justify="space-between"
                       >
-                        <Text>
-                          {permission.title === 'Viewer' && (
-                            <Text variant="description">
-                              Can{' '}
-                              <Text
-                                as="span"
-                                fontWeight="semibold"
-                                color="grey.200"
-                              >
-                                only access and view
-                              </Text>{' '}
-                              the contents of all vaults in the workspace.
-                            </Text>
-                          )}
-                          {permission.title === 'Manager' && (
-                            <Text variant="description">
-                              <Text
-                                as="span"
-                                fontWeight="semibold"
-                                color="grey.200"
-                              >
-                                Can create new vaults, create transaction and
-                                access all vaults
-                              </Text>{' '}
-                              and manage members in the workspace.
-                            </Text>
-                          )}
-                          {permission.title === 'Admin' && (
-                            <Text variant="description">
-                              <Text
-                                as="span"
-                                fontWeight="semibold"
-                                color="grey.200"
-                              >
-                                Manage members, create new vaults, create
-                                transaction
-                              </Text>{' '}
-                              and access everything.
-                            </Text>
-                          )}
+                        <Text fontWeight="medium" variant="subtitle">
+                          {permission.description}
                         </Text>
                       </Flex>
                     </Box>

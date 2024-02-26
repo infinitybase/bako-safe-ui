@@ -4,12 +4,14 @@ interface DialogHeaderProps extends StackProps {
   title: string;
   description: string;
   descriptionFontSize?: string;
+  descriptionColor?: string;
 }
 
 const DialogHeader = ({
   title,
   description,
   descriptionFontSize,
+  descriptionColor,
   ...stackProps
 }: DialogHeaderProps) => (
   <VStack w="full" mb={12} spacing={3} alignItems="flex-start" {...stackProps}>
@@ -17,7 +19,11 @@ const DialogHeader = ({
       {title}
     </Heading>
     <Box maxW={500}>
-      <Text fontSize={descriptionFontSize} variant="description">
+      <Text
+        color={descriptionColor}
+        fontSize={descriptionFontSize}
+        variant="description"
+      >
         {description}
       </Text>
     </Box>

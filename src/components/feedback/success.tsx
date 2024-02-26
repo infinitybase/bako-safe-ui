@@ -1,4 +1,6 @@
+import { Icon } from '@chakra-ui/icons';
 import {
+  As,
   Box,
   Button,
   Center,
@@ -19,6 +21,7 @@ interface SuccessStepProps {
   showAction?: boolean;
   title: string;
   description: string;
+  membersFormIcon?: As;
 }
 
 const FeedbackSuccess = ({
@@ -29,10 +32,15 @@ const FeedbackSuccess = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
+  membersFormIcon,
 }: SuccessStepProps) => (
-  <Center flexDirection="column" mb={12}>
+  <Center overflowX="hidden" flexDirection="column" mb={12}>
     <Box m={8}>
-      <Image src={TransactionsBoxIcon} />
+      {membersFormIcon ? (
+        <Icon fontSize={100} as={membersFormIcon} />
+      ) : (
+        <Image src={TransactionsBoxIcon} />
+      )}
     </Box>
     <Box mb={5}>
       <Heading fontSize="2xl" color="white">
