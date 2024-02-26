@@ -1,13 +1,17 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { useAuth } from '@/modules/auth';
-import { AddressBookQueryKey, invalidateQueries } from '@/modules/core';
+import {
+  AddressBookQueryKey,
+  invalidateQueries,
+  PermissionRoles,
+} from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useAddressBookStore } from '../store/useAddressBookStore';
@@ -47,7 +51,7 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
     workspaces: { current, single },
   } = useAuth();
 
-  useWorkspace(); // dont remove
+  const { hasPermission } = useWorkspace(); // dont remove
 
   // FORM
   const { form } = useCreateContactForm();
@@ -150,9 +154,18 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
     deleteContactRequest.mutate(id);
   };
 
+  const canAddMember = useMemo(() => {
+    return hasPermission([
+      PermissionRoles.OWNER,
+      PermissionRoles.ADMIN,
+      PermissionRoles.MANAGER,
+    ]);
+  }, [hasPermission]);
+
   return {
     inView,
     contacts,
+    canAddMember,
     contactToEdit,
     contactDialog,
     contactToDelete,

@@ -50,6 +50,7 @@ const TransactionFormField = ({
     contactDialog,
     paginatedContacts,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -80,7 +81,7 @@ const TransactionFormField = ({
                 options={paginatedContacts.data!}
                 rightAction={{}}
                 bottomAction={
-                  <Box mt={2}>
+                  <Box hidden={!canAddMember} mt={2}>
                     <Text color="grey.200" fontSize={12}>
                       Do you wanna{' '}
                       <Link
