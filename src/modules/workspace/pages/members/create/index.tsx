@@ -160,7 +160,12 @@ const CreateMemberPage = () => {
   );
 
   return (
-    <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      isOpen
+      onClose={handleClose}
+      closeOnOverlayClick={false}
+      autoFocus={false}
+    >
       <CreateContactDialog
         form={addressBook.form}
         dialog={addressBook.contactDialog}
