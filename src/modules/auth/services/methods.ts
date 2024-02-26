@@ -7,26 +7,37 @@ export enum Encoder {
   WEB_AUTHN = 'WEB_AUTHN',
 }
 
+export enum TypeUser {
+  FUEL = 'FUEL',
+  WEB_AUTHN = 'WEB_AUTHN',
+}
+
 export type CreateUserResponse = {
   id: string;
-  address: string;
-  provider: string;
-  avatar: string;
+  code: string;
+  type: TypeUser;
+};
+
+export type UseSignInRequestParams = {
+  code: string;
+  type: TypeUser;
 };
 
 export type CreateUserPayload = {
   address: string;
   provider: string;
+  type: TypeUser;
+  webauthn?: {
+    id: string;
+    publicKey: string;
+    origin: string;
+  };
 };
 
 export type SignInPayload = {
-  address: string;
-  hash: string;
-  createdAt: string;
   encoder: Encoder;
-  provider: string;
-  user_id: string;
   signature: string;
+  digest: string;
 };
 
 export type SignInResponse = {

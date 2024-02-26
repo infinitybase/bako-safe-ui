@@ -7,6 +7,7 @@ import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
 
+import { TypeUser } from '../services';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 
 const redirectPathBuilder = (
@@ -56,11 +57,10 @@ const useSignIn = () => {
   });
 
   const createUserRequest = useCreateUserRequest({
-    onSuccess: ({ address, id, provider }) => {
+    onSuccess: ({ code, type }) => {
       signInRequest.mutate({
-        address,
-        provider,
-        user_id: id,
+        code,
+        type,
       });
     },
   });
@@ -86,6 +86,7 @@ const useSignIn = () => {
       createUserRequest.mutate({
         address: account!,
         provider: network!.url,
+        type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
       auth.handlers.setInvalidAccount(true);
