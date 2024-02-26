@@ -1,12 +1,14 @@
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { IPermission } from '@/modules/core';
 
+import { TypeUser } from '../services';
 import { useAuthStore } from '../store';
 
 type AuthenticateParams = {
   userId: string;
   avatar: string;
   account: string;
+  accountType: TypeUser;
   accessToken: string;
   permissions: IPermission;
   singleWorkspace: string;
@@ -47,6 +49,7 @@ const useAuth = () => {
       userId: params.userId,
       avatar: params.avatar,
       account: params.account,
+      accountType: params.accountType,
       workspace: params.singleWorkspace,
     });
   };
@@ -85,6 +88,7 @@ const useAuth = () => {
       setInvalidAccount: store.setInvalidAccount,
       authenticateWorkspaceSingle,
     },
+    accountType: store.accountType,
     avatar: store.avatar,
     userId: store.userId,
     account: store.account,

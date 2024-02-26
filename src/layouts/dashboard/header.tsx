@@ -29,6 +29,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
+import { TypeUser } from '@/modules/auth/services';
 import { useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
@@ -67,7 +68,7 @@ const UserBox = () => {
   const settingsDrawer = useDisclosure();
 
   const logout = async () => {
-    await fuel.disconnect();
+    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
     auth.handlers.logout();
   };
 

@@ -1,14 +1,24 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
-import { DrawerConnector, SigninContainer } from '@/modules/auth/components';
+import {
+  DrawerConnector,
+  DrawerWebAuthn,
+  SigninContainer,
+} from '@/modules/auth/components';
 
 import { useSignIn } from '../hooks';
 
 const SigninPage = () => {
-  const { isConnecting, connectors, redirectToWalletLink, auth } = useSignIn();
+  const {
+    isConnecting,
+    connectors,
+    redirectToWalletLink,
+    auth,
+    webauthn: { isOpen, closeWebAuthnDrawer },
+  } = useSignIn();
   const { errorToast } = useContactToast();
 
   useMemo(() => {
@@ -61,6 +71,10 @@ const SigninPage = () => {
         onClose={connectors.drawer.onClose}
         onSelect={connectors.select}
         connectors={connectors.items}
+      />
+      <DrawerWebAuthn
+        isOpen={isOpen} // todo: move the complete item with webauthn to component
+        onClose={closeWebAuthnDrawer}
       />
       <Box textAlign="center" mb={2}>
         <Text fontSize="4xl" fontWeight="bold" color="brand.500">
