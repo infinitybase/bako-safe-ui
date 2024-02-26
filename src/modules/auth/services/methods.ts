@@ -2,7 +2,7 @@ import { api } from '@/config';
 import { Workspace } from '@/modules/core';
 
 export enum Encoder {
-  FUEL = 'FUEL',
+  FUEL = 'fuel',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
 }
