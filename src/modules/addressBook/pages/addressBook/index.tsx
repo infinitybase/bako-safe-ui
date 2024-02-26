@@ -278,7 +278,10 @@ const AddressBookPage = () => {
         )}
 
         {!hasContacts && (
-          <AddressBookEmptyState action={() => handleOpenDialog({})} />
+          <AddressBookEmptyState
+            showAction={hasPermission([OWNER, ADMIN, MANAGER])}
+            action={() => handleOpenDialog({})}
+          />
         )}
       </VStack>
     </>
