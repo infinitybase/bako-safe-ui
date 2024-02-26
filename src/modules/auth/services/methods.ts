@@ -2,9 +2,9 @@ import { api } from '@/config';
 import { Workspace } from '@/modules/core';
 
 export enum Encoder {
-  FUEL = 'FUEL',
-  METAMASK = 'METAMASK',
-  WEB_AUTHN = 'WEB_AUTHN',
+  FUEL = 'fuel',
+  METAMASK = 'metamask',
+  WEB_AUTHN = 'web_authn',
 }
 
 export type CreateUserResponse = {
