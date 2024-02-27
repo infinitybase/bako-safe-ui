@@ -8,7 +8,7 @@ import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
 
-  FUEL = 'fuel',
+  FUEL = 'FUEL',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
 }
