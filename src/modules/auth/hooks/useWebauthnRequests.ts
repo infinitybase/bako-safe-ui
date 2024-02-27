@@ -6,7 +6,7 @@ const useCreateHardwareId = (
   options?: UseMutationOptions<unknown, unknown, string>,
 ) => {
   return useMutation(
-    UserQueryKey.HARDWARE_ID(),
+    UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!),
     UserService.createHardwareId,
     options,
   );
@@ -14,14 +14,14 @@ const useCreateHardwareId = (
 
 const useCheckHardwareId = () => {
   return useQuery(
-    UserQueryKey.HARDWARE_ID(),
+    UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!),
     () => UserService.getHardwareId(),
     {
       refetchOnWindowFocus: false,
       onSuccess: async (data) => {
         if (!data) {
           await UserService.createHardwareId();
-          UserQueryKey.HARDWARE_ID();
+          UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!);
         }
       },
     },
