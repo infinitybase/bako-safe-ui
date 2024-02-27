@@ -25,7 +25,9 @@ const useTransactionList = () => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
-  const pendingSignerTransactions = useTransactionsSignaturePending();
+  const pendingSignerTransactions = useTransactionsSignaturePending([
+    params.vaultId!,
+  ]);
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({

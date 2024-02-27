@@ -27,6 +27,7 @@ const useTransactionListPaginationRequest = (
     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       current,
       params.status as StatusFilter,
+      params.predicateId?.[0],
     ),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
