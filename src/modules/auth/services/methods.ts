@@ -7,7 +7,6 @@ import { Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
-
   FUEL = 'fuel',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
@@ -16,7 +15,6 @@ export enum Encoder {
 export enum TypeUser {
   FUEL = 'FUEL',
   WEB_AUTHN = 'WEB_AUTHN',
-
 }
 
 export type SignWebAuthnPayload = {
@@ -113,7 +111,6 @@ export class UserService {
   }
 
   static async createWebAuthnAccount(name: string) {
-    console.log(name);
     const account = await createAccount(name, Address.fromRandom().toB256());
 
     const payload = {
@@ -164,7 +161,7 @@ export const UserQueryKey = {
     UserQueryKey.DEFAULT,
     'sign-message-web-authn',
   ],
-  HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
+  // HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
   ACCOUNTS: (hardwareId: string) => [
     UserQueryKey.DEFAULT,
     'accounts',
@@ -174,7 +171,7 @@ export const UserQueryKey = {
   FULL_DATA: (search: string, hardwareId: string) => [
     UserQueryKey.DEFAULT,
     UserQueryKey.NICKNAME(search),
-    UserQueryKey.HARDWARE_ID(),
+    // UserQueryKey.HARDWARE_ID(),
     UserQueryKey.ACCOUNTS(hardwareId),
   ],
 };
