@@ -45,6 +45,7 @@ const VaultDetailsPage = () => {
     account,
     inView,
     pendingSignerTransactions,
+    assets,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
@@ -150,7 +151,7 @@ const VaultDetailsPage = () => {
       </HStack>
 
       <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
-        <CardDetails vault={vault} store={store} />
+        <CardDetails vault={vault} store={store} assets={assets} />
 
         <SignersDetails vault={vault} />
       </HStack>

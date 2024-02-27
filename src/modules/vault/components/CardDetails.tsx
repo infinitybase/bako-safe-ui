@@ -28,13 +28,14 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+  assets: UseVaultDetailsReturn['assets'];
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
 
 const CardDetails = (props: CardDetailsProps) => {
   // const navigate = useNavigate();
-  const { store, vault } = props;
+  const { store, vault, assets } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace } = useWorkspace();
   const { isSingleWorkspace } = useAuth();
@@ -185,6 +186,7 @@ const CardDetails = (props: CardDetailsProps) => {
                         cursor: 'pointer',
                         color: 'grey.200',
                       }}
+                      onClick={assets.refetchBalance}
                     >
                       Update
                       <RefreshIcon

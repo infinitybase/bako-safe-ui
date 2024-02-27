@@ -46,6 +46,7 @@ const createAccount = async (name: string) => {
 };
 
 const signAccount = async (sign: SignWebAuthnPayload) => {
+  console.log(sign);
   return await UserService.signMessageWebAuthn(sign);
 };
 
@@ -175,6 +176,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               size="lg"
               variant="primary"
               onClick={async () => {
+                console.log('antes da request');
                 const data = await signAccountMutate.mutateAsync(sign);
                 console.log(data);
               }}

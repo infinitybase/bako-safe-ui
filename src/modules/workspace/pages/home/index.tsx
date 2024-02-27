@@ -282,6 +282,7 @@ const WorkspacePage = () => {
                           cursor: 'pointer',
                           color: 'grey.200',
                         }}
+                        onClick={worksapceBalance.refetch}
                       >
                         Update
                         <RefreshIcon
