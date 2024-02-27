@@ -7,8 +7,7 @@ import { Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
-
-  FUEL = 'fuel',
+  FUEL = 'FUEL',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
 }
@@ -16,7 +15,6 @@ export enum Encoder {
 export enum TypeUser {
   FUEL = 'FUEL',
   WEB_AUTHN = 'WEB_AUTHN',
-
 }
 
 export type SignWebAuthnPayload = {
