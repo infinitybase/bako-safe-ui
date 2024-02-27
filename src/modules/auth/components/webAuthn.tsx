@@ -95,7 +95,6 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
                 border="1px solid white"
                 variant="secondary"
                 fontWeight="medium"
-                size="lg"
                 onClick={formState.handleSecondaryAction}
                 _hover={{
                   borderColor: 'brand.500',
@@ -108,7 +107,6 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
 
             <Button
               w={tabs.is(WebAuthnState.LOGIN) ? '45%' : '100%'}
-              size="lg"
               variant="primary"
               onClick={formState.handlePrimaryAction}
               _hover={{
