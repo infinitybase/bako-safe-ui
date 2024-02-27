@@ -1,4 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
+import { defaultConfig } from 'bsafe';
 import { Address } from 'fuels';
 
 import { api } from '@/config';
@@ -110,11 +111,13 @@ export class UserService {
   }
 
   static async createWebAuthnAccount(name: string) {
+    console.log(name);
     const account = await createAccount(name, Address.fromRandom().toB256());
 
     const payload = {
+      name,
       address: Address.fromB256(account.address).toString(),
-      provider: 'webauthn',
+      provider: defaultConfig['PROVIDER']!,
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain

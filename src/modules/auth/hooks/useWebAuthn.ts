@@ -1,7 +1,12 @@
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useState } from 'react';
 
-import { useCheckHardwareId, useCheckNickname } from './useWebauthnRequests';
+import {
+  useCheckHardwareId,
+  useCheckNickname,
+  useCreateHardwareId,
+  useGetAccountsByHardwareId,
+} from './useWebauthnRequests';
 
 export enum EWebauthn {
   HOME = 0,
@@ -43,6 +48,8 @@ const useWebAuthn = () => {
     setSearch,
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
+    useCreateHardwareId,
+    useGetAccountsByHardwareId,
     hardwareId: useCheckHardwareId().data,
     checkNickname: useCheckNickname(search),
     debouncedSearchHandler,

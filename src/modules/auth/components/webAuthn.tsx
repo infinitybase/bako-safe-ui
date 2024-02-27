@@ -9,6 +9,9 @@ import {
   DrawerOverlay,
   DrawerProps,
   Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
   HStack,
   Input,
@@ -16,11 +19,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { ErrorIcon } from '@/components';
+import { CloseIcon } from '@/components/icons/close-icon';
 
 import {
   redirectPathBuilder,
@@ -78,7 +82,7 @@ const DrawerWebAuth = () => {
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const { ...drawerProps } = props;
-  const { setSearch, search } = useWebAuthn();
+  const { setSearch, search, useGetAccountsByHardwareId } = useWebAuthn();
   const { createAccountMutate, signAccountMutate } = DrawerWebAuth();
   const [sign, setSign] = useState<SignWebAuthnPayload>({
     id: '',
@@ -86,63 +90,57 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     publicKey: '',
   });
 
+  const values = useGetAccountsByHardwareId(
+    localStorage.getItem('hardwareId') || '',
+  );
+
+  console.log(values);
   return (
-    <Drawer {...drawerProps} size="sm" variant="glassmorphic" placement="right">
+    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
       <DrawerOverlay />
       <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
+        <Flex mb={12} w="full" justifyContent="space-between">
+          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={3}>
+            <MdOutlineArrowBackIosNew width={5} height={5} />
+            <Text fontWeight="semibold" color="white" fontSize="lg">
+              Back
+            </Text>
+          </HStack>
           <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
+            <Text fontWeight="semibold" color="white" fontSize="lg">
               Close
             </Text>
+            <CloseIcon w={6} h={6} />
           </HStack>
         </Flex>
 
         <DrawerHeader mb={10}>
           <VStack alignItems="flex-start" spacing={5}>
             <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-              Connect your Wallet
+              Login with WebAuthn
             </Heading>
           </VStack>
         </DrawerHeader>
 
-        <Divider borderColor="dark.100" mb={8} />
+        <Divider mb={8} />
 
         <DrawerBody>
-          <Input
-            placeholder="Search for hardware id"
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-          />
-
-          <Button
-            onClick={async () => {
-              const data = await createAccountMutate.mutateAsync(search);
-              setSign({
-                id: data.id,
-                challenge: data.code,
-                publicKey: data.publicKey,
-              });
-            }}
-          >
-            <Text variant="description">Create</Text>
-          </Button>
-
-          <Button
-            onClick={async () => {
-              const data = await signAccountMutate.mutateAsync(sign);
-              console.log(data);
-            }}
-          >
-            <Text variant="description">SIGN</Text>
-          </Button>
-
+          <FormControl mb={8}>
+            <Input
+              placeholder=" "
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+            <FormLabel>Username</FormLabel>
+            <FormHelperText fontSize="sm" ml={2} color="grey.500">
+              Select your username
+            </FormHelperText>
+          </FormControl>
           {/* <Select
-            // value={props.value}
-            // onChange={props.onChange}
-            // isInvalid={props.isInvalid}
+            value={props.value}
+            onChange={props.onChange}
+            isInvalid={props.isInvalid}
             placeholder=" "
           >
             {assets.map((asset) => (
@@ -151,6 +149,39 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               </option>
             ))}
           </Select> */}
+
+          <HStack w="full" justify="space-evenly">
+            <Button
+              w="45%"
+              bgColor="transparent"
+              border="1px solid white"
+              variant="secondary"
+              fontWeight="medium"
+              size="lg"
+              onClick={async () => {
+                const data = await createAccountMutate.mutateAsync(search);
+                setSign({
+                  id: data.id,
+                  challenge: data.code,
+                  publicKey: data.publicKey,
+                });
+              }}
+            >
+              Create account
+            </Button>
+
+            <Button
+              w="45%"
+              size="lg"
+              variant="primary"
+              onClick={async () => {
+                const data = await signAccountMutate.mutateAsync(sign);
+                console.log(data);
+              }}
+            >
+              Sign In
+            </Button>
+          </HStack>
         </DrawerBody>
 
         <DrawerFooter justifyContent="flex-start">

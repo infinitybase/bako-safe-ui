@@ -1,6 +1,6 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import {

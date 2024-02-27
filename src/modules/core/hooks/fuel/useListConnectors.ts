@@ -1,17 +1,18 @@
 import { useConnectors } from '@fuels/react';
 
 import { FueletIcon, FuelIcon } from '@/components';
+import { PasskeyIcon } from '@/components/icons/passkey-icon';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
   FULLET = 'Fuelet Wallet',
-  WEB_AUTHN = 'WebAuthn',
+  WEB_AUTHN = 'Login With Passkey',
 }
 
 const DEFAULT_CONNECTORS = [
   {
     name: EConnectors.WEB_AUTHN,
-    icon: FuelIcon,
+    icon: PasskeyIcon,
   },
   {
     name: EConnectors.FUEL,
