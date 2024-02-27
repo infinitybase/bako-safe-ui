@@ -1,12 +1,18 @@
+import { useFuel } from '@fuels/react';
+import { defaultConfig } from 'bsafe';
+import { Provider } from 'fuels';
+
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { IPermission } from '@/modules/core';
 
+import { TypeUser } from '../services';
 import { useAuthStore } from '../store';
 
 type AuthenticateParams = {
   userId: string;
   avatar: string;
   account: string;
+  accountType: TypeUser;
   accessToken: string;
   permissions: IPermission;
   singleWorkspace: string;
@@ -19,6 +25,7 @@ type AuthenticateWorkspaceParams = {
 
 const useAuth = () => {
   const store = useAuthStore();
+  const { fuel } = useFuel();
 
   const authenticate = (params: AuthenticateParams) => {
     CookiesConfig.setCookies([
@@ -47,6 +54,7 @@ const useAuth = () => {
       userId: params.userId,
       avatar: params.avatar,
       account: params.account,
+      accountType: params.accountType,
       workspace: params.singleWorkspace,
     });
   };
@@ -73,9 +81,17 @@ const useAuth = () => {
     store.logout();
   };
 
-  // useEffect(() => {
-  //   console.log(store.workspaces.current);
-  // }, [store.workspaces.current]);
+  const hasWallet = async () => {
+    const _hasWallet = store.accountType != TypeUser.WEB_AUTHN;
+
+    return {
+      provider: await Provider.create(
+        _hasWallet
+          ? (await fuel.currentNetwork()).url
+          : defaultConfig['PROVIDER']!,
+      ),
+    };
+  };
 
   return {
     handlers: {
@@ -85,6 +101,8 @@ const useAuth = () => {
       setInvalidAccount: store.setInvalidAccount,
       authenticateWorkspaceSingle,
     },
+    hasWallet,
+    accountType: store.accountType,
     avatar: store.avatar,
     userId: store.userId,
     account: store.account,

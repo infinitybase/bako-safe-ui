@@ -4,12 +4,21 @@ import { Location, useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
-import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import {
+  EConnectors,
+  useDefaultConnectors,
+} from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
 
+import { TypeUser } from '../services';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
+import { useWebAuthn } from './useWebAuthn';
+import {
+  useCheckHardwareId,
+  useGetAccountsByHardwareId,
+} from './useWebauthnRequests';
 
-const redirectPathBuilder = (
+export const redirectPathBuilder = (
   isDapp: boolean,
   location: Location,
   account: string,
@@ -38,7 +47,10 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
+  const { openWebAuthnDrawer, isOpen, closeWebAuthnDrawer, page, setSearch } =
+    useWebAuthn();
 
+  useCheckHardwareId();
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
@@ -47,6 +59,7 @@ const useSignIn = () => {
         userId: user_id,
         avatar: avatar!,
         account: account!,
+        accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
@@ -56,11 +69,10 @@ const useSignIn = () => {
   });
 
   const createUserRequest = useCreateUserRequest({
-    onSuccess: ({ address, id, provider }) => {
+    onSuccess: ({ code, type }) => {
       signInRequest.mutate({
-        address,
-        provider,
-        user_id: id,
+        code,
+        type,
       });
     },
   });
@@ -71,10 +83,16 @@ const useSignIn = () => {
   const selectConnector = async (connector: string) => {
     await fuel.selectConnector(connector);
     connectorDrawer.onClose();
-    goToApp();
+    const isbyWallet =
+      connector === EConnectors.FUEL || connector === EConnectors.FULLET;
+    if (isbyWallet) {
+      return connectByWallet();
+    }
+
+    openWebAuthnDrawer();
   };
 
-  const goToApp = async () => {
+  const connectByWallet = async () => {
     try {
       const connected = await fuel.connect();
 
@@ -86,15 +104,26 @@ const useSignIn = () => {
       createUserRequest.mutate({
         address: account!,
         provider: network!.url,
+        type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
       auth.handlers.setInvalidAccount(true);
     }
   };
 
+  const useCheckHardwareIdRequest = useCheckHardwareId();
+
   return {
     auth,
-    goToApp,
+    connectByWallet,
+    webauthn: {
+      page,
+      isOpen,
+      setSearch,
+      closeWebAuthnDrawer,
+      hardwareId: useCheckHardwareIdRequest,
+      accounts: useGetAccountsByHardwareId(useCheckHardwareIdRequest.data!),
+    },
     signInRequest,
     isConnected,
     isConnecting: signInRequest.isLoading || createUserRequest.isLoading,
