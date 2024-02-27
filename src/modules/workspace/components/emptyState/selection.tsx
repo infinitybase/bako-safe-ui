@@ -1,24 +1,24 @@
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
 
-import { NotFoundIcon } from '@/components';
+import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
 
 export const SelectionEmptyState = () => {
   return (
-    <VStack spacing={0}>
+    <VStack spacing={4}>
       <Box mb={4}>
-        <NotFoundIcon w={100} h={100} />
+        <UserWorkspaceIcon w={100} h={100} />
       </Box>
 
       <Box mb={4}>
-        <Heading color="brand.500" fontSize="4xl">
+        <Heading color="white" fontSize="3xl">
           No workspace found
         </Heading>
       </Box>
 
-      <Box maxW={340} mb={4}>
+      <Box maxW={420} mb={4}>
         <Text
           color="grey.200"
-          fontSize="md"
+          fontSize="sm"
           textAlign="center"
           fontWeight="bold"
         >
@@ -26,6 +26,8 @@ export const SelectionEmptyState = () => {
           create your first one now?
         </Text>
       </Box>
+
+      <Divider borderWidth={1.5} borderColor="grey.600" my={1} />
     </VStack>
   );
 };

@@ -8,7 +8,8 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { SquarePlusIcon, VaultSuccessIcon } from '@/components';
+import { SquarePlusIcon } from '@/components';
+import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
 
 interface SuccessStepProps {
   onConfigureMembers: () => void;
@@ -18,10 +19,10 @@ interface SuccessStepProps {
 const SuccesStep = (props: SuccessStepProps) => (
   <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={100} as={VaultSuccessIcon} />
+      <Icon fontSize={100} as={TransactionsBoxIcon} />
     </Box>
     <Box mb={5}>
-      <Heading color="brand.600">All set!!</Heading>
+      <Heading color="brand.500">All set!!</Heading>
     </Box>
     <Box maxW={310} mb={5}>
       <Heading color="grey.200" fontSize="md" textAlign="center">

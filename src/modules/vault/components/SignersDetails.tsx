@@ -40,12 +40,12 @@ const SignersDetails = (props: SignersDetailsProps) => {
   const members = [owner, ...notOwners];
 
   return (
-    <Box>
-      <HStack alignItems="flex-start" mb={5} w="full" spacing={2}>
-        <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+    <Box w="md">
+      <HStack alignItems="flex-start" mb={5} w="full" spacing={8}>
+        <Text color="grey.400" fontWeight="semibold" fontSize="20px">
           Signers
         </Text>
-        <Badge p={1} variant="warning">
+        <Badge p={1} rounded="xl" px={4} fontWeight="semibold" variant="gray">
           Required signers {vault?.minSigners}/{vault.members?.length}
         </Badge>
       </HStack>
