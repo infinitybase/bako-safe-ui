@@ -6,7 +6,11 @@ const createSchema = yup.object({
   name: yup
     .string()
     .required('You must provide a name')
-    .test('is-valid-name', 'Invalid name', (name) => name.length > 3),
+    .test(
+      'is-valid-name',
+      'This username is not available',
+      (name) => name.length > 3,
+    ),
 });
 
 const loginSchema = yup.object({

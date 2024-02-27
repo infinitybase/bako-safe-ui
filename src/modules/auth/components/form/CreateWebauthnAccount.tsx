@@ -1,3 +1,4 @@
+import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   FormControl,
@@ -23,18 +24,31 @@ export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
         name="name"
         control={form.control}
         render={({ fieldState }) => (
-          <FormControl>
-            <Input
-              value={search}
-              placeholder=""
-              onChange={(e) => setSearch(e.target.value)}
-              isInvalid={fieldState.invalid}
+          <Box position="relative">
+            <FormControl>
+              <Input
+                value={search}
+                placeholder=""
+                onChange={(e) => setSearch(e.target.value)}
+                isInvalid={fieldState.invalid}
+              />
+              <FormLabel color="gray">Name</FormLabel>
+              <FormHelperText color="error.500">
+                {form.formState.errors.name?.message}
+              </FormHelperText>
+            </FormControl>
+            <SmallCloseIcon
+              position="absolute"
+              top={3.5}
+              right={4}
+              w={5}
+              h={5}
+              _hover={{
+                cursor: 'pointer',
+              }}
+              onClick={() => setSearch('')}
             />
-            <FormLabel color="gray">Name</FormLabel>
-            <FormHelperText color="error.500">
-              {form.formState.errors.name?.message}
-            </FormHelperText>
-          </FormControl>
+          </Box>
         )}
       />
     </Box>
