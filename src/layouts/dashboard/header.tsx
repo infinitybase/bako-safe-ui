@@ -29,7 +29,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
-import { useLoadImage } from '@/modules/core/hooks';
+import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -44,7 +44,10 @@ import { useSidebar } from './hook';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
-    paddingX: 6,
+    paddingX: {
+      base: 3,
+      sm: 6,
+    },
     paddingY: 3,
   },
 });
@@ -61,6 +64,7 @@ const TopBarItem = chakra(SpacedBox, {
 });
 
 const UserBox = () => {
+  const { isMobile } = useScreenSize();
   const auth = useAuth();
   const avatarImage = useLoadImage(auth.avatar);
   const { fuel } = useFuel();
@@ -92,17 +96,27 @@ const UserBox = () => {
                   borderRadius={5}
                 />
               ) : (
-                <Avatar variant="roundedSquare" src={auth.avatar} />
+                <Avatar
+                  variant="roundedSquare"
+                  src={auth.avatar}
+                  size={{ base: 'sm', sm: 'md' }}
+                />
               )}
             </Box>
 
-            <Box mr={9}>
-              <Text fontWeight="semibold" color="grey.200">
-                {AddressUtils.format(auth.account)}
-              </Text>
-            </Box>
+            {!isMobile && (
+              <Box mr={9}>
+                <Text fontWeight="semibold" color="grey.200">
+                  {AddressUtils.format(auth.account)}
+                </Text>
+              </Box>
+            )}
 
-            <Icon color="grey.200" fontSize="lg" as={FaChevronDown} />
+            <Icon
+              color="grey.200"
+              fontSize={{ base: 'sm', sm: 'lg' }}
+              as={FaChevronDown}
+            />
           </Flex>
         </PopoverTrigger>
 
@@ -153,6 +167,8 @@ const WorkspaceBox = ({
   currentWorkspace?: Workspace;
   isLoading?: boolean;
 }) => {
+  const { isMobile } = useScreenSize();
+
   if (isLoading)
     return (
       <CircularProgress
@@ -168,10 +184,15 @@ const WorkspaceBox = ({
   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
   return (
-    <Flex w="full" alignItems="center" justifyContent="space-between">
+    <Flex
+      w="full"
+      alignItems="center"
+      justifyContent={{ base: 'flex-end', sm: 'space-between' }}
+    >
       <Flex>
         {isMyWorkspace && (
           <Text
+            fontSize={{ base: 'xs', sm: 'md' }}
             fontWeight="semibold"
             color="grey.200"
             border="2px"
@@ -184,31 +205,51 @@ const WorkspaceBox = ({
           </Text>
         )}
         {!isMyWorkspace && (
-          <HStack spacing={4}>
-            <Avatar variant="roundedSquare" src={avatar} />
-            <Box w={150}>
+          <HStack
+            spacing={{ base: 2, sm: 4 }}
+            flexDirection={{ base: 'row-reverse', sm: 'row' }}
+          >
+            <Avatar
+              variant="roundedSquare"
+              src={avatar}
+              size={{ base: 'sm', sm: 'md' }}
+            />
+            <Box w={{ base: 100, sm: 150 }}>
               <Text
+                fontSize={{ base: 'xs', sm: 'md' }}
                 fontWeight="semibold"
                 color="grey.200"
                 isTruncated
                 maxW={150}
+                textAlign={{
+                  base: 'right',
+                  sm: 'left',
+                }}
               >
                 {name}
               </Text>
-              <Text fontSize="sm" color="grey.500">
-                Current workspace
+              <Text
+                fontSize={{ base: 'xs', sm: 'sm' }}
+                color="grey.500"
+                textAlign={{
+                  base: 'right',
+                  sm: 'left',
+                }}
+              >
+                {isMobile ? 'Workspace' : 'Current workspace'}
               </Text>
             </Box>
           </HStack>
         )}
       </Flex>
 
-      <ReplaceIcon color="grey.200" fontSize={20} />
+      {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
     </Flex>
   );
 };
 
 const Header = () => {
+  const { isMobile } = useScreenSize();
   const navigate = useNavigate();
   const { drawer } = useSidebar();
   const {
@@ -229,7 +270,10 @@ const Header = () => {
 
   return (
     <Flex
-      h={82}
+      h={{
+        base: '64px',
+        sm: 82,
+      }}
       w="100%"
       bgColor="dark.300"
       alignItems="center"
@@ -250,16 +294,20 @@ const Header = () => {
         onClick={() => {
           goHome();
         }}
+        pl={6}
       >
-        <img width={95} src={logo} alt="" />
+        <img width={isMobile ? 65 : 95} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
         <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
-          w={310}
-          px={6}
+          w={{
+            base: 190,
+            sm: 310,
+          }}
+          borderLeftWidth={{ base: 0, sm: 1 }}
         >
           <WorkspaceBox
             currentWorkspace={currentWorkspace.workspace}
@@ -267,36 +315,40 @@ const Header = () => {
           />
         </TopBarItem>
 
-        <TopBarItem
-          onClick={() =>
-            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-          }
-        >
-          <Icon color="grey.200" as={QuestionIcon} />
-        </TopBarItem>
-
-        <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
-          <Icon
-            color="grey.200"
-            as={NotificationIcon}
-            fontSize={30}
-            position="absolute"
-          />
-
-          {unreadCounter > 0 && (
-            <Center
-              px={1}
-              py={0}
-              bg="error.600"
-              borderRadius={10}
-              position="relative"
-              top={-1.5}
-              right={-2.5}
+        {!isMobile && (
+          <>
+            <TopBarItem
+              onClick={() =>
+                window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+              }
             >
-              <Text fontSize="xs">+{unreadCounter}</Text>
-            </Center>
-          )}
-        </TopBarItem>
+              <Icon color="grey.200" as={QuestionIcon} />
+            </TopBarItem>
+
+            <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
+              <Icon
+                color="grey.200"
+                as={NotificationIcon}
+                fontSize={30}
+                position="absolute"
+              />
+
+              {unreadCounter > 0 && (
+                <Center
+                  px={1}
+                  py={0}
+                  bg="error.600"
+                  borderRadius={10}
+                  position="relative"
+                  top={-1.5}
+                  right={-2.5}
+                >
+                  <Text fontSize="xs">+{unreadCounter}</Text>
+                </Center>
+              )}
+            </TopBarItem>
+          </>
+        )}
 
         <TopBarItem>
           <UserBox />
