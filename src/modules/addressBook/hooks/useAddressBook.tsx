@@ -7,14 +7,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { IApiError } from '@/config';
 import { useAuth } from '@/modules/auth';
-import {
-  AddressBookQueryKey,
-  invalidateQueries,
-  PermissionRoles,
-} from '@/modules/core';
+import { PermissionRoles } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
-import { useAddressBookStore } from '../store/useAddressBookStore';
 import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
 import { useCreateContactRequest } from './useCreateContactRequest';
@@ -41,29 +36,34 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
 
   const contactDialog = useDisclosure();
   const deleteContactDialog = useDisclosure();
-  const { workspaceId, vaultId } = useParams();
+  const { workspaceId } = useParams();
   const inView = useInView({ delay: 300 });
   const navigate = useNavigate();
-  const { contacts } = useAddressBookStore();
+
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const {
-    workspaces: { current, single },
-  } = useAuth();
+  const auth = useAuth();
 
   const { hasPermission } = useWorkspace(); // dont remove
+
+  const listContactsRequest = useListContactsRequest({
+    current: workspaceId!,
+    includePersonal: isSingleIncluded ?? !auth.isSingleWorkspace,
+  });
+  const listContactsPaginatedRequest = useListPaginatedContactsRequest(
+    listContactsRequest.data ?? [],
+    { q: search },
+    workspaceId!,
+  );
 
   // FORM
   const { form } = useCreateContactForm();
 
   // MUTATIONS
   const deleteContactRequest = useDeleteContactRequest({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await listContactsRequest.refetch();
       deleteContactDialog.onClose();
-      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
-      invalidateQueries(
-        AddressBookQueryKey.LIST_BY_USER_PAGINATED(current, search),
-      );
       successToast({
         title: 'Success!',
         description: 'Your contact was deleted...',
@@ -72,18 +72,18 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
   });
 
   const updateContactRequest = useUpdateContactRequest({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await listContactsRequest.refetch();
       contactDialog.onClose();
-      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
       createAndUpdateSuccessToast();
     },
     onError: () => errorToast({}),
   });
 
   const createContactRequest = useCreateContactRequest({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await listContactsRequest.refetch();
       contactDialog.onClose();
-      invalidateQueries(AddressBookQueryKey.LIST_BY_USER(current, vaultId));
       createAndUpdateSuccessToast();
     },
     onError: (error) => {
@@ -127,6 +127,7 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
   };
 
   const contactByAddress = (address: string) => {
+    const contacts = listContactsRequest?.data ?? [];
     return contacts.find(({ user }) => user.address === address);
   };
 
@@ -164,33 +165,24 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
 
   return {
     inView,
-    contacts,
     canAddMember,
     contactToEdit,
     contactDialog,
     contactToDelete,
+    listContactsRequest,
     deleteContactDialog,
     createContactRequest,
     deleteContactRequest,
     updateContactRequest,
+    form: { ...form, handleCreateContact, handleUpdateContact },
     search: { value: search, handler: debouncedSearchHandler },
+    paginatedContacts: listContactsPaginatedRequest,
     //functions
     navigate,
     handleOpenDialog,
     contactByAddress,
     setContactToDelete,
     handleDeleteContact,
-    useListPaginatedContactsRequest: useListContactsRequest(
-      current,
-      isSingleIncluded ?? single !== workspaceId,
-      vaultId,
-    ),
-    form: { ...form, handleCreateContact, handleUpdateContact },
-    paginatedContacts: useListPaginatedContactsRequest(
-      contacts,
-      { q: search },
-      current,
-    ),
   };
 };
 

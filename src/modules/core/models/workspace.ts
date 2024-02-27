@@ -136,16 +136,16 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'balance',
   ],
-  FULL_DATA: (workspaceId: string, status?: string, vaultId?: string) => [
+  FULL_DATA: (workspaceId: string, status?: string) => [
     WorkspacesQueryKey.DEFAULT,
     WorkspacesQueryKey.HOME(),
     HomeQueryKey.FULL_DATA(workspaceId),
     WorkspacesQueryKey.GET_BALANCE(workspaceId),
-    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId, vaultId),
+    WorkspacesQueryKey.PENDING_TRANSACTIONS(workspaceId),
     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       workspaceId,
       status,
     ),
-    AddressBookQueryKey.LIST_BY_USER(workspaceId, vaultId),
+    AddressBookQueryKey.LIST_BY_USER(workspaceId),
   ],
 };

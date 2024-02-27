@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { useAddressBookStore } from '@/modules/addressBook/store/useAddressBookStore';
 import { useAuth } from '@/modules/auth';
 import { useBsafeCreateTransaction, WorkspacesQueryKey } from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
@@ -40,8 +39,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { contacts } = useAddressBookStore();
-  useListContactsRequest(current, true, params.vaultId);
+  const listContactsRequest = useListContactsRequest({
+    current,
+    includePersonal: true,
+  });
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -103,7 +104,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     vault: vaultDetails,
     assets: vaultAssets,
-    nicks: contacts,
+    nicks: listContactsRequest.data ?? [],
     navigate,
     accordion,
     handleClose,
