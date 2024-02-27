@@ -4,6 +4,7 @@ import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
+import { useAuth } from '@/modules';
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
 import { VaultService } from '../../services';
@@ -37,9 +38,10 @@ const balancesToAssets = async (predicate?: Vault) => {
 function useVaultAssets(predicate?: Vault) {
   const { setVisibleBalance, setBiggerAsset } = useVaultState();
   const { provider } = useProvider();
+  const auth = useAuth();
 
   const { data: assets, ...rest } = useQuery(
-    ['predicate/assets', predicate],
+    ['predicate/assets', auth.workspaces.current, predicate],
     () => balancesToAssets(predicate),
     {
       initialData: [],

@@ -22,7 +22,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   const transactionsRef = useRef<ITransaction[]>([]);
 
   const refetetchTransactionList = () => {
-    const queries = ['home', 'transaction'];
+    const queries = ['home', 'transaction', 'assets'];
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),
