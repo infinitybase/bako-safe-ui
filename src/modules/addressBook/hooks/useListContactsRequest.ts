@@ -14,7 +14,7 @@ const useListContactsRequest = ({
   includePersonal,
 }: UseListContactsRequestParams) => {
   return useQuery(
-    AddressBookQueryKey.LIST_BY_USER(current),
+    [...AddressBookQueryKey.LIST_BY_USER(current), includePersonal],
     () => AddressBookService.list(includePersonal),
     {
       refetchOnWindowFocus: false,

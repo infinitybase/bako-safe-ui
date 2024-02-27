@@ -48,7 +48,7 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
 
   const listContactsRequest = useListContactsRequest({
     current: workspaceId!,
-    includePersonal: isSingleIncluded ?? !auth.isSingleWorkspace,
+    includePersonal: isSingleIncluded ?? auth.isSingleWorkspace,
   });
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],

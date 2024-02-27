@@ -36,12 +36,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const params = useParams<{ vaultId: string }>();
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-  const {
-    workspaces: { current },
-  } = useAuth();
+  const auth = useAuth();
   const listContactsRequest = useListContactsRequest({
-    current,
-    includePersonal: true,
+    current: auth.workspaces.current,
+    includePersonal: auth.isSingleWorkspace,
   });
 
   // Vault
@@ -65,7 +63,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         description: 'Your transaction was successfully created...',
       });
       queryClient.invalidateQueries([
-        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
+        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+          auth.workspaces.current,
+        ),
         TRANSACTION_LIST_QUERY_KEY,
         USER_TRANSACTIONS_QUERY_KEY,
       ]);
