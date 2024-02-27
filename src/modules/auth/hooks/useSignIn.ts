@@ -47,8 +47,14 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, isOpen, closeWebAuthnDrawer, page, setSearch } =
-    useWebAuthn();
+  const {
+    openWebAuthnDrawer,
+    isOpen,
+    closeWebAuthnDrawer,
+    page,
+    setSearch,
+    hardwareId,
+  } = useWebAuthn();
 
   useCheckHardwareId();
   const hasFuel = !!fuel;
@@ -122,7 +128,7 @@ const useSignIn = () => {
       setSearch,
       closeWebAuthnDrawer,
       hardwareId: useCheckHardwareIdRequest,
-      accounts: useGetAccountsByHardwareId(useCheckHardwareIdRequest.data!),
+      accounts: useGetAccountsByHardwareId(hardwareId!),
     },
     signInRequest,
     isConnected,

@@ -23,13 +23,16 @@ export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
       <Controller
         name="name"
         control={form.control}
-        render={({ fieldState }) => (
+        render={({ field, fieldState }) => (
           <Box position="relative">
             <FormControl>
               <Input
                 value={search}
                 placeholder=""
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  field.onChange(e);
+                }}
                 isInvalid={fieldState.invalid}
               />
               <FormLabel color="gray">Name</FormLabel>

@@ -100,21 +100,26 @@ export async function signChallange(
   publicKey: string,
 ) {
   const challangeBytesInASCII = hexToASCII(challenge);
-  const authentication = await navigator.credentials.get({
-    publicKey: {
-      challenge: fromBase64(challenge.slice(2)),
-      rpId: window.location.hostname,
-      allowCredentials: [
-        {
-          id: fromBase64(id),
-          type: 'public-key',
-          transports: ['hybrid', 'internal'],
-        },
-      ],
-      userVerification: 'required',
-      timeout: 60000,
-    },
-  });
+  console.log(id, challenge, publicKey);
+  const authentication = await navigator.credentials
+    .get({
+      publicKey: {
+        challenge: fromBase64(challenge.slice(2)),
+        rpId: window.location.hostname,
+        allowCredentials: [
+          {
+            id: fromBase64(id),
+            type: 'public-key',
+            transports: ['hybrid', 'internal'],
+          },
+        ],
+        userVerification: 'required',
+        timeout: 60000,
+      },
+    })
+    .catch((e) => console.log(e));
+
+  console.log(authentication);
   const response = (authentication as any).response;
   const authData = new Uint8Array(response.authenticatorData);
   const clientHash = await sha256(response.clientDataJSON);

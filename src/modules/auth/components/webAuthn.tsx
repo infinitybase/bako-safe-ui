@@ -29,16 +29,13 @@ interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const { ...drawerProps } = props;
-  const { useGetAccountsByHardwareId } = useWebAuthn();
-  const { form, tabs, handleChangeTab } = useWebAuthn();
+  const { form, tabs, handleChangeTab, accountsRequest } = useWebAuthn();
   const { formState, memberForm, loginForm } = form;
-
-  useGetAccountsByHardwareId(localStorage.getItem('hardwareId') || '');
 
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <LoginWebAuthnForm form={loginForm} />
+        <LoginWebAuthnForm request={accountsRequest} form={loginForm} />
       </TabPanel>
       <TabPanel p={0}>
         <CreateWebAuthnForm form={memberForm} />
@@ -50,17 +47,25 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
       <DrawerOverlay />
       <DrawerContent>
-        <Flex mb={12} w="full" justifyContent="space-between">
-          <HStack
-            cursor="pointer"
-            onClick={() => handleChangeTab(WebAuthnState.LOGIN)}
-            spacing={3}
-          >
-            <MdOutlineArrowBackIosNew width={5} height={5} />
-            <Text fontWeight="semibold" color="white" fontSize="lg">
-              Back
-            </Text>
-          </HStack>
+        <Flex
+          mb={12}
+          w="full"
+          justifyContent={
+            tabs.is(WebAuthnState.LOGIN) ? 'flex-end' : 'space-between'
+          }
+        >
+          {tabs.is(WebAuthnState.REGISTER) && (
+            <HStack
+              cursor="pointer"
+              onClick={() => handleChangeTab(WebAuthnState.LOGIN)}
+              spacing={3}
+            >
+              <MdOutlineArrowBackIosNew width={5} height={5} />
+              <Text fontWeight="semibold" color="white" fontSize="lg">
+                Back
+              </Text>
+            </HStack>
+          )}
           <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
             <Text fontWeight="semibold" color="white" fontSize="lg">
               Close

@@ -1,12 +1,12 @@
 import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
-import { UserQueryKey, UserService } from '../services';
+import { localStorageKeys, UserQueryKey, UserService } from '../services';
 
 const useCreateHardwareId = (
   options?: UseMutationOptions<unknown, unknown, string>,
 ) => {
   return useMutation(
-    UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!),
+    UserQueryKey.ACCOUNTS(localStorage.getItem(localStorageKeys.HARDWARE_ID)!),
     UserService.createHardwareId,
     options,
   );
@@ -14,14 +14,14 @@ const useCreateHardwareId = (
 
 const useCheckHardwareId = () => {
   return useQuery(
-    UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!),
+    UserQueryKey.ACCOUNTS(localStorage.getItem(localStorageKeys.HARDWARE_ID)!),
     () => UserService.getHardwareId(),
     {
       refetchOnWindowFocus: false,
       onSuccess: async (data) => {
+        console.log('data', data);
         if (!data) {
           await UserService.createHardwareId();
-          UserQueryKey.ACCOUNTS(localStorage.getItem('hardwareId')!);
         }
       },
     },
@@ -44,6 +44,7 @@ const useGetAccountsByHardwareId = (hardwareId: string) => {
     () => UserService.getByHardwareId(hardwareId),
     {
       refetchOnWindowFocus: false,
+      enabled: !!hardwareId,
     },
   );
 };

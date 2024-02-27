@@ -1,13 +1,12 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
-import { SignWebAuthnPayload } from '../services';
+import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
 import { useWebAuthnForm } from './useWebAuthnForm';
 import {
-  useCheckHardwareId,
   useCheckNickname,
   useCreateHardwareId,
   useGetAccountsByHardwareId,
@@ -25,11 +24,6 @@ const useWebAuthn = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(WebAuthnState.LOGIN);
   const [search, setSearch] = useState('');
-  const [sign, setSign] = useState<SignWebAuthnPayload>({
-    id: '',
-    challenge: '',
-    publicKey: '',
-  });
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -37,6 +31,11 @@ const useWebAuthn = () => {
   });
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
+
+  const hardwareId = useMemo(() => {
+    return localStorage.getItem(localStorageKeys.HARDWARE_ID)!;
+  }, []);
+  const accountsRequest = useGetAccountsByHardwareId(hardwareId);
 
   const debouncedSearchHandler = useCallback(
     debounce((event: string | ChangeEvent<HTMLInputElement>) => {
@@ -54,27 +53,28 @@ const useWebAuthn = () => {
   );
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
-    if (name) {
+    console.log('name', name);
+
+    const acc = accountsRequest.data?.find((user) => user.id === name);
+    console.log(acc);
+    if (acc) {
+      const { code } = await UserService.generateSignInCode(acc.address);
+      console.log(code);
       await signAccountMutate
-        .mutateAsync(sign)
+        .mutateAsync({
+          id: acc.id,
+          challenge: code,
+          publicKey: acc.webauthn.publicKey,
+        })
         .then((data) => console.log(data));
     }
   });
 
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
-    await createAccountMutate
-      .mutateAsync(name)
-      .then((data) => {
-        setSign({
-          id: data.id,
-          challenge: data.code,
-          publicKey: data.publicKey,
-        });
-        tabs.set(WebAuthnState.LOGIN);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    await createAccountMutate.mutateAsync(name).catch((error) => {
+      console.error(error);
+    });
+    tabs.set(WebAuthnState.LOGIN);
   });
 
   const handleChangeTab = (tab: WebAuthnState) => {
@@ -122,9 +122,9 @@ const useWebAuthn = () => {
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
     useCreateHardwareId,
-    useGetAccountsByHardwareId,
+    accountsRequest,
     handleChangeTab,
-    hardwareId: useCheckHardwareId().data,
+    hardwareId,
     checkNickname: useCheckNickname(search),
     debouncedSearchHandler,
     isOpen,

@@ -63,10 +63,17 @@ export type SignInResponse = {
 };
 
 export type CheckNicknameResponse = {
+  id: string;
   address: string;
   name: string;
   provider: string;
   type: TypeUser;
+  webauthn: {
+    id: string;
+    publicKey: string;
+    origin: string;
+    hardware: string;
+  };
 };
 
 export class UserService {
@@ -81,6 +88,7 @@ export class UserService {
   }
 
   static async verifyNickname(nickname: string) {
+    if (!nickname) return;
     const { data } = await api.get<CheckNicknameResponse>(
       `/user/nickname/${nickname}`,
     );
@@ -98,12 +106,15 @@ export class UserService {
   }
 
   static async getHardwareId() {
-    const localStorage = window.localStorage;
-    return localStorage.getItem(localStorageKeys.HARDWARE_ID);
+    return new Promise((resolve) => {
+      const localStorage = window.localStorage;
+      return resolve(localStorage.getItem(localStorageKeys.HARDWARE_ID));
+    });
   }
 
   static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<CheckNicknameResponse>(
+    console.log(hardwareId);
+    const { data } = await api.get<CheckNicknameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
 
@@ -123,6 +134,7 @@ export class UserService {
         id: account.credential?.id!,
         publicKey: account.publicKeyHex,
         origin: window.location.origin,
+        hardware: localStorage.getItem(localStorageKeys.HARDWARE_ID)!,
       },
     };
     return {
@@ -139,11 +151,20 @@ export class UserService {
   }: SignWebAuthnPayload) {
     const signature = await signChallange(id, challenge, publicKey);
 
+    console.log(signature);
+    debugger;
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature.sig_compact),
       digest: bytesToHex(signature.dig_compact),
     });
+  }
+
+  static async generateSignInCode(address: string) {
+    const { data } = await api.post<CreateUserResponse>(
+      `/auth/code/${address}`,
+    );
+    return data;
   }
 }
 

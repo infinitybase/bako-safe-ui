@@ -12,8 +12,14 @@ import { UseWebAuthn } from '../../hooks';
 
 interface LoginWebAuthnFormProps {
   form: UseWebAuthn['form']['loginForm'];
+  request: UseWebAuthn['accountsRequest'];
 }
-export const LoginWebAuthnForm = ({ form }: LoginWebAuthnFormProps) => {
+export const LoginWebAuthnForm = ({
+  form,
+  request,
+}: LoginWebAuthnFormProps) => {
+  const { data } = request;
+
   return (
     <Box w="full" maxW={480} mb={8}>
       <Controller
@@ -29,13 +35,11 @@ export const LoginWebAuthnForm = ({ form }: LoginWebAuthnFormProps) => {
               autoComplete="off"
               placeholder=" "
             >
-              {Array(10)
-                .fill(' ')
-                .map((_, index) => (
-                  <option key={index + 1} value={index + 1}>
-                    {index + 1}
-                  </option>
-                ))}
+              {data?.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
             </Select>
             <FormLabel color="gray">Username</FormLabel>
             <FormHelperText
