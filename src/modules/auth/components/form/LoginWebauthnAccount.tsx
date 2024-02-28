@@ -30,8 +30,7 @@ export const LoginWebAuthnForm = ({
             <Select
               value={field.value}
               onChange={field.onChange}
-              defaultValue={''}
-              isInvalid={form.formState.isValid}
+              isInvalid={form.formState.isValid && fieldState.invalid}
               autoComplete="off"
               placeholder=" "
             >

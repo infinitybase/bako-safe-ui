@@ -32,6 +32,9 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const { form, tabs, handleChangeTab, accountsRequest } = useWebAuthn();
   const { formState, memberForm, loginForm } = form;
 
+  const disabledButton =
+    !formState.isValid || form.loginForm.watch('name').length === 0;
+
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
@@ -115,8 +118,9 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               variant="primary"
               onClick={formState.handlePrimaryAction}
               _hover={{
-                opacity: 0.8,
+                opacity: !disabledButton && 0.8,
               }}
+              isDisabled={disabledButton}
             >
               {formState.primaryAction}
             </Button>
