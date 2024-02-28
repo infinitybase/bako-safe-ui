@@ -5,12 +5,8 @@ import * as yup from 'yup';
 const createSchema = yup.object({
   name: yup
     .string()
-    .required('You must provide a name')
-    .test(
-      'is-valid-name',
-      'This username is not available',
-      (name) => name.length > 3,
-    ),
+    .min(3, 'Name must be at least 3 characters')
+    .required('You must provide a name'),
 });
 
 const loginSchema = yup.object({
