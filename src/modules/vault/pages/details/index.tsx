@@ -4,12 +4,14 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Flex,
   Heading,
   HStack,
   Icon,
   Text,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import {
   Card,
@@ -19,6 +21,7 @@ import {
   SquarePlusIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -53,6 +56,7 @@ const VaultDetailsPage = () => {
     workspaces: { current },
   } = useAuth();
   const { workspace } = useGetCurrentWorkspace();
+  const { isMobile } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
@@ -61,68 +65,78 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={8}>
+    <Box w="full" pr={{ base: 0, sm: 8 }}>
       <HStack mb={9} w="full" justifyContent="space-between">
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() => goHome()}
-            >
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+        {isMobile ? (
+          <HStack gap={1.5}>
+            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Text fontSize="sm" fontWeight="normal" color="grey.100">
+              Menu
+            </Text>
+          </HStack>
+        ) : (
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() => goHome()}
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
 
-          {!workspace?.single && (
+            {!workspace?.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(workspaceId)}
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
-                {workspace?.name}
+                Vaults
               </BreadcrumbLink>
             </BreadcrumbItem>
-          )}
 
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() =>
-                navigate(
-                  Pages.userVaults({
-                    workspaceId,
-                  }),
-                )
-              }
-            >
-              Vaults
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-              isTruncated
-              maxW={640}
-            >
-              {vault.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+                isTruncated
+                maxW={640}
+              >
+                {vault.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
         <Button
           color="dark.200"
           bgColor="grey.200"
           fontWeight="medium"
+          fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
           onClick={() => {
             if (
@@ -149,18 +163,24 @@ const VaultDetailsPage = () => {
         </Button>
       </HStack>
 
-      <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
+      <Flex
+        mb={{ base: 10, sm: 14 }}
+        flexDirection={{ base: 'column', sm: 'row' }}
+        alignItems="flex-start"
+        w="full"
+        gap={10}
+      >
         <CardDetails vault={vault} store={store} />
 
         <SignersDetails vault={vault} />
-      </HStack>
+      </Flex>
 
       <HStack spacing={4} mb={3}>
         <Text
           variant="subtitle"
           fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
+          fontSize={{ base: 'md', sm: 'xl' }}
+          color="grey.400"
         >
           Transactions
         </Text>
@@ -172,7 +192,7 @@ const VaultDetailsPage = () => {
 
       {hasTransactions ? (
         <TransactionCard.List
-          mt={7}
+          mt={5}
           w="full"
           spacing={5}
           maxH="calc(100% - 82px)"
@@ -240,7 +260,7 @@ const VaultDetailsPage = () => {
               <NotFoundIcon w={100} h={100} />
             </Box>
             <Box mb={5}>
-              <Heading color="brand.500" fontSize="4xl">
+              <Heading color="brand.500" fontSize="4xl" textAlign="center">
                 Nothing to show here.
               </Heading>
             </Box>
