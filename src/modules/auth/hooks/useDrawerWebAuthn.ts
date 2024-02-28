@@ -33,7 +33,14 @@ export const useDrawerWebAuth = () => {
   const signAccountMutate = useMutation({
     mutationKey: UserQueryKey.SIGN_MESSAGE_WEB_AUTHN(),
     mutationFn: signAccount,
-    onSuccess: ({ user_id, avatar, accessToken, workspace, address }) => {
+    onSuccess: ({
+      user_id,
+      avatar,
+      accessToken,
+      workspace,
+      address,
+      webAuthn,
+    }) => {
       auth.handlers.authenticate({
         userId: user_id,
         avatar,
@@ -42,7 +49,9 @@ export const useDrawerWebAuth = () => {
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
+        webAuthn,
       });
+
       navigate(redirectPathBuilder(!!origin, location, address));
     },
   });

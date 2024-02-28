@@ -60,7 +60,8 @@ const useSignIn = () => {
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace }) => {
+    onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
+      const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
       auth.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
@@ -69,6 +70,7 @@ const useSignIn = () => {
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
+        webAuthn: _webAuthn,
       });
       navigate(redirectPathBuilder(!!origin, location, account!));
     },

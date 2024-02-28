@@ -98,6 +98,7 @@ export async function signChallange(
   publicKey: string,
 ) {
   const challangeBytesInASCII = hexToASCII(challenge);
+
   const authentication = await navigator.credentials.get({
     publicKey: {
       challenge: fromBase64(challenge.slice(2)),

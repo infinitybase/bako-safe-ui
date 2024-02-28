@@ -15,6 +15,8 @@ interface TransactionCardStatusProps {
   transaction: ITransaction;
 }
 
+import React from 'react';
+
 import { useSignTransaction } from '../../hooks/signature';
 
 const Status = ({ transaction, status }: TransactionCardStatusProps) => {

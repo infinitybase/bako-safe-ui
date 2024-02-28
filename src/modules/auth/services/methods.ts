@@ -7,7 +7,7 @@ import { Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
-  FUEL = 'fuel',
+  FUEL = 'FUEL',
   METAMASK = 'METAMASK',
   WEB_AUTHN = 'WEB_AUTHN',
 }
@@ -60,6 +60,10 @@ export type SignInResponse = {
   id: string;
   notify: boolean;
   firstLogin: boolean;
+  webAuthn?: {
+    id: string;
+    publicKey: string;
+  };
 };
 
 export type CheckNicknameResponse = {
@@ -78,13 +82,14 @@ export type CheckNicknameResponse = {
 
 export class UserService {
   static async create(payload: CreateUserPayload) {
-    const response = await api.post<CreateUserResponse>('/user', payload);
-    return response?.data;
+    const { data } = await api.post<CreateUserResponse>('/user', payload);
+    return data;
   }
 
   static async signIn(payload: SignInPayload) {
-    const response = await api.post<SignInResponse>('/auth/sign-in', payload);
-    return response?.data;
+    const { data } = await api.post<SignInResponse>('/auth/sign-in', payload);
+
+    return data;
   }
 
   static async verifyNickname(nickname: string) {
@@ -152,8 +157,8 @@ export class UserService {
 
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
-      signature: bytesToHex(signature.sig_compact),
-      digest: bytesToHex(signature.dig_compact),
+      signature: bytesToHex(signature!.sig_compact),
+      digest: bytesToHex(signature!.dig_compact),
     });
   }
 
