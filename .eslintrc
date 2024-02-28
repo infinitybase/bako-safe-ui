@@ -41,6 +41,7 @@
     "import/no-duplicates": "error",
     "prettier/prettier": "error",
     "unused-imports/no-unused-imports": "error",
+    "jsx-a11y/no-autofocus": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
       { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
