@@ -12,10 +12,17 @@ const titleMd = defineStyle({
   color: 'white',
 });
 
+const titleSm = defineStyle({
+  fontSize: 'sm',
+  fontWeight: 'bold',
+  color: 'white',
+});
+
 const Heading = defineStyleConfig({
   variants: {
     'title-xl': titleXl,
     'title-md': titleMd,
+    'title-sm': titleSm,
   },
 });
 
