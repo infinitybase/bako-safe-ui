@@ -6,17 +6,30 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthn, useWebAuthn } from '../../hooks';
 
 interface CreateWebAuthnFormProps {
   form: UseWebAuthn['form']['memberForm'];
+  setHasNickname: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
+export const CreateWebAuthnForm = ({
+  form,
+  setHasNickname,
+}: CreateWebAuthnFormProps) => {
   // const { debouncedSearchHandler } = useWebAuthn();
-  const { search, setSearch } = useWebAuthn();
+  const { search, setSearch, debouncedSearchHandler, nicknamesData } =
+    useWebAuthn();
+
+  useEffect(() => {
+    if (nicknamesData?.name) {
+      setHasNickname(true);
+    } else {
+      setHasNickname(false);
+    }
+  }, [nicknamesData?.name]);
 
   return (
     <Box w="full" maxW={480} mb={8}>
@@ -31,13 +44,29 @@ export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
                 placeholder=""
                 onChange={(e) => {
                   setSearch(e.target.value);
-                  field.onChange(e);
+                  debouncedSearchHandler(e.target.value);
+                  field.onChange(e.target.value);
                 }}
-                isInvalid={fieldState.invalid}
+                isInvalid={
+                  fieldState.invalid ||
+                  (!!nicknamesData?.name && search.length > 0)
+                }
               />
               <FormLabel color="gray">Name</FormLabel>
-              <FormHelperText color="error.500">
-                {form.formState.errors.name?.message}
+              <FormHelperText
+                color={
+                  nicknamesData?.name || form.formState.errors.name?.message
+                    ? 'error.500'
+                    : 'grey.500'
+                }
+              >
+                {nicknamesData?.name && search.length > 0
+                  ? 'Name already exists'
+                  : form.formState.errors.name?.message
+                  ? form.formState.errors.name?.message
+                  : search.length > 0
+                  ? 'This username is available'
+                  : ''}
               </FormHelperText>
             </FormControl>
             <SmallCloseIcon

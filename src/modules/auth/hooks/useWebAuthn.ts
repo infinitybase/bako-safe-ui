@@ -37,15 +37,15 @@ const useWebAuthn = () => {
   }, []);
   const accountsRequest = useGetAccountsByHardwareId(hardwareId);
 
+  const nicknames = useCheckNickname(search);
+
   const debouncedSearchHandler = useCallback(
     debounce((event: string | ChangeEvent<HTMLInputElement>) => {
       if (typeof event === 'string') {
         setSearch(event);
+        nicknames;
         return;
       }
-
-      memberForm.setValue('name', event.target.value);
-      setSearch(event.target.value);
     }, 300),
     [],
   );
@@ -95,6 +95,10 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleCreate,
       handleSecondaryAction: undefined,
       isLoading: createAccountMutate.isLoading,
+      isDisabled:
+        !memberForm.formState.isValid ||
+        memberForm.watch('name').length === 0 ||
+        nicknames.data?.name,
       title: 'Create your WebAuthn',
       description: 'Create your account to start using WebAuthn',
     },
@@ -105,6 +109,8 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
+      isDisabled:
+        !loginForm.formState.isValid || loginForm.watch('name').length === 0,
       title: 'Login with WebAuthn',
       description: 'Select your username to login',
     },
@@ -120,6 +126,7 @@ const useWebAuthn = () => {
     handleChangeTab,
     hardwareId,
     checkNickname: useCheckNickname(search),
+    nicknamesData: nicknames.data,
     debouncedSearchHandler,
     isOpen,
     search,

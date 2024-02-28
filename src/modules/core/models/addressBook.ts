@@ -17,20 +17,20 @@ export interface AddressBook {
 }
 export const AddressBookQueryKey = {
   DEFAULT: 'contacts',
-  LIST_BY_USER: (workspaceId: string, vaultId?: string) => [
+  LIST_BY_USER: (workspaceId: string) => [
     AddressBookQueryKey.DEFAULT,
-    workspaceId,
     'by-user',
-    vaultId ?? workspaceId,
+    workspaceId,
   ],
   LIST_BY_USER_PAGINATED: (workspaceId: string, filter: string) => [
     AddressBookQueryKey.DEFAULT,
-    workspaceId,
     'by-user',
+    'paginated',
+    workspaceId,
     filter,
   ],
-  FULL_DATA: (workspaceId: string, vaultId?: string) => [
+  FULL_DATA: (workspaceId: string) => [
     AddressBookQueryKey.DEFAULT,
-    AddressBookQueryKey.LIST_BY_USER(workspaceId, vaultId),
+    AddressBookQueryKey.LIST_BY_USER(workspaceId),
   ],
 };
