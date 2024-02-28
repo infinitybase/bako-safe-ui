@@ -252,7 +252,7 @@ const Header = () => {
           goHome();
         }}
       >
-        <img width={95} src={logo} alt="" />
+        <img width={140} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

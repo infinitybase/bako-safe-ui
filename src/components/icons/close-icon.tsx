@@ -1,3 +1,5 @@
+import { createIcon } from '@chakra-ui/icons';
+
 const CloseIcon = createIcon({
   viewBox: '0 0 20 20',
   path: (
@@ -15,3 +17,5 @@ const CloseIcon = createIcon({
     </svg>
   ),
 });
+
+export { CloseIcon };

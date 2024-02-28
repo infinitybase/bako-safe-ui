@@ -1,7 +1,7 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "react-jsx",
     /* Paths */
     "baseUrl": "./",
     "paths": {
