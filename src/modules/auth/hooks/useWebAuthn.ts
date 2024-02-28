@@ -44,8 +44,6 @@ const useWebAuthn = () => {
         return;
       }
 
-      console.log(event);
-
       memberForm.setValue('name', event.target.value);
       setSearch(event.target.value);
     }, 300),
@@ -53,20 +51,15 @@ const useWebAuthn = () => {
   );
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
-    console.log('name', name);
-
     const acc = accountsRequest.data?.find((user) => user.id === name);
-    console.log(acc);
+
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
-      console.log(code);
-      await signAccountMutate
-        .mutateAsync({
-          id: acc.webauthn.id, // this id is of the webauthn
-          challenge: code,
-          publicKey: acc.webauthn.publicKey,
-        })
-        .then((data) => console.log(data));
+      await signAccountMutate.mutateAsync({
+        id: acc.id,
+        challenge: code,
+        publicKey: acc.webauthn.publicKey,
+      });
     }
   });
 
@@ -74,6 +67,7 @@ const useWebAuthn = () => {
     await createAccountMutate.mutateAsync(name).catch((error) => {
       console.error(error);
     });
+    accountsRequest.refetch();
     tabs.set(WebAuthnState.LOGIN);
   });
 

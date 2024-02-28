@@ -16,7 +16,6 @@ const createAccount = async (name: string) => {
 };
 
 const signAccount = async (sign: SignWebAuthnPayload) => {
-  console.log(sign);
   return await UserService.signMessageWebAuthn(sign);
 };
 

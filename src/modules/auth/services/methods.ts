@@ -113,7 +113,6 @@ export class UserService {
   }
 
   static async getByHardwareId(hardwareId: string) {
-    console.log(hardwareId);
     const { data } = await api.get<CheckNicknameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
@@ -151,8 +150,6 @@ export class UserService {
   }: SignWebAuthnPayload) {
     const signature = await signChallange(id, challenge, publicKey);
 
-    console.log(signature);
-    debugger;
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature.sig_compact),

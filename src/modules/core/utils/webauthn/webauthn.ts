@@ -50,9 +50,7 @@ export async function createAccount(username: string, challenge: string) {
     },
   });
 
-  console.log(credential);
   const response = (credential as any).response;
-  console.log('[REG]', response);
   // console.log(parsers.parseClient(response.clientDataJSON));
   // console.log(parsers.parseClient(new Uint8Array(response.clientDataJSON)));
   // console.log(parsers.parseAuthenticator(response.authenticatorData));
@@ -100,31 +98,25 @@ export async function signChallange(
   publicKey: string,
 ) {
   const challangeBytesInASCII = hexToASCII(challenge);
-  console.log(id, challenge, publicKey);
-  const authentication = await navigator.credentials
-    .get({
-      publicKey: {
-        challenge: fromBase64(challenge.slice(2)),
-        rpId: window.location.hostname,
-        allowCredentials: [
-          {
-            id: fromBase64(id),
-            type: 'public-key',
-            transports: ['hybrid', 'internal'],
-          },
-        ],
-        userVerification: 'required',
-        timeout: 60000,
-      },
-    })
-    .catch((e) => console.log(e));
+  const authentication = await navigator.credentials.get({
+    publicKey: {
+      challenge: fromBase64(challenge.slice(2)),
+      rpId: window.location.hostname,
+      allowCredentials: [
+        {
+          id: fromBase64(id),
+          type: 'public-key',
+          transports: ['hybrid', 'internal'],
+        },
+      ],
+      userVerification: 'required',
+      timeout: 60000,
+    },
+  });
 
-  console.log(authentication);
   const response = (authentication as any).response;
   const authData = new Uint8Array(response.authenticatorData);
   const clientHash = await sha256(response.clientDataJSON);
-
-  console.log(response);
 
   //console.log("[PARSE]", response.authenticatorData, response.clientDataJSON, response.signature);
 

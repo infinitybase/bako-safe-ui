@@ -19,7 +19,6 @@ const useCheckHardwareId = () => {
     {
       refetchOnWindowFocus: false,
       onSuccess: async (data) => {
-        console.log('data', data);
         if (!data) {
           await UserService.createHardwareId();
         }
