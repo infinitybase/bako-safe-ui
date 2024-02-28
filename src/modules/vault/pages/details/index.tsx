@@ -8,6 +8,7 @@ import {
   HStack,
   Icon,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
@@ -19,6 +20,7 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -29,6 +31,7 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
+import { TransactionWithVault } from '@/modules/transactions/services/types';
 import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
@@ -36,6 +39,74 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
+
+interface TransactionCardElementProps {
+  transaction: TransactionWithVault;
+}
+
+interface TransactionCardStatusProps extends TransactionCardElementProps {
+  account: string;
+}
+
+interface TransactionCardActionsProps extends TransactionCardStatusProps {
+  isSigner: boolean;
+}
+
+const TransactionCardAmount = ({
+  transaction,
+}: TransactionCardElementProps) => {
+  return (
+    <TransactionCard.Amount
+      assets={
+        transaction?.assets.map((asset) => ({
+          amount: asset.amount,
+          assetId: asset.assetId,
+          to: asset.to,
+        })) ?? []
+      }
+    />
+  );
+};
+
+const TransactionCardName = ({ transaction }: TransactionCardElementProps) => {
+  return (
+    <TransactionCard.Name>
+      {limitCharacters(transaction?.name ?? '', 20)}
+    </TransactionCard.Name>
+  );
+};
+
+const TransactionCardStatus = ({
+  transaction,
+  account,
+}: TransactionCardStatusProps) => {
+  return (
+    <TransactionCard.Status
+      transaction={transaction}
+      status={transactionStatus({
+        ...transaction,
+        account,
+      })}
+    />
+  );
+};
+
+const TransactionCardActions = ({
+  transaction,
+  account,
+  isSigner,
+}: TransactionCardActionsProps) => {
+  return (
+    <TransactionCard.Actions
+      isSigner={isSigner}
+      transaction={transaction}
+      status={transactionStatus({
+        ...transaction,
+        account,
+      })}
+    />
+  );
+};
 
 const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
@@ -47,6 +118,7 @@ const VaultDetailsPage = () => {
     account,
     inView,
     pendingSignerTransactions,
+    menuDrawer,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
@@ -65,9 +137,11 @@ const VaultDetailsPage = () => {
 
   return (
     <Box w="full" pr={{ base: 0, sm: 8 }}>
+      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+
       <HStack mb={9} w="full" justifyContent="space-between">
         {isMobile ? (
-          <HStack gap={1.5}>
+          <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
@@ -192,8 +266,8 @@ const VaultDetailsPage = () => {
         <TransactionCard.List
           mt={5}
           w="full"
-          spacing={5}
-          maxH="calc(100% - 82px)"
+          spacing={{ base: 3, sm: 5 }}
+          maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
         >
           {vaultTransactions.map((transaction) => {
             const isSigner = !!transaction.predicate?.members?.find(
@@ -211,31 +285,45 @@ const VaultDetailsPage = () => {
                     <TransactionCard.Details transaction={transaction} />
                   }
                 >
-                  <TransactionCard.CreationDate>
-                    {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                  </TransactionCard.CreationDate>
+                  {!isMobile && (
+                    <TransactionCard.CreationDate>
+                      {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
+                    </TransactionCard.CreationDate>
+                  )}
                   <TransactionCard.Assets />
-                  <TransactionCard.Amount
-                    assets={
-                      transaction?.assets.map((asset) => ({
-                        amount: asset.amount,
-                        assetId: asset.assetId,
-                        to: asset.to,
-                      })) ?? []
-                    }
-                  />
-                  <TransactionCard.Name>
-                    {limitCharacters(transaction?.name ?? '', 20)}
-                  </TransactionCard.Name>
-                  <TransactionCard.Status
-                    transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
-                  />
-                  <TransactionCard.Actions
-                    isSigner={isSigner}
-                    transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
-                  />
+                  {isMobile ? (
+                    <>
+                      <VStack spacing={1.5}>
+                        <TransactionCardAmount transaction={transaction} />
+                        <TransactionCardName transaction={transaction} />
+                      </VStack>
+                      <VStack spacing={1.5} justifyContent="space-between">
+                        <TransactionCardStatus
+                          transaction={transaction}
+                          account={account}
+                        />
+                        <TransactionCardActions
+                          isSigner={isSigner}
+                          transaction={transaction}
+                          account={account}
+                        />
+                      </VStack>
+                    </>
+                  ) : (
+                    <>
+                      <TransactionCardAmount transaction={transaction} />
+                      <TransactionCardName transaction={transaction} />
+                      <TransactionCardStatus
+                        transaction={transaction}
+                        account={account}
+                      />
+                      <TransactionCardActions
+                        isSigner={isSigner}
+                        transaction={transaction}
+                        account={account}
+                      />
+                    </>
+                  )}
                 </TransactionCard.Container>
               </CustomSkeleton>
             );
@@ -258,14 +346,18 @@ const VaultDetailsPage = () => {
               <NotFoundIcon w={100} h={100} />
             </Box>
             <Box mb={5}>
-              <Heading color="brand.500" fontSize="4xl" textAlign="center">
+              <Heading
+                color="brand.500"
+                fontSize={{ base: 'xl', sm: '4xl' }}
+                textAlign="center"
+              >
                 Nothing to show here.
               </Heading>
             </Box>
             <Box maxW={400} mb={8}>
               <Text
                 color="white"
-                fontSize="md"
+                fontSize={{ base: 'sm', sm: 'md' }}
                 textAlign="center"
                 fontWeight="bold"
               >
@@ -275,6 +367,7 @@ const VaultDetailsPage = () => {
             </Box>
             <Button
               variant="primary"
+              fontSize={{ base: 'sm', sm: 'md' }}
               leftIcon={<SquarePlusIcon />}
               isDisabled={!vault?.hasBalance}
               onClick={() =>
@@ -293,7 +386,7 @@ const VaultDetailsPage = () => {
       )}
 
       {isMobile && (
-        <Box mt={5}>
+        <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>
       )}
