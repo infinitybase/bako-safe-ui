@@ -56,7 +56,7 @@ const useWebAuthn = () => {
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
       await signAccountMutate.mutateAsync({
-        id: acc.id,
+        id: acc.webauthn.id,
         challenge: code,
         publicKey: acc.webauthn.publicKey,
       });
