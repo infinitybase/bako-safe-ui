@@ -50,7 +50,7 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   return (
-    <VStack id="top" w="full" scrollMargin={20} spacing={6}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={8}>
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
