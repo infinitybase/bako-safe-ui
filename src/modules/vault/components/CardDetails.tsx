@@ -104,7 +104,11 @@ const CardDetails = (props: CardDetailsProps) => {
   return (
     <Box w="full" maxW="680">
       <Box mb={5} w="full">
-        <Text color="grey.400" fontWeight="semibold" fontSize="20px">
+        <Text
+          color="grey.400"
+          fontWeight="semibold"
+          fontSize={{ base: 'md', sm: 'xl' }}
+        >
           Balance
         </Text>
       </Box>
