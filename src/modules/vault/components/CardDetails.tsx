@@ -229,6 +229,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
 
                 <Button
+                  fontSize={{ base: 'sm', sm: 'md' }}
                   minW={{ base: undefined, sm: 180 }}
                   h={12}
                   variant="primary"
@@ -236,7 +237,12 @@ const CardDetails = (props: CardDetailsProps) => {
                   _hover={{
                     opacity: 0.8,
                   }}
-                  leftIcon={<PlusSquareIcon w={6} h={6} />}
+                  leftIcon={
+                    <PlusSquareIcon
+                      w={{ base: 5, sm: 6 }}
+                      h={{ base: 5, sm: 6 }}
+                    />
+                  }
                 >
                   Faucet
                 </Button>
