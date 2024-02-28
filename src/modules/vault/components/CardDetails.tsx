@@ -206,7 +206,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       justifyContent="space-around"
                       spacing={2}
                     >
-                      <Heading variant="title-xl">
+                      <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
                         {visebleBalance ? balance : '-----'}
                       </Heading>
                       <Box
