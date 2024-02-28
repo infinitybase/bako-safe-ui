@@ -12,6 +12,7 @@ import {
 import { FiPlusSquare } from 'react-icons/fi';
 
 import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
+import { useScreenSize } from '@/modules/core/hooks';
 
 interface VaultBoxPropx {
   name: string;
@@ -59,6 +60,8 @@ const VaultBox = (props: VaultBoxPropx) => {
     onCreateTransaction,
   } = props;
 
+  const { isMobile } = useScreenSize();
+
   return (
     <Box w="100%">
       <HStack width="100%" alignItems="center" spacing={5} mb={5}>
@@ -85,9 +88,14 @@ const VaultBox = (props: VaultBoxPropx) => {
                 variant="link"
                 color="brand.500"
                 onClick={onChangeVault}
-                leftIcon={<ReplaceIcon color="brand.500" />}
+                leftIcon={
+                  !isMobile ? <ReplaceIcon color="brand.500" /> : undefined
+                }
+                rightIcon={
+                  isMobile ? <ReplaceIcon color="brand.500" /> : undefined
+                }
               >
-                Change vault
+                Change {!isMobile && 'vault'}
               </Button>
             </Box>
           </Flex>
@@ -109,9 +117,10 @@ const VaultBox = (props: VaultBoxPropx) => {
             w="100%"
             variant="primary"
             fontWeight="bold"
+            fontSize={{ base: 'sm', sm: 'md' }}
             onClick={onCreateTransaction}
             isDisabled={!hasBalance || isPending}
-            leftIcon={<FiPlusSquare fontSize={22} />}
+            leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction
           </Button>
