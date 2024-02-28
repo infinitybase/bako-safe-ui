@@ -62,7 +62,7 @@ const useWebAuthn = () => {
       console.log(code);
       await signAccountMutate
         .mutateAsync({
-          id: acc.id,
+          id: acc.webauthn.id, // this id is of the webauthn
           challenge: code,
           publicKey: acc.webauthn.publicKey,
         })
