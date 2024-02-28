@@ -37,16 +37,16 @@ const useWebAuthn = () => {
   }, []);
   const accountsRequest = useGetAccountsByHardwareId(hardwareId);
 
+  const nicknames = useCheckNickname(search);
+
   const debouncedSearchHandler = useCallback(
     debounce((event: string | ChangeEvent<HTMLInputElement>) => {
       if (typeof event === 'string') {
         setSearch(event);
+        nicknames;
         return;
       }
-
-      memberForm.setValue('name', event.target.value);
-      setSearch(event.target.value);
-    }, 300),
+    }, 500),
     [],
   );
 
@@ -120,6 +120,7 @@ const useWebAuthn = () => {
     handleChangeTab,
     hardwareId,
     checkNickname: useCheckNickname(search),
+    nicknamesData: nicknames.data,
     debouncedSearchHandler,
     isOpen,
     search,

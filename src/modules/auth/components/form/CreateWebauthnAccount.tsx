@@ -16,7 +16,8 @@ interface CreateWebAuthnFormProps {
 }
 export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
   // const { debouncedSearchHandler } = useWebAuthn();
-  const { search, setSearch } = useWebAuthn();
+  const { search, setSearch, debouncedSearchHandler, nicknamesData } =
+    useWebAuthn();
 
   return (
     <Box w="full" maxW={480} mb={8}>
@@ -31,13 +32,25 @@ export const CreateWebAuthnForm = ({ form }: CreateWebAuthnFormProps) => {
                 placeholder=""
                 onChange={(e) => {
                   setSearch(e.target.value);
+
+                  debouncedSearchHandler;
                   field.onChange(e);
                 }}
                 isInvalid={fieldState.invalid}
               />
               <FormLabel color="gray">Name</FormLabel>
-              <FormHelperText color="error.500">
-                {form.formState.errors.name?.message}
+              <FormHelperText
+                color={
+                  nicknamesData?.name || form.formState.errors.name?.message
+                    ? 'error.500'
+                    : 'grey.500'
+                }
+              >
+                {nicknamesData?.name
+                  ? 'Name already exists'
+                  : form.formState.errors.name?.message
+                  ? form.formState.errors.name?.message
+                  : 'This username is available'}
               </FormHelperText>
             </FormControl>
             <SmallCloseIcon
