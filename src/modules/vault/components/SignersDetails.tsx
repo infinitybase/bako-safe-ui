@@ -56,13 +56,13 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <SignerCard borderStyle="dashed">
-                <HStack
+                <VStack
                   w="100%"
+                  h="full"
                   spacing={0}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
-                  flexDirection="column"
                   cursor="pointer"
                   onClick={() =>
                     navigate(
@@ -86,7 +86,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                   >
                     View all
                   </Text>
-                </HStack>
+                </VStack>
               </SignerCard>
             </CustomSkeleton>
           );
