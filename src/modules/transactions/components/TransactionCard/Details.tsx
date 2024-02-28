@@ -314,7 +314,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderTopWidth={1}
           >
             <HStack mt={2} p={5} justifyContent="space-between">
-              <Text color="grey.200">Gás Fee (ETH)</Text>
+              <Text color="grey.200">Gas Fee (ETH)</Text>
               <Text color="grey.200" fontSize="lg" fontWeight="semibold">
                 -{transaction.gasUsed}
               </Text>

@@ -181,6 +181,7 @@ const CreateMemberPage = () => {
       onClose={handleClose}
       size="xl"
       closeOnOverlayClick={false}
+      autoFocus={false}
     >
       <CreateContactDialog
         form={addressBook.form}

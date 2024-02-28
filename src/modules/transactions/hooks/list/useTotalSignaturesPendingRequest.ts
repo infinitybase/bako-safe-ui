@@ -5,7 +5,7 @@ import { TransactionService } from '../../services';
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
-  return useQuery([PENDING_TRANSACTIONS_QUERY_KEY], () => {
+  return useQuery([PENDING_TRANSACTIONS_QUERY_KEY, predicateId], () => {
     return TransactionService.getTransactionsSignaturePending(predicateId);
   });
 };

@@ -44,6 +44,7 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
