@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Flex,
   Heading,
   HStack,
   Icon,
@@ -163,17 +162,16 @@ const VaultDetailsPage = () => {
         </Button>
       </HStack>
 
-      <Flex
+      <HStack
         mb={{ base: 10, sm: 14 }}
-        flexDirection={{ base: 'column', sm: 'row' }}
         alignItems="flex-start"
         w="full"
         gap={10}
       >
         <CardDetails vault={vault} store={store} />
 
-        <SignersDetails vault={vault} />
-      </Flex>
+        {!isMobile && <SignersDetails vault={vault} />}
+      </HStack>
 
       <HStack spacing={4} mb={3}>
         <Text
@@ -292,6 +290,12 @@ const VaultDetailsPage = () => {
             </Button>
           </Card>
         )
+      )}
+
+      {isMobile && (
+        <Box mt={5}>
+          <SignersDetails vault={vault} />
+        </Box>
       )}
     </Box>
   );
