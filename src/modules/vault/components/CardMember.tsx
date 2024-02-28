@@ -1,7 +1,16 @@
-import { Badge, chakra, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import {
+  Badge,
+  chakra,
+  Flex,
+  HStack,
+  Image,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
 import { Card } from '@/components';
 import { AddressUtils } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 
 interface CardMemberProps {
   member: {
@@ -15,23 +24,52 @@ interface CardMemberProps {
 const SignerCard = chakra(Card, {
   baseStyle: {
     w: 'full',
-    py: 5,
-    px: 6,
-    bg: 'transparent',
+    py: { base: 3, sm: 5 },
+    px: { base: 3, sm: 6 },
+    bg: 'dark.600',
     flex: 1,
   },
 });
 
+const CardMemberBagde = () => {
+  return (
+    <Badge py={0} variant="success">
+      Owner
+    </Badge>
+  );
+};
+
 const CardMember = ({ member, isOwner }: CardMemberProps) => {
+  const { isMobile } = useScreenSize();
+
   const hasNickname = member?.nickname;
 
   return (
     <SignerCard borderColor="grey.600">
-      <HStack spacing={4} w="full">
-        <Image borderRadius={10} src={member?.avatar} boxSize="38px" />
+      <Flex
+        flexDirection={{ base: 'column', sm: 'row' }}
+        gap={{ base: 2, sm: 4 }}
+        w="full"
+        alignItems={{ base: 'stretch', sm: 'center' }}
+      >
+        <HStack
+          w={{ base: 'full', sm: 'fit-content' }}
+          justifyContent="space-between"
+          gap={2}
+        >
+          <Image
+            borderRadius={8}
+            src={member?.avatar}
+            boxSize={{ base: '32px', sm: '38px' }}
+            minW={{ base: '32px', sm: '38px' }}
+          />
+
+          {isOwner && isMobile && <CardMemberBagde />}
+        </HStack>
+
         <HStack
           h="full"
-          minH={55}
+          minH={{ base: undefined, sm: 55 }}
           maxW={600}
           w="full"
           spacing={0}
@@ -53,7 +91,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
 
             <Text
               maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-              fontSize="md"
+              fontSize={{ base: 'sm', sm: 'md' }}
               color={hasNickname ? 'grey.500' : 'grey.200'}
               fontWeight={hasNickname ? 'regular' : 'bold'}
               textOverflow="ellipsis"
@@ -64,13 +102,9 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
             </Text>
           </VStack>
 
-          {isOwner && (
-            <Badge py={0} variant="success">
-              Owner
-            </Badge>
-          )}
+          {isOwner && !isMobile && <CardMemberBagde />}
         </HStack>
-      </HStack>
+      </Flex>
     </SignerCard>
   );
 };
