@@ -18,7 +18,7 @@ const DialogActions = ({
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Divider hidden={hideDivider} my={6} />
+    <Divider hidden={hideDivider} borderColor="dark.100" my={9} />
     <HStack spacing={4} justifyContent="center">
       {children}
     </HStack>
@@ -26,21 +26,11 @@ const DialogActions = ({
 );
 
 const DialogPrimaryAction = (props: DialogActionProps) => (
-  <Button w="full" variant="primary" {...props} />
+  <Button variant="primary" {...props} />
 );
 
 const DialogSecondaryAction = (props: DialogActionProps) => (
-  <Button
-    w="25%"
-    variant="secondary"
-    bgColor="transparent"
-    border="1px solid white"
-    _hover={{
-      borderColor: 'brand.500',
-      color: 'brand.500',
-    }}
-    {...props}
-  />
+  <Button variant="secondary" bgColor="dark.100" border="none" {...props} />
 );
 
 const DialogTertiaryAction = (props: DialogActionProps) => (

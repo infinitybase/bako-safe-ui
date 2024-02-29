@@ -12,8 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { SquarePlusIcon, StepProgress } from '@/components';
-import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
+import { DappWarning, SquarePlusIcon, StepProgress } from '@/components';
 
 interface OnboardingStepProps {
   tabs: {
@@ -27,103 +26,96 @@ interface OnboardingStepProps {
 }
 
 const OnboardingStep = (props: OnboardingStepProps) => (
-  <Center flexDirection="column" mb={5} p={6}>
+  <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={100} as={TransactionsBoxIcon} />
+      <Icon fontSize={100} as={DappWarning} />
     </Box>
     <Box mb={5}>
-      <Heading fontSize="3xl">Heads up!</Heading>
+      <Heading>Heads up!!</Heading>
     </Box>
-    <Box maxW={500} mb={5}>
-      <Text color="grey.400" fontSize="md" textAlign="center">
-        The vault template is now ready for use whenever you need to streamline
-        your workflow!
+    <Box maxW={400} mb={5}>
+      <Text color="grey.200" fontSize="md" textAlign="center">
+        Before creating your first workspace, {`it's`} crucial <br />
+        to understand how they function.
       </Text>
     </Box>
     <Box w="100%" my={5}>
       <StepProgress value={props.tabs.tab} length={props.tabs.length} />
     </Box>
-    <Box mb={5} maxW={480}>
-      <Text color="white" fontSize="md" textAlign="start">
+    <Box mb={5}>
+      <Text color="grey.200" fontSize="md" textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
-        same vaults and address book. Within a workspace, you can assign members
+        same vaults and address book. Within a workspace, you can assign users
         different levels of permission, including:
       </Text>
     </Box>
     <VStack mb={5}>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="success">
-            Admin
-          </Badge>
+        <Box w="100%" maxW="80px">
+          <Badge variant="success">Admin</Badge>
         </Box>
         <Text color="grey.200" fontSize="md">
-          Manage members, create new vaults, create transaction and access
-          everything.
+          <Text as="span" fontWeight="bold">
+            Manage members, create new vaults, create transactions
+          </Text>{' '}
+          and access everything.
         </Text>
       </HStack>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="yellow">
-            Manager
-          </Badge>
+        <Box w="100%" maxW="80px">
+          <Badge variant="blue">Manager</Badge>
         </Box>
 
         <Text color="grey.200" fontSize="md">
-          Can create new vaults, create transaction and access all vaults in the
-          workspace.
+          <Text as="span" fontWeight="bold">
+            Can create new vaults, create transaction and access all vaults
+          </Text>{' '}
+          in the workspace.
         </Text>
       </HStack>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="blue">
-            Viewer
-          </Badge>
+        <Box w="100%" maxW="80px">
+          <Badge variant="gray">Viewer</Badge>
         </Box>
         <Text color="grey.200" fontSize="md">
-          Can only access and view the contents of all vaults in the workspace.
+          Can only{' '}
+          <Text as="span" fontWeight="bold">
+            access and view
+          </Text>{' '}
+          the contents of all vaults in the workspace.
         </Text>
       </HStack>
     </VStack>
 
-    <Box mb={5} minW={500}>
+    <Box mb={5}>
       <Alert
-        color="#F05D48"
-        bgColor="rgba(240,93,72,0.1)"
+        color="#FDD835"
+        bgColor="#FDD8351A"
         borderWidth={1}
         borderRadius={8}
-        borderColor="rgba(7, 7, 7, 0.2)"
+        borderColor="#FDD8351A"
       >
-        <Text fontSize="md" maxW={440}>
+        <Text fontSize="lg">
           <b>Important Note</b>: Membership in the workspace ≠ signatory rights
           in a vault. They are separate entities with separate controls.
         </Text>
       </Alert>
     </Box>
     <Divider m={4} borderColor="dark.100" />
-    <HStack w="full" spacing={4} justifyContent="center">
+    <HStack spacing={4} justifyContent="center">
       <Button
-        _hover={{
-          borderColor: 'brand.500',
-          color: 'brand.500',
-        }}
-        w="25%"
-        border="1px solid white"
-        bgColor="transparent"
+        border="none"
+        bgColor="dark.100"
         variant="secondary"
         onClick={props.onCancel}
       >
         Cancel
       </Button>
       <Button
-        w="70%"
         color="grey.300"
         variant="primary"
         onClick={props.onConfirm}
         leftIcon={<SquarePlusIcon fontSize={18} />}
-        _hover={{
-          opacity: 0.8,
-        }}
       >
         Create workspace
       </Button>

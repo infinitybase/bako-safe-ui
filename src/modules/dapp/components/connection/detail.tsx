@@ -27,7 +27,7 @@ const DappConnectionDetail = ({
         />
         <Box w="full">
           <Text variant="subtitle">{title}</Text>
-          <Text fontSize="sm" fontWeight="normal" color="brand.500">
+          <Text fontSize="sm" fontWeight="normal" color="brand.600">
             {origin}
           </Text>
         </Box>

@@ -1,4 +1,4 @@
-import { Box, Link, Text } from '@chakra-ui/react';
+import { Box, Divider, Link, Text } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutoComplete } from '@/components/autocomplete';
@@ -35,7 +35,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   );
 
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" maxW={500} pr={12}>
       <Controller
         name="address"
         control={form.control}
@@ -55,6 +55,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
           />
         )}
       />
+      <Divider borderColor="dark.100" my={9} />
     </Box>
   );
 };

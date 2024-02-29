@@ -34,7 +34,7 @@ const Container = ({
     w="full"
     cursor="pointer"
     borderBottomWidth={1}
-    borderColor={isActive ? 'brand.500' : 'transparent'}
+    borderColor={isActive ? 'brand.600' : 'transparent'}
   >
     <MenuItem {...props}>{children}</MenuItem>
   </Box>

@@ -85,7 +85,7 @@ const VaultBox = (props: VaultBoxPropx) => {
                 variant="link"
                 color="brand.500"
                 onClick={onChangeVault}
-                leftIcon={<ReplaceIcon color="brand.500" />}
+                leftIcon={<ReplaceIcon color="brand.600" />}
               >
                 Change vault
               </Button>

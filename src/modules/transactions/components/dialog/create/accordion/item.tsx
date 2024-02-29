@@ -22,7 +22,7 @@ const AccordionItem = ({
         <VStack w="full" py={5} px={5} alignItems="flex-start" spacing={0}>
           <HStack w="full">
             <Box w="full" flex={2}>
-              <Heading fontSize="lg" fontWeight="extrabold" color="grey.200">
+              <Heading fontSize="md" color="grey.200">
                 {title}
               </Heading>
             </Box>

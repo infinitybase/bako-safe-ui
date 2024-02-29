@@ -4,7 +4,6 @@ const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
 
 export enum CookieName {
   ACCESS_TOKEN = `bsafe/token`,
-  ACCOUNT_TYPE = `bsafe/account_type`,
   ADDRESS = `bsafe/address`,
   AVATAR = `bsafe/avatar`,
   USER_ID = `bsafe/user_id`,
@@ -12,8 +11,6 @@ export enum CookieName {
   SINGLE_CONTACTS = `bsafe/single_contacts`,
   WORKSPACE = `bsafe/workspace`,
   PERMISSIONS = `bsafe/permissions`,
-  WEB_AUTHN_ID = `bsafe/web_authn_id`,
-  WEB_AUTHN_PK = `bsafe/web_authn_pk`,
 }
 
 interface Cookie {

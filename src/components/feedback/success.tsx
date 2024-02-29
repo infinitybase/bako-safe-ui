@@ -1,17 +1,14 @@
-import { Icon } from '@chakra-ui/icons';
 import {
-  As,
   Box,
   Button,
   Center,
   Divider,
   Heading,
   HStack,
-  Image,
-  Text,
+  Icon,
 } from '@chakra-ui/react';
 
-import TransactionsBoxIcon from '@/assets/transactions-icon.png';
+import { VaultSuccessIcon } from '../icons';
 
 interface SuccessStepProps {
   onPrimaryAction?: () => void;
@@ -21,7 +18,6 @@ interface SuccessStepProps {
   showAction?: boolean;
   title: string;
   description: string;
-  membersFormIcon?: As;
 }
 
 const FeedbackSuccess = ({
@@ -32,55 +28,34 @@ const FeedbackSuccess = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
-  membersFormIcon,
 }: SuccessStepProps) => (
-  <Center overflowX="hidden" flexDirection="column" mb={12}>
+  <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      {membersFormIcon ? (
-        <Icon fontSize={100} as={membersFormIcon} />
-      ) : (
-        <Image src={TransactionsBoxIcon} />
-      )}
+      <Icon fontSize={100} as={VaultSuccessIcon} />
     </Box>
     <Box mb={5}>
-      <Heading fontSize="2xl" color="white">
-        {title}
+      <Heading color="brand.600">{title}</Heading>
+    </Box>
+    <Box maxW={310} mb={5}>
+      <Heading color="grey.200" fontSize="md" textAlign="center">
+        {description}
       </Heading>
     </Box>
-    <Box maxW={650}>
-      <Text color="grey.400" fontSize="md" textAlign="center">
-        {description}
-      </Text>
-    </Box>
-    <Divider
-      borderWidth={1}
-      hidden={!showAction}
-      my={8}
-      borderColor="dark.100"
-    />
-    <HStack w="full" hidden={!showAction} spacing={4} justifyContent="center">
+    <Divider hidden={!showAction} my={8} borderColor="dark.100" />
+    <HStack hidden={!showAction} spacing={4} justifyContent="center">
       <Button
-        w="45%"
-        border="1px solid white"
-        bgColor="transparent"
+        border="none"
+        bgColor="dark.100"
         variant="secondary"
         onClick={onSecondaryAction}
-        _hover={{
-          borderColor: 'brand.500',
-          color: 'brand.500',
-        }}
       >
         {secondaryAction}
       </Button>
       <Button
-        w="45%"
         border="none"
-        bgColor="brand.500"
+        bgColor="brand.600"
         variant="primary"
         onClick={onPrimaryAction}
-        _hover={{
-          opacity: 0.8,
-        }}
       >
         {primaryAction}
       </Button>

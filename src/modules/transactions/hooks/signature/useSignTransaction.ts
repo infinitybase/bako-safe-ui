@@ -58,15 +58,13 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const signMessageRequest = useWalletSignMessage({
-    onSuccess: () => console.log('Message sign success'),
-    onError: (e) => console.log(e),
+    onError: () => toast.error('Message sign rejected'),
   });
 
   const confirmTransaction = async () => {
     const signedMessage = await signMessageRequest.mutateAsync(
       options.transaction.hash,
     );
-
     await request.mutateAsync({
       account,
       confirm: true,

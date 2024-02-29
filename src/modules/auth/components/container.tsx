@@ -1,8 +1,8 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 
-import logo from '@/assets/bakoLogoDark.svg';
-import bakoSymbol from '@/assets/bakoSymbol.svg';
+import doubleB from '@/assets/doubleB.svg';
+import logo from '@/assets/logoDark.svg';
 
 interface SigninContainerProps {
   children: React.ReactNode;
@@ -31,17 +31,16 @@ const SigninContainer = (props: SigninContainerProps) => {
         top="50%"
         left="50%"
         transform="translate(-50%, -50%)"
-        backgroundColor="dark.600"
+        backgroundColor="dark.500"
         minH="80vh"
-        minW="55vw"
+        minW="50vw"
         display="flex"
         alignItems="center"
       >
         <Box
-          w="35%"
+          w="30%"
           h="80vh"
           backgroundColor="brand.500"
-          bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 0px 0px 10px"
           p={10}
           display="flex"
@@ -53,27 +52,27 @@ const SigninContainer = (props: SigninContainerProps) => {
             src={logo}
             alt=""
             style={{
-              width: '90%',
+              width: '60%',
               //height: '60%',
             }}
           />
           <img
-            src={bakoSymbol}
+            src={doubleB}
             alt=""
             style={{
               position: 'absolute',
-              top: '52%',
-              left: '30%', // Para centralizar a imagem no meio da caixa
+              top: '50%',
+              left: '18%', // Para centralizar a imagem no meio da caixa
               transform: 'translate(-50%, -50%)', // Para
-              width: '45%',
-              height: '75%',
+              width: '35%',
+              height: '80%',
             }}
           />
         </Box>
 
         <Box
           m={10}
-          ml={52}
+          ml={20}
           w="50%"
           position="sticky"
           display="flex"

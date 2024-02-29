@@ -38,7 +38,6 @@ const useVaultDetails = () => {
     isLoading: isLoadingAssets,
     hasBalance,
     hasAssets,
-    refetch,
   } = useVaultAssets(predicateInstance);
 
   const configurable = useMemo(
@@ -80,7 +79,6 @@ const useVaultDetails = () => {
       isLoadingAssets,
       ethBalance,
       value: assets,
-      refetchBalance: refetch,
     },
     inView,
     navigate,

@@ -1,5 +1,5 @@
 import { Box, HStack } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 export interface StepProgressProps {
   length: number;
@@ -15,14 +15,12 @@ const StepProgress = ({ value, length }: StepProgressProps) => {
       h={1}
       bgColor="dark.200"
       justifyContent="space-between"
-      rounded="full"
       spacing={2}
     >
       {Array(length)
         .fill('')
         .map((_, index) => (
           <Box
-            rounded="full"
             h={1}
             w="full"
             key={index}

@@ -1,4 +1,4 @@
-import { As, Box, Flex, Icon as ChakraIcon } from '@chakra-ui/react';
+import { As, Box, Center, Flex, Icon as ChakraIcon } from '@chakra-ui/react';
 
 interface ActionCardIconProps {
   icon: As;
@@ -11,17 +11,22 @@ const Icon = ({ icon, isUpcoming }: ActionCardIconProps) => {
       alignItems="center"
       justifyContent="center"
       mr={3}
-      borderRadius={10}
-      border={'2px solid transparent'}
-      borderColor="rgba(255, 192, 16, 0.6)"
+      position="relative"
     >
-      <Box backgroundColor="rgba(255, 192, 16, 0.1)" borderRadius={8} p={5}>
+      <Box
+        h="80px"
+        w="80px"
+        bg={isUpcoming ? 'grey.500' : 'brand.500'}
+        opacity={isUpcoming ? '0.2' : '0.1'}
+        borderRadius={10}
+      />
+      <Center position="absolute">
         <ChakraIcon
           fontSize={30}
           as={icon}
           color={isUpcoming ? 'grey.500' : 'brand.500'}
         />
-      </Box>
+      </Center>
     </Flex>
   );
 };

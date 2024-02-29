@@ -17,7 +17,7 @@ const SignerCard = chakra(Card, {
     w: 'full',
     py: 5,
     px: 6,
-    bg: 'transparent',
+    bgColor: 'dark.300',
     flex: 1,
   },
 });
@@ -26,19 +26,18 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   const hasNickname = member?.nickname;
 
   return (
-    <SignerCard borderColor="grey.600">
+    <SignerCard>
       <HStack spacing={4} w="full">
         <Image borderRadius={10} src={member?.avatar} boxSize="38px" />
-        <HStack
+        <VStack
           h="full"
-          minH={55}
+          minH={51}
           maxW={600}
-          w="full"
           spacing={0}
-          justifyContent="space-between"
-          alignItems="center"
+          justifyContent="center"
+          alignItems="start"
         >
-          <VStack align="flex-start" spacing={0} justifyContent="center">
+          <HStack>
             {hasNickname && (
               <Text
                 fontSize="lg"
@@ -50,26 +49,25 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
                 {member?.nickname}
               </Text>
             )}
+            {isOwner && (
+              <Badge py={0} variant="success">
+                owner
+              </Badge>
+            )}
+          </HStack>
 
-            <Text
-              maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-              fontSize="md"
-              color={hasNickname ? 'grey.500' : 'grey.200'}
-              fontWeight={hasNickname ? 'regular' : 'bold'}
-              textOverflow="ellipsis"
-              isTruncated
-            >
-              {/* todo: add nickname on bsafe sdk */}
-              {AddressUtils.format(member?.address ?? '')}
-            </Text>
-          </VStack>
-
-          {isOwner && (
-            <Badge py={0} variant="success">
-              Owner
-            </Badge>
-          )}
-        </HStack>
+          <Text
+            maxW={{ md: 200, lg: 250, '2xl': '100%' }}
+            fontSize="md"
+            color={hasNickname ? 'grey.500' : 'grey.200'}
+            fontWeight={hasNickname ? 'regular' : 'bold'}
+            textOverflow="ellipsis"
+            isTruncated
+          >
+            {/* todo: add nickname on bsafe sdk */}
+            {AddressUtils.format(member?.address ?? '')}
+          </Text>
+        </VStack>
       </HStack>
     </SignerCard>
   );

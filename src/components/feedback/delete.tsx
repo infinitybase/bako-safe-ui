@@ -6,11 +6,9 @@ import {
   Heading,
   HStack,
   Icon,
-  Link,
-  Text,
 } from '@chakra-ui/react';
 
-import { RemoveUser } from '../icons/remove-user';
+import { DeleteUserIcon } from '../icons/delete-user';
 
 interface DeleteStepProps {
   onPrimaryAction?: () => void;
@@ -33,60 +31,36 @@ const FeedbackDelete = ({
 }: DeleteStepProps) => (
   <Center flexDirection="column" mb={5}>
     <Box m={8}>
-      <Icon fontSize={100} as={RemoveUser} />
+      <Icon fontSize={100} as={DeleteUserIcon} />
     </Box>
     <Box mb={5}>
-      <Heading color="white">{title}</Heading>
+      <Heading color="error.500">{title}</Heading>
     </Box>
-    <Box maxW={450} mb={5}>
+    <Box maxW={310} mb={5}>
       <Heading
         color="grey.200"
         fontSize="md"
         fontWeight="medium"
         textAlign="center"
       >
-        {description ? (
-          description
-        ) : (
-          <Text variant="description">
-            Are you sure you want to{' '}
-            <Text textDecor="none" as={Link} color="white">
-              remove this member
-            </Text>{' '}
-            from your workspace?
-          </Text>
-        )}
+        {description}
       </Heading>
     </Box>
-    <Divider maxW={400} hidden={!showAction} my={8} borderColor="dark.100" />
-    <HStack
-      w="full"
-      maxW={400}
-      hidden={!showAction}
-      spacing={4}
-      justifyContent="center"
-    >
+    <Divider hidden={!showAction} my={8} borderColor="dark.100" />
+    <HStack hidden={!showAction} spacing={4} justifyContent="center">
       <Button
-        w="50%"
-        border="1px solid white"
-        bgColor="transparent"
+        border="none"
+        bgColor="dark.100"
         variant="secondary"
         onClick={onSecondaryAction}
-        _hover={{
-          opacity: 0.8,
-        }}
       >
         {secondaryAction}
       </Button>
       <Button
-        w="50%"
         border="none"
         bgColor="error.500"
         variant="primary"
         onClick={onPrimaryAction}
-        _hover={{
-          opacity: 0.8,
-        }}
       >
         {primaryAction}
       </Button>

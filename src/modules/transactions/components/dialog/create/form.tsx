@@ -1,5 +1,7 @@
 import {
   Box,
+  Button,
+  Center,
   Divider,
   FormControl,
   FormHelperText,
@@ -9,7 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog } from '@/components';
+import { Dialog, UserAddIcon } from '@/components';
+import { delay, NativeAssetId } from '@/modules/core';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
@@ -44,12 +47,12 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         )}
       />
 
-      <Divider mt={7} mb={4} />
+      <Divider borderColor="dark.100" my={9} />
 
       <Dialog.Section
         mb={8}
         title={
-          <Heading fontSize="lg" fontWeight="bold" color="white">
+          <Heading fontSize="md" color="grey.200">
             Who for?
           </Heading>
         }
@@ -63,6 +66,26 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         accordion={accordion}
         transactions={transactionsFields}
       />
+
+      <Center>
+        <Button
+          maxW="fit-content"
+          leftIcon={<UserAddIcon />}
+          variant="secondary"
+          bgColor="dark.100"
+          border="none"
+          onClick={() => {
+            transactionsFields.append({
+              amount: '',
+              asset: NativeAssetId,
+              to: '',
+            });
+            delay(() => accordion.open(transactionsFields.fields.length), 100);
+          }}
+        >
+          Add new recipient
+        </Button>
+      </Center>
     </Box>
   );
 };

@@ -76,9 +76,6 @@ const CardConnector = (props: ConnectorCardProps) => {
       bgColor="dark.300"
       onClick={selectConnector}
       position="relative"
-      _hover={{
-        borderColor: 'brand.500',
-      }}
     >
       <Box
         w="full"

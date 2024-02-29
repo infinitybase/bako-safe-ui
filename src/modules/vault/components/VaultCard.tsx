@@ -36,17 +36,7 @@ export const VaultCard = ({
   const { role } = usePermissions({ id, workspace });
 
   return (
-    <Card
-      bg="grey.800"
-      w="100%"
-      cursor="pointer"
-      _hover={{
-        transform: 'scale(1.03)',
-        transition: 'ease .3s',
-      }}
-      zIndex={100}
-      {...rest}
-    >
+    <Card bg="dark.300" w="100%" cursor="pointer" zIndex={100} {...rest}>
       <VStack alignItems="flex-start">
         <HStack w="100%" justifyContent="space-between" mb={1}>
           <HStack>
@@ -54,7 +44,7 @@ export const VaultCard = ({
               variant="roundedSquare"
               name={name}
               color="white"
-              bg="grey.600"
+              bg="grey.900"
             />
             <VStack ml={2} alignItems="flex-start" spacing={1}>
               {!workspace.single && (
@@ -66,7 +56,7 @@ export const VaultCard = ({
                     fontSize={14}
                     color="grey.200"
                   />
-                  <Text maxW={48} color="grey.400" fontSize="sm" isTruncated>
+                  <Text maxW={48} color="grey.200" fontSize="sm" isTruncated>
                     {workspace?.name}
                   </Text>
                 </HStack>
@@ -83,7 +73,7 @@ export const VaultCard = ({
           </HStack>
         </HStack>
 
-        <Divider borderColor="grey.600" my={1} />
+        <Divider borderColor="dark.100" my={1} />
 
         <HStack w="full">
           <Box>

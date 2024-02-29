@@ -1,4 +1,3 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
@@ -19,12 +18,11 @@ import {
   FeedbackDelete,
   FeedbackSuccess,
   FeedbackUpdate,
-  RemoveIcon,
+  SquarePlusIcon,
   StepProgress,
 } from '@/components';
-import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { UserPlusIcon } from '@/components/icons/user-add-icon';
-import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+import { TrashIcon } from '@/components/icons/trash';
+import { CreateContactDialog } from '@/modules/addressBook';
 import { AddressUtils } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
@@ -37,14 +35,10 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
-  const { contactByAddress } = useAddressBook();
 
   const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
 
   const member = workspace?.members.find((member) => member.id === memberId);
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-  const contactNickname = contactByAddress(member?.address!)?.nickname;
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
@@ -54,52 +48,43 @@ const MemberTab = () => {
   return (
     <Card
       w="full"
-      bgColor="grey.850"
+      bgColor="dark.300"
       p={4}
       mb={5}
       border="1px"
-      borderRadius="xl"
-      borderColor="grey.400"
+      borderColor="dark.100"
       key={member?.id}
     >
       <HStack w="full" justifyContent="space-between">
-        <Center w="full" gap={4}>
+        <Center gap={4}>
           <Avatar
             size="md"
             fontSize="md"
             color="white"
             bg="grey.900"
             variant="roundedSquare"
-            name={contactNickname ?? member?.address}
+            name={member?.name ?? member?.address}
           />
           <Flex
-            w="full"
             mr={1}
             h="14"
-            direction="row"
-            alignItems="center"
+            direction="column"
+            alignItems="start"
             justifyContent="space-between"
           >
-            <Flex flexDir="column">
-              {contactNickname && (
-                <Text fontWeight="semibold" color="grey.200">
-                  {contactNickname}
-                </Text>
-              )}
+            {member?.name ? (
+              <Text fontWeight="semibold" color="grey.200">
+                {member?.name}
+              </Text>
+            ) : (
               <Text
-                fontWeight={!contactNickname ? 'semibold' : 'normal'}
-                color={!contactNickname ? 'grey.200' : 'grey.500'}
+                fontWeight={!member?.name ? 'semibold' : 'normal'}
+                color={!member?.name ? 'grey.200' : 'grey.500'}
               >
                 {AddressUtils.format(member?.address ?? '')}
               </Text>
-            </Flex>
-            <Badge
-              fontSize="xs"
-              rounded="xl"
-              p={1}
-              px={3}
-              variant={permission?.variant}
-            >
+            )}
+            <Badge fontSize="xs" p={1} variant={permission?.variant}>
               {permission?.title}
             </Badge>
           </Flex>
@@ -110,8 +95,7 @@ const MemberTab = () => {
 };
 
 const CreateMemberPage = () => {
-  const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
-    useChangeMember();
+  const { form, handleClose, tabs, addressBook, dialog } = useChangeMember();
   const { formState, memberForm, permissionForm } = form;
 
   const TabsPanels = (
@@ -132,7 +116,6 @@ const CreateMemberPage = () => {
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
-            membersFormIcon={UserPlusIcon}
           />
         )}
       </TabPanel>
@@ -167,6 +150,7 @@ const CreateMemberPage = () => {
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
+            description={formState.description}
           />
         )}
       </TabPanel>
@@ -177,7 +161,6 @@ const CreateMemberPage = () => {
     <Dialog.Modal
       isOpen
       onClose={handleClose}
-      size="xl"
       closeOnOverlayClick={false}
       autoFocus={false}
     >
@@ -189,26 +172,26 @@ const CreateMemberPage = () => {
       />
 
       <Dialog.Header
-        maxW={480}
+        maxW={500}
         title={dialog.title}
-        position="relative"
-        top={-8}
-        mb={0}
         description={dialog.description}
-        descriptionFontSize="md"
-        descriptionColor="grey.200"
         hidden={!tabs.is(MemberTabState.FORM)}
       />
 
       {formState.isEditMember && (
-        <Tabs maxW={480} w="full" hidden={!tabs.is(MemberTabState.FORM)}>
+        <Tabs
+          maxW={500}
+          w="full"
+          pr={12}
+          hidden={!tabs.is(MemberTabState.FORM)}
+        >
           <MemberTab />
         </Tabs>
       )}
 
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w={480} mb={8}>
+          <Box maxW={500} w={500} mb={10} pr={12}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
@@ -217,7 +200,8 @@ const CreateMemberPage = () => {
 
       <Dialog.Body
         mb={7}
-        maxW={480}
+        maxW={500}
+        pr={12}
         maxH={520}
         overflowY="scroll"
         css={{
@@ -239,41 +223,32 @@ const CreateMemberPage = () => {
 
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions maxW={480}>
-            {!isEditMember ? (
-              <Dialog.SecondaryAction
-                w="25%"
-                onClick={formState?.handleSecondaryAction}
-              >
-                {formState?.secondaryAction}
-              </Dialog.SecondaryAction>
-            ) : (
-              <Dialog.TertiaryAction
-                onClick={formState.handleTertiaryAction}
-                leftIcon={<RemoveIcon color="error.500" />}
-                isDisabled={!formState?.tertiaryAction}
-                isLoading={formState?.isLoading}
-                w="50%"
-                _hover={{
-                  opacity: 0.8,
-                }}
-              >
-                {formState.tertiaryAction}
-              </Dialog.TertiaryAction>
-            )}
+          <Dialog.Actions maxW={500} pr={12}>
+            <Dialog.SecondaryAction onClick={formState?.handleSecondaryAction}>
+              {formState?.secondaryAction}
+            </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
-              w={isEditMember ? '50%' : '75%'}
-              _hover={{
-                opacity: 0.8,
-              }}
               onClick={formState?.handlePrimaryAction}
-              leftIcon={!isEditMember ? <PlusSquareIcon /> : <RefreshIcon />}
+              leftIcon={<SquarePlusIcon />}
               isDisabled={!formState?.isValid}
               isLoading={formState?.isLoading}
             >
               {formState.primaryAction}
             </Dialog.PrimaryAction>
           </Dialog.Actions>
+          {formState.tertiaryAction && (
+            <Dialog.Actions maxW={500} pr={12}>
+              <Dialog.TertiaryAction
+                display="block"
+                onClick={formState.handleTertiaryAction}
+                leftIcon={<TrashIcon />}
+                isDisabled={!formState?.tertiaryAction}
+                isLoading={formState?.isLoading}
+              >
+                {formState.tertiaryAction}
+              </Dialog.TertiaryAction>
+            </Dialog.Actions>
+          )}
         </>
       )}
     </Dialog.Modal>

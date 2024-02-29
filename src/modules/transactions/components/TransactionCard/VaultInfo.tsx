@@ -15,7 +15,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
         variant="roundedSquare"
         name={vault.name}
         color="white"
-        bg="grey.600"
+        bg="grey.900"
         w="38px"
         h="38px"
         p={5}

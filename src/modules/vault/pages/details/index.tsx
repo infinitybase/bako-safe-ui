@@ -32,6 +32,7 @@ import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
+import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 
@@ -41,11 +42,11 @@ const VaultDetailsPage = () => {
     params,
     vault,
     store,
+    assets,
     navigate,
     account,
     inView,
     pendingSignerTransactions,
-    assets,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
@@ -62,7 +63,7 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={8}>
+    <Box w="full">
       <HStack mb={9} w="full" justifyContent="space-between">
         <Breadcrumb>
           <BreadcrumbItem>
@@ -121,9 +122,8 @@ const VaultDetailsPage = () => {
           </BreadcrumbItem>
         </Breadcrumb>
         <Button
-          color="dark.200"
-          bgColor="grey.200"
-          fontWeight="medium"
+          variant="secondary"
+          bgColor="dark.100"
           border="none"
           onClick={() => {
             if (
@@ -151,8 +151,13 @@ const VaultDetailsPage = () => {
       </HStack>
 
       <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
-        <CardDetails vault={vault} store={store} assets={assets} />
-
+        <CardDetails vault={vault} store={store} />
+        <AmountDetails
+          store={store}
+          vaultAddress={vault.predicateAddress!}
+          assets={assets}
+          isLoading={vault.isLoading}
+        />
         <SignersDetails vault={vault} />
       </HStack>
 

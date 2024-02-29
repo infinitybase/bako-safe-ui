@@ -1,5 +1,7 @@
+import React from 'react';
+
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
-import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
+import { useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import { CreateVaultForm } from './form';
 
@@ -19,23 +21,15 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal
-      size="xl"
-      {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
-    >
+    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
       <Dialog.Header
-        maxW={450}
-        position="relative"
-        mb={0}
-        top={-6}
+        maxW={420}
         hidden={steps.step?.hide}
         title="Create Vault"
         description={steps.step?.description ?? ''}
       />
 
-      <Dialog.Body maxW={450}>
+      <Dialog.Body maxW={420}>
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -48,33 +42,18 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Dialog.Actions w="full" maxW={450}>
-        <Dialog.SecondaryAction
-          bgColor="transparent"
-          border="1px solid white"
-          w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
-          onClick={steps.step.onCancel}
-          _hover={{
-            borderColor: 'brand.500',
-            color: 'brand.500',
-          }}
-        >
+      <Dialog.Actions maxW={420}>
+        <Dialog.SecondaryAction onClick={steps.step.onCancel}>
           {steps.step.closeText}
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
-          w="65%"
           hidden={steps.step?.hide}
           onClick={steps.step?.onContinue}
-          leftIcon={
-            tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
-          }
+          leftIcon={<SquarePlusIcon />}
           isDisabled={steps.step?.disable}
           isLoading={bsafeVault.isLoading}
-          _hover={{
-            opacity: !steps.step?.disable && 0.8,
-          }}
         >
-          {steps.step?.nextStepText}
+          Continue
         </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>

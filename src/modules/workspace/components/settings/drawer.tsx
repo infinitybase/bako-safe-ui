@@ -3,7 +3,7 @@ import {
   Badge,
   Box,
   Button,
-  Divider,
+  Center,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -18,8 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, ErrorIcon, RemoveIcon, UserAddIcon } from '@/components';
-import { EditIcon } from '@/components/icons/edit-icon';
+import { Card, ErrorIcon } from '@/components';
 import { useAddressBook } from '@/modules/addressBook';
 import {
   AddressUtils,
@@ -31,8 +30,6 @@ import {
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useAuth } from '../../../auth/hooks/useAuth';
-
-import { WorkspaceCard } from '../card';
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
@@ -60,27 +57,10 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member.address!)?.nickname;
   return (
-    <Card
-      w="full"
-      h={20}
-      bgColor="grey.850"
-      borderColor="grey.600"
-      borderWidth="1.5px"
-      key={member.id}
-      _hover={{
-        cursor: 'pointer',
-        borderColor: 'brand.600',
-      }}
-    >
-      <HStack
-        w="full"
-        h="full"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Box display="flex" alignItems="center" gap={3}>
+    <Card w="full" bgColor="dark.300" key={member.id}>
+      <HStack w="full" justifyContent="space-between">
+        <Center gap={3}>
           <Avatar
             size="md"
             fontSize="md"
@@ -91,51 +71,30 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
           />
           <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
-              {contactNickname ?? ''}
+              {member.name}
             </Text>
             <Text
-              fontWeight={!contactNickname ? 'semibold' : 'normal'}
-              color={!contactNickname ? 'grey.200' : 'grey.500'}
+              fontWeight="normal"
+              color={!member.name ? 'grey.200' : 'grey.500'}
             >
-              {AddressUtils.format(member.address)}
+              {contactByAddress(member.address!)?.nickname ??
+                AddressUtils.format(member.address)}
             </Text>
           </Box>
-        </Box>
+          <Badge fontSize="xs" p={1} variant={permission?.variant}>
+            {permission?.title}
+          </Badge>
+        </Center>
         {isEditable && (
-          <HStack spacing={6}>
-            <Badge
-              rounded="xl"
-              fontSize="xs"
-              py={1}
-              px={4}
-              variant={permission?.variant}
-            >
-              {permission?.title}
-            </Badge>
-
-            <Box>
-              <EditIcon
-                _hover={{
-                  cursor: 'pointer',
-                  opacity: 0.8,
-                }}
-                onClick={() => onEdit(member.id)}
-                w={6}
-                h={6}
-                mr={4}
-              />
-
-              <RemoveIcon
-                _hover={{
-                  cursor: 'pointer',
-                  opacity: 0.8,
-                }}
-                onClick={() => {}}
-                w={6}
-                h={6}
-              />
-            </Box>
-          </HStack>
+          <Button
+            size="sm"
+            variant="secondary"
+            bgColor="dark.100"
+            border="none"
+            onClick={() => onEdit(member.id)}
+          >
+            Edit
+          </Button>
         )}
       </HStack>
     </Card>
@@ -164,29 +123,18 @@ const WorkspaceSettingsDrawer = ({
 
         <DrawerHeader mb={10}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="2xl" fontWeight="semibold" color="white">
+            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
               Workspace settings
             </Heading>
-            <Text fontSize="sm" color="grey.200">
-              This is the workspace that you are seeing.
+            <Text variant="description">
+              You can view the details, members, and their roles in your
+              workspace.
             </Text>
           </VStack>
         </DrawerHeader>
 
         <DrawerBody>
-          <WorkspaceCard
-            key={request.workspace?.id}
-            workspace={request.workspace!}
-            counter={{
-              members: request.workspace!.members.length,
-              //In this case, the predicates are coming in an array, so we need to use the length property
-              vaults: Array.isArray(request.workspace!.predicates)
-                ? request.workspace!.predicates.length
-                : 0,
-            }}
-            mb={10}
-          />
-          {/* <Card mb={10} bgColor="dark.200">
+          <Card mb={10} bgColor="dark.200">
             <HStack spacing={5}>
               <Avatar
                 p={10}
@@ -206,31 +154,23 @@ const WorkspaceSettingsDrawer = ({
                 </Text>
               </Box>
             </HStack>
-          </Card> */}
-          <Divider mb={10} />
+          </Card>
+
           <Flex
             w="full"
             mb={10}
             justifyContent="space-between"
             alignItems="center"
           >
-            <Flex h={14} flexDir="column" justify="space-around">
-              <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
-                Members
-              </Heading>
-              <Text fontSize="sm" color="grey.400">
-                {request.workspace?.members.length}{' '}
-                {request.workspace?.members.length === 1 ? 'Member' : 'Members'}
-              </Text>
-            </Flex>
+            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+              Members
+            </Heading>
 
             <Button
-              size="md"
-              h={10}
-              variant="primary"
-              bgColor="grey.200"
+              size="sm"
+              variant="secondary"
+              bgColor="dark.100"
               border="none"
-              gap={2}
               onClick={() => {
                 navigate(
                   Pages.membersWorkspace({
@@ -238,12 +178,8 @@ const WorkspaceSettingsDrawer = ({
                   }),
                 );
               }}
-              _hover={{
-                opacity: 0.8,
-              }}
             >
-              <UserAddIcon />
-              Add member
+              Add new member
             </Button>
           </Flex>
 

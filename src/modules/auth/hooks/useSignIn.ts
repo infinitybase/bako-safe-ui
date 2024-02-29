@@ -4,21 +4,12 @@ import { Location, useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
-import {
-  EConnectors,
-  useDefaultConnectors,
-} from '@/modules/core/hooks/fuel/useListConnectors';
+import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
 
-import { TypeUser } from '../services';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
-import { useWebAuthn } from './useWebAuthn';
-import {
-  useCheckHardwareId,
-  useGetAccountsByHardwareId,
-} from './useWebauthnRequests';
 
-export const redirectPathBuilder = (
+const redirectPathBuilder = (
   isDapp: boolean,
   location: Location,
   account: string,
@@ -47,40 +38,29 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
-  const {
-    openWebAuthnDrawer,
-    isOpen,
-    closeWebAuthnDrawer,
-    page,
-    setSearch,
-    hardwareId,
-  } = useWebAuthn();
 
-  useCheckHardwareId();
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
-      const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
+    onSuccess: ({ accessToken, avatar, user_id, workspace }) => {
       auth.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
         account: account!,
-        accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
-        webAuthn: _webAuthn,
       });
       navigate(redirectPathBuilder(!!origin, location, account!));
     },
   });
 
   const createUserRequest = useCreateUserRequest({
-    onSuccess: ({ code, type }) => {
+    onSuccess: ({ address, id, provider }) => {
       signInRequest.mutate({
-        code,
-        type,
+        address,
+        provider,
+        user_id: id,
       });
     },
   });
@@ -91,16 +71,10 @@ const useSignIn = () => {
   const selectConnector = async (connector: string) => {
     await fuel.selectConnector(connector);
     connectorDrawer.onClose();
-    const isbyWallet =
-      connector === EConnectors.FUEL || connector === EConnectors.FULLET;
-    if (isbyWallet) {
-      return connectByWallet();
-    }
-
-    openWebAuthnDrawer();
+    goToApp();
   };
 
-  const connectByWallet = async () => {
+  const goToApp = async () => {
     try {
       const connected = await fuel.connect();
 
@@ -112,26 +86,15 @@ const useSignIn = () => {
       createUserRequest.mutate({
         address: account!,
         provider: network!.url,
-        type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
       auth.handlers.setInvalidAccount(true);
     }
   };
 
-  const useCheckHardwareIdRequest = useCheckHardwareId();
-
   return {
     auth,
-    connectByWallet,
-    webauthn: {
-      page,
-      isOpen,
-      setSearch,
-      closeWebAuthnDrawer,
-      hardwareId: useCheckHardwareIdRequest,
-      accounts: useGetAccountsByHardwareId(hardwareId!),
-    },
+    goToApp,
     signInRequest,
     isConnected,
     isConnecting: signInRequest.isLoading || createUserRequest.isLoading,

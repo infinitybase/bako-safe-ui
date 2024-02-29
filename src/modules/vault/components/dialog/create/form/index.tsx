@@ -1,4 +1,5 @@
 import { Box, TabPanels, Tabs } from '@chakra-ui/react';
+import React from 'react';
 
 import { StepProgress } from '@/components';
 import { useFindTemplate } from '@/modules/template/hooks';
@@ -34,8 +35,8 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
   const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full" maxW={450}>
-      <Box hidden={stepAction.hide} mb={8}>
+    <Box w="full" maxW={420}>
+      <Box hidden={stepAction.hide} mb={12}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
       <Tabs index={tabs.tab} colorScheme="green">
