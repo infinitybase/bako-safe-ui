@@ -206,16 +206,16 @@ const useChangeMember = () => {
     // },
     [MemberTabState.FORM]: {
       isValid: permissionForm.formState.isValid || editForm.formState.isValid,
-      primaryAction: isEditMember ? 'Update user' : 'Add member',
+      primaryAction: isEditMember ? 'Update' : 'Add member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: isEditMember
         ? handleSetUpdateStep
         : handlePermissions,
       handleSecondaryAction: handleClose,
       isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
-      title: isEditMember ? 'Edit member' : 'User permission',
+      title: isEditMember ? 'Member permission' : 'User permission',
       description: undefined,
-      tertiaryAction: isEditMember ? 'Remove from workspace' : undefined,
+      tertiaryAction: isEditMember ? 'Remove' : undefined,
       handleTertiaryAction: handleSetDeleteStep,
       oldPermission: undefined,
       newPermission: undefined,
@@ -223,7 +223,7 @@ const useChangeMember = () => {
     },
     [MemberTabState.SUCCESS]: {
       isValid: true,
-      primaryAction: 'Conclude',
+      primaryAction: 'Go to my workspace',
       secondaryAction: 'Add another member',
       handlePrimaryAction: handleClose,
       handleSecondaryAction: clearSteps,
@@ -238,12 +238,12 @@ const useChangeMember = () => {
     },
     [MemberTabState.UPDATE]: {
       isValid: true,
-      primaryAction: 'Update user',
+      primaryAction: 'Update member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handlePermissions,
       handleSecondaryAction: clearSteps,
       isLoading: false,
-      title: 'Update user',
+      title: 'Update member',
       description: undefined,
       tertiaryAction: undefined,
       handleTertiaryAction: undefined,
@@ -253,12 +253,12 @@ const useChangeMember = () => {
     },
     [MemberTabState.DELETE]: {
       isValid: true,
-      primaryAction: 'Remove user',
+      primaryAction: 'Remove member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleDeleteMember,
       handleSecondaryAction: clearSteps,
       isLoading: false,
-      title: 'Remove user',
+      title: 'Remove member',
       description:
         'Are you sure you want to remove this user from this workspace? ',
       tertiaryAction: undefined,
@@ -276,10 +276,11 @@ const useChangeMember = () => {
     memberRequest,
     permissionsRequest,
     handleClose,
+    isEditMember,
     dialog: {
       title: isEditMember ? 'Edit member' : 'Add member',
       description: isEditMember
-        ? 'Manage roles, remove or adjust permissions as needed'
+        ? 'You are editing the role for this member:'
         : 'Add members, manage roles, remove or adjust permissions as needed',
     },
     form: {

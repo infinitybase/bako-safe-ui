@@ -1,4 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
+import { TransactionStatus } from 'bsafe';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -26,6 +27,15 @@ const useSidebar = () => {
   const pendingSignerTransactions = useTransactionsSignaturePending([
     params.vaultId!,
   ]);
+
+  const pendingSignerTransactionsLength = useMemo(() => {
+    if (pendingSignerTransactions.data?.transactionsBlocked) {
+      return transactions?.filter(
+        (transaction) =>
+          transaction.status === TransactionStatus.AWAIT_REQUIREMENTS,
+      ).length;
+    }
+  }, [transactions, pendingSignerTransactions.data?.transactionsBlocked]);
 
   useMemo(() => {
     pendingSignerTransactions.refetch();
@@ -66,6 +76,7 @@ const useSidebar = () => {
       ...transactions,
       pendingTransactions:
         pendingSignerTransactions.data?.transactionsBlocked ?? false,
+      pendingSignerTransactionsLength,
       hasTransactions: !!transactions?.length,
     },
     vaultRequest: vaultDetailsRequest,

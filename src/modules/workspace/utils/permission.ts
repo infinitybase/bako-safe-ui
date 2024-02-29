@@ -46,13 +46,13 @@ class WorkspacePermissionUtils {
       title: 'Manager',
       description:
         'Can create new vaults, create transaction and access all vaults in the workspace.',
-      variant: 'blue',
+      variant: 'yellow',
     },
     [PermissionRoles.VIEWER]: {
       title: 'Viewer',
       description:
         'Can only access and view the contents of all vaults in the workspace.',
-      variant: 'gray',
+      variant: 'blue',
     },
   };
 

@@ -17,7 +17,11 @@ const Container = ({
     <Card
       w="full"
       h="full"
+      bgColor="transparent"
       display="flex"
+      _hover={{
+        borderColor: 'brand.500',
+      }}
       overflow="hidden"
       cursor={isUpcoming ? '' : 'pointer'}
       {...rest}

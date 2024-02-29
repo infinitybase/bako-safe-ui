@@ -17,15 +17,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      size="xl"
+      {...props}
+      onClose={handleClose}
+      closeOnOverlayClick={false}
+    >
       <Dialog.Header
+        position="relative"
+        mb={0}
+        top={-8}
         w="full"
-        maxW={420}
+        maxW={480}
         title="Create Transaction"
         description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
-      <Dialog.Body maxW={420}>
+      <Dialog.Body maxW={500} minH={640}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -35,7 +43,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Dialog.Actions maxW={420}>
+      <Dialog.Actions maxW={480}>
+        {/* TODO: Colocar o Transactions Fee entre o Divider e os botoes */}
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>
@@ -44,6 +53,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           isDisabled={!form.formState.isValid}
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
+          _hover={{
+            opacity: form.formState.isValid && 0.8,
+          }}
         >
           Create transaction
         </Dialog.PrimaryAction>

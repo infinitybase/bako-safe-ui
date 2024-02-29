@@ -6,8 +6,20 @@ const titleXl = defineStyle({
   color: 'white',
 });
 
+const titleLg = defineStyle({
+  fontSize: 'lg',
+  fontWeight: 'bold',
+  color: 'white',
+});
+
 const titleMd = defineStyle({
   fontSize: 'md',
+  fontWeight: 'bold',
+  color: 'white',
+});
+
+const titleSm = defineStyle({
+  fontSize: 'sm',
   fontWeight: 'bold',
   color: 'white',
 });
@@ -15,7 +27,9 @@ const titleMd = defineStyle({
 const Heading = defineStyleConfig({
   variants: {
     'title-xl': titleXl,
+    'title-lg': titleLg,
     'title-md': titleMd,
+    'title-sm': titleSm,
   },
 });
 

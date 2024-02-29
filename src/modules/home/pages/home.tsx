@@ -5,17 +5,17 @@ import {
   GridItem,
   HStack,
   Icon,
-  Link,
   Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core/routes';
 import {
@@ -50,7 +50,7 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   return (
-    <VStack id="top" w="full" scrollMargin={20} spacing={6}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={8}>
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
@@ -94,7 +94,10 @@ const HomePage = () => {
               );
             }}
           >
-            <ActionCard.Icon icon={GoArrowSwitch} />
+            <ActionCard.Icon
+              icon={TransactionsIcon}
+              //isUpcoming={hasTransactions ? false : true}
+            />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -108,7 +111,7 @@ const HomePage = () => {
               navigate(Pages.addressBook({ workspaceId: current }))
             }
           >
-            <ActionCard.Icon icon={CgList} />
+            <ActionCard.Icon icon={AddressBookIcon} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
@@ -214,8 +217,14 @@ const HomePage = () => {
               quantity={pendingSignerTransactions.data?.ofUser ?? 0}
             />
             <Spacer />
-            <Link
-              color="brand.500"
+            <Button
+              color="brand.400"
+              textDecoration="none"
+              backgroundColor="transparent"
+              _hover={{
+                backgroundColor: 'transparent',
+              }}
+              rightIcon={<Icon as={MdKeyboardArrowRight} w={7} h={7} />}
               onClick={() =>
                 navigate(
                   Pages.userTransactions({
@@ -225,7 +234,7 @@ const HomePage = () => {
               }
             >
               View all
-            </Link>
+            </Button>
           </HStack>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             <CustomSkeleton isLoaded={!homeRequest.isLoading}>
@@ -238,6 +247,7 @@ const HomePage = () => {
                 return (
                   <TransactionCard.Container
                     mb={4}
+                    bgColor="grey.800"
                     key={transaction.id}
                     status={status}
                     details={

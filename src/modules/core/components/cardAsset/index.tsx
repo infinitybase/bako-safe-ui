@@ -1,13 +1,55 @@
-import { Avatar, Card, CardProps, Text, VStack } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardProps,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
+import { useScreenSize } from '../../hooks';
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
+
+interface DefaultAsset {
+  assetId: string;
+  amount: string;
+  name: string;
+  slug: string;
+  icon?: string | undefined;
+}
+
+interface AssetDetailsProps {
+  asset: Asset;
+  defaultAsset: DefaultAsset;
+}
 
 interface AssetCardProps extends CardProps {
   asset: Asset;
   visibleBalance?: boolean;
 }
 
+const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
+  return (
+    <Box>
+      <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} noOfLines={2}>
+        {asset.name ?? defaultAsset.name}
+      </Text>
+
+      <Text
+        fontWeight="bold"
+        fontSize={{ base: 'sm', sm: 15 }}
+        color="grey.400"
+      >
+        {asset.slug ?? defaultAsset.slug}
+      </Text>
+    </Box>
+  );
+};
+
 const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
+  const { isMobile } = useScreenSize();
+
   const defaultAsset = {
     ...assetsMap[NativeAssetId],
     assetId: NativeAssetId,
@@ -16,51 +58,48 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
 
   return (
     <Card
-      bgColor="dark.300"
+      bgColor="grey.700"
       cursor="pointer"
-      borderColor="dark.100"
-      borderWidth="1px"
+      borderColor="grey.400"
+      borderWidth="2px"
       borderRadius={10}
-      px={6}
+      px={{ base: 4, sm: 6 }}
       py={4}
       w="full"
-      h={130}
+      h={{ base: undefined, sm: 150 }}
       {...rest}
     >
-      <VStack
-        h="full"
-        spacing={1}
-        display="flex"
-        alignItems="center"
-        flexDirection="row"
-        justifyContent="center"
-        gap={4}
-      >
+      <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 4 }}>
         <Avatar
-          w={10}
-          h={10}
+          w={{ base: 8, sm: 10 }}
+          h={{ base: 8, sm: 10 }}
           variant="roundedSquare"
           src={asset.icon ?? defaultAsset.icon}
         />
 
-        <VStack flex={1} spacing={1.5} alignItems="flex-start">
-          <Text color="grey.500" fontSize={15} noOfLines={2}>
-            {asset.name ?? defaultAsset.name}
-          </Text>
+        {isMobile && <AssetDetails asset={asset} defaultAsset={defaultAsset} />}
+      </HStack>
 
-          <Text fontWeight="bold" fontSize={15} color="grey.200">
-            {asset.slug ?? defaultAsset.slug}
-          </Text>
-        </VStack>
-
+      <VStack
+        display="flex"
+        alignItems="flex-start"
+        flexDirection="column"
+        justifyContent="center"
+        spacing={1}
+        gap={-1}
+      >
         {visibleBalance ? (
-          <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
+          <Text fontWeight="bold" color="white" maxW={360} isTruncated>
             {asset.amount ?? defaultAsset.amount}
           </Text>
         ) : (
-          <Text variant="description" fontSize="md" mr={1}>
-            ******
+          <Text color="white" fontSize="md" mr={1}>
+            ------
           </Text>
+        )}
+
+        {!isMobile && (
+          <AssetDetails asset={asset} defaultAsset={defaultAsset} />
         )}
       </VStack>
     </Card>
