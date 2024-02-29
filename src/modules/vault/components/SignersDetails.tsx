@@ -41,7 +41,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
 
   return (
     <Box w="md">
-      <HStack alignItems="flex-start" mb={5} w="full" spacing={8}>
+      <HStack alignItems="center" mb={5} w="full" spacing={4}>
         <Text color="grey.400" fontWeight="semibold" fontSize="20px">
           Signers
         </Text>
