@@ -17,7 +17,11 @@ import { useSidebar } from './hook';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
-const Sidebar = () => {
+interface SidebarProps {
+  onDrawer?: boolean;
+}
+
+const Sidebar = ({ onDrawer }: SidebarProps) => {
   const {
     route,
     drawer,
@@ -38,7 +42,7 @@ const Sidebar = () => {
     <Box
       w="100%"
       maxW="350px"
-      bgColor="dark.500"
+      bgColor={onDrawer ? 'transparent' : 'dark.500'}
       borderRightWidth={1}
       borderRightColor="dark.100"
       py={6}
