@@ -4,12 +4,9 @@ import { devtools } from 'zustand/middleware';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AddressUtils, IPermission } from '@/modules/core';
 
-import { TypeUser } from '../services';
-
 type SingleAuthentication = {
   avatar: string;
   account: string;
-  accountType: TypeUser;
   userId: string;
   workspace: string;
 };
@@ -22,7 +19,6 @@ type WorkspaceAuthentication = {
 type State = {
   avatar: string;
   account: string;
-  accountType: TypeUser;
   userId: string;
   workspaces: { single: string; current: string };
   invalidAccount: boolean;
@@ -43,7 +39,6 @@ type Store = State & Actions;
 const useAuthStore = create<Store>()(
   devtools((set) => ({
     account: CookiesConfig.getCookie(CookieName.ADDRESS)!,
-    accountType: CookiesConfig.getCookie(CookieName.ACCOUNT_TYPE)! as TypeUser,
     userId: CookiesConfig.getCookie(CookieName.USER_ID)!,
     workspaces: {
       single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
@@ -57,7 +52,6 @@ const useAuthStore = create<Store>()(
     setInvalidAccount: (invalidAccount) => set({ invalidAccount }),
     singleAuthentication: (params) =>
       set({
-        accountType: params.accountType,
         userId: params.userId,
         avatar: params.avatar,
         account: params.account,
@@ -77,7 +71,6 @@ const useAuthStore = create<Store>()(
     logout: () =>
       set({
         userId: '',
-        accountType: undefined,
         avatar: '',
         account: '',
         permissions: undefined,

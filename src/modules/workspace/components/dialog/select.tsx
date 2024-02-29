@@ -66,6 +66,8 @@ const SelectWorkspaceDialog = ({
             marginTop={16}
             py={4}
             pr={4}
+            borderTop="1px solid"
+            borderBottom="1px solid"
             borderColor="grey.100"
             sx={{
               '&::-webkit-scrollbar': {
@@ -106,7 +108,6 @@ const SelectWorkspaceDialog = ({
               <Dialog.SecondaryAction
                 h="full"
                 size="lg"
-                w="40%"
                 bgColor="transparent"
                 outlineColor="white"
                 outline="1px solid"

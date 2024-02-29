@@ -129,7 +129,7 @@ function AutoComplete({
             top="1px"
             right="1px"
             borderRadius={10}
-            bgColor={rightAction ? 'dark.250' : 'transparent'}
+            bgColor={rightAction ? 'dark.600' : 'transparent'}
             h="calc(100% - 3px)"
             w={10}
           >

@@ -50,7 +50,7 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   return (
-    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={8}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6}>
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
@@ -247,7 +247,6 @@ const HomePage = () => {
                 return (
                   <TransactionCard.Container
                     mb={4}
-                    bgColor="grey.800"
                     key={transaction.id}
                     status={status}
                     details={
