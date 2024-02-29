@@ -16,7 +16,7 @@ const DialogSection = ({
   <VStack spacing={1} alignItems="flex-start" {...stackProps}>
     {title}
     {description && (
-      <Text w="90%" fontSize="md" variant="description">
+      <Text w="90%" fontSize={{ base: 'sm', sm: 'md' }} variant="description">
         {description}
       </Text>
     )}

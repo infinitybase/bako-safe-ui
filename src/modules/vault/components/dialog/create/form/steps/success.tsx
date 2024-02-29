@@ -29,7 +29,7 @@ const VaultSuccessStep = ({
           <Icon fontSize={100} as={UserWorkspaceIcon} />
         </Box>
         <Box mb={5}>
-          <Heading fontSize="3xl" color="white">
+          <Heading fontSize={{ base: 'xl', sm: '3xl' }} color="white">
             All set!!
           </Heading>
         </Box>
@@ -37,7 +37,7 @@ const VaultSuccessStep = ({
           <Heading
             fontWeight="normal"
             color="grey.400"
-            fontSize="md"
+            fontSize={{ base: 'sm', sm: 'md' }}
             textAlign="center"
           >
             The vault has been created! Ready for the next steps?
@@ -47,9 +47,13 @@ const VaultSuccessStep = ({
 
       <VStack>
         <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={190}>
-            <Text variant="description">
-              <Text color="grey.200" fontWeight="semibold">
+          <Box w="full" maxW={{ base: 200, sm: 190 }}>
+            <Text fontSize={{ base: 'xs' }} variant="description">
+              <Text
+                fontSize={{ base: 'sm' }}
+                color="grey.200"
+                fontWeight="semibold"
+              >
                 Unlock Vault Features:
               </Text>
               Use the faucet
@@ -61,7 +65,7 @@ const VaultSuccessStep = ({
             }}
             h={9}
             w="full"
-            maxW={130}
+            maxW={{ base: 120, sm: 190 }}
             onClick={onDeposit}
             variant="primary"
             size="sm"
@@ -70,9 +74,13 @@ const VaultSuccessStep = ({
           </Button>
         </HStack>
         <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={190}>
-            <Text variant="description">
-              <Text color="grey.200" fontWeight="semibold">
+          <Box w="full" maxW={{ base: 220, sm: 190 }}>
+            <Text fontSize={{ base: 'xs' }} variant="description">
+              <Text
+                fontSize={{ base: 'sm' }}
+                color="grey.200"
+                fontWeight="semibold"
+              >
                 Streamline Your Workflow:
               </Text>
               Set this vault as Template
@@ -85,7 +93,7 @@ const VaultSuccessStep = ({
             h={9}
             variant="primary"
             w="full"
-            maxW={130}
+            maxW={{ base: 120, sm: 190 }}
             size="sm"
             onClick={onSaveTemplate}
           >
