@@ -89,13 +89,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={-1}
       >
         {visibleBalance ? (
-          <Text
-            fontSize={{ base: 'sm', sm: 'md' }}
-            fontWeight="bold"
-            color="white"
-            maxW={360}
-            isTruncated
-          >
+          <Text fontWeight="bold" color="white" maxW={360} isTruncated>
             {asset.amount ?? defaultAsset.amount}
           </Text>
         ) : (

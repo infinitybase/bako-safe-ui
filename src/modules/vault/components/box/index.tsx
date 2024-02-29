@@ -117,7 +117,6 @@ const VaultBox = (props: VaultBoxPropx) => {
             w="100%"
             variant="primary"
             fontWeight="bold"
-            fontSize={{ base: 'sm', sm: 'md' }}
             onClick={onCreateTransaction}
             isDisabled={!hasBalance || isPending}
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}

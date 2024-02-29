@@ -91,7 +91,6 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
 
             <Text
               maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-              fontSize={{ base: 'sm', sm: 'md' }}
               color={hasNickname ? 'grey.500' : 'grey.200'}
               fontWeight={hasNickname ? 'regular' : 'bold'}
               textOverflow="ellipsis"

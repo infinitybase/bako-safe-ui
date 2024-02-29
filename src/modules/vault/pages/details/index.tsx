@@ -279,19 +279,13 @@ const VaultDetailsPage = () => {
               </Heading>
             </Box>
             <Box maxW={400} mb={8}>
-              <Text
-                color="white"
-                fontSize={{ base: 'sm', sm: 'md' }}
-                textAlign="center"
-                fontWeight="bold"
-              >
+              <Text color="white" textAlign="center" fontWeight="bold">
                 It seems like you {"haven't"} made any transactions yet. Would
                 you like to make one now?
               </Text>
             </Box>
             <Button
               variant="primary"
-              fontSize={{ base: 'sm', sm: 'md' }}
               leftIcon={<SquarePlusIcon />}
               isDisabled={!vault?.hasBalance}
               onClick={() =>

@@ -229,7 +229,6 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
 
                 <Button
-                  fontSize={{ base: 'sm', sm: 'md' }}
                   minW={{ base: undefined, sm: 180 }}
                   h={12}
                   variant="primary"
