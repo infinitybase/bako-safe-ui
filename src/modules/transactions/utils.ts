@@ -24,13 +24,17 @@ export const transactionStatus = ({
   account,
   ...transaction
 }: TransactionStatusParams) => {
-  const { requiredSigners, totalSigners } = transaction.resume;
+  const {
+    requiredSigners,
+    totalSigners,
+    witnesses: witnessesResume,
+  } = transaction.resume;
   const minSigners = requiredSigners;
   const vaultMembersCount = totalSigners;
-  const signatureCount = witnesses?.filter((t) => t.status === DONE).length;
+  const signatureCount = witnessesResume?.filter((w) => w !== null).length ?? 0;
   const witness = witnesses?.find((t) => t.account === account);
-  const howManyDeclined = witnesses?.filter((w) => w.status === REJECTED)
-    .length;
+  const howManyDeclined =
+    witnessesResume?.filter((w) => w === null).length ?? 0;
 
   return {
     isCompleted:
