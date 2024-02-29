@@ -7,7 +7,7 @@ const EmptyTransaction = () => {
     <Card
       w="full"
       mt={10}
-      p={20}
+      p={14}
       bgColor="grey.850"
       display="flex"
       borderWidth={2}

@@ -57,7 +57,7 @@ const TopBarItem = chakra(SpacedBox, {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: '35%',
   },
 });
 
@@ -82,7 +82,7 @@ const UserBox = () => {
 
       <Popover>
         <PopoverTrigger>
-          <Flex w="100%" alignItems="center" cursor={'pointer'}>
+          <Flex w="100%" alignItems="center" cursor={'pointer'} px={2}>
             <Box mr={4}>
               {avatarImage.isLoading ? (
                 <Skeleton
@@ -200,11 +200,10 @@ const WorkspaceBox = ({
                 Current workspace
               </Text>
             </Box>
+            <ReplaceIcon color="grey.200" fontSize={20} />
           </HStack>
         )}
       </Flex>
-
-      <ReplaceIcon color="grey.200" fontSize={20} />
     </Flex>
   );
 };
@@ -233,6 +232,7 @@ const Header = () => {
       h={82}
       w="100%"
       bgColor="dark.300"
+      px={4}
       alignItems="center"
       borderBottomWidth={1}
       justifyContent="space-between"
@@ -259,8 +259,8 @@ const Header = () => {
         <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
-          w={310}
-          px={6}
+          w={!currentWorkspace.workspace?.single ? 310 : 240}
+          alignItems="center"
         >
           <WorkspaceBox
             currentWorkspace={currentWorkspace.workspace}
@@ -269,6 +269,10 @@ const Header = () => {
         </TopBarItem>
 
         <TopBarItem
+          cursor="pointer"
+          _hover={{
+            opacity: 0.8,
+          }}
           onClick={() =>
             window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
           }
@@ -276,7 +280,14 @@ const Header = () => {
           <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
 
-        <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
+        <TopBarItem
+          cursor="pointer"
+          _hover={{
+            opacity: 0.8,
+          }}
+          onClick={drawer.onOpen}
+          width={78}
+        >
           <Icon
             color="grey.200"
             as={NotificationIcon}
