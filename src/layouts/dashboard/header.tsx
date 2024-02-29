@@ -69,6 +69,7 @@ const UserBox = () => {
   const avatarImage = useLoadImage(auth.avatar);
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
+  const { drawer } = useSidebar();
 
   const logout = async () => {
     await fuel.disconnect();
@@ -82,6 +83,8 @@ const UserBox = () => {
         onClose={settingsDrawer.onClose}
         onOpen={settingsDrawer.onOpen}
       />
+
+      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
 
       <Popover>
         <PopoverTrigger>
@@ -129,6 +132,46 @@ const UserBox = () => {
           boxShadow="lg"
         >
           <PopoverBody>
+            {isMobile && (
+              <>
+                <Box
+                  borderTop={'1px solid'}
+                  borderTopColor={'dark.100'}
+                  cursor={'pointer'}
+                  onClick={drawer.onOpen}
+                  p={5}
+                >
+                  <HStack>
+                    <Icon
+                      color="grey.200"
+                      as={NotificationIcon}
+                      fontSize="xl"
+                    />
+                    <Text color="grey.200" fontWeight={'bold'}>
+                      Notifications
+                    </Text>
+                  </HStack>
+                </Box>
+
+                <Box
+                  borderTop={'1px solid'}
+                  borderTopColor={'dark.100'}
+                  cursor={'pointer'}
+                  onClick={() =>
+                    window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+                  }
+                  p={5}
+                >
+                  <HStack>
+                    <Icon color="grey.200" as={QuestionIcon} fontSize="xl" />
+                    <Text color="grey.200" fontWeight={'bold'}>
+                      Help
+                    </Text>
+                  </HStack>
+                </Box>
+              </>
+            )}
+
             <Box
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
