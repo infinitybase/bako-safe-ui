@@ -27,7 +27,7 @@ const useHome = () => {
       onSelect: async () => {
         auth.handlers.authenticateWorkspaceSingle();
         await queryClient.invalidateQueries(
-          WorkspacesQueryKey.FULL_DATA(auth.workspaces.single, vaultId),
+          WorkspacesQueryKey.FULL_DATA(auth.workspaces.single, vaultId!),
         );
         await queryClient.invalidateQueries(
           AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),

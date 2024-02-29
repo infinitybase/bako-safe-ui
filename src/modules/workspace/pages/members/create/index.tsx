@@ -36,11 +36,9 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
 
-  const request = useGetWorkspaceRequest(workspaceId ?? '');
-  const workspace = request.workspace;
-  const member = request.workspace?.members.find(
-    (member) => member.id === memberId,
-  );
+  const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
+
+  const member = workspace?.members.find((member) => member.id === memberId);
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
@@ -160,7 +158,12 @@ const CreateMemberPage = () => {
   );
 
   return (
-    <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      isOpen
+      onClose={handleClose}
+      closeOnOverlayClick={false}
+      autoFocus={false}
+    >
       <CreateContactDialog
         form={addressBook.form}
         dialog={addressBook.contactDialog}

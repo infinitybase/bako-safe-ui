@@ -43,6 +43,7 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -153,7 +154,7 @@ const VaultAddressesStep = ({
                               }),
                         }}
                         bottomAction={
-                          first ? undefined : (
+                          canAddMember && first ? undefined : (
                             <Box mt={2}>
                               <Text color="grey.200" fontSize={12}>
                                 Do you wanna{' '}

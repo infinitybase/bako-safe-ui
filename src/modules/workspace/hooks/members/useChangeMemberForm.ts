@@ -4,15 +4,20 @@ import * as yup from 'yup';
 
 import { AddressUtils, Workspace } from '@/modules/core';
 
-const memberSchema = yup.object({
-  // TODO: Move address validation to ./src/modules/core/utils/address
-  address: yup
-    .string()
-    .required('Empty address')
-    .test('is-valid-address', 'Invalid address', (address) =>
-      AddressUtils.isValid(address),
-    ),
-});
+const memberSchema = (members: string[]) => {
+  return yup.object({
+    // TODO: Move address validation to ./src/modules/core/utils/address
+    address: yup
+      .string()
+      .required('Empty address')
+      .test('is-valid-address', 'Invalid address', (address) =>
+        AddressUtils.isValid(address),
+      )
+      .test('is-not-owner', 'This address is already a member', (address) => {
+        return !members.includes(address);
+      }),
+  });
+};
 
 const permissionSchema = yup.object({
   permission: yup.string().required('Permission is required.'),
@@ -22,11 +27,11 @@ const editSchema = yup.object({
   permission: yup.string().required('Permission is required.'),
 });
 
-const useChangeMemberForm = () => {
+const useChangeMemberForm = (owner: string[]) => {
   const memberForm = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: yupResolver(memberSchema),
+    resolver: yupResolver(memberSchema(owner)),
     defaultValues: {
       address: '',
     },

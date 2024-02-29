@@ -9,7 +9,6 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog, UserAddIcon } from '@/components';
@@ -19,13 +18,14 @@ import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 export interface CreateTransactionFormProps {
   form: UseCreateTransaction['form'];
+  nicks: UseCreateTransaction['nicks'];
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
 }
 
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
-  const { form, assets, transactionsFields, accordion } = props;
+  const { form, assets, transactionsFields, accordion, nicks } = props;
 
   return (
     <Box w="full">
@@ -61,6 +61,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
 
       <TransactionAccordions
         form={form}
+        nicks={nicks}
         assets={assets}
         accordion={accordion}
         transactions={transactionsFields}

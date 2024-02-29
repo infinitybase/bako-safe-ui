@@ -4,9 +4,13 @@ import { NotFoundIcon, SquarePlusIcon } from '@/components';
 
 interface AddressBookEmptyStateProps {
   action: () => void;
+  showAction?: boolean;
 }
 
-const AddressBookEmptyState = ({ action }: AddressBookEmptyStateProps) => {
+const AddressBookEmptyState = ({
+  action,
+  showAction,
+}: AddressBookEmptyStateProps) => {
   return (
     <Card
       w="full"
@@ -31,9 +35,15 @@ const AddressBookEmptyState = ({ action }: AddressBookEmptyStateProps) => {
           to create one now?
         </Text>
       </Box>
-      <Button variant="primary" leftIcon={<SquarePlusIcon />} onClick={action}>
-        Add new favorite
-      </Button>
+      {showAction && (
+        <Button
+          variant="primary"
+          leftIcon={<SquarePlusIcon />}
+          onClick={action}
+        >
+          Add new favorite
+        </Button>
+      )}
     </Card>
   );
 };

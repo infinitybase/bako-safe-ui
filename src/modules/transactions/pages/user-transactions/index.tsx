@@ -201,7 +201,9 @@ const UserTransactionsPage = () => {
         <Box w="full" mt={3}>
           <TransactionFilter.Control
             value={filter.value!}
-            onChange={(value) => filter.set(value as StatusFilter)}
+            onChange={(value) => {
+              filter.set(value as StatusFilter);
+            }}
           >
             <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
             <TransactionFilter.Field

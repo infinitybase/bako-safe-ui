@@ -16,15 +16,13 @@ import { AmountInput } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
-import {
-  UseCreateTransaction,
-  useCreateTransaction,
-} from '@/modules/transactions/hooks';
+import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
+  nicks: UseCreateTransaction['nicks'];
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
@@ -50,6 +48,7 @@ const TransactionFormField = ({
     contactDialog,
     paginatedContacts,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -80,7 +79,7 @@ const TransactionFormField = ({
                 options={paginatedContacts.data!}
                 rightAction={{}}
                 bottomAction={
-                  <Box mt={2}>
+                  <Box hidden={!canAddMember} mt={2}>
                     <Text color="grey.200" fontSize={12}>
                       Do you wanna{' '}
                       <Link
@@ -152,8 +151,7 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { nicks } = useCreateTransaction();
-  const { form, transactions, assets, accordion } = props;
+  const { form, transactions, assets, accordion, nicks } = props;
 
   return (
     <Accordion index={accordion.index}>
@@ -166,6 +164,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           (value) => value === '',
         );
         const isDisabled = hasEmptyField || fieldState.invalid;
+        const contact = nicks.find(
+          (nick) => nick.user.address === transaction.to,
+        );
 
         return (
           <AccordionItem
@@ -186,7 +187,10 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   />
                   <TransactionAccordion.DeleteAction
                     isDisabled={props.transactions.fields.length === 1}
-                    onClick={() => props.transactions.remove(index)}
+                    onClick={() => {
+                      transactions.remove(index);
+                      accordion.close();
+                    }}
                   />
                 </TransactionAccordion.Actions>
               }
@@ -199,8 +203,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                     to{' '}
                     <b>
                       {' '}
-                      {nicks[transaction.to] ??
-                        AddressUtils.format(transaction.to)}
+                      {contact?.nickname ?? AddressUtils.format(transaction.to)}
                     </b>
                   </Text>
                 )
