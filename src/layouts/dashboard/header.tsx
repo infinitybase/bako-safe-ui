@@ -29,7 +29,10 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
+
+import { TypeUser } from '@/modules/auth/services';
 import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
+
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -59,7 +62,7 @@ const TopBarItem = chakra(SpacedBox, {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: '35%',
   },
 });
 
@@ -72,7 +75,7 @@ const UserBox = () => {
   const { drawer } = useSidebar();
 
   const logout = async () => {
-    await fuel.disconnect();
+    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
     auth.handlers.logout();
   };
 
@@ -88,7 +91,7 @@ const UserBox = () => {
 
       <Popover>
         <PopoverTrigger>
-          <Flex w="100%" alignItems="center" cursor={'pointer'}>
+          <Flex w="100%" alignItems="center" cursor={'pointer'} px={2}>
             <Box mr={4}>
               {avatarImage.isLoading ? (
                 <Skeleton
@@ -282,11 +285,13 @@ const WorkspaceBox = ({
                 {isMobile ? 'Workspace' : 'Current workspace'}
               </Text>
             </Box>
+            <ReplaceIcon color="grey.200" fontSize={20} />
           </HStack>
         )}
       </Flex>
 
       {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
+
     </Flex>
   );
 };
@@ -319,6 +324,7 @@ const Header = () => {
       }}
       w="100%"
       bgColor="dark.300"
+      px={4}
       alignItems="center"
       borderBottomWidth={1}
       justifyContent="space-between"
@@ -340,6 +346,7 @@ const Header = () => {
         pl={6}
       >
         <img width={isMobile ? 65 : 95} src={logo} alt="" />
+
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

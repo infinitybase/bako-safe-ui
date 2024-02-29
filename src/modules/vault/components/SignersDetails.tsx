@@ -131,6 +131,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
           Required signers {vault?.minSigners}/{vault.members?.length}
         </Badge>
       </HStack>
+
       {isMobile ? (
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
           <SignersList vault={vault} />
@@ -139,7 +140,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
         <VStack spacing={5}>
           <SignersList vault={vault} />
         </VStack>
-      )}
+      )}\
     </Box>
   );
 };

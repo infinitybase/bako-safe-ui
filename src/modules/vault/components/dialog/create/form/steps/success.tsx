@@ -60,6 +60,8 @@ const VaultSuccessStep = ({
               opacity: 0.8,
             }}
             h={9}
+            w="full"
+            maxW={130}
             onClick={onDeposit}
             variant="primary"
             size="sm"
@@ -82,6 +84,8 @@ const VaultSuccessStep = ({
             }}
             h={9}
             variant="primary"
+            w="full"
+            maxW={130}
             size="sm"
             onClick={onSaveTemplate}
           >

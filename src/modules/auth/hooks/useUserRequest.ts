@@ -5,15 +5,10 @@ import {
   CreateUserPayload,
   CreateUserResponse,
   Encoder,
-  SignInPayload,
   SignInResponse,
   UserService,
+  UseSignInRequestParams,
 } from '../services';
-
-type UseSignInRequestParams = Omit<
-  SignInPayload,
-  'signature' | 'hash' | 'createdAt' | 'encoder'
->;
 
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,
@@ -29,21 +24,15 @@ const useSignInRequest = (
   return useMutation(
     'auth/sign-in',
     async (params: UseSignInRequestParams) => {
+      const account = await fuel.currentAccount();
+
       const payload = {
-        address: params.address,
-        hash: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
         encoder: Encoder.FUEL,
-        provider: params.provider,
-        user_id: params.user_id,
+        digest: params.code,
+        signature: await fuel.signMessage(account!, params.code),
       };
 
-      const signature = await fuel.signMessage(
-        params.address,
-        JSON.stringify(payload),
-      );
-
-      return UserService.signIn({ ...payload, signature });
+      return UserService.signIn(payload);
     },
     options,
   );

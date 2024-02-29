@@ -28,7 +28,10 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
     menuItems,
     vaultAssets,
     vaultRequest,
-    transactionListRequest,
+    transactionListRequest: {
+      pendingTransactions,
+      pendingSignerTransactionsLength,
+    },
   } = useSidebar();
 
   const { vault } = useVaultDetails();
@@ -107,11 +110,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
         >
           <SidebarMenu.Icon as={ExchangeIcon} />
           <SidebarMenu.Title>Transactions</SidebarMenu.Title>
-          <SidebarMenu.Badge
-            hidden={!transactionListRequest.pendingTransactions}
-          >
+          <SidebarMenu.Badge hidden={!pendingTransactions}>
             <Icon as={PendingIcon} />{' '}
-            {transactionListRequest.pendingTransactions}
+            {pendingTransactions && pendingSignerTransactionsLength}
           </SidebarMenu.Badge>
         </SidebarMenu.Container>
 
