@@ -31,12 +31,12 @@ const Container = ({
 
   const childrens = React.Children.toArray(children);
   const gridTemplateColumns =
-    childrens.length === 7 ? '2fr 1fr 1fr 2fr 2fr 4fr' : '1fr 1fr 2fr 2fr 4fr';
+    childrens.length === 7 ? '1fr 1fr 1fr 1fr 1fr 2fr' : '1fr 1fr 2fr 2fr 4fr';
 
   return (
     <Card
       py={4}
-      px={2}
+      px={4}
       w="full"
       as={AccordionItem}
       bgColor={missingSignature ? 'warning.800' : 'grey.800'}
@@ -44,14 +44,13 @@ const Container = ({
       minW="min-content"
       {...rest}
     >
-      <VStack justifyContent="flex-start" gap={0} w="full">
+      <VStack justifyContent="center" gap={0} w="full">
         <HStack
           as={AccordionButton}
           w="full"
-          spacing={10}
           _hover={{ bgColor: 'transparent' }}
         >
-          <Grid w="full" gap={4} templateColumns={gridTemplateColumns}>
+          <Grid w="100%" gap={0} templateColumns={gridTemplateColumns}>
             {children}
           </Grid>
         </HStack>
