@@ -8,7 +8,11 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
@@ -16,24 +20,11 @@ import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
 
-interface ActionsIconProps {
-  isOpen: boolean;
-}
-
 interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
   isSigner: boolean;
 }
-
-const ActionsIcon = ({ isOpen }: ActionsIconProps) => (
-  <Icon
-    as={isOpen ? IoIosArrowUp : IoIosArrowDown}
-    fontSize="md"
-    color="grey.200"
-    cursor="pointer"
-  />
-);
 
 const Actions = ({
   transaction,
@@ -55,7 +46,12 @@ const Actions = ({
     return (
       <HStack w="full" justifyContent="end" spacing={1}>
         <Text fontSize="xs">View details</Text>
-        <ActionsIcon isOpen={isOpen} />
+        <Icon
+          as={IoIosArrowForward}
+          fontSize="md"
+          color="grey.200"
+          cursor="pointer"
+        />
       </HStack>
     );
   }
@@ -119,7 +115,12 @@ const Actions = ({
         <Spacer />
       )}
 
-      <ActionsIcon isOpen={isOpen} />
+      <Icon
+        as={isOpen ? IoIosArrowUp : IoIosArrowDown}
+        fontSize="md"
+        color="grey.200"
+        cursor="pointer"
+      />
     </HStack>
   );
 };
