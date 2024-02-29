@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-import logo from '@/assets/logo.svg';
+import logo from '@/assets/bakoLogoWhite.svg';
 import {
   ExitIcon,
   NotificationIcon,
@@ -29,6 +29,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
+import { TypeUser } from '@/modules/auth/services';
 import { useLoadImage } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
@@ -67,7 +68,7 @@ const UserBox = () => {
   const settingsDrawer = useDisclosure();
 
   const logout = async () => {
-    await fuel.disconnect();
+    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
     auth.handlers.logout();
   };
 
@@ -251,7 +252,7 @@ const Header = () => {
           goHome();
         }}
       >
-        <img width={90} src={logo} alt="" />
+        <img width={95} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

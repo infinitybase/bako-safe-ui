@@ -111,11 +111,11 @@ const AssetBoxInfo = ({
       <Center
         p={3}
         borderRadius={5}
-        bgColor={isContract ? 'grey.900' : 'brand.500'}
+        bgColor={isContract ? 'brand.500' : 'grey.900'}
       >
         <Icon
-          color={isContract ? 'grey.200' : 'black'}
-          fontSize="xs"
+          color={isContract ? 'black' : 'brand.500'}
+          fontSize="2xl"
           as={!isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>

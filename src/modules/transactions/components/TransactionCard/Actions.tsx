@@ -7,6 +7,7 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
+import React from 'react';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';

@@ -9,9 +9,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
 
-import { VaultSuccessIcon } from '@/components';
+import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
 import { UseCreateVaultDialogReturn } from '@/modules/vault/hooks';
 
 interface VaultSuccessStepProp {
@@ -27,13 +26,20 @@ const VaultSuccessStep = ({
     <TabPanel>
       <Center flexDirection="column" mb={5}>
         <Box mb={8}>
-          <Icon fontSize={100} as={VaultSuccessIcon} />
+          <Icon fontSize={100} as={UserWorkspaceIcon} />
         </Box>
         <Box mb={5}>
-          <Heading color="brand.600">All set!!</Heading>
+          <Heading fontSize="3xl" color="white">
+            All set!!
+          </Heading>
         </Box>
         <Box mb={5}>
-          <Heading color="grey.200" fontSize="md" textAlign="center">
+          <Heading
+            fontWeight="normal"
+            color="grey.400"
+            fontSize="md"
+            textAlign="center"
+          >
             The vault has been created! Ready for the next steps?
           </Heading>
         </Box>
@@ -43,20 +49,42 @@ const VaultSuccessStep = ({
         <HStack w="full" justifyContent="space-between">
           <Box w="full" maxW={190}>
             <Text variant="description">
-              Unlock Vault Features: Use the faucet
+              <Text color="grey.200" fontWeight="semibold">
+                Unlock Vault Features:
+              </Text>
+              Use the faucet
             </Text>
           </Box>
-          <Button onClick={onDeposit} variant="primary" size="sm">
+          <Button
+            _hover={{
+              opacity: 0.8,
+            }}
+            h={9}
+            onClick={onDeposit}
+            variant="primary"
+            size="sm"
+          >
             Give me Ether
           </Button>
         </HStack>
         <HStack w="full" justifyContent="space-between">
           <Box w="full" maxW={190}>
             <Text variant="description">
-              Streamline Your Workflow: Set this vault as Template
+              <Text color="grey.200" fontWeight="semibold">
+                Streamline Your Workflow:
+              </Text>
+              Set this vault as Template
             </Text>
           </Box>
-          <Button variant="primary" size="sm" onClick={onSaveTemplate}>
+          <Button
+            _hover={{
+              opacity: 0.8,
+            }}
+            h={9}
+            variant="primary"
+            size="sm"
+            onClick={onSaveTemplate}
+          >
             Set as template
           </Button>
         </HStack>

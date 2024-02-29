@@ -28,6 +28,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         'Define the name and description of this vault. These details will be visible to all members.',
       onCancel: handleCancel,
       closeText: 'Cancel',
+      nextStepText: 'Continue',
     },
     [TabState.ADDRESSES]: {
       hide: false,
@@ -36,7 +37,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
       onCancel: () => tabs.set(TabState.INFO),
-      closeText: 'Back',
+      closeText: 'Cancel',
+      nextStepText: 'Create Vault',
     },
     [TabState.SUCCESS]: {
       hide: true,
@@ -45,6 +47,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       onContinue: () => {},
       onCancel: handleCancel,
       closeText: `I'll do it later`,
+      nextStepText: '',
     },
   };
 

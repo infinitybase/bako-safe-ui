@@ -1,15 +1,22 @@
+import { useFuel } from '@fuels/react';
+import { defaultConfig } from 'bsafe';
+import { Provider } from 'fuels';
+
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { IPermission } from '@/modules/core';
 
+import { SignWebAuthnPayload, TypeUser } from '../services';
 import { useAuthStore } from '../store';
 
 type AuthenticateParams = {
   userId: string;
   avatar: string;
   account: string;
+  accountType: TypeUser;
   accessToken: string;
   permissions: IPermission;
   singleWorkspace: string;
+  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
 };
 
 type AuthenticateWorkspaceParams = {
@@ -19,6 +26,7 @@ type AuthenticateWorkspaceParams = {
 
 const useAuth = () => {
   const store = useAuthStore();
+  const { fuel } = useFuel();
 
   const authenticate = (params: AuthenticateParams) => {
     CookiesConfig.setCookies([
@@ -42,12 +50,26 @@ const useAuth = () => {
         name: CookieName.SINGLE_WORKSPACE,
         value: params.singleWorkspace,
       },
+      {
+        name: CookieName.WEB_AUTHN_PK,
+        value: params.webAuthn?.publicKey ?? '',
+      },
+      {
+        name: CookieName.WEB_AUTHN_ID,
+        value: params.webAuthn?.id ?? '',
+      },
+      {
+        name: CookieName.ACCOUNT_TYPE,
+        value: params.accountType,
+      },
     ]);
     store.singleAuthentication({
       userId: params.userId,
       avatar: params.avatar,
       account: params.account,
+      accountType: params.accountType,
       workspace: params.singleWorkspace,
+      webAuthn: params.webAuthn,
     });
   };
 
@@ -69,13 +91,23 @@ const useAuth = () => {
       CookieName.USER_ID,
       CookieName.ACCESS_TOKEN,
       CookieName.SINGLE_WORKSPACE,
+      CookieName.WEB_AUTHN_ID,
+      CookieName.WEB_AUTHN_PK,
     ]);
     store.logout();
   };
 
-  // useEffect(() => {
-  //   console.log(store.workspaces.current);
-  // }, [store.workspaces.current]);
+  const hasWallet = async () => {
+    const _hasWallet = store.accountType != TypeUser.WEB_AUTHN;
+
+    return {
+      provider: await Provider.create(
+        _hasWallet
+          ? (await fuel.currentNetwork()).url
+          : defaultConfig['PROVIDER']!,
+      ),
+    };
+  };
 
   return {
     handlers: {
@@ -85,9 +117,15 @@ const useAuth = () => {
       setInvalidAccount: store.setInvalidAccount,
       authenticateWorkspaceSingle,
     },
+    hasWallet,
+    accountType: store.accountType,
     avatar: store.avatar,
     userId: store.userId,
     account: store.account,
+    webAuthn: {
+      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
+      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
+    },
     workspaces: store.workspaces,
     permissions: store.permissions,
     isInvalidAccount: store.invalidAccount,

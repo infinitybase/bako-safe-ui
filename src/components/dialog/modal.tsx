@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { ErrorIcon } from '../icons';
+import { CloseIcon } from '../icons/close-icon';
 
 export interface DialogModalProps extends ModalProps {
   hideCloseButton?: boolean;
@@ -23,14 +23,14 @@ const DialogModal = (props: DialogModalProps) => {
   return (
     <Modal variant="glassmorphic" size="2xl" isCentered {...rest}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent rounded="3xl">
         {!hideCloseButton && (
-          <Flex mb={10} w="full" justifyContent="flex-end">
+          <Flex w="full" align="center" justifyContent="flex-end">
             <HStack onClick={props.onClose} cursor="pointer" spacing={2}>
-              <ErrorIcon />
-              <Text fontWeight="semibold" color="white">
+              <Text fontWeight="normal" color="white">
                 Close
               </Text>
+              <CloseIcon />
             </HStack>
           </Flex>
         )}

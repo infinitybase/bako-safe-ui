@@ -2,6 +2,7 @@ import {
   Accordion,
   AccordionItem,
   Box,
+  Button,
   Center,
   FormControl,
   FormHelperText,
@@ -12,11 +13,20 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { AmountInput } from '@/components';
+import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
-import { AddressUtils, AssetSelect } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  AddressUtils,
+  AssetSelect,
+  delay,
+  NativeAssetId,
+} from '@/modules/core';
+import {
+  UseCreateTransaction,
+  useCreateTransaction,
+} from '@/modules/transactions/hooks';
+
 
 import { TransactionAccordion } from './accordion';
 
@@ -77,7 +87,6 @@ const TransactionFormField = ({
                 errorMessage={fieldState.error?.message}
                 isLoading={!paginatedContacts.isSuccess}
                 options={paginatedContacts.data!}
-                rightAction={{}}
                 bottomAction={
                   <Box hidden={!canAddMember} mt={2}>
                     <Text color="grey.200" fontSize={12}>
@@ -154,7 +163,23 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
 
   return (
-    <Accordion index={accordion.index}>
+    <Accordion
+      index={accordion.index}
+      overflowY="auto"
+      maxH={450}
+      pr={4}
+      sx={{
+        '&::-webkit-scrollbar': {
+          width: '5px',
+          maxHeight: '330px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#2C2C2C',
+          borderRadius: '30px',
+          height: '10px' /* Adjust the height of the scrollbar thumb */,
+        },
+      }}
+    >
       {transactions.fields.map((field, index) => {
         const transaction = form.watch(`transactions.${index}`);
         const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
@@ -169,58 +194,83 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         );
 
         return (
-          <AccordionItem
-            key={field.id}
-            mb={6}
-            borderWidth={1}
-            borderStyle="dashed"
-            borderColor="dark.100"
-            borderRadius={10}
-            backgroundColor="dark.300"
-          >
-            <TransactionAccordion.Item
-              title={`Recipient ${index + 1}`}
-              actions={
-                <TransactionAccordion.Actions>
-                  <TransactionAccordion.EditAction
-                    onClick={() => accordion.open(index)}
-                  />
-                  <TransactionAccordion.DeleteAction
-                    isDisabled={props.transactions.fields.length === 1}
-                    onClick={() => {
-                      transactions.remove(index);
-                      accordion.close();
-                    }}
-                  />
-                </TransactionAccordion.Actions>
-              }
-              resume={
-                !hasEmptyField && (
-                  <Text fontSize="sm" color="grey.500">
-                    <b>
-                      {transaction.amount} {assetSlug}
-                    </b>{' '}
-                    to{' '}
-                    <b>
-                      {' '}
-                      {contact?.nickname ?? AddressUtils.format(transaction.to)}
-                    </b>
-                  </Text>
-                )
-              }
+          <>
+            <AccordionItem
+              key={field.id}
+              mb={6}
+              borderWidth={1}
+              borderColor="dark.100"
+              borderRadius={10}
+              backgroundColor="dark.300"
             >
-              <TransactionFormField index={index} form={form} assets={assets} />
-
-              <Center mt={9}>
-                <TransactionAccordion.ConfirmAction
-                  onClick={() => accordion.close()}
-                  isDisabled={isDisabled}
+              <TransactionAccordion.Item
+                title={`Recipient ${index + 1}`}
+                actions={
+                  <TransactionAccordion.Actions>
+                    <TransactionAccordion.EditAction
+                      onClick={() => accordion.open(index)}
+                    />
+                    <TransactionAccordion.DeleteAction
+                      isDisabled={props.transactions.fields.length === 1}
+                      onClick={() => {
+                        transactions.remove(index);
+                        accordion.close();
+                      }}
+                    />
+                    <TransactionAccordion.ConfirmAction
+                      onClick={() => accordion.close()}
+                      isDisabled={isDisabled}
+                    />
+                  </TransactionAccordion.Actions>
+                }
+                resume={
+                  !hasEmptyField && (
+                    <Text fontSize="sm" color="grey.500">
+                      <b>
+                        {transaction.amount} {assetSlug}
+                      </b>{' '}
+                      to{' '}
+                      <b>
+                        {' '}
+                        {nicks[transaction.to] ??
+                          AddressUtils.format(transaction.to)}
+                      </b>
+                    </Text>
+                  )
+                }
+              >
+                <TransactionFormField
+                  index={index}
+                  form={form}
+                  assets={assets}
                 />
-              </Center>
-            </TransactionAccordion.Item>
-          </AccordionItem>
+              </TransactionAccordion.Item>
+            </AccordionItem>
+          </>
         );
       })}
+      <Center mt={6}>
+        <Button
+          w="full"
+          leftIcon={<UserAddIcon />}
+          variant="primary"
+          bgColor="grey.200"
+          border="none"
+          _hover={{
+            opacity: 0.8,
+          }}
+          onClick={() => {
+            transactions.append({
+              amount: '',
+              asset: NativeAssetId,
+              to: '',
+            });
+            delay(() => accordion.open(transactions.fields.length), 100);
+          }}
+        >
+          Add more recipients
+        </Button>
+      </Center>
     </Accordion>
   );
 };
