@@ -8,10 +8,10 @@ import {
   SigninContainer,
   SigninContainerMobile,
 } from '@/modules/auth/components';
-
 import { useScreenSize } from '@/modules/core';
-import { useSignIn } from '../hooks';
 
+import { DrawerWebAuthn } from '../components';
+import { useSignIn } from '../hooks';
 const SigninPage = () => {
   const {
     isConnecting,
