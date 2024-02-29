@@ -52,7 +52,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
 
   //TODO: Use this validation to delete button
   const isEditable =
-    WorkspacePermissionUtils.hasPermissions(loggedPermissions, [
+    WorkspacePermissionUtils.hasPermissions(loggedPermissions!, [
       PermissionRoles.ADMIN,
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;

@@ -62,7 +62,7 @@ const useChangeMember = () => {
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
-    useChangeMemberForm(membersToForm);
+    useChangeMemberForm(membersToForm!);
   const addressBook = useAddressBook();
 
   const role = WorkspacePermissionUtils.getPermissionInWorkspace(
