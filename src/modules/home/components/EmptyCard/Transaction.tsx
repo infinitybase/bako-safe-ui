@@ -7,7 +7,7 @@ const EmptyTransaction = () => {
     <Card
       w="full"
       mt={10}
-      p={14}
+      p={16}
       bgColor="grey.850"
       display="flex"
       borderWidth={2}
@@ -17,15 +17,20 @@ const EmptyTransaction = () => {
       alignItems="center"
     >
       <Box mb={6}>
-        <NotFoundIcon w={100} h={160} />
+        <NotFoundIcon w={120} h={170} />
       </Box>
       <Box mb={5}>
-        <Heading color="brand.500" fontSize="4xl">
+        <Heading color="white" fontSize="4xl">
           Nothing to show here.
         </Heading>
       </Box>
       <Box maxW={400} mb={8}>
-        <Text color="white" fontSize="md" textAlign="center" fontWeight="bold">
+        <Text
+          color="grey.450"
+          fontSize="md"
+          textAlign="center"
+          fontWeight="medium"
+        >
           It seems like you {"haven't"} made any <br /> transactions yet.
         </Text>
       </Box>

@@ -11,8 +11,10 @@ const AddressBookEmptyState = ({ action }: AddressBookEmptyStateProps) => {
     <Card
       w="full"
       p={20}
-      bgColor="dark.300"
+      bgColor="grey.850"
       display="flex"
+      borderWidth={2}
+      borderColor="grey.300"
       justifyContent="center"
       flexDirection="column"
       alignItems="center"
@@ -21,12 +23,17 @@ const AddressBookEmptyState = ({ action }: AddressBookEmptyStateProps) => {
         <NotFoundIcon w={100} h={100} />
       </Box>
       <Box mb={5}>
-        <Heading color="brand.500" fontSize="4xl">
+        <Heading color="white" fontSize="4xl">
           Nothing to show here.
         </Heading>
       </Box>
       <Box maxW={400} mb={8}>
-        <Text color="white" fontSize="md" textAlign="center" fontWeight="bold">
+        <Text
+          color="grey.450"
+          fontSize="md"
+          textAlign="center"
+          fontWeight="medium"
+        >
           It seems like you {"haven't"} create any favorite yet. Would you like
           to create one now?
         </Text>
