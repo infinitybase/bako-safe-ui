@@ -76,10 +76,10 @@ const SignersDetails = (props: SignersDetailsProps) => {
                       )
                     }
                   >
-                    <Text variant="description" fontSize="lg" fontWeight="bold">
+                    <Text variant="grey.200" fontSize="2xl" fontWeight="bold">
                       +{isBig + 1}
                     </Text>
-                    <Text variant="description" fontSize="md">
+                    <Text color="grey.200" fontSize="xl">
                       View all
                     </Text>
                   </HStack>
