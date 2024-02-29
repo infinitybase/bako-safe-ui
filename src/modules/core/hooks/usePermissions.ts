@@ -1,7 +1,7 @@
 import { useAuth } from '@/modules/auth';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { Member, PermissionRoles, Workspace } from '../models';
+import { PermissionRoles, Workspace } from '../models';
 
 interface usePermissionsProps {
   id: string;
@@ -14,7 +14,7 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
     workspace!,
     {
       id: auth.userId,
-    } as Member,
+    },
   );
 
   const permissions =
@@ -38,13 +38,13 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
   const isAdmin =
     permissions?.title ===
     WorkspacePermissionUtils.permissions[PermissionRoles.ADMIN].title;
-  const isManager = (permissions.title =
-    WorkspacePermissionUtils.permissions[PermissionRoles.MANAGER].title);
+  const isManager =
+    permissions?.title ===
+    WorkspacePermissionUtils.permissions[PermissionRoles.MANAGER].title;
 
-  const role =
-    (isViewer && isSigner) || (isAdmin && isSigner) || (isManager && isSigner)
-      ? PermissionRoles.SIGNER
-      : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
+  const role = isSigner
+    ? PermissionRoles.SIGNER
+    : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return {
     isSigner: true,

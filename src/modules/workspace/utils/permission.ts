@@ -66,7 +66,10 @@ class WorkspacePermissionUtils {
       value: permission,
     }));
 
-  static getPermissionInWorkspace(workspace: Workspace, member: Member) {
+  static getPermissionInWorkspace(
+    workspace: Workspace,
+    member: Pick<Member, 'id'>,
+  ) {
     const permission = workspace?.permissions[member.id];
 
     if (!permission) return null;
