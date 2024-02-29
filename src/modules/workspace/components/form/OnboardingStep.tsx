@@ -27,15 +27,26 @@ interface OnboardingStepProps {
 }
 
 const OnboardingStep = (props: OnboardingStepProps) => (
-  <Center flexDirection="column" mb={5} p={6}>
+  <Center
+    flexDirection="column"
+    mb={5}
+    p={{
+      base: 0,
+      sm: 6,
+    }}
+  >
     <Box m={8}>
-      <Icon fontSize={100} as={TransactionsBoxIcon} />
+      <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
     </Box>
     <Box mb={5}>
       <Heading fontSize="3xl">Heads up!</Heading>
     </Box>
     <Box maxW={500} mb={5}>
-      <Text color="grey.400" fontSize="md" textAlign="center">
+      <Text
+        color="grey.400"
+        fontSize={{ base: 'sm', sm: 'md' }}
+        textAlign="center"
+      >
         The vault template is now ready for use whenever you need to streamline
         your workflow!
       </Text>
@@ -44,7 +55,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       <StepProgress value={props.tabs.tab} length={props.tabs.length} />
     </Box>
     <Box mb={5} maxW={480}>
-      <Text color="white" fontSize="md" textAlign="start">
+      <Text color="white" fontSize={{ base: 'sm', sm: 'md' }} textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
         same vaults and address book. Within a workspace, you can assign members
         different levels of permission, including:
@@ -52,41 +63,62 @@ const OnboardingStep = (props: OnboardingStepProps) => (
     </Box>
     <VStack mb={5}>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="success">
+        <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+          <Badge
+            justifyContent="center"
+            py={{
+              base: 0.3,
+            }}
+            px={7}
+            variant="success"
+          >
             Admin
           </Badge>
         </Box>
-        <Text color="grey.200" fontSize="md">
+        <Text color="grey.200" fontSize={{ base: 'sm', sm: 'md' }}>
           Manage members, create new vaults, create transaction and access
           everything.
         </Text>
       </HStack>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="yellow">
+        <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+          <Badge
+            justifyContent="center"
+            py={{
+              base: 0.3,
+            }}
+            px={7}
+            variant="yellow"
+          >
             Manager
           </Badge>
         </Box>
 
-        <Text color="grey.200" fontSize="md">
+        <Text color="grey.200" fontSize={{ base: 'sm', sm: 'md' }}>
           Can create new vaults, create transaction and access all vaults in the
           workspace.
         </Text>
       </HStack>
       <HStack>
-        <Box w="100%" maxW="90px" mr={3}>
-          <Badge justifyContent="center" px={7} variant="blue">
+        <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+          <Badge
+            justifyContent="center"
+            py={{
+              base: 0.3,
+            }}
+            px={7}
+            variant="blue"
+          >
             Viewer
           </Badge>
         </Box>
-        <Text color="grey.200" fontSize="md">
+        <Text color="grey.200" fontSize={{ base: 'sm', sm: 'md' }}>
           Can only access and view the contents of all vaults in the workspace.
         </Text>
       </HStack>
     </VStack>
 
-    <Box mb={5} minW={500}>
+    <Box mb={5} minW="full" maxW={500}>
       <Alert
         color="#F05D48"
         bgColor="rgba(240,93,72,0.1)"
@@ -94,7 +126,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         borderRadius={8}
         borderColor="rgba(7, 7, 7, 0.2)"
       >
-        <Text fontSize="md" maxW={440}>
+        <Text fontSize={{ base: 'sm', sm: 'md' }} maxW={440}>
           <b>Important Note</b>: Membership in the workspace ≠ signatory rights
           in a vault. They are separate entities with separate controls.
         </Text>

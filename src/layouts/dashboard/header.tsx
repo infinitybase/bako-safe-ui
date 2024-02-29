@@ -18,7 +18,6 @@ import {
 import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
@@ -32,13 +31,15 @@ import { useAuth } from '@/modules/auth/hooks';
 import { TypeUser } from '@/modules/auth/services';
 import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
-import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
-import { SelectWorkspaceDialog } from '@/modules/workspace/components';
+import {
+  CreateWorkspaceDialog,
+  SelectWorkspaceDialog,
+} from '@/modules/workspace/components';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
@@ -298,8 +299,9 @@ const WorkspaceBox = ({
 
 const Header = () => {
   const { isMobile } = useScreenSize();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { drawer } = useSidebar();
+  const createWorkspaceDialog = useDisclosure();
   const {
     currentWorkspace,
     workspaceDialog,
@@ -308,7 +310,7 @@ const Header = () => {
   } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const { goHome } = useHome();
-  const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
+  const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -336,6 +338,10 @@ const Header = () => {
         userWorkspaces={userWorkspaces ?? []}
         onSelect={handleWorkspaceSelection.handler}
         onCreate={handleGoToCreateWorkspace}
+      />
+      <CreateWorkspaceDialog
+        isOpen={createWorkspaceDialog.isOpen}
+        onClose={createWorkspaceDialog.onClose}
       />
 
       <SpacedBox
