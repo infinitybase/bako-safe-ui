@@ -106,6 +106,7 @@ const SelectWorkspaceDialog = ({
               <Dialog.SecondaryAction
                 h="full"
                 size="lg"
+                w="40%"
                 bgColor="transparent"
                 outlineColor="white"
                 outline="1px solid"
