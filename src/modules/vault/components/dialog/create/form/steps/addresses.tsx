@@ -157,9 +157,9 @@ const VaultAddressesStep = ({
                                       })
                                     }
                                   >
-                                    add
+                                    add this
                                   </Link>{' '}
-                                  this address in your address book?
+                                  address in your address book?
                                 </Text>
                               </Box>
                             )
