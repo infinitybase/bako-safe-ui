@@ -71,9 +71,10 @@ class WorkspacePermissionUtils {
 
     if (!permission) return null;
 
-    const permissionRole = Object.keys(permission)
-      .filter((role) => permission[role].includes('*'))
-      .at(0);
+    const permissionRole = Object.keys(permission).find((role) =>
+      permission[role].includes('*'),
+    );
+
     const permissionValue = this.permissions[permissionRole || ''];
 
     if (!permissionValue) return null;
