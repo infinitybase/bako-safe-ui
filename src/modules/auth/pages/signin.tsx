@@ -11,7 +11,6 @@ import {
 import { useScreenSize } from '@/modules/core';
 
 import { DrawerWebAuthn } from '../components';
-import { useSignIn } from '../hooks';
 const SigninPage = () => {
   const {
     isConnecting,
