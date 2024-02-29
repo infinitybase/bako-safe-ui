@@ -11,6 +11,8 @@ import {
 } from '@/modules/auth/components';
 import { useScreenSize } from '@/modules/core';
 
+import { useSignIn } from '../hooks/useSignIn';
+
 const SigninPage = () => {
   const {
     isConnecting,
