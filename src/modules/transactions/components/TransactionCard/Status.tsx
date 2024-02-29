@@ -23,7 +23,8 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
     transaction: transaction!,
   });
 
-  const signaturesCount = transaction!.resume?.witnesses?.length ?? 0;
+  const signaturesCount =
+    transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [
