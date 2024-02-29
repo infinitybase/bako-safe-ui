@@ -1,25 +1,21 @@
 import { AttachmentIcon } from '@chakra-ui/icons';
 import { Box, Button, Text } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import {
   DrawerConnector,
+  DrawerWebAuthn,
   SigninContainer,
   SigninContainerMobile,
 } from '@/modules/auth/components';
-import { useScreenSize } from '@/modules/core';
+import { useScreenSize } from '@/modu
+import { useSignIn } from '../hooks';
 
 import { DrawerWebAuthn } from '../components';
 import { useSignIn } from '../hooks';
 const SigninPage = () => {
-  const {
-    isConnecting,
-    connectors,
-    redirectToWalletLink,
-    auth,
-    webauthn: { isOpen, closeWebAuthnDrawer },
-  } = useSignIn();
+  const { isConnecting, connectors, redirectToWalletLink, auth } = useSignIn();
   const { errorToast } = useContactToast();
   const { isMobile } = useScreenSize();
 
@@ -123,10 +119,6 @@ const SigninPage = () => {
         onClose={connectors.drawer.onClose}
         onSelect={connectors.select}
         connectors={connectors.items}
-      />
-      <DrawerWebAuthn
-        isOpen={isOpen} // todo: move the complete item with webauthn to component
-        onClose={closeWebAuthnDrawer}
       />
       <Box textAlign="center" mb={2}>
         <Text

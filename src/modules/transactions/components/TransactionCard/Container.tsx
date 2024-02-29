@@ -50,10 +50,11 @@ const Container = ({
       minW={{ base: 0, sm: 'min-content' }}
       {...rest}
     >
-      <VStack justifyContent="center" gap={0} w="full">
+      <VStack justifyContent="flex-start" gap={0} w="full">
         <HStack
           as={AccordionButton}
           w="full"
+          spacing={10}
           _hover={{ bgColor: 'transparent' }}
         >
           <Grid

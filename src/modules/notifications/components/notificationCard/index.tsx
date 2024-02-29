@@ -32,7 +32,7 @@ const NotificationCard = ({
         <Text fontWeight="bold" color="grey.200">
           {title}
         </Text>
-        <Box w={3} h={3} rounded="full" bg={read ? 'grey.300' : 'error.600'} />
+        <Box w={4} h={4} rounded="full" bg={read ? 'grey.300' : 'brand.500'} />
       </HStack>
 
       <Box mb={2}>
@@ -41,7 +41,7 @@ const NotificationCard = ({
         </Text>
       </Box>
 
-      <Text color="grey.450" variant="description" fontSize={14}>
+      <Text color="grey.500" variant="description" fontSize={14}>
         {notificationDescription(title, summary)}
       </Text>
     </Card>

@@ -77,9 +77,6 @@ const CardConnector = (props: ConnectorCardProps) => {
       bgColor="dark.600"
       onClick={selectConnector}
       position="relative"
-      _hover={{
-        borderColor: 'brand.500',
-      }}
     >
       <Box
         w="full"
@@ -92,7 +89,11 @@ const CardConnector = (props: ConnectorCardProps) => {
         backgroundColor="#121212a8"
       />
       {ConnectorIcon}
-      <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
+      <Heading
+        fontSize={{ base: 'md', sm: 'lg' }}
+        fontWeight="semibold"
+        color="grey.200"
+      >
         {connector.name}
       </Heading>
     </Card>
@@ -115,15 +116,20 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
+          <HStack
+            cursor="pointer"
+            onClick={drawerProps.onClose}
+            spacing={2}
+            zIndex={1}
+          >
             <Text color="grey.100">Close</Text>
             <CloseIcon />
           </HStack>
         </Flex>
 
-        <DrawerHeader mb={10}>
+        <DrawerHeader mt="-43px" mb={7}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="xl" fontWeight="semibold">
+            <Heading fontSize={{ base: 'lg', sm: 'xl' }} fontWeight="semibold">
               Connect your Wallet
             </Heading>
             <Text color="grey.100" fontSize="small" fontWeight="light">

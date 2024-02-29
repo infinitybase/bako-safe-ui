@@ -14,8 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { CustomSkeleton } from '@/components';
-import { CloseIcon } from '@/components/icons/close-icon';
+import { CustomSkeleton, ErrorIcon } from '@/components';
 
 import { useAppNotifications } from '../../hooks';
 import { NotificationsEmptyState } from '../emptyState';
@@ -59,7 +58,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
           <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
-            <CloseIcon w={5} h={5} />
+            <ErrorIcon />
             <Text fontWeight="semibold" color="white">
               Close
             </Text>
@@ -73,15 +72,8 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                 Notifications
               </Heading>
               {unreadCounter > 0 && (
-                <Center
-                  minW={4}
-                  minH={4}
-                  maxW={5}
-                  maxH={5}
-                  bg="error.600"
-                  borderRadius={10}
-                >
-                  <Text fontSize="xs">{unreadCounter}</Text>
+                <Center px={1} py={0} bg="error.600" borderRadius={10}>
+                  <Text fontSize="xs">+{unreadCounter}</Text>
                 </Center>
               )}
             </HStack>
@@ -102,7 +94,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
         >
           {emptyState && <NotificationsEmptyState />}
 
-          <VStack spacing={4}>
+          <VStack spacing={8}>
             {loading &&
               Array(3)
                 .fill('')

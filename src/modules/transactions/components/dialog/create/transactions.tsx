@@ -94,9 +94,9 @@ const TransactionFormField = ({
                           handleOpenDialog?.({ address: field.value })
                         }
                       >
-                        add this
+                        add
                       </Link>{' '}
-                      address in your address book?
+                      this address in your address book?
                     </Text>
                   </Box>
                 }
