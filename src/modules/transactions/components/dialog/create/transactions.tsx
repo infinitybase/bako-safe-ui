@@ -16,6 +16,7 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+
 import {
   AddressUtils,
   AssetSelect,
@@ -31,6 +32,7 @@ import { TransactionAccordion } from './accordion';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
+  nicks: UseCreateTransaction['nicks'];
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
@@ -56,6 +58,7 @@ const TransactionFormField = ({
     contactDialog,
     paginatedContacts,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -85,7 +88,7 @@ const TransactionFormField = ({
                 isLoading={!paginatedContacts.isSuccess}
                 options={paginatedContacts.data!}
                 bottomAction={
-                  <Box mt={2}>
+                  <Box hidden={!canAddMember} mt={2}>
                     <Text color="grey.200" fontSize={12}>
                       Do you wanna{' '}
                       <Link
@@ -157,8 +160,7 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { nicks } = useCreateTransaction();
-  const { form, transactions, assets, accordion } = props;
+  const { form, transactions, assets, accordion, nicks } = props;
 
   return (
     <Accordion
@@ -187,6 +189,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           (value) => value === '',
         );
         const isDisabled = hasEmptyField || fieldState.invalid;
+        const contact = nicks.find(
+          (nick) => nick.user.address === transaction.to,
+        );
 
         return (
           <>

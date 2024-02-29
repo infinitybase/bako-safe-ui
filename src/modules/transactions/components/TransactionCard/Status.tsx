@@ -26,7 +26,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   const { isMobile } = useScreenSize();
 
   const signaturesCount =
-    transaction!.resume?.witnesses!.filter((w) => !!w).length ?? 0;
+    transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [
