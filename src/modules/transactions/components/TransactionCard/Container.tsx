@@ -34,14 +34,14 @@ const Container = ({
   const { isMobile } = useScreenSize();
 
   const gridTemplateColumns = isMobile
-    ? '2fr 1fr'
+    ? '1fr 1fr'
     : childrens.length === 7
     ? '2fr 1fr 1fr 2fr 2fr 4fr'
     : '1fr 1fr 2fr 2fr 4fr';
 
   return (
     <Card
-      py={{ base: 2, sm: 4 }}
+      py={{ base: 1, sm: 4 }}
       px={{ base: 0, sm: 4 }}
       w="full"
       as={AccordionItem}
@@ -61,6 +61,7 @@ const Container = ({
             w="full"
             gap={{ base: 2, sm: 4 }}
             templateColumns={gridTemplateColumns}
+            templateRows={isMobile ? '1fr 1fr' : undefined}
           >
             {children}
           </Grid>

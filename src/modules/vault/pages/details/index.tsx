@@ -8,7 +8,6 @@ import {
   HStack,
   Icon,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
@@ -31,7 +30,6 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { TransactionWithVault } from '@/modules/transactions/services/types';
 import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
@@ -39,74 +37,6 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-
-interface TransactionCardElementProps {
-  transaction: TransactionWithVault;
-}
-
-interface TransactionCardStatusProps extends TransactionCardElementProps {
-  account: string;
-}
-
-interface TransactionCardActionsProps extends TransactionCardStatusProps {
-  isSigner: boolean;
-}
-
-const TransactionCardAmount = ({
-  transaction,
-}: TransactionCardElementProps) => {
-  return (
-    <TransactionCard.Amount
-      assets={
-        transaction?.assets.map((asset) => ({
-          amount: asset.amount,
-          assetId: asset.assetId,
-          to: asset.to,
-        })) ?? []
-      }
-    />
-  );
-};
-
-const TransactionCardName = ({ transaction }: TransactionCardElementProps) => {
-  return (
-    <TransactionCard.Name>
-      {limitCharacters(transaction?.name ?? '', 20)}
-    </TransactionCard.Name>
-  );
-};
-
-const TransactionCardStatus = ({
-  transaction,
-  account,
-}: TransactionCardStatusProps) => {
-  return (
-    <TransactionCard.Status
-      transaction={transaction}
-      status={transactionStatus({
-        ...transaction,
-        account,
-      })}
-    />
-  );
-};
-
-const TransactionCardActions = ({
-  transaction,
-  account,
-  isSigner,
-}: TransactionCardActionsProps) => {
-  return (
-    <TransactionCard.Actions
-      isSigner={isSigner}
-      transaction={transaction}
-      status={transactionStatus({
-        ...transaction,
-        account,
-      })}
-    />
-  );
-};
 
 const VaultDetailsPage = () => {
   const { setTemplateFormInitial } = useTemplateStore();
@@ -291,39 +221,33 @@ const VaultDetailsPage = () => {
                     </TransactionCard.CreationDate>
                   )}
                   <TransactionCard.Assets />
-                  {isMobile ? (
-                    <>
-                      <VStack spacing={1.5}>
-                        <TransactionCardAmount transaction={transaction} />
-                        <TransactionCardName transaction={transaction} />
-                      </VStack>
-                      <VStack spacing={1.5} justifyContent="space-between">
-                        <TransactionCardStatus
-                          transaction={transaction}
-                          account={account}
-                        />
-                        <TransactionCardActions
-                          isSigner={isSigner}
-                          transaction={transaction}
-                          account={account}
-                        />
-                      </VStack>
-                    </>
-                  ) : (
-                    <>
-                      <TransactionCardAmount transaction={transaction} />
-                      <TransactionCardName transaction={transaction} />
-                      <TransactionCardStatus
-                        transaction={transaction}
-                        account={account}
-                      />
-                      <TransactionCardActions
-                        isSigner={isSigner}
-                        transaction={transaction}
-                        account={account}
-                      />
-                    </>
-                  )}
+                  <TransactionCard.Amount
+                    assets={
+                      transaction?.assets.map((asset) => ({
+                        amount: asset.amount,
+                        assetId: asset.assetId,
+                        to: asset.to,
+                      })) ?? []
+                    }
+                  />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction?.name ?? '', 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({
+                      ...transaction,
+                      account,
+                    })}
+                  />
+                  <TransactionCard.Actions
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    status={transactionStatus({
+                      ...transaction,
+                      account,
+                    })}
+                  />
                 </TransactionCard.Container>
               </CustomSkeleton>
             );

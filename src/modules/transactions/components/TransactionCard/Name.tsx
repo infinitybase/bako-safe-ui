@@ -11,7 +11,12 @@ const Name = ({ children }: TransactionCardNameProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <Center alignItems="flex-start" flexDir="column" w="full">
+    <Center
+      alignItems="flex-start"
+      flexDir="column"
+      w="full"
+      gridRow={isMobile ? 2 : 0}
+    >
       <HStack maxW={200}>
         <Heading
           variant={isMobile ? 'title-sm' : 'title-md'}
