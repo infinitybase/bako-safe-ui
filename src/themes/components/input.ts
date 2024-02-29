@@ -26,7 +26,7 @@ const baseStyle = defineStyle({
     bg: `dark.250`,
     color: 'grey.200',
     fontSize: 'md',
-    borderColor: `grey.400`,
+    borderColor: `grey.600`,
     boxShadow: 'none',
     borderWidth: 1,
     pt: 5,
