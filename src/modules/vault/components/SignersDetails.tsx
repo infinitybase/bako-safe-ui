@@ -14,7 +14,7 @@ const SignerCard = chakra(Card, {
     w: 'full',
     py: 5,
     px: 6,
-    bgColor: 'dark.300',
+    bgColor: 'dark.600',
     flex: 1,
   },
 });
@@ -58,7 +58,7 @@ const SignersDetails = (props: SignersDetailsProps) => {
           if (isBig > 0 && index == max) {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-                <SignerCard borderStyle="dashed">
+                <SignerCard borderWidth={1} borderColor="grey.600">
                   <HStack
                     w="100%"
                     spacing={0}
