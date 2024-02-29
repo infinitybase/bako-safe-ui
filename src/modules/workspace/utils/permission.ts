@@ -66,14 +66,18 @@ class WorkspacePermissionUtils {
       value: permission,
     }));
 
-  static getPermissionInWorkspace(workspace: Workspace, member: Member) {
+  static getPermissionInWorkspace(
+    workspace: Workspace,
+    member: Pick<Member, 'id'>,
+  ) {
     const permission = workspace?.permissions[member.id];
 
     if (!permission) return null;
 
-    const permissionRole = Object.keys(permission)
-      .filter((role) => permission[role].includes('*'))
-      .at(0);
+    const permissionRole = Object.keys(permission).find((role) =>
+      permission[role].includes('*'),
+    );
+
     const permissionValue = this.permissions[permissionRole || ''];
 
     if (!permissionValue) return null;
