@@ -5,12 +5,12 @@ import React, { useMemo } from 'react';
 import { useContactToast } from '@/modules/addressBook';
 import {
   DrawerConnector,
+  DrawerWebAuthn,
   SigninContainer,
   SigninContainerMobile,
 } from '@/modules/auth/components';
 import { useScreenSize } from '@/modules/core';
 
-import { DrawerWebAuthn } from '../components';
 const SigninPage = () => {
   const {
     isConnecting,
