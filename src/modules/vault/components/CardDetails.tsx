@@ -5,6 +5,7 @@ import {
   Button,
   Center,
   Divider,
+  Flex,
   Heading,
   HStack,
   Text,
@@ -19,7 +20,12 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
-import { AssetCard, assetsMap, NativeAssetId } from '@/modules/core';
+import {
+  AssetCard,
+  assetsMap,
+  NativeAssetId,
+  useScreenSize,
+} from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -32,12 +38,41 @@ export interface CardDetailsProps {
 
 const MAX_DESCRIPTION_CHARS = 80;
 
+const Update = () => {
+  return (
+    <Text
+      w={20}
+      display="flex"
+      alignItems="center"
+      justifyContent="space-around"
+      variant="description"
+      fontSize={{ base: 'small', sm: 'md' }}
+      fontWeight="semibold"
+      _hover={{
+        cursor: 'pointer',
+        color: 'grey.200',
+      }}
+    >
+      Update
+      <RefreshIcon
+        _hover={{
+          cursor: 'pointer',
+          color: 'grey.200',
+        }}
+        w={{ base: 4, sm: 5 }}
+        h={{ base: 4, sm: 5 }}
+      />
+    </Text>
+  );
+};
+
 const CardDetails = (props: CardDetailsProps) => {
   // const navigate = useNavigate();
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace } = useWorkspace();
   const { isSingleWorkspace } = useAuth();
+  const { isMobile } = useScreenSize();
 
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
@@ -69,31 +104,31 @@ const CardDetails = (props: CardDetailsProps) => {
   return (
     <Box w="full" maxW="680">
       <Box mb={5} w="full">
-        <Text color="grey.400" fontWeight="semibold" fontSize="20px">
+        <Text
+          color="grey.400"
+          fontWeight="semibold"
+          fontSize={{ base: 'md', sm: 'xl' }}
+        >
           Balance
         </Text>
       </Box>
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
-        <Card p={8} bgColor="grey.800">
+        <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
           <VStack spacing={4} w="full">
-            <HStack
+            <Flex
               w="full"
-              display="flex"
-              alignItems="center"
+              flexDir={{ base: 'column', sm: 'row' }}
+              alignItems={{ base: 'flex-start', sm: 'center' }}
               justify="space-between"
+              gap={{ base: 6, sm: 0 }}
             >
-              <Center
-                w="fit-content"
-                display="flex"
-                gap={6}
-                alignItems="flex-start"
-              >
+              <Center w="full" display="flex" gap={6} alignItems="flex-start">
                 <Avatar
                   position="relative"
                   variant="roundedSquare"
-                  size="lg"
-                  p={14}
+                  size={{ base: 'md', sm: 'lg' }}
+                  p={{ base: 8, sm: 14 }}
                   bgColor="grey.200"
                   color="grey.800"
                   fontWeight="bold"
@@ -102,19 +137,23 @@ const CardDetails = (props: CardDetailsProps) => {
                   <Box
                     position="absolute"
                     borderRadius="md"
-                    w={24}
-                    h={24}
+                    w={{ base: 14, sm: 24 }}
+                    h={{ base: 14, sm: 24 }}
                     border="3px solid white"
                   />
                 </Avatar>
-                <Box>
-                  <Heading
-                    variant="title-xl"
-                    w="max"
-                    isTruncated={!vault?.name?.includes(' ')}
-                  >
-                    {vault?.name}
-                  </Heading>
+                <Box w="full">
+                  <HStack justifyContent="space-between" gap={2} w="full">
+                    <Heading
+                      variant={isMobile ? 'title-md' : 'title-xl'}
+                      w="max"
+                      isTruncated={!vault?.name?.includes(' ')}
+                    >
+                      {vault?.name}
+                    </Heading>
+                    {isMobile && <Update />}
+                  </HStack>
+
                   {!isSingleWorkspace && (
                     <Text
                       alignItems="center"
@@ -123,8 +162,13 @@ const CardDetails = (props: CardDetailsProps) => {
                       noOfLines={2}
                       isTruncated
                       mb={2}
+                      fontSize={{ base: 'small', sm: 'sm' }}
                     >
-                      <HandbagIcon w={4} h={4} mr={2} />
+                      <HandbagIcon
+                        w={{ base: 3, sm: 4 }}
+                        h={{ base: 3, sm: 4 }}
+                        mr={2}
+                      />
                       {currentWorkspace.workspace?.name}
                     </Text>
                   )}
@@ -141,7 +185,13 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
               </Center>
 
-              <VStack spacing={4} alignItems="flex-end">
+              <Flex
+                flexDirection={{ base: 'row', sm: 'column' }}
+                gap={4}
+                alignItems={{ base: 'center', sm: 'flex-end' }}
+                justifyContent="space-between"
+                w="full"
+              >
                 <Box width="auto">
                   <HStack
                     minW={20}
@@ -156,7 +206,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       justifyContent="space-around"
                       spacing={2}
                     >
-                      <Heading variant="title-xl">
+                      <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
                         {visebleBalance ? balance : '-----'}
                       </Heading>
                       <Box
@@ -174,44 +224,28 @@ const CardDetails = (props: CardDetailsProps) => {
                         )}
                       </Box>
                     </HStack>
-                    <Text
-                      w={20}
-                      display="flex"
-                      align="center"
-                      justifyContent="space-around"
-                      variant="description"
-                      fontWeight="semibold"
-                      _hover={{
-                        cursor: 'pointer',
-                        color: 'grey.200',
-                      }}
-                    >
-                      Update
-                      <RefreshIcon
-                        _hover={{
-                          cursor: 'pointer',
-                          color: 'grey.200',
-                        }}
-                        w={5}
-                        h={5}
-                      />
-                    </Text>
+                    {!isMobile && <Update />}
                   </HStack>
                 </Box>
-                <VStack spacing={2} alignItems="flex-end">
-                  <Button
-                    minW={180}
-                    h={12}
-                    variant="primary"
-                    onClick={() => openFaucet(vault.predicateAddress!)}
-                    _hover={{
-                      opacity: 0.8,
-                    }}
-                    leftIcon={<PlusSquareIcon w={6} h={6} />}
-                  >
-                    Faucet
-                  </Button>
-                </VStack>
+
+                <Button
+                  minW={{ base: undefined, sm: 180 }}
+                  h={12}
+                  variant="primary"
+                  onClick={() => openFaucet(vault.predicateAddress!)}
+                  _hover={{
+                    opacity: 0.8,
+                  }}
+                  leftIcon={
+                    <PlusSquareIcon
+                      w={{ base: 5, sm: 6 }}
+                      h={{ base: 5, sm: 6 }}
+                    />
+                  }
+                >
+                  Faucet
+                </Button>
+
                 {/* <VStack spacing={2} alignItems="flex-start">
                   <Button
                     onClick={() =>
@@ -246,8 +280,8 @@ const CardDetails = (props: CardDetailsProps) => {
                     </Text>
                   )}
                 </VStack> */}
-              </VStack>
-            </HStack>
+              </Flex>
+            </Flex>
 
             <Divider w="full" borderColor="grey.400" />
 

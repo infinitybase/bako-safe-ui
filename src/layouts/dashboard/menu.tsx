@@ -41,13 +41,13 @@ const Container = ({
 );
 
 const Icon = (props: MergeWithAs<IconProps, never>) => (
-  <ChakraIcon fontSize="xl" {...props} />
+  <ChakraIcon fontSize={{ base: 'lg', sm: 'xl' }} {...props} />
 );
 
 const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (
   <Text
     variant="subtitle"
-    fontSize="lg"
+    fontSize={{ base: 'md', sm: 'lg' }}
     fontWeight={isActive ? 'bold' : 'semibold'}
     {...props}
   />

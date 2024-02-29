@@ -19,7 +19,8 @@ import {
 } from '@chakra-ui/react';
 import React, { useCallback, useMemo } from 'react';
 
-import { Card, ErrorIcon } from '@/components';
+import { Card } from '@/components';
+import { CloseIcon } from '@/components/icons/close-icon';
 
 type ConnectorType = {
   name: string;
@@ -73,7 +74,7 @@ const CardConnector = (props: ConnectorCardProps) => {
       w="100%"
       gap={4}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="dark.300"
+      bgColor="dark.600"
       onClick={selectConnector}
       position="relative"
       _hover={{
@@ -102,23 +103,33 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
   const { connectors, onSelect, ...drawerProps } = props;
 
   return (
-    <Drawer {...drawerProps} size="sm" variant="glassmorphic" placement="right">
+    <Drawer
+      {...drawerProps}
+      size={{
+        base: 'full',
+        sm: 'sm',
+      }}
+      variant="solid"
+      placement="right"
+    >
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
           <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
+            <Text color="grey.100">Close</Text>
+            <CloseIcon />
           </HStack>
         </Flex>
 
         <DrawerHeader mb={10}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+            <Heading fontSize="xl" fontWeight="semibold">
               Connect your Wallet
             </Heading>
+            <Text color="grey.100" fontSize="small" fontWeight="light">
+              Personalize your preferences: set your name, email, and email
+              notification preferences.
+            </Text>
           </VStack>
         </DrawerHeader>
 
@@ -136,7 +147,7 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
           </VStack>
         </DrawerBody>
 
-        <DrawerFooter justifyContent="flex-start">
+        <DrawerFooter justifyContent="flex-start" pl={0}>
           <VStack alignItems="flex-start">
             <Heading fontSize="md" fontWeight="semibold" color="grey.200">
               New to Fuel network?
@@ -146,7 +157,7 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
             </Text>
             <Link
               fontSize="xs"
-              color="brand.500"
+              color="brand.400"
               href="https://www.fuel.network/"
               target="_blank"
             >

@@ -21,6 +21,10 @@ const defaultTheme = extendTheme({
       body: {
         bg: 'dark.500',
         color: '#FFFFFF',
+        fontSize: {
+          base: 'sm',
+          sm: 'md',
+        },
       },
       '#chakra-toast-manager-top-right': {
         mt: 20,
