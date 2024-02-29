@@ -50,10 +50,6 @@ const useChangeMember = () => {
     defaultTab: MemberTabState.FORM,
   });
 
-  const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
-    useChangeMemberForm();
-  const addressBook = useAddressBook();
-
   const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!, {
     onSuccess: (workspace) => {
       if (!isEditMember) return;
@@ -61,6 +57,14 @@ const useChangeMember = () => {
       setMemberValuesByWorkspace(workspace, params.memberId);
     },
   });
+
+  const membersToForm = workspaceRequest.workspace?.members.map(
+    (member) => member.address,
+  );
+  const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
+    useChangeMemberForm(membersToForm);
+  const addressBook = useAddressBook();
+
   const role = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspaceRequest.workspace!,
     {
