@@ -101,7 +101,7 @@ export const VaultCard = ({
                 WorkspacePermissionUtils.permissions[role].variant ?? 'warning'
               }
             >
-              {WorkspacePermissionUtils.permissions[role]?.title}
+              {WorkspacePermissionUtils.permissions[role]?.title ?? ''}
             </Badge>
           </VStack>
         </HStack>
