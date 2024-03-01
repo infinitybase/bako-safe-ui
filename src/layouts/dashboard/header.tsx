@@ -295,7 +295,6 @@ const WorkspaceBox = ({
       </Flex>
 
       {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
-
     </Flex>
   );
 };
@@ -308,7 +307,10 @@ const Header = () => {
   const {
     currentWorkspace,
     workspaceDialog,
-    userWorkspacesRequest: { data: userWorkspaces },
+    userWorkspacesRequest: {
+      data: userWorkspaces,
+      refetch: refetchUserWorkspaces,
+    },
     handleWorkspaceSelection,
   } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
@@ -320,6 +322,11 @@ const Header = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  const handleClose = async () => {
+    await refetchUserWorkspaces();
+    createWorkspaceDialog.onClose();
+  };
 
   return (
     <Flex
@@ -342,10 +349,13 @@ const Header = () => {
         onSelect={handleWorkspaceSelection.handler}
         onCreate={handleGoToCreateWorkspace}
       />
-      <CreateWorkspaceDialog
-        isOpen={createWorkspaceDialog.isOpen}
-        onClose={createWorkspaceDialog.onClose}
-      />
+
+      {createWorkspaceDialog.isOpen && (
+        <CreateWorkspaceDialog
+          isOpen={createWorkspaceDialog.isOpen}
+          onClose={handleClose}
+        />
+      )}
 
       <SpacedBox
         cursor="pointer"
@@ -356,7 +366,6 @@ const Header = () => {
         mr={{ base: -8, sm: 0 }}
       >
         <img width={isMobile ? 65 : 95} src={logo} alt="" />
-
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
