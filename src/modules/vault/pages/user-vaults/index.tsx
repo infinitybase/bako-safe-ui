@@ -49,7 +49,13 @@ const UserVaultsPage = () => {
 
   return (
     <VStack w="full" spacing={6} p={[1, 8]}>
-      <HStack w="full" h="10" justifyContent="space-between" my={2}>
+      <HStack
+        h="10"
+        w="full"
+        justifyContent={['flex-end', 'space-between']}
+        my={2}
+        maxW="full"
+      >
         <HStack visibility={['hidden', 'visible']}>
           <Button
             variant="primary"
@@ -109,7 +115,6 @@ const UserVaultsPage = () => {
         <Box>
           <Button
             variant="primary"
-            right={[14, 0]}
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
             isDisabled={!hasPermission([OWNER, MANAGER])}

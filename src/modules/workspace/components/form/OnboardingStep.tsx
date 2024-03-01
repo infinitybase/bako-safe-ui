@@ -29,20 +29,20 @@ interface OnboardingStepProps {
 const OnboardingStep = (props: OnboardingStepProps) => (
   <Center
     flexDirection="column"
-    mb={5}
+    mb={[0, 5]}
     p={{
       base: 0,
       sm: 6,
     }}
-    maxH={745}
+    maxH="full"
   >
     <Box m={8}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
     </Box>
-    <Box mb={5}>
+    <Box mb={[3, 5]}>
       <Heading fontSize="3xl">Heads up!</Heading>
     </Box>
-    <Box maxW={350} mb={5}>
+    <Box maxW={350} mb={[3, 5]}>
       <Text
         color="grey.400"
         fontSize={{ base: 'sm', sm: 'md' }}
@@ -119,7 +119,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
     </VStack>
 
-    <Box mb={5} minW="full" maxW={500}>
+    <Box mb={[2, 5]} minW="full" maxW={500}>
       <Alert
         color="#F05D48"
         bgColor="rgba(240,93,72,0.1)"
