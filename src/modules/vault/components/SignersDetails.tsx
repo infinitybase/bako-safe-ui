@@ -119,15 +119,21 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
 
   return (
     <Box w={{ base: 'full', sm: 'md' }}>
-      <HStack alignItems="flex-start" mb={5} w="full" spacing={8}>
+      <HStack
+        alignItems="center"
+        justify="flex-start"
+        mb={5}
+        w="full"
+        spacing={3}
+      >
         <Text
           color="grey.400"
-          fontWeight="semibold"
+          fontWeight="medium"
           fontSize={{ base: 'md', sm: 'xl' }}
         >
           Signers
         </Text>
-        <Badge p={1} rounded="xl" px={4} fontWeight="semibold" variant="gray">
+        <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
           Required signers {vault?.minSigners}/{vault.members?.length}
         </Badge>
       </HStack>
