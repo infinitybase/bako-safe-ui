@@ -19,6 +19,8 @@ const Container = ({
       h="full"
       bgColor="transparent"
       display="flex"
+      px={[4, 6]}
+      py={[3, 6]}
       _hover={{
         borderColor: 'brand.500',
       }}
