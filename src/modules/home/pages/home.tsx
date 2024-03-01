@@ -73,7 +73,7 @@ const HomePage = () => {
         </Box>
       </HStack>
       <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-        <Stack w="full" h="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}

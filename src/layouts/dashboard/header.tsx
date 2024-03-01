@@ -110,13 +110,11 @@ const UserBox = () => {
               />
             </Box>
 
-            {!isMobile && (
-              <Box mr={9}>
-                <Text fontWeight="semibold" color="grey.200">
-                  {AddressUtils.format(auth.account)}
-                </Text>
-              </Box>
-            )}
+            <Box display={['none', 'block']} mr={9}>
+              <Text fontWeight="semibold" color="grey.200">
+                {AddressUtils.format(auth.account)}
+              </Text>
+            </Box>
 
             <Icon
               color="grey.200"
@@ -392,40 +390,42 @@ const Header = () => {
           />
         </TopBarItem>
 
-        {!isMobile && (
-          <>
-            <TopBarItem
-              onClick={() =>
-                window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-              }
+        <TopBarItem
+          display={['none', 'flex']}
+          onClick={() =>
+            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+          }
+        >
+          <Icon color="grey.200" as={QuestionIcon} />
+        </TopBarItem>
+
+        <TopBarItem
+          display={['none', 'flex']}
+          cursor="pointer"
+          onClick={drawer.onOpen}
+          width={78}
+        >
+          <Icon
+            color="grey.200"
+            as={NotificationIcon}
+            fontSize={30}
+            position="absolute"
+          />
+
+          {unreadCounter > 0 && (
+            <Center
+              px={1}
+              py={0}
+              bg="error.600"
+              borderRadius={10}
+              position="relative"
+              top={-1.5}
+              right={-2.5}
             >
-              <Icon color="grey.200" as={QuestionIcon} />
-            </TopBarItem>
-
-            <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
-              <Icon
-                color="grey.200"
-                as={NotificationIcon}
-                fontSize={30}
-                position="absolute"
-              />
-
-              {unreadCounter > 0 && (
-                <Center
-                  px={1}
-                  py={0}
-                  bg="error.600"
-                  borderRadius={10}
-                  position="relative"
-                  top={-1.5}
-                  right={-2.5}
-                >
-                  <Text fontSize="xs">+{unreadCounter}</Text>
-                </Center>
-              )}
-            </TopBarItem>
-          </>
-        )}
+              <Text fontSize="xs">+{unreadCounter}</Text>
+            </Center>
+          )}
+        </TopBarItem>
 
         <TopBarItem>
           <UserBox />
