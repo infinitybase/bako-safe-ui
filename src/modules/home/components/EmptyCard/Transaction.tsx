@@ -6,8 +6,8 @@ const EmptyTransaction = () => {
   return (
     <Card
       w="full"
-      mt={10}
-      p={16}
+      mt={[0, 10]}
+      p={[10, 16]}
       bgColor="grey.850"
       display="flex"
       borderWidth={2}
@@ -20,14 +20,14 @@ const EmptyTransaction = () => {
         <NotFoundIcon w={120} h={170} />
       </Box>
       <Box mb={5}>
-        <Heading color="white" fontSize="4xl">
+        <Heading color="white" textAlign="center" fontSize={['2xl', '4xl']}>
           Nothing to show here.
         </Heading>
       </Box>
       <Box maxW={400} mb={8}>
         <Text
           color="grey.450"
-          fontSize="md"
+          fontSize={['sm', 'md']}
           textAlign="center"
           fontWeight="medium"
         >
