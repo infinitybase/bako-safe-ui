@@ -215,6 +215,9 @@ const VaultDetailsPage = () => {
                   details={
                     <TransactionCard.Details transaction={transaction} />
                   }
+                  transaction={transaction}
+                  account={account}
+                  isSigner={isSigner}
                 >
                   {!isMobile && (
                     <TransactionCard.CreationDate>
@@ -240,6 +243,7 @@ const VaultDetailsPage = () => {
                       ...transaction,
                       account,
                     })}
+                    showDescription={!isMobile}
                   />
                   <TransactionCard.Actions
                     isSigner={isSigner}

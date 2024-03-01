@@ -14,13 +14,18 @@ import { useScreenSize } from '@/modules/core/hooks';
 interface TransactionCardStatusProps {
   status: TransactionState;
   transaction: ITransaction;
+  showDescription?: boolean;
 }
 
 import React from 'react';
 
 import { useSignTransaction } from '../../hooks/signature';
 
-const Status = ({ transaction, status }: TransactionCardStatusProps) => {
+const Status = ({
+  transaction,
+  status,
+  showDescription,
+}: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const { retryTransaction, isLoading } = useSignTransaction({
     transaction: transaction!,
@@ -35,6 +40,8 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
     TransactionStatus.PROCESS_ON_CHAIN,
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
+
+  const showRetry = !isMobile && isError;
 
   return (
     <HStack
@@ -73,30 +80,28 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
           {isCompleted && !isError && 'Completed'}
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
-        {!isMobile && (
-          <>
-            <Text variant="description" fontSize="sm" color="grey.500">
-              Transfer status
-            </Text>
+        {showDescription && (
+          <Text variant="description" fontSize="sm" color="grey.500">
+            Transfer status
+          </Text>
+        )}
 
-            {isError && (
-              <Button
-                h={7}
-                variant="secondary"
-                px={3}
-                bgColor="dark.100"
-                border="none"
-                isLoading={isLoading}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  retryTransaction();
-                }}
-              >
-                Retry
-              </Button>
-            )}
-          </>
+        {showRetry && (
+          <Button
+            h={7}
+            variant="secondary"
+            px={3}
+            bgColor="dark.100"
+            border="none"
+            isLoading={isLoading}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              retryTransaction();
+            }}
+          >
+            Retry
+          </Button>
         )}
       </VStack>
     </HStack>

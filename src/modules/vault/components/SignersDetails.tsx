@@ -140,7 +140,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
         <VStack spacing={5}>
           <SignersList vault={vault} />
         </VStack>
-      )}\
+      )}
     </Box>
   );
 };
