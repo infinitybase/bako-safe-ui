@@ -293,6 +293,9 @@ const WorkspaceBox = ({
           </HStack>
         )}
       </Flex>
+
+      {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
+
     </Flex>
   );
 };
@@ -352,7 +355,8 @@ const Header = () => {
         pl={{ base: 1, sm: 6 }}
         mr={{ base: -8, sm: 0 }}
       >
-        <img width={95} src={logo} alt="" />
+        <img width={isMobile ? 65 : 95} src={logo} alt="" />
+
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

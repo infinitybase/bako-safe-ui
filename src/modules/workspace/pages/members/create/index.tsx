@@ -39,11 +39,9 @@ const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
   const { contactByAddress } = useAddressBook();
 
-  const request = useGetWorkspaceRequest(workspaceId ?? '');
-  const workspace = request.workspace;
-  const member = request.workspace?.members.find(
-    (member) => member.id === memberId,
-  );
+  const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
+
+  const member = workspace?.members.find((member) => member.id === memberId);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
   const contactNickname = contactByAddress(member?.address!)?.nickname;
@@ -187,6 +185,7 @@ const CreateMemberPage = () => {
         sm: 'xl',
       }}
       closeOnOverlayClick={false}
+      autoFocus={false}
     >
       <CreateContactDialog
         form={addressBook.form}
