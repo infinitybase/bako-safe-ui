@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
@@ -59,7 +59,7 @@ const UserTransactionsPage = () => {
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={6} p={[1, 8]}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
@@ -161,7 +161,7 @@ const UserTransactionsPage = () => {
         </ActionCard.Container>
 
         <ActionCard.Container cursor="auto">
-          <ActionCard.Icon icon={GoArrowSwitch} />
+          <ActionCard.Icon icon={TransactionsIcon} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
             <ActionCard.Description>
@@ -231,6 +231,7 @@ const UserTransactionsPage = () => {
       <TransactionCard.List mt={1} w="full" spacing={5}>
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
+
         {transactionRequest.transactions.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
             (member) => member.address === account,

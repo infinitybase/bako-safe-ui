@@ -87,7 +87,7 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack w="full" spacing={6}>
+      <VStack w="full" spacing={6} p={[1, 8]}>
         <HStack w="full" h="10" justifyContent="space-between" my={2}>
           <HStack>
             <Button
@@ -233,7 +233,7 @@ const AddressBookPage = () => {
             '2xl': 'repeat(4, 1fr)',
           }}
           gap={6}
-          pb={28}
+          pb={0}
         >
           {!hasContacts && listContactsRequest.isLoading && (
             <>

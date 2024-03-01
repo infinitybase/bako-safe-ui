@@ -119,17 +119,18 @@ const CardDetails = (props: CardDetailsProps) => {
                   variant="roundedSquare"
                   size={{ base: 'md', sm: 'lg' }}
                   p={{ base: 8, sm: 14 }}
-                  bgColor="grey.200"
-                  color="grey.800"
+                  bgColor="grey.600"
+                  color="grey.450"
                   fontWeight="bold"
                   name={vault.name}
                 >
                   <Box
                     position="absolute"
-                    borderRadius="md"
-                    w={{ base: 14, sm: 24 }}
-                    h={{ base: 14, sm: 24 }}
-                    border="3px solid white"
+                    borderRadius="lg"
+                    w={{ base: 14, sm: 102 }}
+                    h={{ base: 14, sm: 102 }}
+                    border="3px solid"
+                    borderColor="grey.450"
                   />
                 </Avatar>
                 <Box w="full">

@@ -34,6 +34,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       base: 0,
       sm: 6,
     }}
+    maxH={745}
   >
     <Box m={8}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
