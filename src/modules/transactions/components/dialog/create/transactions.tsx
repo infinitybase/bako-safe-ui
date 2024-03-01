@@ -16,18 +16,13 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
-
 import {
   AddressUtils,
   AssetSelect,
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import {
-  UseCreateTransaction,
-  useCreateTransaction,
-} from '@/modules/transactions/hooks';
-
+import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -233,7 +228,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       to{' '}
                       <b>
                         {' '}
-                        {nicks[transaction.to] ??
+                        {contact?.nickname ??
                           AddressUtils.format(transaction.to)}
                       </b>
                     </Text>
