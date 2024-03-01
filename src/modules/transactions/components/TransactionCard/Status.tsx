@@ -17,14 +17,12 @@ interface TransactionCardStatusProps {
   showDescription?: boolean;
 }
 
-import React from 'react';
-
 import { useSignTransaction } from '../../hooks/signature';
 
 const Status = ({
   transaction,
   status,
-  showDescription,
+  showDescription = true,
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const { retryTransaction, isLoading } = useSignTransaction({
