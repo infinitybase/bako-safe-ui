@@ -21,11 +21,31 @@ import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
 
+interface ActionsMobileProps {
+  awaitingAnswer?: boolean | ITransaction;
+}
+
 interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
   isSigner: boolean;
 }
+
+const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
+  return (
+    <HStack w="full" justifyContent="end" spacing={1}>
+      <Text color={awaitingAnswer ? 'brand.400' : 'white'} fontSize="xs">
+        {awaitingAnswer ? 'Sign' : 'View Details'}
+      </Text>
+      <Icon
+        as={IoIosArrowForward}
+        fontSize="md"
+        color={awaitingAnswer ? 'brand.400' : 'grey.200'}
+        cursor="pointer"
+      />
+    </HStack>
+  );
+};
 
 const Actions = ({
   transaction,
@@ -44,17 +64,7 @@ const Actions = ({
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
   if (isMobile) {
-    return (
-      <HStack w="full" justifyContent="end" spacing={1}>
-        <Text fontSize="xs">{awaitingAnswer ? 'Sign' : 'View Details'}</Text>
-        <Icon
-          as={IoIosArrowForward}
-          fontSize="md"
-          color="grey.200"
-          cursor="pointer"
-        />
-      </HStack>
-    );
+    return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
   }
 
   return (
@@ -126,4 +136,4 @@ const Actions = ({
   );
 };
 
-export { Actions };
+export { Actions, ActionsMobile };

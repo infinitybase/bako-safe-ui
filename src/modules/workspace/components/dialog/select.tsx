@@ -40,7 +40,6 @@ const SelectWorkspaceDialog = ({
         justifyItems="center"
         alignItems="center"
         h="full"
-        bottom={10}
         maxW={480}
       >
         <VStack spacing={2}>
