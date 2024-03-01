@@ -74,7 +74,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { visebleBalance, setVisibleBalance } = store;
+  const { visebleBalance, setVisibleBalance, balanceUSD } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
@@ -222,7 +222,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? balanceFormatted : '-----'}
+                        {visebleBalance ? balanceUSD : '-----'}
                       </Heading>
                       <Box
                         w="auto"
