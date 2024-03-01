@@ -243,6 +243,9 @@ const UserTransactionsPage = () => {
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}
+                transaction={transaction}
+                account={account}
+                isSigner={isSigner}
               >
                 {transaction.predicate && (
                   <TransactionCard.VaultInfo vault={transaction.predicate} />

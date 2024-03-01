@@ -250,6 +250,9 @@ const HomePage = () => {
                     bgColor="grey.800"
                     key={transaction.id}
                     status={status}
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    account={account}
                     details={
                       <TransactionCard.Details
                         transaction={transaction}
