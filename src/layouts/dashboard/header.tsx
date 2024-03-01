@@ -29,10 +29,8 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
-
 import { TypeUser } from '@/modules/auth/services';
 import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
-
 import { Workspace } from '@/modules/core/models';
 import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -91,8 +89,13 @@ const UserBox = () => {
 
       <Popover>
         <PopoverTrigger>
-          <Flex w="100%" alignItems="center" cursor={'pointer'} px={2}>
-            <Box mr={4}>
+          <Flex
+            w="100%"
+            alignItems="center"
+            cursor={'pointer'}
+            px={{ base: 0, sm: 2 }}
+          >
+            <Box mr={{ base: 2, sm: 4 }}>
               {avatarImage.isLoading ? (
                 <Skeleton
                   w="48px"
@@ -285,12 +288,13 @@ const WorkspaceBox = ({
                 {isMobile ? 'Workspace' : 'Current workspace'}
               </Text>
             </Box>
-            <ReplaceIcon color="grey.200" fontSize={20} />
+            {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
           </HStack>
         )}
       </Flex>
 
       {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
+
     </Flex>
   );
 };
@@ -323,7 +327,7 @@ const Header = () => {
       }}
       w="100%"
       bgColor="dark.300"
-      px={4}
+      px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
       justifyContent="space-between"
@@ -342,9 +346,11 @@ const Header = () => {
         onClick={() => {
           goHome();
         }}
-        pl={6}
+        pl={{ base: 1, sm: 6 }}
+        mr={{ base: -8, sm: 0 }}
       >
         <img width={isMobile ? 65 : 95} src={logo} alt="" />
+
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

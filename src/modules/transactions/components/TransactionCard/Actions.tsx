@@ -45,7 +45,7 @@ const Actions = ({
   if (isMobile) {
     return (
       <HStack w="full" justifyContent="end" spacing={1}>
-        <Text fontSize="xs">View details</Text>
+        <Text fontSize="xs">{awaitingAnswer ? 'Sign' : 'View Details'}</Text>
         <Icon
           as={IoIosArrowForward}
           fontSize="md"
