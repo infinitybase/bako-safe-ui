@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
@@ -161,7 +161,7 @@ const UserTransactionsPage = () => {
         </ActionCard.Container>
 
         <ActionCard.Container cursor="auto">
-          <ActionCard.Icon icon={GoArrowSwitch} />
+          <ActionCard.Icon icon={TransactionsIcon} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
             <ActionCard.Description>
