@@ -15,7 +15,6 @@ import {
   IoIosArrowUp,
 } from 'react-icons/io';
 
-
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
