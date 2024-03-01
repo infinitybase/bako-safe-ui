@@ -173,6 +173,7 @@ const TransactionsVaultPage = () => {
                 <TransactionCard.Status
                   transaction={transaction}
                   status={transactionStatus({ ...transaction, account })}
+                  showDescription={!isMobile}
                 />
                 <TransactionCard.Actions
                   isSigner={isSigner}
