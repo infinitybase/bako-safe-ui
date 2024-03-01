@@ -34,20 +34,20 @@ const Container = ({
     w="full"
     cursor="pointer"
     borderBottomWidth={1}
-    borderColor={isActive ? 'brand.600' : 'transparent'}
+    borderColor={isActive ? 'brand.500' : 'transparent'}
   >
     <MenuItem {...props}>{children}</MenuItem>
   </Box>
 );
 
 const Icon = (props: MergeWithAs<IconProps, never>) => (
-  <ChakraIcon fontSize="xl" {...props} />
+  <ChakraIcon fontSize={{ base: 'lg', sm: 'xl' }} {...props} />
 );
 
 const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (
   <Text
     variant="subtitle"
-    fontSize="lg"
+    fontSize={{ base: 'md', sm: 'lg' }}
     fontWeight={isActive ? 'bold' : 'semibold'}
     {...props}
   />

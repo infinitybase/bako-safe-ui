@@ -8,11 +8,15 @@ import {
   HStack,
   Icon,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
+import { Drawer } from '@/layouts/dashboard/drawer';
+import { useScreenSize } from '@/modules/core';
 import {
   TransactionCard,
   TransactionFilter,
@@ -32,35 +36,47 @@ const TransactionsVaultPage = () => {
     setSelectedTransaction,
     defaultIndex,
   } = useTransactionList();
+  const { isMobile } = useScreenSize();
+  const menuDrawer = useDisclosure();
 
   return (
-    <Box w="full" height="100%" maxH="100%" overflowY="hidden">
-      {/* BREADCRUMB */}
-      <Box mb={10}>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-            >
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+    <Box w="full" height="100%" maxH="100%">
+      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-            >
-              Transactions
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+      <Box mb={10}>
+        {isMobile ? (
+          <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
+            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Text fontSize="sm" fontWeight="normal" color="grey.100">
+              Menu
+            </Text>
+          </HStack>
+        ) : (
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Transactions
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
       </Box>
 
       {/* TITLE */}
@@ -120,9 +136,6 @@ const TransactionsVaultPage = () => {
         mt={7}
         w="full"
         spacing={5}
-        maxH="calc(100% - 140px)"
-        overflowY="scroll"
-        css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
         openIndex={defaultIndex}
         key={defaultIndex.join(',')}
         pb={10}
@@ -140,10 +153,15 @@ const TransactionsVaultPage = () => {
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}
+                transaction={transaction}
+                account={account}
+                isSigner={isSigner}
               >
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
+                {!isMobile && (
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                )}
                 <TransactionCard.Assets />
                 <TransactionCard.Amount assets={transaction.resume.outputs} />
                 <TransactionCard.Name>
@@ -152,6 +170,7 @@ const TransactionsVaultPage = () => {
                 <TransactionCard.Status
                   transaction={transaction}
                   status={transactionStatus({ ...transaction, account })}
+                  showDescription={!isMobile}
                 />
                 <TransactionCard.Actions
                   isSigner={isSigner}

@@ -1,8 +1,7 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-const glassmorphic = defineStyle({
+const commonStyles = {
   dialog: {
-    bg: 'rgba(12, 12, 12, 0.8)',
     py: 9,
     px: 6,
   },
@@ -16,6 +15,38 @@ const glassmorphic = defineStyle({
   body: {
     p: 0,
   },
+};
+
+const glassmorphic = defineStyle({
+  dialog: {
+    ...commonStyles.dialog,
+    bg: 'rgba(12, 12, 12, 0.8)',
+  },
+  overlay: {
+    ...commonStyles.overlay,
+  },
+  header: {
+    ...commonStyles.header,
+  },
+  body: {
+    ...commonStyles.body,
+  },
+});
+
+const solid = defineStyle({
+  dialog: {
+    ...commonStyles.dialog,
+    bg: 'dark.250',
+  },
+  overlay: {
+    ...commonStyles.overlay,
+  },
+  header: {
+    ...commonStyles.header,
+  },
+  body: {
+    ...commonStyles.body,
+  },
 });
 
 const Drawer = defineStyleConfig({
@@ -24,6 +55,7 @@ const Drawer = defineStyleConfig({
   },
   variants: {
     glassmorphic,
+    solid,
   },
 });
 
@@ -36,7 +68,7 @@ const Modal = defineStyleConfig({
       ...glassmorphic,
       dialog: {
         ...glassmorphic.dialog,
-        bg: 'dark.500',
+        bg: '#17181B',
       },
     },
   },

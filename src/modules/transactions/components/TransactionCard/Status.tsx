@@ -9,19 +9,26 @@ import {
 import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
   transaction: ITransaction;
+  showDescription?: boolean;
 }
 
 import { useSignTransaction } from '../../hooks/signature';
 
-const Status = ({ transaction, status }: TransactionCardStatusProps) => {
+const Status = ({
+  transaction,
+  status,
+  showDescription = true,
+}: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const { retryTransaction, isLoading } = useSignTransaction({
     transaction: transaction!,
   });
+  const { isMobile } = useScreenSize();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
@@ -32,8 +39,14 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
+  const showRetry = !isMobile && isError;
+
   return (
-    <HStack justifyContent="center" ml={6}>
+    <HStack
+      w="full"
+      justifyContent={{ base: 'end', sm: 'center' }}
+      ml={{ base: 0, sm: 6 }}
+    >
       {isLoading && (
         <CircularProgress
           trackColor="dark.100"
@@ -42,7 +55,14 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
           color="brand.500"
         />
       )}
-      <VStack hidden={isPending} minW={100} spacing={0} justifyContent="center">
+      <VStack
+        hidden={isPending}
+        minW={100}
+        spacing={0}
+        w="full"
+        alignItems={{ base: 'end', sm: 'center' }}
+        justifyContent="center"
+      >
         <Badge
           h={5}
           variant={
@@ -58,10 +78,13 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
           {isCompleted && !isError && 'Completed'}
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
-        <Text variant="description" fontSize="sm" color="grey.500">
-          Transfer status
-        </Text>
-        {isError && (
+        {showDescription && (
+          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
+            Transfer status
+          </Text>
+        )}
+
+        {showRetry && (
           <Button
             h={7}
             variant="secondary"

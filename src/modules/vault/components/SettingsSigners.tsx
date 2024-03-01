@@ -13,19 +13,22 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const members = vault.members;
 
   return (
-    <Box>
-      <HStack alignItems="center" mb={5} w="full" spacing={3}>
+    <Box w={['full', 'auto']}>
+      <HStack alignItems="center" mb={5} w="full" spacing={4}>
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Signers
         </Text>
-        <Badge p={2} variant="warning" h={5}>
+        <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
           Required signers {vault?.minSigners}/{vault?.members?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
         <Grid
           w="100%"
-          templateColumns={`repeat(${signerColumnsAmount}, 1fr)`}
+          templateColumns={[
+            'repeat(1, 1fr)',
+            `repeat(${signerColumnsAmount}, 1fr)`,
+          ]}
           gap={6}
           mb={16}
         >

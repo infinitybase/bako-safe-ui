@@ -1,3 +1,4 @@
+import { useDisclosure } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,6 +18,7 @@ const useVaultDetails = () => {
   const { account } = useAuthStore();
   const store = useVaultState();
   const inView = useInView();
+  const menuDrawer = useDisclosure();
 
   const { predicate, predicateInstance, isLoading, isFetching } =
     useVaultDetailsRequest(params.vaultId!);
@@ -38,6 +40,7 @@ const useVaultDetails = () => {
     isLoading: isLoadingAssets,
     hasBalance,
     hasAssets,
+    refetch,
   } = useVaultAssets(predicateInstance);
 
   const configurable = useMemo(
@@ -66,6 +69,7 @@ const useVaultDetails = () => {
       isLoading,
       isFetching,
       hasBalance,
+      ethBalance,
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,
@@ -79,6 +83,7 @@ const useVaultDetails = () => {
       isLoadingAssets,
       ethBalance,
       value: assets,
+      refetchBalance: refetch,
     },
     inView,
     navigate,
@@ -86,6 +91,7 @@ const useVaultDetails = () => {
     store,
     params,
     pendingSignerTransactions,
+    menuDrawer,
   };
 };
 

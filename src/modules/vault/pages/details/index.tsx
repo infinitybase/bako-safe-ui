@@ -10,6 +10,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import {
   Card,
@@ -18,7 +19,9 @@ import {
   NotFoundIcon,
   SquarePlusIcon,
 } from '@/components';
+import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -32,7 +35,6 @@ import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
-import { AmountDetails } from '../../components/AmountDetails';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 
@@ -42,11 +44,11 @@ const VaultDetailsPage = () => {
     params,
     vault,
     store,
-    assets,
     navigate,
     account,
     inView,
     pendingSignerTransactions,
+    menuDrawer,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
@@ -55,6 +57,7 @@ const VaultDetailsPage = () => {
     workspaces: { current },
   } = useAuth();
   const { workspace } = useGetCurrentWorkspace();
+  const { isMobile } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
@@ -63,67 +66,80 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full">
-      <HStack mb={9} w="full" justifyContent="space-between">
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() => goHome()}
-            >
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+    <Box w="full" pr={{ base: 0, sm: 8 }}>
+      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
-          {!workspace?.single && (
+      <HStack mb={9} w="full" justifyContent="space-between">
+        {isMobile ? (
+          <HStack gap={1.5} onClick={menuDrawer.onOpen}>
+            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Text fontSize="sm" fontWeight="normal" color="grey.100">
+              Menu
+            </Text>
+          </HStack>
+        ) : (
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() => goHome()}
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            {!workspace?.single && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(workspaceId)}
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
-                {workspace?.name}
+                Vaults
               </BreadcrumbLink>
             </BreadcrumbItem>
-          )}
 
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() =>
-                navigate(
-                  Pages.userVaults({
-                    workspaceId,
-                  }),
-                )
-              }
-            >
-              Vaults
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-              isTruncated
-              maxW={640}
-            >
-              {vault.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+                isTruncated
+                maxW={640}
+              >
+                {vault.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
         <Button
-          variant="secondary"
-          bgColor="dark.100"
+          color="dark.200"
+          bgColor="grey.200"
+          fontWeight="medium"
+          fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
           onClick={() => {
             if (
@@ -150,23 +166,23 @@ const VaultDetailsPage = () => {
         </Button>
       </HStack>
 
-      <HStack mb={14} alignItems="flex-start" w="full" spacing={5}>
+      <HStack
+        mb={{ base: 10, sm: 14 }}
+        alignItems="flex-start"
+        w="full"
+        gap={10}
+      >
         <CardDetails vault={vault} store={store} />
-        <AmountDetails
-          store={store}
-          vaultAddress={vault.predicateAddress!}
-          assets={assets}
-          isLoading={vault.isLoading}
-        />
-        <SignersDetails vault={vault} />
+
+        {!isMobile && <SignersDetails vault={vault} />}
       </HStack>
 
       <HStack spacing={4} mb={3}>
         <Text
           variant="subtitle"
           fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
+          fontSize={{ base: 'md', sm: 'xl' }}
+          color="grey.400"
         >
           Transactions
         </Text>
@@ -178,10 +194,10 @@ const VaultDetailsPage = () => {
 
       {hasTransactions ? (
         <TransactionCard.List
-          mt={7}
+          mt={5}
           w="full"
-          spacing={5}
-          maxH="calc(100% - 82px)"
+          spacing={{ base: 3, sm: 5 }}
+          maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
         >
           {vaultTransactions.map((transaction) => {
             const isSigner = !!transaction.predicate?.members?.find(
@@ -198,10 +214,15 @@ const VaultDetailsPage = () => {
                   details={
                     <TransactionCard.Details transaction={transaction} />
                   }
+                  transaction={transaction}
+                  account={account}
+                  isSigner={isSigner}
                 >
-                  <TransactionCard.CreationDate>
-                    {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                  </TransactionCard.CreationDate>
+                  {!isMobile && (
+                    <TransactionCard.CreationDate>
+                      {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
+                    </TransactionCard.CreationDate>
+                  )}
                   <TransactionCard.Assets />
                   <TransactionCard.Amount
                     assets={
@@ -217,12 +238,19 @@ const VaultDetailsPage = () => {
                   </TransactionCard.Name>
                   <TransactionCard.Status
                     transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
+                    status={transactionStatus({
+                      ...transaction,
+                      account,
+                    })}
+                    showDescription={!isMobile}
                   />
                   <TransactionCard.Actions
                     isSigner={isSigner}
                     transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
+                    status={transactionStatus({
+                      ...transaction,
+                      account,
+                    })}
                   />
                 </TransactionCard.Container>
               </CustomSkeleton>
@@ -246,17 +274,16 @@ const VaultDetailsPage = () => {
               <NotFoundIcon w={100} h={100} />
             </Box>
             <Box mb={5}>
-              <Heading color="brand.500" fontSize="4xl">
+              <Heading
+                color="brand.500"
+                fontSize={{ base: 'xl', sm: '4xl' }}
+                textAlign="center"
+              >
                 Nothing to show here.
               </Heading>
             </Box>
             <Box maxW={400} mb={8}>
-              <Text
-                color="white"
-                fontSize="md"
-                textAlign="center"
-                fontWeight="bold"
-              >
+              <Text color="white" textAlign="center" fontWeight="bold">
                 It seems like you {"haven't"} made any transactions yet. Would
                 you like to make one now?
               </Text>
@@ -278,6 +305,12 @@ const VaultDetailsPage = () => {
             </Button>
           </Card>
         )
+      )}
+
+      {isMobile && (
+        <Box mt={7}>
+          <SignersDetails vault={vault} />
+        </Box>
       )}
     </Box>
   );

@@ -18,6 +18,7 @@ export enum UserTypes {
   POPUP_AUTH = '[POPUP_AUTH]',
   POPUP_TRANSFER = '[POPUP_TRANSFER]',
 }
+
 export interface ISocketEmitMessageParams {
   event: BSAFEConnectorEvents;
   to: string;

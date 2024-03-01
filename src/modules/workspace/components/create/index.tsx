@@ -4,6 +4,7 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  ModalProps,
   TabPanel,
   TabPanels,
   Tabs,
@@ -19,30 +20,31 @@ import {
   StepProgress,
 } from '@/components';
 
-import { OnboardingStep } from '../../components';
 import {
   CreateWorkspaceTabState,
   UseCreateWorkspace,
   useCreateWorkspace,
 } from '../../hooks/create';
+import { OnboardingStep } from '..';
 
 const CreateWorkspaceForm = ({
   form,
 }: {
   form: UseCreateWorkspace['form'];
 }) => (
-  <VStack spacing={6}>
+  <VStack spacing={2}>
     <Controller
       control={form.control}
       name="name"
       render={({ field, fieldState }) => (
         <FormControl isInvalid={fieldState.invalid}>
           <Input
+            minHeight={14}
             value={field.value}
             onChange={field.onChange}
             placeholder=" "
           />
-          <FormLabel>Name your workspace</FormLabel>
+          <FormLabel py={1}>Name your workspace</FormLabel>
           <FormHelperText color="error.500">
             {fieldState.error?.message}
           </FormHelperText>
@@ -50,14 +52,16 @@ const CreateWorkspaceForm = ({
       )}
     />
     <FormControl>
-      <Textarea {...form.register('description')} placeholder=" " />
+      <Textarea size="lg" {...form.register('description')} placeholder=" " />
       <FormLabel>Description</FormLabel>
       <FormHelperText>Optional</FormHelperText>
     </FormControl>
   </VStack>
 );
 
-const CreateWorkspacePage = () => {
+interface CreateWorkspaceDialogProps extends Omit<ModalProps, 'children'> {}
+
+const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   const {
     form,
     tabs,
@@ -65,22 +69,35 @@ const CreateWorkspacePage = () => {
     handleClose,
     handleGoToWorkspace,
     handleConfigureMembers,
-  } = useCreateWorkspace();
+  } = useCreateWorkspace({
+    onClose: props.onClose,
+  });
 
   return (
-    <Dialog.Modal isOpen onClose={handleClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      size={{
+        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'full' : 'lg',
+        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
+      }}
+      closeOnOverlayClick={false}
+      {...props}
+    >
       {tabs.is(CreateWorkspaceTabState.FORM) && (
         <Dialog.Header
-          maxW={420}
+          mb={0}
+          position="relative"
+          maxW={450}
+          top={-6}
           title="Create Workspace"
           description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
+          descriptionFontSize="md"
         />
       )}
 
       <Dialog.Body
-        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 420}
+        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 500}
       >
-        <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={12}>
+        <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab} colorScheme="green">
@@ -92,6 +109,7 @@ const CreateWorkspacePage = () => {
                 onConfirm={() => tabs.set(CreateWorkspaceTabState.FORM)}
               />
             </TabPanel>
+
             <TabPanel p={0}>
               <CreateWorkspaceForm form={form} />
             </TabPanel>
@@ -113,22 +131,36 @@ const CreateWorkspacePage = () => {
 
       <Dialog.Actions
         hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
-        maxW={420}
+        maxW={500}
       >
-        <Dialog.SecondaryAction onClick={handleClose}>
+        <Dialog.SecondaryAction
+          _hover={{
+            borderColor: 'brand.500',
+            color: 'brand.500',
+          }}
+          bg="transparent"
+          border="1px solid white"
+          w="25%"
+          onClick={handleClose}
+        >
           Cancel
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
+          w="70%"
           onClick={form.handleCreateWorkspace}
-          leftIcon={<SquarePlusIcon />}
+          fontSize="md"
+          leftIcon={<SquarePlusIcon w={4} h={4} />}
           isDisabled={request.isLoading}
           isLoading={request.isLoading}
+          _hover={{
+            opacity: 0.8,
+          }}
         >
-          Continue
+          Create Workspace
         </Dialog.PrimaryAction>
       </Dialog.Actions>
     </Dialog.Modal>
   );
 };
 
-export { CreateWorkspacePage };
+export { CreateWorkspaceDialog };

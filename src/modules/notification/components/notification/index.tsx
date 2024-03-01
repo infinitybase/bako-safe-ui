@@ -18,13 +18,16 @@ const colors = {
   bg: {
     success: 'success.900',
     error: 'error.900',
+    warning: 'warning.900',
   },
   title: {
     success: 'brand.500',
     error: 'error.600',
+    warning: 'warning.500',
   },
   description: {
     success: 'grey.200',
+    warning: 'warning.500',
   },
 };
 

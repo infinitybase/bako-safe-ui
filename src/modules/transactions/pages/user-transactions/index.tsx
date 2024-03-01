@@ -7,17 +7,18 @@ import {
   Heading,
   HStack,
   Icon,
+  Stack,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -26,6 +27,7 @@ import { limitCharacters } from '@/utils';
 
 import {
   TransactionCard,
+  TransactionCardMobile,
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
@@ -52,16 +54,18 @@ const UserTransactionsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
+
+  const { isMobile } = useScreenSize();
+
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={6} p={[1, 8]}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
             variant="primary"
             fontWeight="semibold"
-            fontSize={15}
             leftIcon={
               <Box mr={-1}>
                 <IoChevronBack size={22} />
@@ -77,43 +81,45 @@ const UserTransactionsPage = () => {
             Back home
           </Button>
 
-          <Breadcrumb ml={8}>
-            <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          {!isMobile && (
+            <Breadcrumb ml={8}>
+              <BreadcrumbItem>
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+              {!isSingleWorkspace && (
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goWorkspace(current)}
+                  >
+                    {workspace?.name}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              )}
+
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  href="#"
                 >
-                  {workspace?.name}
+                  My Transactions
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
-
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                My Transactions
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+            </Breadcrumb>
+          )}
         </HStack>
 
         <Box>
@@ -136,7 +142,7 @@ const UserTransactionsPage = () => {
       </HStack>
 
       {/* ACTION BUTTONS */}
-      <HStack w="full" spacing={6}>
+      <Stack w="full" direction={['column', 'row']} spacing={6}>
         <ActionCard.Container
           onClick={() =>
             navigate(
@@ -156,7 +162,7 @@ const UserTransactionsPage = () => {
         </ActionCard.Container>
 
         <ActionCard.Container cursor="auto">
-          <ActionCard.Icon icon={GoArrowSwitch} />
+          <ActionCard.Icon icon={TransactionsIcon} />
           <Box>
             <ActionCard.Title>Transactions</ActionCard.Title>
             <ActionCard.Description>
@@ -174,7 +180,7 @@ const UserTransactionsPage = () => {
             )
           }
         >
-          <ActionCard.Icon icon={CgList} />
+          <ActionCard.Icon icon={AddressBookIcon} />
           <Box>
             <ActionCard.Title>Address book</ActionCard.Title>
             <ActionCard.Description>
@@ -183,7 +189,7 @@ const UserTransactionsPage = () => {
             </ActionCard.Description>
           </Box>
         </ActionCard.Container>
-      </HStack>
+      </Stack>
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
@@ -223,16 +229,10 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List
-        mt={1}
-        w="full"
-        spacing={5}
-        maxH="calc(100% - 140px)"
-        overflowY="scroll"
-        css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
-      >
+      <TransactionCard.List mt={1} w="full" spacing={[3, 5]}>
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
+
         {transactionRequest.transactions.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
             (member) => member.address === account,
@@ -240,31 +240,44 @@ const UserTransactionsPage = () => {
 
           return (
             <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
-              <TransactionCard.Container
-                status={transactionStatus({ ...transaction, account })}
-                details={<TransactionCard.Details transaction={transaction} />}
-              >
-                {transaction.predicate && (
-                  <TransactionCard.VaultInfo vault={transaction.predicate} />
-                )}
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
-                <TransactionCard.Assets />
-                <TransactionCard.Amount assets={transaction.resume.outputs} />
-                <TransactionCard.Name>
-                  {limitCharacters(transaction.name, 20)}
-                </TransactionCard.Name>
-                <TransactionCard.Status
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-                <TransactionCard.Actions
+              {isMobile ? (
+                <TransactionCardMobile
                   isSigner={isSigner}
                   transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
+                  account={account}
                 />
-              </TransactionCard.Container>
+              ) : (
+                <TransactionCard.Container
+                  status={transactionStatus({ ...transaction, account })}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
+                  }
+                  transaction={transaction}
+                  account={account}
+                  isSigner={isSigner}
+                >
+                  {transaction.predicate && (
+                    <TransactionCard.VaultInfo vault={transaction.predicate} />
+                  )}
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount assets={transaction.resume.outputs} />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction.name, 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              )}
             </CustomSkeleton>
           );
         })}

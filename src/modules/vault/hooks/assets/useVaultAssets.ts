@@ -10,14 +10,16 @@ import { assetsMap, NativeAssetId } from '@/modules/core';
 import { VaultService } from '../../services';
 import { useVaultState } from '../../states';
 
-const balancesToAssets = async (predicate?: Vault) => {
+const balancesToAssets = async (
+  setBalanceUSD: (string: string) => void,
+  predicate?: Vault,
+) => {
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
-  const currentETH = await VaultService.hasReservedCoins(
-    predicate.BSAFEVaultId,
-  );
-
+  const { reservedCoins: currentETH, balanceUSD } =
+    await VaultService.hasReservedCoins(predicate.BSAFEVaultId);
+  setBalanceUSD(balanceUSD);
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
     const hasETH = balance.assetId === NativeAssetId && currentETH;
@@ -36,13 +38,14 @@ const balancesToAssets = async (predicate?: Vault) => {
 };
 
 function useVaultAssets(predicate?: Vault) {
-  const { setVisibleBalance, setBiggerAsset } = useVaultState();
+  const { setVisibleBalance, setBiggerAsset, setBalanceUSD } = useVaultState();
+
   const { provider } = useProvider();
   const auth = useAuth();
 
   const { data: assets, ...rest } = useQuery(
     ['predicate/assets', auth.workspaces.current, predicate],
-    () => balancesToAssets(predicate),
+    () => balancesToAssets(setBalanceUSD, predicate),
     {
       initialData: [],
       refetchInterval: 10000,

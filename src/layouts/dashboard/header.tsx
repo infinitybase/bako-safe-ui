@@ -7,20 +7,19 @@ import {
   Flex,
   HStack,
   Icon,
+  Image,
   Popover,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Skeleton,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 
-import logo from '@/assets/logo.svg';
+import logo from '@/assets/bakoLogoWhite.svg';
 import {
   ExitIcon,
   NotificationIcon,
@@ -29,22 +28,28 @@ import {
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
-import { useLoadImage } from '@/modules/core/hooks';
+import { TypeUser } from '@/modules/auth/services';
+import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
-import { Pages } from '@/modules/core/routes';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
-import { SelectWorkspaceDialog } from '@/modules/workspace/components';
+import {
+  CreateWorkspaceDialog,
+  SelectWorkspaceDialog,
+} from '@/modules/workspace/components';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
-    paddingX: 6,
+    paddingX: {
+      base: 3,
+      sm: 6,
+    },
     paddingY: 3,
   },
 });
@@ -56,20 +61,29 @@ const TopBarItem = chakra(SpacedBox, {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100%',
+    height: '35%',
   },
 });
 
 const UserBox = () => {
+  const { isMobile } = useScreenSize();
   const auth = useAuth();
   const avatarImage = useLoadImage(auth.avatar);
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
+  const { drawer } = useSidebar();
+  const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
   const logout = async () => {
-    await fuel.disconnect();
+    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
     auth.handlers.logout();
   };
+
+  // Bug fix to unread counter that keeps previous state after redirect
+  useEffect(() => {
+    setUnreadCounter(0);
+    setUnreadCounter(unreadCounter);
+  }, []);
 
   return (
     <>
@@ -79,30 +93,35 @@ const UserBox = () => {
         onOpen={settingsDrawer.onOpen}
       />
 
+      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+
       <Popover>
         <PopoverTrigger>
-          <Flex w="100%" alignItems="center" cursor={'pointer'}>
-            <Box mr={4}>
-              {avatarImage.isLoading ? (
-                <Skeleton
-                  w="48px"
-                  h="48px"
-                  startColor="dark.100"
-                  endColor="dark.300"
-                  borderRadius={5}
-                />
-              ) : (
-                <Avatar variant="roundedSquare" src={auth.avatar} />
-              )}
+          <Flex
+            w="100%"
+            alignItems="center"
+            cursor={'pointer'}
+            px={{ base: 0, sm: 2 }}
+          >
+            <Box mr={{ base: 2, sm: 4 }}>
+              <Avatar
+                variant="roundedSquare"
+                src={auth.avatar}
+                size={{ base: 'sm', sm: 'md' }}
+              />
             </Box>
 
-            <Box mr={9}>
+            <Box display={['none', 'block']} mr={9}>
               <Text fontWeight="semibold" color="grey.200">
                 {AddressUtils.format(auth.account)}
               </Text>
             </Box>
 
-            <Icon color="grey.200" fontSize="lg" as={FaChevronDown} />
+            <Icon
+              color="grey.200"
+              fontSize={{ base: 'sm', sm: 'lg' }}
+              as={FaChevronDown}
+            />
           </Flex>
         </PopoverTrigger>
 
@@ -115,6 +134,58 @@ const UserBox = () => {
           boxShadow="lg"
         >
           <PopoverBody>
+            {isMobile && (
+              <>
+                <Box
+                  borderTop={'1px solid'}
+                  borderTopColor={'dark.100'}
+                  cursor={'pointer'}
+                  onClick={drawer.onOpen}
+                  p={5}
+                >
+                  <HStack>
+                    <Icon
+                      color="grey.200"
+                      as={NotificationIcon}
+                      fontSize="xl"
+                    />
+                    <Text color="grey.200" fontWeight={'bold'}>
+                      Notifications
+                    </Text>
+
+                    {unreadCounter > 0 && (
+                      <Center
+                        px={1}
+                        py={0}
+                        bg="error.600"
+                        borderRadius={10}
+                        position="relative"
+                      >
+                        <Text fontSize="xs">+{unreadCounter}</Text>
+                      </Center>
+                    )}
+                  </HStack>
+                </Box>
+
+                <Box
+                  borderTop={'1px solid'}
+                  borderTopColor={'dark.100'}
+                  cursor={'pointer'}
+                  onClick={() =>
+                    window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+                  }
+                  p={5}
+                >
+                  <HStack>
+                    <Icon color="grey.200" as={QuestionIcon} fontSize="xl" />
+                    <Text color="grey.200" fontWeight={'bold'}>
+                      Help
+                    </Text>
+                  </HStack>
+                </Box>
+              </>
+            )}
+
             <Box
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
@@ -153,6 +224,8 @@ const WorkspaceBox = ({
   currentWorkspace?: Workspace;
   isLoading?: boolean;
 }) => {
+  const { isMobile } = useScreenSize();
+
   if (isLoading)
     return (
       <CircularProgress
@@ -168,10 +241,15 @@ const WorkspaceBox = ({
   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
   return (
-    <Flex w="full" alignItems="center" justifyContent="space-between">
+    <Flex
+      w="full"
+      alignItems="center"
+      justifyContent={{ base: 'flex-end', sm: 'space-between' }}
+    >
       <Flex>
         {isMyWorkspace && (
           <Text
+            fontSize={{ base: 'xs', sm: 'md' }}
             fontWeight="semibold"
             color="grey.200"
             border="2px"
@@ -184,42 +262,65 @@ const WorkspaceBox = ({
           </Text>
         )}
         {!isMyWorkspace && (
-          <HStack spacing={4}>
-            <Avatar variant="roundedSquare" src={avatar} />
-            <Box w={150}>
+          <HStack
+            spacing={{ base: 2, sm: 4 }}
+            flexDirection={{ base: 'row-reverse', sm: 'row' }}
+          >
+            <Avatar
+              variant="roundedSquare"
+              src={avatar}
+              size={{ base: 'sm', sm: 'md' }}
+            />
+            <Box w={{ base: 100, sm: 150 }}>
               <Text
+                fontSize={{ base: 'xs', sm: 'md' }}
                 fontWeight="semibold"
                 color="grey.200"
                 isTruncated
                 maxW={150}
+                textAlign={{
+                  base: 'right',
+                  sm: 'left',
+                }}
               >
                 {name}
               </Text>
-              <Text fontSize="sm" color="grey.500">
-                Current workspace
+              <Text
+                fontSize={{ base: 'xs', sm: 'sm' }}
+                color="grey.500"
+                textAlign={{
+                  base: 'right',
+                  sm: 'left',
+                }}
+              >
+                {isMobile ? 'Workspace' : 'Current workspace'}
               </Text>
             </Box>
+            {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
           </HStack>
         )}
       </Flex>
-
-      <ReplaceIcon color="grey.200" fontSize={20} />
     </Flex>
   );
 };
 
 const Header = () => {
-  const navigate = useNavigate();
+  const { isMobile } = useScreenSize();
+  // const navigate = useNavigate();
   const { drawer } = useSidebar();
+  const createWorkspaceDialog = useDisclosure();
   const {
     currentWorkspace,
     workspaceDialog,
-    userWorkspacesRequest: { data: userWorkspaces },
+    userWorkspacesRequest: {
+      data: userWorkspaces,
+      refetch: refetchUserWorkspaces,
+    },
     handleWorkspaceSelection,
   } = useWorkspace();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const { goHome } = useHome();
-  const handleGoToCreateWorkspace = () => navigate(Pages.createWorkspace());
+  const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -227,13 +328,24 @@ const Header = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
+  const handleClose = async () => {
+    await refetchUserWorkspaces();
+    createWorkspaceDialog.onClose();
+  };
+
   return (
     <Flex
-      h={82}
+      h={{
+        base: '64px',
+        sm: 82,
+      }}
+      zIndex={100}
       w="100%"
       bgColor="dark.300"
+      px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
+      position={['fixed', 'relative']}
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
@@ -245,21 +357,33 @@ const Header = () => {
         onCreate={handleGoToCreateWorkspace}
       />
 
+      {createWorkspaceDialog.isOpen && (
+        <CreateWorkspaceDialog
+          isOpen={createWorkspaceDialog.isOpen}
+          onClose={handleClose}
+        />
+      )}
+
       <SpacedBox
         cursor="pointer"
         onClick={() => {
           goHome();
         }}
+        pl={{ base: 1, sm: 6 }}
+        mr={{ base: -8, sm: 0 }}
       >
-        <img width={90} src={logo} alt="" />
+        <Image width={[90, 140]} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
         <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
-          w={310}
-          px={6}
+          w={{
+            base: 190,
+            sm: currentWorkspace.workspace?.single ? 235 : 300,
+          }}
+          borderLeftWidth={{ base: 0, sm: 1 }}
         >
           <WorkspaceBox
             currentWorkspace={currentWorkspace.workspace}
@@ -268,6 +392,7 @@ const Header = () => {
         </TopBarItem>
 
         <TopBarItem
+          display={['none', 'flex']}
           onClick={() =>
             window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
           }
@@ -275,7 +400,12 @@ const Header = () => {
           <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
 
-        <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
+        <TopBarItem
+          display={['none', 'flex']}
+          cursor="pointer"
+          onClick={drawer.onOpen}
+          width={78}
+        >
           <Icon
             color="grey.200"
             as={NotificationIcon}

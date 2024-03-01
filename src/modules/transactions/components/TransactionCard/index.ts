@@ -1,4 +1,4 @@
-import { Actions } from './Actions';
+import { Actions, ActionsMobile } from './Actions';
 import { Amount } from './Amount';
 import { Assets } from './Assets';
 import { Container } from './Container';
@@ -11,6 +11,7 @@ import { VaultInfo } from './VaultInfo';
 
 const TransactionCard = {
   Actions,
+  ActionsMobile,
   Amount,
   Assets,
   Container,

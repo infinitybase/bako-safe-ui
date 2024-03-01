@@ -24,6 +24,17 @@ const useContactToast = () => {
       ),
     });
 
+  const warningToast = ({ description, title }: ToastParams) => {
+    toast({
+      status: 'warning',
+      duration: 4000,
+      isClosable: false,
+      title: title ?? 'Warning!',
+      description: description ?? '',
+      icon: <Icon fontSize="2xl" color="warning.500" as={MdOutlineError} />,
+    });
+  };
+
   const errorToast = ({ description, title }: ToastParams) => {
     toast({
       status: 'error',
@@ -43,7 +54,12 @@ const useContactToast = () => {
         'Next time you can use it just by typing this name label or address...',
     });
 
-  return { successToast, errorToast, createAndUpdateSuccessToast };
+  return {
+    successToast,
+    errorToast,
+    createAndUpdateSuccessToast,
+    warningToast,
+  };
 };
 
 export { useContactToast };

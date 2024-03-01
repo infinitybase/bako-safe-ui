@@ -23,7 +23,7 @@ const CreateContactDialog = ({
       closeOnOverlayClick={false}
     >
       <Dialog.Header
-        maxW={420}
+        maxW={500}
         title={isEdit ? 'Edit address' : 'Add to address book'}
         description={
           isEdit

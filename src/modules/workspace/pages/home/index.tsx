@@ -1,4 +1,4 @@
-import { Icon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -6,6 +6,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Center,
   Divider,
   Grid,
   GridItem,
@@ -13,12 +14,12 @@ import {
   HStack,
   Link,
   Spacer,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
+import { ITransaction, IWitnesses } from 'bsafe';
 import { format } from 'date-fns';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
@@ -30,6 +31,10 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import { EyeCloseIcon } from '@/components/icons/eye-close';
+import { EyeOpenIcon } from '@/components/icons/eye-open';
+import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
@@ -37,6 +42,7 @@ import {
   NativeAssetId,
   Pages,
   PermissionRoles,
+  useScreenSize,
 } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
@@ -44,6 +50,7 @@ import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import {
   TransactionCard,
+  TransactionCardMobile,
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
@@ -72,6 +79,7 @@ const WorkspacePage = () => {
     goWorkspace,
   } = useWorkspace();
   const { goHome } = useHome();
+  const { isMobile } = useScreenSize();
 
   const {
     workspaces: { current },
@@ -81,14 +89,72 @@ const WorkspacePage = () => {
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
   const workspaceId = current ?? '';
 
-  // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
+  const isSigner = (witnesses: IWitnesses[]) => {
+    return !!witnesses.find((w: IWitnesses) => w.account === account);
+  };
 
   if (!currentWorkspace || currentWorkspace.single) {
     return null;
   }
 
+  const UpdateBalance = (
+    <Text
+      w={20}
+      display="flex"
+      align="center"
+      justifyContent="space-around"
+      variant="description"
+      fontWeight="semibold"
+      _hover={{
+        cursor: 'pointer',
+        color: 'grey.200',
+      }}
+      onClick={() => worksapceBalance.refetch()}
+    >
+      Update
+      <RefreshIcon
+        _hover={{
+          cursor: 'pointer',
+          color: 'grey.200',
+        }}
+        w={5}
+        h={5}
+      />
+    </Text>
+  );
+
+  const WorkspaceBalance = (
+    <HStack
+      w="full"
+      display="flex"
+      alignItems="center"
+      justifyContent={['start', 'space-around']}
+      spacing={2}
+    >
+      <Heading variant="title-xl">
+        {visibleBalance
+          ? `${worksapceBalance.balance.balanceUSD} USD`
+          : '-----'}
+      </Heading>
+      <Box
+        w="auto"
+        _hover={{
+          cursor: 'pointer',
+          opacity: 0.8,
+        }}
+        onClick={() => setVisibleBalance(!visibleBalance)}
+      >
+        {visibleBalance ? (
+          <EyeOpenIcon boxSize={7} />
+        ) : (
+          <EyeCloseIcon boxSize={5} />
+        )}
+      </Box>
+    </HStack>
+  );
+
   return (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={6} px={[0, 12]}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -96,6 +162,7 @@ const WorkspacePage = () => {
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
+            display={['none', 'flex']}
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
@@ -112,7 +179,7 @@ const WorkspacePage = () => {
             Back home
           </Button>
 
-          <Breadcrumb ml={8}>
+          <Breadcrumb display={['none', 'initial']} ml={8}>
             <BreadcrumbItem>
               <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
@@ -145,9 +212,12 @@ const WorkspacePage = () => {
                 fontSize={15}
                 leftIcon={<SettingsIcon fontSize={18} />}
                 px={3}
-                bg="dark.100"
-                color="grey.200"
+                bg="grey.200"
+                color="dark.300"
                 onClick={workspaceDialog.onOpen}
+                _hover={{
+                  opacity: 0.8,
+                }}
               >
                 Members
               </Button>
@@ -160,6 +230,9 @@ const WorkspacePage = () => {
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
+                _hover={{
+                  opacity: 0.8,
+                }}
                 onClick={() => navigate(Pages.createVault({ workspaceId }))}
               >
                 Create vault
@@ -169,7 +242,7 @@ const WorkspacePage = () => {
         </HStack>
       </HStack>
 
-      <HStack w="full" spacing={6}>
+      <Stack w="full" spacing={6} direction={['column-reverse', 'row']}>
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
           isLoaded={!workspaceHomeRequest.isLoading}
@@ -177,69 +250,127 @@ const WorkspacePage = () => {
           w="full"
           h="full"
         >
-          <Card w="full" h="full" p={8} bg="dark.200" borderColor="dark.100">
-            <VStack h="full" alignItems="flex-start">
-              <HStack w="full" spacing={6}>
-                <Avatar
-                  variant="roundedSquare"
-                  name={currentWorkspace?.name}
-                  bg="grey.900"
-                  color="white"
-                  size={'lg'}
-                  p={10}
-                />
-                <Box maxW="40%">
-                  <Heading mb={1} variant="title-xl" isTruncated>
-                    {currentWorkspace?.name}
-                  </Heading>
+          <Box display={['block', 'none']} mt={2} mb={4} alignSelf="flex-start">
+            <Text
+              color="grey.400"
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="md"
+            >
+              Overview
+            </Text>
+          </Box>
+          <Card p={[4, 8]} bgColor="grey.800">
+            <VStack spacing={6} w="full">
+              <HStack
+                w="full"
+                display="flex"
+                alignItems="center"
+                justify="space-between"
+              >
+                <Center
+                  w="fit-content"
+                  display="flex"
+                  gap={6}
+                  alignItems="flex-start"
+                >
+                  <Avatar
+                    position="relative"
+                    variant="roundedSquare"
+                    size={['md', 'lg']}
+                    p={[10, 14]}
+                    bgColor="grey.600"
+                    color="grey.450"
+                    fontWeight="bold"
+                    name={currentWorkspace.name}
+                  >
+                    <Box
+                      position="absolute"
+                      borderRadius="md"
+                      w="calc(100% - 10px)"
+                      h="calc(100% - 10px)"
+                      borderWidth={[2, 3]}
+                      borderColor="grey.450"
+                    />
+                  </Avatar>
                   <Box>
-                    <Text variant="description" noOfLines={2}>
-                      {currentWorkspace?.description}
+                    <Heading variant="title-xl" w="max">
+                      {currentWorkspace?.name}
+                    </Heading>
+
+                    <Text
+                      maxW={['100px', '200px']}
+                      variant="description"
+                      textOverflow="ellipsis"
+                      isTruncated
+                    >
+                      {currentWorkspace.description}
                     </Text>
                   </Box>
-                </Box>
+                </Center>
+                <VStack spacing={4} alignSelf="flex-start">
+                  {!isMobile && (
+                    <Box width="auto">
+                      <HStack
+                        minW={20}
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                      >
+                        {WorkspaceBalance}
+                        {UpdateBalance}
+                      </HStack>
+                    </Box>
+                  )}
 
-                <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
-                  display={'flex'}
-                  justifyContent={'flex-end'}
-                >
-                  <Box
-                    cursor="pointer"
-                    onClick={() => setVisibleBalance((previous) => !previous)}
-                    flexDirection="row"
+                  {isMobile && UpdateBalance}
+
+                  {/* <VStack spacing={2} alignItems="flex-start">
+                  <Button
+                    onClick={() =>
+                      navigate(
+                        Pages.createTransaction({
+                          vaultId: vault.id!,
+                          workspaceId,
+                        }),
+                      )
+                    }
+                    isDisabled={
+                      !vault?.hasBalance ||
+                      !makeTransactionsPerm ||
+                      vaultDetails.transactions.isPendingSigner
+                    }
+                    minW={130}
+                    variant="primary"
                   >
-                    <HStack spacing={2}>
-                      <Heading variant="title-xl">
-                        {(visibleBalance &&
-                          worksapceBalance.balance?.balanceUSD) ??
-                          0}
-                      </Heading>
-                      <Text variant="description" fontSize="md" mr={1}>
-                        {visibleBalance ? 'USD' : '******'}
-                      </Text>
-                      {visibleBalance ? (
-                        <Box
-                          flexDirection="row"
-                          alignItems={'center'}
-                          justifyContent={'center'}
-                        >
-                          <ViewIcon boxSize={5} />
-                        </Box>
-                      ) : (
-                        <ViewOffIcon boxSize={5} />
-                      )}
-                    </HStack>
-                  </Box>
-                </CustomSkeleton>
+                    Send
+                  </Button>
+                  {vault.transactions.isPendingSigner ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      This vault has pending transactions.
+                    </Text>
+                  ) : !makeTransactionsPerm ? (
+                    <Text variant="description" fontSize="xs" color="error.500">
+                      You dont have permission to send transactions.
+                    </Text>
+                  ) : (
+                    <Text variant="description" fontSize="xs">
+                      Send single or batch <br /> payments with multi assets.
+                    </Text>
+                  )}
+                </VStack> */}
+                </VStack>
               </HStack>
-
-              <Divider borderColor="dark.100" mt={4} mb={3} />
-
+              {isMobile && (
+                <HStack width="full" display="flex" flexDirection="column">
+                  {WorkspaceBalance}
+                </HStack>
+              )}
+              <Divider w="full" borderColor="grey.400" />
               <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
                 <Text
                   fontWeight="semibold"
-                  color="grey.200"
+                  color="grey.450"
                 >{`Workspace's balance breakdown`}</Text>
                 <CustomSkeleton
                   isLoaded={!worksapceBalance.isLoading}
@@ -247,7 +378,7 @@ const WorkspacePage = () => {
                   h="full"
                 >
                   {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
-                  !worksapceBalance.balance ? (
+                  !worksapceBalance.balance.balance ? (
                     <Card
                       w="full"
                       h="full"
@@ -259,7 +390,7 @@ const WorkspacePage = () => {
                         <Text fontWeight="bold" color="grey.200">
                           First thing first...
                         </Text>
-                        <Text color="grey.500" maxW={340} textAlign="center">
+                        <Text color="white" maxW={340} textAlign="center">
                           {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
                         </Text>
@@ -283,7 +414,6 @@ const WorkspacePage = () => {
                           amount: worksapceBalance.balance.balance,
                         }}
                         visibleBalance={visibleBalance}
-                        borderColor="dark.100"
                       />
                     </VStack>
                   )}
@@ -294,7 +424,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxH={450} spacing={4}>
+        <VStack w="full" maxW={500} maxH={450} spacing={4}>
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
@@ -340,7 +470,7 @@ const WorkspacePage = () => {
                 )
               }
             >
-              <ActionCard.Icon icon={CgList} />
+              <ActionCard.Icon icon={AddressBookIcon} />
               <Box>
                 <ActionCard.Title>Address book</ActionCard.Title>
                 <ActionCard.Description maxWidth={{}}>
@@ -351,15 +481,15 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
         </VStack>
-      </HStack>
+      </Stack>
 
       {/* WORKSPACE VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
         <Text
+          color="grey.400"
           variant="subtitle"
           fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
+          fontSize="md"
         >
           Recently used vaults
         </Text>
@@ -373,7 +503,7 @@ const WorkspacePage = () => {
             create a vault to start to save your assets."
           />
         ) : (
-          <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
+          <Grid w="full" templateColumns={['block', 'repeat(4, 1fr)']} gap={6}>
             {recentVaults?.map(
               ({ id, name, workspace, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
@@ -421,16 +551,14 @@ const WorkspacePage = () => {
 
       {hasVaults && (
         <HStack w="full" mt={4} spacing={4}>
-          {
-            <Text
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize="xl"
-              color="grey.200"
-            >
-              Transactions
-            </Text>
-          }
+          <Text
+            color="grey.400"
+            variant="subtitle"
+            fontWeight="semibold"
+            fontSize="md"
+          >
+            Transactions
+          </Text>
 
           {hasTransactions && (
             <HStack>
@@ -440,6 +568,7 @@ const WorkspacePage = () => {
               />
               <Spacer />
               <Link
+                display={['none', 'block']}
                 color="brand.500"
                 onClick={() =>
                   navigate(
@@ -463,7 +592,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
       ) : (
         <Box w="full" pb={10}>
-          <TransactionCard.List spacing={4} mb={12}>
+          <TransactionCard.List spacing={[3, 4]} mb={[0, 12]}>
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
 
@@ -472,50 +601,57 @@ const WorkspacePage = () => {
                   isLoaded={!workspaceHomeRequest.isLoading}
                   key={transaction.id}
                 >
-                  <TransactionCard.Container
-                    status={status}
-                    details={
-                      <TransactionCard.Details
-                        transaction={transaction}
-                        status={status}
+                  {isMobile ? (
+                    <TransactionCardMobile
+                      isSigner={isSigner(transaction.witnesses)}
+                      transaction={transaction}
+                      account={account}
+                    />
+                  ) : (
+                    <TransactionCard.Container
+                      status={status}
+                      transaction={transaction}
+                      account={account}
+                      isSigner={isSigner(transaction.witnesses)}
+                      details={
+                        <TransactionCard.Details
+                          transaction={transaction}
+                          status={status}
+                        />
+                      }
+                    >
+                      {transaction.predicate && (
+                        <TransactionCard.VaultInfo
+                          vault={transaction.predicate}
+                        />
+                      )}
+                      <TransactionCard.CreationDate>
+                        {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                      </TransactionCard.CreationDate>
+                      <TransactionCard.Assets />
+                      <TransactionCard.Amount
+                        assets={transaction.resume.outputs}
                       />
-                    }
-                  >
-                    {transaction.predicate && (
-                      <TransactionCard.VaultInfo
-                        vault={transaction.predicate}
+                      <TransactionCard.Name>
+                        {limitCharacters(transaction.name, 20)}
+                      </TransactionCard.Name>
+                      <TransactionCard.Status
+                        transaction={transaction as unknown as ITransaction}
+                        status={transactionStatus({
+                          ...transaction,
+                          account,
+                        })}
                       />
-                    )}
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                    <TransactionCard.Assets />
-                    <TransactionCard.Amount
-                      assets={transaction.resume.outputs}
-                    />
-                    <TransactionCard.Name>
-                      {limitCharacters(transaction.name, 20)}
-                    </TransactionCard.Name>
-                    <TransactionCard.Status
-                      transaction={transaction as unknown as ITransaction}
-                      status={transactionStatus({
-                        ...transaction,
-                        account,
-                      })}
-                    />
-                    <TransactionCard.Actions
-                      transaction={transaction as unknown as ITransaction}
-                      status={transactionStatus({
-                        ...transaction,
-                        account,
-                      })}
-                      isSigner={
-                        !!transaction.witnesses.find(
-                          (w) => w.account === account,
-                        )
-                      } // here
-                    />
-                  </TransactionCard.Container>
+                      <TransactionCard.Actions
+                        transaction={transaction as unknown as ITransaction}
+                        status={transactionStatus({
+                          ...transaction,
+                          account,
+                        })}
+                        isSigner={isSigner(transaction.witnesses)}
+                      />
+                    </TransactionCard.Container>
+                  )}
                 </CustomSkeleton>
               );
             })}

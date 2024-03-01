@@ -4,15 +4,26 @@ import {
   HStack,
   Icon,
   Spacer,
+  Text,
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import React from 'react';
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from 'react-icons/io';
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
+
+interface ActionsMobileProps {
+  awaitingAnswer?: boolean | ITransaction;
+}
 
 interface TransactionActionsProps {
   status: TransactionState;
@@ -20,11 +31,28 @@ interface TransactionActionsProps {
   isSigner: boolean;
 }
 
+const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
+  return (
+    <HStack w="full" justifyContent="end" spacing={1}>
+      <Text color={awaitingAnswer ? 'brand.400' : 'white'} fontSize="xs">
+        {awaitingAnswer ? 'Sign' : 'View Details'}
+      </Text>
+      <Icon
+        as={IoIosArrowForward}
+        fontSize="md"
+        color={awaitingAnswer ? 'brand.400' : 'grey.200'}
+        cursor="pointer"
+      />
+    </HStack>
+  );
+};
+
 const Actions = ({
   transaction,
   status,
   isSigner,
 }: TransactionActionsProps) => {
+  const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
@@ -34,6 +62,10 @@ const Actions = ({
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
+
+  if (isMobile) {
+    return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
+  }
 
   return (
     <HStack minW={140} justifySelf="end">
@@ -96,7 +128,7 @@ const Actions = ({
 
       <Icon
         as={isOpen ? IoIosArrowUp : IoIosArrowDown}
-        fontSize="xl"
+        fontSize="md"
         color="grey.200"
         cursor="pointer"
       />
@@ -104,4 +136,4 @@ const Actions = ({
   );
 };
 
-export { Actions };
+export { Actions, ActionsMobile };

@@ -8,15 +8,16 @@ import {
   GridItem,
   HStack,
   Icon,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
@@ -36,7 +37,7 @@ const UserVaultsPage = () => {
   } = useUserVaults();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
-  const { hasPermission, goWorkspace } = useWorkspace();
+  const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
   const { goHome } = useHome();
   const { selectWorkspace } = useSelectWorkspace();
   const {
@@ -47,9 +48,15 @@ const UserVaultsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   return (
-    <VStack w="full" spacing={6}>
-      <HStack w="full" h="10" justifyContent="space-between" my={2}>
-        <HStack>
+    <VStack w="full" spacing={6} p={[1, 8]}>
+      <HStack
+        h="10"
+        w="full"
+        justifyContent={['flex-end', 'space-between']}
+        my={2}
+        maxW="full"
+      >
+        <HStack visibility={['hidden', 'visible']}>
           <Button
             variant="primary"
             fontWeight="semibold"
@@ -105,7 +112,6 @@ const UserVaultsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
-
         <Box>
           <Button
             variant="primary"
@@ -125,60 +131,70 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <HStack w="full" spacing={6}>
-        <ActionCard.Container
-          onClick={() =>
-            navigate(
-              Pages.userVaults({
-                workspaceId: current,
-              }),
-            )
-          }
-        >
-          <ActionCard.Icon icon={VaultIcon} />
-          <Box>
-            <ActionCard.Title>Vaults</ActionCard.Title>
-            <ActionCard.Description>
-              Access and Manage All Your Vaults in One Place.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
-        <ActionCard.Container
-          onClick={() => {
-            navigate(
-              Pages.userTransactions({
-                workspaceId: current,
-              }),
-            );
-          }}
-        >
-          <ActionCard.Icon icon={GoArrowSwitch} />
-          <Box>
-            <ActionCard.Title>Transactions</ActionCard.Title>
-            <ActionCard.Description>
-              Manage Transactions Across All Vaults in One Place.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
-        <ActionCard.Container
-          onClick={() =>
-            navigate(
-              Pages.addressBook({
-                workspaceId: current,
-              }),
-            )
-          }
-        >
-          <ActionCard.Icon icon={CgList} />
-          <Box>
-            <ActionCard.Title>Address book</ActionCard.Title>
-            <ActionCard.Description>
-              Access and Manage Your Contacts for Easy Transfers and Vault
-              Creation.
-            </ActionCard.Description>
-          </Box>
-        </ActionCard.Container>
-      </HStack>
+      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+        <Stack w="full" direction={['column', 'row']} spacing={6}>
+          <ActionCard.Container
+            flex={1}
+            onClick={() =>
+              navigate(
+                Pages.userVaults({
+                  workspaceId: current,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+
+          <ActionCard.Container
+            flex={1}
+            onClick={() => {
+              navigate(
+                Pages.userTransactions({
+                  workspaceId: current,
+                }),
+              );
+            }}
+          >
+            <ActionCard.Icon
+              icon={TransactionsIcon}
+              //isUpcoming={hasTransactions ? false : true}
+            />
+            <Box>
+              <ActionCard.Title>Transactions</ActionCard.Title>
+              <ActionCard.Description>
+                Manage Transactions Across All Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+
+          <ActionCard.Container
+            flex={1}
+            onClick={() =>
+              navigate(
+                Pages.addressBook({
+                  workspaceId: current,
+                }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={AddressBookIcon} />
+            <Box>
+              <ActionCard.Title>Address book</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage Your Contacts for Easy Transfers and Vault
+                Creation.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </Stack>
+      </CustomSkeleton>
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
@@ -200,7 +216,12 @@ const UserVaultsPage = () => {
         </CustomSkeleton>
       )}
 
-      <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6} pb={28}>
+      <Grid
+        w="full"
+        templateColumns={{ base: 'repeat(1, 1fr)', sm: 'repeat(4, 1fr)' }}
+        gap={6}
+        pb={28}
+      >
         {vaults?.map(({ id, name, workspace, members, description }) => {
           return (
             <GridItem key={id}>

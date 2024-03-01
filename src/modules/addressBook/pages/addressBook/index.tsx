@@ -8,15 +8,16 @@ import {
   GridItem,
   HStack,
   Icon,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CgList } from 'react-icons/cg';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { AddressBookIcon } from '@/components/icons/address-book';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
@@ -86,7 +87,7 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack w="full" spacing={6}>
+      <VStack w="full" spacing={6} p={[1, 8]}>
         <HStack w="full" h="10" justifyContent="space-between" my={2}>
           <HStack>
             <Button
@@ -106,7 +107,7 @@ const AddressBookPage = () => {
               Back home
             </Button>
 
-            <Breadcrumb ml={8}>
+            <Breadcrumb display={['none', 'initial']} ml={8}>
               <BreadcrumbItem>
                 <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 <BreadcrumbLink
@@ -159,15 +160,10 @@ const AddressBookPage = () => {
           )}
         </HStack>
 
-        <HStack w="full" spacing={6}>
+        <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
-            onClick={() =>
-              navigate(
-                Pages.userVaults({
-                  workspaceId,
-                }),
-              )
-            }
+            flex={1}
+            onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -177,16 +173,21 @@ const AddressBookPage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
+
           <ActionCard.Container
+            flex={1}
             onClick={() => {
-              navigate(
+              return navigate(
                 Pages.userTransactions({
-                  workspaceId,
+                  workspaceId: current,
                 }),
               );
             }}
           >
-            <ActionCard.Icon icon={GoArrowSwitch} />
+            <ActionCard.Icon
+              icon={TransactionsIcon}
+              //isUpcoming={hasTransactions ? false : true}
+            />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -194,16 +195,14 @@ const AddressBookPage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
+
           <ActionCard.Container
+            flex={1}
             onClick={() =>
-              navigate(
-                Pages.addressBook({
-                  workspaceId,
-                }),
-              )
+              navigate(Pages.addressBook({ workspaceId: current }))
             }
           >
-            <ActionCard.Icon icon={CgList} />
+            <ActionCard.Icon icon={AddressBookIcon} />
             <Box>
               <ActionCard.Title>Address book</ActionCard.Title>
               <ActionCard.Description>
@@ -212,7 +211,7 @@ const AddressBookPage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-        </HStack>
+        </Stack>
 
         <Box mt={4} mb={-2} alignSelf="flex-start">
           <Text
@@ -234,7 +233,7 @@ const AddressBookPage = () => {
             '2xl': 'repeat(4, 1fr)',
           }}
           gap={6}
-          pb={28}
+          pb={0}
         >
           {!hasContacts && listContactsRequest.isLoading && (
             <>

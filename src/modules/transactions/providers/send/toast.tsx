@@ -20,6 +20,17 @@ const useTransactionToast = () => {
   const toast = useNotification();
   const transactionsToastRef = useRef<TransactionToastRef>({});
 
+  const warning = (message: string, title: string) => {
+    toast({
+      position: 'top-right',
+      duration: 5000,
+      isClosable: true,
+      title: title,
+      icon: <Icon fontSize="2xl" color="warning.500" as={ErrorIcon} />,
+      description: <Text variant="description">{message}</Text>,
+    });
+  };
+
   const loading = (transaction: ITransaction) => {
     if (toast.isActive(transaction.id)) return;
     transactionsToastRef.current[transaction.id] = toast({
@@ -132,6 +143,7 @@ const useTransactionToast = () => {
     closeAll,
     close,
     generalError,
+    warning,
   };
 };
 

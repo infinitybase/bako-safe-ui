@@ -8,6 +8,10 @@ const primary = defineStyle({
       bgColor: 'brand.500',
     },
   },
+  fontSize: {
+    base: 'sm',
+    sm: 'md',
+  },
 });
 
 const secondary = defineStyle({
@@ -20,6 +24,10 @@ const secondary = defineStyle({
       bgColor: 'initial',
     },
   },
+  fontSize: {
+    base: 'sm',
+    sm: 'md',
+  },
 });
 
 const tertiary = defineStyle({
@@ -31,10 +39,14 @@ const tertiary = defineStyle({
       bgColor: 'initial',
     },
   },
+  fontSize: {
+    base: 'sm',
+    sm: 'md',
+  },
 });
 
 const icon = defineStyle({
-  bgColor: 'dark.100',
+  bgColor: 'grey.800',
   color: 'grey.200',
   fontSize: 'xl',
 });
@@ -42,7 +54,6 @@ const icon = defineStyle({
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
-  fontSize: 'md',
 });
 
 const Button = defineStyleConfig({

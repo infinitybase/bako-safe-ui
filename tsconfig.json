@@ -1,14 +1,24 @@
 {
   "extends": "@fuels/ts-config/base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     /* Paths */
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-
-    "types": ["@fuel-wallet/sdk"]
+    "types": [
+      "@fuel-wallet/sdk"
+    ]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

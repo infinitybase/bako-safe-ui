@@ -17,7 +17,11 @@ export enum CreateWorkspaceTabState {
   SUCCESS,
 }
 
-const useCreateWorkspace = () => {
+type UserCreateWorkspaceParams = {
+  onClose: () => void;
+};
+
+const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const navigate = useNavigate();
   const { goWorkspace } = useWorkspace();
   const tabs = useTab({
@@ -29,11 +33,12 @@ const useCreateWorkspace = () => {
   const request = useCreateWorkspaceRequest();
   const { selectWorkspace } = useSelectWorkspace();
 
-  const handleClose = () => navigate(Pages.home());
+  const handleClose = () => props.onClose();
 
   const handleGoToWorkspace = () => {
     selectWorkspace(request?.data!.id, {
       onSelect: (workspace) => {
+        props.onClose();
         goWorkspace(workspace.id);
       },
     });
@@ -42,6 +47,7 @@ const useCreateWorkspace = () => {
   const handleConfigureMembers = () => {
     selectWorkspace(request?.data!.id, {
       onSelect: (workspace) => {
+        props.onClose();
         navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
       },
     });
