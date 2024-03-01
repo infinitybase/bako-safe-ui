@@ -6,6 +6,7 @@ import {
   HStack,
   Icon,
   Spacer,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -50,9 +51,9 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   return (
-    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={8}>
+    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={[1, 8]}>
       <HStack w="full" h="10" justifyContent="space-between">
-        <HStack>
+        <HStack visibility={['hidden', 'visible']}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
           <Text color="grey.200" fontWeight="semibold">
             Home
@@ -72,8 +73,9 @@ const HomePage = () => {
         </Box>
       </HStack>
       <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-        <HStack spacing={6} w="full" h="full">
+        <Stack w="full" h="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
+            flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
           >
             <ActionCard.Icon icon={VaultIcon} />
@@ -86,6 +88,7 @@ const HomePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
+            flex={1}
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
@@ -107,6 +110,7 @@ const HomePage = () => {
           </ActionCard.Container>
 
           <ActionCard.Container
+            flex={1}
             onClick={() =>
               navigate(Pages.addressBook({ workspaceId: current }))
             }
@@ -120,68 +124,70 @@ const HomePage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-        </HStack>
+        </Stack>
       </CustomSkeleton>
       {/* RECENT VAULTS */}
       {recentVaults?.length && (
         <Box mt={4} alignSelf="flex-start">
           <Text
+            color="grey.200"
             variant="subtitle"
             fontWeight="semibold"
-            fontSize="xl"
-            color="grey.200"
+            fontSize={['sm', 'xl']}
           >
             Recently used vaults
           </Text>
         </Box>
       )}
-      <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
-        {recentVaults?.map(
-          ({ id, name, workspace, members, description }, index) => {
-            const lastCard = index === vaultsMax - 1;
-            const hasMore = extraCount > 0;
+      {recentVaults?.length && (
+        <Grid w="full" templateColumns={['initial', 'repeat(4, 1fr)']} gap={6}>
+          {recentVaults?.map(
+            ({ id, name, workspace, members, description }, index) => {
+              const lastCard = index === vaultsMax - 1;
+              const hasMore = extraCount > 0;
 
-            return (
-              <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
-                <GridItem>
-                  {lastCard && hasMore ? (
-                    <ExtraVaultCard
-                      extra={extraCount}
-                      onClick={() =>
-                        navigate(
-                          Pages.userVaults({
-                            workspaceId: single,
-                          }),
-                        )
-                      }
-                    />
-                  ) : (
-                    <VaultCard
-                      id={id}
-                      name={name}
-                      workspace={workspace}
-                      title={description}
-                      members={members!}
-                      onClick={async () => {
-                        selectWorkspace(workspace.id, {
-                          onSelect: async (_workspace) => {
-                            navigate(
-                              Pages.detailsVault({
-                                workspaceId: _workspace.id,
-                                vaultId: id,
-                              }),
-                            );
-                          },
-                        });
-                      }}
-                    />
-                  )}
-                </GridItem>
-              </CustomSkeleton>
-            );
-          },
-        )}
-      </Grid>
+              return (
+                <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
+                  <GridItem>
+                    {lastCard && hasMore ? (
+                      <ExtraVaultCard
+                        extra={extraCount}
+                        onClick={() =>
+                          navigate(
+                            Pages.userVaults({
+                              workspaceId: single,
+                            }),
+                          )
+                        }
+                      />
+                    ) : (
+                      <VaultCard
+                        id={id}
+                        name={name}
+                        workspace={workspace}
+                        title={description}
+                        members={members!}
+                        onClick={async () => {
+                          selectWorkspace(workspace.id, {
+                            onSelect: async (_workspace) => {
+                              navigate(
+                                Pages.detailsVault({
+                                  workspaceId: _workspace.id,
+                                  vaultId: id,
+                                }),
+                              );
+                            },
+                          });
+                        }}
+                      />
+                    )}
+                  </GridItem>
+                </CustomSkeleton>
+              );
+            },
+          )}
+        </Grid>
+      )}
       {/* TRANSACTION LIST */}
       {transactions && transactions.length <= 0 ? (
         <VStack w="full" spacing={6}>
@@ -190,7 +196,7 @@ const HomePage = () => {
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize="xl"
+                fontSize={['md', 'xl']}
                 color="grey.200"
               >
                 Transactions
@@ -207,7 +213,7 @@ const HomePage = () => {
             <Text
               variant="subtitle"
               fontWeight="semibold"
-              fontSize="xl"
+              fontSize={['sm', 'xl']}
               color="grey.200"
             >
               Transactions
@@ -220,6 +226,7 @@ const HomePage = () => {
             <Button
               color="brand.400"
               textDecoration="none"
+              display={['none', 'initial']}
               backgroundColor="transparent"
               _hover={{
                 backgroundColor: 'transparent',
