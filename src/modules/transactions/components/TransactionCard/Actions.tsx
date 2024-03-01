@@ -8,11 +8,13 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
+import React from 'react';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
   IoIosArrowUp,
 } from 'react-icons/io';
+
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';

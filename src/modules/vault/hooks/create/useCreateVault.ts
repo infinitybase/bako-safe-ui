@@ -55,22 +55,18 @@ const useCreateVault = () => {
   });
 
   const setFormWithTemplate = async (id: string) => {
-    try {
-      const template = await TemplateService.getById(id);
-      const address: string[] = template.addresses as string[];
+    const template = await TemplateService.getById(id);
+    const address: string[] = template.addresses as string[];
 
-      form.setValue('minSigners', template.minSigners.toString());
+    form.setValue('minSigners', template.minSigners.toString());
 
-      if (template.addresses) {
-        form.setValue(
-          'addresses',
-          address.map((item: string) => {
-            return { value: item };
-          }),
-        );
-      }
-    } catch (e) {
-      console.log(e);
+    if (template.addresses) {
+      form.setValue(
+        'addresses',
+        address.map((item: string) => {
+          return { value: item };
+        }),
+      );
     }
   };
 

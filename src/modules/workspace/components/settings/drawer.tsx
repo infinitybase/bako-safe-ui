@@ -33,6 +33,8 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 
 import { WorkspaceCard } from '../card';
+import { useAuth } from '../../../auth/hooks/useAuth';
+
 
 import { useAuth } from '../../../auth/hooks/useAuth';
 

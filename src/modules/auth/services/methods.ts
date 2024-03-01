@@ -60,27 +60,40 @@ export type SignInResponse = {
   id: string;
   notify: boolean;
   firstLogin: boolean;
+  webAuthn?: {
+    id: string;
+    publicKey: string;
+  };
 };
 
 export type CheckNicknameResponse = {
+  id: string;
   address: string;
   name: string;
   provider: string;
   type: TypeUser;
+  webauthn: {
+    id: string;
+    publicKey: string;
+    origin: string;
+    hardware: string;
+  };
 };
 
 export class UserService {
   static async create(payload: CreateUserPayload) {
-    const response = await api.post<CreateUserResponse>('/user', payload);
-    return response?.data;
+    const { data } = await api.post<CreateUserResponse>('/user', payload);
+    return data;
   }
 
   static async signIn(payload: SignInPayload) {
-    const response = await api.post<SignInResponse>('/auth/sign-in', payload);
-    return response?.data;
+    const { data } = await api.post<SignInResponse>('/auth/sign-in', payload);
+
+    return data;
   }
 
   static async verifyNickname(nickname: string) {
+    if (!nickname) return;
     const { data } = await api.get<CheckNicknameResponse>(
       `/user/nickname/${nickname}`,
     );
@@ -98,12 +111,14 @@ export class UserService {
   }
 
   static async getHardwareId() {
-    const localStorage = window.localStorage;
-    return localStorage.getItem(localStorageKeys.HARDWARE_ID);
+    return new Promise((resolve) => {
+      const localStorage = window.localStorage;
+      return resolve(localStorage.getItem(localStorageKeys.HARDWARE_ID));
+    });
   }
 
   static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<CheckNicknameResponse>(
+    const { data } = await api.get<CheckNicknameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
 
@@ -111,7 +126,6 @@ export class UserService {
   }
 
   static async createWebAuthnAccount(name: string) {
-    console.log(name);
     const account = await createAccount(name, Address.fromRandom().toB256());
 
     const payload = {
@@ -124,6 +138,7 @@ export class UserService {
         id: account.credential?.id!,
         publicKey: account.publicKeyHex,
         origin: window.location.origin,
+        hardware: localStorage.getItem(localStorageKeys.HARDWARE_ID)!,
       },
     };
     return {
@@ -142,9 +157,16 @@ export class UserService {
 
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
-      signature: bytesToHex(signature.sig_compact),
-      digest: bytesToHex(signature.dig_compact),
+      signature: bytesToHex(signature!.sig_compact),
+      digest: bytesToHex(signature!.dig_compact),
     });
+  }
+
+  static async generateSignInCode(address: string) {
+    const { data } = await api.post<CreateUserResponse>(
+      `/auth/code/${address}`,
+    );
+    return data;
   }
 }
 
@@ -162,7 +184,7 @@ export const UserQueryKey = {
     UserQueryKey.DEFAULT,
     'sign-message-web-authn',
   ],
-  HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
+  // HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
   ACCOUNTS: (hardwareId: string) => [
     UserQueryKey.DEFAULT,
     'accounts',
@@ -172,7 +194,7 @@ export const UserQueryKey = {
   FULL_DATA: (search: string, hardwareId: string) => [
     UserQueryKey.DEFAULT,
     UserQueryKey.NICKNAME(search),
-    UserQueryKey.HARDWARE_ID(),
+    // UserQueryKey.HARDWARE_ID(),
     UserQueryKey.ACCOUNTS(hardwareId),
   ],
 };
