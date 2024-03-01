@@ -11,7 +11,6 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Skeleton,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -104,30 +103,18 @@ const UserBox = () => {
             px={{ base: 0, sm: 2 }}
           >
             <Box mr={{ base: 2, sm: 4 }}>
-              {avatarImage.isLoading ? (
-                <Skeleton
-                  w="48px"
-                  h="48px"
-                  startColor="dark.100"
-                  endColor="dark.300"
-                  borderRadius={5}
-                />
-              ) : (
-                <Avatar
-                  variant="roundedSquare"
-                  src={auth.avatar}
-                  size={{ base: 'sm', sm: 'md' }}
-                />
-              )}
+              <Avatar
+                variant="roundedSquare"
+                src={auth.avatar}
+                size={{ base: 'sm', sm: 'md' }}
+              />
             </Box>
 
-            {!isMobile && (
-              <Box mr={9}>
-                <Text fontWeight="semibold" color="grey.200">
-                  {AddressUtils.format(auth.account)}
-                </Text>
-              </Box>
-            )}
+            <Box display={['none', 'block']} mr={9}>
+              <Text fontWeight="semibold" color="grey.200">
+                {AddressUtils.format(auth.account)}
+              </Text>
+            </Box>
 
             <Icon
               color="grey.200"
@@ -351,11 +338,13 @@ const Header = () => {
         base: '64px',
         sm: 82,
       }}
+      zIndex={100}
       w="100%"
       bgColor="dark.300"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
+      position={['fixed', 'relative']}
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
@@ -382,7 +371,7 @@ const Header = () => {
         pl={{ base: 1, sm: 6 }}
         mr={{ base: -8, sm: 0 }}
       >
-        <img width={isMobile ? 90 : 110} src={logo} alt="" />
+        <img width={isMobile ? 90 : 140} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
@@ -401,40 +390,42 @@ const Header = () => {
           />
         </TopBarItem>
 
-        {!isMobile && (
-          <>
-            <TopBarItem
-              onClick={() =>
-                window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-              }
+        <TopBarItem
+          display={['none', 'flex']}
+          onClick={() =>
+            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
+          }
+        >
+          <Icon color="grey.200" as={QuestionIcon} />
+        </TopBarItem>
+
+        <TopBarItem
+          display={['none', 'flex']}
+          cursor="pointer"
+          onClick={drawer.onOpen}
+          width={78}
+        >
+          <Icon
+            color="grey.200"
+            as={NotificationIcon}
+            fontSize={30}
+            position="absolute"
+          />
+
+          {unreadCounter > 0 && (
+            <Center
+              px={1}
+              py={0}
+              bg="error.600"
+              borderRadius={10}
+              position="relative"
+              top={-1.5}
+              right={-2.5}
             >
-              <Icon color="grey.200" as={QuestionIcon} />
-            </TopBarItem>
-
-            <TopBarItem cursor="pointer" onClick={drawer.onOpen} width={78}>
-              <Icon
-                color="grey.200"
-                as={NotificationIcon}
-                fontSize={30}
-                position="absolute"
-              />
-
-              {unreadCounter > 0 && (
-                <Center
-                  px={1}
-                  py={0}
-                  bg="error.600"
-                  borderRadius={10}
-                  position="relative"
-                  top={-1.5}
-                  right={-2.5}
-                >
-                  <Text fontSize="xs">+{unreadCounter}</Text>
-                </Center>
-              )}
-            </TopBarItem>
-          </>
-        )}
+              <Text fontSize="xs">+{unreadCounter}</Text>
+            </Center>
+          )}
+        </TopBarItem>
 
         <TopBarItem>
           <UserBox />

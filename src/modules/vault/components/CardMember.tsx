@@ -33,7 +33,7 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge py={0} variant="success">
+    <Badge py={0} ml={[0, 8]} variant="success">
       Owner
     </Badge>
   );
@@ -45,7 +45,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   const hasNickname = member?.nickname;
 
   return (
-    <SignerCard borderColor="grey.600">
+    <SignerCard w="full" maxW={360} borderColor="grey.600">
       <Flex
         flexDirection={{ base: 'column', sm: 'row' }}
         gap={{ base: 2, sm: 4 }}

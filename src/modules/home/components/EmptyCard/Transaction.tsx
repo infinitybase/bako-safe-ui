@@ -6,7 +6,7 @@ const EmptyTransaction = () => {
   return (
     <Card
       w="full"
-      mt={[0, 10]}
+      mt={[0, 2]}
       p={[10, 16]}
       bgColor="grey.850"
       display="flex"

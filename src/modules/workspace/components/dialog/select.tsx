@@ -31,11 +31,18 @@ const SelectWorkspaceDialog = ({
     <Dialog.Modal
       size={!listIsEmpty ? 'xl' : '2xl'}
       onClose={dialog.onClose}
-      hideCloseButton={listIsEmpty ? true : false}
+      hideCloseButton={false}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
     >
-      <Dialog.Body position="relative" justifyItems="center" maxW={480}>
+      <Dialog.Body
+        position="relative"
+        justifyItems="center"
+        alignItems="center"
+        h="full"
+        bottom={10}
+        maxW={480}
+      >
         <VStack spacing={2}>
           {!listIsEmpty && (
             <VStack

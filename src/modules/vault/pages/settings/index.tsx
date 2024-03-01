@@ -6,12 +6,15 @@ import {
   Button,
   HStack,
   Icon,
+  Text,
   VStack,
 } from '@chakra-ui/react';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { HomeIcon } from '@/components';
+import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { Pages } from '@/modules/core';
+import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
@@ -20,60 +23,72 @@ import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, params } = useVaultDetails();
+  const { vault, store, navigate, params, menuDrawer } = useVaultDetails();
   const { setTemplateFormInitial } = useTemplateStore();
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
+  const { isMobile } = useScreenSize();
 
   if (!vault) return null;
 
   return (
-    <Box w="full">
+    <Box w="full" pr={[0, 8]}>
+      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+
       <HStack mb={8} w="full" justifyContent="space-between">
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() => goHome()}
-            >
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-            >
-              Settings
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              onClick={() =>
-                navigate(
-                  Pages.detailsVault({
-                    vaultId: vault.id!,
-                    workspaceId: current ?? '',
-                  }),
-                )
-              }
-              isTruncated
-              maxW={640}
-            >
-              {vault.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        {isMobile ? (
+          <HStack gap={1.5} onClick={menuDrawer.onOpen}>
+            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Text fontSize="sm" fontWeight="normal" color="grey.100">
+              Menu
+            </Text>
+          </HStack>
+        ) : (
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() => goHome()}
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Settings
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() =>
+                  navigate(
+                    Pages.detailsVault({
+                      vaultId: vault.id!,
+                      workspaceId: current ?? '',
+                    }),
+                  )
+                }
+                isTruncated
+                maxW={640}
+              >
+                {vault.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
 
         <Button
           variant="secondary"

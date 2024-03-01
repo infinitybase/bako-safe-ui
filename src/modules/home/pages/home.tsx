@@ -73,7 +73,7 @@ const HomePage = () => {
         </Box>
       </HStack>
       <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-        <Stack w="full" h="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -225,12 +225,14 @@ const HomePage = () => {
             <Button
               color="brand.400"
               textDecoration="none"
-              display={['none', 'initial']}
+              alignItems="center"
+              justifyContent="center"
+              display={['none', 'flex']}
               backgroundColor="transparent"
               _hover={{
                 backgroundColor: 'transparent',
               }}
-              rightIcon={<Icon as={MdKeyboardArrowRight} w={7} h={7} />}
+              rightIcon={<Icon as={MdKeyboardArrowRight} boxSize={6} />}
               onClick={() =>
                 navigate(
                   Pages.userTransactions({

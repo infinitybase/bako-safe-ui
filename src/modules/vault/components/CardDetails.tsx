@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
@@ -24,6 +25,8 @@ import {
   AssetCard,
   assetsMap,
   NativeAssetId,
+  Pages,
+  PermissionRoles,
   useScreenSize,
 } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
@@ -68,16 +71,33 @@ const Update = () => {
 };
 
 const CardDetails = (props: CardDetailsProps) => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const { store, vault } = props;
   const { biggerAsset, visebleBalance, setVisibleBalance, balanceUSD } = store;
-  const { currentWorkspace } = useWorkspace();
-  const { isSingleWorkspace } = useAuth();
+  const { currentWorkspace, hasPermission } = useWorkspace();
+  const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
 
-  const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
+  const hasBalance = vault.hasBalance;
+  const balanceFormatted = bn(
+    bn.parseUnits(biggerAsset?.amount ?? '0.000'),
+  ).format({
     precision: 4,
   });
+  const workspaceId = workspaces.current ?? '';
+
+  const reqPerm = [
+    PermissionRoles.ADMIN,
+    PermissionRoles.OWNER,
+    PermissionRoles.MANAGER,
+    PermissionRoles.SIGNER,
+  ];
+
+  const makeTransactionsPerm = useMemo(() => {
+    const as = hasPermission(reqPerm);
+    return as;
+  }, [vault.id, balanceFormatted]);
 
   const vaultDescription = useMemo(() => {
     if (!vault?.description) return '';
@@ -92,7 +112,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW="680">
+    <Box w="full" maxW={730}>
       <Box mb={5} w="full">
         <Text
           color="grey.400"
@@ -108,8 +128,9 @@ const CardDetails = (props: CardDetailsProps) => {
           <VStack spacing={4} w="full">
             <Flex
               w="full"
+              id="asd"
               flexDir={{ base: 'column', sm: 'row' }}
-              alignItems={{ base: 'flex-start', sm: 'center' }}
+              alignItems="flex-start"
               justify="space-between"
               gap={{ base: 6, sm: 0 }}
             >
@@ -119,17 +140,18 @@ const CardDetails = (props: CardDetailsProps) => {
                   variant="roundedSquare"
                   size={{ base: 'md', sm: 'lg' }}
                   p={{ base: 8, sm: 14 }}
-                  bgColor="grey.200"
-                  color="grey.800"
+                  bgColor="grey.600"
+                  color="grey.450"
                   fontWeight="bold"
                   name={vault.name}
                 >
                   <Box
                     position="absolute"
-                    borderRadius="md"
-                    w={{ base: 14, sm: 24 }}
-                    h={{ base: 14, sm: 24 }}
-                    border="3px solid white"
+                    borderRadius="lg"
+                    w={{ base: 14, sm: 102 }}
+                    h={{ base: 14, sm: 102 }}
+                    border="3px solid"
+                    borderColor="grey.450"
                   />
                 </Avatar>
                 <Box w="full">
@@ -167,7 +189,6 @@ const CardDetails = (props: CardDetailsProps) => {
                     maxW="200px"
                     variant="description"
                     textOverflow="ellipsis"
-                    noOfLines={2}
                     isTruncated
                   >
                     {vaultDescription}
@@ -176,11 +197,11 @@ const CardDetails = (props: CardDetailsProps) => {
               </Center>
 
               <Flex
-                flexDirection={{ base: 'row', sm: 'column' }}
+                w="full"
                 gap={4}
+                flexDirection={{ base: 'row', sm: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
-                w="full"
               >
                 <Box width="auto">
                   <HStack
@@ -193,6 +214,9 @@ const CardDetails = (props: CardDetailsProps) => {
                       w="full"
                       display="flex"
                       alignItems="center"
+                      mb={
+                        vault.transactions.isPendingSigner && isMobile ? 5 : 0
+                      }
                       justifyContent="space-around"
                       spacing={2}
                     >
@@ -219,6 +243,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 </Box>
 
                 <Button
+                  hidden={hasBalance}
                   minW={{ base: undefined, sm: 180 }}
                   h={12}
                   variant="primary"
@@ -236,7 +261,11 @@ const CardDetails = (props: CardDetailsProps) => {
                   Faucet
                 </Button>
 
-                {/* <VStack spacing={2} alignItems="flex-start">
+                <VStack
+                  spacing={2}
+                  hidden={!hasBalance}
+                  alignItems={['flex-end', 'flex-start']}
+                >
                   <Button
                     onClick={() =>
                       navigate(
@@ -249,7 +278,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     isDisabled={
                       !vault?.hasBalance ||
                       !makeTransactionsPerm ||
-                      vaultDetails.transactions.isPendingSigner
+                      vault.transactions.isPendingSigner
                     }
                     minW={130}
                     variant="primary"
@@ -261,15 +290,20 @@ const CardDetails = (props: CardDetailsProps) => {
                       This vault has pending transactions.
                     </Text>
                   ) : !makeTransactionsPerm ? (
-                    <Text variant="description" fontSize="xs" color="error.500">
+                    <Text
+                      fontSize="xs"
+                      hidden={isMobile}
+                      variant="description"
+                      color="error.500"
+                    >
                       You dont have permission to send transactions.
                     </Text>
                   ) : (
-                    <Text variant="description" fontSize="xs">
+                    <Text hidden={isMobile} variant="description" fontSize="xs">
                       Send single or batch <br /> payments with multi assets.
                     </Text>
                   )}
-                </VStack> */}
+                </VStack>
               </Flex>
             </Flex>
 
@@ -311,7 +345,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 w="full"
                 h="full"
               >
-                {parseFloat(balance!) === 0 || !balance ? (
+                {parseFloat(balanceFormatted!) === 0 || !balanceFormatted ? (
                   <Card
                     w="full"
                     h="full"
@@ -331,7 +365,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   </Card>
                 ) : (
                   <VStack w="full" h="full" spacing={1} justifyContent="center">
-                    {/*todo: 
+                    {/*todo:
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
@@ -339,7 +373,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       asset={{
                         ...assetsMap[NativeAssetId],
                         assetId: NativeAssetId,
-                        amount: balance,
+                        amount: balanceFormatted,
                       }}
                       visibleBalance={visebleBalance}
                     />
@@ -349,7 +383,7 @@ const CardDetails = (props: CardDetailsProps) => {
             </VStack>
           </VStack>
         </Card>
-        {/* 
+        {/*
         <AmountDetails
           store={store}
           vaultAddress={vault.predicateAddress!}

@@ -34,6 +34,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       base: 0,
       sm: 6,
     }}
+    maxH={745}
   >
     <Box m={8}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
@@ -41,14 +42,14 @@ const OnboardingStep = (props: OnboardingStepProps) => (
     <Box mb={5}>
       <Heading fontSize="3xl">Heads up!</Heading>
     </Box>
-    <Box maxW={500} mb={5}>
+    <Box maxW={350} mb={5}>
       <Text
         color="grey.400"
         fontSize={{ base: 'sm', sm: 'md' }}
         textAlign="center"
       >
-        The vault template is now ready for use whenever you need to streamline
-        your workflow!
+        Before you create your workspace, {`it's`} crucial to understand how
+        they function!
       </Text>
     </Box>
     <Box w="100%" my={5}>
