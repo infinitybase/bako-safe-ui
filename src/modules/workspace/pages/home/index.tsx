@@ -14,6 +14,7 @@ import {
   HStack,
   Link,
   Spacer,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -41,6 +42,7 @@ import {
   NativeAssetId,
   Pages,
   PermissionRoles,
+  useScreenSize,
 } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
@@ -76,6 +78,7 @@ const WorkspacePage = () => {
     goWorkspace,
   } = useWorkspace();
   const { goHome } = useHome();
+  const { isMobile } = useScreenSize();
 
   const {
     workspaces: { current },
@@ -93,8 +96,62 @@ const WorkspacePage = () => {
     return null;
   }
 
+  const UpdateBalance = (
+    <Text
+      w={20}
+      display="flex"
+      align="center"
+      justifyContent="space-around"
+      variant="description"
+      fontWeight="semibold"
+      _hover={{
+        cursor: 'pointer',
+        color: 'grey.200',
+      }}
+      onClick={() => worksapceBalance.refetch()}
+    >
+      Update
+      <RefreshIcon
+        _hover={{
+          cursor: 'pointer',
+          color: 'grey.200',
+        }}
+        w={5}
+        h={5}
+      />
+    </Text>
+  );
+
+  const WorkspaceBalance = (
+    <HStack
+      w="full"
+      display="flex"
+      alignItems="center"
+      justifyContent={['start', 'space-around']}
+      spacing={2}
+    >
+      <Heading variant="title-xl">
+        {visibleBalance ? worksapceBalance.balance.balance : '-----'}
+      </Heading>
+      <Box
+        w="auto"
+        _hover={{
+          cursor: 'pointer',
+          opacity: 0.8,
+        }}
+        onClick={() => setVisibleBalance(!visibleBalance)}
+      >
+        {visibleBalance ? (
+          <EyeOpenIcon boxSize={7} />
+        ) : (
+          <EyeCloseIcon boxSize={5} />
+        )}
+      </Box>
+    </HStack>
+  );
+
   return (
-    <VStack w="full" spacing={6} px={12}>
+    <VStack w="full" spacing={6} px={[0, 12]}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -102,6 +159,7 @@ const WorkspacePage = () => {
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
+            display={['none', 'flex']}
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
@@ -118,7 +176,7 @@ const WorkspacePage = () => {
             Back home
           </Button>
 
-          <Breadcrumb ml={8}>
+          <Breadcrumb display={['none', 'initial']} ml={8}>
             <BreadcrumbItem>
               <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
@@ -181,7 +239,7 @@ const WorkspacePage = () => {
         </HStack>
       </HStack>
 
-      <HStack w="full" spacing={6}>
+      <Stack w="full" spacing={6} direction={['column-reverse', 'row']}>
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
           isLoaded={!workspaceHomeRequest.isLoading}
@@ -189,7 +247,17 @@ const WorkspacePage = () => {
           w="full"
           h="full"
         >
-          <Card p={8} bgColor="grey.800">
+          <Box display={['block', 'none']} mt={2} mb={4} alignSelf="flex-start">
+            <Text
+              color="grey.400"
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="md"
+            >
+              Overview
+            </Text>
+          </Box>
+          <Card p={[4, 8]} bgColor="grey.800">
             <VStack spacing={6} w="full">
               <HStack
                 w="full"
@@ -206,19 +274,20 @@ const WorkspacePage = () => {
                   <Avatar
                     position="relative"
                     variant="roundedSquare"
-                    size="lg"
-                    p={14}
-                    bgColor="grey.200"
-                    color="grey.800"
+                    size={['md', 'lg']}
+                    p={[10, 14]}
+                    bgColor="grey.600"
+                    color="grey.450"
                     fontWeight="bold"
                     name={currentWorkspace.name}
                   >
                     <Box
                       position="absolute"
                       borderRadius="md"
-                      w={24}
-                      h={24}
-                      border="3px solid white"
+                      w="calc(100% - 10px)"
+                      h="calc(100% - 10px)"
+                      borderWidth={[2, 3]}
+                      borderColor="grey.450"
                     />
                   </Avatar>
                   <Box>
@@ -227,77 +296,31 @@ const WorkspacePage = () => {
                     </Heading>
 
                     <Text
-                      maxW="200px"
+                      maxW={['100px', '200px']}
                       variant="description"
                       textOverflow="ellipsis"
-                      noOfLines={2}
                       isTruncated
                     >
                       {currentWorkspace.description}
                     </Text>
                   </Box>
                 </Center>
-
                 <VStack spacing={4} alignSelf="flex-start">
-                  <Box width="auto">
-                    <HStack
-                      minW={20}
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                    >
+                  {!isMobile && (
+                    <Box width="auto">
                       <HStack
-                        w="full"
+                        minW={20}
                         display="flex"
+                        flexDirection="column"
                         alignItems="center"
-                        justifyContent="space-around"
-                        spacing={2}
                       >
-                        <Heading variant="title-xl">
-                          {visibleBalance
-                            ? worksapceBalance.balance.balance
-                            : '-----'}
-                        </Heading>
-                        <Box
-                          w="auto"
-                          _hover={{
-                            cursor: 'pointer',
-                            opacity: 0.8,
-                          }}
-                          onClick={() => setVisibleBalance(!visibleBalance)}
-                        >
-                          {visibleBalance ? (
-                            <EyeOpenIcon boxSize={7} />
-                          ) : (
-                            <EyeCloseIcon boxSize={5} />
-                          )}
-                        </Box>
+                        {WorkspaceBalance}
+                        {UpdateBalance}
                       </HStack>
-                      <Text
-                        w={20}
-                        display="flex"
-                        align="center"
-                        justifyContent="space-around"
-                        variant="description"
-                        fontWeight="semibold"
-                        _hover={{
-                          cursor: 'pointer',
-                          color: 'grey.200',
-                        }}
-                        onClick={() => worksapceBalance.refetch()}
-                      >
-                        Update
-                        <RefreshIcon
-                          _hover={{
-                            cursor: 'pointer',
-                            color: 'grey.200',
-                          }}
-                          w={5}
-                          h={5}
-                        />
-                      </Text>
-                    </HStack>
-                  </Box>
+                    </Box>
+                  )}
+
+                  {isMobile && UpdateBalance}
 
                   {/* <VStack spacing={2} alignItems="flex-start">
                   <Button
@@ -335,9 +358,12 @@ const WorkspacePage = () => {
                 </VStack> */}
                 </VStack>
               </HStack>
-
+              {isMobile && (
+                <HStack width="full" display="flex" flexDirection="column">
+                  {WorkspaceBalance}
+                </HStack>
+              )}
               <Divider w="full" borderColor="grey.400" />
-
               <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
                 <Text
                   fontWeight="semibold"
@@ -374,7 +400,7 @@ const WorkspacePage = () => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      {/*todo: 
+                      {/*todo:
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
@@ -452,15 +478,15 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
         </VStack>
-      </HStack>
+      </Stack>
 
       {/* WORKSPACE VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
         <Text
+          color="grey.400"
           variant="subtitle"
           fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
+          fontSize="md"
         >
           Recently used vaults
         </Text>
@@ -474,7 +500,7 @@ const WorkspacePage = () => {
             create a vault to start to save your assets."
           />
         ) : (
-          <Grid w="full" templateColumns="repeat(4, 1fr)" gap={6}>
+          <Grid w="full" templateColumns={['block', 'repeat(4, 1fr)']} gap={6}>
             {recentVaults?.map(
               ({ id, name, workspace, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
@@ -522,16 +548,14 @@ const WorkspacePage = () => {
 
       {hasVaults && (
         <HStack w="full" mt={4} spacing={4}>
-          {
-            <Text
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize="xl"
-              color="grey.200"
-            >
-              Transactions
-            </Text>
-          }
+          <Text
+            color="grey.400"
+            variant="subtitle"
+            fontWeight="semibold"
+            fontSize="md"
+          >
+            Transactions
+          </Text>
 
           {hasTransactions && (
             <HStack>
@@ -541,6 +565,7 @@ const WorkspacePage = () => {
               />
               <Spacer />
               <Link
+                display={['none', 'block']}
                 color="brand.500"
                 onClick={() =>
                   navigate(
