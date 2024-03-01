@@ -8,11 +8,14 @@ import {
   HStack,
   Icon,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
+import { Drawer } from '@/layouts/dashboard/drawer';
 import { useScreenSize } from '@/modules/core';
 import {
   TransactionCard,
@@ -34,35 +37,46 @@ const TransactionsVaultPage = () => {
     defaultIndex,
   } = useTransactionList();
   const { isMobile } = useScreenSize();
+  const menuDrawer = useDisclosure();
 
   return (
     <Box w="full" height="100%" maxH="100%" overflowY="hidden">
-      {/* BREADCRUMB */}
-      <Box mb={10}>
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-            >
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+      <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              fontSize="sm"
-              color="grey.200"
-              fontWeight="semibold"
-              href="#"
-            >
-              Transactions
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+      <Box mb={10}>
+        {isMobile ? (
+          <HStack mt={2} gap={1.5} onClick={menuDrawer.onOpen}>
+            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            <Text fontSize="sm" fontWeight="normal" color="grey.100">
+              Menu
+            </Text>
+          </HStack>
+        ) : (
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Transactions
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
       </Box>
 
       {/* TITLE */}
