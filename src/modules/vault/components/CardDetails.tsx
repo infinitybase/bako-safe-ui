@@ -74,17 +74,18 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { biggerAsset, visebleBalance, setVisibleBalance, balanceUSD } = store;
+  const { visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
 
   const hasBalance = vault.hasBalance;
   const balanceFormatted = bn(
-    bn.parseUnits(biggerAsset?.amount ?? '0.000'),
+    bn.parseUnits(vault.ethBalance ?? '0.000'),
   ).format({
     precision: 4,
   });
+
   const workspaceId = workspaces.current ?? '';
 
   const reqPerm = [
@@ -221,7 +222,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? balanceUSD : '-----'}
+                        {visebleBalance ? balanceFormatted : '-----'}
                       </Heading>
                       <Box
                         w="auto"
