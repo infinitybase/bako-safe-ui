@@ -55,7 +55,7 @@ const HomePage = () => {
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack visibility={['hidden', 'visible']}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
-          <Text color="grey.200" fontWeight="semibold">
+          <Text color="grey.400" fontWeight="semibold">
             Home
           </Text>
         </HStack>
@@ -130,7 +130,7 @@ const HomePage = () => {
       {recentVaults?.length && (
         <Box mt={4} alignSelf="flex-start">
           <Text
-            color="grey.200"
+            color="grey.400"
             variant="subtitle"
             fontWeight="semibold"
             fontSize={['sm', 'xl']}
@@ -214,7 +214,6 @@ const HomePage = () => {
               variant="subtitle"
               fontWeight="semibold"
               fontSize={['sm', 'xl']}
-              color="grey.200"
             >
               Transactions
             </Text>
