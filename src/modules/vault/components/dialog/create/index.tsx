@@ -20,7 +20,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   return (
     <Dialog.Modal
-      size="xl"
+      size={{ base: tabs.tab === TabState.ADDRESSES ? 'full' : 'lg', sm: 'xl' }}
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}

@@ -207,7 +207,7 @@ const VaultAddressesStep = ({
             maxW={350}
             mb={5}
             title={
-              <Heading fontSize="md" color="grey.200">
+              <Heading fontSize={{ base: 'sm', sm: 'md' }} color="grey.200">
                 Min signatures required?
               </Heading>
             }

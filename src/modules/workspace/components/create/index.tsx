@@ -4,6 +4,7 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  ModalProps,
   TabPanel,
   TabPanels,
   Tabs,
@@ -19,12 +20,12 @@ import {
   StepProgress,
 } from '@/components';
 
-import { OnboardingStep } from '../../components';
 import {
   CreateWorkspaceTabState,
   UseCreateWorkspace,
   useCreateWorkspace,
 } from '../../hooks/create';
+import { OnboardingStep } from '..';
 
 const CreateWorkspaceForm = ({
   form,
@@ -58,7 +59,9 @@ const CreateWorkspaceForm = ({
   </VStack>
 );
 
-const CreateWorkspacePage = () => {
+interface CreateWorkspaceDialogProps extends Omit<ModalProps, 'children'> {}
+
+const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   const {
     form,
     tabs,
@@ -70,10 +73,12 @@ const CreateWorkspacePage = () => {
 
   return (
     <Dialog.Modal
-      size={!tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg'}
-      isOpen
-      onClose={handleClose}
+      size={{
+        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'full' : 'lg',
+        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
+      }}
       closeOnOverlayClick={false}
+      {...props}
     >
       {tabs.is(CreateWorkspaceTabState.FORM) && (
         <Dialog.Header
@@ -156,4 +161,4 @@ const CreateWorkspacePage = () => {
   );
 };
 
-export { CreateWorkspacePage };
+export { CreateWorkspaceDialog };
