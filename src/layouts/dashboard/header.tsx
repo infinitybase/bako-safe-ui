@@ -293,8 +293,6 @@ const WorkspaceBox = ({
           </HStack>
         )}
       </Flex>
-
-      {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
     </Flex>
   );
 };
@@ -374,7 +372,7 @@ const Header = () => {
           cursor="pointer"
           w={{
             base: 190,
-            sm: 310,
+            sm: currentWorkspace.workspace?.single ? 235 : 300,
           }}
           borderLeftWidth={{ base: 0, sm: 1 }}
         >
