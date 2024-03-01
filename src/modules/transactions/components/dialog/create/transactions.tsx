@@ -165,7 +165,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       index={accordion.index}
       overflowY="auto"
       maxH={450}
-      pr={4}
+      pr={{ base: 1, sm: 4 }}
       sx={{
         '&::-webkit-scrollbar': {
           width: '5px',
