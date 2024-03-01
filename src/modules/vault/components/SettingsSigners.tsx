@@ -13,7 +13,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const members = vault.members;
 
   return (
-    <Box>
+    <Box w={['full', 'auto']}>
       <HStack alignItems="center" mb={5} w="full" spacing={4}>
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Signers
@@ -25,7 +25,10 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
       <VStack spacing={5}>
         <Grid
           w="100%"
-          templateColumns={`repeat(${signerColumnsAmount}, 1fr)`}
+          templateColumns={[
+            'repeat(1, 1fr)',
+            `repeat(${signerColumnsAmount}, 1fr)`,
+          ]}
           gap={6}
           mb={16}
         >
