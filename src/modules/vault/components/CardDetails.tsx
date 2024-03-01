@@ -221,7 +221,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? balanceUSD : '-----'}
+                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
                       </Heading>
                       <Box
                         w="auto"

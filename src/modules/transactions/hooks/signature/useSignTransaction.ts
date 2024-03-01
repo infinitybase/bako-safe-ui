@@ -3,6 +3,7 @@ import { randomBytes } from 'ethers';
 import { useCallback, useMemo } from 'react';
 
 import { queryClient } from '@/config';
+import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useAuthStore } from '@/modules/auth';
 import { useWalletSignMessage } from '@/modules/core';
 
@@ -22,6 +23,8 @@ export interface UseSignTransactionOptions {
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
+
+  const { warningToast } = useContactToast();
   const { account } = useAuthStore();
 
   const transactionSendContext = useTransactionSend();
@@ -58,8 +61,12 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const signMessageRequest = useWalletSignMessage({
-    onSuccess: () => console.log('Message sign success'),
-    onError: (e) => console.log(e),
+    onError: () => {
+      warningToast({
+        title: 'Signature failed',
+        description: 'Please try again!',
+      });
+    },
   });
 
   const confirmTransaction = async () => {
