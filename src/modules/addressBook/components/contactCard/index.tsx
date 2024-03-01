@@ -41,7 +41,7 @@ const ContactCard = ({
   const toast = useNotification();
 
   return (
-    <Card display="flex" w="100%" bg="dark.300" zIndex={100} {...rest}>
+    <Card display="flex" w="100%" bg="grey.800" zIndex={100} {...rest}>
       <VStack alignItems="flex-start">
         <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
@@ -72,9 +72,9 @@ const ContactCard = ({
           </HStack>
         </HStack>
 
-        <Divider borderColor="dark.100" my={1} />
+        <Divider borderColor="grey.600" my={1} />
 
-        <HStack>
+        <HStack w="full" justifyContent={['end', 'start']}>
           <IconButton
             aria-label="Copy"
             variant="icon"

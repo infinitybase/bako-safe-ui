@@ -46,7 +46,7 @@ const tertiary = defineStyle({
 });
 
 const icon = defineStyle({
-  bgColor: 'dark.100',
+  bgColor: 'grey.800',
   color: 'grey.200',
   fontSize: 'xl',
 });
