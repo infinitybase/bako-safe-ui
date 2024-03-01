@@ -24,16 +24,18 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       closeOnOverlayClick={false}
     >
       <Dialog.Header
-        position="relative"
+        position={['static', 'relative']}
+        mt={[8, 0]}
         mb={0}
-        top={{ base: -5, sm: -8 }}
+        maxH={40}
+        top={{ base: 0, sm: -8 }}
         w="full"
         maxW={480}
         title="Create Transaction"
         description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
-      <Dialog.Body maxW={500} minH={640}>
+      <Dialog.Body maxW={500} maxH={'full'}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}

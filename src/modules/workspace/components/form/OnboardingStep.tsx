@@ -29,20 +29,20 @@ interface OnboardingStepProps {
 const OnboardingStep = (props: OnboardingStepProps) => (
   <Center
     flexDirection="column"
-    mb={5}
+    mb={[0, 5]}
     p={{
-      base: 0,
+      base: 1,
       sm: 6,
     }}
-    maxH={745}
+    maxH="full"
   >
-    <Box m={8}>
+    <Box m={[2, 8]}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
     </Box>
-    <Box mb={5}>
+    <Box mb={[2, 5]}>
       <Heading fontSize="3xl">Heads up!</Heading>
     </Box>
-    <Box maxW={350} mb={5}>
+    <Box maxW={350} mb={[2, 5]}>
       <Text
         color="grey.400"
         fontSize={{ base: 'sm', sm: 'md' }}
@@ -52,17 +52,17 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         they function!
       </Text>
     </Box>
-    <Box w="100%" my={5}>
+    <Box w="100%" my={[3, 5]}>
       <StepProgress value={props.tabs.tab} length={props.tabs.length} />
     </Box>
-    <Box mb={5} maxW={480}>
-      <Text color="white" fontSize={{ base: 'sm', sm: 'md' }} textAlign="start">
+    <Box mb={[2, 5]} maxW={480}>
+      <Text color="white" fontSize={{ base: 'xs', sm: 'md' }} textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
         same vaults and address book. Within a workspace, you can assign members
         different levels of permission, including:
       </Text>
     </Box>
-    <VStack mb={5}>
+    <VStack mb={[3, 5]}>
       <HStack>
         <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
           <Badge
@@ -119,7 +119,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
     </VStack>
 
-    <Box mb={5} minW="full" maxW={500}>
+    <Box mb={[1, 5]} minW="full" maxW={500}>
       <Alert
         color="#F05D48"
         bgColor="rgba(240,93,72,0.1)"

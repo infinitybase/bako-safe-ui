@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   Divider,
   Drawer,
@@ -27,6 +28,7 @@ type ConnectorType = {
   icon?: React.ElementType;
   imageUrl?: string;
   isEnabled?: boolean;
+  isBeta?: boolean;
 };
 
 interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
@@ -92,13 +94,17 @@ const CardConnector = (props: ConnectorCardProps) => {
         backgroundColor="#121212a8"
       />
       {ConnectorIcon}
-      <Heading
-        fontSize={{ base: 'md', sm: 'lg' }}
-        fontWeight="semibold"
-        color="grey.200"
-      >
-        {connector.name}
-      </Heading>
+      <Box flex={1}>
+        <Heading
+          fontSize={{ base: 'md', sm: 'lg' }}
+          fontWeight="semibold"
+          color="grey.200"
+        >
+          {connector.name}
+        </Heading>
+      </Box>
+
+      {connector.isBeta && <Badge>Beta</Badge>}
     </Card>
   );
 };
@@ -117,7 +123,7 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
       placement="right"
     >
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent maxH="full">
         <Flex mb={5} w="full" justifyContent="flex-end">
           <HStack
             cursor="pointer"

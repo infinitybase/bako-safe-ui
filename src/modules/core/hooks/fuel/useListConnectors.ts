@@ -13,14 +13,17 @@ const DEFAULT_CONNECTORS = [
   {
     name: EConnectors.WEB_AUTHN,
     icon: PasskeyIcon,
+    isBeta: true,
   },
   {
     name: EConnectors.FUEL,
     icon: FuelIcon,
+    isBeta: false,
   },
   {
     name: EConnectors.FULLET,
     icon: FueletIcon,
+    isBeta: false,
   },
 ];
 
