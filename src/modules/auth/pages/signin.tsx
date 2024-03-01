@@ -77,6 +77,13 @@ const SigninPage = () => {
     ),
   };
 
+  const WebauthnDrawer = (
+    <DrawerWebAuthn
+      isOpen={isOpen} // todo: move the complete item with webauthn to component
+      onClose={closeWebAuthnDrawer}
+    />
+  );
+
   if (isMobile) {
     return (
       <SigninContainerMobile>
@@ -86,6 +93,7 @@ const SigninPage = () => {
           onSelect={connectors.select}
           connectors={connectors.items}
         />
+        {WebauthnDrawer}
         <Box
           w="full"
           backgroundColor="brand.500"
@@ -125,10 +133,7 @@ const SigninPage = () => {
         onSelect={connectors.select}
         connectors={connectors.items}
       />
-      <DrawerWebAuthn
-        isOpen={isOpen} // todo: move the complete item with webauthn to component
-        onClose={closeWebAuthnDrawer}
-      />
+      {WebauthnDrawer}
       <Box textAlign="center" mb={2}>
         <Text
           fontSize="4xl"

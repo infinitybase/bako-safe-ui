@@ -133,7 +133,7 @@ const HomePage = () => {
             color="grey.400"
             variant="subtitle"
             fontWeight="semibold"
-            fontSize={['sm', 'xl']}
+            fontSize="md"
           >
             Recently used vaults
           </Text>
