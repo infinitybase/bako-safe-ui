@@ -59,7 +59,7 @@ const baseStyle = defineStyle({
   fontWeight: 'normal',
   textTransform: 'initial',
   borderWidth: 1,
-  paddingX: 2,
+  padding: 1.5,
   display: 'flex',
   alignItems: 'center',
   gap: 2,
