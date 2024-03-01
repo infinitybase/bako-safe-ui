@@ -7,6 +7,7 @@ import {
   Divider,
   Heading,
   HStack,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -63,10 +64,16 @@ const SettingsOverview = (props: CardDetailsProps) => {
       </Box>
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
-        <Card p={8} bg="dark.200" borderColor="dark.100">
-          <HStack>
-            <VStack spacing={9} w="full">
-              <HStack spacing={6} w="full">
+        <Card p={8} bg="dark.200" position="relative" borderColor="dark.100">
+          <Stack direction={['column', 'row']}>
+            <VStack spacing={[6, 9]} w="full">
+              <Stack
+                direction={['column', 'row']}
+                alignItems={['flex-start', 'center']}
+                spacing={[3, 6]}
+                w="full"
+                maxW={['full', '100%']}
+              >
                 <Center>
                   <Avatar
                     variant="roundedSquare"
@@ -74,11 +81,17 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     bg="grey.900"
                     color="white"
                     size={'lg'}
-                    p={10}
+                    p={[10, 10]}
                   />
                 </Center>
                 <Box>
-                  <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
+                  <Heading
+                    mb={1}
+                    variant="title-xl"
+                    fontSize={['md', 'xl']}
+                    isTruncated
+                    maxW={600}
+                  >
                     {vault?.name}
                   </Heading>
 
@@ -86,30 +99,32 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     <Text variant="description">{vault?.description}</Text>
                   </Box>
                 </Box>
-              </HStack>
+              </Stack>
 
               <HStack
                 w="full"
+                maxW={[160, '100%']}
                 spacing={5}
-                justifyContent="flex-start"
+                justifyContent={['center', 'flex-start']}
                 alignItems="flex-start"
               >
                 <VStack spacing={5}>
-                  <Box width="100%">
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
+                  <Box width="100%" maxW="full">
+                    <Stack
+                      justifyContent={['flex-start', 'space-between']}
+                      alignItems={['flex-start', 'center']}
+                      direction={['column', 'row']}
                       mb={2}
                     >
                       <Text variant="description">Vault balance</Text>
                       <HStack spacing={2}>
                         <HStack spacing={2}>
-                          <Heading variant="title-xl">
+                          <Heading variant="title-xl" fontSize={['md', 'lg']}>
                             {store.visebleBalance
                               ? biggerAsset?.amount ?? 0
                               : '*****'}
                           </Heading>
-                          <Text variant="description" fontSize="md">
+                          <Text variant="description" fontSize={['sm', 'md']}>
                             {biggerAsset?.slug ?? 'ETH'}
                           </Text>
                         </HStack>
@@ -123,21 +138,21 @@ const SettingsOverview = (props: CardDetailsProps) => {
                           }
                         >
                           {store.visebleBalance ? (
-                            <ViewIcon boxSize={6} />
+                            <ViewIcon boxSize={[5, 6]} />
                           ) : (
-                            <ViewOffIcon boxSize={6} />
+                            <ViewOffIcon boxSize={[5, 6]} />
                           )}
                         </Box>
                       </HStack>
-                    </HStack>
+                    </Stack>
                   </Box>
 
-                  <Divider borderColor="dark.100" />
+                  <Divider mt={[0, 0]} borderColor="dark.100" />
 
-                  <HStack spacing={40}>
+                  <HStack spacing={[6, 40]}>
                     <VStack spacing={2} alignItems="flex-start">
                       <Button
-                        minW={130}
+                        minW={[160, 130]}
                         variant="primary"
                         onClick={() => openFaucet(vault.predicateAddress!)}
                       >
@@ -151,7 +166,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
                     <VStack spacing={2} alignItems="flex-start">
                       <Button
-                        minW={130}
+                        minW={[160, 130]}
                         variant="primary"
                         isDisabled={
                           !vault?.hasBalance ||
@@ -193,27 +208,42 @@ const SettingsOverview = (props: CardDetailsProps) => {
               </HStack>
             </VStack>
 
-            <VStack spacing={4} justifyContent="flex-start">
-              <Box p={3} backgroundColor={'white'} borderRadius={10}>
+            <VStack
+              position={['absolute', 'relative']}
+              top={[8, 0]}
+              right={[8, 0]}
+              spacing={4}
+              align={['flex-end', 'center']}
+              justifyContent="flex-start"
+            >
+              <Box
+                p={3}
+                backgroundColor={'white'}
+                w={[32, 180]}
+                h={[32, 180]}
+                borderRadius={10}
+              >
                 <QRCodeSVG
                   value={vault.predicateAddress!}
                   fgColor="black"
                   bgColor="white"
                   style={{
+                    width: '100%',
+                    height: '100%',
                     borderRadius: 10,
-                    width: 180,
-                    height: 180,
                   }}
                 />
               </Box>
 
               <AddressCopy
                 w="full"
+                mb={[4, 0]}
+                maxW={['40', 180]}
                 address={AddressUtils.format(vault.predicateAddress)!}
                 addressToCopy={vault.predicateAddress!}
               />
             </VStack>
-          </HStack>
+          </Stack>
         </Card>
       </CustomSkeleton>
     </Box>
