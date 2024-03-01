@@ -7,6 +7,7 @@ import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
 import { useAuthStore } from '@/modules/auth/store';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
+import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
 
@@ -35,6 +36,23 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
     `0x${sign.challenge}`,
     sign.publicKey,
   );
+
+  const publicKeyOnSignature = [
+    recoverPublicKey(signature.sig_compact, signature.dig_compact, 0),
+    recoverPublicKey(signature.sig_compact, signature.dig_compact, 1),
+  ];
+
+  const isValidSignature = publicKeyOnSignature.includes(sign.publicKey);
+
+  console.log({
+    isValidSignature,
+    publicKeyOnSignature,
+    pk_correct: sign.publicKey,
+  });
+
+  if (!isValidSignature) {
+    throw new Error('Invalid signature');
+  }
 
   const result = encodeSignature({
     type: SignatureType.WEB_AUTHN,
