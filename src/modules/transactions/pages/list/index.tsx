@@ -13,6 +13,7 @@ import { TransactionStatus } from 'bsafe';
 import { format } from 'date-fns';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
+import { useScreenSize } from '@/modules/core';
 import {
   TransactionCard,
   TransactionFilter,
@@ -32,6 +33,7 @@ const TransactionsVaultPage = () => {
     setSelectedTransaction,
     defaultIndex,
   } = useTransactionList();
+  const { isMobile } = useScreenSize();
 
   return (
     <Box w="full" height="100%" maxH="100%" overflowY="hidden">
@@ -141,9 +143,11 @@ const TransactionsVaultPage = () => {
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}
               >
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
+                {!isMobile && (
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                )}
                 <TransactionCard.Assets />
                 <TransactionCard.Amount assets={transaction.resume.outputs} />
                 <TransactionCard.Name>
