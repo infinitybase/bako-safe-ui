@@ -69,6 +69,7 @@ const useVaultDetails = () => {
       isLoading,
       isFetching,
       hasBalance,
+      ethBalance,
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,

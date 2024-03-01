@@ -51,9 +51,6 @@ export async function createAccount(username: string, challenge: string) {
   });
 
   const response = (credential as any).response;
-  // console.log(parsers.parseClient(response.clientDataJSON));
-  // console.log(parsers.parseClient(new Uint8Array(response.clientDataJSON)));
-  // console.log(parsers.parseAuthenticator(response.authenticatorData));
 
   const publicKey = await parsePublicKey(response.getPublicKey());
   const publicKeyHex = hexlify(new Uint8Array(publicKey.slice(1)));
