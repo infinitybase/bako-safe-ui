@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Stack,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -17,7 +18,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { useAuth } from '@/modules/auth';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -52,6 +53,9 @@ const UserTransactionsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
+
+  const { isMobile } = useScreenSize();
+
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
@@ -61,7 +65,6 @@ const UserTransactionsPage = () => {
           <Button
             variant="primary"
             fontWeight="semibold"
-            fontSize={15}
             leftIcon={
               <Box mr={-1}>
                 <IoChevronBack size={22} />
@@ -77,43 +80,45 @@ const UserTransactionsPage = () => {
             Back home
           </Button>
 
-          <Breadcrumb ml={8}>
-            <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                onClick={() => goHome()}
-              >
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+          {!isMobile && (
+            <Breadcrumb ml={8}>
+              <BreadcrumbItem>
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goHome()}
+                >
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+              {!isSingleWorkspace && (
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goWorkspace(current)}
+                  >
+                    {workspace?.name}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              )}
+
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  href="#"
                 >
-                  {workspace?.name}
+                  My Transactions
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
-
-            <BreadcrumbItem>
-              <BreadcrumbLink
-                fontSize="sm"
-                color="grey.200"
-                fontWeight="semibold"
-                href="#"
-              >
-                My Transactions
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
+            </Breadcrumb>
+          )}
         </HStack>
 
         <Box>
@@ -136,7 +141,7 @@ const UserTransactionsPage = () => {
       </HStack>
 
       {/* ACTION BUTTONS */}
-      <HStack w="full" spacing={6}>
+      <Stack w="full" h="full" direction={['column', 'row']} spacing={6}>
         <ActionCard.Container
           onClick={() =>
             navigate(
@@ -183,7 +188,7 @@ const UserTransactionsPage = () => {
             </ActionCard.Description>
           </Box>
         </ActionCard.Container>
-      </HStack>
+      </Stack>
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
@@ -223,14 +228,7 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List
-        mt={1}
-        w="full"
-        spacing={5}
-        maxH="calc(100% - 140px)"
-        overflowY="scroll"
-        css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
-      >
+      <TransactionCard.List mt={1} w="full" spacing={5}>
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
         {transactionRequest.transactions.map((transaction) => {

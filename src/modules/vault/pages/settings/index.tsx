@@ -97,7 +97,7 @@ const VaultSettingsPage = () => {
         </Button>
       </HStack>
 
-      <VStack mb={14} alignItems="flex-start" w="100%" spacing={12}>
+      <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
         <SettingsOverview
           vault={vault}
           store={store}
