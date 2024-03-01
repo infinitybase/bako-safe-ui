@@ -17,7 +17,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
+import { ITransaction, IWitnesses } from 'bsafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { GoArrowSwitch } from 'react-icons/go';
@@ -85,7 +85,9 @@ const WorkspacePage = () => {
   const hasTransactions = recentTransactions && recentTransactions?.length > 0;
   const workspaceId = current ?? '';
 
-  // useEffect(() => console.log('[WK]: ', hasSkeleton), [hasSkeleton]);
+  const isSigner = (witnesses: IWitnesses[]) => {
+    return !!witnesses.find((w: IWitnesses) => w.account === account);
+  };
 
   if (!currentWorkspace || currentWorkspace.single) {
     return null;
@@ -573,6 +575,9 @@ const WorkspacePage = () => {
                 >
                   <TransactionCard.Container
                     status={status}
+                    transaction={transaction}
+                    account={account}
+                    isSigner={isSigner(transaction.witnesses)}
                     details={
                       <TransactionCard.Details
                         transaction={transaction}
@@ -608,11 +613,7 @@ const WorkspacePage = () => {
                         ...transaction,
                         account,
                       })}
-                      isSigner={
-                        !!transaction.witnesses.find(
-                          (w) => w.account === account,
-                        )
-                      } // here
+                      isSigner={isSigner(transaction.witnesses)}
                     />
                   </TransactionCard.Container>
                 </CustomSkeleton>

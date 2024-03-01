@@ -142,6 +142,9 @@ const TransactionsVaultPage = () => {
               <TransactionCard.Container
                 status={transactionStatus({ ...transaction, account })}
                 details={<TransactionCard.Details transaction={transaction} />}
+                transaction={transaction}
+                account={account}
+                isSigner={isSigner}
               >
                 {!isMobile && (
                   <TransactionCard.CreationDate>
