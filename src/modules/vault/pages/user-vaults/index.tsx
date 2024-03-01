@@ -127,7 +127,7 @@ const UserVaultsPage = () => {
       </HStack>
 
       <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
-        <Stack w="full" h="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
