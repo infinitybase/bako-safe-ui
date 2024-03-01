@@ -131,7 +131,7 @@ const WorkspacePage = () => {
       spacing={2}
     >
       <Heading variant="title-xl">
-        {visibleBalance ? worksapceBalance.balance.balance : '-----'}
+        {visibleBalance ? worksapceBalance.balance.balanceUSD : '-----'}
       </Heading>
       <Box
         w="auto"

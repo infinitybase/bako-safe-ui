@@ -33,6 +33,7 @@ export const LoginWebAuthnForm = ({
               isInvalid={form.formState.isValid && fieldState.invalid}
               autoComplete="off"
               placeholder=" "
+              isDisabled={data?.length === 0}
             >
               {data?.map((user) => (
                 <option key={user.id} value={user.id}>
