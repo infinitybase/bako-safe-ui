@@ -225,12 +225,14 @@ const HomePage = () => {
             <Button
               color="brand.400"
               textDecoration="none"
-              display={['none', 'initial']}
+              alignItems="center"
+              justifyContent="center"
+              display={['none', 'flex']}
               backgroundColor="transparent"
               _hover={{
                 backgroundColor: 'transparent',
               }}
-              rightIcon={<Icon as={MdKeyboardArrowRight} w={7} h={7} />}
+              rightIcon={<Icon as={MdKeyboardArrowRight} boxSize={6} />}
               onClick={() =>
                 navigate(
                   Pages.userTransactions({

@@ -233,7 +233,7 @@ const AddressBookPage = () => {
             '2xl': 'repeat(4, 1fr)',
           }}
           gap={6}
-          pb={28}
+          pb={0}
         >
           {!hasContacts && listContactsRequest.isLoading && (
             <>
