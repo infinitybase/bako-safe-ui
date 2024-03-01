@@ -34,6 +34,7 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+  //assets: UseVaultDetailsReturn['assets'];
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
@@ -77,17 +78,6 @@ const CardDetails = (props: CardDetailsProps) => {
   const balance = bn(bn.parseUnits(biggerAsset?.amount ?? '0.000')).format({
     precision: 4,
   });
-
-  // const reqPerm = [
-  //   PermissionRoles.ADMIN,
-  //   PermissionRoles.OWNER,
-  //   PermissionRoles.MANAGER,
-  //   PermissionRoles.SIGNER,
-  // ];
-  // const makeTransactionsPerm = useMemo(() => {
-  //   const as = hasPermission(reqPerm);
-  //   return as;
-  // }, [vault.id, balance]);
 
   const vaultDescription = useMemo(() => {
     if (!vault?.description) return '';

@@ -47,14 +47,21 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, isOpen, closeWebAuthnDrawer, page, setSearch } =
-    useWebAuthn();
+  const {
+    openWebAuthnDrawer,
+    isOpen,
+    closeWebAuthnDrawer,
+    page,
+    setSearch,
+    hardwareId,
+  } = useWebAuthn();
 
   useCheckHardwareId();
   const hasFuel = !!fuel;
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace }) => {
+    onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
+      const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
       auth.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
@@ -63,6 +70,7 @@ const useSignIn = () => {
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
+        webAuthn: _webAuthn,
       });
       navigate(redirectPathBuilder(!!origin, location, account!));
     },
@@ -122,7 +130,7 @@ const useSignIn = () => {
       setSearch,
       closeWebAuthnDrawer,
       hardwareId: useCheckHardwareIdRequest,
-      accounts: useGetAccountsByHardwareId(useCheckHardwareIdRequest.data!),
+      accounts: useGetAccountsByHardwareId(hardwareId!),
     },
     signInRequest,
     isConnected,

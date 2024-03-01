@@ -6,10 +6,11 @@ import { CreateTransactionForm } from './form';
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const {
     form,
+    nicks,
     assets,
+    accordion,
     transactionsFields,
     transactionRequest,
-    accordion,
     handleClose,
   } = useCreateTransaction({
     onClose: props.onClose,
@@ -17,7 +18,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   return (
     <Dialog.Modal
-      size="xl"
+      size={{ base: 'full', sm: 'xl' }}
       {...props}
       onClose={handleClose}
       closeOnOverlayClick={false}
@@ -25,7 +26,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Header
         position="relative"
         mb={0}
-        top={-8}
+        top={{ base: -5, sm: -8 }}
         w="full"
         maxW={480}
         title="Create Transaction"
@@ -35,6 +36,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Body maxW={500} minH={640}>
         <CreateTransactionForm
           form={form}
+          nicks={nicks}
           assets={assets}
           accordion={accordion}
           transactionsFields={transactionsFields}

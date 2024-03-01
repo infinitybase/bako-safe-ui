@@ -1,24 +1,13 @@
 import { ITransaction, TransactionStatus } from 'bsafe';
 import { randomBytes } from 'ethers';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
 
 import { queryClient } from '@/config';
-import { useAuth, useAuthStore } from '@/modules/auth';
-import {
-  invalidateQueries,
-  useWalletSignMessage,
-  WorkspacesQueryKey,
-} from '@/modules/core';
-import { useHome } from '@/modules/home';
-import { VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault';
+import { useAuthStore } from '@/modules/auth';
+import { useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
-import {
-  TRANSACTION_LIST_QUERY_KEY,
-  USER_TRANSACTIONS_QUERY_KEY,
-} from '../list';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 
 export interface SignTransactionParams {
@@ -34,13 +23,8 @@ export interface UseSignTransactionOptions {
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
   const { account } = useAuthStore();
-  const {
-    workspaces: { current },
-  } = useAuth();
-  const { vaultId } = useParams();
 
   const transactionSendContext = useTransactionSend();
-  const { transactionsRequest, homeRequest } = useHome();
 
   useMemo(() => {
     const transaction = options.transaction;
@@ -57,21 +41,12 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   }, [options.transaction]);
 
   const refetchTransactionList = useCallback(() => {
-    invalidateQueries([
-      'bsafe',
-      TRANSACTION_LIST_QUERY_KEY,
-      USER_TRANSACTIONS_QUERY_KEY,
-      VAULT_TRANSACTIONS_QUERY_KEY,
-    ]);
-    // queryClient.invalidateQueries(
-    //   WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
-    // );
-    queryClient.invalidateQueries(
-      WorkspacesQueryKey.FULL_DATA(current, vaultId),
-    );
-    transactionsRequest.refetch();
-    homeRequest.refetch();
-  }, [current, homeRequest, transactionsRequest]);
+    const queries = ['home', 'transaction', 'assets'];
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        queries.some((value) => query.queryHash.includes(value)),
+    });
+  }, []);
 
   const request = useSignTransactionRequest({
     onSuccess: () => {
@@ -83,13 +58,15 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   const signMessageRequest = useWalletSignMessage({
-    onError: () => toast.error('Message sign rejected'),
+    onSuccess: () => console.log('Message sign success'),
+    onError: (e) => console.log(e),
   });
 
   const confirmTransaction = async () => {
     const signedMessage = await signMessageRequest.mutateAsync(
       options.transaction.hash,
     );
+
     await request.mutateAsync({
       account,
       confirm: true,
@@ -109,21 +86,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       account,
     });
   };
-
-  useEffect(() => {
-    if (
-      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
-      (!homeRequest.isRefetching || !homeRequest.isFetching)
-    ) {
-      refetchTransactionList();
-    }
-  }, [
-    homeRequest.isFetching,
-    homeRequest.isRefetching,
-    homeRequest.isSuccess,
-    options.transaction.status,
-    refetchTransactionList,
-  ]);
 
   return {
     request,

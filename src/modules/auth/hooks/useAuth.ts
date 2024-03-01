@@ -5,7 +5,7 @@ import { Provider } from 'fuels';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { IPermission } from '@/modules/core';
 
-import { TypeUser } from '../services';
+import { SignWebAuthnPayload, TypeUser } from '../services';
 import { useAuthStore } from '../store';
 
 type AuthenticateParams = {
@@ -16,6 +16,7 @@ type AuthenticateParams = {
   accessToken: string;
   permissions: IPermission;
   singleWorkspace: string;
+  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
 };
 
 type AuthenticateWorkspaceParams = {
@@ -49,6 +50,18 @@ const useAuth = () => {
         name: CookieName.SINGLE_WORKSPACE,
         value: params.singleWorkspace,
       },
+      {
+        name: CookieName.WEB_AUTHN_PK,
+        value: params.webAuthn?.publicKey ?? '',
+      },
+      {
+        name: CookieName.WEB_AUTHN_ID,
+        value: params.webAuthn?.id ?? '',
+      },
+      {
+        name: CookieName.ACCOUNT_TYPE,
+        value: params.accountType,
+      },
     ]);
     store.singleAuthentication({
       userId: params.userId,
@@ -56,6 +69,7 @@ const useAuth = () => {
       account: params.account,
       accountType: params.accountType,
       workspace: params.singleWorkspace,
+      webAuthn: params.webAuthn,
     });
   };
 
@@ -77,6 +91,8 @@ const useAuth = () => {
       CookieName.USER_ID,
       CookieName.ACCESS_TOKEN,
       CookieName.SINGLE_WORKSPACE,
+      CookieName.WEB_AUTHN_ID,
+      CookieName.WEB_AUTHN_PK,
     ]);
     store.logout();
   };
@@ -106,6 +122,10 @@ const useAuth = () => {
     avatar: store.avatar,
     userId: store.userId,
     account: store.account,
+    webAuthn: {
+      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
+      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
+    },
     workspaces: store.workspaces,
     permissions: store.permissions,
     isInvalidAccount: store.invalidAccount,

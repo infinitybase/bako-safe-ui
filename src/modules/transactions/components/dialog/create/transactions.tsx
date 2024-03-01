@@ -16,6 +16,7 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+
 import {
   AddressUtils,
   AssetSelect,
@@ -27,10 +28,12 @@ import {
   useCreateTransaction,
 } from '@/modules/transactions/hooks';
 
+
 import { TransactionAccordion } from './accordion';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
+  nicks: UseCreateTransaction['nicks'];
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
@@ -56,6 +59,7 @@ const TransactionFormField = ({
     contactDialog,
     paginatedContacts,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -85,7 +89,7 @@ const TransactionFormField = ({
                 isLoading={!paginatedContacts.isSuccess}
                 options={paginatedContacts.data!}
                 bottomAction={
-                  <Box mt={2}>
+                  <Box hidden={!canAddMember} mt={2}>
                     <Text color="grey.200" fontSize={12}>
                       Do you wanna{' '}
                       <Link
@@ -157,15 +161,14 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { nicks } = useCreateTransaction();
-  const { form, transactions, assets, accordion } = props;
+  const { form, transactions, assets, accordion, nicks } = props;
 
   return (
     <Accordion
       index={accordion.index}
       overflowY="auto"
       maxH={450}
-      pr={4}
+      pr={{ base: 1, sm: 4 }}
       sx={{
         '&::-webkit-scrollbar': {
           width: '5px',
@@ -187,6 +190,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           (value) => value === '',
         );
         const isDisabled = hasEmptyField || fieldState.invalid;
+        const contact = nicks.find(
+          (nick) => nick.user.address === transaction.to,
+        );
 
         return (
           <>
@@ -194,9 +200,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               key={field.id}
               mb={6}
               borderWidth={1}
-              borderColor="dark.100"
+              borderColor="dark.600"
               borderRadius={10}
-              backgroundColor="dark.300"
+              backgroundColor="dark.600"
             >
               <TransactionAccordion.Item
                 title={`Recipient ${index + 1}`}

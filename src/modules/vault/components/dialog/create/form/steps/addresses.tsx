@@ -44,6 +44,7 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -173,6 +174,7 @@ const VaultAddressesStep = ({
               );
             })}
 
+
             <Button
               w="full"
               border="none"
@@ -196,6 +198,7 @@ const VaultAddressesStep = ({
           </VStack>
         </Dialog.Section>
 
+
         <Divider borderColor="dark.100" my={9} />
 
         <HStack position="relative">
@@ -204,7 +207,7 @@ const VaultAddressesStep = ({
             maxW={350}
             mb={5}
             title={
-              <Heading fontSize="md" color="grey.200">
+              <Heading fontSize={{ base: 'sm', sm: 'md' }} color="grey.200">
                 Min signatures required?
               </Heading>
             }

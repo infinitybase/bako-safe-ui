@@ -10,8 +10,10 @@ const VAULT_QUERY_KEYS = {
 };
 
 const useBsafeVault = (id: string) => {
+  const auth = useAuth();
+
   const { data, ...rest } = useBsafeQuery(
-    VAULT_QUERY_KEYS.VAULT(id),
+    [...VAULT_QUERY_KEYS.VAULT(id), auth.workspaces.current],
     async (context) => {
       return await Vault.create({
         id,

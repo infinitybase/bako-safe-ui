@@ -12,6 +12,8 @@ export enum CookieName {
   SINGLE_CONTACTS = `bsafe/single_contacts`,
   WORKSPACE = `bsafe/workspace`,
   PERMISSIONS = `bsafe/permissions`,
+  WEB_AUTHN_ID = `bsafe/web_authn_id`,
+  WEB_AUTHN_PK = `bsafe/web_authn_pk`,
 }
 
 interface Cookie {

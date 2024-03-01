@@ -39,11 +39,9 @@ const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
   const { contactByAddress } = useAddressBook();
 
-  const request = useGetWorkspaceRequest(workspaceId ?? '');
-  const workspace = request.workspace;
-  const member = request.workspace?.members.find(
-    (member) => member.id === memberId,
-  );
+  const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
+
+  const member = workspace?.members.find((member) => member.id === memberId);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
   const contactNickname = contactByAddress(member?.address!)?.nickname;
@@ -179,8 +177,15 @@ const CreateMemberPage = () => {
     <Dialog.Modal
       isOpen
       onClose={handleClose}
-      size="xl"
+      size={{
+        base:
+          formState.isEditMember && tabs.is(MemberTabState.FORM)
+            ? 'full'
+            : 'md',
+        sm: 'xl',
+      }}
       closeOnOverlayClick={false}
+      autoFocus={false}
     >
       <CreateContactDialog
         form={addressBook.form}
@@ -193,8 +198,10 @@ const CreateMemberPage = () => {
         maxW={480}
         title={dialog.title}
         position="relative"
-        top={-8}
-        mb={0}
+        top={{ base: 0, sm: -8 }}
+        mt={{ base: 8, sm: 0 }}
+        h={8}
+        mb={{ base: 8, sm: 0 }}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"
@@ -209,7 +216,7 @@ const CreateMemberPage = () => {
 
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w={480} mb={8}>
+          <Box maxW={480} w="full" mt={{ base: 8 }} mb={8}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
@@ -240,7 +247,10 @@ const CreateMemberPage = () => {
 
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions maxW={480}>
+          <Dialog.Actions
+            mt={{ base: formState.isEditMember ? 12 : 0 }}
+            maxW={480}
+          >
             {!isEditMember ? (
               <Dialog.SecondaryAction
                 w="25%"

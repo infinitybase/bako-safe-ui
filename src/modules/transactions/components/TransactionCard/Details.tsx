@@ -334,6 +334,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderColor="dark.100"
             borderTopWidth={1}
           >
+
             <HStack
               mt={2}
               px={{ base: 0, sm: 5 }}

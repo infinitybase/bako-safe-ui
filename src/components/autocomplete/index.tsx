@@ -69,8 +69,10 @@ function AutoComplete({
   const isCurrent = currentIndex === index;
   const isContact = (value: string) =>
     value.includes('-') || value.includes('...');
+  const isValidAddress =
+    AddressUtils.isValid(inputValue) || isContact(inputValue);
   const showOptionsList =
-    isCurrent && !isLoading && options && options.length > 0;
+    isCurrent && !isLoading && options && options.length > 0 && !isValidAddress;
   const loading = isLoading && isCurrent;
   const showBottomAction =
     !loading &&
