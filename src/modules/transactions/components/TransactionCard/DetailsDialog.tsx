@@ -71,7 +71,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   ...transaction,
                   account,
                 })}
-                showDescription
               />
             </HStack>
           </VStack>
