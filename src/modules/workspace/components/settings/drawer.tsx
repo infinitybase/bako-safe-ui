@@ -31,13 +31,8 @@ import {
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-
+import { useAuth } from '../../../auth/hooks/useAuth';
 import { WorkspaceCard } from '../card';
-import { useAuth } from '../../../auth/hooks/useAuth';
-
-
-import { useAuth } from '../../../auth/hooks/useAuth';
-
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}

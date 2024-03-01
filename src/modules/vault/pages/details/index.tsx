@@ -48,7 +48,7 @@ const VaultDetailsPage = () => {
     account,
     inView,
     pendingSignerTransactions,
-    assets,
+    //assets,
     menuDrawer,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();

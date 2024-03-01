@@ -2,8 +2,6 @@ import { Vault } from 'bsafe';
 
 import { useAuth } from '@/modules/auth';
 
-import { useAuth } from '@/modules';
-
 import { useBsafeMutation, useBsafeQuery } from './utils';
 
 const VAULT_QUERY_KEYS = {
