@@ -1,4 +1,5 @@
 import {
+  Box,
   Container as ContainerChakra,
   ContainerProps as ContainerChakraProps,
 } from '@chakra-ui/react';
@@ -12,16 +13,20 @@ const Container = ({ children, ...props }: ContainerProps) => {
     <ContainerChakra
       maxWidth="full"
       h="100vh"
-      bgColor="grey.850"
+      bgGradient="linear(to-b, dark.600 30%, #1E1F2280 70%)"
       display="flex"
       flexDirection="column"
-      backgroundImage={HomeBackground}
-      backgroundSize={'cover'}
-      backgroundRepeat={'no-repeat'}
       p={0}
       {...props}
     >
-      {children}
+      <Box
+        backgroundImage={HomeBackground}
+        backgroundSize={'cover'}
+        backgroundRepeat={'no-repeat'}
+        backgroundPosition="0px 650px"
+      >
+        {children}
+      </Box>
     </ContainerChakra>
   );
 };

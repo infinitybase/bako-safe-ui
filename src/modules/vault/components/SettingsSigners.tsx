@@ -14,11 +14,11 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
 
   return (
     <Box>
-      <HStack alignItems="center" mb={5} w="full" spacing={3}>
+      <HStack alignItems="center" mb={5} w="full" spacing={4}>
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Signers
         </Text>
-        <Badge p={2} variant="warning" h={5}>
+        <Badge p={1} rounded="xl" px={4} fontWeight="semibold" variant="gray">
           Required signers {vault?.minSigners}/{vault?.members?.length}
         </Badge>
       </HStack>

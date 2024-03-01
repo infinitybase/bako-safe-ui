@@ -26,7 +26,12 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent rounded="3xl">
         {!hideCloseButton && (
           <Flex w="full" align="center" justifyContent="flex-end">
-            <HStack onClick={props.onClose} cursor="pointer" spacing={2}>
+            <HStack
+              onClick={props.onClose}
+              cursor="pointer"
+              spacing={2}
+              zIndex={1}
+            >
               <Text fontWeight="normal" color="white">
                 Close
               </Text>

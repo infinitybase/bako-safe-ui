@@ -4,14 +4,21 @@ import {
   HStack,
   Icon,
   Spacer,
+  Text,
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bsafe';
 import React from 'react';
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from 'react-icons/io';
+
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
 
@@ -26,6 +33,7 @@ const Actions = ({
   status,
   isSigner,
 }: TransactionActionsProps) => {
+  const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
@@ -35,6 +43,20 @@ const Actions = ({
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
+
+  if (isMobile) {
+    return (
+      <HStack w="full" justifyContent="end" spacing={1}>
+        <Text fontSize="xs">{awaitingAnswer ? 'Sign' : 'View Details'}</Text>
+        <Icon
+          as={IoIosArrowForward}
+          fontSize="md"
+          color="grey.200"
+          cursor="pointer"
+        />
+      </HStack>
+    );
+  }
 
   return (
     <HStack minW={140} justifySelf="end">
@@ -97,7 +119,7 @@ const Actions = ({
 
       <Icon
         as={isOpen ? IoIosArrowUp : IoIosArrowDown}
-        fontSize="xl"
+        fontSize="md"
         color="grey.200"
         cursor="pointer"
       />

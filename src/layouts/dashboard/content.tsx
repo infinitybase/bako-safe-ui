@@ -9,7 +9,14 @@ const Content = (props: ContentProps) => {
       css={{ '&::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       height="calc(100vh - 82px)"
       flex={1}
-      p={6}
+      py={{
+        base: 3,
+        sm: 6,
+      }}
+      px={{
+        base: 5,
+        sm: 6,
+      }}
     >
       {props.children}
     </Flex>

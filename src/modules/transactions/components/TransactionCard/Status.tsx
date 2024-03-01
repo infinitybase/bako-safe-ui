@@ -9,6 +9,7 @@ import {
 import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
@@ -24,6 +25,7 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   const { retryTransaction, isLoading } = useSignTransaction({
     transaction: transaction!,
   });
+  const { isMobile } = useScreenSize();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
@@ -35,7 +37,11 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
   ].includes(transaction.status);
 
   return (
-    <HStack justifyContent="center" ml={6}>
+    <HStack
+      w="full"
+      justifyContent={{ base: 'end', sm: 'center' }}
+      ml={{ base: 0, sm: 6 }}
+    >
       {isLoading && (
         <CircularProgress
           trackColor="dark.100"
@@ -44,7 +50,14 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
           color="brand.500"
         />
       )}
-      <VStack hidden={isPending} minW={100} spacing={0} justifyContent="center">
+      <VStack
+        hidden={isPending}
+        minW={100}
+        spacing={0}
+        w="full"
+        alignItems={{ base: 'end', sm: 'center' }}
+        justifyContent="center"
+      >
         <Badge
           h={5}
           variant={
@@ -60,25 +73,30 @@ const Status = ({ transaction, status }: TransactionCardStatusProps) => {
           {isCompleted && !isError && 'Completed'}
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
-        <Text variant="description" fontSize="sm" color="grey.500">
-          Transfer status
-        </Text>
-        {isError && (
-          <Button
-            h={7}
-            variant="secondary"
-            px={3}
-            bgColor="dark.100"
-            border="none"
-            isLoading={isLoading}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              retryTransaction();
-            }}
-          >
-            Retry
-          </Button>
+        {!isMobile && (
+          <>
+            <Text variant="description" fontSize="sm" color="grey.500">
+              Transfer status
+            </Text>
+
+            {isError && (
+              <Button
+                h={7}
+                variant="secondary"
+                px={3}
+                bgColor="dark.100"
+                border="none"
+                isLoading={isLoading}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  retryTransaction();
+                }}
+              >
+                Retry
+              </Button>
+            )}
+          </>
         )}
       </VStack>
     </HStack>

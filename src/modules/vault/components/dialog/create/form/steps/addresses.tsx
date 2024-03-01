@@ -158,9 +158,9 @@ const VaultAddressesStep = ({
                                       })
                                     }
                                   >
-                                    add
+                                    add this
                                   </Link>{' '}
-                                  this address in your address book?
+                                  address in your address book?
                                 </Text>
                               </Box>
                             )
@@ -173,6 +173,7 @@ const VaultAddressesStep = ({
                 />
               );
             })}
+
 
             <Button
               w="full"
@@ -196,6 +197,7 @@ const VaultAddressesStep = ({
             </Button>
           </VStack>
         </Dialog.Section>
+
 
         <Divider borderColor="dark.100" my={9} />
 

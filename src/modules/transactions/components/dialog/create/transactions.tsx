@@ -16,6 +16,7 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+
 import {
   AddressUtils,
   AssetSelect,
@@ -97,9 +98,9 @@ const TransactionFormField = ({
                           handleOpenDialog?.({ address: field.value })
                         }
                       >
-                        add
+                        add this
                       </Link>{' '}
-                      this address in your address book?
+                      address in your address book?
                     </Text>
                   </Box>
                 }
@@ -199,9 +200,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               key={field.id}
               mb={6}
               borderWidth={1}
-              borderColor="dark.100"
+              borderColor="dark.600"
               borderRadius={10}
-              backgroundColor="dark.300"
+              backgroundColor="dark.600"
             >
               <TransactionAccordion.Item
                 title={`Recipient ${index + 1}`}

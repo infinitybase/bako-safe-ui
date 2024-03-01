@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 import logo from '@/assets/bakoLogoDark.svg';
@@ -8,22 +8,61 @@ interface SigninContainerProps {
   children: React.ReactNode;
 }
 
+const SigninContainerBackground = () => {
+  return (
+    <Box
+      zIndex="0"
+      w="100vw"
+      h="100vh"
+      display="flex"
+      alignItems="center"
+      flexDirection="column"
+      justifyContent="center"
+      backgroundImage="url('backgroundHome.png')"
+      backgroundSize="cover"
+      backgroundPosition="unset"
+      style={{ filter: 'blur(12px)' }} // Adicionando o desfoque aqui
+    />
+  );
+};
+
+const SigninContainerMobile = (props: SigninContainerProps) => {
+  return (
+    <>
+      <SigninContainerBackground />
+      <VStack
+        position="absolute"
+        zIndex={1}
+        borderRadius="10px"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        backgroundColor="dark.600"
+        display="flex"
+        minW="90vw"
+        spacing={0}
+      >
+        <img
+          src={bakoSymbol}
+          alt=""
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '20%',
+            transform: 'translate(-50%, -50%)',
+            height: '70%',
+          }}
+        />
+        {props.children}
+      </VStack>
+    </>
+  );
+};
+
 const SigninContainer = (props: SigninContainerProps) => {
   return (
     <>
-      <Box
-        zIndex="0"
-        w="100vw"
-        h="100vh"
-        display="flex"
-        alignItems="center"
-        flexDirection="column"
-        justifyContent="center"
-        backgroundImage="url('backgroundHome.png')"
-        backgroundSize="cover"
-        backgroundPosition="unset"
-        style={{ filter: 'blur(12px)' }} // Adicionando o desfoque aqui
-      />
+      <SigninContainerBackground />
       <Box
         position="absolute"
         zIndex={1}
@@ -88,4 +127,4 @@ const SigninContainer = (props: SigninContainerProps) => {
   );
 };
 
-export { SigninContainer };
+export { SigninContainer, SigninContainerMobile };

@@ -111,7 +111,7 @@ const AssetBoxInfo = ({
       <Center
         p={3}
         borderRadius={5}
-        bgColor={isContract ? 'brand.500' : 'grey.900'}
+        bgColor={isContract ? 'brand.500' : 'grey.600'}
       >
         <Icon
           color={isContract ? 'black' : 'brand.500'}
@@ -325,8 +325,13 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
 
       {transaction.status === TransactionStatus.SUCCESS && (
         <Button
-          border="none"
-          bgColor="dark.100"
+          border="1px solid white"
+          bgColor="transparent"
+          _hover={{
+            borderColor: 'brand.500',
+            color: 'brand.500',
+          }}
+          alignSelf="flex-end"
           variant="secondary"
           onClick={handleViewInExplorer}
         >

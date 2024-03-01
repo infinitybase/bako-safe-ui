@@ -36,6 +36,9 @@ import { WorkspaceCard } from '../card';
 import { useAuth } from '../../../auth/hooks/useAuth';
 
 
+import { useAuth } from '../../../auth/hooks/useAuth';
+
+
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
 
