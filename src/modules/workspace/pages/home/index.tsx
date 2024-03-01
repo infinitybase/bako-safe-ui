@@ -255,7 +255,7 @@ const WorkspacePage = () => {
                       >
                         <Heading variant="title-xl">
                           {visibleBalance
-                            ? worksapceBalance.balance.balance
+                            ? worksapceBalance.balance.balanceUSD
                             : '-----'}
                         </Heading>
                         <Box
