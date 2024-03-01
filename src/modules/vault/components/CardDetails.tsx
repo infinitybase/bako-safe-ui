@@ -74,7 +74,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { biggerAsset, visebleBalance, setVisibleBalance } = store;
+  const { biggerAsset, visebleBalance, setVisibleBalance, balanceUSD } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
@@ -221,7 +221,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? balanceFormatted : '-----'}
+                        {visebleBalance ? balanceUSD : '-----'}
                       </Heading>
                       <Box
                         w="auto"
@@ -339,7 +339,7 @@ const CardDetails = (props: CardDetailsProps) => {
               <Text
                 fontWeight="semibold"
                 color="grey.450"
-              >{`Workspace's balance breakdown`}</Text>
+              >{`Vaults's balance breakdown`}</Text>
               <CustomSkeleton
                 isLoaded={!currentWorkspace.isLoading}
                 w="full"

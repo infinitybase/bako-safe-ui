@@ -18,7 +18,7 @@ const DialogActions = ({
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Divider hidden={hideDivider} my={6} />
+    <Divider hidden={hideDivider} my={[3, 6]} />
     <HStack spacing={4} justifyContent="center">
       {children}
     </HStack>

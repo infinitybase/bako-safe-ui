@@ -123,7 +123,7 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
       placement="right"
     >
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent maxH="full">
         <Flex mb={5} w="full" justifyContent="flex-end">
           <HStack
             cursor="pointer"

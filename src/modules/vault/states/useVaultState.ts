@@ -15,6 +15,8 @@ interface State {
   setVisibleBalance: (visible: boolean) => void;
   assets: Asset[];
   setAssets: (assets: Asset[]) => void;
+  balanceUSD: string;
+  setBalanceUSD: (balance: string) => void;
 }
 
 const useVaultState = create<State>((set) => ({
@@ -26,6 +28,8 @@ const useVaultState = create<State>((set) => ({
     setIsVisibleBalance(visible ? 'true' : 'false');
   },
   assets: [],
+  balanceUSD: '0.00',
+  setBalanceUSD: (balance) => set({ balanceUSD: balance }),
   setAssets: (assets) => set({ assets }),
 }));
 
