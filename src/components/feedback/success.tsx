@@ -48,7 +48,11 @@ const FeedbackSuccess = ({
       </Heading>
     </Box>
     <Box maxW={650}>
-      <Text color="grey.400" fontSize="md" textAlign="center">
+      <Text
+        color="grey.400"
+        fontSize={{ base: 'sm', sm: 'md' }}
+        textAlign="center"
+      >
         {description}
       </Text>
     </Box>
