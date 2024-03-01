@@ -47,10 +47,10 @@ const VaultSuccessStep = ({
 
       <VStack>
         <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={{ base: 200, sm: 190 }}>
-            <Text fontSize={{ base: 'xs' }} variant="description">
+          <Box w="full" maxW={{ base: 200, sm: 220 }}>
+            <Text fontSize={{ base: 'xs', sm: 'md' }} variant="description">
               <Text
-                fontSize={{ base: 'sm' }}
+                fontSize={{ base: 'sm', sm: 'md' }}
                 color="grey.200"
                 fontWeight="semibold"
               >
@@ -65,7 +65,7 @@ const VaultSuccessStep = ({
             }}
             h={9}
             w="full"
-            maxW={{ base: 120, sm: 190 }}
+            maxW={{ base: 120, sm: 180 }}
             onClick={onDeposit}
             variant="primary"
             size="sm"
@@ -74,10 +74,10 @@ const VaultSuccessStep = ({
           </Button>
         </HStack>
         <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={{ base: 220, sm: 190 }}>
-            <Text fontSize={{ base: 'xs' }} variant="description">
+          <Box w="full" maxW={{ base: 220, sm: 220 }}>
+            <Text fontSize={{ base: 'xs', sm: 'md' }} variant="description">
               <Text
-                fontSize={{ base: 'sm' }}
+                fontSize={{ base: 'sm', sm: 'md' }}
                 color="grey.200"
                 fontWeight="semibold"
               >
@@ -93,7 +93,7 @@ const VaultSuccessStep = ({
             h={9}
             variant="primary"
             w="full"
-            maxW={{ base: 120, sm: 190 }}
+            maxW={{ base: 120, sm: 180 }}
             size="sm"
             onClick={onSaveTemplate}
           >
