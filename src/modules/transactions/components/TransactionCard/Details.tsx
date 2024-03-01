@@ -26,6 +26,7 @@ import {
   AssetModel,
   assetsMap,
   TransactionState,
+  useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
@@ -59,6 +60,7 @@ const AssetBoxInfo = ({
   const clipboard = useClipboard(
     isContract ? contractAddress : asset?.to ?? '',
   );
+  const { isMobile } = useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -70,35 +72,48 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      p={5}
-      spacing={8}
+      px={{ base: 0, sm: 5 }}
+      py={{ base: 3, sm: 5 }}
+      spacing={{ base: 1, sm: 8 }}
       w="full"
       borderTopWidth={1}
       borderColor="transparent"
       {...props}
     >
       {contractWithoutToken ? (
-        <Text fontWeight="semibold" color="grey.200">
+        <Text
+          fontWeight="semibold"
+          color="grey.200"
+          w={{ base: 'full', sm: 'unset' }}
+        >
           Contract execution
         </Text>
       ) : (
         <>
           {assetInfo && (
-            <HStack spacing={4}>
-              <Avatar name={assetInfo.slug} size="28px" src={assetInfo.icon} />
+            <HStack spacing={{ base: 2, sm: 4 }}>
+              <Avatar
+                name={assetInfo.slug}
+                size={{ base: 'xs', sm: '28px' }}
+                src={assetInfo.icon}
+              />
               <Text color="grey.500">{assetInfo.slug}</Text>
             </HStack>
           )}
 
           <HStack>
             <Box mt={0.5} w={115}>
-              <Heading textAlign="center" variant="title-md" color="grey.200">
+              <Heading
+                textAlign="center"
+                variant={isMobile ? 'title-sm' : 'title-md'}
+                color="grey.200"
+              >
                 {asset?.amount}
               </Heading>
               <Text
                 textAlign="center"
                 variant="description"
-                fontSize="sm"
+                fontSize={{ base: 'xs', sm: 'sm' }}
                 color="grey.500"
               >
                 Amount sent
@@ -109,13 +124,13 @@ const AssetBoxInfo = ({
       )}
 
       <Center
-        p={3}
+        p={{ base: 1.5, sm: 3 }}
         borderRadius={5}
         bgColor={isContract ? 'brand.500' : 'grey.600'}
       >
         <Icon
           color={isContract ? 'black' : 'brand.500'}
-          fontSize="2xl"
+          fontSize={{ base: 'md', sm: '2xl' }}
           as={!isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
@@ -123,12 +138,12 @@ const AssetBoxInfo = ({
       {isContract && (
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
-            <Text color="grey.200" fontSize="md" ml={1}>
+            <Text color="grey.200" fontSize={{ base: 'xs', sm: 'md' }} ml={1}>
               {AddressUtils.format(contractAddress, 8)}
             </Text>
             <Icon
               color="grey.500"
-              fontSize="sm"
+              fontSize={{ base: 'xs', sm: 'sm' }}
               as={CopyIcon}
               cursor="pointer"
               onClick={(e) => {
@@ -155,18 +170,19 @@ const AssetBoxInfo = ({
       {!isContract && !!asset && (
         <VStack
           h="full"
+          w="full"
           minH={51}
           maxW={600}
           spacing={0}
           justifyContent="center"
-          alignItems="start"
+          alignItems={{ base: 'center', sm: 'start' }}
         >
           {!!nickname && (
             <Text
-              fontSize="lg"
+              fontSize={{ base: 'sm', sm: 'lg' }}
               color="grey.200"
               fontWeight="semibold"
-              maxW={220}
+              maxW={{ base: 100, sm: 220 }}
               isTruncated
             >
               {nickname}
@@ -174,8 +190,8 @@ const AssetBoxInfo = ({
           )}
 
           <Text
-            maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-            fontSize="md"
+            maxW={{ base: 120, md: 200, lg: 250, '2xl': '100%' }}
+            fontSize={{ base: 'xs', sm: 'md' }}
             color={nickname ? 'grey.500' : 'grey.200'}
             fontWeight={nickname ? 'regular' : 'bold'}
             textOverflow="ellipsis"
@@ -207,9 +223,14 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
 
   return (
     <VStack w="full">
-      <HStack pt={5} alignSelf="flex-start" maxW={600} w="full">
+      <HStack
+        pt={{ base: 0, sm: 5 }}
+        alignSelf="flex-start"
+        maxW={600}
+        w="full"
+      >
         <Box w="full">
-          <Box mb={4}>
+          <Box mb={{ base: 2, sm: 4 }}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
             </Text>
@@ -313,9 +334,18 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderColor="dark.100"
             borderTopWidth={1}
           >
-            <HStack mt={2} p={5} justifyContent="space-between">
+            <HStack
+              mt={2}
+              px={{ base: 0, sm: 5 }}
+              py={{ base: 3, sm: 5 }}
+              justifyContent="space-between"
+            >
               <Text color="grey.200">Gás Fee (ETH)</Text>
-              <Text color="grey.200" fontSize="lg" fontWeight="semibold">
+              <Text
+                color="grey.200"
+                fontSize={{ base: 'md', sm: 'lg' }}
+                fontWeight="semibold"
+              >
                 -{transaction.gasUsed}
               </Text>
             </HStack>
@@ -331,7 +361,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderColor: 'brand.500',
             color: 'brand.500',
           }}
-          alignSelf="flex-end"
+          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
           variant="secondary"
           onClick={handleViewInExplorer}
         >
