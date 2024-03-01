@@ -72,11 +72,18 @@ const UserBox = () => {
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const { drawer } = useSidebar();
+  const { unreadCounter, setUnreadCounter } = useAppNotifications();
 
   const logout = async () => {
     auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
     auth.handlers.logout();
   };
+
+  // Bug fix to unread counter that keeps previous state after redirect
+  useEffect(() => {
+    setUnreadCounter(0);
+    setUnreadCounter(unreadCounter);
+  }, []);
 
   return (
     <>
@@ -157,6 +164,18 @@ const UserBox = () => {
                     <Text color="grey.200" fontWeight={'bold'}>
                       Notifications
                     </Text>
+
+                    {unreadCounter > 0 && (
+                      <Center
+                        px={1}
+                        py={0}
+                        bg="error.600"
+                        borderRadius={10}
+                        position="relative"
+                      >
+                        <Text fontSize="xs">+{unreadCounter}</Text>
+                      </Center>
+                    )}
                   </HStack>
                 </Box>
 
@@ -295,7 +314,6 @@ const WorkspaceBox = ({
       </Flex>
 
       {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
-
     </Flex>
   );
 };
@@ -356,7 +374,6 @@ const Header = () => {
         mr={{ base: -8, sm: 0 }}
       >
         <img width={isMobile ? 65 : 95} src={logo} alt="" />
-
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
