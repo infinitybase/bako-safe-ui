@@ -231,6 +231,7 @@ const UserTransactionsPage = () => {
       <TransactionCard.List mt={1} w="full" spacing={5}>
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
+
         {transactionRequest.transactions.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
             (member) => member.address === account,
