@@ -1,4 +1,11 @@
-import { Box, CardProps, Heading, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  CardProps,
+  Divider,
+  Heading,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
 import { Card } from '@/components';
 
@@ -7,18 +14,27 @@ interface ExtraVaultCardProps extends CardProps {
 }
 
 export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
-  <Card cursor="pointer" p={9} borderStyle="dashed" {...rest}>
-    <VStack spacing={0}>
+  <Card
+    bg="grey.800"
+    cursor="pointer"
+    h={['initial', 'full']}
+    p={6}
+    borderStyle="dashed"
+    {...rest}
+  >
+    <VStack textAlign="center" spacing={0}>
       <Box>
         <Box>
-          <Heading variant="title-lg" color="grey.200">
+          <Heading fontSize={['3xl', '2xl']} color="grey.200">
             +{extra + 1}
           </Heading>
         </Box>
-        <Heading variant="title-md" color="grey.200" my={1}>
+        <Heading fontSize={['xl', '2xl']} color="grey.200" my={1}>
           View all
         </Heading>
       </Box>
+
+      <Divider borderColor="grey.600" mt={3} mb={4} />
 
       <Text
         variant="description"
