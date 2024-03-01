@@ -87,7 +87,7 @@ export const MemberPermissionForm = ({
                       <Badge
                         top={-0.5}
                         maxW={20}
-                        py={0.5}
+                        py={{ base: 0, sm: 0.5 }}
                         position="absolute"
                         justifyContent="center"
                         px={6}
@@ -101,7 +101,11 @@ export const MemberPermissionForm = ({
                         direction="column"
                         justify="space-between"
                       >
-                        <Text fontWeight="medium" variant="subtitle">
+                        <Text
+                          fontWeight="medium"
+                          fontSize={{ base: 'sm' }}
+                          variant="subtitle"
+                        >
                           {permission.description}
                         </Text>
                       </Flex>
