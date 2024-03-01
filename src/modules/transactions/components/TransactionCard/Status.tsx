@@ -79,7 +79,7 @@ const Status = ({
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
         {showDescription && (
-          <Text variant="description" fontSize="sm" color="grey.500">
+          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
             Transfer status
           </Text>
         )}
