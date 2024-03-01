@@ -11,7 +11,6 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Skeleton,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -104,21 +103,11 @@ const UserBox = () => {
             px={{ base: 0, sm: 2 }}
           >
             <Box mr={{ base: 2, sm: 4 }}>
-              {avatarImage.isLoading ? (
-                <Skeleton
-                  w="48px"
-                  h="48px"
-                  startColor="dark.100"
-                  endColor="dark.300"
-                  borderRadius={5}
-                />
-              ) : (
-                <Avatar
-                  variant="roundedSquare"
-                  src={auth.avatar}
-                  size={{ base: 'sm', sm: 'md' }}
-                />
-              )}
+              <Avatar
+                variant="roundedSquare"
+                src={auth.avatar}
+                size={{ base: 'sm', sm: 'md' }}
+              />
             </Box>
 
             {!isMobile && (
@@ -351,11 +340,13 @@ const Header = () => {
         base: '64px',
         sm: 82,
       }}
+      zIndex={100}
       w="100%"
       bgColor="dark.300"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
+      position={['fixed', 'relative']}
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
