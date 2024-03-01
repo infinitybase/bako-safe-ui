@@ -46,10 +46,7 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
 };
 
 const signAccountFuel = async (account: Account, message: string) => {
-  return encodeSignature({
-    type: SignatureType.FUEL,
-    signature: await account.signMessage(message),
-  });
+  return await account.signMessage(message);
 };
 
 const useWalletSignMessage = (
