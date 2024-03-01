@@ -10,10 +10,10 @@ export enum EConnectors {
 }
 
 const DEFAULT_CONNECTORS = [
-  {
-    name: EConnectors.WEB_AUTHN,
-    icon: PasskeyIcon,
-  },
+  // {
+  //   name: EConnectors.WEB_AUTHN,
+  //   icon: PasskeyIcon,
+  // }, // desabled on this branch
   {
     name: EConnectors.FUEL,
     icon: FuelIcon,

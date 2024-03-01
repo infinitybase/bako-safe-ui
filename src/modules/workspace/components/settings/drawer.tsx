@@ -31,7 +31,11 @@ import {
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
+
 import { WorkspaceCard } from '../card';
+
+import { useAuth } from '../../../auth/hooks/useAuth';
+
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
@@ -43,16 +47,21 @@ interface MemberCardProps {
 }
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
+  const { permissions: loggedPermissions } = useAuth();
+
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
     member,
   );
+
   const { contactByAddress } = useAddressBook();
 
   //TODO: Use this validation to delete button
   const isEditable =
-    WorkspacePermissionUtils.permissions[PermissionRoles.OWNER].title !==
-    permission.title;
+    WorkspacePermissionUtils.hasPermissions(loggedPermissions!, [
+      PermissionRoles.ADMIN,
+      PermissionRoles.OWNER,
+    ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
   const contactNickname = contactByAddress(member.address!)?.nickname;
   return (

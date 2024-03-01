@@ -44,6 +44,7 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
+    canAddMember,
   } = useAddressBook();
 
   return (
@@ -173,6 +174,7 @@ const VaultAddressesStep = ({
               );
             })}
 
+
             <Button
               w="full"
               border="none"
@@ -195,6 +197,7 @@ const VaultAddressesStep = ({
             </Button>
           </VStack>
         </Dialog.Section>
+
 
         <Divider borderColor="dark.100" my={9} />
 

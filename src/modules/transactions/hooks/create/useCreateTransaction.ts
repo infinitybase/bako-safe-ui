@@ -1,14 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { useAddressBookStore } from '@/modules/addressBook/store/useAddressBookStore';
 import { useAuth } from '@/modules/auth';
-import {
-  invalidateQueries,
-  useBsafeCreateTransaction,
-  WorkspacesQueryKey,
-} from '@/modules/core';
+import { useBsafeCreateTransaction, WorkspacesQueryKey } from '@/modules/core';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import {
@@ -40,11 +36,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const params = useParams<{ vaultId: string }>();
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-  const {
-    workspaces: { current },
-  } = useAuth();
-  const { contacts } = useAddressBookStore();
-  useListContactsRequest(current, true, params.vaultId);
+  const auth = useAuth();
+  const listContactsRequest = useListContactsRequest({
+    current: auth.workspaces.current,
+    includePersonal: auth.isSingleWorkspace,
+  });
 
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
@@ -66,13 +62,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-      invalidateQueries([
+      queryClient.invalidateQueries([
+        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+          auth.workspaces.current,
+        ),
         TRANSACTION_LIST_QUERY_KEY,
         USER_TRANSACTIONS_QUERY_KEY,
       ]);
-      invalidateQueries(
-        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
-      );
       handleClose();
     },
     onError: () => {
@@ -108,7 +104,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     vault: vaultDetails,
     assets: vaultAssets,
-    nicks: contacts,
+    nicks: listContactsRequest.data ?? [],
     navigate,
     accordion,
     handleClose,

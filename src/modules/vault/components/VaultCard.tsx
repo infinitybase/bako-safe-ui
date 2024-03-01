@@ -15,13 +15,9 @@ import {
 
 import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
-import { useAuth } from '@/modules';
+import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
-import {
-  Member,
-  PermissionRoles,
-  Workspace,
-} from '@/modules/core/models/workspace';
+import { Workspace } from '@/modules/core/models/workspace';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 interface VaultCardProps extends CardProps {
@@ -37,22 +33,7 @@ export const VaultCard = ({
   members,
   ...rest
 }: VaultCardProps) => {
-  const auth = useAuth();
-  const role = WorkspacePermissionUtils.getPermissionInWorkspace(workspace!, {
-    id: auth.userId,
-  } as Member);
-
-  const permissions =
-    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
-
-  const isSigner = workspace.permissions[auth.userId].SIGNER.includes(id);
-
-  const _role =
-    permissions?.title ===
-      WorkspacePermissionUtils.permissions[PermissionRoles.VIEWER].title &&
-    isSigner
-      ? PermissionRoles.SIGNER
-      : role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
+  const { role } = usePermissions({ id, workspace });
 
   return (
     <Card
@@ -127,10 +108,10 @@ export const VaultCard = ({
             <Badge
               h={6}
               variant={
-                WorkspacePermissionUtils.permissions[_role].variant ?? 'warning'
+                WorkspacePermissionUtils.permissions[role].variant ?? 'warning'
               }
             >
-              {WorkspacePermissionUtils.permissions[_role]?.title}
+              {WorkspacePermissionUtils.permissions[role]?.title ?? ''}
             </Badge>
           </VStack>
         </HStack>
