@@ -69,7 +69,9 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     handleClose,
     handleGoToWorkspace,
     handleConfigureMembers,
-  } = useCreateWorkspace();
+  } = useCreateWorkspace({
+    onClose: props.onClose,
+  });
 
   return (
     <Dialog.Modal
