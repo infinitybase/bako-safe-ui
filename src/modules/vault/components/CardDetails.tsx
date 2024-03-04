@@ -74,7 +74,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { visebleBalance, setVisibleBalance, balanceUSD } = store;
+  const { visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
@@ -222,7 +222,9 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
+                        {visebleBalance ? `${balanceFormatted} USD` : '-----'}
+                        {/* balanceUSD it's coming undefined by store prop */}
+                        {/* {visebleBalance ? `${balanceUSD} USD` : '-----'} */}
                       </Heading>
                       <Box
                         w="auto"
@@ -268,6 +270,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   alignItems={['flex-end', 'flex-start']}
                 >
                   <Button
+                    alignSelf="end"
                     onClick={() =>
                       navigate(
                         Pages.createTransaction({
@@ -287,7 +290,12 @@ const CardDetails = (props: CardDetailsProps) => {
                     Send
                   </Button>
                   {vault.transactions.isPendingSigner ? (
-                    <Text variant="description" fontSize="xs" color="error.500">
+                    <Text
+                      variant="description"
+                      textAlign={['end', 'left']}
+                      fontSize="xs"
+                      color="error.500"
+                    >
                       This vault has pending transactions.
                     </Text>
                   ) : !makeTransactionsPerm ? (
