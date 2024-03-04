@@ -104,7 +104,7 @@ const CardConnector = (props: ConnectorCardProps) => {
         </Heading>
       </Box>
 
-      {connector.isBeta && <Badge>Beta</Badge>}
+      {connector.isBeta && <Badge variant="gray">Beta</Badge>}
     </Card>
   );
 };

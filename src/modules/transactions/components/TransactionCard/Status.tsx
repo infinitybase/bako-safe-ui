@@ -17,14 +17,12 @@ interface TransactionCardStatusProps {
   showDescription?: boolean;
 }
 
-import React from 'react';
-
 import { useSignTransaction } from '../../hooks/signature';
 
 const Status = ({
   transaction,
   status,
-  showDescription,
+  showDescription = true,
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const { retryTransaction, isLoading } = useSignTransaction({
@@ -81,7 +79,7 @@ const Status = ({
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
         {showDescription && (
-          <Text variant="description" fontSize="sm" color="grey.500">
+          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
             Transfer status
           </Text>
         )}

@@ -5,9 +5,13 @@ import { useScreenSize } from '@/modules/core/hooks';
 
 interface TransactionCardNameProps {
   children: ReactNode;
+  showTransaction?: boolean;
 }
 
-const Name = ({ children }: TransactionCardNameProps) => {
+const Name = ({
+  children,
+  showTransaction = true,
+}: TransactionCardNameProps) => {
   const { isMobile } = useScreenSize();
 
   return (
@@ -28,14 +32,16 @@ const Name = ({ children }: TransactionCardNameProps) => {
           {children}
         </Heading>
       </HStack>
-      <Text
-        variant="description"
-        textAlign="left"
-        fontSize={{ base: 'xs', sm: 'sm' }}
-        color="grey.500"
-      >
-        Transaction
-      </Text>
+      {showTransaction && (
+        <Text
+          variant="description"
+          textAlign="left"
+          fontSize={{ base: 'xs', sm: 'sm' }}
+          color="grey.500"
+        >
+          Transaction
+        </Text>
+      )}
     </Center>
   );
 };

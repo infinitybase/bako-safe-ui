@@ -40,12 +40,12 @@ const TransactionsVaultPage = () => {
   const menuDrawer = useDisclosure();
 
   return (
-    <Box w="full" height="100%" maxH="100%" overflowY="hidden">
+    <Box w="full" height="100%" maxH="100%">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <Box mb={10}>
         {isMobile ? (
-          <HStack mt={2} gap={1.5} onClick={menuDrawer.onOpen}>
+          <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
@@ -136,9 +136,6 @@ const TransactionsVaultPage = () => {
         mt={7}
         w="full"
         spacing={5}
-        maxH="calc(100% - 140px)"
-        overflowY="scroll"
-        css={{ '::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
         openIndex={defaultIndex}
         key={defaultIndex.join(',')}
         pb={10}
@@ -173,6 +170,7 @@ const TransactionsVaultPage = () => {
                 <TransactionCard.Status
                   transaction={transaction}
                   status={transactionStatus({ ...transaction, account })}
+                  showDescription={!isMobile}
                 />
                 <TransactionCard.Actions
                   isSigner={isSigner}

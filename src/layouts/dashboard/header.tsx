@@ -7,6 +7,7 @@ import {
   Flex,
   HStack,
   Icon,
+  Image,
   Popover,
   PopoverBody,
   PopoverContent,
@@ -371,7 +372,7 @@ const Header = () => {
         pl={{ base: 1, sm: 6 }}
         mr={{ base: -8, sm: 0 }}
       >
-        <img width={isMobile ? 90 : 140} src={logo} alt="" />
+        <Image width={[90, 140]} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">

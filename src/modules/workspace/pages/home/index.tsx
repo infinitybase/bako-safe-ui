@@ -50,6 +50,7 @@ import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import {
   TransactionCard,
+  TransactionCardMobile,
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
@@ -131,7 +132,9 @@ const WorkspacePage = () => {
       spacing={2}
     >
       <Heading variant="title-xl">
-        {visibleBalance ? worksapceBalance.balance.balanceUSD : '-----'}
+        {visibleBalance
+          ? `${worksapceBalance.balance.balanceUSD} USD`
+          : '-----'}
       </Heading>
       <Box
         w="auto"
@@ -589,7 +592,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
       ) : (
         <Box w="full" pb={10}>
-          <TransactionCard.List spacing={4} mb={12}>
+          <TransactionCard.List spacing={[3, 4]} mb={[0, 12]}>
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
 
@@ -598,49 +601,57 @@ const WorkspacePage = () => {
                   isLoaded={!workspaceHomeRequest.isLoading}
                   key={transaction.id}
                 >
-                  <TransactionCard.Container
-                    status={status}
-                    transaction={transaction}
-                    account={account}
-                    isSigner={isSigner(transaction.witnesses)}
-                    details={
-                      <TransactionCard.Details
-                        transaction={transaction}
-                        status={status}
-                      />
-                    }
-                  >
-                    {transaction.predicate && (
-                      <TransactionCard.VaultInfo
-                        vault={transaction.predicate}
-                      />
-                    )}
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                    <TransactionCard.Assets />
-                    <TransactionCard.Amount
-                      assets={transaction.resume.outputs}
-                    />
-                    <TransactionCard.Name>
-                      {limitCharacters(transaction.name, 20)}
-                    </TransactionCard.Name>
-                    <TransactionCard.Status
-                      transaction={transaction as unknown as ITransaction}
-                      status={transactionStatus({
-                        ...transaction,
-                        account,
-                      })}
-                    />
-                    <TransactionCard.Actions
-                      transaction={transaction as unknown as ITransaction}
-                      status={transactionStatus({
-                        ...transaction,
-                        account,
-                      })}
+                  {isMobile ? (
+                    <TransactionCardMobile
                       isSigner={isSigner(transaction.witnesses)}
+                      transaction={transaction}
+                      account={account}
                     />
-                  </TransactionCard.Container>
+                  ) : (
+                    <TransactionCard.Container
+                      status={status}
+                      transaction={transaction}
+                      account={account}
+                      isSigner={isSigner(transaction.witnesses)}
+                      details={
+                        <TransactionCard.Details
+                          transaction={transaction}
+                          status={status}
+                        />
+                      }
+                    >
+                      {transaction.predicate && (
+                        <TransactionCard.VaultInfo
+                          vault={transaction.predicate}
+                        />
+                      )}
+                      <TransactionCard.CreationDate>
+                        {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                      </TransactionCard.CreationDate>
+                      <TransactionCard.Assets />
+                      <TransactionCard.Amount
+                        assets={transaction.resume.outputs}
+                      />
+                      <TransactionCard.Name>
+                        {limitCharacters(transaction.name, 20)}
+                      </TransactionCard.Name>
+                      <TransactionCard.Status
+                        transaction={transaction as unknown as ITransaction}
+                        status={transactionStatus({
+                          ...transaction,
+                          account,
+                        })}
+                      />
+                      <TransactionCard.Actions
+                        transaction={transaction as unknown as ITransaction}
+                        status={transactionStatus({
+                          ...transaction,
+                          account,
+                        })}
+                        isSigner={isSigner(transaction.witnesses)}
+                      />
+                    </TransactionCard.Container>
+                  )}
                 </CustomSkeleton>
               );
             })}

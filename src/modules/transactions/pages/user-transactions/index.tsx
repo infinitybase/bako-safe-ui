@@ -27,6 +27,7 @@ import { limitCharacters } from '@/utils';
 
 import {
   TransactionCard,
+  TransactionCardMobile,
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
@@ -229,7 +230,7 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List mt={1} w="full" spacing={5}>
+      <TransactionCard.List mt={1} w="full" spacing={[3, 5]}>
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
 
@@ -240,34 +241,44 @@ const UserTransactionsPage = () => {
 
           return (
             <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
-              <TransactionCard.Container
-                status={transactionStatus({ ...transaction, account })}
-                details={<TransactionCard.Details transaction={transaction} />}
-                transaction={transaction}
-                account={account}
-                isSigner={isSigner}
-              >
-                {transaction.predicate && (
-                  <TransactionCard.VaultInfo vault={transaction.predicate} />
-                )}
-                <TransactionCard.CreationDate>
-                  {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                </TransactionCard.CreationDate>
-                <TransactionCard.Assets />
-                <TransactionCard.Amount assets={transaction.resume.outputs} />
-                <TransactionCard.Name>
-                  {limitCharacters(transaction.name, 20)}
-                </TransactionCard.Name>
-                <TransactionCard.Status
-                  transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
-                />
-                <TransactionCard.Actions
+              {isMobile ? (
+                <TransactionCardMobile
                   isSigner={isSigner}
                   transaction={transaction}
-                  status={transactionStatus({ ...transaction, account })}
+                  account={account}
                 />
-              </TransactionCard.Container>
+              ) : (
+                <TransactionCard.Container
+                  status={transactionStatus({ ...transaction, account })}
+                  details={
+                    <TransactionCard.Details transaction={transaction} />
+                  }
+                  transaction={transaction}
+                  account={account}
+                  isSigner={isSigner}
+                >
+                  {transaction.predicate && (
+                    <TransactionCard.VaultInfo vault={transaction.predicate} />
+                  )}
+                  <TransactionCard.CreationDate>
+                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                  </TransactionCard.CreationDate>
+                  <TransactionCard.Assets />
+                  <TransactionCard.Amount assets={transaction.resume.outputs} />
+                  <TransactionCard.Name>
+                    {limitCharacters(transaction.name, 20)}
+                  </TransactionCard.Name>
+                  <TransactionCard.Status
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                  <TransactionCard.Actions
+                    isSigner={isSigner}
+                    transaction={transaction}
+                    status={transactionStatus({ ...transaction, account })}
+                  />
+                </TransactionCard.Container>
+              )}
             </CustomSkeleton>
           );
         })}
