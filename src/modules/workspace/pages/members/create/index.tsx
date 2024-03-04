@@ -179,9 +179,7 @@ const CreateMemberPage = () => {
       onClose={handleClose}
       size={{
         base:
-          formState.isEditMember && tabs.is(MemberTabState.FORM)
-            ? 'full'
-            : 'md',
+          formState.isEditMember && tabs.is(MemberTabState.FORM) ? 'xl' : 'md',
         sm: 'xl',
       }}
       closeOnOverlayClick={false}
@@ -226,7 +224,7 @@ const CreateMemberPage = () => {
       <Dialog.Body
         mb={7}
         maxW={480}
-        maxH={520}
+        maxH={['full', 520]}
         overflowY="scroll"
         css={{
           '&::-webkit-scrollbar': {
@@ -240,17 +238,14 @@ const CreateMemberPage = () => {
           },
         }}
       >
-        <Tabs index={tabs.tab} isLazy colorScheme="green">
+        <Tabs index={tabs.tab} maxH="full" isLazy colorScheme="green">
           {TabsPanels}
         </Tabs>
       </Dialog.Body>
 
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions
-            mt={{ base: formState.isEditMember ? 12 : 0 }}
-            maxW={480}
-          >
+          <Dialog.Actions maxW={480}>
             {!isEditMember ? (
               <Dialog.SecondaryAction
                 w="25%"
