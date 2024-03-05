@@ -45,8 +45,6 @@
     "@commitlint/config-conventional": "^17.7.0",
     "@fuel-wallet/types": "^0.13.5",
     "@fuels/ts-config": "^0.0.11",
-    "@react-buddy/ide-toolbox": "^2.4.0",
-    "@react-buddy/palette-chakra-ui": "^2.3.1",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": "^18.2.15",
