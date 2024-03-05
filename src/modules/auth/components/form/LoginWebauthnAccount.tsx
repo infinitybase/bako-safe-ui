@@ -5,7 +5,6 @@ import {
   FormLabel,
   Select,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthn } from '../../hooks';

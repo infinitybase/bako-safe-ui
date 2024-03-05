@@ -87,7 +87,14 @@ export class UserService {
   }
 
   static async signIn(payload: SignInPayload) {
-    const { data } = await api.post<SignInResponse>('/auth/sign-in', payload);
+    const { data, status } = await api.post<SignInResponse>(
+      '/auth/sign-in',
+      payload,
+    );
+
+    if (status !== 200) {
+      throw new Error('Invalid signature');
+    }
 
     return data;
   }
