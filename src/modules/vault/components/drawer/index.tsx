@@ -42,7 +42,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
       {...props}
       size="sm"
       onClose={drawer.onClose}
-      variant="glassmorphic"
+      variant={['solid', 'glassmorphic']}
       placement="left"
     >
       <DrawerOverlay />

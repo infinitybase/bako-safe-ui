@@ -82,63 +82,64 @@ const UserTransactionsPage = () => {
           </Button>
 
           {!isMobile && (
-            <Breadcrumb ml={8}>
-              <BreadcrumbItem>
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goHome()}
-                >
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+            <>
+              <Breadcrumb ml={8}>
+                <BreadcrumbItem>
+                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goHome()}
+                  >
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
 
-              {!isSingleWorkspace && (
+                {!isSingleWorkspace && (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      fontSize="sm"
+                      color="grey.200"
+                      fontWeight="semibold"
+                      onClick={() => goWorkspace(current)}
+                    >
+                      {workspace?.name}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
+
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(current)}
+                    href="#"
                   >
-                    {workspace?.name}
+                    My Transactions
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-              )}
-
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
+              </Breadcrumb>
+              <Box>
+                <Button
+                  isDisabled={!hasPermission([OWNER, MANAGER])}
+                  variant="primary"
+                  fontWeight="bold"
+                  leftIcon={<FaRegPlusSquare />}
+                  onClick={() =>
+                    navigate(
+                      Pages.createVault({
+                        workspaceId: current,
+                      }),
+                    )
+                  }
                 >
-                  My Transactions
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </Breadcrumb>
+                  Create vault
+                </Button>
+              </Box>
+            </>
           )}
         </HStack>
-
-        <Box>
-          <Button
-            isDisabled={!hasPermission([OWNER, MANAGER])}
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            onClick={() =>
-              navigate(
-                Pages.createVault({
-                  workspaceId: current,
-                }),
-              )
-            }
-          >
-            Create vault
-          </Button>
-        </Box>
       </HStack>
 
       {/* ACTION BUTTONS */}
