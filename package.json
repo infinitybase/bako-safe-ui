@@ -87,6 +87,6 @@
     "string-width": "4.1.0",
     "@fuels/react": "0.15.2",
     "@fuel-wallet/types": "^0.13.5",
-    "fuels": "0.0.73"
+    "fuels": "0.0.74"
   }
 }
