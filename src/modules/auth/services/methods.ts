@@ -92,6 +92,7 @@ export class UserService {
       payload,
     );
 
+    //any status diferent from 200 is invalid signature
     if (status !== 200) {
       throw new Error('Invalid signature');
     }
