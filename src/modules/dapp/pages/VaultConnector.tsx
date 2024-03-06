@@ -17,14 +17,17 @@ import {
 import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
-import { useQueryParams } from '@/modules/auth';
+import { PermissionRoles } from '@/modules';
+import { useAuth, useQueryParams } from '@/modules/auth';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
+import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { useAuthSocket } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin } = useQueryParams();
+  const auth = useAuth();
 
   const {
     search,
@@ -133,20 +136,35 @@ const VaultConnector = () => {
             <CustomSkeleton h="120px" w="full" />
           )}
 
-          {vaults?.map(({ id, name, predicateAddress, description }) => {
-            if (id === currentVault && !selectedVaultId) setSelectedVaultId(id);
+          {vaults?.map(
+            ({ id, name, predicateAddress, description, workspace }) => {
+              const isViewer = WorkspacePermissionUtils.is(
+                PermissionRoles.VIEWER,
+                {
+                  permissions: workspace.permissions,
+                  userId: auth.userId,
+                },
+              );
 
-            return (
-              <VaultDrawerBox
-                key={id}
-                name={name}
-                address={predicateAddress}
-                isActive={selectedVaultId === id}
-                description={description ?? ''}
-                onClick={() => setSelectedVaultId(id)}
-              />
-            );
-          })}
+              if (isViewer) return null;
+
+              if (id === currentVault && !selectedVaultId)
+                setSelectedVaultId(id);
+
+              return (
+                <VaultDrawerBox
+                  key={id}
+                  name={name}
+                  workspace={workspace}
+                  address={predicateAddress}
+                  description={description ?? ''}
+                  isActive={selectedVaultId === id}
+                  isSingleWorkspace={workspace.single}
+                  onClick={() => setSelectedVaultId(id)}
+                />
+              );
+            },
+          )}
 
           {isFetching && vaults.length && (
             <Flex justifyContent="center" alignItems="center">
