@@ -4,7 +4,6 @@ import {
   CloseTransactionPayload,
   CreateTransactionPayload,
   CreateTransactionResponse,
-  GetTransactionHistoryResponse,
   GetTransactionParams,
   GetTransactionPendingResponse,
   GetTransactionResponse,
@@ -108,14 +107,6 @@ export class TransactionService {
         params: { predicateId },
       },
     );
-    return data;
-  }
-
-  static async getTransactionsHistory(id: string) {
-    const { data } = await api.get<GetTransactionHistoryResponse>(
-      `/transaction/history/${id}`,
-    );
-
     return data;
   }
 }
