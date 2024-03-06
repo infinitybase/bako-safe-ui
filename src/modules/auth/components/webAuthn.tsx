@@ -16,7 +16,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 import { CloseIcon } from '@/components/icons/close-icon';
@@ -28,9 +27,16 @@ import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
-  const [hasNickname, setHasNickname] = useState(false);
   const { ...drawerProps } = props;
-  const { form, tabs, handleChangeTab, accountsRequest } = useWebAuthn();
+  const {
+    form,
+    tabs,
+    handleChangeTab,
+    accountsRequest,
+    search,
+    setSearch,
+    nicknamesData,
+  } = useWebAuthn();
   const { formState, memberForm, loginForm } = form;
 
   const TabsPanels = (
@@ -39,7 +45,14 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
         <LoginWebAuthnForm request={accountsRequest} form={loginForm} />
       </TabPanel>
       <TabPanel p={0}>
-        <CreateWebAuthnForm setHasNickname={setHasNickname} form={memberForm} />
+        <CreateWebAuthnForm
+          form={memberForm}
+          nickname={{
+            search,
+            setSearch,
+            nicknamesData,
+          }}
+        />
       </TabPanel>
     </TabPanels>
   );
@@ -118,7 +131,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               _hover={{
                 opacity: formState.isDisabled && 0.8,
               }}
-              isDisabled={!!formState.isDisabled || hasNickname}
+              isDisabled={!!formState.isDisabled}
             >
               {formState.primaryAction}
             </Button>

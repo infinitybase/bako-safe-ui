@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -28,6 +28,7 @@ const useWebAuthn = () => {
     tabs: EnumUtils.toNumberArray(WebAuthnState),
     defaultTab: WebAuthnState.LOGIN,
   });
+
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
@@ -47,7 +48,9 @@ const useWebAuthn = () => {
   );
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
-    const acc = accountsRequest?.data?.find((user) => user.id === name);
+    const acc = accountsRequest?.data?.find(
+      (user) => user.webauthn.id === name,
+    );
 
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
@@ -59,13 +62,21 @@ const useWebAuthn = () => {
     }
   });
 
+  useEffect(() => {
+    if (accountsRequest?.data?.length === 0) {
+      tabs.set(WebAuthnState.REGISTER);
+    }
+  }, [accountsRequest.data]);
+
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
-    const onSuccess = () => {
-      accountsRequest.refetch();
-      tabs.set(WebAuthnState.LOGIN);
-    };
     await createAccountMutate
-      .mutateAsync(name, { onSuccess })
+      .mutateAsync(name, {
+        onSuccess: async (data) => {
+          await accountsRequest.refetch();
+          await tabs.set(WebAuthnState.LOGIN);
+          loginForm.setValue('name', data.id);
+        },
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -81,6 +92,8 @@ const useWebAuthn = () => {
 
   const closeWebAuthnDrawer = () => {
     setIsOpen(false);
+    loginForm.resetField('name');
+    memberForm.resetField('name');
   };
 
   const goToPage = (page: WebAuthnState) => {

@@ -6,30 +6,25 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Controller } from 'react-hook-form';
 
-import { UseWebAuthn, useWebAuthn } from '../../hooks';
+import { UseWebAuthn } from '../../hooks';
 
 interface CreateWebAuthnFormProps {
   form: UseWebAuthn['form']['memberForm'];
-  setHasNickname: React.Dispatch<React.SetStateAction<boolean>>;
+  nickname: {
+    search: string;
+    setSearch: (value: string) => void;
+    nicknamesData: UseWebAuthn['nicknamesData'];
+  };
 }
 export const CreateWebAuthnForm = ({
   form,
-  setHasNickname,
+  nickname,
 }: CreateWebAuthnFormProps) => {
   // const { debouncedSearchHandler } = useWebAuthn();
-  const { search, setSearch, debouncedSearchHandler, nicknamesData } =
-    useWebAuthn();
-
-  useEffect(() => {
-    if (nicknamesData?.name) {
-      setHasNickname(true);
-    } else {
-      setHasNickname(false);
-    }
-  }, [nicknamesData?.name]);
+  const { search, setSearch, nicknamesData } = nickname;
 
   return (
     <Box w="full" maxW={480} mb={8}>
@@ -44,7 +39,6 @@ export const CreateWebAuthnForm = ({
                 placeholder=""
                 onChange={(e) => {
                   setSearch(e.target.value);
-                  debouncedSearchHandler(e.target.value);
                   field.onChange(e.target.value);
                 }}
                 isInvalid={
