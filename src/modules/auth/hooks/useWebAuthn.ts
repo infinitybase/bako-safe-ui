@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -8,7 +8,6 @@ import { useDrawerWebAuth } from './useDrawerWebAuthn';
 import { useWebAuthnForm } from './useWebAuthnForm';
 import {
   useCheckNickname,
-  useCreateHardwareId,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
 
@@ -32,10 +31,7 @@ const useWebAuthn = () => {
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
-  const hardwareId = useMemo(() => {
-    return localStorage.getItem(localStorageKeys.HARDWARE_ID)!;
-  }, []);
-  const accountsRequest = useGetAccountsByHardwareId(hardwareId);
+  const accountsRequest = useGetAccountsByHardwareId();
 
   const nicknames = useCheckNickname(search);
 
@@ -51,7 +47,7 @@ const useWebAuthn = () => {
   );
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
-    const acc = accountsRequest.data?.find((user) => user.id === name);
+    const acc = accountsRequest?.data?.find((user) => user.id === name);
 
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
@@ -121,10 +117,9 @@ const useWebAuthn = () => {
     setSearch,
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
-    useCreateHardwareId,
     accountsRequest,
     handleChangeTab,
-    hardwareId,
+    hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
     checkNickname: useCheckNickname(search),
     nicknamesData: nicknames.data,
     debouncedSearchHandler,

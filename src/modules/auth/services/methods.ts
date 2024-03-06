@@ -109,22 +109,6 @@ export class UserService {
     return data;
   }
 
-  static async createHardwareId() {
-    const localStorage = window.localStorage;
-
-    return localStorage.setItem(
-      localStorageKeys.HARDWARE_ID,
-      crypto.randomUUID(),
-    ); // todo: make this to enums
-  }
-
-  static async getHardwareId() {
-    return new Promise((resolve) => {
-      const localStorage = window.localStorage;
-      return resolve(localStorage.getItem(localStorageKeys.HARDWARE_ID));
-    });
-  }
-
   static async getByHardwareId(hardwareId: string) {
     const { data } = await api.get<CheckNicknameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
@@ -184,6 +168,8 @@ export const localStorageKeys = {
 
 export const UserQueryKey = {
   DEFAULT: 'user',
+  HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
+  CREATE_HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'create-hardware-id'],
   CREATE_WEB_AUTHN_ACCOUNT: () => [
     UserQueryKey.DEFAULT,
     'create-web-authn-account',
