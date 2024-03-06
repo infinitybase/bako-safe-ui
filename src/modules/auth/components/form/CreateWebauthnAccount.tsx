@@ -63,10 +63,10 @@ export const CreateWebAuthnForm = ({
                 {nicknamesData?.name && search.length > 0
                   ? 'Name already exists'
                   : form.formState.errors.name?.message
-                  ? form.formState.errors.name?.message
-                  : search.length > 0
-                  ? 'This username is available'
-                  : ''}
+                    ? form.formState.errors.name?.message
+                    : search.length > 0
+                      ? 'This username is available'
+                      : ''}
               </FormHelperText>
             </FormControl>
             <SmallCloseIcon
