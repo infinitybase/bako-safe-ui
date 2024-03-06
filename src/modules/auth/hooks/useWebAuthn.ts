@@ -60,11 +60,15 @@ const useWebAuthn = () => {
   });
 
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
-    await createAccountMutate.mutateAsync(name).catch((error) => {
-      console.error(error);
-    });
-    accountsRequest.refetch();
-    tabs.set(WebAuthnState.LOGIN);
+    const onSuccess = () => {
+      accountsRequest.refetch();
+      tabs.set(WebAuthnState.LOGIN);
+    };
+    await createAccountMutate
+      .mutateAsync(name, { onSuccess })
+      .catch((error) => {
+        console.error(error);
+      });
   });
 
   const handleChangeTab = (tab: WebAuthnState) => {
