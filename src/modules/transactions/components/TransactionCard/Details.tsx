@@ -30,6 +30,9 @@ import {
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
 
+import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
+import { TransactionStepper } from './TransactionStepper';
+
 type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
     assetId: string;
@@ -206,6 +209,10 @@ const AssetBoxInfo = ({
 };
 
 const Details = ({ transaction, status }: TransactionDetailsProps) => {
+  const { transactionHistory } = useTransactionHistory(transaction.id);
+
+  console.log(transactionHistory);
+
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
   const isContract = mainOperation?.to?.type === AddressType.contract;
@@ -226,10 +233,12 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
       <HStack
         pt={{ base: 0, sm: 5 }}
         alignSelf="flex-start"
-        maxW={600}
-        w="full"
+        alignItems="center"
+        justify="space-between"
+        maxW="full"
+        w="80%"
       >
-        <Box w="full">
+        <Box>
           <Box mb={{ base: 2, sm: 4 }}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -334,12 +343,11 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderColor="dark.100"
             borderTopWidth={1}
           >
-
             <HStack
               mt={2}
               px={{ base: 0, sm: 5 }}
               py={{ base: 3, sm: 5 }}
-              justifyContent="space-between"
+              gap={8}
             >
               <Text color="grey.200">Gás Fee (ETH)</Text>
               <Text
@@ -351,6 +359,10 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
               </Text>
             </HStack>
           </Box>
+        </Box>
+
+        <Box>
+          <TransactionStepper steps={transactionHistory!} />
         </Box>
       </HStack>
 
