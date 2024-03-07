@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@fuels/react": "0.15.2",
-    "fuels": "0.0.74",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
     "@fuels/ts-config": "^0.0.11",
