@@ -135,6 +135,7 @@ export class TransactionService {
       fee: usedFee.add(minFee),
       transactionRequest,
     };
+  }
 
   static async getTransactionsHistory(id: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(
