@@ -1,10 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
 import { useBsafeCreateTransaction, WorkspacesQueryKey } from '@/modules/core';
+import { TransactionService } from '@/modules/transactions/services';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import {
@@ -32,14 +34,20 @@ const useTransactionAccordion = () => {
 };
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
+
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-  const auth = useAuth();
+
   const listContactsRequest = useListContactsRequest({
     current: auth.workspaces.current,
     includePersonal: auth.isSingleWorkspace,
+  });
+
+  const resolveTransactionCosts = useMutation({
+    mutationFn: TransactionService.resolveTransactionCosts,
   });
 
   // Vault
@@ -79,6 +87,24 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
+  const transactionAmount = form.watch(
+    `transactions.${accordion.index}.amount`,
+  );
+
+  useEffect(() => {
+    if (Number(transactionAmount) > 0 && form.formState.isValid) {
+      const { transactions } = form.getValues();
+      resolveTransactionCosts.mutate({
+        assets: transactions!.map((transaction) => ({
+          to: transaction.to,
+          amount: transaction.amount,
+          assetId: transaction.asset,
+        })),
+        vault: vaultDetails.predicateInstance!,
+      });
+    }
+  }, [form.formState.isValid, transactionAmount]);
+
   const handleClose = () => {
     props?.onClose();
     form.reset();
@@ -96,6 +122,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   return {
+    resolveTransactionCosts,
     transactionsFields,
     transactionRequest,
     form: {

@@ -1,3 +1,5 @@
+import { Divider, Flex, Text } from '@chakra-ui/react';
+
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 
@@ -11,6 +13,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     accordion,
     transactionsFields,
     transactionRequest,
+    resolveTransactionCosts,
     handleClose,
   } = useCreateTransaction({
     onClose: props.onClose,
@@ -45,7 +48,21 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Dialog.Actions maxW={480}>
+      <Flex wrap="wrap" justifyContent="end" w="full" maxW={480} my={[3, 6]}>
+        <Divider mb={2} w="full" />
+        <Text
+          visibility={
+            resolveTransactionCosts.isLoading || !resolveTransactionCosts.data
+              ? 'hidden'
+              : 'visible'
+          }
+          variant="description"
+        >
+          Fee (network): {resolveTransactionCosts.data?.fee.format()}
+        </Text>
+      </Flex>
+
+      <Dialog.Actions maxW={480} hideDivider>
         {/* TODO: Colocar o Transactions Fee entre o Divider e os botoes */}
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
