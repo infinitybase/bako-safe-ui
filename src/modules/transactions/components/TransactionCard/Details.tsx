@@ -20,6 +20,8 @@ import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
+
+
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import {
   AddressUtils,
