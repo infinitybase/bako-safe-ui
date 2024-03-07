@@ -1,3 +1,5 @@
+import { Transfer } from 'bsafe';
+
 import { api } from '@/config/api';
 
 import {
@@ -14,6 +16,7 @@ import {
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
   GetVaultTransactionsResponse,
+  ResolveTransactionCostInput,
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
@@ -110,6 +113,28 @@ export class TransactionService {
     );
     return data;
   }
+
+  static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
+    const { vault, assets } = input;
+
+    const { transactionRequest } = await Transfer.instance({
+      vault,
+      transfer: {
+        name: '',
+        assets,
+        witnesses: [],
+      },
+    });
+
+    const { gasPrice, usedFee, minFee } =
+      await vault.provider.getTransactionCost(transactionRequest);
+
+    transactionRequest.gasPrice = gasPrice;
+
+    return {
+      fee: usedFee.add(minFee),
+      transactionRequest,
+    };
 
   static async getTransactionsHistory(id: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(

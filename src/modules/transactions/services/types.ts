@@ -1,4 +1,4 @@
-import { ITransaction, ITransactionResume } from 'bsafe';
+import { ITransaction, ITransactionResume, Vault } from 'bsafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
@@ -100,6 +100,15 @@ export interface CloseTransactionPayload {
 export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;
 };
+
+export interface ResolveTransactionCostInput {
+  assets: {
+    to: string;
+    amount: string;
+    assetId: string;
+  }[];
+  vault: Vault;
+}
 
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
