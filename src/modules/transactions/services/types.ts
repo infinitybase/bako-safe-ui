@@ -8,6 +8,25 @@ export enum SortOption {
   DESC = 'DESC',
 }
 
+export enum TransactionHistoryType {
+  FAILED = 'FAILED',
+  CREATED = 'CREATED',
+  SIGN = 'SIGNATURE',
+  DECLINE = 'DECLINE',
+  CANCEL = 'CANCEL',
+  SEND = 'SEND',
+}
+
+export interface ITransactionHistory {
+  type: TransactionHistoryType;
+  date: string;
+  owner: {
+    id: string;
+    avatar: string;
+    address: string;
+  };
+}
+
 export interface TransactionDetails {
   signers: {
     address: string;
@@ -90,6 +109,7 @@ export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
 export type GetTransactionPendingResponse = ITransactionPending;
+export type GetTransactionHistoryResponse = ITransactionHistory[];
 export type CreateTransactionResponse = ITransaction;
 export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;

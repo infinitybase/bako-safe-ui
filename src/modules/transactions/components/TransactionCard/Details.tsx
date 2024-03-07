@@ -9,6 +9,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Stack,
   StackProps,
   Text,
   useClipboard,
@@ -29,6 +30,9 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+
+import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
+import { TransactionStepper } from './TransactionStepper';
 
 type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
@@ -206,6 +210,8 @@ const AssetBoxInfo = ({
 };
 
 const Details = ({ transaction, status }: TransactionDetailsProps) => {
+  const { transactionHistory } = useTransactionHistory(transaction.id);
+
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
   const isContract = mainOperation?.to?.type === AddressType.contract;
@@ -223,13 +229,17 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
 
   return (
     <VStack w="full">
-      <HStack
+      <Stack
         pt={{ base: 0, sm: 5 }}
         alignSelf="flex-start"
-        maxW={600}
-        w="full"
+        display="flex"
+        direction={['column', 'row']}
+        alignItems="center"
+        justify="space-between"
+        maxW="full"
+        w={['90%', '80%']}
       >
-        <Box w="full">
+        <Box>
           <Box mb={{ base: 2, sm: 4 }}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -338,7 +348,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
               mt={2}
               px={{ base: 0, sm: 5 }}
               py={{ base: 3, sm: 5 }}
-              justifyContent="space-between"
+              gap={8}
             >
               <Text color="grey.200">Gás Fee (ETH)</Text>
               <Text
@@ -351,7 +361,11 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </HStack>
           </Box>
         </Box>
-      </HStack>
+
+        <Box alignSelf="flex-start">
+          <TransactionStepper steps={transactionHistory!} />
+        </Box>
+      </Stack>
 
       {transaction.status === TransactionStatus.SUCCESS && (
         <Button
