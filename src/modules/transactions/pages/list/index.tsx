@@ -17,6 +17,7 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useScreenSize } from '@/modules/core';
+import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionFilter,
@@ -36,6 +37,7 @@ const TransactionsVaultPage = () => {
     setSelectedTransaction,
     defaultIndex,
   } = useTransactionList();
+  const { goHome } = useHome();
   const { isMobile } = useScreenSize();
   const menuDrawer = useDisclosure();
 
@@ -59,7 +61,7 @@ const TransactionsVaultPage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                href="#"
+                onClick={() => goHome()}
               >
                 Home
               </BreadcrumbLink>

@@ -53,6 +53,7 @@ const TransactionConfirm = () => {
             name={vault.name}
             address={vault.address.toString()}
             description={vault.description}
+            isSingleWorkspace
             isActive
           />
         )}

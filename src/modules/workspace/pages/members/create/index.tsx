@@ -199,7 +199,7 @@ const CreateMemberPage = () => {
         top={{ base: 0, sm: -8 }}
         mt={{ base: 8, sm: 0 }}
         h={8}
-        mb={{ base: 8, sm: 0 }}
+        mb={{ base: 8, sm: 4 }}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"
@@ -222,7 +222,7 @@ const CreateMemberPage = () => {
       )}
 
       <Dialog.Body
-        mb={7}
+        mb={[7, 1]}
         maxW={480}
         maxH={['full', 520]}
         overflowY="scroll"

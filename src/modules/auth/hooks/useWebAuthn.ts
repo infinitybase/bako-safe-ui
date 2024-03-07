@@ -22,6 +22,7 @@ const useWebAuthn = () => {
   //drawer for webauthn
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(WebAuthnState.LOGIN);
+  const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
 
   const tabs = useTab<WebAuthnState>({
@@ -34,18 +35,20 @@ const useWebAuthn = () => {
 
   const accountsRequest = useGetAccountsByHardwareId();
 
-  const nicknames = useCheckNickname(search);
+  const nicknames = useCheckNickname(searchRequest);
 
   const debouncedSearchHandler = useCallback(
-    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
-      if (typeof event === 'string') {
-        setSearch(event);
-        nicknames;
-        return;
-      }
+    debounce((value: string) => {
+      setSearchRequest(value);
     }, 300),
     [],
   );
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearch(value);
+    debouncedSearchHandler(value);
+  };
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
     const acc = accountsRequest?.data?.find(
@@ -75,6 +78,7 @@ const useWebAuthn = () => {
           await accountsRequest.refetch();
           await tabs.set(WebAuthnState.LOGIN);
           loginForm.setValue('name', data.id);
+          memberForm.reset();
         },
       })
       .catch((error) => {
@@ -90,10 +94,15 @@ const useWebAuthn = () => {
     setIsOpen(true);
   };
 
+  const resetDialogForms = () => {
+    handleChangeTab(WebAuthnState.LOGIN);
+    loginForm.reset();
+    memberForm.reset();
+  };
+
   const closeWebAuthnDrawer = () => {
     setIsOpen(false);
-    loginForm.resetField('name');
-    memberForm.resetField('name');
+    resetDialogForms();
   };
 
   const goToPage = (page: WebAuthnState) => {
@@ -132,14 +141,15 @@ const useWebAuthn = () => {
   return {
     goToPage,
     setSearch,
+    resetDialogForms,
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
     accountsRequest,
     handleChangeTab,
     hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
-    checkNickname: useCheckNickname(search),
+    checkNickname: useCheckNickname(searchRequest),
     nicknamesData: nicknames.data,
-    debouncedSearchHandler,
+    handleInputChange,
     isOpen,
     search,
     page,
