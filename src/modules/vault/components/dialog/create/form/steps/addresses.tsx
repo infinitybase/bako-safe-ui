@@ -174,7 +174,6 @@ const VaultAddressesStep = ({
               );
             })}
 
-
             <Button
               w="full"
               border="none"
@@ -198,10 +197,9 @@ const VaultAddressesStep = ({
           </VStack>
         </Dialog.Section>
 
-
         <Divider borderColor="dark.100" my={9} />
 
-        <HStack position="relative">
+        <HStack>
           <Dialog.Section
             w="full"
             maxW={350}
@@ -244,7 +242,7 @@ const VaultAddressesStep = ({
                     style={{
                       display: 'flex',
                       position: 'absolute',
-                      left: '-309px',
+                      left: '-435%',
                       minWidth: '400px',
                       marginBottom: '20px',
                     }}
