@@ -1,5 +1,7 @@
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Link,
   Step,
   StepDescription,
   StepIcon,
@@ -9,7 +11,12 @@ import {
   StepStatus,
   StepTitle,
   Text,
+  useSteps,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
+
+import { useAuth } from '@/modules/auth';
+import { AddressUtils } from '@/modules/core';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
 
@@ -17,18 +24,49 @@ interface TransactionStepperProps {
   steps: ITransactionHistory[];
 }
 
-const TransactionTypeFormatter = (type: string) => {
-  switch (type) {
-    case TransactionHistoryType.CREATED:
-      return 'Created';
-    case TransactionHistoryType.SEND:
-      return 'Sent';
-    case TransactionHistoryType.SIGN:
-      return 'Signed';
-  }
-};
-
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
+  const { account } = useAuth();
+  const { activeStep, setActiveStep } = useSteps({
+    index: steps?.length,
+    count: steps?.length,
+  });
+
+  const isDeclined = steps?.find(
+    (steps) => steps.type === TransactionHistoryType.DECLINE,
+  );
+  const lastStep = steps?.length - 1;
+
+  const TransactionTypeFormatter = (history: ITransactionHistory) => {
+    switch (true) {
+      case history.owner.address === account &&
+        history.type === TransactionHistoryType.CREATED:
+        return 'You created';
+      case history.owner.address !== account &&
+        history.type === TransactionHistoryType.CREATED:
+        return 'Created';
+      case history.type === TransactionHistoryType.SEND:
+        return 'Sent';
+      case history.owner.address === account &&
+        history.type === TransactionHistoryType.SIGN:
+        return 'You signed';
+      case history.owner.address !== account &&
+        history.type === TransactionHistoryType.SIGN:
+        return 'Signed';
+      case history.owner.address === account &&
+        history.type === TransactionHistoryType.DECLINE:
+        return 'You declined';
+      case history.owner.address !== account &&
+        history.type === TransactionHistoryType.DECLINE:
+        return `Declined`;
+    }
+  };
+
+  useEffect(() => {
+    if (lastStep && isDeclined) {
+      setActiveStep(lastStep);
+    }
+  }, [steps?.length]);
+
   return (
     <Box display="flex" flexDirection="column" gap={5}>
       <Text color="grey.200" fontWeight="medium">
@@ -36,13 +74,13 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
       </Text>
 
       <Stepper
-        index={4}
+        index={isDeclined ? activeStep : steps?.length}
         orientation="vertical"
         h="220px"
         size="sm"
         maxH="full"
         gap={0}
-        colorScheme="success"
+        colorScheme="grey"
       >
         {steps?.map((step, index) => (
           <Step
@@ -53,8 +91,14 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
               justifyContent: 'center',
             }}
           >
-            <StepIndicator bg="grey.400" rounded={5}>
-              <StepStatus key={index} complete={<StepIcon color="black" />} />
+            <StepIndicator bg="grey.600" color="red" rounded={5}>
+              <StepStatus
+                key={index}
+                complete={<StepIcon color="success.500" />}
+                active={
+                  isDeclined && <CloseIcon color="error.500" boxSize={3} />
+                }
+              />
             </StepIndicator>
 
             <StepSeparator />
@@ -64,18 +108,23 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                   fontSize: '16px',
                 }}
               >
-                {TransactionTypeFormatter(step.type)}
+                <Text as={Link} textDecor="none">
+                  {TransactionTypeFormatter(step)}
+                </Text>{' '}
+                <Text as={Link} textDecor="none" variant="subtitle">
+                  {step.owner.address !== account &&
+                    AddressUtils.format(`(${step.owner.address})`)}
+                </Text>
               </StepTitle>
               <StepDescription
                 style={{
                   fontSize: '14px',
+                  color: 'grey.200',
                 }}
               >
-                {new Date(step.date)
-                  .toString()
-                  .split(' ')
-                  .slice(0, 5)
-                  .join(' ')}
+                {new Date(step.date).toDateString() +
+                  ' ' +
+                  new Date(step.date).toLocaleTimeString()}
               </StepDescription>
             </Box>
           </Step>

@@ -1,15 +1,22 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
+import { ITransactionHistory } from '../../services';
 import { useTransactionHistoryRequest } from './useTransactionHistoryRequest';
 
 export const useTransactionHistory = (transactionId: string) => {
+  const [transactionHistory, setTransactionHistory] = useState<
+    ITransactionHistory[] | null
+  >(null);
+
   const transactionHistoryRequest = useTransactionHistoryRequest(transactionId);
 
-  const transactionHistory = useMemo(() => {
+  useEffect(() => {
     if (transactionHistoryRequest.data) {
-      return transactionHistoryRequest.data.map((transaction) => transaction);
+      setTransactionHistory(
+        transactionHistoryRequest.data.map((transaction) => transaction),
+      );
     }
-  }, [transactionHistoryRequest.data]);
+  }, [transactionHistoryRequest.data, transactionId]);
 
   return {
     ...transactionHistoryRequest,
