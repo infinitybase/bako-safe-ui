@@ -67,7 +67,8 @@ const VaultAddressesStep = ({
         >
           <FormControl>
             <Select
-              placeholder=""
+              placeholder=" "
+              defaultValue=""
               isDisabled={!templates.length}
               onChange={(item) => setTemplate(item.target.value)}
             >
@@ -174,7 +175,6 @@ const VaultAddressesStep = ({
               );
             })}
 
-
             <Button
               w="full"
               border="none"
@@ -197,7 +197,6 @@ const VaultAddressesStep = ({
             </Button>
           </VStack>
         </Dialog.Section>
-
 
         <Divider borderColor="dark.100" my={9} />
 
@@ -241,13 +240,11 @@ const VaultAddressesStep = ({
                   </Select>
                   <FormHelperText
                     color="error.500"
-                    style={{
-                      display: 'flex',
-                      position: 'absolute',
-                      left: '-309px',
-                      minWidth: '400px',
-                      marginBottom: '20px',
-                    }}
+                    maxW={['full', 'full']}
+                    minW={['300px', '400px']}
+                    left={['-315%', '-435%']}
+                    position="relative"
+                    mt={[6, 8]}
                   >
                     {fieldState.error?.message}
                   </FormHelperText>

@@ -34,7 +34,7 @@ const FeedbackSuccess = ({
   onSecondaryAction,
   membersFormIcon,
 }: SuccessStepProps) => (
-  <Center overflowX="hidden" flexDirection="column" mb={12}>
+  <Center overflowX="hidden" flexDirection="column">
     <Box m={8}>
       {membersFormIcon ? (
         <Icon fontSize={100} as={membersFormIcon} />

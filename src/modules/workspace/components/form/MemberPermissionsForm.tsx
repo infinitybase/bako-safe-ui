@@ -48,7 +48,7 @@ export const MemberPermissionForm = ({
           </Heading>
         }
         description="Select the role for this user"
-        mb={8}
+        mb={[8, 4]}
       />
       <Controller
         name="permission"
