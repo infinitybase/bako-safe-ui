@@ -199,7 +199,7 @@ const VaultAddressesStep = ({
 
         <Divider borderColor="dark.100" my={9} />
 
-        <HStack>
+        <HStack position="relative">
           <Dialog.Section
             w="full"
             maxW={350}
@@ -239,13 +239,11 @@ const VaultAddressesStep = ({
                   </Select>
                   <FormHelperText
                     color="error.500"
-                    style={{
-                      display: 'flex',
-                      position: 'absolute',
-                      left: '-435%',
-                      minWidth: '400px',
-                      marginBottom: '20px',
-                    }}
+                    maxW={['full', 'full']}
+                    minW={['300px', '400px']}
+                    left={['-315%', '-435%']}
+                    position="relative"
+                    mt={[6, 8]}
                   >
                     {fieldState.error?.message}
                   </FormHelperText>
