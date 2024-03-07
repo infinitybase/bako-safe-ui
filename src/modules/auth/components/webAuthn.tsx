@@ -20,23 +20,27 @@ import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 import { CloseIcon } from '@/components/icons/close-icon';
 
-import { useWebAuthn, WebAuthnState } from '../hooks';
+import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
 import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 
-interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
+interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
+  webauthn: UseWebAuthn;
+}
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
-  const { ...drawerProps } = props;
+  const { webauthn, ...drawerProps } = props;
   const {
     form,
     tabs,
-    handleChangeTab,
+    resetDialogForms,
     accountsRequest,
     search,
     setSearch,
     nicknamesData,
-  } = useWebAuthn();
+    handleInputChange,
+    closeWebAuthnDrawer,
+  } = webauthn;
   const { formState, memberForm, loginForm } = form;
 
   const TabsPanels = (
@@ -51,6 +55,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
             search,
             setSearch,
             nicknamesData,
+            searchHandler: handleInputChange,
           }}
         />
       </TabPanel>
@@ -69,18 +74,14 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
           }
         >
           {tabs.is(WebAuthnState.REGISTER) && (
-            <HStack
-              cursor="pointer"
-              onClick={() => handleChangeTab(WebAuthnState.LOGIN)}
-              spacing={3}
-            >
+            <HStack cursor="pointer" onClick={resetDialogForms} spacing={3}>
               <MdOutlineArrowBackIosNew width={5} height={5} />
               <Text fontWeight="semibold" color="white" fontSize="lg">
                 Back
               </Text>
             </HStack>
           )}
-          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
+          <HStack cursor="pointer" onClick={closeWebAuthnDrawer} spacing={2}>
             <Text fontWeight="semibold" color="white" fontSize="lg">
               Close
             </Text>

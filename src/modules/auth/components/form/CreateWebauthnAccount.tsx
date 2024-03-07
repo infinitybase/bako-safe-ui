@@ -6,7 +6,7 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthn } from '../../hooks';
@@ -17,14 +17,14 @@ interface CreateWebAuthnFormProps {
     search: string;
     setSearch: (value: string) => void;
     nicknamesData: UseWebAuthn['nicknamesData'];
+    searchHandler: (event: ChangeEvent<HTMLInputElement>) => void;
   };
 }
 export const CreateWebAuthnForm = ({
   form,
   nickname,
 }: CreateWebAuthnFormProps) => {
-  // const { debouncedSearchHandler } = useWebAuthn();
-  const { search, setSearch, nicknamesData } = nickname;
+  const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
   return (
     <Box w="full" maxW={480} mb={8}>
@@ -38,7 +38,7 @@ export const CreateWebAuthnForm = ({
                 value={search}
                 placeholder=""
                 onChange={(e) => {
-                  setSearch(e.target.value);
+                  searchHandler(e);
                   field.onChange(e.target.value);
                 }}
                 isInvalid={

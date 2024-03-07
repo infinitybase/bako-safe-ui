@@ -13,7 +13,6 @@ import { Pages } from '@/modules/core/routes';
 import { TypeUser } from '../services';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
-import { useGetAccountsByHardwareId } from './useWebauthnRequests';
 
 export const redirectPathBuilder = (
   isDapp: boolean,
@@ -44,8 +43,7 @@ const useSignIn = () => {
   const { location, origin } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, isOpen, closeWebAuthnDrawer, page, setSearch } =
-    useWebAuthn();
+  const { openWebAuthnDrawer, ...rest } = useWebAuthn();
 
   const hasFuel = !!fuel;
 
@@ -113,11 +111,8 @@ const useSignIn = () => {
     auth,
     connectByWallet,
     webauthn: {
-      page,
-      isOpen,
-      setSearch,
-      closeWebAuthnDrawer,
-      accounts: useGetAccountsByHardwareId(),
+      ...rest,
+      openWebAuthnDrawer,
     },
     signInRequest,
     isConnected,
