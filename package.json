@@ -86,7 +86,6 @@
     "*.tsx": "prettier --write"
   },
   "resolutions": {
-    "string-width": "4.1.0",
-    "fuels": "0.0.74"
+    "string-width": "4.1.0"
     }
 }
