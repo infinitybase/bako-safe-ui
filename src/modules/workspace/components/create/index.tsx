@@ -89,7 +89,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           maxW={450}
           top={-6}
           title="Create Workspace"
-          description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
+          description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
       )}
@@ -116,7 +116,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             <TabPanel p={0}>
               <FeedbackSuccess
                 title="All set!!"
-                description="The vault template is now ready for use whenever you need to streamline
+                description="The workspace template is now ready for use whenever you need to streamline
         your workflow!"
                 primaryAction="Go to my workspace"
                 secondaryAction="Members Settings"

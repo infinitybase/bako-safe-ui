@@ -48,7 +48,7 @@ const UserVaultsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   return (
-    <VStack w="full" spacing={6} p={[1, 8]}>
+    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
       <HStack
         h="10"
         w="full"

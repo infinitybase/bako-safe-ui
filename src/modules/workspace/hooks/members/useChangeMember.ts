@@ -76,6 +76,7 @@ const useChangeMember = () => {
     memberPermission?.role &&
     WorkspacePermissionUtils.permissions[memberPermission.role];
 
+
   useMemo(() => {
     setMemberPermissions({
       oldPermission: permissions?.title?.toUpperCase() ?? '',

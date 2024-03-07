@@ -16,6 +16,7 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@fuel-ts/providers": "^0.73.0",
+    "@fuel-wallet/types": "0.15.2",
     "@fuel-wallet/sdk": "0.15.2",
     "@fuels/react": "0.15.2",
     "@hookform/resolvers": "^3.3.1",
@@ -42,9 +43,9 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@fuels/react": "0.15.2",
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
-    "@fuel-wallet/types": "^0.13.5",
     "@fuels/ts-config": "^0.0.11",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",
@@ -84,9 +85,6 @@
     "*.tsx": "prettier --write"
   },
   "resolutions": {
-    "string-width": "4.1.0",
-    "@fuels/react": "0.15.2",
-    "@fuel-wallet/types": "^0.13.5",
-    "fuels": "0.0.74"
-  }
+    "string-width": "4.1.0"
+    }
 }
