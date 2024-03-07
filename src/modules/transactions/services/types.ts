@@ -9,6 +9,7 @@ export enum SortOption {
 }
 
 export enum TransactionHistoryType {
+  FAILED = 'FAILED',
   CREATED = 'CREATED',
   SIGN = 'SIGNATURE',
   DECLINE = 'DECLINE',

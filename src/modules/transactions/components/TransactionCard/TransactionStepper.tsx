@@ -47,6 +47,10 @@ const TransactionTypeFormatter = (
     case history.owner.address !== account &&
       history.type === TransactionHistoryType.DECLINE:
       return `Declined`;
+    case history.type === TransactionHistoryType.CANCEL:
+      return 'Canceled';
+    case history.type === TransactionHistoryType.FAILED:
+      return 'Failed';
   }
 };
 
@@ -88,11 +92,14 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
         gap={0}
         colorScheme="grey"
       >
-        {steps?.map((step, index, test) => {
+        {steps?.map((step, index) => {
           const nickname = contactByAddress(step.owner.address)?.nickname;
           const declined = step.type === TransactionHistoryType.DECLINE;
+          const failed = step.type === TransactionHistoryType.FAILED;
+          const canceled = step.type === TransactionHistoryType.CANCEL;
           const sended = step.type === TransactionHistoryType.SEND;
-          console.log(test.length - 1);
+
+          const badOptions = (declined || failed || canceled) && lastStep;
 
           return (
             <Step
@@ -107,7 +114,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 <StepStatus
                   key={index}
                   complete={
-                    declined && test.length - 1 ? (
+                    badOptions ? (
                       <Box bgColor="error.500" boxSize={4} rounded={5} />
                     ) : sended && lastStep ? (
                       <Box bgColor="brand.500" boxSize={4} rounded={5} />

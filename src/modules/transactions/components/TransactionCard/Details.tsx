@@ -9,6 +9,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Stack,
   StackProps,
   Text,
   useClipboard,
@@ -228,13 +229,15 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
 
   return (
     <VStack w="full">
-      <HStack
+      <Stack
         pt={{ base: 0, sm: 5 }}
         alignSelf="flex-start"
+        display="flex"
+        direction={['column', 'row']}
         alignItems="center"
         justify="space-between"
         maxW="full"
-        w="80%"
+        w={['90%', '80%']}
       >
         <Box>
           <Box mb={{ base: 2, sm: 4 }}>
@@ -359,10 +362,10 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
 
-        <Box>
+        <Box alignSelf="flex-start">
           <TransactionStepper steps={transactionHistory!} />
         </Box>
-      </HStack>
+      </Stack>
 
       {transaction.status === TransactionStatus.SUCCESS && (
         <Button
