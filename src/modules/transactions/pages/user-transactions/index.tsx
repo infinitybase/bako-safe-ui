@@ -60,7 +60,7 @@ const UserTransactionsPage = () => {
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6} p={[1, 8]}>
+    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
@@ -120,26 +120,26 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               </Breadcrumb>
-              <Box>
-                <Button
-                  isDisabled={!hasPermission([OWNER, MANAGER])}
-                  variant="primary"
-                  fontWeight="bold"
-                  leftIcon={<FaRegPlusSquare />}
-                  onClick={() =>
-                    navigate(
-                      Pages.createVault({
-                        workspaceId: current,
-                      }),
-                    )
-                  }
-                >
-                  Create vault
-                </Button>
-              </Box>
             </>
           )}
         </HStack>
+        <Box>
+          <Button
+            isDisabled={!hasPermission([OWNER, MANAGER])}
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            onClick={() =>
+              navigate(
+                Pages.createVault({
+                  workspaceId: current,
+                }),
+              )
+            }
+          >
+            Create vault
+          </Button>
+        </Box>
       </HStack>
 
       {/* ACTION BUTTONS */}
