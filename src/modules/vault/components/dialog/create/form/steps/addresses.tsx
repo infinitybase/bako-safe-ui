@@ -67,7 +67,8 @@ const VaultAddressesStep = ({
         >
           <FormControl>
             <Select
-              placeholder=""
+              placeholder=" "
+              defaultValue=""
               isDisabled={!templates.length}
               onChange={(item) => setTemplate(item.target.value)}
             >
