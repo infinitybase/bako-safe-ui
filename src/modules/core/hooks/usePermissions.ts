@@ -20,7 +20,8 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
   const type = userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   const permissions =
-    WorkspacePermissionUtils.permissions[type as PermissionRoles];
+    userRole?.role && WorkspacePermissionUtils.permissions[userRole.role];
+
 
   if (!permissions) {
     return {

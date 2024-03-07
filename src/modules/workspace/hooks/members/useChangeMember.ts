@@ -65,17 +65,17 @@ const useChangeMember = () => {
     useChangeMemberForm(membersToForm!);
   const addressBook = useAddressBook();
 
-  const role = WorkspacePermissionUtils.getPermissionInWorkspace(
+  const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspaceRequest.workspace!,
     {
       id: params.memberId,
     } as Member,
   );
 
-  const _role = role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
-
   const permissions =
-    WorkspacePermissionUtils.permissions[_role as PermissionRoles];
+    memberPermission?.role &&
+    WorkspacePermissionUtils.permissions[memberPermission.role];
+
 
   useMemo(() => {
     setMemberPermissions({
@@ -282,7 +282,7 @@ const useChangeMember = () => {
     dialog: {
       title: isEditMember ? 'Edit member' : 'Add member',
       description: isEditMember
-        ? 'You are editing the role for this member:'
+        ? 'You are editing the memberPermission for this member:'
         : 'Add members, manage roles, remove or adjust permissions as needed',
     },
     form: {
