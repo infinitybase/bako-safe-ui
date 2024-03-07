@@ -20,8 +20,6 @@ import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-
-
 import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import {
   AddressUtils,
@@ -212,8 +210,6 @@ const AssetBoxInfo = ({
 
 const Details = ({ transaction, status }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
-
-  console.log(transactionHistory);
 
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
