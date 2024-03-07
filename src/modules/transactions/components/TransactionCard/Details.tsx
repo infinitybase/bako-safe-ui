@@ -102,7 +102,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={115}>
+            <Box mt={0.5} w={140}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -334,7 +334,6 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             borderColor="dark.100"
             borderTopWidth={1}
           >
-
             <HStack
               mt={2}
               px={{ base: 0, sm: 5 }}
