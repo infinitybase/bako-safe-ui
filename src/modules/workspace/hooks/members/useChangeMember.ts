@@ -72,8 +72,10 @@ const useChangeMember = () => {
     } as Member,
   );
 
+  const _role = role?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
+
   const permissions =
-    WorkspacePermissionUtils.permissions[role?.title?.toUpperCase()];
+    WorkspacePermissionUtils.permissions[_role as PermissionRoles];
 
   useMemo(() => {
     setMemberPermissions({

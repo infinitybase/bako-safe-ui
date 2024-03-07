@@ -13,15 +13,15 @@ const useCheckNickname = (nickname: string) => {
 };
 
 const useGetAccountsByHardwareId = () => {
-  let hardwareId = undefined;
+  let hardwareId: string | null = null;
   hardwareId = localStorage.getItem(localStorageKeys.HARDWARE_ID);
-  if (!hardwareId) {
+  if (!hardwareId || hardwareId == null) {
     hardwareId = crypto.randomUUID();
     localStorage.setItem(localStorageKeys.HARDWARE_ID, hardwareId);
   }
   return useQuery(
     UserQueryKey.ACCOUNTS(hardwareId),
-    () => UserService.getByHardwareId(hardwareId),
+    () => UserService.getByHardwareId(hardwareId!),
     {
       refetchOnWindowFocus: false,
       enabled: !!hardwareId,
