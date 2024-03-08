@@ -1,4 +1,4 @@
-import { ITransaction, ITransactionResume } from 'bsafe';
+import { ITransaction, ITransactionResume, Vault } from 'bsafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
@@ -6,6 +6,25 @@ import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 export enum SortOption {
   ASC = 'ASC',
   DESC = 'DESC',
+}
+
+export enum TransactionHistoryType {
+  FAILED = 'FAILED',
+  CREATED = 'CREATED',
+  SIGN = 'SIGNATURE',
+  DECLINE = 'DECLINE',
+  CANCEL = 'CANCEL',
+  SEND = 'SEND',
+}
+
+export interface ITransactionHistory {
+  type: TransactionHistoryType;
+  date: string;
+  owner: {
+    id: string;
+    avatar: string;
+    address: string;
+  };
 }
 
 export interface TransactionDetails {
@@ -82,6 +101,15 @@ export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;
 };
 
+export interface ResolveTransactionCostInput {
+  assets: {
+    to: string;
+    amount: string;
+    assetId: string;
+  }[];
+  vault: Vault;
+}
+
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
@@ -90,6 +118,7 @@ export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];
 export type GetTransactionPendingResponse = ITransactionPending;
+export type GetTransactionHistoryResponse = ITransactionHistory[];
 export type CreateTransactionResponse = ITransaction;
 export type SignerTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;
