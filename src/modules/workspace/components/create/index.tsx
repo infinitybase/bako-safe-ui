@@ -95,6 +95,20 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       )}
 
       <Dialog.Body
+        minH={300}
+        maxH="full"
+        overflowY="scroll"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
         maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 500}
       >
         <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
