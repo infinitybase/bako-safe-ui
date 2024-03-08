@@ -67,7 +67,7 @@ const Container = ({
         px={{ base: 0, sm: 4 }}
         w="full"
         as={AccordionItem}
-        bgColor={missingSignature ? 'warning.800' : 'grey.800'}
+        bgColor="grey.800"
         borderColor={missingSignature ? 'warning.500' : 'dark.100'}
         minW={{ base: 0, sm: 'min-content' }}
         {...rest}

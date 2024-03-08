@@ -76,7 +76,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   return (
     <Dialog.Modal
       size={{
-        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'full' : 'lg',
+        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'lg' : 'lg',
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
       }}
       closeOnOverlayClick={false}
@@ -89,18 +89,18 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           maxW={450}
           top={-6}
           title="Create Workspace"
-          description="Define the details of your vault. Set up this rules carefully because it cannot be changed later."
+          description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
       )}
 
       <Dialog.Body
-        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 500}
+        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 540}
       >
         <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
-        <Tabs index={tabs.tab} colorScheme="green">
+        <Tabs index={tabs.tab}>
           <TabPanels>
             <TabPanel p={0}>
               <OnboardingStep
@@ -116,7 +116,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             <TabPanel p={0}>
               <FeedbackSuccess
                 title="All set!!"
-                description="The vault template is now ready for use whenever you need to streamline
+                description="The workspace template is now ready for use whenever you need to streamline
         your workflow!"
                 primaryAction="Go to my workspace"
                 secondaryAction="Members Settings"
@@ -132,6 +132,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       <Dialog.Actions
         hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
         maxW={500}
+        maxH={50}
+        minH={20}
       >
         <Dialog.SecondaryAction
           _hover={{

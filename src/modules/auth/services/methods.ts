@@ -87,7 +87,15 @@ export class UserService {
   }
 
   static async signIn(payload: SignInPayload) {
-    const { data } = await api.post<SignInResponse>('/auth/sign-in', payload);
+    const { data, status } = await api.post<SignInResponse>(
+      '/auth/sign-in',
+      payload,
+    );
+
+    //any status diferent from 200 is invalid signature
+    if (status !== 200) {
+      throw new Error('Invalid signature');
+    }
 
     return data;
   }
@@ -99,22 +107,6 @@ export class UserService {
     );
 
     return data;
-  }
-
-  static async createHardwareId() {
-    const localStorage = window.localStorage;
-
-    return localStorage.setItem(
-      localStorageKeys.HARDWARE_ID,
-      crypto.randomUUID(),
-    ); // todo: make this to enums
-  }
-
-  static async getHardwareId() {
-    return new Promise((resolve) => {
-      const localStorage = window.localStorage;
-      return resolve(localStorage.getItem(localStorageKeys.HARDWARE_ID));
-    });
   }
 
   static async getByHardwareId(hardwareId: string) {
@@ -176,6 +168,8 @@ export const localStorageKeys = {
 
 export const UserQueryKey = {
   DEFAULT: 'user',
+  HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'hardware-id'],
+  CREATE_HARDWARE_ID: () => [UserQueryKey.DEFAULT, 'create-hardware-id'],
   CREATE_WEB_AUTHN_ACCOUNT: () => [
     UserQueryKey.DEFAULT,
     'create-web-authn-account',

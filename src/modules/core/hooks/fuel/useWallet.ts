@@ -44,12 +44,6 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
 
   const isValidSignature = publicKeyOnSignature.includes(sign.publicKey);
 
-  console.log({
-    isValidSignature,
-    publicKeyOnSignature,
-    pk_correct: sign.publicKey,
-  });
-
   if (!isValidSignature) {
     throw new Error('Invalid signature');
   }

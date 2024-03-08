@@ -21,7 +21,13 @@ const DialogModal = (props: DialogModalProps) => {
   const hideCloseButton = props?.hideCloseButton ?? false;
 
   return (
-    <Modal variant="glassmorphic" size="2xl" isCentered {...rest}>
+    <Modal
+      variant="glassmorphic"
+      size="2xl"
+      blockScrollOnMount={false}
+      isCentered
+      {...rest}
+    >
       <ModalOverlay />
       <ModalContent rounded="3xl">
         {!hideCloseButton && (

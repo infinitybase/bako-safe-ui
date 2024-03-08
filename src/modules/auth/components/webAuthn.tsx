@@ -16,21 +16,31 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 import { CloseIcon } from '@/components/icons/close-icon';
 
-import { useWebAuthn, WebAuthnState } from '../hooks';
+import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
 import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 
-interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
+interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
+  webauthn: UseWebAuthn;
+}
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
-  const [hasNickname, setHasNickname] = useState(false);
-  const { ...drawerProps } = props;
-  const { form, tabs, handleChangeTab, accountsRequest } = useWebAuthn();
+  const { webauthn, ...drawerProps } = props;
+  const {
+    form,
+    tabs,
+    resetDialogForms,
+    accountsRequest,
+    search,
+    setSearch,
+    nicknamesData,
+    handleInputChange,
+    closeWebAuthnDrawer,
+  } = webauthn;
   const { formState, memberForm, loginForm } = form;
 
   const TabsPanels = (
@@ -39,7 +49,15 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
         <LoginWebAuthnForm request={accountsRequest} form={loginForm} />
       </TabPanel>
       <TabPanel p={0}>
-        <CreateWebAuthnForm setHasNickname={setHasNickname} form={memberForm} />
+        <CreateWebAuthnForm
+          form={memberForm}
+          nickname={{
+            search,
+            setSearch,
+            nicknamesData,
+            searchHandler: handleInputChange,
+          }}
+        />
       </TabPanel>
     </TabPanels>
   );
@@ -56,18 +74,14 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
           }
         >
           {tabs.is(WebAuthnState.REGISTER) && (
-            <HStack
-              cursor="pointer"
-              onClick={() => handleChangeTab(WebAuthnState.LOGIN)}
-              spacing={3}
-            >
+            <HStack cursor="pointer" onClick={resetDialogForms} spacing={3}>
               <MdOutlineArrowBackIosNew width={5} height={5} />
               <Text fontWeight="semibold" color="white" fontSize="lg">
                 Back
               </Text>
             </HStack>
           )}
-          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
+          <HStack cursor="pointer" onClick={closeWebAuthnDrawer} spacing={2}>
             <Text fontWeight="semibold" color="white" fontSize="lg">
               Close
             </Text>
@@ -118,7 +132,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               _hover={{
                 opacity: formState.isDisabled && 0.8,
               }}
-              isDisabled={!!formState.isDisabled || hasNickname}
+              isDisabled={!!formState.isDisabled}
             >
               {formState.primaryAction}
             </Button>

@@ -19,7 +19,7 @@ const SigninPage = () => {
     connectors,
     redirectToWalletLink,
     auth,
-    webauthn: { isOpen, closeWebAuthnDrawer },
+    webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
   const { isMobile } = useScreenSize();
@@ -81,6 +81,11 @@ const SigninPage = () => {
     <DrawerWebAuthn
       isOpen={isOpen} // todo: move the complete item with webauthn to component
       onClose={closeWebAuthnDrawer}
+      webauthn={{
+        ...rest,
+        isOpen,
+        closeWebAuthnDrawer,
+      }}
     />
   );
 

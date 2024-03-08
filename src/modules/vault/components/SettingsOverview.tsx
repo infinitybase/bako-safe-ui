@@ -64,7 +64,12 @@ const SettingsOverview = (props: CardDetailsProps) => {
       </Box>
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
-        <Card p={8} bg="dark.200" position="relative" borderColor="dark.100">
+        <Card
+          p={[4, 8]}
+          bg="dark.200"
+          position="relative"
+          borderColor="dark.100"
+        >
           <Stack direction={['column', 'row']}>
             <VStack spacing={[6, 9]} w="full">
               <Stack
@@ -149,10 +154,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
                   <Divider mt={[0, 0]} borderColor="dark.100" />
 
-                  <HStack spacing={[6, 40]}>
+                  <HStack spacing={[16, 40]}>
                     <VStack spacing={2} alignItems="flex-start">
                       <Button
-                        minW={[160, 130]}
+                        minW={[125, 130]}
                         variant="primary"
                         onClick={() => openFaucet(vault.predicateAddress!)}
                       >
@@ -166,7 +171,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
                     <VStack spacing={2} alignItems="flex-start">
                       <Button
-                        minW={[160, 130]}
+                        minW={[125, 130]}
                         variant="primary"
                         isDisabled={
                           !vault?.hasBalance ||
@@ -210,8 +215,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
             <VStack
               position={['absolute', 'relative']}
-              top={[8, 0]}
-              right={[8, 0]}
+              top={[4, 0]}
+              right={[4, 0]}
               spacing={4}
               align={['flex-end', 'center']}
               justifyContent="flex-start"

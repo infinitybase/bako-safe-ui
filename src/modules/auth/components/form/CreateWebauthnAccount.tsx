@@ -6,30 +6,25 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
+import React, { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { UseWebAuthn, useWebAuthn } from '../../hooks';
+import { UseWebAuthn } from '../../hooks';
 
 interface CreateWebAuthnFormProps {
   form: UseWebAuthn['form']['memberForm'];
-  setHasNickname: React.Dispatch<React.SetStateAction<boolean>>;
+  nickname: {
+    search: string;
+    setSearch: (value: string) => void;
+    nicknamesData: UseWebAuthn['nicknamesData'];
+    searchHandler: (event: ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 export const CreateWebAuthnForm = ({
   form,
-  setHasNickname,
+  nickname,
 }: CreateWebAuthnFormProps) => {
-  // const { debouncedSearchHandler } = useWebAuthn();
-  const { search, setSearch, debouncedSearchHandler, nicknamesData } =
-    useWebAuthn();
-
-  useEffect(() => {
-    if (nicknamesData?.name) {
-      setHasNickname(true);
-    } else {
-      setHasNickname(false);
-    }
-  }, [nicknamesData?.name]);
+  const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
   return (
     <Box w="full" maxW={480} mb={8}>
@@ -43,8 +38,7 @@ export const CreateWebAuthnForm = ({
                 value={search}
                 placeholder=""
                 onChange={(e) => {
-                  setSearch(e.target.value);
-                  debouncedSearchHandler(e.target.value);
+                  searchHandler(e);
                   field.onChange(e.target.value);
                 }}
                 isInvalid={
@@ -63,10 +57,10 @@ export const CreateWebAuthnForm = ({
                 {nicknamesData?.name && search.length > 0
                   ? 'Name already exists'
                   : form.formState.errors.name?.message
-                  ? form.formState.errors.name?.message
-                  : search.length > 0
-                  ? 'This username is available'
-                  : ''}
+                    ? form.formState.errors.name?.message
+                    : search.length > 0
+                      ? 'This username is available'
+                      : ''}
               </FormHelperText>
             </FormControl>
             <SmallCloseIcon

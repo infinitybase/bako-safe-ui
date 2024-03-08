@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, ErrorIcon, RemoveIcon, UserAddIcon } from '@/components';
+import { Card, ErrorIcon, UserAddIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
 import { useAddressBook } from '@/modules/addressBook';
 import {
@@ -125,7 +125,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 mr={4}
               />
 
-              <RemoveIcon
+              {/* <RemoveIcon
                 _hover={{
                   cursor: 'pointer',
                   opacity: 0.8,
@@ -133,7 +133,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 onClick={() => {}}
                 w={6}
                 h={6}
-              />
+              /> */}
             </Box>
           </HStack>
         )}

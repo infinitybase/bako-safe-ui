@@ -5,7 +5,6 @@ import {
   FormLabel,
   Select,
 } from '@chakra-ui/react';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthn } from '../../hooks';
@@ -30,13 +29,12 @@ export const LoginWebAuthnForm = ({
             <Select
               value={field.value}
               onChange={field.onChange}
-              isInvalid={form.formState.isValid && fieldState.invalid}
               autoComplete="off"
               placeholder=" "
               isDisabled={data?.length === 0}
             >
               {data?.map((user) => (
-                <option key={user.id} value={user.id}>
+                <option key={user.id} value={user.webauthn.id}>
                   {user.name}
                 </option>
               ))}

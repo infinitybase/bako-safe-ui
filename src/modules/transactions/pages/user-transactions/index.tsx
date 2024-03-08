@@ -60,7 +60,7 @@ const UserTransactionsPage = () => {
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6} p={[1, 8]}>
+    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
@@ -82,46 +82,47 @@ const UserTransactionsPage = () => {
           </Button>
 
           {!isMobile && (
-            <Breadcrumb ml={8}>
-              <BreadcrumbItem>
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() => goHome()}
-                >
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
+            <>
+              <Breadcrumb ml={8}>
+                <BreadcrumbItem>
+                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                  <BreadcrumbLink
+                    fontSize="sm"
+                    color="grey.200"
+                    fontWeight="semibold"
+                    onClick={() => goHome()}
+                  >
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
 
-              {!isSingleWorkspace && (
+                {!isSingleWorkspace && (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      fontSize="sm"
+                      color="grey.200"
+                      fontWeight="semibold"
+                      onClick={() => goWorkspace(current)}
+                    >
+                      {workspace?.name}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
+
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(current)}
+                    href="#"
                   >
-                    {workspace?.name}
+                    My Transactions
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-              )}
-
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  href="#"
-                >
-                  My Transactions
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </Breadcrumb>
+              </Breadcrumb>
+            </>
           )}
         </HStack>
-
         <Box>
           <Button
             isDisabled={!hasPermission([OWNER, MANAGER])}

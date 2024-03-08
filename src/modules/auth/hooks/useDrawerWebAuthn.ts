@@ -1,6 +1,8 @@
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
+import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
+
 import {
   SignWebAuthnPayload,
   TypeUser,
@@ -22,6 +24,7 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 export const useDrawerWebAuth = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const { warningToast } = useContactToast();
 
   const { location, origin } = useQueryParams();
 
@@ -51,8 +54,13 @@ export const useDrawerWebAuth = () => {
         permissions: workspace.permissions,
         webAuthn,
       });
-
       navigate(redirectPathBuilder(!!origin, location, address));
+    },
+    onError: () => {
+      warningToast({
+        title: 'Signature failed',
+        description: 'Please try again!',
+      });
     },
   });
 

@@ -55,7 +55,14 @@ const HomePage = () => {
   const { isMobile } = useScreenSize();
 
   return (
-    <VStack id="top" w="full" scrollMargin={20} spacing={6} p={[1, 8]}>
+    <VStack
+      id="top"
+      w="full"
+      scrollMargin={20}
+      spacing={6}
+      p={[1, 1]}
+      px={['auto', 8]}
+    >
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack visibility={['hidden', 'visible']}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />

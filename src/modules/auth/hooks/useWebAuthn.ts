@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -8,7 +8,6 @@ import { useDrawerWebAuth } from './useDrawerWebAuthn';
 import { useWebAuthnForm } from './useWebAuthnForm';
 import {
   useCheckNickname,
-  useCreateHardwareId,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
 
@@ -23,35 +22,38 @@ const useWebAuthn = () => {
   //drawer for webauthn
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(WebAuthnState.LOGIN);
+  const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
     defaultTab: WebAuthnState.LOGIN,
   });
+
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
-  const hardwareId = useMemo(() => {
-    return localStorage.getItem(localStorageKeys.HARDWARE_ID)!;
-  }, []);
-  const accountsRequest = useGetAccountsByHardwareId(hardwareId);
+  const accountsRequest = useGetAccountsByHardwareId();
 
-  const nicknames = useCheckNickname(search);
+  const nicknames = useCheckNickname(searchRequest);
 
   const debouncedSearchHandler = useCallback(
-    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
-      if (typeof event === 'string') {
-        setSearch(event);
-        nicknames;
-        return;
-      }
+    debounce((value: string) => {
+      setSearchRequest(value);
     }, 300),
     [],
   );
 
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearch(value);
+    debouncedSearchHandler(value);
+  };
+
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
-    const acc = accountsRequest.data?.find((user) => user.id === name);
+    const acc = accountsRequest?.data?.find(
+      (user) => user.webauthn.id === name,
+    );
 
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
@@ -63,12 +65,25 @@ const useWebAuthn = () => {
     }
   });
 
+  useEffect(() => {
+    if (accountsRequest?.data?.length === 0) {
+      tabs.set(WebAuthnState.REGISTER);
+    }
+  }, [accountsRequest.data]);
+
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
-    await createAccountMutate.mutateAsync(name).catch((error) => {
-      console.error(error);
-    });
-    accountsRequest.refetch();
-    tabs.set(WebAuthnState.LOGIN);
+    await createAccountMutate
+      .mutateAsync(name, {
+        onSuccess: async (data) => {
+          await accountsRequest.refetch();
+          await tabs.set(WebAuthnState.LOGIN);
+          loginForm.setValue('name', data.id);
+          memberForm.reset();
+        },
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   });
 
   const handleChangeTab = (tab: WebAuthnState) => {
@@ -79,8 +94,15 @@ const useWebAuthn = () => {
     setIsOpen(true);
   };
 
+  const resetDialogForms = () => {
+    handleChangeTab(WebAuthnState.LOGIN);
+    loginForm.reset();
+    memberForm.reset();
+  };
+
   const closeWebAuthnDrawer = () => {
     setIsOpen(false);
+    resetDialogForms();
   };
 
   const goToPage = (page: WebAuthnState) => {
@@ -119,15 +141,15 @@ const useWebAuthn = () => {
   return {
     goToPage,
     setSearch,
+    resetDialogForms,
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
-    useCreateHardwareId,
     accountsRequest,
     handleChangeTab,
-    hardwareId,
-    checkNickname: useCheckNickname(search),
+    hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
+    checkNickname: useCheckNickname(searchRequest),
     nicknamesData: nicknames.data,
-    debouncedSearchHandler,
+    handleInputChange,
     isOpen,
     search,
     page,

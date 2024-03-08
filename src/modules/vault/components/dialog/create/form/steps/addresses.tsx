@@ -47,6 +47,8 @@ const VaultAddressesStep = ({
     canAddMember,
   } = useAddressBook();
 
+  const minSigners = form.formState.errors.minSigners?.message;
+
   return (
     <>
       <CreateContactDialog
@@ -67,7 +69,8 @@ const VaultAddressesStep = ({
         >
           <FormControl>
             <Select
-              placeholder=""
+              placeholder=" "
+              defaultValue=""
               isDisabled={!templates.length}
               onChange={(item) => setTemplate(item.target.value)}
             >
@@ -174,7 +177,6 @@ const VaultAddressesStep = ({
               );
             })}
 
-
             <Button
               w="full"
               border="none"
@@ -198,7 +200,6 @@ const VaultAddressesStep = ({
           </VStack>
         </Dialog.Section>
 
-
         <Divider borderColor="dark.100" my={9} />
 
         <HStack position="relative">
@@ -214,48 +215,43 @@ const VaultAddressesStep = ({
             description="Set the minimum number of signatures to approve a transfer."
           />
 
-          <Box w="full" maxW={82}>
-            <Controller
-              name="minSigners"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormControl>
-                  <Select
-                    pt={2}
-                    pb={2}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder=" "
-                    cursor="pointer"
-                    _hover={{
-                      opacity: 0.8,
-                    }}
-                  >
-                    {Array(10)
-                      .fill('')
-                      .map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                          {index + 1}
-                        </option>
-                      ))}
-                  </Select>
-                  <FormHelperText
-                    color="error.500"
-                    style={{
-                      display: 'flex',
-                      position: 'absolute',
-                      left: '-309px',
-                      minWidth: '400px',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    {fieldState.error?.message}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            />
-          </Box>
+          <Controller
+            name="minSigners"
+            control={form.control}
+            render={({ field }) => (
+              <FormControl position="relative" maxW={'full'} w="24">
+                <Select
+                  pt={2}
+                  pb={2}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder=" "
+                  cursor="pointer"
+                  _hover={{
+                    opacity: 0.8,
+                  }}
+                >
+                  {Array(10)
+                    .fill('')
+                    .map((_, index) => (
+                      <option key={index + 1} value={index + 1}>
+                        {index + 1}
+                      </option>
+                    ))}
+                </Select>
+              </FormControl>
+            )}
+          />
         </HStack>
+        <FormControl>
+          <FormHelperText
+            color="error.500"
+            maxW={['full', 'full']}
+            minW={['300', 'full']}
+          >
+            {minSigners}
+          </FormHelperText>
+        </FormControl>
       </TabPanel>
     </>
   );

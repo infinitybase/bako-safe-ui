@@ -3,13 +3,12 @@ import {
   Button,
   CircularProgress,
   HStack,
+  Stack,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
@@ -28,7 +27,6 @@ const Status = ({
   const { retryTransaction, isLoading } = useSignTransaction({
     transaction: transaction!,
   });
-  const { isMobile } = useScreenSize();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
@@ -39,7 +37,8 @@ const Status = ({
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
-  const showRetry = !isMobile && isError;
+
+  const showRetry = isError;
 
   return (
     <HStack
@@ -55,11 +54,12 @@ const Status = ({
           color="brand.500"
         />
       )}
-      <VStack
+      <Stack
         hidden={isPending}
         minW={100}
-        spacing={0}
+        spacing={[2, 0]}
         w="full"
+        direction={['row', 'column']}
         alignItems={{ base: 'end', sm: 'center' }}
         justifyContent="center"
       >
@@ -69,8 +69,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-              ? 'success'
-              : 'warning'
+                ? 'success'
+                : 'warning'
           }
         >
           {isError && 'Error'}
@@ -84,9 +84,9 @@ const Status = ({
           </Text>
         )}
 
-        {showRetry && (
+        {isError && (
           <Button
-            h={7}
+            h={[6, 7]}
             variant="secondary"
             px={3}
             bgColor="dark.100"
@@ -101,7 +101,7 @@ const Status = ({
             Retry
           </Button>
         )}
-      </VStack>
+      </Stack>
     </HStack>
   );
 };

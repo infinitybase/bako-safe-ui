@@ -14,12 +14,15 @@ interface PermissionDTO {
 
 type PermissionKey = keyof typeof PermissionRoles;
 
+type PermissionDetail = {
+  role?: PermissionRoles;
+  title: string;
+  variant: string;
+  description: string;
+};
+
 type PermissionDetails = {
-  [key in PermissionKey]: {
-    title: string;
-    variant: string;
-    description: string;
-  };
+  [key in PermissionKey]: PermissionDetail;
 };
 
 class WorkspacePermissionUtils {
@@ -67,7 +70,7 @@ class WorkspacePermissionUtils {
     }));
 
   static getPermissionInWorkspace(
-    workspace: Workspace,
+    workspace: Pick<Workspace, 'permissions'>,
     member: Pick<Member, 'id'>,
   ) {
     const permission = workspace?.permissions[member.id];
@@ -82,7 +85,10 @@ class WorkspacePermissionUtils {
 
     if (!permissionValue) return null;
 
-    return permissionValue;
+    return {
+      ...permissionValue,
+      role: permissionRole,
+    } as PermissionDetail;
   }
 
   static hasPermissions(permissions: IPermission, roles: PermissionRoles[]) {
@@ -92,6 +98,20 @@ class WorkspacePermissionUtils {
     });
 
     return !!permission && !!permission.length;
+  }
+
+  static is(
+    role: PermissionRoles,
+    params: { permissions: IPermission; userId: string },
+  ) {
+    const permissionInWorkspace = this.getPermissionInWorkspace(
+      { permissions: params.permissions },
+      { id: params.userId },
+    );
+
+    if (!permissionInWorkspace) return false;
+
+    return permissionInWorkspace.role === role;
   }
 }
 
