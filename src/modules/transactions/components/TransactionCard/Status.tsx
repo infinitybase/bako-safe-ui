@@ -39,7 +39,7 @@ const Status = ({
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
-  const showRetry = !isMobile && isError;
+  const showRetry = isError;
 
   return (
     <HStack
@@ -69,8 +69,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-              ? 'success'
-              : 'warning'
+                ? 'success'
+                : 'warning'
           }
         >
           {isError && 'Error'}
