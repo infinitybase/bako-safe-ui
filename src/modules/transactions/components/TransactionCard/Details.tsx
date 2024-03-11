@@ -106,7 +106,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={140}>
+            <Box mt={0.5} w={120}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -237,9 +237,9 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
         alignItems="center"
         justify="space-between"
         maxW="full"
-        w={['90%', '80%']}
+        w={['85%', '80%']}
       >
-        <Box>
+        <Box display="flex" flexDirection="row" maxW="full" flexWrap="wrap">
           <Box mb={{ base: 2, sm: 4 }}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
@@ -311,7 +311,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </>
           )}
 
-          <VStack w="full" alignItems="flex-start">
+          <VStack maxW="full" alignItems="flex-start" flexWrap="wrap">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={index}
