@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Resolver, useFieldArray, useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { ITemplatePayload } from '@/modules/core';
 
@@ -15,7 +16,6 @@ export interface IStep {
   onSubmit: (data: ITemplatePayload) => void;
   isLoading: boolean;
 }
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useTemplateStore } from '../store';
 import { useCreate } from './useCreateTemplate';
@@ -64,7 +64,11 @@ const useSteps = () => {
       isLoading,
       onSubmit: async (data) => {
         const { addresses } = data;
-        const add = addresses as unknown as { value: string }[];
+        const filteredAddresses = addresses.filter(
+          (item) => item !== undefined,
+        );
+
+        const add = filteredAddresses as unknown as { value: string }[];
 
         await createTemplate({
           ...data,
