@@ -15,7 +15,6 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
 import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
@@ -25,9 +24,6 @@ import { useSteps } from '@/modules/template/hooks';
 const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
   const { addresses } = useSteps();
 
-  useEffect(() => {
-    console.log(addresses);
-  }, [addresses]);
   return (
     <TabPanel p={0}>
       <Divider borderColor="dark.100" my={9} />
