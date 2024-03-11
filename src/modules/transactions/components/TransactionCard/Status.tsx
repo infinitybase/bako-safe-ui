@@ -37,7 +37,6 @@ const Status = ({
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
-  
   return (
     <HStack
       w="full"
@@ -82,7 +81,7 @@ const Status = ({
           </Text>
         )}
 
-        {showRetry && (
+        {isError && (
           <Button
             h={7}
             variant="secondary"
