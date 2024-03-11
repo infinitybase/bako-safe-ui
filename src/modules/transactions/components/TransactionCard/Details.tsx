@@ -106,7 +106,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={120}>
+            <Box mt={0.5} w={[120, 140]}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -239,13 +239,18 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
         maxW="full"
         w={['85%', '80%']}
       >
-        <Box display="flex" flexDirection="row" maxW="full" flexWrap="wrap">
+        <Box
+          display="flex"
+          flexDirection={['row', 'column']}
+          maxW="full"
+          minW={200}
+          flexWrap="wrap"
+        >
           <Box mb={{ base: 2, sm: 4 }}>
             <Text color="grey.200" fontWeight="medium">
               Transaction breakdown
             </Text>
           </Box>
-
           {fromConnector && (
             <>
               <Card
