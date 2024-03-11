@@ -118,7 +118,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={{ base: 'full', sm: 'md' }}>
+    <Box w={{ base: 'full', sm: 'md' }} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"
@@ -139,7 +139,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
       </HStack>
 
       {isMobile ? (
-        <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+        <Grid templateColumns="repeat(1, 1fr)" gap={3}>
           <SignersList vault={vault} />
         </Grid>
       ) : (

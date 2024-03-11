@@ -126,7 +126,7 @@ const CardDetails = (props: CardDetailsProps) => {
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
-          <VStack spacing={4} w="full">
+          <VStack spacing={4} w="full" maxW="full">
             <Flex
               w="full"
               id="asd"
@@ -155,7 +155,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     borderColor="grey.450"
                   />
                 </Avatar>
-                <Box w="full">
+                <Box w="full" maxW="75%">
                   <HStack justifyContent="space-between" gap={2} w="full">
                     <Heading
                       variant={isMobile ? 'title-md' : 'title-xl'}

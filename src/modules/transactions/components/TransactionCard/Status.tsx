@@ -37,12 +37,11 @@ const Status = ({
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
-  const showRetry = isError;
-
+  
   return (
     <HStack
       w="full"
-      justifyContent={{ base: 'end', sm: 'center' }}
+      justifyContent={{ base: 'flex-end', sm: 'center' }}
       ml={{ base: 0, sm: 6 }}
     >
       {isLoading && (
@@ -58,8 +57,9 @@ const Status = ({
         minW={100}
         spacing={0}
         w="full"
-        alignItems={{ base: 'end', sm: 'center' }}
-        justifyContent="center"
+        direction={['row', 'column']}
+        alignItems={{ base: 'flex-end', sm: 'center' }}
+        justifyContent="flex-end"
       >
         <Badge
           h={5}
@@ -67,8 +67,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-                ? 'success'
-                : 'warning'
+              ? 'success'
+              : 'warning'
           }
         >
           {isError && 'Error'}

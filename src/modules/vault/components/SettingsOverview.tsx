@@ -89,7 +89,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     p={[10, 10]}
                   />
                 </Center>
-                <Box>
+                <Box maxW="59%">
                   <Heading
                     mb={1}
                     variant="title-xl"
