@@ -65,6 +65,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
     <Card
       w="full"
       h={20}
+      maxW="full"
       bgColor="grey.850"
       borderColor="grey.600"
       borderWidth="1.5px"
@@ -73,14 +74,16 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
         cursor: 'pointer',
         borderColor: 'brand.600',
       }}
+      pl={3}
     >
-      <HStack
+      <Box
+        display="flex"
         w="full"
         h="full"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Box display="flex" alignItems="center" gap={3}>
+        <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
           <Avatar
             size="md"
             fontSize="md"
@@ -101,8 +104,9 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             </Text>
           </Box>
         </Box>
+
         {isEditable && (
-          <HStack spacing={6}>
+          <HStack w="35%" spacing={2}>
             <Badge
               rounded="xl"
               fontSize="xs"
@@ -137,7 +141,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             </Box>
           </HStack>
         )}
-      </HStack>
+      </Box>
     </Card>
   );
 };
@@ -247,7 +251,7 @@ const WorkspaceSettingsDrawer = ({
             </Button>
           </Flex>
 
-          <VStack w="full">
+          <VStack w="full" maxW="full">
             {!!request.workspace?.members &&
               request.workspace?.members.map((member) => (
                 <MemberCard
