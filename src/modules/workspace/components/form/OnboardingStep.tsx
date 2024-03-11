@@ -36,7 +36,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
     }}
     maxH="full"
   >
-    <Box m={[2, 8]}>
+    <Box m={[4, 8]}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
     </Box>
     <Box mb={[2, 5]}>
@@ -55,6 +55,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
     <Box w="100%" my={[3, 5]}>
       <StepProgress value={props.tabs.tab} length={props.tabs.length} />
     </Box>
+
     <Box mb={[2, 5]} maxW={480}>
       <Text color="white" fontSize={{ base: 'xs', sm: 'md' }} textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
@@ -119,7 +120,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       </HStack>
     </VStack>
 
-    <Box mb={[1, 5]} minW="full" maxW={500}>
+    <Box mb={[3, 5]} minW="full" maxW={500}>
       <Alert
         color="#F05D48"
         bgColor="rgba(240,93,72,0.1)"

@@ -3,8 +3,8 @@ import {
   Button,
   CircularProgress,
   HStack,
-  Stack,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import { ITransaction, TransactionStatus } from 'bsafe';
 
@@ -37,6 +37,7 @@ const Status = ({
     TransactionStatus.PENDING_SENDER,
   ].includes(transaction.status);
 
+  
   return (
     <HStack
       w="full"
@@ -51,10 +52,10 @@ const Status = ({
           color="brand.500"
         />
       )}
-      <Stack
+      <VStack
         hidden={isPending}
         minW={100}
-        spacing={[2, 0]}
+        spacing={0}
         w="full"
         direction={['row', 'column']}
         alignItems={{ base: 'flex-end', sm: 'center' }}
@@ -81,9 +82,9 @@ const Status = ({
           </Text>
         )}
 
-        {isError && (
+        {showRetry && (
           <Button
-            h={[6, 7]}
+            h={7}
             variant="secondary"
             px={3}
             bgColor="dark.100"
@@ -98,7 +99,7 @@ const Status = ({
             Retry
           </Button>
         )}
-      </Stack>
+      </VStack>
     </HStack>
   );
 };
