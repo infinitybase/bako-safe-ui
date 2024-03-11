@@ -131,8 +131,7 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
-      isDisabled:
-        !loginForm.formState.isValid || loginForm.watch('name').length === 0,
+      isDisabled: loginForm.watch('name')?.length === 0 ?? false,
       title: 'Login with WebAuthn',
       description: 'Select your username to login',
     },
