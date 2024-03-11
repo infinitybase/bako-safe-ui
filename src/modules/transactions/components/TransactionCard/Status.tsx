@@ -9,7 +9,6 @@ import {
 import { ITransaction, TransactionStatus } from 'bsafe';
 
 import { TransactionState } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 
 interface TransactionCardStatusProps {
   status: TransactionState;
@@ -28,7 +27,6 @@ const Status = ({
   const { retryTransaction, isLoading } = useSignTransaction({
     transaction: transaction!,
   });
-  const { isMobile } = useScreenSize();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
