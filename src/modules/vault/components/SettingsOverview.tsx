@@ -71,7 +71,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
           borderColor="dark.100"
         >
           <Stack direction={['column', 'row']}>
-            <VStack spacing={[6, 9]} w="full">
+            <VStack spacing={[6, 9]} w="full" pr={3}>
               <Stack
                 direction={['column', 'row']}
                 alignItems={['flex-start', 'center']}
@@ -106,8 +106,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <VStack w="full" maxW="full" spacing={5}>
-                <Box width="100%" maxW="full">
+              <VStack w="full" maxW={['full', '100%']} spacing={5}>
+                <Box w={['full', '98%']} maxW="full">
                   <Stack
                     justifyContent={['flex-start', 'space-between']}
                     alignItems={['flex-start', 'center']}
@@ -145,9 +145,17 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   </Stack>
                 </Box>
 
-                <Divider w="full" mt={[0, 0]} borderColor="dark.100" />
+                <Divider
+                  w={['full', '98%']}
+                  mt={[0, 0]}
+                  borderColor="dark.100"
+                />
 
-                <HStack w="full" justifySelf="end" spacing={[16, 40]}>
+                <HStack
+                  w={['full', '98%']}
+                  justifySelf="end"
+                  spacing={[16, 40]}
+                >
                   <VStack w="full" spacing={2} alignItems="flex-start">
                     <Button
                       minW={[125, 130]}
@@ -161,7 +169,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     </Text>
                   </VStack>
 
-                  <VStack w="full" maxW="50%" alignItems="flex-end" spacing={0}>
+                  <VStack w="full" alignItems="flex-end" spacing={0}>
                     <Button
                       minW={[125, 130]}
                       variant="primary"
