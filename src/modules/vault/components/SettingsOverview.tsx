@@ -106,111 +106,108 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <HStack
-                w="full"
-                maxW={[160, '100%']}
-                spacing={5}
-                justifyContent={['center', 'flex-start']}
-                alignItems="flex-start"
-              >
-                <VStack spacing={5}>
-                  <Box width="100%" maxW="full">
-                    <Stack
-                      justifyContent={['flex-start', 'space-between']}
-                      alignItems={['flex-start', 'center']}
-                      direction={['column', 'row']}
-                      mb={2}
-                    >
-                      <Text variant="description">Vault balance</Text>
+              <VStack w="full" maxW="full" spacing={5}>
+                <Box width="100%" maxW="full">
+                  <Stack
+                    justifyContent={['flex-start', 'space-between']}
+                    alignItems={['flex-start', 'center']}
+                    direction={['column', 'row']}
+                    mb={2}
+                  >
+                    <Text variant="description">Vault balance</Text>
+                    <HStack spacing={2}>
                       <HStack spacing={2}>
-                        <HStack spacing={2}>
-                          <Heading variant="title-xl" fontSize={['md', 'lg']}>
-                            {store.visebleBalance
-                              ? biggerAsset?.amount ?? 0
-                              : '*****'}
-                          </Heading>
-                          <Text variant="description" fontSize={['sm', 'md']}>
-                            {biggerAsset?.slug ?? 'ETH'}
-                          </Text>
-                        </HStack>
-                        <Box
-                          display="flex"
-                          width="18%"
-                          justifyContent="center"
-                          alignItems="center"
-                          onClick={() =>
-                            store.setVisibleBalance(!store.visebleBalance)
-                          }
-                        >
-                          {store.visebleBalance ? (
-                            <ViewIcon boxSize={[5, 6]} />
-                          ) : (
-                            <ViewOffIcon boxSize={[5, 6]} />
-                          )}
-                        </Box>
+                        <Heading variant="title-xl" fontSize={['md', 'lg']}>
+                          {store.visebleBalance
+                            ? biggerAsset?.amount ?? 0
+                            : '*****'}
+                        </Heading>
+                        <Text variant="description" fontSize={['sm', 'md']}>
+                          {biggerAsset?.slug ?? 'ETH'}
+                        </Text>
                       </HStack>
-                    </Stack>
-                  </Box>
-
-                  <Divider mt={[0, 0]} borderColor="dark.100" />
-
-                  <HStack spacing={[16, 40]}>
-                    <VStack spacing={2} alignItems="flex-start">
-                      <Button
-                        minW={[125, 130]}
-                        variant="primary"
-                        onClick={() => openFaucet(vault.predicateAddress!)}
-                      >
-                        Faucet
-                      </Button>
-                      <Text variant="description" fontSize="xs">
-                        Use the faucet to <br />
-                        add assets to the vault
-                      </Text>
-                    </VStack>
-
-                    <VStack spacing={2} alignItems="flex-start">
-                      <Button
-                        minW={[125, 130]}
-                        variant="primary"
-                        isDisabled={
-                          !vault?.hasBalance ||
-                          blockedTransfers ||
-                          !makeTransactionsPerm
-                        }
+                      <Box
+                        display="flex"
+                        width="18%"
+                        justifyContent="center"
+                        alignItems="center"
                         onClick={() =>
-                          navigate(
-                            Pages.createTransaction({
-                              vaultId: vault.id!,
-                              workspaceId,
-                            }),
-                          )
+                          store.setVisibleBalance(!store.visebleBalance)
                         }
                       >
-                        Send
-                      </Button>
-                      {blockedTransfers ? (
-                        <Text variant="description" mt={2} color="error.500">
-                          This vault has pending transactions.
-                        </Text>
-                      ) : !makeTransactionsPerm ? (
-                        <Text
-                          variant="description"
-                          fontSize="xs"
-                          color="error.500"
-                        >
-                          You dont have permission to send transactions.
-                        </Text>
-                      ) : (
-                        <Text variant="description" fontSize="xs">
-                          Send single or batch <br /> payments with multi
-                          assets.
-                        </Text>
-                      )}
-                    </VStack>
-                  </HStack>
-                </VStack>
-              </HStack>
+                        {store.visebleBalance ? (
+                          <ViewIcon boxSize={[5, 6]} />
+                        ) : (
+                          <ViewOffIcon boxSize={[5, 6]} />
+                        )}
+                      </Box>
+                    </HStack>
+                  </Stack>
+                </Box>
+
+                <Divider w="full" mt={[0, 0]} borderColor="dark.100" />
+
+                <HStack w="full" justifySelf="end" spacing={[16, 40]}>
+                  <VStack w="full" spacing={2} alignItems="flex-start">
+                    <Button
+                      minW={[125, 130]}
+                      variant="primary"
+                      onClick={() => openFaucet(vault.predicateAddress!)}
+                    >
+                      Faucet
+                    </Button>
+                    <Text variant="description" fontSize="xs">
+                      Use the faucet to add assets to the vault
+                    </Text>
+                  </VStack>
+
+                  <VStack w="full" maxW="50%" alignItems="flex-end" spacing={0}>
+                    <Button
+                      minW={[125, 130]}
+                      variant="primary"
+                      isDisabled={
+                        !vault?.hasBalance ||
+                        blockedTransfers ||
+                        !makeTransactionsPerm
+                      }
+                      onClick={() =>
+                        navigate(
+                          Pages.createTransaction({
+                            vaultId: vault.id!,
+                            workspaceId,
+                          }),
+                        )
+                      }
+                    >
+                      Send
+                    </Button>
+                    {blockedTransfers ? (
+                      <Text
+                        variant="description"
+                        textAlign="right"
+                        fontSize="xs"
+                        w="full"
+                        mt={2}
+                        color="error.500"
+                      >
+                        This vault has pending transactions.
+                      </Text>
+                    ) : !makeTransactionsPerm ? (
+                      <Text
+                        variant="description"
+                        fontSize="xs"
+                        color="error.500"
+                      >
+                        You dont have permission to send transactions.
+                      </Text>
+                    ) : (
+                      <Text variant="description" fontSize="xs">
+                        Send single or batch <br /> payments with multi assets.
+                      </Text>
+                    )}
+                  </VStack>
+                </HStack>
+              </VStack>
             </VStack>
 
             <VStack

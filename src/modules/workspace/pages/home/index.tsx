@@ -424,7 +424,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxW={500} maxH={450} spacing={4}>
+        <VStack w="full" maxW={['full', 500]} maxH={450} spacing={4}>
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
