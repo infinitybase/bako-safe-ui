@@ -113,7 +113,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={730}>
+    <Box w="full" maxW={['full', 730]}>
       <Box mb={5} w="full">
         <Text
           color="grey.400"
@@ -155,7 +155,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     borderColor="grey.450"
                   />
                 </Avatar>
-                <Box w="full" maxW="75%">
+                <Box w="full" maxW="full">
                   <HStack justifyContent="space-between" gap={2} w="full">
                     <Heading
                       variant={isMobile ? 'title-md' : 'title-xl'}
