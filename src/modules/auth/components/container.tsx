@@ -39,7 +39,8 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         transform="translate(-50%, -50%)"
         backgroundColor="dark.600"
         display="flex"
-        minW="90vw"
+        minW="80vw"
+        minH="22vh"
         spacing={0}
       >
         <img
