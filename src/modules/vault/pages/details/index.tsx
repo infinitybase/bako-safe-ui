@@ -21,7 +21,7 @@ import {
 } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { useScreenSize } from '@/modules/core/hooks';
+import { usePermissions, useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -51,12 +51,16 @@ const VaultDetailsPage = () => {
     menuDrawer,
   } = useVaultDetails();
   const { goWorkspace } = useWorkspace();
+  const { workspace } = useGetCurrentWorkspace();
+  const { isViewer } = usePermissions({
+    id: vault.id,
+    workspace: workspace!,
+  });
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const { workspace } = useGetCurrentWorkspace();
   const { isMobile } = useScreenSize();
 
   const workspaceId = current ?? '';
@@ -141,6 +145,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
+          isDisabled={isViewer}
           onClick={() => {
             if (
               !vault.id ||

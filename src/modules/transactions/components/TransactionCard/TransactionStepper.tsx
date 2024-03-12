@@ -145,7 +145,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       gap: '4px',
                     }}
                   >
-                    {nickname && <Text>{nickname}</Text>}
+                    {nickname && step.owner.address !== account && (
+                      <Text>{nickname}</Text>
+                    )}
                     <Text color={failed ? 'error.500' : 'white'}>
                       {TransactionTypeFormatter(step, account)}
                     </Text>
