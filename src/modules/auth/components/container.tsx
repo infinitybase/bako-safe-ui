@@ -41,7 +41,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         transform="translate(-50%, -50%)"
         backgroundColor="dark.600"
         display="flex"
-        minW={isLowerThanMobile[0] ? '85vw' : '65vw'}
+        minW={isLowerThanMobile[0] ? '90vw' : '65vw'}
         minH="25vh"
         spacing={0}
       >
