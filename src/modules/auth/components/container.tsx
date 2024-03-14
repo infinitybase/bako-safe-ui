@@ -1,4 +1,4 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, useMediaQuery, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 import logo from '@/assets/bakoLogoDark.svg';
@@ -27,6 +27,8 @@ const SigninContainerBackground = () => {
 };
 
 const SigninContainerMobile = (props: SigninContainerProps) => {
+  const isLowerThanMobile = useMediaQuery('(max-width: 48em)');
+
   return (
     <>
       <SigninContainerBackground />
@@ -39,8 +41,8 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         transform="translate(-50%, -50%)"
         backgroundColor="dark.600"
         display="flex"
-        minW="80vw"
-        minH="22vh"
+        minW={isLowerThanMobile[0] ? '90vw' : '65vw'}
+        minH="25vh"
         spacing={0}
       >
         <img
@@ -51,7 +53,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
             top: '50%',
             left: '20%',
             transform: 'translate(-50%, -50%)',
-            height: '70%',
+            height: '75%',
           }}
         />
         {props.children}
