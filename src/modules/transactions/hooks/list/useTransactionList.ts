@@ -32,7 +32,7 @@ const useTransactionList = () => {
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
   const transactionRequest = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
-    ...(selectedTransaction?.id ? { id: selectedTransaction.id } : {}),
+    id: selectedTransaction.id,
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
