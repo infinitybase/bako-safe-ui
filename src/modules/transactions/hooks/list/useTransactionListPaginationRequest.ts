@@ -48,6 +48,7 @@ const useTransactionListPaginationRequest = (
 
   return {
     ...query,
+    transactionsPages: data,
     transactions: data?.pages.map((page) => page.data).flat() ?? [],
   };
 };

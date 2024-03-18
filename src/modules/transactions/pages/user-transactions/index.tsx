@@ -36,6 +36,8 @@ import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
   const {
+    infinityTransactions,
+    infinityTransactionsRef,
     transactionRequest,
     filter,
     inView,
@@ -234,52 +236,58 @@ const UserTransactionsPage = () => {
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
 
-        {transactionRequest.transactions.map((transaction) => {
+        {infinityTransactions?.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
             (member) => member.address === account,
           );
 
           return (
-            <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
-              {isMobile ? (
-                <TransactionCardMobile
-                  isSigner={isSigner}
-                  transaction={transaction}
-                  account={account}
-                />
-              ) : (
-                <TransactionCard.Container
-                  status={transactionStatus({ ...transaction, account })}
-                  details={
-                    <TransactionCard.Details transaction={transaction} />
-                  }
-                  transaction={transaction}
-                  account={account}
-                  isSigner={isSigner}
-                >
-                  {transaction.predicate && (
-                    <TransactionCard.VaultInfo vault={transaction.predicate} />
-                  )}
-                  <TransactionCard.CreationDate>
-                    {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                  </TransactionCard.CreationDate>
-                  <TransactionCard.Assets />
-                  <TransactionCard.Amount assets={transaction.resume.outputs} />
-                  <TransactionCard.Name>
-                    {limitCharacters(transaction.name, 20)}
-                  </TransactionCard.Name>
-                  <TransactionCard.Status
-                    transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
-                  />
-                  <TransactionCard.Actions
+            <Box key={transaction.id} ref={infinityTransactionsRef}>
+              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
+                {isMobile ? (
+                  <TransactionCardMobile
                     isSigner={isSigner}
                     transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
+                    account={account}
                   />
-                </TransactionCard.Container>
-              )}
-            </CustomSkeleton>
+                ) : (
+                  <TransactionCard.Container
+                    status={transactionStatus({ ...transaction, account })}
+                    details={
+                      <TransactionCard.Details transaction={transaction} />
+                    }
+                    transaction={transaction}
+                    account={account}
+                    isSigner={isSigner}
+                  >
+                    {transaction.predicate && (
+                      <TransactionCard.VaultInfo
+                        vault={transaction.predicate}
+                      />
+                    )}
+                    <TransactionCard.CreationDate>
+                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                    </TransactionCard.CreationDate>
+                    <TransactionCard.Assets />
+                    <TransactionCard.Amount
+                      assets={transaction.resume.outputs}
+                    />
+                    <TransactionCard.Name>
+                      {limitCharacters(transaction.name, 20)}
+                    </TransactionCard.Name>
+                    <TransactionCard.Status
+                      transaction={transaction}
+                      status={transactionStatus({ ...transaction, account })}
+                    />
+                    <TransactionCard.Actions
+                      isSigner={isSigner}
+                      transaction={transaction}
+                      status={transactionStatus({ ...transaction, account })}
+                    />
+                  </TransactionCard.Container>
+                )}
+              </CustomSkeleton>
+            </Box>
           );
         })}
         <Box ref={inView.ref} />
