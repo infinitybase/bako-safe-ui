@@ -14,6 +14,7 @@ import {
   HStack,
   Link,
   Spacer,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -97,6 +98,8 @@ const WorkspacePage = () => {
     return null;
   }
 
+  const balanceUSD = worksapceBalance.balance.balanceUSD;
+
   const UpdateBalance = (
     <Text
       w={20}
@@ -132,9 +135,15 @@ const WorkspacePage = () => {
       spacing={2}
     >
       <Heading variant="title-xl">
-        {visibleBalance
-          ? `${worksapceBalance.balance.balanceUSD} USD`
-          : '-----'}
+        {visibleBalance ? (
+          balanceUSD ? (
+            `${balanceUSD} USD`
+          ) : (
+            <Spinner w={5} h={5} />
+          )
+        ) : (
+          '----'
+        )}
       </Heading>
       <Box
         w="auto"
