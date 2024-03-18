@@ -315,7 +315,7 @@ const WorkspacePage = () => {
                         minW={20}
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
+                        alignItems="flex-end"
                       >
                         {WorkspaceBalance}
                         {UpdateBalance}
