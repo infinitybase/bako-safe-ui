@@ -39,6 +39,8 @@ export const VaultCard = ({
     <Card
       bg="grey.800"
       w="100%"
+      maxW="full"
+      my={[6, 0]}
       cursor="pointer"
       _hover={{
         transform: 'scale(1.03)',
@@ -48,15 +50,15 @@ export const VaultCard = ({
       {...rest}
     >
       <VStack alignItems="flex-start">
-        <HStack w="100%" justifyContent="space-between" mb={1}>
-          <HStack>
+        <HStack maxW="80%" justifyContent="space-between" mb={1}>
+          <HStack maxW="full">
             <Avatar
               variant="roundedSquare"
               name={name}
               color="white"
               bg="grey.600"
             />
-            <VStack ml={2} alignItems="flex-start" spacing={1}>
+            <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
               {!workspace.single && (
                 <HStack>
                   <Icon
@@ -66,13 +68,13 @@ export const VaultCard = ({
                     fontSize={14}
                     color="grey.200"
                   />
-                  <Text maxW={48} color="grey.400" fontSize="sm" isTruncated>
+                  <Text color="grey.400" fontSize="sm" isTruncated>
                     {workspace?.name}
                   </Text>
                 </HStack>
               )}
               <Heading
-                maxW={{ sm: 28, md: 28, lg: 28, xl: 130, '2xl': 180 }}
+                maxW="full"
                 variant="title-md"
                 color="grey.200"
                 isTruncated

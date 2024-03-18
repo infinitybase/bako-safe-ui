@@ -217,7 +217,6 @@ const UserVaultsPage = () => {
       )}
 
       <Grid
-        w="full"
         templateColumns={{ base: 'repeat(1, 1fr)', sm: 'repeat(4, 1fr)' }}
         gap={6}
         pb={28}
