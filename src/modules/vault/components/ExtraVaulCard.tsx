@@ -16,8 +16,10 @@ interface ExtraVaultCardProps extends CardProps {
 export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
   <Card
     bg="grey.800"
+    maxW="full"
+    w="full"
     cursor="pointer"
-    h={['initial', 'full']}
+    h="full"
     p={6}
     borderStyle="dashed"
     {...rest}

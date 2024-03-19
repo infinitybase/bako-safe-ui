@@ -27,7 +27,7 @@ const SigninContainerBackground = () => {
 };
 
 const SigninContainerMobile = (props: SigninContainerProps) => {
-  const isLowerThanMobile = useMediaQuery('(max-width: 48em)');
+  const isLowerThanMobile = useMediaQuery('(max-width: 30em)');
 
   return (
     <>
@@ -41,7 +41,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         transform="translate(-50%, -50%)"
         backgroundColor="dark.600"
         display="flex"
-        minW={isLowerThanMobile[0] ? '90vw' : '65vw'}
+        minW={isLowerThanMobile[0] ? '90vw' : '70vw'}
         minH="25vh"
         spacing={0}
       >

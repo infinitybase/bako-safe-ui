@@ -135,7 +135,13 @@ const CardDetails = (props: CardDetailsProps) => {
               justify="space-between"
               gap={{ base: 6, sm: 0 }}
             >
-              <Center w="full" display="flex" gap={6} alignItems="flex-start">
+              <Center
+                w="full"
+                display="flex"
+                gap={[4, 6]}
+                px={9}
+                alignItems="flex-start"
+              >
                 <Avatar
                   position="relative"
                   variant="roundedSquare"
@@ -155,12 +161,13 @@ const CardDetails = (props: CardDetailsProps) => {
                     borderColor="grey.450"
                   />
                 </Avatar>
-                <Box w="full" maxW="full">
-                  <HStack justifyContent="space-between" gap={2} w="full">
+                <Box w="full" alignItems="center" justifyContent="center">
+                  <HStack justifyContent="space-between" gap={2} maxW="100%">
                     <Heading
+                      alignSelf="flex-start"
+                      maxW="75%"
                       variant={isMobile ? 'title-md' : 'title-xl'}
-                      w="max"
-                      isTruncated={!vault?.name?.includes(' ')}
+                      isTruncated
                     >
                       {vault?.name}
                     </Heading>
