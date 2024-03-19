@@ -1,11 +1,12 @@
 import { TransactionStatus } from 'bsafe';
-import { useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
+import { TransactionWithVault } from '../../services';
 import { useTransactionState } from '../../states';
 import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -30,12 +31,47 @@ const useTransactionList = () => {
   ]);
   const vaultRequest = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
-  const transactionRequest = useTransactionListPaginationRequest({
+  const {
+    transactions,
+    transactionsPages,
+    isLoading,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
     id: selectedTransaction.id,
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
   });
+
+  const observer = useRef<IntersectionObserver>();
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading) return;
+
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetching) {
+          fetchNextPage();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [fetchNextPage, hasNextPage, isFetching, isLoading],
+  );
+
+  const infinityTransactions = useMemo(() => {
+    return transactionsPages?.pages.reduce(
+      (acc: TransactionWithVault[], page) => {
+        return [...acc, ...page.data];
+      },
+      [],
+    );
+  }, [transactionsPages]);
+
   // // const { homeRequest } = useHome();
   // const [firstRender, setFirstRender] = useState<boolean>(true);
   // const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
@@ -68,7 +104,13 @@ const useTransactionList = () => {
   // ]);
 
   return {
-    transactionRequest,
+    transactionRequest: {
+      transactions,
+      isLoading,
+      isFetching,
+      hasNextPage,
+      fetchNextPage,
+    },
     selectedTransaction,
     setSelectedTransaction,
     vaultRequest: vaultRequest,
@@ -84,6 +126,8 @@ const useTransactionList = () => {
     defaultIndex: selectedTransaction?.id ? [0] : [],
     pendingSignerTransactions,
     hasSkeleton: false,
+    infinityTransactions,
+    infinityTransactionsRef: lastElementRef,
   };
 };
 
