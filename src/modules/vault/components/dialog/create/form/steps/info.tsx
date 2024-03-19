@@ -1,3 +1,4 @@
+import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   FormControl,
   FormHelperText,
@@ -7,41 +8,81 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
+import { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseCreateVaultReturn } from '@/modules/vault/hooks';
 
 export interface VaultInfoStepProps {
   form: UseCreateVaultReturn['form'];
+  vaultName: {
+    search: string;
+    setSearch: (value: string) => void;
+    vaultNameIsAvailable: UseCreateVaultReturn['vaultNameIsAvailable'];
+    searchHandler: (event: ChangeEvent<HTMLInputElement>) => void;
+  };
 }
 
-const VaultInfosStep = ({ form }: VaultInfoStepProps) => (
-  <TabPanel p={0}>
-    <VStack spacing={6}>
-      <Controller
-        control={form.control}
-        name="name"
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Input
-              value={field.value}
-              onChange={field.onChange}
-              placeholder=" "
-            />
-            <FormLabel>Vault name</FormLabel>
-            <FormHelperText color="error.500">
-              {fieldState.error?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
-      />
-      <FormControl>
-        <Textarea {...form.register('description')} placeholder=" " />
-        <FormLabel>Description</FormLabel>
-        <FormHelperText>Optional</FormHelperText>
-      </FormControl>
-    </VStack>
-  </TabPanel>
-);
+const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
+  const { search, searchHandler, setSearch, vaultNameIsAvailable } = vaultName;
+  return (
+    <TabPanel p={0}>
+      <VStack spacing={6}>
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field, fieldState }) => (
+            <FormControl>
+              <Input
+                value={search}
+                onChange={(e) => {
+                  searchHandler(e);
+                  field.onChange(e.target.value);
+                }}
+                placeholder=" "
+                isInvalid={
+                  fieldState.invalid ||
+                  (vaultNameIsAvailable && search.length > 0)
+                }
+              />
+              <FormLabel>Vault name</FormLabel>
+              <FormHelperText
+                color={
+                  !!vaultNameIsAvailable || form.formState.errors.name?.message
+                    ? 'error.500'
+                    : 'grey.500'
+                }
+              >
+                {!!vaultNameIsAvailable && search.length > 0
+                  ? 'Vault name already exists in this workspace'
+                  : form.formState.errors.name?.message
+                  ? form.formState.errors.name?.message
+                  : search.length > 0
+                  ? 'This vault is available'
+                  : ''}
+              </FormHelperText>
+              <SmallCloseIcon
+                position="absolute"
+                top={3.5}
+                right={4}
+                w={5}
+                h={5}
+                _hover={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => setSearch('')}
+              />
+            </FormControl>
+          )}
+        />
+        <FormControl>
+          <Textarea {...form.register('description')} placeholder=" " />
+          <FormLabel>Description</FormLabel>
+          <FormHelperText>Optional</FormHelperText>
+        </FormControl>
+      </VStack>
+    </TabPanel>
+  );
+};
 
 export { VaultInfosStep };

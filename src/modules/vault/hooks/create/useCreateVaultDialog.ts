@@ -11,7 +11,7 @@ export type UseCreateVaultDialogReturn = ReturnType<
 >;
 
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
-  const { form, tabs, ...rest } = useCreateVault();
+  const { form, tabs, vaultNameIsAvailable, ...rest } = useCreateVault();
 
   const handleCancel = useCallback(() => {
     props.onClose();
@@ -22,7 +22,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const stepActions = {
     [TabState.INFO]: {
       hide: false,
-      disable: !form.watch('name'),
+      disable: form.watch('name').length === 0 || vaultNameIsAvailable,
       onContinue: () => tabs.set(TabState.ADDRESSES),
       description:
         'Define the name and description of this vault. These details will be visible to all members.',
@@ -59,6 +59,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       step: stepActions[tabs.tab],
       actions: stepActions,
     },
+    vaultNameIsAvailable,
     ...rest,
   };
 };
