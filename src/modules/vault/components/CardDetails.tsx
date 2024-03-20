@@ -129,6 +129,8 @@ const CardDetails = (props: CardDetailsProps) => {
           <VStack spacing={4} w="full" maxW="full">
             <Flex
               w="full"
+              maxW="full"
+              flex={1}
               id="asd"
               flexDir={{ base: 'column', sm: 'row' }}
               alignItems="flex-start"
@@ -136,10 +138,10 @@ const CardDetails = (props: CardDetailsProps) => {
               gap={{ base: 6, sm: 0 }}
             >
               <Center
-                w="full"
+                w={['full', '70%']}
                 display="flex"
                 gap={[4, 6]}
-                px={9}
+                px={[10, 12]}
                 alignItems="flex-start"
               >
                 <Avatar
@@ -161,11 +163,15 @@ const CardDetails = (props: CardDetailsProps) => {
                     borderColor="grey.450"
                   />
                 </Avatar>
-                <Box w="full" alignItems="center" justifyContent="center">
-                  <HStack justifyContent="space-between" gap={2} maxW="100%">
+                <Box
+                  w={['full', '90%']}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW="75%"
+                      maxW="85%"
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >

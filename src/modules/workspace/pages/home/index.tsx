@@ -511,8 +511,13 @@ const WorkspacePage = () => {
             description="Your vaults are entirely free on Fuel. You need
             create a vault to start to save your assets."
           />
-        ) : (
-          <Grid w="full" templateColumns={['block', 'repeat(4, 1fr)']} gap={6}>
+        ) : !isMobile ? (
+          <Grid
+            w="full"
+            maxW="full"
+            templateColumns={['block', 'repeat(4, 1fr)']}
+            gap={6}
+          >
             {recentVaults?.map(
               ({ id, name, workspace, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
@@ -555,6 +560,54 @@ const WorkspacePage = () => {
               },
             )}
           </Grid>
+        ) : (
+          <Box w="full" maxW="full" gap={6}>
+            {recentVaults?.map(
+              ({ id, name, workspace, members, description }, index) => {
+                const lastCard = index === vaultsMax - 1;
+                const hasMore = extraCount > 0;
+
+                return (
+                  <CustomSkeleton
+                    isLoaded={!workspaceHomeRequest.isLoading}
+                    key={id}
+                  >
+                    <GridItem>
+                      {lastCard && hasMore ? (
+                        <ExtraVaultCard
+                          gap={6}
+                          extra={extraCount}
+                          onClick={() =>
+                            navigate(
+                              Pages.userVaults({
+                                workspaceId,
+                              }),
+                            )
+                          }
+                        />
+                      ) : (
+                        <VaultCard
+                          id={id}
+                          name={name}
+                          workspace={workspace}
+                          title={description}
+                          members={members!}
+                          onClick={async () => {
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: workspace.id,
+                                vaultId: id,
+                              }),
+                            );
+                          }}
+                        />
+                      )}
+                    </GridItem>
+                  </CustomSkeleton>
+                );
+              },
+            )}
+          </Box>
         )}
       </CustomSkeleton>
 
