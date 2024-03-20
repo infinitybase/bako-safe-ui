@@ -143,7 +143,10 @@ const AssetBoxInfo = ({
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
             <Text color="grey.200" fontSize={{ base: 'xs', sm: 'md' }} ml={1}>
-              {AddressUtils.format(contractAddress, 8)}
+              {AddressUtils.format(
+                Address.fromString(contractAddress).toAddress(),
+                8,
+              )}
             </Text>
             <Icon
               color="grey.500"
@@ -201,7 +204,9 @@ const AssetBoxInfo = ({
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(asset.to ?? '')}
+            {AddressUtils.format(
+              Address.fromString(asset.to ?? '').toAddress(),
+            )}
           </Text>
         </VStack>
       )}
