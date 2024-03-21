@@ -19,7 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -39,6 +39,7 @@ const UserVaultsPage = () => {
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
   const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
   const { goHome } = useHome();
+  const { isMobile } = useScreenSize();
   const { selectWorkspace } = useSelectWorkspace();
   const {
     workspaces: { current, single },
@@ -215,39 +216,67 @@ const UserVaultsPage = () => {
           />
         </CustomSkeleton>
       )}
-
-      <Grid
-        templateColumns={{ base: 'repeat(1, 1fr)', sm: 'repeat(4, 1fr)' }}
-        gap={6}
-        pb={28}
-      >
-        {vaults?.map(({ id, name, workspace, members, description }) => {
-          return (
-            <GridItem key={id}>
-              <CustomSkeleton isLoaded={!loadingVaults}>
-                <VaultCard
-                  id={id}
-                  name={name}
-                  workspace={workspace}
-                  title={description}
-                  members={members!}
-                  onClick={() => {
-                    selectWorkspace(workspace.id, {
-                      onSelect: (_workspace) =>
-                        navigate(
-                          Pages.detailsVault({
-                            vaultId: id,
-                            workspaceId: _workspace.id,
-                          }),
-                        ),
-                    });
-                  }}
-                />
+      {vaults?.length && !isMobile ? (
+        <Grid w="full" maxW="full" templateColumns={'repeat(4, 1fr)'} gap={6}>
+          {vaults?.map(({ id, name, workspace, members, description }) => {
+            return (
+              <CustomSkeleton isLoaded={!loadingVaults} key={id}>
+                <GridItem>
+                  <VaultCard
+                    id={id}
+                    name={name}
+                    workspace={workspace}
+                    title={description}
+                    members={members!}
+                    onClick={async () => {
+                      selectWorkspace(workspace.id, {
+                        onSelect: async (_workspace) => {
+                          navigate(
+                            Pages.detailsVault({
+                              workspaceId: _workspace.id,
+                              vaultId: id,
+                            }),
+                          );
+                        },
+                      });
+                    }}
+                  />
+                </GridItem>
               </CustomSkeleton>
-            </GridItem>
-          );
-        })}
-      </Grid>
+            );
+          })}
+        </Grid>
+      ) : (
+        <Box w="full" maxW="full" gap={6}>
+          {vaults?.map(({ id, name, workspace, members, description }) => {
+            return (
+              <CustomSkeleton isLoaded={!loadingVaults} key={id}>
+                <GridItem>
+                  <VaultCard
+                    id={id}
+                    name={name}
+                    workspace={workspace}
+                    title={description}
+                    members={members!}
+                    onClick={async () => {
+                      selectWorkspace(workspace.id, {
+                        onSelect: async (_workspace) => {
+                          navigate(
+                            Pages.detailsVault({
+                              workspaceId: _workspace.id,
+                              vaultId: id,
+                            }),
+                          );
+                        },
+                      });
+                    }}
+                  />
+                </GridItem>
+              </CustomSkeleton>
+            );
+          })}
+        </Box>
+      )}
     </VStack>
   );
 };
