@@ -44,7 +44,6 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
-    canAddMember,
   } = useAddressBook();
 
   const minSigners = form.formState.errors.minSigners?.message;
@@ -231,7 +230,7 @@ const VaultAddressesStep = ({
                     opacity: 0.8,
                   }}
                 >
-                  {Array(10)
+                  {Array(addresses.fields.length)
                     .fill('')
                     .map((_, index) => (
                       <option key={index + 1} value={index + 1}>
