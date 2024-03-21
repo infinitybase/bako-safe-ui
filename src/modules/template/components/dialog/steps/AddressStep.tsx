@@ -126,7 +126,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                   onChange={field.onChange}
                   placeholder=" "
                 >
-                  {Array(10)
+                  {Array(addresses.fields.length)
                     .fill('')
                     .map((_, index) => (
                       <option key={index + 1} value={index + 1}>
