@@ -3,7 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  Center,
   Divider,
   Flex,
   Heading,
@@ -137,11 +136,10 @@ const CardDetails = (props: CardDetailsProps) => {
               justify="space-between"
               gap={{ base: 6, sm: 0 }}
             >
-              <Center
+              <HStack
                 w={['full', '70%']}
                 display="flex"
                 gap={[4, 6]}
-                px={[10, 12]}
                 alignItems="flex-start"
               >
                 <Avatar
@@ -171,7 +169,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW="85%"
+                      maxW={['35vw', '80%']}
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >
@@ -208,7 +206,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     {vaultDescription}
                   </Text>
                 </Box>
-              </Center>
+              </HStack>
 
               <Flex
                 w="full"
