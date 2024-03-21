@@ -74,7 +74,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { visebleBalance, setVisibleBalance } = store;
+  const { balanceUSD, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
@@ -235,9 +235,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? `${balanceFormatted} USD` : '-----'}
-                        {/* balanceUSD it's coming undefined by store prop */}
-                        {/* {visebleBalance ? `${balanceUSD} USD` : '-----'} */}
+                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
                       </Heading>
                       <Box
                         w="auto"
