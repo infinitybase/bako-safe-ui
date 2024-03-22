@@ -74,7 +74,12 @@ export const VaultCard = ({
                 </HStack>
               )}
               <Heading
-                maxW="full"
+                maxW={{
+                  base: 'full',
+                  sm: 300,
+                  lg: 210,
+                  xl: 240,
+                }}
                 variant="title-md"
                 color="grey.200"
                 isTruncated
