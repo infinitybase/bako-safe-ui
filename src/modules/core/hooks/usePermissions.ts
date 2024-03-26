@@ -17,8 +17,6 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
     },
   );
 
-  const type = userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
-
   const permissions =
     userRole?.role && WorkspacePermissionUtils.permissions[userRole.role];
 
@@ -32,7 +30,10 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
     };
   }
 
-  const isSigner = workspace.permissions[PermissionRoles.SIGNER]?.includes(id);
+  const isOwner =
+    workspace.permissions[auth.userId][PermissionRoles.OWNER]?.includes('*');
+  const isSigner =
+    workspace.permissions[auth.userId][PermissionRoles.SIGNER]?.includes(id);
 
   const isViewer =
     permissions?.title ===
@@ -44,7 +45,9 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
     permissions?.title ===
     WorkspacePermissionUtils.permissions[PermissionRoles.MANAGER].title;
 
-  const role = isSigner
+  const role = isOwner
+    ? PermissionRoles.OWNER
+    : isSigner
     ? PermissionRoles.SIGNER
     : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
