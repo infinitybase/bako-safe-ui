@@ -151,7 +151,17 @@ const HomePage = () => {
         </Box>
       )}
       {recentVaults?.length && !isMobile ? (
-        <Grid w="full" maxW="full" templateColumns={'repeat(4, 1fr)'} gap={6}>
+        <Grid
+          w="full"
+          maxW="full"
+          gap={6}
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)',
+            '2xl': 'repeat(4, 1fr)',
+          }}
+        >
           {recentVaults?.map(
             ({ id, name, workspace, members, description }, index) => {
               const lastCard = index === vaultsMax - 1;

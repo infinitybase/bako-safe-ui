@@ -217,7 +217,17 @@ const UserVaultsPage = () => {
         </CustomSkeleton>
       )}
       {vaults?.length && !isMobile ? (
-        <Grid w="full" maxW="full" templateColumns={'repeat(4, 1fr)'} gap={6}>
+        <Grid
+          w="full"
+          maxW="full"
+          gap={6}
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)',
+            '2xl': 'repeat(4, 1fr)',
+          }}
+        >
           {vaults?.map(({ id, name, workspace, members, description }) => {
             return (
               <CustomSkeleton isLoaded={!loadingVaults} key={id}>
