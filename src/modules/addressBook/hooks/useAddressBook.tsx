@@ -26,7 +26,7 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = (isSingleIncluded?: boolean) => {
+const useAddressBook = (isSingleIncluded: boolean = false) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
@@ -54,6 +54,7 @@ const useAddressBook = (isSingleIncluded?: boolean) => {
     listContactsRequest.data ?? [],
     { q: search },
     workspaceId!,
+    isSingleIncluded,
   );
 
   // FORM

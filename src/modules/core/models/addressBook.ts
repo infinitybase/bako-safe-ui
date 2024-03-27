@@ -22,12 +22,19 @@ export const AddressBookQueryKey = {
     'by-user',
     workspaceId,
   ],
-  LIST_BY_USER_PAGINATED: (workspaceId: string, filter: string) => [
+  LIST_BY_USER_PAGINATED: (
+    workspaceId: string,
+    filter: string,
+    contactIds: string,
+    includePersonal: boolean,
+  ) => [
     AddressBookQueryKey.DEFAULT,
     'by-user',
     'paginated',
     workspaceId,
     filter,
+    contactIds,
+    includePersonal,
   ],
   FULL_DATA: (workspaceId: string) => [
     AddressBookQueryKey.DEFAULT,
