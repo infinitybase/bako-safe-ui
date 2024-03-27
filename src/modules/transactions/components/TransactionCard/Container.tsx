@@ -64,12 +64,13 @@ const Container = ({
       )}
       <Card
         py={{ base: 1, sm: 4 }}
-        px={{ base: 0, sm: 4 }}
+        px={{ base: 2, sm: 4 }}
         w="full"
         as={AccordionItem}
         bgColor="grey.800"
         borderColor={missingSignature ? 'warning.500' : 'dark.100'}
         minW={{ base: 0, sm: 'min-content' }}
+        maxW="full"
         {...rest}
       >
         <VStack justifyContent="center" gap={0} w="full">
@@ -78,7 +79,7 @@ const Container = ({
             onClick={detailsDialog.onOpen}
             w="full"
             _hover={{ bgColor: 'transparent' }}
-            px={4}
+            px={[2, 4]}
             py={2}
           >
             <Grid

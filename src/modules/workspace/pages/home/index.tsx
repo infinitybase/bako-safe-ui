@@ -14,6 +14,7 @@ import {
   HStack,
   Link,
   Spacer,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -97,6 +98,8 @@ const WorkspacePage = () => {
     return null;
   }
 
+  const balanceUSD = worksapceBalance.balance.balanceUSD;
+
   const UpdateBalance = (
     <Text
       w={20}
@@ -132,9 +135,15 @@ const WorkspacePage = () => {
       spacing={2}
     >
       <Heading variant="title-xl">
-        {visibleBalance
-          ? `${worksapceBalance.balance.balanceUSD} USD`
-          : '-----'}
+        {visibleBalance ? (
+          balanceUSD ? (
+            `${balanceUSD} USD`
+          ) : (
+            <Spinner w={5} h={5} />
+          )
+        ) : (
+          '----'
+        )}
       </Heading>
       <Box
         w="auto"
@@ -315,7 +324,7 @@ const WorkspacePage = () => {
                         minW={20}
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
+                        alignItems="flex-end"
                       >
                         {WorkspaceBalance}
                         {UpdateBalance}
@@ -424,7 +433,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxW={500} maxH={450} spacing={4}>
+        <VStack w="full" maxW={['full', 500]} maxH={450} spacing={4}>
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
@@ -502,8 +511,13 @@ const WorkspacePage = () => {
             description="Your vaults are entirely free on Fuel. You need
             create a vault to start to save your assets."
           />
-        ) : (
-          <Grid w="full" templateColumns={['block', 'repeat(4, 1fr)']} gap={6}>
+        ) : !isMobile ? (
+          <Grid
+            w="full"
+            maxW="full"
+            templateColumns={['block', 'repeat(4, 1fr)']}
+            gap={6}
+          >
             {recentVaults?.map(
               ({ id, name, workspace, members, description }, index) => {
                 const lastCard = index === vaultsMax - 1;
@@ -546,6 +560,54 @@ const WorkspacePage = () => {
               },
             )}
           </Grid>
+        ) : (
+          <Box w="full" maxW="full" gap={6}>
+            {recentVaults?.map(
+              ({ id, name, workspace, members, description }, index) => {
+                const lastCard = index === vaultsMax - 1;
+                const hasMore = extraCount > 0;
+
+                return (
+                  <CustomSkeleton
+                    isLoaded={!workspaceHomeRequest.isLoading}
+                    key={id}
+                  >
+                    <GridItem>
+                      {lastCard && hasMore ? (
+                        <ExtraVaultCard
+                          gap={6}
+                          extra={extraCount}
+                          onClick={() =>
+                            navigate(
+                              Pages.userVaults({
+                                workspaceId,
+                              }),
+                            )
+                          }
+                        />
+                      ) : (
+                        <VaultCard
+                          id={id}
+                          name={name}
+                          workspace={workspace}
+                          title={description}
+                          members={members!}
+                          onClick={async () => {
+                            navigate(
+                              Pages.detailsVault({
+                                workspaceId: workspace.id,
+                                vaultId: id,
+                              }),
+                            );
+                          }}
+                        />
+                      )}
+                    </GridItem>
+                  </CustomSkeleton>
+                );
+              },
+            )}
+          </Box>
         )}
       </CustomSkeleton>
 

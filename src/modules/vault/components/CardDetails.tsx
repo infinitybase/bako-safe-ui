@@ -3,7 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  Center,
   Divider,
   Flex,
   Heading,
@@ -74,7 +73,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { visebleBalance, setVisibleBalance } = store;
+  const { balanceUSD, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile } = useScreenSize();
@@ -113,7 +112,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={730}>
+    <Box w="full" maxW={['full', 730]}>
       <Box mb={5} w="full">
         <Text
           color="grey.400"
@@ -126,16 +125,23 @@ const CardDetails = (props: CardDetailsProps) => {
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
-          <VStack spacing={4} w="full">
+          <VStack spacing={4} w="full" maxW="full">
             <Flex
               w="full"
+              maxW="full"
+              flex={1}
               id="asd"
               flexDir={{ base: 'column', sm: 'row' }}
               alignItems="flex-start"
               justify="space-between"
               gap={{ base: 6, sm: 0 }}
             >
-              <Center w="full" display="flex" gap={6} alignItems="flex-start">
+              <HStack
+                w={['full', '70%']}
+                display="flex"
+                gap={[4, 6]}
+                alignItems="flex-start"
+              >
                 <Avatar
                   position="relative"
                   variant="roundedSquare"
@@ -155,12 +161,17 @@ const CardDetails = (props: CardDetailsProps) => {
                     borderColor="grey.450"
                   />
                 </Avatar>
-                <Box w="full">
-                  <HStack justifyContent="space-between" gap={2} w="full">
+                <Box
+                  w={['full', '90%']}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
+                      alignSelf="flex-start"
+                      maxW={['35vw', '80%']}
                       variant={isMobile ? 'title-md' : 'title-xl'}
-                      w="max"
-                      isTruncated={!vault?.name?.includes(' ')}
+                      isTruncated
                     >
                       {vault?.name}
                     </Heading>
@@ -195,7 +206,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     {vaultDescription}
                   </Text>
                 </Box>
-              </Center>
+              </HStack>
 
               <Flex
                 w="full"
@@ -222,9 +233,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       spacing={2}
                     >
                       <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? `${balanceFormatted} USD` : '-----'}
-                        {/* balanceUSD it's coming undefined by store prop */}
-                        {/* {visebleBalance ? `${balanceUSD} USD` : '-----'} */}
+                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
                       </Heading>
                       <Box
                         w="auto"

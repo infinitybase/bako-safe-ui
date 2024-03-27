@@ -14,6 +14,10 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     handleCancel,
     setFormWithTemplate,
     onSaveTemplate,
+    handleInputChange,
+    vaultNameIsAvailable,
+    search,
+    setSearch,
   } = useCreateVaultDialog({
     onClose: props.onClose,
   });
@@ -45,6 +49,10 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           addresses={addresses}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
+          vaultNameIsAvailable={vaultNameIsAvailable}
+          search={search}
+          setSearch={setSearch}
+          handleInputChange={handleInputChange}
         />
       </Dialog.Body>
 

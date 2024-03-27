@@ -197,9 +197,9 @@ const CreateMemberPage = () => {
         title={dialog.title}
         position="relative"
         top={{ base: 0, sm: -8 }}
-        mt={{ base: 8, sm: 0 }}
-        h={8}
-        mb={{ base: 8, sm: 4 }}
+        mt={{ base: 0, sm: 0 }}
+        h="auto"
+        mb={{ base: 0, sm: 4 }}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"

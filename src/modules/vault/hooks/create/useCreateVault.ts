@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import debounce from 'lodash.debounce';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -8,6 +9,7 @@ import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 
+import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm } from './useCreateVaultForm';
 
 export enum TabState {
@@ -30,6 +32,9 @@ const useCreateVault = () => {
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
 
+  const [searchRequest, setSearchRequest] = useState('');
+  const [search, setSearch] = useState('');
+
   const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
       setVaultId(data.BSAFEVaultId);
@@ -42,6 +47,24 @@ const useCreateVault = () => {
       });
     },
   });
+
+  let vaultNameIsAvailable = false;
+
+  const checkVaultNameResult = useCheckVaultName(searchRequest);
+  vaultNameIsAvailable = checkVaultNameResult.data ?? false;
+
+  const debouncedSearchHandler = useCallback(
+    debounce((value: string) => {
+      setSearchRequest(value);
+    }, 300),
+    [],
+  );
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearch(value);
+    debouncedSearchHandler(value);
+  };
 
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
@@ -123,6 +146,10 @@ const useCreateVault = () => {
       ...form,
       handleCreateVault,
     },
+    handleInputChange,
+    vaultNameIsAvailable,
+    search,
+    setSearch,
     addresses: {
       fields: addressesFieldArray.fields,
       remove: removeAddress,

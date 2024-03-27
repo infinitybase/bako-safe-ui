@@ -23,6 +23,7 @@ import { useSteps } from '@/modules/template/hooks';
 
 const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
   const { addresses } = useSteps();
+
   return (
     <TabPanel p={0}>
       <Divider borderColor="dark.100" my={9} />
@@ -70,6 +71,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                         onClick={() => {
                           if (index > 0) {
                             addresses.remove(index);
+                            form.unregister(`addresses.${index}`);
                           }
                         }}
                       />
@@ -124,7 +126,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                   onChange={field.onChange}
                   placeholder=" "
                 >
-                  {Array(10)
+                  {Array(addresses.fields.length)
                     .fill('')
                     .map((_, index) => (
                       <option key={index + 1} value={index + 1}>
