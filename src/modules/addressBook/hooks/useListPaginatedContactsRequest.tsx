@@ -11,9 +11,17 @@ const useListPaginatedContactsRequest = (
   contacts: WorkspaceContact[],
   filter: GetPaginatedContactsParams,
   workspace: string,
+  includePersonal: boolean,
 ) => {
+  const contactIds = contacts.map((contact) => contact.id).join('-');
+
   const { data, ...query } = useQuery(
-    AddressBookQueryKey.LIST_BY_USER_PAGINATED(workspace, filter.q ?? ''),
+    AddressBookQueryKey.LIST_BY_USER_PAGINATED(
+      workspace,
+      filter.q ?? '',
+      contactIds,
+      includePersonal,
+    ),
     () =>
       AddressBookService.search(
         {
