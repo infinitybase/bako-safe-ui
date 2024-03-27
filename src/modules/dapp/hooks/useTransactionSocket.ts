@@ -1,5 +1,5 @@
 import { useBoolean } from '@chakra-ui/react';
-import { BSAFEConnectorEvents, Vault } from 'bsafe';
+import { BakoSafeConnectors, Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
 
@@ -28,7 +28,7 @@ export const useTransactionSocket = () => {
       //   data,
       //   type,
       // });
-      if (type === BSAFEConnectorEvents.TRANSACTION_SEND) {
+      if (type === BakoSafeConnectors.TRANSACTION_SEND) {
         const bsafeVault = await Vault.create({
           predicateAddress: address,
           token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
@@ -65,7 +65,7 @@ export const useTransactionSocket = () => {
     if (!tx) return;
     //console.log('[enviando mensagem]');
     emitMessage({
-      event: BSAFEConnectorEvents.TRANSACTION_CREATED,
+      event: BakoSafeConnectors.TRANSACTION_CREATED,
       content: {
         sessionId: sessionId!,
         address: CookiesConfig.getCookie(ADDRESS)!,
