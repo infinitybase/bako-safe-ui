@@ -127,38 +127,37 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         </Tabs>
       </Dialog.Body>
 
-      {tabs.is(CreateWorkspaceTabState.FORM) && (
-        <Dialog.Actions
-          hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
-          maxW={500}
+      <Dialog.Actions
+        mt="auto"
+        hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+        maxW={500}
+      >
+        <Dialog.SecondaryAction
+          _hover={{
+            borderColor: 'brand.500',
+            color: 'brand.500',
+          }}
+          bg="transparent"
+          border="1px solid white"
+          w="25%"
+          onClick={handleClose}
         >
-          <Dialog.SecondaryAction
-            _hover={{
-              borderColor: 'brand.500',
-              color: 'brand.500',
-            }}
-            bg="transparent"
-            border="1px solid white"
-            w="25%"
-            onClick={handleClose}
-          >
-            Cancel
-          </Dialog.SecondaryAction>
-          <Dialog.PrimaryAction
-            w="70%"
-            onClick={form.handleCreateWorkspace}
-            fontSize="md"
-            leftIcon={<SquarePlusIcon w={4} h={4} />}
-            isDisabled={request.isLoading}
-            isLoading={request.isLoading}
-            _hover={{
-              opacity: 0.8,
-            }}
-          >
-            Create Workspace
-          </Dialog.PrimaryAction>
-        </Dialog.Actions>
-      )}
+          Cancel
+        </Dialog.SecondaryAction>
+        <Dialog.PrimaryAction
+          w="70%"
+          onClick={form.handleCreateWorkspace}
+          fontSize="md"
+          leftIcon={<SquarePlusIcon w={4} h={4} />}
+          isDisabled={request.isLoading}
+          isLoading={request.isLoading}
+          _hover={{
+            opacity: 0.8,
+          }}
+        >
+          Create Workspace
+        </Dialog.PrimaryAction>
+      </Dialog.Actions>
     </Dialog.Modal>
   );
 };
