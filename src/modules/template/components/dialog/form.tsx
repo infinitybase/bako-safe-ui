@@ -11,7 +11,7 @@ const CreateTemplateForm = () => {
 
   return (
     <form onSubmit={handleSubmit(steps[step].onSubmit)}>
-      <Box w="full" maxW={420}>
+      <Box mb="100%" maxW={420}>
         <Box hidden={steps[step].hiddeProgressBar} mb={12}>
           <StepProgress length={steps.length} value={step} />
         </Box>
@@ -20,7 +20,7 @@ const CreateTemplateForm = () => {
         </Tabs>
       </Box>
 
-      <Dialog.Actions maxW={420} hidden={steps[step].hiddeFooter}>
+      <Dialog.Actions mt="auto" maxW={420} hidden={steps[step].hiddeFooter}>
         <Dialog.SecondaryAction onClick={onClose}>
           Cancel
         </Dialog.SecondaryAction>

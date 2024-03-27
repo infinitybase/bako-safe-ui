@@ -14,7 +14,12 @@ const TemplatePage = (
   const { onClose, steps } = props;
 
   return (
-    <Dialog.Modal isOpen={true} onClose={onClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      size={['full', 'lg']}
+      isOpen={true}
+      onClose={onClose}
+      closeOnOverlayClick={false}
+    >
       <Dialog.Header
         maxW={420}
         hidden={steps[step].hiddeTitle}
