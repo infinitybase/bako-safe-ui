@@ -76,7 +76,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   return (
     <Dialog.Modal
       size={{
-        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'lg' : 'lg',
+        base: 'full',
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
       }}
       closeOnOverlayClick={false}
@@ -94,9 +94,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         />
       )}
 
-      <Dialog.Body
-        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 540}
-      >
+      <Dialog.Body minH="full" maxH="full" maxW={540}>
         <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
@@ -129,38 +127,38 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         </Tabs>
       </Dialog.Body>
 
-      <Dialog.Actions
-        hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
-        maxW={500}
-        maxH={50}
-        minH={20}
-      >
-        <Dialog.SecondaryAction
-          _hover={{
-            borderColor: 'brand.500',
-            color: 'brand.500',
-          }}
-          bg="transparent"
-          border="1px solid white"
-          w="25%"
-          onClick={handleClose}
+      {tabs.is(CreateWorkspaceTabState.FORM) && (
+        <Dialog.Actions
+          hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+          maxW={500}
         >
-          Cancel
-        </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
-          w="70%"
-          onClick={form.handleCreateWorkspace}
-          fontSize="md"
-          leftIcon={<SquarePlusIcon w={4} h={4} />}
-          isDisabled={request.isLoading}
-          isLoading={request.isLoading}
-          _hover={{
-            opacity: 0.8,
-          }}
-        >
-          Create Workspace
-        </Dialog.PrimaryAction>
-      </Dialog.Actions>
+          <Dialog.SecondaryAction
+            _hover={{
+              borderColor: 'brand.500',
+              color: 'brand.500',
+            }}
+            bg="transparent"
+            border="1px solid white"
+            w="25%"
+            onClick={handleClose}
+          >
+            Cancel
+          </Dialog.SecondaryAction>
+          <Dialog.PrimaryAction
+            w="70%"
+            onClick={form.handleCreateWorkspace}
+            fontSize="md"
+            leftIcon={<SquarePlusIcon w={4} h={4} />}
+            isDisabled={request.isLoading}
+            isLoading={request.isLoading}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            Create Workspace
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
+      )}
     </Dialog.Modal>
   );
 };
