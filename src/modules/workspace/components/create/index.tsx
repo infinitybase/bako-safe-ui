@@ -76,7 +76,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   return (
     <Dialog.Modal
       size={{
-        base: tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 'lg' : 'lg',
+        base: 'full',
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
       }}
       closeOnOverlayClick={false}
@@ -94,9 +94,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         />
       )}
 
-      <Dialog.Body
-        maxW={tabs.is(CreateWorkspaceTabState.ON_BOARDING) ? 540 : 540}
-      >
+      <Dialog.Body minH="full" maxH="full" maxW={540}>
         <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
@@ -130,10 +128,9 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       </Dialog.Body>
 
       <Dialog.Actions
+        mt="auto"
         hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
         maxW={500}
-        maxH={50}
-        minH={20}
       >
         <Dialog.SecondaryAction
           _hover={{

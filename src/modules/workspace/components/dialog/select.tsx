@@ -1,6 +1,7 @@
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
+import { DialogActions } from '@/components/dialog/actions';
 import { useAuth } from '@/modules/auth/hooks';
 import { Workspace } from '@/modules/core';
 
@@ -29,7 +30,7 @@ const SelectWorkspaceDialog = ({
 
   return (
     <Dialog.Modal
-      size={!listIsEmpty ? 'xl' : '2xl'}
+      size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
       onClose={dialog.onClose}
       hideCloseButton={false}
       isOpen={dialog.isOpen}
@@ -39,10 +40,10 @@ const SelectWorkspaceDialog = ({
         position="relative"
         justifyItems="center"
         alignItems="center"
-        h="full"
+        maxH="full"
         maxW={480}
       >
-        <VStack spacing={2}>
+        <VStack>
           {!listIsEmpty && (
             <VStack
               w="full"
@@ -102,44 +103,41 @@ const SelectWorkspaceDialog = ({
               ))
             )}
           </VStack>
-          <HStack
-            w={!listIsEmpty ? 'full' : 'fit-content'}
-            spacing={4}
-            mt={4}
-            h={12}
-          >
-            {listIsEmpty && (
-              <Dialog.SecondaryAction
-                h="full"
-                size="lg"
-                w="40%"
-                bgColor="transparent"
-                outlineColor="white"
-                outline="1px solid"
-                onClick={dialog.onClose}
-                _hover={{
-                  outlineColor: 'brand.500',
-                  color: 'brand.500',
-                }}
-              >
-                Cancel
-              </Dialog.SecondaryAction>
-            )}
-            <Dialog.PrimaryAction
-              h="full"
-              w="full"
-              type="submit"
-              leftIcon={<SquarePlusIcon fontSize={18} />}
-              onClick={onCreate}
-              _hover={{
-                opacity: 0.8,
-              }}
-            >
-              Create workspace
-            </Dialog.PrimaryAction>
-          </HStack>
         </VStack>
       </Dialog.Body>
+      <DialogActions mt="auto" maxW={480}>
+        <HStack w={!listIsEmpty ? 'full' : 'fit-content'} spacing={4} h={12}>
+          {listIsEmpty && (
+            <Dialog.SecondaryAction
+              h="full"
+              size="lg"
+              w="40%"
+              bgColor="transparent"
+              outlineColor="white"
+              outline="1px solid"
+              onClick={dialog.onClose}
+              _hover={{
+                outlineColor: 'brand.500',
+                color: 'brand.500',
+              }}
+            >
+              Cancel
+            </Dialog.SecondaryAction>
+          )}
+          <Dialog.PrimaryAction
+            h="full"
+            w="full"
+            type="submit"
+            leftIcon={<SquarePlusIcon fontSize={18} />}
+            onClick={onCreate}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            Create workspace
+          </Dialog.PrimaryAction>
+        </HStack>
+      </DialogActions>
     </Dialog.Modal>
   );
 };
