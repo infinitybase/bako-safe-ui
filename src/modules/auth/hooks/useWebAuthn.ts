@@ -24,6 +24,7 @@ const useWebAuthn = () => {
   const [page, setPage] = useState(WebAuthnState.LOGIN);
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
+  const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -36,6 +37,8 @@ const useWebAuthn = () => {
   const accountsRequest = useGetAccountsByHardwareId();
 
   const nicknames = useCheckNickname(searchRequest);
+
+  const currentUsername = loginForm.watch('name');
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -109,6 +112,20 @@ const useWebAuthn = () => {
     setPage(page);
   };
 
+  useEffect(() => {
+    if (
+      accountsRequest.data &&
+      accountsRequest?.data?.length > 0 &&
+      currentUsername?.length > 0
+    ) {
+      const defaultWebAuthnId = accountsRequest.data.find(
+        (user) => user.webauthn.id === currentUsername,
+      );
+
+      defaultWebAuthnId && setIsValidCurrentUsername(true);
+    }
+  }, [accountsRequest.data, currentUsername]);
+
   const formState = {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
@@ -131,7 +148,8 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
-      isDisabled: loginForm.watch('name')?.length === 0 ?? false,
+      isDisabled:
+        (currentUsername?.length === 0 ?? false) || !isValidCurrentUsername,
       title: 'Login with WebAuthn',
       description: 'Select your username to login',
     },
