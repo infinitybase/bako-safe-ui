@@ -7,8 +7,7 @@ import {
   Text,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
-import React from 'react';
+import { ITransaction } from 'bakosafe';
 import {
   IoIosArrowDown,
   IoIosArrowForward,

@@ -10,7 +10,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 

@@ -1,4 +1,4 @@
-import { Transfer } from 'bsafe';
+import { Transfer } from 'bakosafe';
 
 import { api } from '@/config/api';
 

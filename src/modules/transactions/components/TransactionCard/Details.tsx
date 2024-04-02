@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';

@@ -7,7 +7,7 @@ function useVaultDetailsRequest(id: string) {
 
   return {
     ...rest,
-    predicate: vault?.BSAFEVault,
+    predicate: vault?.BakoSafeVault,
     predicateInstance: vault,
   };
 }

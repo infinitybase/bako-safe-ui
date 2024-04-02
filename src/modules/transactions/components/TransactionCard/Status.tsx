@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -66,8 +66,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-              ? 'success'
-              : 'warning'
+                ? 'success'
+                : 'warning'
           }
         >
           {isError && 'Error'}

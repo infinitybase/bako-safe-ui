@@ -1,18 +1,18 @@
 import {
-  IBSAFEAuth,
+  IBakoSafeAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
   TransactionStatus,
   Vault,
-} from 'bsafe';
+} from 'bakosafe';
 
 import { TransactionService } from '@/modules/transactions/services';
 
 import { useBsafeMutation, useBsafeQuery } from './utils';
 
 const TRANSACTION_QUERY_KEYS = {
-  DEFAULT: ['bsafe', 'transaction'],
+  DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
   VAULT: (id: string, filter?: IListTransactions) => [
     ...TRANSACTION_QUERY_KEYS.DEFAULT,
@@ -35,7 +35,7 @@ const useBsafeCreateTransaction = ({
   return useBsafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      return vault?.BSAFEIncludeTransaction({
+      return vault?.BakoSafeIncludeTransaction({
         name: payload.name!,
         witnesses: payload.witnesses,
         assets: payload.assets,
@@ -55,10 +55,10 @@ const useBsafeTransactionList = ({
   filter,
 }: UseBsafeListTransactionParams) => {
   return useBsafeQuery(
-    TRANSACTION_QUERY_KEYS.VAULT(vault?.BSAFEVaultId, filter),
+    TRANSACTION_QUERY_KEYS.VAULT(vault?.BakoSafeVaultId, filter),
     async () => {
       return await TransactionService.getTransactions({
-        predicateId: [vault?.BSAFEVaultId],
+        predicateId: [vault?.BakoSafeVaultId],
         ...filter,
       });
     },
@@ -74,7 +74,7 @@ interface UseBsafeSendTransactionParams {
 interface BSAFETransactionSendVariables {
   /* TODO: Send a transfer here */
   transaction: ITransaction;
-  auth?: IBSAFEAuth;
+  auth?: IBakoSafeAuth;
 }
 
 // const validateBalance = async (
@@ -114,7 +114,7 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
 
       //await validateBalance(vault, transaction.assets, transaction.id);
 
-      const transfer = await vault.BSAFEGetTransaction(transaction.id);
+      const transfer = await vault.BakoSafeGetTransaction(transaction.id);
       // console.log('[TRANSFER_ON_REQUEST_SEND]: ', {
       //   transfer,
       //   transaction,
@@ -123,11 +123,12 @@ const useBsafeTransactionSend = (options: UseBsafeSendTransactionParams) => {
       //     TransactionStatus.PROCESS_ON_CHAIN,
       //   failed: transfer.BSAFETransaction.status === TransactionStatus.FAILED,
       // });
-      if (transfer.BSAFETransaction.status === TransactionStatus.FAILED) {
-        await TransactionService.send(transfer.BSAFETransactionId);
+      if (transfer.BakoSafeTransaction.status === TransactionStatus.FAILED) {
+        await TransactionService.send(transfer.BakoSafeTransactionId);
       }
       await transfer.wait();
-      return (await vault.BSAFEGetTransaction(transaction.id)).BSAFETransaction;
+      return (await vault.BakoSafeGetTransaction(transaction.id))
+        .BakoSafeTransaction;
     },
     {
       onSuccess: options.onSuccess,

@@ -1,4 +1,4 @@
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
 import { queryClient } from '@/config';

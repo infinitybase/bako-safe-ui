@@ -1,4 +1,4 @@
-import { BakoSafeConnectors } from 'bsafe';
+import { BakoSafeConnectors } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { useQueryParams } from '@/modules/auth/hooks';

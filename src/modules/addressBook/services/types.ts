@@ -1,4 +1,4 @@
-import { SortOption } from 'bsafe';
+import { SortOption } from 'bakosafe';
 
 import { IPagination } from '@/modules/core';
 import { AddressBook } from '@/modules/core/models/';

@@ -1,5 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
-import { defaultConfig } from 'bsafe';
+import { defaultConfig } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { api } from '@/config';

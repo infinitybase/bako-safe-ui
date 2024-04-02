@@ -1,5 +1,5 @@
 import { useBoolean } from '@chakra-ui/react';
-import { BakoSafeConnectors, Vault } from 'bsafe';
+import { BakoSafeConnectors, Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
 
@@ -59,7 +59,7 @@ export const useTransactionSocket = () => {
   const confirmTransaction = async () => {
     confirmingTransctionHandlers.on();
 
-    const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
+    const tx = await vault?.BakoSafeIncludeTransaction(FUELTransaction!);
     //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
     //console.log('[TRANSACTION_TX]: ', tx);
     if (!tx) return;

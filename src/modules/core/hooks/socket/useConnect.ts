@@ -1,4 +1,4 @@
-import { BakoSafeConnectors } from 'bsafe';
+import { BakoSafeConnectors } from 'bakosafe';
 
 import socket from './useSocketConfig';
 

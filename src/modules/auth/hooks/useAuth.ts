@@ -1,5 +1,5 @@
 import { useFuel } from '@fuels/react';
-import { defaultConfig } from 'bsafe';
+import { defaultConfig } from 'bakosafe';
 import { Provider } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';

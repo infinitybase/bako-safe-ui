@@ -1,11 +1,11 @@
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 
 import { useAuth } from '@/modules/auth';
 
 import { useBsafeMutation, useBsafeQuery } from './utils';
 
 const VAULT_QUERY_KEYS = {
-  DEFAULT: ['bsafe', 'vault'],
+  DEFAULT: ['bakosafe', 'vault'],
   VAULT: (id: string) => [...VAULT_QUERY_KEYS.DEFAULT, id],
 };
 
@@ -51,7 +51,6 @@ const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
       const { provider } = await hasWallet();
-      //const provider = await Provider.create(netowrk.url);
 
       return Vault.create({
         name: params.name,
@@ -63,7 +62,7 @@ const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
           SIGNATURES_COUNT: params.minSigners,
           SIGNERS: params.addresses,
         },
-        BSAFEAuth: auth,
+        BakoSafeAuth: auth,
       });
     },
     {

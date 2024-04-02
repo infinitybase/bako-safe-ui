@@ -6,7 +6,7 @@ import {
   HStack,
   Text,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bsafe';
+import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';

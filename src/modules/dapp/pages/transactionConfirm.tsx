@@ -86,8 +86,8 @@ const TransactionConfirm = () => {
           <DappTransaction.Operation
             key={`${index}operation`}
             vault={{
-              name: vault?.BSAFEVault.name ?? '',
-              predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
+              name: vault?.BakoSafeVault.name ?? '',
+              predicateAddress: vault?.BakoSafeVault.predicateAddress ?? '',
             }}
             operation={operation}
           />
