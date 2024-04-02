@@ -23,7 +23,6 @@ import logo from '@/assets/bakoLogoWhite.svg';
 import {
   ExitIcon,
   NotificationIcon,
-  QuestionIcon,
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
@@ -164,23 +163,6 @@ const UserBox = () => {
                         <Text fontSize="xs">+{unreadCounter}</Text>
                       </Center>
                     )}
-                  </HStack>
-                </Box>
-
-                <Box
-                  borderTop={'1px solid'}
-                  borderTopColor={'dark.100'}
-                  cursor={'pointer'}
-                  onClick={() =>
-                    window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-                  }
-                  p={5}
-                >
-                  <HStack>
-                    <Icon color="grey.200" as={QuestionIcon} fontSize="xl" />
-                    <Text color="grey.200" fontWeight={'bold'}>
-                      Help
-                    </Text>
                   </HStack>
                 </Box>
               </>
@@ -389,15 +371,6 @@ const Header = () => {
             currentWorkspace={currentWorkspace.workspace}
             isLoading={currentWorkspace.isLoading}
           />
-        </TopBarItem>
-
-        <TopBarItem
-          display={['none', 'flex']}
-          onClick={() =>
-            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-          }
-        >
-          <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
 
         <TopBarItem

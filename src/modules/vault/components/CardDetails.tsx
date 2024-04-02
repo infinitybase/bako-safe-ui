@@ -181,6 +181,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   {!isSingleWorkspace && (
                     <Text
                       alignItems="center"
+                      textAlign="left"
                       variant="description"
                       textOverflow="ellipsis"
                       noOfLines={2}
