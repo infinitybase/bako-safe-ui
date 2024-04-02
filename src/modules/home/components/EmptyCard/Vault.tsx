@@ -35,7 +35,7 @@ const EmptyVault = (props?: EmptyVaultProps) => {
         <NotFoundIcon w={120} h={150} />
       </Box>
       <Box mb={5}>
-        <Heading color="white" fontSize="4xl">
+        <Heading color="white" fontSize="4xl" textAlign="center">
           {props?.title ?? `Let's Begin!`}
         </Heading>
       </Box>
