@@ -76,7 +76,6 @@ const useChangeMember = () => {
     memberPermission?.role &&
     WorkspacePermissionUtils.permissions[memberPermission.role];
 
-
   useMemo(() => {
     setMemberPermissions({
       oldPermission: permissions?.title?.toUpperCase() ?? '',
@@ -193,6 +192,10 @@ const useChangeMember = () => {
     permissionForm.setValue('permission', '');
   };
 
+  const clearTabs = () => {
+    tabs.set(MemberTabState.FORM);
+  };
+
   const formState = {
     // [MemberTabState.ADDRESS]: {
     //   isValid: memberForm.formState.isValid,
@@ -243,7 +246,7 @@ const useChangeMember = () => {
       primaryAction: 'Update member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handlePermissions,
-      handleSecondaryAction: clearSteps,
+      handleSecondaryAction: clearTabs,
       isLoading: false,
       title: 'Update member',
       description: undefined,
@@ -258,7 +261,7 @@ const useChangeMember = () => {
       primaryAction: 'Remove member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleDeleteMember,
-      handleSecondaryAction: clearSteps,
+      handleSecondaryAction: clearTabs,
       isLoading: false,
       title: 'Remove member',
       description:
