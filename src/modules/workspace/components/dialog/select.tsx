@@ -52,10 +52,10 @@ const SelectWorkspaceDialog = ({
               position="absolute"
               overflow="visible"
               justifyContent="space-evenly"
-              top={-10}
+              top={[-8, -10]}
               spacing={0}
             >
-              <Text fontSize="2xl" fontWeight="bold" color="white">
+              <Text fontSize={['lg', '2xl']} fontWeight="bold" color="white">
                 Select your workspace
               </Text>
               <Text fontSize="md" variant="description" fontWeight="normal">
