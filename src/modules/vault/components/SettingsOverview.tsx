@@ -209,7 +209,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         You dont have permission to send transactions.
                       </Text>
                     ) : (
-                      <Text variant="description" fontSize="xs">
+                      <Text hidden={true} variant="description" fontSize="xs">
                         Send single or batch <br /> payments with multi assets.
                       </Text>
                     )}

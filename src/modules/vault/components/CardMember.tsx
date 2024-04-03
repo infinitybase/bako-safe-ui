@@ -45,7 +45,13 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   const hasNickname = member?.nickname;
 
   return (
-    <SignerCard w="full" maxW={360} minH={28} borderColor="grey.600">
+    <SignerCard
+      w="full"
+      h="full"
+      minH={[28, 'unset']}
+      maxW={['unset', 360]}
+      borderColor="grey.600"
+    >
       <Flex
         flexDirection={{ base: 'column', sm: 'row' }}
         gap={{ base: 2, sm: 4 }}

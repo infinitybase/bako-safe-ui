@@ -37,6 +37,8 @@ const AccordionEditAction = (props: AccordionActionProp) => {
 };
 
 const AccordionConfirmAction = (props: AccordionActionProp) => {
+  const { isOpen } = useAccordionItemState();
+
   return (
     <Button
       maxW="fit-content"
@@ -47,6 +49,7 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
       _hover={{
         opacity: !props.isDisabled && 0.8,
       }}
+      hidden={!isOpen}
       {...props}
     >
       Confirm

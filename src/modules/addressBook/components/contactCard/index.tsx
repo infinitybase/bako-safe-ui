@@ -42,7 +42,7 @@ const ContactCard = ({
 
   return (
     <Card display="flex" w="100%" bg="grey.800" zIndex={100} {...rest}>
-      <VStack alignItems="flex-start">
+      <VStack flex={1} alignItems="flex-start">
         <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
             <Avatar variant="roundedSquare" src={avatar} key={address} />

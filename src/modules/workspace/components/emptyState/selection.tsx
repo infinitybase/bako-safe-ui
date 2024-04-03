@@ -1,8 +1,11 @@
 import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
 
 import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
+import { useScreenSize } from '@/modules/core';
 
 export const SelectionEmptyState = () => {
+  const { isMobile } = useScreenSize();
+
   return (
     <VStack spacing={4}>
       <Box mb={4}>
@@ -10,7 +13,7 @@ export const SelectionEmptyState = () => {
       </Box>
 
       <Box mb={4}>
-        <Heading color="white" fontSize="3xl">
+        <Heading color="white" fontSize="3xl" textAlign="center">
           No workspace found
         </Heading>
       </Box>
@@ -27,7 +30,15 @@ export const SelectionEmptyState = () => {
         </Text>
       </Box>
 
-      <Divider borderWidth={1.5} borderColor="grey.600" my={1} />
+      <Divider
+        position="absolute"
+        left={0}
+        bottom={0}
+        borderWidth={1}
+        borderColor="grey.600"
+        my={1}
+        hidden={isMobile}
+      />
     </VStack>
   );
 };

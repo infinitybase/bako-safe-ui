@@ -221,7 +221,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 }
                 resume={
                   !hasEmptyField && (
-                    <Text fontSize="sm" color="grey.500">
+                    <Text fontSize="sm" color="grey.500" mt={2}>
                       <b>
                         {transaction.amount} {assetSlug}
                       </b>{' '}
