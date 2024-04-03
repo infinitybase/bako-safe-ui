@@ -70,7 +70,7 @@ const SelectWorkspaceDialog = ({
             minH={300}
             maxH={380}
             overflowY="scroll"
-            marginTop={16}
+            marginTop={listIsEmpty ? 4 : 16}
             py={4}
             pr={4}
             borderColor="grey.100"
@@ -105,13 +105,12 @@ const SelectWorkspaceDialog = ({
           </VStack>
         </VStack>
       </Dialog.Body>
-      <DialogActions mt="auto" maxW={480}>
-        <HStack w={!listIsEmpty ? 'full' : 'fit-content'} spacing={4} h={12}>
+      <DialogActions mt="auto" maxW={480} hideDivider={listIsEmpty}>
+        <HStack w="full" spacing={4} h={12} mt={listIsEmpty ? 9 : 'unset'}>
           {listIsEmpty && (
             <Dialog.SecondaryAction
               h="full"
               size="lg"
-              w="40%"
               bgColor="transparent"
               outlineColor="white"
               outline="1px solid"
