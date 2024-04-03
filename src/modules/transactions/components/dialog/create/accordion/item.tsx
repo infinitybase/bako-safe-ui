@@ -25,15 +25,10 @@ const AccordionItem = ({
               <Heading fontSize="lg" fontWeight="extrabold" color="grey.200">
                 {title}
               </Heading>
+              {!isExpanded && resume}
             </Box>
             {actions}
           </HStack>
-          {
-            !isExpanded && resume
-            // <Text fontSize="sm" color="grey.500">
-            //   0.03898 ETH to 827383764...0909
-            // </Text>
-          }
         </VStack>
       </Box>
       <AccordionPanel px={5}>{children}</AccordionPanel>
