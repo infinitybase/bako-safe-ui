@@ -27,7 +27,7 @@ const TemplatePage = (
         description="Define the name and description of this template. These details will be visible only to you."
       />
 
-      <Dialog.Body maxW={420}>
+      <Dialog.Body display="flex" flex={1} maxW={420}>
         <CreateTemplateForm />
       </Dialog.Body>
     </Dialog.Modal>
