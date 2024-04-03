@@ -179,23 +179,27 @@ const CardDetails = (props: CardDetailsProps) => {
                   </HStack>
 
                   {!isSingleWorkspace && (
-                    <Text
+                    <HStack
+                      w="full"
                       alignItems="center"
-                      textAlign="left"
-                      variant="description"
-                      textOverflow="ellipsis"
-                      noOfLines={2}
-                      isTruncated
+                      justifyContent="flex-start"
+                      gap={2}
                       mb={2}
-                      fontSize={{ base: 'small', sm: 'sm' }}
                     >
                       <HandbagIcon
                         w={{ base: 3, sm: 4 }}
                         h={{ base: 3, sm: 4 }}
-                        mr={2}
                       />
-                      {currentWorkspace.workspace?.name}
-                    </Text>
+                      <Text
+                        variant="description"
+                        textOverflow="ellipsis"
+                        noOfLines={2}
+                        isTruncated
+                        fontSize={{ base: 'small', sm: 'sm' }}
+                      >
+                        {currentWorkspace.workspace?.name}
+                      </Text>
+                    </HStack>
                   )}
 
                   <Text
