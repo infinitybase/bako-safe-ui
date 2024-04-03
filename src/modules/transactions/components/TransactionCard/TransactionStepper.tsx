@@ -135,7 +135,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 ml={2}
                 flexDir="column"
                 justifyContent="center"
-                borderBottom="1px solid grey"
+                borderBottom={steps?.length > 1 ? '1px solid grey' : 'unset'}
               >
                 <Box py={4}>
                   <StepTitle
