@@ -132,7 +132,7 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton display="flex" isLoaded={!workspaceHomeRequest.isLoading}>
         <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}

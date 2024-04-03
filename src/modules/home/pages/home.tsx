@@ -83,7 +83,7 @@ const HomePage = () => {
           </Button>
         </Box>
       </HStack>
-      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+      <CustomSkeleton display="flex" isLoaded={!homeRequest.isLoading}>
         <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}
