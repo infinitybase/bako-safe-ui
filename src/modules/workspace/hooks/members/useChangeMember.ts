@@ -285,7 +285,7 @@ const useChangeMember = () => {
     dialog: {
       title: isEditMember ? 'Edit member' : 'Add member',
       description: isEditMember
-        ? 'You are editing the memberPermission for this member:'
+        ? 'You are editing the role for this member:'
         : 'Add members, manage roles, remove or adjust permissions as needed',
     },
     form: {

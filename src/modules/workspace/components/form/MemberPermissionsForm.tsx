@@ -47,7 +47,7 @@ export const MemberPermissionForm = ({
             {formState.title}
           </Heading>
         }
-        description="Select the role for this user"
+        description="Select the new role for the member."
         mb={[8, 4]}
       />
       <Controller
