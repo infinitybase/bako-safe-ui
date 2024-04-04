@@ -40,7 +40,7 @@ const TransactionsVaultPage = () => {
     defaultIndex,
   } = useTransactionList();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isMobile } = useScreenSize();
   const menuDrawer = useDisclosure();
 
   return (
@@ -48,7 +48,7 @@ const TransactionsVaultPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <Box mb={10}>
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">

@@ -248,7 +248,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           display="flex"
           flexDirection={['row', 'column']}
           maxW="full"
-          minW={200}
+          minW={[200, 486]}
           flexWrap="wrap"
         >
           <Box mb={{ base: 2, sm: 4 }}>

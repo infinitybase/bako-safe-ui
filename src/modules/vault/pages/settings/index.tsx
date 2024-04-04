@@ -27,7 +27,7 @@ const VaultSettingsPage = () => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
 
@@ -36,7 +36,7 @@ const VaultSettingsPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">

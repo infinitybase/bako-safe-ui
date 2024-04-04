@@ -61,7 +61,7 @@ const VaultDetailsPage = () => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
@@ -74,7 +74,7 @@ const VaultDetailsPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={9} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -179,7 +179,7 @@ const VaultDetailsPage = () => {
       >
         <CardDetails vault={vault} store={store} />
 
-        {!isMobile && <SignersDetails vault={vault} />}
+        {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>
 
       <HStack spacing={4} mb={3}>
@@ -223,7 +223,7 @@ const VaultDetailsPage = () => {
                   account={account}
                   isSigner={isSigner}
                 >
-                  {!isMobile && (
+                  {!vaultRequiredSizeToColumnLayout && (
                     <TransactionCard.CreationDate>
                       {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
                     </TransactionCard.CreationDate>
@@ -247,7 +247,7 @@ const VaultDetailsPage = () => {
                       ...transaction,
                       account,
                     })}
-                    showDescription={!isMobile}
+                    showDescription={!vaultRequiredSizeToColumnLayout}
                   />
                   <TransactionCard.Actions
                     isSigner={isSigner}
@@ -312,7 +312,7 @@ const VaultDetailsPage = () => {
         )
       )}
 
-      {isMobile && (
+      {vaultRequiredSizeToColumnLayout && (
         <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>
