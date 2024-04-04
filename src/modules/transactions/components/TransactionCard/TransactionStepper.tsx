@@ -135,7 +135,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 ml={2}
                 flexDir="column"
                 justifyContent="center"
-                borderBottom="1px solid grey"
+                borderBottom={steps?.length > 1 ? '1px solid grey' : 'unset'}
               >
                 <Box py={4}>
                   <StepTitle
@@ -145,7 +145,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       gap: '4px',
                     }}
                   >
-                    {nickname && <Text>{nickname}</Text>}
+                    {nickname && step.owner.address !== account && (
+                      <Text>{nickname}</Text>
+                    )}
                     <Text color={failed ? 'error.500' : 'white'}>
                       {TransactionTypeFormatter(step, account)}
                     </Text>

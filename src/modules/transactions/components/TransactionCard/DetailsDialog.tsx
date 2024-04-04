@@ -32,7 +32,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal size="full" onClose={onClose} isOpen={isOpen}>
+    <Dialog.Modal size={['full', 'xl']} onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
         position="relative"
         mb={0}

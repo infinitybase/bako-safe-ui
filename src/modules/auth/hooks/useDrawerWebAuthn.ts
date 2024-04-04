@@ -12,6 +12,7 @@ import {
 import { useAuth } from './useAuth';
 import { useQueryParams } from './usePopup';
 import { redirectPathBuilder } from './useSignIn';
+import { useWebAuthnLastLoginId } from './useWebAuthnLastLoginId';
 
 const createAccount = async (name: string) => {
   return await UserService.createWebAuthnAccount(name);
@@ -25,6 +26,7 @@ export const useDrawerWebAuth = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const { warningToast } = useContactToast();
+  const { setLastLoginId } = useWebAuthnLastLoginId();
 
   const { location, origin } = useQueryParams();
 
@@ -54,6 +56,7 @@ export const useDrawerWebAuth = () => {
         permissions: workspace.permissions,
         webAuthn,
       });
+      setLastLoginId(webAuthn!.id);
       navigate(redirectPathBuilder(!!origin, location, address));
     },
     onError: () => {

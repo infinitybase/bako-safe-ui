@@ -136,14 +136,13 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
           </HStack>
         </Flex>
 
-        <DrawerHeader mt="-43px" mb={7}>
-          <VStack alignItems="flex-start" spacing={5}>
+        <DrawerHeader mt="-43px" mb={3}>
+          <VStack alignItems="flex-start" spacing={2}>
             <Heading fontSize={{ base: 'lg', sm: 'xl' }} fontWeight="semibold">
               Connect your Wallet
             </Heading>
-            <Text color="grey.100" fontSize="small" fontWeight="light">
-              Personalize your preferences: set your name, email, and email
-              notification preferences.
+            <Text color="grey.100" fontSize="small" fontWeight="normal">
+              Select your preferred access mode
             </Text>
           </VStack>
         </DrawerHeader>

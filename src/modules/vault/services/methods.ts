@@ -74,6 +74,10 @@ export class VaultService {
     );
     return data;
   }
+  static async getByName(name: string) {
+    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+    return data;
+  }
 
   static async findPredicates(address: string) {
     const { data } = await api.get<GetAllPredicateResponse>(`/predicate`, {

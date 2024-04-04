@@ -28,6 +28,7 @@ const useTransactionListPaginationRequest = (
       current,
       params.status as StatusFilter,
       params.predicateId?.[0],
+      params.id,
     ),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
@@ -36,6 +37,7 @@ const useTransactionListPaginationRequest = (
         page: pageParam || 0,
         orderBy: 'createdAt',
         sort: SortOption.DESC,
+        id: params.id,
       }),
     {
       onSuccess: () => invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]),
@@ -48,6 +50,7 @@ const useTransactionListPaginationRequest = (
 
   return {
     ...query,
+    transactionsPages: data,
     transactions: data?.pages.map((page) => page.data).flat() ?? [],
   };
 };

@@ -20,6 +20,7 @@ import { Dialog, RemoveIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog } from '@/modules/addressBook/components';
 import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
+import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 
@@ -36,6 +37,7 @@ const VaultAddressesStep = ({
   templates,
   setTemplate,
 }: VaultAddressesStepProps) => {
+  const { isSingleWorkspace } = useAuth();
   const {
     handleOpenDialog,
     paginatedContacts,
@@ -44,8 +46,7 @@ const VaultAddressesStep = ({
     form: contactForm,
     contactDialog,
     inView,
-    canAddMember,
-  } = useAddressBook();
+  } = useAddressBook(!isSingleWorkspace);
 
   const minSigners = form.formState.errors.minSigners?.message;
 
@@ -231,7 +232,7 @@ const VaultAddressesStep = ({
                     opacity: 0.8,
                   }}
                 >
-                  {Array(10)
+                  {Array(addresses.fields.length)
                     .fill('')
                     .map((_, index) => (
                       <option key={index + 1} value={index + 1}>

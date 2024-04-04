@@ -18,6 +18,7 @@ const CreateContactDialog = ({
 }: CreateContactDialogProps) => {
   return (
     <Dialog.Modal
+      size={['full', 'lg']}
       onClose={dialog.onClose}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
@@ -36,7 +37,7 @@ const CreateContactDialog = ({
         <CreateContactForm form={form} />
       </Dialog.Body>
 
-      <Dialog.Actions maxW={420}>
+      <Dialog.Actions mt="auto" maxW={420}>
         <Dialog.SecondaryAction onClick={dialog.onClose}>
           Cancel
         </Dialog.SecondaryAction>

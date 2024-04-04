@@ -197,9 +197,9 @@ const CreateMemberPage = () => {
         title={dialog.title}
         position="relative"
         top={{ base: 0, sm: -8 }}
-        mt={{ base: 8, sm: 0 }}
-        h={8}
-        mb={{ base: 8, sm: 4 }}
+        mt={0}
+        h="auto"
+        mb={0}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"
@@ -214,7 +214,7 @@ const CreateMemberPage = () => {
 
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w="full" mt={{ base: 8 }} mb={8}>
+          <Box maxW={480} w="full" mt={[2, 0]} mb={8}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />

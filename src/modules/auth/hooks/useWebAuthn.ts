@@ -24,6 +24,9 @@ const useWebAuthn = () => {
   const [page, setPage] = useState(WebAuthnState.LOGIN);
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
+  const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
+  //button sign in disabled, this is used because handleLogin proccess annoter info before mutation to use isLoading
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -36,6 +39,8 @@ const useWebAuthn = () => {
   const accountsRequest = useGetAccountsByHardwareId();
 
   const nicknames = useCheckNickname(searchRequest);
+
+  const currentUsername = loginForm.watch('name');
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -51,17 +56,28 @@ const useWebAuthn = () => {
   };
 
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
+    setBtnDisabled(true);
     const acc = accountsRequest?.data?.find(
       (user) => user.webauthn.id === name,
     );
 
     if (acc) {
       const { code } = await UserService.generateSignInCode(acc.address);
-      await signAccountMutate.mutateAsync({
-        id: acc.webauthn.id,
-        challenge: code,
-        publicKey: acc.webauthn.publicKey,
-      });
+      await signAccountMutate.mutateAsync(
+        {
+          id: acc.webauthn.id,
+          challenge: code,
+          publicKey: acc.webauthn.publicKey,
+        },
+        {
+          onError: () => {
+            setBtnDisabled(false);
+          },
+          onSuccess: () => {
+            setBtnDisabled(false);
+          },
+        },
+      );
     }
   });
 
@@ -109,6 +125,20 @@ const useWebAuthn = () => {
     setPage(page);
   };
 
+  useEffect(() => {
+    if (
+      accountsRequest.data &&
+      accountsRequest?.data?.length > 0 &&
+      currentUsername?.length > 0
+    ) {
+      const defaultWebAuthnId = accountsRequest.data.find(
+        (user) => user.webauthn.id === currentUsername,
+      );
+
+      defaultWebAuthnId && setIsValidCurrentUsername(true);
+    }
+  }, [accountsRequest.data, currentUsername]);
+
   const formState = {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
@@ -131,7 +161,10 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
-      isDisabled: loginForm.watch('name')?.length === 0 ?? false,
+      isDisabled:
+        (currentUsername?.length === 0 ?? false) ||
+        !isValidCurrentUsername ||
+        btnDisabled,
       title: 'Login with WebAuthn',
       description: 'Select your username to login',
     },

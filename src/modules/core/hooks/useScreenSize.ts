@@ -1,7 +1,7 @@
 import { useMediaQuery } from '@chakra-ui/react';
 
 const useScreenSize = () => {
-  const [isMobile] = useMediaQuery('(max-width: 30em)');
+  const [isMobile] = useMediaQuery('(max-width: 62em)');
 
   return {
     isMobile,

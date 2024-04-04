@@ -45,7 +45,13 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   const hasNickname = member?.nickname;
 
   return (
-    <SignerCard w="full" maxW={360} borderColor="grey.600">
+    <SignerCard
+      w="full"
+      h="full"
+      minH={[28, 'unset']}
+      maxW={['unset', 360]}
+      borderColor="grey.600"
+    >
       <Flex
         flexDirection={{ base: 'column', sm: 'row' }}
         gap={{ base: 2, sm: 4 }}
@@ -79,7 +85,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
           <VStack align="flex-start" spacing={0} justifyContent="center">
             {hasNickname && (
               <Text
-                fontSize="lg"
+                fontSize={['md', 'lg']}
                 color="grey.200"
                 fontWeight="semibold"
                 maxW={isOwner ? 100 : 150}

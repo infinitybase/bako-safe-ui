@@ -164,6 +164,7 @@ export class UserService {
 
 export const localStorageKeys = {
   HARDWARE_ID: 'bsafe/hardwareId',
+  WEB_AUTHN_LAST_LOGIN_ID: 'bsafe/WebAuthnLastLoginId',
 };
 
 export const UserQueryKey = {
