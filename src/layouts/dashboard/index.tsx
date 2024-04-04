@@ -16,13 +16,15 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = (props: DashboardLayoutProps) => {
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   return (
     <DashboardLayout.Container>
       <DashboardLayout.Header />
       <Flex w="100%" flex={1}>
-        {props.hasSideBar && !isMobile && <DashboardLayout.Sidebar />}
+        {props.hasSideBar && !vaultRequiredSizeToColumnLayout && (
+          <DashboardLayout.Sidebar />
+        )}
         <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
       </Flex>
     </DashboardLayout.Container>
