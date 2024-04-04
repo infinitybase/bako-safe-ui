@@ -242,7 +242,7 @@ const UserTransactionsPage = () => {
           );
 
           return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
+            <Box w="full" key={transaction.id} ref={infinityTransactionsRef}>
               <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
                 {isMobile ? (
                   <TransactionCardMobile
