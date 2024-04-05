@@ -78,7 +78,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
   return (
     <Box display="flex" flexDirection="column" gap={8}>
       <Text color="grey.200" fontWeight="medium">
-        TransactionHistory
+        Transaction History
       </Text>
 
       <Stepper
@@ -108,6 +108,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 display: 'flex',
                 alignItems: 'flex-start',
                 justifyContent: 'center',
+                width: '100%',
               }}
             >
               <StepIndicator rounded={5}>
@@ -129,13 +130,12 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
               <Box
                 pos="relative"
                 top={-6}
-                maxH="fit-content"
-                w="220px"
                 display="flex"
                 ml={2}
                 flexDir="column"
                 justifyContent="center"
                 borderBottom={steps?.length > 1 ? '1px solid grey' : 'unset'}
+                w="100%"
               >
                 <Box py={4}>
                   <StepTitle

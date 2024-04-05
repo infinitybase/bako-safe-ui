@@ -71,7 +71,12 @@ const SettingsOverview = (props: CardDetailsProps) => {
           borderColor="dark.100"
         >
           <Stack direction={['column', 'row']}>
-            <VStack spacing={[6, 9]} w="full" pr={3}>
+            <VStack
+              spacing={[6, 9]}
+              w="full"
+              pr={3}
+              justifyContent="space-between"
+            >
               <Stack
                 direction={['column', 'row']}
                 alignItems={['flex-start', 'center']}
@@ -161,10 +166,16 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       minW={[125, 130]}
                       variant="primary"
                       onClick={() => openFaucet(vault.predicateAddress!)}
+                      position="relative"
                     >
                       Faucet
                     </Button>
-                    <Text variant="description" fontSize="xs">
+                    <Text
+                      variant="description"
+                      fontSize="xs"
+                      position="absolute"
+                      bottom={[-1, 2]}
+                    >
                       Use the faucet to add assets to the vault
                     </Text>
                   </VStack>

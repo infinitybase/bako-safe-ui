@@ -45,6 +45,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
+  isInTheVault?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -179,7 +180,7 @@ const AssetBoxInfo = ({
           h="full"
           w="full"
           minH={51}
-          maxW={600}
+          maxW={200}
           spacing={0}
           justifyContent="center"
           alignItems={{ base: 'center', sm: 'start' }}
@@ -214,7 +215,11 @@ const AssetBoxInfo = ({
   );
 };
 
-const Details = ({ transaction, status }: TransactionDetailsProps) => {
+const Details = ({
+  transaction,
+  status,
+  isInTheVault,
+}: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
 
   const fromConnector = !!transaction?.summary;
@@ -242,7 +247,8 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
         alignItems="center"
         justify="space-between"
         maxW="full"
-        w={['85%', '80%']}
+        columnGap={isInTheVault ? '3rem' : '12rem'}
+        w={['85%', '100%']}
       >
         <Box
           display="flex"
@@ -321,7 +327,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </>
           )}
 
-          <VStack maxW="full" alignItems="flex-start" flexWrap="wrap">
+          <VStack alignItems="flex-start" flexWrap="wrap" w="100%">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={index}
@@ -332,7 +338,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                   transactionID: transaction.id,
                   recipientNickname: asset?.recipientNickname,
                 }}
-                borderColor={index > 0 ? 'dark.100' : 'transparent'}
+                borderColor={index > 0 ? 'grey' : 'transparent'}
                 hasToken={hasToken}
               />
             ))}
@@ -351,7 +357,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             w="full"
             mt={10}
             hidden={transaction.status !== TransactionStatus.SUCCESS}
-            borderColor="dark.100"
+            borderColor="grey"
             borderTopWidth={1}
           >
             <HStack
@@ -359,6 +365,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
               px={{ base: 0, sm: 5 }}
               py={{ base: 3, sm: 5 }}
               gap={8}
+              justifyContent="space-between"
             >
               <Text color="grey.200">Gás Fee (ETH)</Text>
               <Text
@@ -372,7 +379,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
 
-        <Box alignSelf="flex-start">
+        <Box alignSelf="flex-start" w="100%">
           <TransactionStepper steps={transactionHistory!} />
         </Box>
       </Stack>

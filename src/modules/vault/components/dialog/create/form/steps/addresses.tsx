@@ -2,7 +2,6 @@ import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -201,9 +200,7 @@ const VaultAddressesStep = ({
           </VStack>
         </Dialog.Section>
 
-        <Divider borderColor="dark.100" my={9} />
-
-        <HStack position="relative">
+        <HStack position="relative" mt="12">
           <Dialog.Section
             w="full"
             maxW={350}
