@@ -232,7 +232,28 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List mt={1} w="full" spacing={[3, 5]}>
+      <TransactionCard.List
+        mt={1}
+        w="full"
+        spacing={[3, 5]}
+        maxH="77.5vh"
+        overflowY="scroll"
+        pr={4}
+        scrollBehavior="smooth"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.200',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
 

@@ -28,7 +28,7 @@ import {
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
 import { TypeUser } from '@/modules/auth/services';
-import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -67,7 +67,6 @@ const TopBarItem = chakra(SpacedBox, {
 const UserBox = () => {
   const { isMobile } = useScreenSize();
   const auth = useAuth();
-  const avatarImage = useLoadImage(auth.avatar);
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const { drawer } = useSidebar();
@@ -287,8 +286,6 @@ const WorkspaceBox = ({
 };
 
 const Header = () => {
-  const { isMobile } = useScreenSize();
-  // const navigate = useNavigate();
   const { drawer } = useSidebar();
   const createWorkspaceDialog = useDisclosure();
   const {
@@ -327,7 +324,8 @@ const Header = () => {
       px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
-      position={['fixed', 'relative']}
+      position="sticky"
+      top="0"
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
