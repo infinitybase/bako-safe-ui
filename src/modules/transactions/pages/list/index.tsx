@@ -155,7 +155,10 @@ const TransactionsVaultPage = () => {
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
-                    <TransactionCard.Details transaction={transaction} />
+                    <TransactionCard.Details
+                      transaction={transaction}
+                      isInTheVault
+                    />
                   }
                   transaction={transaction}
                   account={account}

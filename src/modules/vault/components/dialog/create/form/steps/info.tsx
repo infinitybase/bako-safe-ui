@@ -1,4 +1,3 @@
-import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   FormControl,
   FormHelperText,
@@ -24,7 +23,8 @@ export interface VaultInfoStepProps {
 }
 
 const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
-  const { search, searchHandler, setSearch, vaultNameIsAvailable } = vaultName;
+  const { search, searchHandler, vaultNameIsAvailable } = vaultName;
+
   return (
     <TabPanel p={0}>
       <VStack spacing={6}>
@@ -56,22 +56,11 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 {!!vaultNameIsAvailable && search.length > 0
                   ? 'Vault name already exists in this workspace'
                   : form.formState.errors.name?.message
-                  ? form.formState.errors.name?.message
-                  : search.length > 0
-                  ? 'This vault is available'
-                  : ''}
+                    ? form.formState.errors.name?.message
+                    : search.length > 0
+                      ? 'This vault is available'
+                      : ''}
               </FormHelperText>
-              <SmallCloseIcon
-                position="absolute"
-                top={3.5}
-                right={4}
-                w={5}
-                h={5}
-                _hover={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => setSearch('')}
-              />
             </FormControl>
           )}
         />
