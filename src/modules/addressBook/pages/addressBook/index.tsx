@@ -88,7 +88,13 @@ const AddressBookPage = () => {
       )}
 
       <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
-        <HStack w="full" h="10" justifyContent="space-between" my={2}>
+        <HStack
+          w="full"
+          h={['20', '10']}
+          justifyContent="space-between"
+          my={2}
+          flexDir={['column', 'row']}
+        >
           <HStack>
             <Button
               variant="primary"
