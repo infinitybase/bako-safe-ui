@@ -227,7 +227,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${hash}`,
+      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
       '_BLANK',
     );
   };
