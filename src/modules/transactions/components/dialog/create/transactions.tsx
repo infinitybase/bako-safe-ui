@@ -16,6 +16,7 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth';
 import {
   AddressUtils,
   AssetSelect,
@@ -46,6 +47,8 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+  const { isSingleWorkspace } = useAuth();
+
   const {
     createContactRequest,
     search,
@@ -55,7 +58,7 @@ const TransactionFormField = ({
     paginatedContacts,
     inView,
     canAddMember,
-  } = useAddressBook();
+  } = useAddressBook(!isSingleWorkspace);
 
   return (
     <>
