@@ -1,4 +1,4 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -8,20 +8,21 @@ import {
   FormLabel,
   Heading,
   HStack,
-  Link,
   Select,
   TabPanel,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Dialog, RemoveIcon } from '@/components';
-import { AutoComplete } from '@/components/autocomplete';
-import { CreateContactDialog } from '@/modules/addressBook/components';
+import { Autocomplete, Dialog, RemoveIcon } from '@/components';
+import {
+  AddToAddressBook,
+  CreateContactDialog,
+} from '@/modules/addressBook/components';
 import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
 import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 
 export interface VaultAddressesStepProps {
@@ -40,7 +41,9 @@ const VaultAddressesStep = ({
   const { isSingleWorkspace } = useAuth();
   const {
     handleOpenDialog,
+    getUniquePaginatedContacts,
     paginatedContacts,
+    listContactsRequest,
     createContactRequest,
     search,
     form: contactForm,
@@ -112,68 +115,79 @@ const VaultAddressesStep = ({
                 <Controller
                   key={id}
                   name={`addresses.${index}.value`}
+                  control={form.control}
                   render={({ field, fieldState }) => {
+                    const firstOptions = Array({
+                      label: field.value,
+                      value: field.value,
+                    });
+
+                    const options = getUniquePaginatedContacts(
+                      field.value,
+                      form.watch('addresses'),
+                      form.formState.errors.addresses,
+                    );
+
+                    const showAddToAddressBook =
+                      !first &&
+                      !fieldState.invalid &&
+                      AddressUtils.isValid(field.value) &&
+                      paginatedContacts.isSuccess &&
+                      listContactsRequest.data &&
+                      !listContactsRequest.data
+                        .map((o) => o.user.address)
+                        .includes(field.value);
+
                     return (
-                      <>
-                        <AutoComplete
-                          value={field.value}
-                          index={index}
+                      <FormControl isInvalid={fieldState.invalid}>
+                        <Autocomplete
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
-                          isInvalid={fieldState.invalid}
-                          isDisabled={first}
+                          value={field.value}
                           onInputChange={search.handler}
-                          onChange={(selected) => field.onChange(selected)}
-                          errorMessage={fieldState.error?.message}
+                          onChange={field.onChange}
+                          options={first ? firstOptions : options!}
                           isLoading={!paginatedContacts.isSuccess}
+                          disabled={first}
                           inView={inView}
-                          options={paginatedContacts.data!}
-                          rightAction={{
-                            ...(first
-                              ? {}
-                              : {
-                                  icon: RemoveIcon!,
-                                  handler: () => {
-                                    const minSigners =
-                                      form.getValues('minSigners');
-                                    const addressesLength =
-                                      addresses.fields.length - 1;
-                                    if (Number(minSigners) > addressesLength) {
-                                      form.setValue(
-                                        'minSigners',
-                                        String(addressesLength),
-                                      );
-                                    }
-                                    addresses.remove(index);
-                                  },
-                                }),
-                          }}
-                          bottomAction={
-                            first ? undefined : (
-                              <Box mt={2}>
-                                <Text color="grey.200" fontSize={12}>
-                                  Do you wanna{' '}
-                                  <Link
-                                    color="brand.500"
-                                    onClick={() =>
-                                      handleOpenDialog?.({
-                                        address: field.value,
-                                      })
-                                    }
-                                  >
-                                    add this
-                                  </Link>{' '}
-                                  address in your address book?
-                                </Text>
-                              </Box>
-                            )
+                          rightElement={
+                            <Icon
+                              as={RemoveIcon}
+                              fontSize="md"
+                              cursor="pointer"
+                              onClick={() => {
+                                const minSigners = form.getValues('minSigners');
+                                const addressesLength =
+                                  addresses.fields.length - 1;
+                                if (Number(minSigners) > addressesLength) {
+                                  form.setValue(
+                                    'minSigners',
+                                    String(addressesLength),
+                                  );
+                                }
+                                addresses.remove(index);
+                              }}
+                            />
                           }
                         />
-                      </>
+
+                        <FormHelperText color="error.500">
+                          {fieldState.error?.message}
+                        </FormHelperText>
+
+                        {showAddToAddressBook && (
+                          <AddToAddressBook
+                            onAdd={() =>
+                              handleOpenDialog?.({
+                                address: field.value,
+                              })
+                            }
+                          />
+                        )}
+                      </FormControl>
                     );
                   }}
-                  control={form.control}
                 />
               );
             })}
