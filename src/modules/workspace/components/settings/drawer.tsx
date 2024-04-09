@@ -105,7 +105,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
           </Box>
         </Box>
 
-        <HStack w="35%" spacing={2}>
+        <HStack w="32%" spacing={2} justifyContent="space-between">
           <Badge
             rounded="xl"
             fontSize="xs"
@@ -117,7 +117,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
           </Badge>
 
           {isEditable && (
-            <Box>
+            <Box w="20%">
               <EditIcon
                 _hover={{
                   cursor: 'pointer',

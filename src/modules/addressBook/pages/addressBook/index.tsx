@@ -88,13 +88,7 @@ const AddressBookPage = () => {
       )}
 
       <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
-        <HStack
-          w="full"
-          h={['20', '10']}
-          justifyContent="space-between"
-          my={2}
-          flexDir={['column', 'row']}
-        >
+        <HStack w="full" h={['20', '10']} justifyContent="space-between" my={2}>
           <HStack>
             <Button
               variant="primary"
@@ -219,7 +213,7 @@ const AddressBookPage = () => {
           </ActionCard.Container>
         </Stack>
 
-        <Box mt={4} mb={-2} alignSelf="flex-start">
+        <Box mt={4} mb={-8} alignSelf="flex-start">
           <Text
             variant="subtitle"
             fontWeight="semibold"

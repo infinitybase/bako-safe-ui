@@ -68,6 +68,7 @@ const UserTransactionsPage = () => {
           <Button
             variant="primary"
             fontWeight="semibold"
+            fontSize={15}
             leftIcon={
               <Box mr={-1}>
                 <IoChevronBack size={22} />

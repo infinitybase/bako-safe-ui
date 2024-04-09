@@ -41,7 +41,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         maxW={480}
         title="Transaction Details"
       />
-      <Dialog.Body>
+      <Dialog.Body mt={[60, 0]}>
         <VStack spacing={5}>
           <VStack w="full" spacing={3}>
             <HStack w="full">
