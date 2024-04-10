@@ -23,6 +23,8 @@ import { AddressUtils, ITemplatePayload } from '@/modules/core';
 import { useSteps } from '@/modules/template/hooks';
 
 const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
+  const [firstRender, setFirstRender] = useState<boolean>(false);
+
   const { addresses } = useSteps();
   const { account, isSingleWorkspace } = useAuth();
   const {
@@ -37,8 +39,6 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
     handleOpenDialog,
     getUniquePaginatedContacts,
   } = useAddressBook(!isSingleWorkspace);
-
-  const [firstRender, setFirstRender] = useState<boolean>(false);
 
   useEffect(() => setFirstRender(true), []);
 
@@ -133,11 +133,12 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                     </FormHelperText>
                     {showAddToAddressBook && (
                       <AddToAddressBook
-                        onAdd={() =>
+                        onAdd={() => {
                           handleOpenDialog?.({
                             address: field.value,
-                          })
-                        }
+                          });
+                          search.handler(field.value);
+                        }}
                       />
                     )}
                   </FormControl>

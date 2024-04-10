@@ -178,11 +178,12 @@ const VaultAddressesStep = ({
 
                         {showAddToAddressBook && (
                           <AddToAddressBook
-                            onAdd={() =>
+                            onAdd={() => {
                               handleOpenDialog?.({
                                 address: field.value,
-                              })
-                            }
+                              });
+                              search.handler(field.value);
+                            }}
                           />
                         )}
                       </FormControl>
