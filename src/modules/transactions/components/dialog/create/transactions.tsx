@@ -96,11 +96,10 @@ const TransactionFormField = ({
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}
                 </FormHelperText>
-                {showAddToAddressBook && (
-                  <AddToAddressBook
-                    onAdd={() => handleOpenDialog?.({ address: field.value })}
-                  />
-                )}
+                <AddToAddressBook
+                  visible={showAddToAddressBook}
+                  onAdd={() => handleOpenDialog?.({ address: field.value })}
+                />
               </FormControl>
             );
           }}

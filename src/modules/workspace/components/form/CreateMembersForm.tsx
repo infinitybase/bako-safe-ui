@@ -53,15 +53,14 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                 </FormHelperText>
               </FormControl>
 
-              {showAddToAddressBook && (
-                <AddToAddressBook
-                  onAdd={() =>
-                    addressBook.handleOpenDialog?.({
-                      address: form.getValues('address'),
-                    })
-                  }
-                />
-              )}
+              <AddToAddressBook
+                visible={showAddToAddressBook}
+                onAdd={() =>
+                  addressBook.handleOpenDialog?.({
+                    address: form.getValues('address'),
+                  })
+                }
+              />
             </>
           );
         }}

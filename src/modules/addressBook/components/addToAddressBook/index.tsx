@@ -1,10 +1,17 @@
 import { Box, Link, Text } from '@chakra-ui/react';
 
+import { useAddToAddressBook } from '../../hooks';
+
 interface AddToAddressBookProps {
+  visible?: boolean;
   onAdd: () => void;
 }
 
-const AddToAddressBook = ({ onAdd }: AddToAddressBookProps) => {
+const AddToAddressBook = ({ visible = true, onAdd }: AddToAddressBookProps) => {
+  const { visibleDelayed } = useAddToAddressBook(visible);
+
+  if (!visibleDelayed) return null;
+
   return (
     <Box mt={2}>
       <Text color="grey.200" fontSize={12}>

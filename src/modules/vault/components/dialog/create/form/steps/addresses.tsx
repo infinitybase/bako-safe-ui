@@ -176,16 +176,15 @@ const VaultAddressesStep = ({
                           {fieldState.error?.message}
                         </FormHelperText>
 
-                        {showAddToAddressBook && (
-                          <AddToAddressBook
-                            onAdd={() => {
-                              handleOpenDialog?.({
-                                address: field.value,
-                              });
-                              search.handler(field.value);
-                            }}
-                          />
-                        )}
+                        <AddToAddressBook
+                          visible={showAddToAddressBook}
+                          onAdd={() => {
+                            handleOpenDialog?.({
+                              address: field.value,
+                            });
+                            search.handler(field.value);
+                          }}
+                        />
                       </FormControl>
                     );
                   }}
