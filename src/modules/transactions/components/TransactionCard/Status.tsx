@@ -57,7 +57,7 @@ const Status = ({
         spacing={0}
         w="full"
         direction={['row', 'column']}
-        alignItems={{ base: 'flex-end', sm: 'center' }}
+        alignItems={{ base: 'flex-end', md: 'center' }}
         justifyContent="flex-end"
       >
         <Badge

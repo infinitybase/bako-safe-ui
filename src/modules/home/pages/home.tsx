@@ -84,7 +84,7 @@ const HomePage = () => {
         </Box>
       </HStack>
       <CustomSkeleton display="flex" isLoaded={!homeRequest.isLoading}>
-        <Stack w="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -150,15 +150,15 @@ const HomePage = () => {
           </Text>
         </Box>
       )}
-      {recentVaults?.length && !isMobile ? (
+      {recentVaults?.length && (
         <Grid
           w="full"
           maxW="full"
           gap={6}
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
-            lg: 'repeat(3, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
           }}
         >
@@ -208,55 +208,6 @@ const HomePage = () => {
             },
           )}
         </Grid>
-      ) : (
-        <Box w="full" maxW="full" gap={6}>
-          {recentVaults?.map(
-            ({ id, name, workspace, members, description }, index) => {
-              const lastCard = index === vaultsMax - 1;
-              const hasMore = extraCount > 0;
-
-              return (
-                <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
-                  <GridItem>
-                    {lastCard && hasMore ? (
-                      <ExtraVaultCard
-                        gap={6}
-                        extra={extraCount}
-                        onClick={() =>
-                          navigate(
-                            Pages.userVaults({
-                              workspaceId: single,
-                            }),
-                          )
-                        }
-                      />
-                    ) : (
-                      <VaultCard
-                        id={id}
-                        name={name}
-                        workspace={workspace}
-                        title={description}
-                        members={members!}
-                        onClick={async () => {
-                          selectWorkspace(workspace.id, {
-                            onSelect: async (_workspace) => {
-                              navigate(
-                                Pages.detailsVault({
-                                  workspaceId: _workspace.id,
-                                  vaultId: id,
-                                }),
-                              );
-                            },
-                          });
-                        }}
-                      />
-                    )}
-                  </GridItem>
-                </CustomSkeleton>
-              );
-            },
-          )}
-        </Box>
       )}
       {/* TRANSACTION LIST */}
       {transactions && transactions.length <= 0 ? (

@@ -71,24 +71,24 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card
-          p={[4, 8]}
+          p={{ base: 4, sm: 8 }}
           bg="dark.200"
           position="relative"
           borderColor="dark.100"
         >
-          <Stack direction={['column', 'row']}>
+          <Stack direction={{ base: 'column', sm: 'row' }}>
             <VStack
-              spacing={[6, 9]}
+              spacing={{ base: 6, sm: 9 }}
               w="full"
               pr={3}
               justifyContent="space-between"
             >
               <Stack
-                direction={['column', 'row']}
-                alignItems={['flex-start', 'center']}
-                spacing={[3, 6]}
+                direction={{ base: 'column', sm: 'row' }}
+                alignItems={{ base: 'flex-start', sm: 'center' }}
+                spacing={{ base: 3, sm: 6 }}
                 w="full"
-                maxW={['full', '100%']}
+                maxW={{ base: 'full', sm: '100%' }}
               >
                 <Center>
                   <Avatar
@@ -97,14 +97,14 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     bg="grey.900"
                     color="white"
                     size={'lg'}
-                    p={[10, 10]}
+                    p={{ base: 10, sm: 10 }}
                   />
                 </Center>
                 <Box maxW="59%">
                   <Heading
                     mb={1}
                     variant="title-xl"
-                    fontSize={['md', 'xl']}
+                    fontSize={{ base: 'md', sm: 'xl' }}
                     isTruncated
                     maxW={600}
                   >
@@ -117,12 +117,12 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <VStack w="full" maxW={['full', '100%']} spacing={5}>
-                <Box w={['full', '98%']} maxW="full">
+              <VStack w="full" maxW={{ base: 'full', sm: '100%' }} spacing={5}>
+                <Box w={{ base: 'full', sm: '98%' }} maxW="full">
                   <Stack
-                    justifyContent={['flex-start', 'space-between']}
-                    alignItems={['flex-start', 'center']}
-                    direction={['column', 'row']}
+                    justifyContent={{ base: 'flex-start', sm: 'space-between' }}
+                    alignItems={{ base: 'flex-start', sm: 'center' }}
+                    direction={{ base: 'column', sm: 'row' }}
                     mb={2}
                   >
                     <Text variant="description">
@@ -130,12 +130,18 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     </Text>
                     <HStack spacing={2}>
                       <HStack spacing={2}>
-                        <Heading variant="title-xl" fontSize={['md', 'lg']}>
+                        <Heading
+                          variant="title-xl"
+                          fontSize={{ base: 'md', sm: 'lg' }}
+                        >
                           {store.visebleBalance
                             ? biggerAsset?.amount ?? 0
                             : '*****'}
                         </Heading>
-                        <Text variant="description" fontSize={['sm', 'md']}>
+                        <Text
+                          variant="description"
+                          fontSize={{ base: 'sm', sm: 'md' }}
+                        >
                           {biggerAsset?.slug ?? 'ETH'}
                         </Text>
                       </HStack>
@@ -149,9 +155,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         }
                       >
                         {store.visebleBalance ? (
-                          <ViewIcon boxSize={[5, 6]} />
+                          <ViewIcon boxSize={{ base: 5, sm: 6 }} />
                         ) : (
-                          <ViewOffIcon boxSize={[5, 6]} />
+                          <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
                         )}
                       </Box>
                     </HStack>
@@ -159,15 +165,19 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
 
                 <Divider
-                  w={['full', '98%']}
+                  w={{ base: 'full', sm: '98%' }}
                   mt={[0, 0]}
                   borderColor="dark.100"
                 />
 
-                <HStack w={['full', '98%']} justifySelf="end" spacing={[8, 40]}>
+                <HStack
+                  w={{ base: 'full', sm: '98%' }}
+                  justifySelf="end"
+                  spacing={{ base: 8, sm: 40 }}
+                >
                   <VStack w="full" spacing={2} alignItems="flex-start">
                     <Button
-                      minW={isExtraSmall ? 110 : [125, 130]}
+                      minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                       variant="primary"
                       onClick={() => openFaucet(vault.predicateAddress!)}
                       position="relative"
@@ -178,7 +188,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                       variant="description"
                       fontSize="xs"
                       position={isExtraSmall ? 'unset' : 'absolute'}
-                      bottom={[-1, 2]}
+                      bottom={{ base: -1, sm: 2 }}
                     >
                       Use the faucet to add assets to the vault
                     </Text>
@@ -191,7 +201,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     alignSelf={isExtraSmall ? 'flex-start' : 'unset'}
                   >
                     <Button
-                      minW={isExtraSmall ? 110 : [125, 130]}
+                      minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                       variant="primary"
                       alignSelf="end"
                       isDisabled={
@@ -219,7 +229,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         mt={2}
                         color="error.500"
                         position={isExtraSmall ? 'unset' : 'absolute'}
-                        bottom={isExtraSmall ? -10 : [-5, -6]}
+                        bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                       >
                         This vault has pending transactions.
                       </Text>
@@ -242,18 +252,18 @@ const SettingsOverview = (props: CardDetailsProps) => {
             </VStack>
 
             <VStack
-              position={['absolute', 'relative']}
-              top={[4, 0]}
-              right={[4, 0]}
+              position={{ base: 'absolute', sm: 'relative' }}
+              top={{ base: 4, sm: 0 }}
+              right={{ base: 4, sm: 0 }}
               spacing={4}
-              align={['flex-end', 'center']}
+              align={{ base: 'flex-end', sm: 'center' }}
               justifyContent="flex-start"
             >
               <Box
                 p={3}
                 backgroundColor={'white'}
-                w={[32, 180]}
-                h={[32, 180]}
+                w={{ base: 32, sm: 180 }}
+                h={{ base: 32, sm: 180 }}
                 borderRadius={10}
               >
                 <QRCodeSVG
@@ -267,11 +277,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   }}
                 />
               </Box>
-
               <AddressCopy
                 w="full"
-                mb={[4, 0]}
-                maxW={['40', 180]}
+                mb={{ base: 4, sm: 0 }}
+                maxW={{ base: '40', sm: 180 }}
                 address={AddressUtils.format(vault.predicateAddress)!}
                 addressToCopy={vault.predicateAddress!}
               />

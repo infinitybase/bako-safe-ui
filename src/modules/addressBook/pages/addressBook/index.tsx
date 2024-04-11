@@ -174,7 +174,7 @@ const AddressBookPage = () => {
           )}
         </Box>
 
-        <Stack w="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -242,6 +242,7 @@ const AddressBookPage = () => {
           w="full"
           templateColumns={{
             base: 'repeat(1, 1fr)',
+            xs: 'repeat(2, 1fr)',
             md: 'repeat(3, 1fr)',
             xl: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
