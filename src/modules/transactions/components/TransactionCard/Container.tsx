@@ -84,7 +84,7 @@ const Container = ({
             onClick={detailsDialog.onOpen}
             w="full"
             _hover={{ bgColor: 'transparent' }}
-            px={[2, 4]}
+            px={{ base: 2, sm: 4 }}
             py={2}
           >
             <Grid

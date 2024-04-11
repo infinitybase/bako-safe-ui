@@ -169,7 +169,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
                 <Divider
                   w={{ base: 'full', sm: '98%' }}
-                  mt={[0, 0]}
+                  mt={{ base: 0, sm: 0 }}
                   borderColor="dark.100"
                 />
 

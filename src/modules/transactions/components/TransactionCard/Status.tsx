@@ -56,7 +56,7 @@ const Status = ({
         minW={100}
         spacing={0}
         w="full"
-        direction={['row', 'column']}
+        direction={{ base: 'row', sm: 'column' }}
         alignItems={{ base: 'flex-end', md: 'center' }}
         justifyContent="flex-end"
       >
@@ -76,7 +76,11 @@ const Status = ({
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
         {showDescription && (
-          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
+          <Text
+            variant="description"
+            fontSize={{ base: 'xs', sm: 'sm' }}
+            color="grey.500"
+          >
             Transfer status
           </Text>
         )}

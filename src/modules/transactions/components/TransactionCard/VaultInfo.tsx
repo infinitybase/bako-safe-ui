@@ -26,11 +26,15 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
       <VStack ml={1} alignItems="flex-start" spacing={0}>
         {!vault.workspace.single && (
           <HStack>
-            <Icon as={HandbagIcon} fontSize={['xs', 14]} color="grey.200" />
+            <Icon
+              as={HandbagIcon}
+              fontSize={{ base: 'xs', sm: 14 }}
+              color="grey.200"
+            />
             <Text
               maxW={40}
               color="grey.200"
-              fontSize={['xs', 'sm']}
+              fontSize={{ base: 'xs', sm: 'sm' }}
               isTruncated
             >
               {vault.workspace?.name}

@@ -60,11 +60,11 @@ const HomePage = () => {
       w="full"
       scrollMargin={20}
       spacing={6}
-      p={[1, 1]}
-      px={['auto', 8]}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
     >
       <HStack w="full" h="10" justifyContent="space-between">
-        <HStack visibility={['hidden', 'visible']}>
+        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
           <Text color="grey.400" fontWeight="semibold">
             Home
@@ -217,7 +217,7 @@ const HomePage = () => {
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize={['md', 'xl']}
+                fontSize={{ base: 'md', sm: 'xl' }}
                 color="grey.200"
               >
                 Transactions
@@ -240,7 +240,7 @@ const HomePage = () => {
             <Text
               variant="subtitle"
               fontWeight="semibold"
-              fontSize={['sm', 'xl']}
+              fontSize={{ base: 'sm', sm: 'xl' }}
             >
               Transactions
             </Text>
@@ -254,7 +254,7 @@ const HomePage = () => {
               textDecoration="none"
               alignItems="center"
               justifyContent="center"
-              display={['none', 'flex']}
+              display={{ base: 'none', sm: 'flex' }}
               backgroundColor="transparent"
               _hover={{
                 backgroundColor: 'transparent',

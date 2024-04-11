@@ -89,10 +89,15 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
+      <VStack
+        w="full"
+        spacing={6}
+        p={{ base: 1, sm: 1 }}
+        px={{ base: 'auto', sm: 8 }}
+      >
         <Box
           w="full"
-          h={['20', '10']}
+          h={{ base: '20', sm: '10' }}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
@@ -120,7 +125,7 @@ const AddressBookPage = () => {
               Back home
             </Button>
 
-            <Breadcrumb display={['none', 'initial']} ml={8}>
+            <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
               <BreadcrumbItem>
                 <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 <BreadcrumbLink

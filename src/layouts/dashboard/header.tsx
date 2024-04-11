@@ -109,7 +109,7 @@ const UserBox = () => {
               />
             </Box>
 
-            <Box display={['none', 'block']} mr={9}>
+            <Box display={{ base: 'none', sm: 'block' }} mr={9}>
               <Text fontWeight="semibold" color="grey.200">
                 {AddressUtils.format(auth.account)}
               </Text>
@@ -352,7 +352,7 @@ const Header = () => {
         pl={{ base: 1, sm: 6 }}
         mr={{ base: -8, sm: 0 }}
       >
-        <Image width={[90, 140]} src={logo} alt="" />
+        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" />
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
@@ -372,7 +372,7 @@ const Header = () => {
         </TopBarItem>
 
         <TopBarItem
-          display={['none', 'flex']}
+          display={{ base: 'none', sm: 'flex' }}
           cursor="pointer"
           onClick={drawer.onOpen}
           width={78}

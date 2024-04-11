@@ -48,15 +48,20 @@ const UserVaultsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   return (
-    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
+    <VStack
+      w="full"
+      spacing={6}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
+    >
       <HStack
         h="10"
         w="full"
-        justifyContent={['flex-end', 'space-between']}
+        justifyContent={{ base: 'flex-end', sm: 'space-between' }}
         my={2}
         maxW="full"
       >
-        <HStack visibility={['hidden', 'visible']}>
+        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Button
             variant="primary"
             fontWeight="semibold"
@@ -229,7 +234,7 @@ const UserVaultsPage = () => {
         >
           {vaults?.map(({ id, name, workspace, members, description }) => {
             return (
-              <CustomSkeleton isLoaded={!loadingVaults} key={id}>
+              <CustomSkeleton isLoaded={!loadingVaults} key={id} maxH="180px">
                 <GridItem>
                   <VaultCard
                     id={id}

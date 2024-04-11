@@ -47,7 +47,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         title="Transaction Details"
       />
       <Dialog.Body mt={-4}>
-        <VStack spacing={{ base: 1, xs: 5 }}>
+        <VStack spacing={{ base: 3, xs: 5 }}>
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount

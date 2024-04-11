@@ -40,7 +40,7 @@ export const VaultCard = ({
       bg="grey.800"
       w="100%"
       maxW="full"
-      my={[6, 0]}
+      my={{ base: 6, sm: 0 }}
       cursor="pointer"
       _hover={{
         transform: 'scale(1.03)',

@@ -18,7 +18,7 @@ const CreateContactDialog = ({
 }: CreateContactDialogProps) => {
   return (
     <Dialog.Modal
-      size={['full', 'lg']}
+      size={{ base: 'full', sm: 'lg' }}
       onClose={dialog.onClose}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}

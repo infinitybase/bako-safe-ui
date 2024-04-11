@@ -22,7 +22,7 @@ const CreateTemplateForm = () => {
         </Box>
 
         <Dialog.Actions
-          mt={['auto', 0]}
+          mt={{ base: 'auto', sm: 0 }}
           maxW={420}
           hidden={steps[step].hiddeFooter}
         >

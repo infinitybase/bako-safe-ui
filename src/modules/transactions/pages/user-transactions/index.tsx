@@ -62,7 +62,12 @@ const UserTransactionsPage = () => {
   const { OWNER, MANAGER } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
+    <VStack
+      w="full"
+      spacing={6}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
+    >
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
@@ -241,7 +246,7 @@ const UserTransactionsPage = () => {
       <TransactionCard.List
         mt={1}
         w="full"
-        spacing={[3, 5]}
+        spacing={{ base: 3, sm: 5 }}
         maxH="74vh"
         overflowY="scroll"
         pr={4}

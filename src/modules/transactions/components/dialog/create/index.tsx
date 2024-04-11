@@ -27,8 +27,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       closeOnOverlayClick={false}
     >
       <Dialog.Header
-        position={['static', 'relative']}
-        mt={[8, 0]}
+        position={{ base: 'static', sm: 'relative' }}
+        mt={{ base: 8, sm: 0 }}
         mb={0}
         maxH={40}
         top={{ base: 0, sm: -8 }}
@@ -48,7 +48,13 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Flex wrap="wrap" justifyContent="end" w="full" maxW={480} my={[3, 6]}>
+      <Flex
+        wrap="wrap"
+        justifyContent="end"
+        w="full"
+        maxW={480}
+        my={{ base: 3, sm: 6 }}
+      >
         <Divider mb={2} w="full" />
         <Text
           visibility={
