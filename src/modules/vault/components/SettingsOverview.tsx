@@ -25,6 +25,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
+import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -108,7 +109,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     isTruncated
                     maxW={600}
                   >
-                    {vault?.name}
+                    {isExtraSmall
+                      ? limitCharacters(vault?.name ?? '', 10)
+                      : vault?.name}
                   </Heading>
 
                   <Box maxW={420}>

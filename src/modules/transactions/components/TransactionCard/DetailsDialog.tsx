@@ -33,17 +33,21 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal size={['full', 'xl']} onClose={onClose} isOpen={isOpen}>
+    <Dialog.Modal
+      size={{ base: 'full', sm: 'xl' }}
+      onClose={onClose}
+      isOpen={isOpen}
+    >
       <Dialog.Header
         position="relative"
         mb={0}
-        top={-5}
+        top={{ base: -5, sm: -7 }}
         w="full"
-        maxW={480}
+        maxW={{ base: 480, xs: 'unset' }}
         title="Transaction Details"
       />
-      <Dialog.Body mt={props.isInTheVaultPage ? 0 : 30}>
-        <VStack spacing={5}>
+      <Dialog.Body mt={-4}>
+        <VStack spacing={{ base: 1, xs: 5 }}>
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount

@@ -30,6 +30,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { limitCharacters } from '@/utils';
 
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
 import { TransactionStepper } from './TransactionStepper';
@@ -65,7 +66,7 @@ const AssetBoxInfo = ({
   const clipboard = useClipboard(
     isContract ? contractAddress : asset?.to ?? '',
   );
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -107,7 +108,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={[120, 140]}>
+            <Box mt={0.5} w={{ base: 120, sm: 140 }}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -205,9 +206,16 @@ const AssetBoxInfo = ({
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toAddress(),
-            )}
+            {isExtraSmall
+              ? limitCharacters(
+                  AddressUtils.format(
+                    Address.fromString(asset.to ?? '').toAddress(),
+                  ) ?? '',
+                  7,
+                )
+              : AddressUtils.format(
+                  Address.fromString(asset.to ?? '').toAddress(),
+                )}
           </Text>
         </VStack>
       )}
@@ -248,13 +256,13 @@ const Details = ({
         justify="space-between"
         maxW="full"
         columnGap={isInTheVaultPage ? '3rem' : '12rem'}
-        w={['85%', '100%']}
+        w={{ base: '85%', sm: '100%' }}
       >
         <Box
           display="flex"
-          flexDirection={['row', 'column']}
+          flexDirection={{ base: 'row', sm: 'column' }}
           maxW="full"
-          minW={[200, 486]}
+          minW={{ base: 200, sm: 486 }}
           flexWrap="wrap"
         >
           <Box mb={{ base: 2, sm: 4 }}>
