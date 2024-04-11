@@ -113,7 +113,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
 };
 
 const SignersDetails = ({ vault }: SignersDetailsProps) => {
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
 
@@ -138,7 +138,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
         </Badge>
       </HStack>
 
-      {isMobile ? (
+      {vaultRequiredSizeToColumnLayout ? (
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
           <SignersList vault={vault} />
         </Grid>

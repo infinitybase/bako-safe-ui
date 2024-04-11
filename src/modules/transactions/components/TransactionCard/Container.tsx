@@ -24,6 +24,7 @@ interface TransactionCardContainerProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  isInTheVaultPage?: boolean;
 }
 
 const Container = ({
@@ -33,6 +34,7 @@ const Container = ({
   transaction,
   account,
   isSigner,
+  isInTheVaultPage,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -41,14 +43,16 @@ const Container = ({
 
   const childrens = React.Children.toArray(children);
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, vaultRequiredSizeToColumnLayout } = useScreenSize();
   const detailsDialog = useDetailsDialog();
 
   const gridTemplateColumns = isMobile
     ? '1fr 1fr'
     : childrens.length === 7
-    ? '2fr 1fr 1fr 2fr 2fr 4fr'
-    : '1fr 1fr 2fr 2fr 4fr';
+      ? '2fr 1fr 1fr 2fr 220px 4fr'
+      : vaultRequiredSizeToColumnLayout && isInTheVaultPage
+        ? '1fr 1fr 2fr 2fr'
+        : '1fr 1fr 2fr 2fr 4fr';
 
   return (
     <>
@@ -60,6 +64,7 @@ const Container = ({
           account={account}
           status={status}
           isSigner={isSigner}
+          isInTheVaultPage={isInTheVaultPage}
         />
       )}
       <Card

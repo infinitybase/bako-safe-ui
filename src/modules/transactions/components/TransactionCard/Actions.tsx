@@ -28,6 +28,7 @@ interface ActionsMobileProps {
 interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
+  isInTheVaultPage?: boolean;
   isSigner: boolean;
 }
 
@@ -51,6 +52,7 @@ const Actions = ({
   transaction,
   status,
   isSigner,
+  isInTheVaultPage,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
@@ -68,7 +70,11 @@ const Actions = ({
   }
 
   return (
-    <HStack minW={140} justifySelf="end">
+    <HStack
+      minW={140}
+      justifySelf="end"
+      alignSelf={isInTheVaultPage ? undefined : 'start'}
+    >
       {isSigned && (
         <Badge h={6} variant="success">
           You signed

@@ -18,7 +18,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { useAuth } from '@/modules/auth';
-import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
+import {
+  AddressUtils,
+  Pages,
+  PermissionRoles,
+  useScreenSize,
+} from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -34,6 +39,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
+  const { isExtraSmall } = useScreenSize();
 
   const { hasPermission } = useWorkspace();
   const {
@@ -119,7 +125,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     direction={['column', 'row']}
                     mb={2}
                   >
-                    <Text variant="description">Vault balance</Text>
+                    <Text variant="description">
+                      Vault {isExtraSmall ? <Text>balance</Text> : 'balance'}
+                    </Text>
                     <HStack spacing={2}>
                       <HStack spacing={2}>
                         <Heading variant="title-xl" fontSize={['md', 'lg']}>
@@ -156,14 +164,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   borderColor="dark.100"
                 />
 
-                <HStack
-                  w={['full', '98%']}
-                  justifySelf="end"
-                  spacing={[16, 40]}
-                >
+                <HStack w={['full', '98%']} justifySelf="end" spacing={[8, 40]}>
                   <VStack w="full" spacing={2} alignItems="flex-start">
                     <Button
-                      minW={[125, 130]}
+                      minW={isExtraSmall ? 110 : [125, 130]}
                       variant="primary"
                       onClick={() => openFaucet(vault.predicateAddress!)}
                       position="relative"
@@ -173,17 +177,23 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     <Text
                       variant="description"
                       fontSize="xs"
-                      position="absolute"
+                      position={isExtraSmall ? 'unset' : 'absolute'}
                       bottom={[-1, 2]}
                     >
                       Use the faucet to add assets to the vault
                     </Text>
                   </VStack>
 
-                  <VStack w="full" alignItems="flex-end" spacing={0}>
+                  <VStack
+                    w="full"
+                    spacing={0}
+                    position="relative"
+                    alignSelf={isExtraSmall ? 'flex-start' : 'unset'}
+                  >
                     <Button
-                      minW={[125, 130]}
+                      minW={isExtraSmall ? 110 : [125, 130]}
                       variant="primary"
+                      alignSelf="end"
                       isDisabled={
                         !vault?.hasBalance ||
                         blockedTransfers ||
@@ -203,11 +213,13 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     {blockedTransfers ? (
                       <Text
                         variant="description"
-                        textAlign="right"
+                        textAlign={isExtraSmall ? 'left' : 'right'}
                         fontSize="xs"
                         w="full"
                         mt={2}
                         color="error.500"
+                        position={isExtraSmall ? 'unset' : 'absolute'}
+                        bottom={isExtraSmall ? -10 : [-5, -6]}
                       >
                         This vault has pending transactions.
                       </Text>

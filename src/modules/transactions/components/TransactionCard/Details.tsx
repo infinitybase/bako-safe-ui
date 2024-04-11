@@ -45,7 +45,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
-  isInTheVault?: boolean;
+  isInTheVaultPage?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -218,7 +218,7 @@ const AssetBoxInfo = ({
 const Details = ({
   transaction,
   status,
-  isInTheVault,
+  isInTheVaultPage,
 }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
 
@@ -247,7 +247,7 @@ const Details = ({
         alignItems="center"
         justify="space-between"
         maxW="full"
-        columnGap={isInTheVault ? '3rem' : '12rem'}
+        columnGap={isInTheVaultPage ? '3rem' : '12rem'}
         w={['85%', '100%']}
       >
         <Box

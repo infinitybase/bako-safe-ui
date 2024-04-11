@@ -57,7 +57,7 @@ const UserTransactionsPage = () => {
 
   const { goHome } = useHome();
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const { OWNER, MANAGER } = PermissionRoles;
 
@@ -197,7 +197,12 @@ const UserTransactionsPage = () => {
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
-        <HStack w="full">
+        <Box
+          w="full"
+          display="flex"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+        >
           <Heading variant="title-xl" color="grey.200">
             Transactions
           </Heading>
@@ -205,7 +210,7 @@ const UserTransactionsPage = () => {
             isLoading={pendingSignerTransactions.isLoading}
             quantity={pendingSignerTransactions.data?.ofUser ?? 0}
           />
-        </HStack>
+        </Box>
 
         {/* FILTER */}
         <Box w="full" mt={3}>
@@ -237,7 +242,7 @@ const UserTransactionsPage = () => {
         mt={1}
         w="full"
         spacing={[3, 5]}
-        maxH="77.5vh"
+        maxH="74vh"
         overflowY="scroll"
         pr={4}
         scrollBehavior="smooth"

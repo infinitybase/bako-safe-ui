@@ -54,7 +54,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
       <StepProgress value={props.tabs.tab} length={props.tabs.length} />
     </Box>
 
-    <Box mb={[2, 5]} maxW={480}>
+    <Box mb={[2, 5]} maxW={['full', 480]}>
       <Text color="white" fontSize={{ base: 'xs', sm: 'md' }} textAlign="start">
         Workspaces are shared spaces that allow multiple people to access the
         same vaults and address book. Within a workspace, you can assign members
@@ -148,7 +148,7 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         Cancel
       </Button>
       <Button
-        w="70%"
+        w="75%"
         color="grey.300"
         variant="primary"
         onClick={props.onConfirm}

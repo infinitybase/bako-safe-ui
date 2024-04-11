@@ -80,7 +80,7 @@ const WorkspacePage = () => {
     goWorkspace,
   } = useWorkspace();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const {
     workspaces: { current },
@@ -433,7 +433,7 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxW={['full', 500]} maxH={450} spacing={4}>
+        <VStack w="full" maxW={['full', 500]} maxH={450} spacing={5}>
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
@@ -462,7 +462,7 @@ const WorkspacePage = () => {
               <ActionCard.Icon icon={TransactionsIcon} />
               <Box>
                 <ActionCard.Title>Transactions</ActionCard.Title>
-                <ActionCard.Description>
+                <ActionCard.Description maxWidth={{}}>
                   Manage Transactions Across All Vaults in One Place.
                 </ActionCard.Description>
               </Box>
@@ -612,7 +612,13 @@ const WorkspacePage = () => {
       </CustomSkeleton>
 
       {hasVaults && (
-        <HStack w="full" mt={4} spacing={4}>
+        <Box
+          mt={4}
+          w="full"
+          display="flex"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+        >
           <Text
             color="grey.400"
             variant="subtitle"
@@ -644,7 +650,7 @@ const WorkspacePage = () => {
               </Link>
             </HStack>
           )}
-        </HStack>
+        </Box>
       )}
 
       {/* TRANSACTION LIST */}

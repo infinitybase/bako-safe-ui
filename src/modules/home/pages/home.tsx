@@ -52,7 +52,7 @@ const HomePage = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   return (
     <VStack
@@ -279,7 +279,13 @@ const HomePage = () => {
         </VStack>
       ) : (
         <Box w="full" mt={8}>
-          <HStack spacing={4}>
+          <Box
+            w="full"
+            display="flex"
+            flexDir={isExtraSmall ? 'column' : 'row'}
+            gap={isExtraSmall ? 2 : 4}
+            mb={isExtraSmall ? -4 : 0}
+          >
             <Text
               variant="subtitle"
               fontWeight="semibold"
@@ -313,7 +319,7 @@ const HomePage = () => {
             >
               View all
             </Button>
-          </HStack>
+          </Box>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {transactions?.map((transaction) => {

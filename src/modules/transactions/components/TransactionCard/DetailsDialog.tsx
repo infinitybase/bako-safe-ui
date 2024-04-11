@@ -15,6 +15,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
   account: string;
   status: TransactionState;
+  isInTheVaultPage?: boolean;
   isSigner: boolean;
 }
 
@@ -41,7 +42,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         maxW={480}
         title="Transaction Details"
       />
-      <Dialog.Body mt={[60, 0]}>
+      <Dialog.Body mt={props.isInTheVaultPage ? 0 : 30}>
         <VStack spacing={5}>
           <VStack w="full" spacing={3}>
             <HStack w="full">

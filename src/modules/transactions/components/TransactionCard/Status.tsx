@@ -66,8 +66,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-              ? 'success'
-              : 'warning'
+                ? 'success'
+                : 'warning'
           }
         >
           {isError && 'Error'}
