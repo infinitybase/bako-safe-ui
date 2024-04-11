@@ -221,6 +221,7 @@ const Details = ({
   isInTheVault,
 }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
+  const { isMobile } = useScreenSize();
 
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
@@ -379,7 +380,11 @@ const Details = ({
           </Box>
         </Box>
 
-        <Box alignSelf="flex-start" w="100%">
+        <Box
+          alignSelf="flex-start"
+          w={isMobile ? '100%' : undefined}
+          minW={[200, 486]}
+        >
           <TransactionStepper steps={transactionHistory!} />
         </Box>
       </Stack>

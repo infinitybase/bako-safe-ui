@@ -111,8 +111,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <VStack w="full" maxW={['full', '100%']} spacing={5}>
-                <Box w={['full', '98%']} maxW="full">
+              <VStack w="full" spacing={5}>
+                <Box w="full" maxW="full">
                   <Stack
                     justifyContent={['flex-start', 'space-between']}
                     alignItems={['flex-start', 'center']}
@@ -150,17 +150,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   </Stack>
                 </Box>
 
-                <Divider
-                  w={['full', '98%']}
-                  mt={[0, 0]}
-                  borderColor="dark.100"
-                />
+                <Divider w="full" mt={[0, 0]} borderColor="dark.100" />
 
-                <HStack
-                  w={['full', '98%']}
-                  justifySelf="end"
-                  spacing={[16, 40]}
-                >
+                <HStack w="full" justifySelf="end" spacing={[16, 40]}>
                   <VStack w="full" spacing={2} alignItems="flex-start">
                     <Button
                       minW={[125, 130]}
@@ -208,6 +200,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         w="full"
                         mt={2}
                         color="error.500"
+                        position="absolute"
+                        bottom={[-1, 2]}
                       >
                         This vault has pending transactions.
                       </Text>
@@ -216,6 +210,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         variant="description"
                         fontSize="xs"
                         color="error.500"
+                        position="absolute"
+                        bottom={[-1, 2]}
                       >
                         You dont have permission to send transactions.
                       </Text>
