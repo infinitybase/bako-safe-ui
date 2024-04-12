@@ -17,6 +17,7 @@ import {
   CreateContactDialog,
   useAddressBook,
 } from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth/hooks';
 import {
   AddressUtils,
   AssetSelect,
@@ -47,6 +48,7 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+  const { isSingleWorkspace } = useAuth();
   const {
     createContactRequest,
     search,
@@ -57,7 +59,7 @@ const TransactionFormField = ({
     listContactsRequest,
     inView,
     canAddMember,
-  } = useAddressBook(false);
+  } = useAddressBook(!isSingleWorkspace);
 
   return (
     <>

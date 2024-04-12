@@ -43,7 +43,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const listContactsRequest = useListContactsRequest({
     current: auth.workspaces.current,
-    includePersonal: auth.isSingleWorkspace,
+    includePersonal: !auth.isSingleWorkspace,
   });
 
   const resolveTransactionCosts = useMutation({
