@@ -120,8 +120,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <VStack w="full" maxW={{ base: 'full', sm: '100%' }} spacing={5}>
-                <Box w={{ base: 'full', sm: '98%' }} maxW="full">
+              <VStack w="full" spacing={5}>
+                <Box w="full" maxW="full">
                   <Stack
                     justifyContent={{ base: 'flex-start', sm: 'space-between' }}
                     alignItems={{ base: 'flex-start', sm: 'center' }}
@@ -168,13 +168,13 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
 
                 <Divider
-                  w={{ base: 'full', sm: '98%' }}
+                  w="full"
                   mt={{ base: 0, sm: 0 }}
                   borderColor="dark.100"
                 />
 
                 <HStack
-                  w={{ base: 'full', sm: '98%' }}
+                  w="full"
                   justifySelf="end"
                   spacing={{ base: 8, sm: 40 }}
                 >
