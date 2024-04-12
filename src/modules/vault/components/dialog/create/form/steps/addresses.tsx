@@ -19,7 +19,10 @@ import {
   AddToAddressBook,
   CreateContactDialog,
 } from '@/modules/addressBook/components';
-import { useAddressBook } from '@/modules/addressBook/hooks/useAddressBook';
+import {
+  useAddressBook,
+  useAddressBookAutocompleteOptions,
+} from '@/modules/addressBook/hooks';
 import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -41,15 +44,21 @@ const VaultAddressesStep = ({
   const { isSingleWorkspace } = useAuth();
   const {
     handleOpenDialog,
-    getUniquePaginatedContacts,
     paginatedContacts,
     listContactsRequest,
     createContactRequest,
-    search,
     form: contactForm,
     contactDialog,
     inView,
+    workspaceId,
   } = useAddressBook(!isSingleWorkspace);
+  const { options, handleFieldOptions } = useAddressBookAutocompleteOptions(
+    workspaceId!,
+    !isSingleWorkspace,
+    listContactsRequest.data,
+    form.watch('addresses'),
+    form.formState.errors.addresses,
+  );
 
   const minSigners = form.formState.errors.minSigners?.message;
 
@@ -117,15 +126,9 @@ const VaultAddressesStep = ({
                   name={`addresses.${index}.value`}
                   control={form.control}
                   render={({ field, fieldState }) => {
-                    const firstOptions = Array({
-                      label: field.value,
-                      value: field.value,
-                    });
-
-                    const options = getUniquePaginatedContacts(
+                    const appliedOptions = handleFieldOptions(
                       field.value,
-                      form.watch('addresses'),
-                      form.formState.errors.addresses,
+                      options[index],
                     );
 
                     const showAddToAddressBook =
@@ -145,10 +148,8 @@ const VaultAddressesStep = ({
                             first ? 'Your address' : `Address ${index + 1}`
                           }
                           value={field.value}
-                          onInputChange={search.handler}
                           onChange={field.onChange}
-                          options={first ? firstOptions : options!}
-                          isLoading={!paginatedContacts.isSuccess}
+                          options={appliedOptions}
                           disabled={first}
                           inView={inView}
                           rightElement={
@@ -182,7 +183,6 @@ const VaultAddressesStep = ({
                             handleOpenDialog?.({
                               address: field.value,
                             });
-                            search.handler(field.value);
                           }}
                         />
                       </FormControl>
