@@ -19,6 +19,16 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
+  if (
+    transactionFee &&
+    !form.getValues(`transactions.${accordion.index}.fee`)
+  ) {
+    form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
+    form.trigger(`transactions.${accordion.index}.amount`);
+  }
+
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: 'xl' }}
@@ -58,7 +68,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           }
           variant="description"
         >
-          Fee (network): {resolveTransactionCosts.data?.fee.format()}
+          Fee (network): {transactionFee}
         </Text>
       </Flex>
 
@@ -69,7 +79,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid}
+          isDisabled={!form.formState.isValid || !transactionFee}
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
           _hover={{
