@@ -2,11 +2,12 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { defaultConnectors } from '@fuel-wallet/sdk';
 import { FuelProvider } from '@fuels/react';
 import { BSafe } from 'bsafe';
+import { Provider as JotaiProvider } from 'jotai';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from '@/App';
-import { BsafeQueryClientProvider } from '@/config';
+import { BsafeQueryClientProvider, RPCProvider } from '@/config';
 import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
@@ -24,11 +25,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           connectors: defaultConnectors(),
         }}
       >
-        <BsafeQueryClientProvider>
-          <TransactionSendProvider>
-            <App />
-          </TransactionSendProvider>
-        </BsafeQueryClientProvider>
+        <JotaiProvider>
+          <RPCProvider>
+            <BsafeQueryClientProvider>
+              <TransactionSendProvider>
+                <App />
+              </TransactionSendProvider>
+            </BsafeQueryClientProvider>
+          </RPCProvider>
+        </JotaiProvider>
       </FuelProvider>
     </ChakraProvider>
   </React.StrictMode>,
