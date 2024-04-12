@@ -57,7 +57,12 @@ const useSteps = () => {
       },
     },
     {
-      component: <AddressStep form={{ handleSubmit, ...form }} />,
+      component: (
+        <AddressStep
+          form={{ handleSubmit, ...form }}
+          addresses={addressesFieldArray}
+        />
+      ),
       hiddeTitle: false,
       hiddeFooter: false,
       hiddeProgressBar: false,

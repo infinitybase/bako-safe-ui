@@ -11,36 +11,48 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
+import {
+  Controller,
+  UseFieldArrayReturn,
+  UseFormReturn,
+} from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, UserAddIcon } from '@/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
-import { useAddressBook } from '@/modules/addressBook/hooks';
+import {
+  AddressesFields,
+  useAddressBook,
+  useAddressBookAutocompleteOptions,
+} from '@/modules/addressBook/hooks';
 import { useAuth } from '@/modules/auth/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
-import { useSteps } from '@/modules/template/hooks';
 
-const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
-  const [firstRender, setFirstRender] = useState<boolean>(false);
+interface AddressStepProps {
+  form: UseFormReturn<ITemplatePayload>;
+  addresses: UseFieldArrayReturn<ITemplatePayload, 'addresses', 'id'>;
+}
 
-  const { addresses } = useSteps();
+const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const { account, isSingleWorkspace } = useAuth();
   const {
     createContactRequest,
-    search,
     form: contactForm,
     contactDialog,
     paginatedContacts,
     listContactsRequest,
     inView,
     canAddMember,
+    workspaceId,
     handleOpenDialog,
-    getUniquePaginatedContacts,
   } = useAddressBook(!isSingleWorkspace);
-
-  useEffect(() => setFirstRender(true), []);
+  const { options, handleFieldOptions } = useAddressBookAutocompleteOptions(
+    workspaceId!,
+    !isSingleWorkspace,
+    listContactsRequest.data,
+    form.watch('addresses') as AddressesFields,
+    form.formState.errors.addresses,
+  );
 
   return (
     <>
@@ -73,31 +85,16 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                 const first = index === 0;
                 const anotherAddress = field.value !== account;
 
-                let options =
-                  getUniquePaginatedContacts(
-                    field.value,
-                    form.watch('addresses') as { value: string }[],
-                    form.formState.errors.addresses,
-                  ) ?? [];
-
-                if (!fieldState.isDirty && field.value) {
-                  const optionsHasNoDefaultValue = options.every(
-                    (o) => o.value !== field.value,
-                  );
-
-                  if (optionsHasNoDefaultValue && !firstRender) {
-                    options = [
-                      ...options,
-                      { label: field.value, value: field.value },
-                    ];
-                  }
-                }
+                const appliedOptions = handleFieldOptions(
+                  field.value,
+                  options[index],
+                );
 
                 const showAddToAddressBook =
                   anotherAddress &&
                   canAddMember &&
-                  !fieldState.invalid &&
                   AddressUtils.isValid(field.value) &&
+                  !fieldState.invalid &&
                   paginatedContacts.isSuccess &&
                   listContactsRequest.data &&
                   !listContactsRequest.data
@@ -109,10 +106,8 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                     <Autocomplete
                       value={field.value}
                       label={`Address ${index + 1}`}
-                      onInputChange={search.handler}
                       onChange={field.onChange}
-                      isLoading={!paginatedContacts.isSuccess}
-                      options={options!}
+                      options={appliedOptions}
                       inView={inView}
                       rightElement={
                         <Icon
@@ -122,7 +117,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                           onClick={() => {
                             if (!first) {
                               addresses.remove(index);
-                              form.unregister(`addresses.${index}`);
+                              form.trigger();
                             }
                           }}
                         />
@@ -139,7 +134,6 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
                         handleOpenDialog?.({
                           address: field.value,
                         });
-                        search.handler(field.value);
                       }}
                     />
                   </FormControl>
@@ -156,6 +150,7 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
               addresses.append({
                 value: '',
               });
+              form.trigger();
             }}
             leftIcon={<UserAddIcon />}
           >
