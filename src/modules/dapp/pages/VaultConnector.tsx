@@ -17,8 +17,8 @@ import {
 import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
-import { PermissionRoles } from '@/modules';
 import { useAuth, useQueryParams } from '@/modules/auth';
+import { PermissionRoles } from '@/modules/core';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';

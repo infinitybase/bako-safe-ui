@@ -4,7 +4,7 @@ import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
-import { useAuth } from '@/modules';
+import { useAuth } from '@/modules/auth/hooks';
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
 import { VaultService } from '../../services';
