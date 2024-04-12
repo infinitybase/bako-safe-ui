@@ -2,7 +2,6 @@ import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form/dist/types';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -18,19 +17,6 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-
-type AddressesErrors = Merge<
-  FieldError,
-  (
-    | Merge<
-        FieldError,
-        FieldErrorsImpl<{
-          value: string;
-        }>
-      >
-    | undefined
-  )[]
->;
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -183,41 +169,6 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     ]);
   }, [hasPermission]);
 
-  const getValidSelectedAddresses = useCallback(
-    (addresses?: { value: string }[], errors?: AddressesErrors) => {
-      const validSelectedValues: string[] = [];
-
-      addresses?.forEach((field, index) => {
-        if (!errors?.[index]?.value) {
-          if (!validSelectedValues.includes(field.value)) {
-            validSelectedValues.push(field.value);
-          }
-        }
-      });
-
-      return validSelectedValues;
-    },
-    [],
-  );
-
-  const getUniquePaginatedContacts = useCallback(
-    (
-      fieldValue: string,
-      addresses?: { value: string }[],
-      errors?: AddressesErrors,
-    ) => {
-      const uniqueContacts = listContactsPaginatedRequest.data?.filter(
-        (contact) =>
-          !getValidSelectedAddresses(addresses, errors)
-            .filter((selectedAdress) => selectedAdress !== fieldValue)
-            .includes(contact.value),
-      );
-
-      return uniqueContacts;
-    },
-    [getValidSelectedAddresses, listContactsPaginatedRequest.data],
-  );
-
   return {
     inView,
     canAddMember,
@@ -232,14 +183,13 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     form: { ...form, handleCreateContact, handleUpdateContact },
     search: { value: search, handler: debouncedSearchHandler },
     paginatedContacts: listContactsPaginatedRequest,
+    workspaceId,
     //functions
     navigate,
     handleOpenDialog,
     contactByAddress,
     setContactToDelete,
     handleDeleteContact,
-    getValidSelectedAddresses,
-    getUniquePaginatedContacts,
   };
 };
 
