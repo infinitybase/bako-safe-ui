@@ -19,7 +19,7 @@ import {
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-interface AutocompleteOption {
+export interface AutocompleteOption {
   value: string;
   label: string;
 }

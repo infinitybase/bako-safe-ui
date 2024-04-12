@@ -57,7 +57,7 @@ export class AddressBookService {
     params: GetPaginatedContactsParams,
     contacts: WorkspaceContact[],
   ): WorkspaceContact[] {
-    const { q, includePersonal, perPage } = params;
+    const { q, includePersonal, excludeContacts, perPage } = params;
     const query = q?.toLowerCase() ?? '';
 
     return contacts
@@ -66,9 +66,10 @@ export class AddressBookService {
         const address = contact.user.address.toLowerCase();
 
         return (
-          nickname.includes(query) ||
-          address.includes(query) ||
-          (includePersonal && contact.nickname.toLowerCase().includes(query))
+          !excludeContacts?.includes(contact.user.address) &&
+          (nickname.includes(query) ||
+            address.includes(query) ||
+            (includePersonal && contact.nickname.toLowerCase().includes(query)))
         );
       })
       .slice(0, perPage);
