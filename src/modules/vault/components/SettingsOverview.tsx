@@ -241,6 +241,8 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         variant="description"
                         fontSize="xs"
                         color="error.500"
+                        position="absolute"
+                        bottom={[-1, 2]}
                       >
                         You dont have permission to send transactions.
                       </Text>
