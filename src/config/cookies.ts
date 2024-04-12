@@ -20,6 +20,7 @@ interface Cookie {
 }
 
 export class CookiesConfig {
+  //todo: move to public env
   private static encryptionKey = 'chave-secreta';
 
   static setCookies(cookies: Cookie[]) {
