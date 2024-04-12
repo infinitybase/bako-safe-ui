@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
-import { useTransactionsSignaturePending } from '@/modules/transactions';
+import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { Pages } from '../../core';
 import { PermissionRoles } from '../../core/models';
