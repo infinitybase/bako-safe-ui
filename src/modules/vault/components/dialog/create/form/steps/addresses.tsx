@@ -44,7 +44,6 @@ const VaultAddressesStep = ({
   const { isSingleWorkspace } = useAuth();
   const {
     handleOpenDialog,
-    paginatedContacts,
     listContactsRequest,
     createContactRequest,
     form: contactForm,
@@ -52,13 +51,14 @@ const VaultAddressesStep = ({
     inView,
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
-  const { options, handleFieldOptions } = useAddressBookAutocompleteOptions(
-    workspaceId!,
-    !isSingleWorkspace,
-    listContactsRequest.data,
-    form.watch('addresses'),
-    form.formState.errors.addresses,
-  );
+  const { optionsRequests, handleFieldOptions } =
+    useAddressBookAutocompleteOptions(
+      workspaceId!,
+      !isSingleWorkspace,
+      listContactsRequest.data,
+      form.watch('addresses'),
+      form.formState.errors.addresses,
+    );
 
   const minSigners = form.formState.errors.minSigners?.message;
 
@@ -128,14 +128,14 @@ const VaultAddressesStep = ({
                   render={({ field, fieldState }) => {
                     const appliedOptions = handleFieldOptions(
                       field.value,
-                      options[index],
+                      optionsRequests[index].options,
                     );
 
                     const showAddToAddressBook =
                       !first &&
                       !fieldState.invalid &&
                       AddressUtils.isValid(field.value) &&
-                      paginatedContacts.isSuccess &&
+                      optionsRequests[index].isSuccess &&
                       listContactsRequest.data &&
                       !listContactsRequest.data
                         .map((o) => o.user.address)
@@ -150,6 +150,7 @@ const VaultAddressesStep = ({
                           value={field.value}
                           onChange={field.onChange}
                           options={appliedOptions}
+                          isLoading={!optionsRequests[index].isSuccess}
                           disabled={first}
                           inView={inView}
                           rightElement={

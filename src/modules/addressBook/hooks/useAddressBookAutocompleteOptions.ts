@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
-import { useQueries } from 'react-query';
+import { useQueries, UseQueryResult } from 'react-query';
 
 import { AutocompleteOption } from '@/components/autocomplete';
 import { AddressBookQueryKey } from '@/modules/core/models/addressBook';
@@ -34,7 +34,7 @@ const useAddressBookAutocompleteOptions = (
 ) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
-  const getValidAddresses = useCallback(
+  const handleValidAddresses = useCallback(
     (fieldValue: string) => {
       const validSelectedValues: string[] = [];
 
@@ -51,6 +51,13 @@ const useAddressBookAutocompleteOptions = (
     },
     [errors, fields],
   );
+
+  const handleQueryData = useCallback((data: WorkspaceContact[]) => {
+    return data.map(({ nickname, user }) => ({
+      label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
+      value: user.address,
+    }));
+  }, []);
 
   const handleFieldOptions = useCallback(
     (fieldValue: string, options: AutocompleteOption[]) => {
@@ -71,9 +78,9 @@ const useAddressBookAutocompleteOptions = (
     [],
   );
 
-  const options = useQueries(
+  const queries = useQueries(
     fields.map((field) => {
-      const excludeContacts = getValidAddresses(field.value);
+      const excludeContacts = handleValidAddresses(field.value);
       const excludeContactsQueryKey = excludeContacts.join('-');
 
       return {
@@ -96,19 +103,23 @@ const useAddressBookAutocompleteOptions = (
           ),
       };
     }),
-  ).map((o) => {
-    return (
-      o?.data?.map(({ nickname, user }) => {
-        return {
-          label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
-          value: user.address,
-        };
-      }) ?? []
-    );
-  });
+  );
+
+  const formattedQueries = useMemo(() => {
+    return queries.map((query: UseQueryResult<WorkspaceContact[], unknown>) => {
+      const { data, ...rest } = query;
+
+      const formattedData = data ? handleQueryData(data) : [];
+
+      return {
+        ...rest,
+        options: formattedData,
+      };
+    });
+  }, [handleQueryData, queries]);
 
   return {
-    options,
+    optionsRequests: formattedQueries,
     handleFieldOptions,
   };
 };

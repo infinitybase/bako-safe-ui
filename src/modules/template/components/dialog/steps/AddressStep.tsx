@@ -39,20 +39,20 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     createContactRequest,
     form: contactForm,
     contactDialog,
-    paginatedContacts,
     listContactsRequest,
     inView,
     canAddMember,
     workspaceId,
     handleOpenDialog,
   } = useAddressBook(!isSingleWorkspace);
-  const { options, handleFieldOptions } = useAddressBookAutocompleteOptions(
-    workspaceId!,
-    !isSingleWorkspace,
-    listContactsRequest.data,
-    form.watch('addresses') as AddressesFields,
-    form.formState.errors.addresses,
-  );
+  const { optionsRequests, handleFieldOptions } =
+    useAddressBookAutocompleteOptions(
+      workspaceId!,
+      !isSingleWorkspace,
+      listContactsRequest.data,
+      form.watch('addresses') as AddressesFields,
+      form.formState.errors.addresses,
+    );
 
   return (
     <>
@@ -87,7 +87,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
 
                 const appliedOptions = handleFieldOptions(
                   field.value,
-                  options[index],
+                  optionsRequests[index].options,
                 );
 
                 const showAddToAddressBook =
@@ -95,7 +95,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                   canAddMember &&
                   AddressUtils.isValid(field.value) &&
                   !fieldState.invalid &&
-                  paginatedContacts.isSuccess &&
+                  optionsRequests[index].isSuccess &&
                   listContactsRequest.data &&
                   !listContactsRequest.data
                     .map((o) => o.user.address)
@@ -108,6 +108,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       label={`Address ${index + 1}`}
                       onChange={field.onChange}
                       options={appliedOptions}
+                      isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}
                       rightElement={
                         <Icon
@@ -116,6 +117,12 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                           cursor="pointer"
                           onClick={() => {
                             if (!first) {
+                              const minSigners = form.getValues('minSigners');
+                              const addressesLength =
+                                addresses.fields.length - 1;
+                              if (Number(minSigners) > addressesLength) {
+                                form.setValue('minSigners', addressesLength);
+                              }
                               addresses.remove(index);
                               form.trigger();
                             }
@@ -151,6 +158,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 value: '',
               });
               form.trigger();
+              form.setValue('minSigners', addresses.fields.length + 1);
             }}
             leftIcon={<UserAddIcon />}
           >
