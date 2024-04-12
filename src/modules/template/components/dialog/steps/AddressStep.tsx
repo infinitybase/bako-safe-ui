@@ -117,14 +117,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                           cursor="pointer"
                           onClick={() => {
                             if (!first) {
-                              const minSigners = form.getValues('minSigners');
-                              const addressesLength =
-                                addresses.fields.length - 1;
-                              if (Number(minSigners) > addressesLength) {
-                                form.setValue('minSigners', addressesLength);
-                              }
                               addresses.remove(index);
-                              form.trigger();
                             }
                           }}
                         />
@@ -157,8 +150,6 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
               addresses.append({
                 value: '',
               });
-              form.trigger();
-              form.setValue('minSigners', addresses.fields.length + 1);
             }}
             leftIcon={<UserAddIcon />}
           >
