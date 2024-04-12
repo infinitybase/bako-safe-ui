@@ -207,7 +207,7 @@ const WorkspacePage = () => {
                 fontWeight="semibold"
                 onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace?.name}
+                {limitCharacters(currentWorkspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -312,12 +312,21 @@ const WorkspacePage = () => {
                     />
                   </Avatar>
                   <Box>
-                    <Heading variant="title-xl" w="max">
+                    <Heading
+                      variant="title-xl"
+                      w="max"
+                      maxW={{
+                        base: '60px',
+                        xs: '200px',
+                      }}
+                      textOverflow="ellipsis"
+                      isTruncated
+                    >
                       {currentWorkspace?.name}
                     </Heading>
 
                     <Text
-                      maxW={{ base: '100px', sm: '200px' }}
+                      maxW={{ base: '60px', xs: '140px' }}
                       variant="description"
                       textOverflow="ellipsis"
                       isTruncated

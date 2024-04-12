@@ -47,7 +47,7 @@ const WorkspaceCard = ({
           <Text
             fontWeight="bold"
             color="grey.200"
-            maxW={{ base: 195, sm: 360 }}
+            maxW={{ base: 150, xs: 360 }}
             isTruncated
           >
             {name}

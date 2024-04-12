@@ -29,6 +29,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
+import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -76,7 +77,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const { balanceUSD, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const hasBalance = vault.hasBalance;
   const balanceFormatted = bn(
@@ -112,7 +113,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={{ base: 'full', sm: 730 }}>
+    <Box w="full" maxW={{ base: 'full', sm: 730, md: 'full' }}>
       <Box mb={5} w="full">
         <Text
           color="grey.400"
@@ -173,7 +174,9 @@ const CardDetails = (props: CardDetailsProps) => {
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >
-                      {vault?.name}
+                      {isExtraSmall
+                        ? limitCharacters(vault?.name ?? '', 8)
+                        : vault?.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
