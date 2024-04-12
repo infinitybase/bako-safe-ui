@@ -126,6 +126,7 @@ const useSignIn = () => {
     },
     hasFuel,
     redirectToWalletLink,
+    byConnector: !!origin,
   };
 };
 

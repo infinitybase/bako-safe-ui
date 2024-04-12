@@ -1,5 +1,4 @@
-import { AttachmentIcon } from '@chakra-ui/icons';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -11,14 +10,15 @@ import {
 } from '@/modules/auth/components';
 import { useScreenSize } from '@/modules/core';
 
+import { ActionButton } from '../components/actionButton';
 import { useSignIn } from '../hooks/useSignIn';
 
 const SigninPage = () => {
   const {
     isConnecting,
     connectors,
-    redirectToWalletLink,
     auth,
+    byConnector,
     webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
@@ -34,46 +34,13 @@ const SigninPage = () => {
   }, [auth.isInvalidAccount]);
 
   const pageSections = {
-    description: connectors.has
-      ? 'Click the button bellow to connect Bako Safe.'
-      : 'You need to use the fuel wallet to connect.',
-    action: connectors.has ? (
-      <Button
-        size={{
-          base: 'md',
-          sm: 'lg',
-        }}
-        color="dark.500"
-        fontWeight="bold"
-        variant="solid"
-        backgroundColor="brand.500"
-        colorScheme="brand"
-        backgroundSize="200% 100%"
-        backgroundPosition="100% 0"
-        transition="background-position .5s"
-        _hover={{
-          transform: 'scale(1.05)',
-          transition: 'ease-in-out .3s',
-        }}
+    description: 'Click the button bellow to connect Bako Safe.',
+    action: (
+      <ActionButton
+        byConnector={byConnector}
         isLoading={isConnecting}
-        loadingText="Connecting.."
         onClick={connectors.drawer.onOpen}
-        leftIcon={<AttachmentIcon />}
-      >
-        Connect Wallet
-      </Button>
-    ) : (
-      <Button
-        size="lg"
-        color="grey.200"
-        bgColor="dark.100"
-        variant="secondary"
-        borderColor="dark.100"
-        leftIcon={<AttachmentIcon />}
-        onClick={redirectToWalletLink}
-      >
-        Fuel Wallet
-      </Button>
+      />
     ),
   };
 

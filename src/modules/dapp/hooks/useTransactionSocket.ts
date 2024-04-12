@@ -7,6 +7,7 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useDidMountEffect, UserTypes, useSocket } from '@/modules/core/hooks';
 import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummary';
+import { TransactionService } from '@/modules/transactions/services';
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
 
 export const useTransactionSocket = () => {
@@ -18,6 +19,7 @@ export const useTransactionSocket = () => {
   const [FUELTransaction, setFUELTransaction] =
     useState<TransactionRequestLike>();
   const summary = useTransactionSummary();
+  const [pendingTx, setPendingTx] = useState<boolean>(false);
 
   const callbacks: { [key: string]: (data: any) => void } = {
     // eslint-disable-next-line prettier/prettier
@@ -39,7 +41,11 @@ export const useTransactionSocket = () => {
           providerUrl: bsafeVault.provider.url,
           transactionLike: transaction,
         });
-        //console.log('[VAULT]: ', bsafeVault);
+        const { transactionsBlocked } =
+          await TransactionService.getTransactionsSignaturePending([
+            bsafeVault?.BSAFEVaultId,
+          ]);
+        setPendingTx(transactionsBlocked ?? false);
         setVault(bsafeVault);
         setFUELTransaction(transaction);
       }
@@ -94,6 +100,7 @@ export const useTransactionSocket = () => {
     summary,
     FUELTransaction,
     confirmTransaction,
+    pendingSignerTransactions: pendingTx,
     cancelTransaction,
     connection: {
       name,
