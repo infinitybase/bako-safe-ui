@@ -1,4 +1,4 @@
-//const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
+import * as CryptoJS from 'crypto-js';
 
 export enum CookieName {
   ACCESS_TOKEN = `bsafe/token`,
@@ -20,26 +20,35 @@ interface Cookie {
 }
 
 export class CookiesConfig {
-  static setCookies(cookies: Cookie[]) {
-    // const expiresAt =
-    //   new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
+  private static encryptionKey = 'chave-secreta';
 
+  static setCookies(cookies: Cookie[]) {
     cookies.forEach((cookie) => {
-      // Cookies.set(cookie.name, cookie.value, {
-      //   secure: true,
-      //   expires: new Date(expiresAt),
-      // });
-      localStorage.setItem(cookie.name, cookie.value);
+      localStorage.setItem(cookie.name, this.encrypt(cookie.value));
     });
   }
 
   static getCookie(name: string) {
-    //return Cookies.get(name);
-    return localStorage.getItem(name);
+    return this.decrypt(localStorage.getItem(name) || '');
   }
 
   static removeCookies(names: string[]) {
-    //names.forEach((name) => Cookies.remove(name));
     names.forEach((name) => localStorage.removeItem(name));
+  }
+
+  private static encrypt(value: string): string {
+    const encrypted = CryptoJS.AES.encrypt(
+      value,
+      this.encryptionKey,
+    ).toString();
+    return encrypted;
+  }
+
+  private static decrypt(encryptedValue: string): string {
+    const decrypted = CryptoJS.AES.decrypt(
+      encryptedValue,
+      this.encryptionKey,
+    ).toString(CryptoJS.enc.Utf8);
+    return decrypted;
   }
 }
