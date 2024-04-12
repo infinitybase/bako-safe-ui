@@ -72,6 +72,7 @@ const Autocomplete = ({
   const handleSelect = (selectedOption: AutocompleteOption) => {
     setInputValue(selectedOption.label);
     onChange(selectedOption.value);
+    onInputChange?.(selectedOption.value);
   };
 
   const handleFocus = () => {
