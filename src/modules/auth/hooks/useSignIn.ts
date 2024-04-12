@@ -1,5 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useIsConnected } from '@fuels/react';
+import { useEffect } from 'react';
 import { Location, useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth/hooks';
@@ -40,12 +41,24 @@ const useSignIn = () => {
   const auth = useAuth();
   const { isConnected } = useIsConnected();
   const { account } = useAccount();
-  const { location, origin } = useQueryParams();
+  const { location, origin, openConnect } = useQueryParams();
 
   const { connectors } = useDefaultConnectors();
   const { openWebAuthnDrawer, ...rest } = useWebAuthn();
 
   const hasFuel = !!fuel;
+
+  useEffect(() => {
+    if (openConnect) {
+      connectorDrawer.onOpen();
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   if (web_auth) {
+  //     connectorDrawer.onClose();
+  //   }
+  // }, [connectorDrawer, web_auth]);
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {

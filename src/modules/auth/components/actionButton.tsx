@@ -41,7 +41,7 @@ const ActionButton = ({
 
   if (byConnector) {
     return (
-      <a href="/login" target="_blank">
+      <a href="?openConnect=true" target="_blank">
         {formattedButton}
       </a>
     );

@@ -20,6 +20,7 @@ const serverAndClient = new JSONRPCServerAndClient(
 );
 
 window.addEventListener('message', (event) => {
+  //todo: validate event source
   console.log('[DAPP]Recive event -->>>', event);
   // if (event.source !== window.parent) return;
   if (event.data) {
