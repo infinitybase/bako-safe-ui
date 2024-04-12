@@ -1,6 +1,4 @@
-import Cookies from 'js-cookie';
-
-const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
+//const { VITE_COOKIE_EXPIRATION_TIME } = import.meta.env;
 
 export enum CookieName {
   ACCESS_TOKEN = `bsafe/token`,
@@ -23,22 +21,25 @@ interface Cookie {
 
 export class CookiesConfig {
   static setCookies(cookies: Cookie[]) {
-    const expiresAt =
-      new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
+    // const expiresAt =
+    //   new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
 
     cookies.forEach((cookie) => {
-      Cookies.set(cookie.name, cookie.value, {
-        secure: true,
-        expires: new Date(expiresAt),
-      });
+      // Cookies.set(cookie.name, cookie.value, {
+      //   secure: true,
+      //   expires: new Date(expiresAt),
+      // });
+      localStorage.setItem(cookie.name, cookie.value);
     });
   }
 
   static getCookie(name: string) {
-    return Cookies.get(name);
+    //return Cookies.get(name);
+    return localStorage.getItem(name);
   }
 
   static removeCookies(names: string[]) {
-    names.forEach((name) => Cookies.remove(name));
+    //names.forEach((name) => Cookies.remove(name));
+    names.forEach((name) => localStorage.removeItem(name));
   }
 }
