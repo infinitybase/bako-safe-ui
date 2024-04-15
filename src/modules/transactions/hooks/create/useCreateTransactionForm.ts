@@ -22,14 +22,12 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
-          // Convertendo valor transferido e da taxa para wei, para facilitar o cáculo.
-          const weiAmount = parent.amount * 10 ** 18;
-          const weiFee = parent.fee * 10 ** 18;
-          const weiSum = weiAmount + weiFee;
-
-          const transactionTotalAmount = weiSum / 10 ** 18;
-
           if (parent.fee) {
+            const transactionTotalAmount = bn
+              .parseUnits(parent.amount)
+              .add(bn.parseUnits(parent.fee))
+              .format();
+
             return params.validateBalance(
               parent.asset,
               String(transactionTotalAmount),
