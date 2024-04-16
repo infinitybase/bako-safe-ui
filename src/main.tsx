@@ -7,9 +7,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from '@/App';
-import { BsafeQueryClientProvider, RPCProvider } from '@/config';
+import { BsafeQueryClientProvider } from '@/config';
 import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
+
+import { SocketProvider } from './config/socket';
 
 BSafe.setup({
   API_URL: import.meta.env.VITE_API_URL,
@@ -25,15 +27,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           connectors: defaultConnectors(),
         }}
       >
-        <JotaiProvider>
-          <RPCProvider>
+        <SocketProvider>
+          <JotaiProvider>
             <BsafeQueryClientProvider>
               <TransactionSendProvider>
                 <App />
               </TransactionSendProvider>
             </BsafeQueryClientProvider>
-          </RPCProvider>
-        </JotaiProvider>
+          </JotaiProvider>
+        </SocketProvider>
       </FuelProvider>
     </ChakraProvider>
   </React.StrictMode>,

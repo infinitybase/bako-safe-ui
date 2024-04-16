@@ -2,17 +2,12 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import { Button } from '@chakra-ui/react';
 
 type ActionButtonProps = {
-  byConnector: boolean;
   isLoading: boolean;
   onClick: () => void;
 };
 
-const ActionButton = ({
-  byConnector,
-  isLoading,
-  onClick,
-}: ActionButtonProps) => {
-  const formattedButton = (
+const ActionButton = ({ onClick, isLoading }: ActionButtonProps) => {
+  return (
     <Button
       size={{
         base: 'md',
@@ -31,22 +26,13 @@ const ActionButton = ({
         transition: 'ease-in-out .3s',
       }}
       loadingText="Connecting.."
-      isLoading={!byConnector ? isLoading : false}
-      onClick={!byConnector ? onClick : () => {}}
+      isLoading={isLoading}
+      onClick={onClick}
       leftIcon={<AttachmentIcon />}
     >
       Connect Wallet
     </Button>
   );
-
-  if (byConnector) {
-    return (
-      <a href="?openConnect=true" target="_blank">
-        {formattedButton}
-      </a>
-    );
-  }
-  return <>{formattedButton}</>;
 };
 
 export { ActionButton };

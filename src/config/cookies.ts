@@ -30,7 +30,8 @@ export class CookiesConfig {
   }
 
   static getCookie(name: string) {
-    return this.decrypt(localStorage.getItem(name) || '');
+    const ck = localStorage.getItem(name);
+    return ck ? this.decrypt(ck) : '';
   }
 
   static removeCookies(names: string[]) {

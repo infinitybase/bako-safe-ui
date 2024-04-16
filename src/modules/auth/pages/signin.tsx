@@ -18,7 +18,6 @@ const SigninPage = () => {
     isConnecting,
     connectors,
     auth,
-    byConnector,
     webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
@@ -37,7 +36,6 @@ const SigninPage = () => {
     description: 'Click the button bellow to connect Bako Safe.',
     action: (
       <ActionButton
-        byConnector={byConnector}
         isLoading={isConnecting}
         onClick={connectors.drawer.onOpen}
       />

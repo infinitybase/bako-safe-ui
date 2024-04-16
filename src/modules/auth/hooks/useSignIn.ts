@@ -3,8 +3,8 @@ import { useAccount, useFuel, useIsConnected } from '@fuels/react';
 import { useEffect } from 'react';
 import { Location, useNavigate } from 'react-router-dom';
 
-import { useQueryParams } from '@/modules/auth/hooks';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
+import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
@@ -12,6 +12,7 @@ import {
 import { Pages } from '@/modules/core/routes';
 
 import { TypeUser } from '../services';
+import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
 
@@ -21,13 +22,18 @@ export const redirectPathBuilder = (
   account: string,
 ) => {
   const isRedirectToPrevious = !!location.state?.from;
-
+  console.log('[PARAMS]: ', {
+    isDapp,
+    location,
+    account,
+    isRedirectToPrevious,
+  });
   if (isDapp && isRedirectToPrevious) {
     return location.state.from;
   }
 
   if (isDapp) {
-    return `${Pages.dappAuth()}${location.search}&address=${account}`;
+    return `${Pages.dappAuth()}${location.search}`;
   }
 
   return Pages.home();
@@ -40,8 +46,12 @@ const useSignIn = () => {
   const { fuel } = useFuel();
   const auth = useAuth();
   const { isConnected } = useIsConnected();
+  const { openConnect, location, sessionId } = useQueryParams();
   const { account } = useAccount();
-  const { location, origin, openConnect } = useQueryParams();
+
+  const { connect } = useSocket();
+
+  useEffect(() => {}, []);
 
   const { connectors } = useDefaultConnectors();
   const { openWebAuthnDrawer, ...rest } = useWebAuthn();
@@ -49,16 +59,19 @@ const useSignIn = () => {
   const hasFuel = !!fuel;
 
   useEffect(() => {
-    if (openConnect) {
-      connectorDrawer.onOpen();
-    }
-  }, []);
+    connect(getSessionId());
+  });
 
-  // useEffect(() => {
-  //   if (web_auth) {
-  //     connectorDrawer.onClose();
-  //   }
-  // }, [connectorDrawer, web_auth]);
+  const getSessionId = () => {
+    const params = new URLSearchParams(location.search);
+    let sessionId = params.get('sessionId');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      window.localStorage.setItem('sessionId', sessionId);
+    }
+
+    return sessionId;
+  };
 
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
@@ -73,7 +86,8 @@ const useSignIn = () => {
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
-      navigate(redirectPathBuilder(!!origin, location, account!));
+
+      navigate(redirectPathBuilder(!!sessionId, location, account!));
     },
   });
 
@@ -139,7 +153,7 @@ const useSignIn = () => {
     },
     hasFuel,
     redirectToWalletLink,
-    byConnector: !!origin,
+    byConnector: openConnect,
   };
 };
 

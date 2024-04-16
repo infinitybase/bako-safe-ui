@@ -18,13 +18,13 @@ import { useTransactionSocket } from '../hooks';
 const TransactionConfirm = () => {
   const {
     init,
-    confirmTransaction,
     cancelTransaction,
-    confirmingTransaction,
     vault,
     pendingSignerTransactions,
     connection,
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
+    requestConfirm: { isLoading: confirmingTransaction },
+    send,
   } = useTransactionSocket();
   const { sessionId } = useQueryParams();
 
@@ -52,9 +52,9 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         {vault && (
           <VaultDrawerBox
-            name={vault.name}
-            address={vault.address.toString()}
-            description={vault.description}
+            name={vault?.name}
+            address={vault?.address}
+            description={vault?.description}
             isSingleWorkspace
             isActive
           />
@@ -81,12 +81,13 @@ const TransactionConfirm = () => {
             {(isLoadingTransactionSummary || !transactionSummary) && (
               <DappTransaction.OperationSkeleton />
             )}
+
             {transactionSummary?.operations?.map((operation, index) => (
               <DappTransaction.Operation
                 key={`${index}operation`}
                 vault={{
-                  name: vault?.BSAFEVault.name ?? '',
-                  predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
+                  name: vault?.name || '',
+                  predicateAddress: vault?.address || '',
                 }}
                 operation={operation}
               />
@@ -114,7 +115,7 @@ const TransactionConfirm = () => {
               size="lg"
               isLoading={confirmingTransaction}
               leftIcon={<SquarePlusIcon fontSize="lg" />}
-              onClick={confirmTransaction}
+              onClick={send}
             >
               Create transaction
             </Dialog.PrimaryAction>

@@ -1,93 +1,72 @@
-import { useBoolean } from '@chakra-ui/react';
-import { BSAFEConnectorEvents, Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useQueryParams } from '@/modules/auth/hooks';
-import { useDidMountEffect, UserTypes, useSocket } from '@/modules/core/hooks';
-import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummary';
-import { TransactionService } from '@/modules/transactions/services';
-const { ACCESS_TOKEN, ADDRESS } = CookieName;
+import { useSocket } from '@/modules/core/hooks';
+
+import { useConfirmTx } from './useConfirmTx';
+import { useTransactionSummary } from './useTransactionSummary';
+
+interface IVaultSk {
+  name: string;
+  address: string;
+  description: string;
+}
 
 export const useTransactionSocket = () => {
-  const [confirmingTransaction, confirmingTransctionHandlers] = useBoolean();
+  const [vault, setVault] = useState<IVaultSk | undefined>(undefined);
+  const [pending, setPending] = useState(false);
+  const [code, setCode] = useState<string>('');
+  const [validAt, setValidAt] = useState<number>(10000000);
+  const [tx, setTx] = useState<TransactionRequestLike>();
 
-  const { connect, emitMessage } = useSocket();
-  const { sessionId, origin, name } = useQueryParams();
-  const [vault, setVault] = useState<Vault>();
-  const [FUELTransaction, setFUELTransaction] =
-    useState<TransactionRequestLike>();
+  const { connect, socket } = useSocket();
+  const { sessionId } = useQueryParams();
+  const confirmTxMutate = useConfirmTx();
+
   const summary = useTransactionSummary();
-  const [pendingTx, setPendingTx] = useState<boolean>(false);
 
-  const callbacks: { [key: string]: (data: any) => void } = {
-    // eslint-disable-next-line prettier/prettier
-    message: async (params: any) => {
-      const { type, data } = params;
-      const { address, transaction } = data;
-      // console.log('[TRANSACTION_REQUESTED]: ', {
-      //   data,
-      //   type,
-      // });
-      if (type === BSAFEConnectorEvents.TRANSACTION_SEND) {
-        const bsafeVault = await Vault.create({
-          predicateAddress: address,
-          token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
-          address: CookiesConfig.getCookie(ADDRESS)!,
-        });
-        //console.log('[VAULT]: ', bsafeVault);
-        summary.getTransactionSummary({
-          providerUrl: bsafeVault.provider.url,
-          transactionLike: transaction,
-        });
-        const { transactionsBlocked } =
-          await TransactionService.getTransactionsSignaturePending([
-            bsafeVault?.BSAFEVaultId,
-          ]);
-        setPendingTx(transactionsBlocked ?? false);
-        setVault(bsafeVault);
-        setFUELTransaction(transaction);
-      }
-    },
+  useEffect(() => {
+    connect(sessionId!);
+  });
+
+  useEffect(() => {
+    socket.on('message', (data) => {
+      setVault(data.data.content.vault);
+      setPending(data.data.content.tx_blocked);
+      setValidAt(data.data.content.validAt);
+      setCode(data.data.content.code);
+      setTx(data.data.content.transaction);
+      summary.getTransactionSummary({
+        transactionLike: data.data.content.transaction,
+        providerUrl: data.data.content.provider,
+      });
+    });
+  }, [socket]);
+
+  const sendTransaction = () => {
+    if (!sessionId || !vault || !tx) return;
+    confirmTxMutate.mutate(
+      {
+        sessionId,
+        vaultAddress: vault.address,
+        code,
+        tx,
+      },
+      {
+        onSuccess: () => {
+          socket.emit('message', {});
+          window.close();
+        },
+        onError: () => {
+          socket.emit('message', {});
+          window.close();
+        },
+      },
+    );
   };
 
-  useDidMountEffect(() => {
-    connect({
-      username: sessionId!,
-      param: UserTypes.POPUP_TRANSFER,
-      sessionId: sessionId!,
-      origin: origin!,
-      callbacks,
-    });
-  }, [callbacks, connect, origin, sessionId]);
-
-  const confirmTransaction = async () => {
-    confirmingTransctionHandlers.on();
-
-    const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
-    //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
-    //console.log('[TRANSACTION_TX]: ', tx);
-    if (!tx) return;
-    //console.log('[enviando mensagem]');
-    emitMessage({
-      event: BSAFEConnectorEvents.TRANSACTION_CREATED,
-      content: {
-        sessionId: sessionId!,
-        address: CookiesConfig.getCookie(ADDRESS)!,
-        origin: origin!,
-        hash: tx.getHashTxId()!,
-        operations: summary.transactionSummary?.operations ?? {},
-      },
-      to: `${sessionId!}:${origin!}`,
-      callback: () => {
-        confirmingTransctionHandlers.off();
-        window.close();
-      },
-    });
-    return;
-  };
-
+  // emmit message to the server and close window
   const cancelTransaction = () => window.close();
 
   const init = () => {
@@ -96,16 +75,17 @@ export const useTransactionSocket = () => {
 
   return {
     init,
+    code,
     vault,
     summary,
-    FUELTransaction,
-    confirmTransaction,
-    pendingSignerTransactions: pendingTx,
-    cancelTransaction,
+    validAt,
     connection: {
       name,
       origin,
     },
-    confirmingTransaction,
+    cancelTransaction,
+    send: sendTransaction,
+    pendingSignerTransactions: pending,
+    requestConfirm: confirmTxMutate,
   };
 };

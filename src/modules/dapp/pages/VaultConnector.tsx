@@ -26,7 +26,7 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useAuthSocket } from '../hooks';
 
 const VaultConnector = () => {
-  const { name, origin } = useQueryParams();
+  const { name, origin, sessionId } = useQueryParams();
   const auth = useAuth();
 
   const {
@@ -35,13 +35,8 @@ const VaultConnector = () => {
     inView,
   } = useVaultDrawer({});
 
-  const {
-    emitEvent,
-    selectedVaultId,
-    setSelectedVaultId,
-    currentVault,
-    emittingEvent,
-  } = useAuthSocket();
+  const { selectedVaultId, setSelectedVaultId, currentVault, send } =
+    useAuthSocket();
 
   return (
     <Flex h="100vh" w="full">
@@ -190,8 +185,16 @@ const VaultConnector = () => {
             variant="primary"
             isDisabled={!selectedVaultId || !vaults.length || isLoading}
             leftIcon={<RiLink size={22} />}
-            onClick={() => emitEvent(selectedVaultId)}
-            isLoading={emittingEvent}
+            onClick={() =>
+              send.mutate({
+                sessionId: sessionId!,
+                name: name!,
+                origin: origin!,
+                vaultId: selectedVaultId,
+                userAddress: auth.account,
+              })
+            }
+            isLoading={send.isLoading}
           >
             Connect
           </Button>
