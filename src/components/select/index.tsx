@@ -50,6 +50,7 @@ const Select = ({
   style,
   ...rest
 }: SelectProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<any>('');
   const [open, setOpen] = useState<boolean>(false);
@@ -59,6 +60,11 @@ const Select = ({
   const handleSelect = (value: string | number) => {
     onChange(value);
     setOpen(false);
+  };
+
+  const handleRighElementClick = () => {
+    setOpen(!open);
+    inputRef.current?.focus();
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -95,6 +101,7 @@ const Select = ({
     <>
       <InputGroup>
         <Input
+          ref={inputRef}
           value={inputValue}
           placeholder=" "
           isReadOnly
@@ -121,6 +128,7 @@ const Select = ({
         <FormLabel>{label}</FormLabel>
 
         <InputRightElement
+          hidden={isOpen || isDisabled}
           px={3}
           top="1.5px"
           right="1px"
@@ -128,7 +136,7 @@ const Select = ({
           bgColor={'dark.250'}
           h="calc(100% - 3px)"
           w={10}
-          onClick={() => setOpen(!open)}
+          onClick={handleRighElementClick}
           cursor={isLoading ? 'default' : 'pointer'}
         >
           {isLoading ? (
@@ -139,11 +147,7 @@ const Select = ({
               color="brand.500"
             />
           ) : (
-            <Icon
-              as={ArrowDownIcon}
-              fontSize={10}
-              color={isDisabled || isOpen ? 'grey.600' : 'grey.200'}
-            />
+            <Icon as={ArrowDownIcon} fontSize={10} color="grey.200" />
           )}
         </InputRightElement>
       </InputGroup>
