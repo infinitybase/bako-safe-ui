@@ -6,7 +6,7 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  InputGroupProps,
+  InputProps,
   InputRightElement,
   Text,
   VStack,
@@ -16,17 +16,27 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowDownIcon } from '../icons';
 
 interface SelectOptions {
-  label: any;
-  value: any;
+  label: string | number;
+  value: string | number;
 }
 
-interface SelectProps extends InputGroupProps {
-  value?: string;
+interface SelectProps
+  extends Omit<
+    InputProps,
+    | 'onChange'
+    | 'value'
+    | 'placeholder'
+    | 'onBlur'
+    | 'onFocus'
+    | 'cursor'
+    | 'isReadOnly'
+    | '_readOnly'
+  > {
+  value?: any;
   options?: SelectOptions[];
   label?: string;
   isLoading?: boolean;
-  isDisabled?: boolean;
-  onChange: (value: unknown) => void;
+  onChange: (value: any) => void;
 }
 
 const Select = ({
@@ -36,6 +46,8 @@ const Select = ({
   isLoading,
   isDisabled,
   onChange,
+  isInvalid,
+  style,
   ...rest
 }: SelectProps) => {
   const optionsRef = useRef<HTMLDivElement>(null);
@@ -43,6 +55,11 @@ const Select = ({
   const [open, setOpen] = useState<boolean>(false);
 
   const isOpen = open && options && options.length > 0 && !isLoading;
+
+  const handleSelect = (value: string | number) => {
+    onChange(value);
+    setOpen(false);
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -76,24 +93,34 @@ const Select = ({
 
   return (
     <>
-      <InputGroup {...rest}>
+      <InputGroup>
         <Input
           value={inputValue}
           placeholder=" "
-          disabled={isDisabled}
           isReadOnly
+          disabled={isDisabled}
           onFocus={() => setOpen(true)}
           onBlur={() => setOpen(false)}
+          isInvalid={isInvalid}
           cursor="pointer"
           _readOnly={{
-            boxShadow: 'none',
+            boxShadow: isInvalid ? 'error.600' : 'none',
           }}
+          style={
+            label
+              ? { ...style }
+              : {
+                  paddingTop: '0.5rem',
+                  paddingBottom: '0.5rem',
+                  ...style,
+                }
+          }
+          {...rest}
         />
 
         <FormLabel>{label}</FormLabel>
 
         <InputRightElement
-          hidden={isOpen || isDisabled}
           px={3}
           top="1.5px"
           right="1px"
@@ -112,7 +139,11 @@ const Select = ({
               color="brand.500"
             />
           ) : (
-            <Icon as={ArrowDownIcon} fontSize={10} color="grey.200" />
+            <Icon
+              as={ArrowDownIcon}
+              fontSize={10}
+              color={isDisabled || isOpen ? 'grey.600' : 'grey.200'}
+            />
           )}
         </InputRightElement>
       </InputGroup>
@@ -131,7 +162,6 @@ const Select = ({
           zIndex={200}
           w="full"
           mt={2}
-          pb={0}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
@@ -152,10 +182,7 @@ const Select = ({
                   borderRadius={10}
                   cursor="pointer"
                   _hover={{ background: 'dark.150' }}
-                  onMouseDown={() => {
-                    onChange(value);
-                    setOpen(false);
-                  }}
+                  onMouseDown={() => handleSelect(value)}
                 >
                   <Text
                     whiteSpace="nowrap"
@@ -175,4 +202,4 @@ const Select = ({
   );
 };
 
-export { Select };
+export { Select, SelectOptions, SelectProps };
