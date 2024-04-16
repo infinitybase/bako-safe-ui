@@ -57,7 +57,7 @@ const Select = ({
 
   const isOpen = open && options && options.length > 0 && !isLoading;
 
-  const handleSelect = (value: string | number) => {
+  const handleSelectOption = (value: string | number) => {
     onChange(value);
     setOpen(false);
   };
@@ -186,7 +186,7 @@ const Select = ({
                   borderRadius={10}
                   cursor="pointer"
                   _hover={{ background: 'dark.150' }}
-                  onMouseDown={() => handleSelect(value)}
+                  onMouseDown={() => handleSelectOption(value)}
                 >
                   <Text
                     whiteSpace="nowrap"
