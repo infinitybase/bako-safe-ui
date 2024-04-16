@@ -68,17 +68,24 @@ export const VaultCard = ({
                     fontSize={14}
                     color="grey.200"
                   />
-                  <Text color="grey.400" fontSize="sm" isTruncated>
+                  <Text
+                    color="grey.400"
+                    fontSize="sm"
+                    isTruncated
+                    maxW={{
+                      base: 150,
+                      sm: 130,
+                      lg: 200,
+                    }}
+                  >
                     {workspace?.name}
                   </Text>
                 </HStack>
               )}
               <Heading
                 maxW={{
-                  base: 'full',
-                  sm: 300,
-                  lg: 210,
-                  xl: 240,
+                  base: 150,
+                  lg: 200,
                 }}
                 variant="title-md"
                 color="grey.200"

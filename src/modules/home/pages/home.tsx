@@ -152,6 +152,7 @@ const HomePage = () => {
       )}
       {recentVaults?.length && (
         <Grid
+          mt={{ base: -8, sm: -2 }}
           w="full"
           maxW="full"
           gap={6}
@@ -168,10 +169,16 @@ const HomePage = () => {
               const hasMore = extraCount > 0;
 
               return (
-                <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
+                <CustomSkeleton
+                  isLoaded={!homeRequest.isLoading}
+                  key={id}
+                  maxH={{ base: 180, sm: 190 }}
+                >
                   <GridItem>
                     {lastCard && hasMore ? (
                       <ExtraVaultCard
+                        mt={{ base: 6, sm: 'unset' }}
+                        maxH={{ base: 185, sm: 190 }}
                         extra={extraCount}
                         onClick={() =>
                           navigate(
