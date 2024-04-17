@@ -77,23 +77,26 @@ export const useTransactionSocket = () => {
     console.log('[SEND_TX]', { sessionId, vault, tx, bakoSafeVault });
     if (!sessionId || !vault || !tx || !bakoSafeVault) return;
     console.log('[BEFORE_IF]');
-    await confirmTxMutate.mutate(
-      {
-        vault: bakoSafeVault,
-        tx,
-      },
-      {
-        onSuccess: (data) => {
-          console.log('[SUCCESS]', data);
-          socket.emit('message', {});
-          window.close();
-        },
-        onError: () => {
-          socket.emit('message', {});
-          window.close();
-        },
-      },
-    );
+    // await confirmTxMutate.mutate(
+    //   {
+    //     vault: bakoSafeVault,
+    //     tx,
+    //   },
+    //   {
+    //     onSuccess: (data) => {
+    //       console.log('[SUCCESS]', data);
+    //       socket.emit('message', {});
+    //       window.close();
+    //     },
+    //     onError: () => {
+    //       socket.emit('message', {});
+    //       window.close();
+    //     },
+    //   },
+    // );
+    console.log('[enviando mensagem]', tx);
+    console.log('[enviando mensagem]', socket);
+    socket.emit('[TX_EVENT]', tx);
   };
 
   // emmit message to the server and close window
