@@ -1,15 +1,15 @@
+import { Vault } from 'bsafe';
+import { TransactionRequestLike } from 'fuels';
 import { useMutation } from 'react-query';
 
-import { DAppService, IDAPPConfirmTx } from '../services';
+interface IDAPPConfirmTx {
+  tx: TransactionRequestLike;
+  vault: Vault;
+}
 
 const useConfirmTx = () => {
-  return useMutation(
-    (params: IDAPPConfirmTx) => DAppService.confirmTx(params),
-    {
-      onSuccess: () => {
-        // todo: close this window
-      },
-    },
+  return useMutation(({ vault, tx }: IDAPPConfirmTx) =>
+    vault.BSAFEIncludeTransaction(tx),
   );
 };
 
