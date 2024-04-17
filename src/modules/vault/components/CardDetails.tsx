@@ -170,7 +170,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW={{ base: '35vw', sm: '80%' }}
+                      maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >

@@ -23,15 +23,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal
-      size={{
-        base: 'full',
-        sm: 'xl',
-      }}
-      {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
-    >
+    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={450}
         position="relative"
@@ -42,7 +34,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         description={steps.step?.description ?? ''}
       />
 
-      <Dialog.Body maxW={450}>
+      <Dialog.Body maxW={450} minH={{ base: '66vh', sm: 'unset' }}>
         <CreateVaultForm
           tabs={tabs}
           form={form}

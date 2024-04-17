@@ -134,7 +134,7 @@ const VaultDetailsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {limitCharacters(vault?.name ?? '', 25)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>

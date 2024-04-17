@@ -222,6 +222,8 @@ const UserVaultsPage = () => {
       )}
       {vaults?.length && (
         <Grid
+          mt={{ base: -8, sm: -2 }}
+          pb={{ base: 8, sm: 0 }}
           w="full"
           maxW="full"
           gap={6}

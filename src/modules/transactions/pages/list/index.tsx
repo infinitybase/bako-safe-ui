@@ -180,6 +180,7 @@ const TransactionsVaultPage = () => {
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
+                  isInTheVaultPage
                 >
                   {!isMobile && (
                     <TransactionCard.CreationDate>

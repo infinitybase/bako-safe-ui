@@ -249,7 +249,8 @@ const UserTransactionsPage = () => {
         spacing={{ base: 3, sm: 5 }}
         maxH="74vh"
         overflowY="scroll"
-        pr={4}
+        overflowX="hidden"
+        pr={2}
         scrollBehavior="smooth"
         sx={{
           '&::-webkit-scrollbar': {

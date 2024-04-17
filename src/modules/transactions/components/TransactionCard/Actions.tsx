@@ -96,12 +96,13 @@ const Actions = ({
       )}
 
       {awaitingAnswer && isSigner ? (
-        <HStack minW={140}>
+        <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
           <Button
             h={9}
             px={3}
             variant="primary"
-            size="sm"
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isLoading}
             isDisabled={isSuccess}
             onClick={(e) => {
@@ -115,7 +116,8 @@ const Actions = ({
           <Button
             h={9}
             px={3}
-            size="sm"
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             variant="secondary"
             onClick={(e) => {
               e.stopPropagation();

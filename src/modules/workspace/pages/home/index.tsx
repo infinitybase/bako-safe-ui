@@ -163,7 +163,7 @@ const WorkspacePage = () => {
   );
 
   return (
-    <VStack w="full" spacing={6} px={{ base: 0, sm: 12 }}>
+    <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -538,12 +538,13 @@ const WorkspacePage = () => {
         ) : (
           <Grid
             w="full"
+            mt={{ base: -8, sm: -2 }}
             maxW="full"
             templateColumns={{
               base: 'repeat(1, 1fr)',
               xs: 'repeat(2, 1fr)',
-              sm: 'repeat(3, 1fr)',
-              lg: 'repeat(4, 1fr)',
+              md: 'repeat(3, 1fr)',
+              xl: 'repeat(4, 1fr)',
             }}
             gap={6}
           >
@@ -553,10 +554,12 @@ const WorkspacePage = () => {
                 const hasMore = extraCount > 0;
 
                 return (
-                  <GridItem key={id}>
+                  <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
                     <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
+                          mt={{ base: 6, sm: 'unset' }}
+                          maxH={{ base: 185, sm: 190 }}
                           extra={extraCount}
                           onClick={() =>
                             navigate(

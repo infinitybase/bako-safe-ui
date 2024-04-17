@@ -13,7 +13,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <HStack w={235}>
+    <HStack w={180}>
       <Avatar
         variant="roundedSquare"
         name={vault.name}
@@ -42,7 +42,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
           </HStack>
         )}
         <Heading
-          maxW={180}
+          maxW={{ base: 110, xs: 180, sm: 120 }}
           variant={isMobile ? 'title-sm' : 'title-md'}
           color="grey.200"
           mt={0}

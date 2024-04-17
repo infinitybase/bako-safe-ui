@@ -78,7 +78,7 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      px={{ base: 0, sm: 5 }}
+      px={{ base: 0, md: 5 }}
       py={{ base: 3, sm: 5 }}
       spacing={{ base: 1, sm: 8 }}
       w="full"
@@ -229,7 +229,6 @@ const Details = ({
   isInTheVaultPage,
 }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
-  const { isMobile } = useScreenSize();
 
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
@@ -255,14 +254,13 @@ const Details = ({
         direction={{ base: 'column', md: 'row' }}
         alignItems="center"
         justify="space-between"
-        maxW="full"
-        columnGap={isInTheVaultPage ? '3rem' : '12rem'}
-        w={{ base: '85%', sm: '100%' }}
+        columnGap={isInTheVaultPage ? '3rem' : '8rem'}
+        w="full"
       >
         <Box
           display="flex"
           flexDirection={{ base: 'row', sm: 'column' }}
-          maxW="full"
+          w={{ base: '100%', lg: 'unset' }}
           minW={{ base: 200, sm: 486 }}
           flexWrap="wrap"
         >
@@ -390,8 +388,9 @@ const Details = ({
 
         <Box
           alignSelf="flex-start"
-          w={isMobile ? '100%' : undefined}
-          minW={[200, 486]}
+          w="full"
+          minW={{ base: 200, md: 300 }}
+          maxW={600}
         >
           <TransactionStepper steps={transactionHistory!} />
         </Box>

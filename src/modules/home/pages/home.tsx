@@ -28,7 +28,6 @@ import {
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
@@ -327,7 +326,7 @@ const HomePage = () => {
                           assets={transaction.resume.outputs}
                         />
                         <TransactionCard.Name>
-                          {limitCharacters(transaction.name, 20)}
+                          {transaction.name}
                         </TransactionCard.Name>
                         <TransactionCard.Status
                           transaction={transaction}

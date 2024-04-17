@@ -85,7 +85,7 @@ export const VaultCard = ({
               <Heading
                 maxW={{
                   base: 150,
-                  lg: 200,
+                  lg: !workspace.single ? 140 : 200,
                 }}
                 variant="title-md"
                 color="grey.200"

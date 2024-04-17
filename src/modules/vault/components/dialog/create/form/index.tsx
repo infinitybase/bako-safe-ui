@@ -42,7 +42,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
   const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full" maxW={450}>
+    <Box w="full">
       <Box hidden={stepAction.hide} mb={8}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
