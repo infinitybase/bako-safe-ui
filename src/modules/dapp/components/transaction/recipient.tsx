@@ -1,7 +1,6 @@
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
 import { AddressType, ChainName } from '@fuel-ts/providers';
 import { Vault } from 'bsafe';
-import { Address, isB256, isBech32 } from 'fuels';
 import React from 'react';
 
 import { Card } from '@/components';
@@ -36,10 +35,7 @@ const DappTransactionRecipient = ({
   isSender,
   fullBorderRadius,
 }: RecipientProps) => {
-  const isValidAddress = isBech32(address) || isB256(address);
-  const bech32Address = isValidAddress
-    ? Address.fromB256(address).toString()
-    : '';
+  const bech32Address = address;
 
   const isVault = bech32Address === vault?.predicateAddress;
   const isContract = type === AddressType.contract;
@@ -49,8 +45,8 @@ const DappTransactionRecipient = ({
     <RecipientCard borderBottomRadius={fullBorderRadius ? 10 : 0}>
       <Text variant="description" textAlign="center">
         {isSender ? 'From' : 'To'}
-        {isContract && '(Contract)'}
-        {isVault && '(BSAFE)'}:
+        {isContract && !isVault && '(Contract)'}
+        {isVault && '(Bako Safe)'}:
       </Text>
       <Divider borderColor="dark.100" mt={2} mb={4} />
       <Center flexDirection="column">

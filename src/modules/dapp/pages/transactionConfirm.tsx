@@ -94,7 +94,7 @@ const TransactionConfirm = () => {
             ))}
           </VStack>
 
-          <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
+          <DappTransaction.Fee fee={transactionSummary?.fee} />
         </>
       )}
       {/* Actions */}

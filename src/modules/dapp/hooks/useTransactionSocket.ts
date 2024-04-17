@@ -34,7 +34,6 @@ export const useTransactionSocket = () => {
 
   useEffect(() => {
     socket.on('message', (data) => {
-      console.log(data);
       setVault(data.data.content.vault);
       setPending(data.data.content.tx_blocked);
       setValidAt(data.data.content.validAt);
@@ -81,7 +80,7 @@ export const useTransactionSocket = () => {
     await confirmTxMutate.mutate(
       {
         vault: bakoSafeVault,
-        tx: tx,
+        tx,
       },
       {
         onSuccess: (data) => {
