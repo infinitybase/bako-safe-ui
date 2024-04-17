@@ -21,7 +21,8 @@ import {
 } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { usePermissions, useScreenSize } from '@/modules/core/hooks';
+import { PermissionRoles } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -50,12 +51,9 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultDetails();
-  const { goWorkspace } = useWorkspace();
+  const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
-  const { isViewer } = usePermissions({
-    id: vault.id,
-    workspace: workspace!,
-  });
+
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   const {
@@ -66,6 +64,10 @@ const VaultDetailsPage = () => {
   const workspaceId = current ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
+
+  const { OWNER, SIGNER } = PermissionRoles;
+
+  const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   if (!vault) return null;
 
@@ -145,7 +147,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
-          isDisabled={isViewer}
+          isDisabled={!canSetTemplate}
           onClick={() => {
             if (
               !vault.id ||
