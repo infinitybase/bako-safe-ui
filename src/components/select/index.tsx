@@ -53,17 +53,22 @@ const Select = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<any>('');
-  const [open, setOpen] = useState<boolean>(false);
+  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [isOptionsVisible, setIsOptionsVisible] = useState<boolean>(false);
+  const [optionsPositionAbove, setOptionsPositionAbove] =
+    useState<boolean>(false);
 
-  const isOpen = open && options && options.length > 0 && !isLoading;
+  const isReadyToShowOptions =
+    showOptions && options && options.length > 0 && !isLoading;
+  const showInputRightElement = isReadyToShowOptions || isDisabled;
 
   const handleSelectOption = (value: string | number) => {
     onChange(value);
-    setOpen(false);
+    setShowOptions(false);
   };
 
   const handleRighElementClick = () => {
-    setOpen(!open);
+    setShowOptions(!open);
     inputRef.current?.focus();
   };
 
@@ -72,7 +77,7 @@ const Select = ({
       optionsRef.current &&
       !optionsRef.current.contains(event.target as Node)
     ) {
-      setOpen(false);
+      setShowOptions(false);
     }
   };
 
@@ -86,7 +91,22 @@ const Select = ({
   }, [options, value]);
 
   useEffect(() => {
-    if (isOpen) {
+    const inputElement = inputRef.current;
+    const optionsElement = optionsRef.current;
+
+    if (inputElement && optionsElement) {
+      const inputRect = inputElement.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      const shouldShowAbove =
+        inputRect.bottom + optionsElement.clientHeight > windowHeight;
+
+      setOptionsPositionAbove(shouldShowAbove);
+    }
+  }, [showOptions]);
+
+  useEffect(() => {
+    if (showOptions) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -95,10 +115,24 @@ const Select = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [showOptions]);
+
+  useEffect(() => {
+    if (isReadyToShowOptions) {
+      const timeoutId = setTimeout(() => {
+        setIsOptionsVisible(true);
+      }, 50);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    } else {
+      setIsOptionsVisible(false);
+    }
+  }, [isReadyToShowOptions]);
 
   return (
-    <>
+    <Box position="relative" w="full">
       <InputGroup>
         <Input
           ref={inputRef}
@@ -106,8 +140,8 @@ const Select = ({
           placeholder=" "
           isReadOnly
           disabled={isDisabled}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
+          onFocus={() => setShowOptions(true)}
+          onBlur={() => setShowOptions(false)}
           isInvalid={isInvalid}
           cursor="pointer"
           _readOnly={{
@@ -128,9 +162,9 @@ const Select = ({
         <FormLabel>{label}</FormLabel>
 
         <InputRightElement
-          hidden={isOpen || isDisabled}
+          hidden={showInputRightElement}
           px={3}
-          top="1.5px"
+          top="2px"
           right="1px"
           borderRadius={10}
           bgColor={'dark.250'}
@@ -152,8 +186,9 @@ const Select = ({
         </InputRightElement>
       </InputGroup>
 
-      {isOpen && (
+      {isReadyToShowOptions && (
         <Box
+          visibility={isOptionsVisible ? 'visible' : 'hidden'}
           ref={optionsRef}
           bg="dark.200"
           color="grey.200"
@@ -163,9 +198,10 @@ const Select = ({
           borderRadius={10}
           padding={2}
           position="absolute"
-          zIndex={200}
+          zIndex={999}
           w="full"
-          mt={2}
+          top={optionsPositionAbove ? 'auto' : 'calc(100% + 0.5rem)'}
+          bottom={optionsPositionAbove ? 'calc(100% + 0.5rem)' : 'auto'}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
@@ -202,7 +238,7 @@ const Select = ({
           </Flex>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 
