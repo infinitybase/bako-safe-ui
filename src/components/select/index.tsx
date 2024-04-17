@@ -74,8 +74,8 @@ const Select = ({
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
-      optionsRef.current &&
-      !optionsRef.current.contains(event.target as Node)
+      !inputRef.current?.contains(event.target as Node) &&
+      !optionsRef.current?.contains(event.target as Node)
     ) {
       setShowOptions(false);
     }
