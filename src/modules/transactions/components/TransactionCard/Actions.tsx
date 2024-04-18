@@ -29,7 +29,7 @@ interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
   isSigner: boolean;
-  redirectButton?: React.ReactNode;
+  callBack?: () => void;
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
@@ -52,7 +52,7 @@ const Actions = ({
   transaction,
   status,
   isSigner,
-  redirectButton,
+  callBack,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
@@ -92,48 +92,23 @@ const Actions = ({
       )}
 
       {awaitingAnswer && isSigner ? (
-        <HStack
-          minW={140}
-          pointerEvents={
-            (redirectButton && isLoading) || (redirectButton && isSuccess)
-              ? 'none'
-              : 'unset'
-          }
-          opacity={
-            (redirectButton && isLoading) || (redirectButton && isSuccess)
-              ? '0.3'
-              : 'unset'
-          }
-          onClick={(e) => {
-            if (redirectButton) {
+        <HStack minW={140}>
+          <Button
+            h={9}
+            px={3}
+            variant="primary"
+            size="sm"
+            isLoading={isLoading}
+            isDisabled={isSuccess}
+            onClick={async (e) => {
               e.stopPropagation();
               e.preventDefault();
-              const clickedElement = e.target as HTMLElement;
-              if (clickedElement.innerText.trim() === 'Sign') {
-                confirmTransaction();
-              }
-            }
-          }}
-        >
-          {redirectButton ? (
-            redirectButton
-          ) : (
-            <Button
-              h={9}
-              px={3}
-              variant="primary"
-              size="sm"
-              isLoading={isLoading}
-              isDisabled={isSuccess}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                confirmTransaction();
-              }}
-            >
-              Sign
-            </Button>
-          )}
+              await confirmTransaction();
+              callBack && callBack();
+            }}
+          >
+            Sign
+          </Button>
           <Button
             h={9}
             px={3}
