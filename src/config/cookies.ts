@@ -38,7 +38,8 @@ export class CookiesConfig {
   }
 
   static getCookie(name: string) {
-    return this.decrypt(Cookies.get(name) || '');
+    const ck = Cookies.get(name);
+    return ck ? this.decrypt(ck) : '';
   }
 
   static removeCookies(names: string[]) {
