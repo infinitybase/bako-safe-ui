@@ -29,6 +29,7 @@ interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
   isSigner: boolean;
+  redirectButton?: React.ReactNode;
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
@@ -51,6 +52,7 @@ const Actions = ({
   transaction,
   status,
   isSigner,
+  redirectButton,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
@@ -90,22 +92,48 @@ const Actions = ({
       )}
 
       {awaitingAnswer && isSigner ? (
-        <HStack minW={140}>
-          <Button
-            h={9}
-            px={3}
-            variant="primary"
-            size="sm"
-            isLoading={isLoading}
-            isDisabled={isSuccess}
-            onClick={(e) => {
+        <HStack
+          minW={140}
+          pointerEvents={
+            (redirectButton && isLoading) || (redirectButton && isSuccess)
+              ? 'none'
+              : 'unset'
+          }
+          opacity={
+            (redirectButton && isLoading) || (redirectButton && isSuccess)
+              ? '0.3'
+              : 'unset'
+          }
+          onClick={(e) => {
+            if (redirectButton) {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction();
-            }}
-          >
-            Sign
-          </Button>
+              const clickedElement = e.target as HTMLElement;
+              if (clickedElement.innerText.trim() === 'Sign') {
+                confirmTransaction();
+              }
+            }
+          }}
+        >
+          {redirectButton ? (
+            redirectButton
+          ) : (
+            <Button
+              h={9}
+              px={3}
+              variant="primary"
+              size="sm"
+              isLoading={isLoading}
+              isDisabled={isSuccess}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                confirmTransaction();
+              }}
+            >
+              Sign
+            </Button>
+          )}
           <Button
             h={9}
             px={3}

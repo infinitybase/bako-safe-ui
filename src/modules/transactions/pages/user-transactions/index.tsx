@@ -304,6 +304,22 @@ const UserTransactionsPage = () => {
                       isSigner={isSigner}
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
+                      redirectButton={
+                        filter.value === StatusFilter.PENDING && (
+                          <TransactionFilter.Control
+                            value={filter.value!}
+                            onChange={(value) => {
+                              filter.set(value as StatusFilter);
+                            }}
+                          >
+                            <TransactionFilter.Field
+                              value={StatusFilter.ALL}
+                              label="Sign"
+                              isButton
+                            />
+                          </TransactionFilter.Control>
+                        )
+                      }
                     />
                   </TransactionCard.Container>
                 )}
