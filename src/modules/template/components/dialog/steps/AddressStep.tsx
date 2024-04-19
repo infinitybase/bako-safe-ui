@@ -185,7 +185,6 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                     value={field.value}
                     defaultValue={1}
                     onChange={field.onChange}
-                    placeholder={''}
                   >
                     {Array(addresses.fields.length)
                       .fill('')
