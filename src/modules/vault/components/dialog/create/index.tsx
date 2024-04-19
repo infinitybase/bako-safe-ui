@@ -12,6 +12,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     steps,
     bsafeVault,
     handleCancel,
+    selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
     handleInputChange,
@@ -42,6 +43,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onCancel={handleCancel}
           onDeposit={onDeposit}
           addresses={addresses}
+          selectedTemplate={selectedTemplate}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
           vaultNameIsAvailable={vaultNameIsAvailable}

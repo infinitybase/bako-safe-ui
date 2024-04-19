@@ -17,6 +17,7 @@ import { Controller } from 'react-hook-form';
 import { AmountInput, UserAddIcon } from '@/components';
 import { AutoComplete } from '@/components/autocomplete';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth';
 import {
   AddressUtils,
   AssetSelect,
@@ -47,6 +48,8 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+  const { isSingleWorkspace } = useAuth();
+
   const {
     createContactRequest,
     search,
@@ -56,7 +59,7 @@ const TransactionFormField = ({
     paginatedContacts,
     inView,
     canAddMember,
-  } = useAddressBook();
+  } = useAddressBook(!isSingleWorkspace);
 
   return (
     <>
@@ -185,7 +188,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const hasEmptyField = Object.values(transaction).some(
           (value) => value === '',
         );
-        const isDisabled = hasEmptyField || fieldState.invalid;
+
+        const currentAmount = form.watch(`transactions.${index}.amount`);
+        const isCurrentAmountZero = Number(currentAmount) === 0;
+
+        const isDisabled =
+          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.to,
         );

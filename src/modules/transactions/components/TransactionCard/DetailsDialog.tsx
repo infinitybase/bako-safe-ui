@@ -17,6 +17,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
@@ -106,6 +107,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 e.stopPropagation();
                 e.preventDefault();
                 confirmTransaction();
+                props.callBack && props.callBack();
               }}
             >
               Sign

@@ -25,6 +25,7 @@ interface TransactionCardContainerProps extends CardProps {
   account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
+  callBack?: () => void;
 }
 
 const Container = ({
@@ -35,6 +36,7 @@ const Container = ({
   account,
   isSigner,
   isInTheVaultPage,
+  callBack,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -72,6 +74,7 @@ const Container = ({
           status={status}
           isSigner={isSigner}
           isInTheVaultPage={isInTheVaultPage}
+          callBack={callBack}
         />
       )}
       <Card

@@ -31,10 +31,13 @@ const SignerCard = chakra(Card, {
 
 const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
-  const { contactByAddress } = useAddressBook();
+
   const {
     workspaces: { current },
+    isSingleWorkspace,
   } = useAuth();
+
+  const { contactByAddress } = useAddressBook(!isSingleWorkspace);
 
   const isBig = !vault?.members ? 0 : vault?.members.length - 4;
 

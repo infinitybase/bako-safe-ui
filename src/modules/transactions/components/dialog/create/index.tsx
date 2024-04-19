@@ -19,6 +19,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
+  const isCurrentAmountZero = Number(currentAmount) === 0;
+
   return (
     <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
@@ -70,7 +73,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid}
+          isDisabled={!form.formState.isValid || isCurrentAmountZero}
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
           _hover={{

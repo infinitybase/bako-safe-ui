@@ -4,6 +4,7 @@ export interface TransactionFilterFieldProps {
   value: string;
   label: string;
   selectedValue?: string;
+  isButton?: boolean;
   onChange?: (value: string) => void;
 }
 
