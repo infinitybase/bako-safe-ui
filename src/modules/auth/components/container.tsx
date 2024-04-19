@@ -21,7 +21,6 @@ const SigninContainerBackground = () => {
       backgroundImage="url('backgroundHome.png')"
       backgroundSize="cover"
       backgroundPosition="unset"
-      style={{ filter: 'blur(12px)' }} // Adicionando o desfoque aqui
     />
   );
 };
