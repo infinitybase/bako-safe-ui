@@ -1,4 +1,5 @@
 import {
+  Address,
   AddressType,
   bn,
   ContractTransactionRequestInput,
@@ -15,12 +16,23 @@ import { NativeAssetId } from '@/modules/core';
 export interface TransactionSimulateParams {
   providerUrl: string;
   transactionLike: TransactionRequestLike;
+  from: string;
 }
+
+export interface ISent {
+  amount: string;
+  assetId: string;
+}
+
 export interface IOutput {
   type: OutputType;
   assetId: string;
   amount: string;
   to: OperationTransactionAddress;
+  from: OperationTransactionAddress;
+  name?: string;
+  calls?: string[];
+  assetsSent?: ISent[];
 }
 
 // export declare enum AddressType {
@@ -32,6 +44,7 @@ class FuelTransactionService {
   static async simulate({
     providerUrl,
     transactionLike,
+    from,
   }: TransactionSimulateParams) {
     const provider = await Provider.create(providerUrl);
     const transactionRequest = ScriptTransactionRequest.from(transactionLike);
@@ -51,13 +64,24 @@ class FuelTransactionService {
         let operation;
         if (output.type === OutputType.Coin) {
           operation = {
+            assetId: output.assetId.toString(),
             type: OutputType.Coin,
             amount: bn(output.amount).format(),
             to: {
               address: output.to.toString(),
               type: AddressType.account,
             },
-            assetId: output.assetId.toString(),
+            from: {
+              type: AddressType.account,
+              address: Address.fromString(from).toHexString(),
+            },
+            name: 'Transfer asset',
+            assetsSent: [
+              {
+                amount: bn(output.amount).format(),
+                assetId: output.assetId.toString(),
+              },
+            ],
           };
         } else if (output.type === OutputType.Contract) {
           if (!transactionLike.inputs)
@@ -70,13 +94,19 @@ class FuelTransactionService {
             Number(output.inputIndex)
           ] as ContractTransactionRequestInput;
           operation = {
+            calls: [],
+            assetId: NativeAssetId,
             type: OutputType.Contract,
             amount: '0.00',
             to: {
               address: input.contractId.toString(),
               type: AddressType.contract,
             },
-            assetId: NativeAssetId,
+            from: {
+              type: AddressType.account,
+              address: Address.fromString(from).toHexString(),
+            },
+            name: 'Contract call',
           };
         }
         if (operation) acc.push(operation);
