@@ -100,11 +100,11 @@ const Actions = ({
             size="sm"
             isLoading={isLoading}
             isDisabled={isSuccess}
-            onClick={async (e) => {
+            onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              await confirmTransaction();
-              callBack && callBack();
+              confirmTransaction(callBack);
+              //callBack && callBack();
             }}
           >
             Sign
