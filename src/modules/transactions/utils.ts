@@ -3,7 +3,7 @@ import {
   ITransactionResume,
   IWitnesses,
   TransactionStatus,
-} from 'bsafe';
+} from 'bakosafe';
 import { bn } from 'fuels';
 
 import { AssetModel, WitnessStatus } from '../core/models';

@@ -1,6 +1,6 @@
 import { Box, HStack, VStack } from '@chakra-ui/react';
 import { Operation } from '@fuel-ts/providers';
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
@@ -11,7 +11,7 @@ import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 
 interface OperationProps {
   operation?: Operation;
-  vault?: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
 }
 
 export const DappTransactionOperationSekeleton = () => (

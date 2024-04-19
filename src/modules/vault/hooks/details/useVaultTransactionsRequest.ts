@@ -1,4 +1,4 @@
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 
 import { useBsafeTransactionList } from '@/modules/core';
 import { SortOption } from '@/modules/transactions/services';

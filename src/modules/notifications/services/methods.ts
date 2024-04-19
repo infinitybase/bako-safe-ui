@@ -1,4 +1,4 @@
-import { SortOption } from 'bsafe';
+import { SortOption } from 'bakosafe';
 
 import { api } from '@/config';
 import { IPagination, Notification, PaginationParams } from '@/modules/core';

@@ -1,4 +1,4 @@
-import { BSAFEConnectorEvents } from 'bsafe';
+import { BakoSafeConnectors } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { useQueryParams } from '@/modules/auth/hooks';
@@ -33,7 +33,7 @@ export const useAuthSocket = () => {
     setEmittingEvent(true);
 
     return emitMessage({
-      event: BSAFEConnectorEvents.AUTH_CONFIRMED,
+      event: BakoSafeConnectors.AUTH_CONFIRMED,
       content: {
         vaultId,
         name: name ?? origin!,

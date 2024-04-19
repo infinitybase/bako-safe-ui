@@ -19,7 +19,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, IWitnesses } from 'bsafe';
+import { ITransaction, IWitnesses } from 'bakosafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';

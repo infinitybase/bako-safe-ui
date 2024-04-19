@@ -1,4 +1,4 @@
-import { SortOption } from 'bsafe';
+import { SortOption } from 'bakosafe';
 import { useInfiniteQuery } from 'react-query';
 
 import { NotificationsQueryKey } from '@/modules/core';

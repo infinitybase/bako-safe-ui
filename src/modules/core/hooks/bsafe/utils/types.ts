@@ -1,9 +1,9 @@
-import { IBSAFEAuth } from 'bsafe';
+import { IBakoSafeAuth } from 'bakosafe';
 import { QueryFunctionContext, QueryKey } from 'react-query/types/core/types';
 import { UseQueryOptions } from 'react-query/types/react/types';
 
 export interface BsafeAuthParams {
-  auth: IBSAFEAuth;
+  auth: IBakoSafeAuth;
 }
 
 export interface BsafeQueryContext<

@@ -38,7 +38,7 @@ const useCreateVault = () => {
 
   const bsafeVault = useCreateBsafeVault({
     onSuccess: (data) => {
-      setVaultId(data.BSAFEVaultId);
+      setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
     },
     onError: () => {
@@ -103,7 +103,7 @@ const useCreateVault = () => {
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bsafeVault.data.BSAFEVaultId,
+          vaultId: bsafeVault.data.BakoSafeVaultId,
           workspaceId: params.workspaceId!,
         }),
       );

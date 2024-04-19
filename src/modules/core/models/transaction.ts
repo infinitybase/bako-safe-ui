@@ -3,7 +3,7 @@ import {
   ITransactionResume,
   IWitnesses,
   TransactionStatus as BSAFETransactionStatus,
-} from 'bsafe';
+} from 'bakosafe';
 
 import { Predicate } from './predicate';
 
