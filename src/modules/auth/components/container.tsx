@@ -86,6 +86,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           borderRadius="10px 0px 0px 10px"
           p={{ md: 0, lg: 10 }}
           pt={{ md: 10, lg: undefined }}
+          pb={{ md: 0, lg: 3.5 }}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
@@ -95,7 +96,8 @@ const SigninContainer = (props: SigninContainerProps) => {
             src={logo}
             alt=""
             style={{
-              width: '90%',
+              width: '85%',
+              marginTop: 'auto',
             }}
           />
           <img
@@ -103,7 +105,7 @@ const SigninContainer = (props: SigninContainerProps) => {
             alt=""
             style={{
               position: 'absolute',
-              top: '52%',
+              top: '50%',
               left: '30%', // Para centralizar a imagem no meio da caixa
               transform: 'translate(-50%, -50%)', // Para
               width: '45%',
