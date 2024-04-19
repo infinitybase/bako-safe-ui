@@ -64,15 +64,16 @@ const TransactionConfirm = () => {
       <Divider borderColor="dark.100" mb={7} />
 
       <Dapp.Section>
+        {pendingSignerTransactions ? <DappError /> : <DappConnectionAlert />}
+      </Dapp.Section>
+
+      <Dapp.Section>
         <DappConnectionDetail
           title={connection?.name ?? ''}
           origin={connection?.origin ?? ''}
         />
       </Dapp.Section>
 
-      <Dapp.Section>
-        {pendingSignerTransactions ? <DappError /> : <DappConnectionAlert />}
-      </Dapp.Section>
       {!pendingSignerTransactions && (
         <>
           <Divider w="full" borderColor="dark.100" mb={7} />
