@@ -184,7 +184,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const hasEmptyField = Object.values(transaction).some(
           (value) => value === '',
         );
-        const isDisabled = hasEmptyField || fieldState.invalid;
+
+        const currentAmount = form.watch(`transactions.${index}.amount`);
+        const isCurrentAmountZero = Number(currentAmount) === 0;
+
+        const isDisabled =
+          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.to,
         );
