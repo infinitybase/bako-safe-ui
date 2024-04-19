@@ -64,6 +64,7 @@ export class CookiesConfig {
 
       return decrypted;
     } catch (e) {
+      console.log('erro');
       return `${crypto.randomUUID()}`;
     }
   }
