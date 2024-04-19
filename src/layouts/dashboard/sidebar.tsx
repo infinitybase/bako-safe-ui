@@ -48,7 +48,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
       py={6}
       px={6}
     >
-      <VStack position="fixed" width="305px">
+      <VStack position="fixed" width="275px">
         {/* VAULT DRAWER LIST */}
         <VaultDrawer
           isOpen={drawer.isOpen}

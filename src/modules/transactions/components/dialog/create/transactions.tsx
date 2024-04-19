@@ -7,6 +7,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Link,
   Text,
   VStack,
@@ -211,16 +212,18 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction
-                      onClick={() => accordion.open(index)}
-                    />
-                    <TransactionAccordion.DeleteAction
-                      isDisabled={props.transactions.fields.length === 1}
-                      onClick={() => {
-                        transactions.remove(index);
-                        accordion.close();
-                      }}
-                    />
+                    <HStack spacing={4}>
+                      <TransactionAccordion.EditAction
+                        onClick={() => accordion.open(index)}
+                      />
+                      <TransactionAccordion.DeleteAction
+                        isDisabled={props.transactions.fields.length === 1}
+                        onClick={() => {
+                          transactions.remove(index);
+                          accordion.close();
+                        }}
+                      />
+                    </HStack>
                     <TransactionAccordion.ConfirmAction
                       onClick={() => accordion.close()}
                       isDisabled={isDisabled}

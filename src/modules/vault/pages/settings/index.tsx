@@ -32,7 +32,7 @@ const VaultSettingsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={[0, 8]}>
+    <Box w="full" pr={{ base: 0, sm: 8 }}>
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">

@@ -57,17 +57,23 @@ const UserTransactionsPage = () => {
 
   const { goHome } = useHome();
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
 
   return (
-    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
+    <VStack
+      w="full"
+      spacing={6}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
+    >
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
             variant="primary"
             fontWeight="semibold"
+            fontSize={15}
             leftIcon={
               <Box mr={-1}>
                 <IoChevronBack size={22} />
@@ -145,7 +151,7 @@ const UserTransactionsPage = () => {
       </HStack>
 
       {/* ACTION BUTTONS */}
-      <Stack w="full" direction={['column', 'row']} spacing={6}>
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
         <ActionCard.Container
           onClick={() =>
             navigate(
@@ -196,7 +202,12 @@ const UserTransactionsPage = () => {
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
-        <HStack w="full">
+        <Box
+          w="full"
+          display="flex"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+        >
           <Heading variant="title-xl" color="grey.200">
             Transactions
           </Heading>
@@ -204,7 +215,7 @@ const UserTransactionsPage = () => {
             isLoading={pendingSignerTransactions.isLoading}
             quantity={pendingSignerTransactions.data?.ofUser ?? 0}
           />
-        </HStack>
+        </Box>
 
         {/* FILTER */}
         <Box w="full" mt={3}>
@@ -235,10 +246,11 @@ const UserTransactionsPage = () => {
       <TransactionCard.List
         mt={1}
         w="full"
-        spacing={[3, 5]}
-        maxH="77.5vh"
+        spacing={{ base: 3, sm: 5 }}
+        maxH="74vh"
         overflowY="scroll"
-        pr={4}
+        overflowX="hidden"
+        pr={2}
         scrollBehavior="smooth"
         sx={{
           '&::-webkit-scrollbar': {

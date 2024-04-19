@@ -22,7 +22,7 @@ const SigninPage = () => {
     webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   useMemo(() => {
     auth.isInvalidAccount &&
@@ -40,7 +40,7 @@ const SigninPage = () => {
     action: connectors.has ? (
       <Button
         size={{
-          base: 'md',
+          base: isExtraSmall ? 'sm' : 'md',
           sm: 'lg',
         }}
         color="dark.500"
@@ -59,6 +59,7 @@ const SigninPage = () => {
         loadingText="Connecting.."
         onClick={connectors.drawer.onOpen}
         leftIcon={<AttachmentIcon />}
+        width={isExtraSmall ? 150 : 'unset'}
       >
         Connect Wallet
       </Button>

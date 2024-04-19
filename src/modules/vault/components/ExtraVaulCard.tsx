@@ -27,11 +27,11 @@ export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
     <VStack textAlign="center" spacing={0}>
       <Box>
         <Box>
-          <Heading fontSize={['3xl', '2xl']} color="grey.200">
+          <Heading fontSize={{ base: '3xl', sm: '2xl' }} color="grey.200">
             +{extra + 1}
           </Heading>
         </Box>
-        <Heading fontSize={['xl', '2xl']} color="grey.200" my={1}>
+        <Heading fontSize={{ base: 'xl', sm: '2xl' }} color="grey.200" my={1}>
           View all
         </Heading>
       </Box>

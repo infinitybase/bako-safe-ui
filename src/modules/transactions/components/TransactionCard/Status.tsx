@@ -39,9 +39,9 @@ const Status = ({
 
   return (
     <HStack
-      w="full"
       justifyContent={{ base: 'flex-end', sm: 'center' }}
       ml={{ base: 0, sm: 6 }}
+      maxW="full"
     >
       {isLoading && (
         <CircularProgress
@@ -56,8 +56,8 @@ const Status = ({
         minW={100}
         spacing={0}
         w="full"
-        direction={['row', 'column']}
-        alignItems={{ base: 'flex-end', sm: 'center' }}
+        direction={{ base: 'row', sm: 'column' }}
+        alignItems={{ base: 'flex-end', md: 'center' }}
         justifyContent="flex-end"
       >
         <Badge
@@ -76,7 +76,11 @@ const Status = ({
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
         {showDescription && (
-          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
+          <Text
+            variant="description"
+            fontSize={{ base: 'xs', sm: 'sm' }}
+            color="grey.500"
+          >
             Transfer status
           </Text>
         )}

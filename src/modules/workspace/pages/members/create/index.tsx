@@ -214,7 +214,7 @@ const CreateMemberPage = () => {
 
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w="full" mt={[2, 0]} mb={8}>
+          <Box maxW={480} w="full" mt={{ base: 2, sm: 0 }} mb={8}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
@@ -222,9 +222,9 @@ const CreateMemberPage = () => {
       )}
 
       <Dialog.Body
-        mb={[7, 1]}
+        mb={{ base: 7, sm: 1 }}
         maxW={480}
-        maxH={['full', 520]}
+        maxH={{ base: 'full', sm: 520 }}
         overflowY="scroll"
         css={{
           '&::-webkit-scrollbar': {

@@ -74,7 +74,7 @@ const ContactCard = ({
 
         <Divider borderColor="grey.600" my={1} />
 
-        <HStack w="full" justifyContent={['end', 'start']}>
+        <HStack w="full" justifyContent={{ base: 'end', sm: 'start' }}>
           <IconButton
             aria-label="Copy"
             variant="icon"

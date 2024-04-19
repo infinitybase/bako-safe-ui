@@ -85,7 +85,8 @@ const SigninContainer = (props: SigninContainerProps) => {
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 0px 0px 10px"
-          p={10}
+          p={{ md: 0, lg: 10 }}
+          pt={{ md: 10, lg: undefined }}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
@@ -96,7 +97,6 @@ const SigninContainer = (props: SigninContainerProps) => {
             alt=""
             style={{
               width: '90%',
-              //height: '60%',
             }}
           />
           <img

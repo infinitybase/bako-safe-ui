@@ -167,19 +167,20 @@ const TransactionsVaultPage = () => {
           );
 
           return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
+            <Box key={transaction.id} ref={infinityTransactionsRef} w="full">
               <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
                     <TransactionCard.Details
                       transaction={transaction}
-                      isInTheVault
+                      isInTheVaultPage
                     />
                   }
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
+                  isInTheVaultPage
                   callBack={() => filter.set(StatusFilter.ALL)}
                 >
                   {!isMobile && (

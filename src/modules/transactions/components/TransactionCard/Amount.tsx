@@ -28,7 +28,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
     <HStack
       alignItems="center"
       justifyContent="flex-start"
-      w={{ base: 'full', sm: 250 }}
+      w={{ base: 'full', sm: 160 }}
       ml={0}
     >
       <AvatarGroup max={2}>

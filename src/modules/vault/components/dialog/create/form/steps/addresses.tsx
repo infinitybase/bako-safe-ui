@@ -229,8 +229,8 @@ const VaultAddressesStep = ({
         <FormControl>
           <FormHelperText
             color="error.500"
-            maxW={['full', 'full']}
-            minW={['300', 'full']}
+            maxW={{ base: 'full', sm: 'full' }}
+            minW={{ base: '300', sm: 'full' }}
           >
             {minSigners}
           </FormHelperText>

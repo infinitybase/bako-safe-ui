@@ -15,7 +15,7 @@ const Title = ({ children, isUpcoming }: ActionCardTitleProps) => {
     >
       <Text
         variant="subtitle"
-        fontSize={['md', 'lg']}
+        fontSize={{ base: 'md', sm: 'lg' }}
         fontWeight="semibold"
         color="grey.200"
       >

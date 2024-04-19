@@ -23,15 +23,10 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const isCurrentAmountZero = Number(currentAmount) === 0;
 
   return (
-    <Dialog.Modal
-      size={{ base: 'full', sm: 'xl' }}
-      {...props}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
-    >
+    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
-        position={['static', 'relative']}
-        mt={[8, 0]}
+        position={{ base: 'static', sm: 'relative' }}
+        mt={{ base: -5, sm: 0 }}
         mb={0}
         maxH={40}
         top={{ base: 0, sm: -8 }}
@@ -51,7 +46,13 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Flex wrap="wrap" justifyContent="end" w="full" maxW={480} my={[3, 6]}>
+      <Flex
+        wrap="wrap"
+        justifyContent="end"
+        w="full"
+        maxW={480}
+        my={{ base: 3, sm: 6 }}
+      >
         <Divider mb={2} w="full" />
         <Text
           visibility={

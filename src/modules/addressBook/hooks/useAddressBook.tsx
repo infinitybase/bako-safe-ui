@@ -92,7 +92,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
         (error as AxiosError)?.response?.data as IApiError
       )?.detail;
 
-      if (errorDescription?.includes('label')) {
+      if (errorDescription?.includes('nickname')) {
         errorToast({
           title: 'Duplicated name',
           description: 'You already have this name in your address book',
