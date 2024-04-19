@@ -23,7 +23,7 @@ const TransactionConfirm = () => {
     pendingSignerTransactions,
     connection,
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
-    requestConfirm: { isLoading: confirmingTransaction },
+    isLoading,
     send,
   } = useTransactionSocket();
   const { sessionId } = useQueryParams();
@@ -65,8 +65,8 @@ const TransactionConfirm = () => {
 
       <Dapp.Section>
         <DappConnectionDetail
-          title={connection.name!}
-          origin={connection.origin!}
+          title={connection?.name ?? ''}
+          origin={connection?.origin ?? ''}
         />
       </Dapp.Section>
 
@@ -107,13 +107,13 @@ const TransactionConfirm = () => {
             <Dialog.SecondaryAction
               size="lg"
               onClick={cancelTransaction}
-              isDisabled={confirmingTransaction}
+              isDisabled={isLoading}
             >
               Reject
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
               size="lg"
-              isLoading={confirmingTransaction}
+              isLoading={isLoading}
               leftIcon={<SquarePlusIcon fontSize="lg" />}
               onClick={send}
             >
@@ -126,7 +126,7 @@ const TransactionConfirm = () => {
               size="lg"
               width="full"
               onClick={cancelTransaction}
-              isDisabled={confirmingTransaction}
+              isDisabled={isLoading}
             >
               Back
             </Dialog.SecondaryAction>

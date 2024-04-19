@@ -1,30 +1,40 @@
-import { BSafe, Vault } from 'bsafe';
 import { TransactionRequestLike } from 'fuels';
 import { useEffect, useState } from 'react';
 
 import { useQueryParams } from '@/modules/auth/hooks';
 import { useSocket } from '@/modules/core/hooks';
 
-import { useConfirmTx } from './useConfirmTx';
 import { useTransactionSummary } from './useTransactionSummary';
 
-interface IVaultSk {
+interface IVaultEvent {
   name: string;
   address: string;
   description: string;
+  provider: string;
+  pending_tx: boolean;
 }
 
+interface IDappEvent {
+  name: string;
+  description: string;
+  origin: string;
+}
+
+// interface IEventTX_EVENT_REQUEST {
+//   vault: IVaultEvent;
+//   tx: TransactionRequestLike;
+//   dapp: IDappEvent;
+// }
+
 export const useTransactionSocket = () => {
-  const [vault, setVault] = useState<IVaultSk | undefined>(undefined);
-  const [pending, setPending] = useState(false);
-  const [code, setCode] = useState<string>('');
+  const [vault, setVault] = useState<IVaultEvent | undefined>(undefined);
+  const [dapp, setDapp] = useState<IDappEvent | undefined>(undefined);
   const [validAt, setValidAt] = useState<number>(10000000);
   const [tx, setTx] = useState<TransactionRequestLike>();
-  const [bakoSafeVault, setBakoSafeVault] = useState<Vault>();
+  const [sending, setSending] = useState(false);
 
   const { connect, socket } = useSocket();
   const { sessionId } = useQueryParams();
-  const confirmTxMutate = useConfirmTx();
 
   const summary = useTransactionSummary();
 
@@ -33,70 +43,32 @@ export const useTransactionSocket = () => {
   });
 
   useEffect(() => {
-    socket.on('message', (data) => {
-      setVault(data.data.content.vault);
-      setPending(data.data.content.tx_blocked);
-      setValidAt(data.data.content.validAt);
-      setCode(data.data.content.code);
-      setTx(data.data.content.transaction);
-      _setVault(
-        data.data.content.user_address,
-        data.data.content.code,
-        data.data.content.vault.address,
-      );
+    //todo: default typing of the events
+    socket.on('message', ({ data }) => {
+      const { to, type, data: content } = data;
+      const isValid = to === '[UI]' && type === '[TX_EVENT_REQUESTED]';
+      if (!isValid) return;
+      const { dapp, vault, tx, validAt } = content;
+
+      setDapp(dapp);
+      setVault(vault);
+      setTx(tx);
+      setValidAt(validAt);
       summary.getTransactionSummary({
-        transactionLike: data.data.content.transaction,
-        providerUrl: data.data.content.provider,
+        providerUrl: vault.provider,
+        transactionLike: tx,
+        from: vault.address,
       });
     });
   }, [socket]);
 
-  const _setVault = async (
-    address: string,
-    code: string,
-    vaultAddress: string,
-  ) => {
-    try {
-      BSafe.setup({
-        API_URL: 'http://localhost:3333',
-      });
-      console.log('[ADDRESS]', address);
-      const vault = await Vault.create({
-        predicateAddress: vaultAddress,
-        address,
-        token: code,
-      });
-      console.log('[VAULT]', vault);
-      setBakoSafeVault(vault);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const sendTransaction = async () => {
-    console.log('[SEND_TX]', { sessionId, vault, tx, bakoSafeVault });
-    if (!sessionId || !vault || !tx || !bakoSafeVault) return;
-    console.log('[BEFORE_IF]');
-    // await confirmTxMutate.mutate(
-    //   {
-    //     vault: bakoSafeVault,
-    //     tx,
-    //   },
-    //   {
-    //     onSuccess: (data) => {
-    //       console.log('[SUCCESS]', data);
-    //       socket.emit('message', {});
-    //       window.close();
-    //     },
-    //     onError: () => {
-    //       socket.emit('message', {});
-    //       window.close();
-    //     },
-    //   },
-    // );
-    console.log('[enviando mensagem]', tx);
-    console.log('[enviando mensagem]', socket);
-    socket.emit('[TX_EVENT]', tx);
+    if (!tx) return;
+    setSending(true);
+    socket.emit('[TX_EVENT_CONFIRM]', {
+      operations: summary.transactionSummary,
+      tx,
+    });
   };
 
   // emmit message to the server and close window
@@ -108,17 +80,13 @@ export const useTransactionSocket = () => {
 
   return {
     init,
-    code,
     vault,
     summary,
     validAt,
-    connection: {
-      name,
-      origin,
-    },
+    connection: dapp,
     cancelTransaction,
     send: sendTransaction,
-    pendingSignerTransactions: pending,
-    requestConfirm: confirmTxMutate,
+    pendingSignerTransactions: vault?.pending_tx,
+    isLoading: sending,
   };
 };
