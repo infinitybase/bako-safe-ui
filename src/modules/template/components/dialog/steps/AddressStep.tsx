@@ -11,13 +11,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Select,
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-import { Dialog, RemoveIcon, UserAddIcon } from '@/components';
+import { Dialog, RemoveIcon, Select, UserAddIcon } from '@/components';
 import { ITemplatePayload } from '@/modules/core';
 import { useSteps } from '@/modules/template/hooks';
 
@@ -119,21 +118,15 @@ const AddressStep = ({ form }: { form: UseFormReturn<ITemplatePayload> }) => {
             render={({ field, fieldState }) => (
               <FormControl>
                 <Select
-                  pt={2}
-                  pb={2}
                   value={field.value}
-                  defaultValue={1}
                   onChange={field.onChange}
-                  placeholder=" "
-                >
-                  {Array(addresses.fields.length)
+                  options={Array(addresses.fields.length)
                     .fill('')
-                    .map((_, index) => (
-                      <option key={index + 1} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
-                </Select>
+                    .map((_, index) => ({
+                      label: index + 1,
+                      value: index + 1,
+                    }))}
+                />
                 <FormHelperText
                   color="error.500"
                   style={{
