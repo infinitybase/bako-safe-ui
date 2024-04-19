@@ -5,9 +5,9 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { IApiError } from '@/config';
+import { IApiError, queryClient } from '@/config';
 import { useAuth } from '@/modules/auth';
-import { PermissionRoles } from '@/modules/core';
+import { AddressBookQueryKey, PermissionRoles } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useContactToast } from './useContactToast';
@@ -83,7 +83,12 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
-      await listContactsRequest.refetch();
+      const queryKeysToInvalidate = [
+        ...AddressBookQueryKey.LIST_BY_USER(workspaceId!),
+      ];
+      queryClient.invalidateQueries([...queryKeysToInvalidate, true]);
+      queryClient.invalidateQueries([...queryKeysToInvalidate, false]);
+      await listContactsPaginatedRequest.refetch();
       contactDialog.onClose();
       createAndUpdateSuccessToast();
     },
@@ -178,6 +183,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     form: { ...form, handleCreateContact, handleUpdateContact },
     search: { value: search, handler: debouncedSearchHandler },
     paginatedContacts: listContactsPaginatedRequest,
+    workspaceId,
     //functions
     navigate,
     handleOpenDialog,

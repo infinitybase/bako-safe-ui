@@ -28,6 +28,7 @@ export interface FindContactsParams {
 export interface GetPaginatedContactsParams {
   q?: string;
   includePersonal?: boolean;
+  excludeContacts?: string[];
   perPage?: number;
   page?: number;
   orderBy?: string;
