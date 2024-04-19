@@ -16,6 +16,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   account: string;
   status: TransactionState;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
@@ -32,7 +33,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal size="xl" onClose={onClose} isOpen={isOpen}>
+    <Dialog.Modal size={['full', 'xl']} onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
         position="relative"
         mb={0}
@@ -105,6 +106,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 e.stopPropagation();
                 e.preventDefault();
                 confirmTransaction();
+                props.callBack && props.callBack();
               }}
             >
               Sign

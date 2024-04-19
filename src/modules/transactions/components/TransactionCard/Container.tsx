@@ -24,6 +24,7 @@ interface TransactionCardContainerProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const Container = ({
@@ -33,6 +34,7 @@ const Container = ({
   transaction,
   account,
   isSigner,
+  callBack,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -47,8 +49,8 @@ const Container = ({
   const gridTemplateColumns = isMobile
     ? '1fr 1fr'
     : childrens.length === 7
-    ? '2fr 1fr 1fr 2fr 2fr 4fr'
-    : '1fr 1fr 2fr 2fr 4fr';
+      ? '2fr 1fr 1fr 2fr 2fr 4fr'
+      : '1fr 1fr 2fr 2fr 4fr';
 
   return (
     <>
@@ -60,6 +62,7 @@ const Container = ({
           account={account}
           status={status}
           isSigner={isSigner}
+          callBack={callBack}
         />
       )}
       <Card

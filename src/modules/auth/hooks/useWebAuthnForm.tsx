@@ -2,6 +2,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { useWebAuthnLastLoginId } from './useWebAuthnLastLoginId';
+
 const createSchema = yup.object({
   name: yup
     .string()
@@ -14,6 +16,8 @@ const loginSchema = yup.object({
 });
 
 const useWebAuthnForm = () => {
+  const { lastLoginId } = useWebAuthnLastLoginId();
+
   const memberForm = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -28,7 +32,7 @@ const useWebAuthnForm = () => {
     reValidateMode: 'onBlur',
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      name: '',
+      name: lastLoginId || '',
     },
   });
 

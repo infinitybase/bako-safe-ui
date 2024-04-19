@@ -40,7 +40,7 @@ const TransactionsVaultPage = () => {
     defaultIndex,
   } = useTransactionList();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isMobile } = useScreenSize();
   const menuDrawer = useDisclosure();
 
   return (
@@ -48,7 +48,7 @@ const TransactionsVaultPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <Box mb={10}>
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -143,6 +143,23 @@ const TransactionsVaultPage = () => {
         openIndex={defaultIndex}
         key={defaultIndex.join(',')}
         pb={10}
+        maxH="77.5vh"
+        overflowY="scroll"
+        scrollBehavior="smooth"
+        pr={4}
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.200',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
       >
         {infinityTransactions?.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
@@ -155,11 +172,15 @@ const TransactionsVaultPage = () => {
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
-                    <TransactionCard.Details transaction={transaction} />
+                    <TransactionCard.Details
+                      transaction={transaction}
+                      isInTheVault
+                    />
                   }
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
+                  callBack={() => filter.set(StatusFilter.ALL)}
                 >
                   {!isMobile && (
                     <TransactionCard.CreationDate>
@@ -180,6 +201,7 @@ const TransactionsVaultPage = () => {
                     isSigner={isSigner}
                     transaction={transaction}
                     status={transactionStatus({ ...transaction, account })}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 </TransactionCard.Container>
               </CustomSkeleton>

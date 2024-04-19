@@ -59,7 +59,7 @@ const UserTransactionsPage = () => {
 
   const { isMobile } = useScreenSize();
 
-  const { OWNER, MANAGER } = PermissionRoles;
+  const { OWNER, MANAGER, ADMIN } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
@@ -127,7 +127,7 @@ const UserTransactionsPage = () => {
         </HStack>
         <Box>
           <Button
-            isDisabled={!hasPermission([OWNER, MANAGER])}
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
@@ -232,7 +232,28 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List mt={1} w="full" spacing={[3, 5]}>
+      <TransactionCard.List
+        mt={1}
+        w="full"
+        spacing={[3, 5]}
+        maxH="77.5vh"
+        overflowY="scroll"
+        pr={4}
+        scrollBehavior="smooth"
+        sx={{
+          '&::-webkit-scrollbar': {
+            width: '5px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.200',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
         {!transactionRequest.isLoading &&
           !transactionRequest?.transactions.length && <EmptyTransaction />}
 
@@ -242,13 +263,14 @@ const UserTransactionsPage = () => {
           );
 
           return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
+            <Box w="full" key={transaction.id} ref={infinityTransactionsRef}>
               <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
                 {isMobile ? (
                   <TransactionCardMobile
                     isSigner={isSigner}
                     transaction={transaction}
                     account={account}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 ) : (
                   <TransactionCard.Container
@@ -283,6 +305,7 @@ const UserTransactionsPage = () => {
                       isSigner={isSigner}
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
+                      callBack={() => filter.set(StatusFilter.ALL)}
                     />
                   </TransactionCard.Container>
                 )}

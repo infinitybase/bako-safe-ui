@@ -23,13 +23,12 @@ import logo from '@/assets/bakoLogoWhite.svg';
 import {
   ExitIcon,
   NotificationIcon,
-  QuestionIcon,
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
 import { useAuth } from '@/modules/auth/hooks';
 import { TypeUser } from '@/modules/auth/services';
-import { useLoadImage, useScreenSize } from '@/modules/core/hooks';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -68,7 +67,6 @@ const TopBarItem = chakra(SpacedBox, {
 const UserBox = () => {
   const { isMobile } = useScreenSize();
   const auth = useAuth();
-  const avatarImage = useLoadImage(auth.avatar);
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const { drawer } = useSidebar();
@@ -164,23 +162,6 @@ const UserBox = () => {
                         <Text fontSize="xs">+{unreadCounter}</Text>
                       </Center>
                     )}
-                  </HStack>
-                </Box>
-
-                <Box
-                  borderTop={'1px solid'}
-                  borderTopColor={'dark.100'}
-                  cursor={'pointer'}
-                  onClick={() =>
-                    window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-                  }
-                  p={5}
-                >
-                  <HStack>
-                    <Icon color="grey.200" as={QuestionIcon} fontSize="xl" />
-                    <Text color="grey.200" fontWeight={'bold'}>
-                      Help
-                    </Text>
                   </HStack>
                 </Box>
               </>
@@ -305,8 +286,6 @@ const WorkspaceBox = ({
 };
 
 const Header = () => {
-  const { isMobile } = useScreenSize();
-  // const navigate = useNavigate();
   const { drawer } = useSidebar();
   const createWorkspaceDialog = useDisclosure();
   const {
@@ -345,7 +324,8 @@ const Header = () => {
       px={{ base: 0, sm: 4 }}
       alignItems="center"
       borderBottomWidth={1}
-      position={['fixed', 'relative']}
+      position="sticky"
+      top="0"
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
@@ -389,15 +369,6 @@ const Header = () => {
             currentWorkspace={currentWorkspace.workspace}
             isLoading={currentWorkspace.isLoading}
           />
-        </TopBarItem>
-
-        <TopBarItem
-          display={['none', 'flex']}
-          onClick={() =>
-            window.open(import.meta.env.VITE_USABILITY_URL, '__BLANK')
-          }
-        >
-          <Icon color="grey.200" as={QuestionIcon} />
         </TopBarItem>
 
         <TopBarItem

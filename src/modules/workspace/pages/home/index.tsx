@@ -22,7 +22,6 @@ import {
 import { ITransaction, IWitnesses } from 'bakosafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { GoArrowSwitch } from 'react-icons/go';
 import { IoChevronBack } from 'react-icons/io5';
 
 import {
@@ -36,6 +35,7 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import {
   AssetCard,
@@ -459,10 +459,10 @@ const WorkspacePage = () => {
                 )
               }
             >
-              <ActionCard.Icon icon={GoArrowSwitch} />
+              <ActionCard.Icon icon={TransactionsIcon} />
               <Box>
                 <ActionCard.Title>Transactions</ActionCard.Title>
-                <ActionCard.Description maxWidth={{}}>
+                <ActionCard.Description>
                   Manage Transactions Across All Vaults in One Place.
                 </ActionCard.Description>
               </Box>

@@ -74,13 +74,11 @@ export function getSignature(
   )
     .normalizeS()
     .toCompactRawBytes();
+  const recoveryBit = getRecoveryBit(publicKey, signatureCompact, digest);
+  const sigatureCompactCopy = new Uint8Array(signatureCompact.slice());
+
   return {
-    signature: hexlify(
-      EIP2090_encode(
-        signatureCompact,
-        getRecoveryBit(publicKey, signatureCompact, digest),
-      ),
-    ),
+    signature: hexlify(EIP2090_encode(sigatureCompactCopy, recoveryBit)),
     digest: hexlify(digest),
     sig_compact: signatureCompact,
     dig_compact: digest,

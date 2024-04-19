@@ -2,7 +2,8 @@ import { Box, Link, Text } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutoComplete } from '@/components/autocomplete';
-import { useAddressBook } from '@/modules/addressBook';
+import { useAddressBook } from '@/modules/addressBook/hooks';
+import { useAuth } from '@/modules/auth/hooks';
 
 import { UseChangeMember } from '../../hooks';
 
@@ -13,7 +14,8 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { paginatedContacts } = useAddressBook();
+  const { isSingleWorkspace } = useAuth();
+  const { paginatedContacts, search } = useAddressBook(!isSingleWorkspace);
 
   const bottomAction = (
     <Box mt={2}>
@@ -44,7 +46,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
             index={0}
             label="Name or address"
             value={field.value}
-            onInputChange={addressBook.search.handler}
+            onInputChange={search.handler}
             onChange={field.onChange}
             errorMessage={fieldState.error?.message}
             isInvalid={fieldState.invalid}

@@ -29,12 +29,10 @@ interface OnboardingStepProps {
 const OnboardingStep = (props: OnboardingStepProps) => (
   <Center
     flexDirection="column"
-    mb={[0, 5]}
     p={{
       base: 1,
       sm: 6,
     }}
-    maxH="full"
   >
     <Box m={[4, 8]}>
       <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
@@ -134,8 +132,8 @@ const OnboardingStep = (props: OnboardingStepProps) => (
         </Text>
       </Alert>
     </Box>
-    <Divider m={4} borderColor="dark.100" />
-    <HStack w="full" spacing={4} justifyContent="center">
+    <Divider h="auto" m={4} borderColor="dark.100" />
+    <HStack w="full" spacing={4}>
       <Button
         _hover={{
           borderColor: 'brand.500',

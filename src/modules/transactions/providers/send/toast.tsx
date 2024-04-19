@@ -79,9 +79,7 @@ const useTransactionToast = () => {
                 e.stopPropagation();
                 const resume = transaction.resume;
                 window.open(
-                  `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${
-                    resume.hash
-                  }`,
+                  `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${resume.hash}`,
                   '_BLANK',
                 );
               }}

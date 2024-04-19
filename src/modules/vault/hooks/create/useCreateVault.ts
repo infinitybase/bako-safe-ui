@@ -29,6 +29,7 @@ const useCreateVault = () => {
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
 
@@ -81,6 +82,7 @@ const useCreateVault = () => {
     const template = await TemplateService.getById(id);
     const address: string[] = template.addresses as string[];
 
+    setSelectedTemplate(id);
     form.setValue('minSigners', template.minSigners.toString());
 
     if (template.addresses) {
@@ -164,6 +166,7 @@ const useCreateVault = () => {
     bsafeVault,
     navigate,
     onDeposit,
+    selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
   };

@@ -3,7 +3,6 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Button,
   HStack,
   Icon,
   Text,
@@ -16,20 +15,19 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useTemplateStore } from '@/modules/template/store';
 import { useVaultDetails } from '@/modules/vault/hooks';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, params, menuDrawer } = useVaultDetails();
-  const { setTemplateFormInitial } = useTemplateStore();
+  const { vault, store, navigate, menuDrawer } = useVaultDetails();
+
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
 
@@ -38,7 +36,7 @@ const VaultSettingsPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -90,7 +88,7 @@ const VaultSettingsPage = () => {
           </Breadcrumb>
         )}
 
-        <Button
+        {/* <Button
           variant="secondary"
           bgColor="dark.100"
           border="none"
@@ -109,7 +107,7 @@ const VaultSettingsPage = () => {
           }}
         >
           Set as template
-        </Button>
+        </Button> */}
       </HStack>
 
       <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>

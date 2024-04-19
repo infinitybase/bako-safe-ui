@@ -179,22 +179,27 @@ const CardDetails = (props: CardDetailsProps) => {
                   </HStack>
 
                   {!isSingleWorkspace && (
-                    <Text
+                    <HStack
+                      w="full"
                       alignItems="center"
-                      variant="description"
-                      textOverflow="ellipsis"
-                      noOfLines={2}
-                      isTruncated
+                      justifyContent="flex-start"
+                      gap={2}
                       mb={2}
-                      fontSize={{ base: 'small', sm: 'sm' }}
                     >
                       <HandbagIcon
                         w={{ base: 3, sm: 4 }}
                         h={{ base: 3, sm: 4 }}
-                        mr={2}
                       />
-                      {currentWorkspace.workspace?.name}
-                    </Text>
+                      <Text
+                        variant="description"
+                        textOverflow="ellipsis"
+                        noOfLines={2}
+                        isTruncated
+                        fontSize={{ base: 'small', sm: 'sm' }}
+                      >
+                        {currentWorkspace.workspace?.name}
+                      </Text>
+                    </HStack>
                   )}
 
                   <Text
@@ -317,7 +322,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       You dont have permission to send transactions.
                     </Text>
                   ) : (
-                    <Text hidden={isMobile} variant="description" fontSize="xs">
+                    <Text hidden={true} variant="description" fontSize="xs">
                       Send single or batch <br /> payments with multi assets.
                     </Text>
                   )}

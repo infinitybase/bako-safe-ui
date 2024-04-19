@@ -21,7 +21,8 @@ import {
 } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { usePermissions, useScreenSize } from '@/modules/core/hooks';
+import { PermissionRoles } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -50,22 +51,23 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultDetails();
-  const { goWorkspace } = useWorkspace();
+  const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
-  const { isViewer } = usePermissions({
-    id: vault.id,
-    workspace: workspace!,
-  });
+
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
+
+  const { OWNER, SIGNER } = PermissionRoles;
+
+  const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   if (!vault) return null;
 
@@ -74,7 +76,7 @@ const VaultDetailsPage = () => {
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={9} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -145,7 +147,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
-          isDisabled={isViewer}
+          isDisabled={!canSetTemplate}
           onClick={() => {
             if (
               !vault.id ||
@@ -179,7 +181,7 @@ const VaultDetailsPage = () => {
       >
         <CardDetails vault={vault} store={store} />
 
-        {!isMobile && <SignersDetails vault={vault} />}
+        {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>
 
       <HStack spacing={4} mb={3}>
@@ -217,13 +219,16 @@ const VaultDetailsPage = () => {
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
-                    <TransactionCard.Details transaction={transaction} />
+                    <TransactionCard.Details
+                      transaction={transaction}
+                      isInTheVault
+                    />
                   }
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
                 >
-                  {!isMobile && (
+                  {!vaultRequiredSizeToColumnLayout && (
                     <TransactionCard.CreationDate>
                       {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
                     </TransactionCard.CreationDate>
@@ -247,7 +252,7 @@ const VaultDetailsPage = () => {
                       ...transaction,
                       account,
                     })}
-                    showDescription={!isMobile}
+                    showDescription={!vaultRequiredSizeToColumnLayout}
                   />
                   <TransactionCard.Actions
                     isSigner={isSigner}
@@ -312,7 +317,7 @@ const VaultDetailsPage = () => {
         )
       )}
 
-      {isMobile && (
+      {vaultRequiredSizeToColumnLayout && (
         <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>

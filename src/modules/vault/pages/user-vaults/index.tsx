@@ -118,7 +118,7 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER])}
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             onClick={() =>
               navigate(
                 Pages.createVault({
@@ -132,7 +132,7 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton display="flex" isLoaded={!workspaceHomeRequest.isLoading}>
         <Stack w="full" direction={['column', 'row']} spacing={6}>
           <ActionCard.Container
             flex={1}

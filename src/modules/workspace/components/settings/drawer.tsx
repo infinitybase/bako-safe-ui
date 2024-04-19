@@ -105,18 +105,18 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
           </Box>
         </Box>
 
-        {isEditable && (
-          <HStack w="35%" spacing={2}>
-            <Badge
-              rounded="xl"
-              fontSize="xs"
-              py={1}
-              px={4}
-              variant={permission?.variant}
-            >
-              {permission?.title}
-            </Badge>
+        <HStack w="35%" spacing={2}>
+          <Badge
+            rounded="xl"
+            fontSize="xs"
+            py={1}
+            px={4}
+            variant={permission?.variant}
+          >
+            {permission?.title}
+          </Badge>
 
+          {isEditable && (
             <Box>
               <EditIcon
                 _hover={{
@@ -128,19 +128,9 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 h={6}
                 mr={4}
               />
-
-              {/* <RemoveIcon
-                _hover={{
-                  cursor: 'pointer',
-                  opacity: 0.8,
-                }}
-                onClick={() => {}}
-                w={6}
-                h={6}
-              /> */}
             </Box>
-          </HStack>
-        )}
+          )}
+        </HStack>
       </Box>
     </Card>
   );
