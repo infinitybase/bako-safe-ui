@@ -6,6 +6,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -49,6 +50,7 @@ const TransactionFormField = ({
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
   const { isSingleWorkspace } = useAuth();
+
   const {
     createContactRequest,
     search,
@@ -187,7 +189,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const hasEmptyField = Object.values(transaction).some(
           (value) => value === '',
         );
-        const isDisabled = hasEmptyField || fieldState.invalid;
+
+        const currentAmount = form.watch(`transactions.${index}.amount`);
+        const isCurrentAmountZero = Number(currentAmount) === 0;
+
+        const isDisabled =
+          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.to,
         );
@@ -206,16 +213,18 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction
-                      onClick={() => accordion.open(index)}
-                    />
-                    <TransactionAccordion.DeleteAction
-                      isDisabled={props.transactions.fields.length === 1}
-                      onClick={() => {
-                        transactions.remove(index);
-                        accordion.close();
-                      }}
-                    />
+                    <HStack spacing={4}>
+                      <TransactionAccordion.EditAction
+                        onClick={() => accordion.open(index)}
+                      />
+                      <TransactionAccordion.DeleteAction
+                        isDisabled={props.transactions.fields.length === 1}
+                        onClick={() => {
+                          transactions.remove(index);
+                          accordion.close();
+                        }}
+                      />
+                    </HStack>
                     <TransactionAccordion.ConfirmAction
                       onClick={() => accordion.close()}
                       isDisabled={isDisabled}

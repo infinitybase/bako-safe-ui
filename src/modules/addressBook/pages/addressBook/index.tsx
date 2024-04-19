@@ -19,7 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks/useGetWorkspaceRequest';
@@ -56,6 +56,8 @@ const AddressBookPage = () => {
     createContactRequest,
   } = useAddressBook(isSingleWorkspace);
 
+  const { isExtraSmall } = useScreenSize();
+
   const { data: contacts } = listContactsRequest;
 
   const { hasPermission, goWorkspace } = useWorkspace();
@@ -87,10 +89,26 @@ const AddressBookPage = () => {
         />
       )}
 
-      <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
-        <HStack w="full" h="10" justifyContent="space-between" my={2}>
-          <HStack>
+      <VStack
+        w="full"
+        spacing={6}
+        p={{ base: 1, sm: 1 }}
+        px={{ base: 'auto', sm: 8 }}
+      >
+        <Box
+          w="full"
+          h={{ base: '20', sm: '10' }}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          my={2}
+          rowGap={6}
+          mb={isExtraSmall ? 6 : 'unset'}
+        >
+          <HStack w={isExtraSmall ? 'full' : 'unset'}>
             <Button
+              w={isExtraSmall ? 'full' : 'unset'}
               variant="primary"
               fontWeight="semibold"
               fontSize={15}
@@ -107,7 +125,7 @@ const AddressBookPage = () => {
               Back home
             </Button>
 
-            <Breadcrumb display={['none', 'initial']} ml={8}>
+            <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
               <BreadcrumbItem>
                 <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 <BreadcrumbLink
@@ -147,8 +165,9 @@ const AddressBookPage = () => {
           </HStack>
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <Box>
+            <Box w={isExtraSmall ? 'full' : 'unset'}>
               <Button
+                w="full"
                 variant="primary"
                 fontWeight="bold"
                 leftIcon={<FaRegPlusSquare />}
@@ -158,9 +177,9 @@ const AddressBookPage = () => {
               </Button>
             </Box>
           )}
-        </HStack>
+        </Box>
 
-        <Stack w="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -213,7 +232,7 @@ const AddressBookPage = () => {
           </ActionCard.Container>
         </Stack>
 
-        <Box mt={4} mb={-2} alignSelf="flex-start">
+        <Box mt={4} mb={-4} alignSelf="flex-start">
           <Text
             variant="subtitle"
             fontWeight="semibold"
@@ -228,7 +247,8 @@ const AddressBookPage = () => {
           w="full"
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
             xl: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
           }}

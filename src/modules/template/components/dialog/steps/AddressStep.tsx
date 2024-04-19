@@ -7,7 +7,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Select,
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
@@ -17,7 +16,13 @@ import {
   UseFormReturn,
 } from 'react-hook-form';
 
-import { Autocomplete, Dialog, RemoveIcon, UserAddIcon } from '@/components';
+import {
+  Autocomplete,
+  Dialog,
+  RemoveIcon,
+  Select,
+  UserAddIcon,
+} from '@/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
@@ -180,7 +185,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                     value={field.value}
                     defaultValue={1}
                     onChange={field.onChange}
-                    placeholder=" "
+                    placeholder={''}
                   >
                     {Array(addresses.fields.length)
                       .fill('')

@@ -1,11 +1,7 @@
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Select,
-} from '@chakra-ui/react';
+import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
+
+import { Select } from '@/components';
 
 import { UseWebAuthn } from '../../hooks';
 
@@ -27,19 +23,15 @@ export const LoginWebAuthnForm = ({
         render={({ field, fieldState }) => (
           <FormControl>
             <Select
+              label="Username"
               value={field.value}
               onChange={field.onChange}
-              autoComplete="off"
-              placeholder=" "
+              options={data?.map((user) => ({
+                label: user.name,
+                value: user.webauthn.id,
+              }))}
               isDisabled={data?.length === 0}
-            >
-              {data?.map((user) => (
-                <option key={user.id} value={user.webauthn.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-            <FormLabel color="gray">Username</FormLabel>
+            />
             <FormHelperText
               ml={2}
               color={form.formState.errors.name ? 'error.500' : 'grey.200'}

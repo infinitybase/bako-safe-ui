@@ -13,7 +13,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <HStack w={235}>
+    <HStack w={180}>
       <Avatar
         variant="roundedSquare"
         name={vault.name}
@@ -26,11 +26,15 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
       <VStack ml={1} alignItems="flex-start" spacing={0}>
         {!vault.workspace.single && (
           <HStack>
-            <Icon as={HandbagIcon} fontSize={['xs', 14]} color="grey.200" />
+            <Icon
+              as={HandbagIcon}
+              fontSize={{ base: 'xs', sm: 14 }}
+              color="grey.200"
+            />
             <Text
               maxW={40}
               color="grey.200"
-              fontSize={['xs', 'sm']}
+              fontSize={{ base: 'xs', sm: 'sm' }}
               isTruncated
             >
               {vault.workspace?.name}
@@ -38,7 +42,7 @@ const VaultInfo = ({ vault }: TransactionVaultInfoProps) => {
           </HStack>
         )}
         <Heading
-          maxW={180}
+          maxW={{ base: 110, xs: 180, sm: 120 }}
           variant={isMobile ? 'title-sm' : 'title-md'}
           color="grey.200"
           mt={0}

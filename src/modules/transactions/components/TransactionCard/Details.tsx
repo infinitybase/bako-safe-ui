@@ -30,6 +30,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { limitCharacters } from '@/utils';
 
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
 import { TransactionStepper } from './TransactionStepper';
@@ -45,6 +46,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
+  isInTheVaultPage?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -64,7 +66,7 @@ const AssetBoxInfo = ({
   const clipboard = useClipboard(
     isContract ? contractAddress : asset?.to ?? '',
   );
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -76,7 +78,7 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      px={{ base: 0, sm: 5 }}
+      px={{ base: 0, md: 5 }}
       py={{ base: 3, sm: 5 }}
       spacing={{ base: 1, sm: 8 }}
       w="full"
@@ -106,7 +108,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={[120, 140]}>
+            <Box mt={0.5} w={{ base: 120, sm: 140 }}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -179,7 +181,7 @@ const AssetBoxInfo = ({
           h="full"
           w="full"
           minH={51}
-          maxW={600}
+          maxW={200}
           spacing={0}
           justifyContent="center"
           alignItems={{ base: 'center', sm: 'start' }}
@@ -204,9 +206,16 @@ const AssetBoxInfo = ({
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toAddress(),
-            )}
+            {isExtraSmall
+              ? limitCharacters(
+                  AddressUtils.format(
+                    Address.fromString(asset.to ?? '').toAddress(),
+                  ) ?? '',
+                  7,
+                )
+              : AddressUtils.format(
+                  Address.fromString(asset.to ?? '').toAddress(),
+                )}
           </Text>
         </VStack>
       )}
@@ -214,7 +223,11 @@ const AssetBoxInfo = ({
   );
 };
 
-const Details = ({ transaction, status }: TransactionDetailsProps) => {
+const Details = ({
+  transaction,
+  status,
+  isInTheVaultPage,
+}: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
 
   const fromConnector = !!transaction?.summary;
@@ -227,7 +240,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${hash}`,
+      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
       '_BLANK',
     );
   };
@@ -238,17 +251,17 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
         pt={{ base: 0, sm: 5 }}
         alignSelf="flex-start"
         display="flex"
-        direction={['column', 'row']}
+        direction={{ base: 'column', md: 'row' }}
         alignItems="center"
         justify="space-between"
-        maxW="full"
-        w={['85%', '80%']}
+        columnGap={isInTheVaultPage ? '3rem' : '8rem'}
+        w="full"
       >
         <Box
           display="flex"
-          flexDirection={['row', 'column']}
-          maxW="full"
-          minW={[200, 486]}
+          flexDirection={{ base: 'row', sm: 'column' }}
+          w={{ base: '100%', lg: 'unset' }}
+          minW={{ base: 200, sm: 486 }}
           flexWrap="wrap"
         >
           <Box mb={{ base: 2, sm: 4 }}>
@@ -321,7 +334,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             </>
           )}
 
-          <VStack maxW="full" alignItems="flex-start" flexWrap="wrap">
+          <VStack alignItems="flex-start" flexWrap="wrap" w="100%">
             {transaction.assets.map((asset, index) => (
               <AssetBoxInfo
                 key={index}
@@ -332,7 +345,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
                   transactionID: transaction.id,
                   recipientNickname: asset?.recipientNickname,
                 }}
-                borderColor={index > 0 ? 'dark.100' : 'transparent'}
+                borderColor={index > 0 ? 'grey' : 'transparent'}
                 hasToken={hasToken}
               />
             ))}
@@ -351,7 +364,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
             w="full"
             mt={10}
             hidden={transaction.status !== TransactionStatus.SUCCESS}
-            borderColor="dark.100"
+            borderColor="grey"
             borderTopWidth={1}
           >
             <HStack
@@ -359,6 +372,7 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
               px={{ base: 0, sm: 5 }}
               py={{ base: 3, sm: 5 }}
               gap={8}
+              justifyContent="space-between"
             >
               <Text color="grey.200">Gás Fee (ETH)</Text>
               <Text
@@ -372,7 +386,12 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
           </Box>
         </Box>
 
-        <Box alignSelf="flex-start">
+        <Box
+          alignSelf="flex-start"
+          w="full"
+          minW={{ base: 200, md: 300 }}
+          maxW={600}
+        >
           <TransactionStepper steps={transactionHistory!} />
         </Box>
       </Stack>

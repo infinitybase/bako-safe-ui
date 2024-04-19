@@ -15,7 +15,9 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
   account: string;
   status: TransactionState;
+  isInTheVaultPage?: boolean;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
@@ -32,17 +34,17 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal size={['full', 'xl']} onClose={onClose} isOpen={isOpen}>
+    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
         position="relative"
         mb={0}
-        top={-5}
+        top={{ base: -5, sm: -7 }}
         w="full"
-        maxW={480}
+        maxW={{ base: 480, xs: 'unset' }}
         title="Transaction Details"
       />
-      <Dialog.Body>
-        <VStack spacing={5}>
+      <Dialog.Body mt={-4}>
+        <VStack spacing={{ base: 3, xs: 5 }}>
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount
@@ -105,6 +107,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 e.stopPropagation();
                 e.preventDefault();
                 confirmTransaction();
+                props.callBack && props.callBack();
               }}
             >
               Sign

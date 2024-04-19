@@ -40,7 +40,7 @@ export const VaultCard = ({
       bg="grey.800"
       w="100%"
       maxW="full"
-      my={[6, 0]}
+      my={{ base: 6, sm: 0 }}
       cursor="pointer"
       _hover={{
         transform: 'scale(1.03)',
@@ -68,17 +68,24 @@ export const VaultCard = ({
                     fontSize={14}
                     color="grey.200"
                   />
-                  <Text color="grey.400" fontSize="sm" isTruncated>
+                  <Text
+                    color="grey.400"
+                    fontSize="sm"
+                    isTruncated
+                    maxW={{
+                      base: 150,
+                      sm: 130,
+                      lg: 200,
+                    }}
+                  >
                     {workspace?.name}
                   </Text>
                 </HStack>
               )}
               <Heading
                 maxW={{
-                  base: 'full',
-                  sm: 300,
-                  lg: 210,
-                  xl: 240,
+                  base: 150,
+                  lg: !workspace.single ? 140 : 200,
                 }}
                 variant="title-md"
                 color="grey.200"

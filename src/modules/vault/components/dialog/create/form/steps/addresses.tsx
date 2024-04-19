@@ -2,19 +2,16 @@ import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   FormHelperText,
-  FormLabel,
   Heading,
   HStack,
-  Select,
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Autocomplete, Dialog, RemoveIcon } from '@/components';
+import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -32,6 +29,7 @@ export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
   templates: ITemplate[];
+  selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
   setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
 }
 
@@ -39,6 +37,7 @@ const VaultAddressesStep = ({
   form,
   addresses,
   templates,
+  selectedTemplate,
   setTemplate,
 }: VaultAddressesStepProps) => {
   const { isSingleWorkspace } = useAuth();
@@ -82,21 +81,15 @@ const VaultAddressesStep = ({
         >
           <FormControl>
             <Select
-              placeholder=" "
-              defaultValue=""
+              label="Do you want to use a template?"
+              value={selectedTemplate}
+              onChange={(value) => setTemplate(value)}
               isDisabled={!templates.length}
-              onChange={(item) => setTemplate(item.target.value)}
-            >
-              {templates.length > 0 &&
-                templates?.map((item: ITemplate) => {
-                  return (
-                    <option value={item.id} key={item.id}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-            </Select>
-            <FormLabel>Do you want to use a template?</FormLabel>
+              options={templates?.map((template) => ({
+                label: template.name,
+                value: template.id,
+              }))}
+            />
             <FormHelperText color="grey.450">
               You can make your work easier by following a rule that {`you've`}{' '}
               set up.
@@ -216,9 +209,7 @@ const VaultAddressesStep = ({
           </VStack>
         </Dialog.Section>
 
-        <Divider borderColor="dark.100" my={9} />
-
-        <HStack position="relative">
+        <HStack position="relative" mt="12">
           <Dialog.Section
             w="full"
             maxW={350}
@@ -237,24 +228,15 @@ const VaultAddressesStep = ({
             render={({ field }) => (
               <FormControl position="relative" maxW={'full'} w="24">
                 <Select
-                  pt={2}
-                  pb={2}
-                  value={field.value}
+                  value={Number(field.value)}
                   onChange={field.onChange}
-                  placeholder=" "
-                  cursor="pointer"
-                  _hover={{
-                    opacity: 0.8,
-                  }}
-                >
-                  {Array(addresses.fields.length)
+                  options={Array(addresses.fields.length)
                     .fill('')
-                    .map((_, index) => (
-                      <option key={index + 1} value={index + 1}>
-                        {index + 1}
-                      </option>
-                    ))}
-                </Select>
+                    .map((_, index) => ({
+                      label: index + 1,
+                      value: index + 1,
+                    }))}
+                />
               </FormControl>
             )}
           />
@@ -262,8 +244,8 @@ const VaultAddressesStep = ({
         <FormControl>
           <FormHelperText
             color="error.500"
-            maxW={['full', 'full']}
-            minW={['300', 'full']}
+            maxW={{ base: 'full', sm: 'full' }}
+            minW={{ base: '300', sm: 'full' }}
           >
             {minSigners}
           </FormHelperText>
