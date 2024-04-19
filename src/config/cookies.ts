@@ -56,11 +56,15 @@ export class CookiesConfig {
   }
 
   private static decrypt(encryptedValue: string): string {
-    const decrypted = CryptoJS.AES.decrypt(
-      encryptedValue,
-      this.encryptionKey,
-    ).toString(CryptoJS.enc.Utf8);
+    try {
+      const decrypted = CryptoJS.AES.decrypt(
+        encryptedValue,
+        this.encryptionKey,
+      ).toString(CryptoJS.enc.Utf8);
 
-    return decrypted;
+      return decrypted;
+    } catch (e) {
+      return `${crypto.randomUUID()}`;
+    }
   }
 }
