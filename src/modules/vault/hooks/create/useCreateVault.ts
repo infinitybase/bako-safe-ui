@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useAuthStore } from '@/modules/auth/store';
-import { useCreateBsafeVault } from '@/modules/core/hooks';
+import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
@@ -36,7 +36,7 @@ const useCreateVault = () => {
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
 
-  const bsafeVault = useCreateBsafeVault({
+  const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
@@ -70,7 +70,7 @@ const useCreateVault = () => {
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
-    bsafeVault.create({
+    bakoSafeVault.create({
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
@@ -96,14 +96,14 @@ const useCreateVault = () => {
   };
 
   const onDeposit = async () => {
-    if (bsafeVault.data) {
+    if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bsafeVault.data.address}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.address}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bsafeVault.data.BakoSafeVaultId,
+          vaultId: bakoSafeVault.data.BakoSafeVaultId,
           workspaceId: params.workspaceId!,
         }),
       );
@@ -163,7 +163,7 @@ const useCreateVault = () => {
       set: setTab,
       isLast: tab === TabState.ADDRESSES,
     },
-    bsafeVault,
+    bakoSafeVault,
     navigate,
     onDeposit,
     selectedTemplate,

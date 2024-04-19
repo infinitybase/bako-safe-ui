@@ -6,9 +6,9 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { authCredentials, useAuthStore } from '@/modules/auth';
 
 import {
-  BsafeMutationFunction,
-  BsafeQueryFunction,
-  BsafeQueryOptions,
+  BakoSafeMutationFunction,
+  BakoSafeQueryFunction,
+  BakoSafeQueryOptions,
 } from './types';
 
 const removeCredentialsWhenUnathorized = (error: any) => {
@@ -20,16 +20,16 @@ const removeCredentialsWhenUnathorized = (error: any) => {
   }
 };
 
-const useBsafeQuery = <
+const useBakoSafeQuery = <
   TQueryFnData = unknown,
   TError = any,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryKey: TQueryKey,
-  queryFn: BsafeQueryFunction<TQueryFnData, TQueryKey>,
+  queryFn: BakoSafeQueryFunction<TQueryFnData, TQueryKey>,
   options?: Omit<
-    BsafeQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+    BakoSafeQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     'queryKey' | 'queryFn'
   >,
 ) => {
@@ -56,14 +56,14 @@ const useBsafeQuery = <
   );
 };
 
-const useBsafeMutation = <
+const useBakoSafeMutation = <
   TData = unknown,
   TError = unknown,
   TVariables = void,
   TContext = unknown,
 >(
   mutationKey: MutationKey,
-  mutationFn: BsafeMutationFunction<TData, TVariables>,
+  mutationFn: BakoSafeMutationFunction<TData, TVariables>,
   options?: Omit<
     UseMutationOptions<TData, TError, TVariables, TContext>,
     'mutationKey' | 'mutationFn'
@@ -86,4 +86,4 @@ const useBsafeMutation = <
   );
 };
 
-export { useBsafeMutation, useBsafeQuery };
+export { useBakoSafeMutation, useBakoSafeQuery };

@@ -49,7 +49,7 @@ const DappTransactionRecipient = ({
       <Text variant="description" textAlign="center">
         {isSender ? 'From' : 'To'}
         {isContract && '(Contract)'}
-        {isVault && '(BSAFE)'}:
+        {isVault && '(BakoSafe)'}:
       </Text>
       <Divider borderColor="dark.100" mt={2} mb={4} />
       <Center flexDirection="column">

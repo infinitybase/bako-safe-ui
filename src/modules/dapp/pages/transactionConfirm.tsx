@@ -42,7 +42,7 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         <Dapp.Header
           title="Create transaction"
-          description="Enhance your security by sending transactions and executing contracts through BSafe."
+          description="Enhance your security by sending transactions and executing contracts through BakoSafe."
         />
       </Dapp.Section>
 

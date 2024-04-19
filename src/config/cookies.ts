@@ -4,17 +4,17 @@ import Cookies from 'js-cookie';
 const { VITE_COOKIE_EXPIRATION_TIME, VITE_ENCRYPTION_KEY } = import.meta.env;
 
 export enum CookieName {
-  ACCESS_TOKEN = `bsafe/token`,
-  ACCOUNT_TYPE = `bsafe/account_type`,
-  ADDRESS = `bsafe/address`,
-  AVATAR = `bsafe/avatar`,
-  USER_ID = `bsafe/user_id`,
-  SINGLE_WORKSPACE = `bsafe/single_workspace`,
-  SINGLE_CONTACTS = `bsafe/single_contacts`,
-  WORKSPACE = `bsafe/workspace`,
-  PERMISSIONS = `bsafe/permissions`,
-  WEB_AUTHN_ID = `bsafe/web_authn_id`,
-  WEB_AUTHN_PK = `bsafe/web_authn_pk`,
+  ACCESS_TOKEN = `bakosafe/token`,
+  ACCOUNT_TYPE = `bakosafe/account_type`,
+  ADDRESS = `bakosafe/address`,
+  AVATAR = `bakosafe/avatar`,
+  USER_ID = `bakosafe/user_id`,
+  SINGLE_WORKSPACE = `bakosafe/single_workspace`,
+  SINGLE_CONTACTS = `bakosafe/single_contacts`,
+  WORKSPACE = `bakosafe/workspace`,
+  PERMISSIONS = `bakosafe/permissions`,
+  WEB_AUTHN_ID = `bakosafe/web_authn_id`,
+  WEB_AUTHN_PK = `bakosafe/web_authn_pk`,
 }
 
 interface Cookie {

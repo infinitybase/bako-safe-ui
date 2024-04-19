@@ -5,7 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
-import { useBsafeCreateTransaction, WorkspacesQueryKey } from '@/modules/core';
+import {
+  useBakoSafeCreateTransaction,
+  WorkspacesQueryKey,
+} from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
@@ -63,7 +66,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     validateBalance: (asset, amount) =>
       vaultAssets.hasAssetBalance(asset, amount),
   });
-  const transactionRequest = useBsafeCreateTransaction({
+  const transactionRequest = useBakoSafeCreateTransaction({
     vault: vaultDetails.predicateInstance!,
     onSuccess: () => {
       successToast({

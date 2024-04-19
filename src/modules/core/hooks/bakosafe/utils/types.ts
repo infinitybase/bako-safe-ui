@@ -2,26 +2,26 @@ import { IBakoSafeAuth } from 'bakosafe';
 import { QueryFunctionContext, QueryKey } from 'react-query/types/core/types';
 import { UseQueryOptions } from 'react-query/types/react/types';
 
-export interface BsafeAuthParams {
+export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
 }
 
-export interface BsafeQueryContext<
+export interface BakoSafeQueryContext<
   TQueryKey extends QueryKey = QueryKey,
   TPageParam = any,
 > extends QueryFunctionContext<TQueryKey, TPageParam>,
-    BsafeAuthParams {}
+    BakoSafeAuthParams {}
 
-export type BsafeQueryFunction<
+export type BakoSafeQueryFunction<
   T = unknown,
   TQueryKey extends QueryKey = QueryKey,
-> = (context: BsafeQueryContext<TQueryKey>) => T | Promise<T>;
+> = (context: BakoSafeQueryContext<TQueryKey>) => T | Promise<T>;
 
-export type BsafeMutationFunction<TData = unknown, TVariables = unknown> = (
-  variables: TVariables & BsafeAuthParams,
+export type BakoSafeMutationFunction<TData = unknown, TVariables = unknown> = (
+  variables: TVariables & BakoSafeAuthParams,
 ) => Promise<TData>;
 
-export interface BsafeQueryOptions<
+export interface BakoSafeQueryOptions<
   TQueryFnData = unknown,
   TError = unknown,
   TData = TQueryFnData,
@@ -30,5 +30,5 @@ export interface BsafeQueryOptions<
     UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     'queryFn'
   > {
-  queryFn?: BsafeQueryFunction<TQueryFnData, TQueryKey>;
+  queryFn?: BakoSafeQueryFunction<TQueryFnData, TQueryKey>;
 }

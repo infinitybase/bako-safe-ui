@@ -10,7 +10,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     addresses,
     onDeposit,
     steps,
-    bsafeVault,
+    bakoSafeVault,
     handleCancel,
     selectedTemplate,
     setFormWithTemplate,
@@ -74,7 +74,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
             tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
           }
           isDisabled={steps.step?.disable}
-          isLoading={bsafeVault.isLoading}
+          isLoading={bakoSafeVault.isLoading}
           _hover={{
             opacity: !steps.step?.disable && 0.8,
           }}

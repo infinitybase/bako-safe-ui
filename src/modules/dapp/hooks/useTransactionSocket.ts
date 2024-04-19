@@ -29,18 +29,18 @@ export const useTransactionSocket = () => {
       //   type,
       // });
       if (type === BakoSafeConnectors.TRANSACTION_SEND) {
-        const bsafeVault = await Vault.create({
+        const bakoSafeVault = await Vault.create({
           predicateAddress: address,
           token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
           address: CookiesConfig.getCookie(ADDRESS)!,
         });
-        //console.log('[VAULT]: ', bsafeVault);
+        //console.log('[VAULT]: ', bakoSafeVault);
         summary.getTransactionSummary({
-          providerUrl: bsafeVault.provider.url,
+          providerUrl: bakoSafeVault.provider.url,
           transactionLike: transaction,
         });
-        //console.log('[VAULT]: ', bsafeVault);
-        setVault(bsafeVault);
+        //console.log('[VAULT]: ', bakoSafeVault);
+        setVault(bakoSafeVault);
         setFUELTransaction(transaction);
       }
     },

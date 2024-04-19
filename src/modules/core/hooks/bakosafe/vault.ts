@@ -2,17 +2,17 @@ import { Vault } from 'bakosafe';
 
 import { useAuth } from '@/modules/auth';
 
-import { useBsafeMutation, useBsafeQuery } from './utils';
+import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
   VAULT: (id: string) => [...VAULT_QUERY_KEYS.DEFAULT, id],
 };
 
-const useBsafeVault = (id: string) => {
+const useBakoSafeVault = (id: string) => {
   const auth = useAuth();
 
-  const { data, ...rest } = useBsafeQuery(
+  const { data, ...rest } = useBakoSafeQuery(
     [...VAULT_QUERY_KEYS.VAULT(id), auth.workspaces.current],
     async (context) => {
       return await Vault.create({
@@ -28,25 +28,25 @@ const useBsafeVault = (id: string) => {
   };
 };
 
-interface UseCreateBsafeVaultParams {
+interface UseCreateBakoSafeVaultParams {
   onSuccess: (data: Vault) => void;
   onError: () => void;
 }
 
-interface UseCreateBsafeVaultPayload {
+interface UseCreateBakoSafeVaultPayload {
   name: string;
   description: string;
   addresses: string[];
   minSigners: number;
 }
 
-const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
+const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   const { hasWallet } = useAuth();
 
-  const { mutate, ...mutation } = useBsafeMutation<
+  const { mutate, ...mutation } = useBakoSafeMutation<
     Vault,
     unknown,
-    UseCreateBsafeVaultPayload
+    UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
@@ -77,4 +77,4 @@ const useCreateBsafeVault = (params?: UseCreateBsafeVaultParams) => {
   };
 };
 
-export { useBsafeVault, useCreateBsafeVault };
+export { useBakoSafeVault, useCreateBakoSafeVault };

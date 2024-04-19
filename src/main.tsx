@@ -6,7 +6,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from '@/App';
-import { BsafeQueryClientProvider } from '@/config';
+import { BakoSafeQueryClientProvider } from '@/config';
 import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
@@ -24,11 +24,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           connectors: defaultConnectors() as any,
         }}
       >
-        <BsafeQueryClientProvider>
+        <BakoSafeQueryClientProvider>
           <TransactionSendProvider>
             <App />
           </TransactionSendProvider>
-        </BsafeQueryClientProvider>
+        </BakoSafeQueryClientProvider>
       </FuelProvider>
     </ChakraProvider>
   </React.StrictMode>,

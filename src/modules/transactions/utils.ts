@@ -18,7 +18,7 @@ export interface TransactionStatusParams {
   status: TransactionStatus;
 }
 
-/* TODO: Fix this to use BSAFE SDK */
+/* TODO: Fix this to use bako safe SDK */
 export const transactionStatus = ({
   witnesses,
   account,
