@@ -270,6 +270,7 @@ const UserTransactionsPage = () => {
                     isSigner={isSigner}
                     transaction={transaction}
                     account={account}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 ) : (
                   <TransactionCard.Container
@@ -304,6 +305,7 @@ const UserTransactionsPage = () => {
                       isSigner={isSigner}
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
+                      callBack={() => filter.set(StatusFilter.ALL)}
                     />
                   </TransactionCard.Container>
                 )}

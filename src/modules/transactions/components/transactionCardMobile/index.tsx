@@ -13,6 +13,7 @@ interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
@@ -41,6 +42,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         account={account}
         status={status}
         isSigner={isSigner}
+        callBack={props.callBack}
       />
 
       <Card

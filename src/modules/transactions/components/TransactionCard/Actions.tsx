@@ -29,6 +29,7 @@ interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
@@ -51,6 +52,7 @@ const Actions = ({
   transaction,
   status,
   isSigner,
+  callBack,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
@@ -101,7 +103,8 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction();
+              confirmTransaction(callBack);
+              //callBack && callBack();
             }}
           >
             Sign
