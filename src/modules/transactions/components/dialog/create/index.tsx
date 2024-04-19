@@ -19,8 +19,18 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
+  if (
+    transactionFee &&
+    !form.getValues(`transactions.${accordion.index}.fee`)
+  ) {
+    form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
+    form.trigger(`transactions.${accordion.index}.amount`);
+  }
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
+
 
   return (
     <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
@@ -62,7 +72,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           }
           variant="description"
         >
-          Fee (network): {resolveTransactionCosts.data?.fee.format()}
+          Fee (network): {transactionFee}
         </Text>
       </Flex>
 
