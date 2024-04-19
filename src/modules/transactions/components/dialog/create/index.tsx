@@ -28,6 +28,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
     form.trigger(`transactions.${accordion.index}.amount`);
   }
+  const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
+  const isCurrentAmountZero = Number(currentAmount) === 0;
+
 
   return (
     <Dialog.Modal
@@ -79,7 +82,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid || !transactionFee}
+          isDisabled={!form.formState.isValid || isCurrentAmountZero}
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
           _hover={{

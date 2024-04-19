@@ -180,6 +180,7 @@ const TransactionsVaultPage = () => {
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
+                  callBack={() => filter.set(StatusFilter.ALL)}
                 >
                   {!isMobile && (
                     <TransactionCard.CreationDate>
@@ -200,6 +201,7 @@ const TransactionsVaultPage = () => {
                     isSigner={isSigner}
                     transaction={transaction}
                     status={transactionStatus({ ...transaction, account })}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 </TransactionCard.Container>
               </CustomSkeleton>

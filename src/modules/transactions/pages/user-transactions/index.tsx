@@ -59,7 +59,7 @@ const UserTransactionsPage = () => {
 
   const { isMobile } = useScreenSize();
 
-  const { OWNER, MANAGER } = PermissionRoles;
+  const { OWNER, MANAGER, ADMIN } = PermissionRoles;
 
   return (
     <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
@@ -127,7 +127,7 @@ const UserTransactionsPage = () => {
         </HStack>
         <Box>
           <Button
-            isDisabled={!hasPermission([OWNER, MANAGER])}
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
@@ -270,6 +270,7 @@ const UserTransactionsPage = () => {
                     isSigner={isSigner}
                     transaction={transaction}
                     account={account}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 ) : (
                   <TransactionCard.Container
@@ -304,6 +305,7 @@ const UserTransactionsPage = () => {
                       isSigner={isSigner}
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
+                      callBack={() => filter.set(StatusFilter.ALL)}
                     />
                   </TransactionCard.Container>
                 )}

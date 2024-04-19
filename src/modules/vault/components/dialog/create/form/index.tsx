@@ -12,6 +12,7 @@ export interface CreateVaultFormProps {
   addresses: UseCreateVaultDialogReturn['addresses'];
   onDeposit: UseCreateVaultDialogReturn['onDeposit'];
   onSaveTemplate: UseCreateVaultDialogReturn['onSaveTemplate'];
+  selectedTemplate: UseCreateVaultDialogReturn['selectedTemplate'];
   setTemplate: UseCreateVaultDialogReturn['setFormWithTemplate'];
   steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
@@ -29,6 +30,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     addresses,
     onDeposit,
     steps,
+    selectedTemplate,
     setTemplate,
     onSaveTemplate,
     search,
@@ -61,6 +63,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             form={form}
             addresses={addresses}
             templates={template}
+            selectedTemplate={selectedTemplate}
             setTemplate={setTemplate}
           />
           <VaultSuccessStep

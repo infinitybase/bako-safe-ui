@@ -1,6 +1,7 @@
-import { FormControl, FormLabel, Select, SelectProps } from '@chakra-ui/react';
+import { FormControl } from '@chakra-ui/react';
 import React from 'react';
 
+import { Select, SelectProps } from '@/components';
 import { Asset, assetsList } from '@/modules/core';
 
 interface Props extends SelectProps {
@@ -26,18 +27,15 @@ function AssetSelect(props: Props) {
   return (
     <FormControl>
       <Select
+        label="Asset"
         value={props.value}
-        onChange={props.onChange}
         isInvalid={props.isInvalid}
-        placeholder=" "
-      >
-        {assets.map((asset) => (
-          <option key={asset.assetId} value={asset.assetId}>
-            {asset.slug} - {asset.name}
-          </option>
-        ))}
-      </Select>
-      <FormLabel color="gray">Asset</FormLabel>
+        onChange={props.onChange}
+        options={assets.map((asset) => ({
+          label: `${asset.slug} - ${asset.name}`,
+          value: asset.assetId,
+        }))}
+      />
       {props.helperText}
     </FormControl>
   );
