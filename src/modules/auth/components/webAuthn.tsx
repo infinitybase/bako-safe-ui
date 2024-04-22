@@ -8,7 +8,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   Heading,
   HStack,
   TabPanel,
@@ -17,7 +16,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
@@ -32,7 +30,6 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const {
     form,
     tabs,
-    resetDialogForms,
     accountsRequest,
     search,
     setSearch,
@@ -65,31 +62,22 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
       <DrawerOverlay />
       <DrawerContent>
-        <Flex
-          mb={12}
-          w="full"
-          justifyContent={
-            tabs.is(WebAuthnState.LOGIN) ? 'flex-end' : 'space-between'
-          }
-        >
-          {tabs.is(WebAuthnState.REGISTER) && (
-            <HStack cursor="pointer" onClick={resetDialogForms} spacing={3}>
-              <MdOutlineArrowBackIosNew width={5} height={5} />
-              <Text fontWeight="semibold" color="white" fontSize="lg">
-                Back
-              </Text>
-            </HStack>
-          )}
-          <HStack cursor="pointer" onClick={closeWebAuthnDrawer} spacing={2}>
-            <CloseIcon w={2.5} h={2.5} color="grey.100" />
-          </HStack>
-        </Flex>
-
         <DrawerHeader mb={8}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="xl" fontWeight="bold" color="white">
-              {formState.title}
-            </Heading>
+            <HStack w="full" justifyContent="space-between">
+              <Heading fontSize="xl" fontWeight="bold" color="white">
+                {formState.title}
+              </Heading>
+
+              <CloseIcon
+                w={2.5}
+                h={2.5}
+                color="grey.100"
+                cursor="pointer"
+                onClick={closeWebAuthnDrawer}
+              />
+            </HStack>
+
             <Text fontSize="sm" color="grey.500">
               {formState.description}
             </Text>
