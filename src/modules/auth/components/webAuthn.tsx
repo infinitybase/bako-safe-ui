@@ -107,10 +107,22 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
             {TabsPanels}
           </Tabs>
 
-          <HStack mt={12} w="full" justify="space-evenly">
+          <VStack w="full" spacing={4}>
+            <Button
+              w="full"
+              variant="primary"
+              onClick={formState.handlePrimaryAction}
+              _hover={{
+                opacity: formState.isDisabled && 0.8,
+              }}
+              isDisabled={!!formState.isDisabled}
+            >
+              {formState.primaryAction}
+            </Button>
+
             {tabs.is(WebAuthnState.LOGIN) && (
               <Button
-                w="45%"
+                w="full"
                 bgColor="transparent"
                 border="1px solid white"
                 variant="secondary"
@@ -124,19 +136,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
                 {formState.secondaryAction}
               </Button>
             )}
-
-            <Button
-              w={tabs.is(WebAuthnState.LOGIN) ? '45%' : '100%'}
-              variant="primary"
-              onClick={formState.handlePrimaryAction}
-              _hover={{
-                opacity: formState.isDisabled && 0.8,
-              }}
-              isDisabled={!!formState.isDisabled}
-            >
-              {formState.primaryAction}
-            </Button>
-          </HStack>
+          </VStack>
         </DrawerBody>
       </DrawerContent>
     </Drawer>
