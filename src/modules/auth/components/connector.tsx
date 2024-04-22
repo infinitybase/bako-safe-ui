@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   Divider,
   Drawer,
@@ -37,11 +38,12 @@ interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
 
 interface CardConnectorProps {
   connector: ConnectorType;
+  isWebAuthn?: boolean;
   onClick: (connector: string) => void;
 }
 
 const CardConnector = (props: CardConnectorProps) => {
-  const { connector, onClick } = props;
+  const { connector, isWebAuthn, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
@@ -75,15 +77,23 @@ const CardConnector = (props: CardConnectorProps) => {
       w="100%"
       h="100%"
       gap={4}
+      justifyContent="space-between"
       p={2}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="dark.50"
+      bgColor={isWebAuthn ? 'warning.900' : 'dark.50'}
+      borderColor={isWebAuthn ? 'brand.500' : 'dark.100'}
       onClick={selectConnector}
       position="relative"
-      _hover={{
-        borderColor: 'grey.100',
-        transition: '0.5s',
-      }}
+      transition="0.5s"
+      _hover={
+        isWebAuthn
+          ? {
+              bg: 'warning.700',
+            }
+          : {
+              borderColor: 'grey.100',
+            }
+      }
     >
       <Box
         w="full"
@@ -101,6 +111,17 @@ const CardConnector = (props: CardConnectorProps) => {
           {connector.label}
         </Heading>
       </Box>
+      {isWebAuthn && (
+        <Badge
+          px={3}
+          py={0.5}
+          variant="gray"
+          borderRadius={10}
+          color="grey.100"
+        >
+          Recommended
+        </Badge>
+      )}
     </Card>
   );
 };
