@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Box,
   Divider,
   Drawer,
@@ -25,10 +24,10 @@ import { CloseIcon } from '@/components/icons/close-icon';
 
 type ConnectorType = {
   name: string;
+  label: string;
   icon?: React.ElementType;
   imageUrl?: string;
   isEnabled?: boolean;
-  isBeta?: boolean;
 };
 
 interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
@@ -36,12 +35,12 @@ interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
   onSelect: (connector: string) => void;
 }
 
-interface ConnectorCardProps {
+interface CardConnectorProps {
   connector: ConnectorType;
   onClick: (connector: string) => void;
 }
 
-const CardConnector = (props: ConnectorCardProps) => {
+const CardConnector = (props: CardConnectorProps) => {
   const { connector, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
@@ -74,13 +73,16 @@ const CardConnector = (props: ConnectorCardProps) => {
     <Card
       as={HStack}
       w="100%"
+      h="100%"
       gap={4}
+      p={2}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="dark.600"
+      bgColor="dark.50"
       onClick={selectConnector}
       position="relative"
       _hover={{
-        borderColor: 'brand.500',
+        borderColor: 'grey.100',
+        transition: '0.5s',
       }}
     >
       <Box
@@ -95,16 +97,10 @@ const CardConnector = (props: ConnectorCardProps) => {
       />
       {ConnectorIcon}
       <Box flex={1}>
-        <Heading
-          fontSize={{ base: 'md', sm: 'lg' }}
-          fontWeight="semibold"
-          color="grey.200"
-        >
-          {connector.name}
+        <Heading fontSize="sm" fontWeight="semibold" color="grey.200">
+          {connector.label}
         </Heading>
       </Box>
-
-      {connector.isBeta && <Badge variant="gray">Beta</Badge>}
     </Card>
   );
 };
@@ -184,4 +180,4 @@ const DrawerConnector = (props: DrawerConnectorProps) => {
   );
 };
 
-export { DrawerConnector };
+export { CardConnector, DrawerConnector };
