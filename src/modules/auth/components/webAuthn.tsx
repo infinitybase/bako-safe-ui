@@ -1,3 +1,4 @@
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -17,8 +18,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
-
-import { CloseIcon } from '@/components/icons/close-icon';
 
 import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
@@ -82,10 +81,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
             </HStack>
           )}
           <HStack cursor="pointer" onClick={closeWebAuthnDrawer} spacing={2}>
-            <Text fontWeight="semibold" color="white" fontSize="lg">
-              Close
-            </Text>
-            <CloseIcon w={6} h={6} />
+            <CloseIcon w={2.5} h={2.5} color="grey.100" />
           </HStack>
         </Flex>
 
