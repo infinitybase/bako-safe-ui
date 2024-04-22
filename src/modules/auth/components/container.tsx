@@ -73,11 +73,13 @@ const SigninContainer = (props: SigninContainerProps) => {
         left="50%"
         transform="translate(-50%, -50%)"
         backgroundColor="dark.50"
-        backdropFilter="blur(8px)"
         minH="80vh"
         minW="55vw"
         display="flex"
         alignItems="center"
+        border={'1px solid transparent'}
+        borderColor="dark.150"
+        boxShadow="lg"
       >
         <Box
           w="35%"
@@ -86,8 +88,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 0px 0px 10px"
           p={{ md: 0, lg: 10 }}
-          pt={{ md: 10, lg: undefined }}
-          pb={{ md: 0, lg: 3.5 }}
+          pb={{ md: 3.5, lg: 3.5 }}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
@@ -98,6 +99,7 @@ const SigninContainer = (props: SigninContainerProps) => {
             alt=""
             style={{
               width: '85%',
+              maxWidth: '11rem',
               marginTop: 'auto',
             }}
           />
@@ -116,14 +118,15 @@ const SigninContainer = (props: SigninContainerProps) => {
         </Box>
 
         <Box
-          m={10}
+          mr={{ base: 12, '2xl': 16 }}
           ml={52}
           w="50%"
+          h="80vh"
           position="sticky"
           display="flex"
           flexDirection="column"
-          alignItems="start"
-          justifyContent="center"
+          alignItems="center"
+          justifyContent="space-evenly"
         >
           {props.children}
         </Box>
