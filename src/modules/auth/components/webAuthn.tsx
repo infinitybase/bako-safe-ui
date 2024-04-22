@@ -1,6 +1,6 @@
 import {
+  Box,
   Button,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -100,7 +100,12 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
           </VStack>
         </DrawerHeader>
 
-        <Divider mb={8} />
+        <Box
+          w="full"
+          h="1px"
+          bgGradient="linear(to-br, brand.500 , brand.800)"
+          mb={8}
+        />
 
         <DrawerBody>
           <Tabs index={tabs.tab} isLazy>
