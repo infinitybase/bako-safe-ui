@@ -1,4 +1,4 @@
-import { BSAFEConnectorEvents } from 'bsafe';
+import { BakoSafeConnectors } from 'bakosafe';
 
 import socket from './useSocketConfig';
 
@@ -20,7 +20,7 @@ export enum UserTypes {
 }
 
 export interface ISocketEmitMessageParams {
-  event: BSAFEConnectorEvents;
+  event: BakoSafeConnectors;
   to: string;
   content: { [key: string]: unknown };
   callback?: () => void;

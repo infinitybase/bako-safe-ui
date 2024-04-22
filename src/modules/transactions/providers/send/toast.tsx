@@ -7,7 +7,7 @@ import {
   Text,
   ToastId,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
+import { ITransaction } from 'bakosafe';
 import { useRef } from 'react';
 
 import { ErrorIcon } from '@/components';

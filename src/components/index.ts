@@ -1,3 +1,4 @@
+export * from './autocomplete';
 export * from './card';
 export * from './dialog';
 export * from './feedback';

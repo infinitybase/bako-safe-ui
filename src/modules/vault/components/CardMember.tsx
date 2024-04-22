@@ -102,7 +102,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {/* todo: add nickname on bsafe sdk */}
+              {/* todo: add nickname on bakosafe sdk */}
               {AddressUtils.format(member?.address ?? '')}
             </Text>
           </VStack>

@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 

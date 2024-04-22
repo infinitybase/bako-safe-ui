@@ -2,8 +2,8 @@ import {
   IAsset,
   ITransactionResume,
   IWitnesses,
-  TransactionStatus as BSAFETransactionStatus,
-} from 'bsafe';
+  TransactionStatus as BakoSafeTransactionStatus,
+} from 'bakosafe';
 
 import { Predicate } from './predicate';
 
@@ -31,7 +31,7 @@ export interface Transaction {
   name: string;
   txData: string;
   hash: string;
-  status: BSAFETransactionStatus;
+  status: BakoSafeTransactionStatus;
   sendTime: string;
   gasUsed: string;
   resume: ITransactionResume;

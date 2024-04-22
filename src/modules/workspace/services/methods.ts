@@ -1,4 +1,4 @@
-import { ITransaction } from 'bsafe';
+import { ITransaction } from 'bakosafe';
 
 import { api } from '@/config';
 import {

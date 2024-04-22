@@ -31,7 +31,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
 
-
   return (
     <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header

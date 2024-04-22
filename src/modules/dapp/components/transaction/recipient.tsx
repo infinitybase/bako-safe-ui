@@ -1,8 +1,7 @@
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
 import { AddressType, ChainName } from '@fuel-ts/providers';
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 import { Address, isB256, isBech32 } from 'fuels';
-import React from 'react';
 
 import { Card } from '@/components';
 import { AddressUtils } from '@/modules/core';
@@ -11,7 +10,7 @@ interface RecipientProps {
   type: AddressType;
   address: string;
   isSender?: boolean;
-  vault?: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
   /* TODO: Check chain name to show is ETH or Fuel */
   chain?: ChainName;
   fullBorderRadius?: boolean;
@@ -50,7 +49,7 @@ const DappTransactionRecipient = ({
       <Text variant="description" textAlign="center">
         {isSender ? 'From' : 'To'}
         {isContract && '(Contract)'}
-        {isVault && '(BSAFE)'}:
+        {isVault && '(BakoSafe)'}:
       </Text>
       <Divider borderColor="dark.100" mt={2} mb={4} />
       <Center flexDirection="column">

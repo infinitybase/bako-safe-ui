@@ -1,141 +1,121 @@
 import {
   Box,
   CircularProgress,
-  ComponentWithAs,
   Flex,
-  FormControl,
-  FormHelperText,
   FormLabel,
-  Icon,
-  IconProps,
   Input,
   InputGroup,
+  InputGroupProps,
   InputRightElement,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  CSSProperties,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { AddressUtils } from '@/modules/core/utils';
-
-interface RightAction {
-  icon?: ComponentWithAs<'svg', IconProps>;
-  handler?: () => void;
-}
-
-interface AutocompleteOption {
+export interface AutocompleteOption {
   value: string;
   label: string;
 }
 
-interface AutoCompleteProps {
-  isLoading: boolean;
-  isInvalid: boolean;
-  options: AutocompleteOption[];
-  // selected?: string[];
+interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
+  label?: string;
   value?: string;
-  label: string;
-  isDisabled?: boolean;
-  errorMessage?: string;
-  rightAction?: RightAction;
-  bottomAction?: ReactNode;
-  index?: number;
+  options: AutocompleteOption[];
+  disabled?: boolean;
+  isLoading?: boolean;
+  inputStyle?: CSSProperties;
+  rightElement?: ReactNode;
+  filterSelectedOption?: boolean;
   inView?: InViewHookResponse;
   onChange: (value: string) => void;
-  onInputChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
+  onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
 }
 
-function AutoComplete({
-  isLoading,
-  isInvalid,
-  isDisabled,
-  options,
-  value,
+const Autocomplete = ({
   label,
-  errorMessage,
-  rightAction,
-  bottomAction,
-  index,
+  value,
+  options,
+  disabled,
+  isLoading,
+  inputStyle,
+  rightElement,
+  filterSelectedOption = true,
   inView,
   onChange,
   onInputChange,
-}: AutoCompleteProps) {
-  const [inputValue, setInputValue] = useState(value ?? '');
-  const [currentIndex, setCurrentIndex] = useState<number>();
-  const [showBottomActionDelayed, setShowBottomActionDelayed] =
-    useState<boolean>(false);
+  ...rest
+}: AutocompleteProps) => {
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  const isCurrent = currentIndex === index;
-  const isContact = (value: string) =>
-    value.includes('-') || value.includes('...');
-  const isValidAddress =
-    AddressUtils.isValid(inputValue) || isContact(inputValue);
-  const showOptionsList =
-    isCurrent && !isLoading && options && options.length > 0 && !isValidAddress;
-  const loading = isLoading && isCurrent;
-  const showBottomAction =
-    !loading &&
-    !isInvalid &&
-    bottomAction &&
-    !showOptionsList &&
-    inputValue.length > 0 &&
-    !isContact(inputValue) &&
-    AddressUtils.isValid(inputValue) &&
-    options &&
-    !options.map((o) => o.value).includes(inputValue);
+  const displayedOptions =
+    filterSelectedOption && options
+      ? options.filter((o) => o.value !== value)
+      : options;
+
+  const isOpen =
+    isFocused && displayedOptions && displayedOptions.length > 0 && !isLoading;
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    onChange(e.target.value);
+    onInputChange?.(e);
+  };
+
+  const handleSelect = (selectedOption: AutocompleteOption) => {
+    setInputValue(selectedOption.label);
+    onChange(selectedOption.value);
+    onInputChange?.(selectedOption.value);
+  };
+
+  const handleFocus = () => {
+    if (!inputValue) onInputChange?.('');
+    setIsFocused(true);
+  };
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-
-    if (showBottomAction) {
-      timer = setTimeout(() => {
-        setShowBottomActionDelayed(true);
-      }, 500);
-    } else {
-      setShowBottomActionDelayed(false);
+    if (options && options.length > 0) {
+      const selectedOption = options.find((option) => option.value === value);
+      if (selectedOption) {
+        setInputValue(selectedOption.label);
+      }
     }
-
-    return () => clearTimeout(timer);
-  }, [showBottomAction]);
+  }, [value, options]);
 
   return (
-    <FormControl isInvalid={isInvalid}>
-      <InputGroup>
+    <>
+      <InputGroup {...rest}>
         <Input
           value={inputValue}
           placeholder=" "
-          disabled={isDisabled || false}
+          disabled={disabled}
           autoComplete="off"
-          onBlur={() => setCurrentIndex(undefined)}
-          onFocus={() => {
-            if (!inputValue) onInputChange?.('');
-            setCurrentIndex(typeof index === 'number' ? index : 0);
-          }}
-          onChange={(e) => {
-            const emptyOrInvalidAddress =
-              !e.target.value || !AddressUtils.isValid(e.target.value);
-
-            if (emptyOrInvalidAddress) setShowBottomActionDelayed(false);
-
-            onChange(e.target.value);
-            onInputChange?.(e);
-            setInputValue(e.target.value);
-          }}
+          onChange={handleInputChange}
+          onBlur={() => setIsFocused(false)}
+          onFocus={handleFocus}
+          style={inputStyle}
         />
+
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {!isDisabled && (
+        {!disabled && (
           <InputRightElement
             px={3}
             top="1px"
             right="1px"
             borderRadius={10}
-            bgColor={rightAction ? 'dark.250' : 'transparent'}
+            bgColor={rightElement ? 'dark.250' : 'transparent'}
             h="calc(100% - 3px)"
             w={10}
           >
-            {loading ? (
+            {isLoading && isFocused ? (
               <CircularProgress
                 trackColor="dark.100"
                 size={18}
@@ -143,27 +123,13 @@ function AutoComplete({
                 color="brand.500"
               />
             ) : (
-              !!rightAction?.handler && (
-                <Icon
-                  as={rightAction.icon}
-                  fontSize="md"
-                  cursor="pointer"
-                  onClick={rightAction.handler}
-                />
-              )
+              rightElement
             )}
           </InputRightElement>
         )}
       </InputGroup>
 
-      {isInvalid && !showOptionsList && (
-        <FormHelperText color="error.500">{errorMessage}</FormHelperText>
-      )}
-
-      {/* ACTION THAT CAN DYNAMICALLY APPEARS BELOW THE INPUT */}
-      {showBottomActionDelayed && bottomAction}
-
-      {showOptionsList && (
+      {isOpen && (
         <Box
           bg="dark.200"
           color="grey.200"
@@ -176,48 +142,47 @@ function AutoComplete({
           zIndex={200}
           w="full"
           mt={2}
-          pb={0}
         >
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
               w="full"
               maxH={194}
+              gap={0}
               overflowY="scroll"
               css={{
                 '&::-webkit-scrollbar': { width: '0' },
                 scrollbarWidth: 'none',
               }}
             >
-              {options.map(({ value, label }) => (
-                <Box
-                  key={value}
-                  w="full"
-                  p={2}
-                  borderRadius={10}
-                  cursor="pointer"
-                  _hover={{ background: 'dark.150' }}
-                  onMouseDown={() => {
-                    setInputValue(label);
-                    onChange(value);
-                  }}
-                >
-                  <Text
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
+              {displayedOptions
+                .filter((option) => option.value !== value)
+                .map((option) => (
+                  <Box
+                    key={option.value}
                     w="full"
+                    p={2}
+                    borderRadius={10}
+                    cursor="pointer"
+                    _hover={{ background: 'dark.150' }}
+                    onMouseDown={() => handleSelect(option)}
                   >
-                    {label}
-                  </Text>
-                </Box>
-              ))}
+                    <Text
+                      whiteSpace="nowrap"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      w="full"
+                    >
+                      {option.label}
+                    </Text>
+                  </Box>
+                ))}
               <Box ref={inView?.ref} />
             </VStack>
           </Flex>
         </Box>
       )}
-    </FormControl>
+    </>
   );
-}
+};
 
-export { AutoComplete };
+export { Autocomplete };

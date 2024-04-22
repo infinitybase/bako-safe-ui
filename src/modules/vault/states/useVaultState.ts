@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { Asset } from '../../core/utils/assets/types';
 
-const IS_VISIBLE_KEY = '@bsafe/balance-is-visible';
+const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
 
 const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
 const setIsVisibleBalance = (isVisible: 'true' | 'false') =>

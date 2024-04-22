@@ -1,8 +1,8 @@
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
 import { queryClient } from '@/config';
-import { useBsafeTransactionSend } from '@/modules/core';
+import { useBakoSafeTransactionSend } from '@/modules/core';
 
 import { useTransactionToast } from './toast';
 
@@ -43,7 +43,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     }
   };
 
-  const { mutate: sendTransaction } = useBsafeTransactionSend({
+  const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction) => {
       transactionsRef.current = transactionsRef.current.filter(
         (data) => data.id !== transaction.id,

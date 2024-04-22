@@ -1,4 +1,4 @@
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';

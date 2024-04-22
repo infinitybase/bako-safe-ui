@@ -42,7 +42,7 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         <Dapp.Header
           title="Create transaction"
-          description="Enhance your security by sending transactions and executing contracts through BSafe."
+          description="Enhance your security by sending transactions and executing contracts through BakoSafe."
         />
       </Dapp.Section>
 
@@ -86,8 +86,8 @@ const TransactionConfirm = () => {
           <DappTransaction.Operation
             key={`${index}operation`}
             vault={{
-              name: vault?.BSAFEVault.name ?? '',
-              predicateAddress: vault?.BSAFEVault.predicateAddress ?? '',
+              name: vault?.BakoSafeVault.name ?? '',
+              predicateAddress: vault?.BakoSafeVault.predicateAddress ?? '',
             }}
             operation={operation}
           />

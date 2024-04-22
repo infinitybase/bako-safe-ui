@@ -1,4 +1,4 @@
-import { Transfer } from 'bsafe';
+import { Transfer } from 'bakosafe';
 
 import { api } from '@/config/api';
 
@@ -88,8 +88,10 @@ export class TransactionService {
     return data;
   }
 
-  static async send(BSAFETransactionId: string) {
-    const { data } = await api.post(`/transaction/send/${BSAFETransactionId}`);
+  static async send(BakoSafeTransactionId: string) {
+    const { data } = await api.post(
+      `/transaction/send/${BakoSafeTransactionId}`,
+    );
 
     return data;
   }

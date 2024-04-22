@@ -1,5 +1,5 @@
 import { useBoolean } from '@chakra-ui/react';
-import { BSAFEConnectorEvents, Vault } from 'bsafe';
+import { BakoSafeConnectors, Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
 import { useState } from 'react';
 
@@ -28,19 +28,19 @@ export const useTransactionSocket = () => {
       //   data,
       //   type,
       // });
-      if (type === BSAFEConnectorEvents.TRANSACTION_SEND) {
-        const bsafeVault = await Vault.create({
+      if (type === BakoSafeConnectors.TRANSACTION_SEND) {
+        const bakoSafeVault = await Vault.create({
           predicateAddress: address,
           token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
           address: CookiesConfig.getCookie(ADDRESS)!,
         });
-        //console.log('[VAULT]: ', bsafeVault);
+        //console.log('[VAULT]: ', bakoSafeVault);
         summary.getTransactionSummary({
-          providerUrl: bsafeVault.provider.url,
+          providerUrl: bakoSafeVault.provider.url,
           transactionLike: transaction,
         });
-        //console.log('[VAULT]: ', bsafeVault);
-        setVault(bsafeVault);
+        //console.log('[VAULT]: ', bakoSafeVault);
+        setVault(bakoSafeVault);
         setFUELTransaction(transaction);
       }
     },
@@ -59,13 +59,13 @@ export const useTransactionSocket = () => {
   const confirmTransaction = async () => {
     confirmingTransctionHandlers.on();
 
-    const tx = await vault?.BSAFEIncludeTransaction(FUELTransaction!);
+    const tx = await vault?.BakoSafeIncludeTransaction(FUELTransaction!);
     //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
     //console.log('[TRANSACTION_TX]: ', tx);
     if (!tx) return;
     //console.log('[enviando mensagem]');
     emitMessage({
-      event: BSAFEConnectorEvents.TRANSACTION_CREATED,
+      event: BakoSafeConnectors.TRANSACTION_CREATED,
       content: {
         sessionId: sessionId!,
         address: CookiesConfig.getCookie(ADDRESS)!,

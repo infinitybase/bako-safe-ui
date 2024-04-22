@@ -1,4 +1,4 @@
-import { IPredicate } from 'bsafe';
+import { IPredicate } from 'bakosafe';
 
 import { Owner, WorkspaceOnVault } from '@/modules/core/models/workspace';
 import { UseVaultDetailsReturn } from '@/modules/vault';
