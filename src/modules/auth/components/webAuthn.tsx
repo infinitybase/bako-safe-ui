@@ -65,7 +65,12 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   );
 
   return (
-    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
+    <Drawer
+      {...drawerProps}
+      size={['full', 'sm']}
+      variant="glassmorphic"
+      placement="right"
+    >
       <DrawerOverlay />
       <DrawerContent>
         <DrawerHeader mb={8}>
