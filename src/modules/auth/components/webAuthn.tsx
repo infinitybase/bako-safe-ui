@@ -30,9 +30,10 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const {
     form,
     tabs,
-    accountsRequest,
+    accountsOptions,
     search,
     setSearch,
+    searchAccount,
     nicknamesData,
     handleInputChange,
     closeWebAuthnDrawer,
@@ -42,7 +43,11 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <LoginWebAuthnForm request={accountsRequest} form={loginForm} />
+        <LoginWebAuthnForm
+          options={accountsOptions}
+          form={loginForm}
+          search={searchAccount}
+        />
       </TabPanel>
       <TabPanel p={0}>
         <CreateWebAuthnForm

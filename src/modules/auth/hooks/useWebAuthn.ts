@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -24,6 +24,7 @@ const useWebAuthn = () => {
   const [page, setPage] = useState(WebAuthnState.LOGIN);
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
+  const [searchAccount, setSearchAccount] = useState('');
   const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
   //button sign in disabled, this is used because handleLogin proccess annoter info before mutation to use isLoading
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -38,9 +39,34 @@ const useWebAuthn = () => {
 
   const accountsRequest = useGetAccountsByHardwareId();
 
+  const accountsOptions = useMemo(() => {
+    const filteredAccounts = accountsRequest.data?.filter((account) =>
+      account.name.toLowerCase().includes(searchAccount.toLowerCase()),
+    );
+
+    const mappedOptions = filteredAccounts?.map((account) => ({
+      label: account.name,
+      value: account.webauthn.id,
+    }));
+
+    return mappedOptions;
+  }, [accountsRequest.data, searchAccount]);
+
   const nicknames = useCheckNickname(searchRequest);
 
   const currentUsername = loginForm.watch('name');
+
+  const debouncedSearchAccount = useCallback(
+    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
+      if (typeof event === 'string') {
+        setSearchAccount(event);
+        return;
+      }
+
+      setSearchAccount(event.target.value);
+    }, 300),
+    [],
+  );
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -177,6 +203,7 @@ const useWebAuthn = () => {
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
     accountsRequest,
+    accountsOptions,
     handleChangeTab,
     hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
     checkNickname: useCheckNickname(searchRequest),
@@ -184,6 +211,7 @@ const useWebAuthn = () => {
     handleInputChange,
     isOpen,
     search,
+    searchAccount: { value: searchAccount, handler: debouncedSearchAccount },
     page,
     form: {
       memberForm,
