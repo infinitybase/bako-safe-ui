@@ -178,7 +178,7 @@ const useWebAuthn = () => {
         memberForm.watch('name').length === 0 ||
         nicknames.data?.name,
       title: 'Create Passkey account',
-      description: 'Create your account to start using WebAuthn',
+      description: 'Create a new account for this device.',
     },
     [WebAuthnState.LOGIN]: {
       isValid: true,
@@ -192,7 +192,8 @@ const useWebAuthn = () => {
         !isValidCurrentUsername ||
         btnDisabled,
       title: 'Login with Passkey',
-      description: 'Select your username to login',
+      description:
+        'Select your username or create a new account for this device.',
     },
   };
 
