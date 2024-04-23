@@ -17,7 +17,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { UseWebAuthn, WebAuthnState } from '../hooks';
+import { UseWebAuthn } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
 import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 
@@ -114,22 +114,20 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
               {formState.primaryAction}
             </Button>
 
-            {tabs.is(WebAuthnState.LOGIN) && (
-              <Button
-                w="full"
-                bgColor="transparent"
-                border="1px solid white"
-                variant="secondary"
-                fontWeight="medium"
-                onClick={formState.handleSecondaryAction}
-                _hover={{
-                  borderColor: 'brand.500',
-                  color: 'brand.500',
-                }}
-              >
-                {formState.secondaryAction}
-              </Button>
-            )}
+            <Button
+              w="full"
+              bgColor="transparent"
+              border="1px solid white"
+              variant="secondary"
+              fontWeight="medium"
+              onClick={formState.handleSecondaryAction}
+              _hover={{
+                borderColor: 'brand.500',
+                color: 'brand.500',
+              }}
+            >
+              {formState.secondaryAction}
+            </Button>
           </VStack>
         </DrawerBody>
       </DrawerContent>

@@ -169,9 +169,9 @@ const useWebAuthn = () => {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
       primaryAction: 'Create account',
-      secondaryAction: undefined,
+      secondaryAction: 'Cancel',
       handlePrimaryAction: handleCreate,
-      handleSecondaryAction: undefined,
+      handleSecondaryAction: resetDialogForms,
       isLoading: createAccountMutate.isLoading,
       isDisabled:
         !memberForm.formState.isValid ||
