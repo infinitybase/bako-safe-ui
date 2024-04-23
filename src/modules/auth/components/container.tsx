@@ -38,21 +38,25 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         top="50%"
         left="50%"
         transform="translate(-50%, -50%)"
-        backgroundColor="dark.600"
+        backgroundColor="dark.50"
         display="flex"
         minW={isLowerThanMobile[0] ? '90vw' : '70vw'}
         minH="25vh"
         spacing={0}
+        border={'1px solid transparent'}
+        borderColor="dark.150"
+        boxShadow="lg"
       >
         <img
           src={bakoSymbol}
           alt=""
           style={{
             position: 'absolute',
-            top: '50%',
-            left: '20%',
+            top: '7.3rem',
+            left: '4.8rem',
             transform: 'translate(-50%, -50%)',
-            height: '75%',
+            height: '100%',
+            maxHeight: '172px',
           }}
         />
         {props.children}

@@ -1,48 +1,26 @@
-import { AttachmentIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Divider,
-  Heading,
-  HStack,
-  Icon,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
-import { FiArrowUpRight } from 'react-icons/fi';
 
 import { useContactToast } from '@/modules/addressBook';
 import {
-  CardConnector,
+  ConnectorsList,
   DrawerWebAuthn,
   SigninContainer,
   SigninContainerMobile,
+  SignInFooter,
 } from '@/modules/auth/components';
 import { useScreenSize } from '@/modules/core';
-import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 import { useSignIn } from '../hooks/useSignIn';
 
 const SigninPage = () => {
   const {
-    isConnecting,
     connectors,
-    redirectToWalletLink,
     auth,
     webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
-  const { isMobile, isExtraSmall } = useScreenSize();
-
-  const webAuthnConnector = connectors.items.find(
-    (connector) => connector.name === EConnectors.WEB_AUTHN,
-  );
-
-  const allOtherConnectors = connectors.items.filter(
-    (connector) => connector.name !== EConnectors.WEB_AUTHN,
-  );
+  const { isMobile } = useScreenSize();
 
   useMemo(() => {
     auth.isInvalidAccount &&
@@ -52,51 +30,6 @@ const SigninPage = () => {
       });
     auth.handlers.setInvalidAccount(false);
   }, [auth.isInvalidAccount]);
-
-  const pageSections = {
-    description: connectors.has
-      ? 'Click the button bellow to connect Bako Safe.'
-      : 'You need to use the fuel wallet to connect.',
-    action: connectors.has ? (
-      <Button
-        size={{
-          base: isExtraSmall ? 'sm' : 'md',
-          sm: 'lg',
-        }}
-        color="dark.500"
-        fontWeight="bold"
-        variant="solid"
-        backgroundColor="brand.500"
-        colorScheme="brand"
-        backgroundSize="200% 100%"
-        backgroundPosition="100% 0"
-        transition="background-position .5s"
-        _hover={{
-          transform: 'scale(1.05)',
-          transition: 'ease-in-out .3s',
-        }}
-        isLoading={isConnecting}
-        loadingText="Connecting.."
-        onClick={connectors.drawer.onOpen}
-        leftIcon={<AttachmentIcon />}
-        width={isExtraSmall ? 150 : 'unset'}
-      >
-        Connect Wallet
-      </Button>
-    ) : (
-      <Button
-        size="lg"
-        color="grey.200"
-        bgColor="dark.100"
-        variant="secondary"
-        borderColor="dark.100"
-        leftIcon={<AttachmentIcon />}
-        onClick={redirectToWalletLink}
-      >
-        Fuel Wallet
-      </Button>
-    ),
-  };
 
   const WebauthnDrawer = (
     <DrawerWebAuthn
@@ -116,31 +49,47 @@ const SigninPage = () => {
         {WebauthnDrawer}
         <Box
           w="full"
+          minH={173}
+          display="flex"
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 10px 0px 0px"
           p={6}
           pl="40%"
         >
-          <Box textAlign="end" mb={3}>
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
+          <Box
+            flex={1}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Heading
+              fontSize={28}
+              fontWeight="extrabold"
               bgClip="text"
               color="dark.300"
+              textAlign="end"
             >
-              Hello,
-            </Text>
-          </Box>
-          <Box textAlign="end">
-            <Text fontSize="small" fontWeight="semibold" color="dark.300">
-              {pageSections.description}
-            </Text>
+              Welcome to Bako Safe
+            </Heading>
           </Box>
         </Box>
-        <Box display="flex" justifyContent="flex-end" w="full" p={6}>
-          {pageSections.action}
-        </Box>
+
+        <VStack
+          justifyContent="center"
+          w="full"
+          pt={14}
+          pb={2}
+          px={6}
+          spacing={8}
+        >
+          <ConnectorsList
+            connectors={connectors.items}
+            onSelect={connectors.select}
+          />
+
+          <SignInFooter />
+        </VStack>
       </SigninContainerMobile>
     );
   }
@@ -155,67 +104,16 @@ const SigninPage = () => {
           bgGradient="linear(to-br, brand.500, brand.800)"
           bgClip="text"
         >
-          Welcome to multisig
-        </Text>
-        <Text color="grey.100" fontSize="sm" maxW={366}>
-          Robust security. Uncompromising performance. The ultimate Multisig
-          Wallet experience for the Rollup OS.
+          Welcome to Bako Safe
         </Text>
       </VStack>
 
-      <VStack spacing={8} w="full">
-        <CardConnector
-          connector={webAuthnConnector!}
-          isWebAuthn
-          onClick={connectors.select}
-        />
+      <ConnectorsList
+        connectors={connectors.items}
+        onSelect={connectors.select}
+      />
 
-        <HStack w="full" spacing={5}>
-          <Divider borderColor="grey.500" />
-          <Text color="grey.250" fontSize="xs" fontWeight="light">
-            OR
-          </Text>
-          <Divider borderColor="grey.500" />
-        </HStack>
-
-        <HStack w="full" spacing={2}>
-          {allOtherConnectors.map((connector) => (
-            <CardConnector
-              key={connector.name}
-              connector={connector}
-              onClick={connectors.select}
-            />
-          ))}
-        </HStack>
-      </VStack>
-
-      <VStack spacing={1}>
-        <VStack spacing={0} textAlign="center">
-          <Heading fontSize="sm">New to Fuel Network?</Heading>
-          <Text fontSize="xs" color="grey.500">
-            {"Fuel is the world's fastest modular execution layer."}
-          </Text>
-        </VStack>
-        <Link
-          fontSize="xs"
-          color="grey.100"
-          href="https://www.fuel.network/"
-          target="_blank"
-          display="flex"
-          gap={2}
-          p={2}
-          textDecoration="none"
-          fontWeight="medium"
-          borderRadius={8}
-          _hover={{
-            textDecoration: 'none',
-            bgColor: 'dark.100',
-          }}
-        >
-          <Text fontSize="xs">Learn more about Fuel</Text>
-          <Icon as={FiArrowUpRight} fontSize="md" />
-        </Link>
-      </VStack>
+      <SignInFooter />
     </SigninContainer>
   );
 };
