@@ -22,6 +22,10 @@ const SigninPage = () => {
   const { errorToast } = useContactToast();
   const { isMobile } = useScreenSize();
 
+  const pageSections = {
+    title: 'Welcome to Bako Safe',
+  };
+
   useMemo(() => {
     auth.isInvalidAccount &&
       errorToast({
@@ -70,7 +74,7 @@ const SigninPage = () => {
               color="dark.300"
               textAlign="end"
             >
-              Welcome to Bako Safe
+              {pageSections.title}
             </Heading>
           </Box>
         </Box>
@@ -104,7 +108,7 @@ const SigninPage = () => {
           bgGradient="linear(to-br, brand.500, brand.800)"
           bgClip="text"
         >
-          Welcome to Bako Safe
+          {pageSections.title}
         </Text>
       </VStack>
 
