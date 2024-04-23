@@ -27,7 +27,9 @@ const SignInFooter = () => (
         bgColor: 'dark.100',
       }}
     >
-      <Text fontSize="xs">Learn more about Fuel</Text>
+      <Text fontSize="xs" fontWeight="normal">
+        Learn more about Fuel
+      </Text>
       <Icon as={FiArrowUpRight} fontSize="md" />
     </Link>
   </VStack>
