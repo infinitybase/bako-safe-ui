@@ -16,7 +16,6 @@ import { FiArrowUpRight } from 'react-icons/fi';
 import { useContactToast } from '@/modules/addressBook';
 import {
   CardConnector,
-  DrawerConnector,
   DrawerWebAuthn,
   SigninContainer,
   SigninContainerMobile,
@@ -114,12 +113,6 @@ const SigninPage = () => {
   if (isMobile) {
     return (
       <SigninContainerMobile>
-        <DrawerConnector
-          isOpen={connectors.drawer.isOpen}
-          onClose={connectors.drawer.onClose}
-          onSelect={connectors.select}
-          connectors={connectors.items}
-        />
         {WebauthnDrawer}
         <Box
           w="full"
