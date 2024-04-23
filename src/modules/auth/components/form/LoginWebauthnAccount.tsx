@@ -20,7 +20,7 @@ export const LoginWebAuthnForm = ({
       <Controller
         name="name"
         control={form.control}
-        render={({ field, fieldState }) => (
+        render={({ field }) => (
           <FormControl>
             <Autocomplete
               label="Username"
@@ -33,9 +33,8 @@ export const LoginWebAuthnForm = ({
               ml={2}
               color={form.formState.errors.name ? 'error.500' : 'grey.200'}
             >
-              {form.formState.errors.name
-                ? form.formState.errors.name?.message
-                : !fieldState.isDirty && 'Select your username'}
+              {form.formState.errors.name &&
+                form.formState.errors.name?.message}
             </FormHelperText>
           </FormControl>
         )}
