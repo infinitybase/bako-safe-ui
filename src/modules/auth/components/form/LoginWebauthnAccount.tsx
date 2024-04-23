@@ -16,7 +16,7 @@ export const LoginWebAuthnForm = ({
   search,
 }: LoginWebAuthnFormProps) => {
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" mb={8}>
       <Controller
         name="name"
         control={form.control}

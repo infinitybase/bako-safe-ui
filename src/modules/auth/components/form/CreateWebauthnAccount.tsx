@@ -28,7 +28,7 @@ export const CreateWebAuthnForm = ({
   const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" mb={8}>
       <Controller
         name="name"
         control={form.control}
