@@ -27,7 +27,7 @@ export interface AutocompleteOption {
 interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   label?: string;
   value?: string;
-  options: AutocompleteOption[];
+  options?: AutocompleteOption[];
   disabled?: boolean;
   isLoading?: boolean;
   inputStyle?: CSSProperties;
