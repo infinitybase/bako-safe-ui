@@ -126,6 +126,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           ml={52}
           w="50%"
           h="80vh"
+          pt={12}
           position="sticky"
           display="flex"
           flexDirection="column"
