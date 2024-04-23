@@ -1,7 +1,19 @@
-import { Avatar, Badge, Box, Heading, HStack, Icon } from '@chakra-ui/react';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Divider,
+  Heading,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 type ConnectorType = {
   name: string;
@@ -15,6 +27,11 @@ interface CardConnectorProps {
   connector: ConnectorType;
   isWebAuthn?: boolean;
   onClick: (connector: string) => void;
+}
+
+interface ConnectorsListProps {
+  connectors: ConnectorType[];
+  onSelect: (connector: string) => void;
 }
 
 const CardConnector = (props: CardConnectorProps) => {
@@ -101,4 +118,51 @@ const CardConnector = (props: CardConnectorProps) => {
   );
 };
 
-export { CardConnector };
+const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
+  const webAuthnConnector = connectors.find(
+    (connector) => connector.name === EConnectors.WEB_AUTHN,
+  );
+
+  const allOtherConnectors = connectors.filter(
+    (connector) => connector.name !== EConnectors.WEB_AUTHN,
+  );
+
+  return (
+    <VStack spacing={{ base: 4, md: 8 }} w="full">
+      <Text
+        color="grey.50"
+        fontSize={{ base: 'xs', md: 'sm' }}
+        maxW={366}
+        mb={{ base: 4, md: 0 }}
+      >
+        Select your preferred access mode
+      </Text>
+
+      <CardConnector
+        connector={webAuthnConnector!}
+        isWebAuthn
+        onClick={onSelect}
+      />
+
+      <HStack w="full" spacing={5}>
+        <Divider borderColor="grey.500" />
+        <Text color="grey.250" fontSize="xs" fontWeight="light">
+          OR
+        </Text>
+        <Divider borderColor="grey.500" />
+      </HStack>
+
+      <Stack flexDirection={['column', 'row']} w="full" spacing={[4, 2]}>
+        {allOtherConnectors.map((connector) => (
+          <CardConnector
+            key={connector.name}
+            connector={connector}
+            onClick={onSelect}
+          />
+        ))}
+      </Stack>
+    </VStack>
+  );
+};
+
+export { CardConnector, ConnectorsList };
