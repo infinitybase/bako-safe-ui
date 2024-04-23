@@ -1,4 +1,3 @@
-import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -16,6 +15,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+
+import { LineCloseIcon } from '@/components';
 
 import { UseWebAuthn } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
@@ -74,9 +75,8 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
                 {formState.title}
               </Heading>
 
-              <CloseIcon
-                w={2.5}
-                h={2.5}
+              <LineCloseIcon
+                fontSize={20}
                 color="grey.100"
                 cursor="pointer"
                 onClick={closeWebAuthnDrawer}

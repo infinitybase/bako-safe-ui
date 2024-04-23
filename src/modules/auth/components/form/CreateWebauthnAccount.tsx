@@ -1,4 +1,3 @@
-import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   FormControl,
@@ -8,6 +7,8 @@ import {
 } from '@chakra-ui/react';
 import React, { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
+
+import { LineCloseIcon } from '@/components';
 
 import { UseWebAuthn } from '../../hooks';
 
@@ -63,12 +64,12 @@ export const CreateWebAuthnForm = ({
                       : ''}
               </FormHelperText>
             </FormControl>
-            <SmallCloseIcon
+            <LineCloseIcon
               position="absolute"
-              top={3.5}
+              top={4}
               right={4}
-              w={5}
-              h={5}
+              fontSize={16}
+              color="grey.100"
               _hover={{
                 cursor: 'pointer',
               }}
