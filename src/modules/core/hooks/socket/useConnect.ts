@@ -2,6 +2,7 @@ import { BSAFEConnectorEvents } from 'bsafe';
 import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
+import { useQueryParams } from '@/modules/auth';
 
 export interface ISocketConnectParams {
   username: string;
@@ -28,18 +29,21 @@ export interface ISocketEmitMessageParams {
 }
 
 export const useSocket = () => {
-  const socket = useContext(SocketContext); // Use o hook useContext para acessar o contexto
+  const socket = useContext(SocketContext);
+  const { request_id, origin } = useQueryParams();
 
   const connect = (sessionId: string) => {
     /* 
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
+    if (socket.connected) return;
     socket.auth = {
       username: `[UI]`,
       data: new Date(),
       sessionId,
       origin,
+      request_id: request_id ?? '',
     };
     socket.connect();
   };

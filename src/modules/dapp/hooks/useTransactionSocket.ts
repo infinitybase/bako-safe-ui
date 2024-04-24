@@ -27,14 +27,20 @@ interface IDappEvent {
 // }
 
 export const useTransactionSocket = () => {
-  const [vault, setVault] = useState<IVaultEvent | undefined>(undefined);
+  const [vault, setVault] = useState<IVaultEvent | undefined>({
+    name: '',
+    address: '',
+    description: '',
+    provider: '',
+    pending_tx: true,
+  });
   const [dapp, setDapp] = useState<IDappEvent | undefined>(undefined);
   const [validAt, setValidAt] = useState<number>(10000000);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
 
   const { connect, socket } = useSocket();
-  const { sessionId } = useQueryParams();
+  const { sessionId, request_id } = useQueryParams();
 
   const summary = useTransactionSummary();
 
@@ -43,12 +49,25 @@ export const useTransactionSocket = () => {
   });
 
   useEffect(() => {
+    if (socket.connected) {
+      socket.emit('message', {
+        sessionId,
+        to: '[CONNECTOR]',
+        request_id,
+        type: '[CONNECTED]',
+        data: {},
+      });
+    }
+  }, [socket.connected]);
+
+  useEffect(() => {
     //todo: default typing of the events
-    socket.on('message', ({ data }) => {
+    socket.on('message', (data) => {
       const { to, type, data: content } = data;
-      const isValid = to === '[UI]' && type === '[TX_EVENT_REQUESTED]';
-      if (!isValid) return;
       const { dapp, vault, tx, validAt } = content;
+      const isValid = to === '[UI]' && type === '[TX_EVENT_REQUESTED]';
+
+      if (!isValid) return;
 
       setDapp(dapp);
       setVault(vault);
@@ -69,10 +88,24 @@ export const useTransactionSocket = () => {
       operations: summary.transactionSummary,
       tx,
     });
+
+    setTimeout(() => {
+      setSending(false);
+      window.close();
+    }, 2000);
   };
 
   // emmit message to the server and close window
-  const cancelTransaction = () => window.close();
+  const cancelTransaction = () => {
+    socket.emit('message', {
+      username: '[UI]',
+      sessionId,
+      to: '[CONNECTOR]',
+      type: '[CLIENT_DISCONNECTED]',
+      request_id,
+      data: {},
+    });
+  };
 
   const init = () => {
     return;
@@ -86,7 +119,7 @@ export const useTransactionSocket = () => {
     connection: dapp,
     cancelTransaction,
     send: sendTransaction,
-    pendingSignerTransactions: vault?.pending_tx,
+    pendingSignerTransactions: vault?.pending_tx ?? true,
     isLoading: sending,
   };
 };

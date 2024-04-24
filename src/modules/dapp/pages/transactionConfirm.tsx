@@ -2,6 +2,7 @@ import { Divider, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
+import { CloseIcon } from '@/components/icons/close-icon';
 import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
 import {
@@ -26,11 +27,11 @@ const TransactionConfirm = () => {
     isLoading,
     send,
   } = useTransactionSocket();
-  const { sessionId } = useQueryParams();
+  const { sessionId, request_id } = useQueryParams();
 
   const { goHome } = useHome();
 
-  if (!sessionId) {
+  if (!sessionId || !request_id) {
     window.close();
     goHome();
   }
@@ -45,6 +46,15 @@ const TransactionConfirm = () => {
         <Dapp.Header
           title="Create transaction"
           description="Enhance your security by sending transactions and executing contracts through BSafe."
+        />
+        <CloseIcon
+          onClick={cancelTransaction}
+          style={{
+            position: 'absolute',
+            top: 20,
+            right: 20,
+            cursor: 'pointer',
+          }}
         />
       </Dapp.Section>
 

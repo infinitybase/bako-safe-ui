@@ -26,7 +26,7 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useAuthSocket } from '../hooks';
 
 const VaultConnector = () => {
-  const { name, origin, sessionId } = useQueryParams();
+  const { name, origin, sessionId, request_id } = useQueryParams();
   const auth = useAuth();
 
   const {
@@ -192,6 +192,7 @@ const VaultConnector = () => {
                 origin: origin!,
                 vaultId: selectedVaultId,
                 userAddress: auth.account,
+                request_id: request_id!,
               })
             }
             isLoading={send.isLoading}

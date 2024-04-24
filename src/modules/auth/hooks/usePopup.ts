@@ -5,9 +5,7 @@ const useQueryParams = () => {
   const location = useLocation();
 
   const queryParams = useMemo(() => {
-    console.log('location: ', location.search);
     const searchParams = new URLSearchParams(location.search);
-    console.log('searchParams: ', searchParams);
     const sessionId = searchParams.get('sessionId');
     const address = searchParams.get('address');
     const isNew = searchParams.get('new');
@@ -15,6 +13,7 @@ const useQueryParams = () => {
     const origin = searchParams.get('origin');
     const currentVault = searchParams.get('currentVault');
     const openConnect = searchParams.get('openConnect') === 'true';
+    const request_id = searchParams.get('request_id');
 
     return {
       sessionId,
@@ -24,6 +23,7 @@ const useQueryParams = () => {
       origin,
       currentVault,
       openConnect,
+      request_id,
     };
   }, [location]);
 

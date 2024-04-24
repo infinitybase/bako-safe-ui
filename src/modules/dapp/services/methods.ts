@@ -9,6 +9,7 @@ export interface IDAppCreatePayload {
   origin: string;
   vaultId: string;
   userAddress: string;
+  request_id: string;
 }
 
 export interface IDAPPConfirmTx {

@@ -8,7 +8,7 @@ const useCreateConnections = () => {
     (params: IDAppCreatePayload) => DAppService.create(params),
     {
       onSuccess: () => {
-        // todo: close this window
+        window.close();
       },
     },
   );
