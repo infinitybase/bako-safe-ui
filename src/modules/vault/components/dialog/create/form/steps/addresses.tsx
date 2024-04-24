@@ -50,7 +50,7 @@ const VaultAddressesStep = ({
     inView,
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
-  const { optionsRequests, handleFieldOptions } =
+  const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions(
       workspaceId!,
       !isSingleWorkspace,
@@ -122,6 +122,7 @@ const VaultAddressesStep = ({
                     const appliedOptions = handleFieldOptions(
                       field.value,
                       optionsRequests[index].options,
+                      first,
                     );
 
                     const showAddToAddressBook =
@@ -140,6 +141,7 @@ const VaultAddressesStep = ({
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
+                          optionsRef={optionRef}
                           value={field.value}
                           onChange={field.onChange}
                           options={appliedOptions}
