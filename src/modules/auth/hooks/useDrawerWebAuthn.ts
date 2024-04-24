@@ -63,8 +63,8 @@ export const useDrawerWebAuth = () => {
     },
     onError: () => {
       warningToast({
-        title: 'Signature failed',
-        description: 'Please try again!',
+        title: 'Problem to sign',
+        description: 'We can not validate your signature. Please, try again.',
       });
     },
   });
