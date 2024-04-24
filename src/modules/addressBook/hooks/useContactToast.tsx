@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/icons';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineError } from 'react-icons/md';
+import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
+import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
 
@@ -20,7 +20,7 @@ const useContactToast = () => {
       title: title ?? 'Success!',
       description: description ?? '',
       icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
+        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
       ),
     });
 
@@ -31,7 +31,7 @@ const useContactToast = () => {
       isClosable: false,
       title: title ?? 'Warning!',
       description: description ?? '',
-      icon: <Icon fontSize="2xl" color="warning.500" as={MdOutlineError} />,
+      icon: <Icon fontSize="xl" color="brand.500" as={IoIosWarning} />,
     });
   };
 
@@ -43,7 +43,7 @@ const useContactToast = () => {
       title: title ?? 'Error!',
       description:
         description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+      icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
     });
   };
 
