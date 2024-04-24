@@ -28,6 +28,8 @@ const useWebAuthn = () => {
   const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
   //button sign in disabled, this is used because handleLogin proccess annoter info before mutation to use isLoading
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [signInProgress, setSignInProgress] = useState(0);
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -88,7 +90,9 @@ const useWebAuthn = () => {
     );
 
     if (acc) {
+      setIsSigningIn(true);
       const { code } = await UserService.generateSignInCode(acc.address);
+      setSignInProgress(50);
       await signAccountMutate.mutateAsync(
         {
           id: acc.webauthn.id,
@@ -97,10 +101,16 @@ const useWebAuthn = () => {
         },
         {
           onError: () => {
+            setSignInProgress(0);
+            setIsSigningIn(false);
             setBtnDisabled(false);
           },
           onSuccess: () => {
-            setBtnDisabled(false);
+            setSignInProgress(100);
+            setTimeout(() => {
+              setIsSigningIn(false);
+              setBtnDisabled(false);
+            }, 800);
           },
         },
       );
@@ -182,7 +192,7 @@ const useWebAuthn = () => {
     },
     [WebAuthnState.LOGIN]: {
       isValid: true,
-      primaryAction: 'Sign in ',
+      primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
       secondaryAction: 'Create account',
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
@@ -220,6 +230,7 @@ const useWebAuthn = () => {
       formState: formState[tabs.tab],
     },
     tabs,
+    signInProgress,
   };
 };
 

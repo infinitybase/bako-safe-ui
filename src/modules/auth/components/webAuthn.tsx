@@ -16,9 +16,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { LineCloseIcon } from '@/components';
+import { LineCloseIcon, ProgressButton } from '@/components';
 
-import { UseWebAuthn } from '../hooks';
+import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
 import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 
@@ -33,9 +33,10 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     tabs,
     accountsOptions,
     search,
-    setSearch,
     searchAccount,
     nicknamesData,
+    signInProgress,
+    setSearch,
     handleInputChange,
     closeWebAuthnDrawer,
   } = webauthn;
@@ -107,17 +108,32 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
           </Tabs>
 
           <VStack w="full" spacing={4}>
-            <Button
-              w="full"
-              variant="primary"
-              onClick={formState.handlePrimaryAction}
-              _hover={{
-                opacity: formState.isDisabled && 0.8,
-              }}
-              isDisabled={!!formState.isDisabled}
-            >
-              {formState.primaryAction}
-            </Button>
+            {tabs.is(WebAuthnState.LOGIN) ? (
+              <ProgressButton
+                w="full"
+                variant="primary"
+                onClick={formState.handlePrimaryAction}
+                _hover={{
+                  opacity: formState.isDisabled && 0.8,
+                }}
+                isDisabled={!!formState.isDisabled}
+                progress={signInProgress}
+              >
+                {formState.primaryAction}
+              </ProgressButton>
+            ) : (
+              <Button
+                w="full"
+                variant="primary"
+                onClick={formState.handlePrimaryAction}
+                _hover={{
+                  opacity: formState.isDisabled && 0.8,
+                }}
+                isDisabled={!!formState.isDisabled}
+              >
+                {formState.primaryAction}
+              </Button>
+            )}
 
             <Button
               w="full"

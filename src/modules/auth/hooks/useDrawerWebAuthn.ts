@@ -46,18 +46,20 @@ export const useDrawerWebAuth = () => {
       address,
       webAuthn,
     }) => {
-      auth.handlers.authenticate({
-        userId: user_id,
-        avatar,
-        account: address,
-        accountType: TypeUser.WEB_AUTHN,
-        accessToken: accessToken,
-        singleWorkspace: workspace.id,
-        permissions: workspace.permissions,
-        webAuthn,
-      });
-      setLastLoginId(webAuthn!.id);
-      navigate(redirectPathBuilder(!!origin, location, address));
+      setTimeout(() => {
+        auth.handlers.authenticate({
+          userId: user_id,
+          avatar,
+          account: address,
+          accountType: TypeUser.WEB_AUTHN,
+          accessToken: accessToken,
+          singleWorkspace: workspace.id,
+          permissions: workspace.permissions,
+          webAuthn,
+        });
+        setLastLoginId(webAuthn!.id);
+        navigate(redirectPathBuilder(!!origin, location, address));
+      }, 800);
     },
     onError: () => {
       warningToast({
