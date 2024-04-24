@@ -12,22 +12,33 @@ interface ContainerProps {
   leftIcon: React.ReactNode;
   onClose: () => void;
   status: AlertStatus;
+  alignItems?: 'center' | 'flex-start';
 }
 
 const colors = {
+  border: {
+    success: 'success.800',
+    error: 'error.800',
+    warning: 'warning.675',
+    info: 'info.700',
+  },
   bg: {
     success: 'success.900',
     error: 'error.900',
     warning: 'warning.900',
+    info: 'info.900',
   },
   title: {
-    success: 'brand.500',
-    error: 'error.600',
-    warning: 'warning.500',
+    success: 'success.700',
+    error: 'error.500',
+    warning: 'brand.500',
+    info: 'info.500',
   },
   description: {
-    success: 'grey.200',
-    warning: 'warning.500',
+    success: 'success.300',
+    error: 'error.300',
+    warning: 'brand.400',
+    info: 'info.300',
   },
 };
 
@@ -36,12 +47,13 @@ const Container = (props: ContainerProps) => {
 
   return (
     <HStack
-      padding={hide ? 4 : 5}
-      spacing={4}
+      alignItems={props.alignItems}
+      padding={hide ? 4 : 2}
+      spacing={2}
       boxShadow="lg"
       borderWidth={1}
-      borderRadius={10}
-      borderColor={colors.bg[props?.status] ?? 'dark.100'}
+      borderRadius={8}
+      borderColor={colors.border[props?.status] ?? 'dark.100'}
       bg={colors.bg[props?.status] ?? 'dark.200'}
       whiteSpace="nowrap"
       overflow="hidden"
@@ -51,7 +63,13 @@ const Container = (props: ContainerProps) => {
       onClick={() => setHide(!hide)}
     >
       {props.leftIcon}
-      <Box hidden={hide} overflow="hidden">
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap={1}
+        hidden={hide}
+        overflow="hidden"
+      >
         {props.children}
       </Box>
     </HStack>
@@ -63,24 +81,37 @@ interface NotificationProps extends UseToastOptions {
 }
 
 const Notification = (props: NotificationProps) => {
+  const containerAlignItems =
+    props.title && props.description ? 'flex-start' : 'center';
+
   return (
     <Container
       onClose={props.onClose}
       leftIcon={props.icon}
       status={props.status!}
+      alignItems={containerAlignItems}
     >
-      <Text color={colors.title[props.status!]} fontWeight="semibold">
-        {props.title}
-      </Text>
-      <Text
-        fontSize={14}
-        noOfLines={2}
-        whiteSpace="pre-wrap"
-        lineHeight={1.2}
-        color={colors.description[props.status!] ?? 'grey.200'}
-      >
-        {props.description}
-      </Text>
+      {props.title && (
+        <Text
+          color={colors.title[props.status!]}
+          fontSize="sm"
+          fontWeight="semibold"
+          lineHeight={1.4}
+        >
+          {props.title}
+        </Text>
+      )}
+      {props.description && (
+        <Text
+          fontSize="xs"
+          noOfLines={2}
+          whiteSpace="pre-wrap"
+          lineHeight={1.2}
+          color={colors.description[props.status!] ?? 'grey.200'}
+        >
+          {props.description}
+        </Text>
+      )}
     </Container>
   );
 };
