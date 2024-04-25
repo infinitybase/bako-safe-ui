@@ -52,11 +52,11 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
           alt=""
           style={{
             position: 'absolute',
-            top: '7.3rem',
-            left: '4.8rem',
+            top: '117px',
+            left: '77px',
             transform: 'translate(-50%, -50%)',
             height: '100%',
-            maxHeight: '172px',
+            maxHeight: '10.75rem',
           }}
         />
         {props.children}
@@ -78,32 +78,30 @@ const SigninContainer = (props: SigninContainerProps) => {
         transform="translate(-50%, -50%)"
         backgroundColor="dark.50"
         minH="80vh"
-        minW="55vw"
+        minW={{ md: '85vw', lg: '75vw', xl: '65vw', '2xl': '55vw' }}
         display="flex"
-        alignItems="center"
+        alignItems="stretch"
         border={'1px solid transparent'}
         borderColor="dark.150"
         boxShadow="lg"
       >
         <Box
-          w="35%"
-          h="80vh"
+          flex={1}
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 0px 0px 10px"
-          p={{ md: 0, lg: 10 }}
-          pb={{ md: 3.5, lg: 3.5 }}
+          p={3}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
           flexDirection="column"
+          position="relative"
         >
           <img
             src={logo}
             alt=""
             style={{
-              width: '85%',
-              maxWidth: '11rem',
+              width: '65%',
               marginTop: 'auto',
             }}
           />
@@ -113,25 +111,24 @@ const SigninContainer = (props: SigninContainerProps) => {
             style={{
               position: 'absolute',
               top: '50%',
-              left: '30%', // Para centralizar a imagem no meio da caixa
+              left: '96.5%', // Para centralizar a imagem no meio da caixa
               transform: 'translate(-50%, -50%)', // Para
-              width: '45%',
-              height: '75%',
+              minWidth: '120%',
             }}
           />
         </Box>
 
         <Box
-          mr={{ base: 12, '2xl': 16 }}
+          flex={2}
+          mr={16}
           ml={52}
-          w="50%"
-          h="80vh"
           pt={12}
           position="sticky"
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="space-evenly"
+          gap={4}
         >
           {props.children}
         </Box>
