@@ -1,4 +1,4 @@
-import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   FormHelperText,
   Heading,
   HStack,
+  Icon,
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
@@ -146,6 +147,7 @@ const VaultAddressesStep = ({
                           isLoading={!optionsRequests[index].isSuccess}
                           disabled={first}
                           inView={inView}
+                          clearable={false}
                           rightElement={
                             <Icon
                               as={RemoveIcon}
