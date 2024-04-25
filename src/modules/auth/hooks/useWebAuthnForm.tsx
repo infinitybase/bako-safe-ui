@@ -7,8 +7,8 @@ import { useWebAuthnLastLoginId } from './useWebAuthnLastLoginId';
 const createSchema = yup.object({
   name: yup
     .string()
-    .min(3, 'Name must be at least 3 characters')
-    .required('You must provide a name')
+    .min(3, 'Username must be at least 3 characters')
+    .required('You must provide a username')
     .test(
       'is-valid-name',
       "The username can't contain special characters or symbols",
@@ -17,7 +17,7 @@ const createSchema = yup.object({
 });
 
 const loginSchema = yup.object({
-  name: yup.string().required('You must select a name'),
+  name: yup.string().required('You must select a username'),
 });
 
 const useWebAuthnForm = () => {

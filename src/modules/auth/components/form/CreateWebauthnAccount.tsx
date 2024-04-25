@@ -47,7 +47,7 @@ export const CreateWebAuthnForm = ({
                   (!!nicknamesData?.name && search.length > 0)
                 }
               />
-              <FormLabel color="gray">Name</FormLabel>
+              <FormLabel color="gray">Username</FormLabel>
               <FormHelperText
                 color={
                   nicknamesData?.name || form.formState.errors.name?.message
