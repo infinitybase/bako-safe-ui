@@ -35,8 +35,13 @@ const VaultConnector = () => {
     inView,
   } = useVaultDrawer({});
 
-  const { selectedVaultId, setSelectedVaultId, currentVault, send } =
-    useAuthSocket();
+  const {
+    selectedVaultId,
+    setSelectedVaultId,
+    currentVault,
+    send,
+    makeLinkCreateVault,
+  } = useAuthSocket();
 
   return (
     <Flex h="100vh" w="full">
@@ -110,10 +115,16 @@ const VaultConnector = () => {
         </Box>
 
         {isSuccess && !isFetching && !vaults.length && (
-          <Text variant="variant">
-            We {"couldn't"} find any results for <b>“{search.value}”</b> in the
-            vault.
-          </Text>
+          // <Text variant="variant">
+          //   We {"couldn't"} find any results for <b>“{search.value}”</b> in the
+          //   vault.
+          // </Text>
+          <button
+            onClick={makeLinkCreateVault}
+            style={{ border: '1px solid red' }}
+          >
+            CRIAR VAULT
+          </button>
         )}
 
         {/* Result */}
@@ -187,12 +198,12 @@ const VaultConnector = () => {
             leftIcon={<RiLink size={22} />}
             onClick={() =>
               send.mutate({
-                sessionId: sessionId!,
                 name: name!,
                 origin: origin!,
+                sessionId: sessionId!,
+                request_id: request_id!,
                 vaultId: selectedVaultId,
                 userAddress: auth.account,
-                request_id: request_id!,
               })
             }
             isLoading={send.isLoading}
