@@ -48,11 +48,13 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
               </Text>
             </HStack>
           )}
-          <Text variant="subtitle">{name}</Text>
+          <Text variant="subtitle" isTruncated maxW={{ base: 120, xs: 250 }}>
+            {name}
+          </Text>
         </VStack>
       </HStack>
       <Box>
-        <Text variant="description" noOfLines={2}>
+        <Text variant="description" isTruncated maxW={{ base: 120, xs: 200 }}>
           {description ?? ''}
         </Text>
       </Box>
