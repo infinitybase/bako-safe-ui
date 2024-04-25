@@ -35,11 +35,10 @@ const useWebAuthn = () => {
     tabs: EnumUtils.toNumberArray(WebAuthnState),
     defaultTab: WebAuthnState.LOGIN,
   });
-
-  const { memberForm, loginForm } = useWebAuthnForm();
-  const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
-
   const accountsRequest = useGetAccountsByHardwareId();
+
+  const { memberForm, loginForm } = useWebAuthnForm(accountsRequest.data || []);
+  const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
   const accountsOptions = useMemo(() => {
     const filteredAccounts = accountsRequest.data?.filter((account) =>
@@ -203,6 +202,7 @@ const useWebAuthn = () => {
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
       isDisabled:
+        !loginForm.formState.isValid ||
         (currentUsername?.length === 0 ?? false) ||
         !isValidCurrentUsername ||
         btnDisabled,
