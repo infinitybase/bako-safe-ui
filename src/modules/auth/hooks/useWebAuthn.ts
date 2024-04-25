@@ -140,6 +140,7 @@ const useWebAuthn = () => {
 
   const handleChangeTab = (tab: WebAuthnState) => {
     tabs.set(tab);
+    setSearchAccount('');
   };
 
   const openWebAuthnDrawer = () => {
@@ -160,6 +161,10 @@ const useWebAuthn = () => {
   const goToPage = (page: WebAuthnState) => {
     setPage(page);
   };
+
+  useEffect(() => {
+    isOpen && setSearchAccount('');
+  }, [isOpen]);
 
   useEffect(() => {
     if (
