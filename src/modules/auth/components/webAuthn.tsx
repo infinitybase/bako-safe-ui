@@ -77,19 +77,19 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
         <DrawerHeader mb={8}>
           <VStack alignItems="flex-start" spacing={5}>
             <HStack w="full" justifyContent="space-between">
-              <Heading fontSize="xl" fontWeight="bold" color="white">
+              <Heading fontSize={['md', 'lg']} fontWeight="bold" color="white">
                 {formState.title}
               </Heading>
 
               <LineCloseIcon
-                fontSize={20}
+                fontSize={'lg'}
                 color="grey.100"
                 cursor="pointer"
                 onClick={closeWebAuthnDrawer}
               />
             </HStack>
 
-            <Text fontSize="sm" color="grey.500">
+            <Text fontSize={['xs', 'sm']} color="grey.500">
               {formState.description}
             </Text>
           </VStack>
