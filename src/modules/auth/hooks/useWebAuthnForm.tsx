@@ -1,4 +1,3 @@
-import { isValidDomain } from '@bako-id/sdk';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -13,7 +12,7 @@ const createSchema = yup.object({
     .test(
       'is-valid-name',
       "The username can't contain special characters or symbols",
-      (name) => isValidDomain(name),
+      (name) => /^@?[a-zA-Z0-9_]+$/.test(name),
     ),
 });
 
