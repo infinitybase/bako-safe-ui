@@ -17,16 +17,16 @@ interface ContainerProps {
 
 const colors = {
   border: {
+    success: 'success.750',
+    error: 'error.700',
+    warning: 'warning.660',
+    info: 'info.650',
+  },
+  bg: {
     success: 'success.800',
     error: 'error.800',
     warning: 'warning.675',
     info: 'info.700',
-  },
-  bg: {
-    success: 'success.900',
-    error: 'error.900',
-    warning: 'warning.900',
-    info: 'info.900',
   },
   title: {
     success: 'success.700',
@@ -46,33 +46,39 @@ const Container = (props: ContainerProps) => {
   const [hide, setHide] = useState(false);
 
   return (
-    <HStack
-      alignItems={props.alignItems}
-      padding={hide ? 4 : 2}
-      spacing={2}
+    <Box
+      bg={colors.bg[props?.status] ?? 'dark.200'}
+      borderRadius={8}
       boxShadow="lg"
       borderWidth={1}
-      borderRadius={8}
       borderColor={colors.border[props?.status] ?? 'dark.100'}
-      bg={colors.bg[props?.status] ?? 'dark.200'}
-      whiteSpace="nowrap"
       overflow="hidden"
-      position="relative"
-      backdropFilter="blur(17px)"
-      maxW={320}
-      onClick={() => setHide(!hide)}
+      backdropFilter="blur(30px)"
     >
-      {props.leftIcon}
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap={1}
-        hidden={hide}
+      <HStack
+        alignItems={props.alignItems}
+        padding={hide ? 4 : 2}
+        spacing={2}
+        bg="dark.225"
+        backdropFilter="blur(30px)"
+        whiteSpace="nowrap"
         overflow="hidden"
+        position="relative"
+        maxW={320}
+        onClick={() => setHide(!hide)}
       >
-        {props.children}
-      </Box>
-    </HStack>
+        {props.leftIcon}
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={1}
+          hidden={hide}
+          overflow="hidden"
+        >
+          {props.children}
+        </Box>
+      </HStack>
+    </Box>
   );
 };
 
