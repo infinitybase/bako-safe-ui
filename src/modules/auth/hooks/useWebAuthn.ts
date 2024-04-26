@@ -128,6 +128,7 @@ const useWebAuthn = () => {
         onSuccess: async (data) => {
           await accountsRequest.refetch();
           await tabs.set(WebAuthnState.LOGIN);
+          loginForm.reset();
           loginForm.setValue('name', data.id);
           memberForm.reset();
         },
