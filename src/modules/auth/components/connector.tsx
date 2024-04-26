@@ -72,8 +72,8 @@ const CardConnector = (props: CardConnectorProps) => {
       justifyContent="space-between"
       p={2}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor={isWebAuthn ? 'warning.900' : 'dark.50'}
-      borderColor={isWebAuthn ? 'brand.500' : 'dark.100'}
+      bgColor={isWebAuthn ? 'warning.900' : 'grey.825'}
+      borderColor={isWebAuthn ? 'brand.500' : 'grey.550'}
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
@@ -83,7 +83,7 @@ const CardConnector = (props: CardConnectorProps) => {
               bg: 'warning.700',
             }
           : {
-              borderColor: 'grey.100',
+              borderColor: 'grey.75',
             }
       }
     >
