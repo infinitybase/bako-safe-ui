@@ -44,6 +44,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         position="relative"
         borderRadius="10px"
         backgroundColor="dark.50"
+        backdropFilter="blur(6px)"
         display="flex"
         minW={isLowerThanMobile[0] ? '90vw' : '55vw'}
         spacing={0}
@@ -77,6 +78,7 @@ const SigninContainer = (props: SigninContainerProps) => {
       <Box
         borderRadius="10px"
         backgroundColor="dark.50"
+        backdropFilter="blur(6px)"
         minH={isMdHeight ? '90vh' : '41.25rem'}
         minW={{ md: '85vw', lg: '75vw', xl: '65rem' }}
         display="flex"
