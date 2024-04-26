@@ -28,13 +28,13 @@ export const CreateWebAuthnForm = ({
   const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
   return (
-    <Box w="full" mb={8}>
+    <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
         render={({ field, fieldState }) => (
           <Box position="relative">
-            <FormControl>
+            <FormControl isInvalid={fieldState.invalid}>
               <Input
                 value={search}
                 placeholder=""

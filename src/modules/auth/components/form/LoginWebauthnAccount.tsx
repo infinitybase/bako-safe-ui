@@ -16,12 +16,12 @@ export const LoginWebAuthnForm = ({
   search,
 }: LoginWebAuthnFormProps) => {
   return (
-    <Box w="full" mb={8}>
+    <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
-        render={({ field }) => (
-          <FormControl>
+        render={({ field, fieldState }) => (
+          <FormControl isInvalid={fieldState.invalid}>
             <Autocomplete
               label="Username"
               value={field.value}
