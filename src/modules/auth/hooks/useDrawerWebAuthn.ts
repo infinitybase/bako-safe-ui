@@ -2,6 +2,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
+import { useScreenSize } from '@/modules/core';
 
 import {
   SignWebAuthnPayload,
@@ -25,6 +26,7 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 export const useDrawerWebAuth = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
   const { setLastLoginId } = useWebAuthnLastLoginId();
 
@@ -65,6 +67,7 @@ export const useDrawerWebAuth = () => {
       warningToast({
         title: 'Problem to sign',
         description: 'We can not validate your signature. Please, try again.',
+        position: isSmall ? 'bottom' : 'top-right',
       });
     },
   });
