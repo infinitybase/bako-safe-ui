@@ -4,9 +4,36 @@ import { useContext } from 'react';
 import { SocketContext } from '@/config/socket';
 import { useQueryParams } from '@/modules/auth';
 
+export enum SocketEvents {
+  CONNECT = 'connection',
+
+  DEFAULT = 'message',
+
+  CONNECTED = '[CONNECTED]',
+  DISCONNECTED = '[CLIENT_DISCONNECTED]',
+
+  TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
+  TX_REQUEST = '[TX_EVENT_REQUESTED]',
+}
+
+export enum SocketUsernames {
+  UI = '[UI]',
+  CONNECTOR = '[CONNECTOR]',
+  API = '[API]',
+}
+
+export interface IDefaultMessage {
+  username: string;
+  room: string;
+  to: SocketUsernames;
+  type: SocketEvents;
+  request_id: string;
+  data: any;
+}
+
 export interface ISocketConnectParams {
   username: string;
-  param: UserTypes;
+  param: SocketUsernames;
   sessionId: string;
   origin: string;
   connectionAlert?: {
@@ -14,11 +41,6 @@ export interface ISocketConnectParams {
     content: { [key: string]: string };
   };
   callbacks?: { [key: string]: (data: any) => void };
-}
-export enum UserTypes {
-  WALLET = '[WALLET]',
-  POPUP_AUTH = '[POPUP_AUTH]',
-  POPUP_TRANSFER = '[POPUP_TRANSFER]',
 }
 
 export interface ISocketEmitMessageParams {
@@ -39,7 +61,7 @@ export const useSocket = () => {
     */
     if (socket.connected) return;
     socket.auth = {
-      username: `[UI]`,
+      username: SocketUsernames.UI,
       data: new Date(),
       sessionId,
       origin,

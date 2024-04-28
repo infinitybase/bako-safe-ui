@@ -2,7 +2,7 @@ import React, { createContext } from 'react';
 import { io } from 'socket.io-client';
 // const { VITE_API_URL } = import.meta.env;
 
-const URL = 'http://localhost:3000';
+const URL = 'http://localhost:3001';
 const socket = io(URL, { autoConnect: false });
 
 socket.on('connect_error', (err) => {

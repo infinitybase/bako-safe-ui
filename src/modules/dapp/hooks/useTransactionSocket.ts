@@ -2,7 +2,7 @@ import { TransactionRequestLike } from 'fuels';
 import { useEffect, useState } from 'react';
 
 import { useQueryParams } from '@/modules/auth/hooks';
-import { useSocket } from '@/modules/core/hooks';
+import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
 
 import { useTransactionSummary } from './useTransactionSummary';
 
@@ -19,12 +19,6 @@ interface IDappEvent {
   description: string;
   origin: string;
 }
-
-// interface IEventTX_EVENT_REQUEST {
-//   vault: IVaultEvent;
-//   tx: TransactionRequestLike;
-//   dapp: IDappEvent;
-// }
 
 export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
@@ -50,11 +44,11 @@ export const useTransactionSocket = () => {
 
   useEffect(() => {
     if (socket.connected) {
-      socket.emit('message', {
+      socket.emit(SocketEvents.DEFAULT, {
         sessionId,
-        to: '[CONNECTOR]',
+        to: SocketUsernames.CONNECTOR,
         request_id,
-        type: '[CONNECTED]',
+        type: SocketEvents.CONNECTED,
         data: {},
       });
     }
@@ -62,10 +56,11 @@ export const useTransactionSocket = () => {
 
   useEffect(() => {
     //todo: default typing of the events
-    socket.on('message', (data) => {
+    socket.on(SocketEvents.DEFAULT, (data) => {
       const { to, type, data: content } = data;
       const { dapp, vault, tx, validAt } = content;
-      const isValid = to === '[UI]' && type === '[TX_EVENT_REQUESTED]';
+      const isValid =
+        to === SocketUsernames.UI && type === SocketEvents.TX_REQUEST;
 
       if (!isValid) return;
 
@@ -84,7 +79,7 @@ export const useTransactionSocket = () => {
   const sendTransaction = async () => {
     if (!tx) return;
     setSending(true);
-    socket.emit('[TX_EVENT_CONFIRM]', {
+    socket.emit(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
     });
@@ -97,11 +92,11 @@ export const useTransactionSocket = () => {
 
   // emmit message to the server and close window
   const cancelTransaction = () => {
-    socket.emit('message', {
-      username: '[UI]',
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
       sessionId,
-      to: '[CONNECTOR]',
-      type: '[CLIENT_DISCONNECTED]',
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.DISCONNECTED,
       request_id,
       data: {},
     });
