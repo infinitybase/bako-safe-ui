@@ -15,7 +15,7 @@ const TemplatePage = (
 
   return (
     <Dialog.Modal
-      size={['full', 'lg']}
+      size={{ base: 'full', sm: 'lg' }}
       isOpen={true}
       onClose={onClose}
       closeOnOverlayClick={false}

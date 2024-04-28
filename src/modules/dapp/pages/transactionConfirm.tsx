@@ -45,7 +45,7 @@ const TransactionConfirm = () => {
       <Dapp.Section>
         <Dapp.Header
           title="Create transaction"
-          description="Enhance your security by sending transactions and executing contracts through BSafe."
+          description="Enhance your security by sending transactions and executing contracts through BakoSafe."
         />
         <CloseIcon
           onClick={cancelTransaction}
@@ -92,7 +92,6 @@ const TransactionConfirm = () => {
             {(isLoadingTransactionSummary || !transactionSummary) && (
               <DappTransaction.OperationSkeleton />
             )}
-
             {transactionSummary?.operations?.map((operation, index) => (
               <DappTransaction.Operation
                 key={`${index}operation`}
@@ -104,7 +103,6 @@ const TransactionConfirm = () => {
               />
             ))}
           </VStack>
-
           <DappTransaction.Fee fee={transactionSummary?.fee} />
         </>
       )}

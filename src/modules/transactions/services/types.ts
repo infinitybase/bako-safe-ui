@@ -1,4 +1,4 @@
-import { ITransaction, ITransactionResume, Vault } from 'bsafe';
+import { ITransaction, ITransactionResume, Vault } from 'bakosafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';

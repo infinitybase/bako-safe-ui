@@ -27,6 +27,7 @@ export const AddressBookQueryKey = {
     filter: string,
     contactIds: string,
     includePersonal: boolean,
+    excludeContacts?: string,
   ) => [
     AddressBookQueryKey.DEFAULT,
     'by-user',
@@ -35,6 +36,7 @@ export const AddressBookQueryKey = {
     filter,
     contactIds,
     includePersonal,
+    excludeContacts,
   ],
   FULL_DATA: (workspaceId: string) => [
     AddressBookQueryKey.DEFAULT,

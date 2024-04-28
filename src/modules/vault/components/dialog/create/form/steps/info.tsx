@@ -64,9 +64,17 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             </FormControl>
           )}
         />
-        <FormControl>
-          <Textarea {...form.register('description')} placeholder=" " />
-          <FormLabel>Description</FormLabel>
+        <FormControl
+          sx={{
+            'textarea::placeholder': {
+              color: 'grey.500',
+            },
+          }}
+        >
+          <Textarea
+            {...form.register('description')}
+            placeholder="Description"
+          />
           <FormHelperText>Optional</FormHelperText>
         </FormControl>
       </VStack>

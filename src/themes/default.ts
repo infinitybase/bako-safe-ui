@@ -5,8 +5,9 @@ import { components } from '@/themes/components';
 import { fonts } from '@/themes/fonts';
 
 const breakpoints = {
-  sm: '62em', // 992px
-  md: '62em',
+  xs: '37.5em', //600px
+  sm: '52em', //832px
+  md: '62em', // 992px
   lg: '72em',
 };
 

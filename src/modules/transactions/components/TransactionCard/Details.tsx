@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
@@ -30,6 +30,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { limitCharacters } from '@/utils';
 
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
 import { TransactionStepper } from './TransactionStepper';
@@ -45,7 +46,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
-  isInTheVault?: boolean;
+  isInTheVaultPage?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -65,7 +66,7 @@ const AssetBoxInfo = ({
   const clipboard = useClipboard(
     isContract ? contractAddress : asset?.to ?? '',
   );
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -77,7 +78,7 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      px={{ base: 0, sm: 5 }}
+      px={{ base: 0, md: 5 }}
       py={{ base: 3, sm: 5 }}
       spacing={{ base: 1, sm: 8 }}
       w="full"
@@ -107,7 +108,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={[120, 140]}>
+            <Box mt={0.5} w={{ base: 120, sm: 140 }}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -205,9 +206,16 @@ const AssetBoxInfo = ({
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toAddress(),
-            )}
+            {isExtraSmall
+              ? limitCharacters(
+                  AddressUtils.format(
+                    Address.fromString(asset.to ?? '').toAddress(),
+                  ) ?? '',
+                  7,
+                )
+              : AddressUtils.format(
+                  Address.fromString(asset.to ?? '').toAddress(),
+                )}
           </Text>
         </VStack>
       )}
@@ -218,10 +226,9 @@ const AssetBoxInfo = ({
 const Details = ({
   transaction,
   status,
-  isInTheVault,
+  isInTheVaultPage,
 }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
-  const { isMobile } = useScreenSize();
 
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
@@ -244,18 +251,17 @@ const Details = ({
         pt={{ base: 0, sm: 5 }}
         alignSelf="flex-start"
         display="flex"
-        direction={['column', 'row']}
+        direction={{ base: 'column', md: 'row' }}
         alignItems="center"
         justify="space-between"
-        maxW="full"
-        columnGap={isInTheVault ? '3rem' : '12rem'}
-        w={['85%', '100%']}
+        columnGap={isInTheVaultPage ? '3rem' : '8rem'}
+        w="full"
       >
         <Box
           display="flex"
-          flexDirection={['row', 'column']}
-          maxW="full"
-          minW={[200, 486]}
+          flexDirection={{ base: 'row', sm: 'column' }}
+          w={{ base: '100%', lg: 'unset' }}
+          minW={{ base: 200, sm: 486 }}
           flexWrap="wrap"
         >
           <Box mb={{ base: 2, sm: 4 }}>
@@ -382,8 +388,9 @@ const Details = ({
 
         <Box
           alignSelf="flex-start"
-          w={isMobile ? '100%' : undefined}
-          minW={[200, 486]}
+          w="full"
+          minW={{ base: 200, md: 300 }}
+          maxW={600}
         >
           <TransactionStepper steps={transactionHistory!} />
         </Box>

@@ -1,5 +1,5 @@
 import { concat } from 'ethers';
-import { arrayify, bn, U64Coder } from 'fuels';
+import { arrayify, BigNumberCoder } from 'fuels';
 
 enum SignatureType {
   WEB_AUTHN = 0,
@@ -20,7 +20,7 @@ type Signature =
     };
 
 function encodeSignature(sig: Signature) {
-  const typeBytes = new U64Coder().encode(bn(sig.type));
+  const typeBytes = new BigNumberCoder('u64').encode(sig.type);
   switch (sig.type) {
     case SignatureType.WEB_AUTHN: {
       const prefixBytes = arrayify(sig.prefix);
@@ -28,10 +28,10 @@ function encodeSignature(sig: Signature) {
       const authDataBytes = arrayify(sig.authData);
       return concat([
         typeBytes,
-        sig.signature,
-        new U64Coder().encode(bn(prefixBytes.length)),
-        new U64Coder().encode(bn(suffixBytes.length)),
-        new U64Coder().encode(bn(authDataBytes.length)),
+        sig.signature, // get Unit8Array of bn
+        new BigNumberCoder('u64').encode(prefixBytes.length),
+        new BigNumberCoder('u64').encode(suffixBytes.length),
+        new BigNumberCoder('u64').encode(authDataBytes.length),
         prefixBytes,
         suffixBytes,
         authDataBytes,

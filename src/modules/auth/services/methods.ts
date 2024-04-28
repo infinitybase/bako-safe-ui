@@ -1,5 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
-import { defaultConfig } from 'bsafe';
+import { defaultConfig } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { api } from '@/config';
@@ -163,8 +163,8 @@ export class UserService {
 }
 
 export const localStorageKeys = {
-  HARDWARE_ID: 'bsafe/hardwareId',
-  WEB_AUTHN_LAST_LOGIN_ID: 'bsafe/WebAuthnLastLoginId',
+  HARDWARE_ID: 'bakosafe/hardwareId',
+  WEB_AUTHN_LAST_LOGIN_ID: 'bakosafe/WebAuthnLastLoginId',
 };
 
 export const UserQueryKey = {

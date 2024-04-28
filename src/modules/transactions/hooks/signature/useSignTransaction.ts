@@ -1,4 +1,4 @@
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useCallback, useMemo } from 'react';
 
@@ -69,17 +69,24 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     },
   });
 
-  const confirmTransaction = async () => {
+  const confirmTransaction = async (callback?: () => void) => {
     const signedMessage = await signMessageRequest.mutateAsync(
       options.transaction.hash,
     );
 
-    await request.mutateAsync({
-      account,
-      confirm: true,
-      signer: signedMessage,
-      id: options.transaction.id,
-    });
+    await request.mutateAsync(
+      {
+        account,
+        confirm: true,
+        signer: signedMessage,
+        id: options.transaction.id,
+      },
+      {
+        onSuccess: () => {
+          callback && callback();
+        },
+      },
+    );
   };
 
   const retryTransaction = async () => {

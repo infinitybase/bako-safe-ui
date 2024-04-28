@@ -19,16 +19,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
+  if (
+    transactionFee &&
+    !form.getValues(`transactions.${accordion.index}.fee`)
+  ) {
+    form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
+    form.trigger(`transactions.${accordion.index}.amount`);
+  }
+  const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
+  const isCurrentAmountZero = Number(currentAmount) === 0;
+
   return (
-    <Dialog.Modal
-      size={{ base: 'full', sm: 'xl' }}
-      {...props}
-      onClose={handleClose}
-      closeOnOverlayClick={false}
-    >
+    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
-        position={['static', 'relative']}
-        mt={[8, 0]}
+        position={{ base: 'static', sm: 'relative' }}
+        mt={{ base: -5, sm: 0 }}
         mb={0}
         maxH={40}
         top={{ base: 0, sm: -8 }}
@@ -48,7 +55,13 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         />
       </Dialog.Body>
 
-      <Flex wrap="wrap" justifyContent="end" w="full" maxW={480} my={[3, 6]}>
+      <Flex
+        wrap="wrap"
+        justifyContent="end"
+        w="full"
+        maxW={480}
+        my={{ base: 3, sm: 6 }}
+      >
         <Divider mb={2} w="full" />
         <Text
           visibility={
@@ -58,7 +71,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           }
           variant="description"
         >
-          Fee (network): {resolveTransactionCosts.data?.fee.format()}
+          Fee (network): {transactionFee}
         </Text>
       </Flex>
 
@@ -69,7 +82,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid}
+          isDisabled={!form.formState.isValid || isCurrentAmountZero}
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
           _hover={{

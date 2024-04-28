@@ -3,7 +3,7 @@ import {
   ITransactionResume,
   IWitnesses,
   TransactionStatus,
-} from 'bsafe';
+} from 'bakosafe';
 import { bn } from 'fuels';
 
 import { AssetModel, WitnessStatus } from '../core/models';
@@ -18,7 +18,7 @@ export interface TransactionStatusParams {
   status: TransactionStatus;
 }
 
-/* TODO: Fix this to use BSAFE SDK */
+/* TODO: Fix this to use bako safe SDK */
 export const transactionStatus = ({
   witnesses,
   account,

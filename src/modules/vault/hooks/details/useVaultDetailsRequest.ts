@@ -1,13 +1,13 @@
-import { useBsafeVault } from '@/modules/core';
+import { useBakoSafeVault } from '@/modules/core';
 
 const VAULT_DETAIL_QUERY_KEY = 'vault/get';
 
 function useVaultDetailsRequest(id: string) {
-  const { vault, ...rest } = useBsafeVault(id);
+  const { vault, ...rest } = useBakoSafeVault(id);
 
   return {
     ...rest,
-    predicate: vault?.BSAFEVault,
+    predicate: vault?.BakoSafeVault,
     predicateInstance: vault,
   };
 }

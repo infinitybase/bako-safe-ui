@@ -1,4 +1,4 @@
-import { BSAFEConnectorEvents } from 'bsafe';
+import { BakoSafeConnectors } from 'bakosafe';
 import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
@@ -44,7 +44,7 @@ export interface ISocketConnectParams {
 }
 
 export interface ISocketEmitMessageParams {
-  event: BSAFEConnectorEvents;
+  event: BakoSafeConnectors;
   to: string;
   content: { [key: string]: unknown };
   callback?: () => void;

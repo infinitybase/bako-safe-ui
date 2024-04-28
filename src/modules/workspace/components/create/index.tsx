@@ -52,8 +52,16 @@ const CreateWorkspaceForm = ({
       )}
     />
     <FormControl>
-      <Textarea size="lg" {...form.register('description')} placeholder=" " />
-      <FormLabel>Description</FormLabel>
+      <Textarea
+        size="lg"
+        {...form.register('description')}
+        placeholder="Description"
+        sx={{
+          'textarea::placeholder': {
+            color: 'grey.500',
+          },
+        }}
+      />
       <FormHelperText>Optional</FormHelperText>
     </FormControl>
   </VStack>

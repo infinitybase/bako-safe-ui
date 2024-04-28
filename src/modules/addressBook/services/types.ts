@@ -1,4 +1,4 @@
-import { SortOption } from 'bsafe';
+import { SortOption } from 'bakosafe';
 
 import { IPagination } from '@/modules/core';
 import { AddressBook } from '@/modules/core/models/';
@@ -28,6 +28,7 @@ export interface FindContactsParams {
 export interface GetPaginatedContactsParams {
   q?: string;
   includePersonal?: boolean;
+  excludeContacts?: string[];
   perPage?: number;
   page?: number;
   orderBy?: string;

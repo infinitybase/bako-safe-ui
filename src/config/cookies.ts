@@ -1,17 +1,20 @@
 import * as CryptoJS from 'crypto-js';
+import Cookies from 'js-cookie';
+
+const { VITE_COOKIE_EXPIRATION_TIME, VITE_ENCRYPTION_KEY } = import.meta.env;
 
 export enum CookieName {
-  ACCESS_TOKEN = `bsafe/token`,
-  ACCOUNT_TYPE = `bsafe/account_type`,
-  ADDRESS = `bsafe/address`,
-  AVATAR = `bsafe/avatar`,
-  USER_ID = `bsafe/user_id`,
-  SINGLE_WORKSPACE = `bsafe/single_workspace`,
-  SINGLE_CONTACTS = `bsafe/single_contacts`,
-  WORKSPACE = `bsafe/workspace`,
-  PERMISSIONS = `bsafe/permissions`,
-  WEB_AUTHN_ID = `bsafe/web_authn_id`,
-  WEB_AUTHN_PK = `bsafe/web_authn_pk`,
+  ACCESS_TOKEN = `bakosafe/token`,
+  ACCOUNT_TYPE = `bakosafe/account_type`,
+  ADDRESS = `bakosafe/address`,
+  AVATAR = `bakosafe/avatar`,
+  USER_ID = `bakosafe/user_id`,
+  SINGLE_WORKSPACE = `bakosafe/single_workspace`,
+  SINGLE_CONTACTS = `bakosafe/single_contacts`,
+  WORKSPACE = `bakosafe/workspace`,
+  PERMISSIONS = `bakosafe/permissions`,
+  WEB_AUTHN_ID = `bakosafe/web_authn_id`,
+  WEB_AUTHN_PK = `bakosafe/web_authn_pk`,
 }
 
 interface Cookie {
@@ -20,22 +23,27 @@ interface Cookie {
 }
 
 export class CookiesConfig {
-  //todo: move to public env
-  private static encryptionKey = 'chave-secreta';
+  private static encryptionKey = VITE_ENCRYPTION_KEY;
 
   static setCookies(cookies: Cookie[]) {
+    const expiresAt =
+      new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
+
     cookies.forEach((cookie) => {
-      localStorage.setItem(cookie.name, this.encrypt(cookie.value));
+      Cookies.set(cookie.name, this.encrypt(cookie.value), {
+        secure: true,
+        expires: new Date(expiresAt),
+      });
     });
   }
 
   static getCookie(name: string) {
-    const ck = localStorage.getItem(name);
+    const ck = Cookies.get(name);
     return ck ? this.decrypt(ck) : '';
   }
 
   static removeCookies(names: string[]) {
-    names.forEach((name) => localStorage.removeItem(name));
+    names.forEach((name) => Cookies.remove(name));
   }
 
   private static encrypt(value: string): string {
@@ -43,14 +51,20 @@ export class CookiesConfig {
       value,
       this.encryptionKey,
     ).toString();
+
     return encrypted;
   }
 
   private static decrypt(encryptedValue: string): string {
-    const decrypted = CryptoJS.AES.decrypt(
-      encryptedValue,
-      this.encryptionKey,
-    ).toString(CryptoJS.enc.Utf8);
-    return decrypted;
+    try {
+      const decrypted = CryptoJS.AES.decrypt(
+        encryptedValue,
+        this.encryptionKey,
+      ).toString(CryptoJS.enc.Utf8);
+
+      return decrypted;
+    } catch (e) {
+      return `${crypto.randomUUID()}`;
+    }
   }
 }
