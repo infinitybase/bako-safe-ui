@@ -1,10 +1,39 @@
 import { BakoSafeConnectors } from 'bakosafe';
+import { useContext } from 'react';
 
-import socket from './useSocketConfig';
+import { SocketContext } from '@/config/socket';
+import { useQueryParams } from '@/modules/auth';
+
+export enum SocketEvents {
+  CONNECT = 'connection',
+
+  DEFAULT = 'message',
+
+  CONNECTED = '[CONNECTED]',
+  DISCONNECTED = '[CLIENT_DISCONNECTED]',
+
+  TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
+  TX_REQUEST = '[TX_EVENT_REQUESTED]',
+}
+
+export enum SocketUsernames {
+  UI = '[UI]',
+  CONNECTOR = '[CONNECTOR]',
+  API = '[API]',
+}
+
+export interface IDefaultMessage {
+  username: string;
+  room: string;
+  to: SocketUsernames;
+  type: SocketEvents;
+  request_id: string;
+  data: any;
+}
 
 export interface ISocketConnectParams {
   username: string;
-  param: UserTypes;
+  param: SocketUsernames;
   sessionId: string;
   origin: string;
   connectionAlert?: {
@@ -12,11 +41,6 @@ export interface ISocketConnectParams {
     content: { [key: string]: string };
   };
   callbacks?: { [key: string]: (data: any) => void };
-}
-export enum UserTypes {
-  WALLET = '[WALLET]',
-  POPUP_AUTH = '[POPUP_AUTH]',
-  POPUP_TRANSFER = '[POPUP_TRANSFER]',
 }
 
 export interface ISocketEmitMessageParams {
@@ -27,29 +51,23 @@ export interface ISocketEmitMessageParams {
 }
 
 export const useSocket = () => {
-  const connect = ({
-    param,
-    callbacks,
-    sessionId,
-    origin,
-  }: ISocketConnectParams) => {
+  const socket = useContext(SocketContext);
+  const { request_id, origin } = useQueryParams();
+
+  const connect = (sessionId: string) => {
     /* 
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
+    if (socket.connected) return;
     socket.auth = {
-      username: `${param}`,
+      username: SocketUsernames.UI,
       data: new Date(),
       sessionId,
       origin,
+      request_id: request_id ?? '',
     };
     socket.connect();
-
-    if (callbacks) {
-      Object.keys(callbacks).forEach((key) => {
-        socket.on(key, callbacks[key]);
-      });
-    }
   };
 
   /* 
@@ -74,5 +92,5 @@ export const useSocket = () => {
     );
   };
 
-  return { connect, emitMessage };
+  return { connect, emitMessage, socket };
 };

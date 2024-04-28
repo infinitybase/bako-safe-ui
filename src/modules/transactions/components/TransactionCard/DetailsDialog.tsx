@@ -2,11 +2,8 @@ import { Button, Divider, HStack, VStack } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
 import { Dialog, DialogModalProps } from '@/components';
-import {
-  TransactionCard,
-  TransactionState,
-  transactionStatus,
-} from '@/modules';
+import { TransactionState } from '@/modules/core/models/transaction';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 import { limitCharacters } from '@/utils';
 
 import { useSignTransaction } from '../../hooks/signature';

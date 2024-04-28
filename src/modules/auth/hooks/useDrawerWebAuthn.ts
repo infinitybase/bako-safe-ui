@@ -28,7 +28,7 @@ export const useDrawerWebAuth = () => {
   const { warningToast } = useContactToast();
   const { setLastLoginId } = useWebAuthnLastLoginId();
 
-  const { location, origin } = useQueryParams();
+  const { location, sessionId } = useQueryParams();
 
   const createAccountMutate = useMutation({
     mutationKey: UserQueryKey.CREATE_WEB_AUTHN_ACCOUNT(),
@@ -57,7 +57,7 @@ export const useDrawerWebAuth = () => {
         webAuthn,
       });
       setLastLoginId(webAuthn!.id);
-      navigate(redirectPathBuilder(!!origin, location, address));
+      navigate(redirectPathBuilder(!!sessionId, location, address));
     },
     onError: () => {
       warningToast({

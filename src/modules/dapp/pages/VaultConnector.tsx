@@ -17,8 +17,8 @@ import {
 import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon } from '@/components';
-import { PermissionRoles } from '@/modules';
 import { useAuth, useQueryParams } from '@/modules/auth';
+import { PermissionRoles } from '@/modules/core';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
@@ -26,7 +26,7 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useAuthSocket } from '../hooks';
 
 const VaultConnector = () => {
-  const { name, origin } = useQueryParams();
+  const { name, origin, sessionId, request_id } = useQueryParams();
   const auth = useAuth();
 
   const {
@@ -36,11 +36,11 @@ const VaultConnector = () => {
   } = useVaultDrawer({});
 
   const {
-    emitEvent,
     selectedVaultId,
     setSelectedVaultId,
     currentVault,
-    emittingEvent,
+    send,
+    makeLinkCreateVault,
   } = useAuthSocket();
 
   return (
@@ -115,10 +115,16 @@ const VaultConnector = () => {
         </Box>
 
         {isSuccess && !isFetching && !vaults.length && (
-          <Text variant="variant">
-            We {"couldn't"} find any results for <b>“{search.value}”</b> in the
-            vault.
-          </Text>
+          // <Text variant="variant">
+          //   We {"couldn't"} find any results for <b>“{search.value}”</b> in the
+          //   vault.
+          // </Text>
+          <button
+            onClick={makeLinkCreateVault}
+            style={{ border: '1px solid red' }}
+          >
+            CRIAR VAULT
+          </button>
         )}
 
         {/* Result */}
@@ -190,8 +196,17 @@ const VaultConnector = () => {
             variant="primary"
             isDisabled={!selectedVaultId || !vaults.length || isLoading}
             leftIcon={<RiLink size={22} />}
-            onClick={() => emitEvent(selectedVaultId)}
-            isLoading={emittingEvent}
+            onClick={() =>
+              send.mutate({
+                name: name!,
+                origin: origin!,
+                sessionId: sessionId!,
+                request_id: request_id!,
+                vaultId: selectedVaultId,
+                userAddress: auth.account,
+              })
+            }
+            isLoading={send.isLoading}
           >
             Connect
           </Button>
