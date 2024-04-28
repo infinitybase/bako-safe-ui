@@ -1,3 +1,4 @@
+export * from './autocomplete';
 export * from './card';
 export * from './dialog';
 export * from './feedback';
@@ -5,4 +6,5 @@ export * from './icons';
 export * from './input';
 export * from './loader';
 export * from './progress';
+export * from './select';
 export * from './skeleton';

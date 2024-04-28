@@ -1,6 +1,6 @@
 import { Box, chakra, HStack, Icon } from '@chakra-ui/react';
 import { OperationTransactionAddress } from '@fuel-ts/providers';
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 
 import { DappRightArrow } from '@/components/icons/dapp-right-arrow';
 import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/recipient';
@@ -8,7 +8,7 @@ import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/
 interface FromToProps {
   to: OperationTransactionAddress;
   from: OperationTransactionAddress;
-  vault: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  vault: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
   hasAssets?: boolean;
 }
 

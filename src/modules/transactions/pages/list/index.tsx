@@ -10,18 +10,21 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useScreenSize } from '@/modules/core';
+import { useAuth } from '@/modules/auth';
+import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionFilter,
 } from '@/modules/transactions/components';
+import { useUserVaults, useVaultDetails } from '@/modules/vault';
+import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
@@ -42,6 +45,15 @@ const TransactionsVaultPage = () => {
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout, isMobile } = useScreenSize();
   const menuDrawer = useDisclosure();
+  const {
+    workspaces: { current },
+    isSingleWorkspace,
+  } = useAuth();
+
+  const { goWorkspace } = useWorkspace();
+  const { workspace } = useGetCurrentWorkspace();
+  const { navigate } = useUserVaults();
+  const { vault } = useVaultDetails();
 
   return (
     <Box w="full" height="100%" maxH="100%">
@@ -66,6 +78,49 @@ const TransactionsVaultPage = () => {
                 onClick={() => goHome()}
               >
                 Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            {!isSingleWorkspace && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(current)}
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Vaults
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() =>
+                  navigate(
+                    Pages.detailsVault({
+                      vaultId: vault.id!,
+                      workspaceId: current ?? '',
+                    }),
+                  )
+                }
+                isTruncated
+                maxW={640}
+              >
+                {vault.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
 
@@ -167,19 +222,21 @@ const TransactionsVaultPage = () => {
           );
 
           return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
+            <Box key={transaction.id} ref={infinityTransactionsRef} w="full">
               <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
                 <TransactionCard.Container
                   status={transactionStatus({ ...transaction, account })}
                   details={
                     <TransactionCard.Details
                       transaction={transaction}
-                      isInTheVault
+                      isInTheVaultPage
                     />
                   }
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
+                  isInTheVaultPage
+                  callBack={() => filter.set(StatusFilter.ALL)}
                 >
                   {!isMobile && (
                     <TransactionCard.CreationDate>
@@ -200,6 +257,7 @@ const TransactionsVaultPage = () => {
                     isSigner={isSigner}
                     transaction={transaction}
                     status={transactionStatus({ ...transaction, account })}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 </TransactionCard.Container>
               </CustomSkeleton>

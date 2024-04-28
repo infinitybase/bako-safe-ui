@@ -19,7 +19,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, IWitnesses } from 'bsafe';
+import { ITransaction, IWitnesses } from 'bakosafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
@@ -80,7 +80,7 @@ const WorkspacePage = () => {
     goWorkspace,
   } = useWorkspace();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const {
     workspaces: { current },
@@ -131,7 +131,7 @@ const WorkspacePage = () => {
       w="full"
       display="flex"
       alignItems="center"
-      justifyContent={['start', 'space-around']}
+      justifyContent={{ base: 'start', md: 'space-around' }}
       spacing={2}
     >
       <Heading variant="title-xl">
@@ -163,7 +163,7 @@ const WorkspacePage = () => {
   );
 
   return (
-    <VStack w="full" spacing={6} px={[0, 12]}>
+    <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -171,7 +171,7 @@ const WorkspacePage = () => {
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
-            display={['none', 'flex']}
+            display={{ base: 'none', xs: 'flex' }}
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
@@ -188,7 +188,7 @@ const WorkspacePage = () => {
             Back home
           </Button>
 
-          <Breadcrumb display={['none', 'initial']} ml={8}>
+          <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
             <BreadcrumbItem>
               <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
@@ -207,7 +207,7 @@ const WorkspacePage = () => {
                 fontWeight="semibold"
                 onClick={() => goWorkspace(workspaceId)}
               >
-                {currentWorkspace?.name}
+                {limitCharacters(currentWorkspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -251,7 +251,11 @@ const WorkspacePage = () => {
         </HStack>
       </HStack>
 
-      <Stack w="full" spacing={6} direction={['column-reverse', 'row']}>
+      <Stack
+        w="full"
+        spacing={6}
+        direction={{ base: 'column-reverse', md: 'row' }}
+      >
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
           isLoaded={!workspaceHomeRequest.isLoading}
@@ -259,7 +263,12 @@ const WorkspacePage = () => {
           w="full"
           h="full"
         >
-          <Box display={['block', 'none']} mt={2} mb={4} alignSelf="flex-start">
+          <Box
+            display={{ base: 'block', sm: 'none' }}
+            mt={2}
+            mb={4}
+            alignSelf="flex-start"
+          >
             <Text
               color="grey.400"
               variant="subtitle"
@@ -269,7 +278,7 @@ const WorkspacePage = () => {
               Overview
             </Text>
           </Box>
-          <Card p={[4, 8]} bgColor="grey.800">
+          <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
             <VStack spacing={6} w="full">
               <HStack
                 w="full"
@@ -286,8 +295,8 @@ const WorkspacePage = () => {
                   <Avatar
                     position="relative"
                     variant="roundedSquare"
-                    size={['md', 'lg']}
-                    p={[10, 14]}
+                    size={{ base: 'md', sm: 'lg' }}
+                    p={{ base: 10, sm: 14 }}
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
@@ -298,17 +307,26 @@ const WorkspacePage = () => {
                       borderRadius="md"
                       w="calc(100% - 10px)"
                       h="calc(100% - 10px)"
-                      borderWidth={[2, 3]}
+                      borderWidth={{ base: 2, sm: 3 }}
                       borderColor="grey.450"
                     />
                   </Avatar>
                   <Box>
-                    <Heading variant="title-xl" w="max">
+                    <Heading
+                      variant="title-xl"
+                      w="max"
+                      maxW={{
+                        base: '60px',
+                        xs: '200px',
+                      }}
+                      textOverflow="ellipsis"
+                      isTruncated
+                    >
                       {currentWorkspace?.name}
                     </Heading>
 
                     <Text
-                      maxW={['100px', '200px']}
+                      maxW={{ base: '60px', xs: '140px' }}
                       variant="description"
                       textOverflow="ellipsis"
                       isTruncated
@@ -416,6 +434,7 @@ const WorkspacePage = () => {
                       - update service with typing returning the assets -> Asset[]
                       - implement a recursive function to render the diferent assets, and make to dynamic data
                   */}
+
                       <AssetCard
                         asset={{
                           ...assetsMap[NativeAssetId],
@@ -433,7 +452,12 @@ const WorkspacePage = () => {
         </CustomSkeleton>
 
         {/* ACTION CARDS */}
-        <VStack w="full" maxW={['full', 500]} maxH={450} spacing={4}>
+        <VStack
+          w="full"
+          maxW={{ base: 'full', md: 500 }}
+          maxH={450}
+          spacing={5}
+        >
           <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
@@ -462,7 +486,7 @@ const WorkspacePage = () => {
               <ActionCard.Icon icon={TransactionsIcon} />
               <Box>
                 <ActionCard.Title>Transactions</ActionCard.Title>
-                <ActionCard.Description>
+                <ActionCard.Description maxWidth={{}}>
                   Manage Transactions Across All Vaults in One Place.
                 </ActionCard.Description>
               </Box>
@@ -511,11 +535,17 @@ const WorkspacePage = () => {
             description="Your vaults are entirely free on Fuel. You need
             create a vault to start to save your assets."
           />
-        ) : !isMobile ? (
+        ) : (
           <Grid
             w="full"
+            mt={{ base: -8, sm: -2 }}
             maxW="full"
-            templateColumns={['block', 'repeat(4, 1fr)']}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              xl: 'repeat(4, 1fr)',
+            }}
             gap={6}
           >
             {recentVaults?.map(
@@ -524,10 +554,12 @@ const WorkspacePage = () => {
                 const hasMore = extraCount > 0;
 
                 return (
-                  <GridItem key={id}>
+                  <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
                     <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
+                          mt={{ base: 6, sm: 'unset' }}
+                          maxH={{ base: 185, sm: 190 }}
                           extra={extraCount}
                           onClick={() =>
                             navigate(
@@ -560,59 +592,17 @@ const WorkspacePage = () => {
               },
             )}
           </Grid>
-        ) : (
-          <Box w="full" maxW="full" gap={6}>
-            {recentVaults?.map(
-              ({ id, name, workspace, members, description }, index) => {
-                const lastCard = index === vaultsMax - 1;
-                const hasMore = extraCount > 0;
-
-                return (
-                  <CustomSkeleton
-                    isLoaded={!workspaceHomeRequest.isLoading}
-                    key={id}
-                  >
-                    <GridItem>
-                      {lastCard && hasMore ? (
-                        <ExtraVaultCard
-                          gap={6}
-                          extra={extraCount}
-                          onClick={() =>
-                            navigate(
-                              Pages.userVaults({
-                                workspaceId,
-                              }),
-                            )
-                          }
-                        />
-                      ) : (
-                        <VaultCard
-                          id={id}
-                          name={name}
-                          workspace={workspace}
-                          title={description}
-                          members={members!}
-                          onClick={async () => {
-                            navigate(
-                              Pages.detailsVault({
-                                workspaceId: workspace.id,
-                                vaultId: id,
-                              }),
-                            );
-                          }}
-                        />
-                      )}
-                    </GridItem>
-                  </CustomSkeleton>
-                );
-              },
-            )}
-          </Box>
         )}
       </CustomSkeleton>
 
       {hasVaults && (
-        <HStack w="full" mt={4} spacing={4}>
+        <Box
+          mt={4}
+          w="full"
+          display="flex"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+        >
           <Text
             color="grey.400"
             variant="subtitle"
@@ -630,7 +620,7 @@ const WorkspacePage = () => {
               />
               <Spacer />
               <Link
-                display={['none', 'block']}
+                display={{ base: 'none', sm: 'block' }}
                 color="brand.500"
                 onClick={() =>
                   navigate(
@@ -644,7 +634,7 @@ const WorkspacePage = () => {
               </Link>
             </HStack>
           )}
-        </HStack>
+        </Box>
       )}
 
       {/* TRANSACTION LIST */}
@@ -654,7 +644,10 @@ const WorkspacePage = () => {
         </CustomSkeleton>
       ) : (
         <Box w="full" pb={10}>
-          <TransactionCard.List spacing={[3, 4]} mb={[0, 12]}>
+          <TransactionCard.List
+            spacing={{ base: 3, sm: 4 }}
+            mb={{ base: 0, sm: 12 }}
+          >
             {recentTransactions?.map((transaction) => {
               const status = transactionStatus({ ...transaction, account });
 

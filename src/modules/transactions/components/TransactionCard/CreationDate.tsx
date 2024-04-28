@@ -13,7 +13,7 @@ const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
     >
       <Text
         variant="subtitle"
-        fontSize={['sm', 'md']}
+        fontSize={{ base: 'sm', sm: 'md' }}
         fontWeight="semibold"
         color="grey.200"
       >

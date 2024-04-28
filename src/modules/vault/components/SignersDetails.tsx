@@ -31,10 +31,13 @@ const SignerCard = chakra(Card, {
 
 const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
-  const { contactByAddress } = useAddressBook();
+
   const {
     workspaces: { current },
+    isSingleWorkspace,
   } = useAuth();
+
+  const { contactByAddress } = useAddressBook(!isSingleWorkspace);
 
   const isBig = !vault?.members ? 0 : vault?.members.length - 4;
 
@@ -113,7 +116,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
 };
 
 const SignersDetails = ({ vault }: SignersDetailsProps) => {
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
 
@@ -138,7 +141,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
         </Badge>
       </HStack>
 
-      {isMobile ? (
+      {vaultRequiredSizeToColumnLayout ? (
         <Grid templateColumns="repeat(2, 1fr)" gap={3}>
           <SignersList vault={vault} />
         </Grid>

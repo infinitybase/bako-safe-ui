@@ -9,11 +9,10 @@ import { CardMember } from './CardMember';
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const { contactByAddress } = useAddressBook();
   if (!vault) return null;
-  const signerColumnsAmount = 3;
   const members = vault.members;
 
   return (
-    <Box w={['full', 'auto']}>
+    <Box w={{ base: 'full', sm: 'auto' }}>
       <HStack alignItems="center" mb={5} w="full" spacing={4}>
         <Text color="grey.200" fontWeight="semibold" fontSize="20px">
           Signers
@@ -25,10 +24,10 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
       <VStack spacing={5}>
         <Grid
           w="100%"
-          templateColumns={[
-            'repeat(1, 1fr)',
-            `repeat(${signerColumnsAmount}, 1fr)`,
-          ]}
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            xs: 'repeat(3, 1fr)',
+          }}
           gap={6}
           mb={16}
         >

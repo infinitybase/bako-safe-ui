@@ -29,6 +29,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
+import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -76,7 +77,7 @@ const CardDetails = (props: CardDetailsProps) => {
   const { balanceUSD, visebleBalance, setVisibleBalance } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const hasBalance = vault.hasBalance;
   const balanceFormatted = bn(
@@ -112,7 +113,7 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={['full', 730]}>
+    <Box w="full" maxW={{ base: 'full', sm: 730, md: 'full' }}>
       <Box mb={5} w="full">
         <Text
           color="grey.400"
@@ -137,9 +138,9 @@ const CardDetails = (props: CardDetailsProps) => {
               gap={{ base: 6, sm: 0 }}
             >
               <HStack
-                w={['full', '70%']}
+                w={{ base: 'full', sm: '70%' }}
                 display="flex"
-                gap={[4, 6]}
+                gap={{ base: 4, sm: 6 }}
                 alignItems="flex-start"
               >
                 <Avatar
@@ -162,18 +163,20 @@ const CardDetails = (props: CardDetailsProps) => {
                   />
                 </Avatar>
                 <Box
-                  w={['full', '90%']}
+                  w={{ base: 'full', sm: '90%' }}
                   alignItems="center"
                   justifyContent="center"
                 >
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW={['35vw', '80%']}
+                      maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >
-                      {vault?.name}
+                      {isExtraSmall
+                        ? limitCharacters(vault?.name ?? '', 8)
+                        : vault?.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
@@ -281,7 +284,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 <VStack
                   spacing={2}
                   hidden={!hasBalance}
-                  alignItems={['flex-end', 'flex-start']}
+                  alignItems={{ base: 'flex-end', sm: 'flex-start' }}
                 >
                   <Button
                     alignSelf="end"
@@ -306,7 +309,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   {vault.transactions.isPendingSigner ? (
                     <Text
                       variant="description"
-                      textAlign={['end', 'left']}
+                      textAlign={{ base: 'end', sm: 'left' }}
                       fontSize="xs"
                       color="error.500"
                     >

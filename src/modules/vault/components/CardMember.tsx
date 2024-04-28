@@ -33,7 +33,7 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge py={0} ml={[0, 8]} variant="success">
+    <Badge py={0} ml={{ base: 0, sm: 8 }} variant="success">
       Owner
     </Badge>
   );
@@ -48,8 +48,8 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
     <SignerCard
       w="full"
       h="full"
-      minH={[28, 'unset']}
-      maxW={['unset', 360]}
+      minH={{ base: 28, sm: 'unset' }}
+      maxW={{ base: 'unset', sm: 360 }}
       borderColor="grey.600"
     >
       <Flex
@@ -85,7 +85,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
           <VStack align="flex-start" spacing={0} justifyContent="center">
             {hasNickname && (
               <Text
-                fontSize={['md', 'lg']}
+                fontSize={{ base: 'md', sm: 'lg' }}
                 color="grey.200"
                 fontWeight="semibold"
                 maxW={isOwner ? 100 : 150}
@@ -102,7 +102,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {/* todo: add nickname on bsafe sdk */}
+              {/* todo: add nickname on bakosafe sdk */}
               {AddressUtils.format(member?.address ?? '')}
             </Text>
           </VStack>

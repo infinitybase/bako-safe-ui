@@ -28,7 +28,6 @@ import {
 } from '@/modules/transactions';
 import { ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
@@ -52,7 +51,7 @@ const HomePage = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   return (
     <VStack
@@ -60,11 +59,11 @@ const HomePage = () => {
       w="full"
       scrollMargin={20}
       spacing={6}
-      p={[1, 1]}
-      px={['auto', 8]}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
     >
       <HStack w="full" h="10" justifyContent="space-between">
-        <HStack visibility={['hidden', 'visible']}>
+        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
           <Text color="grey.400" fontWeight="semibold">
             Home
@@ -84,7 +83,7 @@ const HomePage = () => {
         </Box>
       </HStack>
       <CustomSkeleton display="flex" isLoaded={!homeRequest.isLoading}>
-        <Stack w="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -150,15 +149,16 @@ const HomePage = () => {
           </Text>
         </Box>
       )}
-      {recentVaults?.length && !isMobile ? (
+      {recentVaults?.length && (
         <Grid
+          mt={{ base: -8, sm: -2 }}
           w="full"
           maxW="full"
           gap={6}
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
-            lg: 'repeat(3, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
           }}
         >
@@ -168,10 +168,16 @@ const HomePage = () => {
               const hasMore = extraCount > 0;
 
               return (
-                <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
+                <CustomSkeleton
+                  isLoaded={!homeRequest.isLoading}
+                  key={id}
+                  maxH={{ base: 180, sm: 190 }}
+                >
                   <GridItem>
                     {lastCard && hasMore ? (
                       <ExtraVaultCard
+                        mt={{ base: 6, sm: 'unset' }}
+                        maxH={{ base: 185, sm: 190 }}
                         extra={extraCount}
                         onClick={() =>
                           navigate(
@@ -208,55 +214,6 @@ const HomePage = () => {
             },
           )}
         </Grid>
-      ) : (
-        <Box w="full" maxW="full" gap={6}>
-          {recentVaults?.map(
-            ({ id, name, workspace, members, description }, index) => {
-              const lastCard = index === vaultsMax - 1;
-              const hasMore = extraCount > 0;
-
-              return (
-                <CustomSkeleton isLoaded={!homeRequest.isLoading} key={id}>
-                  <GridItem>
-                    {lastCard && hasMore ? (
-                      <ExtraVaultCard
-                        gap={6}
-                        extra={extraCount}
-                        onClick={() =>
-                          navigate(
-                            Pages.userVaults({
-                              workspaceId: single,
-                            }),
-                          )
-                        }
-                      />
-                    ) : (
-                      <VaultCard
-                        id={id}
-                        name={name}
-                        workspace={workspace}
-                        title={description}
-                        members={members!}
-                        onClick={async () => {
-                          selectWorkspace(workspace.id, {
-                            onSelect: async (_workspace) => {
-                              navigate(
-                                Pages.detailsVault({
-                                  workspaceId: _workspace.id,
-                                  vaultId: id,
-                                }),
-                              );
-                            },
-                          });
-                        }}
-                      />
-                    )}
-                  </GridItem>
-                </CustomSkeleton>
-              );
-            },
-          )}
-        </Box>
       )}
       {/* TRANSACTION LIST */}
       {transactions && transactions.length <= 0 ? (
@@ -266,7 +223,7 @@ const HomePage = () => {
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize={['md', 'xl']}
+                fontSize={{ base: 'md', sm: 'xl' }}
                 color="grey.200"
               >
                 Transactions
@@ -279,11 +236,17 @@ const HomePage = () => {
         </VStack>
       ) : (
         <Box w="full" mt={8}>
-          <HStack spacing={4}>
+          <Box
+            w="full"
+            display="flex"
+            flexDir={isExtraSmall ? 'column' : 'row'}
+            gap={isExtraSmall ? 2 : 4}
+            mb={isExtraSmall ? -4 : 0}
+          >
             <Text
               variant="subtitle"
               fontWeight="semibold"
-              fontSize={['sm', 'xl']}
+              fontSize={{ base: 'sm', sm: 'xl' }}
             >
               Transactions
             </Text>
@@ -297,7 +260,7 @@ const HomePage = () => {
               textDecoration="none"
               alignItems="center"
               justifyContent="center"
-              display={['none', 'flex']}
+              display={{ base: 'none', sm: 'flex' }}
               backgroundColor="transparent"
               _hover={{
                 backgroundColor: 'transparent',
@@ -313,7 +276,7 @@ const HomePage = () => {
             >
               View all
             </Button>
-          </HStack>
+          </Box>
           <TransactionCard.List spacing={4} mt={6} mb={12}>
             <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {transactions?.map((transaction) => {
@@ -363,7 +326,7 @@ const HomePage = () => {
                           assets={transaction.resume.outputs}
                         />
                         <TransactionCard.Name>
-                          {limitCharacters(transaction.name, 20)}
+                          {transaction.name}
                         </TransactionCard.Name>
                         <TransactionCard.Status
                           transaction={transaction}

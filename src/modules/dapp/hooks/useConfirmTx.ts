@@ -1,4 +1,4 @@
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
 import { useMutation } from 'react-query';
 
@@ -9,7 +9,7 @@ interface IDAPPConfirmTx {
 
 const useConfirmTx = () => {
   return useMutation(({ vault, tx }: IDAPPConfirmTx) =>
-    vault.BSAFEIncludeTransaction(tx),
+    vault.BakoSafeIncludeTransaction(tx),
   );
 };
 

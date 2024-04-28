@@ -12,6 +12,7 @@ import {
 
 import { RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
+import { useScreenSize } from '@/modules/core';
 
 type AccordionActionProp = Pick<ButtonProps, 'onClick' | 'isDisabled'>;
 
@@ -72,11 +73,19 @@ const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
   />
 );
 
-const AccordionActions = ({ children, ...rest }: StackProps) => (
-  <HStack spacing={4} {...rest}>
-    {children}
-  </HStack>
-);
+const AccordionActions = ({ children, ...rest }: StackProps) => {
+  const { isExtraSmall } = useScreenSize();
+  return (
+    <HStack
+      spacing={4}
+      w={isExtraSmall ? 'full' : 'unset'}
+      justifyContent={isExtraSmall ? 'space-between' : 'unset'}
+      {...rest}
+    >
+      {children}
+    </HStack>
+  );
+};
 
 export {
   AccordionActions,

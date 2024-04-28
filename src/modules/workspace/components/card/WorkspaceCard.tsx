@@ -44,7 +44,12 @@ const WorkspaceCard = ({
         <Avatar variant="roundedSquare" src={avatar} />
 
         <VStack flex={1} spacing={1.5} alignItems="flex-start">
-          <Text fontWeight="bold" color="grey.200" maxW={360} isTruncated>
+          <Text
+            fontWeight="bold"
+            color="grey.200"
+            maxW={{ base: 150, xs: 360 }}
+            isTruncated
+          >
             {name}
             <Text
               color="grey.500"

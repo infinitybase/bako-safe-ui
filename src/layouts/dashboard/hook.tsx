@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { TransactionStatus } from 'bsafe';
+import { TransactionStatus } from 'bakosafe';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 

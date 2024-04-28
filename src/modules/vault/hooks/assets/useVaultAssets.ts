@@ -1,5 +1,5 @@
 import { useProvider } from '@fuels/react';
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -18,7 +18,7 @@ const balancesToAssets = async (
 
   const balances = await predicate.getBalances();
   const { reservedCoins: currentETH, balanceUSD } =
-    await VaultService.hasReservedCoins(predicate.BSAFEVaultId);
+    await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
   setBalanceUSD(balanceUSD);
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];

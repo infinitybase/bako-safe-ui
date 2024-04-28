@@ -10,8 +10,9 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     addresses,
     onDeposit,
     steps,
-    bsafeVault,
+    bakoSafeVault,
     handleCancel,
+    selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
     handleInputChange,
@@ -23,15 +24,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   });
 
   return (
-    <Dialog.Modal
-      size={{
-        base: 'full',
-        sm: 'xl',
-      }}
-      {...props}
-      onClose={handleCancel}
-      closeOnOverlayClick={false}
-    >
+    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
       <Dialog.Header
         maxW={450}
         position="relative"
@@ -42,7 +35,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         description={steps.step?.description ?? ''}
       />
 
-      <Dialog.Body maxW={450}>
+      <Dialog.Body maxW={450} minH={{ base: '66vh', sm: 'unset' }}>
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -50,6 +43,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onCancel={handleCancel}
           onDeposit={onDeposit}
           addresses={addresses}
+          selectedTemplate={selectedTemplate}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
           vaultNameIsAvailable={vaultNameIsAvailable}
@@ -80,7 +74,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
             tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
           }
           isDisabled={steps.step?.disable}
-          isLoading={bsafeVault.isLoading}
+          isLoading={bakoSafeVault.isLoading}
           _hover={{
             opacity: !steps.step?.disable && 0.8,
           }}

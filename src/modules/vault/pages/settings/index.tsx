@@ -16,6 +16,7 @@ import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useVaultDetails } from '@/modules/vault/hooks';
+import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
@@ -26,13 +27,17 @@ const VaultSettingsPage = () => {
   const { goHome } = useHome();
   const {
     workspaces: { current },
+    isSingleWorkspace,
   } = useAuth();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
+
+  const { goWorkspace } = useWorkspace();
+  const { workspace } = useGetCurrentWorkspace();
 
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={[0, 8]}>
+    <Box w="full" pr={{ base: 0, sm: 8 }}>
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
@@ -56,6 +61,19 @@ const VaultSettingsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!isSingleWorkspace && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(current)} //
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -63,7 +81,7 @@ const VaultSettingsPage = () => {
                 fontWeight="semibold"
                 href="#"
               >
-                Settings
+                Vaults
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -83,6 +101,16 @@ const VaultSettingsPage = () => {
                 maxW={640}
               >
                 {vault.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Settings
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>

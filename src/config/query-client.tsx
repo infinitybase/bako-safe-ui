@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
-interface BsafeQueryClientProviderProps {
+interface BakoSafeQueryClientProviderProps {
   children: React.ReactNode;
 }
 
@@ -19,7 +19,9 @@ const queryClient = new QueryClient({
   },
 });
 
-const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
+const BakoSafeQueryClientProvider = (
+  props: BakoSafeQueryClientProviderProps,
+) => {
   const { fuel } = useFuel();
 
   function onCurrentAccount() {
@@ -65,4 +67,4 @@ const BsafeQueryClientProvider = (props: BsafeQueryClientProviderProps) => {
   );
 };
 
-export { BsafeQueryClientProvider, queryClient };
+export { BakoSafeQueryClientProvider, queryClient };

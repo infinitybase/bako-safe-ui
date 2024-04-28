@@ -21,7 +21,8 @@ import {
 } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { usePermissions, useScreenSize } from '@/modules/core/hooks';
+import { PermissionRoles } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -50,22 +51,23 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultDetails();
-  const { goWorkspace } = useWorkspace();
+  const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
-  const { isViewer } = usePermissions({
-    id: vault.id,
-    workspace: workspace!,
-  });
+
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isExtraSmall } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
+
+  const { OWNER, SIGNER } = PermissionRoles;
+
+  const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   if (!vault) return null;
 
@@ -134,7 +136,7 @@ const VaultDetailsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {limitCharacters(vault?.name ?? '', 25)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -145,7 +147,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
-          isDisabled={isViewer}
+          isDisabled={!canSetTemplate}
           onClick={() => {
             if (
               !vault.id ||
@@ -182,7 +184,12 @@ const VaultDetailsPage = () => {
         {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>
 
-      <HStack spacing={4} mb={3}>
+      <Box
+        mb={3}
+        display="flex"
+        flexDir={isExtraSmall ? 'column' : 'row'}
+        gap={isExtraSmall ? 2 : 4}
+      >
         <Text
           variant="subtitle"
           fontWeight="semibold"
@@ -195,7 +202,7 @@ const VaultDetailsPage = () => {
           isLoading={pendingSignerTransactions.isLoading}
           quantity={pendingSignerTransactions.data?.ofUser ?? 0}
         />
-      </HStack>
+      </Box>
 
       {hasTransactions ? (
         <TransactionCard.List
@@ -219,9 +226,10 @@ const VaultDetailsPage = () => {
                   details={
                     <TransactionCard.Details
                       transaction={transaction}
-                      isInTheVault
+                      isInTheVaultPage
                     />
                   }
+                  isInTheVaultPage
                   transaction={transaction}
                   account={account}
                   isSigner={isSigner}
@@ -231,6 +239,7 @@ const VaultDetailsPage = () => {
                       {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
                     </TransactionCard.CreationDate>
                   )}
+
                   <TransactionCard.Assets />
                   <TransactionCard.Amount
                     assets={
@@ -259,6 +268,7 @@ const VaultDetailsPage = () => {
                       ...transaction,
                       account,
                     })}
+                    isInTheVaultPage
                   />
                 </TransactionCard.Container>
               </CustomSkeleton>
