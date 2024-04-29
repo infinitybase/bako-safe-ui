@@ -1,5 +1,5 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import {
@@ -11,7 +11,6 @@ import {
 } from '@/modules/auth/components';
 import { useScreenSize } from '@/modules/core';
 
-import { ActionButton } from '../components/actionButton';
 import { useSignIn } from '../hooks/useSignIn';
 
 const SigninPage = () => {
