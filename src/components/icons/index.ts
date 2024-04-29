@@ -11,6 +11,7 @@ export * from './error';
 export * from './exchange';
 export * from './exit';
 export * from './home';
+export * from './line-close-icon';
 export * from './not-found';
 export * from './notification';
 export * from './pending';

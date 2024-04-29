@@ -1,49 +1,54 @@
 import { Icon } from '@chakra-ui/icons';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineError } from 'react-icons/md';
+import { ToastPosition } from '@chakra-ui/react';
+import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
+import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
 
 interface ToastParams {
   description?: string;
   title?: string;
+  position?: ToastPosition;
 }
 
 const useContactToast = () => {
   const toast = useNotification();
 
-  const successToast = ({ description, title }: ToastParams) =>
+  const successToast = ({ description, title, position }: ToastParams) =>
     toast({
       status: 'success',
       duration: 4000,
       isClosable: false,
+      position: position ?? 'top-right',
       title: title ?? 'Success!',
       description: description ?? '',
       icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
+        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
       ),
     });
 
-  const warningToast = ({ description, title }: ToastParams) => {
+  const warningToast = ({ description, title, position }: ToastParams) => {
     toast({
       status: 'warning',
       duration: 4000,
       isClosable: false,
+      position: position ?? 'top-right',
       title: title ?? 'Warning!',
       description: description ?? '',
-      icon: <Icon fontSize="2xl" color="warning.500" as={MdOutlineError} />,
+      icon: <Icon fontSize="xl" color="brand.500" as={IoIosWarning} />,
     });
   };
 
-  const errorToast = ({ description, title }: ToastParams) => {
+  const errorToast = ({ description, title, position }: ToastParams) => {
     toast({
       status: 'error',
       duration: 4000,
       isClosable: false,
+      position: position ?? 'top-right',
       title: title ?? 'Error!',
       description:
         description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+      icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
     });
   };
 

@@ -1,4 +1,3 @@
-import { SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   FormControl,
@@ -8,6 +7,8 @@ import {
 } from '@chakra-ui/react';
 import React, { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
+
+import { LineCloseIcon } from '@/components';
 
 import { UseWebAuthn } from '../../hooks';
 
@@ -27,13 +28,13 @@ export const CreateWebAuthnForm = ({
   const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
         render={({ field, fieldState }) => (
           <Box position="relative">
-            <FormControl>
+            <FormControl isInvalid={fieldState.invalid}>
               <Input
                 value={search}
                 placeholder=""
@@ -46,7 +47,7 @@ export const CreateWebAuthnForm = ({
                   (!!nicknamesData?.name && search.length > 0)
                 }
               />
-              <FormLabel color="gray">Name</FormLabel>
+              <FormLabel color="gray">Username</FormLabel>
               <FormHelperText
                 color={
                   nicknamesData?.name || form.formState.errors.name?.message
@@ -63,12 +64,12 @@ export const CreateWebAuthnForm = ({
                       : ''}
               </FormHelperText>
             </FormControl>
-            <SmallCloseIcon
+            <LineCloseIcon
               position="absolute"
-              top={3.5}
+              top={4}
               right={4}
-              w={5}
-              h={5}
+              fontSize={16}
+              color="grey.100"
               _hover={{
                 cursor: 'pointer',
               }}

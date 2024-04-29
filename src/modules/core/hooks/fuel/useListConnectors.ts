@@ -9,21 +9,27 @@ export enum EConnectors {
   WEB_AUTHN = 'Login With Passkey',
 }
 
+export enum EConnectorsLabels {
+  FUEL = 'Fuel domains',
+  FULLET = 'Fuelet',
+  WEB_AUTHN = 'Login With Passkey',
+}
+
 const DEFAULT_CONNECTORS = [
   {
     name: EConnectors.WEB_AUTHN,
+    label: EConnectorsLabels.WEB_AUTHN,
     icon: PasskeyIcon,
-    isBeta: true,
   },
   {
     name: EConnectors.FUEL,
+    label: EConnectorsLabels.FUEL,
     icon: FuelIcon,
-    isBeta: false,
   },
   {
     name: EConnectors.FULLET,
+    label: EConnectorsLabels.FULLET,
     icon: FueletIcon,
-    isBeta: false,
   },
 ];
 

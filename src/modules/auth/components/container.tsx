@@ -3,17 +3,24 @@ import React from 'react';
 
 import logo from '@/assets/bakoLogoDark.svg';
 import bakoSymbol from '@/assets/bakoSymbol.svg';
+import { useScreenSize } from '@/modules/core';
+
+interface SigninContainerBackgroundProps {
+  children: React.ReactNode;
+}
 
 interface SigninContainerProps {
   children: React.ReactNode;
 }
 
-const SigninContainerBackground = () => {
+const SigninContainerBackground = ({
+  children,
+}: SigninContainerBackgroundProps) => {
   return (
     <Box
       zIndex="0"
-      w="100vw"
-      h="100vh"
+      minW="100vw"
+      minH="100vh"
       display="flex"
       alignItems="center"
       flexDirection="column"
@@ -21,8 +28,10 @@ const SigninContainerBackground = () => {
       backgroundImage="url('backgroundHome.png')"
       backgroundSize="cover"
       backgroundPosition="unset"
-      style={{ filter: 'blur(12px)' }} // Adicionando o desfoque aqui
-    />
+      p={4}
+    >
+      {children}
+    </Box>
   );
 };
 
@@ -30,73 +39,72 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
   const isLowerThanMobile = useMediaQuery('(max-width: 30em)');
 
   return (
-    <>
-      <SigninContainerBackground />
+    <SigninContainerBackground>
       <VStack
-        position="absolute"
-        zIndex={1}
+        position="relative"
         borderRadius="10px"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        backgroundColor="dark.600"
+        backgroundColor="dark.50"
+        backdropFilter="blur(6px)"
         display="flex"
-        minW={isLowerThanMobile[0] ? '90vw' : '70vw'}
-        minH="25vh"
+        minW={isLowerThanMobile[0] ? '90vw' : '55vw'}
         spacing={0}
+        border={'1px solid transparent'}
+        borderColor="dark.150"
+        boxShadow="lg"
       >
         <img
           src={bakoSymbol}
           alt=""
           style={{
             position: 'absolute',
-            top: '50%',
-            left: '20%',
+            top: '117px',
+            left: '77px',
             transform: 'translate(-50%, -50%)',
-            height: '75%',
+            height: '100%',
+            maxHeight: '10.75rem',
           }}
         />
         {props.children}
       </VStack>
-    </>
+    </SigninContainerBackground>
   );
 };
 
 const SigninContainer = (props: SigninContainerProps) => {
+  const { isSmHeight, isSmallHeight, isMdHeight } = useScreenSize();
+
   return (
-    <>
-      <SigninContainerBackground />
+    <SigninContainerBackground>
       <Box
-        position="absolute"
-        zIndex={1}
         borderRadius="10px"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        backgroundColor="dark.600"
-        minH="80vh"
-        minW="55vw"
+        backgroundColor="dark.50"
+        backdropFilter="blur(6px)"
+        minH={isMdHeight ? '90vh' : '41.25rem'}
+        minW={{ md: '85vw', lg: '75vw', xl: '65rem' }}
         display="flex"
-        alignItems="center"
+        alignItems="stretch"
+        border={'1px solid transparent'}
+        borderColor="dark.150"
+        boxShadow="lg"
       >
         <Box
-          w="35%"
-          h="80vh"
+          flex={1}
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 0px 0px 10px"
-          p={{ md: 0, lg: 10 }}
-          pt={{ md: 10, lg: undefined }}
+          p={3}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
           flexDirection="column"
+          position="relative"
         >
           <img
             src={logo}
             alt=""
             style={{
-              width: '90%',
+              width: '65%',
+              marginTop: 'auto',
             }}
           />
           <img
@@ -104,29 +112,30 @@ const SigninContainer = (props: SigninContainerProps) => {
             alt=""
             style={{
               position: 'absolute',
-              top: '52%',
-              left: '30%', // Para centralizar a imagem no meio da caixa
-              transform: 'translate(-50%, -50%)', // Para
-              width: '45%',
-              height: '75%',
+              top: '50%',
+              left: '96.5%',
+              transform: 'translate(-50%, -50%)',
+              minWidth: '120%',
             }}
           />
         </Box>
 
         <Box
-          m={10}
-          ml={52}
-          w="50%"
+          flex={isSmHeight ? 4 : isSmallHeight ? 3 : 2}
+          mr={16}
+          ml={isSmHeight ? '15.5%' : isSmallHeight ? '17.5%' : '20.5%'}
+          py={8}
           position="sticky"
           display="flex"
           flexDirection="column"
-          alignItems="start"
-          justifyContent="center"
+          alignItems="center"
+          justifyContent="space-evenly"
+          gap={4}
         >
           {props.children}
         </Box>
       </Box>
-    </>
+    </SigninContainerBackground>
   );
 };
 

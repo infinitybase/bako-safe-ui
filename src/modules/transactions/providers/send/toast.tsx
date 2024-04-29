@@ -1,4 +1,3 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -9,8 +8,9 @@ import {
 } from '@chakra-ui/react';
 import { ITransaction } from 'bakosafe';
 import { useRef } from 'react';
+import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
+import { RiCloseCircleFill } from 'react-icons/ri';
 
-import { ErrorIcon } from '@/components';
 import { useNotification } from '@/modules/notification';
 import { sumEthAsset } from '@/modules/transactions';
 
@@ -22,12 +22,13 @@ const useTransactionToast = () => {
 
   const warning = (message: string, title: string) => {
     toast({
+      status: 'warning',
       position: 'top-right',
       duration: 5000,
       isClosable: true,
       title: title,
-      icon: <Icon fontSize="2xl" color="warning.500" as={ErrorIcon} />,
-      description: <Text variant="description">{message}</Text>,
+      icon: <Icon fontSize="xl" color="brand.500" as={IoIosWarning} />,
+      description: message,
     });
   };
 
@@ -41,7 +42,7 @@ const useTransactionToast = () => {
       icon: (
         <CircularProgress
           trackColor="dark.100"
-          size={30}
+          size={5}
           isIndeterminate
           color="brand.500"
         />
@@ -69,9 +70,12 @@ const useTransactionToast = () => {
 
     if (toastId) {
       toast.update(toastId, {
+        status: 'success',
         title: 'Transaction success',
         duration: 5000,
-        icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
+        icon: (
+          <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
+        ),
         description: (
           <Box mt={2}>
             <Button
@@ -98,14 +102,11 @@ const useTransactionToast = () => {
     const toastId = transactionsToastRef.current[transaction];
     if (toastId) {
       toast.update(toastId, {
+        status: 'error',
         duration: 5000,
         title: 'Error on send your transaction',
-        icon: <Icon fontSize="2xl" color="error.600" as={ErrorIcon} />,
-        description: message && (
-          <Text variant="description" wordBreak="break-word">
-            {message}
-          </Text>
-        ),
+        icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
+        description: message,
       });
     }
   };
@@ -114,16 +115,12 @@ const useTransactionToast = () => {
   const generalError = (id: string, title: string, message?: string) => {
     if (toast.isActive(id)) return;
     transactionsToastRef.current[id] = toast({
-      position: 'top-right',
+      status: 'error',
       duration: 5000,
       isClosable: true,
       title: title,
-      icon: <Icon fontSize="2xl" color="error.600" as={ErrorIcon} />,
-      description: (
-        <>
-          <Text variant="description">{message}</Text>
-        </>
-      ),
+      icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
+      description: message,
     });
   };
 

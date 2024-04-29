@@ -2,6 +2,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
+import { useScreenSize } from '@/modules/core';
 
 import {
   SignWebAuthnPayload,
@@ -25,6 +26,7 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 export const useDrawerWebAuth = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
   const { setLastLoginId } = useWebAuthnLastLoginId();
 
@@ -46,23 +48,26 @@ export const useDrawerWebAuth = () => {
       address,
       webAuthn,
     }) => {
-      auth.handlers.authenticate({
-        userId: user_id,
-        avatar,
-        account: address,
-        accountType: TypeUser.WEB_AUTHN,
-        accessToken: accessToken,
-        singleWorkspace: workspace.id,
-        permissions: workspace.permissions,
-        webAuthn,
-      });
-      setLastLoginId(webAuthn!.id);
-      navigate(redirectPathBuilder(!!sessionId, location, address));
+      setTimeout(() => {
+        auth.handlers.authenticate({
+          userId: user_id,
+          avatar,
+          account: address,
+          accountType: TypeUser.WEB_AUTHN,
+          accessToken: accessToken,
+          singleWorkspace: workspace.id,
+          permissions: workspace.permissions,
+          webAuthn,
+        });
+        setLastLoginId(webAuthn!.id);
+        navigate(redirectPathBuilder(!!sessionId, location, address));
+      }, 800);
     },
     onError: () => {
       warningToast({
-        title: 'Signature failed',
-        description: 'Please try again!',
+        title: 'Problem to sign',
+        description: 'We can not validate your signature. Please, try again.',
+        position: isSmall ? 'bottom' : 'top-right',
       });
     },
   });
