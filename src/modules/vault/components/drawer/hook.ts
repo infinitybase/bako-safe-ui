@@ -48,13 +48,19 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   );
 
   useEffect(() => {
-    if (inView.inView && !vaultListRequestRequest.isLoading) {
+    if (
+      inView.inView &&
+      vaultListRequestRequest.hasNextPage &&
+      !vaultListRequestRequest.isLoading
+    ) {
       vaultListRequestRequest.fetchNextPage();
     }
   }, [
     inView.inView,
+    vaultListRequestRequest.isFetching,
     vaultListRequestRequest.isLoading,
     vaultListRequestRequest.fetchNextPage,
+    vaultListRequestRequest.hasNextPage,
   ]);
 
   const onSelectVault = (
