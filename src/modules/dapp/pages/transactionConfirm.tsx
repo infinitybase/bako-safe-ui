@@ -2,6 +2,7 @@ import { Divider, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
+import { CloseIcon } from '@/components/icons/close-icon';
 import { Dapp } from '@/layouts';
 import { useQueryParams } from '@/modules/auth';
 import {
@@ -12,23 +13,25 @@ import {
 import { useHome } from '@/modules/home/hooks/useHome';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
+import { DappError } from '../components/connection';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
   const {
     init,
-    confirmTransaction,
     cancelTransaction,
-    confirmingTransaction,
     vault,
+    pendingSignerTransactions,
     connection,
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
+    isLoading,
+    send,
   } = useTransactionSocket();
-  const { sessionId } = useQueryParams();
+  const { sessionId, request_id } = useQueryParams();
 
   const { goHome } = useHome();
 
-  if (!sessionId) {
+  if (!sessionId || !request_id) {
     window.close();
     goHome();
   }
@@ -44,15 +47,24 @@ const TransactionConfirm = () => {
           title="Create transaction"
           description="Enhance your security by sending transactions and executing contracts through BakoSafe."
         />
+        <CloseIcon
+          onClick={cancelTransaction}
+          style={{
+            position: 'absolute',
+            top: 20,
+            right: 20,
+            cursor: 'pointer',
+          }}
+        />
       </Dapp.Section>
 
       {/* Vault */}
       <Dapp.Section>
         {vault && (
           <VaultDrawerBox
-            name={vault.name}
-            address={vault.address.toString()}
-            description={vault.description}
+            name={vault?.name}
+            address={vault?.address}
+            description={vault?.description}
             isSingleWorkspace
             isActive
           />
@@ -61,61 +73,74 @@ const TransactionConfirm = () => {
 
       <Divider borderColor="dark.100" mb={7} />
 
-      {/* DApp infos */}
+      <Dapp.Section>
+        {pendingSignerTransactions ? <DappError /> : <DappConnectionAlert />}
+      </Dapp.Section>
 
       <Dapp.Section>
         <DappConnectionDetail
-          title={connection.name!}
-          origin={connection.origin!}
+          title={connection?.name ?? ''}
+          origin={connection?.origin ?? ''}
         />
       </Dapp.Section>
 
-      {/* Alert */}
-      <Dapp.Section>
-        <DappConnectionAlert />
-      </Dapp.Section>
+      {!pendingSignerTransactions && (
+        <>
+          <Divider w="full" borderColor="dark.100" mb={7} />
 
-      <Divider w="full" borderColor="dark.100" mb={7} />
-
-      {/* Transaction Summary */}
-      <VStack spacing={1}>
-        {(isLoadingTransactionSummary || !transactionSummary) && (
-          <DappTransaction.OperationSkeleton />
-        )}
-        {transactionSummary?.operations?.map((operation, index) => (
-          <DappTransaction.Operation
-            key={`${index}operation`}
-            vault={{
-              name: vault?.BakoSafeVault.name ?? '',
-              predicateAddress: vault?.BakoSafeVault.predicateAddress ?? '',
-            }}
-            operation={operation}
-          />
-        ))}
-      </VStack>
-
-      <DappTransaction.Fee fee={transactionSummary?.fee?.format()} />
-
+          <VStack spacing={1}>
+            {(isLoadingTransactionSummary || !transactionSummary) && (
+              <DappTransaction.OperationSkeleton />
+            )}
+            {transactionSummary?.operations?.map((operation, index) => (
+              <DappTransaction.Operation
+                key={`${index}operation`}
+                vault={{
+                  name: vault?.name || '',
+                  predicateAddress: vault?.address || '',
+                }}
+                operation={operation}
+              />
+            ))}
+          </VStack>
+          <DappTransaction.Fee fee={transactionSummary?.fee} />
+        </>
+      )}
       {/* Actions */}
       <Dialog.Actions
         hidden={isLoadingTransactionSummary || !transactionSummary}
         w="full"
       >
-        <Dialog.SecondaryAction
-          size="lg"
-          onClick={cancelTransaction}
-          isDisabled={confirmingTransaction}
-        >
-          Reject
-        </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
-          size="lg"
-          isLoading={confirmingTransaction}
-          leftIcon={<SquarePlusIcon fontSize="lg" />}
-          onClick={confirmTransaction}
-        >
-          Create transaction
-        </Dialog.PrimaryAction>
+        {!pendingSignerTransactions ? (
+          <>
+            <Dialog.SecondaryAction
+              size="lg"
+              onClick={cancelTransaction}
+              isDisabled={isLoading}
+            >
+              Reject
+            </Dialog.SecondaryAction>
+            <Dialog.PrimaryAction
+              size="lg"
+              isLoading={isLoading}
+              leftIcon={<SquarePlusIcon fontSize="lg" />}
+              onClick={send}
+            >
+              Create transaction
+            </Dialog.PrimaryAction>
+          </>
+        ) : (
+          <>
+            <Dialog.SecondaryAction
+              size="lg"
+              width="full"
+              onClick={cancelTransaction}
+              isDisabled={isLoading}
+            >
+              Back
+            </Dialog.SecondaryAction>
+          </>
+        )}
       </Dialog.Actions>
     </Dapp.Content>
   );

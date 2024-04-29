@@ -16,13 +16,8 @@ const useTransactionSummary = () => {
     },
   );
 
-  /* TODO: Remove this */
-  const operation2 = Object.create(data?.operations[0] ?? {});
-  operation2.assetsSent = [];
-
   return {
     ...mutation,
-    mainOperation: data?.operations[0],
     transactionSummary: data,
     getTransactionSummary: mutate,
   };

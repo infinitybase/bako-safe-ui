@@ -115,6 +115,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}
+                      clearable={false}
                       rightElement={
                         <Icon
                           as={RemoveIcon}

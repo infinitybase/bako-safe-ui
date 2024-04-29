@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -24,23 +24,50 @@ const useWebAuthn = () => {
   const [page, setPage] = useState(WebAuthnState.LOGIN);
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
+  const [searchAccount, setSearchAccount] = useState('');
   const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
   //button sign in disabled, this is used because handleLogin proccess annoter info before mutation to use isLoading
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [signInProgress, setSignInProgress] = useState(0);
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
     defaultTab: WebAuthnState.LOGIN,
   });
+  const accountsRequest = useGetAccountsByHardwareId();
 
-  const { memberForm, loginForm } = useWebAuthnForm();
+  const { memberForm, loginForm } = useWebAuthnForm(accountsRequest.data || []);
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
-  const accountsRequest = useGetAccountsByHardwareId();
+  const accountsOptions = useMemo(() => {
+    const filteredAccounts = accountsRequest.data?.filter((account) =>
+      account.name.toLowerCase().includes(searchAccount.toLowerCase()),
+    );
+
+    const mappedOptions = filteredAccounts?.map((account) => ({
+      label: account.name,
+      value: account.webauthn.id,
+    }));
+
+    return mappedOptions;
+  }, [accountsRequest.data, searchAccount]);
 
   const nicknames = useCheckNickname(searchRequest);
 
   const currentUsername = loginForm.watch('name');
+
+  const debouncedSearchAccount = useCallback(
+    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
+      if (typeof event === 'string') {
+        setSearchAccount(event);
+        return;
+      }
+
+      setSearchAccount(event.target.value);
+    }, 300),
+    [],
+  );
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -62,7 +89,9 @@ const useWebAuthn = () => {
     );
 
     if (acc) {
+      setIsSigningIn(true);
       const { code } = await UserService.generateSignInCode(acc.address);
+      setSignInProgress(50);
       await signAccountMutate.mutateAsync(
         {
           id: acc.webauthn.id,
@@ -71,10 +100,16 @@ const useWebAuthn = () => {
         },
         {
           onError: () => {
+            setSignInProgress(0);
+            setIsSigningIn(false);
             setBtnDisabled(false);
           },
           onSuccess: () => {
-            setBtnDisabled(false);
+            setSignInProgress(100);
+            setTimeout(() => {
+              setIsSigningIn(false);
+              setBtnDisabled(false);
+            }, 800);
           },
         },
       );
@@ -93,6 +128,7 @@ const useWebAuthn = () => {
         onSuccess: async (data) => {
           await accountsRequest.refetch();
           await tabs.set(WebAuthnState.LOGIN);
+          loginForm.reset();
           loginForm.setValue('name', data.id);
           memberForm.reset();
         },
@@ -104,6 +140,7 @@ const useWebAuthn = () => {
 
   const handleChangeTab = (tab: WebAuthnState) => {
     tabs.set(tab);
+    setSearchAccount('');
   };
 
   const openWebAuthnDrawer = () => {
@@ -126,6 +163,10 @@ const useWebAuthn = () => {
   };
 
   useEffect(() => {
+    isOpen && setSearchAccount('');
+  }, [isOpen]);
+
+  useEffect(() => {
     if (
       accountsRequest.data &&
       accountsRequest?.data?.length > 0 &&
@@ -143,30 +184,32 @@ const useWebAuthn = () => {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
       primaryAction: 'Create account',
-      secondaryAction: undefined,
+      secondaryAction: 'Cancel',
       handlePrimaryAction: handleCreate,
-      handleSecondaryAction: undefined,
+      handleSecondaryAction: resetDialogForms,
       isLoading: createAccountMutate.isLoading,
       isDisabled:
         !memberForm.formState.isValid ||
         memberForm.watch('name').length === 0 ||
         nicknames.data?.name,
-      title: 'Create your WebAuthn',
-      description: 'Create your account to start using WebAuthn',
+      title: 'Create Passkey account',
+      description: 'Create a new account for this device.',
     },
     [WebAuthnState.LOGIN]: {
       isValid: true,
-      primaryAction: 'Sign in ',
+      primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
       secondaryAction: 'Create account',
       handlePrimaryAction: handleLogin,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
       isDisabled:
+        !loginForm.formState.isValid ||
         (currentUsername?.length === 0 ?? false) ||
         !isValidCurrentUsername ||
         btnDisabled,
-      title: 'Login with WebAuthn',
-      description: 'Select your username to login',
+      title: 'Login with Passkey',
+      description:
+        'Select your username or create a new account for this device.',
     },
   };
 
@@ -177,6 +220,7 @@ const useWebAuthn = () => {
     openWebAuthnDrawer,
     closeWebAuthnDrawer,
     accountsRequest,
+    accountsOptions,
     handleChangeTab,
     hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
     checkNickname: useCheckNickname(searchRequest),
@@ -184,6 +228,7 @@ const useWebAuthn = () => {
     handleInputChange,
     isOpen,
     search,
+    searchAccount: { value: searchAccount, handler: debouncedSearchAccount },
     page,
     form: {
       memberForm,
@@ -191,6 +236,7 @@ const useWebAuthn = () => {
       formState: formState[tabs.tab],
     },
     tabs,
+    signInProgress,
   };
 };
 

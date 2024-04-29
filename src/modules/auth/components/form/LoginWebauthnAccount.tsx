@@ -1,44 +1,40 @@
 import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Select } from '@/components';
+import { Autocomplete } from '@/components';
 
 import { UseWebAuthn } from '../../hooks';
 
 interface LoginWebAuthnFormProps {
   form: UseWebAuthn['form']['loginForm'];
-  request: UseWebAuthn['accountsRequest'];
+  options: UseWebAuthn['accountsOptions'];
+  search: UseWebAuthn['searchAccount'];
 }
 export const LoginWebAuthnForm = ({
   form,
-  request,
+  options,
+  search,
 }: LoginWebAuthnFormProps) => {
-  const { data } = request;
-
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
         render={({ field, fieldState }) => (
-          <FormControl>
-            <Select
+          <FormControl isInvalid={fieldState.invalid}>
+            <Autocomplete
               label="Username"
               value={field.value}
               onChange={field.onChange}
-              options={data?.map((user) => ({
-                label: user.name,
-                value: user.webauthn.id,
-              }))}
-              isDisabled={data?.length === 0}
+              onInputChange={search.handler}
+              options={options}
             />
             <FormHelperText
               ml={2}
               color={form.formState.errors.name ? 'error.500' : 'grey.200'}
             >
-              {form.formState.errors.name
-                ? form.formState.errors.name?.message
-                : !fieldState.isDirty && 'Select your username'}
+              {form.formState.errors.name &&
+                form.formState.errors.name?.message}
             </FormHelperText>
           </FormControl>
         )}

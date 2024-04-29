@@ -46,6 +46,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   options={paginatedContacts.data!}
                   isLoading={!paginatedContacts.isSuccess}
                   inView={addressBook.inView}
+                  clearable={false}
                 />
 
                 <FormHelperText color="error.500">

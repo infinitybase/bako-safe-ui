@@ -56,7 +56,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       refetchTransactionList();
     },
     onError: () => {
-      toast.generalError(randomBytes.toString(), 'Inválid signature');
+      toast.generalError(randomBytes.toString(), 'Invalid signature');
     },
   });
 

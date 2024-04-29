@@ -1,14 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
-import { useQueries, UseQueryResult } from 'react-query';
 
 import { AutocompleteOption } from '@/components/autocomplete';
-import { AddressBookQueryKey } from '@/modules/core/models/addressBook';
 import { WorkspaceContact } from '@/modules/core/models/workspace';
-import { AddressUtils } from '@/modules/core/utils/address';
 import { AddressBookUtils } from '@/utils/address-book';
 
-import { AddressBookService } from '../services/methods';
+import { useInfiniteListcontactsRequest } from './useInfiniteListContactsRequest';
 
 type AddressesErrors = Merge<
   FieldError,
@@ -53,24 +50,20 @@ const useAddressBookAutocompleteOptions = (
   );
 
   const handleQueryData = useCallback((data: WorkspaceContact[]) => {
-    return data.map(({ nickname, user }) => ({
+    return data?.map(({ nickname, user }) => ({
       label: AddressBookUtils.formatForAutocomplete(nickname, user.address),
       value: user.address,
     }));
   }, []);
 
   const handleFieldOptions = useCallback(
-    (fieldValue: string, options: AutocompleteOption[]) => {
-      const addressIsValid = AddressUtils.isValid(fieldValue);
-
-      if (addressIsValid) {
-        const optionsHasNoDefaultValue = options.every(
-          (o) => o.value !== fieldValue,
-        );
-
-        if (optionsHasNoDefaultValue) {
-          options = [...options, { label: fieldValue, value: fieldValue }];
-        }
+    (
+      fieldValue: string,
+      options: AutocompleteOption[],
+      isMyAddress?: boolean,
+    ) => {
+      if (isMyAddress) {
+        options = [...options, { label: fieldValue, value: fieldValue }];
       }
 
       return options;
@@ -78,49 +71,40 @@ const useAddressBookAutocompleteOptions = (
     [],
   );
 
-  const queries = useQueries(
-    fields.map((field) => {
-      const excludeContacts = handleValidAddresses(field.value);
-      const excludeContactsQueryKey = excludeContacts.join('-');
+  const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;
 
-      return {
-        queryKey: AddressBookQueryKey.LIST_BY_USER_PAGINATED(
-          workspaceId,
-          field.value ?? '',
-          contactIds,
-          includePersonal,
-          excludeContactsQueryKey,
-        ),
-        queryFn: () =>
-          AddressBookService.search(
-            {
-              q: field.value,
-              excludeContacts,
-              includePersonal,
-              perPage: 5,
-            },
-            contacts,
-          ),
-      };
-    }),
-  );
+  const currentField = fields[currentIndex];
+
+  const excludeContacts = handleValidAddresses(currentField.value);
+  const excludeContactsQueryKey = excludeContacts.join('-');
+
+  const { infinityContacts, lastElementRef, data, ...query } =
+    useInfiniteListcontactsRequest(
+      workspaceId,
+      currentField.value,
+      contactIds,
+      includePersonal,
+      excludeContactsQueryKey,
+      excludeContacts,
+    );
 
   const formattedQueries = useMemo(() => {
-    return queries.map((query: UseQueryResult<WorkspaceContact[], unknown>) => {
-      const { data, ...rest } = query;
-
-      const formattedData = data ? handleQueryData(data) : [];
+    return fields.map(() => {
+      const formattedData = infinityContacts
+        ? handleQueryData(infinityContacts)
+        : [];
 
       return {
-        ...rest,
+        ...query,
         options: formattedData,
       };
     });
-  }, [handleQueryData, queries]);
+  }, [handleQueryData, data, query]);
 
   return {
     optionsRequests: formattedQueries,
     handleFieldOptions,
+    optionRef: lastElementRef,
   };
 };
 

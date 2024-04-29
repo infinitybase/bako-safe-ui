@@ -12,8 +12,19 @@ const useQueryParams = () => {
     const name = searchParams.get('name');
     const origin = searchParams.get('origin');
     const currentVault = searchParams.get('currentVault');
+    const openConnect = searchParams.get('openConnect') === 'true';
+    const request_id = searchParams.get('request_id');
 
-    return { sessionId, address, isNew, name, origin, currentVault };
+    return {
+      sessionId,
+      address,
+      isNew,
+      name,
+      origin,
+      currentVault,
+      openConnect,
+      request_id,
+    };
   }, [location]);
 
   return { ...queryParams, location };

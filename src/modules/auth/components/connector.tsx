@@ -3,46 +3,39 @@ import {
   Badge,
   Box,
   Divider,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerProps,
-  Flex,
   Heading,
   HStack,
   Icon,
-  Link,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { CloseIcon } from '@/components/icons/close-icon';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 
 type ConnectorType = {
   name: string;
+  label: string;
   icon?: React.ElementType;
   imageUrl?: string;
   isEnabled?: boolean;
-  isBeta?: boolean;
 };
 
-interface DrawerConnectorProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
+interface CardConnectorProps {
+  connector: ConnectorType;
+  isWebAuthn?: boolean;
+  onClick: (connector: string) => void;
+}
+
+interface ConnectorsListProps {
   connectors: ConnectorType[];
   onSelect: (connector: string) => void;
 }
 
-interface ConnectorCardProps {
-  connector: ConnectorType;
-  onClick: (connector: string) => void;
-}
-
-const CardConnector = (props: ConnectorCardProps) => {
-  const { connector, onClick } = props;
+const CardConnector = (props: CardConnectorProps) => {
+  const { connector, isWebAuthn, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
@@ -74,14 +67,25 @@ const CardConnector = (props: ConnectorCardProps) => {
     <Card
       as={HStack}
       w="100%"
+      h="100%"
       gap={4}
+      justifyContent="space-between"
+      p={2}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor="dark.600"
+      bgColor={isWebAuthn ? 'warning.900' : 'grey.825'}
+      borderColor={isWebAuthn ? 'brand.500' : 'grey.550'}
       onClick={selectConnector}
       position="relative"
-      _hover={{
-        borderColor: 'brand.500',
-      }}
+      transition="0.5s"
+      _hover={
+        isWebAuthn
+          ? {
+              bg: 'warning.700',
+            }
+          : {
+              borderColor: 'grey.75',
+            }
+      }
     >
       <Box
         w="full"
@@ -95,93 +99,74 @@ const CardConnector = (props: ConnectorCardProps) => {
       />
       {ConnectorIcon}
       <Box flex={1}>
-        <Heading
-          fontSize={{ base: 'md', sm: 'lg' }}
-          fontWeight="semibold"
-          color="grey.200"
-        >
-          {connector.name}
+        <Heading fontSize="sm" fontWeight="semibold" color="grey.200">
+          {connector.label}
         </Heading>
       </Box>
-
-      {connector.isBeta && <Badge variant="gray">Beta</Badge>}
+      {isWebAuthn && (
+        <Badge
+          px={3}
+          py={0.5}
+          variant="gray"
+          borderRadius={10}
+          color="grey.100"
+        >
+          Recommended
+        </Badge>
+      )}
     </Card>
   );
 };
 
-const DrawerConnector = (props: DrawerConnectorProps) => {
-  const { connectors, onSelect, ...drawerProps } = props;
+const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
+  const webAuthnConnector = connectors.find(
+    (connector) => connector.name === EConnectors.WEB_AUTHN,
+  );
+
+  const allOtherConnectors = connectors.filter(
+    (connector) => connector.name !== EConnectors.WEB_AUTHN,
+  );
 
   return (
-    <Drawer
-      {...drawerProps}
-      size={{
-        base: 'full',
-        sm: 'sm',
-      }}
-      variant="solid"
-      placement="right"
-    >
-      <DrawerOverlay />
-      <DrawerContent maxH="full">
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack
-            cursor="pointer"
-            onClick={drawerProps.onClose}
-            spacing={2}
-            zIndex={1}
-          >
-            <Text color="grey.100">Close</Text>
-            <CloseIcon />
-          </HStack>
-        </Flex>
+    <VStack spacing={{ base: 4, md: 8 }} w="full">
+      <Text
+        color="grey.50"
+        fontSize={{ base: 'xs', md: 'sm' }}
+        maxW={366}
+        mb={{ base: 4, md: 0 }}
+      >
+        Select your preferred access mode
+      </Text>
 
-        <DrawerHeader mt="-43px" mb={3}>
-          <VStack alignItems="flex-start" spacing={2}>
-            <Heading fontSize={{ base: 'lg', sm: 'xl' }} fontWeight="semibold">
-              Connect your Wallet
-            </Heading>
-            <Text color="grey.100" fontSize="small" fontWeight="normal">
-              Select your preferred access mode
-            </Text>
-          </VStack>
-        </DrawerHeader>
+      <CardConnector
+        connector={webAuthnConnector!}
+        isWebAuthn
+        onClick={onSelect}
+      />
 
-        <Divider borderColor="dark.100" mb={8} />
+      <HStack w="full" spacing={5}>
+        <Divider borderColor="grey.500" />
+        <Text color="grey.250" fontSize="xs" fontWeight="light">
+          OR
+        </Text>
+        <Divider borderColor="grey.500" />
+      </HStack>
 
-        <DrawerBody>
-          <VStack spacing={4}>
-            {connectors.map((connector) => (
-              <CardConnector
-                key={connector.name}
-                connector={connector}
-                onClick={onSelect}
-              />
-            ))}
-          </VStack>
-        </DrawerBody>
-
-        <DrawerFooter justifyContent="flex-start" pl={0}>
-          <VStack alignItems="flex-start">
-            <Heading fontSize="md" fontWeight="semibold" color="grey.200">
-              New to Fuel network?
-            </Heading>
-            <Text variant="description">
-              Fuel is the {`world's`} fastest modular execution layer.
-            </Text>
-            <Link
-              fontSize="xs"
-              color="brand.400"
-              href="https://www.fuel.network/"
-              target="_blank"
-            >
-              Learn more about Fuel
-            </Link>
-          </VStack>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+      <Stack
+        flexDirection={{ base: 'column', sm: 'row' }}
+        w="full"
+        spacing={{ base: 4, sm: 2 }}
+      >
+        {allOtherConnectors.map((connector) => (
+          <CardConnector
+            key={connector.name}
+            connector={connector}
+            onClick={onSelect}
+          />
+        ))}
+      </Stack>
+    </VStack>
   );
 };
 
-export { DrawerConnector };
+export { CardConnector, ConnectorsList };

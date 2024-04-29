@@ -49,6 +49,22 @@ const solid = defineStyle({
   },
 });
 
+const solidDark = defineStyle({
+  dialog: {
+    ...commonStyles.dialog,
+    bg: 'dark.300',
+  },
+  overlay: {
+    ...commonStyles.overlay,
+  },
+  header: {
+    ...commonStyles.header,
+  },
+  body: {
+    ...commonStyles.body,
+  },
+});
+
 const Drawer = defineStyleConfig({
   defaultProps: {
     variant: 'glassmorphic',
@@ -56,6 +72,7 @@ const Drawer = defineStyleConfig({
   variants: {
     glassmorphic,
     solid,
+    'solid-dark': solidDark,
   },
 });
 

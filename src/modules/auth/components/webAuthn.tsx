@@ -1,13 +1,12 @@
 import {
+  Box,
   Button,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   Heading,
   HStack,
   TabPanel,
@@ -16,9 +15,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
-import { CloseIcon } from '@/components/icons/close-icon';
+import { LineCloseIcon, ProgressButton } from '@/components';
 
 import { UseWebAuthn, WebAuthnState } from '../hooks';
 import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
@@ -33,11 +31,12 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const {
     form,
     tabs,
-    resetDialogForms,
-    accountsRequest,
+    accountsOptions,
     search,
-    setSearch,
+    searchAccount,
     nicknamesData,
+    signInProgress,
+    setSearch,
     handleInputChange,
     closeWebAuthnDrawer,
   } = webauthn;
@@ -46,7 +45,11 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <LoginWebAuthnForm request={accountsRequest} form={loginForm} />
+        <LoginWebAuthnForm
+          options={accountsOptions}
+          form={loginForm}
+          search={searchAccount}
+        />
       </TabPanel>
       <TabPanel p={0}>
         <CreateWebAuthnForm
@@ -63,80 +66,94 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   );
 
   return (
-    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
+    <Drawer
+      {...drawerProps}
+      size={{ base: 'full', xs: 'sm' }}
+      variant="solid-dark"
+      placement="right"
+    >
       <DrawerOverlay />
       <DrawerContent>
-        <Flex
-          mb={12}
-          w="full"
-          justifyContent={
-            tabs.is(WebAuthnState.LOGIN) ? 'flex-end' : 'space-between'
-          }
-        >
-          {tabs.is(WebAuthnState.REGISTER) && (
-            <HStack cursor="pointer" onClick={resetDialogForms} spacing={3}>
-              <MdOutlineArrowBackIosNew width={5} height={5} />
-              <Text fontWeight="semibold" color="white" fontSize="lg">
-                Back
-              </Text>
-            </HStack>
-          )}
-          <HStack cursor="pointer" onClick={closeWebAuthnDrawer} spacing={2}>
-            <Text fontWeight="semibold" color="white" fontSize="lg">
-              Close
-            </Text>
-            <CloseIcon w={6} h={6} />
-          </HStack>
-        </Flex>
-
         <DrawerHeader mb={8}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="xl" fontWeight="bold" color="white">
-              {formState.title}
-            </Heading>
-            <Text fontSize="sm" color="grey.500">
+            <HStack w="full" justifyContent="space-between">
+              <Heading
+                fontSize={{ base: 'md', xs: 'lg' }}
+                fontWeight="bold"
+                color="white"
+              >
+                {formState.title}
+              </Heading>
+
+              <LineCloseIcon
+                fontSize="lg"
+                color="grey.100"
+                cursor="pointer"
+                onClick={closeWebAuthnDrawer}
+              />
+            </HStack>
+
+            <Text fontSize={{ base: 'xs', xs: 'sm' }} color="grey.500">
               {formState.description}
             </Text>
           </VStack>
         </DrawerHeader>
 
-        <Divider mb={8} />
+        <Box
+          w="full"
+          h="1px"
+          bgGradient="linear(to-br, brand.500 , brand.800)"
+          mb={8}
+        />
 
         <DrawerBody>
           <Tabs index={tabs.tab} isLazy>
             {TabsPanels}
           </Tabs>
 
-          <HStack mt={12} w="full" justify="space-evenly">
-            {tabs.is(WebAuthnState.LOGIN) && (
-              <Button
-                w="45%"
-                bgColor="transparent"
-                border="1px solid white"
-                variant="secondary"
-                fontWeight="medium"
-                onClick={formState.handleSecondaryAction}
+          <VStack w="full" spacing={4}>
+            {tabs.is(WebAuthnState.LOGIN) ? (
+              <ProgressButton
+                w="full"
+                variant="primary"
+                onClick={formState.handlePrimaryAction}
                 _hover={{
-                  borderColor: 'brand.500',
-                  color: 'brand.500',
+                  opacity: formState.isDisabled && 0.8,
                 }}
+                isDisabled={!!formState.isDisabled}
+                progress={signInProgress}
               >
-                {formState.secondaryAction}
+                {formState.primaryAction}
+              </ProgressButton>
+            ) : (
+              <Button
+                w="full"
+                variant="primary"
+                onClick={formState.handlePrimaryAction}
+                _hover={{
+                  opacity: formState.isDisabled && 0.8,
+                }}
+                isDisabled={!!formState.isDisabled}
+              >
+                {formState.primaryAction}
               </Button>
             )}
 
             <Button
-              w={tabs.is(WebAuthnState.LOGIN) ? '45%' : '100%'}
-              variant="primary"
-              onClick={formState.handlePrimaryAction}
+              w="full"
+              bgColor="transparent"
+              border="1px solid white"
+              variant="secondary"
+              fontWeight="medium"
+              onClick={formState.handleSecondaryAction}
               _hover={{
-                opacity: formState.isDisabled && 0.8,
+                borderColor: 'brand.500',
+                color: 'brand.500',
               }}
-              isDisabled={!!formState.isDisabled}
             >
-              {formState.primaryAction}
+              {formState.secondaryAction}
             </Button>
-          </HStack>
+          </VStack>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

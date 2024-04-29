@@ -3,6 +3,7 @@ import {
   CircularProgress,
   Flex,
   FormLabel,
+  HStack,
   Input,
   InputGroup,
   InputGroupProps,
@@ -13,11 +14,14 @@ import {
 import {
   ChangeEvent,
   CSSProperties,
+  LegacyRef,
   ReactNode,
   useEffect,
   useState,
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
+
+import { LineCloseIcon } from '../icons';
 
 export interface AutocompleteOption {
   value: string;
@@ -27,13 +31,15 @@ export interface AutocompleteOption {
 interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   label?: string;
   value?: string;
-  options: AutocompleteOption[];
+  options?: AutocompleteOption[];
   disabled?: boolean;
   isLoading?: boolean;
   inputStyle?: CSSProperties;
   rightElement?: ReactNode;
   filterSelectedOption?: boolean;
   inView?: InViewHookResponse;
+  clearable?: boolean;
+  optionsRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
 }
@@ -48,8 +54,10 @@ const Autocomplete = ({
   rightElement,
   filterSelectedOption = true,
   inView,
+  clearable = true,
   onChange,
   onInputChange,
+  optionsRef,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -62,6 +70,8 @@ const Autocomplete = ({
 
   const isOpen =
     isFocused && displayedOptions && displayedOptions.length > 0 && !isLoading;
+
+  const showClearIcon = clearable && inputValue;
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -78,6 +88,12 @@ const Autocomplete = ({
   const handleFocus = () => {
     if (!inputValue) onInputChange?.('');
     setIsFocused(true);
+  };
+
+  const handleClear = () => {
+    setInputValue('');
+    onChange('');
+    onInputChange?.('');
   };
 
   useEffect(() => {
@@ -107,13 +123,13 @@ const Autocomplete = ({
 
         {!disabled && (
           <InputRightElement
-            px={3}
+            pr={1}
             top="1px"
             right="1px"
             borderRadius={10}
             bgColor={rightElement ? 'dark.250' : 'transparent'}
             h="calc(100% - 3px)"
-            w={10}
+            w={showClearIcon && rightElement ? 16 : 10}
           >
             {isLoading && isFocused ? (
               <CircularProgress
@@ -123,7 +139,17 @@ const Autocomplete = ({
                 color="brand.500"
               />
             ) : (
-              rightElement
+              <HStack>
+                {showClearIcon && (
+                  <LineCloseIcon
+                    fontSize={16}
+                    color="grey.100"
+                    cursor="pointer"
+                    onClick={handleClear}
+                  />
+                )}
+                {rightElement}
+              </HStack>
             )}
           </InputRightElement>
         )}
@@ -158,6 +184,7 @@ const Autocomplete = ({
                 .filter((option) => option.value !== value)
                 .map((option) => (
                   <Box
+                    ref={optionsRef}
                     key={option.value}
                     w="full"
                     p={2}

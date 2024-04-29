@@ -1,4 +1,4 @@
-import { Icon, PlusSquareIcon } from '@chakra-ui/icons';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   FormHelperText,
   Heading,
   HStack,
+  Icon,
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
@@ -50,7 +51,7 @@ const VaultAddressesStep = ({
     inView,
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
-  const { optionsRequests, handleFieldOptions } =
+  const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions(
       workspaceId!,
       !isSingleWorkspace,
@@ -123,6 +124,7 @@ const VaultAddressesStep = ({
                     const appliedOptions = handleFieldOptions(
                       field.value,
                       optionsRequests[index].options,
+                      first,
                     );
 
                     const showAddToAddressBook =
@@ -141,12 +143,14 @@ const VaultAddressesStep = ({
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
+                          optionsRef={optionRef}
                           value={field.value}
                           onChange={field.onChange}
                           options={appliedOptions}
                           isLoading={!optionsRequests[index].isSuccess}
                           disabled={first}
                           inView={inView}
+                          clearable={false}
                           rightElement={
                             <Icon
                               as={RemoveIcon}
