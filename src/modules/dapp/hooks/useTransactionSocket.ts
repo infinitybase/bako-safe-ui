@@ -86,10 +86,10 @@ export const useTransactionSocket = () => {
       tx,
     });
 
-    setTimeout(() => {
-      setSending(false);
-      window.close();
-    }, 2000);
+    // setTimeout(() => {
+    //   setSending(false);
+    //   window.close();
+    // }, 2000);
   };
 
   // emmit message to the server and close window
