@@ -43,7 +43,9 @@ export const useTransactionSocket = () => {
   });
 
   useEffect(() => {
+    console.log('[SOCKET_CONN]: ', socket.connected);
     if (socket.connected) {
+      console.log('[ENVIANDO MENSAGEM]');
       socket.emit(SocketEvents.DEFAULT, {
         sessionId,
         to: SocketUsernames.CONNECTOR,

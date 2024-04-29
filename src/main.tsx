@@ -2,7 +2,6 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { defaultConnectors } from '@fuel-wallet/sdk';
 import { FuelProvider } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
-import { Provider as JotaiProvider } from 'jotai';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -32,13 +31,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </TransactionSendProvider>
         </BakoSafeQueryClientProvider>
         <SocketProvider>
-          <JotaiProvider>
-            <BakoSafeQueryClientProvider>
-              <TransactionSendProvider>
-                <App />
-              </TransactionSendProvider>
-            </BakoSafeQueryClientProvider>
-          </JotaiProvider>
+          <BakoSafeQueryClientProvider>
+            <TransactionSendProvider>
+              <App />
+            </TransactionSendProvider>
+          </BakoSafeQueryClientProvider>
         </SocketProvider>
       </FuelProvider>
     </ChakraProvider>
