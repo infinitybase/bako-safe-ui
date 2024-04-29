@@ -7,7 +7,7 @@ const SignInFooter = () => (
       <Heading fontSize="sm" color="grey.50">
         New to Fuel Network?
       </Heading>
-      <Text fontSize="xs" color="grey.500">
+      <Text fontSize="xs" color="grey.500" maxW={{ base: '80%', md: 'full' }}>
         Fuel is an operating system purpose-built for Ethereum rollups
       </Text>
     </VStack>
