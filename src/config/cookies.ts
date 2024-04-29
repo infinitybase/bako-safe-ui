@@ -26,6 +26,7 @@ export class CookiesConfig {
   private static encryptionKey = VITE_ENCRYPTION_KEY;
 
   static setCookies(cookies: Cookie[]) {
+    console.log('[SET_COOKIES]: ', cookies);
     const expiresAt =
       new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
 
