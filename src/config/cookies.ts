@@ -33,7 +33,6 @@ export class CookiesConfig {
 
     cookies.forEach((cookie) => {
       Cookies.set(cookie.name, this.encrypt(cookie.value), {
-        secure: true,
         expires: new Date(expiresAt),
       });
     });
