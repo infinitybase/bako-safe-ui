@@ -152,7 +152,11 @@ const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
         <Divider borderColor="grey.500" />
       </HStack>
 
-      <Stack flexDirection={['column', 'row']} w="full" spacing={[4, 2]}>
+      <Stack
+        flexDirection={{ base: 'column', sm: 'row' }}
+        w="full"
+        spacing={{ base: 4, sm: 2 }}
+      >
         {allOtherConnectors.map((connector) => (
           <CardConnector
             key={connector.name}

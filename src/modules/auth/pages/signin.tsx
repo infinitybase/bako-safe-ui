@@ -59,7 +59,7 @@ const SigninPage = () => {
           bgGradient="linear(to-br, brand.500 , brand.800)"
           borderRadius="10px 10px 0px 0px"
           p={6}
-          pl={['40%', '40%', '30%']}
+          pl={{ base: '40%', sm: '30%' }}
         >
           <Box
             flex={1}
