@@ -23,11 +23,9 @@ const dappRoutes = (
     <Route
       path={Pages.dappTransaction()}
       element={
-        <AuthRoute>
-          <Container>
-            <TransactionConfirm />
-          </Container>
-        </AuthRoute>
+        <Container>
+          <TransactionConfirm />
+        </Container>
       }
     />
   </>

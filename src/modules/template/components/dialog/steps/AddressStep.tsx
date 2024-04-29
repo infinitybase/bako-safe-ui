@@ -183,18 +183,17 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                   <Select
                     pt={2}
                     pb={2}
-                    value={field.value}
+                    value={field?.value}
                     defaultValue={1}
-                    onChange={field.onChange}
-                  >
-                    {Array(addresses.fields.length)
+                    onChange={field?.onChange}
+                    options={Array(addresses.fields.length)
                       .fill('')
-                      .map((_, index) => (
-                        <option key={index + 1} value={index + 1}>
-                          {index + 1}
-                        </option>
-                      ))}
-                  </Select>
+                      .map((_, index) => ({
+                        label: index + 1,
+                        value: index + 1,
+                      }))}
+                  />
+
                   <FormHelperText
                     color="error.500"
                     style={{

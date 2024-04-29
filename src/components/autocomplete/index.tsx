@@ -14,6 +14,7 @@ import {
 import {
   ChangeEvent,
   CSSProperties,
+  LegacyRef,
   ReactNode,
   useEffect,
   useState,
@@ -38,6 +39,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   filterSelectedOption?: boolean;
   inView?: InViewHookResponse;
   clearable?: boolean;
+  optionsRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
 }
@@ -55,6 +57,7 @@ const Autocomplete = ({
   clearable = true,
   onChange,
   onInputChange,
+  optionsRef,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -181,6 +184,7 @@ const Autocomplete = ({
                 .filter((option) => option.value !== value)
                 .map((option) => (
                   <Box
+                    ref={optionsRef}
                     key={option.value}
                     w="full"
                     p={2}

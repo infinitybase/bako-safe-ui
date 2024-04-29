@@ -114,6 +114,13 @@ const useBakoSafeTransactionSend = (
         address: auth!.address,
       });
 
+      // basicamente, qualquer transação com valor acima de 51% do vault, dará erro
+      // porque o vault criado, ele tem como total balance o valor restante do "vaul original"
+      // por exemplo, o faucet nos dá 0.000199 ETH, se eu faço uma transação de 60% desse valor, que é  de 0.001194
+      // dará erro, porque esse vault criado tem apenas 0.00080165, que é o restante que sobrou após a transação ser feita
+      // creio que para funcionar certo, tem que usar/instanciar o "vault original", onde o total amount é 0.000199
+      // e não esse novo, que o total amont é o resto do valor inicial (0.000199) - o valor da transação.
+
       //await validateBalance(vault, transaction.assets, transaction.id);
 
       const transfer = await vault.BakoSafeGetTransaction(transaction.id);
@@ -126,9 +133,11 @@ const useBakoSafeTransactionSend = (
       //   failed: transfer.BakoSafeTransaction.status === TransactionStatus.FAILED,
       // });
       if (transfer.BakoSafeTransaction.status === TransactionStatus.FAILED) {
+        console.log('entrou no if?');
         await TransactionService.send(transfer.BakoSafeTransactionId);
       }
-      await transfer.wait();
+      const result = await transfer.wait();
+      console.log('result', result);
       return (await vault.BakoSafeGetTransaction(transaction.id))
         .BakoSafeTransaction;
     },

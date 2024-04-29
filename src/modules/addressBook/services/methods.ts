@@ -81,6 +81,9 @@ export class AddressBookService {
       { params },
     );
 
-    return data;
+    return {
+      ...data,
+      data: this.search(params, data.data),
+    };
   }
 }

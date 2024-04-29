@@ -1,5 +1,8 @@
 import { useCallback } from 'react';
 
+import { useAuth, useQueryParams } from '@/modules/auth';
+import { useCreateConnections } from '@/modules/dapp/hooks/useCreateConnection';
+
 import { TabState, useCreateVault } from './useCreateVault';
 
 export interface UseCreateVaultDialogProps {
@@ -11,13 +14,34 @@ export type UseCreateVaultDialogReturn = ReturnType<
 >;
 
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
-  const { form, tabs, vaultNameIsAvailable, ...rest } = useCreateVault();
+  const { form, tabs, vaultNameIsAvailable, vaultId, ...rest } =
+    useCreateVault();
+  const { name, origin, sessionId, request_id } = useQueryParams();
+  const createConnectionsMutation = useCreateConnections();
+  const auth = useAuth();
 
   const handleCancel = useCallback(() => {
     props.onClose();
     form.reset();
     tabs.set(TabState.INFO);
   }, [form, props, tabs]);
+
+  const close = (close_call: () => void, step?: TabState) => () => {
+    const isValid = sessionId && name && origin && request_id;
+
+    if (step && step == TabState.SUCCESS && isValid) {
+      createConnectionsMutation.mutate({
+        sessionId: sessionId!,
+        name: name!,
+        origin: origin!,
+        request_id: request_id!,
+        userAddress: auth.account,
+        vaultId: vaultId,
+      });
+    }
+
+    return close_call();
+  };
 
   const stepActions = {
     [TabState.INFO]: {
@@ -26,7 +50,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       onContinue: () => tabs.set(TabState.ADDRESSES),
       description:
         'Define the name and description of this vault. These details will be visible to all members.',
-      onCancel: handleCancel,
+      onCancel: close(handleCancel),
       closeText: 'Cancel',
       nextStepText: 'Continue',
     },
@@ -36,7 +60,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
-      onCancel: () => tabs.set(TabState.INFO),
+      onCancel: close(() => tabs.set(TabState.INFO)),
       closeText: 'Cancel',
       nextStepText: 'Create Vault',
     },
@@ -45,7 +69,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       disable: false,
       description: null,
       onContinue: () => {},
-      onCancel: handleCancel,
+      onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
       closeText: `I'll do it later`,
       nextStepText: '',
     },

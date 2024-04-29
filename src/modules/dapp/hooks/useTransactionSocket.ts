@@ -1,88 +1,108 @@
-import { useBoolean } from '@chakra-ui/react';
-import { BakoSafeConnectors, Vault } from 'bakosafe';
 import { TransactionRequestLike } from 'fuels';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useQueryParams } from '@/modules/auth/hooks';
-import { useDidMountEffect, UserTypes, useSocket } from '@/modules/core/hooks';
-import { useTransactionSummary } from '@/modules/dapp/hooks/useTransactionSummary';
-const { ACCESS_TOKEN, ADDRESS } = CookieName;
+import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
+
+import { useTransactionSummary } from './useTransactionSummary';
+
+interface IVaultEvent {
+  name: string;
+  address: string;
+  description: string;
+  provider: string;
+  pending_tx: boolean;
+}
+
+interface IDappEvent {
+  name: string;
+  description: string;
+  origin: string;
+}
 
 export const useTransactionSocket = () => {
-  const [confirmingTransaction, confirmingTransctionHandlers] = useBoolean();
+  const [vault, setVault] = useState<IVaultEvent | undefined>({
+    name: '',
+    address: '',
+    description: '',
+    provider: '',
+    pending_tx: true,
+  });
+  const [dapp, setDapp] = useState<IDappEvent | undefined>(undefined);
+  const [validAt, setValidAt] = useState<number>(10000000);
+  const [tx, setTx] = useState<TransactionRequestLike>();
+  const [sending, setSending] = useState(false);
 
-  const { connect, emitMessage } = useSocket();
-  const { sessionId, origin, name } = useQueryParams();
-  const [vault, setVault] = useState<Vault>();
-  const [FUELTransaction, setFUELTransaction] =
-    useState<TransactionRequestLike>();
+  const { connect, socket } = useSocket();
+  const { sessionId, request_id } = useQueryParams();
+
   const summary = useTransactionSummary();
 
-  const callbacks: { [key: string]: (data: any) => void } = {
-    // eslint-disable-next-line prettier/prettier
-    message: async (params: any) => {
-      const { type, data } = params;
-      const { address, transaction } = data;
-      // console.log('[TRANSACTION_REQUESTED]: ', {
-      //   data,
-      //   type,
-      // });
-      if (type === BakoSafeConnectors.TRANSACTION_SEND) {
-        const bakoSafeVault = await Vault.create({
-          predicateAddress: address,
-          token: CookiesConfig.getCookie(ACCESS_TOKEN)!,
-          address: CookiesConfig.getCookie(ADDRESS)!,
-        });
-        //console.log('[VAULT]: ', bakoSafeVault);
-        summary.getTransactionSummary({
-          providerUrl: bakoSafeVault.provider.url,
-          transactionLike: transaction,
-        });
-        //console.log('[VAULT]: ', bakoSafeVault);
-        setVault(bakoSafeVault);
-        setFUELTransaction(transaction);
-      }
-    },
-  };
+  useEffect(() => {
+    connect(sessionId!);
+  });
 
-  useDidMountEffect(() => {
-    connect({
-      username: sessionId!,
-      param: UserTypes.POPUP_TRANSFER,
-      sessionId: sessionId!,
-      origin: origin!,
-      callbacks,
+  useEffect(() => {
+    console.log('[SOCKET_CONN]: ', socket.connected);
+    if (socket.connected) {
+      console.log('[ENVIANDO MENSAGEM]');
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
+    }
+  }, [socket.connected]);
+
+  useEffect(() => {
+    //todo: default typing of the events
+    socket.on(SocketEvents.DEFAULT, (data) => {
+      const { to, type, data: content } = data;
+      const { dapp, vault, tx, validAt } = content;
+      const isValid =
+        to === SocketUsernames.UI && type === SocketEvents.TX_REQUEST;
+
+      if (!isValid) return;
+
+      setDapp(dapp);
+      setVault(vault);
+      setTx(tx);
+      setValidAt(validAt);
+      summary.getTransactionSummary({
+        providerUrl: vault.provider,
+        transactionLike: tx,
+        from: vault.address,
+      });
     });
-  }, [callbacks, connect, origin, sessionId]);
+  }, [socket]);
 
-  const confirmTransaction = async () => {
-    confirmingTransctionHandlers.on();
-
-    const tx = await vault?.BakoSafeIncludeTransaction(FUELTransaction!);
-    //console.log('[CONFIRM_TRANSACTION]: ', FUELTransaction);
-    //console.log('[TRANSACTION_TX]: ', tx);
+  const sendTransaction = async () => {
     if (!tx) return;
-    //console.log('[enviando mensagem]');
-    emitMessage({
-      event: BakoSafeConnectors.TRANSACTION_CREATED,
-      content: {
-        sessionId: sessionId!,
-        address: CookiesConfig.getCookie(ADDRESS)!,
-        origin: origin!,
-        hash: tx.getHashTxId()!,
-        operations: summary.transactionSummary?.operations ?? {},
-      },
-      to: `${sessionId!}:${origin!}`,
-      callback: () => {
-        confirmingTransctionHandlers.off();
-        window.close();
-      },
+    setSending(true);
+    socket.emit(SocketEvents.TX_CONFIRM, {
+      operations: summary.transactionSummary,
+      tx,
     });
-    return;
+
+    setTimeout(() => {
+      setSending(false);
+      window.close();
+    }, 2000);
   };
 
-  const cancelTransaction = () => window.close();
+  // emmit message to the server and close window
+  const cancelTransaction = () => {
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.DISCONNECTED,
+      request_id,
+      data: {},
+    });
+  };
 
   const init = () => {
     return;
@@ -92,13 +112,11 @@ export const useTransactionSocket = () => {
     init,
     vault,
     summary,
-    FUELTransaction,
-    confirmTransaction,
+    validAt,
+    connection: dapp,
     cancelTransaction,
-    connection: {
-      name,
-      origin,
-    },
-    confirmingTransaction,
+    send: sendTransaction,
+    pendingSignerTransactions: vault?.pending_tx ?? true,
+    isLoading: sending,
   };
 };

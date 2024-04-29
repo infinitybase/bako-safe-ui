@@ -1,7 +1,7 @@
 import { useFuel } from '@fuels/react';
 import { useEffect } from 'react';
 
-import { useAuth } from '@/modules';
+import { useAuth } from '@/modules/auth/hooks';
 import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';

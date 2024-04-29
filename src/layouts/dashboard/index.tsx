@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { useScreenSize } from '@/modules';
+import { useScreenSize } from '@/modules/core/hooks';
 
 import { Container } from './container';
 import { Content } from './content';

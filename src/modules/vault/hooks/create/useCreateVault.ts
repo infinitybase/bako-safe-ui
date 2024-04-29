@@ -150,6 +150,7 @@ const useCreateVault = () => {
     },
     handleInputChange,
     vaultNameIsAvailable,
+    vaultId,
     search,
     setSearch,
     addresses: {
