@@ -25,11 +25,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           connectors: defaultConnectors() as any,
         }}
       >
-        <BakoSafeQueryClientProvider>
-          <TransactionSendProvider>
-            <App />
-          </TransactionSendProvider>
-        </BakoSafeQueryClientProvider>
         <SocketProvider>
           <BakoSafeQueryClientProvider>
             <TransactionSendProvider>
