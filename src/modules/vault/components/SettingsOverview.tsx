@@ -128,8 +128,13 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     direction={{ base: 'column', sm: 'row' }}
                     mb={2}
                   >
-                    <Text variant="description">
-                      Vault {isExtraSmall ? <Text>balance</Text> : 'balance'}
+                    <Text
+                      variant="description"
+                      maxW={{ base: 20, xs: 'unset' }}
+                      noOfLines={2}
+                    >
+                      {/* Vault {isExtraSmall ? <Text>balance</Text> : 'balance'} */}
+                      Vault balance
                     </Text>
                     <HStack spacing={2}>
                       <HStack spacing={2}>
@@ -190,7 +195,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     <Text
                       variant="description"
                       fontSize="xs"
-                      position={isExtraSmall ? 'unset' : 'absolute'}
+                      position={{ base: 'unset', xs: 'absolute' }}
                       bottom={{ base: -1, sm: 2 }}
                     >
                       Use the faucet to add assets to the vault
@@ -231,7 +236,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         w="full"
                         mt={2}
                         color="error.500"
-                        position={isExtraSmall ? 'unset' : 'absolute'}
+                        position={{ base: 'unset', xs: 'absolute' }}
                         bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                       >
                         This vault has pending transactions.

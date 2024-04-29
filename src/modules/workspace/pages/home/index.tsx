@@ -613,7 +613,7 @@ const WorkspacePage = () => {
           </Text>
 
           {hasTransactions && (
-            <HStack>
+            <HStack w="full">
               <WaitingSignatureBadge
                 isLoading={pendingSignerTransactions.isLoading}
                 quantity={pendingSignerTransactions.data?.ofUser ?? 0}

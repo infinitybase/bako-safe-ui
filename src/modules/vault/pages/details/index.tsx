@@ -72,7 +72,7 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={{ base: 0, sm: 8 }}>
+    <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={9} w="full" justifyContent="space-between">

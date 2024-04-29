@@ -58,7 +58,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
         if (isBig > 0 && index == max) {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <SignerCard borderStyle="dashed">
+              <SignerCard borderStyle="dashed" h={{ base: 112, sm: 'unset' }}>
                 <VStack
                   w="100%"
                   h="full"
@@ -121,7 +121,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={{ base: 'full', sm: 'md' }} mb={4}>
+    <Box w={{ base: 'full', lg: 'md' }} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"
@@ -142,7 +142,15 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
       </HStack>
 
       {vaultRequiredSizeToColumnLayout ? (
-        <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+        <Grid
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+          }}
+          gap={3}
+          w="full"
+        >
           <SignersList vault={vault} />
         </Grid>
       ) : (
