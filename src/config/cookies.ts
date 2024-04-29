@@ -36,11 +36,12 @@ export class CookiesConfig {
         expires: new Date(expiresAt),
       });
     });
+    console.log('[COOKIES]: ', Cookies.get());
   }
 
   static getCookie(name: string) {
-    const ck = Cookies.get(name);
-    return ck ? this.decrypt(ck) : '';
+    const ck = Cookies.get(name) ?? '';
+    return this.decrypt(ck);
   }
 
   static removeCookies(names: string[]) {
