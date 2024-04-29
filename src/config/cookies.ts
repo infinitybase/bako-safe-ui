@@ -28,7 +28,8 @@ export class CookiesConfig {
   static setCookies(cookies: Cookie[]) {
     console.log('[SET_COOKIES]: ', cookies);
     const expiresAt =
-      new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
+      new Date().getTime() +
+      Number(VITE_COOKIE_EXPIRATION_TIME ?? 15) * 60 * 1000;
 
     cookies.forEach((cookie) => {
       Cookies.set(cookie.name, this.encrypt(cookie.value), {
