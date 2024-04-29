@@ -26,17 +26,23 @@ export class CookiesConfig {
   private static encryptionKey = VITE_ENCRYPTION_KEY;
 
   static setCookies(cookies: Cookie[]) {
-    console.log('[SET_COOKIES]: ', cookies);
-    const expiresAt =
-      new Date().getTime() +
-      Number(VITE_COOKIE_EXPIRATION_TIME ?? 15) * 60 * 1000;
+    try {
+      console.log('[SET_COOKIES]: ', cookies);
+      const expiresAt =
+        new Date().getTime() +
+        Number(VITE_COOKIE_EXPIRATION_TIME ?? 15) * 60 * 1000;
 
-    cookies.forEach((cookie) => {
-      Cookies.set(cookie.name, this.encrypt(cookie.value), {
-        expires: new Date(expiresAt),
+      console.log('[EXPIRES_AT]: ', expiresAt);
+
+      cookies.forEach((cookie) => {
+        Cookies.set(cookie.name, this.encrypt(cookie.value), {
+          expires: new Date(expiresAt),
+        });
       });
-    });
-    console.log('[COOKIES]: ', Cookies.get());
+      console.log('[COOKIES]: ', Cookies.get());
+    } catch (e) {
+      console.log('[ERROR]: ', e);
+    }
   }
 
   static getCookie(name: string) {
