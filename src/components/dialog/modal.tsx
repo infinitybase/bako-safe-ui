@@ -29,7 +29,7 @@ const DialogModal = (props: DialogModalProps) => {
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent rounded="3xl">
+      <ModalContent rounded="3xl" bg="dark.950">
         {!hideCloseButton && (
           <Flex w="full" align="center" justifyContent="flex-end">
             <HStack

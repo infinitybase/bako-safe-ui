@@ -93,7 +93,13 @@ const UserTransactionsPage = () => {
             <>
               <Breadcrumb ml={8}>
                 <BreadcrumbItem>
-                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                  <Icon
+                    mt={1}
+                    mr={2}
+                    as={HomeIcon}
+                    fontSize="sm"
+                    color="grey.200"
+                  />
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
@@ -111,6 +117,8 @@ const UserTransactionsPage = () => {
                       color="grey.200"
                       fontWeight="semibold"
                       onClick={() => goWorkspace(current)}
+                      maxW={40}
+                      isTruncated
                     >
                       {workspace?.name}
                     </BreadcrumbLink>
@@ -250,10 +258,10 @@ const UserTransactionsPage = () => {
         maxH="74vh"
         overflowY="scroll"
         overflowX="hidden"
-        pr={2}
         scrollBehavior="smooth"
         sx={{
           '&::-webkit-scrollbar': {
+            display: 'none',
             width: '5px',
             maxHeight: '330px',
             backgroundColor: 'grey.200',

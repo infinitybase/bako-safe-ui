@@ -58,7 +58,13 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
         if (isBig > 0 && index == max) {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <SignerCard borderStyle="dashed" h={{ base: 112, sm: 'unset' }}>
+              <SignerCard
+                borderStyle="dashed"
+                bg="grey.825"
+                borderColor="grey.550"
+                backdropFilter="blur(8px)"
+                h="4.5em"
+              >
                 <VStack
                   w="100%"
                   h="full"
@@ -76,19 +82,10 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                     )
                   }
                 >
-                  <Text
-                    variant="description"
-                    fontSize={{ base: 'md', sm: 'lg' }}
-                    fontWeight="bold"
-                  >
+                  <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
                     +{isBig + 1}
                   </Text>
-                  <Text
-                    variant="description"
-                    fontSize={{ base: 'sm', sm: 'md' }}
-                  >
-                    View all
-                  </Text>
+                  <Text fontSize={{ base: 'sm', sm: 'md' }}>View all</Text>
                 </VStack>
               </SignerCard>
             </CustomSkeleton>

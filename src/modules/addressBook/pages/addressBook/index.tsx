@@ -127,7 +127,13 @@ const AddressBookPage = () => {
 
             <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
               <BreadcrumbItem>
-                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+                <Icon
+                  mr={2}
+                  mt={1}
+                  as={HomeIcon}
+                  fontSize="sm"
+                  color="grey.200"
+                />
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
@@ -145,6 +151,8 @@ const AddressBookPage = () => {
                     color="grey.200"
                     fontWeight="semibold"
                     onClick={() => goWorkspace(current)}
+                    maxW={40}
+                    isTruncated
                   >
                     {workspace?.name}
                   </BreadcrumbLink>

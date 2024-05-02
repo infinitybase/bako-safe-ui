@@ -52,7 +52,6 @@ const Actions = ({
   transaction,
   status,
   isSigner,
-  isInTheVaultPage,
   callBack,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
@@ -71,11 +70,7 @@ const Actions = ({
   }
 
   return (
-    <HStack
-      minW={140}
-      justifySelf="end"
-      alignSelf={isInTheVaultPage ? undefined : 'start'}
-    >
+    <HStack minW={140} justifySelf="end">
       {isSigned && (
         <Badge h={6} variant="success">
           You signed

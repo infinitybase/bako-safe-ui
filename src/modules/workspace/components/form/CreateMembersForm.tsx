@@ -21,7 +21,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
     useAddressBook(!isSingleWorkspace);
 
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" maxW={480} mb="12px">
       <Controller
         name="address"
         control={form.control}
