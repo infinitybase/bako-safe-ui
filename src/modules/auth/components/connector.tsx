@@ -13,8 +13,8 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
+import { useQueryParams } from '@/modules/auth/hooks';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
-
 type ConnectorType = {
   name: string;
   label: string;
@@ -119,6 +119,7 @@ const CardConnector = (props: CardConnectorProps) => {
 };
 
 const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
+  const { byConnector, sessionId } = useQueryParams();
   const webAuthnConnector = connectors.find(
     (connector) => connector.name === EConnectors.WEB_AUTHN,
   );
@@ -141,7 +142,23 @@ const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
       <CardConnector
         connector={webAuthnConnector!}
         isWebAuthn
-        onClick={onSelect}
+        onClick={() => {
+          const isConnector = byConnector && !!sessionId;
+          // console.log('isConnector', isConnector);
+          // console.log(
+          //   window.location.pathname,
+          //   window.location.search,
+          //   window.origin,
+          // );
+
+          if (isConnector) {
+            window.open(
+              `${window.origin}/${window.location.search}&openWebAuth=true`,
+              '_blank',
+            );
+          }
+          return onSelect(EConnectors.WEB_AUTHN);
+        }}
       />
 
       <HStack w="full" spacing={5}>

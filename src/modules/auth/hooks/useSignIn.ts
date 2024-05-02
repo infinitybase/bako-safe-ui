@@ -46,12 +46,16 @@ const useSignIn = () => {
   const { fuel } = useFuel();
   const auth = useAuth();
   const { isConnected } = useIsConnected();
-  const { openConnect, location, sessionId } = useQueryParams();
+  const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
   const { account } = useAccount();
 
   const { connect } = useSocket();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (isOpenWebAuth) {
+      openWebAuthnDrawer();
+    }
+  }, []);
 
   const { connectors } = useDefaultConnectors();
   const { openWebAuthnDrawer, ...rest } = useWebAuthn();

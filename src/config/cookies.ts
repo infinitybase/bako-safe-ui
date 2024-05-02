@@ -27,19 +27,19 @@ export class CookiesConfig {
 
   static setCookies(cookies: Cookie[]) {
     const expiresAt =
-      new Date().getTime() + Number(VITE_COOKIE_EXPIRATION_TIME) * 60 * 1000;
+      new Date().getTime() +
+      Number(VITE_COOKIE_EXPIRATION_TIME ?? 15) * 60 * 1000;
 
     cookies.forEach((cookie) => {
       Cookies.set(cookie.name, this.encrypt(cookie.value), {
-        secure: true,
         expires: new Date(expiresAt),
       });
     });
   }
 
   static getCookie(name: string) {
-    const ck = Cookies.get(name);
-    return ck ? this.decrypt(ck) : '';
+    const ck = Cookies.get(name) ?? '';
+    return this.decrypt(ck);
   }
 
   static removeCookies(names: string[]) {
