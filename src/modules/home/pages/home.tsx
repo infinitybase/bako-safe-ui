@@ -297,7 +297,6 @@ const HomePage = () => {
                     ) : (
                       <TransactionCard.Container
                         mb={4}
-                        bgColor="grey.800"
                         key={transaction.id}
                         status={status}
                         isSigner={isSigner}

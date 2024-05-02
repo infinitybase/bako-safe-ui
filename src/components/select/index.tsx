@@ -36,6 +36,7 @@ interface SelectProps
   options?: SelectOptions[];
   label?: string;
   isLoading?: boolean;
+  isCreatingValue?: boolean;
   onChange: (value: any) => void;
 }
 
@@ -48,6 +49,7 @@ const Select = ({
   onChange,
   isInvalid,
   style,
+  isCreatingValue,
   ...rest
 }: SelectProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -159,7 +161,12 @@ const Select = ({
           {...rest}
         />
 
-        <FormLabel>{label}</FormLabel>
+        <FormLabel
+          fontSize={isCreatingValue ? { base: 'xs', xs: 'md' } : 'unset'}
+          pt={isCreatingValue ? { base: 1, xs: 'unset' } : 'unset'}
+        >
+          {label}
+        </FormLabel>
 
         <InputRightElement
           hidden={showInputRightElement}
@@ -169,6 +176,7 @@ const Select = ({
           borderRadius={10}
           bgColor={'dark.250'}
           h="calc(100% - 3px)"
+          bg={isCreatingValue ? 'transparent' : 'unset'}
           w={10}
           onClick={handleRighElementClick}
           cursor={isLoading ? 'default' : 'pointer'}

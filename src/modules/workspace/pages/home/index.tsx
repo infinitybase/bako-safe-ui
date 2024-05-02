@@ -190,7 +190,13 @@ const WorkspacePage = () => {
 
           <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <Icon
+                mt={1}
+                mr={2}
+                as={HomeIcon}
+                fontSize="sm"
+                color="grey.200"
+              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -613,7 +619,7 @@ const WorkspacePage = () => {
           </Text>
 
           {hasTransactions && (
-            <HStack>
+            <HStack w="full">
               <WaitingSignatureBadge
                 isLoading={pendingSignerTransactions.isLoading}
                 quantity={pendingSignerTransactions.data?.ofUser ?? 0}

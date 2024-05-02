@@ -374,7 +374,7 @@ const Details = ({
               gap={8}
               justifyContent="space-between"
             >
-              <Text color="grey.200">Gás Fee (ETH)</Text>
+              <Text color="grey.200">Gas Fee (ETH)</Text>
               <Text
                 color="grey.200"
                 fontSize={{ base: 'md', sm: 'lg' }}

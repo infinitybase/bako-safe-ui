@@ -51,7 +51,13 @@ const VaultSettingsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <Icon
+                mt={1}
+                mr={2}
+                as={HomeIcon}
+                fontSize="sm"
+                color="grey.200"
+              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -68,7 +74,9 @@ const VaultSettingsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)} //
+                  onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                 </BreadcrumbLink>

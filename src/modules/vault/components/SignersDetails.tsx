@@ -58,7 +58,13 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
         if (isBig > 0 && index == max) {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-              <SignerCard borderStyle="dashed">
+              <SignerCard
+                borderStyle="dashed"
+                bg="grey.825"
+                borderColor="grey.550"
+                backdropFilter="blur(8px)"
+                h="4.5em"
+              >
                 <VStack
                   w="100%"
                   h="full"
@@ -76,19 +82,10 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                     )
                   }
                 >
-                  <Text
-                    variant="description"
-                    fontSize={{ base: 'md', sm: 'lg' }}
-                    fontWeight="bold"
-                  >
+                  <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
                     +{isBig + 1}
                   </Text>
-                  <Text
-                    variant="description"
-                    fontSize={{ base: 'sm', sm: 'md' }}
-                  >
-                    View all
-                  </Text>
+                  <Text fontSize={{ base: 'sm', sm: 'md' }}>View all</Text>
                 </VStack>
               </SignerCard>
             </CustomSkeleton>
@@ -121,7 +118,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={{ base: 'full', sm: 'md' }} mb={4}>
+    <Box w={{ base: 'full', lg: 'md' }} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"
@@ -142,7 +139,15 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
       </HStack>
 
       {vaultRequiredSizeToColumnLayout ? (
-        <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+        <Grid
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+          }}
+          gap={3}
+          w="full"
+        >
           <SignersList vault={vault} />
         </Grid>
       ) : (

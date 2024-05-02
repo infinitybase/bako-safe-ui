@@ -72,7 +72,7 @@ const VaultDetailsPage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={{ base: 0, sm: 8 }}>
+    <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={9} w="full" justifyContent="space-between">
@@ -86,7 +86,13 @@ const VaultDetailsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <Icon
+                mt={1}
+                mr={2}
+                as={HomeIcon}
+                fontSize="sm"
+                color="grey.200"
+              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -104,6 +110,8 @@ const VaultDetailsPage = () => {
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() => goWorkspace(workspaceId)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                 </BreadcrumbLink>

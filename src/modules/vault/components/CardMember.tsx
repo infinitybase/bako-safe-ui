@@ -1,16 +1,15 @@
 import {
+  Avatar,
   Badge,
   chakra,
   Flex,
   HStack,
-  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
 import { Card } from '@/components';
 import { AddressUtils } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 
 interface CardMemberProps {
   member: {
@@ -40,42 +39,32 @@ const CardMemberBagde = () => {
 };
 
 const CardMember = ({ member, isOwner }: CardMemberProps) => {
-  const { isMobile } = useScreenSize();
-
   const hasNickname = member?.nickname;
 
   return (
     <SignerCard
       w="full"
-      h="full"
-      minH={{ base: 28, sm: 'unset' }}
+      h="4.5em"
       maxW={{ base: 'unset', sm: 360 }}
-      borderColor="grey.600"
+      bg="grey.825"
+      borderColor="grey.550"
+      alignItems="center"
+      display="flex"
     >
-      <Flex
-        flexDirection={{ base: 'column', sm: 'row' }}
-        gap={{ base: 2, sm: 4 }}
-        w="full"
-        alignItems={{ base: 'stretch', sm: 'center' }}
-      >
-        <HStack
-          w={{ base: 'full', sm: 'fit-content' }}
-          justifyContent="space-between"
-          gap={2}
-        >
-          <Image
+      <Flex flexDir="row" gap={{ base: 2, xs: 4 }} w="full">
+        <HStack justifyContent="space-between" gap={2}>
+          <Avatar
             borderRadius={8}
             src={member?.avatar}
-            boxSize={{ base: '32px', sm: '38px' }}
-            minW={{ base: '32px', sm: '38px' }}
+            boxSize={{ base: '32px', xs: '40px' }}
+            border="1px solid"
+            borderColor="grey.75"
           />
-
-          {isOwner && isMobile && <CardMemberBagde />}
         </HStack>
 
         <HStack
           h="full"
-          minH={{ base: undefined, sm: 55 }}
+          minH={55}
           maxW={600}
           w="full"
           spacing={0}
@@ -85,7 +74,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
           <VStack align="flex-start" spacing={0} justifyContent="center">
             {hasNickname && (
               <Text
-                fontSize={{ base: 'md', sm: 'lg' }}
+                fontSize="md"
                 color="grey.200"
                 fontWeight="semibold"
                 maxW={isOwner ? 100 : 150}
@@ -107,7 +96,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
             </Text>
           </VStack>
 
-          {isOwner && !isMobile && <CardMemberBagde />}
+          {isOwner && <CardMemberBagde />}
         </HStack>
       </Flex>
     </SignerCard>

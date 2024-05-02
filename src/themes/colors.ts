@@ -34,6 +34,7 @@ const colors = {
     500: '#0F0F0F',
     600: '#1E1F22',
     900: '#000000',
+    950: '#151413',
   },
   error: {
     300: '#EF9B8F',
@@ -67,6 +68,12 @@ const colors = {
     650: 'rgba(0, 127, 219, 0.3)',
     700: 'rgba(0, 127, 219, 0.15)',
     900: 'rgba(0, 127, 219, 0.08)',
+  },
+  gradients: {
+    'transaction-card':
+      'linear-gradient(0deg, rgba(245, 245, 245, 0.03), rgba(245, 245, 245, 0.03)), linear-gradient(180deg, rgba(21, 20, 19, 0.0375) 0%, rgba(21, 20, 19, 0.0625) 28.5%, rgba(21, 20, 19, 0.125) 72%, rgba(21, 20, 19, 0.25) 100%);',
+
+    'transaction-border': '#35302F',
   },
 };
 
