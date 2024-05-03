@@ -10,6 +10,8 @@ import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useSelectWorkspace } from '@/modules/workspace/hooks';
 
+import { useVaultState } from '../../states';
+
 interface UseVaultDrawerParams {
   onClose?: () => void;
   isOpen?: boolean;
@@ -24,6 +26,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
+  const { setIsFirstAssetsLoading } = useVaultState();
 
   const { selectWorkspace } = useSelectWorkspace();
   const {
@@ -69,6 +72,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     },
   ) => {
     props.onClose?.();
+    setIsFirstAssetsLoading(true);
     queryClient.invalidateQueries('vault/pagination');
     setSearch('');
     selectWorkspace(vault.workspace.id);
@@ -83,6 +87,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const onCloseDrawer = () => {
     props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
+    queryClient.resetQueries();
     setSearch('');
   };
 

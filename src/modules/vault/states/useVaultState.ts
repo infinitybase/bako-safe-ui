@@ -17,6 +17,8 @@ interface State {
   setAssets: (assets: Asset[]) => void;
   balanceUSD: string;
   setBalanceUSD: (balance: string) => void;
+  isFirstAssetsLoading: boolean;
+  setIsFirstAssetsLoading: (isFirstAssetsLoading: boolean) => void;
 }
 
 const useVaultState = create<State>((set) => ({
@@ -31,6 +33,9 @@ const useVaultState = create<State>((set) => ({
   balanceUSD: '0.00',
   setBalanceUSD: (balance) => set({ balanceUSD: balance }),
   setAssets: (assets) => set({ assets }),
+  isFirstAssetsLoading: true,
+  setIsFirstAssetsLoading: (isFirstAssetsLoading) =>
+    set({ isFirstAssetsLoading }),
 }));
 
 export { useVaultState };

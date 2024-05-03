@@ -24,6 +24,7 @@ interface VaultBoxPropx {
   isPending?: boolean;
   hasBalance?: boolean;
   hasPermission?: boolean;
+  isFetching: boolean;
 }
 
 const VaultBoxSkeleton = () => (

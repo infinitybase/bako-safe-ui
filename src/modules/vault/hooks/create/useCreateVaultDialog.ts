@@ -22,8 +22,6 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
 
   const handleCancel = useCallback(() => {
     props.onClose();
-    form.reset();
-    tabs.set(TabState.INFO);
   }, [form, props, tabs]);
 
   const close = (close_call: () => void, step?: TabState) => () => {

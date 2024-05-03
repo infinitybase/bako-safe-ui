@@ -38,7 +38,12 @@ const balancesToAssets = async (
 };
 
 function useVaultAssets(predicate?: Vault) {
-  const { setVisibleBalance, setBiggerAsset, setBalanceUSD } = useVaultState();
+  const {
+    setVisibleBalance,
+    setBiggerAsset,
+    setBalanceUSD,
+    setIsFirstAssetsLoading,
+  } = useVaultState();
 
   const { provider } = useProvider();
   const auth = useAuth();
@@ -51,6 +56,9 @@ function useVaultAssets(predicate?: Vault) {
       refetchInterval: 10000,
       keepPreviousData: true,
       enabled: !!predicate,
+      onSuccess: () => {
+        setIsFirstAssetsLoading(false);
+      },
     },
   );
   const findBiggerAsset = () => {
