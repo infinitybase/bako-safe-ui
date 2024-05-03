@@ -40,7 +40,7 @@ export const MemberPermissionForm = ({
 }: MemberPermissionForm) => {
   return (
     <Box w="full">
-      <Divider mb={5} mt={1} />
+      <Divider mb={5} />
       <Dialog.Section
         title={
           <Heading fontSize="md" color="grey.200">
@@ -63,7 +63,7 @@ export const MemberPermissionForm = ({
               {WorkspacePermissionUtils.permissionsValues.map((permission) => (
                 <RadioCard
                   border="1px"
-                  bgColor="grey.850"
+                  bgColor="grey.825"
                   p={3}
                   my={1}
                   borderRadius="xl"

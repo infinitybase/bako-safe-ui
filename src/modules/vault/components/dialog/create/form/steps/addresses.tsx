@@ -82,6 +82,7 @@ const VaultAddressesStep = ({
         >
           <FormControl>
             <Select
+              isCreatingValue
               label="Do you want to use a template?"
               value={selectedTemplate}
               onChange={(value) => setTemplate(value)}

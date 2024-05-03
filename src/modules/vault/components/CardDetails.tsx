@@ -14,7 +14,7 @@ import { bn } from 'fuels';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton } from '@/components';
+import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
@@ -203,11 +203,11 @@ const CardDetails = (props: CardDetailsProps) => {
                       <HandbagIcon
                         w={{ base: 3, sm: 4 }}
                         h={{ base: 3, sm: 4 }}
+                        color="grey.500"
                       />
                       <Text
                         variant="description"
-                        textOverflow="ellipsis"
-                        noOfLines={2}
+                        maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                         isTruncated
                         fontSize={{ base: 'small', sm: 'sm' }}
                       >
@@ -324,8 +324,9 @@ const CardDetails = (props: CardDetailsProps) => {
                         !makeTransactionsPerm ||
                         vault.transactions.isPendingSigner
                       }
-                      minW={130}
                       variant="primary"
+                      leftIcon={<SquarePlusIcon />}
+                      fontWeight="bold"
                     >
                       Send
                     </Button>

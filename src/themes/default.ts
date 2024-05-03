@@ -21,7 +21,7 @@ const defaultTheme = extendTheme({
   styles: {
     global: () => ({
       body: {
-        bg: 'dark.500',
+        bg: 'grey.825',
         color: '#FFFFFF',
         fontSize: {
           base: 'sm',

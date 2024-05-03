@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
@@ -72,19 +72,22 @@ const SelectWorkspaceDialog = ({
             spacing={5}
             w="full"
             minH={300}
-            maxH={380}
+            maxH={{ base: 597, sm: 380 }}
             overflowY="scroll"
             marginTop={listIsEmpty ? 4 : 16}
             py={4}
-            pr={4}
+            gap={4}
             borderColor="grey.100"
             sx={{
               '&::-webkit-scrollbar': {
+                display: 'none',
                 width: '5px',
                 maxHeight: '330px',
+                backgroundColor: '#2B2927',
               },
               '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#2C2C2C',
+                display: 'none',
+                backgroundColor: 'grey.250',
                 borderRadius: '30px',
                 height: '10px' /* Adjust the height of the scrollbar thumb */,
               },
@@ -93,23 +96,38 @@ const SelectWorkspaceDialog = ({
             {listIsEmpty ? (
               <SelectionEmptyState />
             ) : (
-              userWorkspaces.map((w) => (
-                <WorkspaceCard
-                  key={w.id}
-                  workspace={w}
-                  counter={{ members: w.members.length, vaults: w.predicates }}
-                  onClick={() => {
-                    w.id !== loggedWorkspace
-                      ? onSelect(w.id)
-                      : dialog.onClose();
-                  }}
-                />
-              ))
+              <>
+                {userWorkspaces.map((w) => (
+                  <WorkspaceCard
+                    key={w.id}
+                    workspace={w}
+                    counter={{
+                      members: w.members.length,
+                      vaults: w.predicates,
+                    }}
+                    onClick={() => {
+                      w.id !== loggedWorkspace
+                        ? onSelect(w.id)
+                        : dialog.onClose();
+                    }}
+                  />
+                ))}
+                <Divider position="absolute" top={16} w="full" left={0} />
+              </>
             )}
           </VStack>
         </VStack>
       </Dialog.Body>
-      <DialogActions mt="auto" maxW={480} hideDivider={listIsEmpty}>
+      <DialogActions
+        mt="auto"
+        maxW={480}
+        hideDivider={listIsEmpty}
+        sx={{
+          '& > hr': {
+            marginTop: '0',
+          },
+        }}
+      >
         <HStack w="full" spacing={4} h={12} mt={listIsEmpty ? 9 : 'unset'}>
           {listIsEmpty && (
             <Dialog.SecondaryAction

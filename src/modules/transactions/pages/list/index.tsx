@@ -70,7 +70,13 @@ const TransactionsVaultPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <Icon
+                mt={1}
+                mr={2}
+                as={HomeIcon}
+                fontSize="sm"
+                color="grey.200"
+              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -88,6 +94,8 @@ const TransactionsVaultPage = () => {
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                 </BreadcrumbLink>
@@ -201,16 +209,16 @@ const TransactionsVaultPage = () => {
         maxH="77.5vh"
         overflowY="scroll"
         scrollBehavior="smooth"
-        pr={4}
         sx={{
           '&::-webkit-scrollbar': {
+            display: 'none',
             width: '5px',
             maxHeight: '330px',
             backgroundColor: 'grey.200',
             borderRadius: '30px',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
+            backgroundColor: 'transparent',
             borderRadius: '30px',
             height: '10px',
           },

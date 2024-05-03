@@ -82,7 +82,13 @@ const UserVaultsPage = () => {
           </Button>
           <Breadcrumb ml={8}>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
+              <Icon
+                mt={1}
+                mr={2}
+                as={HomeIcon}
+                fontSize="sm"
+                color="grey.200"
+              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -98,7 +104,9 @@ const UserVaultsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)} //
+                  onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                   {/* use request of workspace  */}
