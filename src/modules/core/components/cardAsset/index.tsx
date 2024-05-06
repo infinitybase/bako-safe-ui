@@ -73,7 +73,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
-          variant="roundedSquare"
+          name={asset.slug}
           src={asset.icon ?? defaultAsset.icon}
         />
 

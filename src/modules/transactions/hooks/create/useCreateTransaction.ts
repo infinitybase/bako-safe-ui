@@ -110,7 +110,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const handleClose = () => {
     props?.onClose();
-    form.reset();
   };
 
   const handleCreateTransaction = form.handleSubmit((data) => {

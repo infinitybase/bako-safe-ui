@@ -66,6 +66,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
             )!
           }
           isLoading={vaultRequest.isLoading}
+          isFetching={vaultRequest.isFetching}
           onChangeVault={drawer.onOpen}
           hasBalance={vaultAssets.hasBalance}
           isPending={vault.transactions.isPendingSigner}

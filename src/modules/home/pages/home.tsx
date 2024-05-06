@@ -82,8 +82,8 @@ const HomePage = () => {
           </Button>
         </Box>
       </HStack>
-      <CustomSkeleton display="flex" isLoaded={!homeRequest.isLoading}>
-        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
+        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
@@ -96,7 +96,9 @@ const HomePage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
+        </CustomSkeleton>
 
+        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() => {
@@ -118,7 +120,8 @@ const HomePage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-
+        </CustomSkeleton>
+        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
@@ -134,223 +137,229 @@ const HomePage = () => {
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
-        </Stack>
-      </CustomSkeleton>
+        </CustomSkeleton>
+      </Stack>
       {/* RECENT VAULTS */}
-      {recentVaults?.length && (
-        <Box mt={4} alignSelf="flex-start">
-          <Text
-            color="grey.400"
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="md"
+      <CustomSkeleton
+        isLoaded={!homeRequest.isLoading}
+        minH={homeRequest.isLoading ? '100vh' : 'fit-content'}
+        mt={homeRequest.isLoading ? 6 : 4}
+      >
+        {recentVaults?.length && (
+          <Box pb={6} alignSelf="flex-start">
+            <Text
+              color="grey.400"
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize="md"
+            >
+              Recently used vaults
+            </Text>
+          </Box>
+        )}
+        {recentVaults?.length && (
+          <Grid
+            mt={{ base: -8, sm: -2 }}
+            w="full"
+            maxW="full"
+            gap={6}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              '2xl': 'repeat(4, 1fr)',
+            }}
           >
-            Recently used vaults
-          </Text>
-        </Box>
-      )}
-      {recentVaults?.length && (
-        <Grid
-          mt={{ base: -8, sm: -2 }}
-          w="full"
-          maxW="full"
-          gap={6}
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
-          }}
-        >
-          {recentVaults?.map(
-            ({ id, name, workspace, members, description }, index) => {
-              const lastCard = index === vaultsMax - 1;
-              const hasMore = extraCount > 0;
+            {recentVaults?.map(
+              ({ id, name, workspace, members, description }, index) => {
+                const lastCard = index === vaultsMax - 1;
+                const hasMore = extraCount > 0;
 
-              return (
-                <CustomSkeleton
-                  isLoaded={!homeRequest.isLoading}
-                  key={id}
-                  maxH={{ base: 180, sm: 190 }}
+                return (
+                  <CustomSkeleton
+                    isLoaded={!homeRequest.isLoading || !!recentVaults}
+                    key={id}
+                    maxH={{ base: 180, sm: 190 }}
+                  >
+                    <GridItem>
+                      {lastCard && hasMore ? (
+                        <ExtraVaultCard
+                          mt={{ base: 6, sm: 'unset' }}
+                          maxH={{ base: 185, sm: 190 }}
+                          extra={extraCount}
+                          onClick={() =>
+                            navigate(
+                              Pages.userVaults({
+                                workspaceId: single,
+                              }),
+                            )
+                          }
+                        />
+                      ) : (
+                        <VaultCard
+                          id={id}
+                          name={name}
+                          workspace={workspace}
+                          title={description}
+                          members={members!}
+                          onClick={async () => {
+                            selectWorkspace(workspace.id, {
+                              onSelect: async (_workspace) => {
+                                navigate(
+                                  Pages.detailsVault({
+                                    workspaceId: _workspace.id,
+                                    vaultId: id,
+                                  }),
+                                );
+                              },
+                            });
+                          }}
+                        />
+                      )}
+                    </GridItem>
+                  </CustomSkeleton>
+                );
+              },
+            )}
+          </Grid>
+        )}
+        {/* TRANSACTION LIST */}
+        {transactions && transactions.length <= 0 ? (
+          <VStack w="full" spacing={6}>
+            {transactions.length && (
+              <HStack w="full" spacing={4}>
+                <Text
+                  variant="subtitle"
+                  fontWeight="semibold"
+                  fontSize={{ base: 'md', sm: 'xl' }}
+                  color="grey.200"
                 >
-                  <GridItem>
-                    {lastCard && hasMore ? (
-                      <ExtraVaultCard
-                        mt={{ base: 6, sm: 'unset' }}
-                        maxH={{ base: 185, sm: 190 }}
-                        extra={extraCount}
-                        onClick={() =>
-                          navigate(
-                            Pages.userVaults({
-                              workspaceId: single,
-                            }),
-                          )
-                        }
-                      />
-                    ) : (
-                      <VaultCard
-                        id={id}
-                        name={name}
-                        workspace={workspace}
-                        title={description}
-                        members={members!}
-                        onClick={async () => {
-                          selectWorkspace(workspace.id, {
-                            onSelect: async (_workspace) => {
-                              navigate(
-                                Pages.detailsVault({
-                                  workspaceId: _workspace.id,
-                                  vaultId: id,
-                                }),
-                              );
-                            },
-                          });
-                        }}
-                      />
-                    )}
-                  </GridItem>
-                </CustomSkeleton>
-              );
-            },
-          )}
-        </Grid>
-      )}
-      {/* TRANSACTION LIST */}
-      {transactions && transactions.length <= 0 ? (
-        <VStack w="full" spacing={6}>
-          {transactions.length && (
-            <HStack w="full" spacing={4}>
+                  Transactions
+                </Text>
+              </HStack>
+            )}
+            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+              <EmptyTransaction />
+            </CustomSkeleton>
+          </VStack>
+        ) : (
+          <Box w="full" mt={8}>
+            <Box
+              w="full"
+              display="flex"
+              flexDir={isExtraSmall ? 'column' : 'row'}
+              gap={isExtraSmall ? 2 : 4}
+              mb={isExtraSmall ? -4 : 0}
+            >
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize={{ base: 'md', sm: 'xl' }}
-                color="grey.200"
+                fontSize={{ base: 'sm', sm: 'xl' }}
               >
                 Transactions
               </Text>
-            </HStack>
-          )}
-          <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-            <EmptyTransaction />
-          </CustomSkeleton>
-        </VStack>
-      ) : (
-        <Box w="full" mt={8}>
-          <Box
-            w="full"
-            display="flex"
-            flexDir={isExtraSmall ? 'column' : 'row'}
-            gap={isExtraSmall ? 2 : 4}
-            mb={isExtraSmall ? -4 : 0}
-          >
-            <Text
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize={{ base: 'sm', sm: 'xl' }}
-            >
-              Transactions
-            </Text>
-            <WaitingSignatureBadge
-              isLoading={pendingSignerTransactions.isLoading}
-              quantity={pendingSignerTransactions.data?.ofUser ?? 0}
-            />
-            <Spacer />
-            <Button
-              color="brand.400"
-              textDecoration="none"
-              alignItems="center"
-              justifyContent="center"
-              display={{ base: 'none', sm: 'flex' }}
-              backgroundColor="transparent"
-              _hover={{
-                backgroundColor: 'transparent',
-              }}
-              rightIcon={<Icon as={MdKeyboardArrowRight} boxSize={6} />}
-              onClick={() =>
-                navigate(
-                  Pages.userTransactions({
-                    workspaceId: single,
-                  }),
-                )
-              }
-            >
-              View all
-            </Button>
-          </Box>
-          <TransactionCard.List spacing={4} mt={6} mb={12}>
-            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-              {transactions?.map((transaction) => {
-                const status = transactionStatus({ ...transaction, account });
-                const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
-                );
+              <WaitingSignatureBadge
+                isLoading={pendingSignerTransactions.isLoading}
+                quantity={pendingSignerTransactions.data?.ofUser ?? 0}
+              />
+              <Spacer />
+              <Button
+                color="brand.400"
+                textDecoration="none"
+                alignItems="center"
+                justifyContent="center"
+                display={{ base: 'none', sm: 'flex' }}
+                backgroundColor="transparent"
+                _hover={{
+                  backgroundColor: 'transparent',
+                }}
+                rightIcon={<Icon as={MdKeyboardArrowRight} boxSize={6} />}
+                onClick={() =>
+                  navigate(
+                    Pages.userTransactions({
+                      workspaceId: single,
+                    }),
+                  )
+                }
+              >
+                View all
+              </Button>
+            </Box>
+            <TransactionCard.List spacing={4} mt={6} mb={12}>
+              <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+                {transactions?.map((transaction) => {
+                  const status = transactionStatus({ ...transaction, account });
+                  const isSigner = !!transaction.predicate?.members?.find(
+                    (member) => member.address === account,
+                  );
 
-                return (
-                  <>
-                    {isMobile ? (
-                      <TransactionCardMobile
-                        isSigner={isSigner}
-                        transaction={transaction}
-                        account={account}
-                        mt={3}
-                      />
-                    ) : (
-                      <TransactionCard.Container
-                        mb={4}
-                        key={transaction.id}
-                        status={status}
-                        isSigner={isSigner}
-                        transaction={transaction}
-                        account={account}
-                        details={
-                          <TransactionCard.Details
-                            transaction={transaction}
-                            status={status}
-                          />
-                        }
-                      >
-                        {transaction.predicate && (
-                          <TransactionCard.VaultInfo
-                            vault={transaction.predicate}
-                          />
-                        )}
-                        <TransactionCard.CreationDate>
-                          {format(
-                            new Date(transaction.createdAt),
-                            'EEE, dd MMM',
-                          )}
-                        </TransactionCard.CreationDate>
-                        <TransactionCard.Assets />
-                        <TransactionCard.Amount
-                          assets={transaction.resume.outputs}
-                        />
-                        <TransactionCard.Name>
-                          {transaction.name}
-                        </TransactionCard.Name>
-                        <TransactionCard.Status
-                          transaction={transaction}
-                          status={transactionStatus({
-                            ...transaction,
-                            account,
-                          })}
-                        />
-                        <TransactionCard.Actions
-                          transaction={transaction}
+                  return (
+                    <>
+                      {isMobile ? (
+                        <TransactionCardMobile
                           isSigner={isSigner}
-                          status={transactionStatus({
-                            ...transaction,
-                            account,
-                          })}
+                          transaction={transaction}
+                          account={account}
+                          mt={3}
                         />
-                      </TransactionCard.Container>
-                    )}
-                  </>
-                );
-              })}
-            </CustomSkeleton>
-          </TransactionCard.List>
-        </Box>
-      )}
+                      ) : (
+                        <TransactionCard.Container
+                          mb={4}
+                          key={transaction.id}
+                          status={status}
+                          isSigner={isSigner}
+                          transaction={transaction}
+                          account={account}
+                          details={
+                            <TransactionCard.Details
+                              transaction={transaction}
+                              status={status}
+                            />
+                          }
+                        >
+                          {transaction.predicate && (
+                            <TransactionCard.VaultInfo
+                              vault={transaction.predicate}
+                            />
+                          )}
+                          <TransactionCard.CreationDate>
+                            {format(
+                              new Date(transaction.createdAt),
+                              'EEE, dd MMM',
+                            )}
+                          </TransactionCard.CreationDate>
+                          <TransactionCard.Assets />
+                          <TransactionCard.Amount
+                            assets={transaction.resume.outputs}
+                          />
+                          <TransactionCard.Name>
+                            {transaction.name}
+                          </TransactionCard.Name>
+                          <TransactionCard.Status
+                            transaction={transaction}
+                            status={transactionStatus({
+                              ...transaction,
+                              account,
+                            })}
+                          />
+                          <TransactionCard.Actions
+                            transaction={transaction}
+                            isSigner={isSigner}
+                            status={transactionStatus({
+                              ...transaction,
+                              account,
+                            })}
+                          />
+                        </TransactionCard.Container>
+                      )}
+                    </>
+                  );
+                })}
+              </CustomSkeleton>
+            </TransactionCard.List>
+          </Box>
+        )}
+      </CustomSkeleton>
     </VStack>
   );
 };

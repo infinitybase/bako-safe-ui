@@ -37,6 +37,10 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     isOpen: props.isOpen,
   });
 
+  const isLoadingVaults = inView.inView
+    ? !isLoading
+    : !isLoading && !isFetching;
+
   return (
     <Drawer
       {...props}
@@ -93,13 +97,18 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
               the vault.
             </Text>
           )}
+
           <VStack spacing={4}>
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
             {vaults?.map((vault) => {
               return (
-                <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
+                <CustomSkeleton
+                  key={vault.id}
+                  // isLoaded={!isLoading && !isFetching}
+                  isLoaded={isLoadingVaults}
+                >
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}

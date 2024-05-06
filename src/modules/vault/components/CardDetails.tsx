@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
@@ -37,6 +37,7 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+
   //assets: UseVaultDetailsReturn['assets'];
 }
 
@@ -74,7 +75,13 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { balanceUSD, visebleBalance, setVisibleBalance } = store;
+  const {
+    balanceUSD,
+    visebleBalance,
+    setVisibleBalance,
+    isFirstAssetsLoading,
+    setIsFirstAssetsLoading,
+  } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile, isExtraSmall } = useScreenSize();
@@ -94,6 +101,10 @@ const CardDetails = (props: CardDetailsProps) => {
     PermissionRoles.MANAGER,
     PermissionRoles.SIGNER,
   ];
+
+  useEffect(() => {
+    return () => setIsFirstAssetsLoading(true);
+  }, []);
 
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
@@ -240,9 +251,15 @@ const CardDetails = (props: CardDetailsProps) => {
                       justifyContent="space-around"
                       spacing={2}
                     >
-                      <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
-                      </Heading>
+                      <CustomSkeleton
+                        isLoaded={!isFirstAssetsLoading}
+                        customStartColor="grey.75"
+                        customEndColor="dark.100"
+                      >
+                        <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
+                          {visebleBalance ? `${balanceUSD} USD` : '-----'}
+                        </Heading>
+                      </CustomSkeleton>
                       <Box
                         w="auto"
                         _hover={{
@@ -262,75 +279,82 @@ const CardDetails = (props: CardDetailsProps) => {
                   </HStack>
                 </Box>
 
-                <Button
-                  hidden={hasBalance}
-                  minW={{ base: undefined, sm: 180 }}
-                  h={12}
-                  variant="primary"
-                  onClick={() => openFaucet(vault.predicateAddress!)}
-                  _hover={{
-                    opacity: 0.8,
-                  }}
-                  leftIcon={
-                    <PlusSquareIcon
-                      w={{ base: 5, sm: 6 }}
-                      h={{ base: 5, sm: 6 }}
-                    />
-                  }
-                >
-                  Faucet
-                </Button>
-
-                <VStack
-                  spacing={2}
-                  hidden={!hasBalance}
-                  alignItems={{ base: 'flex-end', sm: 'flex-start' }}
+                <CustomSkeleton
+                  isLoaded={!isFirstAssetsLoading}
+                  customStartColor="grey.75"
+                  customEndColor="dark.100"
+                  w="fit-content"
                 >
                   <Button
-                    alignSelf="end"
-                    onClick={() =>
-                      navigate(
-                        Pages.createTransaction({
-                          vaultId: vault.id!,
-                          workspaceId,
-                        }),
-                      )
-                    }
-                    isDisabled={
-                      !vault?.hasBalance ||
-                      !makeTransactionsPerm ||
-                      vault.transactions.isPendingSigner
-                    }
+                    hidden={hasBalance}
+                    minW={{ base: undefined, sm: 180 }}
+                    h={12}
                     variant="primary"
-                    leftIcon={<SquarePlusIcon />}
-                    fontWeight="bold"
+                    onClick={() => openFaucet(vault.predicateAddress!)}
+                    _hover={{
+                      opacity: 0.8,
+                    }}
+                    leftIcon={
+                      <PlusSquareIcon
+                        w={{ base: 5, sm: 6 }}
+                        h={{ base: 5, sm: 6 }}
+                      />
+                    }
                   >
-                    Send
+                    Faucet
                   </Button>
-                  {vault.transactions.isPendingSigner ? (
-                    <Text
-                      variant="description"
-                      textAlign={{ base: 'end', sm: 'left' }}
-                      fontSize="xs"
-                      color="error.500"
+
+                  <VStack
+                    spacing={2}
+                    hidden={!hasBalance}
+                    alignItems={{ base: 'flex-end', sm: 'flex-start' }}
+                  >
+                    <Button
+                      alignSelf="end"
+                      onClick={() =>
+                        navigate(
+                          Pages.createTransaction({
+                            vaultId: vault.id!,
+                            workspaceId,
+                          }),
+                        )
+                      }
+                      isDisabled={
+                        !vault?.hasBalance ||
+                        !makeTransactionsPerm ||
+                        vault.transactions.isPendingSigner
+                      }
+                      variant="primary"
+                      leftIcon={<SquarePlusIcon />}
+                      fontWeight="bold"
                     >
-                      This vault has pending transactions.
-                    </Text>
-                  ) : !makeTransactionsPerm ? (
-                    <Text
-                      fontSize="xs"
-                      hidden={isMobile}
-                      variant="description"
-                      color="error.500"
-                    >
-                      You dont have permission to send transactions.
-                    </Text>
-                  ) : (
-                    <Text hidden={true} variant="description" fontSize="xs">
-                      Send single or batch <br /> payments with multi assets.
-                    </Text>
-                  )}
-                </VStack>
+                      Send
+                    </Button>
+                    {vault.transactions.isPendingSigner ? (
+                      <Text
+                        variant="description"
+                        textAlign={{ base: 'end', sm: 'left' }}
+                        fontSize="xs"
+                        color="error.500"
+                      >
+                        This vault has pending transactions.
+                      </Text>
+                    ) : !makeTransactionsPerm ? (
+                      <Text
+                        fontSize="xs"
+                        hidden={isMobile}
+                        variant="description"
+                        color="error.500"
+                      >
+                        You dont have permission to send transactions.
+                      </Text>
+                    ) : (
+                      <Text hidden={true} variant="description" fontSize="xs">
+                        Send single or batch <br /> payments with multi assets.
+                      </Text>
+                    )}
+                  </VStack>
+                </CustomSkeleton>
               </Flex>
             </Flex>
 
@@ -368,7 +392,7 @@ const CardDetails = (props: CardDetailsProps) => {
                 color="grey.450"
               >{`Vaults's balance breakdown`}</Text>
               <CustomSkeleton
-                isLoaded={!currentWorkspace.isLoading}
+                isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}
                 w="full"
                 h="full"
               >
