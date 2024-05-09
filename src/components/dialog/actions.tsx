@@ -9,16 +9,22 @@ import {
 
 export interface DialogActionsProps extends BoxProps {
   hideDivider?: boolean;
+  dividerBorderColor?: string;
 }
 export interface DialogActionProps extends ButtonProps {}
 
 const DialogActions = ({
   children,
   hideDivider,
+  dividerBorderColor,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
-    <Divider hidden={hideDivider} my={{ base: 3, sm: 6 }} />
+    <Divider
+      hidden={hideDivider}
+      my={{ base: 3, sm: 6 }}
+      borderColor={dividerBorderColor ?? 'unset'}
+    />
     <HStack spacing={4} justifyContent="center">
       {children}
     </HStack>

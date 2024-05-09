@@ -29,7 +29,7 @@ export const useTransactionSocket = () => {
     pending_tx: true,
   });
   const [dapp, setDapp] = useState<IDappEvent | undefined>(undefined);
-  const [validAt, setValidAt] = useState<number>(10000000);
+  const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
 
@@ -40,7 +40,7 @@ export const useTransactionSocket = () => {
 
   useEffect(() => {
     connect(sessionId!);
-  });
+  }, [summary.isLoading]);
 
   useEffect(() => {
     console.log('[SOCKET_CONN]: ', socket.connected);
@@ -118,5 +118,6 @@ export const useTransactionSocket = () => {
     send: sendTransaction,
     pendingSignerTransactions: vault?.pending_tx ?? true,
     isLoading: sending,
+    socket,
   };
 };

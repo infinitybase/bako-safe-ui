@@ -10,6 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
@@ -60,6 +61,18 @@ const VaultAddressesStep = ({
       form.formState.errors.addresses,
     );
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    const container = containerRef.current;
+
+    if (container) {
+      container.scroll({
+        top: container.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  };
   const minSigners = form.formState.errors.minSigners?.message;
 
   return (
@@ -111,7 +124,26 @@ const VaultAddressesStep = ({
           }
           description="Who is going to sign this vault?"
         >
-          <VStack mt={4} w="full" spacing={6}>
+          <VStack
+            mt={4}
+            w="full"
+            spacing={6}
+            overflowY="auto"
+            maxH={{ base: 230 }}
+            pr={{ base: 2, sm: 4 }}
+            sx={{
+              '&::-webkit-scrollbar': {
+                width: '5px',
+                maxHeight: '330px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#2C2C2C',
+                borderRadius: '30px',
+                height: '10px' /* Adjust the height of the scrollbar thumb */,
+              },
+            }}
+            ref={containerRef}
+          >
             {addresses.fields.map(({ id }, index) => {
               const first = index === 0;
 
@@ -190,8 +222,8 @@ const VaultAddressesStep = ({
                 />
               );
             })}
-
             <Button
+              minH={10}
               w="full"
               border="none"
               color="dark.300"
@@ -203,6 +235,7 @@ const VaultAddressesStep = ({
                   'minSigners',
                   String(addresses.fields.length + 1),
                 );
+                setTimeout(scrollToBottom, 0);
               }}
               leftIcon={<PlusSquareIcon w={5} h={5} />}
               _hover={{

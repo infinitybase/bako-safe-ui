@@ -23,7 +23,7 @@ const DialogModal = (props: DialogModalProps) => {
   return (
     <Modal
       variant="glassmorphic"
-      size="2xl"
+      size={{ base: 'full', xs: '2xl' }}
       blockScrollOnMount={false}
       isCentered
       {...rest}
