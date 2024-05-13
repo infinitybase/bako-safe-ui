@@ -49,7 +49,7 @@ const DappTransactionRecipient = ({
       h={149}
       w={174}
     >
-      <Text variant="description" textAlign="center" mt={-2}>
+      <Text variant="description" textAlign="center" mt={-2} color="grey.250">
         {isSender ? 'From' : 'To'}: {isContract && '(Contract)'}
       </Text>
       <Divider borderColor="dark.100" mt={1} mb="10px" />

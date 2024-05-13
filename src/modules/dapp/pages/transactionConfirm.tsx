@@ -7,7 +7,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { CustomSkeleton, Dialog, TransactionExpire } from '@/components';
 import { LineCloseIcon, SquarePlusIcon } from '@/components/icons';
@@ -32,6 +33,10 @@ const TransactionConfirm = () => {
     validAt,
   } = useTransactionSocket();
 
+  const [closePopover, setClosePopover] = useState(false);
+
+  const inView = useInView();
+
   const { sessionId, request_id, name, origin } = useQueryParams();
 
   const { goHome } = useHome();
@@ -41,6 +46,10 @@ const TransactionConfirm = () => {
     window.close();
     goHome();
   }
+
+  useEffect(() => {
+    setClosePopover(inView.inView);
+  }, [inView.inView]);
 
   useEffect(() => {
     init();
@@ -79,6 +88,9 @@ const TransactionConfirm = () => {
         >
           <Divider borderColor="dark.100" my={6} />
 
+          {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
+          <Box ref={inView?.ref} />
+
           {pendingSignerTransactions && (
             <Dapp.Section maxW={356}>
               <DappError />
@@ -108,7 +120,9 @@ const TransactionConfirm = () => {
                     name={name!}
                   />
                   <VStack alignItems="flex-start" spacing={0}>
-                    <Text variant="subtitle">{name}</Text>
+                    <Text variant="subtitle" color="grey.250">
+                      {name}
+                    </Text>
                     <Text
                       color="brand.500"
                       variant="description"
@@ -158,14 +172,11 @@ const TransactionConfirm = () => {
               />
             ))}
           </VStack>
-          {/* const transactionTotalAmount = bn
-              .parseUnits(parent.amount)
-              .add(bn.parseUnits(parent.fee))
-              .format(); */}
-          <DappTransaction.ReservedAmount
-            reservedAmount={transactionSummary?.fee}
+
+          <DappTransaction.Fee
+            closePopover={closePopover}
+            fee={transactionSummary?.fee}
           />
-          <DappTransaction.Fee fee={transactionSummary?.fee} />
 
           {/* Actions */}
           <Divider borderColor="grey.950" w="full" my={6} />

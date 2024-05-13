@@ -25,10 +25,6 @@ const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
   const isContract =
     from.type === AddressType.contract || to.type === AddressType.contract;
 
-  // const isVault =
-  //   from.address === vault.predicateAddress ||
-  //   to.address === vault.predicateAddress;
-
   return (
     <FromToContainer gap={2}>
       <DappTransactionRecipient
