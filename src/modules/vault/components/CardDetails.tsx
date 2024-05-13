@@ -233,13 +233,14 @@ const CardDetails = (props: CardDetailsProps) => {
                 flexDirection={{ base: 'row', sm: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
+                h={125}
               >
                 <Box width="auto">
                   <HStack
                     minW={20}
                     display="flex"
                     flexDirection="column"
-                    alignItems="center"
+                    alignItems="end"
                   >
                     <HStack
                       w="full"
