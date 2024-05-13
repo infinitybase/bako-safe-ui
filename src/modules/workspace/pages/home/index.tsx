@@ -23,6 +23,7 @@ import { ITransaction, IWitnesses } from 'bakosafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
+import { Outlet } from 'react-router-dom';
 
 import {
   Card,
@@ -164,6 +165,9 @@ const WorkspacePage = () => {
 
   return (
     <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
+      {/* Resposável por disponibilizar o  "background blur" 
+      para o modal de add/update member */}
+      <Outlet />
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}

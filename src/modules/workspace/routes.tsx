@@ -7,30 +7,29 @@ import { CreateMemberPage } from './pages';
 import { WorkspacePage } from './pages/home';
 
 const workspaceRoutes = (
-  <Route>
+  <Route element={<DashboardLayoutRouter />}>
     <Route
-      path={Pages.membersWorkspace()}
+      path={Pages.workspace()}
       element={
         <AuthRoute>
-          <CreateMemberPage />
+          <WorkspacePage />
         </AuthRoute>
       }
-    />
-
-    <Route
-      path={Pages.updateMemberWorkspace()}
-      element={
-        <AuthRoute>
-          <CreateMemberPage />
-        </AuthRoute>
-      }
-    />
-    <Route element={<DashboardLayoutRouter />}>
+    >
       <Route
-        path={Pages.workspace()}
+        path={Pages.membersWorkspace()}
         element={
           <AuthRoute>
-            <WorkspacePage />
+            <CreateMemberPage />
+          </AuthRoute>
+        }
+      />
+
+      <Route
+        path={Pages.updateMemberWorkspace()}
+        element={
+          <AuthRoute>
+            <CreateMemberPage />
           </AuthRoute>
         }
       />
