@@ -44,6 +44,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
               address={AddressUtils.format(asset.assetId)!}
               addressToCopy={asset.assetId}
               bg="transparent"
+              fontSize={14}
               p={0}
               pr={8}
             />

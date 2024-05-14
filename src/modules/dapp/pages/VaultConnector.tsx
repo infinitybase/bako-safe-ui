@@ -73,7 +73,7 @@ const VaultConnector = () => {
             </Text>
           </VStack>
 
-          {!isSafariBrowser && (
+          {isSafariBrowser && (
             <LineCloseIcon
               mr={2}
               onClick={() => window.close()}
@@ -141,12 +141,10 @@ const VaultConnector = () => {
                     search.handler(e);
                   }}
                 />
-                <Box>
-                  <FormLabel fontWeight="normal">Search vault</FormLabel>
-                </Box>
+                <FormLabel fontWeight="normal">Search vault</FormLabel>
                 {noVaultsFound && (
                   <FormHelperText color="grey.250" mb={-6}>
-                    {`We couldn't find any results for "${AddressUtils.format(search.value)}"`}
+                    {`We couldn't find any results for "${AddressUtils.format(search.value, 1)}"`}
                   </FormHelperText>
                 )}
               </FormControl>

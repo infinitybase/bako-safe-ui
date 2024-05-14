@@ -62,7 +62,7 @@ const DappTransactionRecipient = ({
           variant="roundedSquare"
           boxSize="40px"
         />
-        <Text textAlign="center" variant="title" mb={1}>
+        <Text textAlign="center" variant="title" mb={1} fontSize={14}>
           {title}
         </Text>
 
@@ -73,6 +73,7 @@ const DappTransactionRecipient = ({
           bg="transparent"
           p={0}
           gap={3}
+          fontSize={14}
         />
       </Center>
     </RecipientCard>

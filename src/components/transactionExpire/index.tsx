@@ -40,7 +40,7 @@ const TransactionExpire = ({
       );
 
       if (remainingTime <= 0) {
-        //setTimerEnded(true);
+        setTimerEnded(true);
         clearInterval(interval);
       }
     }, 100); // Update every 100ms
