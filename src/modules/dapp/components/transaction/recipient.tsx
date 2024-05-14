@@ -4,6 +4,7 @@ import { Vault } from 'bakosafe';
 import React from 'react';
 
 import { Card } from '@/components';
+import { AddressCopy } from '@/components/addressCopy';
 import { AddressUtils } from '@/modules/core';
 
 interface RecipientProps {
@@ -42,28 +43,37 @@ const DappTransactionRecipient = ({
   const title = isVault ? vault?.name : 'Unknown';
 
   return (
-    <RecipientCard borderBottomRadius={fullBorderRadius ? 10 : 0}>
-      <Text variant="description" textAlign="center">
-        {isSender ? 'From' : 'To'}
-        {isContract && '(Contract)'}
-        {isVault && '(BakoSafe)'}:{isContract && !isVault && '(Contract)'}
-        {isVault && '(Bako Safe)'}:
+    <RecipientCard
+      borderBottomRadius={fullBorderRadius ? 10 : 0}
+      bg="grey.825"
+      h={149}
+      w={174}
+    >
+      <Text variant="description" textAlign="center" mt={-2} color="grey.250">
+        {isSender ? 'From' : 'To'}: {isContract && '(Contract)'}
       </Text>
-      <Divider borderColor="dark.100" mt={2} mb={4} />
-      <Center flexDirection="column">
+      <Divider borderColor="dark.100" mt={1} mb="10px" />
+      <Center flexDirection="column" h={88}>
         <Avatar
           mb={2}
           name={title}
           color="white"
-          bgColor="dark.150"
+          bgColor="grey.950"
           variant="roundedSquare"
+          boxSize="40px"
         />
-        <Text textAlign="center" variant="title">
+        <Text textAlign="center" variant="title" mb={1}>
           {title}
         </Text>
-        <Text textAlign="center" variant="description">
-          {AddressUtils.format(bech32Address ?? '')}
-        </Text>
+
+        <AddressCopy
+          flexDir="row-reverse"
+          address={AddressUtils.format(bech32Address ?? '')!}
+          addressToCopy={bech32Address}
+          bg="transparent"
+          p={0}
+          gap={3}
+        />
       </Center>
     </RecipientCard>
   );

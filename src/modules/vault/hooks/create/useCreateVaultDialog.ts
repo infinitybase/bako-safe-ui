@@ -68,7 +68,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       description: null,
       onContinue: () => {},
       onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
-      closeText: `I'll do it later`,
+      closeText: `Done`,
       nextStepText: '',
     },
   };

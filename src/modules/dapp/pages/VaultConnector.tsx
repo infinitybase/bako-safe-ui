@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   Heading,
   HStack,
@@ -14,20 +15,23 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { RiLink } from 'react-icons/ri';
 
-import { CustomSkeleton, ErrorIcon } from '@/components';
+import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useAuth, useQueryParams } from '@/modules/auth';
-import { PermissionRoles } from '@/modules/core';
+import { AddressUtils, PermissionRoles } from '@/modules/core';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { useAuthSocket } from '../hooks';
+import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
+  const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const auth = useAuth();
+  const { isSafariBrowser } = useVerifyBrowserType();
 
   const {
     search,
@@ -43,107 +47,182 @@ const VaultConnector = () => {
     makeLinkCreateVault,
   } = useAuthSocket();
 
-  return (
-    <Flex h="100vh" w="full">
-      <Box w={420} px={10} pt={10}>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={() => window.close()} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
-        </Flex>
+  useEffect(() => {
+    if (vaults.length && noVaultOnFirstLoad) {
+      setNoVaultOnFirstLoad(false);
+    }
+  }, [vaults.length]);
 
-        <VStack alignItems="flex-start" mb={5}>
-          <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-            Select a vault
-          </Heading>
-          <Text maxWidth={300} variant="description">
-            Select a vault. You can search for a specific vault by name.
-          </Text>
-        </VStack>
+  const noVaultsFound = search.value.length >= 1 && !vaults.length;
+
+  return (
+    <Flex h="100vh" w="full" overflow="hidden">
+      <Box w={420} px={8} pt={6}>
+        <HStack
+          spacing={2}
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <VStack alignItems="flex-start">
+            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+              Select a vault
+            </Heading>
+            <Text maxWidth={300} variant="description" fontSize={12}>
+              {/* Select a vault. You can search for a specific vault by name. */}
+              You can search for a specific vault by name
+            </Text>
+          </VStack>
+
+          {!isSafariBrowser && (
+            <LineCloseIcon
+              mr={2}
+              onClick={() => window.close()}
+              cursor="pointer"
+              fontSize="24px"
+              aria-label="Close window"
+            />
+          )}
+        </HStack>
+
+        <Divider borderColor="dark.100" my={4} />
 
         {/* Requester */}
-        <Card
-          bgColor="dark.300"
-          borderColor="dark.100"
-          borderRadius={10}
-          px={5}
-          py={4}
-          borderWidth="1px"
-        >
-          <Text fontSize="sm" color="grey.500">
+        <Card h={106} gap={4} bg="transparent" mb={6}>
+          <Text fontSize={12} color="grey.50" fontWeight={700}>
             Requesting a transaction from:
           </Text>
-
-          <Divider borderColor="dark.100" mt={3} mb={5} />
-
-          <HStack width="100%" alignItems="center" spacing={4}>
-            <Avatar
-              variant="roundedSquare"
-              color="white"
-              bgColor="dark.150"
-              name={name!}
-            />
-            <VStack alignItems="flex-start" spacing={0}>
-              <Text variant="subtitle">{name}</Text>
-              <Text color="brand.500" variant="description">
-                {origin?.split('//')[1]}
-              </Text>
-            </VStack>
-          </HStack>
+          <Card
+            bgColor="grey.825"
+            borderColor="dark.100"
+            borderRadius={8}
+            p={4}
+            borderWidth="1px"
+            height={24}
+          >
+            <HStack width="100%" spacing={4} h="49px">
+              <Avatar
+                variant="roundedSquare"
+                color="white"
+                bgColor="dark.950"
+                boxSize={10}
+                name={name!}
+              />
+              <VStack alignItems="flex-start" spacing={0}>
+                <Text variant="subtitle">{name}</Text>
+                <Text color="brand.500" variant="description" lineHeight={4}>
+                  {origin?.split('//')[1]}
+                  {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
+                </Text>
+              </VStack>
+            </HStack>
+          </Card>
         </Card>
 
-        <Divider borderColor="dark.100" my={6} />
-
         {/* Search */}
-        <Box w="full" mb={8}>
-          <FormControl>
-            <Input
-              placeholder=" "
-              variant="custom"
-              colorScheme="dark"
-              onChange={(e) => {
-                setSelectedVaultId('');
-                search.handler(e);
-              }}
-            />
-            <FormLabel>Search</FormLabel>
-            {/* It is important that the Label comes after the Control due to css selectors */}
-          </FormControl>
-        </Box>
-
-        {isSuccess && !isFetching && !vaults.length && (
-          // <Text variant="variant">
-          //   We {"couldn't"} find any results for <b>“{search.value}”</b> in the
-          //   vault.
-          // </Text>
-          <button
-            onClick={makeLinkCreateVault}
-            style={{ border: '1px solid red' }}
-          >
-            CRIAR VAULT
-          </button>
+        {!noVaultOnFirstLoad && (
+          <CustomSkeleton isLoaded={noVaultsFound || !isLoading}>
+            <Box w="full" mb={8}>
+              <FormControl
+                sx={{
+                  '&>input': {
+                    bg: 'grey.825',
+                  },
+                  '&>label': {
+                    color: 'grey.75',
+                  },
+                }}
+              >
+                <Input
+                  placeholder=" "
+                  variant="custom"
+                  colorScheme="dark"
+                  onChange={(e) => {
+                    setSelectedVaultId('');
+                    search.handler(e);
+                  }}
+                />
+                <Box>
+                  <FormLabel fontWeight="normal">Search vault</FormLabel>
+                </Box>
+                {noVaultsFound && (
+                  <FormHelperText color="grey.250" mb={-6}>
+                    {`We couldn't find any results for "${AddressUtils.format(search.value)}"`}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Box>
+          </CustomSkeleton>
         )}
 
-        {/* Result */}
-        <VStack
-          w="full"
-          maxH={460}
-          spacing={4}
-          overflowY="scroll"
-          css={{
-            '&::-webkit-scrollbar': { width: '0' },
-            scrollbarWidth: 'none',
-          }}
-        >
-          {!vaults.length && isFetching && (
-            <CustomSkeleton h="120px" w="full" />
+        <CustomSkeleton h={500} isLoaded={noVaultsFound || !isLoading}>
+          {isSuccess && !isFetching && noVaultOnFirstLoad && (
+            <VStack>
+              <Card
+                w="full"
+                bgColor="transparent"
+                display="flex"
+                borderWidth={1}
+                borderColor="grey.300"
+                justifyContent="center"
+                flexDirection="column"
+                alignItems="center"
+                h={224}
+                my={10}
+              >
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  bg="linear-gradient(132.19deg, rgba(255, 192, 16, 0.1) 0%, rgba(235, 163, 18, 0.1) 48%, rgba(211, 128, 21, 0.1) 71%, rgba(178, 79, 24, 0.1) 99%);"
+                  rounded={10}
+                  w="57px"
+                  h="56px"
+                >
+                  <EmptyBox w="33px" h="33px" />
+                </Flex>
+                <Flex
+                  w={305}
+                  alignItems="center"
+                  flexDir="column"
+                  gap={6}
+                  mt={4}
+                >
+                  <Heading color="grey.75" fontSize={20}>
+                    Nothing to show here.
+                  </Heading>
+                  <Text
+                    color="grey.450"
+                    fontSize={12}
+                    textAlign="center"
+                    fontWeight="medium"
+                  >
+                    It seems like you {"haven't"} any Vault yet.
+                  </Text>
+                </Flex>
+              </Card>
+              <Button
+                bg="grey.75"
+                fontSize={14}
+                onClick={makeLinkCreateVault}
+                w="full"
+              >
+                Create new Vault
+              </Button>
+            </VStack>
           )}
-
-          {vaults?.map(
-            ({ id, name, predicateAddress, description, workspace }) => {
+          {!noVaultOnFirstLoad ? <Divider borderColor="grey.75" /> : null}
+          {/* Result */}
+          <VStack
+            pt={4}
+            w="full"
+            h={noVaultOnFirstLoad ? 140 : 385}
+            spacing={2}
+            overflowY="scroll"
+            css={{
+              '&::-webkit-scrollbar': { width: '0' },
+              scrollbarWidth: 'none',
+            }}
+          >
+            {vaults?.map(({ id, name, predicateAddress, workspace }) => {
               const isViewer = WorkspacePermissionUtils.is(
                 PermissionRoles.VIEWER,
                 {
@@ -163,54 +242,58 @@ const VaultConnector = () => {
                   name={name}
                   workspace={workspace}
                   address={predicateAddress}
-                  description={description ?? ''}
                   isActive={selectedVaultId === id}
                   isSingleWorkspace={workspace.single}
                   onClick={() => setSelectedVaultId(id)}
+                  isInDapp
                 />
               );
-            },
-          )}
+            })}
 
-          {isFetching && vaults.length && (
-            <Flex justifyContent="center" alignItems="center">
-              <Spinner color="brand.500" size="md" />
-            </Flex>
-          )}
+            {isFetching && vaults.length && (
+              <Flex justifyContent="center" alignItems="center">
+                <Spinner color="brand.500" size="md" />
+              </Flex>
+            )}
 
-          <Box ref={inView.ref} />
-        </VStack>
+            <Box ref={inView.ref} />
+          </VStack>
+          {!noVaultOnFirstLoad && <Divider borderColor="grey.75" mb={6} />}
+          <HStack w="full" justifyContent="center" pb={10}>
+            <Button
+              variant="secondary"
+              borderColor="grey.75"
+              onClick={() => window.close()}
+              w={noVaultOnFirstLoad ? 'full' : 'unset'}
+            >
+              Cancel
+            </Button>
 
-        <Divider borderColor="dark.100" my={6} />
-
-        <HStack w="full" justifyContent="center" pb={10}>
-          <Button
-            variant="secondary"
-            bgColor="dark.100"
-            border="none"
-            onClick={() => window.close()}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            isDisabled={!selectedVaultId || !vaults.length || isLoading}
-            leftIcon={<RiLink size={22} />}
-            onClick={() =>
-              send.mutate({
-                name: name!,
-                origin: origin!,
-                sessionId: sessionId!,
-                request_id: request_id!,
-                vaultId: selectedVaultId,
-                userAddress: auth.account,
-              })
-            }
-            isLoading={send.isLoading}
-          >
-            Connect
-          </Button>
-        </HStack>
+            {!noVaultOnFirstLoad && (
+              <Button
+                variant="primary"
+                width="100%"
+                fontWeight={700}
+                fontSize={16}
+                isDisabled={!selectedVaultId || !vaults.length || isLoading}
+                leftIcon={<RiLink size={22} />}
+                onClick={() =>
+                  send.mutate({
+                    name: name!,
+                    origin: origin!,
+                    sessionId: sessionId!,
+                    request_id: request_id!,
+                    vaultId: selectedVaultId,
+                    userAddress: auth.account,
+                  })
+                }
+                isLoading={send.isLoading}
+              >
+                Connect
+              </Button>
+            )}
+          </HStack>
+        </CustomSkeleton>
       </Box>
     </Flex>
   );

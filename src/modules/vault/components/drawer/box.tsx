@@ -12,6 +12,7 @@ interface VaultDrawerBoxProps extends CardProps {
   description?: string;
   workspace?: Workspace;
   isSingleWorkspace?: boolean;
+  isInDapp?: boolean;
 }
 
 const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
@@ -28,7 +29,7 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
       cursor="pointer"
       borderColor={isActive ? 'brand.500' : 'dark.100'}
       borderWidth={isActive ? '2px' : '1px'}
-      height={135}
+      height={props.isInDapp ? '72px' : 135}
       display="flex"
       flexDir="column"
       justifyContent="center"
@@ -44,6 +45,7 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
           color="white"
           bgColor="dark.150"
           name={name}
+          boxSize={props.isInDapp ? 10 : 'unset'}
         />
         <VStack alignItems="flex-start" spacing={0}>
           {!isSingleWorkspace && (
@@ -59,7 +61,13 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
               </Text>
             </HStack>
           )}
-          <Text variant="subtitle" isTruncated maxW={{ base: 120, xs: 250 }}>
+          <Text
+            variant="subtitle"
+            isTruncated
+            maxW={{ base: 120, xs: 250 }}
+            fontSize={props.isInDapp ? 'sm' : 'unset'}
+            color={props.isInDapp ? 'grey.75' : 'unset'}
+          >
             {name}
           </Text>
         </VStack>
