@@ -18,22 +18,29 @@ const TransactionExpire = ({
 }: TransactionExpireProps) => {
   const [timerEnded, setTimerEnded] = useState(false);
   const [startTime] = useState(Date.now());
+  console.log(validAt);
+  const endTimePlusThreeHours = new Date(validAt!);
 
-  const endTimePlusThreeHours = new Date(String(validAt));
-  const correctEndTime = endTimePlusThreeHours.setHours(
-    endTimePlusThreeHours.getHours(), // - 3,
-  );
+  // const correctEndTime = endTimePlusThreeHours.setHours(
+  //   endTimePlusThreeHours.getHours() - 3,
+  // )
 
   const [defaultProgress, setDefaultProgress] = useState(0);
-
+  console.log({
+    endTimePlusThreeHours,
+    DateNow: Date.now(),
+    restante: endTimePlusThreeHours.getTime() - Date.now(),
+  });
   useEffect(() => {
     const interval = setInterval(() => {
-      const remainingTime = correctEndTime - Date.now();
+      const remainingTime = endTimePlusThreeHours.getTime() - Date.now();
       const elapsedTime = Date.now() - startTime;
-      setDefaultProgress((elapsedTime / (correctEndTime - startTime)) * 100);
+      setDefaultProgress(
+        (elapsedTime / (endTimePlusThreeHours.getTime() - startTime)) * 100,
+      );
 
       if (remainingTime <= 0) {
-        //setTimerEnded(true);
+        setTimerEnded(true);
         clearInterval(interval);
       }
     }, 100); // Update every 100ms
@@ -41,9 +48,11 @@ const TransactionExpire = ({
     return () => clearInterval(interval);
   }, [validAt]);
 
-  const remainingMinutes = Math.floor((correctEndTime - Date.now()) / 60000);
+  const remainingMinutes = Math.floor(
+    (endTimePlusThreeHours.getTime() - Date.now()) / 60000,
+  );
   const remainingSeconds =
-    Math.floor((correctEndTime - Date.now()) / 1000) % 60;
+    Math.floor((endTimePlusThreeHours.getTime() - Date.now()) / 1000) % 60;
 
   useEffect(() => {
     if (timerEnded && callBack) {
