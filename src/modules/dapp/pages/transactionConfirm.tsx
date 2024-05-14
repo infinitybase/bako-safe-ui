@@ -60,7 +60,7 @@ const TransactionConfirm = () => {
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
         <TransactionExpire validAt={validAt} callBack={cancelTransaction} />
       </Box>
-      <Dapp.Content>
+      <Dapp.Content maxW={404}>
         <Dapp.Section mb={-7}>
           <Dapp.Header
             title="Create transaction"
@@ -129,7 +129,7 @@ const TransactionConfirm = () => {
                       lineHeight={4}
                     >
                       {origin?.split('//')[1]}
-                      {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
+                      {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
                     </Text>
                   </VStack>
                 </HStack>
@@ -192,6 +192,7 @@ const TransactionConfirm = () => {
                   onClick={cancelTransaction}
                   isDisabled={isLoading}
                   borderColor="grey.75"
+                  fontSize={14}
                 >
                   Cancel
                 </Dialog.SecondaryAction>
@@ -201,6 +202,7 @@ const TransactionConfirm = () => {
                   leftIcon={<SquarePlusIcon fontSize="lg" />}
                   onClick={send}
                   fontWeight={700}
+                  fontSize={14}
                 >
                   Create transaction
                 </Dialog.PrimaryAction>
@@ -211,6 +213,7 @@ const TransactionConfirm = () => {
                   size="lg"
                   width="full"
                   onClick={cancelTransaction}
+                  fontSize={14}
                   isDisabled={isLoading}
                 >
                   Back

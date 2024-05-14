@@ -62,7 +62,7 @@ const DappTransactionRecipient = ({
           variant="roundedSquare"
           boxSize="40px"
         />
-        <Text textAlign="center" variant="title" mb={1}>
+        <Text textAlign="center" variant="title" mb={1} fontSize={14}>
           {title}
         </Text>
 
@@ -71,6 +71,7 @@ const DappTransactionRecipient = ({
           address={AddressUtils.format(bech32Address ?? '')!}
           addressToCopy={bech32Address}
           bg="transparent"
+          fontSize={14}
           p={0}
           gap={3}
         />

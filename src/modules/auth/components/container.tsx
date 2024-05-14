@@ -18,9 +18,19 @@ const SigninContainerBackground = ({
 }: SigninContainerBackgroundProps) => {
   return (
     <Box
+      overflow="hidden"
+      __css={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          display: 'none',
+        },
+      }}
       zIndex="0"
-      minW="100vw"
-      minH="100vh"
+      minW={320}
+      w="100vw"
+      h="100vh"
       display="flex"
       alignItems="center"
       flexDirection="column"
