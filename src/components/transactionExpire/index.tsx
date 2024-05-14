@@ -21,7 +21,7 @@ const TransactionExpire = ({
 
   const endTimePlusThreeHours = new Date(String(validAt));
   const correctEndTime = endTimePlusThreeHours.setHours(
-    endTimePlusThreeHours.getHours() - 3,
+    endTimePlusThreeHours.getHours(), // - 3,
   );
 
   const [defaultProgress, setDefaultProgress] = useState(0);
