@@ -114,7 +114,9 @@ export const useTransactionSocket = () => {
     summary,
     validAt,
     connection: dapp,
-    cancelTransaction,
+    cancelTransaction: () => {
+      cancelTransaction();
+    },
     send: sendTransaction,
     pendingSignerTransactions: vault?.pending_tx ?? true,
     isLoading: sending,
