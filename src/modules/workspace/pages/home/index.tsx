@@ -17,12 +17,14 @@ import {
   Spinner,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { ITransaction, IWitnesses } from 'bakosafe';
 import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
+import { Outlet } from 'react-router-dom';
 
 import {
   Card,
@@ -55,7 +57,7 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
@@ -81,6 +83,7 @@ const WorkspacePage = () => {
   } = useWorkspace();
   const { goHome } = useHome();
   const { isMobile, isExtraSmall } = useScreenSize();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const {
     workspaces: { current },
@@ -164,6 +167,11 @@ const WorkspacePage = () => {
 
   return (
     <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+
+      {/* Resposável por disponibilizar o  "background blur" 
+      para o modal de add/update member */}
+      <Outlet />
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
         onClose={workspaceDialog.onClose}
@@ -248,7 +256,7 @@ const WorkspacePage = () => {
                 _hover={{
                   opacity: 0.8,
                 }}
-                onClick={() => navigate(Pages.createVault({ workspaceId }))}
+                onClick={onOpen}
               >
                 Create vault
               </Button>

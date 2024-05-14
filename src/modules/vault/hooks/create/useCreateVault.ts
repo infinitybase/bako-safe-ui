@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useAuthStore } from '@/modules/auth/store';
+import { invalidateQueries } from '@/modules/core';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
@@ -38,6 +39,7 @@ const useCreateVault = () => {
 
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
+      invalidateQueries();
       setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
     },

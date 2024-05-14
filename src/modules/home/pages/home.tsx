@@ -8,6 +8,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -26,7 +27,7 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHome } from '..';
@@ -53,6 +54,8 @@ const HomePage = () => {
 
   const { isMobile, isExtraSmall } = useScreenSize();
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   return (
     <VStack
       id="top"
@@ -62,6 +65,7 @@ const HomePage = () => {
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
       <HStack w="full" h="10" justifyContent="space-between">
         <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Icon as={HomeIcon} fontSize="lg" color="grey.200" />
@@ -74,9 +78,7 @@ const HomePage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() =>
-              navigate(Pages.createVault({ workspaceId: current }))
-            }
+            onClick={onOpen}
           >
             Create vault
           </Button>

@@ -8,6 +8,7 @@ import {
   HStack,
   Icon,
   Stack,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -22,6 +23,7 @@ import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
+import { CreateVaultDialog } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
@@ -60,6 +62,7 @@ const UserTransactionsPage = () => {
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <VStack
@@ -68,6 +71,7 @@ const UserTransactionsPage = () => {
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
       <HStack w="full" h="10" justifyContent="space-between" my={2}>
         <HStack>
           <Button
@@ -145,13 +149,7 @@ const UserTransactionsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() =>
-              navigate(
-                Pages.createVault({
-                  workspaceId: current,
-                }),
-              )
-            }
+            onClick={onOpen}
           >
             Create vault
           </Button>
