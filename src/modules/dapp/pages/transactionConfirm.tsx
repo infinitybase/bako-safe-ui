@@ -144,7 +144,6 @@ const TransactionConfirm = () => {
                 <VaultDrawerBox
                   name={vault?.name}
                   address={vault?.address}
-                  description={vault?.description}
                   isSingleWorkspace
                   isInDapp
                   px={4}
