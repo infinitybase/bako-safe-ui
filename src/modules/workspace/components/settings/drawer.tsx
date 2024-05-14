@@ -113,7 +113,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
 
         <HStack
           w={{ base: '100%', xs: '32%' }}
-          spacing={2}
+          spacing={4}
           justifyContent="space-between"
         >
           <Badge
@@ -178,7 +178,14 @@ const WorkspaceSettingsDrawer = ({
           </VStack>
         </DrawerHeader>
 
-        <DrawerBody mt={-2}>
+        <DrawerBody
+          mt={-2}
+          overflowY="scroll"
+          css={{
+            '&::-webkit-scrollbar': { width: '0' },
+            scrollbarWidth: 'none',
+          }}
+        >
           <WorkspaceCard
             key={request.workspace?.id}
             workspace={request.workspace!}
@@ -215,7 +222,7 @@ const WorkspaceSettingsDrawer = ({
           <Divider mb={6} />
           <Flex
             w="full"
-            mb={10}
+            mb={4}
             justifyContent="space-between"
             alignItems="center"
           >

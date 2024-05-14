@@ -284,7 +284,7 @@ const WorkspacePage = () => {
               Overview
             </Text>
           </Box>
-          <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
+          <Card p={{ base: 4, sm: 8 }} h="full" bgColor="grey.800">
             <VStack spacing={6} w="full">
               <HStack
                 w="full"

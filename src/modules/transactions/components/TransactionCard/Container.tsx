@@ -82,7 +82,7 @@ const Container = ({
         px={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
         w="full"
         as={AccordionItem}
-        backdropFilter="blur(8px)"
+        backdropFilter="blur(16px)"
         borderColor={
           missingSignature ? 'warning.500' : 'gradients.transaction-border'
         }
