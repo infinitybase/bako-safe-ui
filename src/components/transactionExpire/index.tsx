@@ -1,4 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
+import { addHours, differenceInHours } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 
 interface TransactionExpireProps {
@@ -18,29 +19,28 @@ const TransactionExpire = ({
 }: TransactionExpireProps) => {
   const [timerEnded, setTimerEnded] = useState(false);
   const [startTime] = useState(Date.now());
-  console.log(validAt);
-  const endTimePlusThreeHours = new Date(validAt!);
 
-  // const correctEndTime = endTimePlusThreeHours.setHours(
-  //   endTimePlusThreeHours.getHours() - 3,
-  // )
+  const diff = differenceInHours(new Date(), new Date(validAt!));
+  const endTimePlusThreeHours = addHours(new Date(validAt!), diff).getTime();
 
   const [defaultProgress, setDefaultProgress] = useState(0);
   console.log({
     endTimePlusThreeHours,
-    DateNow: Date.now(),
-    restante: endTimePlusThreeHours.getTime() - Date.now(),
+    diff,
+    restante: endTimePlusThreeHours - Date.now(),
+    atual: new Date(validAt!),
+    _atual: new Date(),
   });
   useEffect(() => {
     const interval = setInterval(() => {
-      const remainingTime = endTimePlusThreeHours.getTime() - Date.now();
+      const remainingTime = endTimePlusThreeHours - Date.now();
       const elapsedTime = Date.now() - startTime;
       setDefaultProgress(
-        (elapsedTime / (endTimePlusThreeHours.getTime() - startTime)) * 100,
+        (elapsedTime / (endTimePlusThreeHours - startTime)) * 100,
       );
 
       if (remainingTime <= 0) {
-        setTimerEnded(true);
+        //setTimerEnded(true);
         clearInterval(interval);
       }
     }, 100); // Update every 100ms
@@ -49,10 +49,10 @@ const TransactionExpire = ({
   }, [validAt]);
 
   const remainingMinutes = Math.floor(
-    (endTimePlusThreeHours.getTime() - Date.now()) / 60000,
+    (endTimePlusThreeHours - Date.now()) / 60000,
   );
   const remainingSeconds =
-    Math.floor((endTimePlusThreeHours.getTime() - Date.now()) / 1000) % 60;
+    Math.floor((endTimePlusThreeHours - Date.now()) / 1000) % 60;
 
   useEffect(() => {
     if (timerEnded && callBack) {
