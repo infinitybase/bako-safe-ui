@@ -46,12 +46,7 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
       >
         Max Fee
         {isMobile ? (
-          <Popover
-            placement="top-start"
-            autoFocus={false}
-            isOpen={isOpen}
-            onClose={onClose}
-          >
+          <Popover placement="top-start" isOpen={isOpen} onClose={onClose}>
             <PopoverTrigger>
               <Icon
                 color="grey.200"
@@ -62,10 +57,11 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
             </PopoverTrigger>
             <PopoverContent
               bg="grey.825"
-              pt={5}
-              border="none"
+              p={4}
+              borderColor="dark.100"
               maxW={270}
               display={!isOpen ? 'none' : 'block'}
+              _focus={{ ring: 'none' }}
             >
               <PopoverCloseButton />
               <PopoverBody>
