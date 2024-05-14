@@ -145,7 +145,7 @@ const HomePage = () => {
         minH={homeRequest.isLoading ? '100vh' : 'fit-content'}
         mt={homeRequest.isLoading ? 6 : 4}
       >
-        {recentVaults?.length && (
+        {recentVaults?.length ? (
           <Box pb={6} alignSelf="flex-start">
             <Text
               color="grey.400"
@@ -156,8 +156,8 @@ const HomePage = () => {
               Recently used vaults
             </Text>
           </Box>
-        )}
-        {recentVaults?.length && (
+        ) : null}
+        {recentVaults?.length ? (
           <Grid
             mt={{ base: -8, sm: -2 }}
             w="full"
@@ -222,7 +222,7 @@ const HomePage = () => {
               },
             )}
           </Grid>
-        )}
+        ) : null}
         {/* TRANSACTION LIST */}
         {transactions && transactions.length <= 0 ? (
           <VStack w="full" spacing={6}>
@@ -238,7 +238,7 @@ const HomePage = () => {
                 </Text>
               </HStack>
             )}
-            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!homeRequest.isLoading} mt={8}>
               <EmptyTransaction />
             </CustomSkeleton>
           </VStack>

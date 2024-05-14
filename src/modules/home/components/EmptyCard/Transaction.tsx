@@ -8,10 +8,10 @@ const EmptyTransaction = () => {
       w="full"
       mt={{ base: 0, sm: 2 }}
       p={{ base: 10, sm: 16 }}
-      bgColor="grey.850"
       display="flex"
       borderWidth={2}
-      borderColor="grey.300"
+      bgColor="grey.825"
+      borderColor="grey.550"
       justifyContent="center"
       flexDirection="column"
       alignItems="center"
