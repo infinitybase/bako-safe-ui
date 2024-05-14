@@ -33,7 +33,7 @@ const TransactionExpire = ({
       setDefaultProgress((elapsedTime / (correctEndTime - startTime)) * 100);
 
       if (remainingTime <= 0) {
-        setTimerEnded(true);
+        //setTimerEnded(true);
         clearInterval(interval);
       }
     }, 100); // Update every 100ms
