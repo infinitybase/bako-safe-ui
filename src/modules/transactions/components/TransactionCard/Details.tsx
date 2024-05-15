@@ -21,12 +21,7 @@ import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import {
-  AlertIcon,
-  CopyIcon,
-  CustomSkeleton,
-  DoubleArrowIcon,
-} from '@/components';
+import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
 import {
   AddressUtils,
   AssetModel,
@@ -52,7 +47,6 @@ interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
   isInTheVaultPage?: boolean;
-  isFetching?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -233,7 +227,6 @@ const Details = ({
   transaction,
   status,
   isInTheVaultPage,
-  isFetching = false,
 }: TransactionDetailsProps) => {
   const { transactionHistory } = useTransactionHistory(transaction.id);
 
@@ -259,145 +252,155 @@ const Details = ({
         alignSelf="flex-start"
         display="flex"
         direction={{ base: 'column', md: 'row' }}
-        alignItems="start"
+        alignItems="center"
         justify="space-between"
         columnGap={isInTheVaultPage ? '3rem' : '8rem'}
         w="full"
-        h={{ base: 'unset', sm: fromConnector ? 439 : 310 }}
       >
-        <CustomSkeleton isLoaded={!isFetching}>
-          <Box
-            display="flex"
-            flexDirection={{ base: 'row', sm: 'column' }}
-            w={{ base: '100%', lg: 'unset' }}
-            minW={{ base: 200, sm: 486 }}
-            flexWrap="wrap"
-          >
-            <Box mb={{ base: 2, sm: 4 }}>
-              <Text color="grey.200" fontWeight="medium">
-                Transaction breakdown
-              </Text>
-            </Box>
+        <Box
+          display="flex"
+          flexDirection={{ base: 'row', xs: 'column' }}
+          w={{ base: '100%', lg: 'unset' }}
+          minW={{ base: 200, sm: 486 }}
+          flexWrap="wrap"
+        >
+          <Box mb={{ base: 2, sm: 4 }}>
+            <Text color="grey.200" fontWeight="medium">
+              Transaction breakdown
+            </Text>
+          </Box>
 
-            {fromConnector && (
-              <>
-                <Card
-                  bgColor={isPending && notSigned ? 'warning.800' : 'dark.300'}
-                  borderColor={
-                    isPending && notSigned ? 'warning.500' : 'dark.100'
-                  }
-                  borderRadius={10}
-                  px={5}
-                  py={4}
-                  borderWidth="1px"
-                >
-                  <Text fontSize="sm" color="grey.500">
-                    Requesting a transaction from:
-                  </Text>
+          {fromConnector && (
+            <>
+              <Card
+                bgColor="grey.825"
+                borderColor="#2B2927"
+                borderRadius={10}
+                w={{ base: 'full', xs: 'unset' }}
+                px={5}
+                py={{ base: 2, xs: 4 }}
+                borderWidth="1px"
+                h={{ base: 114, xs: 'unset' }}
+              >
+                <Text color="grey.500" fontSize={{ base: 12, xs: 'sm' }}>
+                  Requesting a transaction from:
+                </Text>
 
-                  <Divider borderColor="dark.100" mt={3} mb={5} />
+                <Divider borderColor="dark.100" mt={3} mb={5} />
 
-                  <HStack width="100%" alignItems="center" spacing={4}>
-                    <Avatar
-                      variant="roundedSquare"
-                      color="white"
-                      bgColor="dark.150"
-                      src={transaction.summary?.image}
-                      name={transaction.summary?.name}
-                    />
-                    <VStack alignItems="flex-start" spacing={0}>
-                      <Text variant="subtitle">
-                        {transaction.summary?.name}
-                      </Text>
-                      <Text color="brand.500" variant="description">
-                        {transaction.summary?.origin.split('//')[1]}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Card>
-              </>
-            )}
-
-            {isPending && notSigned && fromConnector && (
-              <>
-                <HStack
-                  bg="warning.700"
-                  borderColor="warning.700"
-                  borderWidth="1px"
-                  borderRadius={10}
-                  mt={8}
-                  py={4}
-                  px={8}
-                >
-                  <Icon as={AlertIcon} color="warning.600" fontSize={28} />
-
-                  <VStack spacing={0} alignItems="flex-start" ml={2}>
-                    <Text fontWeight="bold" color="warning.600">
-                      Double check it!
+                <HStack width="100%" alignItems="center" spacing={4}>
+                  <Avatar
+                    variant="roundedSquare"
+                    color="white"
+                    bgColor="dark.150"
+                    src={transaction.summary?.image}
+                    name={transaction.summary?.name}
+                    boxSize="40px"
+                  />
+                  <VStack alignItems="flex-start" spacing={0}>
+                    <Text variant="subtitle" fontSize={14}>
+                      {transaction.summary?.name}
                     </Text>
-                    <Text color="grey.200">
-                      Please carefully review this externally created
-                      transaction before approving it.
+                    <Text
+                      color="brand.500"
+                      variant="description"
+                      fontSize={{ base: 12, xs: 'unset' }}
+                    >
+                      {transaction.summary?.origin.split('//')[1]}
                     </Text>
                   </VStack>
                 </HStack>
+              </Card>
+            </>
+          )}
 
-                <Divider borderColor="dark.100" mt={8} />
-              </>
-            )}
-
-            <VStack alignItems="flex-start" flexWrap="wrap" w="100%">
-              {transaction.assets.map((asset, index) => (
-                <AssetBoxInfo
-                  key={index}
-                  asset={{
-                    assetId: asset.assetId,
-                    amount: asset.amount,
-                    to: asset.to,
-                    transactionID: transaction.id,
-                    recipientNickname: asset?.recipientNickname,
-                  }}
-                  borderColor={index > 0 ? 'grey' : 'transparent'}
-                  hasToken={hasToken}
-                />
-              ))}
-              {isContract && !transaction.assets.length && (
-                <AssetBoxInfo
-                  contractAddress={Address.fromB256(
-                    mainOperation.to?.address ?? '',
-                  ).toString()}
-                  borderColor={'transparent'}
-                  hasToken={hasToken}
-                />
-              )}
-            </VStack>
-
-            <Box
-              w="full"
-              mt={10}
-              hidden={transaction.status !== TransactionStatus.SUCCESS}
-              borderColor="grey"
-              borderTopWidth={1}
-            >
+          {isPending && notSigned && fromConnector && (
+            <>
               <HStack
-                mt={2}
-                px={{ base: 0, sm: 5 }}
-                py={{ base: 3, sm: 5 }}
-                gap={8}
-                justifyContent="space-between"
+                bg="warning.700"
+                borderColor="warning.700"
+                borderWidth="1px"
+                borderRadius={10}
+                mt={{ base: 4, xs: 8 }}
+                py={4}
+                px={8}
               >
-                <Text color="grey.200">Gas Fee (ETH)</Text>
-                <Text
-                  color="grey.200"
-                  fontSize={{ base: 'md', sm: 'lg' }}
-                  fontWeight="semibold"
-                >
-                  -{transaction.gasUsed}
-                </Text>
+                <Icon as={AlertIcon} color="warning.600" fontSize={28} />
+
+                <VStack spacing={0} alignItems="flex-start" ml={2}>
+                  <Text
+                    fontWeight="bold"
+                    color="warning.600"
+                    fontSize={{ base: 12, xs: 'unset' }}
+                  >
+                    Double check it!
+                  </Text>
+                  <Text color="grey.200" fontSize={{ base: 12, xs: 'unset' }}>
+                    Please carefully review this externally created transaction
+                    before approving it.
+                  </Text>
+                </VStack>
               </HStack>
-            </Box>
+
+              <Divider borderColor="dark.100" mt={8} />
+            </>
+          )}
+
+          <VStack alignItems="flex-start" flexWrap="wrap" w="100%">
+            {transaction.assets.map((asset, index) => (
+              <AssetBoxInfo
+                key={index}
+                asset={{
+                  assetId: asset.assetId,
+                  amount: asset.amount,
+                  to: asset.to,
+                  transactionID: transaction.id,
+                  recipientNickname: asset?.recipientNickname,
+                }}
+                borderColor={index > 0 ? 'grey' : 'transparent'}
+                hasToken={hasToken}
+              />
+            ))}
+            {isContract && !transaction.assets.length && (
+              <AssetBoxInfo
+                contractAddress={Address.fromB256(
+                  mainOperation.to?.address ?? '',
+                ).toString()}
+                borderColor={'transparent'}
+                hasToken={hasToken}
+              />
+            )}
+          </VStack>
+
+          <Box
+            w="full"
+            mt={
+              fromConnector && transaction.status === TransactionStatus.SUCCESS
+                ? 0
+                : 10
+            }
+            hidden={transaction.status !== TransactionStatus.SUCCESS}
+            borderColor="grey"
+            borderTopWidth={1}
+          >
+            <HStack
+              mt={2}
+              px={{ base: 0, sm: 5 }}
+              py={{ base: 3, sm: 5 }}
+              gap={8}
+              justifyContent="space-between"
+            >
+              <Text color="grey.200">Gas Fee (ETH)</Text>
+              <Text
+                color="grey.200"
+                fontSize={{ base: 'md', sm: 'lg' }}
+                fontWeight="semibold"
+              >
+                -{transaction.gasUsed}
+              </Text>
+            </HStack>
           </Box>
-        </CustomSkeleton>
+        </Box>
 
         <Box
           alignSelf="flex-start"
