@@ -45,6 +45,21 @@ const tertiary = defineStyle({
   },
 });
 
+const emptyState = defineStyle({
+  bgColor: 'grey.75',
+  borderWidth: 1,
+  color: 'dark.950',
+  _hover: {
+    _disabled: {
+      bgColor: 'initial',
+    },
+  },
+  fontSize: {
+    base: 'sm',
+    sm: 'md',
+  },
+});
+
 const icon = defineStyle({
   bgColor: 'grey.800',
   color: 'grey.200',
@@ -63,6 +78,7 @@ const Button = defineStyleConfig({
     primary,
     secondary,
     tertiary,
+    emptyState,
   },
 });
 

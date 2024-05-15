@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Heading,
   HStack,
   Icon,
   Text,
@@ -12,13 +11,7 @@ import {
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import {
-  Card,
-  CustomSkeleton,
-  HomeIcon,
-  NotFoundIcon,
-  SquarePlusIcon,
-} from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
@@ -31,6 +24,7 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
+import TransactionEmptyState from '@/modules/transactions/components/TransactionEmptyState';
 import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
@@ -204,6 +198,7 @@ const VaultDetailsPage = () => {
           fontWeight="semibold"
           fontSize={{ base: 'md', sm: 'xl' }}
           color="grey.400"
+          mt={{ base: 12, sm: 'unset' }}
         >
           Transactions
         </Text>
@@ -288,49 +283,17 @@ const VaultDetailsPage = () => {
       ) : (
         !hasTransactions &&
         !!vaultTransactions && (
-          <Card
-            w="full"
-            p={20}
-            bgColor="dark.300"
-            display="flex"
-            justifyContent="center"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Box mb={6}>
-              <NotFoundIcon w={100} h={100} />
-            </Box>
-            <Box mb={5}>
-              <Heading
-                color="brand.500"
-                fontSize={{ base: 'xl', sm: '4xl' }}
-                textAlign="center"
-              >
-                Nothing to show here.
-              </Heading>
-            </Box>
-            <Box maxW={400} mb={8}>
-              <Text color="white" textAlign="center" fontWeight="bold">
-                It seems like you {"haven't"} made any transactions yet. Would
-                you like to make one now?
-              </Text>
-            </Box>
-            <Button
-              variant="primary"
-              leftIcon={<SquarePlusIcon />}
-              isDisabled={!vault?.hasBalance}
-              onClick={() =>
-                navigate(
-                  Pages.createTransaction({
-                    workspaceId: params.workspaceId!,
-                    vaultId: vault.id!,
-                  }),
-                )
-              }
-            >
-              Create transaction
-            </Button>
-          </Card>
+          <TransactionEmptyState
+            isDisabled={!vault?.hasBalance}
+            buttonAction={() =>
+              navigate(
+                Pages.createTransaction({
+                  workspaceId: params.workspaceId!,
+                  vaultId: vault.id!,
+                }),
+              )
+            }
+          />
         )
       )}
 

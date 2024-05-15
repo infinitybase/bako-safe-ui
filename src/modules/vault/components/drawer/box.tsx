@@ -45,7 +45,7 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
           color="white"
           bgColor="dark.150"
           name={name}
-          boxSize={props.isInDapp ? 10 : 'unset'}
+          boxSize={props.isInDapp ? 10 : '48px'}
         />
         <VStack alignItems="flex-start" spacing={0}>
           {!isSingleWorkspace && (

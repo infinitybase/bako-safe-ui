@@ -388,10 +388,9 @@ const CardDetails = (props: CardDetailsProps) => {
               </VStack>
             </HStack> */}
             <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
-              <Text
-                fontWeight="semibold"
-                color="grey.450"
-              >{`Vaults's balance breakdown`}</Text>
+              <Text fontWeight="semibold" color="grey.450">
+                {`Vaults's balance breakdown`}
+              </Text>
               <CustomSkeleton
                 isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}
                 w="full"

@@ -8,6 +8,7 @@ export * from './dapp-warning';
 export * from './double-arrow-right';
 export * from './edit';
 export * from './empty-box';
+export * from './empty-box-outline';
 export * from './error';
 export * from './exchange';
 export * from './exit';

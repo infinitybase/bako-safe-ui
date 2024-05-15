@@ -104,11 +104,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             )}
             {vaults?.map((vault) => {
               return (
-                <CustomSkeleton
-                  key={vault.id}
-                  // isLoaded={!isLoading && !isFetching}
-                  isLoaded={isLoadingVaults}
-                >
+                <CustomSkeleton key={vault.id} isLoaded={isLoadingVaults}>
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}

@@ -24,19 +24,20 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
-  const { isSafariBrowser } = useVerifyBrowserType();
+  const { isSafariBrowser, isMobile } = useVerifyBrowserType();
 
   return (
     <Dialog.Modal
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}
-      hideCloseButton={!isSafariBrowser}
+      hideCloseButton={isSafariBrowser && isMobile}
     >
       <Dialog.Header
         maxW={450}
         position="relative"
         mb={0}
+        pt={isSafariBrowser && isMobile ? 6 : 'unset'}
         top={-6}
         hidden={steps.step?.hide}
         title="Create Vault"
