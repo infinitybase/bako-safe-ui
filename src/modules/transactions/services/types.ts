@@ -1,4 +1,9 @@
-import { ITransaction, ITransactionResume, Vault } from 'bakosafe';
+import {
+  ITransaction,
+  ITransactionResume,
+  SortOptionTx,
+  Vault,
+} from 'bakosafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
@@ -55,7 +60,7 @@ export interface GetTransactionParams {
   perPage?: number;
   page?: number;
   orderBy?: string;
-  sort?: SortOption;
+  sort?: SortOptionTx;
   allOfUser?: boolean;
 }
 

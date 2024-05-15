@@ -55,7 +55,6 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
       return Vault.create({
         name: params.name,
         description: params.description!,
-        provider: provider,
         configurable: {
           chainId: provider.getChainId(),
           network: provider.url,
