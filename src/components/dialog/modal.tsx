@@ -13,6 +13,7 @@ import { CloseIcon } from '../icons/close-icon';
 
 export interface DialogModalProps extends ModalProps {
   hideCloseButton?: boolean;
+  closeButtonMarginTop?: { base: number; xs: number | string };
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -31,7 +32,12 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalOverlay />
       <ModalContent rounded="3xl" bg="dark.950">
         {!hideCloseButton && (
-          <Flex w="full" align="center" justifyContent="flex-end">
+          <Flex
+            w="full"
+            align="center"
+            justifyContent="flex-end"
+            mt={props.closeButtonMarginTop}
+          >
             <HStack
               onClick={props.onClose}
               cursor="pointer"

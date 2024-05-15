@@ -41,7 +41,7 @@ const HomePage = () => {
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
     },
-    transactionsRequest: { transactions, isFetching },
+    transactionsRequest: { transactions },
     pendingSignerTransactions,
     homeRequest,
   } = useHome();
@@ -316,7 +316,6 @@ const HomePage = () => {
                             <TransactionCard.Details
                               transaction={transaction}
                               status={status}
-                              isFetching={isFetching}
                             />
                           }
                         >

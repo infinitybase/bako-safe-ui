@@ -1,4 +1,5 @@
 import { Button, Divider, HStack, VStack } from '@chakra-ui/react';
+import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 
 import { Dialog, DialogModalProps } from '@/components';
@@ -30,8 +31,18 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
   const showSignActions = awaitingAnswer && isSigner;
 
+  const fromConnector = !!transaction?.summary;
+  const isTransactionSuccess = transaction.status === TransactionStatus.SUCCESS;
+
   return (
-    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
+    <Dialog.Modal
+      onClose={onClose}
+      isOpen={isOpen}
+      closeButtonMarginTop={{
+        base: fromConnector && isTransactionSuccess ? 20 : 0,
+        xs: 'unset',
+      }}
+    >
       <Dialog.Header
         position="relative"
         mb={0}
@@ -59,7 +70,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               </TransactionCard.CreationDate>
             </HStack>
 
-            <HStack w="full">
+            <HStack w="full" justifyContent="space-between">
               <TransactionCard.Name>
                 {limitCharacters(transaction?.name ?? '', 20)}
               </TransactionCard.Name>
