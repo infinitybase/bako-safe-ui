@@ -28,11 +28,9 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     form,
     tabs,
     addresses,
-    onDeposit,
     steps,
     selectedTemplate,
     setTemplate,
-    onSaveTemplate,
     search,
     setSearch,
     handleInputChange,
@@ -67,8 +65,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             setTemplate={setTemplate}
           />
           <VaultSuccessStep
-            onDeposit={onDeposit}
-            onSaveTemplate={onSaveTemplate}
+            stepProgress={<StepProgress length={stepLength} value={tabs.tab} />}
           />
         </TabPanels>
       </Tabs>

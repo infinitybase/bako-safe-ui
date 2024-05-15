@@ -10,6 +10,7 @@ import {
   Icon,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
@@ -27,7 +28,7 @@ import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
-import { VaultCard } from '../../components';
+import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
 
 const UserVaultsPage = () => {
@@ -35,6 +36,8 @@ const UserVaultsPage = () => {
     navigate,
     vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
+
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
   const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
@@ -54,6 +57,7 @@ const UserVaultsPage = () => {
       p={{ base: 1, sm: 1 }}
       px={{ base: 'auto', sm: 8 }}
     >
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
       <HStack
         h="10"
         w="full"
@@ -131,13 +135,7 @@ const UserVaultsPage = () => {
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
             isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={() =>
-              navigate(
-                Pages.createVault({
-                  workspaceId: current,
-                }),
-              )
-            }
+            onClick={onOpen}
           >
             Create vault
           </Button>

@@ -1,4 +1,5 @@
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import { CreateVaultForm } from './form';
@@ -23,8 +24,15 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const { isSafariBrowser } = useVerifyBrowserType();
+
   return (
-    <Dialog.Modal {...props} onClose={handleCancel} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      {...props}
+      onClose={handleCancel}
+      closeOnOverlayClick={false}
+      hideCloseButton={!isSafariBrowser}
+    >
       <Dialog.Header
         maxW={450}
         position="relative"

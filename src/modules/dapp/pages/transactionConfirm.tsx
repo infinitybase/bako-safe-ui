@@ -1,20 +1,24 @@
-import { Divider, VStack } from '@chakra-ui/react';
-import { useEffect } from 'react';
-
-import { Dialog, SquarePlusIcon } from '@/components';
-import { CloseIcon } from '@/components/icons/close-icon';
-import { Dapp } from '@/layouts';
-import { useQueryParams } from '@/modules/auth';
 import {
-  DappConnectionAlert,
-  DappConnectionDetail,
-  DappTransaction,
-} from '@/modules/dapp/components';
+  Avatar,
+  Box,
+  Card,
+  Divider,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+
+import { CustomSkeleton, Dialog, TransactionExpire } from '@/components';
+import { LineCloseIcon, SquarePlusIcon } from '@/components/icons';
+import { Dapp } from '@/layouts/dapp';
+import { useQueryParams } from '@/modules/auth';
+import { DappError, DappTransaction } from '@/modules/dapp/components';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
-import { DappError } from '../components/connection';
-import { useTransactionSocket } from '../hooks';
+import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
 
 const TransactionConfirm = () => {
   const {
@@ -22,14 +26,21 @@ const TransactionConfirm = () => {
     cancelTransaction,
     vault,
     pendingSignerTransactions,
-    connection,
     summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
     isLoading,
     send,
+    socket,
+    validAt,
   } = useTransactionSocket();
-  const { sessionId, request_id } = useQueryParams();
+
+  const [closePopover, setClosePopover] = useState(false);
+
+  const inView = useInView();
+
+  const { sessionId, request_id, name, origin } = useQueryParams();
 
   const { goHome } = useHome();
+  const { isSafariBrowser } = useVerifyBrowserType();
 
   if (!sessionId || !request_id) {
     window.close();
@@ -37,58 +48,115 @@ const TransactionConfirm = () => {
   }
 
   useEffect(() => {
+    setClosePopover(inView.inView);
+  }, [inView.inView]);
+
+  useEffect(() => {
     init();
-  }, []);
+  }, [socket.connected]);
 
   return (
-    <Dapp.Content>
-      <Dapp.Section>
-        <Dapp.Header
-          title="Create transaction"
-          description="Enhance your security by sending transactions and executing contracts through BakoSafe."
-        />
-        <CloseIcon
-          onClick={cancelTransaction}
-          style={{
-            position: 'absolute',
-            top: 20,
-            right: 20,
-            cursor: 'pointer',
-          }}
-        />
-      </Dapp.Section>
-
-      {/* Vault */}
-      <Dapp.Section>
-        {vault && (
-          <VaultDrawerBox
-            name={vault?.name}
-            address={vault?.address}
-            description={vault?.description}
-            isSingleWorkspace
-            isActive
+    <>
+      <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
+        <TransactionExpire validAt={validAt} callBack={cancelTransaction} />
+      </Box>
+      <Dapp.Content maxW={404}>
+        <Dapp.Section mb={-7}>
+          <Dapp.Header
+            title="Create transaction"
+            description="Send single or batch payments with multi assets. You can send multiple types of assets to different addresses."
+            titleFontSize="16px"
+            descriptionFontSize="12px"
           />
-        )}
-      </Dapp.Section>
 
-      <Divider borderColor="dark.100" mb={7} />
+          {isSafariBrowser && (
+            <LineCloseIcon
+              onClick={cancelTransaction}
+              fontSize="24px"
+              style={{
+                position: 'absolute',
+                top: 50,
+                right: 20,
+                cursor: 'pointer',
+              }}
+            />
+          )}
+        </Dapp.Section>
 
-      <Dapp.Section>
-        {pendingSignerTransactions ? <DappError /> : <DappConnectionAlert />}
-      </Dapp.Section>
+        <CustomSkeleton
+          isLoaded={!isLoadingTransactionSummary && !!transactionSummary}
+        >
+          <Divider borderColor="dark.100" my={6} />
 
-      <Dapp.Section>
-        <DappConnectionDetail
-          title={connection?.name ?? ''}
-          origin={connection?.origin ?? ''}
-        />
-      </Dapp.Section>
+          {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
+          <Box ref={inView?.ref} />
 
-      {!pendingSignerTransactions && (
-        <>
-          <Divider w="full" borderColor="dark.100" mb={7} />
+          {pendingSignerTransactions && (
+            <Dapp.Section maxW={356}>
+              <DappError />
+            </Dapp.Section>
+          )}
 
-          <VStack spacing={1}>
+          {/* Vault */}
+          <Dapp.Section>
+            <Card h={106} gap={4} bg="transparent" mb={8}>
+              <Text fontSize={12} color="grey.50" fontWeight={700}>
+                Requesting a transaction from:
+              </Text>
+              <Card
+                bgColor="grey.825"
+                borderColor="dark.100"
+                borderRadius={8}
+                p={4}
+                borderWidth="1px"
+                height={24}
+              >
+                <HStack width="100%" spacing={4} h="49px">
+                  <Avatar
+                    variant="roundedSquare"
+                    color="white"
+                    bgColor="dark.950"
+                    boxSize={10}
+                    name={name!}
+                  />
+                  <VStack alignItems="flex-start" spacing={0}>
+                    <Text variant="subtitle" color="grey.250">
+                      {name}
+                    </Text>
+                    <Text
+                      color="brand.500"
+                      variant="description"
+                      lineHeight={4}
+                    >
+                      {origin?.split('//')[1]}
+                      {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
+                    </Text>
+                  </VStack>
+                </HStack>
+              </Card>
+            </Card>
+
+            {vault && (
+              <>
+                <Text mb={2} fontSize={12} fontWeight={700}>
+                  Vault:
+                </Text>
+                <VaultDrawerBox
+                  name={vault?.name}
+                  address={vault?.address}
+                  isSingleWorkspace
+                  isInDapp
+                  px={4}
+                />
+              </>
+            )}
+          </Dapp.Section>
+
+          <Text mb={2} fontWeight={700} fontSize={12}>
+            Details:
+          </Text>
+
+          <VStack spacing={1} mb={-4}>
             {(isLoadingTransactionSummary || !transactionSummary) && (
               <DappTransaction.OperationSkeleton />
             )}
@@ -103,46 +171,59 @@ const TransactionConfirm = () => {
               />
             ))}
           </VStack>
-          <DappTransaction.Fee fee={transactionSummary?.fee} />
-        </>
-      )}
-      {/* Actions */}
-      <Dialog.Actions
-        hidden={isLoadingTransactionSummary || !transactionSummary}
-        w="full"
-      >
-        {!pendingSignerTransactions ? (
-          <>
-            <Dialog.SecondaryAction
-              size="lg"
-              onClick={cancelTransaction}
-              isDisabled={isLoading}
-            >
-              Reject
-            </Dialog.SecondaryAction>
-            <Dialog.PrimaryAction
-              size="lg"
-              isLoading={isLoading}
-              leftIcon={<SquarePlusIcon fontSize="lg" />}
-              onClick={send}
-            >
-              Create transaction
-            </Dialog.PrimaryAction>
-          </>
-        ) : (
-          <>
-            <Dialog.SecondaryAction
-              size="lg"
-              width="full"
-              onClick={cancelTransaction}
-              isDisabled={isLoading}
-            >
-              Back
-            </Dialog.SecondaryAction>
-          </>
-        )}
-      </Dialog.Actions>
-    </Dapp.Content>
+
+          <DappTransaction.Fee
+            closePopover={closePopover}
+            fee={transactionSummary?.fee}
+          />
+
+          {/* Actions */}
+          <Divider borderColor="grey.950" w="full" my={6} />
+
+          <Dialog.Actions
+            hideDivider
+            hidden={isLoadingTransactionSummary || !transactionSummary}
+            w="full"
+          >
+            {!pendingSignerTransactions ? (
+              <>
+                <Dialog.SecondaryAction
+                  size="md"
+                  onClick={cancelTransaction}
+                  isDisabled={isLoading}
+                  borderColor="grey.75"
+                  fontSize={14}
+                >
+                  Cancel
+                </Dialog.SecondaryAction>
+                <Dialog.PrimaryAction
+                  size="md"
+                  isLoading={isLoading}
+                  leftIcon={<SquarePlusIcon fontSize="lg" />}
+                  onClick={send}
+                  fontWeight={700}
+                  fontSize={14}
+                >
+                  Create transaction
+                </Dialog.PrimaryAction>
+              </>
+            ) : (
+              <>
+                <Dialog.SecondaryAction
+                  size="lg"
+                  width="full"
+                  onClick={cancelTransaction}
+                  fontSize={14}
+                  isDisabled={isLoading}
+                >
+                  Back
+                </Dialog.SecondaryAction>
+              </>
+            )}
+          </Dialog.Actions>
+        </CustomSkeleton>
+      </Dapp.Content>
+    </>
   );
 };
 

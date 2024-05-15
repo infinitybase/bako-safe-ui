@@ -40,6 +40,7 @@ const Container = ({
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
+
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
@@ -77,6 +78,7 @@ const Container = ({
           callBack={callBack}
         />
       )}
+
       <Card
         py={{ base: 1, sm: 4 }}
         px={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
