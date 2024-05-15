@@ -1,5 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
-import { defaultConfig } from 'bakosafe';
+import { BakoSafe } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { api } from '@/config';
@@ -123,7 +123,7 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      provider: defaultConfig['PROVIDER']!,
+      provider: BakoSafe.getProviders('CHAIN_URL'),
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
