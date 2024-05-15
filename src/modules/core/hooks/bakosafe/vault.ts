@@ -15,13 +15,11 @@ const useBakoSafeVault = (id: string) => {
   const { data, ...rest } = useBakoSafeQuery(
     [...VAULT_QUERY_KEYS.VAULT(id), auth.workspaces.current],
     async (context) => {
-      const v = await Vault.create({
+      return await Vault.create({
         id,
         token: context.auth.token,
         address: context.auth.address,
       });
-      console.log(v);
-      return v;
     },
   );
   return {
