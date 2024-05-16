@@ -248,7 +248,7 @@ const HomePage = () => {
             </CustomSkeleton>
           </VStack>
         ) : (
-          <Box w="full" mt={8}>
+          <Box w="full" mt={{ base: 16, sm: 8 }}>
             <Box
               w="full"
               display="flex"
@@ -259,7 +259,7 @@ const HomePage = () => {
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize={{ base: 'sm', sm: 'xl' }}
+                fontSize={{ base: 'md', xs: 'xl' }}
               >
                 Transactions
               </Text>

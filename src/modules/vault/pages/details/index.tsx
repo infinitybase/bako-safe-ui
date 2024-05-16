@@ -190,15 +190,16 @@ const VaultDetailsPage = () => {
       <Box
         mb={3}
         display="flex"
+        alignItems="center"
         flexDir={isExtraSmall ? 'column' : 'row'}
         gap={isExtraSmall ? 2 : 4}
+        mt={{ base: 12, sm: 'unset' }}
       >
         <Text
           variant="subtitle"
           fontWeight="semibold"
           fontSize={{ base: 'md', sm: 'xl' }}
           color="grey.400"
-          mt={{ base: 12, sm: 'unset' }}
         >
           Transactions
         </Text>

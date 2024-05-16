@@ -91,6 +91,9 @@ const Status = ({
             variant="secondary"
             px={3}
             bgColor="dark.100"
+            mt={{ base: 4, sm: 1 }}
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             border="none"
             isLoading={isLoading}
             onClick={(e) => {
