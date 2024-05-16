@@ -1,4 +1,4 @@
-import { Vault } from 'bakosafe';
+import { IPayloadVault, Vault } from 'bakosafe';
 
 import { useAuth } from '@/modules/auth';
 
@@ -50,20 +50,24 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
-      const { provider } = await hasWallet();
+      try {
+        const { provider } = await hasWallet();
+        const vault: IPayloadVault = {
+          name: params.name,
+          description: params.description!,
+          configurable: {
+            network: provider.url ?? import.meta.env.VITE_NETWORK_URL,
+            SIGNATURES_COUNT: params.minSigners,
+            SIGNERS: params.addresses,
+          },
+          BakoSafeAuth: auth,
+        };
 
-      return Vault.create({
-        name: params.name,
-        description: params.description!,
-        provider: provider,
-        configurable: {
-          chainId: provider.getChainId(),
-          network: provider.url,
-          SIGNATURES_COUNT: params.minSigners,
-          SIGNERS: params.addresses,
-        },
-        BakoSafeAuth: auth,
-      });
+        return await Vault.create(vault);
+      } catch (e) {
+        console.log('[ERROR_ON_VAULT_CREATE]', e);
+        throw e;
+      }
     },
     {
       onError: params?.onError,

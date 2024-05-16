@@ -12,10 +12,10 @@ import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
 
-BakoSafe.setup({
+BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
-  CLIENT_URL: import.meta.env.VERCEL_URL || window.location.origin,
-  PROVIDER: import.meta.env.VITE_NETWORK,
+  CLIENT_URL: window.location.origin,
+  CHAIN_URL: import.meta.env.VITE_NETWORK,
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

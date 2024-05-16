@@ -13,6 +13,7 @@ import {
   Input,
   Spinner,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ import { RiLink } from 'react-icons/ri';
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useAuth, useQueryParams } from '@/modules/auth';
 import { AddressUtils, PermissionRoles } from '@/modules/core';
+import { CreateVaultDialog } from '@/modules/vault';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
@@ -39,13 +41,8 @@ const VaultConnector = () => {
     inView,
   } = useVaultDrawer({});
 
-  const {
-    selectedVaultId,
-    setSelectedVaultId,
-    currentVault,
-    send,
-    makeLinkCreateVault,
-  } = useAuthSocket();
+  const { selectedVaultId, setSelectedVaultId, currentVault, send } =
+    useAuthSocket();
 
   useEffect(() => {
     if (vaults.length && noVaultOnFirstLoad) {
@@ -54,9 +51,12 @@ const VaultConnector = () => {
   }, [vaults.length]);
 
   const noVaultsFound = search.value.length >= 1 && !vaults.length;
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
     <Flex h="100vh" w="full" overflow="hidden">
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+
       <Box w={420} px={8} pt={6}>
         <HStack
           spacing={2}
@@ -199,12 +199,7 @@ const VaultConnector = () => {
                   </Text>
                 </Flex>
               </Card>
-              <Button
-                bg="grey.75"
-                fontSize={14}
-                onClick={makeLinkCreateVault}
-                w="full"
-              >
+              <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
                 Create new Vault
               </Button>
             </VStack>
