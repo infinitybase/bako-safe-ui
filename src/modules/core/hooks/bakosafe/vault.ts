@@ -63,9 +63,6 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
           BakoSafeAuth: auth,
         };
 
-        console.log('[VAULT_CREATE_PAYLOAD]', vault);
-        console.log(await Vault.create(vault));
-
         return await Vault.create(vault);
       } catch (e) {
         console.log('[ERROR_ON_VAULT_CREATE]', e);
