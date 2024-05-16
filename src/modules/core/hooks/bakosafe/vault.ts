@@ -50,19 +50,23 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
-      const { provider } = await hasWallet();
+      try {
+        const { provider } = await hasWallet();
 
-      return Vault.create({
-        name: params.name,
-        description: params.description!,
-        configurable: {
-          chainId: provider.getChainId(),
-          network: provider.url,
-          SIGNATURES_COUNT: params.minSigners,
-          SIGNERS: params.addresses,
-        },
-        BakoSafeAuth: auth,
-      });
+        return await Vault.create({
+          name: params.name,
+          description: params.description!,
+          configurable: {
+            network: provider.url ?? import.meta.env.VITE_NETWORK_URL,
+            SIGNATURES_COUNT: params.minSigners,
+            SIGNERS: params.addresses,
+          },
+          BakoSafeAuth: auth,
+        });
+      } catch (e) {
+        console.log('[ERROR_ON_VAULT_CREATE]', e);
+        throw e;
+      }
     },
     {
       onError: params?.onError,

@@ -14,7 +14,7 @@ import { SocketProvider } from './config/socket';
 
 BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
-  CLIENT_URL: import.meta.env.VERCEL_URL || window.location.origin,
+  CLIENT_URL: window.location.origin,
   CHAIN_URL: import.meta.env.VITE_NETWORK,
 });
 
