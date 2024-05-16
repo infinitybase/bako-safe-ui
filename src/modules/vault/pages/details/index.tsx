@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
@@ -24,7 +25,6 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import TransactionEmptyState from '@/modules/transactions/components/TransactionEmptyState';
 import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
@@ -283,7 +283,7 @@ const VaultDetailsPage = () => {
       ) : (
         !hasTransactions &&
         !!vaultTransactions && (
-          <TransactionEmptyState
+          <EmptyState
             isDisabled={!vault?.hasBalance}
             buttonAction={() =>
               navigate(

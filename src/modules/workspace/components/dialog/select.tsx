@@ -1,4 +1,4 @@
-import { Divider, HStack, Text, VStack } from '@chakra-ui/react';
+import { Divider, HStack, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
@@ -32,10 +32,24 @@ const SelectWorkspaceDialog = ({
     <Dialog.Modal
       size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
       onClose={dialog.onClose}
-      hideCloseButton={false}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
     >
+      {!listIsEmpty && (
+        <Dialog.Header
+          hideCloseButton={false}
+          onClose={dialog.onClose}
+          maxW={450}
+          position="relative"
+          h={20}
+          // mt={{ base: 0, xs: -2 }}
+          mt={0}
+          mb={-12}
+          title="   Select your workspace"
+          description={`We're thrilled. Select your workspace to have you here. `}
+        />
+      )}
+
       <Dialog.Body
         position="relative"
         justifyItems="center"
@@ -44,30 +58,6 @@ const SelectWorkspaceDialog = ({
         maxW={480}
       >
         <VStack>
-          {!listIsEmpty && (
-            <VStack
-              w="full"
-              h={24}
-              align="flex-start"
-              position="absolute"
-              overflow="visible"
-              justifyContent="space-evenly"
-              top={{ base: -8, sm: -10 }}
-              spacing={0}
-            >
-              <Text
-                fontSize={{ base: 'lg', sm: '2xl' }}
-                fontWeight="bold"
-                color="white"
-              >
-                Select your workspace
-              </Text>
-              <Text fontSize="md" variant="description" fontWeight="normal">
-                {`We're thrilled. Select your workspace to have you here. `}
-              </Text>
-            </VStack>
-          )}
-
           <VStack
             spacing={5}
             w="full"

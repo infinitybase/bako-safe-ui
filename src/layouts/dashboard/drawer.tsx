@@ -3,11 +3,9 @@ import {
   DrawerContent,
   DrawerOverlay,
   DrawerProps as ChakraDrawerProps,
-  HStack,
-  Text,
 } from '@chakra-ui/react';
 
-import { CloseIcon } from '@/components/icons/close-icon';
+import { LineCloseIcon } from '@/components';
 
 import { Sidebar } from './sidebar';
 
@@ -18,19 +16,18 @@ const Drawer = ({ ...props }: DrawerProps) => {
 
   return (
     <ChakraDrawer {...props} size="xs" variant="solid" placement="left">
-      <DrawerOverlay mt="64px" />
-      <DrawerContent p={0} mt="64px" bgColor="dark.600">
-        <HStack
+      <DrawerOverlay mt={{ base: '64px', sm: '82px' }} />
+      <DrawerContent p={0} mt={{ base: '64px', sm: '82px' }} bgColor="dark.500">
+        <LineCloseIcon
+          mt={3}
+          mb={1}
+          mr={4}
+          fontSize="24px"
+          aria-label="Close window"
           cursor="pointer"
           onClick={onClose}
-          spacing={2}
-          p={6}
-          pt={5}
-          pb={1}
-        >
-          <Text color="grey.100">Close</Text>
-          <CloseIcon />
-        </HStack>
+          alignSelf="end"
+        />
 
         <Sidebar onDrawer />
       </DrawerContent>

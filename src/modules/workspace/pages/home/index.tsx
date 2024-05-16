@@ -33,6 +33,7 @@ import {
   SettingsIcon,
   VaultIcon,
 } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
@@ -48,8 +49,6 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
-import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import {
   TransactionCard,
@@ -548,11 +547,16 @@ const WorkspacePage = () => {
 
       <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
         {!hasVaults ? (
-          <EmptyVault
-            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
-            description="Your vaults are entirely free on Fuel. You need
-            create a vault to start to save your assets."
-          />
+          <>
+            <EmptyState
+              showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+              title={`Let's Begin!`}
+              subTitle="Your vaults are entirely free on Fuel. You need
+              create a vault to start to save your assets."
+              buttonActionTitle="Create my first vault"
+              buttonAction={onOpen}
+            />
+          </>
         ) : (
           <Grid
             w="full"
@@ -621,14 +625,16 @@ const WorkspacePage = () => {
           flexDir={isExtraSmall ? 'column' : 'row'}
           gap={isExtraSmall ? 2 : 4}
         >
-          <Text
-            color="grey.400"
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="md"
-          >
-            Transactions
-          </Text>
+          {recentTransactions?.length ? (
+            <Text
+              variant="subtitle"
+              fontWeight="semibold"
+              fontSize={{ base: 'md', sm: 'xl' }}
+              color="grey.200"
+            >
+              Transactions
+            </Text>
+          ) : null}
 
           {hasTransactions && (
             <HStack w="full">
@@ -658,7 +664,7 @@ const WorkspacePage = () => {
       {/* TRANSACTION LIST */}
       {!hasTransactions && hasVaults ? (
         <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
-          <EmptyTransaction />
+          <EmptyState showAction={false} />
         </CustomSkeleton>
       ) : (
         <Box w="full" pb={10}>

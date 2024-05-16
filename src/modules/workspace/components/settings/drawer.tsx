@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, ErrorIcon, UserAddIcon } from '@/components';
+import { Card, LineCloseIcon, UserAddIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
 import { useAddressBook } from '@/modules/addressBook';
 import {
@@ -156,10 +156,7 @@ const WorkspaceSettingsDrawer = ({
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end" zIndex={200}>
           <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
+            <LineCloseIcon fontSize="24px" aria-label="Close window" />
           </HStack>
         </Flex>
 

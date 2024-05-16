@@ -1,6 +1,6 @@
 import { Alert, Box, Icon, Text } from '@chakra-ui/react';
 
-import { ErrorIcon } from '@/components/icons/error';
+import { RoundedErrorIcon } from '@/components/icons/rounded-error';
 
 const DappError = () => (
   <Alert
@@ -15,7 +15,7 @@ const DappError = () => (
     display="flex"
     alignItems="start"
   >
-    <Icon fontSize="2xl" as={ErrorIcon} color="error.500" />
+    <Icon fontSize="20px" as={RoundedErrorIcon} color="error.500" />
     <Box ml={2} w="312px" pr={8}>
       <Text variant="subtitle" color="error.500" fontSize="sm" mb={2}>
         New transactions disable

@@ -33,6 +33,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
+        onClose={onClose}
         position="relative"
         mb={0}
         top={{ base: -5, sm: -7 }}

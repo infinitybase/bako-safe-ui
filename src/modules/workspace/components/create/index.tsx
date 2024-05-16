@@ -90,9 +90,10 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       closeOnOverlayClick={false}
       {...props}
     >
-      {tabs.is(CreateWorkspaceTabState.FORM) && (
+      {tabs.is(CreateWorkspaceTabState.FORM) ? (
         <Dialog.Header
           mb={0}
+          onClose={props.onClose}
           position="relative"
           maxW={450}
           top={-6}
@@ -100,9 +101,24 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
+      ) : (
+        <Dialog.Header
+          mt={{ base: 8, xs: 0 }}
+          mb={0}
+          onClose={props.onClose}
+          position="relative"
+          maxW={450}
+          title=""
+          description=""
+        />
       )}
 
-      <Dialog.Body minH="full" maxH="full" maxW={540}>
+      <Dialog.Body
+        minH="full"
+        maxH="full"
+        maxW={540}
+        mt={!tabs.is(CreateWorkspaceTabState.FORM) ? -10 : 'unset'}
+      >
         <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>

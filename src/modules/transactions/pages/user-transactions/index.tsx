@@ -16,12 +16,12 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
@@ -273,7 +273,9 @@ const UserTransactionsPage = () => {
         }}
       >
         {!transactionRequest.isLoading &&
-          !transactionRequest?.transactions.length && <EmptyTransaction />}
+          !transactionRequest?.transactions.length && (
+            <EmptyState showAction={false} />
+          )}
 
         {infinityTransactions?.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(

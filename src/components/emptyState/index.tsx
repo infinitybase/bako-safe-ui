@@ -10,22 +10,31 @@ import {
 
 import { EmptyBoxOutline } from '@/components';
 
-interface TransactionEmptyStateProps extends BoxProps {
-  isDisabled: boolean;
-  buttonAction: () => void;
+interface EmptyStateProps extends BoxProps {
+  isDisabled?: boolean;
+  buttonAction?: () => void;
+  showAction?: boolean;
+  title?: string;
+  subTitle?: string;
+  buttonActionTitle?: string;
 }
 
-const TransactionEmptyState = ({
+const EmptyState = ({
   isDisabled,
   buttonAction,
+  showAction = true,
+  title,
+  subTitle,
+  buttonActionTitle,
   ...rest
-}: TransactionEmptyStateProps) => {
+}: EmptyStateProps) => {
   return (
     <Card
       {...rest}
       w="full"
-      p={20}
+      p={{ base: 10, xs: 20 }}
       bg="gradients.transaction-card"
+      borderWidth={1}
       borderColor="gradients.transaction-border"
       backdropFilter="blur(16px)"
       dropShadow="0px 8px 6px 0px #00000026"
@@ -38,9 +47,9 @@ const TransactionEmptyState = ({
         <Box mb={5}>
           <EmptyBoxOutline w={100} h={100} />
         </Box>
-        <VStack spacing={6} maxW={400} mb={10}>
+        <VStack spacing={6} maxW={305} mb={10}>
           <Heading color="grey.75" fontSize="xl" textAlign="center">
-            Nothing to show here.
+            {title ?? 'Nothing to show here.'}
           </Heading>
           <Text
             color="grey.250"
@@ -48,19 +57,21 @@ const TransactionEmptyState = ({
             fontWeight={400}
             variant="description"
           >
-            It seems like you {"haven't"} any transaction yet.
+            {subTitle ?? `It seems like you haven't any transaction yet.`}
           </Text>
         </VStack>
-        <Button
-          variant="emptyState"
-          isDisabled={isDisabled}
-          onClick={buttonAction}
-          w="full"
-        >
-          Create transaction
-        </Button>
+        {showAction && (
+          <Button
+            variant="emptyState"
+            isDisabled={isDisabled}
+            onClick={buttonAction}
+            w="full"
+          >
+            {buttonActionTitle ?? 'Create transaction'}
+          </Button>
+        )}
       </VStack>
     </Card>
   );
 };
-export default TransactionEmptyState;
+export { EmptyState };

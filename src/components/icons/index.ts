@@ -22,6 +22,7 @@ export * from './play-icon';
 export * from './question';
 export * from './remove';
 export * from './replace';
+export * from './rounded-error';
 export * from './settings';
 export * from './square-plus';
 export * from './success';

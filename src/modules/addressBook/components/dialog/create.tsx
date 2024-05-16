@@ -19,12 +19,13 @@ const CreateContactDialog = ({
   return (
     <Dialog.Modal
       size={{ base: 'full', sm: 'lg' }}
-      onClose={dialog.onClose}
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
+      onClose={dialog.onClose}
     >
       <Dialog.Header
         position="relative"
+        onClose={dialog.onClose}
         top={{ base: -5, sm: -7 }}
         maxW={420}
         title={isEdit ? 'Edit address' : 'Add to address book'}

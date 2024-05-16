@@ -14,7 +14,8 @@ import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, LineCloseIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
@@ -27,7 +28,6 @@ import { useUserVaults, useVaultDetails } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
-import TransactionEmptyState from '../../components/TransactionEmptyState';
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 
@@ -63,7 +63,6 @@ const TransactionsVaultPage = () => {
   return (
     <Box w="full" height="100%" maxH="100%">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
-
       <Box mb={10}>
         {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
@@ -150,7 +149,6 @@ const TransactionsVaultPage = () => {
           </Breadcrumb>
         )}
       </Box>
-
       {/* TITLE */}
       <HStack spacing={5} mb={7}>
         <Heading variant="title-xl" color="grey.200">
@@ -164,7 +162,6 @@ const TransactionsVaultPage = () => {
           isIndeterminate
         />
       </HStack>
-
       {/* FILTER */}
       <TransactionFilter.Control
         value={filter.value!}
@@ -197,12 +194,11 @@ const TransactionsVaultPage = () => {
               }}
               cursor="pointer"
             >
-              <Icon as={ErrorIcon} color="brand.500" />
+              <Icon as={LineCloseIcon} fontSize="18px" color="brand.500" />
             </Box>
           </HStack>
         )}
       </TransactionFilter.Control>
-
       {/* TRANSACTION LIST */}
       {hasTransactions ? (
         <TransactionCard.List
@@ -283,7 +279,7 @@ const TransactionsVaultPage = () => {
           <Box ref={inView.ref} />
         </TransactionCard.List>
       ) : (
-        <TransactionEmptyState
+        <EmptyState
           h="calc(100% - 170px)"
           mt={7}
           isDisabled={!vault?.hasBalance}

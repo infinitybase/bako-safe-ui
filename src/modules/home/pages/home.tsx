@@ -16,6 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
@@ -32,7 +33,6 @@ import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
-import { EmptyTransaction } from '../components/EmptyCard/Transaction';
 
 const HomePage = () => {
   const {
@@ -240,8 +240,11 @@ const HomePage = () => {
                 </Text>
               </HStack>
             )}
-            <CustomSkeleton isLoaded={!homeRequest.isLoading} mt={8}>
-              <EmptyTransaction />
+            <CustomSkeleton
+              isLoaded={!homeRequest.isLoading}
+              mt={{ base: 16, sm: 8 }}
+            >
+              <EmptyState showAction={false} />
             </CustomSkeleton>
           </VStack>
         ) : (

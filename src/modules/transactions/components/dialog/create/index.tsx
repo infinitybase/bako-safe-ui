@@ -34,8 +34,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   return (
     <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
       <Dialog.Header
+        onClose={handleClose}
         position={{ base: 'static', sm: 'relative' }}
-        mt={{ base: -5, sm: 0 }}
+        mt={{ base: 16, xs: 0, sm: 6 }}
         mb={0}
         maxH={40}
         top={{ base: 0, sm: -8 }}

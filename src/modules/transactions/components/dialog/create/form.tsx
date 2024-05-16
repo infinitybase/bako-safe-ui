@@ -1,5 +1,6 @@
 import {
   Box,
+  BoxProps,
   Divider,
   FormControl,
   FormHelperText,
@@ -13,7 +14,7 @@ import { Dialog } from '@/components';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
-export interface CreateTransactionFormProps {
+export interface CreateTransactionFormProps extends BoxProps {
   form: UseCreateTransaction['form'];
   nicks: UseCreateTransaction['nicks'];
   assets: UseCreateTransaction['assets'];
@@ -25,7 +26,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   const { form, assets, transactionsFields, accordion, nicks } = props;
 
   return (
-    <Box w="full">
+    <Box w="full" {...props}>
       <Controller
         control={form.control}
         name="name"
