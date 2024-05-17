@@ -53,6 +53,7 @@ interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
   isInTheVaultPage?: boolean;
+  isMobile?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -108,6 +109,7 @@ const AssetBoxInfo = ({
                 name={assetInfo.slug}
                 size={{ base: 'xs', sm: '28px' }}
                 src={assetInfo.icon}
+                ignoreFallback
               />
               <Text color="grey.500">{assetInfo.slug}</Text>
             </HStack>
@@ -233,6 +235,7 @@ const Details = ({
   transaction,
   status,
   isInTheVaultPage,
+  isMobile,
 }: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
@@ -251,7 +254,7 @@ const Details = ({
 
   const { isOpen } = useAccordionItemState();
 
-  if (!isOpen) return null;
+  if (!isMobile && !isOpen) return null;
 
   return (
     <DetailsTransactionStepper transactionId={transaction.id}>
@@ -263,8 +266,7 @@ const Details = ({
               alignSelf="flex-start"
               display="flex"
               direction={{ base: 'column', md: 'row' }}
-              // Voltar aqui e verificar o alinhamento entre transaction breakdown e history
-              alignItems="start"
+              alignItems="center"
               justify="space-between"
               columnGap={isInTheVaultPage ? '3rem' : '8rem'}
               w="full"

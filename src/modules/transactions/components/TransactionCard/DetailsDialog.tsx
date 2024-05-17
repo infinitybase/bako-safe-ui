@@ -1,4 +1,10 @@
-import { Button, Divider, HStack, VStack } from '@chakra-ui/react';
+import {
+  AccordionItem,
+  Button,
+  Divider,
+  HStack,
+  VStack,
+} from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 
@@ -51,7 +57,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         maxW={{ base: 480, xs: 'unset' }}
         title="Transaction Details"
       />
-      <Dialog.Body mt={-4}>
+      <Dialog.Body mt={-4} as={AccordionItem} borderTop="none">
         <VStack spacing={{ base: 3, xs: 5 }}>
           <VStack w="full" spacing={3}>
             <HStack w="full">
@@ -87,7 +93,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
           <Divider />
 
-          <TransactionCard.Details transaction={transaction} />
+          <TransactionCard.Details transaction={transaction} isMobile />
         </VStack>
       </Dialog.Body>
 
