@@ -12,6 +12,7 @@ import {
   Stack,
   StackProps,
   Text,
+  useAccordionItemState,
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
@@ -32,8 +33,7 @@ import {
 import { useNotification } from '@/modules/notification';
 import { limitCharacters } from '@/utils';
 
-import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
-import { TransactionStepper } from './TransactionStepper';
+import DetailsTransactionStepper from './DetailsTransactionStepper';
 
 type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
@@ -228,8 +228,6 @@ const Details = ({
   status,
   isInTheVaultPage,
 }: TransactionDetailsProps) => {
-  const { transactionHistory } = useTransactionHistory(transaction.id);
-
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
   const isContract = mainOperation?.to?.type === AddressType.contract;
@@ -245,6 +243,7 @@ const Details = ({
     );
   };
 
+  const { isOpen } = useAccordionItemState();
   return (
     <VStack w="full">
       <Stack
@@ -252,7 +251,8 @@ const Details = ({
         alignSelf="flex-start"
         display="flex"
         direction={{ base: 'column', md: 'row' }}
-        alignItems="center"
+        // Voltar aqui e verificar o alinhamento entre transaction breakdown e history
+        alignItems="start"
         justify="space-between"
         columnGap={isInTheVaultPage ? '3rem' : '8rem'}
         w="full"
@@ -408,7 +408,10 @@ const Details = ({
           minW={{ base: 200, md: 300 }}
           maxW={600}
         >
-          <TransactionStepper steps={transactionHistory!} />
+          {/* <TransactionStepper steps={transactionHistory!} /> */}
+          {isOpen && (
+            <DetailsTransactionStepper transactionId={transaction.id!} />
+          )}
         </Box>
       </Stack>
 
