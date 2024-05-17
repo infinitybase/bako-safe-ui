@@ -1,23 +1,22 @@
-import { CustomSkeleton } from '@/components';
-
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
-import { TransactionStepper } from './TransactionStepper';
+import { ITransactionHistory } from '../../services';
 
 interface DetailsTransactionStepperProps {
   transactionId: string;
+  children: (
+    isLoading: boolean,
+    transactionHistory: ITransactionHistory[] | null,
+  ) => React.ReactNode;
 }
 
 const DetailsTransactionStepper = ({
   transactionId,
+  children,
 }: DetailsTransactionStepperProps) => {
   const { transactionHistory, isLoading } =
     useTransactionHistory(transactionId);
 
-  return (
-    <CustomSkeleton isLoaded={!isLoading} h={290}>
-      <TransactionStepper steps={transactionHistory!} />
-    </CustomSkeleton>
-  );
+  return <>{children(isLoading, transactionHistory)}</>;
 };
 
 export default DetailsTransactionStepper;
