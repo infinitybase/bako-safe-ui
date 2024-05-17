@@ -259,7 +259,10 @@ const Details = ({
   return (
     <DetailsTransactionStepper transactionId={transaction.id}>
       {(isLoading, transactionHistory) => (
-        <CustomSkeleton isLoaded={!isLoading}>
+        <CustomSkeleton
+          isLoaded={!isLoading && !!transactionHistory}
+          minH={isMobile ? 550 : 'unset'}
+        >
           <VStack w="full">
             <Stack
               pt={{ base: 0, sm: 5 }}
@@ -427,9 +430,6 @@ const Details = ({
                 maxW={600}
               >
                 <TransactionStepper steps={transactionHistory!} />
-                {/* {isOpen && (
-            <DetailsTransactionStepper transactionId={transaction.id!} />
-          )} */}
               </Box>
             </Stack>
 
