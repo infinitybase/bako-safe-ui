@@ -147,55 +147,68 @@ const WorkspaceSettingsDrawer = ({
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
 
+  const pathname = window.location.pathname;
+
+  const isEditingOrCreatingMember = pathname.endsWith('/members');
+
   const request = useGetCurrentWorkspace();
   const { isExtraSmall } = useScreenSize();
 
   return (
     <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
-      <DrawerOverlay />
-      <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end" zIndex={200}>
-          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
-            <LineCloseIcon fontSize="24px" aria-label="Close window" />
-          </HStack>
-        </Flex>
+      {!isEditingOrCreatingMember && (
+        <>
+          <DrawerOverlay />
+          <DrawerContent>
+            <Flex mb={5} w="full" justifyContent="flex-end" zIndex={200}>
+              <HStack
+                cursor="pointer"
+                onClick={drawerProps.onClose}
+                spacing={2}
+              >
+                <LineCloseIcon fontSize="24px" aria-label="Close window" />
+              </HStack>
+            </Flex>
 
-        <DrawerHeader position="relative" top={isExtraSmall ? '-42px' : -12}>
-          <VStack alignItems="flex-start" spacing={5}>
-            <Heading
-              fontSize={isExtraSmall ? '18px' : '2xl'}
-              fontWeight="semibold"
-              color="white"
+            <DrawerHeader
+              position="relative"
+              top={isExtraSmall ? '-42px' : -12}
             >
-              Workspace settings
-            </Heading>
-            <Text fontSize="sm" color="grey.200">
-              This is the workspace that you are seeing.
-            </Text>
-          </VStack>
-        </DrawerHeader>
+              <VStack alignItems="flex-start" spacing={5}>
+                <Heading
+                  fontSize={isExtraSmall ? '18px' : '2xl'}
+                  fontWeight="semibold"
+                  color="white"
+                >
+                  Workspace settings
+                </Heading>
+                <Text fontSize="sm" color="grey.200">
+                  This is the workspace that you are seeing.
+                </Text>
+              </VStack>
+            </DrawerHeader>
 
-        <DrawerBody
-          mt={-2}
-          overflowY="scroll"
-          css={{
-            '&::-webkit-scrollbar': { width: '0' },
-            scrollbarWidth: 'none',
-          }}
-        >
-          <WorkspaceCard
-            key={request.workspace?.id}
-            workspace={request.workspace!}
-            counter={{
-              members: request.workspace!.members.length,
-              //In this case, the predicates are coming in an array, so we need to use the length property
-              vaults: Array.isArray(request.workspace!.predicates)
-                ? request.workspace!.predicates.length
-                : 0,
-            }}
-            mb={10}
-          />
-          {/* <Card mb={10} bgColor="dark.200">
+            <DrawerBody
+              mt={-2}
+              overflowY="scroll"
+              css={{
+                '&::-webkit-scrollbar': { width: '0' },
+                scrollbarWidth: 'none',
+              }}
+            >
+              <WorkspaceCard
+                key={request.workspace?.id}
+                workspace={request.workspace!}
+                counter={{
+                  members: request.workspace!.members.length,
+                  //In this case, the predicates are coming in an array, so we need to use the length property
+                  vaults: Array.isArray(request.workspace!.predicates)
+                    ? request.workspace!.predicates.length
+                    : 0,
+                }}
+                mb={10}
+              />
+              {/* <Card mb={10} bgColor="dark.200">
             <HStack spacing={5}>
               <Avatar
                 p={10}
@@ -216,66 +229,71 @@ const WorkspaceSettingsDrawer = ({
               </Box>
             </HStack>
           </Card> */}
-          <Divider mb={6} />
-          <Flex
-            w="full"
-            mb={4}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Flex h={14} flexDir="column" justify="space-around">
-              <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
-                Members
-              </Heading>
-              <Text fontSize="sm" color="grey.400">
-                {request.workspace?.members.length}{' '}
-                {request.workspace?.members.length === 1 ? 'Member' : 'Members'}
-              </Text>
-            </Flex>
+              <Divider mb={6} />
+              <Flex
+                w="full"
+                mb={4}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Flex h={14} flexDir="column" justify="space-around">
+                  <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
+                    Members
+                  </Heading>
+                  <Text fontSize="sm" color="grey.400">
+                    {request.workspace?.members.length}{' '}
+                    {request.workspace?.members.length === 1
+                      ? 'Member'
+                      : 'Members'}
+                  </Text>
+                </Flex>
 
-            <Button
-              size="md"
-              h={10}
-              variant="primary"
-              bgColor="grey.200"
-              border="none"
-              gap={2}
-              onClick={() => {
-                navigate(
-                  Pages.membersWorkspace({
-                    workspaceId: request.workspace?.id ?? '',
-                  }),
-                );
-              }}
-              _hover={{
-                opacity: 0.8,
-              }}
-            >
-              <UserAddIcon />
-              Add member
-            </Button>
-          </Flex>
-
-          <VStack w="full" maxW="full">
-            {!!request.workspace?.members &&
-              request.workspace?.members.map((member) => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  workspace={request.workspace!}
-                  onEdit={(memberId) =>
+                <Button
+                  size="md"
+                  h={10}
+                  variant="primary"
+                  bgColor="grey.200"
+                  border="none"
+                  gap={2}
+                  onClick={() => {
                     navigate(
-                      Pages.updateMemberWorkspace({
-                        workspaceId: request.workspace!.id,
-                        memberId,
+                      Pages.membersWorkspace({
+                        workspaceId: request.workspace?.id ?? '',
                       }),
-                    )
-                  }
-                />
-              ))}
-          </VStack>
-        </DrawerBody>
-      </DrawerContent>
+                    );
+                    // drawerProps.onClose();
+                  }}
+                  _hover={{
+                    opacity: 0.8,
+                  }}
+                >
+                  <UserAddIcon />
+                  Add member
+                </Button>
+              </Flex>
+
+              <VStack w="full" maxW="full">
+                {!!request.workspace?.members &&
+                  request.workspace?.members.map((member) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      workspace={request.workspace!}
+                      onEdit={(memberId) =>
+                        navigate(
+                          Pages.updateMemberWorkspace({
+                            workspaceId: request.workspace!.id,
+                            memberId,
+                          }),
+                        )
+                      }
+                    />
+                  ))}
+              </VStack>
+            </DrawerBody>
+          </DrawerContent>
+        </>
+      )}
     </Drawer>
   );
 };

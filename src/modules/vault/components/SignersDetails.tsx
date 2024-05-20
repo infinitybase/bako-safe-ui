@@ -31,7 +31,6 @@ const SignerCard = chakra(Card, {
 
 const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
-  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   const {
     workspaces: { current },
@@ -119,7 +118,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={{ base: 'full', lg: 'md' }} mb={4} h="full">
+    <Box w={{ base: 'full', lg: 'md' }} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"

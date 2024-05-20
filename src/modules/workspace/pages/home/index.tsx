@@ -197,19 +197,13 @@ const WorkspacePage = () => {
 
           <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
             <BreadcrumbItem>
-              <Icon
-                mt={1}
-                mr={2}
-                as={HomeIcon}
-                fontSize="sm"
-                color="grey.200"
-              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -416,6 +410,7 @@ const WorkspacePage = () => {
                   fontWeight="semibold"
                   color="grey.450"
                 >{`Workspace's balance breakdown`}</Text>
+
                 <CustomSkeleton
                   isLoaded={!worksapceBalance.isLoading}
                   w="full"
@@ -453,6 +448,8 @@ const WorkspacePage = () => {
                   */}
 
                       <AssetCard
+                        maxH={145}
+                        p={2}
                         asset={{
                           ...assetsMap[NativeAssetId],
                           assetId: NativeAssetId,

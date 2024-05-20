@@ -70,6 +70,7 @@ const MemberTab = () => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
+            src={member?.avatar}
             name={contactNickname ?? member?.address}
           />
           <Flex
@@ -127,7 +128,7 @@ const CreateMemberPage = () => {
           <FeedbackSuccess
             showAction
             title={formState.title}
-            description="To view all the members added to your workspace, click on settings on the workspace home page."
+            description="To view all the members added to your workspace, click on members on the workspace home page"
             primaryAction={formState.primaryAction}
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}

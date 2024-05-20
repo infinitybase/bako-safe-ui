@@ -127,19 +127,13 @@ const AddressBookPage = () => {
 
             <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
               <BreadcrumbItem>
-                <Icon
-                  mr={2}
-                  mt={1}
-                  as={HomeIcon}
-                  fontSize="sm"
-                  color="grey.200"
-                />
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() => goHome()}
                 >
+                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                   Home
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -299,7 +293,7 @@ const AddressBookPage = () => {
           <EmptyState
             showAction={hasPermission([OWNER, ADMIN, MANAGER])}
             buttonAction={() => handleOpenDialog({})}
-            subTitle={`It seems like you haven't create any favorite yet. Would you like to create one now?`}
+            subTitle={`It seems you haven't added any favorites yet. Would you like to add one now?`}
             buttonActionTitle="Add a new favorite"
           />
         )}

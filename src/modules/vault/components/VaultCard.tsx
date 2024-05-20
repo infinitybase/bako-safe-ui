@@ -110,7 +110,18 @@ export const VaultCard = ({
               spacing={-2}
             >
               {members.map(({ avatar, address }) => (
-                <Avatar variant="roundedSquare" src={avatar} key={address} />
+                <Avatar
+                  variant="roundedSquare"
+                  borderRadius={8}
+                  src={avatar}
+                  key={address}
+                  border="none"
+                  sx={{
+                    '&>img': {
+                      border: '1px solid #CFCCC9',
+                    },
+                  }}
+                />
               ))}
             </AvatarGroup>
           </Box>

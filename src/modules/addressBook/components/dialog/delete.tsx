@@ -37,7 +37,21 @@ const DeleteContactDialog = ({
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
     >
-      <Dialog.Body my="auto" maxW={420} justifyContent="center">
+      <Dialog.Header
+        mb={0}
+        mt={0}
+        h={6}
+        title=""
+        description=""
+        onClose={dialog.onClose}
+        maxW={420}
+      />
+      <Dialog.Body
+        mt={{ base: 'auto', sm: 6 }}
+        mb="auto"
+        maxW={420}
+        justifyContent="center"
+      >
         <VStack>
           <Flex alignItems="center" justifyContent="center" position="relative">
             <Box h="100px" w="100px" bg="error.900" borderRadius={10} />

@@ -80,19 +80,13 @@ const VaultDetailsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon
-                mt={1}
-                mr={2}
-                as={HomeIcon}
-                fontSize="sm"
-                color="grey.200"
-              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -190,7 +184,7 @@ const VaultDetailsPage = () => {
       <Box
         mb={3}
         display="flex"
-        alignItems="center"
+        alignItems={isExtraSmall ? 'flex-start' : 'center'}
         flexDir={isExtraSmall ? 'column' : 'row'}
         gap={isExtraSmall ? 2 : 4}
         mt={{ base: 12, sm: 'unset' }}

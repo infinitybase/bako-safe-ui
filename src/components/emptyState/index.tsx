@@ -57,7 +57,7 @@ const EmptyState = ({
             fontWeight={400}
             variant="description"
           >
-            {subTitle ?? `It seems like you haven't any transaction yet.`}
+            {subTitle ?? `It seems like you haven't made any transactions yet.`}
           </Text>
         </VStack>
         {showAction && (

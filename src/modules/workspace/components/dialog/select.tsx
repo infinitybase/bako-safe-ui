@@ -35,18 +35,30 @@ const SelectWorkspaceDialog = ({
       isOpen={dialog.isOpen}
       closeOnOverlayClick={false}
     >
-      {!listIsEmpty && (
+      {!listIsEmpty ? (
         <Dialog.Header
           hideCloseButton={false}
           onClose={dialog.onClose}
           maxW={450}
           position="relative"
           h={20}
-          // mt={{ base: 0, xs: -2 }}
           mt={0}
           mb={-12}
-          title="   Select your workspace"
+          title="Select your workspace"
           description={`We're thrilled. Select your workspace to have you here. `}
+        />
+      ) : (
+        <Dialog.Header
+          zIndex={10}
+          hideCloseButton={false}
+          onClose={dialog.onClose}
+          maxW={450}
+          position="relative"
+          h={6}
+          mt={0}
+          mb={-5}
+          title=""
+          description=""
         />
       )}
 
