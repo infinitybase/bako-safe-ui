@@ -4,7 +4,7 @@ import {
   ContainerProps as ContainerChakraProps,
 } from '@chakra-ui/react';
 
-import HomeBackgroundHd from '@/assets/home-background-hd.png';
+// import HomeBackgroundHd from '@/assets/home-background-hd.png';
 
 export interface ContainerProps extends ContainerChakraProps {}
 
@@ -19,11 +19,11 @@ const Container = ({ children, ...props }: ContainerProps) => {
       {...props}
     >
       <Box
-        backgroundImage={HomeBackgroundHd}
-        backgroundSize="cover"
-        backgroundRepeat="no-repeat"
-        backgroundPosition="center"
-        backgroundAttachment="fixed"
+      // backgroundImage={HomeBackgroundHd}
+      // backgroundSize="cover"
+      // backgroundRepeat="no-repeat"
+      // backgroundPosition="center"
+      // backgroundAttachment="fixed"
       >
         {children}
       </Box>
