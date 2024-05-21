@@ -37,6 +37,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         vaultId: vaultId,
       });
     }
+    tabs.set(TabState.INFO);
 
     return close_call();
   };
