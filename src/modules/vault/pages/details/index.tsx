@@ -48,7 +48,8 @@ const VaultDetailsPage = () => {
   const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
 
-  const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+  const { vaultTransactions, loadingVaultTransactions, isLoading } =
+    vault.transactions;
   const { goHome } = useHome();
   const {
     workspaces: { current },
@@ -202,95 +203,102 @@ const VaultDetailsPage = () => {
           quantity={pendingSignerTransactions.data?.ofUser ?? 0}
         />
       </Box>
+      <CustomSkeleton
+        isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
+        h="full"
+      >
+        {hasTransactions ? (
+          <TransactionCard.List
+            mt={5}
+            w="full"
+            spacing={{ base: 3, sm: 5 }}
+            maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
+          >
+            {vaultTransactions.map((transaction) => {
+              const isSigner = !!transaction.predicate?.members?.find(
+                (member) => member.address === account,
+              );
 
-      {hasTransactions ? (
-        <TransactionCard.List
-          mt={5}
-          w="full"
-          spacing={{ base: 3, sm: 5 }}
-          maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
-        >
-          {vaultTransactions.map((transaction) => {
-            const isSigner = !!transaction.predicate?.members?.find(
-              (member) => member.address === account,
-            );
+              return (
+                <CustomSkeleton
+                  key={transaction.id}
+                  isLoaded={!loadingVaultTransactions}
+                >
+                  <TransactionCard.Container
+                    status={transactionStatus({ ...transaction, account })}
+                    details={
+                      <TransactionCard.Details
+                        transaction={transaction}
+                        isInTheVaultPage
+                      />
+                    }
+                    isInTheVaultPage
+                    transaction={transaction}
+                    account={account}
+                    isSigner={isSigner}
+                  >
+                    {!vaultRequiredSizeToColumnLayout && (
+                      <TransactionCard.CreationDate>
+                        {format(
+                          new Date(transaction?.createdAt),
+                          'EEE, dd MMM',
+                        )}
+                      </TransactionCard.CreationDate>
+                    )}
 
-            return (
-              <CustomSkeleton
-                key={transaction.id}
-                isLoaded={!loadingVaultTransactions}
-              >
-                <TransactionCard.Container
-                  status={transactionStatus({ ...transaction, account })}
-                  details={
-                    <TransactionCard.Details
+                    <TransactionCard.Assets />
+                    <TransactionCard.Amount
+                      assets={
+                        transaction?.assets.map((asset) => ({
+                          amount: asset.amount,
+                          assetId: asset.assetId,
+                          to: asset.to,
+                        })) ?? []
+                      }
+                    />
+                    <TransactionCard.Name>
+                      {limitCharacters(transaction?.name ?? '', 20)}
+                    </TransactionCard.Name>
+                    <TransactionCard.Status
                       transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
+                      showDescription={!vaultRequiredSizeToColumnLayout}
+                    />
+                    <TransactionCard.Actions
+                      isSigner={isSigner}
+                      transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
                       isInTheVaultPage
                     />
-                  }
-                  isInTheVaultPage
-                  transaction={transaction}
-                  account={account}
-                  isSigner={isSigner}
-                >
-                  {!vaultRequiredSizeToColumnLayout && (
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                  )}
-
-                  <TransactionCard.Assets />
-                  <TransactionCard.Amount
-                    assets={
-                      transaction?.assets.map((asset) => ({
-                        amount: asset.amount,
-                        assetId: asset.assetId,
-                        to: asset.to,
-                      })) ?? []
-                    }
-                  />
-                  <TransactionCard.Name>
-                    {limitCharacters(transaction?.name ?? '', 20)}
-                  </TransactionCard.Name>
-                  <TransactionCard.Status
-                    transaction={transaction}
-                    status={transactionStatus({
-                      ...transaction,
-                      account,
-                    })}
-                    showDescription={!vaultRequiredSizeToColumnLayout}
-                  />
-                  <TransactionCard.Actions
-                    isSigner={isSigner}
-                    transaction={transaction}
-                    status={transactionStatus({
-                      ...transaction,
-                      account,
-                    })}
-                    isInTheVaultPage
-                  />
-                </TransactionCard.Container>
-              </CustomSkeleton>
-            );
-          })}
-          {!vault.transactions.isLoading && <Box ref={inView.ref} />}
-        </TransactionCard.List>
-      ) : (
-        !hasTransactions &&
-        !!vaultTransactions && (
-          <EmptyState
-            isDisabled={!vault?.hasBalance}
-            buttonAction={() =>
-              navigate(
-                Pages.createTransaction({
-                  workspaceId: params.workspaceId!,
-                  vaultId: vault.id!,
-                }),
-              )
-            }
-          />
-        )
-      )}
+                  </TransactionCard.Container>
+                </CustomSkeleton>
+              );
+            })}
+            {!vault.transactions.isLoading && <Box ref={inView.ref} />}
+          </TransactionCard.List>
+        ) : (
+          !hasTransactions &&
+          !!vaultTransactions && (
+            <EmptyState
+              isDisabled={!vault?.hasBalance}
+              buttonAction={() =>
+                navigate(
+                  Pages.createTransaction({
+                    workspaceId: params.workspaceId!,
+                    vaultId: vault.id!,
+                  }),
+                )
+              }
+            />
+          )
+        )}
+      </CustomSkeleton>
 
       {vaultRequiredSizeToColumnLayout && (
         <Box mt={7}>
