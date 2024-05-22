@@ -35,9 +35,6 @@ const SigninContainerBackground = ({
       alignItems="center"
       flexDirection="column"
       justifyContent="center"
-      // backgroundImage="url('backgroundHome.png')"
-      // backgroundSize="cover"
-      // backgroundPosition="unset"
       p={4}
     >
       {children}

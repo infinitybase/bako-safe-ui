@@ -22,7 +22,7 @@ const defaultTheme = extendTheme({
   styles: {
     global: () => ({
       body: {
-        // bg: 'dark.950',
+        bg: 'dark.950',
         maxWidth: '1500px',
         mx: 'auto',
         backgroundImage: `url(${HomeBackgroundHd})`,

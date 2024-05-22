@@ -50,8 +50,9 @@ const emptyState = defineStyle({
   borderWidth: 1,
   color: 'dark.950',
   _hover: {
+    bgColor: 'grey.200',
     _disabled: {
-      bgColor: 'initial',
+      bgColor: 'grey.75',
     },
   },
   fontSize: {
