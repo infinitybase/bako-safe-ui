@@ -42,6 +42,8 @@ const useCreateVault = () => {
       invalidateQueries();
       setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
+      form.reset();
+      setSearch('');
     },
     onError: () => {
       errorToast({
