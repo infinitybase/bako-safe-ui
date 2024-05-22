@@ -17,12 +17,12 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
@@ -86,19 +86,13 @@ const UserVaultsPage = () => {
           </Button>
           <Breadcrumb ml={8}>
             <BreadcrumbItem>
-              <Icon
-                mt={1}
-                mr={2}
-                as={HomeIcon}
-                fontSize="sm"
-                color="grey.200"
-              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -221,8 +215,12 @@ const UserVaultsPage = () => {
 
       {!vaults?.length && (
         <CustomSkeleton isLoaded={!loadingVaults}>
-          <EmptyVault
-            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
+          <EmptyState
+            showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+            title={`Let's Begin!`}
+            subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}
+            buttonActionTitle="Create my first vault"
+            buttonAction={onOpen}
           />
         </CustomSkeleton>
       )}

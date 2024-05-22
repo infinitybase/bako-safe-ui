@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Heading,
   HStack,
   Icon,
   Text,
@@ -12,13 +11,8 @@ import {
 import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import {
-  Card,
-  CustomSkeleton,
-  HomeIcon,
-  NotFoundIcon,
-  SquarePlusIcon,
-} from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
@@ -87,19 +81,13 @@ const VaultDetailsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon
-                mt={1}
-                mr={2}
-                as={HomeIcon}
-                fontSize="sm"
-                color="grey.200"
-              />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -187,6 +175,7 @@ const VaultDetailsPage = () => {
         alignItems="flex-start"
         w="full"
         gap={10}
+        h={453}
       >
         <CardDetails vault={vault} store={store} />
 
@@ -196,8 +185,10 @@ const VaultDetailsPage = () => {
       <Box
         mb={3}
         display="flex"
+        alignItems={isExtraSmall ? 'flex-start' : 'center'}
         flexDir={isExtraSmall ? 'column' : 'row'}
         gap={isExtraSmall ? 2 : 4}
+        mt={{ base: 12, sm: 'unset' }}
       >
         <Text
           variant="subtitle"
@@ -294,49 +285,17 @@ const VaultDetailsPage = () => {
         ) : (
           !hasTransactions &&
           !!vaultTransactions && (
-            <Card
-              w="full"
-              p={20}
-              bgColor="dark.300"
-              display="flex"
-              justifyContent="center"
-              flexDirection="column"
-              alignItems="center"
-            >
-              <Box mb={6}>
-                <NotFoundIcon w={100} h={100} />
-              </Box>
-              <Box mb={5}>
-                <Heading
-                  color="brand.500"
-                  fontSize={{ base: 'xl', sm: '4xl' }}
-                  textAlign="center"
-                >
-                  Nothing to show here.
-                </Heading>
-              </Box>
-              <Box maxW={400} mb={8}>
-                <Text color="white" textAlign="center" fontWeight="bold">
-                  It seems like you {"haven't"} made any transactions yet. Would
-                  you like to make one now?
-                </Text>
-              </Box>
-              <Button
-                variant="primary"
-                leftIcon={<SquarePlusIcon />}
-                isDisabled={!vault?.hasBalance}
-                onClick={() =>
-                  navigate(
-                    Pages.createTransaction({
-                      workspaceId: params.workspaceId!,
-                      vaultId: vault.id!,
-                    }),
-                  )
-                }
-              >
-                Create transaction
-              </Button>
-            </Card>
+            <EmptyState
+              isDisabled={!vault?.hasBalance}
+              buttonAction={() =>
+                navigate(
+                  Pages.createTransaction({
+                    workspaceId: params.workspaceId!,
+                    vaultId: vault.id!,
+                  }),
+                )
+              }
+            />
           )
         )}
       </CustomSkeleton>

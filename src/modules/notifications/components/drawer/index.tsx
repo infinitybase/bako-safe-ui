@@ -14,8 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { CustomSkeleton } from '@/components';
-import { CloseIcon } from '@/components/icons/close-icon';
+import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { useAppNotifications } from '../../hooks';
 import { NotificationsEmptyState } from '../emptyState';
@@ -58,12 +57,12 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
       <DrawerOverlay />
       <DrawerContent>
         <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
-            <CloseIcon w={5} h={5} />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
+          <LineCloseIcon
+            fontSize="24px"
+            aria-label="Close window"
+            cursor="pointer"
+            onClick={drawer.onClose}
+          />
         </Flex>
 
         <DrawerHeader mb={6}>

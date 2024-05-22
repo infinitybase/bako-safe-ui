@@ -63,7 +63,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                 bg="grey.825"
                 borderColor="grey.550"
                 backdropFilter="blur(8px)"
-                h="4.5em"
+                h={{ base: '4.5em', lg: '8em' }}
               >
                 <VStack
                   w="100%"

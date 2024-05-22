@@ -19,12 +19,7 @@ export const SelectionEmptyState = () => {
       </Box>
 
       <Box maxW={420} mb={4}>
-        <Text
-          color="grey.200"
-          fontSize="sm"
-          textAlign="center"
-          fontWeight="bold"
-        >
+        <Text color="grey.200" fontSize="sm" textAlign="center">
           You are not currently a member of any workspace. Would you like to
           create your first one now?
         </Text>

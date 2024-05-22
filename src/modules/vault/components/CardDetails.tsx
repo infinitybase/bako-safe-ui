@@ -125,7 +125,7 @@ const CardDetails = (props: CardDetailsProps) => {
 
   return (
     <Box w="full" maxW={{ base: 'full', sm: 730, md: 'full' }}>
-      <Box mb={5} w="full">
+      <Box mb="1.2em" w="full">
         <Text
           color="grey.400"
           fontWeight="semibold"
@@ -233,13 +233,14 @@ const CardDetails = (props: CardDetailsProps) => {
                 flexDirection={{ base: 'row', sm: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
+                h={125}
               >
                 <Box width="auto">
                   <HStack
                     minW={20}
                     display="flex"
                     flexDirection="column"
-                    alignItems="center"
+                    alignItems="end"
                   >
                     <HStack
                       w="full"
@@ -386,11 +387,15 @@ const CardDetails = (props: CardDetailsProps) => {
                 />
               </VStack>
             </HStack> */}
-            <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
-              <Text
-                fontWeight="semibold"
-                color="grey.450"
-              >{`Vaults's balance breakdown`}</Text>
+            <VStack
+              h={{ base: 160, sm: 180 }}
+              w="full"
+              alignItems="flex-start"
+              spacing={4}
+            >
+              <Text fontWeight="semibold" color="grey.450">
+                {`Vaults's balance breakdown`}
+              </Text>
               <CustomSkeleton
                 isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}
                 w="full"
@@ -400,7 +405,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   <Card
                     w="full"
                     h="full"
-                    p={8}
+                    p={{ base: 4, sm: 8 }}
                     borderColor="dark.100"
                     borderStyle="dashed"
                   >
@@ -408,7 +413,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       <Text fontWeight="bold" color="grey.200">
                         First thing first...
                       </Text>
-                      <Text color="white" maxW={340} textAlign="center">
+                      <Text color="grey.200" maxW={340} textAlign="center">
                         {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
                       </Text>

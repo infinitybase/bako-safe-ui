@@ -41,21 +41,19 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const isTransactionSuccess = transaction.status === TransactionStatus.SUCCESS;
 
   return (
-    <Dialog.Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      closeButtonMarginTop={{
-        base: fromConnector && isTransactionSuccess ? 20 : 0,
-        xs: 'unset',
-      }}
-    >
+    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
+        onClose={onClose}
         position="relative"
         mb={0}
         top={{ base: -5, sm: -7 }}
         w="full"
         maxW={{ base: 480, xs: 'unset' }}
         title="Transaction Details"
+        mt={{
+          base: fromConnector && isTransactionSuccess ? 24 : 4,
+          xs: 'unset',
+        }}
       />
       <Dialog.Body mt={-4} as={AccordionItem} borderTop="none">
         <VStack spacing={{ base: 3, xs: 5 }}>

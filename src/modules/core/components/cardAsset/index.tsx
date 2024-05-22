@@ -75,6 +75,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
           h={{ base: 8, sm: 10 }}
           name={asset.slug}
           src={asset.icon ?? defaultAsset.icon}
+          ignoreFallback
         />
 
         {isMobile && <AssetDetails asset={asset} defaultAsset={defaultAsset} />}
