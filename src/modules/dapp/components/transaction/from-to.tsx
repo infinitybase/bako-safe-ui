@@ -22,8 +22,7 @@ const FromToContainer = chakra(HStack, {
 });
 
 const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
-  const isContract =
-    from.type === AddressType.contract || to.type === AddressType.contract;
+  const isContract = to.type === AddressType.contract;
 
   return (
     <FromToContainer gap={2}>

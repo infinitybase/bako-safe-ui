@@ -50,7 +50,10 @@ const DappTransactionRecipient = ({
       w={174}
     >
       <Text variant="description" textAlign="center" mt={-2} color="grey.250">
-        {isSender ? 'From' : 'To'}: {isContract && '(Contract)'}
+        {isSender ? 'From' : 'To'}
+        {(!isSender && isContract && '(Contract)') ||
+          (!isSender && isContract && !isVault && '(Contract)')}
+        {isVault && '(Bako Safe)'}:
       </Text>
       <Divider borderColor="dark.100" mt={1} mb="10px" />
       <Center flexDirection="column" h={88}>

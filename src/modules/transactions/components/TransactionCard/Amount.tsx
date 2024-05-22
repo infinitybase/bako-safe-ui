@@ -32,7 +32,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
       ml={0}
     >
       <AvatarGroup max={2}>
-        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} />
+        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} ignoreFallback />
       </AvatarGroup>
       <Box w="full" mt={0.5} textAlign="left">
         <Heading variant={isMobile ? 'title-sm' : 'title-md'} color="grey.200">

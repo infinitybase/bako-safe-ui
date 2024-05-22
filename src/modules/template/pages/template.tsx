@@ -21,6 +21,7 @@ const TemplatePage = (
       closeOnOverlayClick={false}
     >
       <Dialog.Header
+        onClose={onClose}
         maxW={420}
         hidden={steps[step].hiddeTitle}
         title="Create Template"

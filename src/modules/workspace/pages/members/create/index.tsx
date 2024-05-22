@@ -70,6 +70,7 @@ const MemberTab = () => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
+            src={member?.avatar}
             name={contactNickname ?? member?.address}
           />
           <Flex
@@ -127,7 +128,7 @@ const CreateMemberPage = () => {
           <FeedbackSuccess
             showAction
             title={formState.title}
-            description="To view all the members added to your workspace, click on settings on the workspace home page."
+            description="To view all the members added to your workspace, click on members on the workspace home page"
             primaryAction={formState.primaryAction}
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
@@ -191,27 +192,24 @@ const CreateMemberPage = () => {
         isLoading={addressBook.createContactRequest.isLoading}
         isEdit={false}
       />
-
       <Dialog.Header
         maxW={480}
         title={dialog.title}
         position="relative"
         top={{ base: 0, sm: -8 }}
-        mt={0}
         h="auto"
         mb={0}
+        onClose={handleClose}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"
         hidden={!tabs.is(MemberTabState.FORM)}
       />
-
       {formState.isEditMember && (
         <Tabs maxW={480} w="full" hidden={!tabs.is(MemberTabState.FORM)}>
           <MemberTab />
         </Tabs>
       )}
-
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
           <Box maxW={480} w="full" mt={{ base: 2, sm: 0 }} mb={8}>
@@ -220,7 +218,6 @@ const CreateMemberPage = () => {
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
         </>
       )}
-
       <Dialog.Body
         mb={{ base: 7, sm: 1 }}
         maxW={480}
@@ -242,7 +239,6 @@ const CreateMemberPage = () => {
           {TabsPanels}
         </Tabs>
       </Dialog.Body>
-
       {tabs.is(MemberTabState.FORM) && (
         <>
           <Dialog.Actions maxW={480}>

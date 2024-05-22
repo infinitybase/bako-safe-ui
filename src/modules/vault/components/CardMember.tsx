@@ -44,7 +44,7 @@ const CardMember = ({ member, isOwner }: CardMemberProps) => {
   return (
     <SignerCard
       w="full"
-      h="4.5em"
+      h="4.49em"
       maxW={{ base: 'unset', sm: 360 }}
       bg="grey.825"
       borderColor="grey.550"

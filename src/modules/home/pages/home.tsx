@@ -16,6 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
@@ -32,7 +33,6 @@ import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
-import { EmptyTransaction } from '../components/EmptyCard/Transaction';
 
 const HomePage = () => {
   const {
@@ -147,7 +147,7 @@ const HomePage = () => {
         minH={homeRequest.isLoading ? '100vh' : 'fit-content'}
         mt={homeRequest.isLoading ? 6 : 4}
       >
-        {recentVaults?.length && (
+        {recentVaults?.length ? (
           <Box pb={6} alignSelf="flex-start">
             <Text
               color="grey.400"
@@ -158,8 +158,8 @@ const HomePage = () => {
               Recently used vaults
             </Text>
           </Box>
-        )}
-        {recentVaults?.length && (
+        ) : null}
+        {recentVaults?.length ? (
           <Grid
             mt={{ base: -8, sm: -2 }}
             w="full"
@@ -224,7 +224,7 @@ const HomePage = () => {
               },
             )}
           </Grid>
-        )}
+        ) : null}
         {/* TRANSACTION LIST */}
         {transactions && transactions.length <= 0 ? (
           <VStack w="full" spacing={6}>
@@ -240,12 +240,15 @@ const HomePage = () => {
                 </Text>
               </HStack>
             )}
-            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-              <EmptyTransaction />
+            <CustomSkeleton
+              isLoaded={!homeRequest.isLoading}
+              mt={{ base: 16, sm: 8 }}
+            >
+              <EmptyState showAction={false} />
             </CustomSkeleton>
           </VStack>
         ) : (
-          <Box w="full" mt={8}>
+          <Box w="full" mt={{ base: 16, sm: 8 }}>
             <Box
               w="full"
               display="flex"
@@ -256,7 +259,7 @@ const HomePage = () => {
               <Text
                 variant="subtitle"
                 fontWeight="semibold"
-                fontSize={{ base: 'sm', sm: 'xl' }}
+                fontSize={{ base: 'md', xs: 'xl' }}
               >
                 Transactions
               </Text>

@@ -127,7 +127,7 @@ const VaultAddressesStep = ({
           <VStack
             mt={4}
             w="full"
-            spacing={6}
+            spacing={2}
             overflowY="auto"
             maxH={{ base: 230 }}
             pr={{ base: 2, sm: 4 }}

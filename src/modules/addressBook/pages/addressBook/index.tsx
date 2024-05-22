@@ -16,6 +16,7 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
@@ -26,7 +27,6 @@ import { useGetCurrentWorkspace } from '@/modules/workspace/hooks/useGetWorkspac
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import {
-  AddressBookEmptyState,
   ContactCard,
   CreateContactDialog,
   DeleteContactDialog,
@@ -127,19 +127,13 @@ const AddressBookPage = () => {
 
             <Breadcrumb display={{ base: 'none', sm: 'initial' }} ml={8}>
               <BreadcrumbItem>
-                <Icon
-                  mr={2}
-                  mt={1}
-                  as={HomeIcon}
-                  fontSize="sm"
-                  color="grey.200"
-                />
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() => goHome()}
                 >
+                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                   Home
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -296,9 +290,11 @@ const AddressBookPage = () => {
         </Grid>
 
         {!hasContacts && !listContactsRequest.isLoading && (
-          <AddressBookEmptyState
+          <EmptyState
             showAction={hasPermission([OWNER, ADMIN, MANAGER])}
-            action={() => handleOpenDialog({})}
+            buttonAction={() => handleOpenDialog({})}
+            subTitle={`It seems you haven't added any favorites yet. Would you like to add one now?`}
+            buttonActionTitle="Add a new favorite"
           />
         )}
       </VStack>
