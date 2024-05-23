@@ -260,8 +260,26 @@ const Details = ({
     <DetailsTransactionStepper transactionId={transaction.id}>
       {(isLoading, transactionHistory) => (
         <CustomSkeleton
+          py={2}
           isLoaded={!isLoading && !!transactionHistory}
           minH={isMobile ? 550 : 'unset'}
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'transparent',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
+          maxH={isMobile ? 120 : 'unset'}
+          overflowY={isMobile ? 'scroll' : 'unset'}
+          overflowX={isMobile ? 'hidden' : 'unset'}
         >
           <VStack w="full">
             <Stack
@@ -297,7 +315,6 @@ const Details = ({
                       px={5}
                       py={{ base: 2, xs: 4 }}
                       borderWidth="1px"
-                      h={{ base: 114, xs: 'unset' }}
                     >
                       <Text color="grey.500" fontSize={{ base: 12, xs: 'sm' }}>
                         Requesting a transaction from:
@@ -323,6 +340,7 @@ const Details = ({
                             variant="description"
                             fontSize={{ base: 12, xs: 'unset' }}
                           >
+                            {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
                             {transaction.summary?.origin.split('//')[1]}
                           </Text>
                         </VStack>
@@ -366,7 +384,7 @@ const Details = ({
                   </>
                 )}
 
-                <VStack alignItems="flex-start" flexWrap="wrap" w="100%">
+                <Box alignItems="flex-start" flexWrap="wrap" w="100%">
                   {transaction.assets.map((asset, index) => (
                     <AssetBoxInfo
                       key={index}
@@ -390,16 +408,10 @@ const Details = ({
                       hasToken={hasToken}
                     />
                   )}
-                </VStack>
+                </Box>
 
                 <Box
                   w="full"
-                  mt={
-                    fromConnector &&
-                    transaction.status === TransactionStatus.SUCCESS
-                      ? 0
-                      : 10
-                  }
                   hidden={transaction.status !== TransactionStatus.SUCCESS}
                   borderColor="grey"
                   borderTopWidth={1}
