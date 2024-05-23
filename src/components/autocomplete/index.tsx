@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
 import {
   ChangeEvent,
   CSSProperties,
@@ -28,6 +29,17 @@ export interface AutocompleteOption {
   label: string;
 }
 
+const slideToPosition = keyframes`
+  from {
+    transform: translateY(20px); 
+    opacity: 0; 
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1; 
+  }
+`;
+
 interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   label?: string;
   value?: string;
@@ -40,8 +52,10 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   inView?: InViewHookResponse;
   clearable?: boolean;
   optionsRef?: LegacyRef<HTMLDivElement>;
+  optionsContainerRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
+  isFromTransactions?: boolean;
 }
 
 const Autocomplete = ({
@@ -58,6 +72,8 @@ const Autocomplete = ({
   onChange,
   onInputChange,
   optionsRef,
+  optionsContainerRef,
+  isFromTransactions,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -157,6 +173,7 @@ const Autocomplete = ({
 
       {isOpen && (
         <Box
+          ref={optionsContainerRef}
           bg="dark.200"
           color="grey.200"
           fontSize="md"
@@ -164,8 +181,16 @@ const Autocomplete = ({
           borderWidth={1}
           borderRadius={10}
           padding={2}
-          position="absolute"
-          zIndex={200}
+          maxW={
+            isFromTransactions
+              ? 'unset'
+              : { base: 'calc(100% - 89px)', xs: 405 }
+          }
+          position={isFromTransactions ? 'absolute' : 'fixed'}
+          zIndex={300}
+          sx={{
+            animation: `${slideToPosition} 0.3s ease-out`,
+          }}
           w="full"
           mt={2}
         >
