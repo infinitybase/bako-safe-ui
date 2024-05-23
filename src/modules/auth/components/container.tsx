@@ -29,15 +29,12 @@ const SigninContainerBackground = ({
       }}
       zIndex="0"
       minW={320}
-      w="100vw"
       h="100vh"
+      w="100%"
       display="flex"
       alignItems="center"
       flexDirection="column"
       justifyContent="center"
-      backgroundImage="url('backgroundHome.png')"
-      backgroundSize="cover"
-      backgroundPosition="unset"
       p={4}
     >
       {children}

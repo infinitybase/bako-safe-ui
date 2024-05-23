@@ -65,7 +65,6 @@ const EmptyState = ({
             variant="emptyState"
             isDisabled={isDisabled}
             onClick={buttonAction}
-            _hover={{ background: isDisabled ? 'grey.75' : 'unset' }}
             w="full"
           >
             {buttonActionTitle ?? 'Create transaction'}

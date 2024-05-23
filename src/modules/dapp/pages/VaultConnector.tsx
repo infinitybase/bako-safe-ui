@@ -54,7 +54,7 @@ const VaultConnector = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
-    <Flex h="100vh" w="full" overflow="hidden">
+    <Flex h="100vh" w="full" overflow="hidden" bgColor="dark.950">
       <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
 
       <Box w={420} px={8} pt={6}>
