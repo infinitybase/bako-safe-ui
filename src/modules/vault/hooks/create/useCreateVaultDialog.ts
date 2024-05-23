@@ -38,6 +38,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       });
     }
     tabs.set(TabState.INFO);
+    form.reset();
 
     return close_call();
   };
