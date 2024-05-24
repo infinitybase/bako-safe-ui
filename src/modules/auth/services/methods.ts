@@ -117,6 +117,14 @@ export class UserService {
     return data;
   }
 
+  static async getByWebAuthnId(webAuthnId: string) {
+    const { data } = await api.get<CheckNicknameResponse>(
+      `/user/by-web-authn-id/${webAuthnId}`,
+    );
+
+    return data;
+  }
+
   static async createWebAuthnAccount(name: string) {
     const account = await createAccount(name, Address.fromRandom().toB256());
 
@@ -191,5 +199,10 @@ export const UserQueryKey = {
     UserQueryKey.NICKNAME(search),
     // UserQueryKey.HARDWARE_ID(),
     UserQueryKey.ACCOUNTS(hardwareId),
+  ],
+  WEB_AUTHN_ID: (webAuthnId: string) => [
+    UserQueryKey.DEFAULT,
+    'web-authn-id',
+    webAuthnId,
   ],
 };

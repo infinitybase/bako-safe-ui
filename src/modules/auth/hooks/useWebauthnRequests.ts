@@ -29,4 +29,15 @@ const useGetAccountsByHardwareId = () => {
   );
 };
 
-export { useCheckNickname, useGetAccountsByHardwareId };
+const useGetUserByWebAuthnId = (webAuthnId: string) => {
+  return useQuery(
+    UserQueryKey.ACCOUNTS(webAuthnId),
+    () => UserService.getByWebAuthnId(webAuthnId),
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!webAuthnId,
+    },
+  );
+};
+
+export { useCheckNickname, useGetAccountsByHardwareId, useGetUserByWebAuthnId };
