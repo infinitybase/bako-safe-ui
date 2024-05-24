@@ -26,6 +26,8 @@ import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
+import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -75,25 +77,25 @@ const VaultAddressesStep = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
 
-  const keepOptionsNearToInput = () => {
-    if (containerRef.current && optionsContainerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
-      optionsContainerRef.current.style.top = `${containerRect.top + pixelsToIncrement}px`;
-      optionsContainerRef.current.style.left = `${containerRect.left}px`;
-    }
+  const handleKeepOptionsNearToInput = () => {
+    const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
+    keepOptionsNearToInput({
+      containerRef,
+      childRef: optionsContainerRef,
+      pixelsToIncrement,
+    });
   };
 
   useEffect(() => {
     if (containerRef.current && optionsContainerRef.current) {
-      keepOptionsNearToInput();
+      handleKeepOptionsNearToInput();
     }
-    window.addEventListener('resize', keepOptionsNearToInput);
-    window.addEventListener('scroll', keepOptionsNearToInput);
+    window.addEventListener('resize', handleKeepOptionsNearToInput);
+    window.addEventListener('scroll', handleKeepOptionsNearToInput);
 
     return () => {
-      window.removeEventListener('resize', keepOptionsNearToInput);
-      window.removeEventListener('scroll', keepOptionsNearToInput);
+      window.removeEventListener('resize', handleKeepOptionsNearToInput);
+      window.removeEventListener('scroll', handleKeepOptionsNearToInput);
     };
   }, [
     containerRef.current,
@@ -101,16 +103,6 @@ const VaultAddressesStep = ({
     addresses.fields.length,
   ]);
 
-  const scrollToBottom = () => {
-    const container = containerRef.current;
-
-    if (container) {
-      container.scroll({
-        top: container.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  };
   const minSigners = form.formState.errors.minSigners?.message;
 
   return (
@@ -163,13 +155,15 @@ const VaultAddressesStep = ({
           description="Who is going to sign this vault?"
         >
           <VStack
-            onClick={handleFirstIsFirstLoad}
             mt={4}
             w="full"
             spacing={2}
             maxH={{ base: 230 }}
             pr={{ base: 2, sm: 4 }}
-            onClick={keepOptionsNearToInput}
+            onClick={() => {
+              handleKeepOptionsNearToInput();
+              handleFirstIsFirstLoad();
+            }}
             overflowY="auto"
             sx={{
               '&::-webkit-scrollbar': {
@@ -276,7 +270,7 @@ const VaultAddressesStep = ({
                   'minSigners',
                   String(addresses.fields.length + 1),
                 );
-                setTimeout(scrollToBottom, 0);
+                setTimeout(() => scrollToBottom(containerRef), 0);
               }}
               leftIcon={<PlusSquareIcon w={5} h={5} />}
               _hover={{
