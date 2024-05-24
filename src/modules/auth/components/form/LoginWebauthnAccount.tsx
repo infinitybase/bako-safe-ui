@@ -1,43 +1,43 @@
-import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+} from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
-
-import { Autocomplete } from '@/components';
 
 import { UseWebAuthn } from '../../hooks';
 
 interface LoginWebAuthnFormProps {
   form: UseWebAuthn['form']['loginForm'];
-  options: UseWebAuthn['accountsOptions'];
-  search: UseWebAuthn['searchAccount'];
 }
-export const LoginWebAuthnForm = ({
-  form,
-  options,
-  search,
-}: LoginWebAuthnFormProps) => {
+
+export const LoginWebAuthnForm = ({ form }: LoginWebAuthnFormProps) => {
   return (
     <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
-        render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
-            <Autocomplete
-              label="Username"
-              value={field.value}
-              onChange={field.onChange}
-              onInputChange={search.handler}
-              options={options}
-            />
-            <FormHelperText
-              ml={2}
-              color={form.formState.errors.name ? 'error.500' : 'grey.200'}
-            >
-              {form.formState.errors.name &&
-                form.formState.errors.name?.message}
-            </FormHelperText>
-          </FormControl>
-        )}
+        render={({ field, fieldState }) => {
+          return (
+            <FormControl isInvalid={fieldState.invalid}>
+              <Input
+                placeholder=" "
+                value={field.value}
+                onChange={field.onChange}
+              />
+              <FormLabel>Username</FormLabel>
+              <FormHelperText
+                ml={2}
+                color={form.formState.errors.name ? 'error.500' : 'grey.200'}
+              >
+                {form.formState.errors.name &&
+                  form.formState.errors.name?.message}
+              </FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     </Box>
   );
