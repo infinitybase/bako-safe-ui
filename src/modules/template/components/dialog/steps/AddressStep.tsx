@@ -10,6 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import {
   Controller,
   UseFieldArrayReturn,
@@ -40,6 +41,14 @@ interface AddressStepProps {
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const { account, isSingleWorkspace } = useAuth();
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const handleFirstIsFirstLoad = () => {
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+    }
+  };
+
   const {
     createContactRequest,
     form: contactForm,
@@ -50,13 +59,16 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     workspaceId,
     handleOpenDialog,
   } = useAddressBook(!isSingleWorkspace);
-  const { optionsRequests, handleFieldOptions } =
+
+  const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions(
       workspaceId!,
       !isSingleWorkspace,
       listContactsRequest.data,
       form.watch('addresses') as AddressesFields,
       form.formState.errors.addresses,
+      true,
+      isFirstLoad,
     );
 
   return (
@@ -81,7 +93,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
           mb={8}
         />
 
-        <VStack spacing={6}>
+        <VStack spacing={6} onClick={handleFirstIsFirstLoad}>
           {addresses.fields.map(({ id }, index) => (
             <Controller
               key={id}
@@ -93,6 +105,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 const appliedOptions = handleFieldOptions(
                   field.value,
                   optionsRequests[index].options,
+                  first,
                 );
 
                 const showAddToAddressBook =
@@ -109,8 +122,10 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 return (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Autocomplete
+                      optionsRef={optionRef}
                       value={field.value}
-                      label={`Address ${index + 1}`}
+                      disabled={first}
+                      label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}

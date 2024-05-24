@@ -10,7 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
@@ -52,6 +52,15 @@ const VaultAddressesStep = ({
     inView,
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
+
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const handleFirstIsFirstLoad = () => {
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+    }
+  };
+
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions(
       workspaceId!,
@@ -59,6 +68,8 @@ const VaultAddressesStep = ({
       listContactsRequest.data,
       form.watch('addresses'),
       form.formState.errors.addresses,
+      true,
+      isFirstLoad,
     );
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -125,6 +136,7 @@ const VaultAddressesStep = ({
           description="Who is going to sign this vault?"
         >
           <VStack
+            onClick={handleFirstIsFirstLoad}
             mt={4}
             w="full"
             spacing={2}
