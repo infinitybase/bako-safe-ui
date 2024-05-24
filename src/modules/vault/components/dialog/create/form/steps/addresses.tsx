@@ -10,7 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
@@ -73,6 +73,33 @@ const VaultAddressesStep = ({
     );
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const optionsContainerRef = useRef<HTMLDivElement>(null);
+
+  const keepOptionsNearToInput = () => {
+    if (containerRef.current && optionsContainerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
+      optionsContainerRef.current.style.top = `${containerRect.top + pixelsToIncrement}px`;
+      optionsContainerRef.current.style.left = `${containerRect.left}px`;
+    }
+  };
+
+  useEffect(() => {
+    if (containerRef.current && optionsContainerRef.current) {
+      keepOptionsNearToInput();
+    }
+    window.addEventListener('resize', keepOptionsNearToInput);
+    window.addEventListener('scroll', keepOptionsNearToInput);
+
+    return () => {
+      window.removeEventListener('resize', keepOptionsNearToInput);
+      window.removeEventListener('scroll', keepOptionsNearToInput);
+    };
+  }, [
+    containerRef.current,
+    optionsContainerRef.current,
+    addresses.fields.length,
+  ]);
 
   const scrollToBottom = () => {
     const container = containerRef.current;
@@ -140,9 +167,10 @@ const VaultAddressesStep = ({
             mt={4}
             w="full"
             spacing={2}
-            overflowY="auto"
             maxH={{ base: 230 }}
             pr={{ base: 2, sm: 4 }}
+            onClick={keepOptionsNearToInput}
+            overflowY="auto"
             sx={{
               '&::-webkit-scrollbar': {
                 width: '5px',
@@ -187,6 +215,7 @@ const VaultAddressesStep = ({
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
+                          optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
                           value={field.value}
                           onChange={field.onChange}

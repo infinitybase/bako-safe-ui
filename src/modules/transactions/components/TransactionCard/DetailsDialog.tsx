@@ -5,7 +5,6 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bakosafe';
 import { format } from 'date-fns';
 
 import { Dialog, DialogModalProps } from '@/components';
@@ -37,9 +36,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
   const showSignActions = awaitingAnswer && isSigner;
 
-  const fromConnector = !!transaction?.summary;
-  const isTransactionSuccess = transaction.status === TransactionStatus.SUCCESS;
-
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
       <Dialog.Header
@@ -50,13 +46,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         w="full"
         maxW={{ base: 480, xs: 'unset' }}
         title="Transaction Details"
-        mt={{
-          base: fromConnector && isTransactionSuccess ? 24 : 4,
-          xs: 'unset',
-        }}
+        mt={{ base: 14, xs: 'unset' }}
       />
       <Dialog.Body mt={-4} as={AccordionItem} borderTop="none">
-        <VStack spacing={{ base: 3, xs: 5 }}>
+        <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount
@@ -88,14 +81,20 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               />
             </HStack>
           </VStack>
-
-          <Divider />
+          <Divider mt={4} />
 
           <TransactionCard.Details transaction={transaction} isMobile />
         </VStack>
       </Dialog.Body>
 
-      <Dialog.Actions mt="auto">
+      <Dialog.Actions
+        mt="auto"
+        sx={{
+          '&>hr': {
+            marginTop: '0',
+          },
+        }}
+      >
         {showSignActions ? (
           <>
             <Button
