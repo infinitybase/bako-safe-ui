@@ -244,6 +244,8 @@ const Details = ({
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
   const notSigned = !status?.isDeclined && !status?.isSigned;
 
+  const { isMdHeight } = useScreenSize();
+
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
@@ -254,6 +256,7 @@ const Details = ({
 
   const { isOpen } = useAccordionItemState();
 
+  console.log('isMdHeight:', isMdHeight);
   if (!isMobile && !isOpen) return null;
 
   return (
@@ -262,7 +265,13 @@ const Details = ({
         <CustomSkeleton
           py={2}
           isLoaded={!isLoading && !!transactionHistory}
-          minH={isMobile ? 550 : 'unset'}
+          h={
+            isMobile && isMdHeight
+              ? 360
+              : isMobile && !isMdHeight
+                ? 500
+                : 'unset'
+          }
           sx={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -277,7 +286,6 @@ const Details = ({
               height: '10px',
             },
           }}
-          maxH={isMobile ? 120 : 'unset'}
           overflowY={isMobile ? 'scroll' : 'unset'}
           overflowX={isMobile ? 'hidden' : 'unset'}
         >

@@ -25,7 +25,7 @@ import {
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { UserPlusIcon } from '@/components/icons/user-add-icon';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
-import { AddressUtils } from '@/modules/core';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
@@ -114,6 +114,7 @@ const CreateMemberPage = () => {
   const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
+  const { isMobile } = useScreenSize();
 
   const TabsPanels = (
     <TabPanels>
@@ -180,11 +181,14 @@ const CreateMemberPage = () => {
       onClose={handleClose}
       size={{
         base:
-          formState.isEditMember && tabs.is(MemberTabState.FORM) ? 'xl' : 'md',
+          // formState.isEditMember && tabs.is(MemberTabState.FORM) ? 'xl' : 'md',
+          'full',
         sm: 'xl',
       }}
       closeOnOverlayClick={false}
       autoFocus={false}
+      blockScrollOnMount={isMobile}
+      hideContentOverflow
     >
       <CreateContactDialog
         form={addressBook.form}
@@ -195,10 +199,11 @@ const CreateMemberPage = () => {
       <Dialog.Header
         maxW={480}
         title={dialog.title}
-        position="relative"
-        top={{ base: 0, sm: -8 }}
-        h="auto"
         mb={0}
+        mt={{
+          base: -4,
+          xs: 0,
+        }}
         onClose={handleClose}
         description={dialog.description}
         descriptionFontSize="md"
@@ -219,21 +224,9 @@ const CreateMemberPage = () => {
         </>
       )}
       <Dialog.Body
-        mb={{ base: 7, sm: 1 }}
+        mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
         maxH={{ base: 'full', sm: 520 }}
-        overflowY="scroll"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '5px',
-            height: '5px' /* Adjust the height of the scrollbar */,
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '20px',
-            height: '20px' /* Adjust the height of the scrollbar thumb */,
-          },
-        }}
       >
         <Tabs index={tabs.tab} maxH="full" isLazy colorScheme="green">
           {TabsPanels}
@@ -241,7 +234,7 @@ const CreateMemberPage = () => {
       </Dialog.Body>
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions maxW={480}>
+          <Dialog.Actions maxW={480} mt={{ base: 'auto', xs: 'unset' }}>
             {!isEditMember ? (
               <Dialog.SecondaryAction
                 w="25%"

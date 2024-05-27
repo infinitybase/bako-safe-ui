@@ -12,6 +12,8 @@ const useScreenSize = () => {
   const [isSmallHeight] = useMediaQuery('(max-height: 37.48em)'); //600px
   const [isSmHeight] = useMediaQuery('(max-height: 33.125em)'); //530px
 
+  const isExtraSmallDevice = isMdHeight && isMobile;
+
   return {
     isMobile,
     isSmall,
@@ -20,6 +22,7 @@ const useScreenSize = () => {
     isMdHeight,
     isSmallHeight,
     isSmHeight,
+    isExtraSmallDevice,
   };
 };
 
