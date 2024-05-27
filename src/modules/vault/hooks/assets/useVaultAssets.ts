@@ -114,7 +114,7 @@ function useVaultAssets(predicate?: Vault) {
       return (
         bn(bn.parseUnits(balance.amount!))
           //@ts-ignore - TODO: minGasPrice was removed in fuels@0.88.1
-          .sub(gasConfig?.minGasPrice || bn.parseUnits('0.00001'))
+          .sub(gasConfig?.maxGasPerPredicate || bn.parseUnits('0.00001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
           .format({ precision: 5 })
       );
