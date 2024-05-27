@@ -13,7 +13,7 @@ import { EnumUtils, useTab } from '@/modules/core';
 import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
 import { useWebAuthnForm } from './useWebAuthnForm';
-import { useWebAuthnLastLoginId } from './useWebAuthnLastLoginId';
+import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,
@@ -44,7 +44,7 @@ const useWebAuthn = () => {
   });
 
   const accountsRequest = useGetAccountsByHardwareId();
-  const { lastLoginUsername } = useWebAuthnLastLoginId();
+  const { lastLoginUsername } = useWebAuthnLastLogin();
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 

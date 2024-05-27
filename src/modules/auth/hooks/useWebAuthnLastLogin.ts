@@ -1,7 +1,7 @@
 import { localStorageKeys } from '../services';
 import { useGetUserByWebAuthnId } from './useWebauthnRequests';
 
-const useWebAuthnLastLoginId = () => {
+const useWebAuthnLastLogin = () => {
   const setLastLoginId = (id: string) => {
     localStorage.setItem(localStorageKeys.WEB_AUTHN_LAST_LOGIN_ID, id);
   };
@@ -19,4 +19,4 @@ const useWebAuthnLastLoginId = () => {
   };
 };
 
-export { useWebAuthnLastLoginId };
+export { useWebAuthnLastLogin };
