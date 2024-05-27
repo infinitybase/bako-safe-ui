@@ -114,7 +114,7 @@ const CreateMemberPage = () => {
   const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmallDevice } = useScreenSize();
 
   const TabsPanels = (
     <TabPanels>
@@ -226,7 +226,20 @@ const CreateMemberPage = () => {
       <Dialog.Body
         mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
-        maxH={{ base: 'full', sm: 520 }}
+        maxH={{ base: isExtraSmallDevice ? 330 : 'full', sm: 520 }}
+        overflowY="scroll"
+        css={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+            width: '5px',
+            height: '5px' /* Adjust the height of the scrollbar */,
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '20px',
+            height: '20px' /* Adjust the height of the scrollbar thumb */,
+          },
+        }}
       >
         <Tabs index={tabs.tab} maxH="full" isLazy colorScheme="green">
           {TabsPanels}
@@ -234,7 +247,17 @@ const CreateMemberPage = () => {
       </Dialog.Body>
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions maxW={480} mt={{ base: 'auto', xs: 'unset' }}>
+          <Dialog.Actions
+            sx={{
+              '&>hr': {
+                marginTop:
+                  isExtraSmallDevice && formState.isEditMember ? '0' : 4,
+              },
+            }}
+            maxW={480}
+            mt={{ base: isExtraSmallDevice ? -6 : 'auto', xs: 'unset' }}
+            p={0}
+          >
             {!isEditMember ? (
               <Dialog.SecondaryAction
                 w="25%"
