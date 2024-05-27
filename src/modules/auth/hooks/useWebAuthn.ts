@@ -66,13 +66,8 @@ const useWebAuthn = () => {
   const currentUsername = loginForm.watch('name');
 
   const debouncedSearchAccount = useCallback(
-    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
-      if (typeof event === 'string') {
-        setSearchAccount(event);
-        return;
-      }
-
-      setSearchAccount(event.target.value);
+    debounce((value: string) => {
+      setSearchAccount(value);
     }, 300),
     [],
   );
@@ -184,7 +179,6 @@ const useWebAuthn = () => {
 
   const handleChangeTab = (tab: WebAuthnState) => {
     tabs.set(tab);
-    setSearchAccount('');
   };
 
   const openWebAuthnDrawer = () => {
@@ -207,8 +201,8 @@ const useWebAuthn = () => {
   };
 
   useEffect(() => {
-    isOpen && setSearchAccount('');
-  }, [isOpen]);
+    debouncedSearchAccount(currentUsername);
+  }, [currentUsername, debouncedSearchAccount]);
 
   useEffect(() => {
     loginForm.setValue('name', lastLoginUsername ?? '');
@@ -265,7 +259,10 @@ const useWebAuthn = () => {
       formState: formState[tabs.tab],
     },
     tabs,
-    signInProgress,
+    signIn: {
+      progess: signInProgress,
+      inProgress: isSigningIn,
+    },
   };
 };
 
