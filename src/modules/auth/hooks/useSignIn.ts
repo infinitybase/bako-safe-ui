@@ -110,8 +110,7 @@ const useSignIn = () => {
   const selectConnector = async (connector: string) => {
     await fuel.selectConnector(connector);
     connectorDrawer.onClose();
-    const isbyWallet =
-      connector === EConnectors.FUEL || connector === EConnectors.FULLET;
+    const isbyWallet = connector !== EConnectors.WEB_AUTHN;
     if (isbyWallet) {
       return connectByWallet();
     }

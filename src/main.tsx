@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { defaultConnectors } from '@fuel-wallet/sdk';
+import { defaultConnectors } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -18,22 +19,26 @@ BakoSafe.setProviders({
   CHAIN_URL: import.meta.env.VITE_NETWORK,
 });
 
+const fuelConnectorsQueryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={defaultTheme}>
-      <FuelProvider
-        fuelConfig={{
-          connectors: defaultConnectors() as any,
-        }}
-      >
-        <SocketProvider>
-          <BakoSafeQueryClientProvider>
-            <TransactionSendProvider>
-              <App />
-            </TransactionSendProvider>
-          </BakoSafeQueryClientProvider>
-        </SocketProvider>
-      </FuelProvider>
+      <QueryClientProvider client={fuelConnectorsQueryClient}>
+        <FuelProvider
+          fuelConfig={{
+            connectors: defaultConnectors({ devMode: import.meta.env.DEV }),
+          }}
+        >
+          <SocketProvider>
+            <BakoSafeQueryClientProvider>
+              <TransactionSendProvider>
+                <App />
+              </TransactionSendProvider>
+            </BakoSafeQueryClientProvider>
+          </SocketProvider>
+        </FuelProvider>
+      </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>,
 );
