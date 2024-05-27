@@ -201,7 +201,7 @@ const CreateMemberPage = () => {
         title={dialog.title}
         mb={0}
         mt={{
-          base: -4,
+          base: isExtraSmallDevice ? 0 : -4,
           xs: 0,
         }}
         onClose={handleClose}
