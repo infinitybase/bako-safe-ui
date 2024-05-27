@@ -165,6 +165,7 @@ const useWebAuthn = () => {
           await tabs.set(WebAuthnState.LOGIN);
           loginForm.reset({ name: name });
           memberForm.reset();
+          setSearch('');
         },
       })
       .catch((error) => {
@@ -189,7 +190,7 @@ const useWebAuthn = () => {
   const resetDialogForms = () => {
     handleChangeTab(WebAuthnState.LOGIN);
     loginForm.reset({ name: lastLoginUsername ?? '' });
-    memberForm.reset();
+    memberForm.reset({ name: search }, { keepErrors: true });
   };
 
   const closeWebAuthnDrawer = () => {
