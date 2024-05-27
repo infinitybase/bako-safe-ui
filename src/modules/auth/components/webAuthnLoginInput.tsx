@@ -66,11 +66,11 @@ const WebAuthnLoginInput = ({
 
         <InputRightElement
           pr={1}
-          top="1px"
+          top="3px"
           right="1px"
           borderRadius={10}
           bgColor="dark.250"
-          h="calc(100% - 3px)"
+          h="calc(100% - 6px)"
           w={10}
         >
           {isLoading ? (
