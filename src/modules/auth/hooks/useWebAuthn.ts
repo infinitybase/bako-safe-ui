@@ -44,7 +44,7 @@ const useWebAuthn = () => {
   });
 
   const accountsRequest = useGetAccountsByHardwareId();
-  const { lastLoginUsername } = useWebAuthnLastLogin();
+  const { lastLoginUsername, setLastLoginUsername } = useWebAuthnLastLogin();
   const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
@@ -133,6 +133,7 @@ const useWebAuthn = () => {
           setTimeout(() => {
             setIsSigningIn(false);
             setBtnDisabled(false);
+            setLastLoginUsername(name);
           }, 800);
         },
       },
