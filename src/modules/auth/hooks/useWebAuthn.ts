@@ -101,7 +101,8 @@ const useWebAuthn = () => {
 
     if (!acc?.address || !acc.webauthn) {
       loginForm.setError('name', {
-        message: 'Invalid username. Please check your username and try again',
+        message:
+          'Username not found, please check your username or create an account.',
       });
 
       setSignInProgress(0);
