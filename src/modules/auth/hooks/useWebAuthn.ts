@@ -1,5 +1,12 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
@@ -83,6 +90,14 @@ const useWebAuthn = () => {
     debouncedSearchHandler(value);
   };
 
+  const loginBtnIsDisabled = useMemo(
+    () =>
+      !loginForm.formState.isValid ||
+      (currentUsername?.length === 0 ?? false) ||
+      btnDisabled,
+    [btnDisabled, currentUsername?.length, loginForm.formState.isValid],
+  );
+
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
     setBtnDisabled(true);
     setIsSigningIn(true);
@@ -91,7 +106,7 @@ const useWebAuthn = () => {
 
     if (!acc?.address || !acc.webauthn) {
       loginForm.setError('name', {
-        message: 'Invalid username. Please check your username and try again.',
+        message: 'Invalid username. Please check your username and try again',
       });
 
       setSignInProgress(0);
@@ -129,11 +144,22 @@ const useWebAuthn = () => {
     );
   });
 
+  const handleLoginUsingEnterKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !loginBtnIsDisabled) {
+      handleLogin();
+    }
+  };
+
   useEffect(() => {
     if (accountsRequest?.data?.length === 0) {
       tabs.set(WebAuthnState.REGISTER);
     }
   }, [accountsRequest.data, isOpen]);
+
+  const createBtnIsDisabled =
+    !memberForm.formState.isValid ||
+    memberForm.watch('name').length === 0 ||
+    nicknames.data?.name;
 
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
     await createAccountMutate
@@ -149,6 +175,12 @@ const useWebAuthn = () => {
         console.error(error);
       });
   });
+
+  const handleCreateUsingEnterKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !createBtnIsDisabled) {
+      handleCreate();
+    }
+  };
 
   const handleChangeTab = (tab: WebAuthnState) => {
     tabs.set(tab);
@@ -188,12 +220,10 @@ const useWebAuthn = () => {
       primaryAction: 'Create account',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleCreate,
+      handlePrimaryActionUsingEnterKey: handleCreateUsingEnterKey,
       handleSecondaryAction: resetDialogForms,
       isLoading: createAccountMutate.isLoading,
-      isDisabled:
-        !memberForm.formState.isValid ||
-        memberForm.watch('name').length === 0 ||
-        nicknames.data?.name,
+      isDisabled: createBtnIsDisabled,
       title: 'Create Passkey account',
       description: 'Create a new account for this device.',
     },
@@ -202,12 +232,10 @@ const useWebAuthn = () => {
       primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
       secondaryAction: 'Create account',
       handlePrimaryAction: handleLogin,
+      handlePrimaryActionUsingEnterKey: handleLoginUsingEnterKey,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
-      isDisabled:
-        !loginForm.formState.isValid ||
-        (currentUsername?.length === 0 ?? false) ||
-        btnDisabled,
+      isDisabled: loginBtnIsDisabled,
       title: 'Login with Passkey',
       description:
         'Select your username or create a new account for this device.',

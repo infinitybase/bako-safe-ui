@@ -11,9 +11,13 @@ import { UseWebAuthn } from '../../hooks';
 
 interface LoginWebAuthnFormProps {
   form: UseWebAuthn['form']['loginForm'];
+  onSubmitUsingEnterKey: UseWebAuthn['form']['formState']['handlePrimaryActionUsingEnterKey'];
 }
 
-export const LoginWebAuthnForm = ({ form }: LoginWebAuthnFormProps) => {
+export const LoginWebAuthnForm = ({
+  form,
+  onSubmitUsingEnterKey,
+}: LoginWebAuthnFormProps) => {
   return (
     <Box w="full" mb={6} p="1px">
       <Controller
@@ -26,6 +30,7 @@ export const LoginWebAuthnForm = ({ form }: LoginWebAuthnFormProps) => {
                 placeholder=" "
                 value={field.value}
                 onChange={field.onChange}
+                onKeyDown={(e) => onSubmitUsingEnterKey(e)}
               />
               <FormLabel>Username</FormLabel>
               <FormHelperText

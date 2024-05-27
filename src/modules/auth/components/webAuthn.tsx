@@ -43,7 +43,10 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
   const TabsPanels = (
     <TabPanels>
       <TabPanel p={0}>
-        <LoginWebAuthnForm form={loginForm} />
+        <LoginWebAuthnForm
+          form={loginForm}
+          onSubmitUsingEnterKey={formState.handlePrimaryActionUsingEnterKey}
+        />
       </TabPanel>
       <TabPanel p={0}>
         <CreateWebAuthnForm
@@ -54,6 +57,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
             nicknamesData,
             searchHandler: handleInputChange,
           }}
+          onSubmitUsingEnterKey={formState.handlePrimaryActionUsingEnterKey}
         />
       </TabPanel>
     </TabPanels>
