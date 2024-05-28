@@ -116,6 +116,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       )}
 
       <Dialog.Body
+        minH={{ base: isExtraSmallDevice ? 360 : 500, xs: 'unset' }}
         maxW={540}
         mt={!tabs.is(CreateWorkspaceTabState.FORM) ? -10 : 'unset'}
       >

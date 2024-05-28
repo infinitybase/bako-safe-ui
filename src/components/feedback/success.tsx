@@ -41,7 +41,7 @@ const FeedbackSuccess = ({
     <Center
       overflowX="hidden"
       flexDirection="column"
-      minH={{ base: isExtraSmallDevice ? 610 : 700, sm: 'unset' }}
+      minH={{ base: isExtraSmallDevice ? 560 : 700, sm: 'unset' }}
       pt={{ base: isExtraSmallDevice ? 28 : 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
     >

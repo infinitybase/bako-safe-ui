@@ -115,6 +115,10 @@ const CreateMemberPage = () => {
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
   const { isMobile, isExtraSmallDevice } = useScreenSize();
+  const isFeedBackScreen =
+    tabs.is(MemberTabState.SUCCESS) ||
+    tabs.is(MemberTabState.UPDATE) ||
+    tabs.is(MemberTabState.DELETE);
 
   const TabsPanels = (
     <TabPanels>
@@ -224,7 +228,10 @@ const CreateMemberPage = () => {
       <Dialog.Body
         mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
-        // maxH={{ base: isExtraSmallDevice ? 330 : 'full', sm: 520 }}
+        maxH={{
+          base: isExtraSmallDevice && !isFeedBackScreen ? 330 : 'full',
+          sm: 520,
+        }}
         overflowY="scroll"
         css={{
           '&::-webkit-scrollbar': {

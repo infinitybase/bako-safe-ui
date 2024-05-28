@@ -37,7 +37,7 @@ const OnboardingStep = (props: OnboardingStepProps) => {
         base: 1,
         sm: 6,
       }}
-      h={{ base: isExtraSmallDevice ? 585 : 710 }}
+      h={{ base: isExtraSmallDevice ? 560 : 710 }}
     >
       <Box m={{ base: 4, sm: 8 }}>
         <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
