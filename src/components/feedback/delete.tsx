@@ -37,8 +37,9 @@ const FeedbackDelete = ({
   return (
     <Center
       flexDirection="column"
-      minH={{ base: isExtraSmallDevice ? 560 : 700, sm: 'unset' }}
-      pt={{ base: isExtraSmallDevice ? 28 : 40, sm: 'unset' }}
+      // minH={{ base: isExtraSmallDevice ? 560 : 700, sm: 'unset' }}
+      minH={{ base: isExtraSmallDevice ? '92vh' : '90vh', sm: 'unset' }}
+      pt={{ base: isExtraSmallDevice ? 32 : 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
     >
       <Box m={8}>

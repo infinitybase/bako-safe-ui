@@ -256,7 +256,6 @@ const Details = ({
 
   const { isOpen } = useAccordionItemState();
 
-  console.log('isMdHeight:', isMdHeight);
   if (!isMobile && !isOpen) return null;
 
   return (
