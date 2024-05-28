@@ -82,7 +82,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     onClose: props.onClose,
   });
 
-  const { isExtraSmall } = useScreenSize();
+  const { isMobile, isExtraSmallDevice } = useScreenSize();
 
   return (
     <Dialog.Modal
@@ -91,22 +91,21 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
       }}
       closeOnOverlayClick={false}
+      blockScrollOnMount={isMobile}
+      hideContentOverflow={isExtraSmallDevice}
       {...props}
     >
       {tabs.is(CreateWorkspaceTabState.FORM) ? (
         <Dialog.Header
           mb={0}
           onClose={props.onClose}
-          position="relative"
           maxW={450}
-          top={-6}
           title="Create Workspace"
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
       ) : (
         <Dialog.Header
-          mt={{ base: isExtraSmall ? 24 : 0 }}
           mb={0}
           onClose={props.onClose}
           position="relative"
@@ -117,8 +116,6 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
       )}
 
       <Dialog.Body
-        minH="full"
-        maxH="full"
         maxW={540}
         mt={!tabs.is(CreateWorkspaceTabState.FORM) ? -10 : 'unset'}
       >

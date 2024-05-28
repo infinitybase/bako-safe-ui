@@ -15,6 +15,7 @@ interface SelectWorkspaceDialogProps {
   onSelect: (workspace: string) => void;
   onCreate: () => void;
   isLoading?: boolean;
+  isCreatingWorkspace?: boolean;
 }
 
 const SelectWorkspaceDialog = ({
@@ -22,10 +23,13 @@ const SelectWorkspaceDialog = ({
   onSelect,
   userWorkspaces,
   onCreate,
+  isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
   const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
   const { isMobile, isExtraSmallDevice } = useScreenSize();
+
+  const openDialog = dialog.isOpen && !isCreatingWorkspace;
 
   const loggedWorkspace = workspaces.current;
 
@@ -33,7 +37,7 @@ const SelectWorkspaceDialog = ({
     <Dialog.Modal
       size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
       onClose={dialog.onClose}
-      isOpen={dialog.isOpen}
+      isOpen={openDialog}
       closeOnOverlayClick={false}
       blockScrollOnMount={isMobile}
     >
@@ -73,7 +77,7 @@ const SelectWorkspaceDialog = ({
       >
         <VStack>
           <VStack
-            h={isExtraSmallDevice ? 445 : isMobile ? '100vh' : 'unset'}
+            h={isExtraSmallDevice ? 400 : isMobile ? '100vh' : 'unset'}
             maxH={560}
             minH={300}
             spacing={5}
@@ -124,7 +128,7 @@ const SelectWorkspaceDialog = ({
         </VStack>
       </Dialog.Body>
       <DialogActions
-        mt="auto"
+        mt={isExtraSmallDevice ? 0 : 'auto'}
         maxW={480}
         hideDivider={listIsEmpty}
         sx={{

@@ -180,9 +180,7 @@ const CreateMemberPage = () => {
       isOpen
       onClose={handleClose}
       size={{
-        base:
-          // formState.isEditMember && tabs.is(MemberTabState.FORM) ? 'xl' : 'md',
-          'full',
+        base: 'full',
         sm: 'xl',
       }}
       closeOnOverlayClick={false}
@@ -226,7 +224,7 @@ const CreateMemberPage = () => {
       <Dialog.Body
         mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
-        maxH={{ base: isExtraSmallDevice ? 330 : 'full', sm: 520 }}
+        // maxH={{ base: isExtraSmallDevice ? 330 : 'full', sm: 520 }}
         overflowY="scroll"
         css={{
           '&::-webkit-scrollbar': {
