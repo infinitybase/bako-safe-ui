@@ -128,13 +128,11 @@ export class TransactionService {
       },
     });
 
-    const { gasPrice, usedFee, minFee } =
+    const { maxFee } =
       await vault.provider.getTransactionCost(transactionRequest);
 
-    transactionRequest.gasPrice = gasPrice;
-
     return {
-      fee: usedFee.add(minFee),
+      fee: maxFee,
       transactionRequest,
     };
   }
