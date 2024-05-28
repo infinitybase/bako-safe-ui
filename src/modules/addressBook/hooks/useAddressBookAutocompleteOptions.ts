@@ -28,6 +28,8 @@ const useAddressBookAutocompleteOptions = (
   contacts: WorkspaceContact[] = [],
   fields: AddressesFields = [],
   errors?: AddressesErrors,
+  isUsingTemplate?: boolean,
+  isFirstLoading?: boolean,
 ) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
@@ -75,13 +77,13 @@ const useAddressBookAutocompleteOptions = (
 
   const currentField = fields[currentIndex];
 
-  const excludeContacts = handleValidAddresses(currentField.value);
+  const excludeContacts = handleValidAddresses(currentField?.value);
   const excludeContactsQueryKey = excludeContacts.join('-');
 
   const { infinityContacts, lastElementRef, data, ...query } =
     useInfiniteListcontactsRequest(
       workspaceId,
-      currentField.value,
+      currentField?.value,
       contactIds,
       includePersonal,
       excludeContactsQueryKey,
@@ -89,9 +91,12 @@ const useAddressBookAutocompleteOptions = (
     );
 
   const formattedQueries = useMemo(() => {
+    const contactsToMapOver =
+      isUsingTemplate && isFirstLoading ? contacts : infinityContacts;
+
     return fields.map(() => {
-      const formattedData = infinityContacts
-        ? handleQueryData(infinityContacts)
+      const formattedData = contactsToMapOver
+        ? handleQueryData(contactsToMapOver)
         : [];
 
       return {

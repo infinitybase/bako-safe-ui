@@ -10,8 +10,8 @@ export enum EConnectors {
 }
 
 export enum EConnectorsLabels {
-  FUEL = 'Fuel domains',
-  FULLET = 'Fuelet',
+  FUEL = 'Fuel Wallet',
+  FUELET = 'Fuelet',
   WEB_AUTHN = 'Login With Passkey',
 }
 
@@ -28,7 +28,7 @@ const DEFAULT_CONNECTORS = [
   },
   {
     name: EConnectors.FULLET,
-    label: EConnectorsLabels.FULLET,
+    label: EConnectorsLabels.FUELET,
     icon: FueletIcon,
   },
 ];

@@ -16,7 +16,7 @@ interface UseSettingsProps {
 
 const { MY_SETTINGS } = SettingsQueryKey;
 
-const useSettings = ({ onOpen, onClose }: UseSettingsProps) => {
+const useSettings = ({ onClose }: UseSettingsProps) => {
   const { account } = useAuthStore();
   const { form } = useSettingsForm();
   const { successToast } = useSettingsToast();
@@ -65,7 +65,7 @@ const useSettings = ({ onOpen, onClose }: UseSettingsProps) => {
   });
 
   useEffect(() => {
-    if (firstLogin) onOpen?.();
+    // if (firstLogin) onOpen?.();
 
     // TODO: Move this to field values
     form.setValue('name', user?.name ?? '');

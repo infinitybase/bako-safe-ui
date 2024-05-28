@@ -97,6 +97,7 @@ const TransactionFormField = ({
                   options={paginatedContacts.data!}
                   inView={inView}
                   clearable={false}
+                  isFromTransactions
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}

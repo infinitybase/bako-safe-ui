@@ -10,6 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Controller,
   UseFieldArrayReturn,
@@ -32,6 +33,8 @@ import {
 } from '@/modules/addressBook/hooks';
 import { useAuth } from '@/modules/auth/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
+import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
+import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -40,6 +43,14 @@ interface AddressStepProps {
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const { account, isSingleWorkspace } = useAuth();
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const handleFirstIsFirstLoad = () => {
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+    }
+  };
+
   const {
     createContactRequest,
     form: contactForm,
@@ -50,14 +61,47 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     workspaceId,
     handleOpenDialog,
   } = useAddressBook(!isSingleWorkspace);
-  const { optionsRequests, handleFieldOptions } =
+
+  const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions(
       workspaceId!,
       !isSingleWorkspace,
       listContactsRequest.data,
       form.watch('addresses') as AddressesFields,
       form.formState.errors.addresses,
+      true,
+      isFirstLoad,
     );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const optionsContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleKeepOptionsNearToInput = () => {
+    const pixelsToIncrement = addresses.fields.length === 2 ? 136 : 156;
+
+    keepOptionsNearToInput({
+      containerRef,
+      childRef: optionsContainerRef,
+      pixelsToIncrement,
+    });
+  };
+
+  useEffect(() => {
+    if (containerRef.current && optionsContainerRef.current) {
+      handleKeepOptionsNearToInput();
+    }
+    window.addEventListener('resize', handleKeepOptionsNearToInput);
+    window.addEventListener('scroll', handleKeepOptionsNearToInput);
+
+    return () => {
+      window.removeEventListener('resize', handleKeepOptionsNearToInput);
+      window.removeEventListener('scroll', handleKeepOptionsNearToInput);
+    };
+  }, [
+    containerRef.current,
+    optionsContainerRef.current,
+    addresses.fields.length,
+  ]);
 
   return (
     <>
@@ -81,7 +125,25 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
           mb={8}
         />
 
-        <VStack spacing={6}>
+        <VStack
+          spacing={6}
+          onClick={handleFirstIsFirstLoad}
+          ref={containerRef}
+          maxH={{ base: 230 }}
+          pr={{ base: 2, sm: 4 }}
+          overflowY="auto"
+          sx={{
+            '&::-webkit-scrollbar': {
+              width: '5px',
+              maxHeight: '330px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px' /* Adjust the height of the scrollbar thumb */,
+            },
+          }}
+        >
           {addresses.fields.map(({ id }, index) => (
             <Controller
               key={id}
@@ -93,6 +155,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 const appliedOptions = handleFieldOptions(
                   field.value,
                   optionsRequests[index].options,
+                  first,
                 );
 
                 const showAddToAddressBook =
@@ -109,8 +172,11 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 return (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Autocomplete
+                      optionsContainerRef={optionsContainerRef}
+                      optionsRef={optionRef}
                       value={field.value}
-                      label={`Address ${index + 1}`}
+                      disabled={first}
+                      label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}
@@ -152,10 +218,13 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
             border="none"
             bgColor="dark.100"
             variant="secondary"
+            minH="40px"
+            w="full"
             onClick={() => {
               addresses.append({
                 value: '',
               });
+              setTimeout(() => scrollToBottom(containerRef), 0);
             }}
             leftIcon={<UserAddIcon />}
           >

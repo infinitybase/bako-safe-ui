@@ -25,6 +25,7 @@ const TemplatePage = (
         maxW={420}
         hidden={steps[step].hiddeTitle}
         title="Create Template"
+        mt={0}
         description="Define the name and description of this template. These details will be visible only to you."
       />
 
