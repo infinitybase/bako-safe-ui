@@ -1,5 +1,5 @@
 import { useProvider } from '@fuels/react';
-import { Vault } from 'bakosafe';
+import { BakoSafe, Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -109,12 +109,11 @@ function useVaultAssets(predicate?: Vault) {
        * TODO: calculate exact gas fee, get resource to spend in provider
        * https://github.com/FuelLabs/fuels-wallet/blob/15358f509596d823f201a2bfd3721d4e26fc52cc/packages/app/src/systems/Transaction/services/transaction.tsx#L270-L289C15
        * **/
-      const gasConfig = provider?.getGasConfig();
+      //const gasConfig = provider?.getGasConfig();
 
       return (
         bn(bn.parseUnits(balance.amount!))
-          //@ts-ignore - TODO: minGasPrice was removed in fuels@0.88.1
-          .sub(gasConfig?.maxGasPerPredicate || bn.parseUnits('0.00001'))
+          .sub(BakoSafe.getGasConfig('BASE_FEE') || bn.parseUnits('0.00001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
           .format({ precision: 5 })
       );

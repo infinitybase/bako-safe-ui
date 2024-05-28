@@ -1,4 +1,4 @@
-import { IPayloadVault, Vault } from 'bakosafe';
+import { BakoSafe, IPayloadVault, Vault } from 'bakosafe';
 
 import { useAuth } from '@/modules/auth';
 
@@ -56,7 +56,7 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
           name: params.name,
           description: params.description!,
           configurable: {
-            network: provider.url ?? import.meta.env.VITE_NETWORK_URL,
+            network: provider.url ?? BakoSafe.getProviders('CHAIN_URL'),
             SIGNATURES_COUNT: params.minSigners,
             SIGNERS: params.addresses,
           },
