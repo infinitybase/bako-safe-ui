@@ -28,7 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <FuelProvider
           fuelConfig={{
             connectors: defaultConnectors({
-              devMode: true,
+              devMode: import.meta.env.VITE_DEV,
             }),
           }}
         >
