@@ -76,7 +76,10 @@ export const CreateWebAuthnForm = ({
               _hover={{
                 cursor: 'pointer',
               }}
-              onClick={() => setSearch('')}
+              onClick={() => {
+                setSearch('');
+                field.onChange('');
+              }}
             />
           </Box>
         )}
