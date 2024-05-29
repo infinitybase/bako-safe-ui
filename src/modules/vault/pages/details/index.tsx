@@ -175,7 +175,6 @@ const VaultDetailsPage = () => {
         alignItems="flex-start"
         w="full"
         gap={10}
-        h={453}
       >
         <CardDetails vault={vault} store={store} />
 
@@ -205,7 +204,7 @@ const VaultDetailsPage = () => {
       </Box>
       <CustomSkeleton
         isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
-        h="full"
+        h="fit-content"
       >
         {hasTransactions ? (
           <TransactionCard.List
@@ -295,6 +294,7 @@ const VaultDetailsPage = () => {
                   }),
                 )
               }
+              mb={10}
             />
           )
         )}
