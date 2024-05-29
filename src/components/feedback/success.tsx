@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react';
 
 import TransactionsBoxIcon from '@/assets/transactions-icon.png';
-import { useScreenSize } from '@/modules';
 
 interface SuccessStepProps {
   onPrimaryAction?: () => void;
@@ -38,8 +37,6 @@ const FeedbackSuccess = ({
   membersFormIcon,
   hasCloseButton,
 }: SuccessStepProps) => {
-  const { isExtraSmall } = useScreenSize();
-
   return (
     <Center
       mt={hasCloseButton ? -8 : 'unset'}
@@ -86,15 +83,15 @@ const FeedbackSuccess = ({
         <HStack
           w="full"
           hidden={!showAction}
-          spacing={isExtraSmall ? 2 : 4}
+          spacing={{ base: 2, xs: 4 }}
           justifyContent="center"
         >
           <Button
-            w={isExtraSmall ? '50%' : '45%'}
+            w={{ base: '50%', xs: '45%' }}
             border="1px solid white"
             bgColor="transparent"
             variant="secondary"
-            fontSize={isExtraSmall ? 'xs' : 'unset'}
+            fontSize={{ base: 'xs', xs: 'unset' }}
             onClick={onSecondaryAction}
             _hover={{
               borderColor: 'brand.500',
@@ -104,11 +101,11 @@ const FeedbackSuccess = ({
             {secondaryAction}
           </Button>
           <Button
-            w={isExtraSmall ? '50%' : '45%'}
+            w={{ base: '50%', xs: '45%' }}
             border="none"
             bgColor="brand.500"
             variant="primary"
-            fontSize={isExtraSmall ? 'xs' : 'unset'}
+            fontSize={{ base: 'xs', xs: 'unset' }}
             onClick={onPrimaryAction}
             _hover={{
               opacity: 0.8,
