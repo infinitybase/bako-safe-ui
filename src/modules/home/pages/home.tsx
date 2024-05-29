@@ -11,7 +11,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
@@ -327,19 +326,17 @@ const HomePage = () => {
                               vault={transaction.predicate}
                             />
                           )}
-                          <TransactionCard.CreationDate>
+                          {/* <TransactionCard.CreationDate>
                             {format(
                               new Date(transaction.createdAt),
                               'EEE, dd MMM',
                             )}
-                          </TransactionCard.CreationDate>
+                          </TransactionCard.CreationDate> */}
                           <TransactionCard.Assets />
                           <TransactionCard.Amount
                             assets={transaction.resume.outputs}
                           />
-                          <TransactionCard.Name>
-                            {transaction.name}
-                          </TransactionCard.Name>
+                          <TransactionCard.Name vaultName={transaction.name} />
                           <TransactionCard.Status
                             transaction={transaction}
                             status={transactionStatus({

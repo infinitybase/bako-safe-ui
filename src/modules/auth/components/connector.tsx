@@ -37,6 +37,13 @@ interface ConnectorsListProps {
 const CardConnector = (props: CardConnectorProps) => {
   const { connector, isWebAuthn, onClick } = props;
 
+  if (
+    connector.name === EConnectors.FUEL_DEVELOPMENT &&
+    !import.meta.env.VITE_DEV
+  ) {
+    return null;
+  }
+
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
       return (

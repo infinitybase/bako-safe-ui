@@ -239,7 +239,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         position={{ base: 'unset', xs: 'absolute' }}
                         bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                       >
-                        This vault has pending transactions.
+                        Pending transactions
                       </Text>
                     ) : !makeTransactionsPerm ? (
                       <Text

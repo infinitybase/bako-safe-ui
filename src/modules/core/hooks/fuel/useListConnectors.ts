@@ -5,13 +5,15 @@ import { PasskeyIcon } from '@/components/icons/passkey-icon';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
+  FUEL_DEVELOPMENT = 'Fuel Wallet Development',
   FULLET = 'Fuelet Wallet',
   WEB_AUTHN = 'Login With Passkey',
 }
 
 export enum EConnectorsLabels {
-  FUEL = 'Fuel domains',
-  FULLET = 'Fuelet',
+  FUEL = 'Fuel Wallet',
+  FUELET = 'Fuelet',
+  FUEL_DEVELOPMENT = 'Fuel Wallet (Development)',
   WEB_AUTHN = 'Login With Passkey',
 }
 
@@ -27,8 +29,13 @@ const DEFAULT_CONNECTORS = [
     icon: FuelIcon,
   },
   {
+    name: EConnectors.FUEL_DEVELOPMENT,
+    label: EConnectorsLabels.FUEL_DEVELOPMENT,
+    icon: FuelIcon,
+  },
+  {
     name: EConnectors.FULLET,
-    label: EConnectorsLabels.FULLET,
+    label: EConnectorsLabels.FUELET,
     icon: FueletIcon,
   },
 ];
@@ -40,12 +47,14 @@ const useDefaultConnectors = () => {
     const fuelConnector = connectors?.find((c) => c.name === connector.name);
     const hasWebAuthn = !!window.navigator.credentials;
     const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
+    const isDevMode = connector.name === EConnectors.FUEL_DEVELOPMENT;
     return {
       ...connector,
       imageUrl: undefined,
       isEnabled:
         (!!fuelConnector && fuelConnector.installed) ||
-        (isWebAuthn && hasWebAuthn),
+        (isWebAuthn && hasWebAuthn) ||
+        isDevMode,
     };
   });
 

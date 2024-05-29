@@ -5,7 +5,7 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import React, { ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
@@ -20,10 +20,12 @@ interface CreateWebAuthnFormProps {
     nicknamesData: UseWebAuthn['nicknamesData'];
     searchHandler: (event: ChangeEvent<HTMLInputElement>) => void;
   };
+  onSubmitUsingEnterKey: UseWebAuthn['form']['formState']['handlePrimaryActionUsingEnterKey'];
 }
 export const CreateWebAuthnForm = ({
   form,
   nickname,
+  onSubmitUsingEnterKey,
 }: CreateWebAuthnFormProps) => {
   const { search, setSearch, nicknamesData, searchHandler } = nickname;
 
@@ -42,6 +44,7 @@ export const CreateWebAuthnForm = ({
                   searchHandler(e);
                   field.onChange(e.target.value);
                 }}
+                onKeyDown={(e) => onSubmitUsingEnterKey(e)}
                 isInvalid={
                   fieldState.invalid ||
                   (!!nicknamesData?.name && search.length > 0)
@@ -73,7 +76,10 @@ export const CreateWebAuthnForm = ({
               _hover={{
                 cursor: 'pointer',
               }}
-              onClick={() => setSearch('')}
+              onClick={() => {
+                setSearch('');
+                field.onChange('');
+              }}
             />
           </Box>
         )}

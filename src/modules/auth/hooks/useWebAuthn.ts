@@ -1,11 +1,19 @@
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { EnumUtils, useTab } from '@/modules/core';
 
 import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
 import { useWebAuthnForm } from './useWebAuthnForm';
+import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,
@@ -25,7 +33,6 @@ const useWebAuthn = () => {
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
   const [searchAccount, setSearchAccount] = useState('');
-  const [isValidCurrentUsername, setIsValidCurrentUsername] = useState(false);
   //button sign in disabled, this is used because handleLogin proccess annoter info before mutation to use isLoading
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -35,9 +42,10 @@ const useWebAuthn = () => {
     tabs: EnumUtils.toNumberArray(WebAuthnState),
     defaultTab: WebAuthnState.LOGIN,
   });
-  const accountsRequest = useGetAccountsByHardwareId();
 
-  const { memberForm, loginForm } = useWebAuthnForm(accountsRequest.data || []);
+  const accountsRequest = useGetAccountsByHardwareId();
+  const { lastLoginUsername, setLastLoginUsername } = useWebAuthnLastLogin();
+  const { memberForm, loginForm } = useWebAuthnForm();
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
   const accountsOptions = useMemo(() => {
@@ -58,13 +66,8 @@ const useWebAuthn = () => {
   const currentUsername = loginForm.watch('name');
 
   const debouncedSearchAccount = useCallback(
-    debounce((event: string | ChangeEvent<HTMLInputElement>) => {
-      if (typeof event === 'string') {
-        setSearchAccount(event);
-        return;
-      }
-
-      setSearchAccount(event.target.value);
+    debounce((value: string) => {
+      setSearchAccount(value);
     }, 300),
     [],
   );
@@ -82,55 +85,88 @@ const useWebAuthn = () => {
     debouncedSearchHandler(value);
   };
 
+  const loginBtnIsDisabled = useMemo(
+    () =>
+      !loginForm.formState.isValid ||
+      (currentUsername?.length === 0 ?? false) ||
+      btnDisabled,
+    [btnDisabled, currentUsername?.length, loginForm.formState.isValid],
+  );
+
   const handleLogin = loginForm.handleSubmit(async ({ name }) => {
     setBtnDisabled(true);
-    const acc = accountsRequest?.data?.find(
-      (user) => user.webauthn.id === name,
-    );
+    setIsSigningIn(true);
 
-    if (acc) {
-      setIsSigningIn(true);
-      const { code } = await UserService.generateSignInCode(acc.address);
-      setSignInProgress(50);
-      await signAccountMutate.mutateAsync(
-        {
-          id: acc.webauthn.id,
-          challenge: code,
-          publicKey: acc.webauthn.publicKey,
+    const acc = await UserService.verifyNickname(name);
+
+    if (!acc?.address || !acc.webauthn) {
+      loginForm.setError('name', {
+        message:
+          'Username not found, please check your username or create an account.',
+      });
+
+      setSignInProgress(0);
+      setBtnDisabled(false);
+      setIsSigningIn(false);
+      return;
+    }
+
+    setSignInProgress(33);
+
+    const { code } = await UserService.generateSignInCode(acc.address);
+
+    setSignInProgress(66);
+
+    await signAccountMutate.mutateAsync(
+      {
+        id: acc.webauthn.id,
+        challenge: code,
+        publicKey: acc.webauthn.publicKey,
+      },
+      {
+        onError: () => {
+          setSignInProgress(0);
+          setIsSigningIn(false);
+          setBtnDisabled(false);
         },
-        {
-          onError: () => {
-            setSignInProgress(0);
+        onSuccess: () => {
+          setSignInProgress(100);
+          setTimeout(() => {
             setIsSigningIn(false);
             setBtnDisabled(false);
-          },
-          onSuccess: () => {
-            setSignInProgress(100);
-            setTimeout(() => {
-              setIsSigningIn(false);
-              setBtnDisabled(false);
-            }, 800);
-          },
+            setLastLoginUsername(name);
+          }, 800);
         },
-      );
-    }
+      },
+    );
   });
+
+  const handleLoginUsingEnterKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !loginBtnIsDisabled) {
+      handleLogin();
+    }
+  };
 
   useEffect(() => {
     if (accountsRequest?.data?.length === 0) {
       tabs.set(WebAuthnState.REGISTER);
     }
-  }, [accountsRequest.data]);
+  }, [accountsRequest.data, isOpen]);
+
+  const createBtnIsDisabled =
+    !memberForm.formState.isValid ||
+    memberForm.watch('name').length === 0 ||
+    nicknames.data?.name;
 
   const handleCreate = memberForm.handleSubmit(async ({ name }) => {
     await createAccountMutate
       .mutateAsync(name, {
-        onSuccess: async (data) => {
+        onSuccess: async () => {
           await accountsRequest.refetch();
           await tabs.set(WebAuthnState.LOGIN);
-          loginForm.reset();
-          loginForm.setValue('name', data.id);
+          loginForm.reset({ name: name });
           memberForm.reset();
+          setSearch('');
         },
       })
       .catch((error) => {
@@ -138,9 +174,14 @@ const useWebAuthn = () => {
       });
   });
 
+  const handleCreateUsingEnterKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !createBtnIsDisabled) {
+      handleCreate();
+    }
+  };
+
   const handleChangeTab = (tab: WebAuthnState) => {
     tabs.set(tab);
-    setSearchAccount('');
   };
 
   const openWebAuthnDrawer = () => {
@@ -149,8 +190,8 @@ const useWebAuthn = () => {
 
   const resetDialogForms = () => {
     handleChangeTab(WebAuthnState.LOGIN);
-    loginForm.reset();
-    memberForm.reset();
+    loginForm.reset({ name: lastLoginUsername ?? '' });
+    memberForm.reset({ name: search }, { keepErrors: true });
   };
 
   const closeWebAuthnDrawer = () => {
@@ -163,22 +204,12 @@ const useWebAuthn = () => {
   };
 
   useEffect(() => {
-    isOpen && setSearchAccount('');
-  }, [isOpen]);
+    debouncedSearchAccount(currentUsername);
+  }, [currentUsername, debouncedSearchAccount]);
 
   useEffect(() => {
-    if (
-      accountsRequest.data &&
-      accountsRequest?.data?.length > 0 &&
-      currentUsername?.length > 0
-    ) {
-      const defaultWebAuthnId = accountsRequest.data.find(
-        (user) => user.webauthn.id === currentUsername,
-      );
-
-      defaultWebAuthnId && setIsValidCurrentUsername(true);
-    }
-  }, [accountsRequest.data, currentUsername]);
+    loginForm.setValue('name', lastLoginUsername ?? '');
+  }, [lastLoginUsername, loginForm]);
 
   const formState = {
     [WebAuthnState.REGISTER]: {
@@ -186,12 +217,10 @@ const useWebAuthn = () => {
       primaryAction: 'Create account',
       secondaryAction: 'Cancel',
       handlePrimaryAction: handleCreate,
+      handlePrimaryActionUsingEnterKey: handleCreateUsingEnterKey,
       handleSecondaryAction: resetDialogForms,
       isLoading: createAccountMutate.isLoading,
-      isDisabled:
-        !memberForm.formState.isValid ||
-        memberForm.watch('name').length === 0 ||
-        nicknames.data?.name,
+      isDisabled: createBtnIsDisabled,
       title: 'Create Passkey account',
       description: 'Create a new account for this device.',
     },
@@ -200,13 +229,10 @@ const useWebAuthn = () => {
       primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
       secondaryAction: 'Create account',
       handlePrimaryAction: handleLogin,
+      handlePrimaryActionUsingEnterKey: handleLoginUsingEnterKey,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
       isLoading: signAccountMutate.isLoading,
-      isDisabled:
-        !loginForm.formState.isValid ||
-        (currentUsername?.length === 0 ?? false) ||
-        !isValidCurrentUsername ||
-        btnDisabled,
+      isDisabled: loginBtnIsDisabled,
       title: 'Login with Passkey',
       description:
         'Select your username or create a new account for this device.',
@@ -236,7 +262,10 @@ const useWebAuthn = () => {
       formState: formState[tabs.tab],
     },
     tabs,
-    signInProgress,
+    signIn: {
+      progess: signInProgress,
+      inProgress: isSigningIn,
+    },
   };
 };
 

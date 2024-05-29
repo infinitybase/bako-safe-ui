@@ -6,6 +6,7 @@ import { components } from '@/themes/components';
 import { fonts } from '@/themes/fonts';
 
 const breakpoints = {
+  mxs: '30', //480px
   xs: '37.5em', //600px
   sm: '52em', //832px
   md: '62em', // 992px
@@ -23,7 +24,6 @@ const defaultTheme = extendTheme({
     global: () => ({
       body: {
         bg: 'dark.950',
-        maxWidth: '1500px',
         mx: 'auto',
         backgroundImage: `url(${HomeBackgroundHd})`,
         backgroundSize: 'cover',

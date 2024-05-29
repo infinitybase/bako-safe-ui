@@ -1,7 +1,4 @@
 import { Card, CardProps, Divider, HStack } from '@chakra-ui/react';
-import { format } from 'date-fns';
-
-import { limitCharacters } from '@/utils';
 
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services';
@@ -55,9 +52,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         {...rest}
       >
         <HStack justifyContent="space-between">
-          <TransactionCard.Name>
-            {limitCharacters(transaction.name, 20)}
-          </TransactionCard.Name>
+          <TransactionCard.Name vaultName={transaction.name} />
 
           <TransactionCard.Status
             transaction={transaction}
@@ -71,9 +66,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <TransactionCard.VaultInfo vault={transaction.predicate} />
           )}
 
-          <TransactionCard.CreationDate>
+          {/* <TransactionCard.CreationDate>
             {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-          </TransactionCard.CreationDate>
+          </TransactionCard.CreationDate> */}
         </HStack>
 
         <Divider bgColor="grey.600" />
