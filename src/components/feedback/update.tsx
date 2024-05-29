@@ -23,7 +23,6 @@ interface UpdateStepProps {
   description?: string;
   oldPermission?: string;
   newPermission?: string;
-  hasCloseButton?: boolean;
 }
 
 const FeedbackUpdate = ({
@@ -35,12 +34,9 @@ const FeedbackUpdate = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
-  hasCloseButton,
 }: UpdateStepProps) => {
-  console.log(hasCloseButton);
   return (
     <Center
-      // mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
       mb={5}
       pt={{ xs: 40, sm: 'unset' }}
@@ -68,7 +64,7 @@ const FeedbackUpdate = ({
       </Box>
       <VStack
         mt={{ base: 'auto', sm: 8 }}
-        w="full"
+        w={{ base: '80%' }}
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >

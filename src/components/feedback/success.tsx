@@ -9,6 +9,7 @@ import {
   HStack,
   Image,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 
 import TransactionsBoxIcon from '@/assets/transactions-icon.png';
@@ -41,13 +42,12 @@ const FeedbackSuccess = ({
 
   return (
     <Center
-      mt={hasCloseButton ? 0 : 14}
-      overflowX="hidden"
+      mt={hasCloseButton ? -8 : 'unset'}
       flexDirection="column"
-      minH={{ base: 680, xs: 650, sm: 'unset' }}
-      h="full"
-      pt={{ base: 40, sm: 'unset' }}
+      mb={5}
+      pt={{ xs: 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
+      h={{ base: 600, xs: 500, sm: 'unset' }}
     >
       <Box m={8}>
         {membersFormIcon ? (
@@ -70,47 +70,54 @@ const FeedbackSuccess = ({
           {description}
         </Text>
       </Box>
-      <Divider
-        borderWidth={1}
-        hidden={!showAction}
+
+      <VStack
         mt={{ base: 'auto', sm: 8 }}
-        mb={8}
-        borderColor="dark.100"
-      />
-      <HStack
-        w="full"
-        hidden={!showAction}
-        spacing={isExtraSmall ? 2 : 4}
-        justifyContent="center"
+        w={{ base: '80%' }}
+        position={{ base: 'absolute', sm: 'unset' }}
+        bottom={4}
       >
-        <Button
-          w={isExtraSmall ? '50%' : '45%'}
-          border="1px solid white"
-          bgColor="transparent"
-          variant="secondary"
-          fontSize={isExtraSmall ? 'xs' : 'unset'}
-          onClick={onSecondaryAction}
-          _hover={{
-            borderColor: 'brand.500',
-            color: 'brand.500',
-          }}
+        <Divider
+          maxW={440}
+          hidden={!showAction}
+          mb={8}
+          borderColor="dark.100"
+        />
+        <HStack
+          w="full"
+          hidden={!showAction}
+          spacing={isExtraSmall ? 2 : 4}
+          justifyContent="center"
         >
-          {secondaryAction}
-        </Button>
-        <Button
-          w={isExtraSmall ? '50%' : '45%'}
-          border="none"
-          bgColor="brand.500"
-          variant="primary"
-          fontSize={isExtraSmall ? 'xs' : 'unset'}
-          onClick={onPrimaryAction}
-          _hover={{
-            opacity: 0.8,
-          }}
-        >
-          {primaryAction}
-        </Button>
-      </HStack>
+          <Button
+            w={isExtraSmall ? '50%' : '45%'}
+            border="1px solid white"
+            bgColor="transparent"
+            variant="secondary"
+            fontSize={isExtraSmall ? 'xs' : 'unset'}
+            onClick={onSecondaryAction}
+            _hover={{
+              borderColor: 'brand.500',
+              color: 'brand.500',
+            }}
+          >
+            {secondaryAction}
+          </Button>
+          <Button
+            w={isExtraSmall ? '50%' : '45%'}
+            border="none"
+            bgColor="brand.500"
+            variant="primary"
+            fontSize={isExtraSmall ? 'xs' : 'unset'}
+            onClick={onPrimaryAction}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            {primaryAction}
+          </Button>
+        </HStack>
+      </VStack>
     </Center>
   );
 };

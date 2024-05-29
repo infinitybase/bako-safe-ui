@@ -8,6 +8,7 @@ import {
   Icon,
   Link,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 
 import { RemoveUser } from '../icons/remove-user';
@@ -20,7 +21,6 @@ interface DeleteStepProps {
   showAction?: boolean;
   title: string;
   description?: string;
-  hasCloseButton?: boolean;
 }
 
 const FeedbackDelete = ({
@@ -31,15 +31,14 @@ const FeedbackDelete = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
-  hasCloseButton,
 }: DeleteStepProps) => {
   return (
     <Center
-      mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
-      minH={{ base: 680, xs: 650, sm: 'unset' }}
-      pt={{ base: 40, sm: 'unset' }}
+      mb={5}
+      pt={{ xs: 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
+      h={{ base: 600, xs: 500, sm: 'unset' }}
     >
       <Box m={8}>
         <Icon fontSize={100} as={RemoveUser} />
@@ -67,45 +66,51 @@ const FeedbackDelete = ({
           )}
         </Heading>
       </Box>
-      <Divider
-        maxW={400}
-        hidden={!showAction}
+      <VStack
         mt={{ base: 'auto', sm: 8 }}
-        mb={8}
-        borderColor="dark.100"
-      />
-      <HStack
-        w="full"
-        maxW={400}
-        hidden={!showAction}
-        spacing={4}
-        justifyContent="center"
+        w={{ base: '80%' }}
+        position={{ base: 'absolute', sm: 'unset' }}
+        bottom={4}
       >
-        <Button
-          w="50%"
-          border="1px solid white"
-          bgColor="transparent"
-          variant="secondary"
-          onClick={onSecondaryAction}
-          _hover={{
-            opacity: 0.8,
-          }}
+        <Divider
+          maxW={440}
+          hidden={!showAction}
+          mb={8}
+          borderColor="dark.100"
+        />
+        <HStack
+          w="full"
+          maxW={400}
+          hidden={!showAction}
+          spacing={4}
+          justifyContent="center"
         >
-          {secondaryAction}
-        </Button>
-        <Button
-          w="50%"
-          border="none"
-          bgColor="error.500"
-          variant="primary"
-          onClick={onPrimaryAction}
-          _hover={{
-            opacity: 0.8,
-          }}
-        >
-          {primaryAction}
-        </Button>
-      </HStack>
+          <Button
+            w="50%"
+            border="1px solid white"
+            bgColor="transparent"
+            variant="secondary"
+            onClick={onSecondaryAction}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            {secondaryAction}
+          </Button>
+          <Button
+            w="50%"
+            border="none"
+            bgColor="error.500"
+            variant="primary"
+            onClick={onPrimaryAction}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            {primaryAction}
+          </Button>
+        </HStack>
+      </VStack>
     </Center>
   );
 };

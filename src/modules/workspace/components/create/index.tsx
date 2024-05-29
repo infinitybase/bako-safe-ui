@@ -107,6 +107,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           maxW={450}
           title=""
           description=""
+          h={6}
         />
       )}
 
@@ -133,7 +134,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             <TabPanel p={0}>
               <FeedbackSuccess
                 hasCloseButton
-                title="All set!!"
+                title="All set!"
                 description="The workspace is now ready for use whenever you need to streamline
         your workflow!"
                 primaryAction="Go to my workspace"
