@@ -149,7 +149,7 @@ const WorkspaceSettingsDrawer = ({
 
   const pathname = window.location.pathname;
 
-  const isEditingOrCreatingMember = pathname.endsWith('/members');
+  const isEditingOrCreatingMember = pathname.includes('/members');
 
   const request = useGetCurrentWorkspace();
   const { isExtraSmall } = useScreenSize();
@@ -261,7 +261,6 @@ const WorkspaceSettingsDrawer = ({
                         workspaceId: request.workspace?.id ?? '',
                       }),
                     );
-                    // drawerProps.onClose();
                   }}
                   _hover={{
                     opacity: 0.8,

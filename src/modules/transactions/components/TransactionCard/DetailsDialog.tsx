@@ -36,17 +36,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
-      <Dialog.Header
-        onClose={onClose}
-        position="relative"
-        mb={0}
-        top={{ base: -5, sm: -7 }}
-        w="full"
-        maxW={{ base: 480, xs: 'unset' }}
-        title="Transaction Details"
-        mt={{ base: 14, xs: 'unset' }}
-      />
-      <Dialog.Body mt={-4} as={AccordionItem} borderTop="none">
+      <Dialog.Body as={AccordionItem} borderTop="none">
+        <Dialog.Header
+          onClose={onClose}
+          w="full"
+          maxW={{ base: 480, xs: 'unset' }}
+          title="Transaction Details"
+        />
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">

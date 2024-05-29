@@ -335,6 +335,7 @@ const Header = () => {
         userWorkspaces={userWorkspaces ?? []}
         onSelect={handleWorkspaceSelection.handler}
         onCreate={handleGoToCreateWorkspace}
+        isCreatingWorkspace={createWorkspaceDialog.isOpen}
       />
 
       {createWorkspaceDialog.isOpen && (

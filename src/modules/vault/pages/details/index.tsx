@@ -204,7 +204,11 @@ const VaultDetailsPage = () => {
       </Box>
       <CustomSkeleton
         isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
-        h="full"
+        h={
+          !vault.isLoading && !isLoading && !loadingVaultTransactions
+            ? 'unset'
+            : '100px'
+        }
       >
         {hasTransactions ? (
           <TransactionCard.List

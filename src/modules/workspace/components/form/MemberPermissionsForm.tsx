@@ -48,7 +48,7 @@ export const MemberPermissionForm = ({
           </Heading>
         }
         description="Select the new role for the member."
-        mb={{ base: 8, sm: 4 }}
+        mb={4}
       />
       <Controller
         name="permission"
@@ -64,7 +64,8 @@ export const MemberPermissionForm = ({
                 <RadioCard
                   border="1px"
                   bgColor="grey.825"
-                  p={3}
+                  px={3}
+                  py={3}
                   my={1}
                   borderRadius="xl"
                   borderColor={
@@ -96,14 +97,14 @@ export const MemberPermissionForm = ({
                         {permission.title}
                       </Badge>
                       <Flex
-                        mt={2}
+                        mt={{ base: 0, xs: 2 }}
                         align="start"
                         direction="column"
                         justify="space-between"
                       >
                         <Text
                           fontWeight="medium"
-                          fontSize={{ base: 'sm' }}
+                          fontSize="sm"
                           variant="subtitle"
                         >
                           {permission.description}
