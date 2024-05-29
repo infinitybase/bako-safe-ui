@@ -11,7 +11,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
-import { format } from 'date-fns';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, HomeIcon, LineCloseIcon } from '@/components';
@@ -26,7 +25,6 @@ import {
 } from '@/modules/transactions/components';
 import { useUserVaults, useVaultDetails } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils/limit-characters';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
@@ -242,18 +240,17 @@ const TransactionsVaultPage = () => {
                     isInTheVaultPage
                     callBack={() => filter.set(StatusFilter.ALL)}
                   >
-                    {!isMobile && (
+                    {/* {!isMobile && (
                       <TransactionCard.CreationDate>
                         {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
                       </TransactionCard.CreationDate>
-                    )}
+                    )} */}
                     <TransactionCard.Assets />
                     <TransactionCard.Amount
                       assets={transaction.resume.outputs}
                     />
-                    <TransactionCard.Name>
-                      {limitCharacters(transaction.name, 20)}
-                    </TransactionCard.Name>
+                    <TransactionCard.Name vaultName={transaction.name} />
+
                     <TransactionCard.Status
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}

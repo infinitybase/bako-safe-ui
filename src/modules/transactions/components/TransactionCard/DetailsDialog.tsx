@@ -5,12 +5,10 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { TransactionCard, transactionStatus } from '@/modules/transactions';
-import { limitCharacters } from '@/utils';
 
 import { useSignTransaction } from '../../hooks/signature';
 import { TransactionWithVault } from '../../services/types';
@@ -62,15 +60,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 }
               />
 
-              <TransactionCard.CreationDate>
+              {/* <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-              </TransactionCard.CreationDate>
+              </TransactionCard.CreationDate> */}
             </HStack>
 
             <HStack w="full" justifyContent="space-between">
-              <TransactionCard.Name>
-                {limitCharacters(transaction?.name ?? '', 20)}
-              </TransactionCard.Name>
+              <TransactionCard.Name vaultName={transaction.name} />
 
               <TransactionCard.Status
                 transaction={transaction}
