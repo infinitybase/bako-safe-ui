@@ -2,8 +2,6 @@ import { Asset, AssetMap } from './types';
 
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
-  '0x0000000000000000000000000000000000000000000000000000000000000000';
-const FuelDevnetAssetId =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
 
 const assetsList: Asset[] = [
@@ -11,12 +9,6 @@ const assetsList: Asset[] = [
     name: 'Ethereum',
     slug: 'ETH',
     assetId: NativeAssetId,
-    icon: ETHDefault,
-  },
-  {
-    name: 'Ethereum',
-    slug: 'ETH',
-    assetId: FuelDevnetAssetId,
     icon: ETHDefault,
   },
   {
