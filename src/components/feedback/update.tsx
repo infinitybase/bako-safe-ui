@@ -8,6 +8,7 @@ import {
   Icon,
   Link,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 
 import { UserWorkspaceIcon } from '../icons/user-workspace-icon';
@@ -42,8 +43,9 @@ const FeedbackUpdate = ({
       // mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
       mb={5}
+      pt={{ xs: 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
-      minH={{ base: 600, xs: 650, sm: 'unset' }}
+      h={{ base: 600, xs: 500, sm: 'unset' }}
     >
       <Box m={8}>
         <Icon fontSize={100} as={UserWorkspaceIcon} />
@@ -64,40 +66,51 @@ const FeedbackUpdate = ({
           Are you sure you want to update the user?
         </Text>
       </Box>
-      <Divider
-        maxW={440}
-        hidden={!showAction}
+      <VStack
         mt={{ base: 'auto', sm: 8 }}
-        mb={8}
-        borderColor="dark.100"
-      />
-      <HStack w="full" hidden={!showAction} spacing={4} justifyContent="center">
-        <Button
-          w="45%"
-          border="1px solid white"
-          bgColor="transparent"
-          variant="secondary"
-          onClick={onSecondaryAction}
-          _hover={{
-            borderColor: 'brand.500',
-            color: 'brand.500',
-          }}
+        w="full"
+        position={{ base: 'absolute', sm: 'unset' }}
+        bottom={4}
+      >
+        <Divider
+          maxW={440}
+          hidden={!showAction}
+          mb={8}
+          borderColor="dark.100"
+        />
+        <HStack
+          w="full"
+          hidden={!showAction}
+          spacing={4}
+          justifyContent="center"
         >
-          {secondaryAction}
-        </Button>
-        <Button
-          w="45%"
-          border="none"
-          bgColor="brand.500"
-          variant="primary"
-          onClick={onPrimaryAction}
-          _hover={{
-            opacity: 0.8,
-          }}
-        >
-          {primaryAction}
-        </Button>
-      </HStack>
+          <Button
+            w="45%"
+            border="1px solid white"
+            bgColor="transparent"
+            variant="secondary"
+            onClick={onSecondaryAction}
+            _hover={{
+              borderColor: 'brand.500',
+              color: 'brand.500',
+            }}
+          >
+            {secondaryAction}
+          </Button>
+          <Button
+            w="45%"
+            border="none"
+            bgColor="brand.500"
+            variant="primary"
+            onClick={onPrimaryAction}
+            _hover={{
+              opacity: 0.8,
+            }}
+          >
+            {primaryAction}
+          </Button>
+        </HStack>
+      </VStack>
     </Center>
   );
 };
