@@ -49,14 +49,14 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
     <Drawer
       {...props}
       size="sm"
-      variant="glassmorphic"
+      variant="solid-dark"
       placement="right"
       onClose={drawer.onClose}
     >
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent p={10}>
         <DrawerHeader mb={6}>
-          <VStack alignItems="flex-start" spacing={2}>
+          <VStack alignItems="flex-start" spacing={4}>
             <HStack
               spacing={2}
               alignItems="center"
@@ -64,7 +64,7 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
               w="full"
             >
               <HStack spacing={2} alignItems="center">
-                <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+                <Heading fontSize="lg" fontWeight="semibold" color="grey.50">
                   Notifications
                 </Heading>
                 {unreadCounter > 0 && (
@@ -87,14 +87,19 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                 onClick={drawer.onClose}
               />
             </HStack>
-            <Text maxWidth={300} variant="description">
-              {`Stay informed about all the activities happening in the vaults you're a part of.`}
+            <Text
+              fontSize="xs"
+              color="grey.450"
+              fontWeight={400}
+              lineHeight={1.21}
+            >
+              {`Stay informed about all the activities happening in the vaults that you are part of.`}
             </Text>
           </VStack>
         </DrawerHeader>
 
         <DrawerBody
-          borderTop="1px"
+          borderTop={emptyState ? 0 : '1px'}
           borderTopColor="dark.100"
           py={isSuccess && !notifications.length ? 0 : 8}
           css={{
