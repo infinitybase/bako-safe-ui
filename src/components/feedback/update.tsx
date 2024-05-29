@@ -36,9 +36,10 @@ const FeedbackUpdate = ({
   onSecondaryAction,
   hasCloseButton,
 }: UpdateStepProps) => {
+  console.log(hasCloseButton);
   return (
     <Center
-      mt={hasCloseButton ? 0 : 14}
+      // mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
       mb={5}
       pb={{ base: 0, sm: 5 }}
