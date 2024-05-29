@@ -206,7 +206,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     w="full"
                     spacing={0}
                     position="relative"
-                    alignSelf={isExtraSmall ? 'flex-start' : 'unset'}
+                    alignSelf={{ base: 'flex-start', xs: 'unset' }}
                   >
                     <Button
                       minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
