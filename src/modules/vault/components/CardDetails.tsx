@@ -124,14 +124,14 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={{ base: 'full', sm: 730, md: 'full' }}>
+    <Box w="full">
       <Box mb="1.2em" w="full">
         <Text
           color="grey.400"
           fontWeight="semibold"
           fontSize={{ base: 'md', sm: 'xl' }}
         >
-          Balance
+          Overview
         </Text>
       </Box>
 
@@ -233,7 +233,6 @@ const CardDetails = (props: CardDetailsProps) => {
                 flexDirection={{ base: 'row', sm: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
-                h={125}
               >
                 <Box width="auto">
                   <HStack
@@ -394,7 +393,7 @@ const CardDetails = (props: CardDetailsProps) => {
               spacing={4}
             >
               <Text fontWeight="semibold" color="grey.450">
-                {`Vaults's balance breakdown`}
+                {`Vault's balance breakdown`}
               </Text>
               <CustomSkeleton
                 isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}

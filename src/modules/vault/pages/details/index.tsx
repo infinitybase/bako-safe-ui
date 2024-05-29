@@ -174,7 +174,6 @@ const VaultDetailsPage = () => {
         alignItems="flex-start"
         w="full"
         gap={10}
-        h={453}
       >
         <CardDetails vault={vault} store={store} />
 
@@ -296,6 +295,7 @@ const VaultDetailsPage = () => {
                   }),
                 )
               }
+              mb={10}
             />
           )
         )}

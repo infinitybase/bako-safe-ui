@@ -1,39 +1,44 @@
 import { Box, Card, Heading, Text } from '@chakra-ui/react';
 
-import { NotFoundIcon } from '@/components';
+import { EmptyBoxOutline } from '@/components';
 
 const NotificationsEmptyState = () => {
   return (
-    <Box pt={8} h={'100%'}>
+    <Box h={'100%'} borderRadius={10} borderWidth={1} borderColor="grey.800">
       <Card
         w="full"
         h={'100%'}
-        p={20}
+        p={[10, 14]}
         bgColor="transparent"
         display="flex"
         justifyContent="center"
         flexDirection="column"
         alignItems="center"
       >
-        <Box mb={6}>
-          <NotFoundIcon w={100} h={100} />
+        <Box mb={4}>
+          <EmptyBoxOutline w={100} h={100} />
         </Box>
 
-        <Box mb={5}>
-          <Heading color="brand.500" fontSize="4xl" textAlign={'center'}>
-            Nothing to show here.
+        <Box mb={4}>
+          <Heading
+            color="grey.75"
+            fontSize="lg"
+            textAlign="center"
+            fontWeight={600}
+          >
+            No Data available
           </Heading>
         </Box>
 
-        <Box maxW={400} mb={8}>
+        <Box>
           <Text
-            color="white"
-            fontSize="md"
+            color="grey.250"
+            fontSize="xs"
             textAlign="center"
-            fontWeight="bold"
+            fontWeight={200}
+            lineHeight={1.4}
           >
-            {`You don't have any notifications yet, but we'll let you know as soon
-          as there are updates.`}
+            {`Currently, there is no available data to display in this section.`}
           </Text>
         </Box>
       </Card>
