@@ -42,7 +42,7 @@ const FeedbackUpdate = ({
       flexDirection="column"
       mb={5}
       pb={{ base: 0, sm: 5 }}
-      h="90vh"
+      minH={{ base: 600, xs: 650, sm: 'unset' }}
     >
       <Box m={8}>
         <Icon fontSize={100} as={UserWorkspaceIcon} />
