@@ -19,6 +19,7 @@ import {
   CreateContactDialog,
 } from '@/modules/addressBook/components';
 import {
+  AddressesFields,
   useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
@@ -68,7 +69,7 @@ const VaultAddressesStep = ({
       workspaceId!,
       !isSingleWorkspace,
       listContactsRequest.data,
-      form.watch('addresses'),
+      form.watch('addresses') as AddressesFields,
       form.formState.errors.addresses,
       true,
       isFirstLoad,
@@ -76,6 +77,11 @@ const VaultAddressesStep = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectOption = () => {
+    form.clearErrors();
+    setIsFirstLoad(true);
+  };
 
   const handleKeepOptionsNearToInput = () => {
     const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
@@ -130,6 +136,7 @@ const VaultAddressesStep = ({
               value={selectedTemplate}
               onChange={(value) => setTemplate(value)}
               isDisabled={!templates.length}
+              callbackOnSelectOption={() => handleSelectOption()}
               options={templates?.map((template) => ({
                 label: template.name,
                 value: template.id,
@@ -173,7 +180,7 @@ const VaultAddressesStep = ({
               '&::-webkit-scrollbar-thumb': {
                 backgroundColor: '#2C2C2C',
                 borderRadius: '30px',
-                height: '10px' /* Adjust the height of the scrollbar thumb */,
+                height: '10px',
               },
             }}
             ref={containerRef}

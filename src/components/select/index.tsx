@@ -38,6 +38,7 @@ interface SelectProps
   isLoading?: boolean;
   isCreatingValue?: boolean;
   onChange: (value: any) => void;
+  callbackOnSelectOption?: () => void;
 }
 
 const Select = ({
@@ -50,6 +51,7 @@ const Select = ({
   isInvalid,
   style,
   isCreatingValue,
+  callbackOnSelectOption,
   ...rest
 }: SelectProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,6 +67,7 @@ const Select = ({
   const showInputRightElement = isReadyToShowOptions || isDisabled;
 
   const handleSelectOption = (value: string | number) => {
+    callbackOnSelectOption && callbackOnSelectOption();
     onChange(value);
     setShowOptions(false);
   };
