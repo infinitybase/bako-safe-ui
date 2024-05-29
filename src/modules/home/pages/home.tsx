@@ -242,7 +242,11 @@ const HomePage = () => {
             )}
             <CustomSkeleton
               isLoaded={!homeRequest.isLoading}
-              mt={{ base: 16, sm: 8 }}
+              mt={{
+                base: recentVaults?.length ? 16 : 0,
+                sm: recentVaults?.length ? 8 : 0,
+                md: recentVaults?.length ? 8 : 2,
+              }}
             >
               <EmptyState showAction={false} />
             </CustomSkeleton>
