@@ -72,7 +72,7 @@ const UserTransactionsPage = () => {
       px={{ base: 'auto', sm: 8 }}
     >
       <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
-      <HStack w="full" h="10" justifyContent="space-between" my={2}>
+      <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Button
             variant="primary"

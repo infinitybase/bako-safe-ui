@@ -97,14 +97,13 @@ const AddressBookPage = () => {
       >
         <Box
           w="full"
-          h={{ base: '20', sm: '10' }}
+          h={isExtraSmall ? 20 : 10}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           flexDir={isExtraSmall ? 'column' : 'row'}
-          my={2}
-          rowGap={6}
-          mb={isExtraSmall ? 6 : 'unset'}
+          rowGap={4}
+          mb={isExtraSmall ? 4 : 'unset'}
         >
           <HStack w={isExtraSmall ? 'full' : 'unset'}>
             <Button
