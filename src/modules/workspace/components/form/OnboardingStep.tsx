@@ -14,7 +14,6 @@ import {
 
 import { SquarePlusIcon, StepProgress } from '@/components';
 import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
-import { useScreenSize } from '@/modules/core';
 
 interface OnboardingStepProps {
   tabs: {
@@ -28,143 +27,140 @@ interface OnboardingStepProps {
 }
 
 const OnboardingStep = (props: OnboardingStepProps) => {
-  const { isExtraSmallDevice } = useScreenSize();
-
   return (
     <Center
       flexDirection="column"
-      p={{
+      px={{
         base: 1,
         sm: 6,
       }}
-      h={{ base: isExtraSmallDevice ? 560 : 710 }}
     >
-      <Box m={{ base: 4, sm: 8 }}>
-        <Icon fontSize={{ base: 86, sm: 100 }} as={TransactionsBoxIcon} />
-      </Box>
-      <Box mb={{ base: 2, sm: 5 }}>
-        <Heading fontSize={{ base: 'xl', xs: '3xl' }}>Heads up!</Heading>
-      </Box>
-      <Box maxW={350} mb={{ base: 2, sm: 5 }}>
-        <Text
-          color="grey.400"
-          fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
-          textAlign="center"
-        >
-          Before you create your workspace, {`it's`} crucial to understand how
-          they function!
-        </Text>
-      </Box>
-      <Box w="100%" my={{ base: 3, sm: 5 }}>
-        <StepProgress value={props.tabs.tab} length={props.tabs.length} />
-      </Box>
-
-      <Box mb={{ base: 2, sm: 5 }} maxW={{ base: 'full', sm: 480 }}>
-        <Text
-          color="white"
-          fontSize={{ base: 'xs', sm: 'md' }}
-          textAlign="start"
-        >
-          Workspaces are shared spaces that allow multiple people to access the
-          same vaults and address book. Within a workspace, you can assign
-          members different levels of permission, including:
-        </Text>
-      </Box>
-      <VStack
-        mb={{ base: isExtraSmallDevice ? 0 : 3, sm: 5 }}
-        overflowY="scroll"
-        sx={{
-          '&::-webkit-scrollbar': {
-            display: 'none',
-            width: '5px',
-            maxHeight: '330px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '30px',
-            height: '10px' /* Adjust the height of the scrollbar thumb */,
-          },
-        }}
-      >
-        <HStack>
-          <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
-            <Badge
-              justifyContent="center"
-              py={{
-                base: 0.3,
-              }}
-              px={7}
-              variant="success"
-            >
-              Admin
-            </Badge>
-          </Box>
-          <Text color="grey.200" fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}>
-            Manage members, create new vaults, create transaction and access
-            everything.
+      <VStack spacing={2} w="full" minH={220}>
+        <Box m={{ base: 2, xs: 4, sm: 8 }}>
+          <Icon fontSize={{ base: 70, xs: 100 }} as={TransactionsBoxIcon} />
+        </Box>
+        <Box>
+          <Heading fontSize={{ base: 'lg', sm: 'xl', xs: '3xl' }}>
+            Heads up!
+          </Heading>
+        </Box>
+        <Box maxW={350}>
+          <Text
+            color="grey.400"
+            fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
+            textAlign="center"
+          >
+            Before you create your workspace, {`it's`} crucial to understand how
+            they function!
           </Text>
-        </HStack>
-        <HStack>
-          <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
-            <Badge
-              justifyContent="center"
-              py={{
-                base: 0.3,
-              }}
-              px={7}
-              variant="yellow"
-            >
-              Manager
-            </Badge>
-          </Box>
-
-          <Text color="grey.200" fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}>
-            Can create new vaults, create transaction and access all vaults in
-            the workspace.
-          </Text>
-        </HStack>
-        <HStack>
-          <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
-            <Badge
-              justifyContent="center"
-              py={{
-                base: 0.3,
-              }}
-              px={7}
-              variant="blue"
-            >
-              Viewer
-            </Badge>
-          </Box>
-          <Text color="grey.200" fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}>
-            Can only access and view the contents of all vaults in the
-            workspace.
-          </Text>
-        </HStack>
+        </Box>
+        <Box w="100%" my={{ base: 3, sm: 5 }}>
+          <StepProgress value={props.tabs.tab} length={props.tabs.length} />
+        </Box>
       </VStack>
 
-      <Box mb={{ base: 0, xs: 3, sm: 5 }} minW="full" maxW={500}>
-        <Alert
-          color="#F05D48"
-          bgColor="rgba(240,93,72,0.1)"
-          borderWidth={1}
-          borderRadius={8}
-          borderColor="rgba(7, 7, 7, 0.2)"
-          px={{ base: 1, xs: 4 }}
-        >
-          <Text fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }} maxW={440}>
-            <b>Important Note</b>: Membership in the workspace ≠ signatory
-            rights in a vault. They are separate entities with separate
-            controls.
+      <VStack spacing={{ base: 0, sm: 6 }} minH={{ base: 425, xs: 'unset' }}>
+        <Box maxW={{ base: 'full', sm: 480 }} mt={{ base: 0, sm: 'unset' }}>
+          <Text
+            color="white"
+            fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
+            textAlign="start"
+          >
+            Workspaces are shared spaces that allow multiple people to access
+            the same vaults and address book. Within a workspace, you can assign
+            members different levels of permission, including:
           </Text>
-        </Alert>
-      </Box>
-      <Divider
-        h="auto"
-        mb={{ base: 3, xs: 4 }}
-        borderColor="dark.100"
-        mt={isExtraSmallDevice ? 3 : 'auto'}
-      />
+        </Box>
+        <VStack
+          mt={{ base: 4, sm: 'unset' }}
+          mb={5}
+          minH={140}
+          maxH={{ base: 290, xs: 'unset' }}
+        >
+          <HStack>
+            <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+              <Badge
+                justifyContent="center"
+                py={{
+                  base: 0.3,
+                }}
+                px={7}
+                variant="success"
+              >
+                Admin
+              </Badge>
+            </Box>
+            <Text
+              color="grey.200"
+              fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
+            >
+              Manage members, create new vaults, create transaction and access
+              everything.
+            </Text>
+          </HStack>
+          <HStack>
+            <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+              <Badge
+                justifyContent="center"
+                py={{
+                  base: 0.3,
+                }}
+                px={7}
+                variant="yellow"
+              >
+                Manager
+              </Badge>
+            </Box>
+
+            <Text
+              color="grey.200"
+              fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
+            >
+              Can create new vaults, create transaction and access all vaults in
+              the workspace.
+            </Text>
+          </HStack>
+          <HStack>
+            <Box w="100%" maxW={{ base: '80px', sm: '90px' }} mr={3}>
+              <Badge
+                justifyContent="center"
+                py={{
+                  base: 0.3,
+                }}
+                px={7}
+                variant="blue"
+              >
+                Viewer
+              </Badge>
+            </Box>
+            <Text
+              color="grey.200"
+              fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }}
+            >
+              Can only access and view the contents of all vaults in the
+              workspace.
+            </Text>
+          </HStack>
+        </VStack>
+        <Box mb={{ base: 2, xs: 3, sm: 5 }} minW="full" maxW={500}>
+          <Alert
+            color="#F05D48"
+            bgColor="rgba(240,93,72,0.1)"
+            borderWidth={1}
+            borderRadius={8}
+            borderColor="rgba(7, 7, 7, 0.2)"
+            px={{ base: 1, xs: 4 }}
+          >
+            <Text fontSize={{ base: 'xs', xs: 'sm', sm: 'md' }} maxW={440}>
+              <b>Important Note</b>: Membership in the workspace ≠ signatory
+              rights in a vault. They are separate entities with separate
+              controls.
+            </Text>
+          </Alert>
+        </Box>
+      </VStack>
+
+      <Divider mb={{ base: 3, xs: 4 }} borderColor="dark.100" mt="auto" />
       <HStack w="full" spacing={4}>
         <Button
           _hover={{

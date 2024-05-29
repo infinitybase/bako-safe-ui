@@ -2,6 +2,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentProps,
   ModalOverlay,
   ModalProps,
 } from '@chakra-ui/react';
@@ -11,6 +12,7 @@ import { useScreenSize } from '@/modules';
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
   hideContentOverflow?: boolean;
+  modalContentProps?: ModalContentProps;
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -33,12 +35,11 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent
         rounded="3xl"
         bg="dark.950"
-        // pr={1}
-        // pr={2}
-        // h={{ base: '100vh', sm: 'unset' }}
-        // overflow={props.hideContentOverflow ? 'hidden' : 'unset'}
+        py={{ base: 2, xs: 8 }}
+        {...props.modalContentProps}
       >
         <ModalBody
+          zIndex={400}
           sx={{
             '&::-webkit-scrollbar': {
               display: 'none',

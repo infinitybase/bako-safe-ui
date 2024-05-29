@@ -90,7 +90,6 @@ const SelectWorkspaceDialog = ({
         position="relative"
       >
         <VStack
-          // h={isExtraSmallDevice ? 400 : isMobile ? '100vh' : 'unset'}
           marginTop={{ base: 24, sm: 8 }}
           minH={300}
           maxH={{ base: 590, xs: 552, sm: 380 }}
@@ -148,7 +147,7 @@ const SelectWorkspaceDialog = ({
       <DialogActions
         position={{ base: 'absolute', xs: 'unset' }}
         bg="dark.950"
-        bottom={{ base: 4, xs: 'unset' }}
+        bottom={{ base: 2, xs: 'unset' }}
         px={{ base: 6, xs: 'unset' }}
         mt={{ base: 'unset', xs: 'auto' }}
         maxW={480}
