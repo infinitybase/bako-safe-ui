@@ -7,7 +7,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   Heading,
   HStack,
   Text,
@@ -56,33 +55,37 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
     >
       <DrawerOverlay />
       <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <LineCloseIcon
-            fontSize="24px"
-            aria-label="Close window"
-            cursor="pointer"
-            onClick={drawer.onClose}
-          />
-        </Flex>
-
         <DrawerHeader mb={6}>
           <VStack alignItems="flex-start" spacing={2}>
-            <HStack spacing={2} alignItems="center">
-              <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-                Notifications
-              </Heading>
-              {unreadCounter > 0 && (
-                <Center
-                  minW={4}
-                  minH={4}
-                  maxW={5}
-                  maxH={5}
-                  bg="error.600"
-                  borderRadius={10}
-                >
-                  <Text fontSize="xs">{unreadCounter}</Text>
-                </Center>
-              )}
+            <HStack
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+              w="full"
+            >
+              <HStack spacing={2} alignItems="center">
+                <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+                  Notifications
+                </Heading>
+                {unreadCounter > 0 && (
+                  <Center
+                    minW={4}
+                    minH={4}
+                    maxW={5}
+                    maxH={5}
+                    bg="error.600"
+                    borderRadius={10}
+                  >
+                    <Text fontSize="xs">{unreadCounter}</Text>
+                  </Center>
+                )}
+              </HStack>
+              <LineCloseIcon
+                fontSize="24px"
+                aria-label="Close window"
+                cursor="pointer"
+                onClick={drawer.onClose}
+              />
             </HStack>
             <Text maxWidth={300} variant="description">
               {`Stay informed about all the activities happening in the vaults you're a part of.`}
