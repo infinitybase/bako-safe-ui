@@ -41,8 +41,6 @@ const FeedbackUpdate = ({
       mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
       mb={5}
-      // minH={{ base: 680, xs: 650, sm: 'unset' }}
-      pt={{ base: 20, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
       h="90vh"
     >
