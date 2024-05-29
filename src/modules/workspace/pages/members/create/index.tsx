@@ -207,7 +207,7 @@ const CreateMemberPage = () => {
       )}
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w="full" mt={{ base: 2, sm: 0 }} mb={8}>
+          <Box maxW={480} w="full" mt={{ base: 2, sm: 6 }} mb={8}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />

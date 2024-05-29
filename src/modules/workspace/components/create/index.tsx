@@ -94,7 +94,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         <Dialog.Header
           mb={0}
           onClose={props.onClose}
-          maxW={450}
+          maxW={{ base: 450, xs: 550, sm: 450 }}
           title="Create Workspace"
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
@@ -107,6 +107,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           maxW={450}
           title=""
           description=""
+          zIndex={200}
           h={6}
         />
       )}
@@ -115,7 +116,14 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         maxW={540}
         mt={!tabs.is(CreateWorkspaceTabState.FORM) ? 0 : 'unset'}
       >
-        <Box mb={8} hidden={!tabs.is(CreateWorkspaceTabState.FORM)}>
+        <Box
+          mb={8}
+          mt={{
+            base: 'unset',
+            sm: tabs.is(CreateWorkspaceTabState.FORM) ? 6 : 'unset',
+          }}
+          hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+        >
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab}>
