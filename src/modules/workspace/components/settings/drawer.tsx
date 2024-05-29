@@ -155,7 +155,7 @@ const WorkspaceSettingsDrawer = ({
   const { isExtraSmall } = useScreenSize();
 
   return (
-    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
+    <Drawer {...drawerProps} size="md" variant="solid-dark" placement="right">
       {!isEditingOrCreatingMember && (
         <>
           <DrawerOverlay />
@@ -176,7 +176,7 @@ const WorkspaceSettingsDrawer = ({
             >
               <VStack alignItems="flex-start" spacing={5}>
                 <Heading
-                  fontSize={isExtraSmall ? '18px' : '2xl'}
+                  fontSize={isExtraSmall ? '18px' : 'xl'}
                   fontWeight="semibold"
                   color="white"
                 >
