@@ -114,17 +114,10 @@ const CreateMemberPage = () => {
   const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
-  const { isMobile, isExtraSmallDevice } = useScreenSize();
-  const isFeedBackScreen =
-    tabs.is(MemberTabState.SUCCESS) ||
-    tabs.is(MemberTabState.UPDATE) ||
-    tabs.is(MemberTabState.DELETE);
+  const { isExtraSmallDevice } = useScreenSize();
 
   const TabsPanels = (
     <TabPanels>
-      {/* <TabPanel p={0}>
-        <MemberAddressForm form={memberForm} addressBook={addressBook} />
-      </TabPanel> */}
       <TabPanel p={0}>
         <MemberPermissionForm form={permissionForm} formState={formState} />
       </TabPanel>
@@ -189,8 +182,6 @@ const CreateMemberPage = () => {
       }}
       closeOnOverlayClick={false}
       autoFocus={false}
-      blockScrollOnMount={isMobile}
-      hideContentOverflow
     >
       <CreateContactDialog
         form={addressBook.form}
@@ -202,10 +193,7 @@ const CreateMemberPage = () => {
         maxW={480}
         title={dialog.title}
         mb={0}
-        mt={{
-          base: isExtraSmallDevice ? 0 : -4,
-          xs: 0,
-        }}
+        mt={0}
         onClose={handleClose}
         description={dialog.description}
         descriptionFontSize="md"
@@ -228,25 +216,14 @@ const CreateMemberPage = () => {
       <Dialog.Body
         mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
-        maxH={{
-          base: isExtraSmallDevice && !isFeedBackScreen ? 330 : 'full',
-          sm: 520,
-        }}
-        overflowY="scroll"
-        css={{
-          '&::-webkit-scrollbar': {
-            display: 'none',
-            width: '5px',
-            height: '5px' /* Adjust the height of the scrollbar */,
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '20px',
-            height: '20px' /* Adjust the height of the scrollbar thumb */,
-          },
-        }}
       >
-        <Tabs index={tabs.tab} maxH="full" isLazy colorScheme="green">
+        <Tabs
+          index={tabs.tab}
+          maxH="full"
+          isLazy
+          colorScheme="green"
+          minH={{ base: 440, sm: 'full' }}
+        >
           {TabsPanels}
         </Tabs>
       </Dialog.Body>

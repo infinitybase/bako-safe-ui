@@ -10,8 +10,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { useScreenSize } from '@/modules';
-
 import { RemoveUser } from '../icons/remove-user';
 
 interface DeleteStepProps {
@@ -22,6 +20,7 @@ interface DeleteStepProps {
   showAction?: boolean;
   title: string;
   description?: string;
+  hasCloseButton?: boolean;
 }
 
 const FeedbackDelete = ({
@@ -32,14 +31,14 @@ const FeedbackDelete = ({
   secondaryAction,
   onPrimaryAction,
   onSecondaryAction,
+  hasCloseButton,
 }: DeleteStepProps) => {
-  const { isExtraSmallDevice } = useScreenSize();
   return (
     <Center
+      mt={hasCloseButton ? 0 : 14}
       flexDirection="column"
-      // minH={{ base: isExtraSmallDevice ? 560 : 700, sm: 'unset' }}
-      minH={{ base: isExtraSmallDevice ? '92vh' : '90vh', sm: 'unset' }}
-      pt={{ base: isExtraSmallDevice ? 32 : 40, sm: 'unset' }}
+      minH={{ base: 680, xs: 650, sm: 'unset' }}
+      pt={{ base: 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
     >
       <Box m={8}>

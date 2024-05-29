@@ -23,6 +23,7 @@ interface SuccessStepProps {
   title: string;
   description: string;
   membersFormIcon?: As;
+  hasCloseButton?: boolean;
 }
 
 const FeedbackSuccess = ({
@@ -34,16 +35,18 @@ const FeedbackSuccess = ({
   onPrimaryAction,
   onSecondaryAction,
   membersFormIcon,
+  hasCloseButton,
 }: SuccessStepProps) => {
-  const { isExtraSmallDevice, isExtraSmall } = useScreenSize();
+  const { isExtraSmall } = useScreenSize();
 
   return (
     <Center
+      mt={hasCloseButton ? 0 : 14}
       overflowX="hidden"
       flexDirection="column"
-      // minH={{ base: isExtraSmallDevice ? 560 : 700, sm: 'unset' }}
-      minH={{ base: isExtraSmallDevice ? '92vh' : '90vh', sm: 'unset' }}
-      pt={{ base: isExtraSmallDevice ? 32 : 40, sm: 'unset' }}
+      minH={{ base: 680, xs: 650, sm: 'unset' }}
+      h="full"
+      pt={{ base: 40, sm: 'unset' }}
       pb={{ base: 0, sm: 5 }}
     >
       <Box m={8}>

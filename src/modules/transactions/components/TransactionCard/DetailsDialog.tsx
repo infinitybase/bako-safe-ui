@@ -37,7 +37,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal onClose={onClose} isOpen={isOpen} blockScrollOnMount>
+    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
       <Dialog.Body as={AccordionItem} borderTop="none">
         <Dialog.Header
           onClose={onClose}

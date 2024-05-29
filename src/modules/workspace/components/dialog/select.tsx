@@ -3,7 +3,7 @@ import { Divider, HStack, VStack } from '@chakra-ui/react';
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
 import { useAuth } from '@/modules/auth/hooks';
-import { useScreenSize, Workspace } from '@/modules/core';
+import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
 import { SelectionEmptyState } from '../';
@@ -27,7 +27,6 @@ const SelectWorkspaceDialog = ({
 }: SelectWorkspaceDialogProps) => {
   const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
-  const { isMobile } = useScreenSize();
 
   const openDialog = dialog.isOpen && !isCreatingWorkspace;
 
@@ -39,7 +38,6 @@ const SelectWorkspaceDialog = ({
       onClose={dialog.onClose}
       isOpen={openDialog}
       closeOnOverlayClick={false}
-      blockScrollOnMount={isMobile}
     >
       <VStack
         position={{ base: 'fixed', sm: 'unset' }}
@@ -92,7 +90,7 @@ const SelectWorkspaceDialog = ({
         <VStack
           marginTop={{ base: 24, sm: 8 }}
           minH={300}
-          maxH={{ base: 590, xs: 552, sm: 380 }}
+          maxH={{ base: 605, xs: 555, sm: 380 }}
           spacing={5}
           w="full"
           overflowY="scroll"

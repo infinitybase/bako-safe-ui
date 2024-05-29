@@ -12,7 +12,6 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { Dialog } from '@/components';
-import { useScreenSize } from '@/modules/core';
 
 import { UseChangeMember } from '../../hooks';
 import { WorkspacePermissionUtils } from '../../utils';
@@ -39,8 +38,6 @@ export const MemberPermissionForm = ({
   form,
   formState,
 }: MemberPermissionForm) => {
-  const { isExtraSmallDevice, isExtraSmall } = useScreenSize();
-
   return (
     <Box w="full">
       <Divider mb={5} />
@@ -68,7 +65,7 @@ export const MemberPermissionForm = ({
                   border="1px"
                   bgColor="grey.825"
                   px={3}
-                  py={isExtraSmallDevice ? 1 : isExtraSmall ? 2 : 3}
+                  py={3}
                   my={1}
                   borderRadius="xl"
                   borderColor={
@@ -107,7 +104,7 @@ export const MemberPermissionForm = ({
                       >
                         <Text
                           fontWeight="medium"
-                          fontSize={{ base: isExtraSmallDevice ? 'xs' : 'sm' }}
+                          fontSize="sm"
                           variant="subtitle"
                         >
                           {permission.description}

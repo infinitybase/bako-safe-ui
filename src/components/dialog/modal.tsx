@@ -11,21 +11,17 @@ import { useScreenSize } from '@/modules';
 
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
-  hideContentOverflow?: boolean;
   modalContentProps?: ModalContentProps;
 }
 
 const DialogModal = (props: DialogModalProps) => {
-  const { children, blockScrollOnMount, ...rest } = props;
+  const { children, ...rest } = props;
   const { isMobile } = useScreenSize();
-
-  console.log('blockScrollOnMount', blockScrollOnMount);
 
   return (
     <Modal
       variant="glassmorphic"
       size={{ base: 'full', xs: '2xl' }}
-      // blockScrollOnMount={blockScrollOnMount ?? false}
       blockScrollOnMount={true}
       isCentered
       scrollBehavior={isMobile ? 'inside' : 'outside'}

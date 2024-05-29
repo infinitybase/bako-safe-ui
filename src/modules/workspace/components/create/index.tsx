@@ -19,7 +19,6 @@ import {
   SquarePlusIcon,
   StepProgress,
 } from '@/components';
-import { useScreenSize } from '@/modules/core';
 
 import {
   CreateWorkspaceTabState,
@@ -82,8 +81,6 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     onClose: props.onClose,
   });
 
-  const { isMobile, isExtraSmallDevice } = useScreenSize();
-
   return (
     <Dialog.Modal
       size={{
@@ -91,8 +88,6 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
       }}
       closeOnOverlayClick={false}
-      blockScrollOnMount={isMobile}
-      hideContentOverflow={isExtraSmallDevice}
       {...props}
     >
       {tabs.is(CreateWorkspaceTabState.FORM) ? (
@@ -137,6 +132,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             </TabPanel>
             <TabPanel p={0}>
               <FeedbackSuccess
+                hasCloseButton
                 title="All set!!"
                 description="The workspace is now ready for use whenever you need to streamline
         your workflow!"
