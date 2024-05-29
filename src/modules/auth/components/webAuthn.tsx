@@ -33,9 +33,8 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     tabs,
     accountsOptions,
     search,
-    searchAccount,
     nicknamesData,
-    signInProgress,
+    signIn,
     setSearch,
     handleInputChange,
     closeWebAuthnDrawer,
@@ -46,9 +45,10 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
     <TabPanels>
       <TabPanel p={0}>
         <LoginWebAuthnForm
-          options={accountsOptions}
           form={loginForm}
-          search={searchAccount}
+          accountsOptions={accountsOptions}
+          showAccountsOptions={!signIn.inProgress}
+          onSubmitUsingEnterKey={formState.handlePrimaryActionUsingEnterKey}
         />
       </TabPanel>
       <TabPanel p={0}>
@@ -60,6 +60,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
             nicknamesData,
             searchHandler: handleInputChange,
           }}
+          onSubmitUsingEnterKey={formState.handlePrimaryActionUsingEnterKey}
         />
       </TabPanel>
     </TabPanels>
@@ -121,7 +122,7 @@ const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {
                   opacity: formState.isDisabled && 0.8,
                 }}
                 isDisabled={!!formState.isDisabled}
-                progress={signInProgress}
+                progress={signIn.progess}
               >
                 {formState.primaryAction}
               </ProgressButton>
