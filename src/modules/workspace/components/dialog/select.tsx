@@ -15,6 +15,7 @@ interface SelectWorkspaceDialogProps {
   onSelect: (workspace: string) => void;
   onCreate: () => void;
   isLoading?: boolean;
+  isCreatingWorkspace?: boolean;
 }
 
 const SelectWorkspaceDialog = ({
@@ -22,9 +23,12 @@ const SelectWorkspaceDialog = ({
   onSelect,
   userWorkspaces,
   onCreate,
+  isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
   const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
+
+  const openDialog = dialog.isOpen && !isCreatingWorkspace;
 
   const loggedWorkspace = workspaces.current;
 
@@ -32,96 +36,118 @@ const SelectWorkspaceDialog = ({
     <Dialog.Modal
       size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
       onClose={dialog.onClose}
-      isOpen={dialog.isOpen}
+      isOpen={openDialog}
       closeOnOverlayClick={false}
     >
-      {!listIsEmpty ? (
-        <Dialog.Header
-          hideCloseButton={false}
-          onClose={dialog.onClose}
-          maxW={450}
-          position="relative"
-          h={20}
-          mt={0}
-          mb={-12}
-          title="Select your workspace"
-          description={`We're thrilled. Select your workspace to have you here. `}
-        />
-      ) : (
-        <Dialog.Header
-          zIndex={10}
-          hideCloseButton={false}
-          onClose={dialog.onClose}
-          maxW={450}
-          position="relative"
-          h={6}
-          mt={0}
-          mb={-5}
-          title=""
-          description=""
-        />
-      )}
+      <VStack
+        position={{ base: 'fixed', sm: 'unset' }}
+        px={{ base: 6, sm: 'unset' }}
+        justifyContent="center"
+        w="full"
+        py={0}
+        m={0}
+        zIndex={400}
+        bg="dark.950"
+        h={{ base: 24, sm: 'unset' }}
+      >
+        {!listIsEmpty ? (
+          <>
+            <Dialog.Header
+              hideCloseButton={false}
+              onClose={dialog.onClose}
+              maxW={450}
+              position="relative"
+              mt={0}
+              mb={0}
+              h={16}
+              title="Select your workspace"
+              description={`We're thrilled. Select your workspace to have you here. `}
+            />
+          </>
+        ) : (
+          <Dialog.Header
+            zIndex={10}
+            hideCloseButton={false}
+            onClose={dialog.onClose}
+            maxW={450}
+            position="relative"
+            h={6}
+            mt={0}
+            mb={-5}
+            title=""
+            description=""
+          />
+        )}
+      </VStack>
 
       <Dialog.Body
-        position="relative"
         justifyItems="center"
         alignItems="center"
         maxH="full"
         maxW={480}
+        position="relative"
       >
-        <VStack>
-          <VStack
-            spacing={5}
-            w="full"
-            minH={300}
-            maxH={{ base: 597, sm: 380 }}
-            overflowY="scroll"
-            marginTop={listIsEmpty ? 4 : 16}
-            py={4}
-            gap={4}
-            borderColor="grey.100"
-            sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-                width: '5px',
-                maxHeight: '330px',
-                backgroundColor: '#2B2927',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                display: 'none',
-                backgroundColor: 'grey.250',
-                borderRadius: '30px',
-                height: '10px' /* Adjust the height of the scrollbar thumb */,
-              },
-            }}
-          >
-            {listIsEmpty ? (
-              <SelectionEmptyState />
-            ) : (
-              <>
-                {userWorkspaces.map((w) => (
-                  <WorkspaceCard
-                    key={w.id}
-                    workspace={w}
-                    counter={{
-                      members: w.members.length,
-                      vaults: w.predicates,
-                    }}
-                    onClick={() => {
-                      w.id !== loggedWorkspace
-                        ? onSelect(w.id)
-                        : dialog.onClose();
-                    }}
-                  />
-                ))}
-                <Divider position="absolute" top={16} w="full" left={0} />
-              </>
-            )}
-          </VStack>
+        <VStack
+          marginTop={{ base: 24, sm: 8 }}
+          minH={300}
+          maxH={{ base: 605, xs: 555, sm: 380 }}
+          spacing={5}
+          w="full"
+          overflowY="scroll"
+          py={4}
+          gap={4}
+          borderColor="grey.100"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: '#2B2927',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              display: 'none',
+              backgroundColor: 'grey.250',
+              borderRadius: '30px',
+              height: '10px' /* Adjust the height of the scrollbar thumb */,
+            },
+          }}
+        >
+          {listIsEmpty ? (
+            <SelectionEmptyState />
+          ) : (
+            <>
+              {userWorkspaces.map((w) => (
+                <WorkspaceCard
+                  key={w.id}
+                  workspace={w}
+                  counter={{
+                    members: w.members.length,
+                    vaults: w.predicates,
+                  }}
+                  onClick={() => {
+                    w.id !== loggedWorkspace
+                      ? onSelect(w.id)
+                      : dialog.onClose();
+                  }}
+                />
+              ))}
+              <Divider
+                position="absolute"
+                top={{ base: 24, sm: 8 }}
+                w="full"
+                left={0}
+                zIndex={100}
+              />
+            </>
+          )}
         </VStack>
       </Dialog.Body>
       <DialogActions
-        mt="auto"
+        position={{ base: 'absolute', xs: 'unset' }}
+        bg="dark.950"
+        bottom={{ base: 2, xs: 'unset' }}
+        px={{ base: 6, xs: 'unset' }}
+        mt={{ base: 'unset', xs: 'auto' }}
         maxW={480}
         hideDivider={listIsEmpty}
         sx={{

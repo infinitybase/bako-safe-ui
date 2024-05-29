@@ -21,7 +21,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ITransaction, IWitnesses } from 'bakosafe';
-import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
@@ -701,16 +700,14 @@ const WorkspacePage = () => {
                           vault={transaction.predicate}
                         />
                       )}
-                      <TransactionCard.CreationDate>
+                      {/* <TransactionCard.CreationDate>
                         {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                      </TransactionCard.CreationDate>
+                      </TransactionCard.CreationDate> */}
                       <TransactionCard.Assets />
                       <TransactionCard.Amount
                         assets={transaction.resume.outputs}
                       />
-                      <TransactionCard.Name>
-                        {limitCharacters(transaction.name, 20)}
-                      </TransactionCard.Name>
+                      <TransactionCard.Name vaultName={transaction.name} />
                       <TransactionCard.Status
                         transaction={transaction as unknown as ITransaction}
                         status={transactionStatus({

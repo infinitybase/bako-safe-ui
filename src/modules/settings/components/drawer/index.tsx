@@ -40,7 +40,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     <Drawer
       {...props}
       size="sm"
-      variant="glassmorphic"
+      variant="solid-dark"
       placement="right"
       onClose={onCloseDrawer}
       isOpen={props.isOpen}

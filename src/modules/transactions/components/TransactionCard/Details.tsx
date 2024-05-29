@@ -262,24 +262,29 @@ const Details = ({
         <CustomSkeleton
           py={2}
           isLoaded={!isLoading && !!transactionHistory}
-          minH={isMobile ? 550 : 'unset'}
-          sx={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-              width: '5px',
-              maxHeight: '330px',
-              backgroundColor: 'transparent',
-              borderRadius: '30px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#2C2C2C',
-              borderRadius: '30px',
-              height: '10px',
-            },
-          }}
-          maxH={isMobile ? 120 : 'unset'}
-          overflowY={isMobile ? 'scroll' : 'unset'}
-          overflowX={isMobile ? 'hidden' : 'unset'}
+          // h={
+          //   isMobile && isMdHeight
+          //     ? 360
+          //     : isMobile && !isMdHeight
+          //       ? 500
+          //       : 'unset'
+          // }
+          // sx={{
+          //   '&::-webkit-scrollbar': {
+          //     display: 'none',
+          //     width: '5px',
+          //     maxHeight: '330px',
+          //     backgroundColor: 'transparent',
+          //     borderRadius: '30px',
+          //   },
+          //   '&::-webkit-scrollbar-thumb': {
+          //     backgroundColor: '#2C2C2C',
+          //     borderRadius: '30px',
+          //     height: '10px',
+          //   },
+          // }}
+          // overflowY={isMobile ? 'scroll' : 'unset'}
+          // overflowX={isMobile ? 'hidden' : 'unset'}
         >
           <VStack w="full">
             <Stack

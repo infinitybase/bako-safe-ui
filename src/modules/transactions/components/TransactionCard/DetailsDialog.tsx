@@ -5,12 +5,10 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { TransactionCard, transactionStatus } from '@/modules/transactions';
-import { limitCharacters } from '@/utils';
 
 import { useSignTransaction } from '../../hooks/signature';
 import { TransactionWithVault } from '../../services/types';
@@ -38,17 +36,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
-      <Dialog.Header
-        onClose={onClose}
-        position="relative"
-        mb={0}
-        top={{ base: -5, sm: -7 }}
-        w="full"
-        maxW={{ base: 480, xs: 'unset' }}
-        title="Transaction Details"
-        mt={{ base: 14, xs: 'unset' }}
-      />
-      <Dialog.Body mt={-4} as={AccordionItem} borderTop="none">
+      <Dialog.Body as={AccordionItem} borderTop="none">
+        <Dialog.Header
+          onClose={onClose}
+          w="full"
+          maxW={{ base: 480, xs: 'unset' }}
+          title="Transaction Details"
+        />
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
@@ -62,15 +56,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 }
               />
 
-              <TransactionCard.CreationDate>
+              {/* <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-              </TransactionCard.CreationDate>
+              </TransactionCard.CreationDate> */}
             </HStack>
 
             <HStack w="full" justifyContent="space-between">
-              <TransactionCard.Name>
-                {limitCharacters(transaction?.name ?? '', 20)}
-              </TransactionCard.Name>
+              <TransactionCard.Name vaultName={transaction.name} />
 
               <TransactionCard.Status
                 transaction={transaction}

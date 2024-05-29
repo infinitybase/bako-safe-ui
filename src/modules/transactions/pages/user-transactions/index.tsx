@@ -11,7 +11,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
@@ -25,7 +24,6 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
 
 import {
   TransactionCard,
@@ -301,16 +299,14 @@ const UserTransactionsPage = () => {
                         vault={transaction.predicate}
                       />
                     )}
-                    <TransactionCard.CreationDate>
+                    {/* <TransactionCard.CreationDate>
                       {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
+                    </TransactionCard.CreationDate> */}
                     <TransactionCard.Assets />
                     <TransactionCard.Amount
                       assets={transaction.resume.outputs}
                     />
-                    <TransactionCard.Name>
-                      {limitCharacters(transaction.name, 20)}
-                    </TransactionCard.Name>
+                    <TransactionCard.Name vaultName={transaction.name} />
                     <TransactionCard.Status
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}

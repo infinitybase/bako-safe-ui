@@ -47,13 +47,14 @@ const useDefaultConnectors = () => {
     const fuelConnector = connectors?.find((c) => c.name === connector.name);
     const hasWebAuthn = !!window.navigator.credentials;
     const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
-    const isDevMode = connector.name === EConnectors.FUEL_DEVELOPMENT
+    const isDevMode = connector.name === EConnectors.FUEL_DEVELOPMENT;
     return {
       ...connector,
       imageUrl: undefined,
       isEnabled:
         (!!fuelConnector && fuelConnector.installed) ||
-        (isWebAuthn && hasWebAuthn) || isDevMode,
+        (isWebAuthn && hasWebAuthn) ||
+        isDevMode,
     };
   });
 

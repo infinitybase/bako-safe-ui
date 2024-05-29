@@ -206,7 +206,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     w="full"
                     spacing={0}
                     position="relative"
-                    alignSelf={isExtraSmall ? 'flex-start' : 'unset'}
+                    alignSelf={{ base: 'flex-start', xs: 'unset' }}
                   >
                     <Button
                       minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
@@ -239,7 +239,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         position={{ base: 'unset', xs: 'absolute' }}
                         bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                       >
-                        This vault has pending transactions.
+                        Pending transactions
                       </Text>
                     ) : !makeTransactionsPerm ? (
                       <Text

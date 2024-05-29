@@ -57,12 +57,12 @@ const Container = ({
   const gridTemplateColumns = isMobile
     ? 'repeat(2, 1fr)'
     : isInTheVaultWithSideBar
-      ? 'repeat(5, 1fr)'
-      : isInTheVaultWithoutSideBar && childrensQuantity < 6
+      ? 'repeat(4, 1fr)'
+      : isInTheVaultWithoutSideBar && childrensQuantity < 5
         ? 'repeat(4, 1fr)'
-        : isInTheVaultWithoutSideBar && childrensQuantity >= 6
-          ? 'repeat(5,1fr)'
-          : 'repeat(6,1fr)';
+        : isInTheVaultWithoutSideBar && childrensQuantity >= 5
+          ? 'repeat(4,1fr)'
+          : 'repeat(5,1fr)';
 
   return (
     <>
