@@ -43,7 +43,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
       />
 
       <Card
-        bgColor={missingSignature ? 'warning.800' : 'grey.800'}
+        bgColor="grey.800"
         borderColor={missingSignature ? 'warning.500' : 'dark.100'}
         borderWidth="1px"
         onClick={onOpen}
