@@ -114,6 +114,7 @@ export class UserService {
       `/user/by-hardware/${hardwareId}`,
     );
 
+    console.log('data', data);
     return data;
   }
 
