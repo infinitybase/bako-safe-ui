@@ -4,7 +4,7 @@ import { useAuthStore } from '@/modules/auth/store';
 
 import { CookieName, CookiesConfig } from './cookies';
 
-const { VITE_API_URL } = import.meta.env;
+// const { VITE_API_URL } = import.meta.env;
 const {
   ACCESS_TOKEN,
   ADDRESS,
@@ -40,6 +40,8 @@ export interface IApiError {
 const api = axios.create({
   baseURL: 'https:/api-safe.bako.global/',
 });
+
+console.log('[AXIOS]: ', api);
 
 api.interceptors.request.use(
   (value) => {
