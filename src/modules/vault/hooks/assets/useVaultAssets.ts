@@ -113,7 +113,7 @@ function useVaultAssets(predicate?: Vault) {
 
       return (
         bn(bn.parseUnits(balance.amount!))
-          .sub(BakoSafe.getGasConfig('BASE_FEE') || bn.parseUnits('0.00001'))
+          //.sub(bn.parseUnits('0.001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
           .format({ precision: 5 })
       );

@@ -20,6 +20,7 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
+import { bn } from 'fuels';
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -132,7 +133,7 @@ export class TransactionService {
       await vault.provider.getTransactionCost(transactionRequest);
 
     return {
-      fee: maxFee,
+      fee: maxFee.add(bn.parseUnits('0.001')),
       transactionRequest,
     };
   }
