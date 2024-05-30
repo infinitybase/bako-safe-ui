@@ -71,7 +71,7 @@ const Update = () => {
   );
 };
 
-const CardDetails = (props: CardDetailsProps) => {
+const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
@@ -121,7 +121,7 @@ const CardDetails = (props: CardDetailsProps) => {
     return description;
   }, [vault]);
 
-  if (!vault) return;
+  if (!vault) return null;
 
   return (
     <Box w="full">

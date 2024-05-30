@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={fuelConnectorsQueryClient}>
         <FuelProvider
           fuelConfig={{
-            connectors: defaultConnectors(),
+            connectors: defaultConnectors() as any,
           }}
         >
           <SocketProvider>

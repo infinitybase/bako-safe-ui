@@ -144,7 +144,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
-          isDisabled={!canSetTemplate}
+          isDisabled={!canSetTemplate || true} // todo: fix this
           onClick={() => {
             if (
               !vault.id ||
