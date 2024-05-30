@@ -62,7 +62,6 @@ const UserVaultsPage = () => {
         h="10"
         w="full"
         justifyContent={{ base: 'flex-end', sm: 'space-between' }}
-        my={2}
         maxW="full"
       >
         <HStack visibility={{ base: 'hidden', sm: 'visible' }}>

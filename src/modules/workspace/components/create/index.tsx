@@ -19,7 +19,6 @@ import {
   SquarePlusIcon,
   StepProgress,
 } from '@/components';
-import { useScreenSize } from '@/modules/core';
 
 import {
   CreateWorkspaceTabState,
@@ -82,8 +81,6 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     onClose: props.onClose,
   });
 
-  const { isExtraSmall } = useScreenSize();
-
   return (
     <Dialog.Modal
       size={{
@@ -97,32 +94,36 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
         <Dialog.Header
           mb={0}
           onClose={props.onClose}
-          position="relative"
-          maxW={450}
-          top={-6}
+          maxW={{ base: 450, xs: 550, sm: 450 }}
           title="Create Workspace"
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
       ) : (
         <Dialog.Header
-          mt={{ base: isExtraSmall ? 24 : 0 }}
           mb={0}
+          mt={0}
           onClose={props.onClose}
-          position="relative"
           maxW={450}
           title=""
           description=""
+          zIndex={200}
+          h={6}
         />
       )}
 
       <Dialog.Body
-        minH="full"
-        maxH="full"
         maxW={540}
-        mt={!tabs.is(CreateWorkspaceTabState.FORM) ? -10 : 'unset'}
+        mt={!tabs.is(CreateWorkspaceTabState.FORM) ? 0 : 'unset'}
       >
-        <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
+        <Box
+          mb={8}
+          mt={{
+            base: 'unset',
+            sm: tabs.is(CreateWorkspaceTabState.FORM) ? 6 : 'unset',
+          }}
+          hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+        >
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab}>
@@ -140,7 +141,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             </TabPanel>
             <TabPanel p={0}>
               <FeedbackSuccess
-                title="All set!!"
+                hasCloseButton
+                title="All set!"
                 description="The workspace is now ready for use whenever you need to streamline
         your workflow!"
                 primaryAction="Go to my workspace"

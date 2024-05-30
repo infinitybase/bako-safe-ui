@@ -32,21 +32,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const isCurrentAmountZero = Number(currentAmount) === 0;
 
   return (
-    <Dialog.Modal {...props} onClose={handleClose} closeOnOverlayClick={false}>
+    <Dialog.Modal
+      {...props}
+      onClose={handleClose}
+      closeOnOverlayClick={false}
+      size={{ base: 'full', sm: 'lg' }}
+    >
       <Dialog.Header
         onClose={handleClose}
         position={{ base: 'static', sm: 'relative' }}
-        mt={{ base: 16, xs: 0, sm: 6 }}
         mb={0}
         maxH={40}
-        top={{ base: 0, sm: -8 }}
-        w="full"
         maxW={480}
         title="Create Transaction"
         description={`Send single or batch payments with multi assets. \n You can send multiple types of assets to different addresses.`}
       />
 
-      <Dialog.Body maxW={500} maxH={'full'}>
+      <Dialog.Body maxW={500} maxH={'full'} mt={{ sm: 4 }}>
         <CreateTransactionForm
           form={form}
           nicks={nicks}
@@ -76,7 +78,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Text>
       </Flex>
 
-      <Dialog.Actions maxW={480} hideDivider>
+      <Dialog.Actions maxW={480} hideDivider mt="auto">
         {/* TODO: Colocar o Transactions Fee entre o Divider e os botoes */}
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel

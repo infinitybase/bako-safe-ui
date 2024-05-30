@@ -149,13 +149,13 @@ const WorkspaceSettingsDrawer = ({
 
   const pathname = window.location.pathname;
 
-  const isEditingOrCreatingMember = pathname.endsWith('/members');
+  const isEditingOrCreatingMember = pathname.includes('/members');
 
   const request = useGetCurrentWorkspace();
   const { isExtraSmall } = useScreenSize();
 
   return (
-    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
+    <Drawer {...drawerProps} size="md" variant="solid-dark" placement="right">
       {!isEditingOrCreatingMember && (
         <>
           <DrawerOverlay />
@@ -176,7 +176,7 @@ const WorkspaceSettingsDrawer = ({
             >
               <VStack alignItems="flex-start" spacing={5}>
                 <Heading
-                  fontSize={isExtraSmall ? '18px' : '2xl'}
+                  fontSize={isExtraSmall ? '18px' : 'xl'}
                   fontWeight="semibold"
                   color="white"
                 >
@@ -261,7 +261,6 @@ const WorkspaceSettingsDrawer = ({
                         workspaceId: request.workspace?.id ?? '',
                       }),
                     );
-                    // drawerProps.onClose();
                   }}
                   _hover={{
                     opacity: 0.8,

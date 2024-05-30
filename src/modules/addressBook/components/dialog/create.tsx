@@ -26,7 +26,6 @@ const CreateContactDialog = ({
       <Dialog.Header
         position="relative"
         onClose={dialog.onClose}
-        top={{ base: -5, sm: -7 }}
         maxW={420}
         title={isEdit ? 'Edit address' : 'Add to address book'}
         description={
@@ -36,7 +35,7 @@ const CreateContactDialog = ({
         }
       />
 
-      <Dialog.Body maxW={420} mt={-8}>
+      <Dialog.Body maxW={420} mt={{ base: -4, sm: -8 }}>
         <CreateContactForm form={form} />
       </Dialog.Body>
 
