@@ -68,16 +68,16 @@ const useSteps = () => {
       hiddeProgressBar: false,
       isLoading,
       onSubmit: async (data) => {
-        const { addresses } = data;
-        const filteredAddresses = addresses.filter(
-          (item) => item !== undefined,
-        );
+        //const { addresses } = data;
+        // const filteredAddresses = addresses.filter(
+        //   (item) => item !== undefined,
+        // );
 
-        const add = filteredAddresses as unknown as { value: string }[];
+        //const add = filteredAddresses;
 
         await createTemplate({
           ...data,
-          addresses: add.map((item) => item.value),
+          //addresses: add.map((item) => item.value),
         });
         nextStep();
       },

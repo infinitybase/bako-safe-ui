@@ -36,7 +36,7 @@ export interface CardDetailsProps {
   blockedTransfers: boolean;
 }
 
-const SettingsOverview = (props: CardDetailsProps) => {
+const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
@@ -60,7 +60,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
     return as;
   }, [vault.id]);
 
-  if (!vault) return;
+  if (!vault) return null;
 
   return (
     <Box w="full">

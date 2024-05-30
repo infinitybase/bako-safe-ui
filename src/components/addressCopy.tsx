@@ -16,13 +16,17 @@ interface Props extends StackProps {
   addressToCopy: string;
 }
 
-function AddressCopy({ address, addressToCopy, ...rest }: Props) {
+function AddressCopy({
+  address,
+  addressToCopy,
+  ...rest
+}: Props): JSX.Element | null {
   const clipboard = useClipboard(addressToCopy);
   const toast = useNotification();
 
   const isValid = !!address && address.length > 0;
 
-  if (!isValid) return;
+  if (!isValid) return null;
 
   return (
     <HStack

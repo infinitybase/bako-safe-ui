@@ -6,10 +6,10 @@ import { Pages } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 export interface AuthRouteProps {
-  children: React.ReactNode;
+  children: JSX.Element;
 }
 
-const AuthRoute = (props: AuthRouteProps) => {
+const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
   const auth = useAuth();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
