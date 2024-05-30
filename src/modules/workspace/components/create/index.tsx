@@ -85,7 +85,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     <Dialog.Modal
       size={{
         base: 'full',
-        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
+        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? 'xl' : 'lg',
       }}
       closeOnOverlayClick={false}
       {...props}

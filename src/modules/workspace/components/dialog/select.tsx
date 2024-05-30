@@ -34,7 +34,7 @@ const SelectWorkspaceDialog = ({
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
+      size={{ base: 'full', sm: !listIsEmpty ? 'xl' : 'xl' }}
       onClose={dialog.onClose}
       isOpen={openDialog}
       closeOnOverlayClick={false}
