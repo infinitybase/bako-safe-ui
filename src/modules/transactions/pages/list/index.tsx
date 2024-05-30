@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
+import format from 'date-fns/format';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, HomeIcon, LineCloseIcon } from '@/components';
@@ -240,16 +241,16 @@ const TransactionsVaultPage = () => {
                     isInTheVaultPage
                     callBack={() => filter.set(StatusFilter.ALL)}
                   >
-                    {/* {!isMobile && (
+                    {!isMobile && (
                       <TransactionCard.CreationDate>
                         {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
                       </TransactionCard.CreationDate>
-                    )} */}
+                    )}
                     <TransactionCard.Assets />
                     <TransactionCard.Amount
                       assets={transaction.resume.outputs}
                     />
-                    <TransactionCard.Name vaultName={transaction.name} />
+                    <TransactionCard.Name transactionName={transaction.name} />
 
                     <TransactionCard.Status
                       transaction={transaction}

@@ -5,6 +5,7 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
+import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
@@ -56,13 +57,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 }
               />
 
-              {/* <TransactionCard.CreationDate>
+              <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-              </TransactionCard.CreationDate> */}
+              </TransactionCard.CreationDate>
             </HStack>
 
             <HStack w="full" justifyContent="space-between">
-              <TransactionCard.Name vaultName={transaction.name} />
+              <TransactionCard.Name transactionName={transaction.name} />
 
               <TransactionCard.Status
                 transaction={transaction}

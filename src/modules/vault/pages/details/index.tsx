@@ -8,6 +8,7 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import format from 'date-fns/format';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
@@ -239,14 +240,14 @@ const VaultDetailsPage = () => {
                     account={account}
                     isSigner={isSigner}
                   >
-                    {/* {!vaultRequiredSizeToColumnLayout && (
+                    {!vaultRequiredSizeToColumnLayout && (
                       <TransactionCard.CreationDate>
                         {format(
                           new Date(transaction?.createdAt),
                           'EEE, dd MMM',
                         )}
                       </TransactionCard.CreationDate>
-                    )} */}
+                    )}
 
                     <TransactionCard.Assets />
                     <TransactionCard.Amount
@@ -258,7 +259,7 @@ const VaultDetailsPage = () => {
                         })) ?? []
                       }
                     />
-                    <TransactionCard.Name vaultName={transaction.name} />
+                    <TransactionCard.Name transactionName={transaction.name} />
                     <TransactionCard.Status
                       transaction={transaction}
                       status={transactionStatus({

@@ -259,33 +259,7 @@ const Details = ({
   return (
     <DetailsTransactionStepper transactionId={transaction.id}>
       {(isLoading, transactionHistory) => (
-        <CustomSkeleton
-          py={2}
-          isLoaded={!isLoading && !!transactionHistory}
-          // h={
-          //   isMobile && isMdHeight
-          //     ? 360
-          //     : isMobile && !isMdHeight
-          //       ? 500
-          //       : 'unset'
-          // }
-          // sx={{
-          //   '&::-webkit-scrollbar': {
-          //     display: 'none',
-          //     width: '5px',
-          //     maxHeight: '330px',
-          //     backgroundColor: 'transparent',
-          //     borderRadius: '30px',
-          //   },
-          //   '&::-webkit-scrollbar-thumb': {
-          //     backgroundColor: '#2C2C2C',
-          //     borderRadius: '30px',
-          //     height: '10px',
-          //   },
-          // }}
-          // overflowY={isMobile ? 'scroll' : 'unset'}
-          // overflowX={isMobile ? 'hidden' : 'unset'}
-        >
+        <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
           <VStack w="full">
             <Stack
               pt={{ base: 0, sm: 5 }}

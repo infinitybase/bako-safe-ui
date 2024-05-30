@@ -39,10 +39,9 @@ const Status = ({
 
   return (
     <HStack
-      w={{ base: '10%', sm: '10%' }}
       justifyContent={{ base: 'flex-end', sm: 'center' }}
       ml={{ base: 0, sm: 6 }}
-      // maxW="full"
+      maxW="full"
     >
       {isLoading && (
         <CircularProgress

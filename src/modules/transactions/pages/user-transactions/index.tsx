@@ -11,6 +11,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import format from 'date-fns/format';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
@@ -299,14 +300,14 @@ const UserTransactionsPage = () => {
                         vault={transaction.predicate}
                       />
                     )}
-                    {/* <TransactionCard.CreationDate>
+                    <TransactionCard.CreationDate>
                       {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate> */}
+                    </TransactionCard.CreationDate>
                     <TransactionCard.Assets />
                     <TransactionCard.Amount
                       assets={transaction.resume.outputs}
                     />
-                    <TransactionCard.Name vaultName={transaction.name} />
+                    <TransactionCard.Name transactionName={transaction.name} />
                     <TransactionCard.Status
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
