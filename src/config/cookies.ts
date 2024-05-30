@@ -55,7 +55,6 @@ export class CookiesConfig {
 
       return encrypted;
     } catch (e) {
-      console.log('Error encrypting cookie', e);
       return `${crypto.randomUUID()}`;
     }
   }
@@ -69,7 +68,6 @@ export class CookiesConfig {
 
       return decrypted;
     } catch (e) {
-      console.log('Error decrypting cookie', e);
       return `${crypto.randomUUID()}`;
     }
   }

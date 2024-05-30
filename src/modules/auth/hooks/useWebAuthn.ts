@@ -49,19 +49,16 @@ const useWebAuthn = () => {
   const { createAccountMutate, signAccountMutate } = useDrawerWebAuth();
 
   const accountsOptions = useMemo(() => {
-    // const filteredAccounts = [];
-    // // accountsRequest.data?.filter((account) =>
-    // //   account.name.toLowerCase().includes(searchAccount.toLowerCase()),
-    // // );
+    const filteredAccounts = accountsRequest.data?.filter((account) =>
+      account.name.toLowerCase().includes(searchAccount.toLowerCase()),
+    );
 
-    // const mappedOptions = filteredAccounts?.map((account) => ({
-    //   label: account.name,
-    //   value: account.webauthn.id,
-    // }));
+    const mappedOptions = filteredAccounts?.map((account) => ({
+      label: account.name,
+      value: account.webauthn.id,
+    }));
 
-    // return mappedOptions;
-
-    return [];
+    return mappedOptions;
   }, [accountsRequest.data, searchAccount]);
 
   const nicknames = useCheckNickname(searchRequest);
