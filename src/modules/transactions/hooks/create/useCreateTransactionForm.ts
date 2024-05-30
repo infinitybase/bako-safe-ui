@@ -21,6 +21,18 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
         .required('Amount is required.')
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
+
+          if (parent.fee) {
+            const transactionTotalAmount = bn
+              .parseUnits(parent.amount)
+              .add(bn.parseUnits(parent.fee))
+              .format();
+
+            return params.validateBalance(
+              parent.asset,
+              String(transactionTotalAmount),
+            );
+          }
           return params.validateBalance(parent.asset, amount);
         })
         .test(
@@ -49,6 +61,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             return tranasctionsBalance.lte(coinBalance);
           },
         ),
+      fee: yup.string(),
       to: yup
         .string()
         .required('Address is required.')
@@ -76,6 +89,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           asset: NativeAssetId,
           to: '',
           amount: '',
+          fee: '',
         },
       ],
     },

@@ -25,7 +25,7 @@ import {
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { UserPlusIcon } from '@/components/icons/user-add-icon';
 import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
-import { AddressUtils } from '@/modules/core';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
@@ -70,6 +70,7 @@ const MemberTab = () => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
+            src={member?.avatar}
             name={contactNickname ?? member?.address}
           />
           <Flex
@@ -113,12 +114,10 @@ const CreateMemberPage = () => {
   const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
+  const { isExtraSmallDevice } = useScreenSize();
 
   const TabsPanels = (
     <TabPanels>
-      {/* <TabPanel p={0}>
-        <MemberAddressForm form={memberForm} addressBook={addressBook} />
-      </TabPanel> */}
       <TabPanel p={0}>
         <MemberPermissionForm form={permissionForm} formState={formState} />
       </TabPanel>
@@ -127,7 +126,7 @@ const CreateMemberPage = () => {
           <FeedbackSuccess
             showAction
             title={formState.title}
-            description="To view all the members added to your workspace, click on settings on the workspace home page."
+            description="To view all the members added to your workspace, click on members on the workspace home page"
             primaryAction={formState.primaryAction}
             secondaryAction={formState.secondaryAction}
             onPrimaryAction={formState.handlePrimaryAction}
@@ -178,8 +177,7 @@ const CreateMemberPage = () => {
       isOpen
       onClose={handleClose}
       size={{
-        base:
-          formState.isEditMember && tabs.is(MemberTabState.FORM) ? 'xl' : 'md',
+        base: 'full',
         sm: 'xl',
       }}
       closeOnOverlayClick={false}
@@ -191,61 +189,57 @@ const CreateMemberPage = () => {
         isLoading={addressBook.createContactRequest.isLoading}
         isEdit={false}
       />
-
       <Dialog.Header
         maxW={480}
         title={dialog.title}
-        position="relative"
-        top={{ base: 0, sm: -8 }}
-        mt={0}
-        h="auto"
         mb={0}
+        mt={0}
+        onClose={handleClose}
         description={dialog.description}
         descriptionFontSize="md"
         descriptionColor="grey.200"
         hidden={!tabs.is(MemberTabState.FORM)}
       />
-
       {formState.isEditMember && (
         <Tabs maxW={480} w="full" hidden={!tabs.is(MemberTabState.FORM)}>
           <MemberTab />
         </Tabs>
       )}
-
       {!formState.isEditMember && tabs.is(MemberTabState.FORM) && (
         <>
-          <Box maxW={480} w="full" mt={[2, 0]} mb={8}>
+          <Box maxW={480} w="full" mt={{ base: 2, sm: 6 }} mb={8}>
             <StepProgress length={tabs.length - 2} value={tabs.tab} />
           </Box>
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
         </>
       )}
-
       <Dialog.Body
-        mb={[7, 1]}
+        mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
         maxW={480}
-        maxH={['full', 520]}
-        overflowY="scroll"
-        css={{
-          '&::-webkit-scrollbar': {
-            width: '5px',
-            height: '5px' /* Adjust the height of the scrollbar */,
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '20px',
-            height: '20px' /* Adjust the height of the scrollbar thumb */,
-          },
-        }}
       >
-        <Tabs index={tabs.tab} maxH="full" isLazy colorScheme="green">
+        <Tabs
+          index={tabs.tab}
+          maxH="full"
+          isLazy
+          colorScheme="green"
+          minH={{ base: 440, sm: 'full' }}
+        >
           {TabsPanels}
         </Tabs>
       </Dialog.Body>
-
       {tabs.is(MemberTabState.FORM) && (
         <>
-          <Dialog.Actions maxW={480}>
+          <Dialog.Actions
+            sx={{
+              '&>hr': {
+                marginTop:
+                  isExtraSmallDevice && formState.isEditMember ? '0' : 4,
+              },
+            }}
+            maxW={480}
+            mt={{ base: isExtraSmallDevice ? -6 : 'auto', xs: 'unset' }}
+            p={0}
+          >
             {!isEditMember ? (
               <Dialog.SecondaryAction
                 w="25%"

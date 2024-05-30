@@ -5,7 +5,6 @@ export interface ContentProps extends FlexProps {}
 const Content = (props: ContentProps) => {
   return (
     <Flex
-      mt={['64px', 0]}
       overflowY="scroll"
       css={{ '&::-webkit-scrollbar': { width: '0' }, scrollbarWidth: 'none' }}
       minH="calc(100vh - 82px)"
@@ -18,6 +17,8 @@ const Content = (props: ContentProps) => {
         base: 5,
         sm: 6,
       }}
+      maxW="1500px"
+      mx="auto"
     >
       {props.children}
     </Flex>

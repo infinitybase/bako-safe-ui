@@ -40,7 +40,7 @@ export const MemberPermissionForm = ({
 }: MemberPermissionForm) => {
   return (
     <Box w="full">
-      <Divider mb={5} mt={1} />
+      <Divider mb={5} />
       <Dialog.Section
         title={
           <Heading fontSize="md" color="grey.200">
@@ -48,7 +48,7 @@ export const MemberPermissionForm = ({
           </Heading>
         }
         description="Select the new role for the member."
-        mb={[8, 4]}
+        mb={4}
       />
       <Controller
         name="permission"
@@ -63,8 +63,9 @@ export const MemberPermissionForm = ({
               {WorkspacePermissionUtils.permissionsValues.map((permission) => (
                 <RadioCard
                   border="1px"
-                  bgColor="grey.850"
-                  p={3}
+                  bgColor="grey.825"
+                  px={3}
+                  py={3}
                   my={1}
                   borderRadius="xl"
                   borderColor={
@@ -96,14 +97,14 @@ export const MemberPermissionForm = ({
                         {permission.title}
                       </Badge>
                       <Flex
-                        mt={2}
+                        mt={{ base: 0, xs: 2 }}
                         align="start"
                         direction="column"
                         justify="space-between"
                       >
                         <Text
                           fontWeight="medium"
-                          fontSize={{ base: 'sm' }}
+                          fontSize="sm"
                           variant="subtitle"
                         >
                           {permission.description}

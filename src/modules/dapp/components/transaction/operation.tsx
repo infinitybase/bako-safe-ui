@@ -1,7 +1,6 @@
 import { Box, HStack, VStack } from '@chakra-ui/react';
-import { Operation } from '@fuel-ts/providers';
-import { Vault } from 'bsafe';
-import { bn } from 'fuels';
+import { AddressType } from '@fuel-ts/providers';
+import { Vault } from 'bakosafe';
 
 import { CustomSkeleton } from '@/components';
 import { assetsMap } from '@/modules/core/utils';
@@ -9,9 +8,11 @@ import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asse
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 
+import { IOutput } from '../../services/fuel-transaction';
+
 interface OperationProps {
-  operation?: Operation;
-  vault?: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
+  operation?: IOutput;
 }
 
 export const DappTransactionOperationSekeleton = () => (
@@ -35,30 +36,31 @@ export const DappTransactionOperationSekeleton = () => (
 );
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { to, from, assetsSent } = operation ?? {};
-  const assets = assetsSent?.map((asset) => {
-    const assetData = assetsMap[asset.assetId];
+  const { to, assetId, amount } = operation ?? {};
 
-    return {
+  if (!to || !assetId || !amount || !vault) return null;
+
+  const assetData = assetsMap[assetId];
+
+  const assets = [
+    {
       icon: assetData.icon,
-      amount: bn(asset.amount).format(),
-      assetId: asset.assetId,
+      amount,
+      assetId,
       name: assetData.name,
       slug: assetData.slug,
-    };
-  });
+    },
+  ];
   const hasAssets = !!assets?.length;
-
-  if (!to || !from || !vault) {
-    /* TODO: should display skeleton here */
-    return null;
-  }
 
   return (
     <Box w="full" mb={7}>
       <DappTransactionFromTo
         to={to}
-        from={from}
+        from={{
+          address: vault.predicateAddress,
+          type: AddressType.contract,
+        }}
         vault={vault}
         hasAssets={hasAssets}
       />

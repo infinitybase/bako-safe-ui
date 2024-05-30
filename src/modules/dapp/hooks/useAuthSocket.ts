@@ -1,9 +1,10 @@
-import { BSAFEConnectorEvents } from 'bsafe';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useQueryParams } from '@/modules/auth/hooks';
-import { UserTypes, useSocket } from '@/modules/core/hooks';
+import { useAuth, useQueryParams } from '@/modules/auth/hooks';
+import { Pages } from '@/modules/core/routes';
 
+import { useCreateConnections } from './useCreateConnection';
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
 
 export interface AuthSocketEvent {
@@ -12,48 +13,28 @@ export interface AuthSocketEvent {
 }
 
 export const useAuthSocket = () => {
-  const { connect, emitMessage } = useSocket();
+  const { sessionId } = useQueryParams();
+  const navigate = useNavigate();
+  const {
+    workspaces: { current },
+  } = useAuth();
 
-  const { sessionId, address, origin, name } = useQueryParams();
   const [selectedVaultId, setSelectedVaultId] = useState('');
-  const [emittingEvent, setEmittingEvent] = useState(false);
 
   const getCurrentVaultRequest = useGetCurrentVaultRequest(sessionId!);
 
-  useMemo(() => {
-    connect({
-      username: sessionId!,
-      param: UserTypes.POPUP_AUTH,
-      sessionId: sessionId!,
-      origin: origin!,
-    });
-  }, [connect, sessionId]);
-
-  const emitEvent = (vaultId: string) => {
-    setEmittingEvent(true);
-
-    return emitMessage({
-      event: BSAFEConnectorEvents.AUTH_CONFIRMED,
-      content: {
-        vaultId,
-        name: name ?? origin!,
-        sessionId: sessionId!,
-        address: address!,
-        origin: origin!,
-      },
-      to: `${UserTypes.WALLET}${sessionId!}`,
-      callback: () => {
-        window.close();
-        setEmittingEvent(false);
-      },
-    });
+  const createConnectionsMutation = useCreateConnections();
+  const makeLinkCreateVault = () => {
+    navigate(
+      `${Pages.createVault({ workspaceId: current })}${location.search}`,
+    );
   };
 
   return {
-    emitEvent,
     selectedVaultId,
     setSelectedVaultId,
     currentVault: getCurrentVaultRequest?.data,
-    emittingEvent,
+    send: createConnectionsMutation,
+    makeLinkCreateVault,
   };
 };

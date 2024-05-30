@@ -1,106 +1,46 @@
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  HStack,
-  Icon,
-  TabPanel,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Flex, Heading, Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
+import React from 'react';
 
-import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
-import { UseCreateVaultDialogReturn } from '@/modules/vault/hooks';
+import { DoneIcon } from '@/components/icons/done-icon';
 
 interface VaultSuccessStepProp {
-  onDeposit: () => void;
-  onSaveTemplate: UseCreateVaultDialogReturn['onSaveTemplate'];
+  stepProgress: React.JSX.Element;
 }
 
-const VaultSuccessStep = ({
-  onDeposit,
-  onSaveTemplate,
-}: VaultSuccessStepProp) => {
+const VaultSuccessStep = ({ stepProgress }: VaultSuccessStepProp) => {
   return (
-    <TabPanel>
-      <Center flexDirection="column" mb={5}>
-        <Box mb={8}>
-          <Icon fontSize={100} as={UserWorkspaceIcon} />
-        </Box>
-        <Box mb={5}>
-          <Heading fontSize={{ base: 'xl', sm: '3xl' }} color="white">
+    <TabPanel p={0} h={450}>
+      <Flex
+        flexDirection="column"
+        h="100%"
+        alignItems="center"
+        justifyContent="space-between"
+        pb={{ base: 'unset', xs: 12 }}
+      >
+        <Flex flexDir="column" gap="16px" mb={5}>
+          <Heading fontSize={{ base: '16px', xs: '3xl' }} color="grey.50">
             All set!!
           </Heading>
-        </Box>
-        <Box mb={5}>
-          <Heading
+          <Text
             fontWeight="normal"
             color="grey.400"
-            fontSize={{ base: 'sm', sm: 'md' }}
-            textAlign="center"
+            fontSize={{ base: 'xs', xs: 'md' }}
+            variant="description"
           >
-            The vault has been created! Ready for the next steps?
-          </Heading>
-        </Box>
-      </Center>
+            Your vault has been created successfully! You can now create
+            transactions.
+          </Text>
 
-      <VStack>
-        <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={{ base: 200, sm: 220 }}>
-            <Text fontSize={{ base: 'xs', sm: 'md' }} variant="description">
-              <Text
-                fontSize={{ base: 'sm', sm: 'md' }}
-                color="grey.200"
-                fontWeight="semibold"
-              >
-                Unlock Vault Features:
-              </Text>
-              Use the faucet
-            </Text>
-          </Box>
-          <Button
-            _hover={{
-              opacity: 0.8,
-            }}
-            h={9}
-            w="full"
-            maxW={{ base: 120, sm: 180 }}
-            onClick={onDeposit}
-            variant="primary"
-            size="sm"
-          >
-            Give me Ether
-          </Button>
-        </HStack>
-        <HStack w="full" justifyContent="space-between">
-          <Box w="full" maxW={{ base: 220, sm: 220 }}>
-            <Text fontSize={{ base: 'xs', sm: 'md' }} variant="description">
-              <Text
-                fontSize={{ base: 'sm', sm: 'md' }}
-                color="grey.200"
-                fontWeight="semibold"
-              >
-                Streamline Your Workflow:
-              </Text>
-              Set this vault as Template
-            </Text>
-          </Box>
-          <Button
-            _hover={{
-              opacity: 0.8,
-            }}
-            h={9}
-            variant="primary"
-            w="full"
-            maxW={{ base: 120, sm: 180 }}
-            size="sm"
-            onClick={onSaveTemplate}
-          >
-            Set as template
-          </Button>
-        </HStack>
-      </VStack>
+          {stepProgress}
+        </Flex>
+
+        <VStack mb={8}>
+          <Icon fontSize={100} as={DoneIcon} />
+          <Text fontWeight={700} fontSize={16} color="grey.50">
+            The vault has been created!
+          </Text>
+        </VStack>
+      </Flex>
     </TabPanel>
   );
 };

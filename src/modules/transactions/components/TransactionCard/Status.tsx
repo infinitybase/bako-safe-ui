@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -39,9 +39,9 @@ const Status = ({
 
   return (
     <HStack
-      w="full"
       justifyContent={{ base: 'flex-end', sm: 'center' }}
       ml={{ base: 0, sm: 6 }}
+      maxW="full"
     >
       {isLoading && (
         <CircularProgress
@@ -56,8 +56,8 @@ const Status = ({
         minW={100}
         spacing={0}
         w="full"
-        direction={['row', 'column']}
-        alignItems={{ base: 'flex-end', sm: 'center' }}
+        direction={{ base: 'row', sm: 'column' }}
+        alignItems={{ base: 'flex-end', md: 'center' }}
         justifyContent="flex-end"
       >
         <Badge
@@ -66,8 +66,8 @@ const Status = ({
             isReproved || isError
               ? 'error'
               : isCompleted
-              ? 'success'
-              : 'warning'
+                ? 'success'
+                : 'warning'
           }
         >
           {isError && 'Error'}
@@ -76,7 +76,11 @@ const Status = ({
           {!isCompleted && !isReproved && !isError && signatureStatus}
         </Badge>
         {showDescription && (
-          <Text variant="description" fontSize={['xs', 'sm']} color="grey.500">
+          <Text
+            variant="description"
+            fontSize={{ base: 'xs', sm: 'sm' }}
+            color="grey.500"
+          >
             Transfer status
           </Text>
         )}
@@ -87,6 +91,9 @@ const Status = ({
             variant="secondary"
             px={3}
             bgColor="dark.100"
+            mt={{ base: 4, sm: 1 }}
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             border="none"
             isLoading={isLoading}
             onClick={(e) => {

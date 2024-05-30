@@ -1,8 +1,9 @@
-import { ITransaction, TransactionStatus } from 'bsafe';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 
 import { queryClient } from '@/config';
-import { useBsafeTransactionSend } from '@/modules/core';
+import { useBakoSafeTransactionSend } from '@/modules/core';
 
 import { useTransactionToast } from './toast';
 
@@ -29,8 +30,8 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     });
   };
 
-  const validateResult = (transaction: ITransaction) => {
-    if (transaction.status == TransactionStatus.SUCCESS) {
+  const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
+    if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
     }
 
@@ -38,12 +39,15 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       toast.error(transaction.id, 'Transaction failed');
     }
 
-    if (transaction.status == TransactionStatus.PROCESS_ON_CHAIN) {
+    if (
+      transaction.status == TransactionStatus.PROCESS_ON_CHAIN &&
+      !isCompleted
+    ) {
       toast.loading(transaction);
     }
   };
 
-  const { mutate: sendTransaction } = useBsafeTransactionSend({
+  const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction) => {
       transactionsRef.current = transactionsRef.current.filter(
         (data) => data.id !== transaction.id,
@@ -51,8 +55,34 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       refetetchTransactionList();
       validateResult(transaction);
     },
-    onError: (error) => {
+
+    // @ts-ignore
+    onError: (error, { transaction }: { transaction: ITransaction }) => {
       const [errorMessage, id] = error.message.split(':');
+
+      // Essa tratativa de erro/solução é um caso específico, referente a situação/comentários do hook useBakoSafeTransactionSend(src/modules/core/hooks/bakosafe/transactions)
+      // que devido a forma como o instanciamento das transações/vaults são feitos, está sendo retornado um erro de "not enough coins"
+      // O que não é o caso, pois há validações para evitar que uma transação seja criada sem que haja o valor disponível no vault.
+      // Essa solução (isCompleted) usa a mesma lógica do "transactionStatus" (caminho: src/modules/transactions/utils) para definir se uma transação foi concluída ou não.
+      const isNotEnoughError = errorMessage.includes('not enough');
+      if (isNotEnoughError) {
+        transactionsRef.current = transactionsRef.current.filter(
+          (data) => data.id !== transaction.id,
+        );
+
+        refetetchTransactionList();
+        const { requiredSigners, witnesses: witnessesResume } =
+          transaction.resume;
+
+        const signatureCount =
+          witnessesResume?.filter((w) => w !== null).length ?? 0;
+
+        const isCompleted = signatureCount >= requiredSigners;
+        validateResult(transaction, isCompleted);
+
+        return;
+      }
+
       toast.error(id, errorMessage);
       refetetchTransactionList();
     },

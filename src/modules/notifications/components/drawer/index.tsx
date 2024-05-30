@@ -7,15 +7,13 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   Heading,
   HStack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
-import { CustomSkeleton } from '@/components';
-import { CloseIcon } from '@/components/icons/close-icon';
+import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { useAppNotifications } from '../../hooks';
 import { NotificationsEmptyState } from '../emptyState';
@@ -51,48 +49,57 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
     <Drawer
       {...props}
       size="sm"
-      variant="glassmorphic"
+      variant="solid-dark"
       placement="right"
       onClose={drawer.onClose}
     >
       <DrawerOverlay />
-      <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
-            <CloseIcon w={5} h={5} />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
-        </Flex>
-
+      <DrawerContent p={10}>
         <DrawerHeader mb={6}>
-          <VStack alignItems="flex-start" spacing={2}>
-            <HStack spacing={2} alignItems="center">
-              <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-                Notifications
-              </Heading>
-              {unreadCounter > 0 && (
-                <Center
-                  minW={4}
-                  minH={4}
-                  maxW={5}
-                  maxH={5}
-                  bg="error.600"
-                  borderRadius={10}
-                >
-                  <Text fontSize="xs">{unreadCounter}</Text>
-                </Center>
-              )}
+          <VStack alignItems="flex-start" spacing={4}>
+            <HStack
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+              w="full"
+            >
+              <HStack spacing={2} alignItems="center">
+                <Heading fontSize="lg" fontWeight="semibold" color="grey.50">
+                  Notifications
+                </Heading>
+                {unreadCounter > 0 && (
+                  <Center
+                    minW={4}
+                    minH={4}
+                    maxW={5}
+                    maxH={5}
+                    bg="error.600"
+                    borderRadius={10}
+                  >
+                    <Text fontSize="xs">{unreadCounter}</Text>
+                  </Center>
+                )}
+              </HStack>
+              <LineCloseIcon
+                fontSize="24px"
+                aria-label="Close window"
+                cursor="pointer"
+                onClick={drawer.onClose}
+              />
             </HStack>
-            <Text maxWidth={300} variant="description">
-              {`Stay informed about all the activities happening in the vaults you're a part of.`}
+            <Text
+              fontSize="xs"
+              color="grey.450"
+              fontWeight={400}
+              lineHeight={1.21}
+            >
+              {`Stay informed about all the activities happening in the vaults that you are part of.`}
             </Text>
           </VStack>
         </DrawerHeader>
 
         <DrawerBody
-          borderTop="1px"
+          borderTop={emptyState ? 0 : '1px'}
           borderTopColor="dark.100"
           py={isSuccess && !notifications.length ? 0 : 8}
           css={{

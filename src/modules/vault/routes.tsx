@@ -30,6 +30,7 @@ const vaultRoutes = (
         </AuthRoute>
       }
     />
+
     <Route
       path={Pages.createTransaction()}
       element={

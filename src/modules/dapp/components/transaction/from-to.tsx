@@ -1,14 +1,15 @@
-import { Box, chakra, HStack, Icon } from '@chakra-ui/react';
+import { chakra, HStack, Icon } from '@chakra-ui/react';
 import { OperationTransactionAddress } from '@fuel-ts/providers';
-import { Vault } from 'bsafe';
+import { Vault } from 'bakosafe';
+import { AddressType } from 'fuels';
 
-import { DappRightArrow } from '@/components/icons/dapp-right-arrow';
+import { ForwardIcon, PlayIcon } from '@/components/icons';
 import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/recipient';
 
 interface FromToProps {
   to: OperationTransactionAddress;
   from: OperationTransactionAddress;
-  vault: Pick<Vault['BSAFEVault'], 'name' | 'predicateAddress'>;
+  vault: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
   hasAssets?: boolean;
 }
 
@@ -21,8 +22,10 @@ const FromToContainer = chakra(HStack, {
 });
 
 const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
+  const isContract = to.type === AddressType.contract;
+
   return (
-    <FromToContainer>
+    <FromToContainer gap={2}>
       <DappTransactionRecipient
         isSender
         type={from.type}
@@ -31,19 +34,17 @@ const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
         address={from.address}
         fullBorderRadius={!hasAssets}
       />
-      <Box
-        px={4}
-        py={3}
+
+      <Icon
+        as={isContract ? PlayIcon : ForwardIcon}
+        boxSize="30px"
+        width="min-content"
         left="50%"
         right="50%"
-        width="min-content"
-        bgColor="dark.150"
         position="absolute"
         transform="translate(-50%)"
-        borderRadius={10}
-      >
-        <Icon as={DappRightArrow} color="grey.200" />
-      </Box>
+      />
+
       <DappTransactionRecipient
         type={to.type}
         chain={to.chain}

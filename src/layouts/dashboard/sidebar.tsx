@@ -1,4 +1,4 @@
-import { Box, Divider, Icon } from '@chakra-ui/react';
+import { Box, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import {
   ExchangeIcon,
@@ -48,95 +48,100 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
       py={6}
       px={6}
     >
-      {/* VAULT DRAWER LIST */}
-      <VaultDrawer
-        isOpen={drawer.isOpen}
-        onClose={drawer.onClose}
-        vaultId={route.params.vaultId!}
-      />
+      <VStack position="fixed" width="275px">
+        {/* VAULT DRAWER LIST */}
+        <VaultDrawer
+          isOpen={drawer.isOpen}
+          onClose={drawer.onClose}
+          vaultId={route.params.vaultId!}
+        />
 
-      {/*/!* VAULT INFOS *!/*/}
-      <VaultBox
-        name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
-        fullName={String(vaultRequest.predicate?.name)}
-        address={
-          AddressUtils.format(vaultRequest?.predicate?.predicateAddress ?? '')!
-        }
-        isLoading={vaultRequest.isLoading}
-        onChangeVault={drawer.onOpen}
-        hasBalance={vaultAssets.hasBalance}
-        isPending={vault.transactions.isPendingSigner}
-        hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
-        onCreateTransaction={() => {
-          route.navigate(
-            Pages.createTransaction({
-              workspaceId: route.params.workspaceId!,
-              vaultId: route.params.vaultId!,
-            }),
-          );
-        }}
-      />
-
-      <Divider borderColor="dark.100" mt={8} mb={4} />
-
-      {/* MENU */}
-      <SidebarMenu.List w="100%">
-        <SidebarMenu.Container
-          isActive={menuItems.home}
-          onClick={() =>
+        {/*/!* VAULT INFOS *!/*/}
+        <VaultBox
+          name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
+          fullName={String(vaultRequest.predicate?.name)}
+          address={
+            AddressUtils.format(
+              vaultRequest?.predicate?.predicateAddress ?? '',
+            )!
+          }
+          isLoading={vaultRequest.isLoading}
+          isFetching={vaultRequest.isFetching}
+          onChangeVault={drawer.onOpen}
+          hasBalance={vaultAssets.hasBalance}
+          isPending={vault.transactions.isPendingSigner}
+          hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
+          onCreateTransaction={() => {
             route.navigate(
-              Pages.detailsVault({
+              Pages.createTransaction({
                 workspaceId: route.params.workspaceId!,
                 vaultId: route.params.vaultId!,
               }),
-            )
-          }
-        >
-          <SidebarMenu.Icon as={HomeIcon} />
-          <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
-        </SidebarMenu.Container>
+            );
+          }}
+        />
 
-        <SidebarMenu.Container
-          isActive={menuItems.transactions}
-          cursor={'pointer'}
-          onClick={() =>
-            route.navigate(
-              Pages.transactions({
-                workspaceId: route.params.workspaceId!,
-                vaultId: route.params.vaultId!,
-              }),
-            )
-          }
-        >
-          <SidebarMenu.Icon as={ExchangeIcon} />
-          <SidebarMenu.Title>Transactions</SidebarMenu.Title>
-          <SidebarMenu.Badge hidden={!pendingTransactions}>
-            <Icon as={PendingIcon} />{' '}
-            {pendingTransactions && pendingSignerTransactionsLength}
-          </SidebarMenu.Badge>
-        </SidebarMenu.Container>
+        <Divider borderColor="dark.100" mt={8} mb={4} />
 
-        {/*<SidebarMenu.Container onClick={() => {}}>*/}
-        {/*  <SidebarMenu.Icon as={HiQrCode} />*/}
-        {/*  <SidebarMenu.Title> Address book</SidebarMenu.Title>*/}
-        {/*  <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>*/}
-        {/*</SidebarMenu.Container>*/}
+        {/* MENU */}
+        <SidebarMenu.List w="100%">
+          <SidebarMenu.Container
+            isActive={menuItems.home}
+            onClick={() =>
+              route.navigate(
+                Pages.detailsVault({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={HomeIcon} />
+            <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+          </SidebarMenu.Container>
 
-        <SidebarMenu.Container
-          isActive={menuItems.settings}
-          onClick={() =>
-            route.navigate(
-              Pages.vaultSettings({
-                workspaceId: route.params.workspaceId!,
-                vaultId: route.params.vaultId!,
-              }),
-            )
-          }
-        >
-          <SidebarMenu.Icon as={SettingsIcon} />
-          <SidebarMenu.Title>Settings</SidebarMenu.Title>
-        </SidebarMenu.Container>
-      </SidebarMenu.List>
+          <SidebarMenu.Container
+            isActive={menuItems.transactions}
+            cursor={'pointer'}
+            onClick={() =>
+              route.navigate(
+                Pages.transactions({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={ExchangeIcon} />
+            <SidebarMenu.Title>Transactions</SidebarMenu.Title>
+            <SidebarMenu.Badge hidden={!pendingTransactions}>
+              <Icon as={PendingIcon} />{' '}
+              {pendingTransactions && pendingSignerTransactionsLength}
+            </SidebarMenu.Badge>
+          </SidebarMenu.Container>
+
+          {/*<SidebarMenu.Container onClick={() => {}}>*/}
+          {/*  <SidebarMenu.Icon as={HiQrCode} />*/}
+          {/*  <SidebarMenu.Title> Address book</SidebarMenu.Title>*/}
+          {/*  <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>*/}
+          {/*</SidebarMenu.Container>*/}
+
+          <SidebarMenu.Container
+            isActive={menuItems.settings}
+            onClick={() =>
+              route.navigate(
+                Pages.vaultSettings({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={SettingsIcon} />
+            <SidebarMenu.Title>Settings</SidebarMenu.Title>
+          </SidebarMenu.Container>
+        </SidebarMenu.List>
+      </VStack>
     </Box>
   );
 };

@@ -12,16 +12,22 @@ import {
   Stack,
   StackProps,
   Text,
+  useAccordionItemState,
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
 import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, TransactionStatus } from 'bsafe';
+import { ITransaction, TransactionStatus } from 'bakosafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AlertIcon, CopyIcon, DoubleArrowIcon } from '@/components';
+import {
+  AlertIcon,
+  CopyIcon,
+  CustomSkeleton,
+  DoubleArrowIcon,
+} from '@/components';
 import {
   AddressUtils,
   AssetModel,
@@ -30,8 +36,9 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useNotification } from '@/modules/notification';
+import { limitCharacters } from '@/utils';
 
-import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
+import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 
 type TransactionUI = Omit<ITransaction, 'assets'> & {
@@ -45,6 +52,8 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
+  isInTheVaultPage?: boolean;
+  isMobile?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -64,7 +73,7 @@ const AssetBoxInfo = ({
   const clipboard = useClipboard(
     isContract ? contractAddress : asset?.to ?? '',
   );
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -76,7 +85,7 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      px={{ base: 0, sm: 5 }}
+      px={{ base: 0, md: 5 }}
       py={{ base: 3, sm: 5 }}
       spacing={{ base: 1, sm: 8 }}
       w="full"
@@ -100,13 +109,14 @@ const AssetBoxInfo = ({
                 name={assetInfo.slug}
                 size={{ base: 'xs', sm: '28px' }}
                 src={assetInfo.icon}
+                ignoreFallback
               />
               <Text color="grey.500">{assetInfo.slug}</Text>
             </HStack>
           )}
 
           <HStack>
-            <Box mt={0.5} w={[120, 140]}>
+            <Box mt={0.5} w={{ base: 120, sm: 140 }}>
               <Heading
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -179,7 +189,7 @@ const AssetBoxInfo = ({
           h="full"
           w="full"
           minH={51}
-          maxW={600}
+          maxW={200}
           spacing={0}
           justifyContent="center"
           alignItems={{ base: 'center', sm: 'start' }}
@@ -204,9 +214,16 @@ const AssetBoxInfo = ({
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toAddress(),
-            )}
+            {isExtraSmall
+              ? limitCharacters(
+                  AddressUtils.format(
+                    Address.fromString(asset.to ?? '').toAddress(),
+                  ) ?? '',
+                  7,
+                )
+              : AddressUtils.format(
+                  Address.fromString(asset.to ?? '').toAddress(),
+                )}
           </Text>
         </VStack>
       )}
@@ -214,9 +231,12 @@ const AssetBoxInfo = ({
   );
 };
 
-const Details = ({ transaction, status }: TransactionDetailsProps) => {
-  const { transactionHistory } = useTransactionHistory(transaction.id);
-
+const Details = ({
+  transaction,
+  status,
+  isInTheVaultPage,
+  isMobile,
+}: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
   const mainOperation = transaction?.summary?.operations?.[0];
   const isContract = mainOperation?.to?.type === AddressType.contract;
@@ -227,172 +247,202 @@ const Details = ({ transaction, status }: TransactionDetailsProps) => {
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/transaction/${hash}`,
+      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
       '_BLANK',
     );
   };
 
+  const { isOpen } = useAccordionItemState();
+
+  if (!isMobile && !isOpen) return null;
+
   return (
-    <VStack w="full">
-      <Stack
-        pt={{ base: 0, sm: 5 }}
-        alignSelf="flex-start"
-        display="flex"
-        direction={['column', 'row']}
-        alignItems="center"
-        justify="space-between"
-        maxW="full"
-        w={['85%', '80%']}
-      >
-        <Box
-          display="flex"
-          flexDirection={['row', 'column']}
-          maxW="full"
-          minW={200}
-          flexWrap="wrap"
-        >
-          <Box mb={{ base: 2, sm: 4 }}>
-            <Text color="grey.200" fontWeight="medium">
-              Transaction breakdown
-            </Text>
-          </Box>
-          {fromConnector && (
-            <>
-              <Card
-                bgColor={isPending && notSigned ? 'warning.800' : 'dark.300'}
-                borderColor={
-                  isPending && notSigned ? 'warning.500' : 'dark.100'
-                }
-                borderRadius={10}
-                px={5}
-                py={4}
-                borderWidth="1px"
+    <DetailsTransactionStepper transactionId={transaction.id}>
+      {(isLoading, transactionHistory) => (
+        <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
+          <VStack w="full">
+            <Stack
+              pt={{ base: 0, sm: 5 }}
+              alignSelf="flex-start"
+              display="flex"
+              direction={{ base: 'column', md: 'row' }}
+              alignItems="start"
+              justify="space-between"
+              columnGap={isInTheVaultPage ? '3rem' : '8rem'}
+              w="full"
+            >
+              <Box
+                display="flex"
+                flexDirection={{ base: 'row', xs: 'column' }}
+                w={{ base: '100%', lg: 'unset' }}
+                minW={{ base: 200, sm: 486 }}
+                flexWrap="wrap"
               >
-                <Text fontSize="sm" color="grey.500">
-                  Requesting a transaction from:
-                </Text>
+                <Box mb={{ base: 2, sm: 4 }}>
+                  <Text color="grey.200" fontWeight="medium">
+                    Transaction breakdown
+                  </Text>
+                </Box>
 
-                <Divider borderColor="dark.100" mt={3} mb={5} />
+                {fromConnector && (
+                  <>
+                    <Card
+                      bgColor="grey.825"
+                      borderColor="#2B2927"
+                      borderRadius={10}
+                      w={{ base: 'full', xs: 'unset' }}
+                      px={5}
+                      py={{ base: 2, xs: 4 }}
+                      borderWidth="1px"
+                    >
+                      <Text color="grey.500" fontSize={{ base: 12, xs: 'sm' }}>
+                        Requesting a transaction from:
+                      </Text>
 
-                <HStack width="100%" alignItems="center" spacing={4}>
-                  <Avatar
-                    variant="roundedSquare"
-                    color="white"
-                    bgColor="dark.150"
-                    src={transaction.summary?.image}
-                    name={transaction.summary?.name}
-                  />
-                  <VStack alignItems="flex-start" spacing={0}>
-                    <Text variant="subtitle">{transaction.summary?.name}</Text>
-                    <Text color="brand.500" variant="description">
-                      {transaction.summary?.origin.split('//')[1]}
+                      <Divider borderColor="dark.100" mt={3} mb={5} />
+
+                      <HStack width="100%" alignItems="center" spacing={4}>
+                        <Avatar
+                          variant="roundedSquare"
+                          color="white"
+                          bgColor="dark.150"
+                          src={transaction.summary?.image}
+                          name={transaction.summary?.name}
+                          boxSize="40px"
+                        />
+                        <VStack alignItems="flex-start" spacing={0}>
+                          <Text variant="subtitle" fontSize={14}>
+                            {transaction.summary?.name}
+                          </Text>
+                          <Text
+                            color="brand.500"
+                            variant="description"
+                            fontSize={{ base: 12, xs: 'unset' }}
+                          >
+                            {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
+                            {transaction.summary?.origin.split('//')[1]}
+                          </Text>
+                        </VStack>
+                      </HStack>
+                    </Card>
+                  </>
+                )}
+
+                {isPending && notSigned && fromConnector && (
+                  <>
+                    <HStack
+                      bg="warning.700"
+                      borderColor="warning.700"
+                      borderWidth="1px"
+                      borderRadius={10}
+                      mt={{ base: 4, xs: 8 }}
+                      py={4}
+                      px={8}
+                    >
+                      <Icon as={AlertIcon} color="warning.600" fontSize={28} />
+
+                      <VStack spacing={0} alignItems="flex-start" ml={2}>
+                        <Text
+                          fontWeight="bold"
+                          color="warning.600"
+                          fontSize={{ base: 12, xs: 'unset' }}
+                        >
+                          Double check it!
+                        </Text>
+                        <Text
+                          color="grey.200"
+                          fontSize={{ base: 12, xs: 'unset' }}
+                        >
+                          Please carefully review this externally created
+                          transaction before approving it.
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <Divider borderColor="dark.100" mt={8} />
+                  </>
+                )}
+
+                <Box alignItems="flex-start" flexWrap="wrap" w="100%">
+                  {transaction.assets.map((asset, index) => (
+                    <AssetBoxInfo
+                      key={index}
+                      asset={{
+                        assetId: asset.assetId,
+                        amount: asset.amount,
+                        to: asset.to,
+                        transactionID: transaction.id,
+                        recipientNickname: asset?.recipientNickname,
+                      }}
+                      borderColor={index > 0 ? 'grey' : 'transparent'}
+                      hasToken={hasToken}
+                    />
+                  ))}
+                  {isContract && !transaction.assets.length && (
+                    <AssetBoxInfo
+                      contractAddress={Address.fromB256(
+                        mainOperation.to?.address ?? '',
+                      ).toString()}
+                      borderColor={'transparent'}
+                      hasToken={hasToken}
+                    />
+                  )}
+                </Box>
+
+                <Box
+                  w="full"
+                  hidden={transaction.status !== TransactionStatus.SUCCESS}
+                  borderColor="grey"
+                  borderTopWidth={1}
+                >
+                  <HStack
+                    mt={2}
+                    px={{ base: 0, sm: 5 }}
+                    py={{ base: 3, sm: 5 }}
+                    gap={8}
+                    justifyContent="space-between"
+                  >
+                    <Text color="grey.200">Gas Fee (ETH)</Text>
+                    <Text
+                      color="grey.200"
+                      fontSize={{ base: 'md', sm: 'lg' }}
+                      fontWeight="semibold"
+                    >
+                      -{transaction.gasUsed}
                     </Text>
-                  </VStack>
-                </HStack>
-              </Card>
-            </>
-          )}
+                  </HStack>
+                </Box>
+              </Box>
 
-          {isPending && notSigned && fromConnector && (
-            <>
-              <HStack
-                bg="warning.700"
-                borderColor="warning.700"
-                borderWidth="1px"
-                borderRadius={10}
-                mt={8}
-                py={4}
-                px={8}
+              <Box
+                alignSelf="flex-start"
+                w="full"
+                minW={{ base: 200, md: 300 }}
+                maxW={600}
               >
-                <Icon as={AlertIcon} color="warning.600" fontSize={28} />
+                <TransactionStepper steps={transactionHistory!} />
+              </Box>
+            </Stack>
 
-                <VStack spacing={0} alignItems="flex-start" ml={2}>
-                  <Text fontWeight="bold" color="warning.600">
-                    Double check it!
-                  </Text>
-                  <Text color="grey.200">
-                    Please carefully review this externally created transaction
-                    before approving it.
-                  </Text>
-                </VStack>
-              </HStack>
-
-              <Divider borderColor="dark.100" mt={8} />
-            </>
-          )}
-
-          <VStack maxW="full" alignItems="flex-start" flexWrap="wrap">
-            {transaction.assets.map((asset, index) => (
-              <AssetBoxInfo
-                key={index}
-                asset={{
-                  assetId: asset.assetId,
-                  amount: asset.amount,
-                  to: asset.to,
-                  transactionID: transaction.id,
-                  recipientNickname: asset?.recipientNickname,
+            {transaction.status === TransactionStatus.SUCCESS && (
+              <Button
+                border="1px solid white"
+                bgColor="transparent"
+                _hover={{
+                  borderColor: 'brand.500',
+                  color: 'brand.500',
                 }}
-                borderColor={index > 0 ? 'dark.100' : 'transparent'}
-                hasToken={hasToken}
-              />
-            ))}
-            {isContract && !transaction.assets.length && (
-              <AssetBoxInfo
-                contractAddress={Address.fromB256(
-                  mainOperation.to?.address ?? '',
-                ).toString()}
-                borderColor={'transparent'}
-                hasToken={hasToken}
-              />
+                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                variant="secondary"
+                onClick={handleViewInExplorer}
+              >
+                View on Explorer
+              </Button>
             )}
           </VStack>
-
-          <Box
-            w="full"
-            mt={10}
-            hidden={transaction.status !== TransactionStatus.SUCCESS}
-            borderColor="dark.100"
-            borderTopWidth={1}
-          >
-            <HStack
-              mt={2}
-              px={{ base: 0, sm: 5 }}
-              py={{ base: 3, sm: 5 }}
-              gap={8}
-            >
-              <Text color="grey.200">Gás Fee (ETH)</Text>
-              <Text
-                color="grey.200"
-                fontSize={{ base: 'md', sm: 'lg' }}
-                fontWeight="semibold"
-              >
-                -{transaction.gasUsed}
-              </Text>
-            </HStack>
-          </Box>
-        </Box>
-
-        <Box alignSelf="flex-start">
-          <TransactionStepper steps={transactionHistory!} />
-        </Box>
-      </Stack>
-
-      {transaction.status === TransactionStatus.SUCCESS && (
-        <Button
-          border="1px solid white"
-          bgColor="transparent"
-          _hover={{
-            borderColor: 'brand.500',
-            color: 'brand.500',
-          }}
-          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-          variant="secondary"
-          onClick={handleViewInExplorer}
-        >
-          View on Explorer
-        </Button>
+        </CustomSkeleton>
       )}
-    </VStack>
+    </DetailsTransactionStepper>
   );
 };
 

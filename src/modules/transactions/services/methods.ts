@@ -1,4 +1,4 @@
-import { Transfer } from 'bsafe';
+import { Transfer } from 'bakosafe';
 
 import { api } from '@/config/api';
 
@@ -20,6 +20,7 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
+import { bn } from 'fuels';
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -88,8 +89,10 @@ export class TransactionService {
     return data;
   }
 
-  static async send(BSAFETransactionId: string) {
-    const { data } = await api.post(`/transaction/send/${BSAFETransactionId}`);
+  static async send(BakoSafeTransactionId: string) {
+    const { data } = await api.post(
+      `/transaction/send/${BakoSafeTransactionId}`,
+    );
 
     return data;
   }
@@ -126,13 +129,11 @@ export class TransactionService {
       },
     });
 
-    const { gasPrice, usedFee, minFee } =
+    const { maxFee } =
       await vault.provider.getTransactionCost(transactionRequest);
 
-    transactionRequest.gasPrice = gasPrice;
-
     return {
-      fee: usedFee.add(minFee),
+      fee: maxFee.add(bn.parseUnits('0.001')),
       transactionRequest,
     };
   }

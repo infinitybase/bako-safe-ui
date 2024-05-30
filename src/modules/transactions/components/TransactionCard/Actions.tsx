@@ -7,8 +7,7 @@ import {
   Text,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bsafe';
-import React from 'react';
+import { ITransaction } from 'bakosafe';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -28,7 +27,9 @@ interface ActionsMobileProps {
 interface TransactionActionsProps {
   status: TransactionState;
   transaction?: ITransaction;
+  isInTheVaultPage?: boolean;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
@@ -51,6 +52,7 @@ const Actions = ({
   transaction,
   status,
   isSigner,
+  callBack,
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
@@ -90,18 +92,20 @@ const Actions = ({
       )}
 
       {awaitingAnswer && isSigner ? (
-        <HStack minW={140}>
+        <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
           <Button
             h={9}
             px={3}
             variant="primary"
-            size="sm"
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isLoading}
             isDisabled={isSuccess}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction();
+              confirmTransaction(callBack);
+              //callBack && callBack();
             }}
           >
             Sign
@@ -109,7 +113,8 @@ const Actions = ({
           <Button
             h={9}
             px={3}
-            size="sm"
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             variant="secondary"
             onClick={(e) => {
               e.stopPropagation();

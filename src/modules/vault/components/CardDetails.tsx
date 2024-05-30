@@ -11,10 +11,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton } from '@/components';
+import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
@@ -29,6 +29,7 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
+import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -36,6 +37,7 @@ import { openFaucet } from '../utils';
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
+
   //assets: UseVaultDetailsReturn['assets'];
 }
 
@@ -73,10 +75,16 @@ const CardDetails = (props: CardDetailsProps) => {
   const navigate = useNavigate();
 
   const { store, vault } = props;
-  const { balanceUSD, visebleBalance, setVisibleBalance } = store;
+  const {
+    balanceUSD,
+    visebleBalance,
+    setVisibleBalance,
+    isFirstAssetsLoading,
+    setIsFirstAssetsLoading,
+  } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const hasBalance = vault.hasBalance;
   const balanceFormatted = bn(
@@ -93,6 +101,10 @@ const CardDetails = (props: CardDetailsProps) => {
     PermissionRoles.MANAGER,
     PermissionRoles.SIGNER,
   ];
+
+  useEffect(() => {
+    return () => setIsFirstAssetsLoading(true);
+  }, []);
 
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
@@ -112,14 +124,14 @@ const CardDetails = (props: CardDetailsProps) => {
   if (!vault) return;
 
   return (
-    <Box w="full" maxW={['full', 730]}>
-      <Box mb={5} w="full">
+    <Box w="full">
+      <Box mb="1.2em" w="full">
         <Text
           color="grey.400"
           fontWeight="semibold"
           fontSize={{ base: 'md', sm: 'xl' }}
         >
-          Balance
+          Overview
         </Text>
       </Box>
 
@@ -137,9 +149,9 @@ const CardDetails = (props: CardDetailsProps) => {
               gap={{ base: 6, sm: 0 }}
             >
               <HStack
-                w={['full', '70%']}
+                w={{ base: 'full', sm: '70%' }}
                 display="flex"
-                gap={[4, 6]}
+                gap={{ base: 4, sm: 6 }}
                 alignItems="flex-start"
               >
                 <Avatar
@@ -162,18 +174,20 @@ const CardDetails = (props: CardDetailsProps) => {
                   />
                 </Avatar>
                 <Box
-                  w={['full', '90%']}
+                  w={{ base: 'full', sm: '90%' }}
                   alignItems="center"
                   justifyContent="center"
                 >
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW={['35vw', '80%']}
+                      maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                       variant={isMobile ? 'title-md' : 'title-xl'}
                       isTruncated
                     >
-                      {vault?.name}
+                      {isExtraSmall
+                        ? limitCharacters(vault?.name ?? '', 8)
+                        : vault?.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
@@ -189,11 +203,11 @@ const CardDetails = (props: CardDetailsProps) => {
                       <HandbagIcon
                         w={{ base: 3, sm: 4 }}
                         h={{ base: 3, sm: 4 }}
+                        color="grey.500"
                       />
                       <Text
                         variant="description"
-                        textOverflow="ellipsis"
-                        noOfLines={2}
+                        maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                         isTruncated
                         fontSize={{ base: 'small', sm: 'sm' }}
                       >
@@ -225,7 +239,7 @@ const CardDetails = (props: CardDetailsProps) => {
                     minW={20}
                     display="flex"
                     flexDirection="column"
-                    alignItems="center"
+                    alignItems="end"
                   >
                     <HStack
                       w="full"
@@ -237,9 +251,15 @@ const CardDetails = (props: CardDetailsProps) => {
                       justifyContent="space-around"
                       spacing={2}
                     >
-                      <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                        {visebleBalance ? `${balanceUSD} USD` : '-----'}
-                      </Heading>
+                      <CustomSkeleton
+                        isLoaded={!isFirstAssetsLoading}
+                        customStartColor="grey.75"
+                        customEndColor="dark.100"
+                      >
+                        <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
+                          {visebleBalance ? `${balanceUSD} USD` : '-----'}
+                        </Heading>
+                      </CustomSkeleton>
                       <Box
                         w="auto"
                         _hover={{
@@ -259,74 +279,82 @@ const CardDetails = (props: CardDetailsProps) => {
                   </HStack>
                 </Box>
 
-                <Button
-                  hidden={hasBalance}
-                  minW={{ base: undefined, sm: 180 }}
-                  h={12}
-                  variant="primary"
-                  onClick={() => openFaucet(vault.predicateAddress!)}
-                  _hover={{
-                    opacity: 0.8,
-                  }}
-                  leftIcon={
-                    <PlusSquareIcon
-                      w={{ base: 5, sm: 6 }}
-                      h={{ base: 5, sm: 6 }}
-                    />
-                  }
-                >
-                  Faucet
-                </Button>
-
-                <VStack
-                  spacing={2}
-                  hidden={!hasBalance}
-                  alignItems={['flex-end', 'flex-start']}
+                <CustomSkeleton
+                  isLoaded={!isFirstAssetsLoading}
+                  customStartColor="grey.75"
+                  customEndColor="dark.100"
+                  w="fit-content"
                 >
                   <Button
-                    alignSelf="end"
-                    onClick={() =>
-                      navigate(
-                        Pages.createTransaction({
-                          vaultId: vault.id!,
-                          workspaceId,
-                        }),
-                      )
-                    }
-                    isDisabled={
-                      !vault?.hasBalance ||
-                      !makeTransactionsPerm ||
-                      vault.transactions.isPendingSigner
-                    }
-                    minW={130}
+                    hidden={hasBalance}
+                    minW={{ base: undefined, sm: 180 }}
+                    h={12}
                     variant="primary"
+                    onClick={() => openFaucet(vault.predicateAddress!)}
+                    _hover={{
+                      opacity: 0.8,
+                    }}
+                    leftIcon={
+                      <PlusSquareIcon
+                        w={{ base: 5, sm: 6 }}
+                        h={{ base: 5, sm: 6 }}
+                      />
+                    }
                   >
-                    Send
+                    Faucet
                   </Button>
-                  {vault.transactions.isPendingSigner ? (
-                    <Text
-                      variant="description"
-                      textAlign={['end', 'left']}
-                      fontSize="xs"
-                      color="error.500"
+
+                  <VStack
+                    spacing={2}
+                    hidden={!hasBalance}
+                    alignItems={{ base: 'flex-end', sm: 'flex-start' }}
+                  >
+                    <Button
+                      alignSelf="end"
+                      onClick={() =>
+                        navigate(
+                          Pages.createTransaction({
+                            vaultId: vault.id!,
+                            workspaceId,
+                          }),
+                        )
+                      }
+                      isDisabled={
+                        !vault?.hasBalance ||
+                        !makeTransactionsPerm ||
+                        vault.transactions.isPendingSigner
+                      }
+                      variant="primary"
+                      leftIcon={<SquarePlusIcon />}
+                      fontWeight="bold"
                     >
-                      This vault has pending transactions.
-                    </Text>
-                  ) : !makeTransactionsPerm ? (
-                    <Text
-                      fontSize="xs"
-                      hidden={isMobile}
-                      variant="description"
-                      color="error.500"
-                    >
-                      You dont have permission to send transactions.
-                    </Text>
-                  ) : (
-                    <Text hidden={true} variant="description" fontSize="xs">
-                      Send single or batch <br /> payments with multi assets.
-                    </Text>
-                  )}
-                </VStack>
+                      Send
+                    </Button>
+                    {vault.transactions.isPendingSigner ? (
+                      <Text
+                        variant="description"
+                        textAlign={{ base: 'end', sm: 'left' }}
+                        fontSize="xs"
+                        color="error.500"
+                      >
+                        This vault has pending transactions.
+                      </Text>
+                    ) : !makeTransactionsPerm ? (
+                      <Text
+                        fontSize="xs"
+                        hidden={isMobile}
+                        variant="description"
+                        color="error.500"
+                      >
+                        You dont have permission to send transactions.
+                      </Text>
+                    ) : (
+                      <Text hidden={true} variant="description" fontSize="xs">
+                        Send single or batch <br /> payments with multi assets.
+                      </Text>
+                    )}
+                  </VStack>
+                </CustomSkeleton>
               </Flex>
             </Flex>
 
@@ -358,13 +386,17 @@ const CardDetails = (props: CardDetailsProps) => {
                 />
               </VStack>
             </HStack> */}
-            <VStack h="full" w="full" alignItems="flex-start" spacing={4}>
-              <Text
-                fontWeight="semibold"
-                color="grey.450"
-              >{`Vaults's balance breakdown`}</Text>
+            <VStack
+              h={{ base: 160, sm: 180 }}
+              w="full"
+              alignItems="flex-start"
+              spacing={4}
+            >
+              <Text fontWeight="semibold" color="grey.450">
+                {`Vault's balance breakdown`}
+              </Text>
               <CustomSkeleton
-                isLoaded={!currentWorkspace.isLoading}
+                isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}
                 w="full"
                 h="full"
               >
@@ -372,7 +404,7 @@ const CardDetails = (props: CardDetailsProps) => {
                   <Card
                     w="full"
                     h="full"
-                    p={8}
+                    p={{ base: 4, sm: 8 }}
                     borderColor="dark.100"
                     borderStyle="dashed"
                   >
@@ -380,7 +412,7 @@ const CardDetails = (props: CardDetailsProps) => {
                       <Text fontWeight="bold" color="grey.200">
                         First thing first...
                       </Text>
-                      <Text color="white" maxW={340} textAlign="center">
+                      <Text color="grey.200" maxW={340} textAlign="center">
                         {`You don't have any vaults yet. Create a vault to start to
                     save your assets.`}
                       </Text>

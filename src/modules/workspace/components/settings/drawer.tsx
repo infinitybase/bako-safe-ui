@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, ErrorIcon, UserAddIcon } from '@/components';
+import { Card, LineCloseIcon, UserAddIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
 import { useAddressBook } from '@/modules/addressBook';
 import {
@@ -26,6 +26,7 @@ import {
   Member,
   Pages,
   PermissionRoles,
+  useScreenSize,
   Workspace,
 } from '@/modules/core';
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
@@ -44,7 +45,7 @@ interface MemberCardProps {
 }
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
-  const { permissions: loggedPermissions } = useAuth();
+  const { permissions: loggedPermissions, avatar } = useAuth();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
@@ -61,36 +62,41 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
   const contactNickname = contactByAddress(member.address!)?.nickname;
+
   return (
     <Card
+      alignSelf={{ base: 'start', xs: 'unset' }}
+      h={{ base: 24, xs: 20 }}
       w="full"
-      h={20}
       maxW="full"
-      bgColor="grey.850"
-      borderColor="grey.600"
+      bg="gradients.transaction-card"
+      borderColor="gradients.transaction-border"
       borderWidth="1.5px"
       key={member.id}
       _hover={{
         cursor: 'pointer',
         borderColor: 'brand.600',
       }}
-      pl={3}
+      px={{ base: 3, xs: 6 }}
+      py={2}
     >
       <Box
         display="flex"
         w="full"
         h="full"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ base: 'start', xs: 'center' }}
+        flexDir={{ base: 'column', xs: 'row' }}
       >
         <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
           <Avatar
-            size="md"
+            boxSize="40px"
             fontSize="md"
             color="white"
             bg="grey.900"
             variant="roundedSquare"
             name={contactByAddress(member.address!)?.nickname ?? member.address}
+            src={avatar}
           />
           <Box mr={1}>
             <Text fontWeight="semibold" color="grey.200">
@@ -105,30 +111,30 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
           </Box>
         </Box>
 
-        <HStack w="35%" spacing={2}>
+        <HStack
+          w={{ base: '100%', xs: '32%' }}
+          spacing={4}
+          justifyContent="space-between"
+        >
           <Badge
             rounded="xl"
             fontSize="xs"
-            py={1}
-            px={4}
+            py={{ base: 0.5, xs: 1 }}
+            px={{ base: 2, xs: 4 }}
             variant={permission?.variant}
           >
             {permission?.title}
           </Badge>
 
           {isEditable && (
-            <Box>
-              <EditIcon
-                _hover={{
-                  cursor: 'pointer',
-                  opacity: 0.8,
-                }}
-                onClick={() => onEdit(member.id)}
-                w={6}
-                h={6}
-                mr={4}
-              />
-            </Box>
+            <EditIcon
+              _hover={{
+                cursor: 'pointer',
+                opacity: 0.8,
+              }}
+              onClick={() => onEdit(member.id)}
+              boxSize={{ base: 5, xs: 6 }}
+            />
           )}
         </HStack>
       </Box>
@@ -141,46 +147,68 @@ const WorkspaceSettingsDrawer = ({
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
 
+  const pathname = window.location.pathname;
+
+  const isEditingOrCreatingMember = pathname.includes('/members');
+
   const request = useGetCurrentWorkspace();
+  const { isExtraSmall } = useScreenSize();
 
   return (
-    <Drawer {...drawerProps} size="md" variant="glassmorphic" placement="right">
-      <DrawerOverlay />
-      <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawerProps.onClose} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
-        </Flex>
+    <Drawer {...drawerProps} size="md" variant="solid-dark" placement="right">
+      {!isEditingOrCreatingMember && (
+        <>
+          <DrawerOverlay />
+          <DrawerContent>
+            <Flex mb={5} w="full" justifyContent="flex-end" zIndex={200}>
+              <HStack
+                cursor="pointer"
+                onClick={drawerProps.onClose}
+                spacing={2}
+              >
+                <LineCloseIcon fontSize="24px" aria-label="Close window" />
+              </HStack>
+            </Flex>
 
-        <DrawerHeader mb={10}>
-          <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="2xl" fontWeight="semibold" color="white">
-              Workspace settings
-            </Heading>
-            <Text fontSize="sm" color="grey.200">
-              This is the workspace that you are seeing.
-            </Text>
-          </VStack>
-        </DrawerHeader>
+            <DrawerHeader
+              position="relative"
+              top={isExtraSmall ? '-42px' : -12}
+            >
+              <VStack alignItems="flex-start" spacing={5}>
+                <Heading
+                  fontSize={isExtraSmall ? '18px' : 'xl'}
+                  fontWeight="semibold"
+                  color="white"
+                >
+                  Workspace settings
+                </Heading>
+                <Text fontSize="sm" color="grey.200">
+                  This is the workspace that you are seeing.
+                </Text>
+              </VStack>
+            </DrawerHeader>
 
-        <DrawerBody>
-          <WorkspaceCard
-            key={request.workspace?.id}
-            workspace={request.workspace!}
-            counter={{
-              members: request.workspace!.members.length,
-              //In this case, the predicates are coming in an array, so we need to use the length property
-              vaults: Array.isArray(request.workspace!.predicates)
-                ? request.workspace!.predicates.length
-                : 0,
-            }}
-            mb={10}
-          />
-          {/* <Card mb={10} bgColor="dark.200">
+            <DrawerBody
+              mt={-2}
+              overflowY="scroll"
+              css={{
+                '&::-webkit-scrollbar': { width: '0' },
+                scrollbarWidth: 'none',
+              }}
+            >
+              <WorkspaceCard
+                key={request.workspace?.id}
+                workspace={request.workspace!}
+                counter={{
+                  members: request.workspace!.members.length,
+                  //In this case, the predicates are coming in an array, so we need to use the length property
+                  vaults: Array.isArray(request.workspace!.predicates)
+                    ? request.workspace!.predicates.length
+                    : 0,
+                }}
+                mb={10}
+              />
+              {/* <Card mb={10} bgColor="dark.200">
             <HStack spacing={5}>
               <Avatar
                 p={10}
@@ -201,66 +229,70 @@ const WorkspaceSettingsDrawer = ({
               </Box>
             </HStack>
           </Card> */}
-          <Divider mb={10} />
-          <Flex
-            w="full"
-            mb={10}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Flex h={14} flexDir="column" justify="space-around">
-              <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
-                Members
-              </Heading>
-              <Text fontSize="sm" color="grey.400">
-                {request.workspace?.members.length}{' '}
-                {request.workspace?.members.length === 1 ? 'Member' : 'Members'}
-              </Text>
-            </Flex>
+              <Divider mb={6} />
+              <Flex
+                w="full"
+                mb={4}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Flex h={14} flexDir="column" justify="space-around">
+                  <Heading fontSize="lg" fontWeight="semibold" color="grey.200">
+                    Members
+                  </Heading>
+                  <Text fontSize="sm" color="grey.400">
+                    {request.workspace?.members.length}{' '}
+                    {request.workspace?.members.length === 1
+                      ? 'Member'
+                      : 'Members'}
+                  </Text>
+                </Flex>
 
-            <Button
-              size="md"
-              h={10}
-              variant="primary"
-              bgColor="grey.200"
-              border="none"
-              gap={2}
-              onClick={() => {
-                navigate(
-                  Pages.membersWorkspace({
-                    workspaceId: request.workspace?.id ?? '',
-                  }),
-                );
-              }}
-              _hover={{
-                opacity: 0.8,
-              }}
-            >
-              <UserAddIcon />
-              Add member
-            </Button>
-          </Flex>
-
-          <VStack w="full" maxW="full">
-            {!!request.workspace?.members &&
-              request.workspace?.members.map((member) => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  workspace={request.workspace!}
-                  onEdit={(memberId) =>
+                <Button
+                  size="md"
+                  h={10}
+                  variant="primary"
+                  bgColor="grey.200"
+                  border="none"
+                  gap={2}
+                  onClick={() => {
                     navigate(
-                      Pages.updateMemberWorkspace({
-                        workspaceId: request.workspace!.id,
-                        memberId,
+                      Pages.membersWorkspace({
+                        workspaceId: request.workspace?.id ?? '',
                       }),
-                    )
-                  }
-                />
-              ))}
-          </VStack>
-        </DrawerBody>
-      </DrawerContent>
+                    );
+                  }}
+                  _hover={{
+                    opacity: 0.8,
+                  }}
+                >
+                  <UserAddIcon />
+                  Add member
+                </Button>
+              </Flex>
+
+              <VStack w="full" maxW="full">
+                {!!request.workspace?.members &&
+                  request.workspace?.members.map((member) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      workspace={request.workspace!}
+                      onEdit={(memberId) =>
+                        navigate(
+                          Pages.updateMemberWorkspace({
+                            workspaceId: request.workspace!.id,
+                            memberId,
+                          }),
+                        )
+                      }
+                    />
+                  ))}
+              </VStack>
+            </DrawerBody>
+          </DrawerContent>
+        </>
+      )}
     </Drawer>
   );
 };

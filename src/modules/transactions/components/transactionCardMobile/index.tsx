@@ -1,7 +1,5 @@
 import { Card, CardProps, Divider, HStack } from '@chakra-ui/react';
-import { format } from 'date-fns';
-
-import { limitCharacters } from '@/utils';
+import format from 'date-fns/format';
 
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services';
@@ -13,6 +11,7 @@ interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
@@ -41,10 +40,11 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         account={account}
         status={status}
         isSigner={isSigner}
+        callBack={props.callBack}
       />
 
       <Card
-        bgColor={missingSignature ? 'warning.800' : 'grey.800'}
+        bgColor="grey.800"
         borderColor={missingSignature ? 'warning.500' : 'dark.100'}
         borderWidth="1px"
         onClick={onOpen}
@@ -53,9 +53,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         {...rest}
       >
         <HStack justifyContent="space-between">
-          <TransactionCard.Name>
-            {limitCharacters(transaction.name, 20)}
-          </TransactionCard.Name>
+          <TransactionCard.Name transactionName={transaction.name} />
 
           <TransactionCard.Status
             transaction={transaction}
@@ -64,7 +62,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
           />
         </HStack>
 
-        <HStack mt={2} justifyContent="space-between">
+        <HStack mt={2}>
           {transaction.predicate && (
             <TransactionCard.VaultInfo vault={transaction.predicate} />
           )}

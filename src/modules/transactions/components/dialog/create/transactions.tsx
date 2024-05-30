@@ -1,21 +1,24 @@
 import {
   Accordion,
   AccordionItem,
-  Box,
   Button,
   Center,
   FormControl,
   FormHelperText,
   FormLabel,
-  Link,
+  HStack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { AmountInput, UserAddIcon } from '@/components';
-import { AutoComplete } from '@/components/autocomplete';
-import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
+import {
+  AddToAddressBook,
+  CreateContactDialog,
+  useAddressBook,
+} from '@/modules/addressBook';
+import { useAuth } from '@/modules/auth/hooks';
 import {
   AddressUtils,
   AssetSelect,
@@ -46,6 +49,8 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+  const { isSingleWorkspace } = useAuth();
+
   const {
     createContactRequest,
     search,
@@ -53,9 +58,10 @@ const TransactionFormField = ({
     form: contactForm,
     contactDialog,
     paginatedContacts,
+    listContactsRequest,
     inView,
     canAddMember,
-  } = useAddressBook();
+  } = useAddressBook(!isSingleWorkspace);
 
   return (
     <>
@@ -70,36 +76,37 @@ const TransactionFormField = ({
           name={`transactions.${index}.to`}
           control={form.control}
           render={({ field, fieldState }) => {
+            const showAddToAddressBook =
+              canAddMember &&
+              !fieldState.invalid &&
+              AddressUtils.isValid(field.value) &&
+              paginatedContacts.isSuccess &&
+              listContactsRequest.data &&
+              !listContactsRequest.data
+                .map((o) => o.user.address)
+                .includes(field.value);
+
             return (
-              <AutoComplete
-                inView={inView}
-                value={field.value}
-                index={index}
-                label={`Recipient ${index + 1} address`}
-                isInvalid={fieldState.invalid}
-                isDisabled={false}
-                onInputChange={search.handler}
-                onChange={(selected) => field.onChange(selected)}
-                errorMessage={fieldState.error?.message}
-                isLoading={!paginatedContacts.isSuccess}
-                options={paginatedContacts.data!}
-                bottomAction={
-                  <Box hidden={!canAddMember} mt={2}>
-                    <Text color="grey.200" fontSize={12}>
-                      Do you wanna{' '}
-                      <Link
-                        color="brand.500"
-                        onClick={() =>
-                          handleOpenDialog?.({ address: field.value })
-                        }
-                      >
-                        add this
-                      </Link>{' '}
-                      address in your address book?
-                    </Text>
-                  </Box>
-                }
-              />
+              <FormControl isInvalid={fieldState.invalid}>
+                <Autocomplete
+                  value={field.value}
+                  label={`Recipient ${index + 1} address`}
+                  onInputChange={search.handler}
+                  onChange={field.onChange}
+                  isLoading={!paginatedContacts.isSuccess}
+                  options={paginatedContacts.data!}
+                  inView={inView}
+                  clearable={false}
+                  isFromTransactions
+                />
+                <FormHelperText color="error.500">
+                  {fieldState.error?.message}
+                </FormHelperText>
+                <AddToAddressBook
+                  visible={showAddToAddressBook}
+                  onAdd={() => handleOpenDialog?.({ address: field.value })}
+                />
+              </FormControl>
             );
           }}
         />
@@ -184,7 +191,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const hasEmptyField = Object.values(transaction).some(
           (value) => value === '',
         );
-        const isDisabled = hasEmptyField || fieldState.invalid;
+
+        const currentAmount = form.watch(`transactions.${index}.amount`);
+        const isCurrentAmountZero = Number(currentAmount) === 0;
+
+        const isDisabled =
+          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.to,
         );
@@ -203,16 +215,18 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <TransactionAccordion.EditAction
-                      onClick={() => accordion.open(index)}
-                    />
-                    <TransactionAccordion.DeleteAction
-                      isDisabled={props.transactions.fields.length === 1}
-                      onClick={() => {
-                        transactions.remove(index);
-                        accordion.close();
-                      }}
-                    />
+                    <HStack spacing={4}>
+                      <TransactionAccordion.EditAction
+                        onClick={() => accordion.open(index)}
+                      />
+                      <TransactionAccordion.DeleteAction
+                        isDisabled={props.transactions.fields.length === 1}
+                        onClick={() => {
+                          transactions.remove(index);
+                          accordion.close();
+                        }}
+                      />
+                    </HStack>
                     <TransactionAccordion.ConfirmAction
                       onClick={() => accordion.close()}
                       isDisabled={isDisabled}

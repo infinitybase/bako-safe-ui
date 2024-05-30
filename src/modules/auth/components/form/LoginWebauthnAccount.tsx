@@ -1,55 +1,47 @@
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Select,
-} from '@chakra-ui/react';
+import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthn } from '../../hooks';
+import { WebAuthnLoginInput } from '../webAuthnLoginInput';
 
 interface LoginWebAuthnFormProps {
   form: UseWebAuthn['form']['loginForm'];
-  request: UseWebAuthn['accountsRequest'];
+  accountsOptions: UseWebAuthn['accountsOptions'];
+  showAccountsOptions: boolean;
+  onSubmitUsingEnterKey: UseWebAuthn['form']['formState']['handlePrimaryActionUsingEnterKey'];
 }
+
 export const LoginWebAuthnForm = ({
   form,
-  request,
+  accountsOptions,
+  showAccountsOptions,
+  onSubmitUsingEnterKey,
 }: LoginWebAuthnFormProps) => {
-  const { data } = request;
-
   return (
-    <Box w="full" maxW={480} mb={8}>
+    <Box w="full" mb={6} p="1px">
       <Controller
         name="name"
         control={form.control}
-        render={({ field, fieldState }) => (
-          <FormControl>
-            <Select
-              value={field.value}
-              onChange={field.onChange}
-              autoComplete="off"
-              placeholder=" "
-              isDisabled={data?.length === 0}
-            >
-              {data?.map((user) => (
-                <option key={user.id} value={user.webauthn.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-            <FormLabel color="gray">Username</FormLabel>
-            <FormHelperText
-              ml={2}
-              color={form.formState.errors.name ? 'error.500' : 'grey.200'}
-            >
-              {form.formState.errors.name
-                ? form.formState.errors.name?.message
-                : !fieldState.isDirty && 'Select your username'}
-            </FormHelperText>
-          </FormControl>
-        )}
+        render={({ field, fieldState }) => {
+          return (
+            <FormControl isInvalid={fieldState.invalid}>
+              <WebAuthnLoginInput
+                value={field.value}
+                onChange={field.onChange}
+                onKeyDown={(e) => onSubmitUsingEnterKey(e)}
+                options={accountsOptions}
+                showOptions={showAccountsOptions}
+              />
+              <FormHelperText
+                ml={2}
+                color={form.formState.errors.name ? 'error.500' : 'grey.200'}
+              >
+                {form.formState.errors.name &&
+                  form.formState.errors.name?.message}
+              </FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     </Box>
   );

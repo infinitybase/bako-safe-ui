@@ -24,6 +24,8 @@ interface TransactionCardContainerProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  isInTheVaultPage?: boolean;
+  callBack?: () => void;
 }
 
 const Container = ({
@@ -33,22 +35,34 @@ const Container = ({
   transaction,
   account,
   isSigner,
+  isInTheVaultPage,
+  callBack,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
+
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const childrens = React.Children.toArray(children);
-
-  const { isMobile } = useScreenSize();
+  const { isMobile, vaultRequiredSizeToColumnLayout } = useScreenSize();
   const detailsDialog = useDetailsDialog();
 
+  const childrensQuantity = React.Children.toArray(children).length;
+
+  const isInTheVaultWithSideBar =
+    isInTheVaultPage && !vaultRequiredSizeToColumnLayout;
+  const isInTheVaultWithoutSideBar =
+    isInTheVaultPage && vaultRequiredSizeToColumnLayout;
+
   const gridTemplateColumns = isMobile
-    ? '1fr 1fr'
-    : childrens.length === 7
-    ? '2fr 1fr 1fr 2fr 2fr 4fr'
-    : '1fr 1fr 2fr 2fr 4fr';
+    ? 'repeat(2, 1fr)'
+    : isInTheVaultWithSideBar
+      ? 'repeat(5, 1fr)'
+      : isInTheVaultWithoutSideBar && childrensQuantity < 6
+        ? 'repeat(4, 1fr)'
+        : isInTheVaultWithoutSideBar && childrensQuantity >= 6
+          ? 'repeat(5,1fr)'
+          : 'repeat(6,1fr)';
 
   return (
     <>
@@ -60,26 +74,37 @@ const Container = ({
           account={account}
           status={status}
           isSigner={isSigner}
+          isInTheVaultPage={isInTheVaultPage}
+          callBack={callBack}
         />
       )}
+
       <Card
         py={{ base: 1, sm: 4 }}
-        px={{ base: 2, sm: 4 }}
+        px={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
         w="full"
         as={AccordionItem}
-        bgColor="grey.800"
-        borderColor={missingSignature ? 'warning.500' : 'dark.100'}
-        minW={{ base: 0, sm: 'min-content' }}
+        backdropFilter="blur(16px)"
+        borderColor={
+          missingSignature ? 'warning.500' : 'gradients.transaction-border'
+        }
+        bg="gradients.transaction-card"
+        boxShadow="0px 8px 6px 0px #00000026"
         maxW="full"
         {...rest}
       >
-        <VStack justifyContent="center" gap={0} w="full">
+        <VStack
+          justifyContent="center"
+          gap={0}
+          w="full"
+          maxW={{ base: 890, lg: 'unset' }}
+        >
           <HStack
             as={isMobile ? Box : AccordionButton}
             onClick={detailsDialog.onOpen}
             w="full"
             _hover={{ bgColor: 'transparent' }}
-            px={[2, 4]}
+            px={{ base: 2, sm: 4 }}
             py={2}
           >
             <Grid

@@ -17,9 +17,10 @@ const useHome = () => {
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
+  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
-  const pendingSignerTransactions = useTransactionsSignaturePending();
+
   const { selectWorkspace } = useSelectWorkspace();
 
   const goHome = () => {

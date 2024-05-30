@@ -1,5 +1,5 @@
 import { Icon } from '@chakra-ui/icons';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 import { useNotification } from '@/modules/notification';
 
@@ -19,7 +19,7 @@ const useSettingsToast = () => {
       title: title ?? 'Success!',
       description: description ?? 'Your settings was updated!',
       icon: (
-        <Icon fontSize="2xl" color="brand.500" as={BsFillCheckCircleFill} />
+        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
       ),
     });
 

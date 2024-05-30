@@ -1,24 +1,24 @@
 import { Center, Heading, HStack, Text } from '@chakra-ui/react';
-import { ReactNode } from 'react';
 
 import { useScreenSize } from '@/modules/core/hooks';
+import { limitCharacters } from '@/utils';
 
 interface TransactionCardNameProps {
-  children: ReactNode;
   showTransaction?: boolean;
+  transactionName?: string;
 }
 
 const Name = ({
-  children,
   showTransaction = true,
+  transactionName,
 }: TransactionCardNameProps) => {
   const { isMobile } = useScreenSize();
 
   return (
     <Center
+      w="fit-content"
       alignItems="flex-start"
       flexDir="column"
-      w="full"
       gridRow={isMobile ? 2 : 0}
     >
       <HStack maxW={200}>
@@ -29,7 +29,7 @@ const Name = ({
           textAlign="left"
           noOfLines={1}
         >
-          {children}
+          {limitCharacters(String(transactionName) ?? '', 8)}
         </Heading>
       </HStack>
       {showTransaction && (

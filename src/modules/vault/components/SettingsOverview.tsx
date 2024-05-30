@@ -18,8 +18,14 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { useAuth } from '@/modules/auth';
-import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
+import {
+  AddressUtils,
+  Pages,
+  PermissionRoles,
+  useScreenSize,
+} from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
+import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -34,6 +40,7 @@ const SettingsOverview = (props: CardDetailsProps) => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
   const { biggerAsset } = store;
+  const { isExtraSmall } = useScreenSize();
 
   const { hasPermission } = useWorkspace();
   const {
@@ -65,19 +72,24 @@ const SettingsOverview = (props: CardDetailsProps) => {
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
         <Card
-          p={[4, 8]}
+          p={{ base: 4, sm: 8 }}
           bg="dark.200"
           position="relative"
           borderColor="dark.100"
         >
-          <Stack direction={['column', 'row']}>
-            <VStack spacing={[6, 9]} w="full" pr={3}>
+          <Stack direction={{ base: 'column', sm: 'row' }}>
+            <VStack
+              spacing={{ base: 6, sm: 9 }}
+              w="full"
+              pr={3}
+              justifyContent="space-between"
+            >
               <Stack
-                direction={['column', 'row']}
-                alignItems={['flex-start', 'center']}
-                spacing={[3, 6]}
+                direction={{ base: 'column', sm: 'row' }}
+                alignItems={{ base: 'flex-start', sm: 'center' }}
+                spacing={{ base: 3, sm: 6 }}
                 w="full"
-                maxW={['full', '100%']}
+                maxW={{ base: 'full', sm: '100%' }}
               >
                 <Center>
                   <Avatar
@@ -86,18 +98,20 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     bg="grey.900"
                     color="white"
                     size={'lg'}
-                    p={[10, 10]}
+                    p={{ base: 10, sm: 10 }}
                   />
                 </Center>
                 <Box maxW="59%">
                   <Heading
                     mb={1}
                     variant="title-xl"
-                    fontSize={['md', 'xl']}
+                    fontSize={{ base: 'md', sm: 'xl' }}
                     isTruncated
                     maxW={600}
                   >
-                    {vault?.name}
+                    {isExtraSmall
+                      ? limitCharacters(vault?.name ?? '', 10)
+                      : vault?.name}
                   </Heading>
 
                   <Box maxW={420}>
@@ -106,23 +120,36 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
               </Stack>
 
-              <VStack w="full" maxW={['full', '100%']} spacing={5}>
-                <Box w={['full', '98%']} maxW="full">
+              <VStack w="full" spacing={5}>
+                <Box w="full" maxW="full">
                   <Stack
-                    justifyContent={['flex-start', 'space-between']}
-                    alignItems={['flex-start', 'center']}
-                    direction={['column', 'row']}
+                    justifyContent={{ base: 'flex-start', sm: 'space-between' }}
+                    alignItems={{ base: 'flex-start', sm: 'center' }}
+                    direction={{ base: 'column', sm: 'row' }}
                     mb={2}
                   >
-                    <Text variant="description">Vault balance</Text>
+                    <Text
+                      variant="description"
+                      maxW={{ base: 20, xs: 'unset' }}
+                      noOfLines={2}
+                    >
+                      {/* Vault {isExtraSmall ? <Text>balance</Text> : 'balance'} */}
+                      Vault balance
+                    </Text>
                     <HStack spacing={2}>
                       <HStack spacing={2}>
-                        <Heading variant="title-xl" fontSize={['md', 'lg']}>
+                        <Heading
+                          variant="title-xl"
+                          fontSize={{ base: 'md', sm: 'lg' }}
+                        >
                           {store.visebleBalance
                             ? biggerAsset?.amount ?? 0
                             : '*****'}
                         </Heading>
-                        <Text variant="description" fontSize={['sm', 'md']}>
+                        <Text
+                          variant="description"
+                          fontSize={{ base: 'sm', sm: 'md' }}
+                        >
                           {biggerAsset?.slug ?? 'ETH'}
                         </Text>
                       </HStack>
@@ -136,9 +163,9 @@ const SettingsOverview = (props: CardDetailsProps) => {
                         }
                       >
                         {store.visebleBalance ? (
-                          <ViewIcon boxSize={[5, 6]} />
+                          <ViewIcon boxSize={{ base: 5, sm: 6 }} />
                         ) : (
-                          <ViewOffIcon boxSize={[5, 6]} />
+                          <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
                         )}
                       </Box>
                     </HStack>
@@ -146,33 +173,45 @@ const SettingsOverview = (props: CardDetailsProps) => {
                 </Box>
 
                 <Divider
-                  w={['full', '98%']}
-                  mt={[0, 0]}
+                  w="full"
+                  mt={{ base: 0, sm: 0 }}
                   borderColor="dark.100"
                 />
 
                 <HStack
-                  w={['full', '98%']}
+                  w="full"
                   justifySelf="end"
-                  spacing={[16, 40]}
+                  spacing={{ base: 8, sm: 40 }}
                 >
                   <VStack w="full" spacing={2} alignItems="flex-start">
                     <Button
-                      minW={[125, 130]}
+                      minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                       variant="primary"
                       onClick={() => openFaucet(vault.predicateAddress!)}
+                      position="relative"
                     >
                       Faucet
                     </Button>
-                    <Text variant="description" fontSize="xs">
+                    <Text
+                      variant="description"
+                      fontSize="xs"
+                      position={{ base: 'unset', xs: 'absolute' }}
+                      bottom={{ base: -1, sm: 2 }}
+                    >
                       Use the faucet to add assets to the vault
                     </Text>
                   </VStack>
 
-                  <VStack w="full" alignItems="flex-end" spacing={0}>
+                  <VStack
+                    w="full"
+                    spacing={0}
+                    position="relative"
+                    alignSelf={{ base: 'flex-start', xs: 'unset' }}
+                  >
                     <Button
-                      minW={[125, 130]}
+                      minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                       variant="primary"
+                      alignSelf="end"
                       isDisabled={
                         !vault?.hasBalance ||
                         blockedTransfers ||
@@ -192,19 +231,23 @@ const SettingsOverview = (props: CardDetailsProps) => {
                     {blockedTransfers ? (
                       <Text
                         variant="description"
-                        textAlign="right"
+                        textAlign={isExtraSmall ? 'left' : 'right'}
                         fontSize="xs"
                         w="full"
                         mt={2}
                         color="error.500"
+                        position={{ base: 'unset', xs: 'absolute' }}
+                        bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                       >
-                        This vault has pending transactions.
+                        Pending transactions
                       </Text>
                     ) : !makeTransactionsPerm ? (
                       <Text
                         variant="description"
                         fontSize="xs"
                         color="error.500"
+                        position="absolute"
+                        bottom={[-1, 2]}
                       >
                         You dont have permission to send transactions.
                       </Text>
@@ -219,18 +262,18 @@ const SettingsOverview = (props: CardDetailsProps) => {
             </VStack>
 
             <VStack
-              position={['absolute', 'relative']}
-              top={[4, 0]}
-              right={[4, 0]}
+              position={{ base: 'absolute', sm: 'relative' }}
+              top={{ base: 4, sm: 0 }}
+              right={{ base: 4, sm: 0 }}
               spacing={4}
-              align={['flex-end', 'center']}
+              align={{ base: 'flex-end', sm: 'center' }}
               justifyContent="flex-start"
             >
               <Box
                 p={3}
                 backgroundColor={'white'}
-                w={[32, 180]}
-                h={[32, 180]}
+                w={{ base: 32, sm: 180 }}
+                h={{ base: 32, sm: 180 }}
                 borderRadius={10}
               >
                 <QRCodeSVG
@@ -244,11 +287,10 @@ const SettingsOverview = (props: CardDetailsProps) => {
                   }}
                 />
               </Box>
-
               <AddressCopy
                 w="full"
-                mb={[4, 0]}
-                maxW={['40', 180]}
+                mb={{ base: 4, sm: 0 }}
+                maxW={{ base: '40', sm: 180 }}
                 address={AddressUtils.format(vault.predicateAddress)!}
                 addressToCopy={vault.predicateAddress!}
               />

@@ -10,19 +10,22 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bsafe';
-import { format } from 'date-fns';
+import { TransactionStatus } from 'bakosafe';
+import format from 'date-fns/format';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import { CustomSkeleton, ErrorIcon, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, LineCloseIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useScreenSize } from '@/modules/core';
+import { useAuth } from '@/modules/auth';
+import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { limitCharacters } from '@/utils/limit-characters';
+import { useUserVaults, useVaultDetails } from '@/modules/vault';
+import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
@@ -40,15 +43,27 @@ const TransactionsVaultPage = () => {
     defaultIndex,
   } = useTransactionList();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isMobile } = useScreenSize();
   const menuDrawer = useDisclosure();
+  const {
+    workspaces: { current },
+    isSingleWorkspace,
+  } = useAuth();
+
+  const { goWorkspace } = useWorkspace();
+  const { workspace } = useGetCurrentWorkspace();
+  const { navigate } = useUserVaults();
+  const { vault, params } = useVaultDetails();
+
+  const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+  const hasTransactions =
+    !loadingVaultTransactions && vaultTransactions?.length;
 
   return (
     <Box w="full" height="100%" maxH="100%">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
-
       <Box mb={10}>
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -58,14 +73,59 @@ const TransactionsVaultPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+
+            {!isSingleWorkspace && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
+
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Vaults
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                onClick={() =>
+                  navigate(
+                    Pages.detailsVault({
+                      vaultId: vault.id!,
+                      workspaceId: current ?? '',
+                    }),
+                  )
+                }
+                isTruncated
+                maxW={640}
+              >
+                {vault.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
 
@@ -82,7 +142,6 @@ const TransactionsVaultPage = () => {
           </Breadcrumb>
         )}
       </Box>
-
       {/* TITLE */}
       <HStack spacing={5} mb={7}>
         <Heading variant="title-xl" color="grey.200">
@@ -96,7 +155,6 @@ const TransactionsVaultPage = () => {
           isIndeterminate
         />
       </HStack>
-
       {/* FILTER */}
       <TransactionFilter.Control
         value={filter.value!}
@@ -129,65 +187,104 @@ const TransactionsVaultPage = () => {
               }}
               cursor="pointer"
             >
-              <Icon as={ErrorIcon} color="brand.500" />
+              <Icon as={LineCloseIcon} fontSize="18px" color="brand.500" />
             </Box>
           </HStack>
         )}
       </TransactionFilter.Control>
-
       {/* TRANSACTION LIST */}
-      <TransactionCard.List
-        mt={7}
-        w="full"
-        spacing={5}
-        openIndex={defaultIndex}
-        key={defaultIndex.join(',')}
-        pb={10}
-      >
-        {infinityTransactions?.map((transaction) => {
-          const isSigner = !!transaction.predicate?.members?.find(
-            (member) => member.address === account,
-          );
+      {hasTransactions ? (
+        <TransactionCard.List
+          mt={7}
+          w="full"
+          spacing={5}
+          openIndex={defaultIndex}
+          key={defaultIndex.join(',')}
+          pb={10}
+          maxH="77.5vh"
+          overflowY="scroll"
+          scrollBehavior="smooth"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'grey.200',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'transparent',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
+        >
+          {infinityTransactions?.map((transaction) => {
+            const isSigner = !!transaction.predicate?.members?.find(
+              (member) => member.address === account,
+            );
 
-          return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
-              <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
-                <TransactionCard.Container
-                  status={transactionStatus({ ...transaction, account })}
-                  details={
-                    <TransactionCard.Details transaction={transaction} />
-                  }
-                  transaction={transaction}
-                  account={account}
-                  isSigner={isSigner}
-                >
-                  {!isMobile && (
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                  )}
-                  <TransactionCard.Assets />
-                  <TransactionCard.Amount assets={transaction.resume.outputs} />
-                  <TransactionCard.Name>
-                    {limitCharacters(transaction.name, 20)}
-                  </TransactionCard.Name>
-                  <TransactionCard.Status
-                    transaction={transaction}
+            return (
+              <Box key={transaction.id} ref={infinityTransactionsRef} w="full">
+                <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                  <TransactionCard.Container
                     status={transactionStatus({ ...transaction, account })}
-                    showDescription={!isMobile}
-                  />
-                  <TransactionCard.Actions
+                    details={
+                      <TransactionCard.Details
+                        transaction={transaction}
+                        isInTheVaultPage
+                      />
+                    }
+                    transaction={transaction}
+                    account={account}
                     isSigner={isSigner}
-                    transaction={transaction}
-                    status={transactionStatus({ ...transaction, account })}
-                  />
-                </TransactionCard.Container>
-              </CustomSkeleton>
-            </Box>
-          );
-        })}
-        <Box ref={inView.ref} />
-      </TransactionCard.List>
+                    isInTheVaultPage
+                    callBack={() => filter.set(StatusFilter.ALL)}
+                  >
+                    {!isMobile && (
+                      <TransactionCard.CreationDate>
+                        {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
+                      </TransactionCard.CreationDate>
+                    )}
+                    <TransactionCard.Assets />
+                    <TransactionCard.Amount
+                      assets={transaction.resume.outputs}
+                    />
+                    <TransactionCard.Name transactionName={transaction.name} />
+
+                    <TransactionCard.Status
+                      transaction={transaction}
+                      status={transactionStatus({ ...transaction, account })}
+                      showDescription={!isMobile}
+                    />
+                    <TransactionCard.Actions
+                      isSigner={isSigner}
+                      transaction={transaction}
+                      status={transactionStatus({ ...transaction, account })}
+                      callBack={() => filter.set(StatusFilter.ALL)}
+                    />
+                  </TransactionCard.Container>
+                </CustomSkeleton>
+              </Box>
+            );
+          })}
+          <Box ref={inView.ref} />
+        </TransactionCard.List>
+      ) : (
+        <EmptyState
+          h="calc(100% - 170px)"
+          mt={7}
+          isDisabled={!vault?.hasBalance}
+          buttonAction={() =>
+            navigate(
+              Pages.createTransaction({
+                workspaceId: params.workspaceId!,
+                vaultId: vault.id!,
+              }),
+            )
+          }
+        />
+      )}
     </Box>
   );
 };

@@ -15,15 +15,17 @@ const TemplatePage = (
 
   return (
     <Dialog.Modal
-      size={['full', 'lg']}
+      size={{ base: 'full', sm: 'lg' }}
       isOpen={true}
       onClose={onClose}
       closeOnOverlayClick={false}
     >
       <Dialog.Header
+        onClose={onClose}
         maxW={420}
         hidden={steps[step].hiddeTitle}
         title="Create Template"
+        mt={0}
         description="Define the name and description of this template. These details will be visible only to you."
       />
 

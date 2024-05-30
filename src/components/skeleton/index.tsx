@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 
 interface CustomSkeletonProps extends SkeletonProps {
   children?: ReactNode;
+  customStartColor?: string;
+  customEndColor?: string;
 }
 
 const CustomSkeleton = ({
@@ -13,8 +15,8 @@ const CustomSkeleton = ({
   <Skeleton
     w="100%"
     speed={1}
-    startColor="dark.200"
-    endColor="dark.500"
+    startColor={props.customStartColor ?? 'dark.200'}
+    endColor={props.customEndColor ?? 'dark.500'}
     isLoaded={isLoaded}
     borderRadius={10}
     {...props}

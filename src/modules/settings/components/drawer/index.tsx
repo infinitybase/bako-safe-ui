@@ -7,7 +7,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -21,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { ErrorIcon } from '@/components';
+import { LineCloseIcon } from '@/components';
 
 import { useSettings } from '../../hooks';
 
@@ -41,33 +40,35 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     <Drawer
       {...props}
       size="sm"
-      variant="glassmorphic"
+      variant="solid-dark"
       placement="right"
       onClose={onCloseDrawer}
       isOpen={props.isOpen}
     >
       <DrawerOverlay />
-      <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={onCloseDrawer} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
-        </Flex>
-
-        <DrawerHeader mb={6}>
-          <VStack alignItems="flex-start" spacing={2}>
-            <HStack spacing={2} alignItems="center">
-              <Heading fontSize="xl" fontWeight="bold" color="grey.200">
+      <DrawerContent maxW={456} p={9}>
+        <DrawerHeader>
+          <VStack alignItems="flex-start" spacing={6}>
+            <HStack
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+              w="full"
+            >
+              <Heading fontSize="xl" fontWeight="bold" color="grey.50">
                 Settings
               </Heading>
+              <LineCloseIcon
+                fontSize="24px"
+                aria-label="Close window"
+                cursor="pointer"
+                onClick={onCloseDrawer}
+              />
             </HStack>
             <Text
               fontSize="sm"
               maxWidth={320}
-              color="grey.500"
+              color="grey.75"
               fontWeight="light"
             >
               Personalize Your Preferences: Set Your Name, Email, and Email
@@ -75,6 +76,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
             </Text>
           </VStack>
         </DrawerHeader>
+
+        <Divider borderColor="#868079" my={10} />
 
         <DrawerBody
           css={{
@@ -154,6 +157,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 bgColor="dark.100"
                 border="none"
                 onClick={onCloseDrawer}
+                w="full"
               >
                 Cancel
               </Button>
@@ -162,6 +166,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 isDisabled={isLoading}
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
+                w="full"
               >
                 Update
               </Button>

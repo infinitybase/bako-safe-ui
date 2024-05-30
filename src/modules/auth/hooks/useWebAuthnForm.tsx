@@ -2,21 +2,22 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useWebAuthnLastLoginId } from './useWebAuthnLastLoginId';
-
 const createSchema = yup.object({
   name: yup
     .string()
-    .min(3, 'Name must be at least 3 characters')
-    .required('You must provide a name'),
-});
-
-const loginSchema = yup.object({
-  name: yup.string().required('You must select a name'),
+    .min(3, 'Username must be at least 3 characters')
+    .required('You must provide a username')
+    .test(
+      'is-valid-name',
+      "The username can't contain special characters or symbols",
+      (name) => /^@?[a-zA-Z0-9_]+$/.test(name),
+    ),
 });
 
 const useWebAuthnForm = () => {
-  const { lastLoginId } = useWebAuthnLastLoginId();
+  const loginSchema = yup.object({
+    name: yup.string().required('You must provide a username'),
+  });
 
   const memberForm = useForm({
     mode: 'onChange',
@@ -29,10 +30,10 @@ const useWebAuthnForm = () => {
 
   const loginForm = useForm({
     mode: 'onChange',
-    reValidateMode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      name: lastLoginId || '',
+      name: '',
     },
   });
 

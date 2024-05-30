@@ -1,13 +1,15 @@
-import { Button, Divider, HStack, VStack } from '@chakra-ui/react';
-import { format } from 'date-fns';
+import {
+  AccordionItem,
+  Button,
+  Divider,
+  HStack,
+  VStack,
+} from '@chakra-ui/react';
+import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
-import {
-  TransactionCard,
-  TransactionState,
-  transactionStatus,
-} from '@/modules';
-import { limitCharacters } from '@/utils';
+import { TransactionState } from '@/modules/core/models/transaction';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 
 import { useSignTransaction } from '../../hooks/signature';
 import { TransactionWithVault } from '../../services/types';
@@ -15,7 +17,9 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
   account: string;
   status: TransactionState;
+  isInTheVaultPage?: boolean;
   isSigner: boolean;
+  callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
@@ -32,17 +36,15 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const showSignActions = awaitingAnswer && isSigner;
 
   return (
-    <Dialog.Modal size={['full', 'xl']} onClose={onClose} isOpen={isOpen}>
-      <Dialog.Header
-        position="relative"
-        mb={0}
-        top={-5}
-        w="full"
-        maxW={480}
-        title="Transaction Details"
-      />
-      <Dialog.Body>
-        <VStack spacing={5}>
+    <Dialog.Modal onClose={onClose} isOpen={isOpen}>
+      <Dialog.Body as={AccordionItem} borderTop="none">
+        <Dialog.Header
+          onClose={onClose}
+          w="full"
+          maxW={{ base: 480, xs: 'unset' }}
+          title="Transaction Details"
+        />
+        <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount
@@ -60,10 +62,8 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               </TransactionCard.CreationDate>
             </HStack>
 
-            <HStack w="full">
-              <TransactionCard.Name>
-                {limitCharacters(transaction?.name ?? '', 20)}
-              </TransactionCard.Name>
+            <HStack w="full" justifyContent="space-between">
+              <TransactionCard.Name transactionName={transaction.name} />
 
               <TransactionCard.Status
                 transaction={transaction}
@@ -74,14 +74,20 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               />
             </HStack>
           </VStack>
+          <Divider mt={4} />
 
-          <Divider />
-
-          <TransactionCard.Details transaction={transaction} />
+          <TransactionCard.Details transaction={transaction} isMobile />
         </VStack>
       </Dialog.Body>
 
-      <Dialog.Actions mt="auto">
+      <Dialog.Actions
+        mt="auto"
+        sx={{
+          '&>hr': {
+            marginTop: '0',
+          },
+        }}
+      >
         {showSignActions ? (
           <>
             <Button
@@ -105,6 +111,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 e.stopPropagation();
                 e.preventDefault();
                 confirmTransaction();
+                props.callBack && props.callBack();
               }}
             >
               Sign

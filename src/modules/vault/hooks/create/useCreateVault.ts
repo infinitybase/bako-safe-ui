@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useAuthStore } from '@/modules/auth/store';
-import { useCreateBsafeVault } from '@/modules/core/hooks';
+import { invalidateQueries } from '@/modules/core';
+import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
@@ -29,16 +30,20 @@ const useCreateVault = () => {
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(account);
 
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
 
-  const bsafeVault = useCreateBsafeVault({
+  const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
-      setVaultId(data.BSAFEVaultId);
+      invalidateQueries();
+      setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
+      form.reset();
+      setSearch('');
     },
     onError: () => {
       errorToast({
@@ -69,7 +74,7 @@ const useCreateVault = () => {
   const handleCreateVault = form.handleSubmit(async (data) => {
     const addresses = data.addresses?.map((address) => address.value) ?? [];
 
-    bsafeVault.create({
+    bakoSafeVault.create({
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
@@ -81,6 +86,7 @@ const useCreateVault = () => {
     const template = await TemplateService.getById(id);
     const address: string[] = template.addresses as string[];
 
+    setSelectedTemplate(id);
     form.setValue('minSigners', template.minSigners.toString());
 
     if (template.addresses) {
@@ -94,14 +100,14 @@ const useCreateVault = () => {
   };
 
   const onDeposit = async () => {
-    if (bsafeVault.data) {
+    if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bsafeVault.data.address}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.address}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bsafeVault.data.BSAFEVaultId,
+          vaultId: bakoSafeVault.data.BakoSafeVaultId,
           workspaceId: params.workspaceId!,
         }),
       );
@@ -148,6 +154,7 @@ const useCreateVault = () => {
     },
     handleInputChange,
     vaultNameIsAvailable,
+    vaultId,
     search,
     setSearch,
     addresses: {
@@ -161,9 +168,10 @@ const useCreateVault = () => {
       set: setTab,
       isLast: tab === TabState.ADDRESSES,
     },
-    bsafeVault,
+    bakoSafeVault,
     navigate,
     onDeposit,
+    selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
   };

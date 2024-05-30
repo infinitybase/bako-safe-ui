@@ -4,24 +4,19 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Heading,
   HStack,
   Icon,
   Text,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import {
-  Card,
-  CustomSkeleton,
-  HomeIcon,
-  NotFoundIcon,
-  SquarePlusIcon,
-} from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { usePermissions, useScreenSize } from '@/modules/core/hooks';
+import { PermissionRoles } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -50,31 +45,33 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultDetails();
-  const { goWorkspace } = useWorkspace();
+  const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
-  const { isViewer } = usePermissions({
-    id: vault.id,
-    workspace: workspace!,
-  });
-  const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
+
+  const { vaultTransactions, loadingVaultTransactions, isLoading } =
+    vault.transactions;
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isExtraSmall } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =
     !loadingVaultTransactions && vaultTransactions?.length;
 
+  const { OWNER, SIGNER } = PermissionRoles;
+
+  const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
+
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={{ base: 0, sm: 8 }}>
+    <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={9} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -84,13 +81,13 @@ const VaultDetailsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -102,6 +99,8 @@ const VaultDetailsPage = () => {
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() => goWorkspace(workspaceId)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                 </BreadcrumbLink>
@@ -134,7 +133,7 @@ const VaultDetailsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {limitCharacters(vault?.name ?? '', 25)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -145,7 +144,7 @@ const VaultDetailsPage = () => {
           fontWeight="medium"
           fontSize={{ base: 'sm', sm: 'md' }}
           border="none"
-          isDisabled={isViewer}
+          isDisabled={!canSetTemplate}
           onClick={() => {
             if (
               !vault.id ||
@@ -179,10 +178,17 @@ const VaultDetailsPage = () => {
       >
         <CardDetails vault={vault} store={store} />
 
-        {!isMobile && <SignersDetails vault={vault} />}
+        {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>
 
-      <HStack spacing={4} mb={3}>
+      <Box
+        mb={3}
+        display="flex"
+        alignItems={isExtraSmall ? 'flex-start' : 'center'}
+        flexDir={isExtraSmall ? 'column' : 'row'}
+        gap={isExtraSmall ? 2 : 4}
+        mt={{ base: 12, sm: 'unset' }}
+      >
         <Text
           variant="subtitle"
           fontWeight="semibold"
@@ -195,109 +201,94 @@ const VaultDetailsPage = () => {
           isLoading={pendingSignerTransactions.isLoading}
           quantity={pendingSignerTransactions.data?.ofUser ?? 0}
         />
-      </HStack>
-
-      {hasTransactions ? (
-        <TransactionCard.List
-          mt={5}
-          w="full"
-          spacing={{ base: 3, sm: 5 }}
-          maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
-        >
-          {vaultTransactions.map((transaction) => {
-            const isSigner = !!transaction.predicate?.members?.find(
-              (member) => member.address === account,
-            );
-
-            return (
-              <CustomSkeleton
-                key={transaction.id}
-                isLoaded={!loadingVaultTransactions}
-              >
-                <TransactionCard.Container
-                  status={transactionStatus({ ...transaction, account })}
-                  details={
-                    <TransactionCard.Details transaction={transaction} />
-                  }
-                  transaction={transaction}
-                  account={account}
-                  isSigner={isSigner}
-                >
-                  {!isMobile && (
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                  )}
-                  <TransactionCard.Assets />
-                  <TransactionCard.Amount
-                    assets={
-                      transaction?.assets.map((asset) => ({
-                        amount: asset.amount,
-                        assetId: asset.assetId,
-                        to: asset.to,
-                      })) ?? []
-                    }
-                  />
-                  <TransactionCard.Name>
-                    {limitCharacters(transaction?.name ?? '', 20)}
-                  </TransactionCard.Name>
-                  <TransactionCard.Status
-                    transaction={transaction}
-                    status={transactionStatus({
-                      ...transaction,
-                      account,
-                    })}
-                    showDescription={!isMobile}
-                  />
-                  <TransactionCard.Actions
-                    isSigner={isSigner}
-                    transaction={transaction}
-                    status={transactionStatus({
-                      ...transaction,
-                      account,
-                    })}
-                  />
-                </TransactionCard.Container>
-              </CustomSkeleton>
-            );
-          })}
-          {!vault.transactions.isLoading && <Box ref={inView.ref} />}
-        </TransactionCard.List>
-      ) : (
-        !hasTransactions &&
-        !!vaultTransactions && (
-          <Card
+      </Box>
+      <CustomSkeleton
+        isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
+        h={
+          !vault.isLoading && !isLoading && !loadingVaultTransactions
+            ? 'unset'
+            : '100px'
+        }
+      >
+        {hasTransactions ? (
+          <TransactionCard.List
+            mt={5}
             w="full"
-            p={20}
-            bgColor="dark.300"
-            display="flex"
-            justifyContent="center"
-            flexDirection="column"
-            alignItems="center"
+            spacing={{ base: 3, sm: 5 }}
+            maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
           >
-            <Box mb={6}>
-              <NotFoundIcon w={100} h={100} />
-            </Box>
-            <Box mb={5}>
-              <Heading
-                color="brand.500"
-                fontSize={{ base: 'xl', sm: '4xl' }}
-                textAlign="center"
-              >
-                Nothing to show here.
-              </Heading>
-            </Box>
-            <Box maxW={400} mb={8}>
-              <Text color="white" textAlign="center" fontWeight="bold">
-                It seems like you {"haven't"} made any transactions yet. Would
-                you like to make one now?
-              </Text>
-            </Box>
-            <Button
-              variant="primary"
-              leftIcon={<SquarePlusIcon />}
+            {vaultTransactions.map((transaction) => {
+              const isSigner = !!transaction.predicate?.members?.find(
+                (member) => member.address === account,
+              );
+
+              return (
+                <CustomSkeleton
+                  key={transaction.id}
+                  isLoaded={!loadingVaultTransactions}
+                >
+                  <TransactionCard.Container
+                    status={transactionStatus({ ...transaction, account })}
+                    details={
+                      <TransactionCard.Details
+                        transaction={transaction}
+                        isInTheVaultPage
+                      />
+                    }
+                    isInTheVaultPage
+                    transaction={transaction}
+                    account={account}
+                    isSigner={isSigner}
+                  >
+                    {!vaultRequiredSizeToColumnLayout && (
+                      <TransactionCard.CreationDate>
+                        {format(
+                          new Date(transaction?.createdAt),
+                          'EEE, dd MMM',
+                        )}
+                      </TransactionCard.CreationDate>
+                    )}
+
+                    <TransactionCard.Assets />
+                    <TransactionCard.Amount
+                      assets={
+                        transaction?.assets.map((asset) => ({
+                          amount: asset.amount,
+                          assetId: asset.assetId,
+                          to: asset.to,
+                        })) ?? []
+                      }
+                    />
+                    <TransactionCard.Name transactionName={transaction.name} />
+                    <TransactionCard.Status
+                      transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
+                      showDescription={!vaultRequiredSizeToColumnLayout}
+                    />
+                    <TransactionCard.Actions
+                      isSigner={isSigner}
+                      transaction={transaction}
+                      status={transactionStatus({
+                        ...transaction,
+                        account,
+                      })}
+                      isInTheVaultPage
+                    />
+                  </TransactionCard.Container>
+                </CustomSkeleton>
+              );
+            })}
+            {!vault.transactions.isLoading && <Box ref={inView.ref} />}
+          </TransactionCard.List>
+        ) : (
+          !hasTransactions &&
+          !!vaultTransactions && (
+            <EmptyState
               isDisabled={!vault?.hasBalance}
-              onClick={() =>
+              buttonAction={() =>
                 navigate(
                   Pages.createTransaction({
                     workspaceId: params.workspaceId!,
@@ -305,14 +296,13 @@ const VaultDetailsPage = () => {
                   }),
                 )
               }
-            >
-              Create transaction
-            </Button>
-          </Card>
-        )
-      )}
+              mb={10}
+            />
+          )
+        )}
+      </CustomSkeleton>
 
-      {isMobile && (
+      {vaultRequiredSizeToColumnLayout && (
         <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>

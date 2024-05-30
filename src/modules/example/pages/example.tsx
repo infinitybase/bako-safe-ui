@@ -334,6 +334,7 @@ const ExamplePage = () => {
         onClose={dialogExample.onClose}
       >
         <Dialog.Header
+          onClose={dialogExample.onClose}
           w="full"
           maxW={420}
           title="Modal example"

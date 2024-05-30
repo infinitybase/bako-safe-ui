@@ -1,5 +1,7 @@
-import { AccordionPanel, Box, Heading, HStack, VStack } from '@chakra-ui/react';
+import { AccordionPanel, Box, Heading, VStack } from '@chakra-ui/react';
 import React from 'react';
+
+import { useScreenSize } from '@/modules/core';
 
 interface AccordionItemProps {
   title: string;
@@ -16,11 +18,18 @@ const AccordionItem = ({
   resume,
   isExpanded,
 }: AccordionItemProps) => {
+  const { isExtraSmall } = useScreenSize();
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
         <VStack w="full" py={5} px={5} alignItems="flex-start" spacing={0}>
-          <HStack w="full">
+          <Box
+            w="full"
+            display="flex"
+            flexDir={isExtraSmall ? 'column' : 'row'}
+            alignItems="start"
+            rowGap={6}
+          >
             <Box w="full" flex={2}>
               <Heading fontSize="lg" fontWeight="extrabold" color="grey.200">
                 {title}
@@ -28,7 +37,7 @@ const AccordionItem = ({
               {!isExpanded && resume}
             </Box>
             {actions}
-          </HStack>
+          </Box>
         </VStack>
       </Box>
       <AccordionPanel px={5}>{children}</AccordionPanel>

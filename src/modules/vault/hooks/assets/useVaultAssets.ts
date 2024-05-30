@@ -1,10 +1,10 @@
 import { useProvider } from '@fuels/react';
-import { Vault } from 'bsafe';
+import { BakoSafe, Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
-import { useAuth } from '@/modules';
+import { useAuth } from '@/modules/auth/hooks';
 import { assetsMap, NativeAssetId } from '@/modules/core';
 
 import { VaultService } from '../../services';
@@ -18,7 +18,7 @@ const balancesToAssets = async (
 
   const balances = await predicate.getBalances();
   const { reservedCoins: currentETH, balanceUSD } =
-    await VaultService.hasReservedCoins(predicate.BSAFEVaultId);
+    await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
   setBalanceUSD(balanceUSD);
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
@@ -38,7 +38,12 @@ const balancesToAssets = async (
 };
 
 function useVaultAssets(predicate?: Vault) {
-  const { setVisibleBalance, setBiggerAsset, setBalanceUSD } = useVaultState();
+  const {
+    setVisibleBalance,
+    setBiggerAsset,
+    setBalanceUSD,
+    setIsFirstAssetsLoading,
+  } = useVaultState();
 
   const { provider } = useProvider();
   const auth = useAuth();
@@ -51,6 +56,9 @@ function useVaultAssets(predicate?: Vault) {
       refetchInterval: 10000,
       keepPreviousData: true,
       enabled: !!predicate,
+      onSuccess: () => {
+        setIsFirstAssetsLoading(false);
+      },
     },
   );
   const findBiggerAsset = () => {
@@ -101,11 +109,11 @@ function useVaultAssets(predicate?: Vault) {
        * TODO: calculate exact gas fee, get resource to spend in provider
        * https://github.com/FuelLabs/fuels-wallet/blob/15358f509596d823f201a2bfd3721d4e26fc52cc/packages/app/src/systems/Transaction/services/transaction.tsx#L270-L289C15
        * **/
-      const gasConfig = provider?.getGasConfig();
+      //const gasConfig = provider?.getGasConfig();
 
       return (
         bn(bn.parseUnits(balance.amount!))
-          .sub(gasConfig?.minGasPrice || bn.parseUnits('0.00001'))
+          //.sub(bn.parseUnits('0.001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
           .format({ precision: 5 })
       );

@@ -52,8 +52,16 @@ const CreateWorkspaceForm = ({
       )}
     />
     <FormControl>
-      <Textarea size="lg" {...form.register('description')} placeholder=" " />
-      <FormLabel>Description</FormLabel>
+      <Textarea
+        size="lg"
+        {...form.register('description')}
+        placeholder="Description"
+        sx={{
+          'textarea::placeholder': {
+            color: 'grey.500',
+          },
+        }}
+      />
       <FormHelperText>Optional</FormHelperText>
     </FormControl>
   </VStack>
@@ -77,25 +85,45 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     <Dialog.Modal
       size={{
         base: 'full',
-        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? '2xl' : 'lg',
+        sm: !tabs.is(CreateWorkspaceTabState.FORM) ? 'xl' : 'lg',
       }}
       closeOnOverlayClick={false}
       {...props}
     >
-      {tabs.is(CreateWorkspaceTabState.FORM) && (
+      {tabs.is(CreateWorkspaceTabState.FORM) ? (
         <Dialog.Header
           mb={0}
-          position="relative"
-          maxW={450}
-          top={-6}
+          onClose={props.onClose}
+          maxW={{ base: 450, xs: 550, sm: 450 }}
           title="Create Workspace"
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
           descriptionFontSize="md"
         />
+      ) : (
+        <Dialog.Header
+          mb={0}
+          mt={0}
+          onClose={props.onClose}
+          maxW={450}
+          title=""
+          description=""
+          zIndex={200}
+          h={6}
+        />
       )}
 
-      <Dialog.Body minH="full" maxH="full" maxW={540}>
-        <Box hidden={!tabs.is(CreateWorkspaceTabState.FORM)} mb={8}>
+      <Dialog.Body
+        maxW={540}
+        mt={!tabs.is(CreateWorkspaceTabState.FORM) ? 0 : 'unset'}
+      >
+        <Box
+          mb={8}
+          mt={{
+            base: 'unset',
+            sm: tabs.is(CreateWorkspaceTabState.FORM) ? 6 : 'unset',
+          }}
+          hidden={!tabs.is(CreateWorkspaceTabState.FORM)}
+        >
           <StepProgress length={tabs.length} value={tabs.tab} />
         </Box>
         <Tabs index={tabs.tab}>
@@ -113,8 +141,9 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             </TabPanel>
             <TabPanel p={0}>
               <FeedbackSuccess
-                title="All set!!"
-                description="The workspace template is now ready for use whenever you need to streamline
+                hasCloseButton
+                title="All set!"
+                description="The workspace is now ready for use whenever you need to streamline
         your workflow!"
                 primaryAction="Go to my workspace"
                 secondaryAction="Members Settings"

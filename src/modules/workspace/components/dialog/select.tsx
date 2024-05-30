@@ -1,4 +1,4 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { Divider, HStack, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
@@ -15,6 +15,7 @@ interface SelectWorkspaceDialogProps {
   onSelect: (workspace: string) => void;
   onCreate: () => void;
   isLoading?: boolean;
+  isCreatingWorkspace?: boolean;
 }
 
 const SelectWorkspaceDialog = ({
@@ -22,90 +23,139 @@ const SelectWorkspaceDialog = ({
   onSelect,
   userWorkspaces,
   onCreate,
+  isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
   const { workspaces } = useAuth();
   const listIsEmpty = userWorkspaces.length === 0;
+
+  const openDialog = dialog.isOpen && !isCreatingWorkspace;
 
   const loggedWorkspace = workspaces.current;
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', sm: !listIsEmpty ? 'xl' : '2xl' }}
+      size={{ base: 'full', sm: !listIsEmpty ? 'xl' : 'xl' }}
       onClose={dialog.onClose}
-      hideCloseButton={false}
-      isOpen={dialog.isOpen}
+      isOpen={openDialog}
       closeOnOverlayClick={false}
     >
+      <VStack
+        position={{ base: 'fixed', sm: 'unset' }}
+        px={{ base: 6, sm: 'unset' }}
+        justifyContent="center"
+        w="full"
+        py={0}
+        m={0}
+        zIndex={400}
+        bg="dark.950"
+        h={{ base: 24, sm: 'unset' }}
+      >
+        {!listIsEmpty ? (
+          <>
+            <Dialog.Header
+              hideCloseButton={false}
+              onClose={dialog.onClose}
+              maxW={450}
+              position="relative"
+              mt={0}
+              mb={0}
+              h={16}
+              title="Select your workspace"
+              description={`We're thrilled. Select your workspace to have you here. `}
+            />
+          </>
+        ) : (
+          <Dialog.Header
+            zIndex={10}
+            hideCloseButton={false}
+            onClose={dialog.onClose}
+            maxW={450}
+            position="relative"
+            h={6}
+            mt={0}
+            mb={-5}
+            title=""
+            description=""
+          />
+        )}
+      </VStack>
+
       <Dialog.Body
-        position="relative"
         justifyItems="center"
         alignItems="center"
         maxH="full"
         maxW={480}
+        position="relative"
       >
-        <VStack>
-          {!listIsEmpty && (
-            <VStack
-              w="full"
-              h={24}
-              align="flex-start"
-              position="absolute"
-              overflow="visible"
-              justifyContent="space-evenly"
-              top={[-8, -10]}
-              spacing={0}
-            >
-              <Text fontSize={['lg', '2xl']} fontWeight="bold" color="white">
-                Select your workspace
-              </Text>
-              <Text fontSize="md" variant="description" fontWeight="normal">
-                {`We're thrilled. Select your workspace to have you here. `}
-              </Text>
-            </VStack>
-          )}
-
-          <VStack
-            spacing={5}
-            w="full"
-            minH={300}
-            maxH={380}
-            overflowY="scroll"
-            marginTop={listIsEmpty ? 4 : 16}
-            py={4}
-            pr={4}
-            borderColor="grey.100"
-            sx={{
-              '&::-webkit-scrollbar': {
-                width: '5px',
-                maxHeight: '330px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#2C2C2C',
-                borderRadius: '30px',
-                height: '10px' /* Adjust the height of the scrollbar thumb */,
-              },
-            }}
-          >
-            {listIsEmpty ? (
-              <SelectionEmptyState />
-            ) : (
-              userWorkspaces.map((w) => (
+        <VStack
+          marginTop={{ base: 24, sm: 8 }}
+          minH={300}
+          maxH={{ base: 605, xs: 555, sm: 380 }}
+          spacing={5}
+          w="full"
+          overflowY="scroll"
+          py={4}
+          gap={4}
+          borderColor="grey.100"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: '#2B2927',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              display: 'none',
+              backgroundColor: 'grey.250',
+              borderRadius: '30px',
+              height: '10px' /* Adjust the height of the scrollbar thumb */,
+            },
+          }}
+        >
+          {listIsEmpty ? (
+            <SelectionEmptyState />
+          ) : (
+            <>
+              {userWorkspaces.map((w) => (
                 <WorkspaceCard
                   key={w.id}
                   workspace={w}
-                  counter={{ members: w.members.length, vaults: w.predicates }}
+                  counter={{
+                    members: w.members.length,
+                    vaults: w.predicates,
+                  }}
                   onClick={() => {
                     w.id !== loggedWorkspace
                       ? onSelect(w.id)
                       : dialog.onClose();
                   }}
                 />
-              ))
-            )}
-          </VStack>
+              ))}
+              <Divider
+                position="absolute"
+                top={{ base: 24, sm: 8 }}
+                w="full"
+                left={0}
+                zIndex={100}
+              />
+            </>
+          )}
         </VStack>
       </Dialog.Body>
-      <DialogActions mt="auto" maxW={480} hideDivider={listIsEmpty}>
+      <DialogActions
+        position={{ base: 'absolute', xs: 'unset' }}
+        bg="dark.950"
+        bottom={{ base: 2, xs: 'unset' }}
+        px={{ base: 6, xs: 'unset' }}
+        mt={{ base: 'unset', xs: 'auto' }}
+        maxW={480}
+        hideDivider={listIsEmpty}
+        sx={{
+          '& > hr': {
+            marginTop: '0',
+          },
+        }}
+      >
         <HStack w="full" spacing={4} h={12} mt={listIsEmpty ? 9 : 'unset'}>
           {listIsEmpty && (
             <Dialog.SecondaryAction

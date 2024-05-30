@@ -8,22 +8,23 @@ import {
   HStack,
   Icon,
   Stack,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { EmptyTransaction } from '@/modules/home/components/EmptyCard/Transaction';
 import { useHome } from '@/modules/home/hooks/useHome';
+import { CreateVaultDialog } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
 
 import {
   TransactionCard,
@@ -57,17 +58,25 @@ const UserTransactionsPage = () => {
 
   const { goHome } = useHome();
 
-  const { isMobile } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
-  const { OWNER, MANAGER } = PermissionRoles;
+  const { OWNER, MANAGER, ADMIN } = PermissionRoles;
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
-    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
-      <HStack w="full" h="10" justifyContent="space-between" my={2}>
+    <VStack
+      w="full"
+      spacing={6}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
+    >
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+      <HStack w="full" h="10" justifyContent="space-between">
         <HStack>
           <Button
             variant="primary"
             fontWeight="semibold"
+            fontSize={15}
             leftIcon={
               <Box mr={-1}>
                 <IoChevronBack size={22} />
@@ -87,13 +96,13 @@ const UserTransactionsPage = () => {
             <>
               <Breadcrumb ml={8}>
                 <BreadcrumbItem>
-                  <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
                     onClick={() => goHome()}
                   >
+                    <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                     Home
                   </BreadcrumbLink>
                 </BreadcrumbItem>
@@ -105,6 +114,8 @@ const UserTransactionsPage = () => {
                       color="grey.200"
                       fontWeight="semibold"
                       onClick={() => goWorkspace(current)}
+                      maxW={40}
+                      isTruncated
                     >
                       {workspace?.name}
                     </BreadcrumbLink>
@@ -127,17 +138,11 @@ const UserTransactionsPage = () => {
         </HStack>
         <Box>
           <Button
-            isDisabled={!hasPermission([OWNER, MANAGER])}
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            onClick={() =>
-              navigate(
-                Pages.createVault({
-                  workspaceId: current,
-                }),
-              )
-            }
+            onClick={onOpen}
           >
             Create vault
           </Button>
@@ -145,7 +150,7 @@ const UserTransactionsPage = () => {
       </HStack>
 
       {/* ACTION BUTTONS */}
-      <Stack w="full" direction={['column', 'row']} spacing={6}>
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
         <ActionCard.Container
           onClick={() =>
             navigate(
@@ -196,7 +201,12 @@ const UserTransactionsPage = () => {
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
-        <HStack w="full">
+        <Box
+          w="full"
+          display="flex"
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+        >
           <Heading variant="title-xl" color="grey.200">
             Transactions
           </Heading>
@@ -204,7 +214,7 @@ const UserTransactionsPage = () => {
             isLoading={pendingSignerTransactions.isLoading}
             quantity={pendingSignerTransactions.data?.ofUser ?? 0}
           />
-        </HStack>
+        </Box>
 
         {/* FILTER */}
         <Box w="full" mt={3}>
@@ -232,9 +242,33 @@ const UserTransactionsPage = () => {
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List mt={1} w="full" spacing={[3, 5]}>
+      <TransactionCard.List
+        mt={1}
+        w="full"
+        spacing={{ base: 3, sm: 5 }}
+        maxH="74vh"
+        overflowY="scroll"
+        overflowX="hidden"
+        scrollBehavior="smooth"
+        sx={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+            width: '5px',
+            maxHeight: '330px',
+            backgroundColor: 'grey.200',
+            borderRadius: '30px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#2C2C2C',
+            borderRadius: '30px',
+            height: '10px',
+          },
+        }}
+      >
         {!transactionRequest.isLoading &&
-          !transactionRequest?.transactions.length && <EmptyTransaction />}
+          !transactionRequest?.transactions.length && (
+            <EmptyState showAction={false} />
+          )}
 
         {infinityTransactions?.map((transaction) => {
           const isSigner = !!transaction.predicate?.members?.find(
@@ -242,13 +276,14 @@ const UserTransactionsPage = () => {
           );
 
           return (
-            <Box key={transaction.id} ref={infinityTransactionsRef}>
+            <Box w="full" key={transaction.id} ref={infinityTransactionsRef}>
               <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
                 {isMobile ? (
                   <TransactionCardMobile
                     isSigner={isSigner}
                     transaction={transaction}
                     account={account}
+                    callBack={() => filter.set(StatusFilter.ALL)}
                   />
                 ) : (
                   <TransactionCard.Container
@@ -272,9 +307,7 @@ const UserTransactionsPage = () => {
                     <TransactionCard.Amount
                       assets={transaction.resume.outputs}
                     />
-                    <TransactionCard.Name>
-                      {limitCharacters(transaction.name, 20)}
-                    </TransactionCard.Name>
+                    <TransactionCard.Name transactionName={transaction.name} />
                     <TransactionCard.Status
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
@@ -283,6 +316,7 @@ const UserTransactionsPage = () => {
                       isSigner={isSigner}
                       transaction={transaction}
                       status={transactionStatus({ ...transaction, account })}
+                      callBack={() => filter.set(StatusFilter.ALL)}
                     />
                   </TransactionCard.Container>
                 )}

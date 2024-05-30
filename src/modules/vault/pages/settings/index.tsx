@@ -16,6 +16,7 @@ import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useVaultDetails } from '@/modules/vault/hooks';
+import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
@@ -26,17 +27,21 @@ const VaultSettingsPage = () => {
   const { goHome } = useHome();
   const {
     workspaces: { current },
+    isSingleWorkspace,
   } = useAuth();
-  const { isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
+
+  const { goWorkspace } = useWorkspace();
+  const { workspace } = useGetCurrentWorkspace();
 
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={[0, 8]}>
+    <Box w="full" pr={{ base: 0, sm: 8 }}>
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
-        {isMobile ? (
+        {vaultRequiredSizeToColumnLayout ? (
           <HStack gap={1.5} onClick={menuDrawer.onOpen}>
             <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
@@ -46,16 +51,31 @@ const VaultSettingsPage = () => {
         ) : (
           <Breadcrumb>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {!isSingleWorkspace && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
+                >
+                  {workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -63,7 +83,7 @@ const VaultSettingsPage = () => {
                 fontWeight="semibold"
                 href="#"
               >
-                Settings
+                Vaults
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -83,6 +103,16 @@ const VaultSettingsPage = () => {
                 maxW={640}
               >
                 {vault.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                fontSize="sm"
+                color="grey.200"
+                fontWeight="semibold"
+                href="#"
+              >
+                Settings
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>

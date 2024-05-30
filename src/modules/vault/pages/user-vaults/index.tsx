@@ -10,24 +10,25 @@ import {
   Icon,
   Stack,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { EmptyVault } from '@/modules/home/components/EmptyCard/Vault';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
-import { VaultCard } from '../../components';
+import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
 
 const UserVaultsPage = () => {
@@ -36,10 +37,11 @@ const UserVaultsPage = () => {
     vaultsRequest: { vaults, loadingVaults },
   } = useUserVaults();
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
   const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
   const { goHome } = useHome();
-  const { isMobile } = useScreenSize();
   const { selectWorkspace } = useSelectWorkspace();
   const {
     workspaces: { current, single },
@@ -49,15 +51,20 @@ const UserVaultsPage = () => {
   const { workspace } = useGetCurrentWorkspace();
 
   return (
-    <VStack w="full" spacing={6} p={[1, 1]} px={['auto', 8]}>
+    <VStack
+      w="full"
+      spacing={6}
+      p={{ base: 1, sm: 1 }}
+      px={{ base: 'auto', sm: 8 }}
+    >
+      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
       <HStack
         h="10"
         w="full"
-        justifyContent={['flex-end', 'space-between']}
-        my={2}
+        justifyContent={{ base: 'flex-end', sm: 'space-between' }}
         maxW="full"
       >
-        <HStack visibility={['hidden', 'visible']}>
+        <HStack visibility={{ base: 'hidden', sm: 'visible' }}>
           <Button
             variant="primary"
             fontWeight="semibold"
@@ -78,13 +85,13 @@ const UserVaultsPage = () => {
           </Button>
           <Breadcrumb ml={8}>
             <BreadcrumbItem>
-              <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
                 onClick={() => goHome()}
               >
+                <Icon mr={2} as={HomeIcon} fontSize="sm" color="grey.200" />
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -94,7 +101,9 @@ const UserVaultsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)} //
+                  onClick={() => goWorkspace(current)}
+                  maxW={40}
+                  isTruncated
                 >
                   {workspace?.name}
                   {/* use request of workspace  */}
@@ -118,14 +127,8 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="bold"
             leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER])}
-            onClick={() =>
-              navigate(
-                Pages.createVault({
-                  workspaceId: current,
-                }),
-              )
-            }
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+            onClick={onOpen}
           >
             Create vault
           </Button>
@@ -133,7 +136,7 @@ const UserVaultsPage = () => {
       </HStack>
 
       <CustomSkeleton display="flex" isLoaded={!workspaceHomeRequest.isLoading}>
-        <Stack w="full" direction={['column', 'row']} spacing={6}>
+        <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
@@ -211,26 +214,32 @@ const UserVaultsPage = () => {
 
       {!vaults?.length && (
         <CustomSkeleton isLoaded={!loadingVaults}>
-          <EmptyVault
-            showActionButton={hasPermission([OWNER, MANAGER, ADMIN])}
+          <EmptyState
+            showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+            title={`Let's Begin!`}
+            subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}
+            buttonActionTitle="Create my first vault"
+            buttonAction={onOpen}
           />
         </CustomSkeleton>
       )}
-      {vaults?.length && !isMobile ? (
+      {vaults?.length && (
         <Grid
+          mt={{ base: -8, sm: -2 }}
+          pb={{ base: 8, sm: 0 }}
           w="full"
           maxW="full"
           gap={6}
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
-            lg: 'repeat(3, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
             '2xl': 'repeat(4, 1fr)',
           }}
         >
           {vaults?.map(({ id, name, workspace, members, description }) => {
             return (
-              <CustomSkeleton isLoaded={!loadingVaults} key={id}>
+              <CustomSkeleton isLoaded={!loadingVaults} key={id} maxH="180px">
                 <GridItem>
                   <VaultCard
                     id={id}
@@ -256,36 +265,6 @@ const UserVaultsPage = () => {
             );
           })}
         </Grid>
-      ) : (
-        <Box w="full" maxW="full" gap={6}>
-          {vaults?.map(({ id, name, workspace, members, description }) => {
-            return (
-              <CustomSkeleton isLoaded={!loadingVaults} key={id}>
-                <GridItem>
-                  <VaultCard
-                    id={id}
-                    name={name}
-                    workspace={workspace}
-                    title={description}
-                    members={members!}
-                    onClick={async () => {
-                      selectWorkspace(workspace.id, {
-                        onSelect: async (_workspace) => {
-                          navigate(
-                            Pages.detailsVault({
-                              workspaceId: _workspace.id,
-                              vaultId: id,
-                            }),
-                          );
-                        },
-                      });
-                    }}
-                  />
-                </GridItem>
-              </CustomSkeleton>
-            );
-          })}
-        </Box>
       )}
     </VStack>
   );

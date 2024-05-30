@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 import { HomePage } from '@/modules/home/pages';
-import { CreateVaultPage, UserVaultsPage } from '@/modules/vault/pages';
+import { UserVaultsPage } from '@/modules/vault/pages';
 
 import { UserTransactionsPage } from '../transactions/pages/user-transactions';
 
@@ -21,14 +21,7 @@ const homeRoutes = (
         </AuthRoute>
       }
     />
-    <Route
-      path={Pages.createVault()}
-      element={
-        <AuthRoute>
-          <CreateVaultPage />
-        </AuthRoute>
-      }
-    />
+
     <Route
       path={Pages.userVaults()}
       element={

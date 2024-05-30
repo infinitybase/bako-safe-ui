@@ -1,4 +1,5 @@
 import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import { CreateVaultForm } from './form';
@@ -10,8 +11,9 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     addresses,
     onDeposit,
     steps,
-    bsafeVault,
+    bakoSafeVault,
     handleCancel,
+    selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
     handleInputChange,
@@ -22,27 +24,27 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     onClose: props.onClose,
   });
 
+  const { isSafariBrowser, isMobile } = useVerifyBrowserType();
+
   return (
     <Dialog.Modal
-      size={{
-        base: 'full',
-        sm: 'xl',
-      }}
+      size={{ base: 'full', md: 'xl' }}
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}
     >
       <Dialog.Header
+        hideCloseButton={isSafariBrowser && isMobile}
+        onClose={handleCancel}
         maxW={450}
-        position="relative"
         mb={0}
-        top={-6}
+        pt={isSafariBrowser && isMobile ? 6 : 'unset'}
         hidden={steps.step?.hide}
         title="Create Vault"
         description={steps.step?.description ?? ''}
       />
 
-      <Dialog.Body maxW={450}>
+      <Dialog.Body maxW={450} minH={{ base: '66vh', sm: 'unset' }}>
         <CreateVaultForm
           tabs={tabs}
           form={form}
@@ -50,6 +52,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onCancel={handleCancel}
           onDeposit={onDeposit}
           addresses={addresses}
+          selectedTemplate={selectedTemplate}
           setTemplate={setFormWithTemplate}
           onSaveTemplate={onSaveTemplate}
           vaultNameIsAvailable={vaultNameIsAvailable}
@@ -80,7 +83,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
             tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
           }
           isDisabled={steps.step?.disable}
-          isLoading={bsafeVault.isLoading}
+          isLoading={bakoSafeVault.isLoading}
           _hover={{
             opacity: !steps.step?.disable && 0.8,
           }}

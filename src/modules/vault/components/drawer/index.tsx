@@ -6,7 +6,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerProps,
-  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -16,7 +15,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { CustomSkeleton, ErrorIcon } from '@/components';
+import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
@@ -37,30 +36,33 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     isOpen: props.isOpen,
   });
 
+  const isLoadingVaults = inView.inView
+    ? !isLoading
+    : !isLoading && !isFetching;
+
   return (
     <Drawer
       {...props}
       size="sm"
       onClose={drawer.onClose}
-      variant={['solid', 'glassmorphic']}
+      variant="solid-dark"
       placement="left"
     >
       <DrawerOverlay />
       <DrawerContent>
-        <Flex mb={5} w="full" justifyContent="flex-end">
-          <HStack cursor="pointer" onClick={drawer.onClose} spacing={2}>
-            <ErrorIcon />
-            <Text fontWeight="semibold" color="white">
-              Close
-            </Text>
-          </HStack>
-        </Flex>
-
         <DrawerHeader mb={10}>
           <VStack alignItems="flex-start" spacing={5}>
-            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-              Vault
-            </Heading>
+            <HStack w="full" justifyContent="space-between">
+              <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
+                Vault
+              </Heading>
+              <LineCloseIcon
+                fontSize="24px"
+                aria-label="Close window"
+                cursor="pointer"
+                onClick={drawer.onClose}
+              />
+            </HStack>
             <Text maxWidth={300} variant="description">
               Select a vault to go to the home page. You can search for a
               specific vault by name.
@@ -93,13 +95,14 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
               the vault.
             </Text>
           )}
+
           <VStack spacing={4}>
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
             {vaults?.map((vault) => {
               return (
-                <CustomSkeleton key={vault.id} isLoaded={!isLoading}>
+                <CustomSkeleton key={vault.id} isLoaded={isLoadingVaults}>
                   <VaultDrawerBox
                     name={vault.name}
                     address={vault.predicateAddress}

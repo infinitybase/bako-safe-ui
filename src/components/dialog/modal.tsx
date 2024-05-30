@@ -1,51 +1,55 @@
 import {
-  Flex,
-  HStack,
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentProps,
   ModalOverlay,
   ModalProps,
-  Text,
 } from '@chakra-ui/react';
 
-import { CloseIcon } from '../icons/close-icon';
+import { useScreenSize } from '@/modules';
 
 export interface DialogModalProps extends ModalProps {
-  hideCloseButton?: boolean;
+  contentPadding?: number;
+  modalContentProps?: ModalContentProps;
 }
 
 const DialogModal = (props: DialogModalProps) => {
   const { children, ...rest } = props;
-
-  const hideCloseButton = props?.hideCloseButton ?? false;
+  const { isMobile } = useScreenSize();
 
   return (
     <Modal
       variant="glassmorphic"
-      size="2xl"
-      blockScrollOnMount={false}
+      size={{ base: 'full', xs: 'xl' }}
+      blockScrollOnMount={true}
       isCentered
+      scrollBehavior={isMobile ? 'inside' : 'outside'}
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent rounded="3xl">
-        {!hideCloseButton && (
-          <Flex w="full" align="center" justifyContent="flex-end">
-            <HStack
-              onClick={props.onClose}
-              cursor="pointer"
-              spacing={2}
-              zIndex={1}
-            >
-              <Text fontWeight="normal" color="white">
-                Close
-              </Text>
-              <CloseIcon />
-            </HStack>
-          </Flex>
-        )}
+      <ModalContent
+        rounded="3xl"
+        bg="dark.950"
+        py={{ base: 2, xs: 8 }}
+        {...props.modalContentProps}
+      >
         <ModalBody
+          zIndex={400}
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'transparent',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
           w="full"
           display="flex"
           alignItems="center"

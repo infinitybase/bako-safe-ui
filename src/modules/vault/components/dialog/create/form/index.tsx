@@ -12,6 +12,7 @@ export interface CreateVaultFormProps {
   addresses: UseCreateVaultDialogReturn['addresses'];
   onDeposit: UseCreateVaultDialogReturn['onDeposit'];
   onSaveTemplate: UseCreateVaultDialogReturn['onSaveTemplate'];
+  selectedTemplate: UseCreateVaultDialogReturn['selectedTemplate'];
   setTemplate: UseCreateVaultDialogReturn['setFormWithTemplate'];
   steps: UseCreateVaultDialogReturn['steps'];
   isLoading?: boolean;
@@ -27,10 +28,9 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     form,
     tabs,
     addresses,
-    onDeposit,
     steps,
+    selectedTemplate,
     setTemplate,
-    onSaveTemplate,
     search,
     setSearch,
     handleInputChange,
@@ -42,8 +42,8 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
   const stepLength = Object.keys(steps.actions).length;
 
   return (
-    <Box w="full" maxW={450}>
-      <Box hidden={stepAction.hide} mb={8}>
+    <Box w="full">
+      <Box hidden={stepAction.hide} mb={8} mt={{ sm: 8 }}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
       <Tabs index={tabs.tab} colorScheme="green">
@@ -61,11 +61,11 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             form={form}
             addresses={addresses}
             templates={template}
+            selectedTemplate={selectedTemplate}
             setTemplate={setTemplate}
           />
           <VaultSuccessStep
-            onDeposit={onDeposit}
-            onSaveTemplate={onSaveTemplate}
+            stepProgress={<StepProgress length={stepLength} value={tabs.tab} />}
           />
         </TabPanels>
       </Tabs>

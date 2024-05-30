@@ -1,4 +1,4 @@
-import { SortOption } from 'bsafe';
+import { SortOption } from 'bakosafe';
 import { useInfiniteQuery } from 'react-query';
 
 import { NotificationsQueryKey } from '@/modules/core';
@@ -13,7 +13,7 @@ const useListNotificationsRequest = (account: string, enabled?: boolean) => {
         perPage: 5,
         page: pageParam || 0,
         orderBy: 'createdAt',
-        sort: SortOption.DESC,
+        sort: SortOption.desc,
       }),
     {
       getNextPageParam: ({ totalPages, currentPage, nextPage }) =>

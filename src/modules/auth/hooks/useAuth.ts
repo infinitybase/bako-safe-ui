@@ -1,5 +1,5 @@
 import { useFuel } from '@fuels/react';
-import { defaultConfig } from 'bsafe';
+import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
@@ -104,7 +104,7 @@ const useAuth = () => {
       provider: await Provider.create(
         _hasWallet
           ? (await fuel.currentNetwork()).url
-          : defaultConfig['PROVIDER']!,
+          : BakoSafe.getProviders('CHAIN_URL'),
       ),
     };
   };

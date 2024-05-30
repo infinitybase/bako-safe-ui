@@ -6,7 +6,7 @@ import {
   HStack,
   Text,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bsafe';
+import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
@@ -28,11 +28,11 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
     <HStack
       alignItems="center"
       justifyContent="flex-start"
-      w={{ base: 'full', sm: 250 }}
+      w={{ base: 'full', sm: 160 }}
       ml={0}
     >
       <AvatarGroup max={2}>
-        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} />
+        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} ignoreFallback />
       </AvatarGroup>
       <Box w="full" mt={0.5} textAlign="left">
         <Heading variant={isMobile ? 'title-sm' : 'title-md'} color="grey.200">

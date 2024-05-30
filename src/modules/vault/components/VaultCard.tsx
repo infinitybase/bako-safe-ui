@@ -15,6 +15,7 @@ import {
 
 import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
+import { useScreenSize } from '@/modules/core';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import { Workspace } from '@/modules/core/models/workspace';
@@ -34,13 +35,14 @@ export const VaultCard = ({
   ...rest
 }: VaultCardProps) => {
   const { role } = usePermissions({ id, workspace });
+  const { isExtraSmall } = useScreenSize();
 
   return (
     <Card
       bg="grey.800"
       w="100%"
-      maxW="full"
-      my={[6, 0]}
+      maxW={isExtraSmall ? 272 : 'full'}
+      my={{ base: 6, sm: 0 }}
       cursor="pointer"
       _hover={{
         transform: 'scale(1.03)',
@@ -68,17 +70,24 @@ export const VaultCard = ({
                     fontSize={14}
                     color="grey.200"
                   />
-                  <Text color="grey.400" fontSize="sm" isTruncated>
+                  <Text
+                    color="grey.400"
+                    fontSize="sm"
+                    isTruncated
+                    maxW={{
+                      base: 150,
+                      sm: 130,
+                      lg: 200,
+                    }}
+                  >
                     {workspace?.name}
                   </Text>
                 </HStack>
               )}
               <Heading
                 maxW={{
-                  base: 'full',
-                  sm: 300,
-                  lg: 210,
-                  xl: 240,
+                  base: 150,
+                  lg: !workspace.single ? 140 : 200,
                 }}
                 variant="title-md"
                 color="grey.200"
@@ -101,9 +110,27 @@ export const VaultCard = ({
               mt={1}
               size="sm"
               spacing={-2}
+              sx={{
+                '&>span': {
+                  height: '38px',
+                  width: '38px',
+                },
+              }}
             >
               {members.map(({ avatar, address }) => (
-                <Avatar variant="roundedSquare" src={avatar} key={address} />
+                <Avatar
+                  variant="roundedSquare"
+                  borderRadius={8}
+                  src={avatar}
+                  key={address}
+                  border="none"
+                  sx={{
+                    '&>img': {
+                      border: '1px solid #CFCCC9',
+                      boxShadow: '4px 0px 4px 0px #2B2827E5',
+                    },
+                  }}
+                />
               ))}
             </AvatarGroup>
           </Box>
