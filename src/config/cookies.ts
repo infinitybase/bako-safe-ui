@@ -47,12 +47,17 @@ export class CookiesConfig {
   }
 
   private static encrypt(value: string): string {
-    const encrypted = CryptoJS.AES.encrypt(
-      value,
-      this.encryptionKey,
-    ).toString();
+    try {
+      const encrypted = CryptoJS.AES.encrypt(
+        value,
+        this.encryptionKey,
+      ).toString();
 
-    return encrypted;
+      return encrypted;
+    } catch (e) {
+      console.log('Error encrypting cookie', e);
+      return `${crypto.randomUUID()}`;
+    }
   }
 
   private static decrypt(encryptedValue: string): string {
@@ -64,6 +69,7 @@ export class CookiesConfig {
 
       return decrypted;
     } catch (e) {
+      console.log('Error decrypting cookie', e);
       return `${crypto.randomUUID()}`;
     }
   }
