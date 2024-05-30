@@ -38,7 +38,7 @@ export interface IApiError {
 }
 
 const api = axios.create({
-  baseURL: 'https:/api-safe.bako.global/',
+  baseURL: 'https://api-safe.bako.global/',
 });
 
 console.log('[AXIOS]: ', api);
