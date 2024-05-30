@@ -38,7 +38,7 @@ export interface IApiError {
 }
 
 const api = axios.create({
-  baseURL: VITE_API_URL,
+  baseURL: 'https:/api-safe.bako.global/',
 });
 
 api.interceptors.request.use(
