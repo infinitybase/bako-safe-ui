@@ -293,7 +293,7 @@ const VaultAddressesStep = ({
           <Dialog.Section
             w="full"
             maxW={350}
-            mb={5}
+            mb={{ base: 5, sm: 'unset' }}
             title={
               <Heading fontSize={{ base: 'sm', sm: 'md' }} color="grey.200">
                 Min signatures required?
