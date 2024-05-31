@@ -19,12 +19,7 @@ import {
   useAddressBook,
 } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth/hooks';
-import {
-  AddressUtils,
-  AssetSelect,
-  delay,
-  NativeAssetId,
-} from '@/modules/core';
+import { AddressUtils, AssetSelect, NativeAssetId } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
@@ -165,9 +160,6 @@ const TransactionFormField = ({
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
 
-  console.log('accordionIndex:', accordion.index);
-  console.log('transactions.fields.length:', transactions.fields.length);
-
   return (
     <Accordion
       index={accordion.index}
@@ -273,14 +265,13 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             opacity: 0.8,
           }}
           onClick={() => {
-            if (transactions.fields.length) {
-              transactions.append({
-                amount: '',
-                asset: NativeAssetId,
-                to: '',
-              });
-              delay(() => accordion.open(transactions.fields.length), 0);
-            }
+            transactions.append({
+              amount: '',
+              asset: NativeAssetId,
+              to: '',
+            });
+            // delay(() => accordion.open(transactions.fields.length), 100);
+            accordion.open(transactions.fields.length);
           }}
         >
           Add more recipients

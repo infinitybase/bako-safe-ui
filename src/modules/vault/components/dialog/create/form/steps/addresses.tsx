@@ -58,7 +58,7 @@ const VaultAddressesStep = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-  const { setDisableScroll } = useVaultState();
+  const { disableScroll, setDisableScroll } = useVaultState();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -84,6 +84,8 @@ const VaultAddressesStep = ({
     form.clearErrors();
     setIsFirstLoad(true);
   };
+
+  const isDisable = !!form.formState.errors.addresses;
 
   const handleKeepOptionsNearToInput = () => {
     const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
@@ -173,7 +175,7 @@ const VaultAddressesStep = ({
               handleKeepOptionsNearToInput();
               handleFirstIsFirstLoad();
             }}
-            overflowY="auto"
+            overflowY={disableScroll ? 'hidden' : 'auto'}
             sx={{
               '&::-webkit-scrollbar': {
                 width: '5px',
@@ -276,6 +278,7 @@ const VaultAddressesStep = ({
               color="dark.300"
               bgColor="grey.200"
               variant="secondary"
+              isDisabled={isDisable}
               onClick={() => {
                 addresses.append();
                 form.setValue(
