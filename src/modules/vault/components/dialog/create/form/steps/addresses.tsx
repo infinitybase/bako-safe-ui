@@ -27,6 +27,7 @@ import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { useVaultState } from '@/modules/vault/states';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
@@ -57,6 +58,7 @@ const VaultAddressesStep = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const { setDisableScroll } = useVaultState();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -216,6 +218,8 @@ const VaultAddressesStep = ({
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
+                          actionOnSelect={() => setDisableScroll(false)}
+                          actionOnFocus={() => setDisableScroll(true)}
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
                           value={field.value}
