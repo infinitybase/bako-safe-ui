@@ -19,6 +19,7 @@ const AccordionItem = ({
   isExpanded,
 }: AccordionItemProps) => {
   const { isExtraSmall } = useScreenSize();
+
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">

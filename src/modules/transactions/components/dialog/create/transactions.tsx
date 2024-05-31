@@ -195,8 +195,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const currentAmount = form.watch(`transactions.${index}.amount`);
         const isCurrentAmountZero = Number(currentAmount) === 0;
 
-        const isDisabled =
-          hasEmptyField || fieldState.invalid || isCurrentAmountZero;
+        const isDisabled = accordion.index <= 0;
+        hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.to,
         );
@@ -275,7 +275,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               asset: NativeAssetId,
               to: '',
             });
-            delay(() => accordion.open(transactions.fields.length), 0);
+            delay(() => accordion.open(transactions.fields.length), 100);
           }}
         >
           Add more recipients
