@@ -26,7 +26,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const { isSafariBrowser, isMobile } = useVerifyBrowserType();
 
-  const isFirstTab = tabs.tab === 0;
+  // const isFirstTab = tabs.tab === 0;
 
   return (
     <Dialog.Modal
@@ -48,7 +48,8 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <Dialog.Body
         maxW={450}
-        minH={{ base: isFirstTab ? 250 : 645, sm: 'unset' }}
+        // minH={{ base: isFirstTab ? 250 : 645, sm: 'unset' }}
+        minH={{ base: '60vh', sm: 'unset' }}
       >
         <CreateVaultForm
           tabs={tabs}
