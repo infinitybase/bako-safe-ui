@@ -275,7 +275,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               asset: NativeAssetId,
               to: '',
             });
-            delay(() => accordion.open(transactions.fields.length), 100);
+            delay(() => accordion.open(transactions.fields.length), 0);
           }}
         >
           Add more recipients
