@@ -58,6 +58,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   isFromTransactions?: boolean;
   actionOnFocus?: (value?: any) => void;
   actionOnSelect?: (value?: any) => void;
+  actionOnRemoveInput?: (value?: any) => void;
 }
 
 const Autocomplete = ({
@@ -78,6 +79,7 @@ const Autocomplete = ({
   isFromTransactions,
   actionOnFocus,
   actionOnSelect,
+  actionOnRemoveInput,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -114,6 +116,12 @@ const Autocomplete = ({
     }
     if (!inputValue) onInputChange?.('');
     setIsFocused(true);
+  };
+
+  const handleRemoveInput = () => {
+    if (actionOnRemoveInput) {
+      actionOnRemoveInput();
+    }
   };
 
   const handleClear = () => {
@@ -156,6 +164,7 @@ const Autocomplete = ({
             bgColor={rightElement ? 'dark.250' : 'transparent'}
             h="calc(100% - 3px)"
             w={showClearIcon && rightElement ? 16 : 10}
+            onClick={handleRemoveInput}
           >
             {isLoading && isFocused ? (
               <CircularProgress

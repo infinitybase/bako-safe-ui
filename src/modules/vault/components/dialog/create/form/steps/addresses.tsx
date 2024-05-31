@@ -219,6 +219,7 @@ const VaultAddressesStep = ({
                             first ? 'Your address' : `Address ${index + 1}`
                           }
                           actionOnSelect={() => setDisableScroll(false)}
+                          actionOnRemoveInput={() => setDisableScroll(false)}
                           actionOnFocus={() => setDisableScroll(true)}
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
