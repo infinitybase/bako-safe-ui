@@ -14,7 +14,6 @@ interface AccordionItemProps {
   actions: React.ReactNode;
   resume: React.ReactNode;
   children: React.ReactNode;
-  // isExpanded?: boolean;
 }
 
 const AccordionItem = ({
@@ -22,7 +21,6 @@ const AccordionItem = ({
   actions,
   children,
   resume,
-  // isExpanded,
 }: AccordionItemProps) => {
   const { isExtraSmall } = useScreenSize();
   const { isOpen } = useAccordionItemState();

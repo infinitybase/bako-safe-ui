@@ -29,8 +29,6 @@ const useTransactionAccordion = () => {
 
   const open = useCallback((index: number) => setAccordionIndex(index), []);
 
-  console.log('accordionIndex no hook', accordionIndex);
-
   return {
     open,
     close,
