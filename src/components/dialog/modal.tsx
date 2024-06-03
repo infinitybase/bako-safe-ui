@@ -24,9 +24,9 @@ const DialogModal = (props: DialogModalProps) => {
     <Modal
       variant="glassmorphic"
       size={{ base: 'full', xs: 'xl' }}
-      blockScrollOnMount={false}
+      blockScrollOnMount={true}
       isCentered
-      // scrollBehavior={isMobile ? 'inside' : 'outside'}
+      scrollBehavior={isMobile ? 'inside' : 'outside'}
       {...rest}
     >
       <ModalOverlay />
@@ -37,22 +37,22 @@ const DialogModal = (props: DialogModalProps) => {
         {...props.modalContentProps}
       >
         <ModalBody
-          // overflowY={disableScroll ? 'hidden' : 'auto'}
-          // zIndex={400}
-          // sx={{
-          //   '&::-webkit-scrollbar': {
-          //     display: 'none',
-          //     width: '5px',
-          //     maxHeight: '330px',
-          //     backgroundColor: 'transparent',
-          //     borderRadius: '30px',
-          //   },
-          //   '&::-webkit-scrollbar-thumb': {
-          //     backgroundColor: '#2C2C2C',
-          //     borderRadius: '30px',
-          //     height: '10px',
-          //   },
-          // }}
+          overflowY={disableScroll ? 'hidden' : 'auto'}
+          zIndex={400}
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'transparent',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
           w="full"
           display="flex"
           alignItems="center"
