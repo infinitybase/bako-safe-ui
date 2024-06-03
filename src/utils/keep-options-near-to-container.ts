@@ -1,5 +1,5 @@
 type KeepOptionsNearToInputProps<T extends HTMLElement> = {
-  containerRef: React.RefObject<T[]>;
+  containerRef: React.RefObject<T[]> | React.RefObject<T>;
   childRef: React.RefObject<T>;
   pixelsToIncrement?: number;
   index?: number;
