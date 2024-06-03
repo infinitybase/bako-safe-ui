@@ -170,8 +170,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   return (
     <Accordion
-      index={accordion.index}
-      onChange={accordion.open}
+      index={accordion.index + 1}
       overflowY="auto"
       maxH={450}
       pr={{ base: 1, sm: 4 }}
