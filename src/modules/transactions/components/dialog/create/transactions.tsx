@@ -19,12 +19,7 @@ import {
   useAddressBook,
 } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth/hooks';
-import {
-  AddressUtils,
-  AssetSelect,
-  delay,
-  NativeAssetId,
-} from '@/modules/core';
+import { AddressUtils, AssetSelect, NativeAssetId } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
@@ -275,7 +270,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               asset: NativeAssetId,
               to: '',
             });
-            delay(() => accordion.open(transactions.fields.length), 100);
+            setTimeout(() => accordion.open(transactions.fields.length), 0);
           }}
         >
           Add more recipients

@@ -27,8 +27,6 @@ const AccordionItem = ({
   const { isExtraSmall } = useScreenSize();
   const { isOpen } = useAccordionItemState();
 
-  console.log('isOpen on the item', isOpen);
-
   return (
     <>
       <Box p={0} alignItems="center" justifyContent="space-between">
@@ -50,7 +48,7 @@ const AccordionItem = ({
           </Box>
         </VStack>
       </Box>
-      <AccordionPanel px={5}>{children}</AccordionPanel>
+      {isOpen && <AccordionPanel px={5}>{children}</AccordionPanel>}
     </>
   );
 };
