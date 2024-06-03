@@ -10,7 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
@@ -77,8 +77,9 @@ const VaultAddressesStep = ({
       isFirstLoad,
     );
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement[]>([]);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
+  const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSelectOption = () => {
     form.clearErrors();
@@ -87,31 +88,16 @@ const VaultAddressesStep = ({
 
   const isDisable = !!form.formState.errors.addresses;
 
-  const handleKeepOptionsNearToInput = () => {
-    const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
+  const handleKeepOptionsNearToInput = (index: number) => {
+    const pixelsToIncrement = 50;
+
     keepOptionsNearToInput({
-      containerRef,
+      containerRef: inputRef,
       childRef: optionsContainerRef,
       pixelsToIncrement,
+      index,
     });
   };
-
-  useEffect(() => {
-    if (containerRef.current && optionsContainerRef.current) {
-      handleKeepOptionsNearToInput();
-    }
-    window.addEventListener('resize', handleKeepOptionsNearToInput);
-    window.addEventListener('scroll', handleKeepOptionsNearToInput);
-
-    return () => {
-      window.removeEventListener('resize', handleKeepOptionsNearToInput);
-      window.removeEventListener('scroll', handleKeepOptionsNearToInput);
-    };
-  }, [
-    containerRef.current,
-    optionsContainerRef.current,
-    addresses.fields.length,
-  ]);
 
   const minSigners = form.formState.errors.minSigners?.message;
 
@@ -172,7 +158,6 @@ const VaultAddressesStep = ({
             maxH={{ base: 230 }}
             pr={{ base: 2, sm: 4 }}
             onClick={() => {
-              handleKeepOptionsNearToInput();
               handleFirstIsFirstLoad();
             }}
             overflowY={disableScroll ? 'hidden' : 'auto'}
@@ -187,7 +172,7 @@ const VaultAddressesStep = ({
                 height: '10px',
               },
             }}
-            ref={containerRef}
+            ref={optionsScrollableContainerRef}
           >
             {addresses.fields.map(({ id }, index) => {
               const first = index === 0;
@@ -215,13 +200,21 @@ const VaultAddressesStep = ({
                         .includes(field.value);
 
                     return (
-                      <FormControl isInvalid={fieldState.invalid}>
+                      <FormControl
+                        isInvalid={fieldState.invalid}
+                        id={`Address ${index + 1}`}
+                      >
                         <Autocomplete
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
                           }
+                          inputRef={(el) => (inputRef.current[index] = el!)}
+                          onClick={() => {
+                            handleKeepOptionsNearToInput(index);
+                          }}
                           actionOnSelect={() => setDisableScroll(false)}
                           actionOnRemoveInput={() => setDisableScroll(false)}
+                          actionOnBlur={() => setDisableScroll(false)}
                           actionOnFocus={() => setDisableScroll(true)}
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
@@ -285,7 +278,10 @@ const VaultAddressesStep = ({
                   'minSigners',
                   String(addresses.fields.length + 1),
                 );
-                setTimeout(() => scrollToBottom(containerRef), 0);
+                setTimeout(
+                  () => scrollToBottom(optionsScrollableContainerRef),
+                  0,
+                );
               }}
               leftIcon={<PlusSquareIcon w={5} h={5} />}
               _hover={{

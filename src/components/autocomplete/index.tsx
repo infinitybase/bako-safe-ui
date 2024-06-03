@@ -59,6 +59,8 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnFocus?: (value?: any) => void;
   actionOnSelect?: (value?: any) => void;
   actionOnRemoveInput?: (value?: any) => void;
+  actionOnBlur?: (value?: any) => void;
+  inputRef?: LegacyRef<HTMLInputElement>;
 }
 
 const Autocomplete = ({
@@ -80,6 +82,8 @@ const Autocomplete = ({
   actionOnFocus,
   actionOnSelect,
   actionOnRemoveInput,
+  inputRef,
+  actionOnBlur,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -130,6 +134,13 @@ const Autocomplete = ({
     onInputChange?.('');
   };
 
+  const handleOnBlur = () => {
+    if (actionOnBlur) {
+      actionOnBlur();
+    }
+    setIsFocused(false);
+  };
+
   useEffect(() => {
     if (options && options.length > 0) {
       const selectedOption = options.find((option) => option.value === value);
@@ -148,9 +159,10 @@ const Autocomplete = ({
           disabled={disabled}
           autoComplete="off"
           onChange={handleInputChange}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleOnBlur}
           onFocus={handleFocus}
           style={inputStyle}
+          ref={inputRef}
         />
 
         <FormLabel color="grey.500">{label}</FormLabel>
