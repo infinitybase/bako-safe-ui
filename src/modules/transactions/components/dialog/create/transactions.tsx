@@ -166,6 +166,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
 
   console.log('transactionsLength', transactions.fields.length);
+  console.log('accordionIndex', accordion.index);
 
   return (
     <Accordion
