@@ -165,6 +165,8 @@ const TransactionFormField = ({
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
 
+  const hasTenAddress = transactions.fields.length >= 10;
+
   return (
     <Accordion
       index={accordion.index}
@@ -266,6 +268,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           variant="primary"
           bgColor="grey.200"
           border="none"
+          isDisabled={hasTenAddress}
           _hover={{
             opacity: 0.8,
           }}
