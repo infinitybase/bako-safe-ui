@@ -10,7 +10,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -165,23 +164,10 @@ const TransactionFormField = ({
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
-  const [accordionIndex, setAccordionIndex] = useState<number[]>([0]);
-
-  useEffect(() => {
-    if (transactions.fields.length > 0) {
-      setAccordionIndex([transactions.fields.length - 1]);
-    }
-  }, [transactions.fields.length]);
-
-  const handleAccordionChange = (index: number | number[]) => {
-    setAccordionIndex(Array.isArray(index) ? index : [index]);
-  };
 
   return (
     <Accordion
-      // index={accordion.index}
-      index={accordionIndex}
-      onChange={handleAccordionChange}
+      index={accordion.index}
       overflowY="auto"
       maxH={450}
       pr={{ base: 1, sm: 4 }}
