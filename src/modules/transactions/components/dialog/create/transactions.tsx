@@ -165,6 +165,8 @@ const TransactionFormField = ({
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks } = props;
 
+  console.log('transactionsLength', transactions.fields.length);
+
   return (
     <Accordion
       index={accordion.index}
