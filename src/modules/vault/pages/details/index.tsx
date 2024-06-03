@@ -38,6 +38,7 @@ const VaultDetailsPage = () => {
   const {
     params,
     vault,
+    assets,
     store,
     navigate,
     account,
@@ -176,7 +177,7 @@ const VaultDetailsPage = () => {
         w="full"
         gap={10}
       >
-        <CardDetails vault={vault} store={store} />
+        <CardDetails vault={vault} store={store} assets={assets} />
 
         {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>

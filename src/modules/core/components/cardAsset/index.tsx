@@ -66,7 +66,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
       px={{ base: 4, sm: 6 }}
       py={4}
       w="full"
-      h={{ base: undefined, sm: 150 }}
+      h="full"
       {...rest}
     >
       <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 4 }}>

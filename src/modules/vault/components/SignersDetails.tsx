@@ -118,7 +118,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={{ base: 'full', lg: 'md' }} mb={4}>
+    <Box w={vaultRequiredSizeToColumnLayout ? 'full' : 'md'} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"

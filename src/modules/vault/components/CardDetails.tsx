@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
@@ -20,25 +20,18 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
-import {
-  AssetCard,
-  assetsMap,
-  NativeAssetId,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
+import { AssetsDetails } from './AssetsDetails';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
-
-  //assets: UseVaultDetailsReturn['assets'];
+  assets: UseVaultDetailsReturn['assets'];
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
@@ -72,9 +65,10 @@ const Update = () => {
 };
 
 const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
+  const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const { store, vault } = props;
+  const { store, vault, assets } = props;
   const {
     balanceUSD,
     visebleBalance,
@@ -386,12 +380,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 />
               </VStack>
             </HStack> */}
-            <VStack
-              h={{ base: 160, sm: 180 }}
-              w="full"
-              alignItems="flex-start"
-              spacing={4}
-            >
+            <VStack w="full" alignItems="flex-start" spacing={4}>
               <Text fontWeight="semibold" color="grey.450">
                 {`Vault's balance breakdown`}
               </Text>
@@ -419,20 +408,19 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     </VStack>
                   </Card>
                 ) : (
-                  <VStack w="full" h="full" spacing={1} justifyContent="center">
-                    {/*todo:
-                      - update service with typing returning the assets -> Asset[]
-                      - implement a recursive function to render the diferent assets, and make to dynamic data
-                  */}
-                    <AssetCard
-                      asset={{
-                        ...assetsMap[NativeAssetId],
-                        assetId: NativeAssetId,
-                        amount: balanceFormatted,
-                      }}
+                  <HStack
+                    ref={assetsContainerRef}
+                    w="full"
+                    h="full"
+                    spacing={{ base: 2, sm: 4 }}
+                    justifyContent="flex-start"
+                  >
+                    <AssetsDetails
+                      containerRef={assetsContainerRef}
+                      assets={assets.value!}
                       visibleBalance={visebleBalance}
                     />
-                  </VStack>
+                  </HStack>
                 )}
               </CustomSkeleton>
             </VStack>
