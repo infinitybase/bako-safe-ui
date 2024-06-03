@@ -48,7 +48,7 @@ const AccordionItem = ({
           </Box>
         </VStack>
       </Box>
-      <AccordionPanel px={5}>{children}</AccordionPanel>
+      {isOpen && <AccordionPanel px={5}>{children}</AccordionPanel>}
     </>
   );
 };
