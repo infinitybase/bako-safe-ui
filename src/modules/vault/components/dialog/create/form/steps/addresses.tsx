@@ -10,7 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
@@ -58,6 +58,9 @@ const VaultAddressesStep = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [currentInputIndex, setCurrentInputIndex] = useState<
+    number | undefined
+  >(undefined);
   const { disableScroll, setDisableScroll } = useVaultState();
 
   const handleFirstIsFirstLoad = () => {
@@ -75,6 +78,7 @@ const VaultAddressesStep = ({
       form.formState.errors.addresses,
       true,
       isFirstLoad,
+      currentInputIndex,
     );
 
   const inputRef = useRef<HTMLInputElement[]>([]);
@@ -87,6 +91,7 @@ const VaultAddressesStep = ({
   };
 
   const isDisable = !!form.formState.errors.addresses;
+  const lastAddressIndex = addresses.fields.length;
 
   const handleKeepOptionsNearToInput = (index: number) => {
     const pixelsToIncrement = 50;
@@ -100,6 +105,12 @@ const VaultAddressesStep = ({
   };
 
   const minSigners = form.formState.errors.minSigners?.message;
+
+  useEffect(() => {
+    if (currentInputIndex !== undefined) {
+      setCurrentInputIndex(undefined);
+    }
+  }, [lastAddressIndex]);
 
   return (
     <>
@@ -215,7 +226,12 @@ const VaultAddressesStep = ({
                           actionOnSelect={() => setDisableScroll(false)}
                           actionOnRemoveInput={() => setDisableScroll(false)}
                           actionOnBlur={() => setDisableScroll(false)}
-                          actionOnFocus={() => setDisableScroll(true)}
+                          actionOnFocus={() => {
+                            setDisableScroll(true);
+                            if (index !== lastAddressIndex) {
+                              setCurrentInputIndex(index);
+                            }
+                          }}
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
                           value={field.value}
