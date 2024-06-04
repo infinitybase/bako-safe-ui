@@ -109,6 +109,8 @@ const VaultAddressesStep = ({
     addresses.fields.length,
   ]);
 
+  const hasTenAddress = addresses.fields.length >= 10;
+
   const minSigners = form.formState.errors.minSigners?.message;
 
   return (
@@ -271,6 +273,7 @@ const VaultAddressesStep = ({
               color="dark.300"
               bgColor="grey.200"
               variant="secondary"
+              isDisabled={hasTenAddress}
               onClick={() => {
                 addresses.append();
                 form.setValue(
