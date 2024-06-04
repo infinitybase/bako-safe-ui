@@ -85,6 +85,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     onSuccess: async () => {
       const queryKeysToInvalidate = [
         ...AddressBookQueryKey.LIST_BY_USER(workspaceId!),
+        ...AddressBookQueryKey.DEFAULT,
       ];
       queryClient.invalidateQueries([...queryKeysToInvalidate, true]);
       queryClient.invalidateQueries([...queryKeysToInvalidate, false]);

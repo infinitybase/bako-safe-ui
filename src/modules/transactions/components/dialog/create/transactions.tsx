@@ -17,6 +17,7 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBook,
+  useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth/hooks';
 import {
@@ -52,16 +53,27 @@ const TransactionFormField = ({
   const { isSingleWorkspace } = useAuth();
 
   const {
+    workspaceId,
     createContactRequest,
     search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
-    paginatedContacts,
     listContactsRequest,
     inView,
     canAddMember,
   } = useAddressBook(!isSingleWorkspace);
+
+  const { optionsRequests, handleFieldOptions, optionRef } =
+    useAddressBookAutocompleteOptions(
+      workspaceId!,
+      !isSingleWorkspace,
+      listContactsRequest.data,
+      form.watch('transactions'),
+      form.formState.errors.transactions,
+      false,
+      false,
+    );
 
   return (
     <>
@@ -76,11 +88,16 @@ const TransactionFormField = ({
           name={`transactions.${index}.to`}
           control={form.control}
           render={({ field, fieldState }) => {
+            const appliedOptions = handleFieldOptions(
+              field.value,
+              optionsRequests[index].options,
+            );
+
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
               AddressUtils.isValid(field.value) &&
-              paginatedContacts.isSuccess &&
+              optionsRequests[index].isSuccess &&
               listContactsRequest.data &&
               !listContactsRequest.data
                 .map((o) => o.user.address)
@@ -93,11 +110,12 @@ const TransactionFormField = ({
                   label={`Recipient ${index + 1} address`}
                   onInputChange={search.handler}
                   onChange={field.onChange}
-                  isLoading={!paginatedContacts.isSuccess}
-                  options={paginatedContacts.data!}
+                  isLoading={!optionsRequests[index].isSuccess}
+                  options={appliedOptions}
                   inView={inView}
                   clearable={false}
                   isFromTransactions
+                  optionsRef={optionRef}
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}

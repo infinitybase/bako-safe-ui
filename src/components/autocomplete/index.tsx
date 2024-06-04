@@ -56,10 +56,10 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
   isFromTransactions?: boolean;
-  actionOnFocus?: (value?: any) => void;
-  actionOnSelect?: (value?: any) => void;
-  actionOnRemoveInput?: (value?: any) => void;
-  actionOnBlur?: (value?: any) => void;
+  actionOnFocus?: () => void;
+  actionOnSelect?: () => void;
+  actionOnRemoveInput?: () => void;
+  actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
 }
 
@@ -79,11 +79,11 @@ const Autocomplete = ({
   optionsRef,
   optionsContainerRef,
   isFromTransactions,
-  actionOnFocus,
-  actionOnSelect,
-  actionOnRemoveInput,
-  inputRef,
-  actionOnBlur,
+  actionOnFocus = () => {},
+  actionOnSelect = () => {},
+  actionOnRemoveInput = () => {},
+  inputRef = () => {},
+  actionOnBlur = () => {},
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -106,26 +106,20 @@ const Autocomplete = ({
   };
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
-    if (actionOnSelect) {
-      actionOnSelect();
-    }
+    actionOnSelect();
     setInputValue(selectedOption.label);
     onChange(selectedOption.value);
     onInputChange?.(selectedOption.value);
   };
 
   const handleFocus = () => {
-    if (actionOnFocus) {
-      actionOnFocus();
-    }
+    actionOnFocus();
     if (!inputValue) onInputChange?.('');
     setIsFocused(true);
   };
 
   const handleRemoveInput = () => {
-    if (actionOnRemoveInput) {
-      actionOnRemoveInput();
-    }
+    actionOnRemoveInput();
   };
 
   const handleClear = () => {
@@ -135,9 +129,7 @@ const Autocomplete = ({
   };
 
   const handleOnBlur = () => {
-    if (actionOnBlur) {
-      actionOnBlur();
-    }
+    actionOnBlur();
     setIsFocused(false);
   };
 

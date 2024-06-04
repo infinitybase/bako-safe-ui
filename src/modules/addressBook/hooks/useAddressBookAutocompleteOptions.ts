@@ -20,7 +20,7 @@ type AddressesErrors = Merge<
   )[]
 >;
 
-export type AddressesFields = { value: string }[];
+export type AddressesFields = { [key: string]: string }[];
 
 const useAddressBookAutocompleteOptions = (
   workspaceId: string,
