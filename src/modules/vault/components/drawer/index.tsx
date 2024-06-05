@@ -40,12 +40,8 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     ? !isLoading
     : !isLoading && !isFetching;
 
-  console.log(
-    'aqui no drawer',
-    vaults.map((vault) => vault),
-  );
-
-  console.log('isLoading fro mrequest:', isLoading);
+  console.log('isLoading fromrequest:', isLoading);
+  console.log('isFetching fromrequest:', isFetching);
   console.log('vaultsRequest:', vaults);
 
   return (
