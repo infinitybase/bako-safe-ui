@@ -36,6 +36,7 @@ interface TransactionAccordionProps {
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
+  isFeeCalcLoading: boolean;
 }
 
 interface TransctionFormFieldProps {
@@ -179,7 +180,8 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { form, transactions, assets, accordion, nicks } = props;
+  const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
+    props;
 
   return (
     <Accordion
@@ -246,6 +248,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                     <TransactionAccordion.ConfirmAction
                       onClick={() => accordion.close()}
                       isDisabled={isDisabled}
+                      isLoading={
+                        !isCurrentAmountZero ? isFeeCalcLoading : false
+                      }
                     />
                   </TransactionAccordion.Actions>
                 }
