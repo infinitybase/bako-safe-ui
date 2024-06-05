@@ -55,7 +55,6 @@ const TransactionFormField = ({
   const {
     workspaceId,
     createContactRequest,
-    search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
@@ -85,7 +84,7 @@ const TransactionFormField = ({
       />
       <VStack spacing={5}>
         <Controller
-          name={`transactions.${index}.to`}
+          name={`transactions.${index}.value`}
           control={form.control}
           render={({ field, fieldState }) => {
             const appliedOptions = handleFieldOptions(
@@ -108,7 +107,6 @@ const TransactionFormField = ({
                 <Autocomplete
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
-                  onInputChange={search.handler}
                   onChange={field.onChange}
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}
@@ -216,7 +214,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const isDisabled =
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
-          (nick) => nick.user.address === transaction.to,
+          (nick) => nick.user.address === transaction.value,
         );
 
         return (
@@ -261,7 +259,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {' '}
                         {contact?.nickname ??
-                          AddressUtils.format(transaction.to)}
+                          AddressUtils.format(transaction.value)}
                       </b>
                     </Text>
                   )
@@ -291,7 +289,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             transactions.append({
               amount: '',
               asset: NativeAssetId,
-              to: '',
+              value: '',
             });
             delay(() => accordion.open(transactions.fields.length), 100);
           }}

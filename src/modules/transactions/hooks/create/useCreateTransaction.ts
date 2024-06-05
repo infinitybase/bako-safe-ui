@@ -99,7 +99,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       const { transactions } = form.getValues();
       resolveTransactionCosts.mutate({
         assets: transactions!.map((transaction) => ({
-          to: transaction.to,
+          to: transaction.value,
           amount: transaction.amount,
           assetId: transaction.asset,
         })),
@@ -118,7 +118,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       assets: data.transactions!.map((transaction) => ({
         amount: transaction.amount,
         assetId: transaction.asset,
-        to: transaction.to,
+        to: transaction.value,
       })),
     });
   });

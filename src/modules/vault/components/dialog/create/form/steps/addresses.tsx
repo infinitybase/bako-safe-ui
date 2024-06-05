@@ -232,6 +232,13 @@ const VaultAddressesStep = ({
                               setCurrentInputIndex(index);
                             }
                           }}
+                          // to keep the options relative to the container when typing in the input
+                          onKeyUp={() =>
+                            setTimeout(
+                              () => handleKeepOptionsNearToInput(index),
+                              100,
+                            )
+                          }
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
                           value={field.value}

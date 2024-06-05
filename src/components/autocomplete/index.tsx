@@ -82,8 +82,8 @@ const Autocomplete = ({
   actionOnFocus = () => {},
   actionOnSelect = () => {},
   actionOnRemoveInput = () => {},
-  inputRef = () => {},
   actionOnBlur = () => {},
+  inputRef,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
