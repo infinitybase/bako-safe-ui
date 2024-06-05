@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth';
-import { Predicate, Workspace } from '@/modules/core';
+import { delay, Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useSelectWorkspace } from '@/modules/workspace/hooks';
@@ -71,10 +71,8 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       workspace: Workspace;
     },
   ) => {
-    props.onClose?.();
-    setIsFirstAssetsLoading(true);
     queryClient.invalidateQueries('vault/pagination');
-    queryClient.resetQueries();
+    setIsFirstAssetsLoading(true);
     setSearch('');
     selectWorkspace(vault.workspace.id);
     navigate(
@@ -83,13 +81,14 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
         workspaceId: current,
       }),
     );
+    delay(() => props.onClose?.(), 0);
   };
 
   const onCloseDrawer = () => {
-    props.onClose?.();
     queryClient.invalidateQueries('vault/pagination');
     queryClient.resetQueries();
     setSearch('');
+    delay(() => props.onClose?.(), 0);
   };
 
   return {
