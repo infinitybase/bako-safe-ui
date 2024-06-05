@@ -95,7 +95,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    if (Number(transactionAmount) > 0 && form.formState.isValid) {
+    if (Number(transactionAmount) > 0) {
       const { transactions } = form.getValues();
       resolveTransactionCosts.mutate({
         assets: transactions!.map((transaction) => ({
@@ -106,7 +106,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         vault: vaultDetails.predicateInstance!,
       });
     }
-  }, [form.formState.isValid, transactionAmount]);
+  }, [transactionAmount, form.formState.isValid]);
 
   const handleClose = () => {
     props?.onClose();
