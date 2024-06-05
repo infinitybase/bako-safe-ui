@@ -46,7 +46,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   );
 
   console.log('isLoading fro mrequest:', isLoading);
-  console.log('request:', request);
+  console.log('vaultsRequest:', vaults);
 
   return (
     <Drawer
