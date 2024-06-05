@@ -17,6 +17,7 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBook,
+  useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth/hooks';
 import {
@@ -52,16 +53,26 @@ const TransactionFormField = ({
   const { isSingleWorkspace } = useAuth();
 
   const {
+    workspaceId,
     createContactRequest,
-    search,
     handleOpenDialog,
     form: contactForm,
     contactDialog,
-    paginatedContacts,
     listContactsRequest,
     inView,
     canAddMember,
   } = useAddressBook(!isSingleWorkspace);
+
+  const { optionsRequests, handleFieldOptions, optionRef } =
+    useAddressBookAutocompleteOptions(
+      workspaceId!,
+      !isSingleWorkspace,
+      listContactsRequest.data,
+      form.watch('transactions'),
+      form.formState.errors.transactions,
+      false,
+      false,
+    );
 
   return (
     <>
@@ -73,14 +84,19 @@ const TransactionFormField = ({
       />
       <VStack spacing={5}>
         <Controller
-          name={`transactions.${index}.to`}
+          name={`transactions.${index}.value`}
           control={form.control}
           render={({ field, fieldState }) => {
+            const appliedOptions = handleFieldOptions(
+              field.value,
+              optionsRequests[index].options,
+            );
+
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
               AddressUtils.isValid(field.value) &&
-              paginatedContacts.isSuccess &&
+              optionsRequests[index].isSuccess &&
               listContactsRequest.data &&
               !listContactsRequest.data
                 .map((o) => o.user.address)
@@ -91,13 +107,13 @@ const TransactionFormField = ({
                 <Autocomplete
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
-                  onInputChange={search.handler}
                   onChange={field.onChange}
-                  isLoading={!paginatedContacts.isSuccess}
-                  options={paginatedContacts.data!}
+                  isLoading={!optionsRequests[index].isSuccess}
+                  options={appliedOptions}
                   inView={inView}
                   clearable={false}
                   isFromTransactions
+                  optionsRef={optionRef}
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}
@@ -198,7 +214,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const isDisabled =
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
-          (nick) => nick.user.address === transaction.to,
+          (nick) => nick.user.address === transaction.value,
         );
 
         return (
@@ -243,7 +259,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {' '}
                         {contact?.nickname ??
-                          AddressUtils.format(transaction.to)}
+                          AddressUtils.format(transaction.value)}
                       </b>
                     </Text>
                   )
@@ -273,7 +289,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             transactions.append({
               amount: '',
               asset: NativeAssetId,
-              to: '',
+              value: '',
             });
             delay(() => accordion.open(transactions.fields.length), 100);
           }}
