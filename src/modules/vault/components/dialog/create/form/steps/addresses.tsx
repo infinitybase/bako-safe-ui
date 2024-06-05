@@ -106,6 +106,8 @@ const VaultAddressesStep = ({
 
   const minSigners = form.formState.errors.minSigners?.message;
 
+  const hasTenAddress = addresses.fields.length >= 10;
+
   useEffect(() => {
     if (currentInputIndex !== undefined) {
       setCurrentInputIndex(undefined);
@@ -294,7 +296,7 @@ const VaultAddressesStep = ({
               color="dark.300"
               bgColor="grey.200"
               variant="secondary"
-              isDisabled={isDisable}
+              isDisabled={isDisable || hasTenAddress}
               onClick={() => {
                 addresses.append();
                 form.setValue(
