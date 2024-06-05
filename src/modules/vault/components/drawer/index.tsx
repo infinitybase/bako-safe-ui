@@ -45,6 +45,9 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     vaults.map((vault) => vault),
   );
 
+  console.log('isLoading fro mrequest:', isLoading);
+  console.log('request:', request);
+
   return (
     <Drawer
       {...props}

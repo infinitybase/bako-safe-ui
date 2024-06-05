@@ -21,10 +21,6 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
 
   const { isExtraSmall } = useScreenSize();
 
-  console.log('name', name);
-  // console.log('address', props.address);
-  // console.log('wk', workspace);
-
   return (
     <Card
       {...rest}
