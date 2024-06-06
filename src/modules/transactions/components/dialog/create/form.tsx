@@ -20,10 +20,18 @@ export interface CreateTransactionFormProps extends BoxProps {
   assets: UseCreateTransaction['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
+  isFeeCalcLoading: boolean;
 }
 
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
-  const { form, assets, transactionsFields, accordion, nicks } = props;
+  const {
+    form,
+    assets,
+    transactionsFields,
+    accordion,
+    nicks,
+    isFeeCalcLoading,
+  } = props;
 
   return (
     <Box w="full" {...props}>
@@ -63,6 +71,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         assets={assets}
         accordion={accordion}
         transactions={transactionsFields}
+        isFeeCalcLoading={isFeeCalcLoading}
       />
     </Box>
   );
