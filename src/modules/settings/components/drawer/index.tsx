@@ -133,7 +133,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
               {/* Do you wanna receive email notifications? */}
-              {webAuthn
+              {accountType === 'FUEL'
                 ? 'This account is using webAuthun'
                 : 'This account do not use webAuthun'}
             </Text>
