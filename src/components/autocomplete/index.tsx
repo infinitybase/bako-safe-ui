@@ -56,6 +56,11 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
   isFromTransactions?: boolean;
+  actionOnFocus?: () => void;
+  actionOnSelect?: () => void;
+  actionOnRemoveInput?: () => void;
+  actionOnBlur?: () => void;
+  inputRef?: LegacyRef<HTMLInputElement>;
 }
 
 const Autocomplete = ({
@@ -74,6 +79,11 @@ const Autocomplete = ({
   optionsRef,
   optionsContainerRef,
   isFromTransactions,
+  actionOnFocus = () => {},
+  actionOnSelect = () => {},
+  actionOnRemoveInput = () => {},
+  actionOnBlur = () => {},
+  inputRef,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -96,20 +106,31 @@ const Autocomplete = ({
   };
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
+    actionOnSelect();
     setInputValue(selectedOption.label);
     onChange(selectedOption.value);
     onInputChange?.(selectedOption.value);
   };
 
   const handleFocus = () => {
+    actionOnFocus();
     if (!inputValue) onInputChange?.('');
     setIsFocused(true);
+  };
+
+  const handleRemoveInput = () => {
+    actionOnRemoveInput();
   };
 
   const handleClear = () => {
     setInputValue('');
     onChange('');
     onInputChange?.('');
+  };
+
+  const handleOnBlur = () => {
+    actionOnBlur();
+    setIsFocused(false);
   };
 
   useEffect(() => {
@@ -130,9 +151,10 @@ const Autocomplete = ({
           disabled={disabled}
           autoComplete="off"
           onChange={handleInputChange}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleOnBlur}
           onFocus={handleFocus}
           style={inputStyle}
+          ref={inputRef}
         />
 
         <FormLabel color="grey.500">{label}</FormLabel>
@@ -146,6 +168,7 @@ const Autocomplete = ({
             bgColor={rightElement ? 'dark.250' : 'transparent'}
             h="calc(100% - 3px)"
             w={showClearIcon && rightElement ? 16 : 10}
+            onClick={handleRemoveInput}
           >
             {isLoading && isFocused ? (
               <CircularProgress

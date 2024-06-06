@@ -62,7 +62,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           },
         ),
       fee: yup.string(),
-      to: yup
+      value: yup
         .string()
         .required('Address is required.')
         .test('valid-address', 'Address invalid.', (address) =>
@@ -87,7 +87,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       transactions: [
         {
           asset: NativeAssetId,
-          to: '',
+          value: '',
           amount: '',
           fee: '',
         },

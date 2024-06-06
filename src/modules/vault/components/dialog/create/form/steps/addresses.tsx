@@ -27,6 +27,7 @@ import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { useVaultState } from '@/modules/vault/states';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
@@ -57,6 +58,10 @@ const VaultAddressesStep = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [currentInputIndex, setCurrentInputIndex] = useState<
+    number | undefined
+  >(undefined);
+  const { disableScroll, setDisableScroll } = useVaultState();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -73,43 +78,41 @@ const VaultAddressesStep = ({
       form.formState.errors.addresses,
       true,
       isFirstLoad,
+      currentInputIndex,
     );
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement[]>([]);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
+  const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSelectOption = () => {
     form.clearErrors();
     setIsFirstLoad(true);
   };
 
-  const handleKeepOptionsNearToInput = () => {
-    const pixelsToIncrement = addresses.fields.length === 2 ? 116 : 161;
+  const isDisable = !!form.formState.errors.addresses;
+  const lastAddressIndex = addresses.fields.length;
+
+  const handleKeepOptionsNearToInput = (index: number) => {
+    const pixelsToIncrement = 50;
+
     keepOptionsNearToInput({
-      containerRef,
+      containerRef: inputRef,
       childRef: optionsContainerRef,
       pixelsToIncrement,
+      index,
     });
   };
 
-  useEffect(() => {
-    if (containerRef.current && optionsContainerRef.current) {
-      handleKeepOptionsNearToInput();
-    }
-    window.addEventListener('resize', handleKeepOptionsNearToInput);
-    window.addEventListener('scroll', handleKeepOptionsNearToInput);
-
-    return () => {
-      window.removeEventListener('resize', handleKeepOptionsNearToInput);
-      window.removeEventListener('scroll', handleKeepOptionsNearToInput);
-    };
-  }, [
-    containerRef.current,
-    optionsContainerRef.current,
-    addresses.fields.length,
-  ]);
-
   const minSigners = form.formState.errors.minSigners?.message;
+
+  const hasTenAddress = addresses.fields.length >= 10;
+
+  useEffect(() => {
+    if (currentInputIndex !== undefined) {
+      setCurrentInputIndex(undefined);
+    }
+  }, [lastAddressIndex]);
 
   return (
     <>
@@ -168,10 +171,9 @@ const VaultAddressesStep = ({
             maxH={{ base: 230 }}
             pr={{ base: 2, sm: 4 }}
             onClick={() => {
-              handleKeepOptionsNearToInput();
               handleFirstIsFirstLoad();
             }}
-            overflowY="auto"
+            overflowY={disableScroll ? 'hidden' : 'auto'}
             sx={{
               '&::-webkit-scrollbar': {
                 width: '5px',
@@ -183,7 +185,7 @@ const VaultAddressesStep = ({
                 height: '10px',
               },
             }}
-            ref={containerRef}
+            ref={optionsScrollableContainerRef}
           >
             {addresses.fields.map(({ id }, index) => {
               const first = index === 0;
@@ -211,10 +213,33 @@ const VaultAddressesStep = ({
                         .includes(field.value);
 
                     return (
-                      <FormControl isInvalid={fieldState.invalid}>
+                      <FormControl
+                        isInvalid={fieldState.invalid}
+                        id={`Address ${index + 1}`}
+                      >
                         <Autocomplete
                           label={
                             first ? 'Your address' : `Address ${index + 1}`
+                          }
+                          inputRef={(el) => (inputRef.current[index] = el!)}
+                          onClick={() => {
+                            handleKeepOptionsNearToInput(index);
+                          }}
+                          actionOnSelect={() => setDisableScroll(false)}
+                          actionOnRemoveInput={() => setDisableScroll(false)}
+                          actionOnBlur={() => setDisableScroll(false)}
+                          actionOnFocus={() => {
+                            setDisableScroll(true);
+                            if (index !== lastAddressIndex) {
+                              setCurrentInputIndex(index);
+                            }
+                          }}
+                          // to keep the options relative to the container when typing in the input
+                          onKeyUp={() =>
+                            setTimeout(
+                              () => handleKeepOptionsNearToInput(index),
+                              100,
+                            )
                           }
                           optionsContainerRef={optionsContainerRef}
                           optionsRef={optionRef}
@@ -271,13 +296,17 @@ const VaultAddressesStep = ({
               color="dark.300"
               bgColor="grey.200"
               variant="secondary"
+              isDisabled={isDisable || hasTenAddress}
               onClick={() => {
                 addresses.append();
                 form.setValue(
                   'minSigners',
                   String(addresses.fields.length + 1),
                 );
-                setTimeout(() => scrollToBottom(containerRef), 0);
+                setTimeout(
+                  () => scrollToBottom(optionsScrollableContainerRef),
+                  0,
+                );
               }}
               leftIcon={<PlusSquareIcon w={5} h={5} />}
               _hover={{
@@ -293,7 +322,7 @@ const VaultAddressesStep = ({
           <Dialog.Section
             w="full"
             maxW={350}
-            mb={5}
+            mb={{ base: 5, sm: 'unset' }}
             title={
               <Heading fontSize={{ base: 'sm', sm: 'md' }} color="grey.200">
                 Min signatures required?

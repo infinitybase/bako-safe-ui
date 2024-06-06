@@ -14,7 +14,10 @@ import { RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
 import { useScreenSize } from '@/modules/core';
 
-type AccordionActionProp = Pick<ButtonProps, 'onClick' | 'isDisabled'>;
+type AccordionActionProp = Pick<
+  ButtonProps,
+  'onClick' | 'isDisabled' | 'isLoading'
+>;
 
 const AccordionEditAction = (props: AccordionActionProp) => {
   const { isOpen } = useAccordionItemState();
@@ -51,6 +54,7 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
         opacity: !props.isDisabled && 0.8,
       }}
       hidden={!isOpen}
+      isLoading={props.isLoading}
       {...props}
     >
       Confirm

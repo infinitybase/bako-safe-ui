@@ -20,7 +20,7 @@ type AddressesErrors = Merge<
   )[]
 >;
 
-export type AddressesFields = { value: string }[];
+export type AddressesFields = { [key: string]: string }[];
 
 const useAddressBookAutocompleteOptions = (
   workspaceId: string,
@@ -30,6 +30,7 @@ const useAddressBookAutocompleteOptions = (
   errors?: AddressesErrors,
   isUsingTemplate?: boolean,
   isFirstLoading?: boolean,
+  dynamicCurrentIndex?: number,
 ) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
@@ -75,7 +76,7 @@ const useAddressBookAutocompleteOptions = (
 
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;
 
-  const currentField = fields[currentIndex];
+  const currentField = fields[dynamicCurrentIndex ?? currentIndex];
 
   const excludeContacts = handleValidAddresses(currentField?.value);
   const excludeContactsQueryKey = excludeContacts.join('-');

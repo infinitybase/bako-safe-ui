@@ -99,7 +99,7 @@ const useChangeMember = () => {
   // });
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
-    const memberAddress = memberForm.getValues('address');
+    const memberAddress = memberForm.getValues('address.value');
     const permission = data.permission as PermissionRoles;
 
     // If has memberAddress it means that comes from the memberForm(creation)
@@ -188,7 +188,7 @@ const useChangeMember = () => {
 
   const clearSteps = () => {
     tabs.set(MemberTabState.FORM);
-    memberForm.setValue('address', '');
+    memberForm.setValue('address', { value: '' });
     permissionForm.setValue('permission', '');
   };
 

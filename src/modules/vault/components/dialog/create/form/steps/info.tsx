@@ -7,7 +7,7 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { UseCreateVaultReturn } from '@/modules/vault/hooks';
@@ -24,6 +24,11 @@ export interface VaultInfoStepProps {
 
 const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
   const { search, searchHandler, vaultNameIsAvailable } = vaultName;
+  const formName = form.watch('name');
+
+  useEffect(() => {
+    form.setValue('name', search);
+  }, [formName]);
 
   return (
     <TabPanel p={0}>
@@ -35,6 +40,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
             <FormControl>
               <Input
                 value={search}
+                defaultValue={search || form.watch('name')}
                 onChange={(e) => {
                   searchHandler(e);
                   field.onChange(e.target.value);
@@ -56,10 +62,10 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 {!!vaultNameIsAvailable && search.length > 0
                   ? 'Vault name already exists in this workspace'
                   : form.formState.errors.name?.message
-                    ? form.formState.errors.name?.message
-                    : search.length > 0
-                      ? 'This vault is available'
-                      : ''}
+                  ? form.formState.errors.name?.message
+                  : search.length > 0
+                  ? 'This vault is available'
+                  : ''}
               </FormHelperText>
             </FormControl>
           )}

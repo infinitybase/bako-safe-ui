@@ -55,6 +55,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           assets={assets}
           accordion={accordion}
           transactionsFields={transactionsFields}
+          isFeeCalcLoading={resolveTransactionCosts.isLoading}
         />
       </Dialog.Body>
 
