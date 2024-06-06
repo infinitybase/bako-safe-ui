@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   Button,
   Divider,
@@ -21,7 +22,7 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useAuthStore } from '@/modules/auth';
+import { useAuthStore, useSignIn } from '@/modules/auth';
 import { TypeUser } from '@/modules/auth/services';
 
 import { useSettings } from '../../hooks';
@@ -37,9 +38,20 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     updateSettingsRequest: { isLoading },
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
+  const {
+    webauthn: { nicknamesData },
+  } = useSignIn();
+
+  const name = form.watch('name');
+
+  // @ts-ignore
+  const isNicknameInUse = nicknamesData?.name && name?.length > 0;
 
   const { accountType } = useAuthStore();
   const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
+  // const isFromWebAuthn = true;
+
+  console.log('name:', name);
 
   return (
     <Drawer
@@ -132,6 +144,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
               {/* Do you wanna receive email notifications? */}
               {isFromWebAuthn ? 'This account is from WebAuthn' : 'É da Fuel'}
+              {isNicknameInUse ? 'Esse nick já está em uso' : 'Nick ta safe'}
             </Text>
 
             <Controller
