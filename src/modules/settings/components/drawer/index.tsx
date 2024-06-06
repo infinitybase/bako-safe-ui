@@ -46,7 +46,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
 
   const isNicknameInUse =
-    nicknamesData?.name && search?.length > 0 && isFromWebAuthn;
+    !!nicknamesData?.name && search?.length > 0 && isFromWebAuthn;
 
   return (
     <Drawer
@@ -132,10 +132,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                         {isNicknameInUse
                           ? 'Name already exists'
                           : form.formState.errors.name?.message
-                            ? form.formState.errors.name?.message
-                            : search.length > 0
-                              ? 'This name is available'
-                              : ''}
+                          ? form.formState.errors.name?.message
+                          : search.length > 0
+                          ? 'This name is available'
+                          : ''}
                       </FormHelperText>
                     ) : (
                       <FormHelperText color="error.500">
@@ -204,7 +204,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={isLoading || (isNicknameInUse as boolean)}
+                isDisabled={isLoading || isNicknameInUse}
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"
