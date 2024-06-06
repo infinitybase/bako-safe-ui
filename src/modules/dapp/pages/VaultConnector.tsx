@@ -146,7 +146,10 @@ const VaultConnector = () => {
                 </Box>
                 {noVaultsFound && (
                   <FormHelperText color="grey.250" mb={-6}>
-                    {`We couldn't find any results for "${AddressUtils.format(search.value, 1)}"`}
+                    {`We couldn't find any results for "${AddressUtils.format(
+                      search.value,
+                      1,
+                    )}"`}
                   </FormHelperText>
                 )}
               </FormControl>
