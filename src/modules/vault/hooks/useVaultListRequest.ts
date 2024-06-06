@@ -2,10 +2,7 @@ import { useInfiniteQuery } from 'react-query';
 
 import { GetAllPredicatesPayload, VaultService } from '../services';
 
-const useVaultListRequest = (
-  filter: GetAllPredicatesPayload,
-  enabled?: boolean,
-) => {
+const useVaultListRequest = (filter: GetAllPredicatesPayload) => {
   const { data, ...query } = useInfiniteQuery(
     ['vault/pagination', filter],
     ({ pageParam }) =>
@@ -19,7 +16,6 @@ const useVaultListRequest = (
         lastPage.currentPage !== lastPage.totalPages
           ? lastPage.nextPage
           : undefined,
-      enabled,
     },
   );
 
