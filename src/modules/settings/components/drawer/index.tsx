@@ -21,6 +21,7 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
+import { useAuthStore } from '@/modules/auth';
 
 import { useSettings } from '../../hooks';
 
@@ -35,6 +36,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     updateSettingsRequest: { isLoading },
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
+
+  const auth = useAuthStore();
+
+  // console.log('is this the connector?', test.data[0].name);
+  console.log('auth:', auth);
 
   return (
     <Drawer
