@@ -413,8 +413,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         First thing first...
                       </Text>
                       <Text color="grey.200" maxW={340} textAlign="center">
-                        {`You don't have any vaults yet. Create a vault to start to
-                    save your assets.`}
+                        {`You don't have any assets yet.`}
                       </Text>
                     </VStack>
                   </Card>
