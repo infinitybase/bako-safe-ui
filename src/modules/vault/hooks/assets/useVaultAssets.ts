@@ -71,7 +71,8 @@ function useVaultAssets(predicate?: Vault) {
         const _isValid =
           index > 0 &&
           item?.amount &&
-          bn(assets[bigger].amount) < bn(item.amount);
+          bn(bn.parseUnits(assets[bigger].amount)) <
+            bn(bn.parseUnits(item.amount));
         if (_isValid) {
           bigger = index;
         }
