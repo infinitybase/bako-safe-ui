@@ -22,6 +22,7 @@ import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useAuthStore } from '@/modules/auth';
+import { TypeUser } from '@/modules/auth/services';
 
 import { useSettings } from '../../hooks';
 
@@ -37,11 +38,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
 
-  const { accountType, webAuthn } = useAuthStore();
-
-  // console.log('is this the connector?', test.data[0].name);
-  console.log('accountType:', accountType);
-  console.log('webAuthn:', webAuthn);
+  const { accountType } = useAuthStore();
+  const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
 
   return (
     <Drawer
@@ -133,9 +131,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
               {/* Do you wanna receive email notifications? */}
-              {accountType === 'FUEL'
-                ? 'This account is using webAuthun'
-                : 'This account do not use webAuthun'}
+              {isFromWebAuthn ? 'This account is from WebAuthn' : 'É da Fuel'}
             </Text>
 
             <Controller
