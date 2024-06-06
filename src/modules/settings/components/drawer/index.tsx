@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   Button,
   Divider,
@@ -41,18 +40,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const {
     webauthn: { nicknamesData, search, handleInputChange, form: formAuthn },
   } = useSignIn();
-
-  const { formState } = formAuthn;
-  // const name = form.watch('name');
-
-  // @ts-ignore
-  const isNicknameInUse = nicknamesData?.name && search?.length > 0;
-
   const { accountType } = useAuthStore();
-  const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
-  // const isFromWebAuthn = true;
+  const { formState } = formAuthn;
 
-  console.log('nicknamesData:', nicknamesData);
+  const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
+
+  const isNicknameInUse =
+    nicknamesData?.name && search?.length > 0 && isFromWebAuthn;
 
   return (
     <Drawer
@@ -122,31 +116,32 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       onKeyDown={(e) =>
                         formState.handlePrimaryActionUsingEnterKey(e)
                       }
-                      isInvalid={
-                        fieldState.invalid ||
-                        (!!nicknamesData?.name && search.length > 0)
-                      }
+                      isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
                     <FormLabel>Name</FormLabel>
-                    <FormHelperText
-                      color={
-                        nicknamesData?.name ||
-                        form.formState.errors.name?.message
-                          ? 'error.500'
-                          : 'grey.500'
-                      }
-                    >
-                      {nicknamesData?.name && search.length > 0
-                        ? 'Name already exists'
-                        : form.formState.errors.name?.message
-                          ? form.formState.errors.name?.message
-                          : search.length > 0
-                            ? 'This name is available'
-                            : ''}
-                    </FormHelperText>
-                    {/* <FormHelperText color="error.500">
-                      {fieldState.error?.message}
-                    </FormHelperText> */}
+
+                    {isFromWebAuthn ? (
+                      <FormHelperText
+                        color={
+                          nicknamesData?.name ||
+                          form.formState.errors.name?.message
+                            ? 'error.500'
+                            : 'grey.500'
+                        }
+                      >
+                        {isNicknameInUse
+                          ? 'Name already exists'
+                          : form.formState.errors.name?.message
+                            ? form.formState.errors.name?.message
+                            : search.length > 0
+                              ? 'This name is available'
+                              : ''}
+                      </FormHelperText>
+                    ) : (
+                      <FormHelperText color="error.500">
+                        {fieldState.error?.message}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               />
@@ -171,9 +166,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
             </VStack>
 
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
-              {/* Do you wanna receive email notifications? */}
-              {isFromWebAuthn ? 'This account is from WebAuthn' : 'É da Fuel'}
-              {isNicknameInUse ? 'Esse nick já está em uso' : 'Nick ta safe'}
+              Do you wanna receive email notifications?
             </Text>
 
             <Controller
@@ -211,7 +204,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={isLoading}
+                isDisabled={isLoading || (isNicknameInUse as boolean)}
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"
