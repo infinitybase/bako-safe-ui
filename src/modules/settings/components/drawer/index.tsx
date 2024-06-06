@@ -37,10 +37,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
 
-  const auth = useAuthStore();
+  const { accountType, webAuthn } = useAuthStore();
 
   // console.log('is this the connector?', test.data[0].name);
-  console.log('auth:', auth);
+  console.log('accountType:', accountType);
+  console.log('webAuthn:', webAuthn);
 
   return (
     <Drawer
@@ -131,7 +132,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
             </VStack>
 
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
-              Do you wanna receive email notifications?
+              {/* Do you wanna receive email notifications? */}
+              {webAuthn
+                ? 'This account is using webAuthun'
+                : 'This account do not use webAuthun'}
             </Text>
 
             <Controller
