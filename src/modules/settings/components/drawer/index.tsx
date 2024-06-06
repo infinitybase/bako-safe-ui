@@ -39,19 +39,20 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const {
-    webauthn: { nicknamesData },
+    webauthn: { nicknamesData, search, handleInputChange, form: formAuthn },
   } = useSignIn();
 
-  const name = form.watch('name');
+  const { formState } = formAuthn;
+  // const name = form.watch('name');
 
   // @ts-ignore
-  const isNicknameInUse = nicknamesData?.name && name?.length > 0;
+  const isNicknameInUse = nicknamesData?.name && search?.length > 0;
 
   const { accountType } = useAuthStore();
   const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
   // const isFromWebAuthn = true;
 
-  console.log('name:', name);
+  console.log('nicknamesData:', nicknamesData);
 
   return (
     <Drawer
@@ -110,14 +111,42 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
-                      value={field.value}
-                      onChange={field.onChange}
+                      // value={field.value}
+                      // onChange={field.onChange}
                       placeholder=" "
+                      value={search}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        field.onChange(e.target.value);
+                      }}
+                      onKeyDown={(e) =>
+                        formState.handlePrimaryActionUsingEnterKey(e)
+                      }
+                      isInvalid={
+                        fieldState.invalid ||
+                        (!!nicknamesData?.name && search.length > 0)
+                      }
                     />
                     <FormLabel>Name</FormLabel>
-                    <FormHelperText color="error.500">
-                      {fieldState.error?.message}
+                    <FormHelperText
+                      color={
+                        nicknamesData?.name ||
+                        form.formState.errors.name?.message
+                          ? 'error.500'
+                          : 'grey.500'
+                      }
+                    >
+                      {nicknamesData?.name && search.length > 0
+                        ? 'Name already exists'
+                        : form.formState.errors.name?.message
+                          ? form.formState.errors.name?.message
+                          : search.length > 0
+                            ? 'This name is available'
+                            : ''}
                     </FormHelperText>
+                    {/* <FormHelperText color="error.500">
+                      {fieldState.error?.message}
+                    </FormHelperText> */}
                   </FormControl>
                 )}
               />
