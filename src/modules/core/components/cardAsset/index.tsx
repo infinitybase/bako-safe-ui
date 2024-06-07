@@ -36,11 +36,7 @@ const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
         {asset.name ?? defaultAsset.name}
       </Text>
 
-      <Text
-        fontWeight="bold"
-        fontSize={{ base: 'sm', sm: 15 }}
-        color="grey.400"
-      >
+      <Text fontWeight="bold" fontSize="xs" color="grey.400">
         {asset.slug ?? defaultAsset.slug}
       </Text>
     </Box>
@@ -61,15 +57,15 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
       bgColor="grey.700"
       cursor="pointer"
       borderColor="grey.400"
-      borderWidth="2px"
+      borderWidth="1px"
       borderRadius={10}
-      px={{ base: 4, sm: 6 }}
+      px={4}
       py={4}
       w="full"
       h="full"
       {...rest}
     >
-      <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 4 }}>
+      <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 3 }}>
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
