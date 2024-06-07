@@ -1,5 +1,5 @@
 import { Text, VStack } from '@chakra-ui/react';
-import { MutableRefObject } from 'react';
+import { Fragment, MutableRefObject } from 'react';
 
 import { AssetCard } from '@/modules/core/components';
 import { Asset } from '@/modules/core/utils';
@@ -23,17 +23,16 @@ const AssetsDetails = ({
   return (
     <>
       {assets.map((asset, index) => (
-        <>
+        <Fragment key={`${asset.assetId}-${index}`}>
           {index < visibleItems && (
             <AssetCard
-              key={`${asset.assetId}-${index}`}
               flex={2}
               maxW={itemWidth}
               asset={asset}
               visibleBalance={visibleBalance}
             />
           )}
-        </>
+        </Fragment>
       ))}
 
       {showViewAll && (
