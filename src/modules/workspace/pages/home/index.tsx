@@ -290,7 +290,7 @@ const WorkspacePage = () => {
             h={{ base: 'unset', md: 'full' }}
             bgColor="grey.800"
           >
-            <VStack spacing={6} w="full">
+            <VStack spacing={4} w="full" h="full">
               <HStack
                 w="full"
                 display="flex"
