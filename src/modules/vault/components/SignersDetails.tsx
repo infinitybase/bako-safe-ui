@@ -113,12 +113,12 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
 };
 
 const SignersDetails = ({ vault }: SignersDetailsProps) => {
-  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
+  const { isLarge } = useScreenSize();
 
   if (!vault) return null;
 
   return (
-    <Box w={vaultRequiredSizeToColumnLayout ? 'full' : 'md'} mb={4}>
+    <Box w={isLarge ? 'full' : 'md'} mb={4}>
       <HStack
         alignItems="center"
         justify="flex-start"
@@ -138,7 +138,7 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
         </Badge>
       </HStack>
 
-      {vaultRequiredSizeToColumnLayout ? (
+      {isLarge ? (
         <Grid
           templateColumns={{
             base: 'repeat(1, 1fr)',
