@@ -412,6 +412,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     ref={assetsContainerRef}
                     w="full"
                     h="full"
+                    maxH={150}
                     spacing={{ base: 2, sm: 4 }}
                     justifyContent="flex-start"
                   >
