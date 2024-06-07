@@ -42,6 +42,7 @@ const AssetsDetails = ({
           alignItems="center"
           alignSelf="stretch"
           maxW={itemWidth}
+          minW={92}
           p={4}
           borderRadius={10}
           bgColor="grey.950"

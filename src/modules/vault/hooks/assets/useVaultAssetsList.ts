@@ -18,7 +18,7 @@ function useVaultAssetsList(
         const containerWidth = containerRef.current.offsetWidth;
 
         if (assets.length > 0) {
-          let itemsToShow = Math.floor(containerWidth / itemWidth) - 1;
+          let itemsToShow = Math.floor(containerWidth / itemWidth);
 
           if (itemsToShow < 1) {
             itemsToShow = 1;
