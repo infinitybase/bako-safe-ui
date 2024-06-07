@@ -30,9 +30,11 @@ interface AssetCardProps extends CardProps {
 }
 
 const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
+  const { isMobile } = useScreenSize();
+
   return (
-    <Box>
-      <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} noOfLines={2}>
+    <Box maxW={isMobile ? '70%' : 'full'}>
+      <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} isTruncated>
         {asset.name ?? defaultAsset.name}
       </Text>
 
@@ -86,7 +88,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={-1}
       >
         {visibleBalance ? (
-          <Text fontWeight="bold" color="white" maxW={360} isTruncated>
+          <Text fontWeight="bold" color="white" maxW="100%" isTruncated>
             {asset.amount ?? defaultAsset.amount}
           </Text>
         ) : (
