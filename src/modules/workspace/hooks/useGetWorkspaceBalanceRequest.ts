@@ -8,6 +8,8 @@ import {
   WorkspaceService,
 } from '@/modules/workspace/services';
 
+import { handleAssetsBalance } from '../utils/assets';
+
 const useGetWorkspaceBalanceRequest = (
   options?: UseQueryOptions<
     IWroskapceBalance,
@@ -35,6 +37,7 @@ const useGetWorkspaceBalanceRequest = (
       balance: data?.balance,
       balanceUSD: data?.balanceUSD,
       workspaceId: data?.workspaceId,
+      assetsBalance: handleAssetsBalance(data?.assetsBalance),
     },
     ...request,
   };
