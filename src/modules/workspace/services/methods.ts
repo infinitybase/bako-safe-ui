@@ -60,7 +60,6 @@ export type SelectWorkspaceResponse = {
 };
 
 export type IWroskapceBalance = {
-  balance: string;
   balanceUSD: string;
   workspaceId: string;
   assetsBalance: CoinQuantity[];
