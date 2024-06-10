@@ -20,18 +20,31 @@ type AddressesErrors = Merge<
   )[]
 >;
 
+type AddressBookAutocompleteOptionsProps = {
+  workspaceId: string;
+  includePersonal: boolean;
+  contacts: WorkspaceContact[];
+  fields: AddressesFields;
+  errors?: AddressesErrors;
+  isUsingTemplate?: boolean;
+  isFirstLoading?: boolean;
+  dynamicCurrentIndex?: number;
+  canRepeatAddresses?: boolean;
+};
+
 export type AddressesFields = { [key: string]: string }[];
 
-const useAddressBookAutocompleteOptions = (
-  workspaceId: string,
-  includePersonal: boolean,
-  contacts: WorkspaceContact[] = [],
-  fields: AddressesFields = [],
-  errors?: AddressesErrors,
-  isUsingTemplate?: boolean,
-  isFirstLoading?: boolean,
-  dynamicCurrentIndex?: number,
-) => {
+const useAddressBookAutocompleteOptions = ({
+  workspaceId,
+  includePersonal,
+  contacts = [],
+  fields = [],
+  errors,
+  isUsingTemplate,
+  isFirstLoading,
+  dynamicCurrentIndex,
+  canRepeatAddresses,
+}: AddressBookAutocompleteOptionsProps) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
   const handleValidAddresses = useCallback(
@@ -87,8 +100,8 @@ const useAddressBookAutocompleteOptions = (
       currentField?.value,
       contactIds,
       includePersonal,
-      excludeContactsQueryKey,
-      excludeContacts,
+      canRepeatAddresses ? '' : excludeContactsQueryKey,
+      canRepeatAddresses ? [''] : excludeContacts,
     );
 
   const formattedQueries = useMemo(() => {

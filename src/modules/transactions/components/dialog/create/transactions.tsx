@@ -51,6 +51,7 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+
   const { isSingleWorkspace } = useAuth();
 
   const {
@@ -65,15 +66,17 @@ const TransactionFormField = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      form.watch('transactions'),
-      form.formState.errors.transactions,
-      false,
-      false,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: form.watch('transactions')!,
+      errors: form.formState.errors.transactions,
+      isUsingTemplate: false,
+      isFirstLoading: false,
+      dynamicCurrentIndex: index,
+      canRepeatAddresses: true,
+    });
 
   return (
     <>
@@ -92,6 +95,8 @@ const TransactionFormField = ({
               field.value,
               optionsRequests[index].options,
             );
+
+            // console.log(`field:${index}`, field.value);
 
             const showAddToAddressBook =
               canAddMember &&
