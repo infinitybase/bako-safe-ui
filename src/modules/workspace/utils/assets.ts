@@ -1,4 +1,4 @@
-import { CoinQuantity } from 'fuels';
+import { bn, CoinQuantity } from 'fuels';
 
 import { assetsMap } from '@/modules/core/utils/assets';
 
@@ -7,7 +7,7 @@ export const handleAssetsBalance = (balances: CoinQuantity[] = []) => {
     const assetInfos = assetsMap[balance.assetId];
 
     return {
-      amount: balance.amount.toString(),
+      amount: bn(balance.amount).format(),
       slug: assetInfos?.slug ?? 'UKN',
       name: assetInfos?.name ?? 'Unknown',
       assetId: balance.assetId,
