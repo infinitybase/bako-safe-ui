@@ -70,16 +70,16 @@ const VaultAddressesStep = ({
   };
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      form.watch('addresses') as AddressesFields,
-      form.formState.errors.addresses,
-      true,
-      isFirstLoad,
-      currentInputIndex,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: form.watch('addresses') as AddressesFields,
+      errors: form.formState.errors.addresses,
+      isUsingTemplate: true,
+      isFirstLoading: isFirstLoad,
+      dynamicCurrentIndex: currentInputIndex,
+    });
 
   const inputRef = useRef<HTMLInputElement[]>([]);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
