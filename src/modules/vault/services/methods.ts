@@ -16,7 +16,6 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 }
 
 export interface HasReservedCoins {
-  balance: string;
   balanceUSD: string;
   reservedCoins: BN;
 }
