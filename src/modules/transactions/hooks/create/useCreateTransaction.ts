@@ -1,3 +1,4 @@
+import { bn } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -53,6 +54,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     mutationFn: TransactionService.resolveTransactionCosts,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
@@ -93,6 +96,18 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const transactionAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
+
+  const getBalanceWithoutReservedAmount = (
+    transactionAmount: string,
+    transactionFee: string,
+  ) => {
+    const result = bn
+      .parseUnits(transactionAmount)
+      .sub(bn.parseUnits(transactionFee ?? ''))
+      .format();
+
+    return result;
+  };
 
   useEffect(() => {
     if (Number(transactionAmount) > 0) {
@@ -137,6 +152,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     navigate,
     accordion,
     handleClose,
+    transactionFee,
+    getBalanceWithoutReservedAmount,
   };
 };
 

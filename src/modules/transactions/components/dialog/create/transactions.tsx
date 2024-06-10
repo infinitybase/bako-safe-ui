@@ -7,6 +7,7 @@ import {
   FormHelperText,
   FormLabel,
   HStack,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -26,7 +27,10 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  UseCreateTransaction,
+  useCreateTransaction,
+} from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -37,22 +41,34 @@ interface TransactionAccordionProps {
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
+  transactionFee: string | undefined;
 }
 
 interface TransctionFormFieldProps {
   form: UseCreateTransaction['form'];
   index: number;
   assets: UseCreateTransaction['assets'];
+  transactionFee: string | undefined;
+  isFeeCalcLoading: boolean;
 }
 
 const TransactionFormField = ({
   form,
   assets,
   index,
+  transactionFee,
+  isFeeCalcLoading,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
 
   const { isSingleWorkspace } = useAuth();
+
+  const { getBalanceWithoutReservedAmount } = useCreateTransaction();
+
+  const balanceWithoutReservedAmount = getBalanceWithoutReservedAmount(
+    assets.getCoinBalance(asset),
+    transactionFee ?? '',
+  );
 
   const {
     workspaceId,
@@ -167,9 +183,13 @@ const TransactionFormField = ({
               <FormLabel color="gray">Amount</FormLabel>
               <FormHelperText>
                 {asset && (
-                  <Text>
-                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
-                    {assets.getCoinBalance(asset)}
+                  <Text display="flex" alignItems="center">
+                    Balance (available): {assets.getAssetInfo(asset)?.slug}{' '}
+                    {isFeeCalcLoading ? (
+                      <Spinner color="gray.825" size="xs" ml={1} />
+                    ) : (
+                      balanceWithoutReservedAmount
+                    )}
                   </Text>
                 )}
               </FormHelperText>
@@ -185,8 +205,15 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
-    props;
+  const {
+    form,
+    transactions,
+    assets,
+    accordion,
+    nicks,
+    isFeeCalcLoading,
+    transactionFee,
+  } = props;
 
   return (
     <Accordion
@@ -279,6 +306,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   index={index}
                   form={form}
                   assets={assets}
+                  transactionFee={transactionFee}
+                  isFeeCalcLoading={isFeeCalcLoading}
                 />
               </TransactionAccordion.Item>
             </AccordionItem>
