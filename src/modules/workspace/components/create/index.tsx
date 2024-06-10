@@ -25,7 +25,7 @@ import {
   UseCreateWorkspace,
   useCreateWorkspace,
 } from '../../hooks/create';
-import { OnboardingStep } from '..';
+import { OnboardingStep } from '../form';
 
 const CreateWorkspaceForm = ({
   form,
@@ -67,18 +67,20 @@ const CreateWorkspaceForm = ({
   </VStack>
 );
 
-interface CreateWorkspaceDialogProps extends Omit<ModalProps, 'children'> {}
+interface CreateWorkspaceDialogProps extends Omit<ModalProps, 'children'> {
+  handleCancel: () => void;
+}
 
 const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   const {
     form,
     tabs,
     request,
-    handleClose,
+    onCancel,
     handleGoToWorkspace,
     handleConfigureMembers,
   } = useCreateWorkspace({
-    onClose: props.onClose,
+    onClose: props.handleCancel,
   });
 
   return (
@@ -131,7 +133,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             <TabPanel p={0}>
               <OnboardingStep
                 tabs={tabs}
-                onCancel={handleClose}
+                onCancel={props.handleCancel}
                 onConfirm={() => tabs.set(CreateWorkspaceTabState.FORM)}
               />
             </TabPanel>
@@ -169,7 +171,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           bg="transparent"
           border="1px solid white"
           w="25%"
-          onClick={handleClose}
+          onClick={onCancel}
         >
           Cancel
         </Dialog.SecondaryAction>

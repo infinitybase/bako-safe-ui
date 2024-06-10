@@ -307,9 +307,15 @@ const Header = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
+  const handleCancel = async () => {
+    await refetchUserWorkspaces();
+    createWorkspaceDialog.onClose();
+  };
+
   const handleClose = async () => {
     await refetchUserWorkspaces();
     createWorkspaceDialog.onClose();
+    workspaceDialog.onClose();
   };
 
   return (
@@ -341,6 +347,7 @@ const Header = () => {
       {createWorkspaceDialog.isOpen && (
         <CreateWorkspaceDialog
           isOpen={createWorkspaceDialog.isOpen}
+          handleCancel={handleCancel}
           onClose={handleClose}
         />
       )}

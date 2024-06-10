@@ -33,7 +33,9 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const request = useCreateWorkspaceRequest();
   const { selectWorkspace } = useSelectWorkspace();
 
-  const handleClose = () => props.onClose();
+  const onCancel = () => {
+    tabs.set(CreateWorkspaceTabState.ON_BOARDING);
+  };
 
   const handleGoToWorkspace = () => {
     selectWorkspace(request?.data!.id, {
@@ -67,7 +69,7 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
 
   return {
     request,
-    handleClose,
+    onCancel,
     handleGoToWorkspace,
     handleConfigureMembers,
     form: {
