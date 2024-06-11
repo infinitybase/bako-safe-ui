@@ -23,15 +23,28 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           const { parent } = context;
 
           if (parent.fee) {
-            const transactionTotalAmount = bn
-              .parseUnits(parent.amount)
-              .add(bn.parseUnits(parent.fee))
-              .format();
+            if (parent.asset === NativeAssetId) {
+              const transactionTotalAmount = bn
+                .parseUnits(parent.amount)
+                .add(bn.parseUnits(parent.fee))
+                .format();
 
-            return params.validateBalance(
+              return params.validateBalance(
+                parent.asset,
+                transactionTotalAmount,
+              );
+            }
+
+            const hasAssetBalance = params.validateBalance(
               parent.asset,
-              String(transactionTotalAmount),
+              parent.amount,
             );
+            const hasFeeBalance = params.validateBalance(
+              NativeAssetId,
+              parent.fee,
+            );
+
+            return hasAssetBalance && hasFeeBalance;
           }
           return params.validateBalance(parent.asset, amount);
         })
@@ -50,7 +63,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             }[];
 
             const coinBalance = params.getCoinAmount(parent.asset);
-            const tranasctionsBalance = transactions
+            let transactionsBalance = transactions
               .filter((transaction) => transaction.asset === parent.asset)
               .reduce(
                 (currentValue, transaction) =>
@@ -58,7 +71,13 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
                 bn(0),
               );
 
-            return tranasctionsBalance.lte(coinBalance);
+            if (parent.fee && parent.asset === NativeAssetId) {
+              transactionsBalance = transactionsBalance.add(
+                bn.parseUnits(parent.fee),
+              );
+            }
+
+            return transactionsBalance.lte(coinBalance);
           },
         ),
       fee: yup.string(),
