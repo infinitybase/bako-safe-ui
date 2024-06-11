@@ -37,6 +37,7 @@ const useVaultDetails = () => {
   const {
     assets,
     ethBalance,
+    hasEthBalance,
     isLoading: isLoadingAssets,
     hasBalance,
     hasAssets,
@@ -70,6 +71,7 @@ const useVaultDetails = () => {
       isFetching,
       hasBalance,
       ethBalance,
+      hasEthBalance,
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions: vaultTransactionsRequest.transactions,

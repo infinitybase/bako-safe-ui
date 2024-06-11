@@ -23,6 +23,7 @@ interface VaultBoxPropx {
   isLoading?: boolean;
   isPending?: boolean;
   hasBalance?: boolean;
+  hasEthBalance?: boolean;
   hasPermission?: boolean;
   isFetching: boolean;
 }
@@ -56,6 +57,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     isLoading,
     isPending,
     hasBalance,
+    hasEthBalance,
     hasPermission,
     onChangeVault,
     onCreateTransaction,
@@ -119,7 +121,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             variant="primary"
             fontWeight="bold"
             onClick={onCreateTransaction}
-            isDisabled={!hasBalance || isPending}
+            isDisabled={!hasBalance || !hasEthBalance || isPending}
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction

@@ -69,6 +69,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           isFetching={vaultRequest.isFetching}
           onChangeVault={drawer.onOpen}
           hasBalance={vaultAssets.hasBalance}
+          hasEthBalance={vaultAssets.hasEthBalance}
           isPending={vault.transactions.isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
           onCreateTransaction={() => {

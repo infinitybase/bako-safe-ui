@@ -315,6 +315,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       }
                       isDisabled={
                         !vault?.hasBalance ||
+                        !vault?.hasEthBalance ||
                         !makeTransactionsPerm ||
                         vault.transactions.isPendingSigner
                       }
