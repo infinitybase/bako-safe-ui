@@ -64,6 +64,8 @@ const VaultDetailsPage = () => {
 
   const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
+  const hideSetTemplateButton = true;
+
   if (!vault) return null;
 
   return (
@@ -138,36 +140,39 @@ const VaultDetailsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         )}
-        <Button
-          color="dark.200"
-          bgColor="grey.200"
-          fontWeight="medium"
-          fontSize={{ base: 'sm', sm: 'md' }}
-          border="none"
-          isDisabled={!canSetTemplate || true} // todo: fix this
-          onClick={() => {
-            if (
-              !vault.id ||
-              !vault.minSigners ||
-              !vault.members ||
-              !params.workspaceId
-            )
-              return;
-            setTemplateFormInitial({
-              minSigners: vault.minSigners!,
-              addresses:
-                vault.members! && vault.members.map((signer) => signer.address),
-            });
-            navigate(
-              Pages.createTemplate({
-                vaultId: vault.id!,
-                workspaceId: params.workspaceId!,
-              }),
-            );
-          }}
-        >
-          Set as template
-        </Button>
+        {!hideSetTemplateButton && (
+          <Button
+            color="dark.200"
+            bgColor="grey.200"
+            fontWeight="medium"
+            fontSize={{ base: 'sm', sm: 'md' }}
+            border="none"
+            isDisabled={!canSetTemplate || true} // todo: fix this
+            onClick={() => {
+              if (
+                !vault.id ||
+                !vault.minSigners ||
+                !vault.members ||
+                !params.workspaceId
+              )
+                return;
+              setTemplateFormInitial({
+                minSigners: vault.minSigners!,
+                addresses:
+                  vault.members! &&
+                  vault.members.map((signer) => signer.address),
+              });
+              navigate(
+                Pages.createTemplate({
+                  vaultId: vault.id!,
+                  workspaceId: params.workspaceId!,
+                }),
+              );
+            }}
+          >
+            Set as template
+          </Button>
+        )}
       </HStack>
 
       <HStack
