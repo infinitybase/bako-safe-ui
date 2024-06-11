@@ -1,5 +1,4 @@
-import { useProvider } from '@fuels/react';
-import { BakoSafe, Vault } from 'bakosafe';
+import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -17,15 +16,19 @@ const balancesToAssets = async (
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
-  const { reservedCoins: currentETH, balanceUSD } =
-    await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
+  const { reservedCoins, balanceUSD } = await VaultService.hasReservedCoins(
+    predicate.BakoSafeVaultId,
+  );
   setBalanceUSD(balanceUSD);
   const result = balances.map((balance) => {
     const assetInfos = assetsMap[balance.assetId];
-    const hasETH = balance.assetId === NativeAssetId && currentETH;
+    const reservedCoinAmount = reservedCoins?.find(
+      (item) => item.assetId === balance.assetId,
+    )?.amount;
+
     return {
-      amount: hasETH
-        ? balance.amount.sub(currentETH).format()
+      amount: reservedCoinAmount
+        ? balance.amount.sub(reservedCoinAmount).format()
         : balance.amount.format(),
       slug: assetInfos?.slug ?? 'UKN',
       name: assetInfos?.name ?? 'Unknown',
@@ -45,7 +48,6 @@ function useVaultAssets(predicate?: Vault) {
     setIsFirstAssetsLoading,
   } = useVaultState();
 
-  const { provider } = useProvider();
   const auth = useAuth();
 
   const { data: assets, ...rest } = useQuery(
