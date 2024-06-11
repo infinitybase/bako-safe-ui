@@ -1,5 +1,6 @@
-import { Asset, AssetMap } from './types';
+import BTCIcon from '@/assets/BTCIcon.svg';
 
+import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
@@ -10,6 +11,13 @@ const assetsList: Asset[] = [
     slug: 'ETH',
     assetId: NativeAssetId,
     icon: ETHDefault,
+  },
+  {
+    name: 'Bitcoin',
+    slug: 'BTC',
+    assetId:
+      '0xfe3f96763e20e5d168037065a3bc65b751df7a038fd9297cc1cb5c740fd1c170',
+    icon: BTCIcon,
   },
   {
     name: 'Dai',
