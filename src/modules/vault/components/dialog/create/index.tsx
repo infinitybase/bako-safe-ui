@@ -45,6 +45,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         hidden={steps.step?.hide}
         title="Create Vault"
         description={steps.step?.description ?? ''}
+        descriptionFontSize="sm"
       />
 
       <Dialog.Body
