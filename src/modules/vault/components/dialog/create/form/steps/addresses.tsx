@@ -24,7 +24,6 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { useAuth } from '@/modules/auth/hooks';
-import { delay } from '@/modules/core';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
@@ -203,6 +202,8 @@ const VaultAddressesStep = ({
                       first,
                     );
 
+                    const isLoading = !optionsRequests[index].isSuccess;
+
                     const showAddToAddressBook =
                       !first &&
                       !fieldState.invalid &&
@@ -224,18 +225,19 @@ const VaultAddressesStep = ({
                           }
                           inputRef={(el) => (inputRef.current[index] = el!)}
                           onClick={() => {
-                            handleKeepOptionsNearToInput(index);
+                            if (!isLoading) {
+                              console.log('onClick em ação');
+                              handleKeepOptionsNearToInput(index);
+                            }
                           }}
                           actionOnSelect={() => setDisableScroll(false)}
                           actionOnRemoveInput={() => setDisableScroll(false)}
                           actionOnBlur={() => setDisableScroll(false)}
                           actionOnFocus={() => {
                             setDisableScroll(true);
-                            delay(() => {
-                              if (index !== lastAddressIndex) {
-                                setCurrentInputIndex(index);
-                              }
-                            }, 0);
+                            if (index !== lastAddressIndex) {
+                              setCurrentInputIndex(index);
+                            }
                           }}
                           // to keep the options relative to the container when typing in the input
                           onKeyUp={() =>
@@ -249,7 +251,7 @@ const VaultAddressesStep = ({
                           value={field.value}
                           onChange={field.onChange}
                           options={appliedOptions}
-                          isLoading={!optionsRequests[index].isSuccess}
+                          isLoading={isLoading}
                           disabled={first}
                           inView={inView}
                           clearable={false}
