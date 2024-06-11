@@ -151,7 +151,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
         <VStack
           w="full"
-          overflowY="hidden"
+          overflowY="scroll"
           sx={{
             '&::-webkit-scrollbar': {
               display: 'none',
