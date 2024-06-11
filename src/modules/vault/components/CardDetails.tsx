@@ -389,7 +389,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 w="full"
                 h="full"
               >
-                {parseFloat(balanceFormatted!) === 0 || !balanceFormatted ? (
+                {!hasBalance ? (
                   <Card
                     w="full"
                     h="full"
