@@ -97,13 +97,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
-  const getBalanceWithoutReservedAmount = (
-    transactionAmount: string,
-    transactionFee: string,
-  ) => {
+  const getBalanceWithoutReservedAmount = (transactionAmount: string) => {
     const result = bn
       .parseUnits(transactionAmount)
-      .sub(bn.parseUnits(transactionFee ?? ''))
+      .sub(bn.parseUnits('0.001'))
       .format();
 
     return result;
