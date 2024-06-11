@@ -24,6 +24,7 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { useAuth } from '@/modules/auth/hooks';
+import { delay } from '@/modules/core';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
@@ -230,9 +231,11 @@ const VaultAddressesStep = ({
                           actionOnBlur={() => setDisableScroll(false)}
                           actionOnFocus={() => {
                             setDisableScroll(true);
-                            if (index !== lastAddressIndex) {
-                              setCurrentInputIndex(index);
-                            }
+                            delay(() => {
+                              if (index !== lastAddressIndex) {
+                                setCurrentInputIndex(index);
+                              }
+                            }, 0);
                           }}
                           // to keep the options relative to the container when typing in the input
                           onKeyUp={() =>
