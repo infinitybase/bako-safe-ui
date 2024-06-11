@@ -112,8 +112,6 @@ const TransactionFormField = ({
               optionsRequests[index].options,
             );
 
-            // console.log(`field:${index}`, field.value);
-
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&

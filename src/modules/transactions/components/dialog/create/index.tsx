@@ -133,7 +133,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
             </Tooltip>
           )}
         </Text>
-        <Text variant="description">{transactionFee}</Text>
+        <Text variant="description">
+          {transactionFee} {transactionFee && 'ETH'}
+        </Text>
       </Flex>
 
       <Dialog.Actions maxW={480} hideDivider mt="auto">

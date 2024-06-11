@@ -47,8 +47,6 @@ const useAddressBookAutocompleteOptions = ({
 }: AddressBookAutocompleteOptionsProps) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
-  console.log('dynamicIndex', dynamicCurrentIndex);
-
   const handleValidAddresses = useCallback(
     (fieldValue: string) => {
       const validSelectedValues: string[] = [];

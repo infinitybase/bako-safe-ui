@@ -109,6 +109,7 @@ const VaultAddressesStep = ({
   const hasTenAddress = addresses.fields.length >= 10;
 
   useEffect(() => {
+    handleKeepOptionsNearToInput(currentInputIndex ?? 0);
     if (currentInputIndex !== undefined) {
       setCurrentInputIndex(undefined);
     }
@@ -225,10 +226,7 @@ const VaultAddressesStep = ({
                           }
                           inputRef={(el) => (inputRef.current[index] = el!)}
                           onClick={() => {
-                            if (!isLoading) {
-                              console.log('onClick em ação');
-                              handleKeepOptionsNearToInput(index);
-                            }
+                            handleKeepOptionsNearToInput(index);
                           }}
                           actionOnSelect={() => setDisableScroll(false)}
                           actionOnRemoveInput={() => setDisableScroll(false)}
