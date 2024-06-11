@@ -21,6 +21,8 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
+import { useAuthStore, useSignIn } from '@/modules/auth';
+import { TypeUser } from '@/modules/auth/services';
 
 import { useSettings } from '../../hooks';
 
@@ -35,6 +37,16 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     updateSettingsRequest: { isLoading },
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
+  const {
+    webauthn: { nicknamesData, search, handleInputChange, form: formAuthn },
+  } = useSignIn();
+  const { accountType } = useAuthStore();
+  const { formState } = formAuthn;
+
+  const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
+
+  const isNicknameInUse =
+    !!nicknamesData?.name && search?.length > 0 && isFromWebAuthn;
 
   return (
     <Drawer
@@ -93,14 +105,43 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
-                      value={field.value}
-                      onChange={field.onChange}
+                      // value={field.value}
+                      // onChange={field.onChange}
                       placeholder=" "
+                      value={search}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        field.onChange(e.target.value);
+                      }}
+                      onKeyDown={(e) =>
+                        formState.handlePrimaryActionUsingEnterKey(e)
+                      }
+                      isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
                     <FormLabel>Name</FormLabel>
-                    <FormHelperText color="error.500">
-                      {fieldState.error?.message}
-                    </FormHelperText>
+
+                    {isFromWebAuthn ? (
+                      <FormHelperText
+                        color={
+                          nicknamesData?.name ||
+                          form.formState.errors.name?.message
+                            ? 'error.500'
+                            : 'grey.500'
+                        }
+                      >
+                        {isNicknameInUse
+                          ? 'Name already exists'
+                          : form.formState.errors.name?.message
+                          ? form.formState.errors.name?.message
+                          : search.length > 0
+                          ? 'This name is available'
+                          : ''}
+                      </FormHelperText>
+                    ) : (
+                      <FormHelperText color="error.500">
+                        {fieldState.error?.message}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 )}
               />
@@ -163,7 +204,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={isLoading}
+                isDisabled={isLoading || isNicknameInUse}
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"

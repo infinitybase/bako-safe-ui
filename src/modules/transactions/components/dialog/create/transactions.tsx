@@ -26,7 +26,10 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  UseCreateTransaction,
+  useCreateTransaction,
+} from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -43,6 +46,7 @@ interface TransctionFormFieldProps {
   form: UseCreateTransaction['form'];
   index: number;
   assets: UseCreateTransaction['assets'];
+  isFeeCalcLoading: boolean;
 }
 
 const TransactionFormField = ({
@@ -51,7 +55,14 @@ const TransactionFormField = ({
   index,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
+
   const { isSingleWorkspace } = useAuth();
+
+  const { getBalanceWithoutReservedAmount } = useCreateTransaction();
+
+  const balanceWithoutReservedAmount = getBalanceWithoutReservedAmount(
+    assets.getCoinBalance(asset),
+  );
 
   const {
     workspaceId,
@@ -65,15 +76,17 @@ const TransactionFormField = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      form.watch('transactions'),
-      form.formState.errors.transactions,
-      false,
-      false,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: form.watch('transactions')!,
+      errors: form.formState.errors.transactions,
+      isUsingTemplate: false,
+      isFirstLoading: false,
+      dynamicCurrentIndex: index,
+      canRepeatAddresses: true,
+    });
 
   return (
     <>
@@ -162,9 +175,9 @@ const TransactionFormField = ({
               <FormLabel color="gray">Amount</FormLabel>
               <FormHelperText>
                 {asset && (
-                  <Text>
-                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
-                    {assets.getCoinBalance(asset)}
+                  <Text display="flex" alignItems="center">
+                    Balance (available): {assets.getAssetInfo(asset)?.slug}{' '}
+                    {balanceWithoutReservedAmount}
                   </Text>
                 )}
               </FormHelperText>
@@ -274,6 +287,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   index={index}
                   form={form}
                   assets={assets}
+                  isFeeCalcLoading={isFeeCalcLoading}
                 />
               </TransactionAccordion.Item>
             </AccordionItem>

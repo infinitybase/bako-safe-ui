@@ -7,7 +7,7 @@ const description = defineStyle({
 
 const subtitle = defineStyle({
   fontSize: 'md',
-  color: 'grey.400',
+  color: 'grey.425',
   fontWeight: 'semibold',
 });
 
