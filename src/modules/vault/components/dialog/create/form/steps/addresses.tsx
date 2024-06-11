@@ -26,7 +26,6 @@ import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
-// import { useVaultState } from '@/modules/vault/states';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 export interface VaultAddressesStepProps {
@@ -36,9 +35,6 @@ export interface VaultAddressesStepProps {
   selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
   setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
 }
-// templates,
-// setTemplate,
-// selectedTemplate,
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const { isSingleWorkspace } = useAuth();
@@ -56,7 +52,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const [currentInputIndex, setCurrentInputIndex] = useState<
     number | undefined
   >(undefined);
-  // const { disableScroll, setDisableScroll } = useVaultState();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -76,40 +71,14 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
       dynamicCurrentIndex: currentInputIndex,
     });
 
-  // const inputRef = useRef<HTMLInputElement[]>([]);
-  // const optionsContainerRef = useRef<HTMLDivElement>(null);
   const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
-
-  // const handleSelectOption = () => {
-  //   form.clearErrors();
-  //   setIsFirstLoad(true);
-  // };
 
   const isDisable = !!form.formState.errors.addresses;
   const lastAddressIndex = addresses.fields.length;
 
-  // const handleKeepOptionsNearToInput = (index: number) => {
-  //   console.log('index no keep', index);
-  //   const pixelsToIncrement = 50;
-
-  //   keepOptionsNearToInput({
-  //     containerRef: inputRef,
-  //     childRef: optionsContainerRef,
-  //     pixelsToIncrement,
-  //     index,
-  //   });
-  // };
-
   const minSigners = form.formState.errors.minSigners?.message;
 
   const hasTenAddress = addresses.fields.length >= 10;
-
-  // useEffect(() => {
-  //   handleKeepOptionsNearToInput(currentInputIndex ?? 0);
-  //   if (currentInputIndex !== undefined) {
-  //     setCurrentInputIndex(undefined);
-  //   }
-  // }, [lastAddressIndex]);
 
   return (
     <>
@@ -121,34 +90,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
       />
 
       <TabPanel p={0}>
-        {/* <Box
-          p={4}
-          mb={8}
-          borderRadius="xl"
-          bgColor="dark.600"
-          hidden={!templates.length}
-          w="100%"
-        >
-          <FormControl>
-            <Select
-              isCreatingValue
-              label="Do you want to use a template?"
-              value={selectedTemplate}
-              onChange={(value) => setTemplate(value)}
-              isDisabled={!templates.length}
-              callbackOnSelectOption={() => handleSelectOption()}
-              options={templates?.map((template) => ({
-                label: template.name,
-                value: template.id,
-              }))}
-            />
-            <FormHelperText color="grey.450">
-              You can make your work easier by following a rule that {`you've`}{' '}
-              set up.
-            </FormHelperText>
-          </FormControl>
-        </Box> */}
-
         <VStack
           w="full"
           overflowY="scroll"
@@ -165,18 +106,14 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
             },
           }}
           pr={{ base: 2, sm: 4 }}
-          h={485}
-          // mb={8}
+          h={500}
         >
           <Dialog.Section
             w="full"
             p={4}
-            // mb={8}
-            // borderRadius="xl"
             borderRadius="xl"
             border="1px solid"
             borderColor="grey.925"
-            // bgColor="dark.600"
             bgColor="transparent"
             title={
               <Heading fontSize="sm" color="grey.200">
@@ -190,24 +127,11 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               mt={4}
               w="full"
               spacing={2}
-              minH={260}
+              minH={120}
               position="relative"
-              // maxH={{ base: 230 }}
               onClick={() => {
                 handleFirstIsFirstLoad();
               }}
-              // overflowY={disableScroll ? 'hidden' : 'auto'}
-              // sx={{
-              //   '&::-webkit-scrollbar': {
-              //     width: '5px',
-              //     maxHeight: '330px',
-              //   },
-              //   '&::-webkit-scrollbar-thumb': {
-              //     backgroundColor: '#2C2C2C',
-              //     borderRadius: '30px',
-              //     height: '10px',
-              //   },
-              // }}
               ref={optionsScrollableContainerRef}
             >
               {addresses.fields.map(({ id }, index) => {
@@ -247,32 +171,14 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                             label={
                               first ? 'Your address' : `Address ${index + 1}`
                             }
-                            // inputRef={(el) => (inputRef.current[index] = el!)}
                             onClick={() => {
-                              // handleKeepOptionsNearToInput(index);
                               setCurrentInputIndex(index);
-                              // setTimeout(
-                              // () => setCurrentInputIndex(index),
-                              // 100,
-                              // );
                             }}
-                            // actionOnSelect={() => setDisableScroll(false)}
-                            // actionOnRemoveInput={() => setDisableScroll(false)}
-                            // actionOnBlur={() => setDisableScroll(false)}
                             actionOnFocus={() => {
-                              // setDisableScroll(true);
                               if (index !== lastAddressIndex) {
                                 setCurrentInputIndex(index);
                               }
                             }}
-                            // // to keep the options relative to the container when typing in the input
-                            // onKeyUp={() =>
-                            //   setTimeout(
-                            //     () => handleKeepOptionsNearToInput(index),
-                            //     100,
-                            //   )
-                            // }
-                            // optionsContainerRef={optionsContainerRef}
                             optionsRef={optionRef}
                             value={field.value}
                             onChange={field.onChange}
@@ -351,7 +257,15 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
             </VStack>
           </Dialog.Section>
 
-          <HStack position="relative" mt="12">
+          <HStack
+            position="relative"
+            mt="8"
+            border="1px solid"
+            borderColor="grey.925"
+            borderRadius="xl"
+            p={4}
+            mb={4}
+          >
             <Dialog.Section
               w="full"
               maxW={350}
@@ -371,6 +285,9 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
+                    style={{
+                      background: '#201F1D',
+                    }}
                     value={Number(field.value)}
                     onChange={field.onChange}
                     options={Array(addresses.fields.length)

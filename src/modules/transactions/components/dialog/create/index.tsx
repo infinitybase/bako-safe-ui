@@ -66,7 +66,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <Dialog.Body maxW={500} maxH={'full'} mt={{ sm: 4 }}>
         <CreateTransactionForm
-          transactionFee={transactionFee}
           form={form}
           nicks={nicks}
           assets={assets}

@@ -9,4 +9,5 @@ export * from './progress';
 export * from './progressButton';
 export * from './select';
 export * from './skeleton';
+export * from './tooltip';
 export * from './transactionExpire';
