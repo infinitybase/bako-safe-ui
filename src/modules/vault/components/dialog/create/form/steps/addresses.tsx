@@ -171,9 +171,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                             label={
                               first ? 'Your address' : `Address ${index + 1}`
                             }
-                            onClick={() => {
-                              setCurrentInputIndex(index);
-                            }}
                             actionOnFocus={() => {
                               if (index !== lastAddressIndex) {
                                 setCurrentInputIndex(index);
