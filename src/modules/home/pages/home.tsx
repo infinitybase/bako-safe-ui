@@ -12,7 +12,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import format from 'date-fns/format';
-import { useEffect } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
@@ -31,7 +30,7 @@ import {
 } from '@/modules/transactions';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
-import { getTransactions } from '@/utils/fetch-test';
+import { TxService } from '@/utils/transaction-history';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
@@ -54,13 +53,24 @@ const HomePage = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
-  const solve = async () => {
-    return await getTransactions();
-  };
+  // const solve = async () => {
+  //   return await getTransactions();
+  // };
 
-  useEffect(() => {
-    solve();
-  }, []);
+  const getTxHistory = async () => {
+    const result = await TxService.getTransactionHistory({
+      address:
+        '0x893e864a5ab4e64f1e618910c57638499f50a04c471b138e1705b99193dbca6c',
+      providerUrl: 'https://testnet.fuel.network/v1/graphql',
+    });
+
+    const operations = result.transactionHistory.map(
+      (transaction) => transaction.operations,
+    );
+
+    console.log('operations:', operations);
+    // console.log('result:', result);
+  };
 
   // Recebedor: 0x893e864a5ab4e64f1e618910c57638499f50a04c471b138e1705b99193dbca6c
   // Enviador: 0xbefc6ebfa0f300020efb1dabf25c6dd219bf5331c56de62a7f4b4772d75d238b
@@ -102,6 +112,7 @@ const HomePage = () => {
           </Text>
         </HStack>
         <Box>
+          <Button onClick={getTxHistory}>Clica ae</Button>
           <Button
             variant="primary"
             fontWeight="bold"

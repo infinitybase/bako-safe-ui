@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 const TRANSACTIONS_QUERY = `query Transactions($address: Address) {
   transactionsByOwner(owner: $address, first: 5) {
     nodes {
@@ -80,9 +81,34 @@ const getTransactions = async () => {
     }),
   });
   const json: any = await response.json();
-  // console.log('TRANSACTIONS:', json.data.transactionsByOwner.nodes);
-  console.log('Recebedor recebeu:', json.data.transactionsByOwner.nodes[0]);
-  console.log('Recebedor enviou:', json.data.transactionsByOwner.nodes[2]);
+  const transactions: [] = json.data.transactionsByOwner.nodes;
+
+  console.log('transactions:', transactions);
+
+  let deposits = [];
+  let transfers = [];
+
+  transactions.forEach((transaction, i) => {
+    // console.log('owner:', transaction.inputs[0].owner);
+    // console.log('args', TRANSACTIONS_ARGS.address);
+    // console.log(
+    //   'é igual',
+    //   TRANSACTIONS_ARGS.address === transaction.inputs[0].owner,
+    //   i,
+    // );
+    if (TRANSACTIONS_ARGS.address === transaction.inputs[0].owner) {
+      deposits.push(transaction);
+    } else {
+      transfers.push(transaction);
+    }
+  });
+
+  console.log('depositos', deposits);
+  console.log('transferencias', transfers);
+
+  // console.log('TRANSACTIONS:', transactions);
+  // console.log('Recebedor recebeu:', json.data.transactionsByOwner.nodes[0]);
+  // console.log('Recebedor enviou:', json.data.transactionsByOwner.nodes[2]);
 };
 
 export { getTransactions };
