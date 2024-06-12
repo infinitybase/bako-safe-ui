@@ -46,4 +46,4 @@ const assetsMap: AssetMap = assetsList.reduce((previousValue, currentValue) => {
   };
 }, {});
 
-export { assetsList, assetsMap, NativeAssetId };
+export { assetsList, assetsMap, ETHDefault, NativeAssetId };
