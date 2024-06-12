@@ -35,7 +35,9 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
-    props.isOpen,
+    // In local was working fine, but when deploy, the requests wasn't being updated even if invalidating it
+    // so, removing this props solve the problem
+    // props.isOpen,
   );
 
   const debouncedSearchHandler = useCallback(

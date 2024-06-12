@@ -5,18 +5,24 @@ export interface DialogSectionProps extends Omit<StackProps, 'title'> {
   title: React.ReactNode;
   description?: string;
   children?: React.ReactNode;
+  descriptionFontSize?: string;
 }
 
 const DialogSection = ({
   title,
   description,
   children,
+  descriptionFontSize,
   ...stackProps
 }: DialogSectionProps) => (
   <VStack spacing={1} alignItems="flex-start" {...stackProps}>
     {title}
     {description && (
-      <Text w="90%" fontSize={{ base: 'sm', sm: 'md' }} variant="description">
+      <Text
+        w="90%"
+        fontSize={{ base: 'sm', sm: descriptionFontSize ?? 'md' }}
+        variant="description"
+      >
         {description}
       </Text>
     )}

@@ -63,15 +63,15 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
   } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      form.watch('addresses') as AddressesFields,
-      form.formState.errors.addresses,
-      true,
-      isFirstLoad,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: form.watch('addresses') as AddressesFields,
+      errors: form.formState.errors.addresses,
+      isUsingTemplate: true,
+      isFirstLoading: isFirstLoad,
+    });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsContainerRef = useRef<HTMLDivElement>(null);

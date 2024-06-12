@@ -35,6 +35,7 @@ const DialogModal = (props: DialogModalProps) => {
         {...props.modalContentProps}
       >
         <ModalBody
+          overflowY="auto"
           zIndex={400}
           sx={{
             '&::-webkit-scrollbar': {

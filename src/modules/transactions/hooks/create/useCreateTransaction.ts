@@ -1,3 +1,4 @@
+import { bn } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -53,6 +54,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     mutationFn: TransactionService.resolveTransactionCosts,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
@@ -94,19 +97,28 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
+  const getBalanceWithoutReservedAmount = (transactionAmount: string) => {
+    const result = bn
+      .parseUnits(transactionAmount)
+      .sub(bn.parseUnits('0.001'))
+      .format();
+
+    return result;
+  };
+
   useEffect(() => {
-    if (Number(transactionAmount) > 0 && form.formState.isValid) {
+    if (Number(transactionAmount) > 0) {
       const { transactions } = form.getValues();
       resolveTransactionCosts.mutate({
         assets: transactions!.map((transaction) => ({
-          to: transaction.to,
+          to: transaction.value,
           amount: transaction.amount,
           assetId: transaction.asset,
         })),
         vault: vaultDetails.predicateInstance!,
       });
     }
-  }, [form.formState.isValid, transactionAmount]);
+  }, [transactionAmount, form.formState.isValid]);
 
   const handleClose = () => {
     props?.onClose();
@@ -118,7 +130,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       assets: data.transactions!.map((transaction) => ({
         amount: transaction.amount,
         assetId: transaction.asset,
-        to: transaction.to,
+        to: transaction.value,
       })),
     });
   });
@@ -137,6 +149,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     navigate,
     accordion,
     handleClose,
+    transactionFee,
+    getBalanceWithoutReservedAmount,
   };
 };
 

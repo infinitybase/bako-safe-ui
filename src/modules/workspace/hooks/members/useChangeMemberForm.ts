@@ -7,15 +7,17 @@ import { AddressUtils, Workspace } from '@/modules/core';
 const memberSchema = (members: string[]) => {
   return yup.object({
     // TODO: Move address validation to ./src/modules/core/utils/address
-    address: yup
-      .string()
-      .required('Empty address')
-      .test('is-valid-address', 'Invalid address', (address) =>
-        AddressUtils.isValid(address),
-      )
-      .test('is-not-owner', 'This address is already a member', (address) => {
-        return !members.includes(address);
-      }),
+    address: yup.object().shape({
+      value: yup
+        .string()
+        .required('Empty address')
+        .test('is-valid-address', 'Invalid address', (address) =>
+          AddressUtils.isValid(address),
+        )
+        .test('is-not-owner', 'This address is already a member', (address) => {
+          return !members.includes(address);
+        }),
+    }),
   });
 };
 
@@ -33,7 +35,9 @@ const useChangeMemberForm = (owner: string[]) => {
     reValidateMode: 'onChange',
     resolver: yupResolver(memberSchema(owner)),
     defaultValues: {
-      address: '',
+      address: {
+        value: '',
+      },
     },
   });
 
@@ -70,7 +74,11 @@ const useChangeMemberForm = (owner: string[]) => {
     permissionForm.setValue('permission', permissionRole[0], {
       shouldValidate: true,
     });
-    memberForm.setValue('address', member[0], { shouldValidate: true });
+    memberForm.setValue(
+      'address',
+      { value: member[0] },
+      { shouldValidate: true },
+    );
     editForm.setValue('permission', permissionRole[0], {
       shouldValidate: true,
     });

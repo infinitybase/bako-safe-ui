@@ -32,6 +32,7 @@ import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
+  const [dynamicHeight, setDynamicHeight] = useState(0);
   const auth = useAuth();
   const { isSafariBrowser } = useVerifyBrowserType();
 
@@ -52,6 +53,13 @@ const VaultConnector = () => {
 
   const noVaultsFound = search.value.length >= 1 && !vaults.length;
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  useEffect(() => {
+    const clientWindowHeight = window.innerHeight;
+    const dividedBy = clientWindowHeight >= 750 ? 2.1 : 2.5;
+
+    setDynamicHeight(clientWindowHeight / dividedBy);
+  }, []);
 
   return (
     <Flex h="100vh" w="full" overflow="hidden" bgColor="dark.950">
@@ -146,7 +154,10 @@ const VaultConnector = () => {
                 </Box>
                 {noVaultsFound && (
                   <FormHelperText color="grey.250" mb={-6}>
-                    {`We couldn't find any results for "${AddressUtils.format(search.value, 1)}"`}
+                    {`We couldn't find any results for "${AddressUtils.format(
+                      search.value,
+                      1,
+                    )}"`}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -154,7 +165,7 @@ const VaultConnector = () => {
           </CustomSkeleton>
         )}
 
-        <CustomSkeleton h={500} isLoaded={noVaultsFound || !isLoading}>
+        <CustomSkeleton h={450} isLoaded={noVaultsFound || !isLoading}>
           {isSuccess && !isFetching && noVaultOnFirstLoad && (
             <VStack>
               <Card
@@ -209,7 +220,7 @@ const VaultConnector = () => {
           <VStack
             pt={4}
             w="full"
-            h={noVaultOnFirstLoad ? 140 : 385}
+            h={noVaultOnFirstLoad ? 140 : `${dynamicHeight}px`}
             spacing={2}
             overflowY="scroll"
             css={{
@@ -251,7 +262,11 @@ const VaultConnector = () => {
               </Flex>
             )}
 
-            <Box ref={inView.ref} />
+            {/* Normally, it's a self closing box (<Box/>) but due the dynamic height using window.height */}
+            {/* it's necessary to render it this way */}
+            <Box ref={inView.ref} color="transparent">
+              ...
+            </Box>
           </VStack>
           {!noVaultOnFirstLoad && <Divider borderColor="grey.75" mb={6} />}
           <HStack w="full" justifyContent="center" pb={10}>
