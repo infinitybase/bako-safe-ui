@@ -226,6 +226,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
     props;
 
+  //console.log(aux);
+  // const _asset_inputs = form
+  //   .watch(`transactions`)
+  //   ?.filter((t) => Number(t.amount) > 0)
+  //   ?.reduce((t, acc) => t.add(bn.parseUnits(acc.amount)), bn(0));
+
+  // const asset_fee =
+
   return (
     <Accordion
       index={accordion.index}

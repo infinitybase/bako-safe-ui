@@ -111,35 +111,39 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     balance: string,
     transactionFee: string,
   ) => {
-    // console.log('fee:', transactionFee);
-    // console.log('balance', balance);
-    // console.log(
-    //   'balance - reservedAmount',
-    //   bn.parseUnits(balance).sub(bn.parseUnits('0.001')).format(),
-    // );
-    // console.log(
-    //   'balance - transactionFee',
-    //   bn.parseUnits(balance).sub(bn.parseUnits(transactionFee)).format(),
-    // );
+    console.log('fee:', transactionFee);
+    console.log('balance', balance);
+    console.log(
+      'balance - reservedAmount',
+      bn.parseUnits(balance).sub(bn.parseUnits('0.001')).format(),
+    );
+    console.log(
+      'balance - disponivel',
+      bn.parseUnits(balance).sub(bn.parseUnits(transactionFee)).format(),
+    );
 
     const result = bn
       .parseUnits(balance)
-      .sub(bn.parseUnits('0.001'))
-      .sub(bn.parseUnits(transactionFee))
+      .sub(resolveTransactionCosts.data?.fee ?? bn.parseUnits('0'))
       .format();
 
-    // console.log('result', result);
+    console.log('result', result);
 
     return result;
   };
 
   useEffect(() => {
+    console.log({
+      props,
+      getBalanceEstimatedMaxFee,
+    });
     if (getBalanceEstimatedMaxFee) {
+      console.log('[calcular_fee_inicial]> ', transactionAmount);
       resolveTransactionCosts.mutate({
         assets: [
           {
             to: 'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp',
-            amount: transactionAmount,
+            amount: props.initialBalance ?? '0',
             assetId: props.assetId ?? NativeAssetId,
           },
         ],
@@ -149,6 +153,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     if (Number(transactionAmount) > 0) {
       const { transactions } = form.getValues();
+      console.log('[tx_amount > 0] :', transactionAmount);
       resolveTransactionCosts.mutate({
         assets: transactions!.map((transaction) => ({
           to: transaction.value,
