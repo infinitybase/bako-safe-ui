@@ -7,6 +7,7 @@ import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
 import {
+  NativeAssetId,
   useBakoSafeCreateTransaction,
   WorkspacesQueryKey,
 } from '@/modules/core';
@@ -21,6 +22,10 @@ import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+  initialBalance?: string;
+  to?: string;
+  assetId?: string;
+  isFirstLoading?: boolean;
 }
 
 const useTransactionAccordion = () => {
@@ -41,6 +46,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const auth = useAuth();
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
+  const getBalanceEstimatedMaxFee =
+    props?.initialBalance &&
+    props?.to &&
+    props?.assetId &&
+    props.isFirstLoading;
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
@@ -97,16 +107,46 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
-  const getBalanceWithoutReservedAmount = (transactionAmount: string) => {
+  const getBalanceWithoutReservedAmount = (
+    balance: string,
+    transactionFee: string,
+  ) => {
+    // console.log('fee:', transactionFee);
+    // console.log('balance', balance);
+    // console.log(
+    //   'balance - reservedAmount',
+    //   bn.parseUnits(balance).sub(bn.parseUnits('0.001')).format(),
+    // );
+    // console.log(
+    //   'balance - transactionFee',
+    //   bn.parseUnits(balance).sub(bn.parseUnits(transactionFee)).format(),
+    // );
+
     const result = bn
-      .parseUnits(transactionAmount)
+      .parseUnits(balance)
       .sub(bn.parseUnits('0.001'))
+      .sub(bn.parseUnits(transactionFee))
       .format();
+
+    // console.log('result', result);
 
     return result;
   };
 
   useEffect(() => {
+    if (getBalanceEstimatedMaxFee) {
+      resolveTransactionCosts.mutate({
+        assets: [
+          {
+            to: 'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp',
+            amount: transactionAmount,
+            assetId: props.assetId ?? NativeAssetId,
+          },
+        ],
+        vault: vaultDetails.predicateInstance!,
+      });
+    }
+
     if (Number(transactionAmount) > 0) {
       const { transactions } = form.getValues();
       resolveTransactionCosts.mutate({

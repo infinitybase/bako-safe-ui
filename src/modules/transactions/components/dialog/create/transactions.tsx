@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -47,22 +48,47 @@ interface TransctionFormFieldProps {
   index: number;
   assets: UseCreateTransaction['assets'];
   isFeeCalcLoading: boolean;
+  isFirstLoading: boolean;
+  setIsFirstLoading: (state: boolean) => void;
+  estimatedBalance: string;
+  setEstimatedBalance: (state: string) => void;
 }
 
 const TransactionFormField = ({
   form,
   assets,
   index,
+  isFirstLoading,
+  setIsFirstLoading,
+  setEstimatedBalance,
+  estimatedBalance,
 }: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
 
   const { isSingleWorkspace } = useAuth();
+  const { account } = useAuth();
 
-  const { getBalanceWithoutReservedAmount } = useCreateTransaction();
+  const { getBalanceWithoutReservedAmount, transactionFee } =
+    useCreateTransaction({
+      onClose: () => console.log('ignore'),
+      isFirstLoading,
+      initialBalance: assets.getCoinBalance(asset),
+      to: account,
+      assetId: NativeAssetId,
+    });
 
-  const balanceWithoutReservedAmount = getBalanceWithoutReservedAmount(
-    assets.getCoinBalance(asset),
-  );
+  useEffect(() => {
+    if (transactionFee?.length && isFirstLoading) {
+      setIsFirstLoading(false);
+      const balanceWithoutReservedAmountAndEstimatedFee =
+        getBalanceWithoutReservedAmount(
+          assets.getCoinBalance(asset),
+          transactionFee,
+        );
+
+      setEstimatedBalance(balanceWithoutReservedAmountAndEstimatedFee);
+    }
+  }, [transactionFee?.length]);
 
   const {
     workspaceId,
@@ -177,7 +203,8 @@ const TransactionFormField = ({
                 {asset && (
                   <Text display="flex" alignItems="center">
                     Balance (available): {assets.getAssetInfo(asset)?.slug}{' '}
-                    {balanceWithoutReservedAmount}
+                    {/* {balanceWithoutReservedAmount} */}
+                    {estimatedBalance}
                   </Text>
                 )}
               </FormHelperText>
@@ -193,6 +220,9 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
+  const [isFirstLoading, setIsFirstLoading] = useState(true);
+  const [estimatedBalance, setEstimatedBalance] = useState('');
+
   const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
     props;
 
@@ -284,6 +314,10 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 }
               >
                 <TransactionFormField
+                  isFirstLoading={isFirstLoading}
+                  setIsFirstLoading={setIsFirstLoading}
+                  setEstimatedBalance={setEstimatedBalance}
+                  estimatedBalance={estimatedBalance}
                   index={index}
                   form={form}
                   assets={assets}

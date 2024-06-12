@@ -50,15 +50,33 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             }[];
 
             const coinBalance = params.getCoinAmount(parent.asset);
-            const tranasctionsBalance = transactions
-              .filter((transaction) => transaction.asset === parent.asset)
-              .reduce(
-                (currentValue, transaction) =>
-                  currentValue.add(bn.parseUnits(transaction.amount)),
-                bn(0),
-              );
 
-            return tranasctionsBalance.lte(coinBalance);
+            let tranasctionsBalance = undefined;
+
+            if (parent.fee) {
+              const transactionTotalAmount = bn
+                .parseUnits(parent.amount)
+                .add(bn.parseUnits(parent.fee))
+                .format();
+
+              tranasctionsBalance = transactions
+                .filter((transaction) => transaction.asset === parent.asset)
+                .reduce(
+                  (currentValue) =>
+                    currentValue.add(bn.parseUnits(transactionTotalAmount)),
+                  bn(0),
+                );
+              return tranasctionsBalance.lte(coinBalance);
+            } else {
+              tranasctionsBalance = transactions
+                .filter((transaction) => transaction.asset === parent.asset)
+                .reduce(
+                  (currentValue, transaction) =>
+                    currentValue.add(bn.parseUnits(transaction.amount)),
+                  bn(0),
+                );
+              return tranasctionsBalance.lte(coinBalance);
+            }
           },
         ),
       fee: yup.string(),
