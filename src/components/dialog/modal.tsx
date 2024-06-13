@@ -35,13 +35,9 @@ const DialogModal = (props: DialogModalProps) => {
         {...props.modalContentProps}
       >
         <ModalBody
-          draggable={false}
           overflowY="auto"
           zIndex={400}
-          scrollSnapStop="normal"
           sx={{
-            touchAction: 'pan-y',
-            '&::-webkit-overflow-scrolling:': 'touch',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
