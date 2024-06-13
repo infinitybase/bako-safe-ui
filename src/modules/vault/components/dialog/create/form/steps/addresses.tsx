@@ -48,6 +48,9 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
 
+  const hasThreeOrMoreAddress =
+    form.watch('addresses') && form.watch('addresses')!.length >= 3;
+
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState<
     number | undefined
@@ -282,6 +285,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
+                    needShowOptionsAbove={hasThreeOrMoreAddress}
                     style={{
                       background: '#201F1D',
                     }}

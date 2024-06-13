@@ -34,6 +34,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const { isSafariBrowser, isMobile } = useVerifyBrowserType();
 
   const isFirstTab = tabs.tab === 0;
+  const isSecondTab = tabs.tab === 1;
 
   return (
     <Dialog.Modal
@@ -80,34 +81,36 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Actions
         w="full"
         maxW={450}
-        mt={isFirstTab ? 'auto' : 'unset'}
+        mt={isSecondTab ? 'unset' : 'auto'}
         sx={{
           '&>hr': {
             mt: '0',
-            mb: '0',
+            mb: isSecondTab ? '0' : 8,
           },
         }}
       >
         <VStack w="full" alignItems="center" bg="dark.950" zIndex={100}>
-          <HStack my={6} w="full" justifyContent="space-between">
-            <Text variant="description" fontSize="xs">
-              Estimated Fee
-            </Text>
-            <Text
-              color="white"
-              variant="description"
-              display="flex"
-              gap={2}
-              fontSize="xs"
-            >
-              Vault creation is free on Fuel Network
-              <Tooltip
-                placment="top-start"
-                text="Vault creation is free on Bako Safe
+          {isSecondTab && (
+            <HStack my={6} w="full" justifyContent="space-between">
+              <Text variant="description" fontSize="xs">
+                Estimated Fee
+              </Text>
+              <Text
+                color="white"
+                variant="description"
+                display="flex"
+                gap={2}
+                fontSize="xs"
+              >
+                Vault creation is free on Fuel Network
+                <Tooltip
+                  placment="top-start"
+                  text="Vault creation is free on Bako Safe
 Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."
-              />
-            </Text>
-          </HStack>
+                />
+              </Text>
+            </HStack>
+          )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
               bgColor="transparent"
