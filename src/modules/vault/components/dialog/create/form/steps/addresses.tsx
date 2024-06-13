@@ -94,10 +94,13 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
       <TabPanel p={0}>
         <VStack
+          draggable={false}
           w="full"
           overflowY="scroll"
+          scrollSnapStop="normal"
           sx={{
             touchAction: 'pan-y',
+            '&::-webkit-overflow-scrolling:': 'touch',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -111,7 +114,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
           }}
           pr={{ base: 2, sm: 4 }}
           h={500}
-          scrollSnapStop="normal"
         >
           <Dialog.Section
             w="full"
