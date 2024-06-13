@@ -92,11 +92,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel p={0} maxH={500}>
+      <TabPanel
+        p={0}
+        maxH={500}
+        sx={{
+          overscrollBehavior: 'none',
+        }}
+      >
         <VStack
           w="full"
           overflowY="scroll"
           sx={{
+            overscrollBehavior: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
