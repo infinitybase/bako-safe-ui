@@ -92,7 +92,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel p={0}>
+      <TabPanel p={0} maxH={500}>
         <VStack
           draggable={false}
           w="full"

@@ -58,7 +58,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Body
         maxW={450}
         mb={isFirstTab ? 8 : 0}
-        maxH={isFirstTab ? '60vh' : 'unset'}
+        maxH={isFirstTab ? '60vh' : 700}
         minH={!isFirstTab ? 500 : 'unset'}
       >
         <CreateVaultForm
