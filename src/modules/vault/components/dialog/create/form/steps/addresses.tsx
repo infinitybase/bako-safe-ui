@@ -97,6 +97,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
           w="full"
           overflowY="scroll"
           sx={{
+            touchAction: 'pan-y',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -110,6 +111,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
           }}
           pr={{ base: 2, sm: 4 }}
           h={500}
+          scrollSnapStop="normal"
         >
           <Dialog.Section
             w="full"
@@ -264,7 +266,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
             borderColor="grey.925"
             borderRadius="xl"
             p={4}
-            mb={4}
+            mb={{ base: 8, xs: 4 }}
           >
             <Dialog.Section
               w="full"

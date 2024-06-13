@@ -37,7 +37,9 @@ const DialogModal = (props: DialogModalProps) => {
         <ModalBody
           overflowY="auto"
           zIndex={400}
+          scrollSnapStop="normal"
           sx={{
+            touchAction: 'pan-y',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
