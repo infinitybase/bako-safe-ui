@@ -67,7 +67,7 @@ export const useSocket = () => {
       origin,
       request_id: request_id ?? '',
     };
-    socket.connect();
+    request_id && socket.connect();
   };
 
   /* 
