@@ -1,3 +1,4 @@
+import { BakoSafe } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -7,6 +8,7 @@ import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
 import {
+  NativeAssetId,
   useBakoSafeCreateTransaction,
   WorkspacesQueryKey,
 } from '@/modules/core';
@@ -97,14 +99,26 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
+  const currentBalance = vaultAssets.getCoinBalance(NativeAssetId);
+
   const getBalanceWithoutReservedAmount = (transactionAmount: string) => {
     const result = bn
       .parseUnits(transactionAmount)
-      .sub(bn.parseUnits('0.001'))
+      .sub(bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()))
       .format();
 
     return result;
   };
+
+  const defaultFee = '0.000043103';
+  const isBalanceLowerThanReservedAmount =
+    Number(currentBalance) <=
+    Number(
+      bn
+        .parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString())
+        .add(bn.parseUnits(defaultFee))
+        .format(),
+    );
 
   useEffect(() => {
     if (Number(transactionAmount) > 0) {
@@ -151,6 +165,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee,
     getBalanceWithoutReservedAmount,
+    isBalanceLowerThanReservedAmount,
   };
 };
 

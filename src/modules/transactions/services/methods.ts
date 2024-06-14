@@ -1,4 +1,5 @@
-import { Transfer } from 'bakosafe';
+import { BakoSafe, Transfer } from 'bakosafe';
+import { bn } from 'fuels';
 
 import { api } from '@/config/api';
 
@@ -20,7 +21,6 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from './types';
-import { bn } from 'fuels';
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -133,7 +133,9 @@ export class TransactionService {
       await vault.provider.getTransactionCost(transactionRequest);
 
     return {
-      fee: maxFee.add(bn.parseUnits('0.001')),
+      fee: maxFee.add(
+        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
+      ),
       transactionRequest,
     };
   }
