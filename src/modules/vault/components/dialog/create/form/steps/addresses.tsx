@@ -48,6 +48,9 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
     workspaceId,
   } = useAddressBook(!isSingleWorkspace);
 
+  const hasThreeOrMoreAddress =
+    form.watch('addresses') && form.watch('addresses')!.length >= 3;
+
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState<
     number | undefined
@@ -89,11 +92,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel p={0}>
+      <TabPanel
+        p={0}
+        maxH={500}
+        sx={{
+          overscrollBehavior: 'none',
+        }}
+      >
         <VStack
           w="full"
           overflowY="scroll"
           sx={{
+            overscrollBehavior: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -261,7 +271,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
             borderColor="grey.925"
             borderRadius="xl"
             p={4}
-            mb={4}
+            mb={{ base: 8, xs: 4 }}
           >
             <Dialog.Section
               w="full"
@@ -282,6 +292,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
+                    needShowOptionsAbove={hasThreeOrMoreAddress}
                     style={{
                       background: '#201F1D',
                     }}
