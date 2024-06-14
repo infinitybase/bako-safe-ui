@@ -3,6 +3,7 @@ import {
   AccordionItem,
   Button,
   Center,
+  CircularProgress,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -10,7 +11,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -27,10 +27,7 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import {
-  UseCreateTransaction,
-  useCreateTransaction,
-} from '@/modules/transactions/hooks';
+import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 
@@ -41,6 +38,7 @@ interface TransactionAccordionProps {
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
+  getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
 interface TransctionFormFieldProps {
@@ -48,47 +46,17 @@ interface TransctionFormFieldProps {
   index: number;
   assets: UseCreateTransaction['assets'];
   isFeeCalcLoading: boolean;
-  isFirstLoading: boolean;
-  setIsFirstLoading: (state: boolean) => void;
-  estimatedBalance: string;
-  setEstimatedBalance: (state: string) => void;
+  getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
-const TransactionFormField = ({
-  form,
-  assets,
-  index,
-  isFirstLoading,
-  setIsFirstLoading,
-  setEstimatedBalance,
-  estimatedBalance,
-}: TransctionFormFieldProps) => {
+const TransactionFormField = (props: TransctionFormFieldProps) => {
+  const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
+
   const asset = form.watch(`transactions.${index}.asset`);
 
   const { isSingleWorkspace } = useAuth();
-  const { account } = useAuth();
 
-  const { getBalanceWithoutReservedAmount, transactionFee } =
-    useCreateTransaction({
-      onClose: () => console.log('ignore'),
-      isFirstLoading,
-      initialBalance: assets.getCoinBalance(asset),
-      to: account,
-      assetId: NativeAssetId,
-    });
-
-  useEffect(() => {
-    if (transactionFee?.length && isFirstLoading) {
-      setIsFirstLoading(false);
-      const balanceWithoutReservedAmountAndEstimatedFee =
-        getBalanceWithoutReservedAmount(
-          assets.getCoinBalance(asset),
-          transactionFee,
-        );
-
-      setEstimatedBalance(balanceWithoutReservedAmountAndEstimatedFee);
-    }
-  }, [transactionFee?.length]);
+  const balanceAvailable = getBalanceAvailable();
 
   const {
     workspaceId,
@@ -202,9 +170,20 @@ const TransactionFormField = ({
               <FormHelperText>
                 {asset && (
                   <Text display="flex" alignItems="center">
-                    Balance (available): {assets.getAssetInfo(asset)?.slug}{' '}
-                    {/* {balanceWithoutReservedAmount} */}
-                    {estimatedBalance}
+                    Balance (available):{' '}
+                    {isFeeCalcLoading ? (
+                      <CircularProgress
+                        trackColor="dark.100"
+                        size={3}
+                        isIndeterminate
+                        color="brand.500"
+                        ml={1}
+                      />
+                    ) : (
+                      <>
+                        {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
+                      </>
+                    )}
                   </Text>
                 )}
               </FormHelperText>
@@ -220,11 +199,15 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const [isFirstLoading, setIsFirstLoading] = useState(true);
-  const [estimatedBalance, setEstimatedBalance] = useState('');
-
-  const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
-    props;
+  const {
+    form,
+    transactions,
+    assets,
+    accordion,
+    nicks,
+    isFeeCalcLoading,
+    getBalanceAvailable,
+  } = props;
 
   return (
     <Accordion
@@ -314,14 +297,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 }
               >
                 <TransactionFormField
-                  isFirstLoading={isFirstLoading}
-                  setIsFirstLoading={setIsFirstLoading}
-                  setEstimatedBalance={setEstimatedBalance}
-                  estimatedBalance={estimatedBalance}
                   index={index}
                   form={form}
                   assets={assets}
                   isFeeCalcLoading={isFeeCalcLoading}
+                  getBalanceAvailable={getBalanceAvailable}
                 />
               </TransactionAccordion.Item>
             </AccordionItem>

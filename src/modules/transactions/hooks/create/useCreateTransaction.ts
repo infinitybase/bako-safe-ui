@@ -20,12 +20,11 @@ import {
 } from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
+const recipientMock =
+  'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
+
 interface UseCreateTransactionParams {
   onClose: () => void;
-  initialBalance?: string;
-  to?: string;
-  assetId?: string;
-  isFirstLoading?: boolean;
 }
 
 const useTransactionAccordion = () => {
@@ -43,14 +42,13 @@ const useTransactionAccordion = () => {
 };
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
+  const [validTransactionFee, setValidTransactionFee] = useState<
+    string | undefined
+  >(undefined);
+
   const auth = useAuth();
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
-  const getBalanceEstimatedMaxFee =
-    props?.initialBalance &&
-    props?.to &&
-    props?.assetId &&
-    props.isFirstLoading;
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
@@ -69,6 +67,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
+
+  // Para lógica de multi asset deve buscar balances do vault
+  const vaultBalance = vaultAssets.getCoinBalance(NativeAssetId);
 
   const { transactionsFields, form } = useCreateTransactionForm({
     assets: vaultAssets.assets?.map((asset) => ({
@@ -107,58 +108,32 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
-  const getBalanceWithoutReservedAmount = (
-    balance: string,
-    transactionFee: string,
-  ) => {
-    // console.log('fee:', transactionFee);
-    // console.log('balance', balance);
-    // console.log(
-    //   'balance - reservedAmount',
-    //   bn.parseUnits(balance).sub(bn.parseUnits('0.001')).format(),
-    // );
-    // console.log(
-    //   'balance - transactionFee',
-    //   bn.parseUnits(balance).sub(bn.parseUnits(transactionFee)).format(),
-    // );
+  const transactionTotalAmount = form
+    .watch('transactions')
+    ?.reduce((acc, t) => acc.add(bn.parseUnits(t.amount)), bn(0))
+    ?.format();
 
-    const result = bn
-      .parseUnits(balance)
-      .sub(bn.parseUnits('0.001'))
-      .sub(bn.parseUnits(transactionFee))
+  const getBalanceAvailable = useCallback(() => {
+    // Para lógica de multi asset deve considerar o assetId
+    const assetInputsAmount =
+      transactionTotalAmount && Number(transactionTotalAmount) > 0
+        ? bn
+            .parseUnits(transactionTotalAmount)
+            .sub(bn.parseUnits(transactionAmount))
+        : bn(0);
+
+    const balanceAvailable = bn(bn.parseUnits(vaultBalance))
+      .sub(assetInputsAmount)
+      .sub(bn.parseUnits(validTransactionFee ?? '0'))
       .format();
 
-    // console.log('result', result);
-
-    return result;
-  };
-
-  useEffect(() => {
-    if (getBalanceEstimatedMaxFee) {
-      resolveTransactionCosts.mutate({
-        assets: [
-          {
-            to: 'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp',
-            amount: transactionAmount,
-            assetId: props.assetId ?? NativeAssetId,
-          },
-        ],
-        vault: vaultDetails.predicateInstance!,
-      });
-    }
-
-    if (Number(transactionAmount) > 0) {
-      const { transactions } = form.getValues();
-      resolveTransactionCosts.mutate({
-        assets: transactions!.map((transaction) => ({
-          to: transaction.value,
-          amount: transaction.amount,
-          assetId: transaction.asset,
-        })),
-        vault: vaultDetails.predicateInstance!,
-      });
-    }
-  }, [transactionAmount, form.formState.isValid]);
+    return balanceAvailable;
+  }, [
+    transactionAmount,
+    validTransactionFee,
+    transactionTotalAmount,
+    vaultBalance,
+  ]);
 
   const handleClose = () => {
     props?.onClose();
@@ -175,6 +150,44 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     });
   });
 
+  useEffect(() => {
+    if (transactionFee) {
+      setValidTransactionFee(transactionFee);
+      form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
+    }
+  }, [transactionFee]);
+
+  useEffect(() => {
+    const { transactions } = form.getValues();
+
+    const assets =
+      Number(transactionTotalAmount) > 0
+        ? transactions!
+            .map((transaction) => ({
+              to: transaction.value,
+              amount: transaction.amount,
+              assetId: transaction.asset,
+            }))
+            .filter(
+              (transaction) =>
+                transaction.to !== '' &&
+                !isNaN(Number(transaction.amount)) &&
+                Number(transaction.amount) > 0,
+            )
+        : [
+            {
+              to: recipientMock,
+              amount: vaultBalance,
+              assetId: NativeAssetId,
+            },
+          ]; // Para lógica de multi asset deve buscar balances do vault
+
+    resolveTransactionCosts.mutate({
+      assets,
+      vault: vaultDetails.predicateInstance!,
+    });
+  }, [transactionTotalAmount, vaultBalance]);
+
   return {
     resolveTransactionCosts,
     transactionsFields,
@@ -189,8 +202,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     navigate,
     accordion,
     handleClose,
-    transactionFee,
-    getBalanceWithoutReservedAmount,
+    transactionFee: validTransactionFee,
+    getBalanceAvailable,
   };
 };
 

@@ -28,8 +28,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     transactionsFields,
     transactionRequest,
     resolveTransactionCosts,
-    handleClose,
     transactionFee,
+    getBalanceAvailable,
+    handleClose,
   } = useCreateTransaction({
     onClose: props.onClose,
   });
@@ -37,13 +38,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { isMobile } = useVerifyBrowserType();
 
-  if (
-    transactionFee &&
-    !form.getValues(`transactions.${accordion.index}.fee`)
-  ) {
-    form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
-    form.trigger(`transactions.${accordion.index}.amount`);
-  }
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
 
@@ -72,6 +66,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           accordion={accordion}
           transactionsFields={transactionsFields}
           isFeeCalcLoading={resolveTransactionCosts.isLoading}
+          getBalanceAvailable={getBalanceAvailable}
         />
       </Dialog.Body>
 
@@ -84,11 +79,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       >
         <Divider mb={2} w="full" />
         <Text
-          visibility={
-            resolveTransactionCosts.isLoading || !resolveTransactionCosts.data
-              ? 'hidden'
-              : 'visible'
-          }
+          visibility={!transactionFee ? 'hidden' : 'visible'}
           variant="description"
         >
           Max fee:{' '}
