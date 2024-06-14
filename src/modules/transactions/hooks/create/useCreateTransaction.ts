@@ -153,6 +153,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   useEffect(() => {
     if (transactionFee) {
       setValidTransactionFee(transactionFee);
+      form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
+    } else if (validTransactionFee) {
       form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
     }
   }, [transactionFee]);
