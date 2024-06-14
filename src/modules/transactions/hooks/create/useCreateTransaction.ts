@@ -68,7 +68,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
 
-  // Para lógica de multi asset deve buscar balances do vault
+  // TODO: For multi-asset use the vault balances
   const vaultBalance = vaultAssets.getCoinBalance(NativeAssetId);
 
   const { transactionsFields, form } = useCreateTransactionForm({
@@ -114,7 +114,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     ?.format();
 
   const getBalanceAvailable = useCallback(() => {
-    // Para lógica de multi asset deve considerar o assetId
+    // TODO: For multi assets consider the assetId
     const assetInputsAmount =
       transactionTotalAmount && Number(transactionTotalAmount) > 0
         ? bn
@@ -182,7 +182,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
               amount: vaultBalance,
               assetId: NativeAssetId,
             },
-          ]; // Para lógica de multi asset deve buscar balances do vault
+          ]; // TODO: For multi-asset use the vault balances
 
     resolveTransactionCosts.mutate({
       assets,
