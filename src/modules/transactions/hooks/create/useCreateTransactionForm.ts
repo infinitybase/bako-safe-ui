@@ -19,6 +19,14 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       amount: yup
         .string()
         .required('Amount is required.')
+        .test(
+          'amount-greater-than-zero',
+          'Amount must be greater than 0.',
+          (_, context) => {
+            const { parent } = context;
+            return bn.parseUnits(parent.amount).gt(bn(0));
+          },
+        )
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
