@@ -26,7 +26,7 @@ const NotificationsEmptyState = () => {
             textAlign="center"
             fontWeight={600}
           >
-            No Data available
+            Nothing to show here.
           </Heading>
         </Box>
 
@@ -38,7 +38,7 @@ const NotificationsEmptyState = () => {
             fontWeight={200}
             lineHeight={1.4}
           >
-            {`Currently, there is no available data to display in this section.`}
+            {`You don't have any notifications yet. We will notify you as soon as a notification arrives.`}
           </Text>
         </Box>
       </Card>

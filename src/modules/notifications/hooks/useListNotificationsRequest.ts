@@ -18,7 +18,7 @@ const useListNotificationsRequest = (account: string, enabled?: boolean) => {
     {
       getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
         currentPage !== totalPages ? nextPage : undefined,
-      // enabled,
+      enabled,
       refetchOnWindowFocus: false,
     },
   );
