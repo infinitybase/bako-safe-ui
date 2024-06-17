@@ -1,4 +1,5 @@
 import { bn } from 'fuels';
+import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -150,6 +151,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     });
   });
 
+  const debouncedResolveTransactionCosts = useCallback(
+    debounce((assets, vault) => {
+      resolveTransactionCosts.mutate({ assets, vault });
+    }, 300),
+    [],
+  );
+
   useEffect(() => {
     if (transactionFee) {
       setValidTransactionFee(transactionFee);
@@ -190,10 +198,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
             },
           ]; // TODO: For multi-asset use the vault balances
 
-    resolveTransactionCosts.mutate({
-      assets,
-      vault: vaultDetails.predicateInstance!,
-    });
+    debouncedResolveTransactionCosts(assets, vaultDetails.predicateInstance!);
   }, [transactionTotalAmount, vaultBalance]);
 
   return {
