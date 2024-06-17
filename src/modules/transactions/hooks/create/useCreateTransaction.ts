@@ -110,14 +110,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     return result;
   };
 
-  const defaultFee = '0.000043103';
   const isBalanceLowerThanReservedAmount =
     Number(currentBalance) <=
     Number(
-      bn
-        .parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString())
-        .add(bn.parseUnits(defaultFee))
-        .format(),
+      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
     );
 
   useEffect(() => {
