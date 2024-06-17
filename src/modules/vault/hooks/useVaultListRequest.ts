@@ -4,7 +4,7 @@ import { GetAllPredicatesPayload, VaultService } from '../services';
 
 const useVaultListRequest = (
   filter: GetAllPredicatesPayload,
-  enabled: boolean,
+  enabled?: boolean,
 ) => {
   const { data, ...query } = useInfiniteQuery(
     ['vault/pagination', filter],

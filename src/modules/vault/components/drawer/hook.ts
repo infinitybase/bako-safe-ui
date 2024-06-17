@@ -14,7 +14,7 @@ import { useVaultState } from '../../states';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
-  isOpen: boolean;
+  isOpen?: boolean;
   onSelect?: (
     vault: Predicate & {
       workspace: Workspace;
