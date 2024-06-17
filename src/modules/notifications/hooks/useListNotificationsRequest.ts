@@ -6,6 +6,8 @@ import { NotificationsQueryKey } from '@/modules/core';
 import { NotificationService } from '../services';
 
 const useListNotificationsRequest = (account: string, enabled?: boolean) => {
+  console.log('está funcionando localmente');
+
   const { data, ...query } = useInfiniteQuery(
     [NotificationsQueryKey.PAGINATED_LIST, account],
     ({ pageParam }) =>
