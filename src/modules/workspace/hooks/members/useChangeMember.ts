@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
   Member,
+  Pages,
   PermissionRoles,
   useTab,
   Workspace,
@@ -37,6 +38,8 @@ interface MemberPermission {
 export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
+  const navigate = useNavigate();
+
   const { goWorkspace } = useWorkspace();
   const { successToast } = useSettingsToast();
 
@@ -188,12 +191,22 @@ const useChangeMember = () => {
 
   const clearSteps = () => {
     tabs.set(MemberTabState.FORM);
-    memberForm.setValue('address', { value: '' });
-    permissionForm.setValue('permission', '');
+    memberForm.reset();
+    permissionForm.reset();
+    editForm.reset();
+    isEditMember && redirectToAddMember();
   };
 
   const clearTabs = () => {
     tabs.set(MemberTabState.FORM);
+  };
+
+  const redirectToAddMember = () => {
+    navigate(
+      Pages.membersWorkspace({
+        workspaceId: params.workspaceId ?? '',
+      }),
+    );
   };
 
   const formState = {
