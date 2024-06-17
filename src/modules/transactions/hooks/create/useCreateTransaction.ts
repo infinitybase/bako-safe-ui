@@ -163,7 +163,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     if (Number(transactionAmount) > 0 && validTransactionFee) {
       form.trigger(`transactions.${accordion.index}.amount`);
     }
-  }, [accordion.index]);
+  }, [accordion.index, validTransactionFee]);
 
   useEffect(() => {
     const { transactions } = form.getValues();
