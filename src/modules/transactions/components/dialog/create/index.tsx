@@ -137,7 +137,12 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={!form.formState.isValid || isCurrentAmountZero}
+          isDisabled={
+            !form.formState.isValid ||
+            isCurrentAmountZero ||
+            resolveTransactionCosts.isLoading ||
+            !transactionFee
+          }
           isLoading={transactionRequest.isLoading}
           onClick={form.handleCreateTransaction}
           _hover={{
