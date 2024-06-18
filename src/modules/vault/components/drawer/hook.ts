@@ -75,6 +75,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   ) => {
     props.onClose?.();
     setIsFirstAssetsLoading(true);
+    queryClient.resetQueries();
     queryClient.invalidateQueries('vault/pagination');
     vaultListRequestRequest.refetch();
     setSearch('');

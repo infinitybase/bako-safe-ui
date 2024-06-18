@@ -42,7 +42,11 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     : !isLoading && !isFetching;
 
   useEffect(() => {
-    () => refetch();
+    refetch();
+
+    return () => {
+      refetch();
+    };
   }, []);
 
   return (
