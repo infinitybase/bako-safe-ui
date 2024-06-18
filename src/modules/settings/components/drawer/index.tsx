@@ -38,7 +38,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const {
-    webauthn: { nicknamesData, search, handleInputChange, form: formAuthn },
+    webauthn: {
+      nicknamesData,
+      nicknamesRequest,
+      search,
+      handleInputChange,
+      form: formAuthn,
+    },
   } = useSignIn();
   const { accountType } = useAuthStore();
   const { formState } = formAuthn;
@@ -204,7 +210,9 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={isLoading || isNicknameInUse}
+                isDisabled={
+                  isLoading || isNicknameInUse || nicknamesRequest.isLoading
+                }
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"

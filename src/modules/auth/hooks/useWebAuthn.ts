@@ -250,7 +250,8 @@ const useWebAuthn = () => {
     handleChangeTab,
     hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
     checkNickname: useCheckNickname(searchRequest),
-    nicknamesData: nicknames.data,
+    nicknamesData: nicknames.data, // TODO: remove this, use nicknamesRequest.data instead
+    nicknamesRequest: nicknames,
     handleInputChange,
     isOpen,
     search,
