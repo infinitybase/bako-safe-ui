@@ -18,6 +18,7 @@ import {
   useCheckNickname,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
+import { useContactToast } from '@/modules/addressBook';
 
 export enum WebAuthnState {
   LOGIN = 0,
@@ -37,7 +38,7 @@ const useWebAuthn = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
-  const toast = useToast();
+  const { successToast } = useContactToast();
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -168,7 +169,7 @@ const useWebAuthn = () => {
           loginForm.reset({ name: name });
           memberForm.reset();
           setSearch('');
-          toast.success('Account created successfully.');
+          successToast({ title: 'Account created successfully.' });
         },
       })
       .catch((error) => {
