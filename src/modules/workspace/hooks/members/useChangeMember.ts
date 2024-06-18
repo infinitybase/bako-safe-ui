@@ -103,10 +103,11 @@ const useChangeMember = () => {
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');
+    const updatedMemberPermission = editForm.getValues('permission');
     const permission = data.permission as PermissionRoles;
 
-    // If has memberAddress it means that comes from the memberForm(creation)
-    if (memberAddress) {
+    // If not has an updated member permission and has a memberAddress it means that comes from the memberForm(creation)
+    if (!updatedMemberPermission && memberAddress) {
       memberRequest.mutate(memberAddress, {
         onSettled: (data?: Workspace) => {
           workspaceRequest.refetch().then(() => {
@@ -136,8 +137,10 @@ const useChangeMember = () => {
     const member = workspace.members.find(
       (member) => member.address === memberAddress,
     );
-    // If !member and !memberAddress it means that comes from the editForm
-    if (!member) return;
+
+    // If not has an updated member permission or not has a member it means that comes from the editForm
+    if (!updatedMemberPermission || !member) return;
+
     permissionsRequest.mutate(
       {
         member: member.id,
@@ -193,8 +196,11 @@ const useChangeMember = () => {
     tabs.set(MemberTabState.FORM);
     memberForm.reset();
     permissionForm.reset();
-    editForm.reset();
-    isEditMember && redirectToAddMember();
+
+    if (isEditMember) {
+      editForm.reset();
+      redirectToAddMember();
+    }
   };
 
   const clearTabs = () => {
