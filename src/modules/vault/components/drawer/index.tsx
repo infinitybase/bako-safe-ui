@@ -19,7 +19,6 @@ import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
-import { useEffect } from 'react';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
@@ -30,7 +29,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const {
     drawer,
     search,
-    request: { vaults, isSuccess, isLoading, isFetching, refetch },
+    request: { vaults, isSuccess, isLoading, isFetching },
     inView,
   } = useVaultDrawer({
     onClose: props.onClose,
@@ -40,14 +39,6 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
-
-  useEffect(() => {
-    refetch();
-
-    return () => {
-      refetch();
-    };
-  }, []);
 
   return (
     <Drawer
