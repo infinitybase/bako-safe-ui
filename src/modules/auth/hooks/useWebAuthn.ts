@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-import { EnumUtils, useTab } from '@/modules/core';
+import { EnumUtils, useTab, useToast } from '@/modules/core';
 
 import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
@@ -37,6 +37,7 @@ const useWebAuthn = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
+  const toast = useToast();
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -167,6 +168,7 @@ const useWebAuthn = () => {
           loginForm.reset({ name: name });
           memberForm.reset();
           setSearch('');
+          toast.success('Account created successfully.');
         },
       })
       .catch((error) => {
@@ -215,7 +217,7 @@ const useWebAuthn = () => {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
       primaryAction: 'Create account',
-      secondaryAction: 'Cancel',
+      secondaryAction: 'Already have an account? Sign in',
       handlePrimaryAction: handleCreate,
       handlePrimaryActionUsingEnterKey: handleCreateUsingEnterKey,
       handleSecondaryAction: resetDialogForms,
@@ -227,7 +229,7 @@ const useWebAuthn = () => {
     [WebAuthnState.LOGIN]: {
       isValid: true,
       primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
-      secondaryAction: 'Create account',
+      secondaryAction: `Don't have an account? Sign up`,
       handlePrimaryAction: handleLogin,
       handlePrimaryActionUsingEnterKey: handleLoginUsingEnterKey,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
