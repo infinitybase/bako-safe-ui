@@ -151,11 +151,12 @@ const useWebAuthn = () => {
     }
   };
 
-  useEffect(() => {
-    if (accountsRequest?.data?.length === 0) {
-      tabs.set(WebAuthnState.REGISTER);
-    }
-  }, [accountsRequest.data, isOpen]);
+  // Commented out this logic to open the login tab when click on login with  passkey
+  // useEffect(() => {
+  //   if (accountsRequest?.data?.length === 0) {
+  //     tabs.set(WebAuthnState.REGISTER);
+  //   }
+  // }, [accountsRequest.data, isOpen]);
 
   const createBtnIsDisabled =
     !memberForm.formState.isValid ||
