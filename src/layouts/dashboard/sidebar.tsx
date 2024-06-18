@@ -7,7 +7,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { useCreateTransaction } from '@/modules';
+import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useVaultDetails } from '@/modules/vault';
