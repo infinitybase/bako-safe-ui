@@ -38,7 +38,9 @@ const useWebAuthn = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
-  const { successToast } = useContactToast();
+  const { successToast } = useContactToast({
+    createdAccountNotification: true,
+  });
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
