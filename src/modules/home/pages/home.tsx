@@ -34,6 +34,7 @@ import { TxService } from '@/utils/transaction-history';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
+import { Address } from 'fuels';
 
 const HomePage = () => {
   const {
@@ -53,42 +54,18 @@ const HomePage = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
-  // const solve = async () => {
-  //   return await getTransactions();
-  // };
-
   const getTxHistory = async () => {
+    const rawAddress = Address.fromString(
+      'fuel1yd9z98lev4tw5yp0uxswt0freea33fv3e3w248wgtnzz9526sn5sshnhh8',
+    ).toB256();
+
     const result = await TxService.getTransactionHistory({
-      address:
-        '0x893e864a5ab4e64f1e618910c57638499f50a04c471b138e1705b99193dbca6c',
+      address: rawAddress,
       providerUrl: 'https://testnet.fuel.network/v1/graphql',
     });
 
-    const operations = result.transactionHistory.map(
-      (transaction) => transaction.operations,
-    );
-
-    console.log('operations:', operations);
-    // console.log('result:', result);
+    return result;
   };
-
-  // Recebedor: 0x893e864a5ab4e64f1e618910c57638499f50a04c471b138e1705b99193dbca6c
-  // Enviador: 0xbefc6ebfa0f300020efb1dabf25c6dd219bf5331c56de62a7f4b4772d75d238b
-  // C1: 0x5ce3e354e276b31593e2505e3d5f5ced7fa83bb3dacf2108205d646deec8747f
-  // console.log(
-  //   'Recebedor',
-  //   Address.fromString(
-  //     'fuel13ylgvjj6knny78np3ygv2a3cfx04pgzvgud38rshqkuery7mefkqzcud6h',
-  //   ).toB256(),
-  // ),
-
-  // Certeza que foi uma transação de recebimento
-  // inputs -> owner = Quem enviou (Se aqui não for seu endereço,
-  // então vc recebeu um valor. Se for seu endereço, vc enviou um valor) - __typename= "InputCoin"
-  // outputs: [0] - to = Quem recebeu - __typename: "CoinOutput"
-  // outputs: [1] - to = Quem enviou : __typename: "ChangeOutput"
-
-  // index 0 recebeu, index 1 enviou
 
   const { isMobile, isExtraSmall } = useScreenSize();
 
