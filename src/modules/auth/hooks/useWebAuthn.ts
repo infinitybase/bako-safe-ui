@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-import { EnumUtils, useTab } from '@/modules/core';
+import { EnumUtils, useTab, useToast } from '@/modules/core';
 
 import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
@@ -18,6 +18,7 @@ import {
   useCheckNickname,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
+import { useContactToast } from '@/modules/addressBook';
 
 export enum WebAuthnState {
   LOGIN = 0,
@@ -37,6 +38,9 @@ const useWebAuthn = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
+  const { successToast } = useContactToast({
+    createdAccountNotification: true,
+  });
 
   const tabs = useTab<WebAuthnState>({
     tabs: EnumUtils.toNumberArray(WebAuthnState),
@@ -147,11 +151,12 @@ const useWebAuthn = () => {
     }
   };
 
-  useEffect(() => {
-    if (accountsRequest?.data?.length === 0) {
-      tabs.set(WebAuthnState.REGISTER);
-    }
-  }, [accountsRequest.data, isOpen]);
+  // Commented out this logic to open the login tab when click on login with  passkey
+  // useEffect(() => {
+  //   if (accountsRequest?.data?.length === 0) {
+  //     tabs.set(WebAuthnState.REGISTER);
+  //   }
+  // }, [accountsRequest.data, isOpen]);
 
   const createBtnIsDisabled =
     !memberForm.formState.isValid ||
@@ -167,6 +172,7 @@ const useWebAuthn = () => {
           loginForm.reset({ name: name });
           memberForm.reset();
           setSearch('');
+          successToast({ title: 'Account created successfully.' });
         },
       })
       .catch((error) => {
@@ -215,7 +221,7 @@ const useWebAuthn = () => {
     [WebAuthnState.REGISTER]: {
       isValid: memberForm.formState.isValid,
       primaryAction: 'Create account',
-      secondaryAction: 'Cancel',
+      secondaryAction: 'Already have an account? Sign in',
       handlePrimaryAction: handleCreate,
       handlePrimaryActionUsingEnterKey: handleCreateUsingEnterKey,
       handleSecondaryAction: resetDialogForms,
@@ -227,7 +233,7 @@ const useWebAuthn = () => {
     [WebAuthnState.LOGIN]: {
       isValid: true,
       primaryAction: isSigningIn ? 'Signing in...' : 'Sign in',
-      secondaryAction: 'Create account',
+      secondaryAction: `Don't have an account? Sign up`,
       handlePrimaryAction: handleLogin,
       handlePrimaryActionUsingEnterKey: handleLoginUsingEnterKey,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
@@ -250,7 +256,8 @@ const useWebAuthn = () => {
     handleChangeTab,
     hardwareId: localStorage.getItem(localStorageKeys.HARDWARE_ID),
     checkNickname: useCheckNickname(searchRequest),
-    nicknamesData: nicknames.data,
+    nicknamesData: nicknames.data, // TODO: remove this, use nicknamesRequest.data instead
+    nicknamesRequest: nicknames,
     handleInputChange,
     isOpen,
     search,

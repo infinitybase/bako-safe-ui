@@ -38,6 +38,7 @@ const DialogModal = (props: DialogModalProps) => {
           overflowY="auto"
           zIndex={400}
           sx={{
+            overscrollBehavior: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
