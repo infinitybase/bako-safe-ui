@@ -93,6 +93,7 @@ const useAuth = () => {
       CookieName.SINGLE_WORKSPACE,
       CookieName.WEB_AUTHN_ID,
       CookieName.WEB_AUTHN_PK,
+      CookieName.ACCOUNT_TYPE,
     ]);
     store.logout();
   };

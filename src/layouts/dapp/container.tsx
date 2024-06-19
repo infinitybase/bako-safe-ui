@@ -18,6 +18,7 @@ const Container = (props: ContainerProps) => {
         '&::-webkit-scrollbar': { width: '0' },
         scrollbarWidth: 'none',
       }}
+      bgColor="dark.950"
     >
       <Box
         maxW={DAPP_CONTAINER_SIZES.width}

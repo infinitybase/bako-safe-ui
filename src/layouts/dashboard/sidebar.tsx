@@ -15,6 +15,7 @@ import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
+import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -37,7 +38,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
   const { vault } = useVaultDetails();
 
+
   const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+
+  const {
+    request: { refetch },
+  } = useVaultDrawer({ onClose: () => {} });
+
 
   const { hasPermission } = useWorkspace();
 
@@ -71,7 +78,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           isBalanceLowerThanReservedAmount={isBalanceLowerThanReservedAmount}
           isLoading={vaultRequest.isLoading}
           isFetching={vaultRequest.isFetching}
-          onChangeVault={drawer.onOpen}
+          onChangeVault={() => {
+            refetch(), drawer.onOpen();
+          }}
           hasBalance={vaultAssets.hasBalance}
           isPending={vault.transactions.isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}

@@ -102,6 +102,7 @@ const VaultBox = (props: VaultBoxPropx) => {
                 rightIcon={
                   isMobile ? <ReplaceIcon color="brand.500" /> : undefined
                 }
+                isDisabled={isLoading}
               >
                 Change {!isMobile && 'vault'}
               </Button>
