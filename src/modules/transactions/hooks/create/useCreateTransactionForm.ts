@@ -19,6 +19,14 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       amount: yup
         .string()
         .required('Amount is required.')
+        .test(
+          'amount-greater-than-zero',
+          'Amount must be greater than 0.',
+          (_, context) => {
+            const { parent } = context;
+            return bn.parseUnits(parent.amount).gt(bn(0));
+          },
+        )
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
@@ -50,7 +58,8 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             }[];
 
             const coinBalance = params.getCoinAmount(parent.asset);
-            const tranasctionsBalance = transactions
+
+            let transactionsBalance = transactions
               .filter((transaction) => transaction.asset === parent.asset)
               .reduce(
                 (currentValue, transaction) =>
@@ -58,7 +67,13 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
                 bn(0),
               );
 
-            return tranasctionsBalance.lte(coinBalance);
+            if (parent.fee && parent.asset === NativeAssetId) {
+              transactionsBalance = transactionsBalance.add(
+                bn.parseUnits(parent.fee),
+              );
+            }
+
+            return transactionsBalance.lte(coinBalance);
           },
         ),
       fee: yup.string(),

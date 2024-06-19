@@ -38,13 +38,11 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
   const { vault } = useVaultDetails();
 
-
   const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     request: { refetch },
   } = useVaultDrawer({ onClose: () => {} });
-
 
   const { hasPermission } = useWorkspace();
 
