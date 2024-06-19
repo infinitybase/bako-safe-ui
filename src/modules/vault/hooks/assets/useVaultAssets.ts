@@ -85,6 +85,14 @@ function useVaultAssets(predicate?: Vault) {
         }
       });
       setBiggerAsset(assets[bigger]);
+    } else {
+      setBiggerAsset({
+        assetId: NativeAssetId,
+        name: '',
+        icon: '',
+        slug: '',
+        amount: '0',
+      });
     }
   };
 

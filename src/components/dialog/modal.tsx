@@ -7,7 +7,7 @@ import {
   ModalProps,
 } from '@chakra-ui/react';
 
-import { useScreenSize, useVaultState } from '@/modules';
+import { useScreenSize } from '@/modules';
 
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
@@ -17,8 +17,6 @@ export interface DialogModalProps extends ModalProps {
 const DialogModal = (props: DialogModalProps) => {
   const { children, ...rest } = props;
   const { isMobile } = useScreenSize();
-
-  const { disableScroll } = useVaultState();
 
   return (
     <Modal
@@ -37,9 +35,10 @@ const DialogModal = (props: DialogModalProps) => {
         {...props.modalContentProps}
       >
         <ModalBody
-          overflowY={disableScroll ? 'hidden' : 'auto'}
+          overflowY="auto"
           zIndex={400}
           sx={{
+            overscrollBehavior: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',

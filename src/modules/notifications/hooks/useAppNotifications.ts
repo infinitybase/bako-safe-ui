@@ -35,10 +35,16 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     account,
     props?.isOpen,
   );
+
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
   const { setSelectedTransaction } = useTransactionState();
-  const { unreadCounter, setUnreadCounter } = useNotificationsStore();
+  const {
+    unreadCounter,
+    setUnreadCounter,
+    hasNewNotification,
+    setHasNewNotification,
+  } = useNotificationsStore();
 
   // const { currentWorkspace } = useWorkspace();
   const {
@@ -78,6 +84,15 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   };
 
   useEffect(() => {
+    if (hasNewNotification) {
+      console.log('inciando refetchamento');
+      notificationsListRequest.refetch();
+      unreadNotificationsRequest.refetch();
+      setHasNewNotification(false);
+    }
+  }, [hasNewNotification]);
+
+  useEffect(() => {
     if (inView.inView && !notificationsListRequest.isLoading) {
       notificationsListRequest.fetchNextPage();
     }
@@ -89,7 +104,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
 
   useEffect(() => {
     setUnreadCounter(unreadNotificationsRequest?.data?.total ?? 0);
-  }, [unreadNotificationsRequest?.data]);
+  }, [unreadNotificationsRequest?.data, hasNewNotification]);
 
   return {
     drawer: {

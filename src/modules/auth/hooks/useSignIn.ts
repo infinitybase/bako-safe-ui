@@ -10,6 +10,7 @@ import {
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
+import { ENetworks } from '@/utils/constants';
 
 import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
@@ -126,6 +127,11 @@ const useSignIn = () => {
 
       const network = await fuel.currentNetwork();
       const account = await fuel.currentAccount();
+
+      if (network.url === ENetworks.BETA_5) {
+        console.log('Try to connect to your local network');
+        throw Error;
+      }
 
       createUserRequest.mutate({
         address: account!,

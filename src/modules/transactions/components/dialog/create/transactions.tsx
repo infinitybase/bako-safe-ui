@@ -3,6 +3,7 @@ import {
   AccordionItem,
   Button,
   Center,
+  CircularProgress,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -37,21 +38,25 @@ interface TransactionAccordionProps {
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
+  getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
 interface TransctionFormFieldProps {
   form: UseCreateTransaction['form'];
   index: number;
   assets: UseCreateTransaction['assets'];
+  isFeeCalcLoading: boolean;
+  getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
-const TransactionFormField = ({
-  form,
-  assets,
-  index,
-}: TransctionFormFieldProps) => {
+const TransactionFormField = (props: TransctionFormFieldProps) => {
+  const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
+
   const asset = form.watch(`transactions.${index}.asset`);
+
   const { isSingleWorkspace } = useAuth();
+
+  const balanceAvailable = getBalanceAvailable();
 
   const {
     workspaceId,
@@ -65,15 +70,17 @@ const TransactionFormField = ({
   } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      form.watch('transactions'),
-      form.formState.errors.transactions,
-      false,
-      false,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: form.watch('transactions')!,
+      errors: form.formState.errors.transactions,
+      isUsingTemplate: false,
+      isFirstLoading: false,
+      dynamicCurrentIndex: index,
+      canRepeatAddresses: true,
+    });
 
   return (
     <>
@@ -162,9 +169,21 @@ const TransactionFormField = ({
               <FormLabel color="gray">Amount</FormLabel>
               <FormHelperText>
                 {asset && (
-                  <Text>
-                    Balance: {assets.getAssetInfo(asset)?.slug}{' '}
-                    {assets.getCoinBalance(asset)}
+                  <Text display="flex" alignItems="center">
+                    Balance (available):{' '}
+                    {isFeeCalcLoading ? (
+                      <CircularProgress
+                        trackColor="dark.100"
+                        size={3}
+                        isIndeterminate
+                        color="brand.500"
+                        ml={1}
+                      />
+                    ) : (
+                      <>
+                        {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
+                      </>
+                    )}
                   </Text>
                 )}
               </FormHelperText>
@@ -180,8 +199,15 @@ const TransactionFormField = ({
 };
 
 const TransactionAccordions = (props: TransactionAccordionProps) => {
-  const { form, transactions, assets, accordion, nicks, isFeeCalcLoading } =
-    props;
+  const {
+    form,
+    transactions,
+    assets,
+    accordion,
+    nicks,
+    isFeeCalcLoading,
+    getBalanceAvailable,
+  } = props;
 
   return (
     <Accordion
@@ -274,6 +300,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                   index={index}
                   form={form}
                   assets={assets}
+                  isFeeCalcLoading={isFeeCalcLoading}
+                  getBalanceAvailable={getBalanceAvailable}
                 />
               </TransactionAccordion.Item>
             </AccordionItem>

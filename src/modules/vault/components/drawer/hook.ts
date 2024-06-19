@@ -35,6 +35,8 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
+    // In local was working fine, but when deploy, the requests wasn't being updated even if invalidating it
+    // so, removing this props solve the problem
     props.isOpen,
   );
 
@@ -73,7 +75,9 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   ) => {
     props.onClose?.();
     setIsFirstAssetsLoading(true);
+    queryClient.resetQueries();
     queryClient.invalidateQueries('vault/pagination');
+    vaultListRequestRequest.refetch();
     setSearch('');
     selectWorkspace(vault.workspace.id);
     navigate(

@@ -21,8 +21,9 @@ import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { useCreateTransaction } from '@/modules/transactions';
 import { useWorkspace } from '@/modules/workspace';
-import { limitCharacters } from '@/utils';
+import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -86,6 +87,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   ).format({
     precision: 4,
   });
+
+  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const workspaceId = workspaces.current ?? '';
 
@@ -317,7 +320,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         !vault?.hasBalance ||
                         !vault?.hasEthBalance ||
                         !makeTransactionsPerm ||
-                        vault.transactions.isPendingSigner
+                        vault.transactions.isPendingSigner ||
+                        isBalanceLowerThanReservedAmount
                       }
                       variant="primary"
                       leftIcon={<SquarePlusIcon />}
@@ -325,6 +329,17 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       Send
                     </Button>
+                    {isBalanceLowerThanReservedAmount &&
+                      !vault.transactions.isPendingSigner && (
+                        <Text
+                          variant="description"
+                          textAlign={{ base: 'end', sm: 'left' }}
+                          fontSize="xs"
+                          color="error.500"
+                        >
+                          Not enough balance.
+                        </Text>
+                      )}
                     {vault.transactions.isPendingSigner ? (
                       <Text
                         variant="description"
@@ -403,8 +418,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         First thing first...
                       </Text>
                       <Text color="grey.200" maxW={340} textAlign="center">
-                        {`You don't have any vaults yet. Create a vault to start to
-                    save your assets.`}
+                        {`You don't have any assets yet.`}
                       </Text>
                     </VStack>
                   </Card>

@@ -24,15 +24,15 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
     useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions(
-      workspaceId!,
-      !isSingleWorkspace,
-      listContactsRequest.data,
-      [form.watch('address')],
-      form.formState.errors.address,
-      false,
-      false,
-    );
+    useAddressBookAutocompleteOptions({
+      workspaceId: workspaceId!,
+      includePersonal: !isSingleWorkspace,
+      contacts: listContactsRequest.data!,
+      fields: [form.watch('address')],
+      errors: form.formState.errors.address,
+      isUsingTemplate: false,
+      isFirstLoading: false,
+    });
 
   return (
     <Box w="full" maxW={480} mb="12px">

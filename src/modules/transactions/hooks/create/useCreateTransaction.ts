@@ -1,3 +1,6 @@
+import { BakoSafe } from 'bakosafe';
+import { bn } from 'fuels';
+import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,6 +9,7 @@ import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
 import {
+  NativeAssetId,
   useBakoSafeCreateTransaction,
   WorkspacesQueryKey,
 } from '@/modules/core';
@@ -17,6 +21,9 @@ import {
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
+
+const recipientMock =
+  'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
 
 interface UseCreateTransactionParams {
   onClose: () => void;
@@ -37,6 +44,10 @@ const useTransactionAccordion = () => {
 };
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
+  const [validTransactionFee, setValidTransactionFee] = useState<
+    string | undefined
+  >(undefined);
+
   const auth = useAuth();
   const navigate = useNavigate();
   const params = useParams<{ vaultId: string }>();
@@ -53,9 +64,14 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     mutationFn: TransactionService.resolveTransactionCosts,
   });
 
+  const transactionFee = resolveTransactionCosts.data?.fee.format();
+
   // Vault
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
+
+  // TODO: For multi-asset use the vault balances
+  const vaultBalance = vaultAssets.getCoinBalance(NativeAssetId);
 
   const { transactionsFields, form } = useCreateTransactionForm({
     assets: vaultAssets.assets?.map((asset) => ({
@@ -94,19 +110,37 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     `transactions.${accordion.index}.amount`,
   );
 
-  useEffect(() => {
-    if (Number(transactionAmount) > 0) {
-      const { transactions } = form.getValues();
-      resolveTransactionCosts.mutate({
-        assets: transactions!.map((transaction) => ({
-          to: transaction.value,
-          amount: transaction.amount,
-          assetId: transaction.asset,
-        })),
-        vault: vaultDetails.predicateInstance!,
-      });
-    }
-  }, [transactionAmount, form.formState.isValid]);
+  const transactionTotalAmount = form
+    .watch('transactions')
+    ?.reduce((acc, t) => acc.add(bn.parseUnits(t.amount)), bn(0))
+    ?.format();
+
+  const getBalanceAvailable = useCallback(() => {
+    // TODO: For multi assets consider the assetId
+    const assetInputsAmount =
+      transactionTotalAmount && Number(transactionTotalAmount) > 0
+        ? bn
+            .parseUnits(transactionTotalAmount)
+            .sub(bn.parseUnits(transactionAmount))
+        : bn(0);
+
+    const balanceAvailable = bn(bn.parseUnits(vaultBalance))
+      .sub(assetInputsAmount)
+      .sub(bn.parseUnits(validTransactionFee ?? '0'))
+      .format();
+
+    return balanceAvailable;
+  }, [
+    transactionAmount,
+    validTransactionFee,
+    transactionTotalAmount,
+    vaultBalance,
+  ]);
+  const isBalanceLowerThanReservedAmount =
+    Number(vaultBalance) <=
+    Number(
+      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
+    );
 
   const handleClose = () => {
     props?.onClose();
@@ -123,6 +157,56 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     });
   });
 
+  const debouncedResolveTransactionCosts = useCallback(
+    debounce((assets, vault) => {
+      resolveTransactionCosts.mutate({ assets, vault });
+    }, 300),
+    [],
+  );
+
+  useEffect(() => {
+    if (transactionFee) {
+      setValidTransactionFee(transactionFee);
+      form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
+    } else if (validTransactionFee) {
+      form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
+    }
+  }, [transactionFee]);
+
+  useEffect(() => {
+    if (Number(transactionAmount) > 0 && validTransactionFee) {
+      form.trigger(`transactions.${accordion.index}.amount`);
+    }
+  }, [accordion.index, resolveTransactionCosts.data]);
+
+  useEffect(() => {
+    const { transactions } = form.getValues();
+
+    const assets =
+      Number(transactionTotalAmount) > 0
+        ? transactions!
+            .map((transaction) => ({
+              to: transaction.value,
+              amount: transaction.amount,
+              assetId: transaction.asset,
+            }))
+            .filter(
+              (transaction) =>
+                transaction.to !== '' &&
+                !isNaN(Number(transaction.amount)) &&
+                Number(transaction.amount) > 0,
+            )
+        : [
+            {
+              to: recipientMock,
+              amount: vaultBalance,
+              assetId: NativeAssetId,
+            },
+          ]; // TODO: For multi-asset use the vault balances
+
+    debouncedResolveTransactionCosts(assets, vaultDetails.predicateInstance!);
+  }, [transactionTotalAmount, vaultBalance]);
+
   return {
     resolveTransactionCosts,
     transactionsFields,
@@ -137,6 +221,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     navigate,
     accordion,
     handleClose,
+    transactionFee: validTransactionFee,
+    getBalanceAvailable,
+    isBalanceLowerThanReservedAmount,
   };
 };
 

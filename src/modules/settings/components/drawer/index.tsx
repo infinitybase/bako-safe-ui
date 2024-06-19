@@ -18,9 +18,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
+import { useAuthStore, useSignIn } from '@/modules/auth';
 
 import { useSettings } from '../../hooks';
 
@@ -34,7 +36,30 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     handleSubmitSettings,
     updateSettingsRequest: { isLoading },
     onCloseDrawer,
+    mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
+  const {
+    webauthn: {
+      nicknamesData,
+      nicknamesRequest,
+      search,
+      handleInputChange,
+      form: formAuthn,
+      setSearch,
+    },
+  } = useSignIn();
+  const { userId } = useAuthStore();
+
+  const { formState } = formAuthn;
+
+  const isNicknameInUse =
+    !!nicknamesData?.name && nicknamesData?.id !== userId && search?.length > 0;
+
+  const name = mySettingsRequest.data?.name;
+
+  useEffect(() => {
+    setSearch(name ?? '');
+  }, [name, props.isOpen]);
 
   return (
     <Drawer
@@ -93,13 +118,36 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
-                      value={field.value}
-                      onChange={field.onChange}
+                      // value={field.value}
+                      // onChange={field.onChange}
                       placeholder=" "
+                      value={search}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        field.onChange(e.target.value);
+                      }}
+                      onKeyDown={(e) =>
+                        formState.handlePrimaryActionUsingEnterKey(e)
+                      }
+                      isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
                     <FormLabel>Name</FormLabel>
-                    <FormHelperText color="error.500">
-                      {fieldState.error?.message}
+
+                    <FormHelperText
+                      color={
+                        (nicknamesData?.name && nicknamesData?.id !== userId) ||
+                        form.formState.errors.name?.message
+                          ? 'error.500'
+                          : 'grey.500'
+                      }
+                    >
+                      {isNicknameInUse
+                        ? 'Name already exists'
+                        : form.formState.errors.name?.message
+                        ? form.formState.errors.name?.message
+                        : search.length > 0
+                        ? 'This name is available'
+                        : ''}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -163,7 +211,9 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading || isNicknameInUse || nicknamesRequest.isLoading
+                }
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"
