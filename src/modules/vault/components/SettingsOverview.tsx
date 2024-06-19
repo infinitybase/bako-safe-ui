@@ -217,7 +217,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       alignSelf="end"
                       isDisabled={
                         !vault?.hasBalance ||
-                        !vault?.hasEthBalance ||
                         blockedTransfers ||
                         !makeTransactionsPerm ||
                         isBalanceLowerThanReservedAmount

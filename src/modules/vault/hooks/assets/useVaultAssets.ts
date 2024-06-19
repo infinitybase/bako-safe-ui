@@ -161,10 +161,6 @@ function useVaultAssets(predicate?: Vault) {
     return getCoinBalance(NativeAssetId);
   }, [getCoinBalance]);
 
-  const hasEthBalance = useMemo(() => {
-    return getCoinAmount(NativeAssetId).gt(0);
-  }, [getCoinAmount]);
-
   return {
     assets,
     ...rest,
@@ -175,7 +171,6 @@ function useVaultAssets(predicate?: Vault) {
     setVisibleBalance,
     hasBalance,
     ethBalance,
-    hasEthBalance,
     hasAssets: !!assets?.length,
   };
 }
