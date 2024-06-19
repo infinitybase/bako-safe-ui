@@ -18,11 +18,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useAuthStore, useSignIn } from '@/modules/auth';
-import { TypeUser } from '@/modules/auth/services';
 
 import { useSettings } from '../../hooks';
 
@@ -36,6 +36,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     handleSubmitSettings,
     updateSettingsRequest: { isLoading },
     onCloseDrawer,
+    mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const {
     webauthn: {
@@ -44,15 +45,21 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       search,
       handleInputChange,
       form: formAuthn,
+      setSearch,
     },
   } = useSignIn();
-  const { accountType } = useAuthStore();
+  const { userId } = useAuthStore();
+
   const { formState } = formAuthn;
 
-  const isFromWebAuthn = accountType === TypeUser.WEB_AUTHN;
-
   const isNicknameInUse =
-    !!nicknamesData?.name && search?.length > 0 && isFromWebAuthn;
+    !!nicknamesData?.name && nicknamesData?.id !== userId && search?.length > 0;
+
+  const name = mySettingsRequest.data?.name;
+
+  useEffect(() => {
+    setSearch(name ?? '');
+  }, [name, props.isOpen]);
 
   return (
     <Drawer
@@ -126,28 +133,22 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     />
                     <FormLabel>Name</FormLabel>
 
-                    {isFromWebAuthn ? (
-                      <FormHelperText
-                        color={
-                          nicknamesData?.name ||
-                          form.formState.errors.name?.message
-                            ? 'error.500'
-                            : 'grey.500'
-                        }
-                      >
-                        {isNicknameInUse
-                          ? 'Name already exists'
-                          : form.formState.errors.name?.message
-                          ? form.formState.errors.name?.message
-                          : search.length > 0
-                          ? 'This name is available'
-                          : ''}
-                      </FormHelperText>
-                    ) : (
-                      <FormHelperText color="error.500">
-                        {fieldState.error?.message}
-                      </FormHelperText>
-                    )}
+                    <FormHelperText
+                      color={
+                        (nicknamesData?.name && nicknamesData?.id !== userId) ||
+                        form.formState.errors.name?.message
+                          ? 'error.500'
+                          : 'grey.500'
+                      }
+                    >
+                      {isNicknameInUse
+                        ? 'Name already exists'
+                        : form.formState.errors.name?.message
+                        ? form.formState.errors.name?.message
+                        : search.length > 0
+                        ? 'This name is available'
+                        : ''}
+                    </FormHelperText>
                   </FormControl>
                 )}
               />
