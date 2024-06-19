@@ -34,7 +34,6 @@ const useGetWorkspaceBalanceRequest = (
   return {
     balance: {
       ...data,
-      balance: data?.balance,
       balanceUSD: data?.balanceUSD,
       workspaceId: data?.workspaceId,
       assetsBalance: handleAssetsBalance(data?.assetsBalance),
