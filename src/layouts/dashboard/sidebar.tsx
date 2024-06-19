@@ -7,6 +7,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
+import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useVaultDetails } from '@/modules/vault';
@@ -37,9 +38,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
   const { vault } = useVaultDetails();
 
+
+  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+
   const {
     request: { refetch },
   } = useVaultDrawer({ onClose: () => {} });
+
 
   const { hasPermission } = useWorkspace();
 
@@ -70,6 +75,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               vaultRequest?.predicate?.predicateAddress ?? '',
             )!
           }
+          isBalanceLowerThanReservedAmount={isBalanceLowerThanReservedAmount}
           isLoading={vaultRequest.isLoading}
           isFetching={vaultRequest.isFetching}
           onChangeVault={() => {

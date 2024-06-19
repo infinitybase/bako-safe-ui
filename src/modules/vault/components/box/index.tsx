@@ -14,6 +14,8 @@ import { FiPlusSquare } from 'react-icons/fi';
 import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
 
+import { useVaultDetails } from '../../hooks';
+
 interface VaultBoxPropx {
   name: string;
   fullName: string;
@@ -25,6 +27,7 @@ interface VaultBoxPropx {
   hasBalance?: boolean;
   hasPermission?: boolean;
   isFetching: boolean;
+  isBalanceLowerThanReservedAmount: boolean;
 }
 
 const VaultBoxSkeleton = () => (
@@ -60,6 +63,10 @@ const VaultBox = (props: VaultBoxPropx) => {
     onChangeVault,
     onCreateTransaction,
   } = props;
+
+  const {
+    store: { isFirstAssetsLoading },
+  } = useVaultDetails();
 
   const { isMobile } = useScreenSize();
 
@@ -120,7 +127,12 @@ const VaultBox = (props: VaultBoxPropx) => {
             variant="primary"
             fontWeight="bold"
             onClick={onCreateTransaction}
-            isDisabled={!hasBalance || isPending}
+            isDisabled={
+              !hasBalance ||
+              isPending ||
+              props.isBalanceLowerThanReservedAmount ||
+              isFirstAssetsLoading
+            }
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction
@@ -130,6 +142,13 @@ const VaultBox = (props: VaultBoxPropx) => {
               This vault has pending transactions.
             </Text>
           )}
+          {!isPending &&
+            !isFirstAssetsLoading &&
+            props.isBalanceLowerThanReservedAmount && (
+              <Text variant="description" mt={2} color="error.500">
+                Not enough balance.
+              </Text>
+            )}
         </Box>
       )}
     </Box>
