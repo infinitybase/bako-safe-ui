@@ -1,3 +1,4 @@
+import { BakoSafe } from 'bakosafe';
 import { bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -135,6 +136,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionTotalAmount,
     vaultBalance,
   ]);
+  const isBalanceLowerThanReservedAmount =
+    Number(vaultBalance) <=
+    Number(
+      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
+    );
 
   const handleClose = () => {
     props?.onClose();
@@ -217,6 +223,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
+    isBalanceLowerThanReservedAmount,
   };
 };
 

@@ -100,10 +100,11 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
             {!vaults.length && isFetching && (
               <CustomSkeleton h="90px" w="full" />
             )}
-            {vaults?.map((vault) => {
-              return (
-                <CustomSkeleton key={vault.id} isLoaded={isLoadingVaults}>
+            <CustomSkeleton isLoaded={isLoadingVaults}>
+              {vaults?.map((vault) => {
+                return (
                   <VaultDrawerBox
+                    mt={4}
                     name={vault.name}
                     address={vault.predicateAddress}
                     workspace={vault.workspace}
@@ -112,9 +113,9 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                     isSingleWorkspace={vault.workspace.single}
                     onClick={() => drawer.onSelectVault(vault)}
                   />
-                </CustomSkeleton>
-              );
-            })}
+                );
+              })}
+            </CustomSkeleton>
             <Box ref={inView.ref} />
           </VStack>
         </DrawerBody>

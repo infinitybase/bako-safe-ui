@@ -39,6 +39,7 @@ interface SelectProps
   isCreatingValue?: boolean;
   onChange: (value: any) => void;
   callbackOnSelectOption?: () => void;
+  needShowOptionsAbove?: boolean;
 }
 
 const Select = ({
@@ -52,6 +53,7 @@ const Select = ({
   style,
   isCreatingValue,
   callbackOnSelectOption,
+  needShowOptionsAbove,
   ...rest
 }: SelectProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -106,7 +108,7 @@ const Select = ({
       const shouldShowAbove =
         inputRect.bottom + optionsElement.clientHeight > windowHeight;
 
-      setOptionsPositionAbove(shouldShowAbove);
+      setOptionsPositionAbove(needShowOptionsAbove ?? shouldShowAbove);
     }
   }, [showOptions]);
 
