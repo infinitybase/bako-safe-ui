@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { TypeUser } from 'bakosafe';
 import { useEffect } from 'react';
 
 import { useAuth } from '@/modules/auth/hooks';
@@ -25,7 +26,8 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
-      if (currentAccount === auth.account) return;
+      if (currentAccount === auth.account || auth.accountType !== TypeUser.FUEL)
+        return;
       clearAll();
     }
 
@@ -36,7 +38,7 @@ function App() {
       fuel.off(fuel.events.connection, onConnection);
       fuel.off(fuel.events.currentAccount, onCurrentAccount);
     };
-  }, []);
+  }, [auth]);
 
   return <AppRoutes />;
 }

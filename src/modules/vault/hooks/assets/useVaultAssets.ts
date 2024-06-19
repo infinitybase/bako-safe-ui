@@ -45,7 +45,6 @@ function useVaultAssets(predicate?: Vault) {
     setIsFirstAssetsLoading,
   } = useVaultState();
 
-  const { provider } = useProvider();
   const auth = useAuth();
 
   const { data: assets, ...rest } = useQuery(
@@ -77,6 +76,14 @@ function useVaultAssets(predicate?: Vault) {
         }
       });
       setBiggerAsset(assets[bigger]);
+    } else {
+      setBiggerAsset({
+        assetId: NativeAssetId,
+        name: '',
+        icon: '',
+        slug: '',
+        amount: '0',
+      });
     }
   };
 

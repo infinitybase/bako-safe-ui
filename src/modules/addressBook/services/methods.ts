@@ -60,19 +60,22 @@ export class AddressBookService {
     const { q, includePersonal, excludeContacts, perPage } = params;
     const query = q?.toLowerCase() ?? '';
 
-    return contacts
-      .filter((contact) => {
-        const nickname = contact.nickname.toLowerCase();
-        const address = contact.user.address.toLowerCase();
+    const filteredContacts = contacts.filter((contact) => {
+      const nickname = contact.nickname.toLowerCase();
+      const address = contact.user.address.toLowerCase();
 
-        return (
-          !excludeContacts?.includes(contact.user.address) &&
-          (nickname.includes(query) ||
-            address.includes(query) ||
-            (includePersonal && contact.nickname.toLowerCase().includes(query)))
-        );
-      })
-      .slice(0, perPage);
+      const isExcluded = excludeContacts?.includes(contact.user.address);
+      const matchesQuery =
+        nickname.includes(query) ||
+        address.includes(query) ||
+        (includePersonal && contact.nickname.toLowerCase().includes(query));
+
+      return !isExcluded && matchesQuery;
+    });
+
+    const result = filteredContacts.slice(0, perPage);
+
+    return result;
   }
 
   static async listWithPagination(params: GetPaginatedContactsParams) {
