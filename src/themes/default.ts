@@ -22,11 +22,7 @@ const defaultTheme = extendTheme({
   },
   styles: {
     global: () => ({
-      html: {
-        overscrollBehavior: 'none',
-      },
       body: {
-        overscrollBehavior: 'none',
         bg: 'dark.950',
         mx: 'auto',
         backgroundImage: `url(${HomeBackgroundHd})`,
