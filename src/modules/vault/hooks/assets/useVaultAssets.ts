@@ -138,7 +138,13 @@ function useVaultAssets(predicate?: Vault) {
   );
 
   const getAssetInfo = (assetId: string) => {
-    return assetsMap[assetId];
+    return (
+      assetsMap[assetId] ?? {
+        name: 'Unknown',
+        slug: 'UKN',
+        icon: ETHDefault,
+      }
+    );
   };
 
   const hasAssetBalance = useCallback(
