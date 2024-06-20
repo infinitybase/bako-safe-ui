@@ -136,7 +136,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionTotalAmount,
     vaultBalance,
   ]);
-  const isBalanceLowerThanReservedAmount =
+  const isEthBalanceLowerThanReservedAmount =
     Number(vaultBalance) <=
     Number(
       bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
@@ -223,7 +223,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
-    isBalanceLowerThanReservedAmount,
+    isEthBalanceLowerThanReservedAmount,
   };
 };
 

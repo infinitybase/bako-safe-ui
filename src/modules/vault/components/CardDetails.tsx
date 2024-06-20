@@ -88,7 +88,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     precision: 4,
   });
 
-  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const workspaceId = workspaces.current ?? '';
 
@@ -320,7 +320,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         !vault?.hasBalance ||
                         !makeTransactionsPerm ||
                         vault.transactions.isPendingSigner ||
-                        isBalanceLowerThanReservedAmount
+                        isEthBalanceLowerThanReservedAmount
                       }
                       variant="primary"
                       leftIcon={<SquarePlusIcon />}
@@ -328,7 +328,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       Send
                     </Button>
-                    {isBalanceLowerThanReservedAmount &&
+                    {isEthBalanceLowerThanReservedAmount &&
                       !vault.transactions.isPendingSigner && (
                         <Text
                           variant="description"

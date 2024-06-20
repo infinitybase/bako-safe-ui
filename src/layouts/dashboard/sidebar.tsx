@@ -38,7 +38,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
   const { vault } = useVaultDetails();
 
-  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     request: { refetch },
@@ -73,7 +73,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               vaultRequest?.predicate?.predicateAddress ?? '',
             )!
           }
-          isBalanceLowerThanReservedAmount={isBalanceLowerThanReservedAmount}
+          isEthBalanceLowerThanReservedAmount={
+            isEthBalanceLowerThanReservedAmount
+          }
           isLoading={vaultRequest.isLoading}
           isFetching={vaultRequest.isFetching}
           onChangeVault={() => {
