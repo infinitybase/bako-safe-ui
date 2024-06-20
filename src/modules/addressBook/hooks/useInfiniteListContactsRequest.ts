@@ -15,6 +15,11 @@ const useInfiniteListcontactsRequest = (
   perPage: number = 5,
   page: number = 0,
 ) => {
+  const dynamicPerPage =
+    excludeContacts && excludeContacts.length >= 5
+      ? (perPage += perPage)
+      : perPage;
+
   const { data, fetchNextPage, isLoading, hasNextPage, isFetching, ...query } =
     useInfiniteQuery(
       AddressBookQueryKey.LIST_BY_USER_PAGINATED(
@@ -29,7 +34,7 @@ const useInfiniteListcontactsRequest = (
           q: value,
           excludeContacts,
           includePersonal,
-          perPage: perPage,
+          perPage: dynamicPerPage,
           page: pageParam || page,
         }),
       {

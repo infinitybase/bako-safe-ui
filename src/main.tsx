@@ -18,6 +18,7 @@ BakoSafe.setProviders({
   CLIENT_URL: window.location.origin,
   CHAIN_URL: import.meta.env.VITE_NETWORK,
 });
+BakoSafe.setGasConfig({ BASE_FEE: 0.001 });
 
 const fuelConnectorsQueryClient = new QueryClient();
 

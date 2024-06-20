@@ -34,6 +34,14 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const { isSafariBrowser, isMobile } = useVerifyBrowserType();
 
   const isFirstTab = tabs.tab === 0;
+  const isSecondTab = tabs.tab === 1;
+
+  const isSecondTabAndMobile = isSecondTab && isMobile;
+
+  const mobileStylesForHeader = {
+    top: 0,
+    position: 'sticky',
+  };
 
   return (
     <Dialog.Modal
@@ -57,7 +65,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Body
         maxW={450}
         mb={isFirstTab ? 8 : 0}
-        maxH={isFirstTab ? '60vh' : 'unset'}
+        maxH={isFirstTab ? '60vh' : 700}
         minH={!isFirstTab ? 500 : 'unset'}
       >
         <CreateVaultForm
@@ -80,34 +88,40 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       <Dialog.Actions
         w="full"
         maxW={450}
-        mt={isFirstTab ? 'auto' : 'unset'}
+        mt={isSecondTab ? 'unset' : 'auto'}
         sx={{
           '&>hr': {
-            mt: '0',
-            mb: '0',
+            mt: 0,
+            mb: isSecondTab ? 0 : 8,
           },
         }}
+        bgColor="dark.950"
+        position={isSecondTabAndMobile ? 'absolute' : 'unset'}
+        bottom={0}
+        px={isSecondTabAndMobile ? 6 : 'unset'}
       >
         <VStack w="full" alignItems="center" bg="dark.950" zIndex={100}>
-          <HStack my={6} w="full" justifyContent="space-between">
-            <Text variant="description" fontSize="xs">
-              Estimated Fee
-            </Text>
-            <Text
-              color="white"
-              variant="description"
-              display="flex"
-              gap={2}
-              fontSize="xs"
-            >
-              Vault creation is free on Fuel Network
-              <Tooltip
-                placment="top-start"
-                text="Vault creation is free on Bako Safe
+          {isSecondTab && (
+            <HStack my={6} w="full" justifyContent="space-between">
+              <Text variant="description" fontSize="xs">
+                Estimated Fee
+              </Text>
+              <Text
+                color="white"
+                variant="description"
+                display="flex"
+                gap={2}
+                fontSize="xs"
+              >
+                Vault creation is free on Fuel Network
+                <Tooltip
+                  placment="top-start"
+                  text="Vault creation is free on Bako Safe
 Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."
-              />
-            </Text>
-          </HStack>
+                />
+              </Text>
+            </HStack>
+          )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
               bgColor="transparent"

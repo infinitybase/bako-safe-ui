@@ -6,6 +6,7 @@ import { queryClient } from '@/config';
 import { useBakoSafeTransactionSend } from '@/modules/core';
 
 import { useTransactionToast } from './toast';
+import { useNotificationsStore } from '@/modules/notifications/store';
 
 interface TransactionSendContextType {
   isExecuting: (transaction: ITransaction) => boolean;
@@ -21,6 +22,7 @@ const TransactionSendContext = createContext<TransactionSendContextType>(
 const TransactionSendProvider = (props: PropsWithChildren) => {
   const toast = useTransactionToast();
   const transactionsRef = useRef<ITransaction[]>([]);
+  const { setHasNewNotification } = useNotificationsStore();
 
   const refetetchTransactionList = () => {
     const queries = ['home', 'transaction', 'assets'];
@@ -45,6 +47,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     ) {
       toast.loading(transaction);
     }
+    setHasNewNotification(true);
   };
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({

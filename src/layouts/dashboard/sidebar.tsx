@@ -7,6 +7,7 @@ import {
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
+import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useVaultDetails } from '@/modules/vault';
@@ -14,6 +15,7 @@ import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
+import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -35,6 +37,12 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   } = useSidebar();
 
   const { vault } = useVaultDetails();
+
+  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+
+  const {
+    request: { refetch },
+  } = useVaultDrawer({ onClose: () => {} });
 
   const { hasPermission } = useWorkspace();
 
@@ -65,9 +73,12 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               vaultRequest?.predicate?.predicateAddress ?? '',
             )!
           }
+          isBalanceLowerThanReservedAmount={isBalanceLowerThanReservedAmount}
           isLoading={vaultRequest.isLoading}
           isFetching={vaultRequest.isFetching}
-          onChangeVault={drawer.onOpen}
+          onChangeVault={() => {
+            refetch(), drawer.onOpen();
+          }}
           hasBalance={vaultAssets.hasBalance}
           isPending={vault.transactions.isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}

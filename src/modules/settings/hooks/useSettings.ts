@@ -1,13 +1,14 @@
+import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
-import { queryClient } from '@/config';
+import { IApiError, queryClient } from '@/config';
+import { useContactToast } from '@/modules/addressBook';
 import { useAuthStore } from '@/modules/auth';
 import { SettingsQueryKey } from '@/modules/core';
 
 import { useUpdateSettingsRequest } from './';
 import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';
-import { useSettingsToast } from './useSettingsToast';
 
 interface UseSettingsProps {
   onOpen?: () => void;
@@ -19,7 +20,7 @@ const { MY_SETTINGS } = SettingsQueryKey;
 const useSettings = ({ onClose }: UseSettingsProps) => {
   const { account } = useAuthStore();
   const { form } = useSettingsForm();
-  const { successToast } = useSettingsToast();
+  const { successToast, errorToast } = useContactToast();
   const mySettingsRequest = useMySettingsRequest(account);
   const updateSettingsRequest = useUpdateSettingsRequest();
 
@@ -57,6 +58,21 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
             successToast({
               title: 'Settings updated',
               description: 'Your settings have been updated successfully.',
+            });
+          },
+          onError: (error) => {
+            const errorDescription = (
+              (error as AxiosError)?.response?.data as IApiError
+            )?.detail;
+            const description =
+              errorDescription?.includes('name') &&
+              errorDescription?.includes('already exists')
+                ? 'This name is already being used'
+                : 'An error occurred while updating your settings';
+
+            errorToast({
+              title: 'Error on update settings',
+              description,
             });
           },
         },
