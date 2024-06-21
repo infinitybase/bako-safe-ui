@@ -124,10 +124,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
             .sub(bn.parseUnits(transactionAmount))
         : bn(0);
 
-    const balanceAvailable = bn(bn.parseUnits(vaultBalance))
-      .sub(assetInputsAmount)
-      .sub(bn.parseUnits(validTransactionFee ?? '0'))
-      .format();
+    const _vaultBalance = bn.parseUnits(vaultBalance ?? '0');
+
+    const balanceAvailableWithoutFee = assetInputsAmount.gte(_vaultBalance)
+      ? bn(0)
+      : _vaultBalance.sub(assetInputsAmount);
+
+    const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
+
+    const balanceAvailable = balanceAvailableWithoutFee.gte(transactionFee)
+      ? balanceAvailableWithoutFee.sub(transactionFee).format()
+      : balanceAvailableWithoutFee.format();
 
     return balanceAvailable;
   }, [
@@ -136,6 +143,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionTotalAmount,
     vaultBalance,
   ]);
+
   const isBalanceLowerThanReservedAmount =
     Number(vaultBalance) <=
     Number(
