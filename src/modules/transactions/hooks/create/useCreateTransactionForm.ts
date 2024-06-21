@@ -54,7 +54,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
 
             return hasAssetBalance && hasFeeBalance;
           }
-          return params.validateBalance(parent.asset, amount);
+          return params.validateBalance(parent.asset, parent.amount);
         })
         .test(
           'has-total-balance',
