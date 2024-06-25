@@ -416,7 +416,7 @@ const WorkspacePage = () => {
                   w="full"
                   h="full"
                 >
-                  {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ? (
+                  {worksapceBalance.balance.assetsBalance.length === 0 ? (
                     <Card
                       w="full"
                       h="full"
