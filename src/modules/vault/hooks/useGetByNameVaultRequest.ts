@@ -10,6 +10,7 @@ const useCheckVaultName = (name: string) => {
     () => VaultService.getByName(name),
     {
       refetchOnWindowFocus: false,
+      enabled: !!name && name.length > 0,
     },
   );
 };

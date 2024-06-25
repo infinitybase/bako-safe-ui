@@ -4,7 +4,6 @@ import {
   HStack,
   Icon,
   Spacer,
-  Text,
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransaction } from 'bakosafe';
@@ -35,15 +34,19 @@ interface TransactionActionsProps {
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
   return (
     <HStack w="full" justifyContent="end" spacing={1}>
-      <Text color={awaitingAnswer ? 'brand.400' : 'white'} fontSize="xs">
+      <Button
+        color={awaitingAnswer ? 'black' : 'grey.75'}
+        bgColor={awaitingAnswer ? 'brand.500' : '#F5F5F50D'}
+        fontWeight={awaitingAnswer ? 'bold' : 'normal'}
+        border="none"
+        fontSize="xs"
+        letterSpacing=".5px"
+        alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+        variant="secondary"
+        rightIcon={<Icon as={IoIosArrowForward} fontSize="lg" />}
+      >
         {awaitingAnswer ? 'Sign' : 'View Details'}
-      </Text>
-      <Icon
-        as={IoIosArrowForward}
-        fontSize="md"
-        color={awaitingAnswer ? 'brand.400' : 'grey.200'}
-        cursor="pointer"
-      />
+      </Button>
     </HStack>
   );
 };
@@ -105,7 +108,6 @@ const Actions = ({
               e.stopPropagation();
               e.preventDefault();
               confirmTransaction(callBack);
-              //callBack && callBack();
             }}
           >
             Sign

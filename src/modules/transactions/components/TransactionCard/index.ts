@@ -8,7 +8,7 @@ import { List } from './List';
 import { Name } from './Name';
 import { Status } from './Status';
 import { TransactionStepper } from './TransactionStepper';
-import { VaultInfo } from './VaultInfo';
+import { VaultInfo, BasicInfos } from './VaultInfo';
 
 const TransactionCard = {
   Actions,
@@ -22,6 +22,7 @@ const TransactionCard = {
   Name,
   Status,
   VaultInfo,
+  BasicInfos,
   TransactionStepper,
 };
 

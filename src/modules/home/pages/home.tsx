@@ -11,7 +11,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import format from 'date-fns/format';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
@@ -30,11 +29,9 @@ import {
 } from '@/modules/transactions';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
-import { TxService } from '@/utils/transaction-history';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
-import { Address } from 'fuels';
 
 const HomePage = () => {
   const {
@@ -53,19 +50,6 @@ const HomePage = () => {
   } = useAuth();
 
   const { selectWorkspace } = useSelectWorkspace();
-
-  const getTxHistory = async () => {
-    const rawAddress = Address.fromString(
-      'fuel1yd9z98lev4tw5yp0uxswt0freea33fv3e3w248wgtnzz9526sn5sshnhh8',
-    ).toB256();
-
-    const result = await TxService.getTransactionHistory({
-      address: rawAddress,
-      providerUrl: 'https://testnet.fuel.network/v1/graphql',
-    });
-
-    return result;
-  };
 
   const { isMobile, isExtraSmall } = useScreenSize();
 
@@ -89,7 +73,6 @@ const HomePage = () => {
           </Text>
         </HStack>
         <Box>
-          <Button onClick={getTxHistory}>Clica ae</Button>
           <Button
             variant="primary"
             fontWeight="bold"
@@ -341,41 +324,7 @@ const HomePage = () => {
                               status={status}
                             />
                           }
-                        >
-                          {transaction.predicate && (
-                            <TransactionCard.VaultInfo
-                              vault={transaction.predicate}
-                            />
-                          )}
-                          <TransactionCard.CreationDate>
-                            {format(
-                              new Date(transaction.createdAt),
-                              'EEE, dd MMM',
-                            )}
-                          </TransactionCard.CreationDate>
-                          <TransactionCard.Assets />
-                          <TransactionCard.Amount
-                            assets={transaction.resume.outputs}
-                          />
-                          <TransactionCard.Name
-                            transactionName={transaction.name}
-                          />
-                          <TransactionCard.Status
-                            transaction={transaction}
-                            status={transactionStatus({
-                              ...transaction,
-                              account,
-                            })}
-                          />
-                          <TransactionCard.Actions
-                            transaction={transaction}
-                            isSigner={isSigner}
-                            status={transactionStatus({
-                              ...transaction,
-                              account,
-                            })}
-                          />
-                        </TransactionCard.Container>
+                        />
                       )}
                     </>
                   );
