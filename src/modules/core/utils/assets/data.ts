@@ -1,4 +1,6 @@
-import BTCIcon from '@/assets/BTCIcon.svg';
+import BTCIcon from '@/assets/tokens/bitcoin.svg';
+import UNIIcon from '@/assets/tokens/uniswap.svg';
+import USDCIcon from '@/assets/tokens/usdc.svg';
 
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
@@ -18,6 +20,21 @@ const assetsList: Asset[] = [
     assetId:
       '0xfe3f96763e20e5d168037065a3bc65b751df7a038fd9297cc1cb5c740fd1c170',
     icon: BTCIcon,
+  },
+
+  {
+    name: 'USDC',
+    slug: 'USDC',
+    assetId:
+      '0xda1fb840452bba3ab65a11f782902e7286fc44b94a9b85059dd7f8b68bf371d4',
+    icon: USDCIcon,
+  },
+  {
+    name: 'Uniswap',
+    slug: 'UNI',
+    assetId:
+      '0xb3238af388ac05188e342b1801db79d358e4a162734511316c937b00c8687fe9',
+    icon: UNIIcon,
   },
   {
     name: 'Dai',
