@@ -12,6 +12,9 @@ const Pages = {
   detailsVault: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId',
   ),
+  vaultBalance: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/balance',
+  ),
   vaultSettings: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId/settings',
   ),

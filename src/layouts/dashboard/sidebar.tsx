@@ -1,6 +1,7 @@
 import { Box, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import {
+  CoinsIcon,
   ExchangeIcon,
   HomeIcon,
   PendingIcon,
@@ -111,6 +112,21 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={HomeIcon} />
             <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.balance}
+            onClick={() =>
+              route.navigate(
+                Pages.vaultBalance({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={CoinsIcon} />
+            <SidebarMenu.Title>Balance</SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
