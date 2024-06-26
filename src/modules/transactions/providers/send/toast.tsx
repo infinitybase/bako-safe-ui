@@ -12,7 +12,6 @@ import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
-import { sumEthAsset } from '@/modules/transactions';
 
 type TransactionToastRef = Record<ITransaction['id'], ToastId>;
 
@@ -47,21 +46,7 @@ const useTransactionToast = () => {
           color="brand.500"
         />
       ),
-      description: (
-        <>
-          <Text variant="description">
-            ETH{' '}
-            {sumEthAsset(
-              transaction.assets.map((transaction) => ({
-                amount: transaction.amount,
-                assetId: transaction.assetId,
-                to: transaction.to,
-              })),
-            )}
-          </Text>
-          <Text variant="description">{transaction.name}</Text>
-        </>
-      ),
+      description: <Text variant="description">{transaction.name}</Text>,
     });
   };
 
