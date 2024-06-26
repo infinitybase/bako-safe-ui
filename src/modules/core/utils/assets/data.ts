@@ -21,7 +21,6 @@ const assetsList: Asset[] = [
       '0xfe3f96763e20e5d168037065a3bc65b751df7a038fd9297cc1cb5c740fd1c170',
     icon: BTCIcon,
   },
-
   {
     name: 'USDC',
     slug: 'USDC',

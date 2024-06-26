@@ -3,6 +3,7 @@ import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
+import BakoIcon from '@/assets/tokens/bako.svg';
 import { useAuth } from '@/modules/auth/hooks';
 import { Asset, assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
 
@@ -35,7 +36,7 @@ const balancesToAssets = async (
         slug: assetInfos?.slug ?? 'UKN',
         name: assetInfos?.name ?? 'Unknown',
         assetId: balance.assetId,
-        icon: assetInfos?.icon ?? ETHDefault,
+        icon: assetInfos?.icon ?? BakoIcon,
       });
     }
 
