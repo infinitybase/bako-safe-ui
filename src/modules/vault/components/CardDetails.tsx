@@ -434,6 +434,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       containerRef={assetsContainerRef}
                       assets={assets.value!}
                       visibleBalance={visebleBalance}
+                      viewAllRedirect={Pages.vaultBalance({
+                        vaultId: vault.id,
+                        workspaceId,
+                      })}
                     />
                   </HStack>
                 )}

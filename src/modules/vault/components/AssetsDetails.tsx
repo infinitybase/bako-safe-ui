@@ -1,5 +1,6 @@
 import { Text, VStack } from '@chakra-ui/react';
 import { Fragment, MutableRefObject } from 'react';
+import { To, useNavigate } from 'react-router-dom';
 
 import { AssetCard } from '@/modules/core/components';
 import { Asset } from '@/modules/core/utils';
@@ -10,13 +11,16 @@ interface AssetsDetailsProps {
   containerRef: MutableRefObject<HTMLDivElement | null>;
   assets: Asset[];
   visibleBalance?: boolean;
+  viewAllRedirect: To;
 }
 
 const AssetsDetails = ({
   containerRef,
   assets,
   visibleBalance,
+  viewAllRedirect,
 }: AssetsDetailsProps) => {
+  const navigate = useNavigate();
   const { visibleItems, showViewAll, countViewAll, itemWidth } =
     useVaultAssetsList(containerRef, assets);
 
@@ -48,6 +52,7 @@ const AssetsDetails = ({
           bgColor="grey.950"
           spacing={0}
           cursor="pointer"
+          onClick={() => navigate(viewAllRedirect)}
         >
           <Text
             fontSize={{ base: 'lg', sm: 'xl' }}
