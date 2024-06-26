@@ -3,24 +3,26 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Flex,
   HStack,
   Icon,
   Text,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import { HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon } from '@/components';
+import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { Pages, useScreenSize } from '@/modules/core';
+import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { useVaultDetails } from '../../hooks';
 
 const VaultBalancePage = () => {
-  const { vault, navigate, menuDrawer } = useVaultDetails();
-  const { goWorkspace } = useWorkspace();
+  const { vault, menuDrawer, assets, store, navigate } = useVaultDetails();
+  const { currentWorkspace, goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
   const {
     workspaces: { current },
@@ -32,7 +34,7 @@ const VaultBalancePage = () => {
   if (!vault) return null;
 
   return (
-    <Box w="full">
+    <Flex w="full" direction="column">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
@@ -113,7 +115,31 @@ const VaultBalancePage = () => {
           </Breadcrumb>
         )}
       </HStack>
-    </Box>
+
+      <Flex w="full" direction="column" flex={1}>
+        <Box mb={5} w="full">
+          <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+            Balance
+          </Text>
+        </Box>
+
+        <CustomSkeleton
+          isLoaded={!currentWorkspace.isLoading && !store.isFirstAssetsLoading}
+          flex={1}
+        >
+          {assets.hasAssets ? (
+            <AssetsBalanceList assets={assets.value!} />
+          ) : (
+            <EmptyState
+              showAction={false}
+              title="No Data available"
+              subTitle="Currently, there is no available data to display in this section."
+              h="full"
+            />
+          )}
+        </CustomSkeleton>
+      </Flex>
+    </Flex>
   );
 };
 
