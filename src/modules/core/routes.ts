@@ -65,6 +65,10 @@ const Pages = {
     memberId: string;
   }>('/workspace/:workspaceId/members/:memberId'),
 
+  balanceWorkspace: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/balance',
+  ),
+
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
   // workspaceTransactions: pageRoute<{ workspaceId: string }>(
   //   'workspace/:WorkspaceId/transaction/me',

@@ -446,8 +446,9 @@ const WorkspacePage = () => {
                         containerRef={assetsContainerRef}
                         assets={worksapceBalance.balance.assetsBalance}
                         visibleBalance={visibleBalance}
-                        // TODO: change to workspace balance page
-                        viewAllRedirect={Pages.workspace({ workspaceId })}
+                        viewAllRedirect={Pages.balanceWorkspace({
+                          workspaceId,
+                        })}
                       />
                     </HStack>
                   )}
