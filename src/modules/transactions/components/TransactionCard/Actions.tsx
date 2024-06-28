@@ -6,7 +6,6 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bakosafe';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -18,20 +17,22 @@ import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
+import { ITransactionWithType, TransactionType } from '../../services';
 
 interface ActionsMobileProps {
-  awaitingAnswer?: boolean | ITransaction;
+  awaitingAnswer?: boolean | ITransactionWithType;
 }
 
 interface TransactionActionsProps {
   status: TransactionState;
-  transaction?: ITransaction;
+  transaction?: ITransactionWithType;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
   callBack?: () => void;
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
+  const { isSmall, isExtraSmall } = useScreenSize();
   return (
     <HStack w="full" justifyContent="end" spacing={1}>
       <Button
@@ -43,9 +44,12 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
         letterSpacing=".5px"
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="secondary"
-        rightIcon={<Icon as={IoIosArrowForward} fontSize="lg" />}
+        rightIcon={
+          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
+        }
+        px={isExtraSmall ? 3 : 4}
       >
-        {awaitingAnswer ? 'Sign' : 'View Details'}
+        {awaitingAnswer ? 'Sign' : isSmall ? 'Details' : 'View Details'}
       </Button>
     </HStack>
   );
@@ -68,6 +72,8 @@ const Actions = ({
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
+  const isDeposit = transaction?.type === TransactionType.DEPOSIT;
+
   if (isMobile) {
     return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
   }
@@ -88,7 +94,7 @@ const Actions = ({
         </Badge>
       )}
 
-      {notAnswered && (
+      {!isDeposit && notAnswered && (
         <Badge h={6} variant="info">
           {`You didn't sign`}
         </Badge>

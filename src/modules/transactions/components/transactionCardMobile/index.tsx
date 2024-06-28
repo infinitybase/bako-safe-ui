@@ -9,11 +9,11 @@ import {
 } from '@chakra-ui/react';
 
 import { useDetailsDialog } from '../../hooks/details';
-import { TransactionWithVault } from '../../services';
+import { TransactionType, TransactionWithVault } from '../../services';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
-import { UpRightArrow } from '@/components';
+import { DownLeftArrow, UpRightArrow } from '@/components';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
@@ -24,6 +24,7 @@ interface TransactionCardMobileProps extends CardProps {
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
   const status = transactionStatus({
     ...transaction,
@@ -73,7 +74,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             borderRadius="5px 0 0 5px"
             minH="140px"
           >
-            <Icon as={UpRightArrow} fontSize={24} />
+            <Icon as={isDeposit ? DownLeftArrow : UpRightArrow} fontSize={24} />
           </Flex>
           <VStack w="full">
             <HStack justifyContent="space-between" w="full">

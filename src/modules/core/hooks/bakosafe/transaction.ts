@@ -47,7 +47,7 @@ const useBakoSafeCreateTransaction = ({
 
 interface UseBakoSafeListTransactionParams {
   vault: Vault;
-  filter?: IListTransactions & { limit: number };
+  filter?: IListTransactions & { limit: number; byMonth?: boolean };
 }
 
 const useBakoSafeTransactionList = ({

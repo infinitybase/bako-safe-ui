@@ -3,6 +3,7 @@ import {
   Button,
   Grid,
   GridItem,
+  Heading,
   HStack,
   Icon,
   Spacer,
@@ -54,6 +55,9 @@ const HomePage = () => {
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const month = Object.keys(transactions ?? {})[0];
+  const transactionsArray = transactions?.[month];
 
   return (
     <VStack
@@ -225,15 +229,15 @@ const HomePage = () => {
           </Grid>
         ) : null}
         {/* TRANSACTION LIST */}
-        {transactions && transactions.length <= 0 ? (
+        {transactionsArray && transactionsArray.length <= 0 ? (
           <VStack w="full" spacing={6}>
-            {transactions.length && (
+            {transactionsArray && (
               <HStack w="full" spacing={4}>
                 <Text
                   variant="subtitle"
-                  fontWeight="semibold"
-                  fontSize={{ base: 'md', sm: 'xl' }}
-                  color="grey.200"
+                  fontWeight={700}
+                  fontSize="md"
+                  color="grey.50"
                 >
                   Transactions
                 </Text>
@@ -256,20 +260,23 @@ const HomePage = () => {
               w="full"
               display="flex"
               flexDir={isExtraSmall ? 'column' : 'row'}
-              gap={isExtraSmall ? 2 : 4}
-              mb={isExtraSmall ? -4 : 0}
+              gap={isExtraSmall ? 6 : 4}
+              mb={isExtraSmall ? 0 : 4}
             >
-              <Text
-                variant="subtitle"
-                fontWeight="semibold"
-                fontSize={{ base: 'md', xs: 'xl' }}
+              <Box
+                display="flex"
+                flexDir={isExtraSmall ? 'column' : 'row'}
+                alignItems={isExtraSmall ? 'unset' : 'center'}
+                gap={isExtraSmall ? 2 : 4}
               >
-                Transactions
-              </Text>
-              <WaitingSignatureBadge
-                isLoading={pendingSignerTransactions.isLoading}
-                quantity={pendingSignerTransactions.data?.ofUser ?? 0}
-              />
+                <Text fontWeight={700} fontSize="md" color="grey.50">
+                  Transactions
+                </Text>
+                <WaitingSignatureBadge
+                  isLoading={pendingSignerTransactions.isLoading}
+                  quantity={pendingSignerTransactions.data?.ofUser ?? 0}
+                />
+              </Box>
               <Spacer />
               <Button
                 color="brand.400"
@@ -293,9 +300,13 @@ const HomePage = () => {
                 View all
               </Button>
             </Box>
-            <TransactionCard.List spacing={4} mt={6} mb={12}>
+
+            <Text fontSize="sm" fontWeight="semibold" color="grey.425">
+              {month}
+            </Text>
+            <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
               <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-                {transactions?.map((transaction) => {
+                {transactionsArray?.map((transaction) => {
                   const status = transactionStatus({ ...transaction, account });
                   const isSigner = !!transaction.predicate?.members?.find(
                     (member) => member.address === account,

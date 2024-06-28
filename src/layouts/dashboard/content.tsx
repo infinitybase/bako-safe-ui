@@ -14,7 +14,7 @@ const Content = (props: ContentProps) => {
         sm: 6,
       }}
       px={{
-        base: 5,
+        base: 3,
         sm: 6,
       }}
       maxW="1500px"

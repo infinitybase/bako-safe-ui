@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-import { Card, UpRightArrow } from '@/components';
+import { Card, DownLeftArrow, UpRightArrow } from '@/components';
 import { TransactionState, useScreenSize } from '@/modules/core';
 
 import { useDetailsDialog } from '../../hooks/details';
-import { TransactionWithVault } from '../../services/types';
+import { TransactionType, TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 import { TransactionCard, transactionStatus } from '../..';
 
@@ -45,8 +45,9 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const { isMobile, vaultRequiredSizeToColumnLayout } = useScreenSize();
+  const { isMobile } = useScreenSize();
   const detailsDialog = useDetailsDialog();
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
   return (
     <>
@@ -89,7 +90,11 @@ const Container = ({
           borderRadius="10px 0 0 10px"
           h="auto"
         >
-          <Icon as={UpRightArrow} fontSize={24} mt={7} />
+          <Icon
+            as={isDeposit ? DownLeftArrow : UpRightArrow}
+            fontSize={24}
+            mt={7}
+          />
         </Flex>
         <VStack
           justifyContent="center"

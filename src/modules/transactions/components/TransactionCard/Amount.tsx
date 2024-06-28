@@ -1,7 +1,7 @@
 import {
   Avatar,
   AvatarGroup,
-  Box,
+  Flex,
   HStack,
   Text,
   useMediaQuery,
@@ -12,8 +12,7 @@ import { bn } from 'fuels';
 
 import { assetsMap, NativeAssetId } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
-import BTCIcon from '@/assets/BTCIcon.svg';
-import MATIC from '@/assets/POLYGON.svg';
+import bakoIcon from '@/assets/tokens/bako.svg';
 
 interface TransactionCardAmountProps {
   assets: ITransferAsset[];
@@ -21,11 +20,7 @@ interface TransactionCardAmountProps {
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
-
-  const ethAmount = assets
-    .filter((a) => a.assetId === NativeAssetId)
-    .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
-    .format();
+  const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 
   const totalAmoutSent = assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
@@ -42,45 +37,50 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   return (
-    <HStack alignItems="center" justifyContent="flex-start" w={150}>
-      {oneAssetOfEach.map((asset) => (
-        <AvatarGroup max={showOnlyOneAsset ? 1 : 3}>
+    <HStack
+      alignItems="center"
+      justifyContent="flex-start"
+      w={isExtraSmall ? 150 : 200}
+    >
+      <AvatarGroup
+        max={showOnlyOneAsset ? 1 : 3}
+        w={isMobile ? 'unset' : 56}
+        justifyContent={isMobile ? 'start' : 'end'}
+        position="relative"
+      >
+        {oneAssetOfEach.map((asset) => (
           <Avatar
-            name={assetsMap[asset.assetId].slug}
-            src={assetsMap[asset.assetId].icon}
+            name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
+            src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
             ignoreFallback
             boxSize={24}
             border="none"
           />
-          <Avatar
-            name={assetsMap[asset.assetId].slug}
-            src={MATIC}
-            ignoreFallback
-            boxSize={24}
-            border="none"
-          />
-          <Avatar
-            name={assetsMap[asset.assetId].slug}
-            src={BTCIcon}
-            ignoreFallback
-            boxSize={24}
-            border="none"
-          />
-          <Avatar
-            name={assetsMap[asset.assetId].slug}
-            src={assetsMap[asset.assetId].icon}
-            ignoreFallback
-            boxSize={24}
-            border="none"
-          />
-        </AvatarGroup>
-      ))}
-      <Box w="full" mt={0.5} textAlign="left">
-        <Text color="grey.75">{totalAmoutSent}</Text>
-        <Text variant="description" fontSize="sm" color="grey.425">
+        ))}
+      </AvatarGroup>
+      <Flex
+        flexDir={isMultiToken ? 'column-reverse' : 'column'}
+        w="full"
+        mt={0.5}
+        textAlign="center"
+      >
+        {isMultiToken ? (
+          <Text color="grey.425" fontSize="xs">
+            Multi-token
+          </Text>
+        ) : (
+          <Text color="grey.75" fontSize="sm">
+            {totalAmoutSent}
+          </Text>
+        )}
+        <Text
+          variant="description"
+          fontSize={isMultiToken ? 'sm' : 'xs'}
+          color={isMultiToken ? ' grey.75' : 'grey.425'}
+        >
           $25.00
         </Text>
-      </Box>
+      </Flex>
     </HStack>
   );
 };

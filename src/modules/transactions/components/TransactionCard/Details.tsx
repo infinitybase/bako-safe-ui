@@ -27,7 +27,6 @@ import {
   CopyIcon,
   CustomSkeleton,
   DoubleArrowIcon,
-  UpRightArrow,
   UpRightArrowWhite,
 } from '@/components';
 import {
@@ -42,6 +41,8 @@ import { limitCharacters } from '@/utils';
 
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
+
+import { TransactionType } from '../../services/types';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }
@@ -58,6 +59,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
     to: string;
     recipientNickname?: string;
   }[];
+  type: TransactionType;
 };
 interface TransactionDetailsProps {
   transaction: TransactionUI;
@@ -70,12 +72,14 @@ interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
   contractAddress?: string;
   hasToken?: boolean;
+  isDeposit: boolean;
 }
 
 const AssetBoxInfo = ({
   asset,
   contractAddress,
   hasToken,
+  isDeposit,
   ...props
 }: AssetBoxInfoProps) => {
   const toast = useNotification();
@@ -92,8 +96,6 @@ const AssetBoxInfo = ({
 
   const contractWithoutToken = isContract && !hasToken;
   const nickname = asset?.recipientNickname;
-
-  const isDeposit = false;
 
   return (
     <HStack
@@ -262,6 +264,8 @@ const Details = ({
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
   const notSigned = !status?.isDeclined && !status?.isSigned;
 
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
+
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
@@ -309,6 +313,7 @@ const Details = ({
                 >
                   {transaction.assets.map((asset, index) => (
                     <AssetBoxInfo
+                      isDeposit={isDeposit}
                       key={index}
                       asset={{
                         assetId: asset.assetId,
@@ -326,6 +331,7 @@ const Details = ({
                   ))}
                   {isContract && !transaction.assets.length && (
                     <AssetBoxInfo
+                      isDeposit={isDeposit}
                       contractAddress={Address.fromB256(
                         mainOperation.to?.address ?? '',
                       ).toString()}
@@ -431,7 +437,8 @@ const Details = ({
                       Gas Fee (ETH)
                     </Text>
                     <Text color="grey.75" fontSize="xs">
-                      -{transaction.gasUsed}
+                      {isDeposit ? '+' : '-'}
+                      {transaction.gasUsed}
                     </Text>
                   </HStack>
                 </Box>
