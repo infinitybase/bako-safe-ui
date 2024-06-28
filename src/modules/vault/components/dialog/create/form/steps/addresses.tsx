@@ -92,18 +92,11 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
         isEdit={false}
       />
 
-      <TabPanel
-        p={0}
-        maxH={500}
-        sx={{
-          overscrollBehavior: 'none',
-        }}
-      >
+      <TabPanel p={0} maxH={500}>
         <VStack
           w="full"
           overflowY="scroll"
           sx={{
-            overscrollBehavior: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
               width: '5px',
@@ -115,8 +108,9 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
-          pr={{ base: 2, sm: 4 }}
-          h={500}
+          // pr={{ base: 2, sm: 4 }}
+          // h={500}
+          h={{ base: '60vh', xs: 500 }}
         >
           <Dialog.Section
             w="full"
@@ -266,7 +260,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
           <HStack
             position="relative"
-            mt="8"
+            mt={{ base: 4, xs: 8 }}
             border="1px solid"
             borderColor="grey.925"
             borderRadius="xl"

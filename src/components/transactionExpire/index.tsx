@@ -24,13 +24,7 @@ const TransactionExpire = ({
   const endTimePlusThreeHours = addHours(new Date(validAt!), diff).getTime();
 
   const [defaultProgress, setDefaultProgress] = useState(0);
-  console.log({
-    endTimePlusThreeHours,
-    diff,
-    restante: endTimePlusThreeHours - Date.now(),
-    atual: new Date(validAt!),
-    _atual: new Date(),
-  });
+
   useEffect(() => {
     const interval = setInterval(() => {
       const remainingTime = endTimePlusThreeHours - Date.now();
@@ -60,7 +54,9 @@ const TransactionExpire = ({
     }
   }, [timerEnded, callBack]);
 
-  const timerDisplay = `${remainingMinutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  const timerDisplay = `${remainingMinutes}:${
+    remainingSeconds < 10 ? '0' : ''
+  }${remainingSeconds}`;
 
   if (!validAt) return null;
 

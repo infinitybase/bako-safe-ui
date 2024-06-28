@@ -132,7 +132,7 @@ function useVaultAssets(predicate?: Vault) {
         bn(bn.parseUnits(balance.amount!))
           //.sub(bn.parseUnits('0.001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
-          .format({ precision: 5 })
+          .format()
       );
     },
     [assets],
