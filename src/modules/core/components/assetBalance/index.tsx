@@ -1,6 +1,6 @@
 import { Avatar, Card, Grid, Text, VStack } from '@chakra-ui/react';
 
-import BakoIcon from '@/assets/icons/bako.svg';
+import BakoIcon from '@/assets/tokens/bako.svg';
 import { Asset } from '@/modules/core/utils';
 
 interface AssetsBalanceProps {
