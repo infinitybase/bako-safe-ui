@@ -1,5 +1,4 @@
-import { useProvider } from '@fuels/react';
-import { BakoSafe, Vault } from 'bakosafe';
+import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -122,7 +121,7 @@ function useVaultAssets(predicate?: Vault) {
         bn(bn.parseUnits(balance.amount!))
           //.sub(bn.parseUnits('0.001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
-          .format({ precision: 5 })
+          .format()
       );
     },
     [assets],
