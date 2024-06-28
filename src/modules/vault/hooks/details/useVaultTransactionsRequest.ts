@@ -4,13 +4,14 @@ import { useBakoSafeTransactionList } from '@/modules/core';
 
 const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 
-const useVaultTransactionsRequest = (vault: Vault) => {
+const useVaultTransactionsRequest = (vault: Vault, byMonth?: boolean) => {
   const { data, ...query } = useBakoSafeTransactionList({
     vault,
     filter: {
       orderBy: 'createdAt',
       sort: SortOptionTx.DESC,
       limit: 6,
+      byMonth,
     },
   });
 

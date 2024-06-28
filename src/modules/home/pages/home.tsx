@@ -3,46 +3,37 @@ import {
   Button,
   Grid,
   GridItem,
-  Heading,
   HStack,
   Icon,
-  Spacer,
   Stack,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
-import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-import { EmptyState } from '@/components/emptyState';
+
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import { useScreenSize } from '@/modules/core';
+
 import { Pages } from '@/modules/core/routes';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
+
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
+import HomeTransactions from '../components/HomeTransactions';
+
 const HomePage = () => {
   const {
-    account,
     navigate,
     vaultsRequest: {
       vaults: { recentVaults, extraCount, vaultsMax },
     },
-    transactionsRequest: { transactions },
-    pendingSignerTransactions,
     homeRequest,
   } = useHome();
 
@@ -52,12 +43,7 @@ const HomePage = () => {
 
   const { selectWorkspace } = useSelectWorkspace();
 
-  const { isMobile, isExtraSmall } = useScreenSize();
-
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const month = Object.keys(transactions ?? {})[0];
-  const transactionsArray = transactions?.[month];
 
   return (
     <VStack
@@ -229,121 +215,9 @@ const HomePage = () => {
           </Grid>
         ) : null}
         {/* TRANSACTION LIST */}
-        {transactionsArray && transactionsArray.length <= 0 ? (
-          <VStack w="full" spacing={6}>
-            {transactionsArray && (
-              <HStack w="full" spacing={4}>
-                <Text
-                  variant="subtitle"
-                  fontWeight={700}
-                  fontSize="md"
-                  color="grey.50"
-                >
-                  Transactions
-                </Text>
-              </HStack>
-            )}
-            <CustomSkeleton
-              isLoaded={!homeRequest.isLoading}
-              mt={{
-                base: recentVaults?.length ? 16 : 0,
-                sm: recentVaults?.length ? 8 : 0,
-                md: recentVaults?.length ? 8 : 2,
-              }}
-            >
-              <EmptyState showAction={false} />
-            </CustomSkeleton>
-          </VStack>
-        ) : (
-          <Box w="full" mt={{ base: 16, sm: 8 }}>
-            <Box
-              w="full"
-              display="flex"
-              flexDir={isExtraSmall ? 'column' : 'row'}
-              gap={isExtraSmall ? 6 : 4}
-              mb={isExtraSmall ? 0 : 4}
-            >
-              <Box
-                display="flex"
-                flexDir={isExtraSmall ? 'column' : 'row'}
-                alignItems={isExtraSmall ? 'unset' : 'center'}
-                gap={isExtraSmall ? 2 : 4}
-              >
-                <Text fontWeight={700} fontSize="md" color="grey.50">
-                  Transactions
-                </Text>
-                <WaitingSignatureBadge
-                  isLoading={pendingSignerTransactions.isLoading}
-                  quantity={pendingSignerTransactions.data?.ofUser ?? 0}
-                />
-              </Box>
-              <Spacer />
-              <Button
-                color="brand.400"
-                textDecoration="none"
-                alignItems="center"
-                justifyContent="center"
-                display={{ base: 'none', sm: 'flex' }}
-                backgroundColor="transparent"
-                _hover={{
-                  backgroundColor: 'transparent',
-                }}
-                rightIcon={<Icon as={MdKeyboardArrowRight} boxSize={6} />}
-                onClick={() =>
-                  navigate(
-                    Pages.userTransactions({
-                      workspaceId: single,
-                    }),
-                  )
-                }
-              >
-                View all
-              </Button>
-            </Box>
-
-            <Text fontSize="sm" fontWeight="semibold" color="grey.425">
-              {month}
-            </Text>
-            <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-              <CustomSkeleton isLoaded={!homeRequest.isLoading}>
-                {transactionsArray?.map((transaction) => {
-                  const status = transactionStatus({ ...transaction, account });
-                  const isSigner = !!transaction.predicate?.members?.find(
-                    (member) => member.address === account,
-                  );
-
-                  return (
-                    <>
-                      {isMobile ? (
-                        <TransactionCardMobile
-                          isSigner={isSigner}
-                          transaction={transaction}
-                          account={account}
-                          mt={3}
-                        />
-                      ) : (
-                        <TransactionCard.Container
-                          mb={4}
-                          key={transaction.id}
-                          status={status}
-                          isSigner={isSigner}
-                          transaction={transaction}
-                          account={account}
-                          details={
-                            <TransactionCard.Details
-                              transaction={transaction}
-                              status={status}
-                            />
-                          }
-                        />
-                      )}
-                    </>
-                  );
-                })}
-              </CustomSkeleton>
-            </TransactionCard.List>
-          </Box>
-        )}
+        <Box minH="650px">
+          <HomeTransactions />
+        </Box>
       </CustomSkeleton>
     </VStack>
   );

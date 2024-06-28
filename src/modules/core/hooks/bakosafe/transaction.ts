@@ -133,11 +133,9 @@ const useBakoSafeTransactionSend = (
       //   failed: transfer.BakoSafeTransaction.status === TransactionStatus.FAILED,
       // });
       if (transfer.BakoSafeTransaction.status === TransactionStatus.FAILED) {
-        console.log('entrou no if?');
         await TransactionService.send(transfer.BakoSafeTransactionId);
       }
       const result = await transfer.wait();
-      console.log('result', result);
       return (await vault.BakoSafeGetTransaction(transaction.id))
         .BakoSafeTransaction;
     },

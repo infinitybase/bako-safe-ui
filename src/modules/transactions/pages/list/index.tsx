@@ -35,10 +35,11 @@ import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
-import { useState } from 'react';
-import { TransactionType } from '../../services';
+import { useFilterTxType } from '../../hooks/filter';
 
 const TransactionsVaultPage = () => {
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
   const {
     transactionRequest,
     infinityTransactionsRef,
@@ -49,26 +50,10 @@ const TransactionsVaultPage = () => {
     selectedTransaction,
     setSelectedTransaction,
     defaultIndex,
-  } = useTransactionList({ byMonth: true });
+  } = useTransactionList({ byMonth: true, type: txFilterType });
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
     useScreenSize();
-
-  const [txFilterType, setTxFilterType] = useState<TransactionType | undefined>(
-    undefined,
-  );
-
-  const handleIncomingAction = () => {
-    txFilterType === TransactionType.DEPOSIT
-      ? setTxFilterType(undefined)
-      : setTxFilterType(TransactionType.DEPOSIT);
-  };
-
-  const handleOutgoingAction = () => {
-    txFilterType === TransactionType.TRANSACTION_SCRIPT
-      ? setTxFilterType(undefined)
-      : setTxFilterType(TransactionType.TRANSACTION_SCRIPT);
-  };
 
   const menuDrawer = useDisclosure();
   const {

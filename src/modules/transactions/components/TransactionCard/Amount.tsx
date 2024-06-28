@@ -10,7 +10,7 @@ import {
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { assetsMap, NativeAssetId } from '@/modules/core';
+import { assetsMap } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 import bakoIcon from '@/assets/tokens/bako.svg';
 
@@ -20,7 +20,7 @@ interface TransactionCardAmountProps {
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
-  const { isMobile, isExtraSmall, isSmall } = useScreenSize();
+  const { isMobile, isExtraSmall } = useScreenSize();
 
   const totalAmoutSent = assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))

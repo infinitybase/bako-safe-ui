@@ -11,8 +11,14 @@ import { useVaultState } from '@/modules/vault/states';
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
+import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+import { IPagination } from '@/modules/core';
 
-const useVaultDetails = () => {
+interface IUseVaultDetails {
+  byMonth?: boolean;
+}
+
+const useVaultDetails = ({ byMonth = false }: IUseVaultDetails = {}) => {
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const { account } = useAuthStore();
@@ -24,6 +30,7 @@ const useVaultDetails = () => {
     useVaultDetailsRequest(params.vaultId!);
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
+    byMonth,
   );
 
   const pendingSignerTransactions = useTransactionsSignaturePending([
@@ -72,7 +79,8 @@ const useVaultDetails = () => {
       ethBalance,
       transactions: {
         ...vaultTransactionsRequest,
-        vaultTransactions: vaultTransactionsRequest.transactions,
+        vaultTransactions:
+          vaultTransactionsRequest.transactions as unknown as IPagination<ITransactionsGroupedByMonth>,
         loadingVaultTransactions: vaultTransactionsRequest.isLoading,
         isPendingSigner:
           pendingSignerTransactions.data?.transactionsBlocked ?? false,

@@ -38,25 +38,11 @@ import {
 } from '../../components';
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
-import { TransactionType } from '../../services';
-import { useState } from 'react';
+import { useFilterTxType } from '../../hooks/filter';
 
 const UserTransactionsPage = () => {
-  const [txFilterType, setTxFilterType] = useState<TransactionType | undefined>(
-    undefined,
-  );
-
-  const handleIncomingAction = () => {
-    txFilterType === TransactionType.DEPOSIT
-      ? setTxFilterType(undefined)
-      : setTxFilterType(TransactionType.DEPOSIT);
-  };
-
-  const handleOutgoingAction = () => {
-    txFilterType === TransactionType.TRANSACTION_SCRIPT
-      ? setTxFilterType(undefined)
-      : setTxFilterType(TransactionType.TRANSACTION_SCRIPT);
-  };
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
 
   const {
     infinityTransactions,
