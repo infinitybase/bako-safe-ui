@@ -284,19 +284,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 >
                   <Button
                     hidden={hasBalance}
-                    minW={{ base: undefined, sm: 180 }}
-                    h={12}
                     variant="primary"
                     onClick={() => openFaucet(vault.predicateAddress!)}
-                    _hover={{
-                      opacity: 0.8,
-                    }}
-                    leftIcon={
-                      <PlusSquareIcon
-                        w={{ base: 5, sm: 6 }}
-                        h={{ base: 5, sm: 6 }}
-                      />
-                    }
+                    leftIcon={<PlusSquareIcon />}
                   >
                     Faucet
                   </Button>
@@ -407,12 +397,20 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 {!hasBalance ? (
                   <Card
                     w="full"
-                    h="full"
+                    h={{ base: 98, sm: 102.5, lg: 150 }}
                     p={{ base: 4, sm: 8 }}
                     borderColor="dark.100"
                     borderStyle="dashed"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    <VStack h="full" spacing={1} justifyContent="center">
+                    <VStack
+                      flex={1}
+                      h="full"
+                      spacing={1}
+                      justifyContent="center"
+                    >
                       <Text fontWeight="bold" color="grey.200">
                         First thing first...
                       </Text>

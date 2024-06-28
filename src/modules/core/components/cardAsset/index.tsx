@@ -3,12 +3,11 @@ import {
   Box,
   Card,
   CardProps,
-  HStack,
+  Flex,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
-import { useScreenSize } from '../../hooks';
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
 
 interface DefaultAsset {
@@ -30,10 +29,8 @@ interface AssetCardProps extends CardProps {
 }
 
 const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
-  const { isMobile } = useScreenSize();
-
   return (
-    <Box maxW={isMobile ? '70%' : 'full'}>
+    <Box maxW={{ base: '70%', lg: 'full' }}>
       <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} isTruncated>
         {asset.name ?? defaultAsset.name}
       </Text>
@@ -46,8 +43,6 @@ const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
 };
 
 const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
-  const { isMobile } = useScreenSize();
-
   const defaultAsset = {
     ...assetsMap[NativeAssetId],
     assetId: NativeAssetId,
@@ -67,7 +62,12 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
       h="full"
       {...rest}
     >
-      <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 3 }}>
+      <Flex
+        direction={{ base: 'row', lg: 'column' }}
+        alignItems="flex-start"
+        gap={2}
+        mb={1}
+      >
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
@@ -76,8 +76,8 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
           ignoreFallback
         />
 
-        {isMobile && <AssetDetails asset={asset} defaultAsset={defaultAsset} />}
-      </HStack>
+        <AssetDetails asset={asset} defaultAsset={defaultAsset} />
+      </Flex>
 
       <VStack
         display="flex"
@@ -95,10 +95,6 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
           <Text color="white" fontSize="md" mr={1}>
             ------
           </Text>
-        )}
-
-        {!isMobile && (
-          <AssetDetails asset={asset} defaultAsset={defaultAsset} />
         )}
       </VStack>
     </Card>
