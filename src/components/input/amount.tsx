@@ -33,6 +33,7 @@ const AmountInput = (props: AmountInputProps) => (
         event.target.value = `0.`;
       }
 
+      event.target.value = event.target.value.replace(/[^0-9.]/g, '');
       props.onChange?.(event);
     }}
     render={(maskedInputRef, maskedInputProps) => (
