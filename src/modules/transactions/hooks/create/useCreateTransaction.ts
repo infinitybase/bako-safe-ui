@@ -206,6 +206,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
     } else if (validTransactionFee) {
       form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
+    } else {
+      const txFee = BakoSafe.getGasConfig('BASE_FEE').toString();
+      setValidTransactionFee(txFee);
+      form.setValue(`transactions.${accordion.index}.fee`, txFee);
     }
   }, [transactionFee]);
 
