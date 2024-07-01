@@ -60,7 +60,15 @@ const HomeTransactions = memo(() => {
   return groupedTransactions && groupedTransactions.length <= 0 ? (
     <VStack w="full" spacing={6}>
       {groupedTransactions && (
-        <HStack w="full" spacing={4}>
+        <HStack
+          w="full"
+          spacing={4}
+          mt={{
+            base: recentVaults?.length ? 16 : 0,
+            sm: recentVaults?.length ? 8 : 0,
+            md: recentVaults?.length ? 8 : 2,
+          }}
+        >
           <Text
             variant="subtitle"
             fontWeight={700}
@@ -71,14 +79,7 @@ const HomeTransactions = memo(() => {
           </Text>
         </HStack>
       )}
-      <CustomSkeleton
-        isLoaded={!homeRequest.isLoading}
-        mt={{
-          base: recentVaults?.length ? 16 : 0,
-          sm: recentVaults?.length ? 8 : 0,
-          md: recentVaults?.length ? 8 : 2,
-        }}
-      >
+      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
         <EmptyState showAction={false} />
       </CustomSkeleton>
     </VStack>
