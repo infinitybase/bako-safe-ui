@@ -34,7 +34,7 @@ const TransactionTypeFormatter = (
       history.type === TransactionHistoryType.CREATED:
       return 'Created';
     case history.type === TransactionHistoryType.SEND:
-      return 'Sent';
+      return 'Execution';
     case history.owner.address === account &&
       history.type === TransactionHistoryType.SIGN:
       return 'You signed';
@@ -77,7 +77,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={8}>
-      <Text color="grey.200" fontWeight="medium">
+      <Text color="grey.425" fontSize="sm">
         Transaction History
       </Text>
 
@@ -134,7 +134,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 ml={2}
                 flexDir="column"
                 justifyContent="center"
-                borderBottom={steps?.length > 1 ? '1px solid grey' : 'unset'}
+                borderColor="grey.950"
+                borderBottomWidth={1}
+                borderTopWidth={index === 0 ? 1 : 0}
                 w="100%"
               >
                 <Box py={4}>
@@ -148,11 +150,20 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     {nickname && step.owner.address !== account && (
                       <Text>{nickname}</Text>
                     )}
-                    <Text color={failed ? 'error.500' : 'white'}>
+                    <Text
+                      color={
+                        failed
+                          ? 'error.500'
+                          : step.type === TransactionHistoryType.SEND
+                          ? 'brand.500'
+                          : 'grey.75'
+                      }
+                      fontSize="sm"
+                    >
                       {TransactionTypeFormatter(step, account)}
                     </Text>
                     {!nickname && (
-                      <Text variant="subtitle">
+                      <Text variant="subtitle" color="grey.425">
                         {step.owner.address !== account &&
                           AddressUtils.format(`(${step.owner.address})`)}
                       </Text>
@@ -161,10 +172,10 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                   <StepDescription
                     style={{
                       fontSize: '14px',
-                      color: 'grey.200',
+                      color: 'grey.425',
                     }}
                   >
-                    <Text variant="description">
+                    <Text variant="description" color="grey.425" fontSize="xs">
                       {new Date(step.date).toDateString() +
                         ' ' +
                         new Date(step.date).toLocaleTimeString()}

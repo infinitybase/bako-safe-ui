@@ -11,12 +11,7 @@ const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
       w={{ base: 'full', sm: 100 }}
       justifyContent={{ base: 'flex-end', sm: 'flex-start' }}
     >
-      <Text
-        variant="subtitle"
-        fontSize={{ base: 'sm', sm: 'md' }}
-        fontWeight="semibold"
-        color="grey.200"
-      >
+      <Text variant="subtitle" fontSize="sm" color="grey.425">
         {children}
       </Text>
     </Center>

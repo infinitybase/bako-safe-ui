@@ -17,6 +17,7 @@ const useHome = () => {
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();
+
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
@@ -53,7 +54,6 @@ const useHome = () => {
     },
     transactionsRequest: {
       ...homeDataRequest,
-      transactions: homeDataRequest.data?.transactions?.data,
       loadingTransactions: homeDataRequest.isLoading,
     },
     homeRequest: homeDataRequest,

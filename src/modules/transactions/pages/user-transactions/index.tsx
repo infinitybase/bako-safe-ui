@@ -4,18 +4,23 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
+  Divider,
   Heading,
   HStack,
   Icon,
   Stack,
+  Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import format from 'date-fns/format';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
-
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
+import {
+  CustomSkeleton,
+  HomeIcon,
+  TransactionTypeFilters,
+  VaultIcon,
+} from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
@@ -25,7 +30,6 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
-
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -34,8 +38,12 @@ import {
 } from '../../components';
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
+import { useFilterTxType } from '../../hooks/filter';
 
 const UserTransactionsPage = () => {
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
+
   const {
     infinityTransactions,
     infinityTransactionsRef,
@@ -45,8 +53,7 @@ const UserTransactionsPage = () => {
     account,
     navigate,
     pendingSignerTransactions,
-    hasSkeleton,
-  } = useTransactionList();
+  } = useTransactionList({ type: txFilterType, byMonth: true });
 
   const { hasPermission, goWorkspace } = useWorkspace();
   const {
@@ -58,7 +65,7 @@ const UserTransactionsPage = () => {
 
   const { goHome } = useHome();
 
-  const { isMobile, isExtraSmall } = useScreenSize();
+  const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -201,55 +208,80 @@ const UserTransactionsPage = () => {
 
       {/* USER TRANSACTIONS */}
       <VStack w="full" mt={6}>
-        <Box
+        <HStack
+          justifyContent="space-between"
+          alignItems={isSmall ? 'start' : 'center'}
           w="full"
-          display="flex"
-          flexDir={isExtraSmall ? 'column' : 'row'}
-          gap={isExtraSmall ? 2 : 4}
+          flexDir={isSmall ? 'column' : 'row'}
         >
-          <Heading variant="title-xl" color="grey.200">
-            Transactions
-          </Heading>
-          <WaitingSignatureBadge
-            isLoading={pendingSignerTransactions.isLoading}
-            quantity={pendingSignerTransactions.data?.ofUser ?? 0}
-          />
-        </Box>
+          <Box
+            w="full"
+            display="flex"
+            flexDir={isExtraSmall ? 'column' : 'row'}
+            gap={isExtraSmall ? 2 : 4}
+          >
+            <Heading fontSize="sm" color="grey.200">
+              Transactions
+            </Heading>
+            <WaitingSignatureBadge
+              isLoading={pendingSignerTransactions.isLoading}
+              quantity={pendingSignerTransactions.data?.ofUser ?? 0}
+            />
+          </Box>
+          {!isSmall && (
+            <TransactionTypeFilters
+              currentFilter={txFilterType}
+              incomingAction={handleIncomingAction}
+              outgoingAction={handleOutgoingAction}
+            />
+          )}
+        </HStack>
 
         {/* FILTER */}
-        <Box w="full" mt={3}>
-          <TransactionFilter.Control
-            value={filter.value!}
-            onChange={(value) => {
-              filter.set(value as StatusFilter);
-            }}
-          >
-            <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
-            <TransactionFilter.Field
-              value={StatusFilter.COMPLETED}
-              label="Completed"
+        <VStack w="full" alignItems="start">
+          <Box>
+            <TransactionFilter.Control
+              value={filter.value!}
+              onChange={(value) => {
+                filter.set(value as StatusFilter);
+              }}
+            >
+              <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
+              <TransactionFilter.Field
+                value={StatusFilter.COMPLETED}
+                label="Completed"
+              />
+              <TransactionFilter.Field
+                value={StatusFilter.DECLINED}
+                label="Declined"
+              />
+              <TransactionFilter.Field
+                value={StatusFilter.PENDING}
+                label="Pending"
+              />
+            </TransactionFilter.Control>
+          </Box>
+          {isSmall && (
+            <TransactionTypeFilters
+              mt={2}
+              currentFilter={txFilterType}
+              incomingAction={handleIncomingAction}
+              outgoingAction={handleOutgoingAction}
+              buttonsFullWidth
             />
-            <TransactionFilter.Field
-              value={StatusFilter.DECLINED}
-              label="Declined"
-            />
-            <TransactionFilter.Field
-              value={StatusFilter.PENDING}
-              label="Pending"
-            />
-          </TransactionFilter.Control>
-        </Box>
+          )}
+        </VStack>
       </VStack>
 
       {/* LIST */}
-      <TransactionCard.List
-        mt={1}
-        w="full"
-        spacing={{ base: 3, sm: 5 }}
+      <VStack
+        minH="55vh"
         maxH="74vh"
+        mt={-3}
         overflowY="scroll"
         overflowX="hidden"
         scrollBehavior="smooth"
+        w="full"
         sx={{
           '&::-webkit-scrollbar': {
             display: 'none',
@@ -269,63 +301,72 @@ const UserTransactionsPage = () => {
           !transactionRequest?.transactions.length && (
             <EmptyState showAction={false} />
           )}
+        {infinityTransactions?.map((grouped) => (
+          <>
+            <HStack w="full">
+              <Text
+                fontSize="sm"
+                fontWeight="semibold"
+                color="grey.425"
+                whiteSpace="nowrap"
+              >
+                {grouped.monthYear}
+              </Text>
 
-        {infinityTransactions?.map((transaction) => {
-          const isSigner = !!transaction.predicate?.members?.find(
-            (member) => member.address === account,
-          );
+              <Divider w="full" borderColor="grey.950" />
+            </HStack>
+            <TransactionCard.List mt={1} w="full" spacing={0}>
+              {grouped?.transactions.map((transaction) => {
+                const status = transactionStatus({
+                  ...transaction,
+                  account,
+                });
+                const isSigner = !!transaction.predicate?.members?.find(
+                  (member) => member.address === account,
+                );
 
-          return (
-            <Box w="full" key={transaction.id} ref={infinityTransactionsRef}>
-              <CustomSkeleton key={transaction.id} isLoaded={!hasSkeleton}>
-                {isMobile ? (
-                  <TransactionCardMobile
-                    isSigner={isSigner}
-                    transaction={transaction}
-                    account={account}
-                    callBack={() => filter.set(StatusFilter.ALL)}
-                  />
-                ) : (
-                  <TransactionCard.Container
-                    status={transactionStatus({ ...transaction, account })}
-                    details={
-                      <TransactionCard.Details transaction={transaction} />
-                    }
-                    transaction={transaction}
-                    account={account}
-                    isSigner={isSigner}
-                  >
-                    {transaction.predicate && (
-                      <TransactionCard.VaultInfo
-                        vault={transaction.predicate}
-                      />
-                    )}
-                    <TransactionCard.CreationDate>
-                      {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                    </TransactionCard.CreationDate>
-                    <TransactionCard.Assets />
-                    <TransactionCard.Amount
-                      assets={transaction.resume.outputs}
-                    />
-                    <TransactionCard.Name transactionName={transaction.name} />
-                    <TransactionCard.Status
-                      transaction={transaction}
-                      status={transactionStatus({ ...transaction, account })}
-                    />
-                    <TransactionCard.Actions
-                      isSigner={isSigner}
-                      transaction={transaction}
-                      status={transactionStatus({ ...transaction, account })}
-                      callBack={() => filter.set(StatusFilter.ALL)}
-                    />
-                  </TransactionCard.Container>
-                )}
-              </CustomSkeleton>
-            </Box>
-          );
-        })}
-        <Box ref={inView.ref} />
-      </TransactionCard.List>
+                return (
+                  <>
+                    <Box
+                      key={transaction.id}
+                      ref={infinityTransactionsRef}
+                      w="full"
+                    >
+                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                        {isMobile ? (
+                          <TransactionCardMobile
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={account}
+                            mt="15px"
+                          />
+                        ) : (
+                          <TransactionCard.Container
+                            mb="11px"
+                            key={transaction.id}
+                            status={status}
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={account}
+                            details={
+                              <TransactionCard.Details
+                                transaction={transaction}
+                                status={status}
+                              />
+                            }
+                          />
+                        )}
+                      </CustomSkeleton>
+                    </Box>
+
+                    <Box ref={inView.ref} />
+                  </>
+                );
+              })}
+            </TransactionCard.List>
+          </>
+        ))}
+      </VStack>
     </VStack>
   );
 };

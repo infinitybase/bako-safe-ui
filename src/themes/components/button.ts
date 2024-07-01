@@ -61,6 +61,17 @@ const emptyState = defineStyle({
   },
 });
 
+const txFilterType = defineStyle({
+  bgColor: '#F5F5F50D',
+  borderRadius: 6,
+  fontWeight: 'normal',
+  fontSize: 'xs',
+  border: 'none',
+  letterSpacing: '.5px',
+  px: 3,
+  h: '28px',
+});
+
 const icon = defineStyle({
   bgColor: 'grey.800',
   color: 'grey.200',
@@ -80,6 +91,7 @@ const Button = defineStyleConfig({
     secondary,
     tertiary,
     emptyState,
+    txFilterType,
   },
 });
 
