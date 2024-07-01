@@ -33,6 +33,7 @@ const VaultSettingsPage = () => {
 
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
+  const workspaceId = current ?? '';
 
   if (!vault) return null;
 
@@ -82,6 +83,13 @@ const VaultSettingsPage = () => {
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>
