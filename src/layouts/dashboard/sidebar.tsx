@@ -1,21 +1,22 @@
 import { Box, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import {
+  CoinsIcon,
   ExchangeIcon,
   HomeIcon,
   PendingIcon,
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
+import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { useVaultDetails } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
+import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
-import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -38,7 +39,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
   const { vault } = useVaultDetails();
 
-  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     request: { refetch },
@@ -73,7 +74,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               vaultRequest?.predicate?.predicateAddress ?? '',
             )!
           }
-          isBalanceLowerThanReservedAmount={isBalanceLowerThanReservedAmount}
+          isEthBalanceLowerThanReservedAmount={
+            isEthBalanceLowerThanReservedAmount
+          }
           isLoading={vaultRequest.isLoading}
           isFetching={vaultRequest.isFetching}
           onChangeVault={() => {
@@ -109,6 +112,21 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={HomeIcon} />
             <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+          </SidebarMenu.Container>
+
+          <SidebarMenu.Container
+            isActive={menuItems.balance}
+            onClick={() =>
+              route.navigate(
+                Pages.vaultBalance({
+                  workspaceId: route.params.workspaceId!,
+                  vaultId: route.params.vaultId!,
+                }),
+              )
+            }
+          >
+            <SidebarMenu.Icon as={CoinsIcon} />
+            <SidebarMenu.Title>Balance</SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container

@@ -12,6 +12,9 @@ const Pages = {
   detailsVault: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId',
   ),
+  vaultBalance: pageRoute<{ workspaceId: string; vaultId: string }>(
+    '/workspace/:workspaceId/vault/:vaultId/balance',
+  ),
   vaultSettings: pageRoute<{ workspaceId: string; vaultId: string }>(
     '/workspace/:workspaceId/vault/:vaultId/settings',
   ),
@@ -61,6 +64,10 @@ const Pages = {
     workspaceId: string;
     memberId: string;
   }>('/workspace/:workspaceId/members/:memberId'),
+
+  balanceWorkspace: pageRoute<{ workspaceId: string }>(
+    '/workspace/:workspaceId/balance',
+  ),
 
   workspace: pageRoute<{ workspaceId: string }>('/workspace/:workspaceId'),
   // workspaceTransactions: pageRoute<{ workspaceId: string }>(

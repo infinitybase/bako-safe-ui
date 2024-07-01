@@ -31,17 +31,30 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           const { parent } = context;
 
           if (parent.fee) {
-            const transactionTotalAmount = bn
-              .parseUnits(parent.amount)
-              .add(bn.parseUnits(parent.fee))
-              .format();
+            if (parent.asset === NativeAssetId) {
+              const transactionTotalAmount = bn
+                .parseUnits(parent.amount)
+                .add(bn.parseUnits(parent.fee))
+                .format();
 
-            return params.validateBalance(
+              return params.validateBalance(
+                parent.asset,
+                transactionTotalAmount,
+              );
+            }
+
+            const hasAssetBalance = params.validateBalance(
               parent.asset,
-              String(transactionTotalAmount),
+              parent.amount,
             );
+            const hasFeeBalance = params.validateBalance(
+              NativeAssetId,
+              parent.fee,
+            );
+
+            return hasAssetBalance && hasFeeBalance;
           }
-          return params.validateBalance(parent.asset, amount);
+          return params.validateBalance(parent.asset, parent.amount);
         })
         .test(
           'has-total-balance',
@@ -58,7 +71,6 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             }[];
 
             const coinBalance = params.getCoinAmount(parent.asset);
-
             let transactionsBalance = transactions
               .filter((transaction) => transaction.asset === parent.asset)
               .reduce(

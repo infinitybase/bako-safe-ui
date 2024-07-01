@@ -52,6 +52,12 @@ const useSidebar = () => {
         workspaceId: current ?? '',
       }),
     ),
+    balance: checkPathname(
+      Pages.vaultBalance({
+        vaultId: params?.vaultId ?? '',
+        workspaceId: current ?? '',
+      }),
+    ),
   };
 
   return {

@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 
-import { CreateMemberPage } from './pages';
+import { CreateMemberPage, WorkspaceBalancePage } from './pages';
 import { WorkspacePage } from './pages/home';
 
 const workspaceRoutes = (
@@ -34,6 +34,15 @@ const workspaceRoutes = (
         }
       />
     </Route>
+
+    <Route
+      path={Pages.balanceWorkspace()}
+      element={
+        <AuthRoute>
+          <WorkspaceBalancePage />
+        </AuthRoute>
+      }
+    />
   </Route>
 );
 

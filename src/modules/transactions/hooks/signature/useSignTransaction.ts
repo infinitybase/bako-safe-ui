@@ -44,7 +44,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   }, [options.transaction]);
 
   const refetchTransactionList = useCallback(() => {
-    const queries = ['home', 'transaction', 'assets'];
+    const queries = ['home', 'transaction', 'assets', 'balance'];
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),

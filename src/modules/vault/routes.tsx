@@ -6,7 +6,7 @@ import { AuthRoute, Pages } from '@/modules/core';
 import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '@/modules/transactions/pages';
 
-import { VaultDetailsPage, VaultSettingsPage } from './pages';
+import { VaultBalancePage, VaultDetailsPage, VaultSettingsPage } from './pages';
 
 const vaultRoutes = (
   <Route
@@ -44,6 +44,14 @@ const vaultRoutes = (
       element={
         <AuthRoute>
           <VaultSettingsPage />
+        </AuthRoute>
+      }
+    />
+    <Route
+      path={Pages.vaultBalance()}
+      element={
+        <AuthRoute>
+          <VaultBalancePage />
         </AuthRoute>
       }
     />

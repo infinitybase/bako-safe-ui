@@ -35,6 +35,7 @@ function AssetSelect(props: Props) {
           label: `${asset.slug} - ${asset.name}`,
           value: asset.assetId,
         }))}
+        maxOptionsHeight={120}
       />
       {props.helperText}
     </FormControl>

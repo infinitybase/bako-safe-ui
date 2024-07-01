@@ -61,7 +61,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     return as;
   }, [vault.id]);
 
-  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   if (!vault) return null;
 
@@ -219,7 +219,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         !vault?.hasBalance ||
                         blockedTransfers ||
                         !makeTransactionsPerm ||
-                        isBalanceLowerThanReservedAmount
+                        isEthBalanceLowerThanReservedAmount
                       }
                       onClick={() =>
                         navigate(
@@ -233,20 +233,21 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       Send
                     </Button>
 
-                    {isBalanceLowerThanReservedAmount && !blockedTransfers && (
-                      <Text
-                        variant="description"
-                        textAlign={isExtraSmall ? 'left' : 'right'}
-                        fontSize="xs"
-                        w="full"
-                        mt={2}
-                        color="error.500"
-                        position={{ base: 'unset', xs: 'absolute' }}
-                        bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
-                      >
-                        Not enough balance.
-                      </Text>
-                    )}
+                    {isEthBalanceLowerThanReservedAmount &&
+                      !blockedTransfers && (
+                        <Text
+                          variant="description"
+                          textAlign={isExtraSmall ? 'left' : 'right'}
+                          fontSize="xs"
+                          w="full"
+                          mt={2}
+                          color="error.500"
+                          position={{ base: 'unset', xs: 'absolute' }}
+                          bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
+                        >
+                          Not enough balance.
+                        </Text>
+                      )}
 
                     {blockedTransfers ? (
                       <Text

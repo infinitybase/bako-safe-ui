@@ -27,7 +27,7 @@ interface VaultBoxPropx {
   hasBalance?: boolean;
   hasPermission?: boolean;
   isFetching: boolean;
-  isBalanceLowerThanReservedAmount: boolean;
+  isEthBalanceLowerThanReservedAmount: boolean;
 }
 
 const VaultBoxSkeleton = () => (
@@ -130,7 +130,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             isDisabled={
               !hasBalance ||
               isPending ||
-              props.isBalanceLowerThanReservedAmount ||
+              props.isEthBalanceLowerThanReservedAmount ||
               isFirstAssetsLoading
             }
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
@@ -144,7 +144,7 @@ const VaultBox = (props: VaultBoxPropx) => {
           )}
           {!isPending &&
             !isFirstAssetsLoading &&
-            props.isBalanceLowerThanReservedAmount && (
+            props.isEthBalanceLowerThanReservedAmount && (
               <Text variant="description" mt={2} color="error.500">
                 Not enough balance.
               </Text>
