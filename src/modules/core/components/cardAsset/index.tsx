@@ -3,12 +3,11 @@ import {
   Box,
   Card,
   CardProps,
-  HStack,
+  Flex,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
-import { useScreenSize } from '../../hooks';
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
 
 interface DefaultAsset {
@@ -31,16 +30,12 @@ interface AssetCardProps extends CardProps {
 
 const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
   return (
-    <Box>
-      <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} noOfLines={2}>
+    <Box maxW={{ base: '70%', lg: 'full' }}>
+      <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} isTruncated>
         {asset.name ?? defaultAsset.name}
       </Text>
 
-      <Text
-        fontWeight="bold"
-        fontSize={{ base: 'sm', sm: 15 }}
-        color="grey.400"
-      >
+      <Text fontWeight="bold" fontSize="xs" color="grey.400">
         {asset.slug ?? defaultAsset.slug}
       </Text>
     </Box>
@@ -48,8 +43,6 @@ const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
 };
 
 const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
-  const { isMobile } = useScreenSize();
-
   const defaultAsset = {
     ...assetsMap[NativeAssetId],
     assetId: NativeAssetId,
@@ -61,15 +54,20 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
       bgColor="grey.700"
       cursor="pointer"
       borderColor="grey.400"
-      borderWidth="2px"
+      borderWidth="1px"
       borderRadius={10}
-      px={{ base: 4, sm: 6 }}
+      px={4}
       py={4}
       w="full"
-      h={{ base: undefined, sm: 150 }}
+      h="full"
       {...rest}
     >
-      <HStack gap={2} alignItems="center" mb={{ base: 1, sm: 4 }}>
+      <Flex
+        direction={{ base: 'row', lg: 'column' }}
+        alignItems="flex-start"
+        gap={2}
+        mb={1}
+      >
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
@@ -78,8 +76,8 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
           ignoreFallback
         />
 
-        {isMobile && <AssetDetails asset={asset} defaultAsset={defaultAsset} />}
-      </HStack>
+        <AssetDetails asset={asset} defaultAsset={defaultAsset} />
+      </Flex>
 
       <VStack
         display="flex"
@@ -90,17 +88,13 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={-1}
       >
         {visibleBalance ? (
-          <Text fontWeight="bold" color="white" maxW={360} isTruncated>
+          <Text fontWeight="bold" color="white" maxW="100%" isTruncated>
             {asset.amount ?? defaultAsset.amount}
           </Text>
         ) : (
           <Text color="white" fontSize="md" mr={1}>
             ------
           </Text>
-        )}
-
-        {!isMobile && (
-          <AssetDetails asset={asset} defaultAsset={defaultAsset} />
         )}
       </VStack>
     </Card>

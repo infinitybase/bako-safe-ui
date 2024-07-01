@@ -44,6 +44,7 @@ const VaultDetailsPage = () => {
   const {
     params,
     vault,
+    assets,
     store,
     navigate,
     account,
@@ -60,7 +61,7 @@ const VaultDetailsPage = () => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile } =
+  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isExtraSmall, isLarge } =
     useScreenSize();
 
   const workspaceId = current ?? '';
@@ -188,9 +189,9 @@ const VaultDetailsPage = () => {
         w="full"
         gap={10}
       >
-        <CardDetails vault={vault} store={store} />
+        <CardDetails vault={vault} store={store} assets={assets} />
 
-        {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
+        {!isLarge && <SignersDetails vault={vault} />}
       </HStack>
       <Box
         w="full"
@@ -312,7 +313,7 @@ const VaultDetailsPage = () => {
             )}
       </CustomSkeleton>
 
-      {vaultRequiredSizeToColumnLayout && (
+      {isLarge && (
         <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>

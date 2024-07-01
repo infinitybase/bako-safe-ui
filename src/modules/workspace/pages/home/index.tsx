@@ -18,6 +18,10 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { ITransaction, IWitnesses } from 'bakosafe';
+import format from 'date-fns/format';
+import { useRef } from 'react';
+
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
@@ -36,17 +40,18 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import {
-  AssetCard,
-  assetsMap,
-  NativeAssetId,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+
+import { AssetsDetails, CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+import {
+  TransactionCard,
+  TransactionCardMobile,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
+
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
@@ -56,6 +61,7 @@ import WkHomeTransactions from '../../components/wkHomeTransactions';
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
+  const assetsContainerRef = useRef(null);
   const {
     navigate,
     currentWorkspace: { workspace: currentWorkspace },
@@ -273,7 +279,7 @@ const WorkspacePage = () => {
             h={{ base: 'unset', md: 'full' }}
             bgColor="grey.800"
           >
-            <VStack spacing={6} w="full">
+            <VStack spacing={4} w="full" h="full">
               <HStack
                 w="full"
                 display="flex"
@@ -364,8 +370,7 @@ const WorkspacePage = () => {
                   w="full"
                   h="full"
                 >
-                  {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
-                  !worksapceBalance.balance.balance ? (
+                  {worksapceBalance.balance.assetsBalance.length === 0 ? (
                     <Card
                       w="full"
                       h="full"
@@ -384,28 +389,22 @@ const WorkspacePage = () => {
                       </VStack>
                     </Card>
                   ) : (
-                    <VStack
+                    <HStack
+                      ref={assetsContainerRef}
                       w="full"
                       h="full"
-                      spacing={1}
-                      justifyContent="center"
+                      spacing={{ base: 2, sm: 4 }}
+                      justifyContent="flex-start"
                     >
-                      {/*todo:
-                      - update service with typing returning the assets -> Asset[]
-                      - implement a recursive function to render the diferent assets, and make to dynamic data
-                  */}
-
-                      <AssetCard
-                        maxH={145}
-                        p={2}
-                        asset={{
-                          ...assetsMap[NativeAssetId],
-                          assetId: NativeAssetId,
-                          amount: worksapceBalance.balance.balance,
-                        }}
+                      <AssetsDetails
+                        containerRef={assetsContainerRef}
+                        assets={worksapceBalance.balance.assetsBalance}
                         visibleBalance={visibleBalance}
+                        viewAllRedirect={Pages.balanceWorkspace({
+                          workspaceId,
+                        })}
                       />
-                    </VStack>
+                    </HStack>
                   )}
                 </CustomSkeleton>
               </VStack>
