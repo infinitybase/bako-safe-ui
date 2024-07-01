@@ -54,8 +54,8 @@ dependencies:
     specifier: ^1.5.0
     version: 1.5.0
   bakosafe:
-    specifier: 0.0.58
-    version: 0.0.58(fuels@0.88.1)(ts-node@10.9.2)(typescript@5.0.2)
+    specifier: 0.0.59
+    version: 0.0.59(fuels@0.88.1)(ts-node@10.9.2)(typescript@5.0.2)
   crypto-js:
     specifier: 4.2.0
     version: 4.2.0
@@ -3808,8 +3808,8 @@ packages:
       resolve: 1.22.8
     dev: false
 
-  /bakosafe@0.0.58(fuels@0.88.1)(ts-node@10.9.2)(typescript@5.0.2):
-    resolution: {integrity: sha512-PObAlSbMzjYiOFmJ4Qd3lkOslT2O6Mqazvc5liJDZUXShyEUWRaL7fn/v/TDVFf4n7LxmPNiKWrFg8hBLoVg7g==}
+  /bakosafe@0.0.59(fuels@0.88.1)(ts-node@10.9.2)(typescript@5.0.2):
+    resolution: {integrity: sha512-2ZcahyHWshnKEGz/9qkyTIFPNY3hxG4+7mPl1eJ2rPkM0GxoZPsMwJ4F90zC5XJoU2qPhA+jkHQnCyBxYBEFEQ==}
     peerDependencies:
       fuels: 0.88.1
     dependencies:
