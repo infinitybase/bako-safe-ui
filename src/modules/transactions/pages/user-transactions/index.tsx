@@ -275,6 +275,7 @@ const UserTransactionsPage = () => {
 
       {/* LIST */}
       <VStack
+        minH="55vh"
         maxH="74vh"
         mt={-3}
         overflowY="scroll"

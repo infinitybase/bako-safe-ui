@@ -11,14 +11,21 @@ import { useVaultState } from '@/modules/vault/states';
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+import {
+  ITransactionsGroupedByMonth,
+  TransactionType,
+} from '@/modules/transactions/services';
 import { IPagination } from '@/modules/core';
 
 interface IUseVaultDetails {
   byMonth?: boolean;
+  txFilterType?: TransactionType;
 }
 
-const useVaultDetails = ({ byMonth = false }: IUseVaultDetails = {}) => {
+const useVaultDetails = ({
+  byMonth = false,
+  txFilterType,
+}: IUseVaultDetails = {}) => {
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string; vaultId: string }>();
   const { account } = useAuthStore();
@@ -31,6 +38,7 @@ const useVaultDetails = ({ byMonth = false }: IUseVaultDetails = {}) => {
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
     byMonth,
+    txFilterType,
   );
 
   const pendingSignerTransactions = useTransactionsSignaturePending([

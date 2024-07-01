@@ -7,7 +7,10 @@ import {
   Vault,
 } from 'bakosafe';
 
-import { TransactionService } from '@/modules/transactions/services';
+import {
+  TransactionService,
+  TransactionType,
+} from '@/modules/transactions/services';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
@@ -47,7 +50,11 @@ const useBakoSafeCreateTransaction = ({
 
 interface UseBakoSafeListTransactionParams {
   vault: Vault;
-  filter?: IListTransactions & { limit: number; byMonth?: boolean };
+  filter?: IListTransactions & {
+    limit: number;
+    byMonth?: boolean;
+    type?: TransactionType;
+  };
 }
 
 const useBakoSafeTransactionList = ({

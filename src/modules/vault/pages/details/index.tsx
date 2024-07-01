@@ -7,11 +7,12 @@ import {
   Divider,
   HStack,
   Icon,
+  Spacer,
   Text,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import { CustomSkeleton, HomeIcon } from '@/components';
+import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
@@ -33,8 +34,12 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
+import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 
 const VaultDetailsPage = () => {
+  const { handleIncomingAction, handleOutgoingAction, txFilterType } =
+    useFilterTxType();
+
   const { setTemplateFormInitial } = useTemplateStore();
   const {
     params,
@@ -45,7 +50,7 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
     menuDrawer,
-  } = useVaultDetails();
+  } = useVaultDetails({ byMonth: true, txFilterType });
   const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
 
@@ -55,7 +60,7 @@ const VaultDetailsPage = () => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { vaultRequiredSizeToColumnLayout, isExtraSmall, isMobile } =
+  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile } =
     useScreenSize();
 
   const workspaceId = current ?? '';
@@ -187,24 +192,37 @@ const VaultDetailsPage = () => {
 
         {!vaultRequiredSizeToColumnLayout && <SignersDetails vault={vault} />}
       </HStack>
-
       <Box
-        mb={3}
+        w="full"
         display="flex"
-        alignItems={isExtraSmall ? 'flex-start' : 'center'}
-        flexDir={isExtraSmall ? 'column' : 'row'}
-        gap={isExtraSmall ? 2 : 4}
-        mt={{ base: 12, sm: 'unset' }}
+        flexDir={isSmall ? 'column' : 'row'}
+        gap={4}
+        mb={4}
       >
-        <Text variant="subtitle" fontWeight={700} fontSize="md" color="grey.50">
-          Transactions
-        </Text>
-        <WaitingSignatureBadge
-          isLoading={pendingSignerTransactions.isLoading}
-          quantity={pendingSignerTransactions.data?.ofUser ?? 0}
+        <Box
+          display="flex"
+          flexDir={isSmall ? 'column' : 'row'}
+          alignItems={isSmall ? 'unset' : 'center'}
+          gap={isSmall ? 2 : 4}
+        >
+          <Text fontWeight={700} fontSize="md" color="grey.50">
+            Transactions
+          </Text>
+          <WaitingSignatureBadge
+            isLoading={pendingSignerTransactions.isLoading}
+            quantity={pendingSignerTransactions.data?.ofUser ?? 0}
+          />
+        </Box>
+        <Spacer />
+        <TransactionTypeFilters
+          incomingAction={handleIncomingAction}
+          outgoingAction={handleOutgoingAction}
+          buttonsFullWidth={isSmall}
         />
       </Box>
+
       <CustomSkeleton
+        minH="30vh"
         isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
         h={
           !vault.isLoading && !isLoading && !loadingVaultTransactions
