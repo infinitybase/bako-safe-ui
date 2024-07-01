@@ -18,14 +18,14 @@ const assetsList: Asset[] = [
     name: 'Bitcoin',
     slug: 'BTC',
     assetId:
-      '0xfe3f96763e20e5d168037065a3bc65b751df7a038fd9297cc1cb5c740fd1c170',
+      '0xccceae45a7c23dcd4024f4083e959a0686a191694e76fa4fb76c449361ca01f7',
     icon: BTCIcon,
   },
   {
     name: 'USDC',
     slug: 'USDC',
     assetId:
-      '0xda1fb840452bba3ab65a11f782902e7286fc44b94a9b85059dd7f8b68bf371d4',
+      '0xfed3ee85624c79cb18a3a848092239f2e764ed6b0aa156ad10a18bfdbe74269f',
     icon: USDCIcon,
   },
   {
