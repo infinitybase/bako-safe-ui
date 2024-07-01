@@ -6,7 +6,6 @@ import {
   Card,
   Center,
   Divider,
-  Heading,
   HStack,
   Icon,
   Stack,
@@ -21,12 +20,14 @@ import { ITransaction, TransactionStatus } from 'bakosafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
+import { css, keyframes } from '@emotion/react';
 
 import {
   AlertIcon,
   CopyIcon,
   CustomSkeleton,
   DoubleArrowIcon,
+  UpRightArrowWhite,
 } from '@/components';
 import {
   AddressUtils,
@@ -41,6 +42,16 @@ import { limitCharacters } from '@/utils';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 
+import { TransactionType } from '../../services/types';
+
+const shakeAnimation = keyframes`
+  0% { transform: translateY(0); }
+  25% { transform: translateY(-2px); }
+  50% { transform: translateY(2px); }
+  75% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+`;
+
 type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
     assetId: string;
@@ -48,6 +59,7 @@ type TransactionUI = Omit<ITransaction, 'assets'> & {
     to: string;
     recipientNickname?: string;
   }[];
+  type: TransactionType;
 };
 interface TransactionDetailsProps {
   transaction: TransactionUI;
@@ -60,12 +72,14 @@ interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
   contractAddress?: string;
   hasToken?: boolean;
+  isDeposit: boolean;
 }
 
 const AssetBoxInfo = ({
   asset,
   contractAddress,
   hasToken,
+  isDeposit,
   ...props
 }: AssetBoxInfoProps) => {
   const toast = useNotification();
@@ -85,18 +99,16 @@ const AssetBoxInfo = ({
 
   return (
     <HStack
-      px={{ base: 0, md: 5 }}
-      py={{ base: 3, sm: 5 }}
+      py={2}
       spacing={{ base: 1, sm: 8 }}
       w="full"
       borderTopWidth={1}
-      borderColor="transparent"
       {...props}
     >
       {contractWithoutToken ? (
         <Text
           fontWeight="semibold"
-          color="grey.200"
+          color="grey.425"
           w={{ base: 'full', sm: 'unset' }}
         >
           Contract execution
@@ -107,30 +119,34 @@ const AssetBoxInfo = ({
             <HStack spacing={{ base: 2, sm: 4 }}>
               <Avatar
                 name={assetInfo.slug}
-                size={{ base: 'xs', sm: '28px' }}
+                size="xs"
                 src={assetInfo.icon}
                 ignoreFallback
               />
-              <Text color="grey.500">{assetInfo.slug}</Text>
+              <Text fontSize="sm" color="grey.500">
+                {assetInfo.slug}
+              </Text>
             </HStack>
           )}
 
           <HStack>
             <Box mt={0.5} w={{ base: 120, sm: 140 }}>
-              <Heading
+              <Text
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
-                color="grey.200"
+                color="grey.75"
+                fontSize="sm"
               >
+                {isDeposit ? '+' : '-'}
                 {asset?.amount}
-              </Heading>
+              </Text>
               <Text
                 textAlign="center"
                 variant="description"
-                fontSize={{ base: 'xs', sm: 'sm' }}
+                fontSize="xs"
                 color="grey.500"
               >
-                Amount sent
+                $25.00
               </Text>
             </Box>
           </HStack>
@@ -140,11 +156,16 @@ const AssetBoxInfo = ({
       <Center
         p={{ base: 1.5, sm: 3 }}
         borderRadius={5}
-        bgColor={isContract ? 'brand.500' : 'grey.600'}
+        // bgColor={isContract ? 'brand.500' : "grey.825"}
+        bgColor="grey.825"
+        borderWidth={1}
+        borderColor="grey.925"
+        boxSize="30px"
       >
         <Icon
-          color={isContract ? 'black' : 'brand.500'}
-          fontSize={{ base: 'md', sm: '2xl' }}
+          // color={isContract ? 'black' : 'brand.500'}
+          color="grey.250"
+          fontSize="18px"
           as={!isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
@@ -197,8 +218,7 @@ const AssetBoxInfo = ({
           {!!nickname && (
             <Text
               fontSize={{ base: 'sm', sm: 'lg' }}
-              color="grey.200"
-              fontWeight="semibold"
+              color="grey.75"
               maxW={{ base: 100, sm: 220 }}
               isTruncated
             >
@@ -208,9 +228,8 @@ const AssetBoxInfo = ({
 
           <Text
             maxW={{ base: 120, md: 200, lg: 250, '2xl': '100%' }}
-            fontSize={{ base: 'xs', sm: 'md' }}
-            color={nickname ? 'grey.500' : 'grey.200'}
-            fontWeight={nickname ? 'regular' : 'bold'}
+            fontSize="sm"
+            color="grey.75"
             textOverflow="ellipsis"
             isTruncated
           >
@@ -238,11 +257,14 @@ const Details = ({
   isMobile,
 }: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
+
   const mainOperation = transaction?.summary?.operations?.[0];
   const isContract = mainOperation?.to?.type === AddressType.contract;
   const hasToken = !!mainOperation?.assetsSent?.length;
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
   const notSigned = !status?.isDeclined && !status?.isSigned;
+
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -278,10 +300,45 @@ const Details = ({
                 minW={{ base: 200, sm: 486 }}
                 flexWrap="wrap"
               >
-                <Box mb={{ base: 2, sm: 4 }}>
-                  <Text color="grey.200" fontWeight="medium">
+                <Box mb={2}>
+                  <Text color="grey.425" fontSize="sm">
                     Transaction breakdown
                   </Text>
+                </Box>
+
+                <Box
+                  alignItems="flex-start"
+                  flexWrap="wrap"
+                  mb={fromConnector ? 4 : 0}
+                >
+                  {transaction.assets.map((asset, index) => (
+                    <AssetBoxInfo
+                      isDeposit={isDeposit}
+                      key={index}
+                      asset={{
+                        assetId: asset.assetId,
+                        amount: asset.amount,
+                        to: asset.to,
+                        transactionID: transaction.id,
+                        recipientNickname: asset?.recipientNickname,
+                      }}
+                      borderColor="grey.950"
+                      borderBottomWidth={
+                        index === transaction.assets.length - 1 ? 1 : 0
+                      }
+                      hasToken={hasToken}
+                    />
+                  ))}
+                  {isContract && !transaction.assets.length && (
+                    <AssetBoxInfo
+                      isDeposit={isDeposit}
+                      contractAddress={Address.fromB256(
+                        mainOperation.to?.address ?? '',
+                      ).toString()}
+                      borderColor={'transparent'}
+                      hasToken={hasToken}
+                    />
+                  )}
                 </Box>
 
                 {fromConnector && (
@@ -363,52 +420,25 @@ const Details = ({
                   </>
                 )}
 
-                <Box alignItems="flex-start" flexWrap="wrap" w="100%">
-                  {transaction.assets.map((asset, index) => (
-                    <AssetBoxInfo
-                      key={index}
-                      asset={{
-                        assetId: asset.assetId,
-                        amount: asset.amount,
-                        to: asset.to,
-                        transactionID: transaction.id,
-                        recipientNickname: asset?.recipientNickname,
-                      }}
-                      borderColor={index > 0 ? 'grey' : 'transparent'}
-                      hasToken={hasToken}
-                    />
-                  ))}
-                  {isContract && !transaction.assets.length && (
-                    <AssetBoxInfo
-                      contractAddress={Address.fromB256(
-                        mainOperation.to?.address ?? '',
-                      ).toString()}
-                      borderColor={'transparent'}
-                      hasToken={hasToken}
-                    />
-                  )}
-                </Box>
-
                 <Box
                   w="full"
                   hidden={transaction.status !== TransactionStatus.SUCCESS}
-                  borderColor="grey"
+                  borderColor="grey.950"
                   borderTopWidth={1}
+                  mt={fromConnector ? 4 : 0}
                 >
                   <HStack
                     mt={2}
-                    px={{ base: 0, sm: 5 }}
                     py={{ base: 3, sm: 5 }}
                     gap={8}
                     justifyContent="space-between"
                   >
-                    <Text color="grey.200">Gas Fee (ETH)</Text>
-                    <Text
-                      color="grey.200"
-                      fontSize={{ base: 'md', sm: 'lg' }}
-                      fontWeight="semibold"
-                    >
-                      -{transaction.gasUsed}
+                    <Text color="grey.75" fontSize="xs">
+                      Gas Fee (ETH)
+                    </Text>
+                    <Text color="grey.75" fontSize="xs">
+                      {isDeposit ? '+' : '-'}
+                      {transaction.gasUsed}
                     </Text>
                   </HStack>
                 </Box>
@@ -426,15 +456,26 @@ const Details = ({
 
             {transaction.status === TransactionStatus.SUCCESS && (
               <Button
-                border="1px solid white"
-                bgColor="transparent"
-                _hover={{
-                  borderColor: 'brand.500',
-                  color: 'brand.500',
-                }}
+                border="none"
+                bgColor="#F5F5F50D"
+                fontSize="xs"
+                fontWeight="normal"
+                letterSpacing=".5px"
                 alignSelf={{ base: 'stretch', sm: 'flex-end' }}
                 variant="secondary"
                 onClick={handleViewInExplorer}
+                css={css`
+                  &:hover .btn-icon {
+                    animation: ${shakeAnimation} 0.5s ease-in-out;
+                  }
+                `}
+                rightIcon={
+                  <Icon
+                    as={UpRightArrowWhite}
+                    fontSize="lg"
+                    className="btn-icon"
+                  />
+                }
               >
                 View on Explorer
               </Button>

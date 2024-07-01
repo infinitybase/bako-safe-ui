@@ -11,7 +11,7 @@ import { StatusFilter } from './useTransactionList';
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
   'perPage' | 'page'
->;
+> & {};
 
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
@@ -26,6 +26,7 @@ const useTransactionListPaginationRequest = (
       params.status as StatusFilter,
       params.predicateId?.[0],
       params.id,
+      params.type,
     ),
     ({ pageParam }) =>
       TransactionService.getTransactionsPagination({

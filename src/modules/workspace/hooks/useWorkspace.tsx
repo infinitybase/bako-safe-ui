@@ -118,9 +118,7 @@ const useWorkspace = () => {
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
-    workspaceTransactions: {
-      recentTransactions: workspaceHomeRequest.data?.transactions?.data,
-    },
+
     worksapceBalance,
     hasPermission,
     visibleBalance,

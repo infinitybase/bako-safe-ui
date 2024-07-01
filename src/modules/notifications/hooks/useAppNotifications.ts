@@ -85,7 +85,6 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
 
   useEffect(() => {
     if (hasNewNotification) {
-      console.log('inciando refetchamento');
       notificationsListRequest.refetch();
       unreadNotificationsRequest.refetch();
       setHasNewNotification(false);

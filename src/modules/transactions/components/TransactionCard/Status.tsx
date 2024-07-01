@@ -17,6 +17,7 @@ interface TransactionCardStatusProps {
 }
 
 import { useSignTransaction } from '../../hooks/signature';
+import { RefreshIcon } from '@/components/icons/refresh-icon';
 
 const Status = ({
   transaction,
@@ -60,21 +61,54 @@ const Status = ({
         alignItems={{ base: 'flex-end', md: 'center' }}
         justifyContent="flex-end"
       >
-        <Badge
-          h={5}
-          variant={
-            isReproved || isError
-              ? 'error'
-              : isCompleted
+        <HStack position="relative">
+          <Badge
+            minW={isError ? '110px' : '80px'}
+            display="flex"
+            alignItems="center"
+            fontSize="xs"
+            justifyContent={isError ? 'flex-start' : 'center'}
+            h={6}
+            borderRadius="20px"
+            variant={
+              isReproved || isError
+                ? 'error'
+                : isCompleted
                 ? 'success'
                 : 'warning'
-          }
-        >
-          {isError && 'Error'}
-          {isReproved && 'Declined'}
-          {isCompleted && !isError && 'Completed'}
-          {!isCompleted && !isReproved && !isError && signatureStatus}
-        </Badge>
+            }
+          >
+            {isError && 'Error'}
+            {isReproved && 'Declined'}
+            {isCompleted && !isError && 'Completed'}
+            {!isCompleted && !isReproved && !isError && signatureStatus}
+          </Badge>
+          {isError && (
+            <Button
+              position="absolute"
+              top={0}
+              left={10}
+              h={6}
+              variant="secondary"
+              px={2}
+              border="1px solid #868079"
+              bgColor="#F5F5F51A"
+              borderRadius="20px"
+              fontSize="xs"
+              fontWeight="normal"
+              isLoading={isLoading}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                retryTransaction();
+              }}
+              leftIcon={<RefreshIcon fontSize="sm" />}
+            >
+              Retry
+            </Button>
+          )}
+        </HStack>
+
         {showDescription && (
           <Text
             variant="description"
@@ -83,27 +117,6 @@ const Status = ({
           >
             Transfer status
           </Text>
-        )}
-
-        {isError && (
-          <Button
-            h={7}
-            variant="secondary"
-            px={3}
-            bgColor="dark.100"
-            mt={{ base: 4, sm: 1 }}
-            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            border="none"
-            isLoading={isLoading}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              retryTransaction();
-            }}
-          >
-            Retry
-          </Button>
         )}
       </VStack>
     </HStack>
