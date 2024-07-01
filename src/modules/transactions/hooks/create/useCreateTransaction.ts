@@ -151,10 +151,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
 
-    const balanceAvailable =
-      isEthTransaction && balanceAvailableWithoutFee.gte(transactionFee)
-        ? balanceAvailableWithoutFee.sub(transactionFee).format()
-        : balanceAvailableWithoutFee.format();
+    let balanceAvailable = '0.000';
+
+    if (isEthTransaction && balanceAvailableWithoutFee.gte(transactionFee)) {
+      balanceAvailable = balanceAvailableWithoutFee
+        .sub(transactionFee)
+        .format();
+    }
+
+    if (!isEthTransaction) {
+      balanceAvailable = balanceAvailableWithoutFee.format();
+    }
 
     return balanceAvailable;
   }, [
