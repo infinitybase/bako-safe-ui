@@ -38,15 +38,8 @@ const HomeTransactions = memo(() => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
 
-  const {
-    account,
-    navigate,
-    vaultsRequest: {
-      vaults: { recentVaults },
-    },
-    pendingSignerTransactions,
-    homeRequest,
-  } = useHome();
+  const { account, navigate, pendingSignerTransactions, homeRequest } =
+    useHome();
 
   const {
     workspaces: { single },
@@ -58,17 +51,9 @@ const HomeTransactions = memo(() => {
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
   return groupedTransactions && groupedTransactions.length <= 0 ? (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={6} mt="-5px">
       {groupedTransactions && (
-        <HStack
-          w="full"
-          spacing={4}
-          mt={{
-            base: recentVaults?.length ? 16 : 0,
-            sm: recentVaults?.length ? 8 : 0,
-            md: recentVaults?.length ? 8 : 2,
-          }}
-        >
+        <HStack w="full" spacing={4}>
           <Text
             variant="subtitle"
             fontWeight={700}
