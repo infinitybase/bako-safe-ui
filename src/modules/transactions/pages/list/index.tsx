@@ -60,6 +60,7 @@ const TransactionsVaultPage = () => {
     workspaces: { current },
     isSingleWorkspace,
   } = useAuth();
+  const workspaceId = current ?? '';
 
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
@@ -116,6 +117,13 @@ const TransactionsVaultPage = () => {
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>
