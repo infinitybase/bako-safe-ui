@@ -15,12 +15,12 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
-import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, TransactionStatus } from 'bakosafe';
-import { Address } from 'fuels';
-import { useMemo } from 'react';
-import { FaPlay } from 'react-icons/fa';
 import { css, keyframes } from '@emotion/react';
+import { AddressType } from '@fuel-wallet/types';
+import { ITransaction, TransactionStatus, Transfer } from 'bakosafe';
+import { Address, Provider, transactionRequestify } from 'fuels';
+import { useEffect, useMemo } from 'react';
+import { FaPlay } from 'react-icons/fa';
 
 import {
   AlertIcon,
@@ -39,10 +39,9 @@ import {
 import { useNotification } from '@/modules/notification';
 import { limitCharacters } from '@/utils';
 
+import { TransactionType } from '../../services/types';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
-
-import { TransactionType } from '../../services/types';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }
@@ -275,6 +274,23 @@ const Details = ({
   };
 
   const { isOpen } = useAccordionItemState();
+
+  const testTx = async () => {
+    const provider = await Provider.create(import.meta.env.VITE_NETWORK);
+
+    console.log(
+      'ESTIMATE FEE',
+      await Transfer.estimateFee(
+        transactionRequestify(transaction.txData),
+        provider,
+        1,
+      ),
+    );
+  };
+
+  useEffect(() => {
+    testTx();
+  }, []);
 
   if (!isMobile && !isOpen) return null;
 
