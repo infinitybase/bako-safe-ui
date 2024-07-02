@@ -38,13 +38,19 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
+      console.log('[ASSETS]: ', payload.assets);
       return vault?.BakoSafeIncludeTransaction({
         name: payload.name!,
         witnesses: payload.witnesses,
         assets: payload.assets,
       });
     },
-    options,
+    {
+      ...options,
+      onSuccess: (data) => {
+        console.log('[resultado]: ', data);
+      },
+    },
   );
 };
 
