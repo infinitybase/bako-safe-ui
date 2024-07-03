@@ -13,6 +13,7 @@ import { bn } from 'fuels';
 import { assetsMap } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 import bakoIcon from '@/assets/tokens/bako.svg';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 
 interface TransactionCardAmountProps {
   assets: ITransferAsset[];
@@ -35,6 +36,8 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   }, [] as ITransferAsset[]);
 
   const isMultiToken = oneAssetOfEach.length >= 2;
+
+  const txUSDAmount = useTxAmountToUSD(assets);
 
   return (
     <HStack
@@ -78,7 +81,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
           fontSize={isMultiToken ? 'sm' : 'xs'}
           color={isMultiToken ? ' grey.75' : 'grey.425'}
         >
-          $25.00
+          ${txUSDAmount}
         </Text>
       </Flex>
     </HStack>

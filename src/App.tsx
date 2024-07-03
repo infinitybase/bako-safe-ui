@@ -7,11 +7,21 @@ import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useTransactionSend } from './modules/transactions';
+import { useTokensStore } from './modules/assets-tokens/store';
+import { useTokensUSDAmountRequest } from './modules/home/hooks/useTokensUSDAmountRequest';
 
 function App() {
   const { fuel } = useFuel();
   const auth = useAuth();
   const transactionSend = useTransactionSend();
+  const { setTokenCurrentAmount } = useTokensStore();
+  const tokensRequestData = useTokensUSDAmountRequest();
+
+  useEffect(() => {
+    if (!tokensRequestData.isLoading && tokensRequestData.data) {
+      setTokenCurrentAmount(tokensRequestData.data);
+    }
+  }, [tokensRequestData.isLoading]);
 
   useEffect(() => {
     async function clearAll() {

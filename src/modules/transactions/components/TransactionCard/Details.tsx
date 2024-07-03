@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, TransactionStatus } from 'bakosafe';
+import { ITransaction, ITransferAsset, TransactionStatus } from 'bakosafe';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
@@ -43,6 +43,7 @@ import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 
 import { TransactionType } from '../../services/types';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }
@@ -93,6 +94,8 @@ const AssetBoxInfo = ({
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
     [asset?.assetId],
   );
+
+  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
 
   const contractWithoutToken = isContract && !hasToken;
   const nickname = asset?.recipientNickname;
@@ -146,7 +149,7 @@ const AssetBoxInfo = ({
                 fontSize="xs"
                 color="grey.500"
               >
-                $25.00
+                ${txUSDAmount}
               </Text>
             </Box>
           </HStack>
