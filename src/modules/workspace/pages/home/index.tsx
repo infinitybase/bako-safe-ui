@@ -44,7 +44,12 @@ import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 
-import { AssetsDetails, CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+import {
+  AssetsDetails,
+  CreateVaultDialog,
+  ExtraVaultCard,
+  VaultCard,
+} from '@/modules/vault';
 import {
   TransactionCard,
   TransactionCardMobile,
