@@ -1,31 +1,36 @@
-import { tokensIDS } from '@/modules/core/utils/assets/address';
+import { AssetId, tokensIDS } from '@/modules/core/utils/assets/address';
 import { create } from 'zustand';
 
 interface TokenState {
   tokens: {
-    [assetId: tokensIDS]: {
+    [assetId in AssetId]: {
       usdAmount: number;
     };
   };
-  setTokenCurrentAmount: (tokenData: [string, number][]) => void;
+  setTokenCurrentAmount: (tokenData: [AssetId, number][]) => void;
 }
 
 const useTokensStore = create<TokenState>((set) => ({
   tokens: {
-    [tokensIDS.ETH]: {
+    [AssetId.BTC]: {
       usdAmount: 0,
     },
-    [tokensIDS.BTC]: {
+    [AssetId.ETH]: {
       usdAmount: 0,
     },
-    [tokensIDS.USDC]: {
+    [AssetId.USDC]: {
       usdAmount: 0,
     },
-    [tokensIDS.UNI]: {
+    [AssetId.UNI]: {
+      usdAmount: 0,
+    },
+    [AssetId.DAI]: {
+      usdAmount: 0,
+    },
+    [AssetId.sETH]: {
       usdAmount: 0,
     },
   },
-
   setTokenCurrentAmount: (tokenData) => {
     set((state) => {
       const newTokens = { ...state.tokens };
