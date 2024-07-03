@@ -100,7 +100,7 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, sm: 8 }}
+      spacing={{ base: 1, sm: 4 }}
       w="full"
       borderTopWidth={1}
       {...props}
@@ -116,7 +116,7 @@ const AssetBoxInfo = ({
       ) : (
         <>
           {assetInfo && (
-            <HStack spacing={{ base: 2, sm: 4 }}>
+            <HStack spacing={{ base: 2, sm: 4 }} minW={24}>
               <Avatar
                 name={assetInfo.slug}
                 size="xs"
