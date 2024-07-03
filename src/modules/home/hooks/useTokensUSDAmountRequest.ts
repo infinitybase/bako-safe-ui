@@ -5,7 +5,7 @@ import { HomeService } from '../services';
 const useTokensUSDAmountRequest = () => {
   return useQuery(['tokens'], () => HomeService.getTokensUSDAmount(), {
     refetchOnWindowFocus: false,
-    refetchInterval: 600000,
+    refetchInterval: 1000 * 60 * 10,
   });
 };
 
