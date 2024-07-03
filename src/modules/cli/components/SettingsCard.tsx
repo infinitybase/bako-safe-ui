@@ -8,7 +8,7 @@ interface CLISettingsCardProps extends CardProps {
   onClick: () => void;
 }
 
-const CLISettingsCard = (props: CLISettingsCardProps) => {
+const SettingsCard = (props: CLISettingsCardProps) => {
   const { label, icon, disabled, onClick, ...rest } = props;
 
   const handleClick = useCallback(() => {
@@ -50,4 +50,4 @@ const CLISettingsCard = (props: CLISettingsCardProps) => {
   );
 };
 
-export { CLISettingsCard };
+export { SettingsCard };

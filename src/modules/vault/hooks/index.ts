@@ -1,5 +1,4 @@
 export * from './assets';
-export * from './cli';
 export * from './create';
 export * from './details';
 export * from './useHomeVaultsRequest';

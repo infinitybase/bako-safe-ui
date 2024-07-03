@@ -19,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { useAuth } from '@/modules/auth';
+import { SettingsCard } from '@/modules/cli/components';
+import { useCLI } from '@/modules/cli/hooks';
 import {
   AddressUtils,
   Pages,
@@ -29,10 +31,8 @@ import { useCreateTransaction } from '@/modules/transactions';
 import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
-import { useCLI } from '../hooks';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
-import { CLISettingsCard } from './cli';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
@@ -355,7 +355,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
             }}
           >
             {settings.map((setting) => (
-              <CLISettingsCard
+              <SettingsCard
                 key={setting.label}
                 onClick={setting.onClick}
                 icon={setting.icon}
