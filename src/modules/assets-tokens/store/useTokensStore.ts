@@ -1,4 +1,4 @@
-import { AssetId, tokensIDS } from '@/modules/core/utils/assets/address';
+import { AssetId } from '@/modules/core/utils/assets/address';
 import { create } from 'zustand';
 
 interface TokenState {
