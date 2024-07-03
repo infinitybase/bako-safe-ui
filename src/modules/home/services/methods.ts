@@ -1,5 +1,6 @@
 import { api } from '@/config';
 import { IPagination, Predicate, Workspace } from '@/modules/core';
+import { AssetId } from '@/modules/core/utils/assets/address';
 import {
   ITransactionsGroupedByMonth,
   TransactionType,
@@ -14,7 +15,7 @@ export interface HomeTransactionsResponse {
   data: IPagination<ITransactionsGroupedByMonth>;
 }
 
-type TokensUSDResponse = [string, number][];
+type TokensUSDResponse = [AssetId, number][];
 export class HomeService {
   static async home() {
     const { data } = await api.get<HomeDataResponse>(`/user/me`);
