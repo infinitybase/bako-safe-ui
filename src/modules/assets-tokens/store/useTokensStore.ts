@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 interface TokenState {
   tokens: {
-    [assetId: string]: {
+    [assetId: tokensIDS]: {
       usdAmount: number;
     };
   };
