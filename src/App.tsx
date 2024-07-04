@@ -22,7 +22,13 @@ function App() {
       setTokenCurrentAmount(tokensRequestData.data);
       setIsLoading(tokensRequestData.isLoading);
     }
-  }, [tokensRequestData.isLoading, tokensRequestData.data]);
+    console.log('quantas x ele renderiza?', auth);
+  }, [
+    tokensRequestData.isLoading,
+    tokensRequestData.data,
+    tokensRequestData.isFetching,
+    auth.userId,
+  ]);
 
   useEffect(() => {
     async function clearAll() {
