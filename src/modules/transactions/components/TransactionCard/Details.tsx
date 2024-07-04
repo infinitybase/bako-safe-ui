@@ -1,4 +1,3 @@
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -12,7 +11,6 @@ import {
   StackProps,
   Text,
   useAccordionItemState,
-  useClipboard,
   VStack,
 } from '@chakra-ui/react';
 import { AddressType } from '@fuel-wallet/types';
@@ -23,7 +21,6 @@ import { FaPlay } from 'react-icons/fa';
 import { css, keyframes } from '@emotion/react';
 
 import {
-  AlertIcon,
   CustomSkeleton,
   DoubleArrowIcon,
   MinimalAlertIcon,
