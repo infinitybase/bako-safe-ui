@@ -14,12 +14,13 @@ function App() {
   const { fuel } = useFuel();
   const auth = useAuth();
   const transactionSend = useTransactionSend();
-  const { setTokenCurrentAmount } = useTokensStore();
+  const { setTokenCurrentAmount, setIsLoading } = useTokensStore();
   const tokensRequestData = useTokensUSDAmountRequest();
 
   useEffect(() => {
     if (!tokensRequestData.isLoading && tokensRequestData.data) {
       setTokenCurrentAmount(tokensRequestData.data);
+      setIsLoading(tokensRequestData.isLoading);
     }
   }, [tokensRequestData.isLoading, tokensRequestData.data]);
 

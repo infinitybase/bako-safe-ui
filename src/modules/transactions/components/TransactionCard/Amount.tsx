@@ -14,6 +14,8 @@ import { assetsMap } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 import bakoIcon from '@/assets/tokens/bako.svg';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { useTokensStore } from '@/modules/assets-tokens/store';
+import { CustomSkeleton } from '@/components';
 
 interface TransactionCardAmountProps {
   assets: ITransferAsset[];
@@ -22,6 +24,7 @@ interface TransactionCardAmountProps {
 const Amount = ({ assets }: TransactionCardAmountProps) => {
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const { isMobile, isExtraSmall } = useScreenSize();
+  const { isLoading } = useTokensStore();
 
   const totalAmoutSent = assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
@@ -81,7 +84,9 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
           fontSize={isMultiToken ? 'sm' : 'xs'}
           color={isMultiToken ? ' grey.75' : 'grey.425'}
         >
-          ${txUSDAmount}
+          <CustomSkeleton isLoaded={!isLoading}>
+            ${txUSDAmount ?? 0}
+          </CustomSkeleton>
         </Text>
       </Flex>
     </HStack>
