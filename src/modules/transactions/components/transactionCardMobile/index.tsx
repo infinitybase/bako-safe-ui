@@ -14,11 +14,15 @@ import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
 import { DownLeftArrow, UpRightArrow } from '@/components';
+import { DeployIcon } from '@/components/icons/tx-deploy';
+import { ContractIcon } from '@/components/icons/tx-contract';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  isContratt?: boolean;
+  isDeploy?: boolean;
   callBack?: () => void;
 }
 
@@ -74,7 +78,18 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             borderRadius="5px 0 0 5px"
             minH="140px"
           >
-            <Icon as={isDeposit ? DownLeftArrow : UpRightArrow} fontSize={24} />
+            <Icon
+              as={
+                props.isDeploy
+                  ? DeployIcon
+                  : props.isContratt
+                    ? ContractIcon
+                    : isDeposit
+                      ? DownLeftArrow
+                      : UpRightArrow
+              }
+              fontSize={props.isDeploy || props.isContratt ? 'inherit' : '12px'}
+            />
           </Flex>
           <VStack w="full">
             <HStack justifyContent="space-between" w="full">

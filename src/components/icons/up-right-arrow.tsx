@@ -2,17 +2,17 @@ import { createIcon } from '@chakra-ui/react';
 
 const UpRightArrow = createIcon({
   displayName: 'UpRightArrow',
-  viewBox: '0 0 16 16',
+  viewBox: '0 0 9 9',
   path: (
     <svg
-      width="16"
-      height="17"
-      viewBox="0 0 16 17"
+      width="9"
+      height="9"
+      viewBox="0 0 9 9"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M10.6689 6.776L4.93095 12.514L3.98828 11.5713L9.72561 5.83333H4.66895V4.5H12.0023V11.8333H10.6689V6.776Z"
+        d="M7.66895 2.776L1.93095 8.514L0.988281 7.57133L6.72561 1.83333H1.66895V0.5H9.00228V7.83333H7.66895V2.776Z"
         fill="#FFC010"
       />
     </svg>

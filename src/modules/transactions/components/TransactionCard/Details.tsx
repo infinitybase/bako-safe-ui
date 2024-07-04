@@ -24,7 +24,6 @@ import { css, keyframes } from '@emotion/react';
 
 import {
   AlertIcon,
-  CopyIcon,
   CustomSkeleton,
   DoubleArrowIcon,
   UpRightArrowWhite,
@@ -36,7 +35,6 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
-import { useNotification } from '@/modules/notification';
 import { limitCharacters } from '@/utils';
 
 import DetailsTransactionStepper from './DetailsTransactionStepper';
@@ -44,6 +42,8 @@ import { TransactionStepper } from './TransactionStepper';
 
 import { TransactionType } from '../../services/types';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { DepositDetails } from './DepositDetails';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }
@@ -53,7 +53,7 @@ const shakeAnimation = keyframes`
   100% { transform: translateY(0); }
 `;
 
-type TransactionUI = Omit<ITransaction, 'assets'> & {
+export type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
     assetId: string;
     amount: string;
@@ -67,6 +67,8 @@ interface TransactionDetailsProps {
   status?: TransactionState;
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
+  isDeploy?: boolean;
+  isContratt?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -74,6 +76,8 @@ interface AssetBoxInfoProps extends StackProps {
   contractAddress?: string;
   hasToken?: boolean;
   isDeposit: boolean;
+  isDeploy?: boolean;
+  isContratt?: boolean;
 }
 
 const AssetBoxInfo = ({
@@ -81,13 +85,11 @@ const AssetBoxInfo = ({
   contractAddress,
   hasToken,
   isDeposit,
+  isDeploy,
+  isContratt,
   ...props
 }: AssetBoxInfoProps) => {
-  const toast = useNotification();
   const isContract = !!contractAddress;
-  const clipboard = useClipboard(
-    isContract ? contractAddress : asset?.to ?? '',
-  );
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const assetInfo = useMemo(
@@ -119,7 +121,7 @@ const AssetBoxInfo = ({
       ) : (
         <>
           {assetInfo && (
-            <HStack spacing={{ base: 2, sm: 4 }} minW={24}>
+            <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
               <Avatar
                 name={assetInfo.slug}
                 size="xs"
@@ -133,7 +135,7 @@ const AssetBoxInfo = ({
           )}
 
           <HStack>
-            <Box mt={0.5} w={{ base: 120, sm: 140 }}>
+            <Box mt={0.5} w={{ base: 82 }}>
               <Text
                 textAlign="center"
                 variant={isMobile ? 'title-sm' : 'title-md'}
@@ -159,55 +161,53 @@ const AssetBoxInfo = ({
       <Center
         p={{ base: 1.5, sm: 3 }}
         borderRadius={5}
-        // bgColor={isContract ? 'brand.500' : "grey.825"}
         bgColor="grey.825"
         borderWidth={1}
         borderColor="grey.925"
         boxSize="30px"
       >
+        {/* Estava Mockado */}
         <Icon
-          // color={isContract ? 'black' : 'brand.500'}
           color="grey.250"
-          fontSize="18px"
-          as={!isContract ? DoubleArrowIcon : FaPlay}
+          fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
+          as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
 
-      {isContract && (
+      {/* Mockado */}
+      {/* {isContratt && (
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
-            <Text color="grey.200" fontSize={{ base: 'xs', sm: 'md' }} ml={1}>
-              {AddressUtils.format(
-                Address.fromString(contractAddress).toAddress(),
-                8,
-              )}
+            <Text
+              maxW="228px"
+              w="full"
+              fontSize="sm"
+              color="grey.75"
+              textOverflow="ellipsis"
+              isTruncated
+              ml="2px"
+            >
+              {isExtraSmall
+                ? limitCharacters(
+                    AddressUtils.format(
+                      Address.fromString(
+                        '0xfa6f5d747cd78ded64a29f44a8f7ae3fbe0cc9f668cb3d15a33adc3f334f73b6',
+                      ).toAddress(),
+                    ) ?? '',
+                    7,
+                  )
+                : AddressUtils.format(
+                    Address.fromString(
+                      '0xfa6f5d747cd78ded64a29f44a8f7ae3fbe0cc9f668cb3d15a33adc3f334f73b6',
+                    ).toAddress(),
+                    24,
+                  )}
             </Text>
-            <Icon
-              color="grey.500"
-              fontSize={{ base: 'xs', sm: 'sm' }}
-              as={CopyIcon}
-              cursor="pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                clipboard.onCopy();
-                toast({
-                  position: 'top-right',
-                  duration: 2000,
-                  isClosable: false,
-                  title: 'Copied to clipboard',
-                  icon: (
-                    <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />
-                  ),
-                });
-              }}
-            />
           </HStack>
-          <Text color="grey.500" fontSize="xs">
-            Contract
-          </Text>
         </VStack>
-      )}
+      )} */}
 
+      {/* isContratt - Mockado */}
       {!isContract && !!asset && (
         <VStack
           h="full"
@@ -230,11 +230,13 @@ const AssetBoxInfo = ({
           )}
 
           <Text
-            maxW={{ base: 120, md: 200, lg: 250, '2xl': '100%' }}
+            maxW="228px"
+            w="full"
             fontSize="sm"
             color="grey.75"
             textOverflow="ellipsis"
             isTruncated
+            ml="2px"
           >
             {isExtraSmall
               ? limitCharacters(
@@ -245,6 +247,7 @@ const AssetBoxInfo = ({
                 )
               : AddressUtils.format(
                   Address.fromString(asset.to ?? '').toAddress(),
+                  24,
                 )}
           </Text>
         </VStack>
@@ -258,6 +261,8 @@ const Details = ({
   status,
   isInTheVaultPage,
   isMobile,
+  isDeploy,
+  isContratt,
 }: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
 
@@ -285,209 +290,245 @@ const Details = ({
     <DetailsTransactionStepper transactionId={transaction.id}>
       {(isLoading, transactionHistory) => (
         <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
-          <VStack w="full">
-            <Stack
-              pt={{ base: 0, sm: 5 }}
-              alignSelf="flex-start"
-              display="flex"
-              direction={{ base: 'column', md: 'row' }}
-              alignItems="start"
-              justify="space-between"
-              columnGap={isInTheVaultPage ? '3rem' : '8rem'}
-              w="full"
-            >
-              <Box
+          {isDeposit ? (
+            <DepositDetails transaction={transaction} />
+          ) : (
+            <VStack w="full">
+              <Stack
+                pt={{ base: 0, sm: 5 }}
+                alignSelf="flex-start"
                 display="flex"
-                flexDirection={{ base: 'row', xs: 'column' }}
-                w={{ base: '100%', lg: 'unset' }}
-                minW={{ base: 200, sm: 486 }}
-                flexWrap="wrap"
+                direction={{ base: 'column', md: 'row' }}
+                alignItems="start"
+                justify="space-between"
+                columnGap={isInTheVaultPage ? '3rem' : '72px'}
+                w="full"
               >
-                <Box mb={2}>
-                  <Text color="grey.425" fontSize="sm">
-                    Transaction breakdown
-                  </Text>
-                </Box>
-
                 <Box
-                  alignItems="flex-start"
+                  display="flex"
+                  flexDirection={{ base: 'row', xs: 'column' }}
+                  w="full"
+                  minW={{ base: 200, sm: '476px' }}
                   flexWrap="wrap"
-                  mb={fromConnector ? 4 : 0}
                 >
-                  {transaction.assets.map((asset, index) => (
-                    <AssetBoxInfo
-                      isDeposit={isDeposit}
-                      key={index}
-                      asset={{
-                        assetId: asset.assetId,
-                        amount: asset.amount,
-                        to: asset.to,
-                        transactionID: transaction.id,
-                        recipientNickname: asset?.recipientNickname,
-                      }}
-                      borderColor="grey.950"
-                      borderBottomWidth={
-                        index === transaction.assets.length - 1 ? 1 : 0
-                      }
-                      hasToken={hasToken}
-                    />
-                  ))}
-                  {isContract && !transaction.assets.length && (
-                    <AssetBoxInfo
-                      isDeposit={isDeposit}
-                      contractAddress={Address.fromB256(
-                        mainOperation.to?.address ?? '',
-                      ).toString()}
-                      borderColor={'transparent'}
-                      hasToken={hasToken}
-                    />
-                  )}
-                </Box>
+                  <Box mb={4}>
+                    <Text color="grey.425" fontSize="sm">
+                      Transaction breakdown
+                    </Text>
+                  </Box>
 
-                {fromConnector && (
-                  <>
-                    <Card
-                      bgColor="grey.825"
-                      borderColor="#2B2927"
-                      borderRadius={10}
-                      w={{ base: 'full', xs: 'unset' }}
-                      px={5}
-                      py={{ base: 2, xs: 4 }}
-                      borderWidth="1px"
-                    >
-                      <Text color="grey.500" fontSize={{ base: 12, xs: 'sm' }}>
-                        Requesting a transaction from:
-                      </Text>
-
-                      <Divider borderColor="dark.100" mt={3} mb={5} />
-
-                      <HStack width="100%" alignItems="center" spacing={4}>
-                        <Avatar
-                          variant="roundedSquare"
-                          color="white"
-                          bgColor="dark.150"
-                          src={transaction.summary?.image}
-                          name={transaction.summary?.name}
-                          boxSize="40px"
+                  <Box
+                    alignItems="flex-start"
+                    flexWrap="wrap"
+                    mb={fromConnector ? 4 : 0}
+                  >
+                    {transaction.assets.map((asset, index) => (
+                      <>
+                        <AssetBoxInfo
+                          isContratt={isContratt}
+                          isDeploy={isDeploy}
+                          isDeposit={isDeposit}
+                          key={index}
+                          asset={{
+                            assetId: asset.assetId,
+                            amount: asset.amount,
+                            to: asset.to,
+                            transactionID: transaction.id,
+                            recipientNickname: asset?.recipientNickname,
+                          }}
+                          borderColor="grey.950"
+                          borderBottomWidth={
+                            index === transaction.assets.length - 1 ? 1 : 0
+                          }
+                          hasToken={hasToken}
                         />
-                        <VStack alignItems="flex-start" spacing={0}>
-                          <Text variant="subtitle" fontSize={14}>
-                            {transaction.summary?.name}
-                          </Text>
+                        {isContratt && (
+                          <AssetBoxInfo
+                            borderTop="none"
+                            isContratt={false}
+                            isDeploy={isDeploy}
+                            isDeposit={isDeposit}
+                            key={index}
+                            asset={{
+                              assetId: asset.assetId,
+                              amount: asset.amount,
+                              to: asset.to,
+                              transactionID: transaction.id,
+                              recipientNickname: asset?.recipientNickname,
+                            }}
+                            borderColor="grey.950"
+                            borderBottomWidth={
+                              index === transaction.assets.length - 1 ? 1 : 0
+                            }
+                            hasToken={hasToken}
+                          />
+                        )}
+                      </>
+                    ))}
+                    {isContract && !transaction.assets.length && (
+                      <AssetBoxInfo
+                        isDeposit={isDeposit}
+                        contractAddress={Address.fromB256(
+                          mainOperation.to?.address ?? '',
+                        ).toString()}
+                        borderColor={'transparent'}
+                        hasToken={hasToken}
+                      />
+                    )}
+                  </Box>
+
+                  {isContratt && (
+                    <>
+                      <Card
+                        bgColor="grey.825"
+                        borderColor="grey.925"
+                        borderRadius={10}
+                        w={{ base: 'full', xs: 'unset' }}
+                        px={5}
+                        py={{ base: 2, xs: 4 }}
+                        borderWidth="1px"
+                        mt={4}
+                      >
+                        <Text color="grey.550" fontSize="xs">
+                          Requesting a transaction from:
+                        </Text>
+
+                        <Divider borderColor="grey.950" my={4} />
+
+                        <HStack
+                          width="100%"
+                          alignItems="center"
+                          spacing={4}
+                          h="32px"
+                        >
+                          <Avatar
+                            borderRadius="6.4px"
+                            color="white"
+                            bgColor="dark.950"
+                            // src={transaction.summary?.image}
+                            // name={transaction.summary?.name}
+                            name="Eita Assim"
+                            size="sm"
+                          />
+                          <VStack alignItems="flex-start" spacing={0}>
+                            <Text
+                              variant="subtitle"
+                              fontSize="14px"
+                              color="grey.250"
+                            >
+                              {transaction.summary?.name}
+                              {/* Transaction De mentirinha hihihi */}
+                            </Text>
+                            <Text
+                              color="brand.500"
+                              variant="description"
+                              fontSize="xs"
+                            >
+                              {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
+                              {/* {transaction.summary?.origin.split('//')[1]} */}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                      </Card>
+                    </>
+                  )}
+
+                  {isPending && notSigned && isContratt && (
+                    <>
+                      <HStack
+                        bg="warning.700"
+                        borderColor="warning.700"
+                        borderWidth="1px"
+                        borderRadius={10}
+                        mt={{ base: 4, xs: 8 }}
+                        py={4}
+                        px={8}
+                      >
+                        <Icon
+                          as={AlertIcon}
+                          color="warning.600"
+                          fontSize={28}
+                        />
+
+                        <VStack spacing={0} alignItems="flex-start" ml={2}>
                           <Text
-                            color="brand.500"
-                            variant="description"
+                            fontWeight="bold"
+                            color="warning.600"
                             fontSize={{ base: 12, xs: 'unset' }}
                           >
-                            {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
-                            {transaction.summary?.origin.split('//')[1]}
+                            Double check it!
+                          </Text>
+                          <Text
+                            color="grey.200"
+                            fontSize={{ base: 12, xs: 'unset' }}
+                          >
+                            Please carefully review this externally created
+                            transaction before approving it.
                           </Text>
                         </VStack>
                       </HStack>
-                    </Card>
-                  </>
-                )}
 
-                {isPending && notSigned && fromConnector && (
-                  <>
-                    <HStack
-                      bg="warning.700"
-                      borderColor="warning.700"
-                      borderWidth="1px"
-                      borderRadius={10}
-                      mt={{ base: 4, xs: 8 }}
-                      py={4}
-                      px={8}
-                    >
-                      <Icon as={AlertIcon} color="warning.600" fontSize={28} />
+                      <Divider borderColor="dark.100" mt={8} />
+                    </>
+                  )}
 
-                      <VStack spacing={0} alignItems="flex-start" ml={2}>
-                        <Text
-                          fontWeight="bold"
-                          color="warning.600"
-                          fontSize={{ base: 12, xs: 'unset' }}
-                        >
-                          Double check it!
-                        </Text>
-                        <Text
-                          color="grey.200"
-                          fontSize={{ base: 12, xs: 'unset' }}
-                        >
-                          Please carefully review this externally created
-                          transaction before approving it.
-                        </Text>
-                      </VStack>
+                  <Box
+                    w="full"
+                    hidden={transaction.status !== TransactionStatus.SUCCESS}
+                    mt={4}
+                  >
+                    <HStack gap={8} justifyContent="space-between">
+                      <Text color="grey.75" fontSize="xs">
+                        Gas Fee (ETH)
+                      </Text>
+                      <Text color="grey.75" fontSize="xs">
+                        -{transaction.gasUsed}
+                      </Text>
                     </HStack>
-
-                    <Divider borderColor="dark.100" mt={8} />
-                  </>
-                )}
+                  </Box>
+                </Box>
 
                 <Box
+                  alignSelf="flex-start"
                   w="full"
-                  hidden={transaction.status !== TransactionStatus.SUCCESS}
-                  borderColor="grey.950"
-                  borderTopWidth={1}
-                  mt={fromConnector ? 4 : 0}
+                  minW={{ base: 200, sm: '476px' }}
                 >
-                  <HStack
-                    mt={2}
-                    py={{ base: 3, sm: 5 }}
-                    gap={8}
-                    justifyContent="space-between"
-                  >
-                    <Text color="grey.75" fontSize="xs">
-                      Gas Fee (ETH)
-                    </Text>
-                    <Text color="grey.75" fontSize="xs">
-                      {isDeposit ? '+' : '-'}
-                      {transaction.gasUsed}
-                    </Text>
-                  </HStack>
+                  <TransactionStepper steps={transactionHistory!} />
                 </Box>
-              </Box>
+              </Stack>
 
-              <Box
-                alignSelf="flex-start"
-                w="full"
-                minW={{ base: 200, md: 300 }}
-                maxW={600}
-              >
-                <TransactionStepper steps={transactionHistory!} />
-              </Box>
-            </Stack>
-
-            {transaction.status === TransactionStatus.SUCCESS && (
-              <Button
-                border="none"
-                bgColor="#F5F5F50D"
-                fontSize="xs"
-                fontWeight="normal"
-                letterSpacing=".5px"
-                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                variant="secondary"
-                onClick={handleViewInExplorer}
-                css={css`
-                  &:hover .btn-icon {
-                    animation: ${shakeAnimation} 0.5s ease-in-out;
+              {transaction.status === TransactionStatus.SUCCESS && (
+                <Button
+                  border="none"
+                  bgColor="#F5F5F50D"
+                  fontSize="xs"
+                  fontWeight="normal"
+                  letterSpacing=".5px"
+                  alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                  variant="secondary"
+                  onClick={handleViewInExplorer}
+                  css={css`
+                    &:hover .btn-icon {
+                      animation: ${shakeAnimation} 0.5s ease-in-out;
+                    }
+                  `}
+                  rightIcon={
+                    <Icon
+                      as={UpRightArrowWhite}
+                      fontSize="lg"
+                      className="btn-icon"
+                    />
                   }
-                `}
-                rightIcon={
-                  <Icon
-                    as={UpRightArrowWhite}
-                    fontSize="lg"
-                    className="btn-icon"
-                  />
-                }
-              >
-                View on Explorer
-              </Button>
-            )}
-          </VStack>
+                >
+                  View on Explorer
+                </Button>
+              )}
+            </VStack>
+          )}
         </CustomSkeleton>
       )}
     </DetailsTransactionStepper>
   );
 };
 
-export { Details };
+export { Details, AssetBoxInfo };

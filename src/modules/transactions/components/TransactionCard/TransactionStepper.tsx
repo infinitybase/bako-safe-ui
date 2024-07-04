@@ -77,7 +77,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={8}>
-      <Text color="grey.425" fontSize="sm">
+      <Text color="grey.425" fontSize="sm" ml={8} mb="7px">
         Transaction History
       </Text>
 
@@ -139,7 +139,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 borderTopWidth={index === 0 ? 1 : 0}
                 w="100%"
               >
-                <Box py={4}>
+                <Box py={2}>
                   <StepTitle
                     style={{
                       fontSize: '16px',
@@ -155,8 +155,8 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                         failed
                           ? 'error.500'
                           : step.type === TransactionHistoryType.SEND
-                          ? 'brand.500'
-                          : 'grey.75'
+                            ? 'brand.500'
+                            : 'grey.75'
                       }
                       fontSize="sm"
                     >
@@ -173,6 +173,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     style={{
                       fontSize: '14px',
                       color: 'grey.425',
+                      marginTop: '14px',
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">

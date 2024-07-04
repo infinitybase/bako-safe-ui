@@ -19,6 +19,8 @@ import { useDetailsDialog } from '../../hooks/details';
 import { TransactionType, TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 import { TransactionCard, transactionStatus } from '../..';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 
 interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
@@ -27,6 +29,8 @@ interface TransactionCardContainerProps extends CardProps {
   account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
+  isContratt?: boolean;
+  isDeploy?: boolean;
   callBack?: () => void;
 }
 
@@ -38,6 +42,8 @@ const Container = ({
   isSigner,
   isInTheVaultPage,
   callBack,
+  isContratt,
+  isDeploy,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -91,9 +97,17 @@ const Container = ({
           h="auto"
         >
           <Icon
-            as={isDeposit ? DownLeftArrow : UpRightArrow}
-            fontSize={24}
-            mt={7}
+            as={
+              isDeploy
+                ? DeployIcon
+                : isContratt
+                  ? ContractIcon
+                  : isDeposit
+                    ? DownLeftArrow
+                    : UpRightArrow
+            }
+            mt={8}
+            fontSize={isDeploy || isContratt ? 'inherit' : '12px'}
           />
         </Flex>
         <VStack
