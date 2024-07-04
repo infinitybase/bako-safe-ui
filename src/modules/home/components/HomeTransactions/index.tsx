@@ -33,7 +33,11 @@ const shakeAnimation = keyframes`
   100% { transform: translateX(0); }
 `;
 
-const HomeTransactions = memo(() => {
+interface HomeTransactionsProps {
+  hasRecentVaults: boolean;
+}
+
+const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
 
@@ -50,7 +54,17 @@ const HomeTransactions = memo(() => {
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
   return groupedTransactions && groupedTransactions.length <= 0 ? (
-    <VStack w="full" spacing={6} mt="-5px">
+    <VStack
+      w="full"
+      spacing={6}
+      mt={
+        hasRecentVaults && !isMobile
+          ? 8
+          : hasRecentVaults && isMobile
+            ? 16
+            : '-5px'
+      }
+    >
       {groupedTransactions && (
         <HStack w="full" spacing={4}>
           <Text
