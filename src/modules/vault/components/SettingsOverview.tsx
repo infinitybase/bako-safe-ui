@@ -44,7 +44,7 @@ export interface CardDetailsProps {
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { vault, store, blockedTransfers } = props;
-  const { biggerAsset } = store;
+  const { balanceUSD } = store;
   const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
     useScreenSize();
 
@@ -169,15 +169,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                               fontSize={{ base: 'md', sm: 'lg' }}
                             >
                               {store.visebleBalance
-                                ? biggerAsset?.amount ?? 0
-                                : '*****'}
+                                ? `${balanceUSD} USD`
+                                : '-----'}
                             </Heading>
-                            <Text
-                              variant="description"
-                              fontSize={{ base: 'sm', sm: 'md' }}
-                            >
-                              {biggerAsset?.slug ?? 'ETH'}
-                            </Text>
                           </HStack>
                           <Box
                             display="flex"
