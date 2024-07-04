@@ -15,7 +15,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
     >
-      <Box pb={3} borderColor="grey.950" borderBottomWidth={1}>
+      <Box pb={3} borderColor="grey.950" borderBottomWidth={1} w="full">
         <Text color="grey.425" fontSize="sm">
           Transaction breakdown
         </Text>

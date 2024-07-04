@@ -14,7 +14,7 @@ interface DetailItemProps {
 
 const DetailItem = ({ asset }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
-  const { isExtraSmall } = useScreenSize();
+  const { isExtraSmall, isMobile } = useScreenSize();
 
   return (
     <Grid gridTemplateColumns="repeat(5,1fr)" alignItems="center">
@@ -28,7 +28,6 @@ const DetailItem = ({ asset }: DetailItemProps) => {
         textOverflow="ellipsis"
         isTruncated
       >
-        {/* {asset.to} */}
         {isExtraSmall
           ? limitCharacters(
               AddressUtils.format(
@@ -38,7 +37,7 @@ const DetailItem = ({ asset }: DetailItemProps) => {
             )
           : AddressUtils.format(
               Address.fromString(asset.to ?? '').toAddress(),
-              24,
+              isMobile ? 10 : 24,
             )}
       </Text>
 
@@ -72,7 +71,7 @@ const DetailItem = ({ asset }: DetailItemProps) => {
             )
           : AddressUtils.format(
               Address.fromString(asset.to ?? '').toAddress(),
-              24,
+              isMobile ? 10 : 24,
             )}
       </Text>
     </Grid>

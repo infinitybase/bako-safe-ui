@@ -26,6 +26,7 @@ import {
   AlertIcon,
   CustomSkeleton,
   DoubleArrowIcon,
+  MinimalAlertIcon,
   UpRightArrowWhite,
 } from '@/components';
 import {
@@ -105,7 +106,7 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, sm: 4 }}
+      spacing={{ base: 1, sm: 14 }}
       w="full"
       borderTopWidth={1}
       {...props}
@@ -134,27 +135,25 @@ const AssetBoxInfo = ({
             </HStack>
           )}
 
-          <HStack>
-            <Box mt={0.5} w={{ base: 82 }}>
-              <Text
-                textAlign="center"
-                variant={isMobile ? 'title-sm' : 'title-md'}
-                color="grey.75"
-                fontSize="sm"
-              >
-                {isDeposit ? '+' : '-'}
-                {asset?.amount}
-              </Text>
-              <Text
-                textAlign="center"
-                variant="description"
-                fontSize="xs"
-                color="grey.500"
-              >
-                ${txUSDAmount}
-              </Text>
-            </Box>
-          </HStack>
+          <Box mt={0.5} w={{ base: '105px' }}>
+            <Text
+              textAlign="center"
+              variant={isMobile ? 'title-sm' : 'title-md'}
+              color="grey.75"
+              fontSize="sm"
+            >
+              {isDeposit ? null : '-'}
+              {asset?.amount}
+            </Text>
+            <Text
+              textAlign="center"
+              variant="description"
+              fontSize="xs"
+              color="grey.500"
+            >
+              ${txUSDAmount}
+            </Text>
+          </Box>
         </>
       )}
 
@@ -169,13 +168,13 @@ const AssetBoxInfo = ({
         {/* Estava Mockado */}
         <Icon
           color="grey.250"
-          fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
-          as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
+          fontSize={isDeploy ? '12.8px' : !isContratt ? '18px' : '12.8px'}
+          as={isDeploy ? DeployIcon : !isContratt ? DoubleArrowIcon : FaPlay}
         />
       </Center>
 
       {/* Mockado */}
-      {/* {isContratt && (
+      {isContratt && (
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
             <Text
@@ -200,15 +199,15 @@ const AssetBoxInfo = ({
                     Address.fromString(
                       '0xfa6f5d747cd78ded64a29f44a8f7ae3fbe0cc9f668cb3d15a33adc3f334f73b6',
                     ).toAddress(),
-                    24,
+                    isMobile ? 10 : 24,
                   )}
             </Text>
           </HStack>
         </VStack>
-      )} */}
+      )}
 
       {/* isContratt - Mockado */}
-      {!isContract && !!asset && (
+      {!isContratt && !!asset && (
         <VStack
           h="full"
           w="full"
@@ -247,7 +246,7 @@ const AssetBoxInfo = ({
                 )
               : AddressUtils.format(
                   Address.fromString(asset.to ?? '').toAddress(),
-                  24,
+                  isMobile ? 10 : 24,
                 )}
           </Text>
         </VStack>
@@ -417,58 +416,52 @@ const Details = ({
                               color="grey.250"
                             >
                               {transaction.summary?.name}
-                              {/* Transaction De mentirinha hihihi */}
+                              Transaction De mentirinha hihihi
                             </Text>
                             <Text
                               color="brand.500"
                               variant="description"
                               fontSize="xs"
                             >
-                              {/* bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app */}
+                              bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app
                               {/* {transaction.summary?.origin.split('//')[1]} */}
                             </Text>
                           </VStack>
                         </HStack>
+                        {isPending && notSigned && isContratt && (
+                          <HStack
+                            bg="warning.700"
+                            borderColor="warning.700"
+                            borderWidth="1px"
+                            borderRadius={10}
+                            mt={{ base: 4, xs: 8 }}
+                            py={4}
+                            px={4}
+                          >
+                            <Icon
+                              as={MinimalAlertIcon}
+                              color="warning.600"
+                              fontSize={28}
+                              // alignSelf="start"
+                              mt={-7}
+                            />
+
+                            <VStack spacing={0} alignItems="flex-start">
+                              <Text
+                                fontWeight="bold"
+                                color="#FFC010"
+                                fontSize="sm"
+                              >
+                                Double check it!
+                              </Text>
+                              <Text color="#EED07C" fontSize="xs">
+                                Please carefully review this externally created
+                                transaction before approving it.
+                              </Text>
+                            </VStack>
+                          </HStack>
+                        )}
                       </Card>
-                    </>
-                  )}
-
-                  {isPending && notSigned && isContratt && (
-                    <>
-                      <HStack
-                        bg="warning.700"
-                        borderColor="warning.700"
-                        borderWidth="1px"
-                        borderRadius={10}
-                        mt={{ base: 4, xs: 8 }}
-                        py={4}
-                        px={8}
-                      >
-                        <Icon
-                          as={AlertIcon}
-                          color="warning.600"
-                          fontSize={28}
-                        />
-
-                        <VStack spacing={0} alignItems="flex-start" ml={2}>
-                          <Text
-                            fontWeight="bold"
-                            color="warning.600"
-                            fontSize={{ base: 12, xs: 'unset' }}
-                          >
-                            Double check it!
-                          </Text>
-                          <Text
-                            color="grey.200"
-                            fontSize={{ base: 12, xs: 'unset' }}
-                          >
-                            Please carefully review this externally created
-                            transaction before approving it.
-                          </Text>
-                        </VStack>
-                      </HStack>
-
-                      <Divider borderColor="dark.100" mt={8} />
                     </>
                   )}
 

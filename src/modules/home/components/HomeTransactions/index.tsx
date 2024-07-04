@@ -157,7 +157,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
             {/* TX mockadas para testes */}
-            {/* {isMobile ? (
+            {isMobile ? (
               <>
                 <TransactionCardMobile
                   isSigner={true}
@@ -214,7 +214,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
                   }
                 />
               </>
-            )} */}
+            )}
             <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
