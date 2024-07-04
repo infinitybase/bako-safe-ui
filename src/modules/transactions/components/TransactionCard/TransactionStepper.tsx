@@ -137,6 +137,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                 borderColor="grey.950"
                 borderBottomWidth={1}
                 borderTopWidth={index === 0 ? 1 : 0}
+                pb={'7px'}
                 w="100%"
               >
                 <Box py={2}>
@@ -173,7 +174,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     style={{
                       fontSize: '14px',
                       color: 'grey.425',
-                      marginTop: '14px',
+                      marginTop: '16px',
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
