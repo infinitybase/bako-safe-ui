@@ -17,7 +17,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         color="grey.75"
         fontSize="sm"
       >
-        -{asset?.amount}
+        {asset?.amount}
       </Text>
       <Text
         textAlign="center"
