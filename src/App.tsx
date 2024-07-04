@@ -14,21 +14,20 @@ function App() {
   const { fuel } = useFuel();
   const auth = useAuth();
   const transactionSend = useTransactionSend();
-  const { setTokenCurrentAmount, setIsLoading } = useTokensStore();
-  const tokensRequestData = useTokensUSDAmountRequest();
+  // const { setTokenCurrentAmount, setIsLoading } = useTokensStore();
+  // const tokensRequestData = useTokensUSDAmountRequest();
 
-  useEffect(() => {
-    if (!tokensRequestData.isLoading && tokensRequestData.data) {
-      setTokenCurrentAmount(tokensRequestData.data);
-      setIsLoading(tokensRequestData.isLoading);
-    }
-    console.log('quantas x ele renderiza?', auth);
-  }, [
-    tokensRequestData.isLoading,
-    tokensRequestData.data,
-    tokensRequestData.isFetching,
-    auth.userId,
-  ]);
+  // useEffect(() => {
+  //   if (!tokensRequestData.isLoading && tokensRequestData.data) {
+  //     setTokenCurrentAmount(tokensRequestData.data);
+  //     setIsLoading(tokensRequestData.isLoading);
+  //   }
+  //   console.log('quantas x ele renderiza?', auth);
+  // }, [
+  //   tokensRequestData.isLoading,
+  //   tokensRequestData.data,
+  //   tokensRequestData.isFetching,
+  // ]);
 
   useEffect(() => {
     async function clearAll() {
