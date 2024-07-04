@@ -56,7 +56,6 @@ const HomePage = () => {
       setTokenCurrentAmount(tokensRequestData.data);
       setIsLoading(tokensRequestData.isLoading);
     }
-    console.log('quantas x ele renderiza?');
   }, [
     tokensRequestData.isLoading,
     tokensRequestData.data,
