@@ -21,7 +21,7 @@ function App() {
     if (!tokensRequestData.isLoading && tokensRequestData.data) {
       setTokenCurrentAmount(tokensRequestData.data);
     }
-  }, [tokensRequestData.isLoading]);
+  }, [tokensRequestData.isLoading, tokensRequestData.data]);
 
   useEffect(() => {
     async function clearAll() {
