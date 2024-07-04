@@ -5,13 +5,25 @@ import {
   RecoveryIcon,
 } from '@/components';
 
+import { TabState, useAPIToken } from './APIToken';
+
 const useCLI = () => {
+  const { dialog, steps, tabs, create, remove, list, hasToken } = useAPIToken();
+
   const settings = [
     {
       label: 'API Tokens',
       icon: CoinsIcon,
       disabled: false,
-      onClick: () => {},
+      onClick: () => {
+        if (hasToken) {
+          tabs.set(TabState.LIST);
+        } else {
+          tabs.set(TabState.CREATE);
+        }
+
+        create.dialog.onOpen();
+      },
     },
     {
       label: 'Add other tokens',
@@ -34,7 +46,15 @@ const useCLI = () => {
   ];
 
   return {
-    settings: settings,
+    settings,
+    APIToken: {
+      dialog,
+      steps,
+      tabs,
+      create,
+      remove,
+      list,
+    },
   };
 };
 
