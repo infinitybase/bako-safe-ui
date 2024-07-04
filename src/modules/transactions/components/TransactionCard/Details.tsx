@@ -66,7 +66,7 @@ interface TransactionDetailsProps {
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
   isDeploy?: boolean;
-  isContratt?: boolean;
+  isContract?: boolean;
 }
 
 interface AssetBoxInfoProps extends StackProps {
@@ -75,7 +75,7 @@ interface AssetBoxInfoProps extends StackProps {
   hasToken?: boolean;
   isDeposit: boolean;
   isDeploy?: boolean;
-  isContratt?: boolean;
+  isContract?: boolean;
 }
 
 const AssetBoxInfo = ({
@@ -84,7 +84,7 @@ const AssetBoxInfo = ({
   hasToken,
   isDeposit,
   isDeploy,
-  isContratt,
+
   ...props
 }: AssetBoxInfoProps) => {
   const isContract = !!contractAddress;
@@ -98,7 +98,6 @@ const AssetBoxInfo = ({
   const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
 
   const contractWithoutToken = isContract && !hasToken;
-  const nickname = asset?.recipientNickname;
 
   return (
     <HStack
@@ -162,16 +161,14 @@ const AssetBoxInfo = ({
         borderColor="grey.925"
         boxSize="30px"
       >
-        {/* Estava Mockado */}
         <Icon
           color="grey.250"
-          fontSize={isDeploy ? '12.8px' : !isContratt ? '18px' : '12.8px'}
-          as={isDeploy ? DeployIcon : !isContratt ? DoubleArrowIcon : FaPlay}
+          fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
+          as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
         />
       </Center>
 
-      {/* Mockado */}
-      {isContratt && (
+      {isContract && (
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
             <Text
@@ -202,52 +199,6 @@ const AssetBoxInfo = ({
           </HStack>
         </VStack>
       )}
-
-      {/* isContratt - Mockado */}
-      {!isContratt && !!asset && (
-        <VStack
-          h="full"
-          w="full"
-          minH={51}
-          maxW={200}
-          spacing={0}
-          justifyContent="center"
-          alignItems={{ base: 'center', sm: 'start' }}
-        >
-          {!!nickname && (
-            <Text
-              fontSize={{ base: 'sm', sm: 'lg' }}
-              color="grey.75"
-              maxW={{ base: 100, sm: 220 }}
-              isTruncated
-            >
-              {nickname}
-            </Text>
-          )}
-
-          <Text
-            maxW="228px"
-            w="full"
-            fontSize="sm"
-            color="grey.75"
-            textOverflow="ellipsis"
-            isTruncated
-            ml="2px"
-          >
-            {isExtraSmall
-              ? limitCharacters(
-                  AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
-                  ) ?? '',
-                  7,
-                )
-              : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
-                  isMobile ? 10 : 24,
-                )}
-          </Text>
-        </VStack>
-      )}
     </HStack>
   );
 };
@@ -258,7 +209,6 @@ const Details = ({
   isInTheVaultPage,
   isMobile,
   isDeploy,
-  isContratt,
 }: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
 
@@ -321,7 +271,7 @@ const Details = ({
                     {transaction.assets.map((asset, index) => (
                       <>
                         <AssetBoxInfo
-                          isContratt={isContratt}
+                          isContract={isContract}
                           isDeploy={isDeploy}
                           isDeposit={isDeposit}
                           key={index}
@@ -338,10 +288,10 @@ const Details = ({
                           }
                           hasToken={hasToken}
                         />
-                        {isContratt && (
+                        {isContract && (
                           <AssetBoxInfo
                             borderTop="none"
-                            isContratt={false}
+                            isContract={false}
                             isDeploy={isDeploy}
                             isDeposit={isDeposit}
                             key={index}
@@ -373,7 +323,7 @@ const Details = ({
                     )}
                   </Box>
 
-                  {isContratt && (
+                  {isContract && (
                     <>
                       <Card
                         bgColor="grey.825"
@@ -425,7 +375,7 @@ const Details = ({
                             </Text>
                           </VStack>
                         </HStack>
-                        {isPending && notSigned && isContratt && (
+                        {isPending && notSigned && isContract && (
                           <HStack
                             bg="warning.700"
                             borderColor="warning.700"

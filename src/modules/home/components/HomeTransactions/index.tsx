@@ -156,65 +156,6 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            {/* TX mockadas para testes */}
-            {isMobile ? (
-              <>
-                <TransactionCardMobile
-                  isSigner={true}
-                  transaction={grouped.transactions[0]}
-                  account={account}
-                  mt="15px"
-                  isContratt
-                />
-                <TransactionCardMobile
-                  isSigner={true}
-                  transaction={grouped.transactions[0]}
-                  account={account}
-                  mt="15px"
-                  isDeploy
-                />
-              </>
-            ) : (
-              <>
-                <TransactionCard.Container
-                  isContratt
-                  mb="50px"
-                  border="1px solid slateblue"
-                  // @ts-ignore
-                  status="isCompleted"
-                  isSigner={true}
-                  transaction={grouped.transactions[0]}
-                  account={account}
-                  details={
-                    <TransactionCard.Details
-                      isContratt
-                      transaction={grouped.transactions[0]}
-                      // @ts-ignore
-                      status="isCompleted"
-                    />
-                  }
-                />
-
-                <TransactionCard.Container
-                  isDeploy
-                  mb="50px"
-                  border="1px solid slategrey"
-                  // @ts-ignore
-                  status="isCompleted"
-                  isSigner={true}
-                  transaction={grouped.transactions[0]}
-                  account={account}
-                  details={
-                    <TransactionCard.Details
-                      isDeploy
-                      transaction={grouped.transactions[0]}
-                      // @ts-ignore
-                      status="isCompleted"
-                    />
-                  }
-                />
-              </>
-            )}
             <CustomSkeleton isLoaded={!homeRequest.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({

@@ -29,7 +29,7 @@ interface TransactionCardContainerProps extends CardProps {
   account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
-  isContratt?: boolean;
+  isContract?: boolean;
   isDeploy?: boolean;
   callBack?: () => void;
 }
@@ -42,7 +42,7 @@ const Container = ({
   isSigner,
   isInTheVaultPage,
   callBack,
-  isContratt,
+  isContract,
   isDeploy,
   ...rest
 }: TransactionCardContainerProps) => {
@@ -100,14 +100,14 @@ const Container = ({
             as={
               isDeploy
                 ? DeployIcon
-                : isContratt
+                : isContract
                   ? ContractIcon
                   : isDeposit
                     ? DownLeftArrow
                     : UpRightArrow
             }
             mt={8}
-            fontSize={isDeploy || isContratt ? 'inherit' : '12px'}
+            fontSize={isDeploy || isContract ? 'inherit' : '12px'}
           />
         </Flex>
         <VStack

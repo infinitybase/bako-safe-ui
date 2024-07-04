@@ -21,7 +21,7 @@ interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
-  isContratt?: boolean;
+  isContract?: boolean;
   isDeploy?: boolean;
   callBack?: () => void;
 }
@@ -82,13 +82,13 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
               as={
                 props.isDeploy
                   ? DeployIcon
-                  : props.isContratt
+                  : props.isContract
                     ? ContractIcon
                     : isDeposit
                       ? DownLeftArrow
                       : UpRightArrow
               }
-              fontSize={props.isDeploy || props.isContratt ? 'inherit' : '12px'}
+              fontSize={props.isDeploy || props.isContract ? 'inherit' : '12px'}
             />
           </Flex>
           <VStack w="full">
