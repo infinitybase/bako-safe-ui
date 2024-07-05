@@ -7,7 +7,9 @@ interface TokenState {
       usdAmount: number;
     };
   };
+  isLoading: boolean;
   setTokenCurrentAmount: (tokenData: [string, number][]) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 const useTokensStore = create<TokenState>((set) => ({
@@ -39,6 +41,9 @@ const useTokensStore = create<TokenState>((set) => ({
       return { tokens: newTokens };
     });
   },
+
+  isLoading: true,
+  setIsLoading: (isLoading) => set({ isLoading }),
 }));
 
 export { useTokensStore };
