@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useHomeTransactions } from '../../hooks/useHomeTransactions';
 import { useHome } from '../../hooks';
 import { useAuth } from '@/modules/auth';
@@ -38,6 +38,7 @@ interface HomeTransactionsProps {
 }
 
 const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
+  const [hasTransactions, setHasTransactions] = useState(false);
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
 
@@ -51,9 +52,21 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);
 
+  useEffect(() => {
+    if (
+      groupedTransactions &&
+      groupedTransactions.length >= 1 &&
+      !hasTransactions
+    ) {
+      setHasTransactions(true);
+    }
+  }, [groupedTransactions]);
+
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions && groupedTransactions.length <= 0 ? (
+  return groupedTransactions &&
+    groupedTransactions.length <= 0 &&
+    !hasTransactions ? (
     <VStack
       w="full"
       spacing={6}

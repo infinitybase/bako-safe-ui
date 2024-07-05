@@ -10,7 +10,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <Box mt={0.5} w={{ base: 82 }}>
+    <Box mt={0.5} w={{ base: '105px' }}>
       <Text
         textAlign="center"
         variant={isMobile ? 'title-sm' : 'title-md'}
