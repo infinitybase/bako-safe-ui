@@ -24,6 +24,7 @@ interface DetailItemProps {
 
 const DetailItem = ({ asset, index }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD([asset]);
+
   const { isExtraSmall, isMobile } = useScreenSize();
 
   const isFirstItem = index === 0;

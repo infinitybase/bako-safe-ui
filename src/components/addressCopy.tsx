@@ -14,11 +14,13 @@ import { useNotification } from '@/modules/notification';
 interface Props extends StackProps {
   address: string;
   addressToCopy: string;
+  addressColor?: string;
 }
 
 function AddressCopy({
   address,
   addressToCopy,
+  addressColor,
   ...rest
 }: Props): JSX.Element | null {
   const clipboard = useClipboard(addressToCopy);
@@ -50,7 +52,7 @@ function AddressCopy({
     >
       <Icon color="grey.200" fontSize="md" as={CopyIcon} />
       <Box maxWidth="145px" w="full">
-        <Text noOfLines={1} color="grey.500">
+        <Text noOfLines={1} color={addressColor ?? 'grey.500'}>
           {address}
         </Text>
       </Box>
