@@ -13,7 +13,7 @@ export enum TabState {
 
 export type UseAPITokenReturn = ReturnType<typeof useAPIToken>;
 
-const useAPIToken = () => {
+const useAPIToken = (hasPermission: boolean) => {
   const [tab, setTab] = useState<TabState>(TabState.LIST);
 
   const dialog = useDisclosure();
@@ -23,7 +23,7 @@ const useAPIToken = () => {
     request: createRequest,
     createdAPIKey,
   } = useCreateAPIToken(setTab);
-  const { request: listRequest } = useListAPITokens();
+  const { request: listRequest } = useListAPITokens(hasPermission);
   const { confirm, request: removeRequest, handler } = useRemoveAPIToken();
 
   const hasToken = useMemo(() => {
