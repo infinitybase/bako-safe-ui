@@ -199,6 +199,40 @@ const AssetBoxInfo = ({
           </HStack>
         </VStack>
       )}
+
+      {!isContract && !!asset && (
+        <VStack
+          h="full"
+          w="full"
+          minH={51}
+          maxW={200}
+          spacing={0}
+          justifyContent="center"
+          alignItems={{ base: 'center', sm: 'start' }}
+        >
+          <Text
+            maxW="228px"
+            w="full"
+            fontSize="sm"
+            color="grey.75"
+            textOverflow="ellipsis"
+            isTruncated
+            ml="2px"
+          >
+            {isExtraSmall
+              ? limitCharacters(
+                  AddressUtils.format(
+                    Address.fromString(asset.to ?? '').toAddress(),
+                  ) ?? '',
+                  7,
+                )
+              : AddressUtils.format(
+                  Address.fromString(asset.to ?? '').toAddress(),
+                  isMobile ? 10 : 24,
+                )}
+          </Text>
+        </VStack>
+      )}
     </HStack>
   );
 };

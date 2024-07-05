@@ -10,14 +10,25 @@ import { DoubleArrowIcon } from '@/components';
 
 interface DetailItemProps {
   asset: AssetModel;
+  index: number;
 }
 
-const DetailItem = ({ asset }: DetailItemProps) => {
+const DetailItem = ({ asset, index }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
   const { isExtraSmall, isMobile } = useScreenSize();
 
+  const isFirstItem = index === 0;
+
   return (
-    <Grid gridTemplateColumns="repeat(5,1fr)" alignItems="center">
+    <Grid
+      gridTemplateColumns="repeat(5,1fr)"
+      alignItems="center"
+      w="full"
+      borderColor="grey.950"
+      borderBottomWidth={1}
+      pt={isFirstItem ? '1px' : '9px'}
+      pb={2}
+    >
       <TokenInfos asset={asset} />
       <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
       <Text
@@ -41,7 +52,7 @@ const DetailItem = ({ asset }: DetailItemProps) => {
             )}
       </Text>
 
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" w="full">
         <Center
           borderRadius={5}
           bgColor="grey.825"

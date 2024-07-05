@@ -45,15 +45,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           </Text>
         </Box>
 
-        <Box
-          alignItems="flex-start"
-          flexWrap="wrap"
-          py={3}
-          borderColor="grey.950"
-          borderBottomWidth={1}
-        >
+        <Box alignItems="flex-start" flexWrap="wrap" w="full">
           {transaction.assets.map((asset, index) => (
-            <DetailItem key={index} asset={asset} />
+            <DetailItem key={index} asset={asset} index={index} />
           ))}
         </Box>
       </VStack>
