@@ -4,7 +4,7 @@ import { useAuth } from '@/modules/auth/hooks';
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
-import { TransactionType } from '@/modules/transactions/services';
+import { TransactionType } from 'bakosafe';
 
 const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
   const auth = useAuth();

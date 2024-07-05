@@ -1,8 +1,6 @@
-import {
-  ITransactionsGroupedByMonth,
-  TransactionType,
-} from '@/modules/transactions/services';
+import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { useHomeTransactionsRequest } from './useHomeTransationsRequest';
+import { TransactionType } from 'bakosafe';
 
 const useHomeTransactions = (txFilterType?: TransactionType | undefined) => {
   const homeTranscationsRequest = useHomeTransactionsRequest(txFilterType);

@@ -1,7 +1,7 @@
 import { SortOptionTx, Vault } from 'bakosafe';
 
 import { useBakoSafeTransactionList } from '@/modules/core';
-import { TransactionType } from '@/modules/transactions/services';
+import { TransactionType } from 'bakosafe';
 
 const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 

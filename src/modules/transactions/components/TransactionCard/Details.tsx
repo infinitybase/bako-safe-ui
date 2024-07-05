@@ -38,7 +38,7 @@ import { limitCharacters } from '@/utils';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 
-import { TransactionType } from '../../services/types';
+import { TransactionType } from 'bakosafe';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { DepositDetails } from './DepositDetails';
 import { DeployIcon } from '@/components/icons/tx-deploy';

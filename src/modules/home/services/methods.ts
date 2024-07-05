@@ -1,10 +1,9 @@
 import { api } from '@/config';
 import { IPagination, Predicate, Workspace } from '@/modules/core';
 import { AssetId } from '@/modules/core/utils/assets/address';
-import {
-  ITransactionsGroupedByMonth,
-  TransactionType,
-} from '@/modules/transactions/services';
+import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+
+import { TransactionType } from 'bakosafe';
 
 export interface HomeDataResponse {
   predicates: IPagination<Predicate & { workspace: Workspace }>;
@@ -23,7 +22,7 @@ export class HomeService {
     return data;
   }
 
-  static async homeTransactions(type: TransactionType | undefined) {
+  static async homeTransactions(type?: TransactionType) {
     const { data } = await api.get<HomeTransactionsResponse>(
       `/user/me/transactions`,
       {

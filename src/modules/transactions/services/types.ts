@@ -3,6 +3,7 @@ import {
   ITransactionResume,
   SortOptionTx,
   Vault,
+  TransactionType,
 } from 'bakosafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
@@ -63,7 +64,7 @@ export interface GetTransactionParams {
   sort?: SortOptionTx;
   allOfUser?: boolean;
   byMonth?: boolean;
-  type?: TransactionType | undefined;
+  type?: TransactionType;
 }
 
 export interface GetUserTransactionsParams {
@@ -102,11 +103,6 @@ export interface CloseTransactionPayload {
   gasUsed: string;
   hasError?: boolean;
   transactionResult: string;
-}
-
-export enum TransactionType {
-  TRANSACTION_SCRIPT = 'TRANSACTION_SCRIPT',
-  DEPOSIT = 'DEPOSIT',
 }
 
 export type TransactionWithVault = ITransaction & {

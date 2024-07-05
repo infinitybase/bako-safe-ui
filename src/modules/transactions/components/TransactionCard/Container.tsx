@@ -14,9 +14,9 @@ import { ReactNode } from 'react';
 
 import { Card, DownLeftArrow, UpRightArrow } from '@/components';
 import { TransactionState, useScreenSize } from '@/modules/core';
-
+import { TransactionType } from 'bakosafe';
 import { useDetailsDialog } from '../../hooks/details';
-import { TransactionType, TransactionWithVault } from '../../services/types';
+import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 import { TransactionCard, transactionStatus } from '../..';
 import { ContractIcon } from '@/components/icons/tx-contract';

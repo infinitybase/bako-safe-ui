@@ -1,4 +1,4 @@
-import { TransactionType } from '@/modules/transactions/services';
+import { TransactionType } from 'bakosafe';
 import { AddressBookQueryKey } from './addressBook';
 import { HomeQueryKey } from './home';
 
@@ -122,7 +122,7 @@ export const WorkspacesQueryKey = {
     status?: string,
     vaultId?: string,
     id?: string,
-    type?: TransactionType | undefined,
+    type?: TransactionType,
   ) => [
     WorkspacesQueryKey.DEFAULT,
     'transaction-list-pagination',

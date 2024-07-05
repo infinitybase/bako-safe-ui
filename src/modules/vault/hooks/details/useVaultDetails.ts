@@ -11,11 +11,9 @@ import { useVaultState } from '@/modules/vault/states';
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
-import {
-  ITransactionsGroupedByMonth,
-  TransactionType,
-} from '@/modules/transactions/services';
+import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { IPagination } from '@/modules/core';
+import { TransactionType } from 'bakosafe';
 
 interface IUseVaultDetails {
   byMonth?: boolean;

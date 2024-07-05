@@ -17,7 +17,8 @@ import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
 import { useSignTransaction } from '../../hooks/signature';
-import { ITransactionWithType, TransactionType } from '../../services';
+import { ITransactionWithType } from '../../services';
+import { TransactionType } from 'bakosafe';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;

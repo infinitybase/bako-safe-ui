@@ -9,13 +9,14 @@ import {
 } from '@chakra-ui/react';
 
 import { useDetailsDialog } from '../../hooks/details';
-import { TransactionType, TransactionWithVault } from '../../services';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
 import { DownLeftArrow, UpRightArrow } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { ContractIcon } from '@/components/icons/tx-contract';
+import { TransactionType } from 'bakosafe';
+import { TransactionWithVault } from '../../services/types';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;

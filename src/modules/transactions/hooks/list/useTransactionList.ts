@@ -6,7 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
-import { ITransactionsGroupedByMonth, TransactionType } from '../../services';
+import { ITransactionsGroupedByMonth } from '../../services';
+import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';

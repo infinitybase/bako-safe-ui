@@ -7,7 +7,7 @@ import {
   UpRightArrowWhite,
 } from '../icons';
 import { css, keyframes } from '@emotion/react';
-import { TransactionType } from '@/modules/transactions/services';
+import { TransactionType } from 'bakosafe';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }

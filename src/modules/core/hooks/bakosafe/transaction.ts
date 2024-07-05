@@ -5,12 +5,10 @@ import {
   ITransaction,
   TransactionStatus,
   Vault,
+  TransactionType,
 } from 'bakosafe';
 
-import {
-  TransactionService,
-  TransactionType,
-} from '@/modules/transactions/services';
+import { TransactionService } from '@/modules/transactions/services';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
