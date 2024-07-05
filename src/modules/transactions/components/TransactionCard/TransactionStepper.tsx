@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 
 import { useAddressBook } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
-import { AddressUtils } from '@/modules/core';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
 
@@ -56,6 +56,7 @@ const TransactionTypeFormatter = (
 
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
   const { account } = useAuth();
+  const { isMobile } = useScreenSize();
 
   const { contactByAddress } = useAddressBook();
   const { activeStep, setActiveStep } = useSteps({
@@ -77,7 +78,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
 
   return (
     <Box display="flex" flexDirection="column" gap={8}>
-      <Text color="grey.425" fontSize="sm" ml={8} mb="7px">
+      <Text color="grey.425" fontSize="sm" ml={isMobile ? 0 : 8} mb="7px">
         Transaction History
       </Text>
 

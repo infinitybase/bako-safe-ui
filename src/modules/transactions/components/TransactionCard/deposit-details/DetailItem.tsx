@@ -1,4 +1,4 @@
-import { AddressUtils, AssetModel, useScreenSize } from '@/modules/core';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 import TokenInfos from './TokenInfos';
 import {
   Box,
@@ -20,12 +20,13 @@ import { DoubleArrowIcon } from '@/components';
 interface DetailItemProps {
   asset: ITransferAsset;
   index: number;
+  toAddress: string;
 }
 
-const DetailItem = ({ asset, index }: DetailItemProps) => {
+const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD([asset]);
 
-  const { isExtraSmall, isMobile } = useScreenSize();
+  const { isExtraSmall, isMobile, isSmall } = useScreenSize();
 
   const isFirstItem = index === 0;
 
@@ -43,11 +44,11 @@ const DetailItem = ({ asset, index }: DetailItemProps) => {
     >
       {isMobile ? (
         <VStack w="full" spacing="7px">
-          <HStack w="full" justifyContent="space-between">
+          <HStack w="100%" justifyContent="space-between" pr="2px">
             <TokenInfos asset={asset} />
             <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
           </HStack>
-          <Flex justifyContent="space-between" w="full">
+          <Flex justifyContent="space-between" w="full" alignItems="center">
             <Text
               maxW="288px"
               w="full"
@@ -61,11 +62,11 @@ const DetailItem = ({ asset, index }: DetailItemProps) => {
                     AddressUtils.format(
                       Address.fromString(asset.to ?? '').toAddress(),
                     ) ?? '',
-                    10,
+                    isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
                     Address.fromString(asset.to ?? '').toAddress(),
-                    isMobile ? 16 : 24,
+                    isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
 
@@ -93,13 +94,13 @@ const DetailItem = ({ asset, index }: DetailItemProps) => {
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(asset.to ?? '').toAddress(),
+                      Address.fromString(toAddress ?? '').toAddress(),
                     ) ?? '',
-                    10,
+                    isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
-                    isMobile ? 10 : 24,
+                    Address.fromString(toAddress ?? '').toAddress(),
+                    isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
           </Flex>
@@ -119,7 +120,7 @@ const DetailItem = ({ asset, index }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
+                    Address.fromB256(asset.to ?? '').toAddress(),
                   ) ?? '',
                   7,
                 )
@@ -152,12 +153,12 @@ const DetailItem = ({ asset, index }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
+                    Address.fromString(toAddress ?? '').toAddress(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
+                  Address.fromString(toAddress ?? '').toAddress(),
                   isMobile ? 10 : 24,
                 )}
           </Text>

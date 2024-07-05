@@ -5,9 +5,10 @@ import { css, keyframes } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
 import { UpRightArrowWhite } from '@/components';
 import { useScreenSize } from '@/modules/core';
+import { TransactionWithVault } from '../../services';
 
 type DepositDetailsProps = {
-  transaction: TransactionUI;
+  transaction: TransactionWithVault;
 };
 
 const shakeAnimation = keyframes`
@@ -19,6 +20,8 @@ const shakeAnimation = keyframes`
 `;
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
+  const toAddress = transaction.predicate?.predicateAddress;
+
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
     window.open(
@@ -47,7 +50,12 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
           {transaction.assets.map((asset, index) => (
-            <DetailItem key={index} asset={asset} index={index} />
+            <DetailItem
+              key={index}
+              asset={asset}
+              index={index}
+              toAddress={toAddress ?? ''}
+            />
           ))}
         </Box>
       </VStack>
