@@ -7,7 +7,6 @@ import {
   WaitingSignatureBadge,
   transactionStatus,
 } from '@/modules/transactions';
-import { TransactionType } from '@/modules/transactions/services';
 import {
   Box,
   Button,
@@ -34,7 +33,11 @@ const shakeAnimation = keyframes`
   100% { transform: translateX(0); }
 `;
 
-const HomeTransactions = memo(() => {
+interface HomeTransactionsProps {
+  hasRecentVaults: boolean;
+}
+
+const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const [hasTransactions, setHasTransactions] = useState(false);
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
@@ -64,7 +67,17 @@ const HomeTransactions = memo(() => {
   return groupedTransactions &&
     groupedTransactions.length <= 0 &&
     !hasTransactions ? (
-    <VStack w="full" spacing={6} mt="-5px">
+    <VStack
+      w="full"
+      spacing={6}
+      mt={
+        hasRecentVaults && !isMobile
+          ? 8
+          : hasRecentVaults && isMobile
+            ? 16
+            : '-5px'
+      }
+    >
       {groupedTransactions && (
         <HStack w="full" spacing={4}>
           <Text
