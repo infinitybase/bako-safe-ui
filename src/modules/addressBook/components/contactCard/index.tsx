@@ -41,7 +41,16 @@ const ContactCard = ({
   const toast = useNotification();
 
   return (
-    <Card display="flex" w="100%" bg="grey.800" {...rest}>
+    <Card
+      display="flex"
+      w="100%"
+      borderColor="gradients.transaction-border"
+      bg="gradients.transaction-card"
+      borderWidth={1}
+      backdropFilter="blur(16px)"
+      dropShadow="0px 8px 6px 0px #00000026"
+      {...rest}
+    >
       <VStack flex={1} alignItems="flex-start">
         <HStack flex={1} justifyContent="space-between" mb={1}>
           <HStack>
