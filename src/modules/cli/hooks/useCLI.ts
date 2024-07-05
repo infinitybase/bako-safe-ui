@@ -1,27 +1,49 @@
+import { useMemo } from 'react';
+
 import {
   BitCoinIcon,
   CoinsIcon,
   MoreLessIcon,
   RecoveryIcon,
 } from '@/components';
+import { useAuth } from '@/modules/auth';
+import { PermissionRoles } from '@/modules/core/models';
+import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
+import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
 
-const useCLI = () => {
-  const { dialog, steps, tabs, create, remove, list, hasToken } = useAPIToken();
+export const requiredCLIRoles = [
+  PermissionRoles.ADMIN,
+  PermissionRoles.OWNER,
+  PermissionRoles.MANAGER,
+];
+
+const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
+  const { userId } = useAuth();
+  const { workspace } = useGetWorkspaceRequest(vault?.workspace?.id ?? '');
+
+  const hasPermission = useMemo(() => {
+    const memberPermission = workspace?.permissions[userId];
+    const hasRequiredPermission =
+      memberPermission &&
+      requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
+        .length > 0;
+
+    const hasPerm = hasRequiredPermission;
+    return hasPerm;
+  }, [userId, vault, workspace]);
+
+  const { dialog, steps, tabs, create, remove, list, hasToken } =
+    useAPIToken(hasPermission);
 
   const settings = [
     {
       label: 'API Tokens',
       icon: CoinsIcon,
-      disabled: false,
+      disabled: !hasPermission,
       onClick: () => {
-        if (hasToken) {
-          tabs.set(TabState.LIST);
-        } else {
-          tabs.set(TabState.CREATE);
-        }
-
+        hasToken ? tabs.set(TabState.LIST) : tabs.set(TabState.CREATE);
         create.dialog.onOpen();
       },
     },
@@ -47,6 +69,7 @@ const useCLI = () => {
 
   return {
     settings,
+    hasPermission,
     APIToken: {
       dialog,
       steps,
