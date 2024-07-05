@@ -75,7 +75,7 @@ const colors = {
   gradients: {
     'transaction-card':
       'linear-gradient(0deg, rgba(245, 245, 245, 0.03), rgba(245, 245, 245, 0.03)), linear-gradient(180deg, rgba(21, 20, 19, 0.0375) 0%, rgba(21, 20, 19, 0.0625) 28.5%, rgba(21, 20, 19, 0.125) 72%, rgba(21, 20, 19, 0.25) 100%);',
-
+    'transaction-card-hover': 'rgba(84, 76, 76, 0.25)',
     'transaction-border': '#35302F',
   },
 };

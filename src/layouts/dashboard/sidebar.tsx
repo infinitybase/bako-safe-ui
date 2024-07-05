@@ -125,7 +125,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               )
             }
           >
-            <SidebarMenu.Icon as={CoinsIcon} />
+            <SidebarMenu.Icon as={CoinsIcon} textColor="#C5C5C5" />
             <SidebarMenu.Title>Balance</SidebarMenu.Title>
           </SidebarMenu.Container>
 
