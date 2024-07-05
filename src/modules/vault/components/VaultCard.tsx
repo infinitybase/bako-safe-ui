@@ -39,7 +39,11 @@ export const VaultCard = ({
 
   return (
     <Card
-      bg="grey.800"
+      borderColor="gradients.transaction-border"
+      bg="gradients.transaction-card"
+      borderWidth={1}
+      backdropFilter="blur(16px)"
+      dropShadow="0px 8px 6px 0px #00000026"
       w="100%"
       maxW={isExtraSmall ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}

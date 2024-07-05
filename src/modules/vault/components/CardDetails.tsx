@@ -133,7 +133,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
       </Box>
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
-        <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
+        <Card
+          p={{ base: 4, sm: 8 }}
+          borderColor="gradients.transaction-border"
+          bg="gradients.transaction-card"
+          borderWidth={1}
+          backdropFilter="blur(16px)"
+          dropShadow="0px 8px 6px 0px #00000026"
+        >
           <VStack spacing={4} w="full" maxW="full">
             <Flex
               w="full"
@@ -359,32 +366,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
             <Divider w="full" borderColor="grey.400" />
 
-            {/* <HStack
-              w="full"
-              spacing={5}
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <VStack spacing={4} justifyContent="flex-start">
-                <Box p={3} backgroundColor={'white'} borderRadius={10}>
-                  <QRCodeSVG
-                    value={vault.predicateAddress!}
-                    fgColor="black"
-                    bgColor="white"
-                    style={{
-                      borderRadius: 10,
-                      width: 180,
-                      height: 180,
-                    }}
-                  />
-                </Box>
-                <AddressCopy
-                  w="full"
-                  address={AddressUtils.format(vault.predicateAddress)!}
-                  addressToCopy={vault.predicateAddress!}
-                />
-              </VStack>
-            </HStack> */}
             <VStack w="full" alignItems="flex-start" spacing={4}>
               <Text fontWeight="semibold" color="grey.450">
                 {`Vault's balance breakdown`}

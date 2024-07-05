@@ -18,8 +18,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, IWitnesses } from 'bakosafe';
-import format from 'date-fns/format';
 import { useRef } from 'react';
 
 import { FaRegPlusSquare } from 'react-icons/fa';
@@ -44,13 +42,12 @@ import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 
-import { AssetsDetails, CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
+  AssetsDetails,
+  CreateVaultDialog,
+  ExtraVaultCard,
+  VaultCard,
+} from '@/modules/vault';
 
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
@@ -559,9 +556,11 @@ const WorkspacePage = () => {
         )}
       </CustomSkeleton>
 
-      <Box w="full" minH="650px">
-        <WkHomeTransactions />
-      </Box>
+      {recentVaults && recentVaults.length >= 1 && (
+        <Box w="full" minH="650px">
+          <WkHomeTransactions />
+        </Box>
+      )}
     </VStack>
   );
 };

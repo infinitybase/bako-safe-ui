@@ -38,3 +38,10 @@ export * from './up-right-arrow-white';
 export * from './user-add';
 export * from './vault';
 export * from './vault-success';
+export * from './up-right-arrow';
+export * from './up-right-arrow-white';
+export * from './down-left-arrow';
+export * from './down-left-arrow-white';
+export * from './refresh';
+export * from './minimal-alert';
+

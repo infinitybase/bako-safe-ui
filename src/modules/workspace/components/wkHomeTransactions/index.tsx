@@ -7,7 +7,6 @@ import {
   WaitingSignatureBadge,
   transactionStatus,
 } from '@/modules/transactions';
-import { TransactionType } from '@/modules/transactions/services';
 import {
   Box,
   Button,
@@ -20,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useAuth } from '@/modules/auth';
 
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
@@ -36,6 +35,8 @@ const shakeAnimation = keyframes`
 `;
 
 const WkHomeTransactions = memo(() => {
+  const [hasTransactions, setHasTransactions] = useState(false);
+
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
 
@@ -56,9 +57,21 @@ const WkHomeTransactions = memo(() => {
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);
 
+  useEffect(() => {
+    if (
+      groupedTransactions &&
+      groupedTransactions.length >= 1 &&
+      !hasTransactions
+    ) {
+      setHasTransactions(true);
+    }
+  }, [groupedTransactions]);
+
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions && groupedTransactions.length <= 0 ? (
+  return groupedTransactions &&
+    groupedTransactions.length <= 0 &&
+    !hasTransactions ? (
     <VStack w="full" spacing={6}>
       {groupedTransactions && (
         <HStack w="full" spacing={4}>

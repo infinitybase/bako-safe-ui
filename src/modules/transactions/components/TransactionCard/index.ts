@@ -9,6 +9,7 @@ import { Name } from './Name';
 import { Status } from './Status';
 import { TransactionStepper } from './TransactionStepper';
 import { BasicInfos } from './VaultInfo';
+import { DepositDetails } from './DepositDetails';
 
 const TransactionCard = {
   Actions,
@@ -23,6 +24,7 @@ const TransactionCard = {
   Status,
   BasicInfos,
   TransactionStepper,
+  DepositDetails,
 };
 
 export { TransactionCard };

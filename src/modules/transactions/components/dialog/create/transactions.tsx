@@ -98,6 +98,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             const appliedOptions = handleFieldOptions(
               field.value,
               optionsRequests[index].options,
+              !!field.value,
             );
 
             const showAddToAddressBook =

@@ -61,8 +61,13 @@ const VaultDetailsPage = () => {
   const {
     workspaces: { current },
   } = useAuth();
-  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isExtraSmall, isLarge } =
-    useScreenSize();
+  const {
+    vaultRequiredSizeToColumnLayout,
+    isSmall,
+    isMobile,
+    isExtraSmall,
+    isLarge,
+  } = useScreenSize();
 
   const workspaceId = current ?? '';
   const hasTransactions =

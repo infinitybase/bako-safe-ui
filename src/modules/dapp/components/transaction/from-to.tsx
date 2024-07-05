@@ -1,7 +1,7 @@
 import { chakra, HStack, Icon } from '@chakra-ui/react';
 import { OperationTransactionAddress } from '@fuel-ts/providers';
 import { Vault } from 'bakosafe';
-import { AddressType } from 'fuels';
+import { Address, AddressType } from 'fuels';
 
 import { ForwardIcon, PlayIcon } from '@/components/icons';
 import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/recipient';
@@ -24,6 +24,8 @@ const FromToContainer = chakra(HStack, {
 const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
   const isContract = to.type === AddressType.contract;
 
+  const rawAddress = Address.fromString(to.address).toB256();
+
   return (
     <FromToContainer gap={2}>
       <DappTransactionRecipient
@@ -31,7 +33,7 @@ const DappTransactionFromTo = ({ to, from, vault, hasAssets }: FromToProps) => {
         type={from.type}
         chain={from.chain}
         vault={vault}
-        address={from.address}
+        address={rawAddress}
         fullBorderRadius={!hasAssets}
       />
 
