@@ -50,7 +50,7 @@ function AddressCopy({
       }}
       {...rest}
     >
-      <Icon color="grey.200" fontSize="md" as={CopyIcon} visibility="visible" />
+      <Icon color="grey.200" fontSize="md" as={CopyIcon} />
       <Box maxWidth="145px" w="full">
         <Text noOfLines={1} color={addressColor ?? 'grey.500'}>
           {address}
