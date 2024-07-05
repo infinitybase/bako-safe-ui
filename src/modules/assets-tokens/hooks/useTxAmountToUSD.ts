@@ -12,13 +12,15 @@ const useTxAmountToUSD = (assets: ITransferAsset[]) => {
         const assetAmount = Number(asset.amount);
         const transactionAmount = assetAmount * usdAmount;
         return acc + transactionAmount;
-      } else {
-        return acc;
       }
+
+      return acc;
     }, 0);
 
     return totalAmount.toFixed(2);
   }
+
+  return '0.00';
 };
 
 export { useTxAmountToUSD };
