@@ -131,7 +131,7 @@ const AssetBoxInfo = ({
             </HStack>
           )}
 
-          <Box mt={0.5} w={{ base: '105px' }}>
+          <Box mt={0.5} minW="105px">
             <Text
               textAlign="center"
               variant={isMobile ? 'title-sm' : 'title-md'}
