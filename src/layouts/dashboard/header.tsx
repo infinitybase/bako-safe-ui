@@ -42,6 +42,8 @@ import {
 import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { useSidebar } from './hook';
+import { AddressCopy } from '@/components/addressCopy';
+import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -71,6 +73,9 @@ const UserBox = () => {
   const settingsDrawer = useDisclosure();
   const { drawer } = useSidebar();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
+  const mySettingsRequest = useMySettingsRequest(auth.account);
+  const name = mySettingsRequest.data?.name;
+  const hasNickName = !name?.startsWith('fuel');
 
   const logout = async () => {
     auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
@@ -166,6 +171,33 @@ const UserBox = () => {
                 </Box>
               </>
             )}
+
+            <Box
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              p={5}
+              display="flex"
+              flexDir={'column'}
+              alignItems="start"
+            >
+              {hasNickName && (
+                <Text color="grey.50" fontWeight={500} fontSize="16px" mb="4px">
+                  {name}
+                </Text>
+              )}
+              <AddressCopy
+                addressColor="grey.250"
+                spacing={1}
+                flexDir="row"
+                address={AddressUtils.format(auth.account)!}
+                addressToCopy={auth.account}
+                bg="transparent"
+                fontSize={14}
+                alignSelf="start"
+                p={0}
+              />
+            </Box>
 
             <Box
               borderTop={'1px solid'}
