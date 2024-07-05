@@ -27,9 +27,6 @@ import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
 import HomeTransactions from '../components/HomeTransactions';
-import { useTokensStore } from '@/modules/assets-tokens/store';
-import { useTokensUSDAmountRequest } from '../hooks/useTokensUSDAmountRequest';
-import { useEffect } from 'react';
 
 const HomePage = () => {
   const {
@@ -47,22 +44,6 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  const { setTokenCurrentAmount, setIsLoading } = useTokensStore();
-  const tokensRequestData = useTokensUSDAmountRequest();
-
-  useEffect(() => {
-    if (!tokensRequestData.isLoading && tokensRequestData.data) {
-      setTokenCurrentAmount(tokensRequestData.data);
-      setIsLoading(tokensRequestData.isLoading);
-    }
-  }, [
-    tokensRequestData.isLoading,
-    tokensRequestData.data,
-    tokensRequestData.isFetching,
-    homeRequest.isLoading,
-    homeRequest.isFetching,
-  ]);
 
   return (
     <VStack
