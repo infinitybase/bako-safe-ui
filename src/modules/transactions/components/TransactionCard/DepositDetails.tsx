@@ -38,7 +38,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       flexWrap="wrap"
       minH={{ base: 560, xs: 400, sm: 'unset' }}
     >
-      <VStack>
+      <VStack w="full">
         <Box pb={3} borderColor="grey.950" borderBottomWidth={1} w="full">
           <Text color="grey.425" fontSize="sm">
             Transaction breakdown

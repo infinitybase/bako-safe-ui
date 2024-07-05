@@ -12,7 +12,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
   return (
     <Box mt={0.5} w={{ base: '105px' }}>
       <Text
-        textAlign="center"
+        textAlign={isMobile ? 'end' : 'center'}
         variant={isMobile ? 'title-sm' : 'title-md'}
         color="grey.75"
         fontSize="sm"
@@ -20,7 +20,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         {asset?.amount}
       </Text>
       <Text
-        textAlign="center"
+        textAlign={isMobile ? 'end' : 'center'}
         variant="description"
         fontSize="xs"
         color="grey.500"
