@@ -36,7 +36,7 @@ const tertiary = defineStyle({
   color: 'error.500',
   _hover: {
     _disabled: {
-      bgColor: 'initial',
+      bgColor: 'error.600',
     },
   },
   fontSize: {
