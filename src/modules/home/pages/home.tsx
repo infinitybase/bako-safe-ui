@@ -28,6 +28,8 @@ import { ActionCard } from '../components/ActionCard';
 
 import HomeTransactions from '../components/HomeTransactions';
 
+import { useTokensUSDAmountRequest } from '../hooks/useTokensUSDAmountRequest';
+
 const HomePage = () => {
   const {
     navigate,
@@ -44,6 +46,8 @@ const HomePage = () => {
   const { selectWorkspace } = useSelectWorkspace();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  useTokensUSDAmountRequest();
 
   return (
     <VStack
