@@ -17,6 +17,7 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
+import { invalidateQueries } from '@/modules/core';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -50,6 +51,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     current: workspaceId!,
     includePersonal: isSingleIncluded ?? auth.isSingleWorkspace,
   });
+
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],
     { q: search },
@@ -83,14 +85,10 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
-      const queryKeysToInvalidate = [
-        ...AddressBookQueryKey.LIST_BY_USER(workspaceId!),
-        ...AddressBookQueryKey.DEFAULT,
-      ];
-      await listContactsPaginatedRequest.refetch();
-      await listContactsRequest.refetch();
-      queryClient.invalidateQueries([...queryKeysToInvalidate, true]);
-      queryClient.invalidateQueries([...queryKeysToInvalidate, false]);
+      queryClient.invalidateQueries({
+        queryKey: AddressBookQueryKey.DEFAULT,
+        exact: false,
+      });
       contactDialog.onClose();
       createAndUpdateSuccessToast();
     },
