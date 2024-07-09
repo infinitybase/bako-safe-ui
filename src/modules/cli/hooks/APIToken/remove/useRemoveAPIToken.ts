@@ -23,7 +23,9 @@ const useRemoveAPIToken = () => {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries([GET_API_TOKENS_QUERY_KEY]);
+          queryClient.invalidateQueries({
+            queryKey: [GET_API_TOKENS_QUERY_KEY],
+          });
           successToast({
             title: 'API Token removed!',
             description: 'Your API Token was successfully removed.',

@@ -36,7 +36,7 @@ const useCreateAPIToken = (
 
     await mutate(formattdeData, {
       onSuccess: (data: CreateAPITokenResponse) => {
-        queryClient.invalidateQueries([GET_API_TOKENS_QUERY_KEY]);
+        queryClient.invalidateQueries({ queryKey: [GET_API_TOKENS_QUERY_KEY] });
         successToast({
           title: 'API Token created!',
           description: 'Your API Token was successfully created.',
