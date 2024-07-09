@@ -1,4 +1,4 @@
-import { useMutation, UseMutationOptions } from 'react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import {
   AddressBookService,
@@ -13,7 +13,11 @@ const useCreateContactRequest = (
     CreateContactPayload
   >,
 ) => {
-  return useMutation('address-book/create', AddressBookService.create, options);
+  return useMutation({
+    mutationKey: ['address-book/create'],
+    mutationFn: AddressBookService.create,
+    ...options,
+  });
 };
 
 export { useCreateContactRequest };

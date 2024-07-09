@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
 import { AddressBookUtils } from '@/utils';
@@ -15,14 +15,16 @@ const useListPaginatedContactsRequest = (
 ) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
-  const { data, ...query } = useQuery(
-    AddressBookQueryKey.LIST_BY_USER_PAGINATED(
-      workspace,
-      filter.q ?? '',
-      contactIds,
-      includePersonal,
-    ),
-    () =>
+  const { data, ...query } = useQuery({
+    queryKey: [
+      AddressBookQueryKey.LIST_BY_USER_PAGINATED(
+        workspace,
+        filter.q ?? '',
+        contactIds,
+        includePersonal,
+      ),
+    ],
+    queryFn: () =>
       AddressBookService.search(
         {
           ...filter,
@@ -30,7 +32,7 @@ const useListPaginatedContactsRequest = (
         },
         contacts,
       ),
-  );
+  });
 
   return {
     ...query,

@@ -17,7 +17,6 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { invalidateQueries } from '@/modules/core';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -86,7 +85,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: AddressBookQueryKey.DEFAULT,
+        queryKey: [AddressBookQueryKey.DEFAULT],
         exact: false,
       });
       contactDialog.onClose();
