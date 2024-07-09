@@ -30,7 +30,6 @@ interface TransactionCardContainerProps extends CardProps {
   isSigner: boolean;
   isInTheVaultPage?: boolean;
   isContract?: boolean;
-  isDeploy?: boolean;
   callBack?: () => void;
 }
 
@@ -43,7 +42,6 @@ const Container = ({
   isInTheVaultPage,
   callBack,
   isContract,
-  isDeploy,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -55,6 +53,7 @@ const Container = ({
   const detailsDialog = useDetailsDialog();
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
+  const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
   return (
     <>
       {transaction && (
