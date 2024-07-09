@@ -15,6 +15,7 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
+import { useSelectWorkspace } from '@/modules/workspace';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -31,6 +32,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const { account } = useAuthStore();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
+  const { selectWorkspace } = useSelectWorkspace();
   const notificationsListRequest = useListNotificationsRequest(
     account,
     props?.isOpen,
@@ -74,13 +76,15 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     if (isTransaction)
       setSelectedTransaction({ name: transactionName, id: transactionId });
 
-    console.log('summary:', summary);
-
     const page = isTransaction
       ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
       : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    navigate(page);
+    selectWorkspace(summaryWorkspaceId);
+
+    setTimeout(() => {
+      navigate(page);
+    }, 500);
   };
 
   useEffect(() => {
