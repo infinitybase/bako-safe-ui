@@ -22,6 +22,7 @@ export interface NotificationSummary {
   vaultName: string;
   transactionId?: string;
   transactionName?: string;
+  workspaceId: string;
 }
 
 export interface Notification {
