@@ -33,7 +33,7 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
-import { limitCharacters } from '@/utils';
+import { limitCharacters, limitName } from '@/utils';
 
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
@@ -314,7 +314,9 @@ const Details = ({
                             amount: asset.amount,
                             to: asset.to,
                             transactionID: transaction.id,
-                            recipientNickname: asset?.recipientNickname,
+                            recipientNickname: AddressUtils.format(
+                              asset?.recipientNickname ?? '',
+                            ),
                           }}
                           borderColor="grey.950"
                           borderBottomWidth={
@@ -334,7 +336,9 @@ const Details = ({
                               amount: asset.amount,
                               to: asset.to,
                               transactionID: transaction.id,
-                              recipientNickname: asset?.recipientNickname,
+                              recipientNickname: AddressUtils.format(
+                                asset?.recipientNickname ?? '',
+                              ),
                             }}
                             borderColor="grey.950"
                             borderBottomWidth={

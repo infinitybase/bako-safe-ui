@@ -22,6 +22,7 @@ import {
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
+import { Address } from 'fuels';
 
 export enum MemberTabState {
   FORM = 0,
@@ -103,16 +104,17 @@ const useChangeMember = () => {
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');
+    const _memberAddress = Address.fromString(memberAddress).bech32Address;
     const updatedMemberPermission = editForm.getValues('permission');
     const permission = data.permission as PermissionRoles;
 
     // If not has an updated member permission and has a memberAddress it means that comes from the memberForm(creation)
-    if (!updatedMemberPermission && memberAddress) {
-      memberRequest.mutate(memberAddress, {
+    if (!updatedMemberPermission && _memberAddress) {
+      memberRequest.mutate(_memberAddress, {
         onSettled: (data?: Workspace) => {
           workspaceRequest.refetch().then(() => {
             const newMember = data?.members.find(
-              (member) => member.address === memberAddress,
+              (member) => member.address === _memberAddress,
             );
             if (newMember) {
               permissionsRequest.mutate(

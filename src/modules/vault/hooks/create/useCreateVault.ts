@@ -12,6 +12,7 @@ import { useTemplateStore } from '@/modules/template/store';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm } from './useCreateVaultForm';
+import { Address } from 'fuels';
 
 export enum TabState {
   INFO,
@@ -72,7 +73,10 @@ const useCreateVault = () => {
   };
 
   const handleCreateVault = form.handleSubmit(async (data) => {
-    const addresses = data.addresses?.map((address) => address.value) ?? [];
+    const addresses =
+      data.addresses?.map(
+        (address) => Address.fromString(address.value).bech32Address,
+      ) ?? [];
 
     bakoSafeVault.create({
       name: data.name,
