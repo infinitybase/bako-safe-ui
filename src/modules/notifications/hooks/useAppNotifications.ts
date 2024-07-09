@@ -80,11 +80,11 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
       : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    selectWorkspace(summaryWorkspaceId);
-
-    setTimeout(() => {
-      navigate(page);
-    }, 500);
+    selectWorkspace(summaryWorkspaceId, {
+      onSelect: async (_workspace) => {
+        navigate(page);
+      },
+    });
   };
 
   useEffect(() => {
