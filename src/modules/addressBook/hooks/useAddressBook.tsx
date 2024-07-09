@@ -84,14 +84,10 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
-      const queryKeysToInvalidate = [
-        ...AddressBookQueryKey.LIST_BY_USER(workspaceId!),
-        ...AddressBookQueryKey.DEFAULT,
-      ];
-      await listContactsPaginatedRequest.refetch();
-      await listContactsRequest.refetch();
-      queryClient.invalidateQueries([...queryKeysToInvalidate, true]);
-      queryClient.invalidateQueries([...queryKeysToInvalidate, false]);
+      queryClient.invalidateQueries({
+        queryKey: AddressBookQueryKey.DEFAULT,
+        exact: false,
+      });
       contactDialog.onClose();
       createAndUpdateSuccessToast();
     },
