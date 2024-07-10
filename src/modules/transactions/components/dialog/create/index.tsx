@@ -66,7 +66,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           accordion={accordion}
           transactionsFields={transactionsFields}
           isFeeCalcLoading={
-            resolveTransactionCosts.isLoading || !transactionFee
+            resolveTransactionCosts.isPending || !transactionFee
           }
           getBalanceAvailable={getBalanceAvailable}
         />
@@ -140,7 +140,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           isDisabled={
             !form.formState.isValid ||
             isCurrentAmountZero ||
-            resolveTransactionCosts.isLoading ||
+            resolveTransactionCosts.isPending ||
             !transactionFee
           }
           isLoading={transactionRequest.isLoading}
