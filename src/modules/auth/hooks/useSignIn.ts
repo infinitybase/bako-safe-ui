@@ -152,7 +152,7 @@ const useSignIn = () => {
     },
     signInRequest,
     isConnected,
-    isConnecting: signInRequest.isLoading || createUserRequest.isLoading,
+    isConnecting: signInRequest.isPending || createUserRequest.isPending,
     createUserRequest,
     connectors: {
       items: connectors,
