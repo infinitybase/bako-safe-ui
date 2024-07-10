@@ -1,4 +1,3 @@
-import { BakoSafeConnectors } from 'bakosafe';
 import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
@@ -41,6 +40,20 @@ export interface ISocketConnectParams {
     content: { [key: string]: string };
   };
   callbacks?: { [key: string]: (data: any) => void };
+}
+export enum BakoSafeConnectors {
+  ACCOUNTS = 'accounts',
+  CURRENT_ACCOUNT = 'currentAccount',
+  TRANSACTION_CREATED = '[TRANSACTION_CREATED]',
+  TRANSACTION_SEND = '[TRANSACTION_SEND]',
+  AUTH_CONFIRMED = '[AUTH_CONFIRMED]',
+  AUTH_REJECTED = '[AUTH_REJECTED]',
+  AUTH_DISCONECT_DAPP = '[AUTH_DISCONECT_DAPP]',
+  AUTH_DISCONECT_CONFIRM = '[AUTH_DISCONECT_CONFIRM]',
+  CONNECTION = 'connection',
+  POPUP_TRANSFER = '[POPUP_TRANSFER]_connected',
+  CONNECTED_NETWORK = '[CONNECTED_NETWORK]',
+  DEFAULT = 'message',
 }
 
 export interface ISocketEmitMessageParams {

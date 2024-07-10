@@ -17,6 +17,7 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
+import { Address } from 'fuels';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -83,14 +84,10 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
-      const queryKeysToInvalidate = [
-        ...AddressBookQueryKey.LIST_BY_USER(workspaceId!),
-        ...AddressBookQueryKey.DEFAULT,
-      ];
-      await listContactsPaginatedRequest.refetch();
-      await listContactsRequest.refetch();
-      queryClient.invalidateQueries([...queryKeysToInvalidate, true]);
-      queryClient.invalidateQueries([...queryKeysToInvalidate, false]);
+      queryClient.invalidateQueries({
+        queryKey: AddressBookQueryKey.DEFAULT,
+        exact: false,
+      });
       contactDialog.onClose();
       createAndUpdateSuccessToast();
     },
@@ -136,7 +133,11 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const contactByAddress = (address: string) => {
     const contacts = listContactsRequest?.data ?? [];
-    return contacts.find(({ user }) => user.address === address);
+    return contacts.find(
+      ({ user }) =>
+        Address.fromString(user.address).bech32Address ===
+        Address.fromString(address).bech32Address,
+    );
   };
 
   const debouncedSearchHandler = useCallback(
@@ -151,9 +152,14 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     [],
   );
 
-  const handleCreateContact = form.handleSubmit(async (data) => {
-    createContactRequest.mutate(data);
-  });
+  const handleCreateContact = form.handleSubmit(
+    async ({ nickname, address }) => {
+      createContactRequest.mutate({
+        nickname,
+        address: Address.fromString(address).bech32Address,
+      });
+    },
+  );
 
   const handleUpdateContact = form.handleSubmit(async (data) => {
     updateContactRequest.mutate({ ...data, id: contactToEdit.id });

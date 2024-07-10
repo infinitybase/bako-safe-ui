@@ -3,6 +3,7 @@ import {
   ITransactionResume,
   SortOptionTx,
   Vault,
+  TransactionType,
 } from 'bakosafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
@@ -62,6 +63,8 @@ export interface GetTransactionParams {
   orderBy?: string;
   sort?: SortOptionTx;
   allOfUser?: boolean;
+  byMonth?: boolean;
+  type?: TransactionType;
 }
 
 export interface GetUserTransactionsParams {
@@ -104,7 +107,17 @@ export interface CloseTransactionPayload {
 
 export type TransactionWithVault = ITransaction & {
   predicate?: PredicateAndWorkspace;
+  type: TransactionType;
 };
+
+export interface ITransactionWithType extends ITransaction {
+  type: TransactionType;
+}
+
+export interface ITransactionsGroupedByMonth {
+  monthYear: string;
+  transactions: TransactionWithVault[];
+}
 
 export interface ResolveTransactionCostInput {
   assets: {
@@ -118,7 +131,7 @@ export interface ResolveTransactionCostInput {
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
-  IPagination<TransactionWithVault>;
+  IPagination<ITransactionsGroupedByMonth>;
 export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];

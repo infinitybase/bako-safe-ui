@@ -36,6 +36,13 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const isFirstTab = tabs.tab === 0;
   const isSecondTab = tabs.tab === 1;
 
+  const isSecondTabAndMobile = isSecondTab && isMobile;
+
+  const mobileStylesForHeader = {
+    top: 0,
+    position: 'sticky',
+  };
+
   return (
     <Dialog.Modal
       size={{ base: 'full', md: 'xl' }}
@@ -84,10 +91,14 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         mt={isSecondTab ? 'unset' : 'auto'}
         sx={{
           '&>hr': {
-            mt: '0',
-            mb: isSecondTab ? '0' : 8,
+            mt: 0,
+            mb: isSecondTab ? 0 : 8,
           },
         }}
+        bgColor="dark.950"
+        position={isSecondTabAndMobile ? 'absolute' : 'unset'}
+        bottom={0}
+        px={isSecondTabAndMobile ? 6 : 'unset'}
       >
         <VStack w="full" alignItems="center" bg="dark.950" zIndex={100}>
           {isSecondTab && (

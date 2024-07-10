@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth, useAuthStore } from '@/modules/auth';
+import { useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -15,6 +15,7 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
+import { useSelectWorkspace } from '@/modules/workspace';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -31,6 +32,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const { account } = useAuthStore();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
+  const { selectWorkspace } = useSelectWorkspace();
   const notificationsListRequest = useListNotificationsRequest(
     account,
     props?.isOpen,
@@ -45,13 +47,6 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     hasNewNotification,
     setHasNewNotification,
   } = useNotificationsStore();
-
-  // const { currentWorkspace } = useWorkspace();
-  const {
-    workspaces: { current },
-  } = useAuth();
-
-  const workspaceId = current ?? '';
 
   const onCloseDrawer = async () => {
     const hasUnread = !!unreadCounter;
@@ -68,7 +63,12 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   };
 
   const onSelectNotification = (summary: NotificationSummary) => {
-    const { transactionId, transactionName, vaultId } = summary;
+    const {
+      transactionId,
+      transactionName,
+      vaultId,
+      workspaceId: summaryWorkspaceId,
+    } = summary;
     const isTransaction = summary?.transactionId;
 
     onCloseDrawer();
@@ -77,15 +77,18 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       setSelectedTransaction({ name: transactionName, id: transactionId });
 
     const page = isTransaction
-      ? Pages.transactions({ vaultId, workspaceId })
-      : Pages.detailsVault({ vaultId, workspaceId });
+      ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
+      : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    navigate(page);
+    selectWorkspace(summaryWorkspaceId, {
+      onSelect: async (_workspace) => {
+        navigate(page);
+      },
+    });
   };
 
   useEffect(() => {
     if (hasNewNotification) {
-      console.log('inciando refetchamento');
       notificationsListRequest.refetch();
       unreadNotificationsRequest.refetch();
       setHasNewNotification(false);

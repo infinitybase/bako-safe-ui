@@ -1,4 +1,4 @@
-import { BN } from 'fuels';
+import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Predicate, Workspace } from '@/modules/core/models';
@@ -16,9 +16,8 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 }
 
 export interface HasReservedCoins {
-  balance: string;
   balanceUSD: string;
-  reservedCoins: BN;
+  reservedCoins: CoinQuantity[];
 }
 
 export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
@@ -95,7 +94,10 @@ export class VaultService {
 
     return {
       ...data,
-      reservedCoins: new BN(data.reservedCoins),
+      reservedCoins: data.reservedCoins.map((reservedCoin) => ({
+        ...reservedCoin,
+        amount: new BN(reservedCoin.amount),
+      })),
     };
   }
 }

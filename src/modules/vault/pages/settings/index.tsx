@@ -33,11 +33,12 @@ const VaultSettingsPage = () => {
 
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
+  const workspaceId = current ?? '';
 
   if (!vault) return null;
 
   return (
-    <Box w="full" pr={{ base: 0, sm: 8 }}>
+    <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
 
       <HStack mb={8} w="full" justifyContent="space-between">
@@ -82,6 +83,13 @@ const VaultSettingsPage = () => {
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>

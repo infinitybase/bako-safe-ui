@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
@@ -20,26 +20,19 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useAuth } from '@/modules/auth';
-import {
-  AssetCard,
-  assetsMap,
-  NativeAssetId,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
 import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
+import { AssetsDetails } from './AssetsDetails';
 
 export interface CardDetailsProps {
   store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
-
-  //assets: UseVaultDetailsReturn['assets'];
+  assets: UseVaultDetailsReturn['assets'];
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
@@ -73,9 +66,10 @@ const Update = () => {
 };
 
 const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
+  const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const { store, vault } = props;
+  const { store, vault, assets } = props;
   const {
     balanceUSD,
     visebleBalance,
@@ -94,7 +88,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     precision: 4,
   });
 
-  const { isBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const workspaceId = workspaces.current ?? '';
 
@@ -139,7 +133,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
       </Box>
 
       <CustomSkeleton isLoaded={!vault.isLoading}>
-        <Card p={{ base: 4, sm: 8 }} bgColor="grey.800">
+        <Card
+          p={{ base: 4, sm: 8 }}
+          borderColor="gradients.transaction-border"
+          bg="gradients.transaction-card"
+          borderWidth={1}
+          backdropFilter="blur(16px)"
+          dropShadow="0px 8px 6px 0px #00000026"
+        >
           <VStack spacing={4} w="full" maxW="full">
             <Flex
               w="full"
@@ -290,19 +291,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 >
                   <Button
                     hidden={hasBalance}
-                    minW={{ base: undefined, sm: 180 }}
-                    h={12}
                     variant="primary"
                     onClick={() => openFaucet(vault.predicateAddress!)}
-                    _hover={{
-                      opacity: 0.8,
-                    }}
-                    leftIcon={
-                      <PlusSquareIcon
-                        w={{ base: 5, sm: 6 }}
-                        h={{ base: 5, sm: 6 }}
-                      />
-                    }
+                    leftIcon={<PlusSquareIcon />}
                   >
                     Faucet
                   </Button>
@@ -326,7 +317,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         !vault?.hasBalance ||
                         !makeTransactionsPerm ||
                         vault.transactions.isPendingSigner ||
-                        isBalanceLowerThanReservedAmount
+                        isEthBalanceLowerThanReservedAmount
                       }
                       variant="primary"
                       leftIcon={<SquarePlusIcon />}
@@ -334,7 +325,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       Send
                     </Button>
-                    {isBalanceLowerThanReservedAmount &&
+                    {isEthBalanceLowerThanReservedAmount &&
                       !vault.transactions.isPendingSigner && (
                         <Text
                           variant="description"
@@ -375,38 +366,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
             <Divider w="full" borderColor="grey.400" />
 
-            {/* <HStack
-              w="full"
-              spacing={5}
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <VStack spacing={4} justifyContent="flex-start">
-                <Box p={3} backgroundColor={'white'} borderRadius={10}>
-                  <QRCodeSVG
-                    value={vault.predicateAddress!}
-                    fgColor="black"
-                    bgColor="white"
-                    style={{
-                      borderRadius: 10,
-                      width: 180,
-                      height: 180,
-                    }}
-                  />
-                </Box>
-                <AddressCopy
-                  w="full"
-                  address={AddressUtils.format(vault.predicateAddress)!}
-                  addressToCopy={vault.predicateAddress!}
-                />
-              </VStack>
-            </HStack> */}
-            <VStack
-              h={{ base: 160, sm: 180 }}
-              w="full"
-              alignItems="flex-start"
-              spacing={4}
-            >
+            <VStack w="full" alignItems="flex-start" spacing={4}>
               <Text fontWeight="semibold" color="grey.450">
                 {`Vault's balance breakdown`}
               </Text>
@@ -415,15 +375,23 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 w="full"
                 h="full"
               >
-                {parseFloat(balanceFormatted!) === 0 || !balanceFormatted ? (
+                {!hasBalance ? (
                   <Card
                     w="full"
-                    h="full"
+                    h={{ base: 98, sm: 102.5, lg: 150 }}
                     p={{ base: 4, sm: 8 }}
                     borderColor="dark.100"
                     borderStyle="dashed"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    <VStack h="full" spacing={1} justifyContent="center">
+                    <VStack
+                      flex={1}
+                      h="full"
+                      spacing={1}
+                      justifyContent="center"
+                    >
                       <Text fontWeight="bold" color="grey.200">
                         First thing first...
                       </Text>
@@ -433,20 +401,24 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     </VStack>
                   </Card>
                 ) : (
-                  <VStack w="full" h="full" spacing={1} justifyContent="center">
-                    {/*todo:
-                      - update service with typing returning the assets -> Asset[]
-                      - implement a recursive function to render the diferent assets, and make to dynamic data
-                  */}
-                    <AssetCard
-                      asset={{
-                        ...assetsMap[NativeAssetId],
-                        assetId: NativeAssetId,
-                        amount: balanceFormatted,
-                      }}
+                  <HStack
+                    ref={assetsContainerRef}
+                    w="full"
+                    h="full"
+                    maxH={150}
+                    spacing={{ base: 2, sm: 4 }}
+                    justifyContent="flex-start"
+                  >
+                    <AssetsDetails
+                      containerRef={assetsContainerRef}
+                      assets={assets.value!}
                       visibleBalance={visebleBalance}
+                      viewAllRedirect={Pages.vaultBalance({
+                        vaultId: vault.id,
+                        workspaceId,
+                      })}
                     />
-                  </VStack>
+                  </HStack>
                 )}
               </CustomSkeleton>
             </VStack>

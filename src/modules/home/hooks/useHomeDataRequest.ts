@@ -9,11 +9,10 @@ const useHomeDataRequest = () => {
   const auth = useAuth();
 
   return useQuery(
-    HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current),
+    [HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current)],
     () => HomeService.home(),
     {
-      refetchOnWindowFocus: true,
-      //refetchInterval: 10000,
+      refetchOnWindowFocus: false,
     },
   );
 };

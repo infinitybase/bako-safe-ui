@@ -7,6 +7,7 @@ import { IPermission } from '@/modules/core';
 
 import { SignWebAuthnPayload, TypeUser } from '../services';
 import { useAuthStore } from '../store';
+import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
 type AuthenticateParams = {
   userId: string;
@@ -27,6 +28,7 @@ type AuthenticateWorkspaceParams = {
 const useAuth = () => {
   const store = useAuthStore();
   const { fuel } = useFuel();
+  useTokensUSDAmountRequest();
 
   const authenticate = (params: AuthenticateParams) => {
     CookiesConfig.setCookies([

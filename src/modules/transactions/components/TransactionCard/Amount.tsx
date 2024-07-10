@@ -1,51 +1,94 @@
 import {
   Avatar,
   AvatarGroup,
-  Box,
-  Heading,
+  Flex,
   HStack,
   Text,
+  useMediaQuery,
 } from '@chakra-ui/react';
+
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { assetsMap, NativeAssetId } from '@/modules/core';
+import { assetsMap } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
+import bakoIcon from '@/assets/tokens/bako.svg';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { useTokensStore } from '@/modules/assets-tokens/store';
+import { CustomSkeleton } from '@/components';
 
 interface TransactionCardAmountProps {
   assets: ITransferAsset[];
 }
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
-  const { isMobile } = useScreenSize();
+  const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
+  const { isMobile, isExtraSmall } = useScreenSize();
+  const { isLoading } = useTokensStore();
 
-  const ethAmount = assets
-    .filter((a) => a.assetId === NativeAssetId)
+  const totalAmoutSent = assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
     .format();
+
+  const oneAssetOfEach = assets.reduce((uniqueAssets, current) => {
+    if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
+      uniqueAssets.push(current);
+    }
+
+    return uniqueAssets;
+  }, [] as ITransferAsset[]);
+
+  const isMultiToken = oneAssetOfEach.length >= 2;
+
+  const txUSDAmount = useTxAmountToUSD(assets);
 
   return (
     <HStack
       alignItems="center"
       justifyContent="flex-start"
-      w={{ base: 'full', sm: 160 }}
-      ml={0}
+      w={isExtraSmall ? 150 : 200}
     >
-      <AvatarGroup max={2}>
-        <Avatar name="ETH" src={assetsMap[NativeAssetId].icon} ignoreFallback />
+      <AvatarGroup
+        max={showOnlyOneAsset ? 1 : 3}
+        w={isMobile ? 'unset' : 56}
+        justifyContent={isMobile ? 'start' : 'end'}
+        position="relative"
+      >
+        {oneAssetOfEach.map((asset) => (
+          <Avatar
+            name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
+            src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
+            ignoreFallback
+            boxSize={24}
+            border="none"
+          />
+        ))}
       </AvatarGroup>
-      <Box w="full" mt={0.5} textAlign="left">
-        <Heading variant={isMobile ? 'title-sm' : 'title-md'} color="grey.200">
-          {ethAmount}
-        </Heading>
+      <Flex
+        flexDir={isMultiToken ? 'column-reverse' : 'column'}
+        w="full"
+        mt={0.5}
+        textAlign="center"
+      >
+        {isMultiToken ? (
+          <Text color="grey.425" fontSize="xs">
+            Multi-token
+          </Text>
+        ) : (
+          <Text color="grey.75" fontSize="sm">
+            {totalAmoutSent}
+          </Text>
+        )}
         <Text
           variant="description"
-          fontSize={{ base: 'xs', sm: 'sm' }}
-          color="grey.500"
+          fontSize={isMultiToken ? 'sm' : 'xs'}
+          color={isMultiToken ? ' grey.75' : 'grey.425'}
         >
-          Amount sent
+          <CustomSkeleton isLoaded={!isLoading}>
+            ${txUSDAmount ?? 0}
+          </CustomSkeleton>
         </Text>
-      </Box>
+      </Flex>
     </HStack>
   );
 };

@@ -12,16 +12,14 @@ import {
   GridItem,
   Heading,
   HStack,
-  Link,
-  Spacer,
   Spinner,
   Stack,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, IWitnesses } from 'bakosafe';
-import format from 'date-fns/format';
+import { useRef } from 'react';
+
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
@@ -40,48 +38,42 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { useAuth } from '@/modules/auth';
-import {
-  AssetCard,
-  assetsMap,
-  NativeAssetId,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
+import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
+
 import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
-import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+  AssetsDetails,
+  CreateVaultDialog,
+  ExtraVaultCard,
+  VaultCard,
+} from '@/modules/vault';
+
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
 import { useWorkspace } from '../../hooks';
+import WkHomeTransactions from '../../components/wkHomeTransactions';
 
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
+  const assetsContainerRef = useRef(null);
   const {
-    account,
     navigate,
     currentWorkspace: { workspace: currentWorkspace },
     workspaceVaults: { vaultsMax, extraCount, recentVaults },
-    workspaceTransactions: { recentTransactions },
     hasPermission,
     visibleBalance,
     setVisibleBalance,
     workspaceDialog,
     worksapceBalance,
-    pendingSignerTransactions,
+
     workspaceHomeRequest,
     goWorkspace,
   } = useWorkspace();
   const { goHome } = useHome();
-  const { isMobile, isExtraSmall } = useScreenSize();
+  const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const {
@@ -89,12 +81,8 @@ const WorkspacePage = () => {
   } = useAuth();
 
   const hasVaults = recentVaults?.length ?? 0;
-  const hasTransactions = recentTransactions && recentTransactions?.length > 0;
-  const workspaceId = current ?? '';
 
-  const isSigner = (witnesses: IWitnesses[]) => {
-    return !!witnesses.find((w: IWitnesses) => w.account === account);
-  };
+  const workspaceId = current ?? '';
 
   if (!currentWorkspace || currentWorkspace.single) {
     return null;
@@ -167,7 +155,6 @@ const WorkspacePage = () => {
   return (
     <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
-
       {/* Resposável por disponibilizar o  "background blur" 
       para o modal de add/update member */}
       <Outlet />
@@ -257,7 +244,6 @@ const WorkspacePage = () => {
           )}
         </HStack>
       </HStack>
-
       <Stack
         w="full"
         spacing={6}
@@ -290,7 +276,7 @@ const WorkspacePage = () => {
             h={{ base: 'unset', md: 'full' }}
             bgColor="grey.800"
           >
-            <VStack spacing={6} w="full">
+            <VStack spacing={4} w="full" h="full">
               <HStack
                 w="full"
                 display="flex"
@@ -362,41 +348,6 @@ const WorkspacePage = () => {
                   )}
 
                   {isMobile && UpdateBalance}
-
-                  {/* <VStack spacing={2} alignItems="flex-start">
-                  <Button
-                    onClick={() =>
-                      navigate(
-                        Pages.createTransaction({
-                          vaultId: vault.id!,
-                          workspaceId,
-                        }),
-                      )
-                    }
-                    isDisabled={
-                      !vault?.hasBalance ||
-                      !makeTransactionsPerm ||
-                      vaultDetails.transactions.isPendingSigner
-                    }
-                    minW={130}
-                    variant="primary"
-                  >
-                    Send
-                  </Button>
-                  {vault.transactions.isPendingSigner ? (
-                    <Text variant="description" fontSize="xs" color="error.500">
-                      This vault has pending transactions.
-                    </Text>
-                  ) : !makeTransactionsPerm ? (
-                    <Text variant="description" fontSize="xs" color="error.500">
-                      You dont have permission to send transactions.
-                    </Text>
-                  ) : (
-                    <Text variant="description" fontSize="xs">
-                      Send single or batch <br /> payments with multi assets.
-                    </Text>
-                  )}
-                </VStack> */}
                 </VStack>
               </HStack>
               {isMobile && (
@@ -416,8 +367,7 @@ const WorkspacePage = () => {
                   w="full"
                   h="full"
                 >
-                  {parseFloat(worksapceBalance.balance.balanceUSD!) === 0 ||
-                  !worksapceBalance.balance.balance ? (
+                  {worksapceBalance.balance.assetsBalance.length === 0 ? (
                     <Card
                       w="full"
                       h="full"
@@ -436,28 +386,22 @@ const WorkspacePage = () => {
                       </VStack>
                     </Card>
                   ) : (
-                    <VStack
+                    <HStack
+                      ref={assetsContainerRef}
                       w="full"
                       h="full"
-                      spacing={1}
-                      justifyContent="center"
+                      spacing={{ base: 2, sm: 4 }}
+                      justifyContent="flex-start"
                     >
-                      {/*todo:
-                      - update service with typing returning the assets -> Asset[]
-                      - implement a recursive function to render the diferent assets, and make to dynamic data
-                  */}
-
-                      <AssetCard
-                        maxH={145}
-                        p={2}
-                        asset={{
-                          ...assetsMap[NativeAssetId],
-                          assetId: NativeAssetId,
-                          amount: worksapceBalance.balance.balance,
-                        }}
+                      <AssetsDetails
+                        containerRef={assetsContainerRef}
+                        assets={worksapceBalance.balance.assetsBalance}
                         visibleBalance={visibleBalance}
+                        viewAllRedirect={Pages.balanceWorkspace({
+                          workspaceId,
+                        })}
                       />
-                    </VStack>
+                    </HStack>
                   )}
                 </CustomSkeleton>
               </VStack>
@@ -529,7 +473,6 @@ const WorkspacePage = () => {
           </CustomSkeleton>
         </VStack>
       </Stack>
-
       {/* WORKSPACE VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
         <Text
@@ -541,7 +484,6 @@ const WorkspacePage = () => {
           Recently used vaults
         </Text>
       </Box>
-
       <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
         {!hasVaults ? (
           <>
@@ -614,124 +556,9 @@ const WorkspacePage = () => {
         )}
       </CustomSkeleton>
 
-      {hasVaults && (
-        <Box
-          mt={4}
-          w="full"
-          display="flex"
-          flexDir={isExtraSmall ? 'column' : 'row'}
-          gap={isExtraSmall ? 2 : 4}
-        >
-          {recentTransactions?.length ? (
-            <Text
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize={{ base: 'md', sm: 'xl' }}
-              color="grey.200"
-            >
-              Transactions
-            </Text>
-          ) : null}
-
-          {hasTransactions && (
-            <HStack w="full">
-              <WaitingSignatureBadge
-                isLoading={pendingSignerTransactions.isLoading}
-                quantity={pendingSignerTransactions.data?.ofUser ?? 0}
-              />
-              <Spacer />
-              <Link
-                display={{ base: 'none', sm: 'block' }}
-                color="brand.500"
-                onClick={() =>
-                  navigate(
-                    Pages.userTransactions({
-                      workspaceId,
-                    }),
-                  )
-                }
-              >
-                View all
-              </Link>
-            </HStack>
-          )}
-        </Box>
-      )}
-
-      {/* TRANSACTION LIST */}
-      {!hasTransactions && hasVaults ? (
-        <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
-          <EmptyState showAction={false} />
-        </CustomSkeleton>
-      ) : (
-        <Box w="full" pb={10}>
-          <TransactionCard.List
-            spacing={{ base: 3, sm: 4 }}
-            mb={{ base: 0, sm: 12 }}
-          >
-            {recentTransactions?.map((transaction) => {
-              const status = transactionStatus({ ...transaction, account });
-
-              return (
-                <CustomSkeleton
-                  isLoaded={!workspaceHomeRequest.isLoading}
-                  key={transaction.id}
-                >
-                  {isMobile ? (
-                    <TransactionCardMobile
-                      isSigner={isSigner(transaction.witnesses)}
-                      transaction={transaction}
-                      account={account}
-                    />
-                  ) : (
-                    <TransactionCard.Container
-                      status={status}
-                      transaction={transaction}
-                      account={account}
-                      isSigner={isSigner(transaction.witnesses)}
-                      details={
-                        <TransactionCard.Details
-                          transaction={transaction}
-                          status={status}
-                        />
-                      }
-                    >
-                      {transaction.predicate && (
-                        <TransactionCard.VaultInfo
-                          vault={transaction.predicate}
-                        />
-                      )}
-                      <TransactionCard.CreationDate>
-                        {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                      </TransactionCard.CreationDate>
-                      <TransactionCard.Assets />
-                      <TransactionCard.Amount
-                        assets={transaction.resume.outputs}
-                      />
-                      <TransactionCard.Name
-                        transactionName={transaction.name}
-                      />
-                      <TransactionCard.Status
-                        transaction={transaction as unknown as ITransaction}
-                        status={transactionStatus({
-                          ...transaction,
-                          account,
-                        })}
-                      />
-                      <TransactionCard.Actions
-                        transaction={transaction as unknown as ITransaction}
-                        status={transactionStatus({
-                          ...transaction,
-                          account,
-                        })}
-                        isSigner={isSigner(transaction.witnesses)}
-                      />
-                    </TransactionCard.Container>
-                  )}
-                </CustomSkeleton>
-              );
-            })}
-          </TransactionCard.List>
+      {recentVaults && recentVaults.length >= 1 && (
+        <Box w="full" minH="650px">
+          <WkHomeTransactions />
         </Box>
       )}
     </VStack>

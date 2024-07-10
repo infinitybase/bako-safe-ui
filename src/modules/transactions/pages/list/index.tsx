@@ -4,17 +4,22 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   CircularProgress,
-  Heading,
+  Divider,
   HStack,
   Icon,
   Text,
   useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
-import format from 'date-fns/format';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
-import { CustomSkeleton, HomeIcon, LineCloseIcon } from '@/components';
+import {
+  CustomSkeleton,
+  HomeIcon,
+  LineCloseIcon,
+  TransactionTypeFilters,
+} from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
@@ -22,6 +27,7 @@ import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import {
   TransactionCard,
+  TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
 import { useUserVaults, useVaultDetails } from '@/modules/vault';
@@ -29,8 +35,11 @@ import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
+import { useFilterTxType } from '../../hooks/filter';
 
 const TransactionsVaultPage = () => {
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
   const {
     transactionRequest,
     infinityTransactionsRef,
@@ -41,14 +50,17 @@ const TransactionsVaultPage = () => {
     selectedTransaction,
     setSelectedTransaction,
     defaultIndex,
-  } = useTransactionList();
+  } = useTransactionList({ byMonth: true, type: txFilterType });
   const { goHome } = useHome();
-  const { vaultRequiredSizeToColumnLayout, isMobile } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
+    useScreenSize();
+
   const menuDrawer = useDisclosure();
   const {
     workspaces: { current },
     isSingleWorkspace,
   } = useAuth();
+  const workspaceId = current ?? '';
 
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
@@ -57,7 +69,7 @@ const TransactionsVaultPage = () => {
 
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const hasTransactions =
-    !loadingVaultTransactions && vaultTransactions?.length;
+    !loadingVaultTransactions && vaultTransactions?.data?.length;
 
   return (
     <Box w="full" height="100%" maxH="100%">
@@ -105,6 +117,13 @@ const TransactionsVaultPage = () => {
                 color="grey.200"
                 fontWeight="semibold"
                 href="#"
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 Vaults
               </BreadcrumbLink>
@@ -143,17 +162,39 @@ const TransactionsVaultPage = () => {
         )}
       </Box>
       {/* TITLE */}
-      <HStack spacing={5} mb={7}>
-        <Heading variant="title-xl" color="grey.200">
-          Transactions
-        </Heading>
-        <CircularProgress
-          hidden={!transactionRequest.isFetching}
-          size="20px"
-          color="brand.500"
-          trackColor="dark.100"
-          isIndeterminate
-        />
+      <HStack
+        mb={7}
+        justifyContent="space-between"
+        alignItems={isSmall ? 'start' : 'center'}
+        w="full"
+        flexDir={isSmall ? 'column' : 'row'}
+      >
+        <HStack spacing={5}>
+          <Text
+            variant="subtitle"
+            fontWeight={700}
+            fontSize="md"
+            color="grey.50"
+          >
+            Transactions
+          </Text>
+          <CircularProgress
+            hidden={!transactionRequest.isFetching}
+            size="20px"
+            color="brand.500"
+            trackColor="dark.100"
+            isIndeterminate
+          />
+        </HStack>
+
+        {!isSmall && (
+          <TransactionTypeFilters
+            mt={2}
+            currentFilter={txFilterType}
+            incomingAction={handleIncomingAction}
+            outgoingAction={handleOutgoingAction}
+          />
+        )}
       </HStack>
       {/* FILTER */}
       <TransactionFilter.Control
@@ -192,15 +233,18 @@ const TransactionsVaultPage = () => {
           </HStack>
         )}
       </TransactionFilter.Control>
+      {isSmall && (
+        <TransactionTypeFilters
+          mt={3}
+          currentFilter={txFilterType}
+          incomingAction={handleIncomingAction}
+          outgoingAction={handleOutgoingAction}
+          buttonsFullWidth
+        />
+      )}
       {/* TRANSACTION LIST */}
       {hasTransactions ? (
-        <TransactionCard.List
-          mt={7}
-          w="full"
-          spacing={5}
-          openIndex={defaultIndex}
-          key={defaultIndex.join(',')}
-          pb={10}
+        <VStack
           maxH="77.5vh"
           overflowY="scroll"
           scrollBehavior="smooth"
@@ -218,58 +262,78 @@ const TransactionsVaultPage = () => {
               height: '10px',
             },
           }}
+          pb={10}
+          mt={3}
         >
-          {infinityTransactions?.map((transaction) => {
-            const isSigner = !!transaction.predicate?.members?.find(
-              (member) => member.address === account,
-            );
+          {infinityTransactions?.map((grouped) => (
+            <>
+              <HStack w="full">
+                <Text
+                  fontSize="sm"
+                  fontWeight="semibold"
+                  color="grey.425"
+                  whiteSpace="nowrap"
+                >
+                  {grouped.monthYear}
+                </Text>
 
-            return (
-              <Box key={transaction.id} ref={infinityTransactionsRef} w="full">
-                <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
-                  <TransactionCard.Container
-                    status={transactionStatus({ ...transaction, account })}
-                    details={
-                      <TransactionCard.Details
-                        transaction={transaction}
-                        isInTheVaultPage
-                      />
-                    }
-                    transaction={transaction}
-                    account={account}
-                    isSigner={isSigner}
-                    isInTheVaultPage
-                    callBack={() => filter.set(StatusFilter.ALL)}
+                <Divider w="full" borderColor="grey.950" />
+              </HStack>
+              {grouped?.transactions.map((transaction) => {
+                const status = transactionStatus({
+                  ...transaction,
+                  account,
+                });
+                const isSigner = !!transaction.predicate?.members?.find(
+                  (member) => member.address === account,
+                );
+
+                return (
+                  <TransactionCard.List
+                    w="full"
+                    spacing={0}
+                    openIndex={defaultIndex}
+                    key={defaultIndex.join(',')}
                   >
-                    {!isMobile && (
-                      <TransactionCard.CreationDate>
-                        {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-                      </TransactionCard.CreationDate>
-                    )}
-                    <TransactionCard.Assets />
-                    <TransactionCard.Amount
-                      assets={transaction.resume.outputs}
-                    />
-                    <TransactionCard.Name transactionName={transaction.name} />
+                    <Box
+                      key={transaction.id}
+                      ref={infinityTransactionsRef}
+                      w="full"
+                    >
+                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                        {isMobile ? (
+                          <TransactionCardMobile
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={account}
+                            mt={1.5}
+                          />
+                        ) : (
+                          <TransactionCard.Container
+                            mb={0.5}
+                            key={transaction.id}
+                            status={status}
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={account}
+                            details={
+                              <TransactionCard.Details
+                                transaction={transaction}
+                                status={status}
+                              />
+                            }
+                          />
+                        )}
+                      </CustomSkeleton>
+                    </Box>
 
-                    <TransactionCard.Status
-                      transaction={transaction}
-                      status={transactionStatus({ ...transaction, account })}
-                      showDescription={!isMobile}
-                    />
-                    <TransactionCard.Actions
-                      isSigner={isSigner}
-                      transaction={transaction}
-                      status={transactionStatus({ ...transaction, account })}
-                      callBack={() => filter.set(StatusFilter.ALL)}
-                    />
-                  </TransactionCard.Container>
-                </CustomSkeleton>
-              </Box>
-            );
-          })}
-          <Box ref={inView.ref} />
-        </TransactionCard.List>
+                    <Box ref={inView.ref} />
+                  </TransactionCard.List>
+                );
+              })}
+            </>
+          ))}
+        </VStack>
       ) : (
         <EmptyState
           h="calc(100% - 170px)"

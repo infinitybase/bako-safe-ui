@@ -1,4 +1,5 @@
 import { ITransaction } from 'bakosafe';
+import { CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import {
@@ -59,9 +60,9 @@ export type SelectWorkspaceResponse = {
 };
 
 export type IWroskapceBalance = {
-  balance: string;
   balanceUSD: string;
   workspaceId: string;
+  assetsBalance: CoinQuantity[];
 };
 
 export type GetWorkspaceBalanceResponse = IWroskapceBalance;

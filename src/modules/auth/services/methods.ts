@@ -113,8 +113,6 @@ export class UserService {
     const { data } = await api.get<CheckNicknameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
-
-    console.log('data', data);
     return data;
   }
 

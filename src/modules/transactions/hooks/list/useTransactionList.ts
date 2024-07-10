@@ -6,7 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/modules/auth/store';
 import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
-import { TransactionWithVault } from '../../services';
+import { ITransactionsGroupedByMonth } from '../../services';
+import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -18,7 +19,15 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.DECLINED,
 }
 
-const useTransactionList = () => {
+interface IUseTransactionListProps {
+  byMonth?: boolean;
+  type?: TransactionType;
+}
+
+const useTransactionList = ({
+  byMonth = false,
+  type = undefined,
+}: IUseTransactionListProps = {}) => {
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
@@ -43,6 +52,8 @@ const useTransactionList = () => {
     id: selectedTransaction.id,
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
+    byMonth,
+    type,
   });
 
   const observer = useRef<IntersectionObserver>();
@@ -65,7 +76,7 @@ const useTransactionList = () => {
 
   const infinityTransactions = useMemo(() => {
     return transactionsPages?.pages.reduce(
-      (acc: TransactionWithVault[], page) => {
+      (acc: ITransactionsGroupedByMonth[], page) => {
         return [...acc, ...page.data];
       },
       [],

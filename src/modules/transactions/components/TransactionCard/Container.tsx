@@ -4,39 +4,44 @@ import {
   AccordionPanel,
   Box,
   CardProps,
+  Flex,
   Grid,
   HStack,
+  Icon,
   VStack,
 } from '@chakra-ui/react';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import { Card } from '@/components';
+import { Card, DownLeftArrow, UpRightArrow } from '@/components';
 import { TransactionState, useScreenSize } from '@/modules/core';
-
+import { TransactionType } from 'bakosafe';
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
+import { TransactionCard, transactionStatus } from '../..';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 
 interface TransactionCardContainerProps extends CardProps {
-  children: ReactNode;
   status: TransactionState;
   details: ReactNode;
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
+  isContract?: boolean;
   callBack?: () => void;
 }
 
 const Container = ({
   status,
   details,
-  children,
   transaction,
   account,
   isSigner,
   isInTheVaultPage,
   callBack,
+  isContract,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -44,26 +49,11 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const { isMobile, vaultRequiredSizeToColumnLayout } = useScreenSize();
+  const { isMobile } = useScreenSize();
   const detailsDialog = useDetailsDialog();
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
-  const childrensQuantity = React.Children.toArray(children).length;
-
-  const isInTheVaultWithSideBar =
-    isInTheVaultPage && !vaultRequiredSizeToColumnLayout;
-  const isInTheVaultWithoutSideBar =
-    isInTheVaultPage && vaultRequiredSizeToColumnLayout;
-
-  const gridTemplateColumns = isMobile
-    ? 'repeat(2, 1fr)'
-    : isInTheVaultWithSideBar
-      ? 'repeat(5, 1fr)'
-      : isInTheVaultWithoutSideBar && childrensQuantity < 6
-        ? 'repeat(4, 1fr)'
-        : isInTheVaultWithoutSideBar && childrensQuantity >= 6
-          ? 'repeat(5,1fr)'
-          : 'repeat(6,1fr)';
-
+  const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
   return (
     <>
       {transaction && (
@@ -80,8 +70,9 @@ const Container = ({
       )}
 
       <Card
-        py={{ base: 1, sm: 4 }}
-        px={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
+        pl={0}
+        pr={{ base: 2, sm: 4, md: isInTheVaultPage ? 4 : 0, lg: 4 }}
+        py={0}
         w="full"
         as={AccordionItem}
         backdropFilter="blur(16px)"
@@ -92,7 +83,32 @@ const Container = ({
         boxShadow="0px 8px 6px 0px #00000026"
         maxW="full"
         {...rest}
+        display="flex"
+        minH="78px"
       >
+        <Flex
+          alignItems="flex-start"
+          justifyContent="center"
+          bgColor="grey.925"
+          w="32px"
+          p={0}
+          borderRadius="10px 0 0 10px"
+          h="auto"
+        >
+          <Icon
+            as={
+              isDeploy
+                ? DeployIcon
+                : isContract
+                  ? ContractIcon
+                  : isDeposit
+                    ? DownLeftArrow
+                    : UpRightArrow
+            }
+            mt={8}
+            fontSize={isDeploy || isContract ? 'inherit' : '12px'}
+          />
+        </Flex>
         <VStack
           justifyContent="center"
           gap={0}
@@ -110,10 +126,31 @@ const Container = ({
             <Grid
               w="full"
               gap={{ base: 2, sm: 4 }}
-              templateColumns={gridTemplateColumns}
-              templateRows={isMobile ? '1fr 1fr' : undefined}
+              templateColumns="repeat(4, 1fr)"
             >
-              {children}
+              {transaction.predicate && (
+                <TransactionCard.BasicInfos
+                  vault={transaction.predicate}
+                  transactionName={transaction.name}
+                />
+              )}
+
+              <TransactionCard.Amount assets={transaction.resume.outputs} />
+              <TransactionCard.Status
+                transaction={transaction}
+                status={transactionStatus({
+                  ...transaction,
+                  account,
+                })}
+              />
+              <TransactionCard.Actions
+                transaction={transaction}
+                isSigner={isSigner}
+                status={transactionStatus({
+                  ...transaction,
+                  account,
+                })}
+              />
             </Grid>
           </HStack>
 

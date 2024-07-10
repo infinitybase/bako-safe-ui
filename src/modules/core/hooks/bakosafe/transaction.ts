@@ -5,6 +5,7 @@ import {
   ITransaction,
   TransactionStatus,
   Vault,
+  TransactionType,
 } from 'bakosafe';
 
 import { TransactionService } from '@/modules/transactions/services';
@@ -47,7 +48,11 @@ const useBakoSafeCreateTransaction = ({
 
 interface UseBakoSafeListTransactionParams {
   vault: Vault;
-  filter?: IListTransactions & { limit: number };
+  filter?: IListTransactions & {
+    limit: number;
+    byMonth?: boolean;
+    type?: TransactionType;
+  };
 }
 
 const useBakoSafeTransactionList = ({
@@ -133,11 +138,9 @@ const useBakoSafeTransactionSend = (
       //   failed: transfer.BakoSafeTransaction.status === TransactionStatus.FAILED,
       // });
       if (transfer.BakoSafeTransaction.status === TransactionStatus.FAILED) {
-        console.log('entrou no if?');
         await TransactionService.send(transfer.BakoSafeTransactionId);
       }
       const result = await transfer.wait();
-      console.log('result', result);
       return (await vault.BakoSafeGetTransaction(transaction.id))
         .BakoSafeTransaction;
     },

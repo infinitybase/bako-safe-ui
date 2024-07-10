@@ -40,6 +40,7 @@ interface SelectProps
   onChange: (value: any) => void;
   callbackOnSelectOption?: () => void;
   needShowOptionsAbove?: boolean;
+  maxOptionsHeight?: number;
 }
 
 const Select = ({
@@ -54,6 +55,7 @@ const Select = ({
   isCreatingValue,
   callbackOnSelectOption,
   needShowOptionsAbove,
+  maxOptionsHeight,
   ...rest
 }: SelectProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -219,7 +221,7 @@ const Select = ({
           <Flex display="flex" justifyContent="center" alignItems="center">
             <VStack
               w="full"
-              maxH={207}
+              maxH={maxOptionsHeight ?? 207}
               gap={0}
               overflowY="scroll"
               css={{

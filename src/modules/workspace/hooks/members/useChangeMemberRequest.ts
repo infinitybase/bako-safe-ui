@@ -7,12 +7,16 @@ import {
   UpdateWorkspacePermissionsPayload,
   WorkspaceService,
 } from '@/modules/workspace/services';
+import { Address } from 'fuels';
 
 const useIncludeMemberRequest = (workspaceId: string) =>
   useMutation(
     WorkspacesQueryKey.ADD_MEMBER(workspaceId),
     (userAddress: IncludeWorkspaceMemberPayload['address']) =>
-      WorkspaceService.includeMember({ id: workspaceId, address: userAddress }),
+      WorkspaceService.includeMember({
+        id: workspaceId,
+        address: Address.fromString(userAddress).bech32Address,
+      }),
   );
 
 type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;

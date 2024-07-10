@@ -28,8 +28,8 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   }
 
   return (
-    <Badge h={6} variant="yellow">
-      <Icon as={PendingIcon} />
+    <Badge h={5} variant="yellow" fontSize="xs">
+      <Icon as={PendingIcon} fontSize={12} />
       {`${quantity} waiting for your signature`}
     </Badge>
   );

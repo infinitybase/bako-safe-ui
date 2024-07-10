@@ -1,21 +1,35 @@
-import { Card, CardProps, Divider, HStack } from '@chakra-ui/react';
-import format from 'date-fns/format';
+import {
+  Card,
+  CardProps,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  VStack,
+} from '@chakra-ui/react';
 
 import { useDetailsDialog } from '../../hooks/details';
-import { TransactionWithVault } from '../../services';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
+import { DownLeftArrow, UpRightArrow } from '@/components';
+import { DeployIcon } from '@/components/icons/tx-deploy';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { TransactionType } from 'bakosafe';
+import { TransactionWithVault } from '../../services/types';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
+  isContract?: boolean;
+  isDeploy?: boolean;
   callBack?: () => void;
 }
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
+  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
   const status = transactionStatus({
     ...transaction,
@@ -44,40 +58,65 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
       />
 
       <Card
-        bgColor="grey.800"
-        borderColor={missingSignature ? 'warning.500' : 'dark.100'}
-        borderWidth="1px"
+        borderColor={
+          missingSignature ? 'warning.500' : 'gradients.transaction-border'
+        }
+        borderWidth={1}
         onClick={onOpen}
         gap={2}
-        p={4}
+        pr={4}
+        backdropFilter="blur(16px)"
+        bg="gradients.transaction-card"
+        boxShadow="0px 8px 6px 0px #00000026"
         {...rest}
       >
-        <HStack justifyContent="space-between">
-          <TransactionCard.Name transactionName={transaction.name} />
+        <HStack>
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            bgColor="grey.925"
+            w="32px"
+            borderRadius="5px 0 0 5px"
+            minH="140px"
+          >
+            <Icon
+              as={
+                props.isDeploy
+                  ? DeployIcon
+                  : props.isContract
+                    ? ContractIcon
+                    : isDeposit
+                      ? DownLeftArrow
+                      : UpRightArrow
+              }
+              fontSize={props.isDeploy || props.isContract ? 'inherit' : '12px'}
+            />
+          </Flex>
+          <VStack w="full">
+            <HStack justifyContent="space-between" w="full">
+              {transaction.predicate && (
+                <TransactionCard.BasicInfos
+                  vault={transaction.predicate}
+                  transactionName={transaction.name}
+                  maxW={100}
+                />
+              )}
 
-          <TransactionCard.Status
-            transaction={transaction}
-            status={status}
-            showDescription={false}
-          />
-        </HStack>
+              <TransactionCard.Status
+                transaction={transaction}
+                status={status}
+                showDescription={false}
+              />
+            </HStack>
 
-        <HStack mt={2}>
-          {transaction.predicate && (
-            <TransactionCard.VaultInfo vault={transaction.predicate} />
-          )}
+            <Divider borderColor="grey.950" />
 
-          <TransactionCard.CreationDate>
-            {format(new Date(transaction.createdAt), 'EEE, dd MMM')}
-          </TransactionCard.CreationDate>
-        </HStack>
+            <HStack justifyContent="space-between" w="full">
+              <TransactionCard.Amount assets={transaction.resume.outputs} />
 
-        <Divider bgColor="grey.600" />
-
-        <HStack justifyContent="space-between">
-          <TransactionCard.Amount assets={transaction.resume.outputs} />
-
-          <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
+              <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
+            </HStack>
+          </VStack>
         </HStack>
       </Card>
     </>

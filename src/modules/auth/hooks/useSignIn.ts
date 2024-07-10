@@ -23,12 +23,12 @@ export const redirectPathBuilder = (
   account: string,
 ) => {
   const isRedirectToPrevious = !!location.state?.from;
-  console.log('[PARAMS]: ', {
-    isDapp,
-    location,
-    account,
-    isRedirectToPrevious,
-  });
+  // console.log('[PARAMS]: ', {
+  //   isDapp,
+  //   location,
+  //   account,
+  //   isRedirectToPrevious,
+  // });
   if (isDapp && isRedirectToPrevious) {
     return location.state.from;
   }
@@ -129,7 +129,6 @@ const useSignIn = () => {
       const account = await fuel.currentAccount();
 
       if (network.url === ENetworks.BETA_5) {
-        console.log('Try to connect to your local network');
         throw Error;
       }
 

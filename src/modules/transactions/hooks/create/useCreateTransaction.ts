@@ -1,4 +1,4 @@
-import { BakoSafe } from 'bakosafe';
+import { BakoSafe, IAssetGroupById } from 'bakosafe';
 import { bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -70,9 +70,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const vaultDetails = useVaultDetailsRequest(params.vaultId!);
   const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
 
-  // TODO: For multi-asset use the vault balances
-  const vaultBalance = vaultAssets.getCoinBalance(NativeAssetId);
-
   const { transactionsFields, form } = useCreateTransactionForm({
     assets: vaultAssets.assets?.map((asset) => ({
       amount: asset.amount,
@@ -106,38 +103,77 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
-  const transactionAmount = form.watch(
+  // Balance available
+  const currentVaultAssets = vaultAssets.assets;
+  const currentFieldAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
+  const currentFieldAsset = form.watch(`transactions.${accordion.index}.asset`);
 
   const transactionTotalAmount = form
     .watch('transactions')
     ?.reduce((acc, t) => acc.add(bn.parseUnits(t.amount)), bn(0))
     ?.format();
+  const transactionAssetsTotalAmount = form
+    .watch('transactions')
+    ?.reduce((acc, tx) => {
+      const { asset, amount } = tx;
+
+      if (!acc[asset]) {
+        acc[asset] = bn.parseUnits(amount);
+      } else {
+        acc[asset] = acc[asset].add(bn.parseUnits(amount));
+      }
+
+      return acc;
+    }, {} as IAssetGroupById);
 
   const getBalanceAvailable = useCallback(() => {
-    // TODO: For multi assets consider the assetId
-    const assetInputsAmount =
-      transactionTotalAmount && Number(transactionTotalAmount) > 0
-        ? bn
-            .parseUnits(transactionTotalAmount)
-            .sub(bn.parseUnits(transactionAmount))
-        : bn(0);
+    const currentAssetBalance = bn.parseUnits(
+      currentVaultAssets?.find((asset) => asset.assetId === currentFieldAsset)
+        ?.amount ?? '0',
+    );
 
-    const balanceAvailable = bn(bn.parseUnits(vaultBalance))
-      .sub(assetInputsAmount)
-      .sub(bn.parseUnits(validTransactionFee ?? '0'))
-      .format();
+    const currentAssetAmount =
+      transactionAssetsTotalAmount?.[currentFieldAsset] ?? bn(0);
+
+    const assetFieldsAmount = currentAssetAmount.gt(0)
+      ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmount))
+      : currentAssetAmount;
+
+    const balanceAvailableWithoutFee = assetFieldsAmount.gte(
+      currentAssetBalance,
+    )
+      ? bn(0)
+      : currentAssetBalance.sub(assetFieldsAmount);
+
+    const isEthTransaction = currentFieldAsset === NativeAssetId;
+
+    const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
+
+    let balanceAvailable = '0.000';
+
+    if (isEthTransaction && balanceAvailableWithoutFee.gte(transactionFee)) {
+      balanceAvailable = balanceAvailableWithoutFee
+        .sub(transactionFee)
+        .format();
+    }
+
+    if (!isEthTransaction) {
+      balanceAvailable = balanceAvailableWithoutFee.format();
+    }
 
     return balanceAvailable;
   }, [
-    transactionAmount,
+    currentFieldAmount,
     validTransactionFee,
-    transactionTotalAmount,
-    vaultBalance,
+    transactionAssetsTotalAmount,
+    currentVaultAssets,
   ]);
-  const isBalanceLowerThanReservedAmount =
-    Number(vaultBalance) <=
+
+  const currentEthBalance = vaultAssets.getCoinBalance(NativeAssetId);
+  const isEthBalanceLowerThanReservedAmount =
+    Number(currentEthBalance) <=
     Number(
       bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
     );
@@ -170,14 +206,18 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
     } else if (validTransactionFee) {
       form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
+    } else {
+      const txFee = BakoSafe.getGasConfig('BASE_FEE').toString();
+      setValidTransactionFee(txFee);
+      form.setValue(`transactions.${accordion.index}.fee`, txFee);
     }
   }, [transactionFee]);
 
   useEffect(() => {
-    if (Number(transactionAmount) > 0 && validTransactionFee) {
+    if (Number(currentFieldAmount) > 0 && validTransactionFee) {
       form.trigger(`transactions.${accordion.index}.amount`);
     }
-  }, [accordion.index, resolveTransactionCosts.data]);
+  }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
 
   useEffect(() => {
     const { transactions } = form.getValues();
@@ -186,26 +226,23 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       Number(transactionTotalAmount) > 0
         ? transactions!
             .map((transaction) => ({
-              to: transaction.value,
+              to: transaction.value || recipientMock,
               amount: transaction.amount,
               assetId: transaction.asset,
             }))
             .filter(
               (transaction) =>
-                transaction.to !== '' &&
                 !isNaN(Number(transaction.amount)) &&
                 Number(transaction.amount) > 0,
             )
-        : [
-            {
-              to: recipientMock,
-              amount: vaultBalance,
-              assetId: NativeAssetId,
-            },
-          ]; // TODO: For multi-asset use the vault balances
+        : currentVaultAssets?.map((asset) => ({
+            to: recipientMock,
+            amount: asset.amount,
+            assetId: asset.assetId,
+          }));
 
     debouncedResolveTransactionCosts(assets, vaultDetails.predicateInstance!);
-  }, [transactionTotalAmount, vaultBalance]);
+  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
 
   return {
     resolveTransactionCosts,
@@ -223,7 +260,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
-    isBalanceLowerThanReservedAmount,
+    isEthBalanceLowerThanReservedAmount,
   };
 };
 

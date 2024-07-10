@@ -1,11 +1,11 @@
-import { useProvider } from '@fuels/react';
-import { BakoSafe, Vault } from 'bakosafe';
+import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
+import BakoIcon from '@/assets/tokens/bako.svg';
 import { useAuth } from '@/modules/auth/hooks';
-import { assetsMap, NativeAssetId } from '@/modules/core';
+import { Asset, assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
 
 import { VaultService } from '../../services';
 import { useVaultState } from '../../states';
@@ -17,24 +17,33 @@ const balancesToAssets = async (
   if (!predicate) return [];
 
   const balances = await predicate.getBalances();
-  const { reservedCoins: currentETH, balanceUSD } =
-    await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
+  const { reservedCoins, balanceUSD } = await VaultService.hasReservedCoins(
+    predicate.BakoSafeVaultId,
+  );
   setBalanceUSD(balanceUSD);
-  const result = balances.map((balance) => {
+  const result = balances.reduce((acc, balance) => {
     const assetInfos = assetsMap[balance.assetId];
-    const hasETH = balance.assetId === NativeAssetId && currentETH;
-    return {
-      amount: hasETH
-        ? balance.amount.sub(currentETH).format()
-        : balance.amount.format(),
-      slug: assetInfos?.slug ?? 'UKN',
-      name: assetInfos?.name ?? 'Unknown',
-      assetId: balance.assetId,
-      icon: assetInfos?.icon,
-    };
-  });
+    const reservedCoinAmount = reservedCoins?.find(
+      (item) => item.assetId === balance.assetId,
+    )?.amount;
+    const adjustedAmount = reservedCoinAmount
+      ? balance.amount.sub(reservedCoinAmount)
+      : balance.amount;
 
-  return result || [];
+    if (adjustedAmount.gt(0)) {
+      acc.push({
+        amount: adjustedAmount.format(),
+        slug: assetInfos?.slug ?? 'UKN',
+        name: assetInfos?.name ?? 'Unknown',
+        assetId: balance.assetId,
+        icon: assetInfos?.icon ?? BakoIcon,
+      });
+    }
+
+    return acc;
+  }, [] as Required<Asset>[]);
+
+  return result;
 };
 
 function useVaultAssets(predicate?: Vault) {
@@ -70,7 +79,8 @@ function useVaultAssets(predicate?: Vault) {
         const _isValid =
           index > 0 &&
           item?.amount &&
-          bn(assets[bigger].amount) < bn(item.amount);
+          bn(bn.parseUnits(assets[bigger].amount)) <
+            bn(bn.parseUnits(item.amount));
         if (_isValid) {
           bigger = index;
         }
@@ -122,14 +132,20 @@ function useVaultAssets(predicate?: Vault) {
         bn(bn.parseUnits(balance.amount!))
           //.sub(bn.parseUnits('0.001'))
           //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
-          .format({ precision: 5 })
+          .format()
       );
     },
     [assets],
   );
 
   const getAssetInfo = (assetId: string) => {
-    return assetsMap[assetId];
+    return (
+      assetsMap[assetId] ?? {
+        name: 'Unknown',
+        slug: 'UKN',
+        icon: ETHDefault,
+      }
+    );
   };
 
   const hasAssetBalance = useCallback(
@@ -155,13 +171,13 @@ function useVaultAssets(predicate?: Vault) {
   return {
     assets,
     ...rest,
-    ethBalance,
     getAssetInfo,
     getCoinAmount,
     getCoinBalance,
     hasAssetBalance,
     setVisibleBalance,
     hasBalance,
+    ethBalance,
     hasAssets: !!assets?.length,
   };
 }
