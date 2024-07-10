@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useAuthStore } from '@/modules/auth';
-import { useWalletSignMessage } from '@/modules/core';
+import { invalidateQueries, useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
@@ -30,6 +30,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const transactionSendContext = useTransactionSend();
 
   useMemo(() => {
+    console.log('OPTIONS_TRANSCATIONS:', options);
     const transaction = options.transaction;
 
     const toSend =
@@ -38,6 +39,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
       !transactionSendContext.isExecuting(transaction);
 
     if (toSend) {
+      console.log('INSIDE_IF_TOSEND:', options.transaction);
       transactionSendContext.executeTransaction(transaction);
     }
     return options.transaction;
@@ -53,7 +55,12 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const request = useSignTransactionRequest({
     onSuccess: () => {
-      refetchTransactionList();
+      // refetchTransactionList();
+      invalidateQueries();
+      queryClient.invalidateQueries({
+        queryKey: 'transaction',
+        exact: false,
+      });
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');
