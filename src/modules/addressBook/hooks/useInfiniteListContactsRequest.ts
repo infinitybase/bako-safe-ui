@@ -22,15 +22,13 @@ const useInfiniteListcontactsRequest = (
 
   const { data, fetchNextPage, isLoading, hasNextPage, isFetching, ...query } =
     useInfiniteQuery({
-      queryKey: [
-        AddressBookQueryKey.LIST_BY_USER_PAGINATED(
-          workspaceId,
-          value ?? '',
-          contactIds,
-          includePersonal,
-          excludeContactsQueryKey,
-        ),
-      ],
+      queryKey: AddressBookQueryKey.LIST_BY_USER_PAGINATED(
+        workspaceId,
+        value ?? '',
+        contactIds,
+        includePersonal,
+        excludeContactsQueryKey,
+      ),
       queryFn: ({ pageParam }) =>
         AddressBookService.listWithPagination({
           q: value,
