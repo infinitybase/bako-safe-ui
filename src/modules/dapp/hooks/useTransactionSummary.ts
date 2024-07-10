@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import {
   FuelTransactionService,
@@ -8,13 +8,13 @@ import {
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const useTransactionSummary = () => {
-  const { data, mutate, ...mutation } = useMutation(
-    'dapp/transaction-summary',
-    async (params: TransactionSimulateParams) => {
+  const { data, mutate, ...mutation } = useMutation({
+    mutationKey: ['dapp/transaction-summary'],
+    mutationFn: async (params: TransactionSimulateParams) => {
       await delay(600);
       return FuelTransactionService.simulate(params);
     },
-  );
+  });
 
   return {
     ...mutation,
