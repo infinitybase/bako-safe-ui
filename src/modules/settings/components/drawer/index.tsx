@@ -34,7 +34,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const {
     form,
     handleSubmitSettings,
-    updateSettingsRequest: { isLoading },
+    updateSettingsRequest: { isPending: isLoading },
     onCloseDrawer,
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
@@ -144,10 +144,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       {isNicknameInUse
                         ? 'Name already exists'
                         : form.formState.errors.name?.message
-                        ? form.formState.errors.name?.message
-                        : search.length > 0
-                        ? 'This name is available'
-                        : ''}
+                          ? form.formState.errors.name?.message
+                          : search.length > 0
+                            ? 'This name is available'
+                            : ''}
                     </FormHelperText>
                   </FormControl>
                 )}
