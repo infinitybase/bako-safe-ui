@@ -18,6 +18,8 @@ const useUnreadNotificationsCounterRequest = () => {
     {
       refetchInterval: Number(VITE_NOTIFICATIONS_REFRESH),
       refetchOnWindowFocus: true,
+      cacheTime: 1000 * 60 * 4,
+      staleTime: 1000 * 60 * 4,
     },
   );
 };
