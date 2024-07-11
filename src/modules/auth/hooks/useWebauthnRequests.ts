@@ -26,7 +26,7 @@ const useGetAccountsByHardwareId = () => {
     () => UserService.getByHardwareId(hardwareId!),
     {
       refetchOnWindowFocus: false,
-      enabled: !!hardwareId && !account,
+      enabled: !!hardwareId,
     },
   );
 };
