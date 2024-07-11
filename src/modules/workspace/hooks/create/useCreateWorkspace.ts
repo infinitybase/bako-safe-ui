@@ -18,6 +18,7 @@ export enum CreateWorkspaceTabState {
 }
 
 type UserCreateWorkspaceParams = {
+  handleCancel: () => void;
   onClose: () => void;
 };
 
@@ -40,6 +41,7 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const handleGoToWorkspace = () => {
     selectWorkspace(request?.data!.id, {
       onSelect: (workspace) => {
+        props.handleCancel();
         props.onClose();
         goWorkspace(workspace.id);
       },
@@ -49,7 +51,7 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const handleConfigureMembers = () => {
     selectWorkspace(request?.data!.id, {
       onSelect: (workspace) => {
-        props.onClose();
+        props.handleCancel();
         navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
       },
     });
