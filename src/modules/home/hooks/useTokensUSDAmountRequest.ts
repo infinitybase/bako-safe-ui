@@ -11,6 +11,7 @@ const useTokensUSDAmountRequest = () => {
     refetchInterval: 1000 * 60 * 10,
     cacheTime: 1000 * 60 * 10,
     staleTime: 1000 * 60 * 10,
+    enabled: location.pathname != '/',
     onSuccess: (data) => {
       setTokenCurrentAmount(data ?? []);
       setIsLoading(false);
