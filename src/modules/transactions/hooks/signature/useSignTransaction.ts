@@ -1,20 +1,16 @@
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useAuthStore } from '@/modules/auth';
-import {
-  WorkspacesQueryKey,
-  invalidateQueries,
-  useWalletSignMessage,
-} from '@/modules/core';
+import { useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
-import { PENDING_TRANSACTIONS_QUERY_KEY, useTransactionList } from '../list';
+import { useTransactionList } from '../list';
 
 export interface SignTransactionParams {
   txId: string;
@@ -28,21 +24,13 @@ export interface UseSignTransactionOptions {
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
   const {
-    transactionRequest: {
-      refetch: refetchTransactionsRequest,
-      isLoading,
-      isFetching,
-    },
+    transactionRequest: { refetch: refetchTransactionsRequest },
   } = useTransactionList();
 
   const toast = useTransactionToast();
-  const [confirmedSignture, setConfirmedSignture] = useState(false);
 
   const { warningToast } = useContactToast();
-  const {
-    account,
-    workspaces: { current },
-  } = useAuthStore();
+  const { account } = useAuthStore();
 
   const transactionSendContext = useTransactionSend();
 
@@ -69,45 +57,9 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     });
   }, []);
 
-  // Account 12, todas as tx falharam tentando usar
-  // queryClient.invalidateQueries({
-  //   queryKey: [
-  //     WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
-  //     WorkspacesQueryKey.FULL_DATA,
-  //     PENDING_TRANSACTIONS_QUERY_KEY,
-  //     'transaction',
-  //   ],
-  //   exact: false,
-  // });
-  // e invalidateQueries(); que isso é errado mas se funcionasse, confirmaria a ideia de que o problema é invalidação
-
-  // Account 14 - Todos tiveram sucesso usando refetch diretamente do hook de tx list: "refetchTransactionsRequest()"
-
   const request = useSignTransactionRequest({
-    onSuccess: async (isSignatureConfirmed) => {
-      // if (isSignatureConfirmed) {
-      // @ts-ignore
-      // setConfirmedSignture(isSignatureConfirmed);
-      // console.log('isLoading BEFORE___refetch:', isLoading);
-      // console.log('isFetching BEFORE___refetch:', isFetching);
+    onSuccess: () => {
       refetchTransactionList();
-      // console.log('isLoading AFTER___refetch:', isLoading);
-      // console.log('isFetching AFTER___refetch:', isFetching);
-      // }
-      // invalidateQueries();
-      // queryClient.invalidateQueries({
-      //   queryKey: [
-      //     'workspace',
-      //     'transaction-list-pagination',
-      //     'transactions/list',
-      //     'home',
-      //   ],
-      //   // queryKey: [
-      //   //   WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(current),
-      //   //   // WorkspacesQueryKey.FULL_DATA,
-      //   //   // PENDING_TRANSACTIONS_QUERY_KEY,
-      //   // ],
-      // });
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');

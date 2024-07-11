@@ -7,6 +7,7 @@ import { useBakoSafeTransactionSend } from '@/modules/core';
 
 import { useTransactionToast } from './toast';
 import { useNotificationsStore } from '@/modules/notifications/store';
+import { expectedCommonErrorMessage } from '../../utils';
 
 interface TransactionSendContextType {
   isExecuting: (transaction: ITransaction) => boolean;
@@ -62,12 +63,15 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     // @ts-ignore
     onError: (error, { transaction }: { transaction: ITransaction }) => {
       const [errorMessage, id] = error.message.split(':');
+      const errorMessageSecondCase = error.message || error.toString();
 
       // Essa tratativa de erro/solução é um caso específico, referente a situação/comentários do hook useBakoSafeTransactionSend(src/modules/core/hooks/bakosafe/transactions)
       // que devido a forma como o instanciamento das transações/vaults são feitos, está sendo retornado um erro de "not enough coins"
       // O que não é o caso, pois há validações para evitar que uma transação seja criada sem que haja o valor disponível no vault.
       // Essa solução (isCompleted) usa a mesma lógica do "transactionStatus" (caminho: src/modules/transactions/utils) para definir se uma transação foi concluída ou não.
-      const isNotEnoughError = errorMessage.includes('not enough');
+      const isNotEnoughError =
+        errorMessage.includes(expectedCommonErrorMessage) ||
+        errorMessageSecondCase?.includes(expectedCommonErrorMessage);
       if (isNotEnoughError) {
         transactionsRef.current = transactionsRef.current.filter(
           (data) => data.id !== transaction.id,
