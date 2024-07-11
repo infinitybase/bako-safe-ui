@@ -60,9 +60,9 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     return options.transaction;
   }, [options.transaction]);
 
-  const refetchTransactionList = useCallback(() => {
+  const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
-    refetchTransactionsRequest();
+    await refetchTransactionsRequest();
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),
