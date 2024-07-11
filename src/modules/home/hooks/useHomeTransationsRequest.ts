@@ -14,6 +14,8 @@ const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
     () => HomeService.homeTransactions(type),
     {
       refetchOnWindowFocus: true,
+      cacheTime: 1000 * 60 * 4,
+      staleTime: 1000 * 60 * 4,
     },
   );
 };
