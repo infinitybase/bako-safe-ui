@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
@@ -9,27 +9,28 @@ import {
 } from '@/modules/workspace/services';
 
 const useIncludeMemberRequest = (workspaceId: string) =>
-  useMutation(
-    WorkspacesQueryKey.ADD_MEMBER(workspaceId),
-    (userAddress: IncludeWorkspaceMemberPayload['address']) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.ADD_MEMBER(workspaceId),
+    mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
       WorkspaceService.includeMember({ id: workspaceId, address: userAddress }),
-  );
+  });
 
 type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;
 
 const useChangePermissionsRequest = (workspaceId: string) =>
-  useMutation(
-    WorkspacesQueryKey.UPDATE_PERMISSION(workspaceId),
-    (payload: ChangePermissionPayload) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.UPDATE_PERMISSION(workspaceId),
+    mutationFn: (payload: ChangePermissionPayload) =>
       WorkspaceService.updatePermissions({ id: workspaceId, ...payload }),
-  );
+  });
 
 const useDeleteMemberRequest = (workspaceId: string) =>
-  useMutation(
-    WorkspacesQueryKey.DELETE_MEMBER(workspaceId),
-    (payload: DeleteWorkspaceMemberPayload) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.DELETE_MEMBER(workspaceId),
+    mutationFn: (payload: DeleteWorkspaceMemberPayload) =>
       WorkspaceService.deleteMember({ id: payload.id, member: payload.member }),
-  );
+  });
+
 export {
   useChangePermissionsRequest,
   useDeleteMemberRequest,

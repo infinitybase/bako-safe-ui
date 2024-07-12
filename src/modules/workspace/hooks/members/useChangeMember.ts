@@ -236,7 +236,7 @@ const useChangeMember = () => {
         ? handleSetUpdateStep
         : handlePermissions,
       handleSecondaryAction: handleClose,
-      isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
+      isLoading: permissionsRequest.isPending || deleteRequest.isPending,
       title: isEditMember ? 'Member permission' : 'User permission',
       description: undefined,
       tertiaryAction: isEditMember ? 'Remove' : undefined,
