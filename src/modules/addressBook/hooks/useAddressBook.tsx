@@ -1,5 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
+import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -50,7 +51,6 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     current: workspaceId!,
     includePersonal: isSingleIncluded ?? auth.isSingleWorkspace,
   });
-
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],
     { q: search },
@@ -133,7 +133,11 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const contactByAddress = (address: string) => {
     const contacts = listContactsRequest?.data ?? [];
-    return contacts.find(({ user }) => user.address === address);
+    return contacts.find(
+      ({ user }) =>
+        Address.fromString(user.address).bech32Address ===
+        Address.fromString(address).bech32Address,
+    );
   };
 
   const debouncedSearchHandler = useCallback(
@@ -148,9 +152,14 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
     [],
   );
 
-  const handleCreateContact = form.handleSubmit(async (data) => {
-    createContactRequest.mutate(data);
-  });
+  const handleCreateContact = form.handleSubmit(
+    async ({ nickname, address }) => {
+      createContactRequest.mutate({
+        nickname,
+        address: Address.fromString(address).bech32Address,
+      });
+    },
+  );
 
   const handleUpdateContact = form.handleSubmit(async (data) => {
     updateContactRequest.mutate({ ...data, id: contactToEdit.id });

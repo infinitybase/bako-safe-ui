@@ -3,6 +3,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils } from '@/modules/core/utils';
+import { Address } from 'fuels';
 
 const schema = yup
   .object({
@@ -27,7 +28,11 @@ const schema = yup
               const addressIndex = context.path.replace(/\D/g, '');
               const hasAddress = addresses.some(
                 (value: string, _index: number) => {
-                  return Number(addressIndex) !== _index && value === address;
+                  return (
+                    Number(addressIndex) !== _index &&
+                    Address.fromString(value).bech32Address ===
+                      Address.fromString(address).bech32Address
+                  );
                 },
               );
 

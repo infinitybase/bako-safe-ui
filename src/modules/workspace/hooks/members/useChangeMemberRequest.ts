@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { Address } from 'fuels';
 
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
@@ -12,7 +13,10 @@ const useIncludeMemberRequest = (workspaceId: string) =>
   useMutation({
     mutationKey: WorkspacesQueryKey.ADD_MEMBER(workspaceId),
     mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
-      WorkspaceService.includeMember({ id: workspaceId, address: userAddress }),
+      WorkspaceService.includeMember({
+        id: workspaceId,
+        address: Address.fromString(userAddress).bech32Address,
+      }),
   });
 
 type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;

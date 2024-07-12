@@ -33,7 +33,7 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
-import { limitCharacters } from '@/utils';
+import { limitCharacters, limitName } from '@/utils';
 
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
@@ -65,7 +65,6 @@ interface TransactionDetailsProps {
   status?: TransactionState;
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
-  isDeploy?: boolean;
   isContract?: boolean;
 }
 
@@ -84,7 +83,6 @@ const AssetBoxInfo = ({
   hasToken,
   isDeposit,
   isDeploy,
-
   ...props
 }: AssetBoxInfoProps) => {
   const isContract = !!contractAddress;
@@ -183,16 +181,12 @@ const AssetBoxInfo = ({
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(
-                        '0xfa6f5d747cd78ded64a29f44a8f7ae3fbe0cc9f668cb3d15a33adc3f334f73b6',
-                      ).toAddress(),
+                      Address.fromString(asset?.to ?? '').toAddress(),
                     ) ?? '',
                     7,
                   )
                 : AddressUtils.format(
-                    Address.fromString(
-                      '0xfa6f5d747cd78ded64a29f44a8f7ae3fbe0cc9f668cb3d15a33adc3f334f73b6',
-                    ).toAddress(),
+                    Address.fromString(asset?.to ?? '').toAddress(),
                     isMobile ? 10 : 24,
                   )}
             </Text>
@@ -242,7 +236,6 @@ const Details = ({
   status,
   isInTheVaultPage,
   isMobile,
-  isDeploy,
 }: TransactionDetailsProps) => {
   const fromConnector = !!transaction?.summary;
 
@@ -253,6 +246,7 @@ const Details = ({
   const notSigned = !status?.isDeclined && !status?.isSigned;
 
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -314,7 +308,9 @@ const Details = ({
                             amount: asset.amount,
                             to: asset.to,
                             transactionID: transaction.id,
-                            recipientNickname: asset?.recipientNickname,
+                            recipientNickname: AddressUtils.format(
+                              asset?.recipientNickname ?? '',
+                            ),
                           }}
                           borderColor="grey.950"
                           borderBottomWidth={
@@ -334,7 +330,9 @@ const Details = ({
                               amount: asset.amount,
                               to: asset.to,
                               transactionID: transaction.id,
-                              recipientNickname: asset?.recipientNickname,
+                              recipientNickname: AddressUtils.format(
+                                asset?.recipientNickname ?? '',
+                              ),
                             }}
                             borderColor="grey.950"
                             borderBottomWidth={
