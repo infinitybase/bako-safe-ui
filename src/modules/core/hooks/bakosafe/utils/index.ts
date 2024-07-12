@@ -42,19 +42,20 @@ const useBakoSafeQuery = <
     queryFn: async (context) => {
       const credentials = authCredentials();
 
-      return queryFn({
-        ...context,
-        auth: {
-          token: credentials.token!,
-          address: credentials.address!,
-        },
-      });
+      try {
+        return queryFn({
+          ...context,
+          auth: {
+            token: credentials.token!,
+            address: credentials.address!,
+          },
+        });
+      } catch (error) {
+        removeCredentialsWhenUnathorized(error);
+        throw error;
+      }
     },
     ...options,
-    onError: (error: any) => {
-      removeCredentialsWhenUnathorized(error);
-      options?.onError?.(error);
-    },
   });
 };
 
