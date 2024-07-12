@@ -109,7 +109,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     declineTransaction,
     isLoading:
       request.isPending ||
-      signMessageRequest.isLoading ||
+      signMessageRequest.isPending ||
       options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
       options.transaction.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,
