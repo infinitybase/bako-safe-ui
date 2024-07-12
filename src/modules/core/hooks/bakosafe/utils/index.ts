@@ -1,6 +1,10 @@
-import { useMutation, useQuery } from 'react-query';
-import { MutationKey, QueryKey } from 'react-query/types/core/types';
-import { UseMutationOptions } from 'react-query/types/react/types';
+import {
+  MutationKey,
+  QueryKey,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from '@tanstack/react-query';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { authCredentials, useAuthStore } from '@/modules/auth';
@@ -33,9 +37,9 @@ const useBakoSafeQuery = <
     'queryKey' | 'queryFn'
   >,
 ) => {
-  return useQuery(
+  return useQuery({
     queryKey,
-    async (context) => {
+    queryFn: async (context) => {
       const credentials = authCredentials();
 
       return queryFn({
@@ -46,14 +50,12 @@ const useBakoSafeQuery = <
         },
       });
     },
-    {
-      ...options,
-      onError: (error: any) => {
-        removeCredentialsWhenUnathorized(error);
-        options?.onError?.(error);
-      },
+    ...options,
+    onError: (error: any) => {
+      removeCredentialsWhenUnathorized(error);
+      options?.onError?.(error);
     },
-  );
+  });
 };
 
 const useBakoSafeMutation = <
@@ -69,9 +71,9 @@ const useBakoSafeMutation = <
     'mutationKey' | 'mutationFn'
   >,
 ) => {
-  return useMutation(
+  return useMutation({
     mutationKey,
-    async (variables) => {
+    mutationFn: async (variables) => {
       const credentials = authCredentials();
 
       return await mutationFn({
@@ -82,8 +84,8 @@ const useBakoSafeMutation = <
         },
       });
     },
-    options,
-  );
+    ...options,
+  });
 };
 
 export { useBakoSafeMutation, useBakoSafeQuery };

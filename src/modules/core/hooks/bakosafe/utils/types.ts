@@ -1,15 +1,16 @@
+import {
+  QueryFunctionContext,
+  QueryKey,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { IBakoSafeAuth } from 'bakosafe';
-import { QueryFunctionContext, QueryKey } from 'react-query/types/core/types';
-import { UseQueryOptions } from 'react-query/types/react/types';
 
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
 }
 
-export interface BakoSafeQueryContext<
-  TQueryKey extends QueryKey = QueryKey,
-  TPageParam = any,
-> extends QueryFunctionContext<TQueryKey, TPageParam>,
+export interface BakoSafeQueryContext<TQueryKey extends QueryKey = QueryKey>
+  extends QueryFunctionContext<TQueryKey>,
     BakoSafeAuthParams {}
 
 export type BakoSafeQueryFunction<
