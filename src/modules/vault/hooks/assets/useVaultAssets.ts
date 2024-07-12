@@ -58,14 +58,15 @@ function useVaultAssets(predicate?: Vault) {
 
   const { data: assets, ...rest } = useQuery({
     queryKey: ['predicate/assets', auth.workspaces.current, predicate],
-    queryFn: () => balancesToAssets(setBalanceUSD, predicate),
+    queryFn: () =>
+      balancesToAssets(setBalanceUSD, predicate).then((data) => {
+        setIsFirstAssetsLoading(false);
+        return data;
+      }),
     initialData: [],
     refetchInterval: 10000,
     placeholderData: (previousData) => previousData,
     enabled: !!predicate,
-    onSuccess: () => {
-      setIsFirstAssetsLoading(false);
-    },
   });
   const findBiggerAsset = () => {
     let bigger = 0;

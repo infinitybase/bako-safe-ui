@@ -9,13 +9,14 @@ const useTokensUSDAmountRequest = () => {
 
   return useQuery({
     queryKey: ['tokens'],
-    queryFn: () => HomeService.getTokensUSDAmount(),
+    queryFn: () =>
+      HomeService.getTokensUSDAmount().then((data) => {
+        setTokenCurrentAmount(data ?? []);
+        setIsLoading(false);
+        return data;
+      }),
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 10,
-    onSuccess: (data) => {
-      setTokenCurrentAmount(data ?? []);
-      setIsLoading(false);
-    },
   });
 };
 
