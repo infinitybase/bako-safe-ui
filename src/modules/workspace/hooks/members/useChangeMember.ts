@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { Address } from 'fuels';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
@@ -22,7 +23,6 @@ import {
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
-import { Address } from 'fuels';
 
 export enum MemberTabState {
   FORM = 0,
@@ -54,13 +54,7 @@ const useChangeMember = () => {
     defaultTab: MemberTabState.FORM,
   });
 
-  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!, {
-    onSuccess: (workspace) => {
-      if (!isEditMember) return;
-
-      setMemberValuesByWorkspace(workspace, params.memberId);
-    },
-  });
+  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
 
   const membersToForm = workspaceRequest.workspace?.members.map(
     (member) => member.address,
@@ -90,6 +84,13 @@ const useChangeMember = () => {
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
   const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
+
+  const handleEditMemberPermission = useCallback(
+    (workspace: Workspace) => {
+      isEditMember && setMemberValuesByWorkspace(workspace, params.memberId);
+    },
+    [isEditMember, params.memberId, setMemberValuesByWorkspace],
+  );
 
   const handleClose = () => goWorkspace(params.workspaceId!);
 
@@ -294,6 +295,10 @@ const useChangeMember = () => {
       isEditMember,
     },
   };
+
+  useEffect(() => {
+    handleEditMemberPermission(workspaceRequest.workspace!);
+  }, []);
 
   return {
     tabs,
