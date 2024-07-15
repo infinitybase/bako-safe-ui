@@ -7,25 +7,36 @@ import {
   Divider,
   HStack,
   Icon,
+  IconButton,
   Stack,
   StackProps,
   Text,
   useAccordionItemState,
+  useClipboard,
   VStack,
 } from '@chakra-ui/react';
+import { css, keyframes } from '@emotion/react';
 import { AddressType } from '@fuel-wallet/types';
-import { ITransaction, ITransferAsset, TransactionStatus } from 'bakosafe';
-import { Address } from 'fuels';
+import {
+  ITransaction,
+  ITransferAsset,
+  TransactionStatus,
+  TransactionType,
+} from 'bakosafe';
+import { Address, bn, Operation } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
-import { css, keyframes } from '@emotion/react';
+import { IoIosCheckmark } from 'react-icons/io';
 
 import {
+  CopyIcon,
   CustomSkeleton,
   DoubleArrowIcon,
   MinimalAlertIcon,
   UpRightArrowWhite,
 } from '@/components';
+import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
   AddressUtils,
   AssetModel,
@@ -33,22 +44,28 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
-import { limitCharacters, limitName } from '@/utils';
+import { limitCharacters } from '@/utils';
 
+import { DepositDetails } from './DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 
-import { TransactionType } from 'bakosafe';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { DepositDetails } from './DepositDetails';
-import { DeployIcon } from '@/components/icons/tx-deploy';
-
 const shakeAnimation = keyframes`
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-2px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-2px);
+    }
+    50% {
+        transform: translateY(2px);
+    }
+    75% {
+        transform: translateY(-2px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 `;
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
@@ -60,6 +77,7 @@ export type TransactionUI = Omit<ITransaction, 'assets'> & {
   }[];
   type: TransactionType;
 };
+
 interface TransactionDetailsProps {
   transaction: TransactionUI;
   status?: TransactionState;
@@ -72,10 +90,130 @@ interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
   contractAddress?: string;
   hasToken?: boolean;
-  isDeposit: boolean;
+  isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
 }
+
+interface DeploymentInfoProps extends StackProps {
+  operation: Operation;
+}
+
+// TODO: Refactor the AssetBox and Details
+const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
+  const { isMobile } = useScreenSize();
+
+  const contractId = operation.to!.address;
+  const asset = useMemo(() => {
+    const operationCoin = operation.assetsSent![0];
+    return {
+      ...operationCoin,
+      to: contractId,
+      amount: bn(operationCoin.amount).format({ precision: 6 }),
+    };
+  }, [contractId, operation.assetsSent]);
+  const assetInfo = useMemo(
+    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    [asset?.assetId],
+  );
+
+  const clipboard = useClipboard(contractId);
+  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
+
+  return (
+    <HStack
+      py={2}
+      borderTopWidth={1}
+      borderBottomWidth={1}
+      borderColor="grey.950"
+      spacing={{ base: 1, sm: 1 }}
+      maxW="full"
+      w="full"
+      position="relative"
+      {...props}
+    >
+      {assetInfo && (
+        <HStack spacing={{ base: 2, sm: 3 }}>
+          <Avatar
+            size="xs"
+            src={assetInfo.icon}
+            name={assetInfo.slug}
+            mr={{ base: 1, sm: 1 }}
+            ignoreFallback
+          />
+          <Text fontSize="sm" color="grey.500">
+            {assetInfo.slug}
+          </Text>
+        </HStack>
+      )}
+
+      <Box mt={0.5} w="full">
+        <Text
+          textAlign="center"
+          variant={isMobile ? 'title-sm' : 'title-md'}
+          color="grey.75"
+          fontSize="sm"
+        >
+          {asset?.amount}
+        </Text>
+        <Text
+          textAlign="center"
+          variant="description"
+          fontSize="xs"
+          color="grey.500"
+        >
+          ${txUSDAmount}
+        </Text>
+      </Box>
+
+      <Center
+        mr={3}
+        p={{ base: 1.5, sm: 3 }}
+        borderRadius={5}
+        bgColor="grey.825"
+        borderWidth={1}
+        borderColor="grey.925"
+        boxSize="30px"
+      >
+        <Icon color="grey.250" fontSize="12.8px" as={DeployIcon} />
+      </Center>
+
+      <HStack
+        justifyContent="end"
+        pr="40px"
+        maxW="full"
+        w="full"
+        overflow="hidden"
+      >
+        <Text
+          ml="2px"
+          maxW={{ base: '200px', sm: '50px', md: '175px' }}
+          fontSize="sm"
+          color="grey.75"
+          textOverflow="ellipsis"
+          isTruncated
+        >
+          {contractId}
+        </Text>
+        <IconButton
+          variant="icon"
+          aria-label="Copy"
+          position="absolute"
+          right={0}
+          background={{ base: 'dark.950', md: 'none' }}
+          icon={
+            <Icon
+              as={clipboard.hasCopied ? IoIosCheckmark : CopyIcon}
+              color={clipboard.hasCopied ? 'success.700' : 'grey.200'}
+              fontSize={clipboard.hasCopied ? 30 : 16}
+            />
+          }
+          onClick={clipboard.onCopy}
+        />
+      </HStack>
+    </HStack>
+  );
+};
 
 const AssetBoxInfo = ({
   asset,
@@ -318,7 +456,7 @@ const Details = ({
                           }
                           hasToken={hasToken}
                         />
-                        {isContract && (
+                        {isContract && !isDeploy && (
                           <AssetBoxInfo
                             borderTop="none"
                             isContract={false}
@@ -343,7 +481,7 @@ const Details = ({
                         )}
                       </>
                     ))}
-                    {isContract && !transaction.assets.length && (
+                    {isContract && !isDeploy && !transaction.assets.length && (
                       <AssetBoxInfo
                         isDeposit={isDeposit}
                         contractAddress={Address.fromB256(
@@ -355,7 +493,7 @@ const Details = ({
                     )}
                   </Box>
 
-                  {isContract && (
+                  {isContract && !isDeploy && (
                     <>
                       <Card
                         bgColor="grey.825"
@@ -444,6 +582,10 @@ const Details = ({
                     </>
                   )}
 
+                  {isDeploy && !!mainOperation && (
+                    <DeploymentInfo operation={mainOperation} />
+                  )}
+
                   <Box
                     w="full"
                     hidden={transaction.status !== TransactionStatus.SUCCESS}
@@ -503,4 +645,4 @@ const Details = ({
   );
 };
 
-export { Details, AssetBoxInfo };
+export { AssetBoxInfo, Details };

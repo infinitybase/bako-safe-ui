@@ -15,13 +15,16 @@ interface ExtraVaultCardProps extends CardProps {
 
 export const ExtraVaultCard = ({ extra, ...rest }: ExtraVaultCardProps) => (
   <Card
-    bg="grey.800"
+    bg="gradients.transaction-card"
+    borderWidth={1}
+    borderColor="gradients.transaction-border"
+    backdropFilter="blur(16px)"
+    dropShadow="0px 8px 6px 0px #00000026"
     maxW="full"
     w="full"
     cursor="pointer"
     h="full"
     p={6}
-    borderStyle="dashed"
     {...rest}
   >
     <VStack textAlign="center" spacing={0}>
