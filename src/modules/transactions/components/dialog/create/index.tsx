@@ -143,7 +143,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
             resolveTransactionCosts.isPending ||
             !transactionFee
           }
-          isLoading={transactionRequest.isLoading}
+          isLoading={transactionRequest.isPending}
           onClick={form.handleCreateTransaction}
           _hover={{
             opacity: form.formState.isValid && 0.8,
