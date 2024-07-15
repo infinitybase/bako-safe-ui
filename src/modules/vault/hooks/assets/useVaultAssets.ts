@@ -57,10 +57,14 @@ function useVaultAssets(predicate?: Vault) {
   const auth = useAuth();
 
   const { data: assets, ...rest } = useQuery({
-    queryKey: ['predicate/assets', auth.workspaces.current, predicate],
+    queryKey: [
+      'predicate/assets',
+      auth.workspaces.current,
+      predicate?.BakoSafeVaultId,
+    ],
     queryFn: () =>
       balancesToAssets(setBalanceUSD, predicate).then((data) => {
-        setIsFirstAssetsLoading(false);
+        setTimeout(() => setIsFirstAssetsLoading(false), 500);
         return data;
       }),
     initialData: [],
@@ -68,6 +72,7 @@ function useVaultAssets(predicate?: Vault) {
     placeholderData: (previousData) => previousData,
     enabled: !!predicate,
   });
+
   const findBiggerAsset = () => {
     let bigger = 0;
     const isValid = assets && assets.length > 0;
