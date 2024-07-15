@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   BitCoinIcon,
@@ -12,6 +12,8 @@ import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
+import { createGTMCustomEvent } from '@/utils';
+import { FeatureConfig, useCommingSoon } from './CommingSoon';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -19,9 +21,19 @@ export const requiredCLIRoles = [
   PermissionRoles.MANAGER,
 ];
 
+export enum CLIFeaturesLabels {
+  API_TOKEN = 'API Tokens',
+  ADD_OTHER_TOKENS = 'Add other tokens',
+  RECOVERY = 'Recovery',
+  SPEND_LIMIT = 'Spend limit',
+}
+
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const { userId } = useAuth();
   const { workspace } = useGetWorkspaceRequest(vault?.workspace?.id ?? '');
+  const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
+    null,
+  );
 
   const hasPermission = useMemo(() => {
     const memberPermission = workspace?.permissions[userId];
@@ -37,9 +49,16 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);
 
+  const { commingSoonDialog, features } = useCommingSoon();
+
+  const handleOpen = (feature: FeatureConfig) => {
+    setSelectedFeature(feature);
+    commingSoonDialog.onOpen();
+  };
+
   const settings = [
     {
-      label: 'API Tokens',
+      label: CLIFeaturesLabels.API_TOKEN,
       icon: CoinsIcon,
       disabled: !hasPermission,
       onClick: () => {
@@ -48,22 +67,43 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       },
     },
     {
-      label: 'Add other tokens',
+      label: CLIFeaturesLabels.ADD_OTHER_TOKENS,
       icon: BitCoinIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.ADD_OTHER_TOKENS]);
+        createGTMCustomEvent({
+          buttonId: 'add_other_tokens',
+          eventName: 'add_other_tokens_button_clicked',
+          description: 'Vault - Settings - Add other tokens',
+        });
+      },
     },
     {
-      label: 'Recovery',
+      label: CLIFeaturesLabels.RECOVERY,
       icon: RecoveryIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.RECOVERY]);
+        createGTMCustomEvent({
+          buttonId: 'recovery',
+          eventName: 'recovery_button_clicked',
+          description: 'Vault - Settings - Recovery',
+        });
+      },
     },
     {
-      label: 'Spend limit',
+      label: CLIFeaturesLabels.SPEND_LIMIT,
       icon: MoreLessIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.SPEND_LIMIT]);
+        createGTMCustomEvent({
+          buttonId: 'spend_limit',
+          eventName: 'spend_limit_button_clicked',
+          description: 'Vault - Settings - Spend Limit',
+        });
+      },
     },
   ];
 
@@ -77,6 +117,11 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       create,
       remove,
       list,
+    },
+    commingSoonFeatures: {
+      commingSoonDialog,
+      features,
+      selectedFeature,
     },
   };
 };
