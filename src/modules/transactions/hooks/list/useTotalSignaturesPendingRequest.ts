@@ -11,9 +11,10 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
     {
-      cacheTime: 1000 * 60 * 4,
-      staleTime: 1000 * 60 * 4,
+      // cacheTime: 1000 * 60 * 4,
+      // staleTime: 1000 * 60 * 4,
       refetchInterval: 1000 * 60 * 4,
+      refetchOnWindowFocus: true,
     },
   );
 };
