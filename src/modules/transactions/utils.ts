@@ -76,3 +76,5 @@ export const sumEthAsset = (assets: AssetModel[]) =>
     .filter((a) => a.assetId === NativeAssetId)
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
     .format();
+
+export const expectedCommonErrorMessage = 'not enough coins to fit the target';

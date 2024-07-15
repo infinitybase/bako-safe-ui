@@ -47,6 +47,7 @@ const useTransactionList = ({
     isFetching,
     hasNextPage,
     fetchNextPage,
+    refetch,
   } = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
     id: selectedTransaction.id,
@@ -121,6 +122,7 @@ const useTransactionList = ({
       isFetching,
       hasNextPage,
       fetchNextPage,
+      refetch,
     },
     selectedTransaction,
     setSelectedTransaction,
