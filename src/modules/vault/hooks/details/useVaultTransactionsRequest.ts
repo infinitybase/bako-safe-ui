@@ -15,7 +15,9 @@ const useVaultTransactionsRequest = (
     filter: {
       orderBy: 'createdAt',
       sort: SortOptionTx.DESC,
-      limit: 6,
+      page: 0,
+      perPage: 5,
+      limit: 5,
       byMonth,
       type,
     },
