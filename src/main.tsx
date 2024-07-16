@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import TagManager from 'react-gtm-module';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
@@ -20,7 +21,14 @@ BakoSafe.setProviders({
 });
 BakoSafe.setGasConfig({ BASE_FEE: 0.001 });
 
+const gtmId = import.meta.env.VITE_GTM_ID;
+
+const tagManagerArgs = {
+  gtmId,
+};
+
 const fuelConnectorsQueryClient = new QueryClient();
+TagManager.initialize(tagManagerArgs);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

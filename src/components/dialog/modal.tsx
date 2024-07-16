@@ -12,6 +12,7 @@ import { useScreenSize } from '@/modules';
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
   modalContentProps?: ModalContentProps;
+  xsBreakPointPy?: number;
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -31,7 +32,7 @@ const DialogModal = (props: DialogModalProps) => {
       <ModalContent
         rounded="3xl"
         bg="dark.950"
-        py={{ base: 2, xs: 8 }}
+        py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
         {...props.modalContentProps}
       >
         <ModalBody

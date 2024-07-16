@@ -16,7 +16,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton } from '@/components';
+import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { useAuth } from '@/modules/auth';
 import { CLISettingsCard } from '@/modules/cli/components';
@@ -55,7 +55,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
-  const { settings, hasPermission: hasCLIPermission, APIToken } = useCLI(vault);
+  const {
+    settings,
+    hasPermission: hasCLIPermission,
+    APIToken,
+    commingSoonFeatures: { commingSoonDialog, selectedFeature },
+  } = useCLI(vault);
   const { dialog, steps, tabs, create, list } = APIToken;
 
   const workspaceId = current ?? '';
@@ -381,6 +386,16 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
         create={create}
         list={list}
       />
+
+      {selectedFeature && (
+        <CommingSoonDialog
+          description={selectedFeature.dialogDescription}
+          isOpen={commingSoonDialog.isOpen}
+          onClose={commingSoonDialog.onClose}
+          notifyHandler={selectedFeature.notifyHandler}
+          title="Coming Soon"
+        />
+      )}
     </>
   );
 };
