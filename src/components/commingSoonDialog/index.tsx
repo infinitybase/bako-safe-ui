@@ -26,6 +26,7 @@ const CommingSoonDialog = ({
         base: 'full',
         sm: 'sm',
       }}
+      xsBreakPointPy={6}
     >
       <Dialog.Header
         title=""
@@ -36,7 +37,6 @@ const CommingSoonDialog = ({
         mt={{ base: 4, xs: 0 }}
         maxW={385}
         h={6}
-        px={4}
       />
 
       <Dialog.Body

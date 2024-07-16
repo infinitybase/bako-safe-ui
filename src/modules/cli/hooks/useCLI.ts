@@ -12,7 +12,6 @@ import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
-import { createGTMCustomEvent } from '@/utils';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
 
 export const requiredCLIRoles = [
@@ -49,7 +48,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);
 
-  const { commingSoonDialog, features } = useCommingSoon();
+  const { commingSoonDialog, features, handleAction } = useCommingSoon();
 
   const handleOpen = (feature: FeatureConfig) => {
     setSelectedFeature(feature);
@@ -72,11 +71,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       disabled: !hasPermission,
       onClick: () => {
         handleOpen(features[CLIFeaturesLabels.ADD_OTHER_TOKENS]);
-        createGTMCustomEvent({
-          buttonId: 'add_other_tokens',
-          eventName: 'add_other_tokens_button_clicked',
-          description: 'Vault - Settings - Add other tokens',
-        });
+        handleAction(CLIFeaturesLabels.ADD_OTHER_TOKENS);
       },
     },
     {
@@ -85,11 +80,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       disabled: !hasPermission,
       onClick: () => {
         handleOpen(features[CLIFeaturesLabels.RECOVERY]);
-        createGTMCustomEvent({
-          buttonId: 'recovery',
-          eventName: 'recovery_button_clicked',
-          description: 'Vault - Settings - Recovery',
-        });
+        handleAction(CLIFeaturesLabels.RECOVERY);
       },
     },
     {
@@ -98,11 +89,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       disabled: !hasPermission,
       onClick: () => {
         handleOpen(features[CLIFeaturesLabels.SPEND_LIMIT]);
-        createGTMCustomEvent({
-          buttonId: 'spend_limit',
-          eventName: 'spend_limit_button_clicked',
-          description: 'Vault - Settings - Spend Limit',
-        });
+        handleAction(CLIFeaturesLabels.SPEND_LIMIT);
       },
     },
   ];
