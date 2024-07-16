@@ -50,6 +50,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   } = useSignIn();
   const { userId } = useAuthStore();
 
+  const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
+
   const { formState } = formAuthn;
 
   const isNicknameInUse =
@@ -136,7 +138,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     <FormHelperText
                       color={
                         (nicknamesData?.name && nicknamesData?.id !== userId) ||
-                        form.formState.errors.name?.message
+                        form.formState.errors.name?.message ||
+                        isNameInputInvalid
                           ? 'error.500'
                           : 'grey.500'
                       }
@@ -144,10 +147,12 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       {isNicknameInUse
                         ? 'Name already exists'
                         : form.formState.errors.name?.message
-                        ? form.formState.errors.name?.message
-                        : search.length > 0
-                        ? 'This name is available'
-                        : ''}
+                          ? form.formState.errors.name?.message
+                          : search.length >= 3
+                            ? 'This name is available'
+                            : isNameInputInvalid
+                              ? 'Username must be at least 3 characters'
+                              : ''}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -212,7 +217,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               <Button
                 variant="primary"
                 isDisabled={
-                  isLoading || isNicknameInUse || nicknamesRequest.isLoading
+                  isLoading ||
+                  isNicknameInUse ||
+                  nicknamesRequest.isLoading ||
+                  isNameInputInvalid
                 }
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
