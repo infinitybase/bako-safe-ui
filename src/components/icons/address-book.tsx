@@ -4,7 +4,7 @@ const AddressBookIcon = createIcon({
   displayName: 'AddressBookIcon',
   viewBox: '4 4 30 30',
   defaultProps: {
-    fontSize: 26,
+    fontSize: '26px',
   },
   path: (
     <>

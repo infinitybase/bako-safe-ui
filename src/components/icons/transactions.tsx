@@ -4,7 +4,7 @@ const TransactionsIcon = createIcon({
   displayName: 'TransactionsIcon',
   viewBox: '0 0 40 40',
   defaultProps: {
-    fontSize: 26,
+    fontSize: '26px',
   },
   path: (
     <>
