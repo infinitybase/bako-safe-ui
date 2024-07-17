@@ -3,9 +3,9 @@ import { createIcon } from '@chakra-ui/icons';
 const TransactionsIcon = createIcon({
   displayName: 'TransactionsIcon',
   viewBox: '0 0 40 40',
-  // defaultProps: {
-  //   fontSize: 26,
-  // },
+  defaultProps: {
+    fontSize: 26,
+  },
   path: (
     <>
       <g opacity="0.7" clipPath="url(#clip0_11266_11081)">
