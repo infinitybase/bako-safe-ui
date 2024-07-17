@@ -3,9 +3,9 @@ import { createIcon } from '@chakra-ui/icons';
 const AddressBookIcon = createIcon({
   displayName: 'AddressBookIcon',
   viewBox: '4 4 30 30',
-  defaultProps: {
-    fontSize: '26px',
-  },
+  // defaultProps: {
+  //   fontSize: 26,
+  // },
   path: (
     <>
       <g opacity="0.7">
