@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
+import { useGetTokensIcon } from '../../hooks';
 
 interface DefaultAsset {
   assetId: string;
@@ -49,6 +50,8 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
     amount: `0`,
   };
 
+  const assetIcon = useGetTokensIcon(asset.assetId);
+
   return (
     <Card
       bgColor="grey.700"
@@ -72,7 +75,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
           name={asset.slug}
-          src={asset.icon ?? defaultAsset.icon}
+          src={assetIcon ?? defaultAsset.icon}
           ignoreFallback
         />
 

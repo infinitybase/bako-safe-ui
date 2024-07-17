@@ -1,4 +1,5 @@
 import { BN, CoinQuantity } from 'fuels';
+import { Asset } from '@/modules/core';
 
 import { api } from '@/config';
 import { Predicate, Workspace } from '@/modules/core/models';
@@ -18,6 +19,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 export interface HasReservedCoins {
   balanceUSD: string;
   reservedCoins: CoinQuantity[];
+  assets: Required<Asset>[];
 }
 
 export type PredicateAndWorkspace = Predicate & { workspace: Workspace };

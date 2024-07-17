@@ -1,5 +1,5 @@
 import { BakoSafe, IAssetGroupById } from 'bakosafe';
-import { bn } from 'fuels';
+import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -75,7 +75,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset),
+    getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset) as BN,
     validateBalance: (asset, amount) =>
       vaultAssets.hasAssetBalance(asset, amount),
   });
@@ -171,7 +171,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = vaultAssets.getCoinBalance(NativeAssetId);
+  const currentEthBalance = vaultAssets.getCoinAmount(NativeAssetId, true);
   const isEthBalanceLowerThanReservedAmount =
     Number(currentEthBalance) <=
     Number(

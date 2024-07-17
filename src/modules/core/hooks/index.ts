@@ -7,3 +7,4 @@ export * from './usePermissions';
 export * from './useScreenSize';
 export * from './useTab';
 export * from './useToast';
+export * from './useGetTokensIcon';

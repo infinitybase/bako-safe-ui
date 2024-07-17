@@ -9,8 +9,6 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
 interface State {
-  biggerAsset: Asset | null;
-  setBiggerAsset: (asset: Asset | null) => void;
   visebleBalance: boolean;
   setVisibleBalance: (visible: boolean) => void;
   assets: Asset[];
@@ -24,8 +22,6 @@ interface State {
 }
 
 const useVaultState = create<State>((set) => ({
-  biggerAsset: null,
-  setBiggerAsset: (asset) => set({ biggerAsset: asset }),
   visebleBalance: isVisibleBalance(),
   setVisibleBalance: (visible) => {
     set({ visebleBalance: visible });
