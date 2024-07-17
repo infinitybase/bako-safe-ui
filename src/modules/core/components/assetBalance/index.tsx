@@ -2,6 +2,7 @@ import { Avatar, Card, Grid, Text, VStack } from '@chakra-ui/react';
 
 import BakoIcon from '@/assets/tokens/bako.svg';
 import { Asset } from '@/modules/core/utils';
+import { useGetTokensIcon } from '../../hooks';
 
 interface AssetsBalanceProps {
   assets: Asset[];
@@ -12,6 +13,8 @@ interface AssetsBalanceCardProps {
 }
 
 const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
+  const assetIcon = useGetTokensIcon(asset.assetId);
+
   return (
     <Card
       p={4}
@@ -26,7 +29,7 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
         <Avatar
           size="sm"
           name={asset.slug}
-          src={asset.icon ?? BakoIcon}
+          src={assetIcon ?? BakoIcon}
           ignoreFallback
         />
 

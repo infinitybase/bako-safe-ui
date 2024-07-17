@@ -14,7 +14,7 @@ import { FiPlusSquare } from 'react-icons/fi';
 import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
 
-import { useVaultDetails } from '../../hooks';
+import { useVaultState } from '../../states';
 
 interface VaultBoxPropx {
   name: string;
@@ -64,9 +64,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     onCreateTransaction,
   } = props;
 
-  const {
-    store: { isFirstAssetsLoading },
-  } = useVaultDetails();
+  const { isFirstAssetsLoading } = useVaultState();
 
   const { isMobile } = useScreenSize();
 

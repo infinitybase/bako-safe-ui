@@ -15,6 +15,8 @@ interface State {
   setAssets: (assets: Asset[]) => void;
   balanceUSD: string;
   setBalanceUSD: (balance: string) => void;
+  hasBalance: boolean;
+  setHasBalance: (hasBalance: boolean) => void;
   isFirstAssetsLoading: boolean;
   setIsFirstAssetsLoading: (isFirstAssetsLoading: boolean) => void;
   disableScroll: boolean;
@@ -30,6 +32,8 @@ const useVaultState = create<State>((set) => ({
   assets: [],
   balanceUSD: '0.00',
   setBalanceUSD: (balance) => set({ balanceUSD: balance }),
+  hasBalance: false,
+  setHasBalance: (hasBalance) => set({ hasBalance }),
   setAssets: (assets) => set({ assets }),
   isFirstAssetsLoading: true,
   setIsFirstAssetsLoading: (isFirstAssetsLoading) =>

@@ -11,7 +11,7 @@ import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
-import { useVaultDetails } from '@/modules/vault';
+import { useVaultDetails, useVaultState } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
@@ -29,13 +29,14 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
     route,
     drawer,
     menuItems,
-    vaultAssets,
     vaultRequest,
     transactionListRequest: {
       pendingTransactions,
       pendingSignerTransactionsLength,
     },
   } = useSidebar();
+
+  const { hasBalance } = useVaultState();
 
   const { vault } = useVaultDetails();
 
@@ -82,7 +83,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           onChangeVault={() => {
             refetch(), drawer.onOpen();
           }}
-          hasBalance={vaultAssets.hasBalance}
+          hasBalance={hasBalance}
           isPending={vault.transactions.isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
           onCreateTransaction={() => {

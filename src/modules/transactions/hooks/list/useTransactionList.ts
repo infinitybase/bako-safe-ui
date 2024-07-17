@@ -4,7 +4,6 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
@@ -38,8 +37,7 @@ const useTransactionList = ({
   const pendingSignerTransactions = useTransactionsSignaturePending([
     params.vaultId!,
   ]);
-  const vaultRequest = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
+
   const {
     transactions,
     transactionsPages,
@@ -84,37 +82,6 @@ const useTransactionList = ({
     );
   }, [transactionsPages]);
 
-  // // const { homeRequest } = useHome();
-  // const [firstRender, setFirstRender] = useState<boolean>(true);
-  // const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
-
-  // useMemo(() => {
-  //   if (firstRender && transactionRequest.status === 'loading') {
-  //     setHasSkeleton(true);
-  //     setFirstRender(false);
-  //   }
-
-  //   if (!firstRender && transactionRequest.status === 'success') {
-  //     setHasSkeleton(false);
-  //   }
-  // }, [transactionRequest.status]);
-
-  // useEffect(() => {
-  //   if (selectedTransaction.id) setFilter(undefined);
-
-  //   if (
-  //     inView.inView &&
-  //     !transactionRequest.isFetching &&
-  //     transactionRequest.hasNextPage
-  //   ) {
-  //     transactionRequest.fetchNextPage();
-  //   }
-  // }, [
-  //   inView.inView,
-  //   transactionRequest.isFetching,
-  //   transactionRequest.hasNextPage,
-  // ]);
-
   return {
     transactionRequest: {
       transactions,
@@ -126,8 +93,6 @@ const useTransactionList = ({
     },
     selectedTransaction,
     setSelectedTransaction,
-    vaultRequest: vaultRequest,
-    vaultAssets,
     navigate,
     params,
     filter: {

@@ -1,5 +1,5 @@
 import { Vault } from 'bakosafe';
-import { BN, bn } from 'fuels';
+import { bn } from 'fuels';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
@@ -25,8 +25,12 @@ const balancesToAssets = async (
 };
 
 function useVaultAssets(predicate?: Vault) {
-  const { setVisibleBalance, setBalanceUSD, setIsFirstAssetsLoading } =
-    useVaultState();
+  const {
+    setVisibleBalance,
+    setBalanceUSD,
+    setIsFirstAssetsLoading,
+    setHasBalance,
+  } = useVaultState();
 
   const auth = useAuth();
 
@@ -82,7 +86,12 @@ function useVaultAssets(predicate?: Vault) {
   );
 
   const hasBalance = useMemo(() => {
-    return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
+    const result = assets?.some((asset) =>
+      bn(bn.parseUnits(asset.amount)).gt(0),
+    );
+
+    setHasBalance(!!result);
+    return result;
   }, [assets]);
 
   const ethBalance = useMemo(() => {

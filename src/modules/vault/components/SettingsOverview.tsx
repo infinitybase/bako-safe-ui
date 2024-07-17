@@ -167,7 +167,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           maxW={{ base: 20, xs: 'unset' }}
                           noOfLines={2}
                         >
-                          {/* Vault {isExtraSmall ? <Text>balance</Text> : 'balance'} */}
                           Vault balance
                         </Text>
                         <HStack spacing={2}>

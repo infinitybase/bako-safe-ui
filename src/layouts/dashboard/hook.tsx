@@ -8,7 +8,7 @@ import {
   useTransactionListRequest,
   useTransactionsSignaturePending,
 } from '@/modules/transactions/hooks';
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
+import { useVaultDetailsRequest } from '@/modules/vault/hooks';
 
 const useSidebar = () => {
   const auth = useAuth();
@@ -19,7 +19,6 @@ const useSidebar = () => {
 
   const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
   const { data: transactions } = useTransactionListRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultDetailsRequest?.predicateInstance);
   const {
     workspaces: { current },
   } = useAuth();
@@ -67,7 +66,6 @@ const useSidebar = () => {
     },
     drawer,
     menuItems,
-    vaultAssets,
     transactionListRequest: {
       ...transactions,
       pendingTransactions:
