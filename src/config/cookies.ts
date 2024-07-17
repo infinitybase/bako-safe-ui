@@ -1,7 +1,7 @@
 import * as CryptoJS from 'crypto-js';
 import Cookies from 'js-cookie';
 
-const { VITE_COOKIE_EXPIRATION_TIME, VITE_ENCRYPTION_KEY } = import.meta.env;
+const { VITE_ENCRYPTION_KEY } = import.meta.env;
 
 export enum CookieName {
   ACCESS_TOKEN = `bakosafe/token`,
@@ -26,14 +26,8 @@ export class CookiesConfig {
   private static encryptionKey = VITE_ENCRYPTION_KEY;
 
   static setCookies(cookies: Cookie[]) {
-    const expiresAt =
-      new Date().getTime() +
-      Number(VITE_COOKIE_EXPIRATION_TIME ?? 15) * 60 * 1000;
-
     cookies.forEach((cookie) => {
-      Cookies.set(cookie.name, this.encrypt(cookie.value), {
-        expires: new Date(expiresAt),
-      });
+      Cookies.set(cookie.name, this.encrypt(cookie.value));
     });
   }
 
