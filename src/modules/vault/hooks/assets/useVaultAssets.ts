@@ -87,7 +87,7 @@ function useVaultAssets(predicate?: Vault) {
 
   const ethBalance = useMemo(() => {
     return getCoinAmount(NativeAssetId, true);
-  }, [getCoinAmount]) as BN;
+  }, [getCoinAmount]) as string;
 
   return {
     assets,
