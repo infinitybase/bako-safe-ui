@@ -17,9 +17,9 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 }
 
 export interface HasReservedCoins {
-  balanceUSD: string;
+  currentBalanceUSD: string;
   reservedCoins: CoinQuantity[];
-  assets: Required<Asset>[];
+  currentBalance: Required<Asset>[];
 }
 
 export type PredicateAndWorkspace = Predicate & { workspace: Workspace };

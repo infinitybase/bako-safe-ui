@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
-import { useGetTokensIcon } from '../../hooks';
+import { useGetTokenInfos } from '../../hooks';
 
 interface DefaultAsset {
   assetId: string;
@@ -20,7 +20,8 @@ interface DefaultAsset {
 }
 
 interface AssetDetailsProps {
-  asset: Asset;
+  assetName: string;
+  assetSlug: string;
   defaultAsset: DefaultAsset;
 }
 
@@ -29,15 +30,19 @@ interface AssetCardProps extends CardProps {
   visibleBalance?: boolean;
 }
 
-const AssetDetails = ({ asset, defaultAsset }: AssetDetailsProps) => {
+const AssetDetails = ({
+  assetName,
+  assetSlug,
+  defaultAsset,
+}: AssetDetailsProps) => {
   return (
     <Box maxW={{ base: '70%', lg: 'full' }}>
       <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} isTruncated>
-        {asset.name ?? defaultAsset.name}
+        {assetName ?? defaultAsset.name}
       </Text>
 
       <Text fontWeight="bold" fontSize="xs" color="grey.400">
-        {asset.slug ?? defaultAsset.slug}
+        {assetSlug ?? defaultAsset.slug}
       </Text>
     </Box>
   );
@@ -50,7 +55,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
     amount: `0`,
   };
 
-  const assetIcon = useGetTokensIcon(asset.assetId);
+  const { assetAmount, assetsInfo } = useGetTokenInfos(asset);
 
   return (
     <Card
@@ -74,12 +79,16 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
-          name={asset.slug}
-          src={assetIcon ?? defaultAsset.icon}
+          name={assetsInfo.slug}
+          src={assetsInfo.icon ?? defaultAsset.icon}
           ignoreFallback
         />
 
-        <AssetDetails asset={asset} defaultAsset={defaultAsset} />
+        <AssetDetails
+          assetName={assetsInfo.name}
+          assetSlug={assetsInfo.slug}
+          defaultAsset={defaultAsset}
+        />
       </Flex>
 
       <VStack
@@ -92,7 +101,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
       >
         {visibleBalance ? (
           <Text fontWeight="bold" color="white" maxW="100%" isTruncated>
-            {asset.amount ?? defaultAsset.amount}
+            {assetAmount ?? defaultAsset.amount}
           </Text>
         ) : (
           <Text color="white" fontSize="md" mr={1}>
