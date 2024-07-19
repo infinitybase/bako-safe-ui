@@ -112,26 +112,25 @@ const useChangeMember = () => {
     // If not has an updated member permission and has a memberAddress it means that comes from the memberForm(creation)
     if (!updatedMemberPermission && _memberAddress) {
       memberRequest.mutate(_memberAddress, {
-        onSettled: (data?: Workspace) => {
-          workspaceRequest.refetch().then(() => {
-            const newMember = data?.members.find(
-              (member) => member.address === _memberAddress,
+        onSuccess: (data: Workspace) => {
+          const newMember = data?.members.find(
+            (member) => member.address === _memberAddress,
+          );
+
+          if (newMember) {
+            permissionsRequest.mutate(
+              {
+                member: newMember.id,
+                permissions: defaultPermissions[permission],
+              },
+              {
+                onSuccess: () => {
+                  tabs.set(MemberTabState.SUCCESS);
+                  workspaceRequest.refetch();
+                },
+              },
             );
-            if (newMember) {
-              permissionsRequest.mutate(
-                {
-                  member: newMember.id,
-                  permissions: defaultPermissions[permission],
-                },
-                {
-                  onSuccess: () => {
-                    tabs.set(MemberTabState.SUCCESS);
-                    workspaceRequest.refetch();
-                  },
-                },
-              );
-            }
-          });
+          }
         },
       });
     }
