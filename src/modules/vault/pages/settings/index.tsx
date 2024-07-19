@@ -15,14 +15,14 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useVaultDetails } from '@/modules/vault/hooks';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
+import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, menuDrawer } = useVaultDetails();
+  const { vault, store, navigate, menuDrawer } = useVaultInfosContext();
 
   const { goHome } = useHome();
   const {

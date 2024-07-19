@@ -18,10 +18,11 @@ import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
-import { useVaultDetails } from '../../hooks';
+import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultBalancePage = () => {
-  const { vault, menuDrawer, assets, store, navigate } = useVaultDetails();
+  const { vault, menuDrawer, assets, store, navigate } = useVaultInfosContext();
+
   const { currentWorkspace, goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
   const {

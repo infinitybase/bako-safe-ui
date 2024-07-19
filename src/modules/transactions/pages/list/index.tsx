@@ -30,12 +30,13 @@ import {
   TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { useUserVaults, useVaultDetails } from '@/modules/vault';
+import { useUserVaults } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 import { useFilterTxType } from '../../hooks/filter';
+import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
 
 const TransactionsVaultPage = () => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
@@ -65,7 +66,7 @@ const TransactionsVaultPage = () => {
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
   const { navigate } = useUserVaults();
-  const { vault, params } = useVaultDetails();
+  const { vault, params } = useVaultInfosContext();
 
   const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
   const hasTransactions =

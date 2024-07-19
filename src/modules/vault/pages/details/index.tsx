@@ -27,7 +27,6 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
@@ -35,12 +34,12 @@ import { limitCharacters } from '@/utils/limit-characters';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultDetailsPage = () => {
   const { handleIncomingAction, handleOutgoingAction, txFilterType } =
     useFilterTxType();
 
-  const { setTemplateFormInitial } = useTemplateStore();
   const {
     params,
     vault,
@@ -51,7 +50,9 @@ const VaultDetailsPage = () => {
     inView,
     pendingSignerTransactions,
     menuDrawer,
-  } = useVaultDetails({ byMonth: true, txFilterType });
+  } = useVaultInfosContext();
+
+  const { setTemplateFormInitial } = useTemplateStore();
   const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
 

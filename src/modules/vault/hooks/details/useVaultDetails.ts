@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -18,34 +18,51 @@ import { TransactionType } from 'bakosafe';
 interface IUseVaultDetails {
   byMonth?: boolean;
   txFilterType?: TransactionType;
+  vaultId: string;
+  workspaceId: string;
 }
 
 const useVaultDetails = ({
   byMonth = false,
   txFilterType,
-}: IUseVaultDetails = {}) => {
+  vaultId,
+  workspaceId,
+}: IUseVaultDetails) => {
+  // *TODO*: Adicionar uma validação para evitar fazer as requisições do vault (pending predicate,etc) na home
+
   const navigate = useNavigate();
-  const params = useParams<{ workspaceId: string; vaultId: string }>();
+  // Esse cara não estava sendo atualizado e por isso hook inteiro retornadava undefined.
+  // const params = useParams<{ workspaceId: string; vaultId: string }>();
+  const params = {
+    workspaceId,
+    vaultId,
+  };
   const { account } = useAuthStore();
   const store = useVaultState();
   const inView = useInView();
   const menuDrawer = useDisclosure();
 
   const { predicate, predicateInstance, isLoading, isFetching } =
-    useVaultDetailsRequest(params.vaultId!);
+    useVaultDetailsRequest(vaultId);
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
     byMonth,
     txFilterType,
   );
 
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
+  const pendingSignerTransactions = useTransactionsSignaturePending([vaultId]);
 
-  useMemo(() => {
-    pendingSignerTransactions.refetch();
-  }, [predicate, params]);
+  // Foi comentando porque está causando infinite loop na requisição de pending. Tentei usando useEffect mas o resultado foi o mesmo
+
+  // useMemo(() => {
+  //   pendingSignerTransactions.refetch();
+  // }, [predicate, params]);
+
+  // useEffect(() => {
+  //   if (predicate && params) {
+  //     pendingSignerTransactions.refetch();
+  //   }
+  // }, [predicate, params, pendingSignerTransactions]);
 
   const {
     assets,

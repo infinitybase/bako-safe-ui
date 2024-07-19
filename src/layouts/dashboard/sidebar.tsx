@@ -11,12 +11,13 @@ import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
-import { useVaultDetails, useVaultState } from '@/modules/vault';
+import { useVaultState } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
 
 import { useSidebar } from './hook';
+import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -37,8 +38,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   } = useSidebar();
 
   const { hasBalance } = useVaultState();
-
-  const { vault } = useVaultDetails();
+  const { vault } = useVaultInfosContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
