@@ -170,7 +170,6 @@ const useChangeMember = () => {
 
     deleteRequest.mutate(
       {
-        id: workspace.id,
         member: member.id,
       },
       {
