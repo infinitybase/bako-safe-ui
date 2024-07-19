@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from 'react-router-dom';
 
 import { addressBookRoutes } from '@/modules/addressBook';
 import { signinRoutes } from '@/modules/auth';
@@ -7,7 +13,7 @@ import { dappRoutes } from '@/modules/dapp';
 // import { exampleRoutes } from '@/modules/example';
 import { homeRoutes } from '@/modules/home';
 import { transactionRoutes } from '@/modules/transactions';
-import { vaultRoutes } from '@/modules/vault';
+import { VaultRoutes } from '@/modules/vault';
 import { workspaceRoutes } from '@/modules/workspace';
 import { VaultInfosProvider } from '@/modules/vault/providers/VaultInfosProvider';
 
@@ -17,20 +23,26 @@ const routes = (
     {signinRoutes}
     {homeRoutes}
     {dappRoutes}
-    {vaultRoutes}
+    {/* {vaultRoutes} */}
     {transactionRoutes}
     {addressBookRoutes}
     {workspaceRoutes}
   </>
 );
 
+const router = createBrowserRouter(
+  createRoutesFromElements(<Route>{routes}</Route>),
+);
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <VaultInfosProvider>
-        <ScrollTop />
-        <Routes>{routes}</Routes>
-      </VaultInfosProvider>
+      {/* <VaultInfosProvider> */}
+      <ScrollTop />
+      <Routes>{routes}</Routes>
+      {/* </VaultInfosProvider> */}
+      {/* {vaultRoutes} */}
+      <VaultRoutes />
     </BrowserRouter>
   );
 };
