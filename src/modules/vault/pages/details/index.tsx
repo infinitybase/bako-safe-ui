@@ -37,8 +37,7 @@ import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultDetailsPage = () => {
-  const { handleIncomingAction, handleOutgoingAction, txFilterType } =
-    useFilterTxType();
+  const { handleIncomingAction, handleOutgoingAction } = useFilterTxType();
 
   const {
     params,

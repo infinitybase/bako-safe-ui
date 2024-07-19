@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
@@ -72,10 +72,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const { store, vault, assets } = props;
   const {
     balanceUSD,
-    visebleBalance,
+    visibleBalance,
     setVisibleBalance,
     isFirstAssetsLoading,
-    setIsFirstAssetsLoading,
+    // setIsFirstAssetsLoading,
   } = store;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
@@ -99,9 +99,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     PermissionRoles.SIGNER,
   ];
 
-  useEffect(() => {
-    return () => setIsFirstAssetsLoading(true);
-  }, []);
+  //  Verificar se o vault não irá mostrar o balance errado, sem esse useEffect
+  // useEffect(() => {
+  // return () => setIsFirstAssetsLoading(true);
+  // }, []);
 
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
@@ -261,7 +262,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         customEndColor="dark.100"
                       >
                         <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                          {visebleBalance ? `${balanceUSD} USD` : '-----'}
+                          {visibleBalance ? `${balanceUSD} USD` : '-----'}
                         </Heading>
                       </CustomSkeleton>
                       <Box
@@ -270,9 +271,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           cursor: 'pointer',
                           opacity: 0.8,
                         }}
-                        onClick={() => setVisibleBalance(!visebleBalance)}
+                        onClick={() => setVisibleBalance(!visibleBalance)}
                       >
-                        {visebleBalance ? (
+                        {visibleBalance ? (
                           <EyeOpenIcon boxSize={7} />
                         ) : (
                           <EyeCloseIcon boxSize={5} />
@@ -412,7 +413,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     <AssetsDetails
                       containerRef={assetsContainerRef}
                       assets={assets.value!}
-                      visibleBalance={visebleBalance}
+                      visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
                         vaultId: vault.id,
                         workspaceId,

@@ -1,43 +1,41 @@
 import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import { useAuth } from '@/modules/auth/hooks';
 import { assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
 
-import { VaultService } from '../../services';
-import { useVaultState } from '../../states';
+const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
 
-const balancesToAssets = async (
-  setBalanceUSD: (string: string) => void,
-  predicate?: Vault,
-) => {
-  if (!predicate) return [];
+const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
+const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
+  localStorage.setItem(IS_VISIBLE_KEY, isVisible);
+
+import { VaultService } from '../../services';
+
+const balancesToAssets = async (predicate?: Vault) => {
+  if (!predicate) return {};
 
   const { currentBalanceUSD, currentBalance } =
     await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
 
-  setBalanceUSD(currentBalanceUSD);
-
-  return currentBalance;
+  return { assets: currentBalance, balanceUSD: currentBalanceUSD };
 };
 
 function useVaultAssets(predicate?: Vault) {
-  const {
-    setVisibleBalance,
-    setBalanceUSD,
-    setIsFirstAssetsLoading,
-    setHasBalance,
-  } = useVaultState();
+  const initialVisibility = isVisibleBalance();
+
+  const [isFirstAssetsLoading, setIsFirstAssetsLoading] = useState(true);
+  const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
   const auth = useAuth();
 
-  const { data: assets, ...rest } = useQuery(
+  const { data, ...rest } = useQuery(
     ['predicate/assets', auth.workspaces.current, predicate],
-    () => balancesToAssets(setBalanceUSD, predicate),
+    () => balancesToAssets(predicate),
     {
-      initialData: [],
+      initialData: {},
       refetchInterval: 10000,
       keepPreviousData: true,
       enabled: !!predicate,
@@ -49,7 +47,7 @@ function useVaultAssets(predicate?: Vault) {
 
   const getCoinAmount = useCallback(
     (assetId: string, needsFormat?: boolean) => {
-      const balance = assets?.find((asset) => asset.assetId === assetId);
+      const balance = data?.assets?.find((asset) => asset.assetId === assetId);
 
       if (!balance) {
         const result = bn(0);
@@ -59,7 +57,7 @@ function useVaultAssets(predicate?: Vault) {
       const result = bn(bn.parseUnits(balance.amount!));
       return needsFormat ? result.format() : result;
     },
-    [assets],
+    [data?.assets],
   );
 
   const getAssetInfo = (assetId: string) => {
@@ -85,28 +83,36 @@ function useVaultAssets(predicate?: Vault) {
   );
 
   const hasBalance = useMemo(() => {
-    const result = assets?.some((asset) =>
+    const result = data?.assets?.some((asset) =>
       bn(bn.parseUnits(asset.amount)).gt(0),
     );
 
-    setHasBalance(!!result);
     return result;
-  }, [assets]);
+  }, [data?.assets]);
 
   const ethBalance = useMemo(() => {
     return getCoinAmount(NativeAssetId, true);
   }, [getCoinAmount]) as string;
 
+  const handleSetVisibleBalance = (visible: any) => {
+    setVisibleBalance(visible);
+    setIsVisibleBalance(visible ? 'true' : 'false');
+  };
+
   return {
-    assets,
+    assets: data?.assets,
     ...rest,
     getAssetInfo,
     getCoinAmount,
     hasAssetBalance,
-    setVisibleBalance,
+    setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
-    hasAssets: !!assets?.length,
+    hasAssets: !!data?.assets?.length,
+    isFirstAssetsLoading,
+    visibleBalance,
+    balanceUSD: data?.balanceUSD,
+    setIsFirstAssetsLoading,
   };
 }
 

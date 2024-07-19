@@ -13,11 +13,12 @@ import { Controller } from 'react-hook-form';
 import { Dialog } from '@/components';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import { UseVaultDetailsReturn } from '@/modules/vault';
 
 export interface CreateTransactionFormProps extends BoxProps {
   form: UseCreateTransaction['form'];
   nicks: UseCreateTransaction['nicks'];
-  assets: UseCreateTransaction['assets'];
+  vaultInfos: UseVaultDetailsReturn['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
@@ -27,7 +28,7 @@ export interface CreateTransactionFormProps extends BoxProps {
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   const {
     form,
-    assets,
+    vaultInfos,
     transactionsFields,
     accordion,
     nicks,
@@ -70,7 +71,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       <TransactionAccordions
         form={form}
         nicks={nicks}
-        assets={assets}
+        vaultInfos={vaultInfos}
         accordion={accordion}
         transactions={transactionsFields}
         isFeeCalcLoading={isFeeCalcLoading}

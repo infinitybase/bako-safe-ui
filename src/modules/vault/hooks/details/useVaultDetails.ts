@@ -1,12 +1,11 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
 import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
-import { useVaultState } from '@/modules/vault/states';
 
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
@@ -28,17 +27,13 @@ const useVaultDetails = ({
   vaultId,
   workspaceId,
 }: IUseVaultDetails) => {
-  // *TODO*: Adicionar uma validação para evitar fazer as requisições do vault (pending predicate,etc) na home
-
   const navigate = useNavigate();
-  // Esse cara não estava sendo atualizado e por isso hook inteiro retornadava undefined.
-  // const params = useParams<{ workspaceId: string; vaultId: string }>();
+
   const params = {
     workspaceId,
     vaultId,
   };
   const { account } = useAuthStore();
-  const store = useVaultState();
   const inView = useInView();
   const menuDrawer = useDisclosure();
 
@@ -71,6 +66,14 @@ const useVaultDetails = ({
     hasBalance,
     hasAssets,
     refetch,
+    balanceUSD,
+    setVisibleBalance,
+    visibleBalance,
+    isFirstAssetsLoading,
+    setIsFirstAssetsLoading,
+    getCoinAmount,
+    hasAssetBalance,
+    getAssetInfo,
   } = useVaultAssets(predicateInstance);
 
   const configurable = useMemo(
@@ -103,11 +106,12 @@ const useVaultDetails = ({
       transactions: {
         ...vaultTransactionsRequest,
         vaultTransactions:
-          vaultTransactionsRequest.transactions as unknown as IPagination<ITransactionsGroupedByMonth>,
-        loadingVaultTransactions: vaultTransactionsRequest.isLoading,
+          vaultTransactionsRequest?.transactions as unknown as IPagination<ITransactionsGroupedByMonth>,
+        loadingVaultTransactions: vaultTransactionsRequest?.isLoading,
         isPendingSigner:
-          pendingSignerTransactions.data?.transactionsBlocked ?? false,
+          pendingSignerTransactions?.data?.transactionsBlocked ?? false,
       },
+      predicateInstance,
     },
     assets: {
       hasAssets,
@@ -115,11 +119,21 @@ const useVaultDetails = ({
       ethBalance,
       value: assets,
       refetchBalance: refetch,
+      getCoinAmount,
+      hasAssetBalance,
+      getAssetInfo,
     },
+
     inView,
     navigate,
     account,
-    store,
+    store: {
+      balanceUSD,
+      setVisibleBalance,
+      visibleBalance,
+      isFirstAssetsLoading,
+      setIsFirstAssetsLoading,
+    },
     params,
     pendingSignerTransactions,
     menuDrawer,

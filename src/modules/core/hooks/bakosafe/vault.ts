@@ -21,6 +21,9 @@ const useBakoSafeVault = (id: string) => {
         address: context.auth.address,
       });
     },
+    {
+      enabled: !!id,
+    },
   );
   return {
     vault: data,

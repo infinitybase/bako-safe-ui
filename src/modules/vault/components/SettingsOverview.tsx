@@ -175,7 +175,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                               variant="title-xl"
                               fontSize={{ base: 'md', sm: 'lg' }}
                             >
-                              {store.visebleBalance
+                              {store.visibleBalance
                                 ? `${balanceUSD} USD`
                                 : '-----'}
                             </Heading>
@@ -186,10 +186,10 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             justifyContent="center"
                             alignItems="center"
                             onClick={() =>
-                              store.setVisibleBalance(!store.visebleBalance)
+                              store.setVisibleBalance(!store.visibleBalance)
                             }
                           >
-                            {store.visebleBalance ? (
+                            {store.visibleBalance ? (
                               <ViewIcon boxSize={{ base: 5, sm: 6 }} />
                             ) : (
                               <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />

@@ -19,6 +19,7 @@ import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
+import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
@@ -35,6 +36,10 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     onClose: props.onClose,
     isOpen: props.isOpen,
   });
+
+  const {
+    store: { setIsFirstAssetsLoading },
+  } = useVaultInfosContext();
 
   const isLoadingVaults = inView.inView
     ? !isLoading
@@ -111,7 +116,9 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                     isActive={vaultId === vault.id}
                     description={vault.description}
                     isSingleWorkspace={vault.workspace.single}
-                    onClick={() => drawer.onSelectVault(vault)}
+                    onClick={() =>
+                      drawer.onSelectVault(vault, setIsFirstAssetsLoading)
+                    }
                   />
                 );
               })}

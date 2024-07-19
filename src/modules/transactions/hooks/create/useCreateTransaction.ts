@@ -1,4 +1,4 @@
-import { BakoSafe, IAssetGroupById } from 'bakosafe';
+import { BakoSafe, IAssetGroupById, Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,12 +9,13 @@ import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
 import { useAuth } from '@/modules/auth';
 import {
+  Asset,
   NativeAssetId,
   useBakoSafeCreateTransaction,
+  useGetTokenInfosArray,
   WorkspacesQueryKey,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
 
 import {
   TRANSACTION_LIST_QUERY_KEY,
@@ -27,6 +28,13 @@ const recipientMock =
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+  assets: Asset[] | undefined;
+  hasAssetBalance: (assetId: string, value: string) => boolean;
+  predicateInstance: Vault | undefined;
+  getCoinAmount: (
+    assetId: string,
+    needsFormat?: boolean | undefined,
+  ) => string | BN;
 }
 
 const useTransactionAccordion = () => {
@@ -50,7 +58,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const auth = useAuth();
   const navigate = useNavigate();
-  const params = useParams<{ vaultId: string }>();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
@@ -66,21 +73,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionFee = resolveTransactionCosts.data?.fee.format();
 
-  // Vault
-  const vaultDetails = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
-
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: vaultAssets.assets?.map((asset) => ({
-      amount: asset.amount,
+    assets: props?.assets?.map((asset) => ({
+      amount: asset.amount!,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset) as BN,
-    validateBalance: (asset, amount) =>
-      vaultAssets.hasAssetBalance(asset, amount),
+    getCoinAmount: (asset) => props?.getCoinAmount(asset) as BN,
+
+    validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
   const transactionRequest = useBakoSafeCreateTransaction({
-    vault: vaultDetails.predicateInstance!,
+    vault: props?.predicateInstance!,
     onSuccess: () => {
       successToast({
         title: 'Transaction created!',
@@ -104,7 +107,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   // Balance available
-  const currentVaultAssets = vaultAssets.assets;
+  const currentVaultAssets = props?.assets;
+
   const currentFieldAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
@@ -129,9 +133,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     }, {} as IAssetGroupById);
 
   const getBalanceAvailable = useCallback(() => {
+    const formattedCurrentAssetBalance = useGetTokenInfosArray(
+      currentVaultAssets ?? [],
+    );
     const currentAssetBalance = bn.parseUnits(
-      currentVaultAssets?.find((asset) => asset.assetId === currentFieldAsset)
-        ?.amount ?? '0',
+      formattedCurrentAssetBalance?.find(
+        (asset) => asset.assetId === currentFieldAsset,
+      )?.amount ?? '0',
     );
 
     const currentAssetAmount =
@@ -171,7 +179,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = vaultAssets.getCoinAmount(NativeAssetId, true);
+  const currentEthBalance = props?.getCoinAmount(NativeAssetId, true);
   const isEthBalanceLowerThanReservedAmount =
     Number(currentEthBalance) <=
     Number(
@@ -241,7 +249,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
             assetId: asset.assetId,
           }));
 
-    debouncedResolveTransactionCosts(assets, vaultDetails.predicateInstance!);
+    debouncedResolveTransactionCosts(assets, props?.predicateInstance!);
   }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
 
   return {
@@ -252,8 +260,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       ...form,
       handleCreateTransaction,
     },
-    vault: vaultDetails,
-    assets: vaultAssets,
     nicks: listContactsRequest.data ?? [],
     navigate,
     accordion,

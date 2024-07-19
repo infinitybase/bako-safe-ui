@@ -11,7 +11,6 @@ import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
-import { useVaultState } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
@@ -37,8 +36,10 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
     },
   } = useSidebar();
 
-  const { hasBalance } = useVaultState();
-  const { vault } = useVaultInfosContext();
+  const {
+    vault,
+    store: { isFirstAssetsLoading },
+  } = useVaultInfosContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
@@ -68,6 +69,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
+          isFirstAssetsLoading={isFirstAssetsLoading}
           name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
           fullName={String(vaultRequest.predicate?.name)}
           address={
@@ -83,7 +85,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           onChangeVault={() => {
             refetch(), drawer.onOpen();
           }}
-          hasBalance={hasBalance}
+          hasBalance={vault.hasBalance}
           isPending={vault.transactions.isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
           onCreateTransaction={() => {
