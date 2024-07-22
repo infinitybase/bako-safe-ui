@@ -48,18 +48,6 @@ const useVaultDetails = ({
 
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId]);
 
-  // Foi comentando porque está causando infinite loop na requisição de pending. Tentei usando useEffect mas o resultado foi o mesmo
-
-  // useMemo(() => {
-  //   pendingSignerTransactions.refetch();
-  // }, [predicate, params]);
-
-  // useEffect(() => {
-  //   if (predicate && params) {
-  //     pendingSignerTransactions.refetch();
-  //   }
-  // }, [predicate, params, pendingSignerTransactions]);
-
   const {
     assets,
     ethBalance,

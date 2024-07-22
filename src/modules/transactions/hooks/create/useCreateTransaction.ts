@@ -3,7 +3,7 @@ import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
@@ -12,6 +12,7 @@ import {
   Asset,
   NativeAssetId,
   useBakoSafeCreateTransaction,
+  useGetParams,
   useGetTokenInfosArray,
   WorkspacesQueryKey,
 } from '@/modules/core';
@@ -52,6 +53,10 @@ const useTransactionAccordion = () => {
 };
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
   const [validTransactionFee, setValidTransactionFee] = useState<
     string | undefined
   >(undefined);
@@ -82,6 +87,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
+
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: props?.predicateInstance!,
     onSuccess: () => {
@@ -96,6 +102,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         TRANSACTION_LIST_QUERY_KEY,
         USER_TRANSACTIONS_QUERY_KEY,
       ]);
+
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return (
+            query.queryHash.includes(vaultId!) &&
+            query.queryHash.includes('byMonth')
+          );
+        },
+      });
+
       handleClose();
     },
     onError: () => {

@@ -33,12 +33,9 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultDetailsPage = () => {
-  // const { handleIncomingAction, handleOutgoingAction } = useFilterTxType();
-
   const {
     params,
     vault,
@@ -50,8 +47,6 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultInfosContext();
-
-  console.log('vault:', vault);
 
   const { setTemplateFormInitial } = useTemplateStore();
   const { goWorkspace, hasPermission } = useWorkspace();

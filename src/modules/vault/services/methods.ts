@@ -89,9 +89,11 @@ export class VaultService {
     return data;
   }
 
-  static async hasReservedCoins(predicate: string): Promise<HasReservedCoins> {
+  static async hasReservedCoins(
+    predicateId: string,
+  ): Promise<HasReservedCoins> {
     const { data } = await api.get<HasReservedCoins>(
-      `/predicate/reserved-coins/${predicate}`,
+      `/predicate/reserved-coins/${predicateId}`,
     );
 
     return {
