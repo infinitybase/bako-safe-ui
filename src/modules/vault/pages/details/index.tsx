@@ -37,7 +37,7 @@ import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultDetailsPage = () => {
-  const { handleIncomingAction, handleOutgoingAction } = useFilterTxType();
+  // const { handleIncomingAction, handleOutgoingAction } = useFilterTxType();
 
   const {
     params,
@@ -50,6 +50,8 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     menuDrawer,
   } = useVaultInfosContext();
+
+  console.log('vault:', vault);
 
   const { setTemplateFormInitial } = useTemplateStore();
   const { goWorkspace, hasPermission } = useWorkspace();
@@ -216,8 +218,8 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
+          incomingAction={vault.transactions.handleIncomingAction}
+          outgoingAction={vault.transactions.handleOutgoingAction}
           buttonsFullWidth={isSmall}
         />
       </Box>

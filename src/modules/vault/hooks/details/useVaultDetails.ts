@@ -12,21 +12,22 @@ import { useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { IPagination } from '@/modules/core';
-import { TransactionType } from 'bakosafe';
+import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 
 interface IUseVaultDetails {
   byMonth?: boolean;
-  txFilterType?: TransactionType;
   vaultId: string;
   workspaceId: string;
 }
 
 const useVaultDetails = ({
   byMonth = false,
-  txFilterType,
   vaultId,
   workspaceId,
 }: IUseVaultDetails) => {
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
+
   const navigate = useNavigate();
 
   const params = {
@@ -110,6 +111,8 @@ const useVaultDetails = ({
         loadingVaultTransactions: vaultTransactionsRequest?.isLoading,
         isPendingSigner:
           pendingSignerTransactions?.data?.transactionsBlocked ?? false,
+        handleIncomingAction,
+        handleOutgoingAction,
       },
       predicateInstance,
     },
