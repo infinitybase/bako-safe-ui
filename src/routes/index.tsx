@@ -7,9 +7,9 @@ import { dappRoutes } from '@/modules/dapp';
 // import { exampleRoutes } from '@/modules/example';
 import { homeRoutes } from '@/modules/home';
 import { transactionRoutes } from '@/modules/transactions';
-import { vaultRoutes } from '@/modules/vault';
+import { VaultRoutes } from '@/modules/vault';
 import { workspaceRoutes } from '@/modules/workspace';
-import { VaultInfosProvider } from '@/modules/vault/providers/VaultInfosProvider';
+// import { VaultInfosProvider } from '@/modules/vault/providers/VaultInfosProvider';
 
 const routes = (
   <>
@@ -17,7 +17,7 @@ const routes = (
     {signinRoutes}
     {homeRoutes}
     {dappRoutes}
-    {vaultRoutes}
+    {VaultRoutes}
     {transactionRoutes}
     {addressBookRoutes}
     {workspaceRoutes}
@@ -27,10 +27,8 @@ const routes = (
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <VaultInfosProvider>
-        <ScrollTop />
-        <Routes>{routes}</Routes>
-      </VaultInfosProvider>
+      <ScrollTop />
+      <Routes>{routes}</Routes>
     </BrowserRouter>
   );
 };
