@@ -9,18 +9,7 @@ export type IVaultInfoContext = UseVaultDetailsReturn | null;
 const VaultInfosContext = createContext<IVaultInfoContext>(null);
 
 const VaultInfosProvider = ({ children }: { children: React.ReactNode }) => {
-  const { txFilterType } = useFilterTxType();
-
-  const {
-    vaultPageParams: { vaultId, workspaceId },
-  } = useGetParams();
-
-  const vaultDetails: IVaultInfoContext = useVaultDetails({
-    byMonth: true,
-    txFilterType,
-    vaultId: vaultId ?? '',
-    workspaceId: workspaceId ?? '',
-  });
+  const vaultDetails = useVaultDetails();
 
   return (
     <VaultInfosContext.Provider value={vaultDetails}>

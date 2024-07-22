@@ -1,142 +1,55 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
-import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useVaultAssets } from '../assets';
 import { useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
-import { IPagination } from '@/modules/core';
-import { TransactionType } from 'bakosafe';
+import { useGetParams } from '@/modules/core';
+import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 
-interface IUseVaultDetails {
-  byMonth?: boolean;
-  txFilterType?: TransactionType;
-  vaultId: string;
-  workspaceId: string;
-}
+const useVaultDetails = () => {
+  const [byMonth, setByMonth] = useState(false);
 
-const useVaultDetails = ({
-  byMonth = false,
-  txFilterType,
-  vaultId,
-  workspaceId,
-}: IUseVaultDetails) => {
-  const navigate = useNavigate();
-
-  const params = {
-    workspaceId,
-    vaultId,
-  };
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
   const { account } = useAuthStore();
-  const inView = useInView();
-  const menuDrawer = useDisclosure();
 
-  const { predicate, predicateInstance, isLoading, isFetching } =
-    useVaultDetailsRequest(vaultId);
+  const { predicateInstance, ...rest } = useVaultDetailsRequest(vaultId!);
+  const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
   const vaultTransactionsRequest = useVaultTransactionsRequest(
     predicateInstance!,
     byMonth,
     txFilterType,
   );
-
-  const pendingSignerTransactions = useTransactionsSignaturePending([vaultId]);
-
-  // Foi comentando porque está causando infinite loop na requisição de pending. Tentei usando useEffect mas o resultado foi o mesmo
-
-  // useMemo(() => {
-  //   pendingSignerTransactions.refetch();
-  // }, [predicate, params]);
-
-  // useEffect(() => {
-  //   if (predicate && params) {
-  //     pendingSignerTransactions.refetch();
-  //   }
-  // }, [predicate, params, pendingSignerTransactions]);
-
-  const {
-    assets,
-    ethBalance,
-    isLoading: isLoadingAssets,
-    hasBalance,
-    hasAssets,
-    refetch,
-    balanceUSD,
-    setVisibleBalance,
-    visibleBalance,
-    isFirstAssetsLoading,
-    setIsFirstAssetsLoading,
-    getCoinAmount,
-    hasAssetBalance,
-    getAssetInfo,
-  } = useVaultAssets(predicateInstance);
-
-  const configurable = useMemo(
-    () => predicateInstance?.getConfigurable(),
-    [predicateInstance],
-  );
-
-  const signersOrdination = useMemo(() => {
-    if (!predicate) return [];
-
-    return (
-      predicate.addresses
-        ?.map((address) => ({
-          address,
-          isOwner: address === predicate.owner.address,
-        }))
-        .sort((address) => (address.isOwner ? -1 : 0)) ?? []
-    );
-  }, [predicate]);
+  const assets = useVaultAssets(predicateInstance);
 
   return {
     vault: {
-      ...(predicate as PredicateWithWorkspace),
-      configurable,
-      signers: signersOrdination,
-      isLoading,
-      isFetching,
-      hasBalance,
-      ethBalance,
-      transactions: {
-        ...vaultTransactionsRequest,
-        vaultTransactions:
-          vaultTransactionsRequest?.transactions as unknown as IPagination<ITransactionsGroupedByMonth>,
-        loadingVaultTransactions: vaultTransactionsRequest?.isLoading,
-        isPendingSigner:
-          pendingSignerTransactions?.data?.transactionsBlocked ?? false,
-      },
       predicateInstance,
+      ...rest,
+      //add on origin of predicateInstance, ordination by util ordinateMembers, on onsuccess
     },
-    assets: {
-      hasAssets,
-      isLoadingAssets,
-      ethBalance,
-      value: assets,
-      refetchBalance: refetch,
-      getCoinAmount,
-      hasAssetBalance,
-      getAssetInfo,
+    transactions: {
+      ...vaultTransactionsRequest,
+      byMonth,
+      setByMonth,
+      txFilterType,
+      handleIncomingAction,
+      handleOutgoingAction,
     },
-
-    inView,
-    navigate,
+    assets,
     account,
-    store: {
-      balanceUSD,
-      setVisibleBalance,
-      visibleBalance,
-      isFirstAssetsLoading,
-      setIsFirstAssetsLoading,
-    },
-    params,
+    inView: useInView(),
     pendingSignerTransactions,
-    menuDrawer,
+    menuDrawer: useDisclosure(),
   };
 };
 
