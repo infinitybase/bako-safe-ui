@@ -23,24 +23,30 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
-import { Pages, useScreenSize } from '@/modules/core';
+import { Pages, useGetParams, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { useUserVaults } from '@/modules/vault';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 import { useFilterTxType } from '../../hooks/filter';
 import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const TransactionsVaultPage = () => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
+
+  const navigate = useNavigate();
+  const {
+    vaultPageParams: { workspaceId: vaultWkId },
+  } = useGetParams();
+
   const {
     transactionRequest,
     infinityTransactionsRef,
@@ -65,12 +71,14 @@ const TransactionsVaultPage = () => {
 
   const { goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
-  const { navigate } = useUserVaults();
-  const { vault, params } = useVaultInfosContext();
+  const {
+    vault,
+    transactions: vaultTransaction,
+    assets: { hasBalance },
+  } = useVaultInfosContext();
 
-  const { vaultTransactions, loadingVaultTransactions } = vault.transactions;
-  const hasTransactions =
-    !loadingVaultTransactions && vaultTransactions?.data?.length;
+  const { transactions, isLoading } = vaultTransaction;
+  const hasTransactions = !isLoading && transactions?.data?.length;
 
   return (
     <Box w="full" height="100%" maxH="100%">
@@ -137,7 +145,7 @@ const TransactionsVaultPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
+                      vaultId: vault.predicate?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -145,7 +153,7 @@ const TransactionsVaultPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault?.predicate?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
 
@@ -339,12 +347,12 @@ const TransactionsVaultPage = () => {
         <EmptyState
           h="calc(100% - 170px)"
           mt={7}
-          isDisabled={!vault?.hasBalance}
+          isDisabled={hasBalance}
           buttonAction={() =>
             navigate(
               Pages.createTransaction({
-                workspaceId: params.workspaceId!,
-                vaultId: vault.id!,
+                workspaceId: vaultWkId!,
+                vaultId: vault.predicate?.id!,
               }),
             )
           }

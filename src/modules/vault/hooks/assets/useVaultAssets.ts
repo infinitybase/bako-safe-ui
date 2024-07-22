@@ -46,16 +46,14 @@ function useVaultAssets(predicate?: Vault) {
   );
 
   const getCoinAmount = useCallback(
-    (assetId: string, needsFormat?: boolean) => {
+    (assetId: string) => {
       const balance = data?.assets?.find((asset) => asset.assetId === assetId);
 
       if (!balance) {
-        const result = bn(0);
-        return needsFormat ? result.format() : result;
+        return bn(0);
       }
 
-      const result = bn(bn.parseUnits(balance.amount!));
-      return needsFormat ? result.format() : result;
+      return bn(bn.parseUnits(balance.amount!));
     },
     [data?.assets],
   );
@@ -72,7 +70,7 @@ function useVaultAssets(predicate?: Vault) {
 
   const hasAssetBalance = useCallback(
     (assetId: string, value: string) => {
-      const coinBalance = getCoinAmount(assetId, true);
+      const coinBalance = getCoinAmount(assetId).format();
       const hasBalance = bn(bn.parseUnits(value)).lte(
         bn.parseUnits(String(coinBalance)),
       );
@@ -91,8 +89,8 @@ function useVaultAssets(predicate?: Vault) {
   }, [data?.assets]);
 
   const ethBalance = useMemo(() => {
-    return getCoinAmount(NativeAssetId, true);
-  }, [getCoinAmount]) as string;
+    return getCoinAmount(NativeAssetId).format();
+  }, [getCoinAmount]);
 
   const handleSetVisibleBalance = (visible: any) => {
     setVisibleBalance(visible);

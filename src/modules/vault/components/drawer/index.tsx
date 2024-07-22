@@ -38,7 +38,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
   });
 
   const {
-    store: { setIsFirstAssetsLoading },
+    assets: { setIsFirstAssetsLoading },
   } = useVaultInfosContext();
 
   const isLoadingVaults = inView.inView

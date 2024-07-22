@@ -4,6 +4,7 @@ const VAULT_DETAIL_QUERY_KEY = 'vault/get';
 
 function useVaultDetailsRequest(id: string) {
   const { vault, ...rest } = useBakoSafeVault(id);
+  // data.BakoSafeVault.members = ordinateMembers(members, owner);
 
   return {
     ...rest,

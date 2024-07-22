@@ -62,7 +62,7 @@ const useBakoSafeTransactionList = ({
   return useBakoSafeQuery(
     TRANSACTION_QUERY_KEYS.VAULT(vault?.BakoSafeVaultId, filter),
     async () => {
-      return await TransactionService.getTransactions({
+      return await TransactionService.getTransactionsPagination({
         predicateId: [vault?.BakoSafeVaultId],
         ...filter,
       });

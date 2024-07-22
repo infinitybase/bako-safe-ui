@@ -1,8 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { UseVaultDetailsReturn, useVaultDetails } from '../hooks';
 
-import { useGetParams } from '@/modules';
-
 export type IVaultInfoContext = UseVaultDetailsReturn | null;
 
 const VaultInfosContext = createContext<IVaultInfoContext>(null);

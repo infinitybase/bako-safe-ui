@@ -19,9 +19,11 @@ import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const VaultBalancePage = () => {
-  const { vault, menuDrawer, assets, store, navigate } = useVaultInfosContext();
+  const navigate = useNavigate();
+  const { vault, menuDrawer, assets } = useVaultInfosContext();
 
   const { currentWorkspace, goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
@@ -92,7 +94,7 @@ const VaultBalancePage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
+                      vaultId: vault?.predicate?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -100,7 +102,7 @@ const VaultBalancePage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault.predicate?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -125,11 +127,11 @@ const VaultBalancePage = () => {
         </Box>
 
         <CustomSkeleton
-          isLoaded={!currentWorkspace.isLoading && !store.isFirstAssetsLoading}
+          isLoaded={!currentWorkspace.isLoading && !assets.isFirstAssetsLoading}
           flex={1}
         >
           {assets.hasAssets ? (
-            <AssetsBalanceList assets={assets.value!} />
+            <AssetsBalanceList assets={assets.assets!} />
           ) : (
             <EmptyState
               showAction={false}

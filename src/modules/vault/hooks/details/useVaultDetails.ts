@@ -1,7 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-// import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/modules/auth/store';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
@@ -29,6 +28,7 @@ const useVaultDetails = () => {
     byMonth,
     txFilterType,
   );
+
   const assets = useVaultAssets(predicateInstance);
 
   return {
@@ -49,6 +49,8 @@ const useVaultDetails = () => {
     account,
     inView: useInView(),
     pendingSignerTransactions,
+    isPendingSigner:
+      pendingSignerTransactions.data?.transactionsBlocked ?? false,
     menuDrawer: useDisclosure(),
   };
 };

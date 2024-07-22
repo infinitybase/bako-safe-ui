@@ -36,15 +36,15 @@ import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 
 export interface CardDetailsProps {
-  store: UseVaultDetailsReturn['store'];
+  assets: UseVaultDetailsReturn['assets'];
   vault: UseVaultDetailsReturn['vault'];
   blockedTransfers: boolean;
 }
 
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { vault, store, blockedTransfers } = props;
-  const { balanceUSD } = store;
+  const { vault, assets, blockedTransfers } = props;
+  const { balanceUSD } = assets;
   const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
     useScreenSize();
 
@@ -74,7 +74,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
     return as;
-  }, [vault.id]);
+  }, [vault.predicate?.id]);
 
   if (!vault) return null;
 
@@ -125,7 +125,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     <Center>
                       <Avatar
                         variant="roundedSquare"
-                        name={vault.name}
+                        name={vault.predicate?.name}
                         bg="grey.900"
                         color="white"
                         size={'lg'}
@@ -141,12 +141,14 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
                       >
                         {isExtraSmall
-                          ? limitCharacters(vault?.name ?? '', 10)
-                          : vault?.name}
+                          ? limitCharacters(vault.predicate?.name ?? '', 10)
+                          : vault.predicate?.name}
                       </Heading>
 
                       <Box maxW={420}>
-                        <Text variant="description">{vault?.description}</Text>
+                        <Text variant="description">
+                          {vault?.predicate?.description}
+                        </Text>
                       </Box>
                     </Box>
                   </Stack>
@@ -175,7 +177,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                               variant="title-xl"
                               fontSize={{ base: 'md', sm: 'lg' }}
                             >
-                              {store.visibleBalance
+                              {assets.visibleBalance
                                 ? `${balanceUSD} USD`
                                 : '-----'}
                             </Heading>
@@ -186,10 +188,10 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             justifyContent="center"
                             alignItems="center"
                             onClick={() =>
-                              store.setVisibleBalance(!store.visibleBalance)
+                              assets.setVisibleBalance(!assets.visibleBalance)
                             }
                           >
-                            {store.visibleBalance ? (
+                            {assets.visibleBalance ? (
                               <ViewIcon boxSize={{ base: 5, sm: 6 }} />
                             ) : (
                               <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
@@ -214,7 +216,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
-                          onClick={() => openFaucet(vault.predicateAddress!)}
+                          onClick={() =>
+                            openFaucet(vault.predicate?.predicateAddress!)
+                          }
                           position="relative"
                         >
                           Faucet
@@ -240,7 +244,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           variant="primary"
                           alignSelf="end"
                           isDisabled={
-                            !vault?.hasBalance ||
+                            !assets?.hasBalance ||
                             blockedTransfers ||
                             !makeTransactionsPerm ||
                             isEthBalanceLowerThanReservedAmount
@@ -248,7 +252,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           onClick={() =>
                             navigate(
                               Pages.createTransaction({
-                                vaultId: vault.id!,
+                                vaultId: vault.predicate?.id!,
                                 workspaceId,
                               }),
                             )
@@ -327,7 +331,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                   >
                     <QRCodeSVG
-                      value={vault.predicateAddress!}
+                      value={vault?.predicate?.predicateAddress!}
                       fgColor="black"
                       bgColor="white"
                       style={{
@@ -341,8 +345,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     w="full"
                     mb={{ base: 4, sm: 0 }}
                     maxW={{ base: '40', sm: 180 }}
-                    address={AddressUtils.format(vault.predicateAddress)!}
-                    addressToCopy={vault.predicateAddress!}
+                    address={
+                      AddressUtils.format(
+                        vault?.predicate?.predicateAddress ?? '',
+                      )!
+                    }
+                    addressToCopy={vault?.predicate?.predicateAddress!}
                   />
                 </VStack>
               </Stack>

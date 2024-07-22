@@ -37,8 +37,8 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   } = useSidebar();
 
   const {
-    vault,
-    store: { isFirstAssetsLoading },
+    isPendingSigner,
+    assets: { isFirstAssetsLoading, hasBalance },
   } = useVaultInfosContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
@@ -85,8 +85,8 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           onChangeVault={() => {
             refetch(), drawer.onOpen();
           }}
-          hasBalance={vault.hasBalance}
-          isPending={vault.transactions.isPendingSigner}
+          hasBalance={hasBalance}
+          isPending={isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
           onCreateTransaction={() => {
             route.navigate(

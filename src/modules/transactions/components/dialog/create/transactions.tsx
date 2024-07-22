@@ -35,7 +35,7 @@ import { UseVaultDetailsReturn } from '@/modules/vault';
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
   nicks: UseCreateTransaction['nicks'];
-  vaultInfos: UseVaultDetailsReturn['assets'];
+  assets: UseVaultDetailsReturn['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
@@ -45,14 +45,13 @@ interface TransactionAccordionProps {
 interface TransctionFormFieldProps {
   form: UseCreateTransaction['form'];
   index: number;
-  vaultInfos: UseVaultDetailsReturn['assets'];
+  assets: UseVaultDetailsReturn['assets'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }
 
 const TransactionFormField = (props: TransctionFormFieldProps) => {
-  const { form, vaultInfos, index, isFeeCalcLoading, getBalanceAvailable } =
-    props;
+  const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
 
   const asset = form.watch(`transactions.${index}.asset`);
 
@@ -143,7 +142,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           render={({ field, fieldState }) => (
             <AssetSelect
               isInvalid={fieldState.invalid}
-              assets={vaultInfos!.value!}
+              assets={assets!.assets!}
               name={`transaction.${index}.asset`}
               value={field.value}
               onChange={field.onChange}
@@ -184,8 +183,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                       />
                     ) : (
                       <>
-                        {vaultInfos.getAssetInfo(asset)?.slug}{' '}
-                        {balanceAvailable}
+                        {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
                       </>
                     )}
                   </Text>
@@ -206,7 +204,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     form,
     transactions,
-    vaultInfos,
+    assets,
     accordion,
     nicks,
     isFeeCalcLoading,
@@ -233,7 +231,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
     >
       {transactions.fields.map((field, index) => {
         const transaction = form.watch(`transactions.${index}`);
-        const assetSlug = vaultInfos.getAssetInfo(transaction.asset)?.slug;
+        const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
         const fieldState = form.getFieldState(`transactions.${index}`);
 
         const hasEmptyField = Object.values(transaction).some(
@@ -303,7 +301,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                 <TransactionFormField
                   index={index}
                   form={form}
-                  vaultInfos={vaultInfos}
+                  assets={assets}
                   isFeeCalcLoading={isFeeCalcLoading}
                   getBalanceAvailable={getBalanceAvailable}
                 />

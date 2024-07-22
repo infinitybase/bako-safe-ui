@@ -32,10 +32,7 @@ interface UseCreateTransactionParams {
   assets: Asset[] | undefined;
   hasAssetBalance: (assetId: string, value: string) => boolean;
   predicateInstance: Vault | undefined;
-  getCoinAmount: (
-    assetId: string,
-    needsFormat?: boolean | undefined,
-  ) => string | BN;
+  getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
 }
 
 const useTransactionAccordion = () => {
@@ -83,7 +80,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount!,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => props?.getCoinAmount(asset) as BN,
+    getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
 
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
@@ -195,7 +192,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = props?.getCoinAmount(NativeAssetId, true);
+  const currentEthBalance = props?.getCoinAmount(NativeAssetId);
   const isEthBalanceLowerThanReservedAmount =
     Number(currentEthBalance) <=
     Number(

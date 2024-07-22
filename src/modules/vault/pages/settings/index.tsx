@@ -20,9 +20,11 @@ import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, menuDrawer } = useVaultInfosContext();
+  const navigate = useNavigate();
+  const { vault, assets, menuDrawer, isPendingSigner } = useVaultInfosContext();
 
   const { goHome } = useHome();
   const {
@@ -102,7 +104,7 @@ const VaultSettingsPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
+                      vaultId: vault.predicate?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -110,7 +112,7 @@ const VaultSettingsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault?.predicate?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -151,8 +153,8 @@ const VaultSettingsPage = () => {
       <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
         <SettingsOverview
           vault={vault}
-          store={store}
-          blockedTransfers={vault.transactions.isPendingSigner}
+          assets={assets}
+          blockedTransfers={isPendingSigner}
         />
         <SettingsSigners vault={vault} />
       </VStack>

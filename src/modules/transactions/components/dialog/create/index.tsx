@@ -22,7 +22,7 @@ import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvid
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const {
-    assets: vaultInfos,
+    assets,
     vault: { predicateInstance },
   } = useVaultInfosContext();
   const {
@@ -36,9 +36,9 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction({
-    assets: vaultInfos.value,
-    hasAssetBalance: vaultInfos.hasAssetBalance,
-    getCoinAmount: vaultInfos.getCoinAmount,
+    assets: assets.assets,
+    hasAssetBalance: assets.hasAssetBalance,
+    getCoinAmount: assets.getCoinAmount,
     predicateInstance,
     onClose: props.onClose,
   });
@@ -70,7 +70,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         <CreateTransactionForm
           form={form}
           nicks={nicks}
-          vaultInfos={vaultInfos}
+          assets={assets}
           accordion={accordion}
           transactionsFields={transactionsFields}
           isFeeCalcLoading={

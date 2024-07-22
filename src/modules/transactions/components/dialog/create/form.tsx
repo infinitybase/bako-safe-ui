@@ -18,7 +18,7 @@ import { UseVaultDetailsReturn } from '@/modules/vault';
 export interface CreateTransactionFormProps extends BoxProps {
   form: UseCreateTransaction['form'];
   nicks: UseCreateTransaction['nicks'];
-  vaultInfos: UseVaultDetailsReturn['assets'];
+  assets: UseVaultDetailsReturn['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactionsFields: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
@@ -28,7 +28,7 @@ export interface CreateTransactionFormProps extends BoxProps {
 const CreateTransactionForm = (props: CreateTransactionFormProps) => {
   const {
     form,
-    vaultInfos,
+    assets,
     transactionsFields,
     accordion,
     nicks,
@@ -71,7 +71,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       <TransactionAccordions
         form={form}
         nicks={nicks}
-        vaultInfos={vaultInfos}
+        assets={assets}
         accordion={accordion}
         transactions={transactionsFields}
         isFeeCalcLoading={isFeeCalcLoading}
