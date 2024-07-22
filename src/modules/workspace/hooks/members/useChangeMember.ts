@@ -1,5 +1,5 @@
 import { Address } from 'fuels';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAddressBook } from '@/modules/addressBook';
@@ -54,13 +54,7 @@ const useChangeMember = () => {
     defaultTab: MemberTabState.FORM,
   });
 
-  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!, {
-    onSuccess: (workspace) => {
-      if (!isEditMember) return;
-
-      setMemberValuesByWorkspace(workspace, params.memberId);
-    },
-  });
+  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
 
   const membersToForm = workspaceRequest.workspace?.members.map(
     (member) => member.address,
@@ -90,6 +84,13 @@ const useChangeMember = () => {
   const memberRequest = useIncludeMemberRequest(params.workspaceId!);
   const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
   const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
+
+  const handleEditMemberPermission = useCallback(
+    (workspace: Workspace) => {
+      isEditMember && setMemberValuesByWorkspace(workspace, params.memberId);
+    },
+    [isEditMember, params.memberId, setMemberValuesByWorkspace],
+  );
 
   const handleClose = () => goWorkspace(params.workspaceId!);
 
@@ -237,7 +238,7 @@ const useChangeMember = () => {
         ? handleSetUpdateStep
         : handlePermissions,
       handleSecondaryAction: handleClose,
-      isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
+      isLoading: permissionsRequest.isPending || deleteRequest.isPending,
       title: isEditMember ? 'Member permission' : 'User permission',
       description: undefined,
       tertiaryAction: isEditMember ? 'Remove' : undefined,
@@ -293,6 +294,10 @@ const useChangeMember = () => {
       isEditMember,
     },
   };
+
+  useEffect(() => {
+    handleEditMemberPermission(workspaceRequest.workspace!);
+  }, []);
 
   return {
     tabs,

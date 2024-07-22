@@ -34,7 +34,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const {
     form,
     handleSubmitSettings,
-    updateSettingsRequest: { isLoading },
+    updateSettingsRequest: { isPending: isLoading },
     onCloseDrawer,
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });

@@ -1,7 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
 
 import BakoIcon from '@/assets/tokens/bako.svg';
 import { useAuth } from '@/modules/auth/hooks';
@@ -56,19 +56,23 @@ function useVaultAssets(predicate?: Vault) {
 
   const auth = useAuth();
 
-  const { data: assets, ...rest } = useQuery(
-    ['predicate/assets', auth.workspaces.current, predicate],
-    () => balancesToAssets(setBalanceUSD, predicate),
-    {
-      initialData: [],
-      refetchInterval: 10000,
-      keepPreviousData: true,
-      enabled: !!predicate,
-      onSuccess: () => {
-        setIsFirstAssetsLoading(false);
-      },
-    },
-  );
+  const { data: assets, ...rest } = useQuery({
+    queryKey: [
+      'predicate/assets',
+      auth.workspaces.current,
+      predicate?.BakoSafeVaultId,
+    ],
+    queryFn: () =>
+      balancesToAssets(setBalanceUSD, predicate).then((data) => {
+        setTimeout(() => setIsFirstAssetsLoading(false), 500);
+        return data;
+      }),
+    initialData: [],
+    refetchInterval: 10000,
+    placeholderData: (previousData) => previousData,
+    enabled: !!predicate,
+  });
+
   const findBiggerAsset = () => {
     let bigger = 0;
     const isValid = assets && assets.length > 0;

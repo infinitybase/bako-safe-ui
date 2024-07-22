@@ -114,8 +114,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     retryTransaction,
     declineTransaction,
     isLoading:
-      request.isLoading ||
-      signMessageRequest.isLoading ||
+      request.isPending ||
+      signMessageRequest.isPending ||
       options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
       options.transaction.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,

@@ -1,5 +1,4 @@
-import { useQuery } from 'react-query';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core';
@@ -9,15 +8,13 @@ const useGetWorkspaceRequest = (
   workspaceId: string,
   options?: UseQueryOptions<Workspace, unknown, Workspace, string[]>,
 ) => {
-  const { data, ...request } = useQuery(
-    WorkspacesQueryKey.GET(workspaceId),
-    () => WorkspaceService.getById(workspaceId),
-    {
-      ...options,
-      enabled: !!workspaceId || options?.enabled,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const { data, ...request } = useQuery({
+    queryKey: WorkspacesQueryKey.GET(workspaceId),
+    queryFn: () => WorkspaceService.getById(workspaceId),
+    ...options,
+    enabled: !!workspaceId || options?.enabled,
+    refetchOnWindowFocus: false,
+  });
 
   return {
     workspace: data,

@@ -1,11 +1,12 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { TransactionService } from '@/modules/transactions/services';
 
 const useTransactionHistoryRequest = (transactionId: string) => {
-  return useQuery(['transaction/history', transactionId], () =>
-    TransactionService.getTransactionsHistory(transactionId),
-  );
+  return useQuery({
+    queryKey: ['transaction/history', transactionId],
+    queryFn: () => TransactionService.getTransactionsHistory(transactionId),
+  });
 };
 
 export { useTransactionHistoryRequest };

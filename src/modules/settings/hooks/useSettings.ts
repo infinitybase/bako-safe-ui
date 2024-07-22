@@ -33,7 +33,10 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
     if (firstLogin && user) {
       updateSettingsRequest.mutate(
         { first_login: false, id: user.id },
-        { onSuccess: () => queryClient.invalidateQueries([MY_SETTINGS]) },
+        {
+          onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: [MY_SETTINGS] }),
+        },
       );
     }
 
@@ -53,7 +56,7 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
         },
         {
           onSuccess: async () => {
-            queryClient.invalidateQueries([MY_SETTINGS]);
+            queryClient.invalidateQueries({ queryKey: [MY_SETTINGS] });
             onClose?.();
             successToast({
               title: 'Settings updated',

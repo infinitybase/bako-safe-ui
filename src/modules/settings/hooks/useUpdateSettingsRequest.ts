@@ -1,4 +1,4 @@
-import { useMutation, UseMutationOptions } from 'react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import {
   SettingsService,
@@ -13,11 +13,11 @@ const useUpdateSettingsRequest = (
     UpdateSettingsPayload
   >,
 ) => {
-  return useMutation(
-    'settings/update',
-    SettingsService.updateSettings,
-    options,
-  );
+  return useMutation({
+    mutationKey: ['settings/update'],
+    mutationFn: SettingsService.updateSettings,
+    ...options,
+  });
 };
 
 export { useUpdateSettingsRequest };

@@ -143,7 +143,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
                 tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
               }
               isDisabled={steps.step?.disable}
-              isLoading={bakoSafeVault.isLoading}
+              isLoading={bakoSafeVault.isPending}
               _hover={{
                 opacity: !steps.step?.disable && 0.8,
               }}
