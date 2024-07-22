@@ -39,7 +39,7 @@ const AssetCard = chakra(Card, {
 
 const AmountDetails = (props: AmountDetailsProps) => {
   const { store, assets, isLoading, vaultAddress } = props;
-  const { visebleBalance } = store;
+  const { visibleBalance } = store;
 
   const isBig = assets?.value ? formatList(assets.value) : 0;
 
@@ -139,7 +139,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                         fontWeight="semibold"
                         fontSize="lg"
                       >
-                        {visebleBalance ? balance : '*****'}
+                        {visibleBalance ? balance : '*****'}
                       </Text>
                       <Text variant="description" fontSize="md">
                         {assetsMap[asset.assetId].slug}
