@@ -1,10 +1,11 @@
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
 import { AuthRoute, Pages } from '@/modules/core';
 import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '@/modules/transactions/pages';
 import { VaultBalancePage, VaultDetailsPage, VaultSettingsPage } from './pages';
+import { VaultInfosProvider } from './providers/VaultInfosProvider';
 
 const VaultRoutes = () => (
   <VaultInfosProvider>
@@ -55,4 +56,4 @@ const VaultRoutes = () => (
   </VaultInfosProvider>
 );
 
-export { vaultRoutes };
+export { VaultRoutes };
