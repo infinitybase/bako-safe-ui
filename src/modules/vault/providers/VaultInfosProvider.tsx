@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { UseVaultDetailsReturn, useVaultDetails } from '../hooks';
 
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useGetParams } from '@/modules';
 
 export type IVaultInfoContext = UseVaultDetailsReturn | null;

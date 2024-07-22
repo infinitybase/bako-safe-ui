@@ -33,12 +33,9 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 
 const VaultDetailsPage = () => {
-  const { handleIncomingAction, handleOutgoingAction } = useFilterTxType();
-
   const {
     params,
     vault,
@@ -216,8 +213,8 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
+          incomingAction={vault.transactions.handleIncomingAction}
+          outgoingAction={vault.transactions.handleOutgoingAction}
           buttonsFullWidth={isSmall}
         />
       </Box>

@@ -12,7 +12,7 @@ import { TransactionService } from '@/modules/transactions/services';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
-const TRANSACTION_QUERY_KEYS = {
+export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
   VAULT: (id: string, filter?: IListTransactions) => [
