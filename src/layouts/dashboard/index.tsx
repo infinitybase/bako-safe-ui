@@ -8,7 +8,7 @@ import { Container } from './container';
 import { Content } from './content';
 import { Drawer } from './drawer';
 import { Header } from './header';
-import { Sidebar } from './sidebar';
+import { Sidebar } from '../../modules/vault/layout/sidebar';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

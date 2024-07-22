@@ -1,14 +1,22 @@
 import { useBakoSafeVault } from '@/modules/core';
+import { ordinateMembers } from '../../utils';
 
 const VAULT_DETAIL_QUERY_KEY = 'vault/get';
 
 function useVaultDetailsRequest(id: string) {
   const { vault, ...rest } = useBakoSafeVault(id);
-  // data.BakoSafeVault.members = ordinateMembers(members, owner);
+
+  const predicate = {
+    ...vault?.BakoSafeVault,
+    members: ordinateMembers(
+      vault?.BakoSafeVault.members!,
+      vault?.BakoSafeVault.owner!,
+    ),
+  };
 
   return {
     ...rest,
-    predicate: vault?.BakoSafeVault,
+    predicate,
     predicateInstance: vault,
     members: vault,
   };

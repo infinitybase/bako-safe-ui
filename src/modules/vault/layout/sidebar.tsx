@@ -15,7 +15,7 @@ import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
 
-import { useSidebar } from './hook';
+import { useSidebar } from '../../../layouts/dashboard/hook';
 import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;

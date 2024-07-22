@@ -120,26 +120,28 @@ export class TransactionService {
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets } = input;
 
-    if (vault) {
-      const { transactionRequest } = await Transfer.instance({
-        vault,
-        transfer: {
-          name: '',
-          assets,
-          witnesses: [],
-        },
-      });
-
-      const { maxFee } =
-        await vault.provider.getTransactionCost(transactionRequest);
-
+    if (!vault)
       return {
-        fee: maxFee.add(
-          bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
-        ),
-        transactionRequest,
+        fee: bn(0),
       };
-    }
+
+    const { transactionRequest } = await Transfer.instance({
+      vault,
+      transfer: {
+        name: '',
+        assets,
+        witnesses: [],
+      },
+    });
+
+    const { maxFee } =
+      await vault.provider.getTransactionCost(transactionRequest);
+
+    return {
+      fee: maxFee.add(
+        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
+      ),
+    };
   }
 
   static async getTransactionsHistory(id: string) {
