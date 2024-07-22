@@ -19,9 +19,8 @@ const Pages = {
     '/workspace/:workspaceId/vault/:vaultId/settings',
   ),
   userVaults: pageRoute<{ workspaceId: string }>(
-    '/workspace/:workspaceId/vault/me',
+    '/workspace/:workspaceId/list/vault/me',
   ),
-  // userVaults: pageRoute('/workspace/:workspaceId/vault/me'),
 
   addressBook: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/address-book',
