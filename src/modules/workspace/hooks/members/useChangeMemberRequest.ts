@@ -9,30 +9,29 @@ import {
   WorkspaceService,
 } from '@/modules/workspace/services';
 
-const useIncludeMemberRequest = (workspaceId: string) =>
+const useIncludeMemberRequest = () =>
   useMutation({
-    mutationKey: WorkspacesQueryKey.ADD_MEMBER(workspaceId),
+    mutationKey: WorkspacesQueryKey.ADD_MEMBER(),
     mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
       WorkspaceService.includeMember({
-        id: workspaceId,
         address: Address.fromString(userAddress).bech32Address,
       }),
   });
 
 type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;
 
-const useChangePermissionsRequest = (workspaceId: string) =>
+const useChangePermissionsRequest = () =>
   useMutation({
-    mutationKey: WorkspacesQueryKey.UPDATE_PERMISSION(workspaceId),
+    mutationKey: WorkspacesQueryKey.UPDATE_PERMISSION(),
     mutationFn: (payload: ChangePermissionPayload) =>
-      WorkspaceService.updatePermissions({ id: workspaceId, ...payload }),
+      WorkspaceService.updatePermissions({ ...payload }),
   });
 
-const useDeleteMemberRequest = (workspaceId: string) =>
+const useDeleteMemberRequest = () =>
   useMutation({
-    mutationKey: WorkspacesQueryKey.DELETE_MEMBER(workspaceId),
+    mutationKey: WorkspacesQueryKey.DELETE_MEMBER(),
     mutationFn: (payload: DeleteWorkspaceMemberPayload) =>
-      WorkspaceService.deleteMember({ id: payload.id, member: payload.member }),
+      WorkspaceService.deleteMember({ member: payload.member }),
   });
 
 export {

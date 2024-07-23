@@ -81,9 +81,9 @@ const useChangeMember = () => {
     });
   }, [permissionForm.watch('permission')]);
 
-  const memberRequest = useIncludeMemberRequest(params.workspaceId!);
-  const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
-  const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
+  const memberRequest = useIncludeMemberRequest();
+  const permissionsRequest = useChangePermissionsRequest();
+  const deleteRequest = useDeleteMemberRequest();
 
   const handleEditMemberPermission = useCallback(
     (workspace: Workspace) => {
@@ -171,7 +171,6 @@ const useChangeMember = () => {
 
     deleteRequest.mutate(
       {
-        id: workspace.id,
         member: member.id,
       },
       {
