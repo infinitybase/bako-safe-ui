@@ -13,6 +13,7 @@ import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
+import { useGetParams } from '@/modules';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -30,8 +31,13 @@ export enum CLIFeaturesLabels {
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const { userId } = useAuth();
 
+  const {
+    vaultPageParams: { workspaceId },
+  } = useGetParams();
+  // Temporary solution to solve build/type problem, while the BakoSafeVault type is adjusted(needs to include workspace on it)
   const { workspace } = useGetWorkspaceRequest(
-    vault?.predicate.workspace?.id ?? '',
+    workspaceId ?? '',
+    // vault?.predicate.workspace?.id ?? '',
   );
   const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
     null,
