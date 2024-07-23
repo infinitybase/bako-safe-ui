@@ -31,54 +31,22 @@ function useVaultAssets(predicate?: Vault) {
 
   const auth = useAuth();
 
-  const { data: assets, ...rest } = useQuery({
+  const { data, ...rest } = useQuery({
     queryKey: [
       'predicate/assets',
       auth.workspaces.current,
       predicate?.BakoSafeVaultId,
     ],
     queryFn: () =>
-      balancesToAssets(setBalanceUSD, predicate).then((data) => {
+      balancesToAssets(predicate).then((data) => {
         setTimeout(() => setIsFirstAssetsLoading(false), 500);
         return data;
       }),
-    initialData: [],
+    initialData: {},
     refetchInterval: 10000,
     placeholderData: (previousData) => previousData,
     enabled: !!predicate,
   });
-
-  const findBiggerAsset = () => {
-    let bigger = 0;
-    const isValid = assets && assets.length > 0;
-
-    if (isValid) {
-      setBiggerAsset(assets[0]);
-      assets.map((item, index) => {
-        const _isValid =
-          index > 0 &&
-          item?.amount &&
-          bn(bn.parseUnits(assets[bigger].amount)) <
-            bn(bn.parseUnits(item.amount));
-        if (_isValid) {
-          bigger = index;
-        }
-      });
-      setBiggerAsset(assets[bigger]);
-    } else {
-      setBiggerAsset({
-        assetId: NativeAssetId,
-        name: '',
-        icon: '',
-        slug: '',
-        amount: '0',
-      });
-    }
-  };
-
-  useEffect(() => {
-    findBiggerAsset();
-  }, [assets]);
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
