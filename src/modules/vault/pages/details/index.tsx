@@ -145,7 +145,7 @@ const VaultDetailsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {limitCharacters(vault?.predicate?.name ?? '', 25)}
+                {limitCharacters(vault?.data?.name ?? '', 25)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -160,21 +160,21 @@ const VaultDetailsPage = () => {
             isDisabled={!canSetTemplate || true} // todo: fix this
             onClick={() => {
               if (
-                !vault.predicate?.id ||
-                !vault.predicate?.minSigners ||
-                !vault.predicate.members ||
+                !vault.data?.id ||
+                !vault.data?.minSigners ||
+                !vault.data.members ||
                 !vaultPageParams.workspaceId
               )
                 return;
               setTemplateFormInitial({
-                minSigners: vault.predicate?.minSigners!,
+                minSigners: vault.data?.minSigners!,
                 addresses:
-                  vault.members! &&
-                  vault.predicate?.members.map((signer) => signer.address),
+                  vault.data.members! &&
+                  vault.data?.members.map((signer) => signer.address),
               });
               navigate(
                 Pages.createTemplate({
-                  vaultId: vault.predicate.id!,
+                  vaultId: vault.data.id!,
                   workspaceId: vaultPageParams.workspaceId!,
                 }),
               );
@@ -304,7 +304,7 @@ const VaultDetailsPage = () => {
                   navigate(
                     Pages.createTransaction({
                       workspaceId: vaultWkId!,
-                      vaultId: vault?.predicate?.id!,
+                      vaultId: vault?.data?.id!,
                     }),
                   )
                 }

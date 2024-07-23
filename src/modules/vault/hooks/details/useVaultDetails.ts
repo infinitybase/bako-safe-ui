@@ -5,10 +5,11 @@ import { useAuthStore } from '@/modules/auth/store';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useVaultAssets } from '../assets';
-import { useSidebar, useVaultDetailsRequest } from '../details';
+import { useSidebar } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useVaultByIdRequest } from '@/modules';
 
 const useVaultDetails = () => {
   const [byMonth, setByMonth] = useState(false);
@@ -20,10 +21,12 @@ const useVaultDetails = () => {
   } = useGetParams();
   const { account } = useAuthStore();
 
-  const { predicateInstance, ...rest } = useVaultDetailsRequest(vaultId!);
+  const vaultRequest = useVaultByIdRequest(vaultId ?? '');
+
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
+
   const vaultTransactionsRequest = useVaultTransactionsRequest(
-    predicateInstance!,
+    vaultId!,
     byMonth,
     txFilterType,
   );
@@ -31,12 +34,11 @@ const useVaultDetails = () => {
     params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
   });
 
-  const assets = useVaultAssets(predicateInstance);
+  const assets = useVaultAssets(vaultId!);
 
   return {
     vault: {
-      predicateInstance,
-      ...rest,
+      ...vaultRequest,
     },
     transactions: {
       ...vaultTransactionsRequest,

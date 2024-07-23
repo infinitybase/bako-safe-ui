@@ -47,7 +47,7 @@ const useBakoSafeCreateTransaction = ({
 };
 
 interface UseBakoSafeListTransactionParams {
-  vault: Vault;
+  vaultId: string;
   filter?: IListTransactions & {
     limit: number;
     byMonth?: boolean;
@@ -56,18 +56,18 @@ interface UseBakoSafeListTransactionParams {
 }
 
 const useBakoSafeTransactionList = ({
-  vault,
+  vaultId,
   filter,
 }: UseBakoSafeListTransactionParams) => {
   return useBakoSafeQuery(
-    TRANSACTION_QUERY_KEYS.VAULT(vault?.BakoSafeVaultId, filter),
+    TRANSACTION_QUERY_KEYS.VAULT(vaultId, filter),
     async () => {
       return await TransactionService.getTransactionsPagination({
-        predicateId: [vault?.BakoSafeVaultId],
+        predicateId: [vaultId],
         ...filter,
       });
     },
-    { enabled: !!vault },
+    { enabled: !!vaultId, refetchOnWindowFocus: false },
   );
 };
 

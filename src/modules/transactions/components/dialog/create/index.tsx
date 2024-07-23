@@ -41,6 +41,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getCoinAmount: assets.getCoinAmount,
     predicateInstance,
     onClose: props.onClose,
+    isOpen: props.isOpen,
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();

@@ -145,7 +145,7 @@ const TransactionsVaultPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.predicate?.id!,
+                      vaultId: vault.data?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -153,7 +153,7 @@ const TransactionsVaultPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault?.predicate?.name}
+                {vault?.data?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
 
@@ -352,7 +352,7 @@ const TransactionsVaultPage = () => {
             navigate(
               Pages.createTransaction({
                 workspaceId: vaultWkId!,
-                vaultId: vault.predicate?.id!,
+                vaultId: vault.data?.id!,
               }),
             )
           }

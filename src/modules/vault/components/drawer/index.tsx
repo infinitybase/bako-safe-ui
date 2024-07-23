@@ -37,10 +37,6 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     isOpen: props.isOpen,
   });
 
-  const {
-    assets: { setIsFirstAssetsLoading },
-  } = useVaultInfosContext();
-
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
@@ -116,9 +112,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
                     isActive={vaultId === vault.id}
                     description={vault.description}
                     isSingleWorkspace={vault.workspace.single}
-                    onClick={() =>
-                      drawer.onSelectVault(vault, setIsFirstAssetsLoading)
-                    }
+                    onClick={() => drawer.onSelectVault(vault)}
                   />
                 );
               })}

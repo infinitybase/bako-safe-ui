@@ -28,7 +28,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   const {
     isPendingSigner,
     pendingSignerTransactionsLength,
-    assets: { isFirstAssetsLoading, hasBalance },
+    assets: { isLoading, hasBalance },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
@@ -59,12 +59,10 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
-          isFirstAssetsLoading={isFirstAssetsLoading}
-          name={String(`${vault.predicate?.name?.slice(0, 9)}...`)}
-          fullName={String(vault.predicate?.name)}
-          address={
-            AddressUtils.format(vault?.predicate?.predicateAddress ?? '')!
-          }
+          isFirstAssetsLoading={isLoading}
+          name={String(`${vault.data?.name?.slice(0, 9)}...`)}
+          fullName={String(vault.data?.name)}
+          address={AddressUtils.format(vault?.data?.predicateAddress ?? '')!}
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount
           }

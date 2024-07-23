@@ -74,7 +74,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
     return as;
-  }, [vault.predicate?.id]);
+  }, [vault.data?.id]);
 
   if (!vault) return null;
 
@@ -125,7 +125,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     <Center>
                       <Avatar
                         variant="roundedSquare"
-                        name={vault.predicate?.name}
+                        name={vault.data?.name}
                         bg="grey.900"
                         color="white"
                         size={'lg'}
@@ -141,13 +141,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
                       >
                         {isExtraSmall
-                          ? limitCharacters(vault.predicate?.name ?? '', 10)
-                          : vault.predicate?.name}
+                          ? limitCharacters(vault.data?.name ?? '', 10)
+                          : vault.data?.name}
                       </Heading>
 
                       <Box maxW={420}>
                         <Text variant="description">
-                          {vault?.predicate?.description}
+                          {vault?.data?.description}
                         </Text>
                       </Box>
                     </Box>
@@ -217,7 +217,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
-                            openFaucet(vault.predicate?.predicateAddress!)
+                            openFaucet(vault.data?.predicateAddress!)
                           }
                           position="relative"
                         >
@@ -252,7 +252,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           onClick={() =>
                             navigate(
                               Pages.createTransaction({
-                                vaultId: vault.predicate?.id!,
+                                vaultId: vault.data?.id!,
                                 workspaceId,
                               }),
                             )
@@ -331,7 +331,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                   >
                     <QRCodeSVG
-                      value={vault?.predicate?.predicateAddress!}
+                      value={vault?.data?.predicateAddress!}
                       fgColor="black"
                       bgColor="white"
                       style={{
@@ -346,11 +346,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     mb={{ base: 4, sm: 0 }}
                     maxW={{ base: '40', sm: 180 }}
                     address={
-                      AddressUtils.format(
-                        vault?.predicate?.predicateAddress ?? '',
-                      )!
+                      AddressUtils.format(vault?.data?.predicateAddress ?? '')!
                     }
-                    addressToCopy={vault?.predicate?.predicateAddress!}
+                    addressToCopy={vault?.data?.predicateAddress!}
                   />
                 </VStack>
               </Stack>

@@ -12,6 +12,7 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
     enabled: predicateId && !!predicateId[0],
+    refetchOnWindowFocus: false,
   });
 };
 

@@ -14,43 +14,26 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
 
 import { VaultService } from '../../services';
 
-const balancesToAssets = async (predicate?: Vault) => {
-  if (!predicate) return {};
-
-  const { currentBalanceUSD, currentBalance } =
-    await VaultService.hasReservedCoins(predicate.BakoSafeVaultId);
-
-  return { assets: currentBalance, balanceUSD: currentBalanceUSD };
-};
-
-function useVaultAssets(predicate?: Vault) {
+function useVaultAssets(predicateId: string) {
   const initialVisibility = isVisibleBalance();
-
-  const [isFirstAssetsLoading, setIsFirstAssetsLoading] = useState(true);
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
   const auth = useAuth();
 
   const { data, ...rest } = useQuery({
-    queryKey: [
-      'predicate/assets',
-      auth.workspaces.current,
-      predicate?.BakoSafeVaultId,
-    ],
-    queryFn: () =>
-      balancesToAssets(predicate).then((data) => {
-        setTimeout(() => setIsFirstAssetsLoading(false), 500);
-        return data;
-      }),
-    initialData: {},
+    queryKey: ['predicateId/assets', auth.workspaces.current, predicateId],
+    queryFn: () => VaultService.hasReservedCoins(predicateId),
     refetchInterval: 10000,
+    refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
-    enabled: !!predicate,
+    enabled: !!predicateId,
   });
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
-      const balance = data?.assets?.find((asset) => asset.assetId === assetId);
+      const balance = data?.currentBalance.find(
+        (asset) => asset.assetId === assetId,
+      );
 
       if (!balance) {
         return bn(0);
@@ -58,7 +41,7 @@ function useVaultAssets(predicate?: Vault) {
 
       return bn(bn.parseUnits(balance.amount!));
     },
-    [data?.assets],
+    [data?.currentBalance],
   );
 
   const getAssetInfo = (assetId: string) => {
@@ -84,12 +67,12 @@ function useVaultAssets(predicate?: Vault) {
   );
 
   const hasBalance = useMemo(() => {
-    const result = data?.assets?.some((asset) =>
+    const result = data?.currentBalance.some((asset) =>
       bn(bn.parseUnits(asset.amount)).gt(0),
     );
 
     return result;
-  }, [data?.assets]);
+  }, [data?.currentBalance]);
 
   const ethBalance = useMemo(() => {
     return getCoinAmount(NativeAssetId).format();
@@ -101,7 +84,7 @@ function useVaultAssets(predicate?: Vault) {
   };
 
   return {
-    assets: data?.assets,
+    assets: data?.currentBalance,
     ...rest,
     getAssetInfo,
     getCoinAmount,
@@ -109,11 +92,9 @@ function useVaultAssets(predicate?: Vault) {
     setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
-    hasAssets: !!data?.assets?.length,
-    isFirstAssetsLoading,
+    hasAssets: !!data?.currentBalance.length,
     visibleBalance,
-    balanceUSD: data?.balanceUSD,
-    setIsFirstAssetsLoading,
+    balanceUSD: data?.currentBalanceUSD,
   };
 }
 

@@ -106,7 +106,7 @@ const VaultSettingsPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.predicate?.id!,
+                      vaultId: vault.data?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -114,7 +114,7 @@ const VaultSettingsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault?.predicate?.name}
+                {vault?.data?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>

@@ -12,6 +12,7 @@ import {
   Asset,
   NativeAssetId,
   useBakoSafeCreateTransaction,
+  useBakoSafeVault,
   useGetParams,
   useGetTokenInfosArray,
   WorkspacesQueryKey,
@@ -29,6 +30,7 @@ const recipientMock =
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+  isOpen: boolean;
   assets: Asset[] | undefined;
   hasAssetBalance: (assetId: string, value: string) => boolean;
   predicateInstance: Vault | undefined;
@@ -85,8 +87,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
+  const { vault } = useBakoSafeVault(vaultId!);
+
   const transactionRequest = useBakoSafeCreateTransaction({
-    vault: props?.predicateInstance!,
+    vault: vault!,
     onSuccess: () => {
       successToast({
         title: 'Transaction created!',
@@ -113,12 +117,24 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
       handleClose();
     },
+
     onError: () => {
       errorToast({
         title: 'There was an error creating the transaction',
         description: 'Please try again later',
       });
     },
+  });
+
+  const handleCreateTransaction = form.handleSubmit((data) => {
+    transactionRequest.mutate({
+      name: data.name,
+      assets: data.transactions!.map((transaction) => ({
+        amount: transaction.amount,
+        assetId: transaction.asset,
+        to: transaction.value,
+      })),
+    });
   });
 
   // Balance available
@@ -205,17 +221,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     props?.onClose();
   };
 
-  const handleCreateTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
-  });
-
   const debouncedResolveTransactionCosts = useCallback(
     debounce((assets, vault) => {
       resolveTransactionCosts.mutate({ assets, vault });
@@ -264,7 +269,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
             assetId: asset.assetId,
           }));
 
-    debouncedResolveTransactionCosts(assets, props?.predicateInstance!);
+    debouncedResolveTransactionCosts(assets, vault!);
   }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
 
   return {
