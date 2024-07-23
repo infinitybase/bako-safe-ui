@@ -75,7 +75,7 @@ const AddressBookPage = () => {
         form={form}
         dialog={contactDialog}
         isLoading={
-          createContactRequest.isLoading || updateContactRequest.isLoading
+          createContactRequest.isPending || updateContactRequest.isPending
         }
         isEdit={!!contactToEdit?.id}
       />
@@ -85,7 +85,7 @@ const AddressBookPage = () => {
           contactToDelete={contactToDelete}
           dialog={deleteContactDialog}
           handleDelete={handleDeleteContact}
-          isLoading={deleteContactRequest.isLoading}
+          isLoading={deleteContactRequest.isPending}
         />
       )}
 

@@ -1,18 +1,22 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
+
+import { useTokensStore } from '@/modules/assets-tokens/store/useTokensStore';
 
 import { HomeService } from '../services';
-import { useTokensStore } from '@/modules/assets-tokens/store/useTokensStore';
 
 const useTokensUSDAmountRequest = () => {
   const { setTokenCurrentAmount, setIsLoading } = useTokensStore();
 
-  return useQuery(['tokens'], () => HomeService.getTokensUSDAmount(), {
+  return useQuery({
+    queryKey: ['tokens'],
+    queryFn: () =>
+      HomeService.getTokensUSDAmount().then((data) => {
+        setTokenCurrentAmount(data ?? []);
+        setIsLoading(false);
+        return data;
+      }),
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 10,
-    onSuccess: (data) => {
-      setTokenCurrentAmount(data ?? []);
-      setIsLoading(false);
-    },
   });
 };
 

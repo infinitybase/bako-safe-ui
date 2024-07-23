@@ -88,7 +88,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
       <CreateContactDialog
         form={contactForm}
         dialog={contactDialog}
-        isLoading={createContactRequest.isLoading}
+        isLoading={createContactRequest.isPending}
         isEdit={false}
       />
 

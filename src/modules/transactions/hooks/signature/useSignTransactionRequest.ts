@@ -1,4 +1,4 @@
-import { useMutation, UseMutationOptions } from 'react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import {
   SignerTransactionPayload,
@@ -13,7 +13,11 @@ const useSignTransactionRequest = (
     SignerTransactionPayload
   >,
 ) => {
-  return useMutation('transaction/sign', TransactionService.signer, options);
+  return useMutation({
+    mutationKey: ['transaction/sign'],
+    mutationFn: TransactionService.signer,
+    ...options,
+  });
 };
 
 export { useSignTransactionRequest };

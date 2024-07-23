@@ -1,5 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
+import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -17,7 +18,6 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { Address } from 'fuels';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -85,7 +85,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: AddressBookQueryKey.DEFAULT,
+        queryKey: [AddressBookQueryKey.DEFAULT],
         exact: false,
       });
       contactDialog.onClose();

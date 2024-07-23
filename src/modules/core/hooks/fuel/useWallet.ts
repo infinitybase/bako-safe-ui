@@ -1,6 +1,10 @@
 import { useFuel } from '@fuels/react';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from '@tanstack/react-query';
 import { Account } from 'fuels';
-import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
 import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
@@ -14,13 +18,11 @@ import { FuelQueryKeys } from './types';
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
 
-  return useQuery(
-    [FuelQueryKeys.WALLET, account],
-    () => fuel?.getWallet(account!),
-    {
-      enabled: !!fuel && !!account,
-    },
-  );
+  return useQuery({
+    queryKey: [FuelQueryKeys.WALLET, account],
+    queryFn: () => fuel?.getWallet(account!),
+    enabled: !!fuel && !!account,
+  });
 };
 
 const useMyWallet = () => {
@@ -67,8 +69,8 @@ const useWalletSignMessage = (
   const { data: wallet } = useMyWallet();
   const { webAuthn, accountType } = useAuth();
 
-  return useMutation(
-    async (message: string) => {
+  return useMutation({
+    mutationFn: async (message: string) => {
       switch (accountType) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
@@ -80,11 +82,9 @@ const useWalletSignMessage = (
           return signAccountFuel(wallet!, message);
       }
     },
-    {
-      retry: false,
-      ...options,
-    },
-  );
+    retry: false,
+    ...options,
+  });
 };
 
 export { useMyWallet, useWallet, useWalletSignMessage };

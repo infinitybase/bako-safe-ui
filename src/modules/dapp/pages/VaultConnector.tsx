@@ -297,7 +297,7 @@ const VaultConnector = () => {
                     userAddress: auth.account,
                   })
                 }
-                isLoading={send.isLoading}
+                isLoading={send.isPending}
               >
                 Connect
               </Button>

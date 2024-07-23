@@ -108,7 +108,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
       <CreateContactDialog
         form={contactForm}
         dialog={contactDialog}
-        isLoading={createContactRequest.isLoading}
+        isLoading={createContactRequest.isPending}
         isEdit={false}
       />
 
