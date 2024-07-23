@@ -1,21 +1,19 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
+import { TransactionType } from 'bakosafe';
 
 import { useAuth } from '@/modules/auth/hooks';
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
-import { TransactionType } from 'bakosafe';
 
 const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
   const auth = useAuth();
 
-  return useQuery(
-    [HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current), type],
-    () => HomeService.homeTransactions(type),
-    {
-      refetchOnWindowFocus: true,
-    },
-  );
+  return useQuery({
+    queryKey: [HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current), type],
+    queryFn: () => HomeService.homeTransactions(type),
+    refetchOnWindowFocus: true,
+  });
 };
 
 export { useHomeTransactionsRequest };

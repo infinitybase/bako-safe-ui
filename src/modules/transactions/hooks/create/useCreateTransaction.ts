@@ -1,8 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
 import { BakoSafe, IAssetGroupById, Vault } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
@@ -92,13 +92,15 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-      queryClient.invalidateQueries([
-        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-          auth.workspaces.current,
-        ),
-        TRANSACTION_LIST_QUERY_KEY,
-        USER_TRANSACTIONS_QUERY_KEY,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: [
+          WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+            auth.workspaces.current,
+          ),
+          TRANSACTION_LIST_QUERY_KEY,
+          USER_TRANSACTIONS_QUERY_KEY,
+        ],
+      });
 
       queryClient.invalidateQueries({
         predicate: (query) => {

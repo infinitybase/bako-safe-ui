@@ -88,7 +88,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       <CreateContactDialog
         form={contactForm}
         dialog={contactDialog}
-        isLoading={createContactRequest.isLoading}
+        isLoading={createContactRequest.isPending}
         isEdit={false}
       />
       <VStack spacing={5}>

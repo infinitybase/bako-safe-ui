@@ -3,7 +3,6 @@ import { BakoSafe, IPayloadVault, Vault } from 'bakosafe';
 import { useAuth } from '@/modules/auth';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
-import { ordinateMembers } from '@/modules/vault/utils';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
@@ -24,15 +23,6 @@ const useBakoSafeVault = (id: string) => {
     },
     {
       enabled: !!id,
-      onSuccess: (data) => {
-        // ordinate vault members
-        const {
-          BakoSafeVault: { members, owner },
-        } = data;
-
-        data.BakoSafeVault.members = ordinateMembers(members, owner);
-        return data;
-      },
     },
   );
   return {

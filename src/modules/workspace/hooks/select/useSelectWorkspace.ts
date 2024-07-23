@@ -1,4 +1,4 @@
-import { useMutation, UseMutationOptions } from 'react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 //import { CookieName } from '@/config/cookies';
 import { useAuth } from '@/modules/auth/hooks';
@@ -11,11 +11,11 @@ import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
 ) => {
-  return useMutation(
-    WorkspacesQueryKey.SELECT(),
-    WorkspaceService.select,
-    options,
-  );
+  return useMutation({
+    mutationKey: WorkspacesQueryKey.SELECT(),
+    mutationFn: WorkspaceService.select,
+    ...options,
+  });
 };
 
 interface UseSelectWorkspaceOptions {
@@ -24,7 +24,7 @@ interface UseSelectWorkspaceOptions {
 }
 
 const useSelectWorkspace = () => {
-  const { mutate, isLoading, data, ...request } = useSelectWorkspaceRequest();
+  const { mutate, isPending, data, ...request } = useSelectWorkspaceRequest();
   const auth = useAuth();
 
   const selectWorkspace = (
@@ -52,7 +52,7 @@ const useSelectWorkspace = () => {
   return {
     selectWorkspace,
     selectedWorkspace: data,
-    isSelecting: isLoading,
+    isSelecting: isPending,
     ...request,
   };
 };

@@ -74,7 +74,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     props.onClose?.();
     setIsFirstAssetsLoading(true);
     queryClient.resetQueries();
-    queryClient.invalidateQueries('vault/pagination');
+    queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
     vaultListRequestRequest.refetch();
     setSearch('');
     selectWorkspace(vault.workspace.id);
@@ -88,7 +88,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   const onCloseDrawer = () => {
     props.onClose?.();
-    queryClient.invalidateQueries('vault/pagination');
+    queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
     queryClient.resetQueries();
     setSearch('');
   };

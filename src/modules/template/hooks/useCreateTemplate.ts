@@ -1,19 +1,19 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { ITemplatePayload } from '@/modules/core';
 
 import { TemplateService } from '../services/methods';
 
 const useCreate = () => {
-  const { mutateAsync, isLoading, isError } = useMutation(
-    async (data: ITemplatePayload) => {
+  const { mutateAsync, isPending, isError } = useMutation({
+    mutationFn: async (data: ITemplatePayload) => {
       return await TemplateService.create(data);
     },
-  );
+  });
 
   return {
     createTemplate: mutateAsync,
-    isLoading,
+    isLoading: isPending,
     isError,
   };
 };

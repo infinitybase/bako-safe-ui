@@ -1,7 +1,7 @@
 import { useFuel } from '@fuels/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
@@ -9,15 +9,8 @@ interface BakoSafeQueryClientProviderProps {
   children: React.ReactNode;
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    mutations: {
-      variables: {
-        teste: '',
-      },
-    },
-  },
-});
+const queryClient = new QueryClient();
+
 //force deploy
 const BakoSafeQueryClientProvider = (
   props: BakoSafeQueryClientProviderProps,
@@ -25,24 +18,30 @@ const BakoSafeQueryClientProvider = (
   const { fuel } = useFuel();
 
   function onCurrentAccount() {
-    queryClient.invalidateQueries([FuelQueryKeys.CURRENT_ACCOUNT]);
-    queryClient.invalidateQueries([FuelQueryKeys.WALLET]);
+    queryClient.invalidateQueries({
+      queryKey: [FuelQueryKeys.CURRENT_ACCOUNT],
+    });
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.WALLET] });
   }
 
   function onAccount() {
-    queryClient.invalidateQueries([FuelQueryKeys.CURRENT_ACCOUNT]);
-    queryClient.invalidateQueries([FuelQueryKeys.WALLET]);
+    queryClient.invalidateQueries({
+      queryKey: [FuelQueryKeys.CURRENT_ACCOUNT],
+    });
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.WALLET] });
   }
 
   function onConnection() {
-    queryClient.invalidateQueries([FuelQueryKeys.CURRENT_ACCOUNT]);
-    queryClient.invalidateQueries([FuelQueryKeys.WALLET]);
-    queryClient.invalidateQueries([FuelQueryKeys.IS_CONNECTED]);
-    queryClient.invalidateQueries([FuelQueryKeys.PROVIDER]);
+    queryClient.invalidateQueries({
+      queryKey: [FuelQueryKeys.CURRENT_ACCOUNT],
+    });
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.WALLET] });
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.IS_CONNECTED] });
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.PROVIDER] });
   }
 
   function onNetwork() {
-    queryClient.invalidateQueries([FuelQueryKeys.PROVIDER]);
+    queryClient.invalidateQueries({ queryKey: [FuelQueryKeys.PROVIDER] });
   }
 
   useEffect(() => {

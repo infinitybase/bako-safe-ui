@@ -1,5 +1,5 @@
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
-import { useInfiniteQuery } from 'react-query';
 
 import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
 
@@ -21,15 +21,15 @@ const useInfiniteListcontactsRequest = (
       : perPage;
 
   const { data, fetchNextPage, isLoading, hasNextPage, isFetching, ...query } =
-    useInfiniteQuery(
-      AddressBookQueryKey.LIST_BY_USER_PAGINATED(
+    useInfiniteQuery({
+      queryKey: AddressBookQueryKey.LIST_BY_USER_PAGINATED(
         workspaceId,
         value ?? '',
         contactIds,
         includePersonal,
         excludeContactsQueryKey,
       ),
-      ({ pageParam }) =>
+      queryFn: ({ pageParam }) =>
         AddressBookService.listWithPagination({
           q: value,
           excludeContacts,
@@ -37,13 +37,12 @@ const useInfiniteListcontactsRequest = (
           perPage: dynamicPerPage,
           page: pageParam || page,
         }),
-      {
-        getNextPageParam: (lastPage) =>
-          lastPage.currentPage !== lastPage.totalPages
-            ? lastPage.nextPage
-            : undefined,
-      },
-    );
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) =>
+        lastPage.currentPage !== lastPage.totalPages
+          ? lastPage.nextPage
+          : undefined,
+    });
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(

@@ -24,23 +24,15 @@ export interface WorkspaceHomeResponse {
   transactions: IPagination<ITransaction & { predicate: Predicate }>;
 }
 
-export interface UpdateWorkspaceMembersPayload {
-  id: Workspace['id'];
-  members: string[];
-}
-
 export interface IncludeWorkspaceMemberPayload {
-  id: Workspace['id'];
   address: string;
 }
 
 export interface UpdateWorkspacePermissionsPayload {
-  id: Workspace['id'];
   member: string;
   permissions: IPermission;
 }
 export interface DeleteWorkspaceMemberPayload {
-  id: Workspace['id'];
   member: string;
 }
 
@@ -93,28 +85,19 @@ export class WorkspaceService {
     return data;
   }
 
-  static async updateMembers(payload: UpdateWorkspaceMembersPayload) {
-    const { data } = await api.put<UpdateWorkspaceMembersResponse>(
-      `/workspace/${payload.id}/members`,
-      { members: payload.members },
-    );
-
-    return data;
-  }
-
   static async includeMember(payload: IncludeWorkspaceMemberPayload) {
-    const { id, address } = payload;
+    const { address } = payload;
     const { data } = await api.post<IncludeWorkspaceMemberResponse>(
-      `/workspace/${id}/members/${address}/include`,
+      `/workspace/members/${address}/include`,
     );
 
     return data;
   }
 
   static async updatePermissions(payload: UpdateWorkspacePermissionsPayload) {
-    const { id, permissions, member } = payload;
+    const { permissions, member } = payload;
     const { data } = await api.put<UpdateWorkspacePermissionsResponse>(
-      `/workspace/${id}/permissions/${member}`,
+      `/workspace/permissions/${member}`,
       { permissions },
     );
 
@@ -137,9 +120,9 @@ export class WorkspaceService {
   }
 
   static async deleteMember(payload: DeleteWorkspaceMemberPayload) {
-    const { id, member } = payload;
+    const { member } = payload;
     const { data } = await api.post<UpdateWorkspaceMembersResponse>(
-      `/workspace/${id}/members/${member}/remove`,
+      `/workspace/members/${member}/remove`,
     );
 
     return data;

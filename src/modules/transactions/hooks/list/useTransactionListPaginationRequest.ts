@@ -1,5 +1,5 @@
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { SortOptionTx } from 'bakosafe';
-import { useInfiniteQuery } from 'react-query';
 
 import { useAuth } from '@/modules/auth';
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
@@ -20,15 +20,15 @@ const useTransactionListPaginationRequest = (
     workspaces: { current },
   } = useAuth();
 
-  const { data, ...query } = useInfiniteQuery(
-    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+  const { data, ...query } = useInfiniteQuery({
+    queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       current,
       params.status as StatusFilter,
       params.predicateId?.[0],
       params.id,
       params.type,
     ),
-    ({ pageParam }) =>
+    queryFn: ({ pageParam }) =>
       TransactionService.getTransactionsPagination({
         ...params,
         perPage: 5,
@@ -36,15 +36,16 @@ const useTransactionListPaginationRequest = (
         orderBy: 'createdAt',
         sort: SortOptionTx.DESC,
         id: params.id,
+      }).then((data) => {
+        invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
+        return data;
       }),
-    {
-      onSuccess: () => invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]),
-      getNextPageParam: (lastPage) =>
-        lastPage.currentPage !== lastPage.totalPages
-          ? lastPage.nextPage
-          : undefined,
-    },
-  );
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.currentPage !== lastPage.totalPages
+        ? lastPage.nextPage
+        : undefined,
+  });
 
   return {
     ...query,

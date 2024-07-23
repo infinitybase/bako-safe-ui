@@ -28,12 +28,15 @@ const useHome = () => {
     selectWorkspace(auth.workspaces.single, {
       onSelect: async () => {
         auth.handlers.authenticateWorkspaceSingle();
-        await queryClient.invalidateQueries(
-          WorkspacesQueryKey.FULL_DATA(auth.workspaces.single, vaultId!),
-        );
-        await queryClient.invalidateQueries(
-          AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
-        );
+        await queryClient.invalidateQueries({
+          queryKey: WorkspacesQueryKey.FULL_DATA(
+            auth.workspaces.single,
+            vaultId!,
+          ),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
+        });
         navigate(Pages.home());
       },
     });

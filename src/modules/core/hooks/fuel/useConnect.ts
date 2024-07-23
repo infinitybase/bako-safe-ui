@@ -1,5 +1,5 @@
 import { useFuel } from '@fuels/react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { FuelQueryKeys } from './types';
 
@@ -11,20 +11,18 @@ export interface UseConnectParams {
 const useConnect = (params?: UseConnectParams) => {
   const { fuel } = useFuel();
 
-  const mutation = useMutation(
-    FuelQueryKeys.CONNECT,
-    () => {
+  const mutation = useMutation({
+    mutationKey: [FuelQueryKeys.CONNECT],
+    mutationFn: () => {
       return fuel?.connect();
     },
-    {
-      onSuccess: params?.onConnect,
-      onError: params?.onError,
-    },
-  );
+    onSuccess: params?.onConnect,
+    onError: params?.onError,
+  });
 
   return {
     connect: mutation.mutateAsync,
-    isConnecting: mutation.isLoading,
+    isConnecting: mutation.isPending,
     ...mutation,
   };
 };
@@ -32,8 +30,11 @@ const useConnect = (params?: UseConnectParams) => {
 const useDisconnect = () => {
   const { fuel } = useFuel();
 
-  const mutation = useMutation(FuelQueryKeys.DISCONNECT, () => {
-    return fuel?.disconnect();
+  const mutation = useMutation({
+    mutationKey: [FuelQueryKeys.DISCONNECT],
+    mutationFn: () => {
+      return fuel?.disconnect();
+    },
   });
 
   return {

@@ -1,4 +1,5 @@
 import { TransactionType } from 'bakosafe';
+
 import { AddressBookQueryKey } from './addressBook';
 import { HomeQueryKey } from './home';
 
@@ -102,21 +103,9 @@ export const WorkspacesQueryKey = {
     workspaceId,
     'by-id',
   ],
-  ADD_MEMBER: (workspaceId: string) => [
-    WorkspacesQueryKey.DEFAULT,
-    workspaceId,
-    'add-member',
-  ],
-  UPDATE_PERMISSION: (workspaceId: string) => [
-    WorkspacesQueryKey.DEFAULT,
-    workspaceId,
-    'update-permission',
-  ],
-  DELETE_MEMBER: (workspaceId: string) => [
-    WorkspacesQueryKey.DEFAULT,
-    workspaceId,
-    'delete-member',
-  ],
+  ADD_MEMBER: () => [WorkspacesQueryKey.DEFAULT, 'add-member'],
+  UPDATE_PERMISSION: () => [WorkspacesQueryKey.DEFAULT, 'update-permission'],
+  DELETE_MEMBER: () => [WorkspacesQueryKey.DEFAULT, 'delete-member'],
   TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
     workspaceId: string,
     status?: string,
