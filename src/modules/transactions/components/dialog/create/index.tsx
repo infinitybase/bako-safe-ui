@@ -21,10 +21,7 @@ import { CreateTransactionForm } from './form';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
-  const {
-    assets,
-    vault: { predicateInstance },
-  } = useVaultInfosContext();
+  const { assets } = useVaultInfosContext();
   const {
     form,
     nicks,
@@ -39,7 +36,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     assets: assets.assets,
     hasAssetBalance: assets.hasAssetBalance,
     getCoinAmount: assets.getCoinAmount,
-    predicateInstance,
     onClose: props.onClose,
     isOpen: props.isOpen,
   });

@@ -33,7 +33,6 @@ interface UseCreateTransactionParams {
   isOpen: boolean;
   assets: Asset[] | undefined;
   hasAssetBalance: (assetId: string, value: string) => boolean;
-  predicateInstance: Vault | undefined;
   getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
 }
 
