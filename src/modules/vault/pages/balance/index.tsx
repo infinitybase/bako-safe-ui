@@ -19,7 +19,7 @@ import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
-import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const VaultBalancePage = () => {

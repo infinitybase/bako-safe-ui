@@ -20,7 +20,7 @@ import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
-import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const VaultSettingsPage = () => {

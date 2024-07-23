@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
-import { UseVaultDetailsReturn, useVaultDetails } from '../hooks';
+import { createContext, useContext } from 'react';
+import { UseVaultDetailsReturn, useVaultDetails } from './hooks';
 
 export type IVaultInfoContext = UseVaultDetailsReturn | null;
 

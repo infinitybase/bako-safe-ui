@@ -1,34 +1,20 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
-import {
-  useTransactionListRequest,
-  useTransactionsSignaturePending,
-} from '@/modules/transactions/hooks';
-import { useVaultDetailsRequest } from '@/modules/vault/hooks';
 
-const useSidebar = () => {
-  const auth = useAuth();
+type UseSidebarProps = {
+  params: { workspaceId: string; vaultId: string };
+};
+
+const useSidebar = ({ params }: UseSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams<{ workspaceId: string; vaultId: string }>();
   const drawer = useDisclosure();
-
-  const vaultDetailsRequest = useVaultDetailsRequest(params.vaultId!);
-  const { data: transactions } = useTransactionListRequest(params.vaultId!);
   const {
     workspaces: { current },
   } = useAuth();
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
-
-  useMemo(() => {
-    pendingSignerTransactions.refetch();
-  }, [auth.account, params.vaultId, transactions]);
 
   const checkPathname = (path: string) => location.pathname === path;
 
@@ -66,15 +52,6 @@ const useSidebar = () => {
     },
     drawer,
     menuItems,
-    transactionListRequest: {
-      ...transactions,
-      pendingTransactions:
-        pendingSignerTransactions.data?.transactionsBlocked ?? false,
-      pendingSignerTransactionsLength:
-        pendingSignerTransactions.data?.ofUser || 0,
-      hasTransactions: !!transactions?.length,
-    },
-    vaultRequest: vaultDetailsRequest,
   };
 };
 

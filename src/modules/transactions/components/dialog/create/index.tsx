@@ -18,7 +18,7 @@ import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 
 import { CreateTransactionForm } from './form';
-import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const {

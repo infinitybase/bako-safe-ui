@@ -34,7 +34,7 @@ import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const VaultDetailsPage = () => {

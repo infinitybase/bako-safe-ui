@@ -9,7 +9,7 @@ import {
   VaultSettingsPage,
   TransactionsVaultPage,
 } from './pages';
-import { VaultInfosProvider } from './providers/VaultInfosProvider';
+import { VaultInfosProvider } from './VaultInfosProvider';
 import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
 
 const VaultRoutes = () => {

@@ -35,7 +35,7 @@ import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import { StatusFilter, useTransactionList } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
 import { useFilterTxType } from '../../../transactions/hooks/filter';
-import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const TransactionsVaultPage = () => {

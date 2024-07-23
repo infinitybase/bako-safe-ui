@@ -14,9 +14,7 @@ import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCre
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
-
-import { useSidebar } from '../../../layouts/dashboard/hook';
-import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -25,22 +23,14 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ onDrawer }: SidebarProps) => {
-  const {
-    route,
-    drawer,
-    menuItems,
-    vaultRequest,
-    transactionListRequest: {
-      pendingTransactions,
-      pendingSignerTransactionsLength,
-    },
-  } = useSidebar();
-
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     isPendingSigner,
+    pendingSignerTransactionsLength,
     assets: { isFirstAssetsLoading, hasBalance },
+    vault,
+    sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
 
   const {
@@ -70,18 +60,16 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
           isFirstAssetsLoading={isFirstAssetsLoading}
-          name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
-          fullName={String(vaultRequest.predicate?.name)}
+          name={String(`${vault.predicate?.name?.slice(0, 9)}...`)}
+          fullName={String(vault.predicate?.name)}
           address={
-            AddressUtils.format(
-              vaultRequest?.predicate?.predicateAddress ?? '',
-            )!
+            AddressUtils.format(vault?.predicate?.predicateAddress ?? '')!
           }
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount
           }
-          isLoading={vaultRequest.isLoading}
-          isFetching={vaultRequest.isFetching}
+          isLoading={vault.isLoading}
+          isFetching={vault.isFetching}
           onChangeVault={() => {
             refetch(), drawer.onOpen();
           }}
@@ -146,9 +134,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={ExchangeIcon} />
             <SidebarMenu.Title>Transactions</SidebarMenu.Title>
-            <SidebarMenu.Badge hidden={!pendingTransactions}>
+            <SidebarMenu.Badge hidden={!isPendingSigner}>
               <Icon as={PendingIcon} />{' '}
-              {pendingTransactions && pendingSignerTransactionsLength}
+              {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
           </SidebarMenu.Container>
 

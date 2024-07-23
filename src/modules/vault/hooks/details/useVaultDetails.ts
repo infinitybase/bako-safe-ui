@@ -5,7 +5,7 @@ import { useAuthStore } from '@/modules/auth/store';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { useVaultAssets } from '../assets';
-import { useVaultDetailsRequest } from '../details';
+import { useSidebar, useVaultDetailsRequest } from '../details';
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
@@ -16,7 +16,7 @@ const useVaultDetails = () => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
   const {
-    vaultPageParams: { vaultId },
+    vaultPageParams: { vaultId, workspaceId },
   } = useGetParams();
   const { account } = useAuthStore();
 
@@ -27,6 +27,9 @@ const useVaultDetails = () => {
     byMonth,
     txFilterType,
   );
+  const sideBarDetails = useSidebar({
+    params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
+  });
 
   const assets = useVaultAssets(predicateInstance);
 
@@ -43,12 +46,15 @@ const useVaultDetails = () => {
       handleIncomingAction,
       handleOutgoingAction,
     },
+    sideBarDetails,
     assets,
     account,
     inView: useInView(),
     pendingSignerTransactions,
     isPendingSigner:
       pendingSignerTransactions.data?.transactionsBlocked ?? false,
+    pendingSignerTransactionsLength:
+      pendingSignerTransactions.data?.ofUser || 0,
   };
 };
 
