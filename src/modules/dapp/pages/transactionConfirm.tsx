@@ -26,7 +26,7 @@ const TransactionConfirm = () => {
     cancelTransaction,
     vault,
     pendingSignerTransactions,
-    summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
+    summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     isLoading,
     send,
     socket,

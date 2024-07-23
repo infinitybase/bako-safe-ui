@@ -1,15 +1,13 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { localStorageKeys, UserQueryKey, UserService } from '../services';
 
 const useCheckNickname = (nickname: string) => {
-  return useQuery(
-    UserQueryKey.NICKNAME(nickname),
-    () => UserService.verifyNickname(nickname),
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery({
+    queryKey: UserQueryKey.NICKNAME(nickname),
+    queryFn: () => UserService.verifyNickname(nickname),
+    refetchOnWindowFocus: false,
+  });
 };
 
 const useGetAccountsByHardwareId = () => {
@@ -19,14 +17,12 @@ const useGetAccountsByHardwareId = () => {
     hardwareId = crypto.randomUUID();
     localStorage.setItem(localStorageKeys.HARDWARE_ID, hardwareId);
   }
-  return useQuery(
-    UserQueryKey.ACCOUNTS(hardwareId),
-    () => UserService.getByHardwareId(hardwareId!),
-    {
-      refetchOnWindowFocus: false,
-      enabled: !!hardwareId,
-    },
-  );
+  return useQuery({
+    queryKey: UserQueryKey.ACCOUNTS(hardwareId),
+    queryFn: () => UserService.getByHardwareId(hardwareId!),
+    refetchOnWindowFocus: false,
+    enabled: !!hardwareId,
+  });
 };
 
 export { useCheckNickname, useGetAccountsByHardwareId };

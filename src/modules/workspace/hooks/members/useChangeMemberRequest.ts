@@ -1,5 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
 import { Address } from 'fuels';
-import { useMutation } from 'react-query';
 
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
@@ -10,29 +10,30 @@ import {
 } from '@/modules/workspace/services';
 
 const useIncludeMemberRequest = () =>
-  useMutation(
-    WorkspacesQueryKey.ADD_MEMBER(),
-    (userAddress: IncludeWorkspaceMemberPayload['address']) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.ADD_MEMBER(),
+    mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
       WorkspaceService.includeMember({
         address: Address.fromString(userAddress).bech32Address,
       }),
-  );
+  });
 
 type ChangePermissionPayload = Omit<UpdateWorkspacePermissionsPayload, 'id'>;
 
 const useChangePermissionsRequest = () =>
-  useMutation(
-    WorkspacesQueryKey.UPDATE_PERMISSION(),
-    (payload: ChangePermissionPayload) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.UPDATE_PERMISSION(),
+    mutationFn: (payload: ChangePermissionPayload) =>
       WorkspaceService.updatePermissions({ ...payload }),
-  );
+  });
 
 const useDeleteMemberRequest = () =>
-  useMutation(
-    WorkspacesQueryKey.DELETE_MEMBER(),
-    (payload: DeleteWorkspaceMemberPayload) =>
+  useMutation({
+    mutationKey: WorkspacesQueryKey.DELETE_MEMBER(),
+    mutationFn: (payload: DeleteWorkspaceMemberPayload) =>
       WorkspaceService.deleteMember({ member: payload.member }),
-  );
+  });
+
 export {
   useChangePermissionsRequest,
   useDeleteMemberRequest,

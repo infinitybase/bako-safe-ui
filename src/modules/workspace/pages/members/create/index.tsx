@@ -186,7 +186,7 @@ const CreateMemberPage = () => {
       <CreateContactDialog
         form={addressBook.form}
         dialog={addressBook.contactDialog}
-        isLoading={addressBook.createContactRequest.isLoading}
+        isLoading={addressBook.createContactRequest.isPending}
         isEdit={false}
       />
       <Dialog.Header

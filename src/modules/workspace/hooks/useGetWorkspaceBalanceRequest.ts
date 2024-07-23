@@ -1,5 +1,4 @@
-import { useQuery } from 'react-query';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { useAuth } from '@/modules/auth';
 import { WorkspacesQueryKey } from '@/modules/core';
@@ -21,15 +20,13 @@ const useGetWorkspaceBalanceRequest = (
   const {
     workspaces: { current },
   } = useAuth();
-  const { data, ...request } = useQuery(
-    WorkspacesQueryKey.GET_BALANCE(current),
-    () => WorkspaceService.getBalance(),
-    {
-      ...options,
-      refetchOnWindowFocus: false,
-      refetchInterval: 1000 * 60 * 5, // 5 mins
-    },
-  );
+  const { data, ...request } = useQuery({
+    queryKey: WorkspacesQueryKey.GET_BALANCE(current),
+    queryFn: () => WorkspaceService.getBalance(),
+    ...options,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5, // 5 mins
+  });
 
   return {
     balance: {

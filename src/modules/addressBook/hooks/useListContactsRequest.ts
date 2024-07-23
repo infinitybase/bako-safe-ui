@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { AddressBookQueryKey } from '@/modules/core';
 
@@ -13,13 +13,11 @@ const useListContactsRequest = ({
   current,
   includePersonal,
 }: UseListContactsRequestParams) => {
-  return useQuery(
-    [...AddressBookQueryKey.LIST_BY_USER(current), includePersonal],
-    () => AddressBookService.list(includePersonal),
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery({
+    queryKey: [...AddressBookQueryKey.LIST_BY_USER(current), includePersonal],
+    queryFn: () => AddressBookService.list(includePersonal),
+    refetchOnWindowFocus: false,
+  });
 };
 
 export { useListContactsRequest };
