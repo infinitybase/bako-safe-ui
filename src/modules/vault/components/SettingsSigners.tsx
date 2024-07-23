@@ -9,7 +9,7 @@ import { CardMember } from './CardMember';
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const { contactByAddress } = useAddressBook();
   if (!vault) return null;
-  const members = vault.members;
+  const members = vault.predicate?.members;
 
   return (
     <Box w={{ base: 'full', sm: 'auto' }}>
@@ -18,7 +18,8 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.minSigners}/{vault?.members?.length}
+          Required signers {vault?.predicate.minSigners}/
+          {vault?.predicate?.members?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
@@ -35,7 +36,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <CardMember
-                  isOwner={vault.owner?.id === member.id}
+                  isOwner={vault.predicate?.owner?.id === member.id}
                   member={{
                     ...member,
                     nickname:

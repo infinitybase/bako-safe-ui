@@ -36,12 +36,12 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
     },
   } = useSidebar();
 
+  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
+
   const {
     isPendingSigner,
     assets: { isFirstAssetsLoading, hasBalance },
   } = useVaultInfosContext();
-
-  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     request: { refetch },

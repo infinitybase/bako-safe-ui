@@ -9,6 +9,7 @@ import {
   Icon,
   Spacer,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -37,6 +38,7 @@ import { useVaultInfosContext } from '../../providers/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const VaultDetailsPage = () => {
+  const menuDrawer = useDisclosure();
   const {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
@@ -48,7 +50,6 @@ const VaultDetailsPage = () => {
     account,
     inView,
     pendingSignerTransactions,
-    menuDrawer,
     transactions,
     isPendingSigner,
   } = useVaultInfosContext();

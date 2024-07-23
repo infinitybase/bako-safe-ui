@@ -7,6 +7,7 @@ import {
   HStack,
   Icon,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -23,7 +24,8 @@ import { useNavigate } from 'react-router-dom';
 
 const VaultBalancePage = () => {
   const navigate = useNavigate();
-  const { vault, menuDrawer, assets } = useVaultInfosContext();
+  const menuDrawer = useDisclosure();
+  const { vault, assets } = useVaultInfosContext();
 
   const { currentWorkspace, goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();

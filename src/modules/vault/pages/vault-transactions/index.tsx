@@ -32,9 +32,9 @@ import {
 } from '@/modules/transactions/components';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
-import { StatusFilter, useTransactionList } from '../../hooks';
-import { transactionStatus } from '../../utils';
-import { useFilterTxType } from '../../hooks/filter';
+import { StatusFilter, useTransactionList } from '../../../transactions/hooks';
+import { transactionStatus } from '../../../transactions/utils';
+import { useFilterTxType } from '../../../transactions/hooks/filter';
 import { useVaultInfosContext } from '@/modules/vault/providers/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 

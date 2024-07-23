@@ -29,7 +29,10 @@ export enum CLIFeaturesLabels {
 
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const { userId } = useAuth();
-  const { workspace } = useGetWorkspaceRequest(vault?.workspace?.id ?? '');
+
+  const { workspace } = useGetWorkspaceRequest(
+    vault?.predicate.workspace?.id ?? '',
+  );
   const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
     null,
   );

@@ -7,6 +7,7 @@ import {
   Icon,
   Text,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -24,7 +25,8 @@ import { useNavigate } from 'react-router-dom';
 
 const VaultSettingsPage = () => {
   const navigate = useNavigate();
-  const { vault, assets, menuDrawer, isPendingSigner } = useVaultInfosContext();
+  const menuDrawer = useDisclosure();
+  const { vault, assets, isPendingSigner } = useVaultInfosContext();
 
   const { goHome } = useHome();
   const {

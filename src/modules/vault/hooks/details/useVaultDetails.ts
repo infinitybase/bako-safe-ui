@@ -1,4 +1,3 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -35,7 +34,6 @@ const useVaultDetails = () => {
     vault: {
       predicateInstance,
       ...rest,
-      //add on origin of predicateInstance, ordination by util ordinateMembers, on onsuccess
     },
     transactions: {
       ...vaultTransactionsRequest,
@@ -51,7 +49,6 @@ const useVaultDetails = () => {
     pendingSignerTransactions,
     isPendingSigner:
       pendingSignerTransactions.data?.transactionsBlocked ?? false,
-    menuDrawer: useDisclosure(),
   };
 };
 

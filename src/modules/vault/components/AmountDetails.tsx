@@ -22,7 +22,6 @@ const formatList = (list: Asset[]) => {
 };
 
 export interface AmountDetailsProps {
-  store: UseVaultDetailsReturn['store'];
   assets: UseVaultDetailsReturn['assets'];
   isLoading: boolean;
   vaultAddress: string;
@@ -38,10 +37,10 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
-  const { store, assets, isLoading, vaultAddress } = props;
-  const { visibleBalance } = store;
+  const { assets, isLoading, vaultAddress } = props;
+  const { visibleBalance } = assets;
 
-  const isBig = assets?.value ? formatList(assets.value) : 0;
+  const isBig = assets?.assets ? formatList(assets.assets) : 0;
 
   return (
     <Box w="full" maxW="205px">
@@ -52,7 +51,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
       </Box>
       <VStack spacing={5} justifyContent="space-between">
         {!assets.hasAssets && (
-          <CustomSkeleton isLoaded={!assets.isLoadingAssets && !isLoading}>
+          <CustomSkeleton isLoaded={!isLoading}>
             <AssetCard
               w="full"
               p={5}
@@ -92,8 +91,8 @@ const AmountDetails = (props: AmountDetailsProps) => {
           </CustomSkeleton>
         )}
 
-        {assets?.value &&
-          assets.value.map((asset: Asset, index: number) => {
+        {assets?.assets &&
+          assets.assets.map((asset: Asset, index: number) => {
             if (isBig > 0 && index > 3) return;
             if (isBig > 0 && index == 3) {
               return (
