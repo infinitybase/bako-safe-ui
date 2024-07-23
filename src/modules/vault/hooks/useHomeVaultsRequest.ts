@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useAuthStore } from '@/modules/auth';
-import { SortOption } from '@/modules/transactions/services';
+import {
+  SortOption,
+  TransactionOrderBy,
+} from '@/modules/transactions/services';
 
 import { VaultService } from '../services';
 
@@ -14,7 +17,7 @@ const useHomeVaultsRequest = (vaultsPerPage: number) => {
       VaultService.getAllWithPagination({
         page: 0,
         perPage: vaultsPerPage,
-        orderBy: 'createdAt',
+        orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,
       }),
   });

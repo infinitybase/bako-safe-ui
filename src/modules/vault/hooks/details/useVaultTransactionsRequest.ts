@@ -1,7 +1,7 @@
-import { SortOptionTx, Vault } from 'bakosafe';
+import { SortOptionTx, Vault, TransactionType } from 'bakosafe';
 
 import { useBakoSafeTransactionList } from '@/modules/core';
-import { TransactionType } from 'bakosafe';
+import { TransactionOrderBy } from '@/modules/transactions/services';
 
 const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 
@@ -13,7 +13,7 @@ const useVaultTransactionsRequest = (
   const { data, ...query } = useBakoSafeTransactionList({
     vault,
     filter: {
-      orderBy: 'createdAt',
+      orderBy: TransactionOrderBy.CREATED_AT,
       sort: SortOptionTx.DESC,
       page: 0,
       perPage: 5,
