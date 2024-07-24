@@ -16,7 +16,7 @@ const balancesToAssets = async (
 ) => {
   if (!predicate) return [];
 
-  const balances = await predicate.getBalances();
+  const { balances } = await predicate.getBalances();
   const { reservedCoins, balanceUSD } = await VaultService.hasReservedCoins(
     predicate.BakoSafeVaultId,
   );
