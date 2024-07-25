@@ -41,7 +41,7 @@ const useVaultTransactionsList = ({
   } = useVaultTxRequest({
     predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
-    status: filter ? [filter] : undefined,
+    status: filter,
     byMonth,
     type,
   });
