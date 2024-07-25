@@ -32,32 +32,17 @@ import {
 } from '@/modules/transactions/components';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
-import { StatusFilter, useTransactionList } from '../../../transactions/hooks';
+import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
-import { useFilterTxType } from '../../../transactions/hooks/filter';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 
 const TransactionsVaultPage = () => {
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
-
   const navigate = useNavigate();
   const {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
 
-  const {
-    transactionRequest,
-    infinityTransactionsRef,
-    infinityTransactions,
-    filter,
-    inView,
-    account,
-    selectedTransaction,
-    setSelectedTransaction,
-    defaultIndex,
-  } = useTransactionList({ byMonth: true, type: txFilterType });
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
     useScreenSize();
@@ -77,8 +62,22 @@ const TransactionsVaultPage = () => {
     assets: { hasBalance },
   } = useVaultInfosContext();
 
-  const { transactions, isLoading } = vaultTransaction;
-  const hasTransactions = !isLoading && transactions?.data?.length;
+  const {
+    isLoading,
+    infinityTransactionsRef,
+    infinityTransactions,
+    filter,
+    inView,
+    account,
+    selectedTransaction,
+    setSelectedTransaction,
+    defaultIndex,
+    isFetching,
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+  } = vaultTransaction;
+  const hasTransactions = !isLoading && infinityTransactions?.length;
 
   return (
     <Box w="full" height="100%" maxH="100%">
@@ -188,7 +187,7 @@ const TransactionsVaultPage = () => {
             Transactions
           </Text>
           <CircularProgress
-            hidden={!transactionRequest.isFetching}
+            hidden={!isFetching}
             size="20px"
             color="brand.500"
             trackColor="dark.100"
@@ -288,7 +287,7 @@ const TransactionsVaultPage = () => {
 
                 <Divider w="full" borderColor="grey.950" />
               </HStack>
-              {grouped?.transactions.map((transaction) => {
+              {grouped?.transactions?.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
                   account,
@@ -309,7 +308,7 @@ const TransactionsVaultPage = () => {
                       ref={infinityTransactionsRef}
                       w="full"
                     >
-                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                      <CustomSkeleton isLoaded={!isLoading}>
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}

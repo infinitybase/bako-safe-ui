@@ -19,7 +19,6 @@ import { CustomSkeleton, LineCloseIcon } from '@/components';
 
 import { VaultDrawerBox } from './box';
 import { useVaultDrawer } from './hook';
-import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 interface VaultDrawerProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;

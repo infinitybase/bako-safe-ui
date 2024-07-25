@@ -48,7 +48,6 @@ const VaultDetailsPage = () => {
     vault,
     assets,
     account,
-    inView,
     pendingSignerTransactions,
     transactions,
     isPendingSigner,
@@ -58,7 +57,7 @@ const VaultDetailsPage = () => {
   const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
 
-  const { transactions: vaultTransactions, isLoading } = transactions;
+  const { homeDetailsLimitedTransactions, isLoading } = transactions;
 
   const { goHome } = useHome();
   const {
@@ -68,7 +67,7 @@ const VaultDetailsPage = () => {
     useScreenSize();
 
   const workspaceId = current ?? '';
-  const hasTransactions = !isLoading && vaultTransactions?.data?.length;
+  const hasTransactions = !isLoading && homeDetailsLimitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
 
@@ -234,7 +233,7 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? vaultTransactions?.data.map((grouped) => (
+          ? homeDetailsLimitedTransactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -253,7 +252,7 @@ const VaultDetailsPage = () => {
                   maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
                   spacing={0}
                 >
-                  {grouped?.transactions.map((transaction) => {
+                  {grouped?.transactions?.map((transaction) => {
                     const status = transactionStatus({
                       ...transaction,
                       account,
@@ -288,8 +287,6 @@ const VaultDetailsPage = () => {
                             }
                           />
                         )}
-
-                        {!isLoading && <Box ref={inView.ref} />}
                       </>
                     );
                   })}
@@ -297,7 +294,7 @@ const VaultDetailsPage = () => {
               </>
             ))
           : !hasTransactions &&
-            !!vaultTransactions && (
+            !!homeDetailsLimitedTransactions && (
               <EmptyState
                 isDisabled={!assets.hasBalance}
                 buttonAction={() =>

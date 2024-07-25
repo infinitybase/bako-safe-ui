@@ -24,6 +24,8 @@ import {
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
+import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTxRequest';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
@@ -108,8 +110,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       queryClient.invalidateQueries({
         predicate: (query) => {
           return (
-            query.queryHash.includes(vaultId!) &&
-            query.queryHash.includes('byMonth')
+            query.queryHash.includes(VAULT_TRANSACTIONS_LIST_PAGINATION) ||
+            query.queryKey.includes(PENDING_VAULT_TRANSACTIONS_QUERY_KEY)
           );
         },
       });

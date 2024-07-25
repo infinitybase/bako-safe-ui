@@ -1,35 +1,42 @@
 import { useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-
-import { useAuthStore } from '@/modules/auth/store';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
-
 import { useVaultAssets } from '../assets';
 import { useSidebar } from '../details';
-import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultByIdRequest } from '@/modules';
+import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
+import { useVaultSignaturesPendingRequest } from '../list/useVautSignaturesPendingRequest';
 
 const useVaultDetails = () => {
+  const {
+    vaultPageParams: { vaultId, workspaceId },
+  } = useGetParams();
   const [byMonth, setByMonth] = useState(false);
 
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
-  const {
-    vaultPageParams: { vaultId, workspaceId },
-  } = useGetParams();
-  const { account } = useAuthStore();
 
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
-
-  const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
-
-  const vaultTransactionsRequest = useVaultTransactionsRequest(
+  const pendingSignerTransactions = useVaultSignaturesPendingRequest([
     vaultId!,
-    byMonth,
-    txFilterType,
-  );
+  ]);
+
+  const {
+    transactionRequest,
+    infinityTransactionsRef,
+    infinityTransactions,
+    filter,
+    inView,
+    account,
+    selectedTransaction,
+    setSelectedTransaction,
+    defaultIndex,
+  } = useVaultTransactionsList({
+    byMonth: true,
+    type: txFilterType,
+    vaultId: vaultId!,
+  });
+
   const sideBarDetails = useSidebar({
     params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
   });
@@ -41,17 +48,25 @@ const useVaultDetails = () => {
       ...vaultRequest,
     },
     transactions: {
-      ...vaultTransactionsRequest,
+      ...transactionRequest,
       byMonth,
       setByMonth,
       txFilterType,
       handleIncomingAction,
       handleOutgoingAction,
+      infinityTransactionsRef,
+      infinityTransactions,
+      homeDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
+      filter,
+      inView,
+      account,
+      selectedTransaction,
+      setSelectedTransaction,
+      defaultIndex,
     },
     sideBarDetails,
     assets,
     account,
-    inView: useInView(),
     pendingSignerTransactions,
     isPendingSigner:
       pendingSignerTransactions.data?.transactionsBlocked ?? false,
