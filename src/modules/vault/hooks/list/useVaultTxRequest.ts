@@ -11,7 +11,7 @@ type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
   'perPage' | 'page' | 'status'
 > & {
-  status: StatusFilter;
+  status?: StatusFilter[];
 };
 
 export const VAULT_TRANSACTIONS_LIST_PAGINATION =
@@ -20,7 +20,7 @@ export const VAULT_TRANSACTIONS_LIST_PAGINATION =
 export const vaultInfinityQueryKey = {
   VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
     vaultId?: string,
-    status?: string,
+    status?: string[],
     id?: string,
     type?: TransactionType,
   ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, id, type],
