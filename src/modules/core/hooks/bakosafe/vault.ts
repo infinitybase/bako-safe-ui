@@ -11,7 +11,6 @@ const VAULT_QUERY_KEYS = {
 
 const useBakoSafeVault = (id: string) => {
   const auth = useAuth();
-
   const { data, ...rest } = useBakoSafeQuery(
     [...VAULT_QUERY_KEYS.VAULT(id), auth.workspaces.current],
     async (context) => {
@@ -20,6 +19,9 @@ const useBakoSafeVault = (id: string) => {
         token: context.auth.token,
         address: context.auth.address,
       });
+    },
+    {
+      enabled: !!id,
     },
   );
   return {

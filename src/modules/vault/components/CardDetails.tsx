@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
@@ -30,9 +30,9 @@ import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 
 export interface CardDetailsProps {
-  store: UseVaultDetailsReturn['store'];
   vault: UseVaultDetailsReturn['vault'];
   assets: UseVaultDetailsReturn['assets'];
+  isPendingSigner: boolean;
 }
 
 const MAX_DESCRIPTION_CHARS = 80;
@@ -69,22 +69,20 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const { store, vault, assets } = props;
+  const { vault, assets } = props;
   const {
     balanceUSD,
-    visebleBalance,
+    visibleBalance,
     setVisibleBalance,
-    isFirstAssetsLoading,
-    setIsFirstAssetsLoading,
-  } = store;
+    isLoading,
+    hasBalance,
+    ethBalance,
+  } = assets;
   const { currentWorkspace, hasPermission } = useWorkspace();
   const { workspaces, isSingleWorkspace } = useAuth();
   const { isMobile, isExtraSmall } = useScreenSize();
 
-  const hasBalance = vault.hasBalance;
-  const balanceFormatted = bn(
-    bn.parseUnits(vault.ethBalance ?? '0.000'),
-  ).format({
+  const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
     precision: 4,
   });
 
@@ -99,19 +97,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     PermissionRoles.SIGNER,
   ];
 
-  useEffect(() => {
-    return () => setIsFirstAssetsLoading(true);
-  }, []);
-
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
     return as;
-  }, [vault.id, balanceFormatted]);
+  }, [vault.data?.id, balanceFormatted]);
 
   const vaultDescription = useMemo(() => {
-    if (!vault?.description) return '';
+    if (!vault?.data?.description) return '';
 
-    let description = vault.description;
+    let description = vault.data?.description;
     if (description.length > MAX_DESCRIPTION_CHARS) {
       description = description.substring(0, MAX_DESCRIPTION_CHARS) + '...';
     }
@@ -166,7 +160,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   bgColor="grey.600"
                   color="grey.450"
                   fontWeight="bold"
-                  name={vault.name}
+                  name={vault.data?.name}
                 >
                   <Box
                     position="absolute"
@@ -190,8 +184,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       isTruncated
                     >
                       {isExtraSmall
-                        ? limitCharacters(vault?.name ?? '', 8)
-                        : vault?.name}
+                        ? limitCharacters(vault?.data?.name ?? '', 8)
+                        : vault?.data?.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
@@ -249,19 +243,17 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       w="full"
                       display="flex"
                       alignItems="center"
-                      mb={
-                        vault.transactions.isPendingSigner && isMobile ? 5 : 0
-                      }
+                      mb={props.isPendingSigner && isMobile ? 5 : 0}
                       justifyContent="space-around"
                       spacing={2}
                     >
                       <CustomSkeleton
-                        isLoaded={!isFirstAssetsLoading}
+                        isLoaded={!isLoading}
                         customStartColor="grey.75"
                         customEndColor="dark.100"
                       >
                         <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
-                          {visebleBalance ? `${balanceUSD} USD` : '-----'}
+                          {visibleBalance ? `${balanceUSD} USD` : '-----'}
                         </Heading>
                       </CustomSkeleton>
                       <Box
@@ -270,9 +262,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           cursor: 'pointer',
                           opacity: 0.8,
                         }}
-                        onClick={() => setVisibleBalance(!visebleBalance)}
+                        onClick={() => setVisibleBalance(!visibleBalance)}
                       >
-                        {visebleBalance ? (
+                        {visibleBalance ? (
                           <EyeOpenIcon boxSize={7} />
                         ) : (
                           <EyeCloseIcon boxSize={5} />
@@ -284,7 +276,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 </Box>
 
                 <CustomSkeleton
-                  isLoaded={!isFirstAssetsLoading}
+                  isLoaded={!isLoading}
                   customStartColor="grey.75"
                   customEndColor="dark.100"
                   w="fit-content"
@@ -292,7 +284,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Button
                     hidden={hasBalance}
                     variant="primary"
-                    onClick={() => openFaucet(vault.predicateAddress!)}
+                    onClick={() => openFaucet(vault.data?.predicateAddress!)}
                     leftIcon={<PlusSquareIcon />}
                   >
                     Faucet
@@ -308,15 +300,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       onClick={() =>
                         navigate(
                           Pages.createTransaction({
-                            vaultId: vault.id!,
+                            vaultId: vault.data?.id!,
                             workspaceId,
                           }),
                         )
                       }
                       isDisabled={
-                        !vault?.hasBalance ||
+                        !hasBalance ||
                         !makeTransactionsPerm ||
-                        vault.transactions.isPendingSigner ||
+                        props.isPendingSigner ||
                         isEthBalanceLowerThanReservedAmount
                       }
                       variant="primary"
@@ -326,7 +318,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       Send
                     </Button>
                     {isEthBalanceLowerThanReservedAmount &&
-                      !vault.transactions.isPendingSigner && (
+                      !props.isPendingSigner && (
                         <Text
                           variant="description"
                           textAlign={{ base: 'end', sm: 'left' }}
@@ -336,7 +328,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                           Not enough balance.
                         </Text>
                       )}
-                    {vault.transactions.isPendingSigner ? (
+                    {props.isPendingSigner ? (
                       <Text
                         variant="description"
                         textAlign={{ base: 'end', sm: 'left' }}
@@ -371,7 +363,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 {`Vault's balance breakdown`}
               </Text>
               <CustomSkeleton
-                isLoaded={!currentWorkspace.isLoading && !isFirstAssetsLoading}
+                isLoaded={!currentWorkspace.isLoading && !isLoading}
                 w="full"
                 h="full"
               >
@@ -411,10 +403,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   >
                     <AssetsDetails
                       containerRef={assetsContainerRef}
-                      assets={assets.value!}
-                      visibleBalance={visebleBalance}
+                      assets={assets.assets!}
+                      visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
-                        vaultId: vault.id,
+                        vaultId: vault.data?.id!,
                         workspaceId,
                       })}
                     />
@@ -427,7 +419,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
         {/*
         <AmountDetails
           store={store}
-          vaultAddress={vault.predicateAddress!}
+          vaultAddress={vault.data.predicateAddress!}
           assets={assets}
           isLoading={vault.isLoading}
         /> */}

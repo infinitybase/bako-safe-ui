@@ -1,15 +1,11 @@
-import { TransactionStatus } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/modules/auth/store';
-
-import { ITransactionsGroupedByMonth } from '../../services';
-import { TransactionType } from 'bakosafe';
-import { useTransactionState } from '../../states';
-import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
-import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
+import { useVaultTxRequest } from './useVaultTxRequest';
+import { useTransactionState } from '@/modules/transactions/states';
+import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 
 export enum StatusFilter {
   ALL = '',
@@ -18,38 +14,33 @@ export enum StatusFilter {
   DECLINED = TransactionStatus.DECLINED,
 }
 
-interface IUseTransactionListProps {
+interface IUseVaultTransactionsListProps {
   byMonth?: boolean;
   type?: TransactionType;
+  vaultId?: string;
 }
 
-const useTransactionList = ({
+const useVaultTransactionsList = ({
   byMonth = false,
   type = undefined,
-}: IUseTransactionListProps = {}) => {
-  const params = useParams<{ vaultId: string }>();
+  vaultId,
+}: IUseVaultTransactionsListProps = {}) => {
   const navigate = useNavigate();
   const inView = useInView();
   const { account } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
-
   const {
-    transactions,
     transactionsPages,
     isLoading,
     isFetching,
     hasNextPage,
     fetchNextPage,
-    refetch,
-  } = useTransactionListPaginationRequest({
-    predicateId: params.vaultId ? [params.vaultId] : undefined,
+  } = useVaultTxRequest({
+    predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
-    /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
     byMonth,
     type,
@@ -74,7 +65,7 @@ const useTransactionList = ({
   );
 
   const infinityTransactions = useMemo(() => {
-    return transactionsPages?.pages.reduce(
+    return transactionsPages?.pages?.reduce(
       (acc: ITransactionsGroupedByMonth[], page) => {
         return [...acc, ...page.data];
       },
@@ -84,17 +75,15 @@ const useTransactionList = ({
 
   return {
     transactionRequest: {
-      transactions,
       isLoading,
       isFetching,
       hasNextPage,
       fetchNextPage,
-      refetch,
     },
     selectedTransaction,
     setSelectedTransaction,
     navigate,
-    params,
+    params: { vaultId },
     filter: {
       set: setFilter,
       value: filter,
@@ -102,11 +91,10 @@ const useTransactionList = ({
     inView,
     account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    pendingSignerTransactions,
     hasSkeleton: false,
     infinityTransactions,
     infinityTransactionsRef: lastElementRef,
   };
 };
 
-export { useTransactionList };
+export { useVaultTransactionsList };

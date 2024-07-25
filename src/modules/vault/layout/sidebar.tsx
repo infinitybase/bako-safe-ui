@@ -11,12 +11,10 @@ import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
-import { useVaultDetails } from '@/modules/vault';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useWorkspace } from '@/modules/workspace';
-
-import { useSidebar } from './hook';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -25,21 +23,15 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ onDrawer }: SidebarProps) => {
-  const {
-    route,
-    drawer,
-    menuItems,
-    vaultAssets,
-    vaultRequest,
-    transactionListRequest: {
-      pendingTransactions,
-      pendingSignerTransactionsLength,
-    },
-  } = useSidebar();
-
-  const { vault } = useVaultDetails();
-
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
+
+  const {
+    isPendingSigner,
+    pendingSignerTransactionsLength,
+    assets: { isLoading, hasBalance },
+    vault,
+    sideBarDetails: { route, drawer, menuItems },
+  } = useVaultInfosContext();
 
   const {
     request: { refetch },
@@ -67,23 +59,20 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
 
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
-          name={String(`${vaultRequest.predicate?.name?.slice(0, 9)}...`)}
-          fullName={String(vaultRequest.predicate?.name)}
-          address={
-            AddressUtils.format(
-              vaultRequest?.predicate?.predicateAddress ?? '',
-            )!
-          }
+          isFirstAssetsLoading={isLoading}
+          name={String(`${vault.data?.name?.slice(0, 9)}...`)}
+          fullName={String(vault.data?.name)}
+          address={AddressUtils.format(vault?.data?.predicateAddress ?? '')!}
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount
           }
-          isLoading={vaultRequest.isLoading}
-          isFetching={vaultRequest.isFetching}
+          isLoading={vault.isLoading}
+          isFetching={vault.isFetching}
           onChangeVault={() => {
             refetch(), drawer.onOpen();
           }}
-          hasBalance={vaultAssets.hasBalance}
-          isPending={vault.transactions.isPendingSigner}
+          hasBalance={hasBalance}
+          isPending={isPendingSigner}
           hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
           onCreateTransaction={() => {
             route.navigate(
@@ -143,9 +132,9 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           >
             <SidebarMenu.Icon as={ExchangeIcon} />
             <SidebarMenu.Title>Transactions</SidebarMenu.Title>
-            <SidebarMenu.Badge hidden={!pendingTransactions}>
+            <SidebarMenu.Badge hidden={!isPendingSigner}>
               <Icon as={PendingIcon} />{' '}
-              {pendingTransactions && pendingSignerTransactionsLength}
+              {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
           </SidebarMenu.Container>
 

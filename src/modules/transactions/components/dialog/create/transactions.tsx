@@ -30,11 +30,12 @@ import {
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
+import { UseVaultDetailsReturn } from '@/modules/vault';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
   nicks: UseCreateTransaction['nicks'];
-  assets: UseCreateTransaction['assets'];
+  assets: UseVaultDetailsReturn['assets'];
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   isFeeCalcLoading: boolean;
@@ -44,7 +45,7 @@ interface TransactionAccordionProps {
 interface TransctionFormFieldProps {
   form: UseCreateTransaction['form'];
   index: number;
-  assets: UseCreateTransaction['assets'];
+  assets: UseVaultDetailsReturn['assets'];
   isFeeCalcLoading: boolean;
   getBalanceAvailable: UseCreateTransaction['getBalanceAvailable'];
 }

@@ -18,12 +18,13 @@ import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 
 import { CreateTransactionForm } from './form';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
+  const { assets } = useVaultInfosContext();
   const {
     form,
     nicks,
-    assets,
     accordion,
     transactionsFields,
     transactionRequest,
@@ -32,7 +33,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction({
+    assets: assets.assets,
+    hasAssetBalance: assets.hasAssetBalance,
+    getCoinAmount: assets.getCoinAmount,
     onClose: props.onClose,
+    isOpen: props.isOpen,
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();

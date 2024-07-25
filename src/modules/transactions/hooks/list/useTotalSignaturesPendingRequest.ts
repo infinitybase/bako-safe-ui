@@ -7,9 +7,12 @@ const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
   return useQuery({
     queryKey: [PENDING_TRANSACTIONS_QUERY_KEY, predicateId],
+
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
+    enabled: predicateId && !!predicateId[0],
+    refetchOnWindowFocus: false,
   });
 };
 

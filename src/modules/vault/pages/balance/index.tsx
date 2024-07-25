@@ -7,6 +7,7 @@ import {
   HStack,
   Icon,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -18,10 +19,14 @@ import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
-import { useVaultDetails } from '../../hooks';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const VaultBalancePage = () => {
-  const { vault, menuDrawer, assets, store, navigate } = useVaultDetails();
+  const navigate = useNavigate();
+  const menuDrawer = useDisclosure();
+  const { vault, assets } = useVaultInfosContext();
+
   const { currentWorkspace, goWorkspace } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
   const {
@@ -91,7 +96,7 @@ const VaultBalancePage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
+                      vaultId: vault?.data?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -99,7 +104,7 @@ const VaultBalancePage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault.data?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -124,11 +129,11 @@ const VaultBalancePage = () => {
         </Box>
 
         <CustomSkeleton
-          isLoaded={!currentWorkspace.isLoading && !store.isFirstAssetsLoading}
+          isLoaded={!currentWorkspace.isLoading && !assets.isLoading}
           flex={1}
         >
           {assets.hasAssets ? (
-            <AssetsBalanceList assets={assets.value!} />
+            <AssetsBalanceList assets={assets.assets!} />
           ) : (
             <EmptyState
               showAction={false}
