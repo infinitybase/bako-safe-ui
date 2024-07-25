@@ -9,8 +9,10 @@ import {
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
-  'perPage' | 'page'
-> & {};
+  'perPage' | 'page' | 'status'
+> & {
+  status: StatusFilter;
+};
 
 export const VAULT_TRANSACTIONS_LIST_PAGINATION =
   'vault-transaction-list-pagination';
@@ -28,7 +30,7 @@ const useVaultTxRequest = (params: UseTransactionListPaginationParams) => {
   const queryKey =
     vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       params.predicateId?.[0],
-      params.status as StatusFilter,
+      params.status,
       params.id,
       params.type,
     );
