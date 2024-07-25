@@ -6,8 +6,12 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { IPermission } from '@/modules/core';
 
 import { SignWebAuthnPayload, TypeUser } from '../services';
-import { useAuthStore } from '../store';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import {
+  IUseAuthActions,
+  IUseAuthActionsState,
+  IUseAuthActionHandler,
+} from '..';
 
 type AuthenticateParams = {
   userId: string;
@@ -25,8 +29,20 @@ type AuthenticateWorkspaceParams = {
   workspace: string;
 };
 
-const useAuth = () => {
-  const store = useAuthStore();
+export type IUseAuthReturn = Omit<IUseAuthActionsState, 'formattedAccount'> & {
+  account: string;
+  hasWallet: () => Promise<{
+    provider: Provider;
+  }>;
+  handlers: Partial<IUseAuthActionHandler> & {
+    authenticate: (params: AuthenticateParams) => void;
+    authenticateWorkspace: (params: AuthenticateWorkspaceParams) => void;
+    authenticateWorkspaceSingle: () => void;
+  };
+  isSingleWorkspace: boolean;
+};
+
+const useAuth = (authContext: IUseAuthActions): IUseAuthReturn => {
   const { fuel } = useFuel();
   useTokensUSDAmountRequest();
 
@@ -65,7 +81,7 @@ const useAuth = () => {
         value: params.accountType,
       },
     ]);
-    store.singleAuthentication({
+    authContext?.singleAuthentication({
       userId: params.userId,
       avatar: params.avatar,
       account: params.account,
@@ -76,14 +92,14 @@ const useAuth = () => {
   };
 
   const authenticateWorkspace = (params: AuthenticateWorkspaceParams) => {
-    store.workspaceAuthentication({
+    authContext?.workspaceAuthentication({
       permissions: params.permissions,
       workspace: params.workspace,
     });
   };
 
   const authenticateWorkspaceSingle = () => {
-    store.workspaceAuthenticationSingle();
+    authContext?.workspaceAuthenticationSingle();
   };
 
   const logout = () => {
@@ -97,11 +113,11 @@ const useAuth = () => {
       CookieName.WEB_AUTHN_PK,
       CookieName.ACCOUNT_TYPE,
     ]);
-    store.logout();
+    authContext?.logout();
   };
 
   const hasWallet = async () => {
-    const _hasWallet = store.accountType != TypeUser.WEB_AUTHN;
+    const _hasWallet = authContext?.accountType != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
@@ -117,22 +133,23 @@ const useAuth = () => {
       logout,
       authenticate,
       authenticateWorkspace,
-      setInvalidAccount: store.setInvalidAccount,
+      setInvalidAccount: authContext?.setInvalidAccount,
       authenticateWorkspaceSingle,
     },
     hasWallet,
-    accountType: store.accountType,
-    avatar: store.avatar,
-    userId: store.userId,
-    account: store.account,
+    accountType: authContext?.accountType,
+    avatar: authContext?.avatar,
+    userId: authContext?.userId,
+    account: authContext?.account,
     webAuthn: {
       id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
       publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
     },
-    workspaces: store.workspaces,
-    permissions: store.permissions,
-    isInvalidAccount: store.invalidAccount,
-    isSingleWorkspace: store.workspaces.current === store.workspaces.single,
+    workspaces: authContext?.workspaces,
+    permissions: authContext?.permissions,
+    isInvalidAccount: authContext?.isInvalidAccount,
+    isSingleWorkspace:
+      authContext?.workspaces.current === authContext?.workspaces.single,
   };
 };
 
