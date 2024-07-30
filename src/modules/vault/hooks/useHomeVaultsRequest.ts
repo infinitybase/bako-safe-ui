@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useAuthStore } from '@/modules/auth';
 import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
 
 import { VaultService } from '../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
 
   return useQuery({
     queryKey: ['predicate/home', account],

@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useAuthStore } from '@/modules/auth/store';
 import { AddressBookQueryKey, Pages, WorkspacesQueryKey } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useSelectWorkspace } from '@/modules/workspace';
@@ -13,7 +12,7 @@ const useHome = () => {
   const auth = useWorkspaceContext();
 
   const navigate = useNavigate();
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
   const homeDataRequest = useHomeDataRequest();

@@ -3,13 +3,12 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth/store';
-
 import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export enum StatusFilter {
   ALL = '',
@@ -30,7 +29,7 @@ const useTransactionList = ({
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 

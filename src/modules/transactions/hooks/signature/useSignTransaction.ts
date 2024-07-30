@@ -4,13 +4,13 @@ import { useCallback, useMemo } from 'react';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useAuthStore } from '@/modules/auth';
 import { useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { useTransactionList } from '../list';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface SignTransactionParams {
   txId: string;
@@ -30,7 +30,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
 
   const { warningToast } = useContactToast();
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
 
   const transactionSendContext = useTransactionSend();
 

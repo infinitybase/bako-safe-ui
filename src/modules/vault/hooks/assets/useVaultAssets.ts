@@ -91,7 +91,7 @@ function useVaultAssets(predicateId: string) {
     setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
-    hasAssets: !!data?.currentBalance.length,
+    hasAssets: !!data?.currentBalance?.length,
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
   };

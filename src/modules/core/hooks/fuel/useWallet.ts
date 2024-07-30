@@ -7,7 +7,6 @@ import {
 import { Account } from 'fuels';
 
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
-import { useAuthStore } from '@/modules/auth/store';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
@@ -26,7 +25,7 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const { account: currentAccount } = useAuthStore();
+  const { account: currentAccount } = useWorkspaceContext();
 
   return useWallet(currentAccount);
 };

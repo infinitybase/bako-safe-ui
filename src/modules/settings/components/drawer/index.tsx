@@ -22,9 +22,10 @@ import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useAuthStore, useSignIn } from '@/modules/auth';
+import { useSignIn } from '@/modules/auth';
 
 import { useSettings } from '../../hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
   onOpen: () => void;
@@ -48,7 +49,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       setSearch,
     },
   } = useSignIn();
-  const { userId } = useAuthStore();
+  const { userId } = useWorkspaceContext();
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 

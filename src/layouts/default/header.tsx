@@ -9,18 +9,18 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
 
 import { TabEnum } from './types';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const Header = () => {
   const [tab, setTab] = useState<TabEnum>(TabEnum.VAULTS);
   const navigate = useNavigate();
 
   const { fuel } = useFuel();
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
   const { goHome } = useHome();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;

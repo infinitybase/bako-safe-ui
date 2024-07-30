@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -16,6 +15,7 @@ import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
 import { useSelectWorkspace } from '@/modules/workspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -29,7 +29,7 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useAuthStore();
+  const { account } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const { selectWorkspace } = useSelectWorkspace();

@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-import { useAuthStore } from '@/modules/auth/store';
-
 import { CookieName, CookiesConfig } from './cookies';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { VITE_API_URL } = import.meta.env;
 const {
@@ -58,9 +57,10 @@ api.interceptors.response.use(
   async (config) => config,
   async (error) => {
     const unauthorizedError = error.response?.status === 401;
+    const auth = useWorkspaceContext();
 
     if (unauthorizedError) {
-      useAuthStore.getState().logout();
+      auth?.handlers?.logout?.();
       CookiesConfig.removeCookies([
         ACCESS_TOKEN,
         ADDRESS,

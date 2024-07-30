@@ -7,19 +7,21 @@ import {
 } from '@tanstack/react-query';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { authCredentials, useAuthStore } from '@/modules/auth';
+import { authCredentials } from '@/modules/auth';
 
 import {
   BakoSafeMutationFunction,
   BakoSafeQueryFunction,
   BakoSafeQueryOptions,
 } from './types';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const removeCredentialsWhenUnathorized = (error: any) => {
   const unauthorizedError = error.response?.status === 401;
+  const auth = useWorkspaceContext();
 
   if (unauthorizedError) {
-    useAuthStore.getState().logout();
+    auth.handlers?.logout?.();
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };
