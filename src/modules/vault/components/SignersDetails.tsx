@@ -11,12 +11,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
 import { useAddressBook } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
 import { useScreenSize } from '@/modules/core/hooks';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 
 import { CardMember } from './CardMember';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -35,7 +35,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const {
     workspaces: { current },
     isSingleWorkspace,
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { contactByAddress } = useAddressBook(!isSingleWorkspace);
 

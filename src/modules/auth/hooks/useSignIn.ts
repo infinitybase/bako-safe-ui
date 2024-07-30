@@ -2,8 +2,6 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useIsConnected } from '@fuels/react';
 import { useEffect } from 'react';
 import { Location, useNavigate } from 'react-router-dom';
-
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useSocket } from '@/modules/core';
 import {
   EConnectors,
@@ -16,6 +14,7 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export const redirectPathBuilder = (
   isDapp: boolean,
@@ -45,7 +44,7 @@ const useSignIn = () => {
   const connectorDrawer = useDisclosure();
 
   const { fuel } = useFuel();
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
   const { account } = useAccount();
@@ -91,6 +90,16 @@ const useSignIn = () => {
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
+      // auth.handlers.authenticate({
+      //   userId: user_id,
+      //   avatar: avatar!,
+      //   account: account!,
+      //   accountType: TypeUser.FUEL,
+      //   accessToken: accessToken,
+      //   singleWorkspace: workspace.id,
+      //   permissions: workspace.permissions,
+      //   webAuthn: _webAuthn,
+      // });
 
       navigate(redirectPathBuilder(!!sessionId, location, account!));
     },
@@ -138,7 +147,7 @@ const useSignIn = () => {
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
-      auth.handlers.setInvalidAccount(true);
+      auth.handlers.setInvalidAccount?.(true);
     }
   };
 

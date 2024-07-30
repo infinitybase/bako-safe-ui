@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeDataRequest = () => {
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
 
   return useQuery({
     queryKey: HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current),

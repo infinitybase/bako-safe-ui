@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
-import { useAuth, useQueryParams } from '@/modules/auth';
+import { useQueryParams } from '@/modules/auth';
 import { AddressUtils, PermissionRoles } from '@/modules/core';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
@@ -28,12 +28,13 @@ import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
 
   const {

@@ -19,7 +19,6 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
 import { useWorkspace } from '@/modules/workspace';
@@ -28,6 +27,7 @@ import { limitCharacters } from '@/utils/limit-characters';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -79,7 +79,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     ethBalance,
   } = assets;
   const { currentWorkspace, hasPermission } = useWorkspace();
-  const { workspaces, isSingleWorkspace } = useAuth();
+  const { workspaces, isSingleWorkspace } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({

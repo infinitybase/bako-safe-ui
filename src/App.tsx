@@ -2,20 +2,20 @@ import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useEffect } from 'react';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useTransactionSend } from './modules/transactions';
+import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
 
 function App() {
   const { fuel } = useFuel();
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const transactionSend = useTransactionSend();
 
   useEffect(() => {
     async function clearAll() {
-      auth.handlers.logout();
+      auth.handlers.logout?.();
       invalidateQueries();
       transactionSend.clearAll();
     }

@@ -16,7 +16,6 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams, useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -36,6 +35,7 @@ import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultDetailsPage = () => {
   const menuDrawer = useDisclosure();
@@ -62,7 +62,7 @@ const VaultDetailsPage = () => {
   const { goHome } = useHome();
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();
 

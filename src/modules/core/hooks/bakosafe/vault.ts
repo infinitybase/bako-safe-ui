@@ -1,8 +1,7 @@
 import { BakoSafe, IPayloadVault, Vault } from 'bakosafe';
 
-import { useAuth } from '@/modules/auth';
-
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
@@ -10,7 +9,7 @@ const VAULT_QUERY_KEYS = {
 };
 
 const useBakoSafeVault = (id: string) => {
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const { data, ...rest } = useBakoSafeQuery(
     [...VAULT_QUERY_KEYS.VAULT(id), auth.workspaces.current],
     async (context) => {
@@ -43,7 +42,7 @@ interface UseCreateBakoSafeVaultPayload {
 }
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const { hasWallet } = useAuth();
+  const { hasWallet } = useWorkspaceContext();
 
   const { mutate, ...mutation } = useBakoSafeMutation<
     Vault,

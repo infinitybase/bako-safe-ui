@@ -24,7 +24,6 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -39,6 +38,7 @@ import {
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 import { useFilterTxType } from '../../hooks/filter';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserTransactionsPage = () => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
@@ -59,7 +59,7 @@ const UserTransactionsPage = () => {
   const {
     isSingleWorkspace,
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { workspace } = useGetCurrentWorkspace();
 

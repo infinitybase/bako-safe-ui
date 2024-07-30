@@ -7,10 +7,10 @@ import {
   useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { UseChangeMember } from '../../hooks';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
@@ -19,7 +19,7 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { isSingleWorkspace } = useAuth();
+  const { isSingleWorkspace } = useWorkspaceContext();
   const { paginatedContacts, listContactsRequest, workspaceId } =
     useAddressBook(!isSingleWorkspace);
 

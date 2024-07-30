@@ -22,11 +22,11 @@ import {
   useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -37,7 +37,7 @@ export interface VaultAddressesStepProps {
 }
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
-  const { isSingleWorkspace } = useAuth();
+  const { isSingleWorkspace } = useWorkspaceContext();
   const {
     handleOpenDialog,
     listContactsRequest,

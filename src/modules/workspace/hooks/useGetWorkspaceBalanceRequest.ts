@@ -1,6 +1,5 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth';
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
   IWroskapceBalance,
@@ -8,6 +7,7 @@ import {
 } from '@/modules/workspace/services';
 
 import { handleAssetsBalance } from '../utils/assets';
+import { useWorkspaceContext } from '../WorkspaceProvider';
 
 const useGetWorkspaceBalanceRequest = (
   options?: UseQueryOptions<
@@ -19,7 +19,7 @@ const useGetWorkspaceBalanceRequest = (
 ) => {
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
   const { data, ...request } = useQuery({
     queryKey: WorkspacesQueryKey.GET_BALANCE(current),
     queryFn: () => WorkspaceService.getBalance(),

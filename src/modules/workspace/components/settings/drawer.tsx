@@ -32,8 +32,8 @@ import {
 import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { useAuth } from '../../../auth/hooks/useAuth';
 import { WorkspaceCard } from '../card';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
@@ -45,7 +45,7 @@ interface MemberCardProps {
 }
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
-  const { permissions: loggedPermissions, avatar } = useAuth();
+  const { permissions: loggedPermissions, avatar } = useWorkspaceContext();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,

@@ -20,7 +20,6 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -30,6 +29,7 @@ import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserVaultsPage = () => {
   const {
@@ -46,7 +46,7 @@ const UserVaultsPage = () => {
   const {
     workspaces: { current, single },
     isSingleWorkspace,
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { workspace } = useGetCurrentWorkspace();
 

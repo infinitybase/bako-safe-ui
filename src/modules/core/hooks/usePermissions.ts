@@ -1,7 +1,7 @@
-import { useAuth } from '@/modules/auth';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { PermissionRoles, Workspace } from '../models';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface usePermissionsProps {
   id: string;
@@ -9,7 +9,7 @@ interface usePermissionsProps {
 }
 
 export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const userRole = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
     {
@@ -48,8 +48,8 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
   const role = isOwner
     ? PermissionRoles.OWNER
     : isSigner
-    ? PermissionRoles.SIGNER
-    : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
+      ? PermissionRoles.SIGNER
+      : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return {
     isSigner: true,

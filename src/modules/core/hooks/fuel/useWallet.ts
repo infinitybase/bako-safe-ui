@@ -6,7 +6,6 @@ import {
 } from '@tanstack/react-query';
 import { Account } from 'fuels';
 
-import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
 import { useAuthStore } from '@/modules/auth/store';
 import { signChallange } from '@/modules/core/utils/webauthn';
@@ -14,6 +13,7 @@ import { signChallange } from '@/modules/core/utils/webauthn';
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -67,7 +67,7 @@ const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { webAuthn, accountType } = useAuth();
+  const { webAuthn, accountType } = useWorkspaceContext();
 
   return useMutation({
     mutationFn: async (message: string) => {

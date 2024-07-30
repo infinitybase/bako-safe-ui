@@ -3,7 +3,6 @@ import { useState, useCallback } from 'react';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AddressUtils, IPermission } from '@/modules/core';
 import { SignWebAuthnPayload, TypeUser } from '../services';
-import { useAuth } from '..';
 
 export type SingleAuthentication = {
   avatar: string;

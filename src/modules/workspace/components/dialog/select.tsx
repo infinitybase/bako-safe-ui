@@ -2,12 +2,12 @@ import { Divider, HStack, VStack } from '@chakra-ui/react';
 
 import { Dialog, SquarePlusIcon } from '@/components';
 import { DialogActions } from '@/components/dialog/actions';
-import { useAuth } from '@/modules/auth/hooks';
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
 import { SelectionEmptyState } from '../';
 import { WorkspaceCard } from '../card';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
@@ -25,7 +25,7 @@ const SelectWorkspaceDialog = ({
   onCreate,
   isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
-  const { workspaces } = useAuth();
+  const { workspaces } = useWorkspaceContext();
   const listIsEmpty = userWorkspaces.length === 0;
 
   const openDialog = dialog.isOpen && !isCreatingWorkspace;

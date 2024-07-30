@@ -16,7 +16,6 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 
 import { Pages } from '@/modules/core/routes';
 
@@ -29,6 +28,7 @@ import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
 
 import { useTokensUSDAmountRequest } from '../hooks/useTokensUSDAmountRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const HomePage = () => {
   const {
@@ -41,7 +41,7 @@ const HomePage = () => {
 
   const {
     workspaces: { current, single },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { selectWorkspace } = useSelectWorkspace();
 

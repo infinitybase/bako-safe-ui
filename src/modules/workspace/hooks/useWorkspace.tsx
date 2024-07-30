@@ -4,7 +4,6 @@ import { useCallback, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
@@ -15,6 +14,7 @@ import { useGetCurrentWorkspace } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
+import { useWorkspaceContext } from '../WorkspaceProvider';
 
 const VAULTS_PER_PAGE = 8;
 
@@ -24,7 +24,7 @@ const useWorkspace = () => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
 
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
 
   const [visibleBalance, setVisibleBalance] = useState(false);
 
@@ -39,7 +39,7 @@ const useWorkspace = () => {
   const workspaceRequest = useGetCurrentWorkspace();
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { selectWorkspace, isSelecting } = useSelectWorkspace();
 

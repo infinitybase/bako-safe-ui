@@ -4,11 +4,11 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useAuth } from '@/modules/auth';
 import { Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useSelectWorkspace } from '@/modules/workspace/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
@@ -28,7 +28,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const { selectWorkspace } = useSelectWorkspace();
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },

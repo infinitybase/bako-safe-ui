@@ -1,8 +1,8 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type UseSidebarProps = {
   params: { workspaceId: string; vaultId: string };
@@ -14,7 +14,7 @@ const useSidebar = ({ params }: UseSidebarProps) => {
   const drawer = useDisclosure();
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const checkPathname = (path: string) => location.pathname === path;
 

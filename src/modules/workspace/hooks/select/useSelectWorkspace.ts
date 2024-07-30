@@ -1,12 +1,7 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
-//import { CookieName } from '@/config/cookies';
-import { useAuth } from '@/modules/auth/hooks';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core/models/workspace';
-
 import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
-
-//const { WORKSPACE, PERMISSIONS, USER_ID } = CookieName;
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
@@ -25,7 +20,7 @@ interface UseSelectWorkspaceOptions {
 
 const useSelectWorkspace = () => {
   const { mutate, isPending, data, ...request } = useSelectWorkspaceRequest();
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
 
   const selectWorkspace = (
     workspace: string,

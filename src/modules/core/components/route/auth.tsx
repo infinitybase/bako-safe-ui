@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { Pages } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface AuthRouteProps {
   children: JSX.Element;
 }
 
 const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
   const { handleWorkspaceSelection } = useWorkspace();

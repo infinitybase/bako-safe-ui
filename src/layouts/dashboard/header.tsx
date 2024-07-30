@@ -26,7 +26,6 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { useAuth } from '@/modules/auth/hooks';
 import { TypeUser } from '@/modules/auth/services';
 import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
@@ -43,6 +42,7 @@ import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -67,7 +67,7 @@ const TopBarItem = chakra(SpacedBox, {
 
 const UserBox = () => {
   const { isMobile } = useScreenSize();
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
@@ -78,7 +78,7 @@ const UserBox = () => {
 
   const logout = async () => {
     auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
-    auth.handlers.logout();
+    auth.handlers.logout?.();
   };
 
   // Bug fix to unread counter that keeps previous state after redirect

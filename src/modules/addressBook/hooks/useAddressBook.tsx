@@ -7,7 +7,6 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { IApiError, queryClient } from '@/config';
-import { useAuth } from '@/modules/auth';
 import { AddressBookQueryKey, PermissionRoles } from '@/modules/core';
 import { useWorkspace } from '@/modules/workspace';
 
@@ -18,6 +17,7 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -43,7 +43,7 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
 
   const { hasPermission } = useWorkspace(); // dont remove
 

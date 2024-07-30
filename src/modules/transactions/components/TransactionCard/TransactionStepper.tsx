@@ -13,10 +13,10 @@ import {
 import { useEffect } from 'react';
 
 import { useAddressBook } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
@@ -55,7 +55,7 @@ const TransactionTypeFormatter = (
 };
 
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
-  const { account } = useAuth();
+  const { account } = useWorkspaceContext();
   const { isMobile } = useScreenSize();
 
   const { contactByAddress } = useAddressBook();

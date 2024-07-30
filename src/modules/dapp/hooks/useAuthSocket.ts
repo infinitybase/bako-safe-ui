@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth, useQueryParams } from '@/modules/auth/hooks';
+import { useQueryParams } from '@/modules/auth/hooks';
 import { Pages } from '@/modules/core/routes';
 
 import { useCreateConnections } from './useCreateConnection';
 import { useGetCurrentVaultRequest } from './useGetCurrentVaultRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface AuthSocketEvent {
   sessionId: string;
@@ -17,7 +18,7 @@ export const useAuthSocket = () => {
   const navigate = useNavigate();
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const [selectedVaultId, setSelectedVaultId] = useState('');
 

@@ -1,8 +1,8 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core';
 import { WorkspaceService } from '@/modules/workspace/services';
+import { useWorkspaceContext } from '../WorkspaceProvider';
 
 const useGetWorkspaceRequest = (
   workspaceId: string,
@@ -23,13 +23,13 @@ const useGetWorkspaceRequest = (
 };
 
 const useGetCurrentWorkspace = () => {
-  const { workspaces } = useAuth();
+  const { workspaces } = useWorkspaceContext();
 
   return useGetWorkspaceRequest(workspaces.current);
 };
 
 const useGetSingleWorkspace = () => {
-  const { workspaces } = useAuth();
+  const { workspaces } = useWorkspaceContext();
 
   return useGetWorkspaceRequest(workspaces.single);
 };

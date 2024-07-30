@@ -22,7 +22,6 @@ import {
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { Pages, useGetParams, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import {
@@ -36,6 +35,7 @@ import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionsVaultPage = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const TransactionsVaultPage = () => {
   const {
     workspaces: { current },
     isSingleWorkspace,
-  } = useAuth();
+  } = useWorkspaceContext();
   const workspaceId = current ?? '';
 
   const { goWorkspace } = useWorkspace();

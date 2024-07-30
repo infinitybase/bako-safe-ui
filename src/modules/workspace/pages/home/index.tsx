@@ -37,7 +37,6 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -54,6 +53,7 @@ import { limitCharacters } from '@/utils';
 
 import { useWorkspace } from '../../hooks';
 import WkHomeTransactions from '../../components/wkHomeTransactions';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
@@ -78,7 +78,7 @@ const WorkspacePage = () => {
 
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const hasVaults = recentVaults?.length ?? 0;
 

@@ -6,7 +6,6 @@ import {
   MoreLessIcon,
   RecoveryIcon,
 } from '@/components';
-import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core/models';
 import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
 import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
@@ -14,6 +13,7 @@ import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
 import { useGetParams } from '@/modules';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -29,7 +29,7 @@ export enum CLIFeaturesLabels {
 }
 
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
-  const { userId } = useAuth();
+  const { userId } = useWorkspaceContext();
 
   const {
     vaultPageParams: { workspaceId },

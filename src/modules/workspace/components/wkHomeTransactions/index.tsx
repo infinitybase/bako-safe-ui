@@ -20,11 +20,11 @@ import {
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
-import { useAuth } from '@/modules/auth';
 
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import { useWorkspace } from '../../hooks';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -50,7 +50,7 @@ const WkHomeTransactions = memo(() => {
 
   const {
     workspaces: { current },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const workspaceId = current ?? '';
 

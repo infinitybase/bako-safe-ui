@@ -1,16 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useAuth } from '@/modules/auth/hooks';
 import { useAuthStore } from '@/modules/auth/store';
 import { AddressBookQueryKey, Pages, WorkspacesQueryKey } from '@/modules/core';
 import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHomeDataRequest } from './useHomeDataRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHome = () => {
-  const auth = useAuth();
+  const auth = useWorkspaceContext();
 
   const navigate = useNavigate();
   const { account } = useAuthStore();

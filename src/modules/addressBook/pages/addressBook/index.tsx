@@ -19,7 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth/hooks/useAuth';
+
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
@@ -32,6 +32,7 @@ import {
   DeleteContactDialog,
 } from '../../components';
 import { useAddressBook } from '../../hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -39,7 +40,7 @@ const AddressBookPage = () => {
   const {
     workspaces: { current, single },
     isSingleWorkspace,
-  } = useAuth();
+  } = useWorkspaceContext();
   const {
     form,
     navigate,

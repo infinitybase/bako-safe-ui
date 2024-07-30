@@ -31,10 +31,10 @@ import {
   useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -42,7 +42,7 @@ interface AddressStepProps {
 }
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
-  const { account, isSingleWorkspace } = useAuth();
+  const { account, isSingleWorkspace } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const handleFirstIsFirstLoad = () => {

@@ -22,8 +22,8 @@ import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
 import { useHomeTransactions } from '../../hooks/useHomeTransactions';
 import { useHome } from '../../hooks';
-import { useAuth } from '@/modules/auth';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -47,7 +47,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
 
   const {
     workspaces: { single },
-  } = useAuth();
+  } = useWorkspaceContext();
 
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);

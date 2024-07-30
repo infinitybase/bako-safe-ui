@@ -20,7 +20,6 @@ import {
   useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth/hooks';
 import {
   AddressUtils,
   AssetSelect,
@@ -31,6 +30,7 @@ import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 import { UseVaultDetailsReturn } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
@@ -55,7 +55,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
   const asset = form.watch(`transactions.${index}.asset`);
 
-  const { isSingleWorkspace } = useAuth();
+  const { isSingleWorkspace } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
 

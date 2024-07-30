@@ -14,13 +14,13 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultBalancePage = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const VaultBalancePage = () => {
   const {
     workspaces: { current },
     isSingleWorkspace,
-  } = useAuth();
+  } = useWorkspaceContext();
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
