@@ -18,6 +18,7 @@ function useVaultAssets(predicateId: string) {
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
+
   const auth = useAuth();
 
   const { data, ...rest } = useQuery({
