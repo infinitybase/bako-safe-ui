@@ -9,7 +9,9 @@ import { VaultService } from '../services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
 
   return useQuery({
     queryKey: ['predicate/home', account],

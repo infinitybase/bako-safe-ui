@@ -33,8 +33,10 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
 
   const {
-    workspaces: { current },
-    isSingleWorkspace,
+    authDetails: {
+      workspaces: { current },
+      isSingleWorkspace,
+    },
   } = useWorkspaceContext();
 
   const { contactByAddress } = useAddressBook(!isSingleWorkspace);

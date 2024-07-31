@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById, Vault } from 'bakosafe';
+import { BakoSafe, IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -61,15 +61,15 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
 
   const listContactsRequest = useListContactsRequest({
-    current: auth.workspaces.current,
-    includePersonal: !auth.isSingleWorkspace,
+    current: authDetails.workspaces.current,
+    includePersonal: !authDetails.isSingleWorkspace,
   });
 
   const resolveTransactionCosts = useMutation({
@@ -100,7 +100,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       queryClient.invalidateQueries({
         queryKey: [
           WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-            auth.workspaces.current,
+            authDetails.workspaces.current,
           ),
           TRANSACTION_LIST_QUERY_KEY,
           USER_TRANSACTIONS_QUERY_KEY,

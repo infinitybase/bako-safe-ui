@@ -49,7 +49,9 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       setSearch,
     },
   } = useSignIn();
-  const { userId } = useWorkspaceContext();
+  const {
+    authDetails: { userId },
+  } = useWorkspaceContext();
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 

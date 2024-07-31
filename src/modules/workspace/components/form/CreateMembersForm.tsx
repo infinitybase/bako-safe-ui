@@ -19,7 +19,9 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { isSingleWorkspace } = useWorkspaceContext();
+  const {
+    authDetails: { isSingleWorkspace },
+  } = useWorkspaceContext();
   const { paginatedContacts, listContactsRequest, workspaceId } =
     useAddressBook(!isSingleWorkspace);
 

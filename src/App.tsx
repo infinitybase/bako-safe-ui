@@ -10,7 +10,7 @@ import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
 
 function App() {
   const { fuel } = useFuel();
-  const auth = useWorkspaceContext();
+  const { authDetails: auth } = useWorkspaceContext();
   const transactionSend = useTransactionSend();
 
   useEffect(() => {

@@ -25,7 +25,9 @@ const SelectWorkspaceDialog = ({
   onCreate,
   isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
-  const { workspaces } = useWorkspaceContext();
+  const {
+    authDetails: { workspaces },
+  } = useWorkspaceContext();
   const listIsEmpty = userWorkspaces.length === 0;
 
   const openDialog = dialog.isOpen && !isCreatingWorkspace;

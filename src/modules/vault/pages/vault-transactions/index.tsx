@@ -29,7 +29,6 @@ import {
   TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
@@ -49,13 +48,14 @@ const TransactionsVaultPage = () => {
 
   const menuDrawer = useDisclosure();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
+    authDetails: {
+      workspaces: { current },
+      isSingleWorkspace,
+    },
+    workspaceInfos: { goWorkspace, currentWorkspace },
   } = useWorkspaceContext();
   const workspaceId = current ?? '';
 
-  const { goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
   const {
     vault,
     transactions: vaultTransaction,
@@ -114,7 +114,7 @@ const TransactionsVaultPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {currentWorkspace.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

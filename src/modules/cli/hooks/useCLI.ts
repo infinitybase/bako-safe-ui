@@ -29,7 +29,9 @@ export enum CLIFeaturesLabels {
 }
 
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
-  const { userId } = useWorkspaceContext();
+  const {
+    authDetails: { userId },
+  } = useWorkspaceContext();
 
   const {
     vaultPageParams: { workspaceId },

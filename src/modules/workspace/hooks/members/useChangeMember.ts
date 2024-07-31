@@ -16,13 +16,13 @@ import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
-import { useWorkspace } from '../useWorkspace';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export enum MemberTabState {
   FORM = 0,
@@ -40,8 +40,10 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
+  const {
+    workspaceInfos: { goWorkspace },
+  } = useWorkspaceContext();
 
-  const { goWorkspace } = useWorkspace();
   const { successToast } = useSettingsToast();
 
   const params = useParams<{ workspaceId: string; memberId: string }>();

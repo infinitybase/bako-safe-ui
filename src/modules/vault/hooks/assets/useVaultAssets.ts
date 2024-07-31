@@ -17,10 +17,14 @@ function useVaultAssets(predicateId: string) {
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
 
   const { data, ...rest } = useQuery({
-    queryKey: ['predicateId/assets', auth.workspaces.current, predicateId],
+    queryKey: [
+      'predicateId/assets',
+      authDetails.workspaces.current,
+      predicateId,
+    ],
     queryFn: () => VaultService.hasReservedCoins(predicateId),
     refetchInterval: 10000,
     refetchOnWindowFocus: false,

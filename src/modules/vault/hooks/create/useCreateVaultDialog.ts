@@ -19,7 +19,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     useCreateVault();
   const { name, origin, sessionId, request_id } = useQueryParams();
   const createConnectionsMutation = useCreateConnections();
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
 
   const handleCancel = useCallback(() => {
     props.onClose();
@@ -34,7 +34,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         name: name!,
         origin: origin!,
         request_id: request_id!,
-        userAddress: auth.account,
+        userAddress: authDetails.account,
         vaultId: vaultId,
       });
     }

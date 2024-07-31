@@ -34,7 +34,7 @@ const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
 
   const {
@@ -234,7 +234,7 @@ const VaultConnector = () => {
                 PermissionRoles.VIEWER,
                 {
                   permissions: workspace.permissions,
-                  userId: auth.userId,
+                  userId: authDetails.userId,
                 },
               );
 
@@ -295,7 +295,7 @@ const VaultConnector = () => {
                     sessionId: sessionId!,
                     request_id: request_id!,
                     vaultId: selectedVaultId,
-                    userAddress: auth.account,
+                    userAddress: authDetails.account,
                   })
                 }
                 isLoading={send.isPending}

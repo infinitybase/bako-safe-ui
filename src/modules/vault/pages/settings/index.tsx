@@ -15,7 +15,6 @@ import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
@@ -30,13 +29,14 @@ const VaultSettingsPage = () => {
 
   const { goHome } = useHome();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
+    authDetails: {
+      workspaces: { current },
+      isSingleWorkspace,
+    },
+    workspaceInfos: { goWorkspace, currentWorkspace },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
-  const { goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
   const workspaceId = current ?? '';
 
   if (!vault) return null;
@@ -77,7 +77,7 @@ const VaultSettingsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {currentWorkspace.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

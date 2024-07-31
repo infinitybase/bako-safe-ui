@@ -17,7 +17,9 @@ export const useAuthSocket = () => {
   const { sessionId } = useQueryParams();
   const navigate = useNavigate();
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
   } = useWorkspaceContext();
 
   const [selectedVaultId, setSelectedVaultId] = useState('');

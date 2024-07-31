@@ -23,9 +23,6 @@ import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useGetCurrentWorkspace } from '@/modules/workspace';
-import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
@@ -40,15 +37,21 @@ const UserVaultsPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
-  const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
   const { goHome } = useHome();
-  const { selectWorkspace } = useSelectWorkspace();
-  const {
-    workspaces: { current, single },
-    isSingleWorkspace,
-  } = useWorkspaceContext();
 
-  const { workspace } = useGetCurrentWorkspace();
+  const {
+    authDetails: {
+      workspaces: { current, single },
+      isSingleWorkspace,
+    },
+    workspaceInfos: {
+      goWorkspace,
+      hasPermission,
+      workspaceHomeRequest,
+      currentWorkspace,
+      selectWorkspace,
+    },
+  } = useWorkspaceContext();
 
   return (
     <VStack
@@ -105,7 +108,7 @@ const UserVaultsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {currentWorkspace.workspace?.name}
                   {/* use request of workspace  */}
                 </BreadcrumbLink>
               </BreadcrumbItem>

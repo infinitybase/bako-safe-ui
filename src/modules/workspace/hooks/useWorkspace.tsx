@@ -10,41 +10,45 @@ import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/li
 
 import { Pages } from '../../core';
 import { PermissionRoles } from '../../core/models';
-import { useGetCurrentWorkspace } from '../hooks/useGetWorkspaceRequest';
+import { useGetWorkspaceRequest } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
-import { useWorkspaceContext } from '../WorkspaceProvider';
+import { IUseAuthReturn } from '@/modules/auth';
 
 const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = () => {
+const useWorkspace = (auth: IUseAuthReturn) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
-
-  const auth = useWorkspaceContext();
 
   const [visibleBalance, setVisibleBalance] = useState(false);
 
   const toast = useNotification();
   const workspaceDialog = useDisclosure();
-
-  const workspaceHomeRequest = useHomeDataRequest();
-  const userWorkspacesRequest = useUserWorkspacesRequest();
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
-  const worksapceBalance = useGetWorkspaceBalanceRequest();
-  const workspaceRequest = useGetCurrentWorkspace();
+  const worksapceBalance = useGetWorkspaceBalanceRequest(
+    auth.workspaces.current,
+  );
+
+  const workspaceHomeRequest = useHomeDataRequest(auth.workspaces.current);
+  const userWorkspacesRequest = useUserWorkspacesRequest();
+  const singleWorkspace = useGetWorkspaceRequest(auth.workspaces.single);
+  const currentWorkspaceRequest = useGetWorkspaceRequest(
+    auth.workspaces.current,
+  );
   const {
     workspaces: { current },
-  } = useWorkspaceContext();
+  } = auth;
 
-  const { selectWorkspace, isSelecting } = useSelectWorkspace();
+  const { selectWorkspace, isSelecting } = useSelectWorkspace(auth);
 
   const goWorkspace = (workspaceId: string) => {
     navigate(Pages.workspace({ workspaceId }));
+    return '';
   };
 
   const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
@@ -54,7 +58,7 @@ const useWorkspace = () => {
       return;
     }
 
-    await workspaceRequest.refetch();
+    await currentWorkspaceRequest.refetch();
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
@@ -99,8 +103,8 @@ const useWorkspace = () => {
   return {
     account: auth.account,
     currentWorkspace: {
-      workspace: workspaceRequest.workspace,
-      isLoading: workspaceRequest.isLoading,
+      workspace: currentWorkspaceRequest.workspace,
+      isLoading: currentWorkspaceRequest.isLoading,
     },
     currentPermissions: auth.permissions,
     userWorkspacesRequest,
@@ -111,6 +115,7 @@ const useWorkspace = () => {
     },
     navigate,
     workspaceHomeRequest,
+    singleWorkspace,
     workspaceId,
     workspaceVaults: {
       recentVaults: workspaceHomeRequest.data?.predicates?.data,
@@ -118,7 +123,7 @@ const useWorkspace = () => {
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
-
+    selectWorkspace,
     worksapceBalance,
     hasPermission,
     visibleBalance,

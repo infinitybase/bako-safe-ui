@@ -23,7 +23,9 @@ export enum TabState {
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
 
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string }>();

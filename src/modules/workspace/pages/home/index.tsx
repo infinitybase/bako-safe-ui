@@ -51,7 +51,6 @@ import {
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
-import { useWorkspace } from '../../hooks';
 import WkHomeTransactions from '../../components/wkHomeTransactions';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
@@ -59,25 +58,26 @@ const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
   const assetsContainerRef = useRef(null);
-  const {
-    navigate,
-    currentWorkspace: { workspace: currentWorkspace },
-    workspaceVaults: { vaultsMax, extraCount, recentVaults },
-    hasPermission,
-    visibleBalance,
-    setVisibleBalance,
-    workspaceDialog,
-    worksapceBalance,
-
-    workspaceHomeRequest,
-    goWorkspace,
-  } = useWorkspace();
   const { goHome } = useHome();
   const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: {
+      navigate,
+      currentWorkspace: { workspace: currentWorkspace },
+      workspaceVaults: { vaultsMax, extraCount, recentVaults },
+      hasPermission,
+      visibleBalance,
+      setVisibleBalance,
+      workspaceDialog,
+      worksapceBalance,
+      workspaceHomeRequest,
+      goWorkspace,
+    },
   } = useWorkspaceContext();
 
   const hasVaults = recentVaults?.length ?? 0;

@@ -28,7 +28,6 @@ import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -55,13 +54,17 @@ const UserTransactionsPage = () => {
     pendingSignerTransactions,
   } = useTransactionList({ type: txFilterType, byMonth: true });
 
-  const { hasPermission, goWorkspace } = useWorkspace();
   const {
-    isSingleWorkspace,
-    workspaces: { current },
+    authDetails: {
+      isSingleWorkspace,
+      workspaces: { current },
+    },
+    workspaceInfos: {
+      hasPermission,
+      goWorkspace,
+      currentWorkspace: { workspace },
+    },
   } = useWorkspaceContext();
-
-  const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
 

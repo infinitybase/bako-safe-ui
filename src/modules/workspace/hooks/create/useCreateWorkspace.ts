@@ -4,10 +4,9 @@ import { Pages } from '@/modules/core';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 
-import { useSelectWorkspace } from '../select';
-import { useWorkspace } from '../useWorkspace';
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export type UseCreateWorkspace = ReturnType<typeof useCreateWorkspace>;
 
@@ -24,7 +23,9 @@ type UserCreateWorkspaceParams = {
 
 const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const navigate = useNavigate();
-  const { goWorkspace } = useWorkspace();
+  const {
+    workspaceInfos: { goWorkspace, selectWorkspace },
+  } = useWorkspaceContext();
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(CreateWorkspaceTabState),
     defaultTab: CreateWorkspaceTabState.ON_BOARDING,
@@ -32,7 +33,6 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
 
   const form = useCreateWorkspaceForm();
   const request = useCreateWorkspaceRequest();
-  const { selectWorkspace } = useSelectWorkspace();
 
   const onCancel = () => {
     tabs.set(CreateWorkspaceTabState.ON_BOARDING);

@@ -42,7 +42,9 @@ interface AddressStepProps {
 }
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
-  const { account, isSingleWorkspace } = useWorkspaceContext();
+  const {
+    authDetails: { account, isSingleWorkspace },
+  } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const handleFirstIsFirstLoad = () => {

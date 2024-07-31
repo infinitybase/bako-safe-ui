@@ -20,7 +20,9 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { fuel } = useFuel();
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
   const { goHome } = useHome();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;

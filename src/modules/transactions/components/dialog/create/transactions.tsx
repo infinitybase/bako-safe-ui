@@ -55,7 +55,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
   const asset = form.watch(`transactions.${index}.asset`);
 
-  const { isSingleWorkspace } = useWorkspaceContext();
+  const {
+    authDetails: { isSingleWorkspace },
+  } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
 

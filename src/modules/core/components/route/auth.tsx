@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface AuthRouteProps {
@@ -10,16 +9,20 @@ export interface AuthRouteProps {
 }
 
 const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
-  const auth = useWorkspaceContext();
+  const {
+    authDetails,
+    workspaceInfos: { handleWorkspaceSelection },
+  } = useWorkspaceContext();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
-  const { handleWorkspaceSelection } = useWorkspace();
 
   useEffect(() => {
-    handleWorkspaceSelection.handler(workspaceId ?? auth.workspaces.single);
+    handleWorkspaceSelection.handler(
+      workspaceId ?? authDetails.workspaces.single,
+    );
   }, [workspaceId]);
 
-  if (!auth.account) {
+  if (!authDetails.account) {
     return (
       <Navigate
         to={`${Pages.index()}${search}`}

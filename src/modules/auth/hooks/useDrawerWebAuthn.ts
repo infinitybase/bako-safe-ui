@@ -23,7 +23,7 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 };
 
 export const useDrawerWebAuth = () => {
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const navigate = useNavigate();
   const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
@@ -47,7 +47,7 @@ export const useDrawerWebAuth = () => {
       webAuthn,
     }) => {
       setTimeout(() => {
-        auth.handlers.authenticate({
+        authDetails.handlers.authenticate({
           userId: user_id,
           avatar,
           account: address,

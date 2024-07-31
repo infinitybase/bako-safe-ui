@@ -46,7 +46,9 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
     useHome();
 
   const {
-    workspaces: { single },
+    authDetails: {
+      workspaces: { single },
+    },
   } = useWorkspaceContext();
 
   const { transactions: groupedTransactions } =

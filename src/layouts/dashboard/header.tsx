@@ -38,7 +38,6 @@ import {
   CreateWorkspaceDialog,
   SelectWorkspaceDialog,
 } from '@/modules/workspace/components';
-import { useWorkspace } from '@/modules/workspace/hooks';
 
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
@@ -67,18 +66,18 @@ const TopBarItem = chakra(SpacedBox, {
 
 const UserBox = () => {
   const { isMobile } = useScreenSize();
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-  const mySettingsRequest = useMySettingsRequest(auth.account);
+  const mySettingsRequest = useMySettingsRequest(authDetails.account);
   const name = mySettingsRequest.data?.name;
   const hasNickName = !name?.startsWith('fuel');
 
   const logout = async () => {
-    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
-    auth.handlers.logout?.();
+    authDetails.accountType === TypeUser.FUEL && (await fuel.disconnect());
+    authDetails.handlers.logout?.();
   };
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -111,14 +110,14 @@ const UserBox = () => {
             <Box mr={{ base: 2, sm: 4 }}>
               <Avatar
                 variant="roundedSquare"
-                src={auth.avatar}
+                src={authDetails.avatar}
                 size={{ base: 'sm', sm: 'md' }}
               />
             </Box>
 
             <Box display={{ base: 'none', sm: 'block' }} mr={9}>
               <Text fontWeight="semibold" color="grey.200">
-                {AddressUtils.format(auth.account)}
+                {AddressUtils.format(authDetails.account)}
               </Text>
             </Box>
 
@@ -192,8 +191,8 @@ const UserBox = () => {
                 addressColor="grey.250"
                 spacing={1}
                 flexDir="row"
-                address={AddressUtils.format(auth.account)!}
-                addressToCopy={auth.account}
+                address={AddressUtils.format(authDetails.account)!}
+                addressToCopy={authDetails.account}
                 bg="transparent"
                 fontSize={14}
                 alignSelf="start"
@@ -323,14 +322,16 @@ const Header = () => {
   const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
   const {
-    currentWorkspace,
-    workspaceDialog,
-    userWorkspacesRequest: {
-      data: userWorkspaces,
-      refetch: refetchUserWorkspaces,
+    workspaceInfos: {
+      currentWorkspace,
+      workspaceDialog,
+      userWorkspacesRequest: {
+        data: userWorkspaces,
+        refetch: refetchUserWorkspaces,
+      },
+      handleWorkspaceSelection,
     },
-    handleWorkspaceSelection,
-  } = useWorkspace();
+  } = useWorkspaceContext();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const { goHome } = useHome();
   const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();

@@ -27,8 +27,6 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useGetCurrentWorkspace } from '@/modules/workspace';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
@@ -54,14 +52,15 @@ const VaultDetailsPage = () => {
   } = useVaultInfosContext();
 
   const { setTemplateFormInitial } = useTemplateStore();
-  const { goWorkspace, hasPermission } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
 
   const { homeDetailsLimitedTransactions, isLoading } = transactions;
 
   const { goHome } = useHome();
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: { goWorkspace, hasPermission, currentWorkspace },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();
@@ -103,7 +102,7 @@ const VaultDetailsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!workspace?.single && (
+            {!currentWorkspace.workspace?.single && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -113,7 +112,7 @@ const VaultDetailsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {currentWorkspace.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

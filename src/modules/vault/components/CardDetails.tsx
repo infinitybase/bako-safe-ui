@@ -21,7 +21,6 @@ import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
-import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -78,8 +77,10 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     hasBalance,
     ethBalance,
   } = assets;
-  const { currentWorkspace, hasPermission } = useWorkspace();
-  const { workspaces, isSingleWorkspace } = useWorkspaceContext();
+  const {
+    authDetails: { workspaces, isSingleWorkspace },
+    workspaceInfos: { currentWorkspace, hasPermission },
+  } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({

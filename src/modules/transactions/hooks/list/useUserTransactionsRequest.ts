@@ -10,9 +10,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
 
 const useUserTransactionsRequest = (options?: { limit?: number }) => {
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   return useQuery({
-    queryKey: [USER_TRANSACTIONS_QUERY_KEY, auth.workspaces.current],
+    queryKey: [USER_TRANSACTIONS_QUERY_KEY, authDetails.workspaces.current],
     queryFn: () =>
       TransactionService.getUserTransactions({
         limit: options?.limit ?? undefined,

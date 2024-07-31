@@ -7,9 +7,9 @@ import {
 } from '@/modules/workspace/services';
 
 import { handleAssetsBalance } from '../utils/assets';
-import { useWorkspaceContext } from '../WorkspaceProvider';
 
 const useGetWorkspaceBalanceRequest = (
+  currentWorkspace: string,
   options?: UseQueryOptions<
     IWroskapceBalance,
     unknown,
@@ -17,11 +17,8 @@ const useGetWorkspaceBalanceRequest = (
     string[]
   >,
 ) => {
-  const {
-    workspaces: { current },
-  } = useWorkspaceContext();
   const { data, ...request } = useQuery({
-    queryKey: WorkspacesQueryKey.GET_BALANCE(current),
+    queryKey: WorkspacesQueryKey.GET_BALANCE(currentWorkspace),
     queryFn: () => WorkspaceService.getBalance(),
     ...options,
     refetchOnWindowFocus: false,

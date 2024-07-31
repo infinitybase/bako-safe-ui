@@ -2,39 +2,38 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { AddressBookQueryKey, Pages, WorkspacesQueryKey } from '@/modules/core';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
-import { useSelectWorkspace } from '@/modules/workspace';
 
-import { useHomeDataRequest } from './useHomeDataRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHome = () => {
-  const auth = useWorkspaceContext();
-
   const navigate = useNavigate();
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails,
+    workspaceInfos: {
+      workspaceHomeRequest,
+      pendingSignerTransactions,
+      selectWorkspace,
+    },
+  } = useWorkspaceContext();
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
-  const homeDataRequest = useHomeDataRequest();
 
-  const pendingSignerTransactions = useTransactionsSignaturePending();
-
-  const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
-
-  const { selectWorkspace } = useSelectWorkspace();
+  const vaultsTotal = workspaceHomeRequest?.data?.predicates.total ?? 0;
 
   const goHome = () => {
-    selectWorkspace(auth.workspaces.single, {
+    selectWorkspace(authDetails.workspaces.single, {
       onSelect: async () => {
-        auth.handlers.authenticateWorkspaceSingle();
+        authDetails.handlers.authenticateWorkspaceSingle();
         await queryClient.invalidateQueries({
           queryKey: WorkspacesQueryKey.FULL_DATA(
-            auth.workspaces.single,
+            authDetails.workspaces.single,
             vaultId!,
           ),
         });
         await queryClient.invalidateQueries({
-          queryKey: AddressBookQueryKey.LIST_BY_USER(auth.workspaces.single),
+          queryKey: AddressBookQueryKey.LIST_BY_USER(
+            authDetails.workspaces.single,
+          ),
         });
         navigate(Pages.home());
       },
@@ -42,23 +41,23 @@ const useHome = () => {
   };
 
   return {
-    account,
+    account: authDetails.account,
     vaultsRequest: {
-      ...homeDataRequest,
+      ...workspaceHomeRequest,
       vaults: {
-        recentVaults: homeDataRequest.data?.predicates?.data,
+        recentVaults: workspaceHomeRequest.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
         extraCount:
           vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: homeDataRequest.isLoading,
-      refetchVaults: homeDataRequest.refetch,
+      loadingRecentVaults: workspaceHomeRequest.isLoading,
+      refetchVaults: workspaceHomeRequest.refetch,
     },
     transactionsRequest: {
-      ...homeDataRequest,
-      loadingTransactions: homeDataRequest.isLoading,
+      ...workspaceHomeRequest,
+      loadingTransactions: workspaceHomeRequest.isLoading,
     },
-    homeRequest: homeDataRequest,
+    homeRequest: workspaceHomeRequest,
     navigate,
     goHome,
     pendingSignerTransactions,

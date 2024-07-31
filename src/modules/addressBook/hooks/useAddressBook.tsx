@@ -8,7 +8,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { IApiError, queryClient } from '@/config';
 import { AddressBookQueryKey, PermissionRoles } from '@/modules/core';
-import { useWorkspace } from '@/modules/workspace';
 
 import { useContactToast } from './useContactToast';
 import { useCreateContactForm } from './useCreateContactForm';
@@ -43,13 +42,14 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const auth = useWorkspaceContext();
-
-  const { hasPermission } = useWorkspace(); // dont remove
+  const {
+    authDetails,
+    workspaceInfos: { hasPermission },
+  } = useWorkspaceContext();
 
   const listContactsRequest = useListContactsRequest({
     current: workspaceId!,
-    includePersonal: isSingleIncluded ?? auth.isSingleWorkspace,
+    includePersonal: isSingleIncluded ?? authDetails.isSingleWorkspace,
   });
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],

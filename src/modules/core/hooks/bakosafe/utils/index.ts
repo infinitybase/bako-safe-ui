@@ -18,10 +18,10 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const removeCredentialsWhenUnathorized = (error: any) => {
   const unauthorizedError = error.response?.status === 401;
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
 
   if (unauthorizedError) {
-    auth.handlers?.logout?.();
+    authDetails.handlers?.logout?.();
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };

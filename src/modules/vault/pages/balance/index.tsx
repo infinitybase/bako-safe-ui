@@ -16,7 +16,6 @@ import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
@@ -27,11 +26,12 @@ const VaultBalancePage = () => {
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
 
-  const { currentWorkspace, goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
+    authDetails: {
+      workspaces: { current },
+      isSingleWorkspace,
+    },
+    workspaceInfos: { currentWorkspace, goWorkspace },
   } = useWorkspaceContext();
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
@@ -74,7 +74,7 @@ const VaultBalancePage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {currentWorkspace.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

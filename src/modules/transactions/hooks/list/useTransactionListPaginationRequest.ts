@@ -21,7 +21,9 @@ const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
   } = useWorkspaceContext();
 
   const { data, ...query } = useInfiniteQuery({

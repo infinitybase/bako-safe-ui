@@ -37,7 +37,9 @@ export interface VaultAddressesStepProps {
 }
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
-  const { isSingleWorkspace } = useWorkspaceContext();
+  const {
+    authDetails: { isSingleWorkspace },
+  } = useWorkspaceContext();
   const {
     handleOpenDialog,
     listContactsRequest,
@@ -108,8 +110,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
-          // pr={{ base: 2, sm: 4 }}
-          // h={500}
           h={{ base: '60vh', xs: 500 }}
         >
           <Dialog.Section

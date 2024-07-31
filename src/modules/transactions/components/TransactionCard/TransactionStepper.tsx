@@ -55,7 +55,9 @@ const TransactionTypeFormatter = (
 };
 
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
   const { isMobile } = useScreenSize();
 
   const { contactByAddress } = useAddressBook();

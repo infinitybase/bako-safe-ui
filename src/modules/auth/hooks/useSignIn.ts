@@ -44,7 +44,7 @@ const useSignIn = () => {
   const connectorDrawer = useDisclosure();
 
   const { fuel } = useFuel();
-  const auth = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
   const { account } = useAccount();
@@ -80,7 +80,7 @@ const useSignIn = () => {
   const signInRequest = useSignInRequest({
     onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
-      auth.handlers.authenticate({
+      authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
         account: account!,
@@ -90,16 +90,6 @@ const useSignIn = () => {
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
-      // auth.handlers.authenticate({
-      //   userId: user_id,
-      //   avatar: avatar!,
-      //   account: account!,
-      //   accountType: TypeUser.FUEL,
-      //   accessToken: accessToken,
-      //   singleWorkspace: workspace.id,
-      //   permissions: workspace.permissions,
-      //   webAuthn: _webAuthn,
-      // });
 
       navigate(redirectPathBuilder(!!sessionId, location, account!));
     },
@@ -147,12 +137,12 @@ const useSignIn = () => {
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
-      auth.handlers.setInvalidAccount?.(true);
+      authDetails.handlers.setInvalidAccount?.(true);
     }
   };
 
   return {
-    auth,
+    auth: authDetails,
     connectByWallet,
     webauthn: {
       ...rest,

@@ -23,8 +23,6 @@ import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useGetCurrentWorkspace } from '@/modules/workspace/hooks/useGetWorkspaceRequest';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 
 import {
   ContactCard,
@@ -38,8 +36,11 @@ const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
 const AddressBookPage = () => {
   const {
-    workspaces: { current, single },
-    isSingleWorkspace,
+    authDetails: {
+      workspaces: { current, single },
+      isSingleWorkspace,
+    },
+    workspaceInfos: { hasPermission, goWorkspace, currentWorkspace },
   } = useWorkspaceContext();
   const {
     form,
@@ -60,10 +61,6 @@ const AddressBookPage = () => {
   const { isExtraSmall } = useScreenSize();
 
   const { data: contacts } = listContactsRequest;
-
-  const { hasPermission, goWorkspace } = useWorkspace();
-
-  const { workspace } = useGetCurrentWorkspace();
 
   const { goHome } = useHome();
 
@@ -148,7 +145,7 @@ const AddressBookPage = () => {
                     maxW={40}
                     isTruncated
                   >
-                    {workspace?.name}
+                    {currentWorkspace?.workspace?.name}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

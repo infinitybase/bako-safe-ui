@@ -30,7 +30,9 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   const toast = useTransactionToast();
 
   const { warningToast } = useContactToast();
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
 
   const transactionSendContext = useTransactionSend();
 

@@ -20,7 +20,6 @@ import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages } from '@/modules/core/routes';
 
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
-import { useSelectWorkspace } from '@/modules/workspace';
 
 import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
@@ -40,10 +39,11 @@ const HomePage = () => {
   } = useHome();
 
   const {
-    workspaces: { current, single },
+    authDetails: {
+      workspaces: { current, single },
+    },
+    workspaceInfos: { selectWorkspace },
   } = useWorkspaceContext();
-
-  const { selectWorkspace } = useSelectWorkspace();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 

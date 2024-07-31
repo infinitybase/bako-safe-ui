@@ -9,7 +9,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 const useMeTransactions = () => {
   const navigate = useNavigate();
 
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
   const transactionsRequest = useMeTransactionsRequest(account);
 
   const transactions = useMemo(() => {

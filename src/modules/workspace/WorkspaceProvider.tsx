@@ -1,16 +1,19 @@
 import { createContext, useContext } from 'react';
-import { IUseAuthReturn } from '..';
+import { IUseAuthReturn, UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 
-export type IWorkspaceContext = IUseAuthReturn | null;
+export interface IWorkspaceContext {
+  authDetails: IUseAuthReturn;
+  workspaceInfos: UseWorkspaceReturn;
+}
 
-const WorkspaceContext = createContext<IWorkspaceContext>(null);
+const WorkspaceContext = createContext<IWorkspaceContext | null>(null);
 
 const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
-  const { authDetails } = useWorkspaceDetails();
+  const workspaceDetails = useWorkspaceDetails();
 
   return (
-    <WorkspaceContext.Provider value={authDetails}>
+    <WorkspaceContext.Provider value={workspaceDetails}>
       {children}
     </WorkspaceContext.Provider>
   );

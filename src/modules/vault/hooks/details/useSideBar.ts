@@ -13,7 +13,9 @@ const useSidebar = ({ params }: UseSidebarProps) => {
   const location = useLocation();
   const drawer = useDisclosure();
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
   } = useWorkspaceContext();
 
   const checkPathname = (path: string) => location.pathname === path;

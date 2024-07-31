@@ -29,7 +29,6 @@ import {
   useScreenSize,
   Workspace,
 } from '@/modules/core';
-import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { WorkspaceCard } from '../card';
@@ -45,7 +44,9 @@ interface MemberCardProps {
 }
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
-  const { permissions: loggedPermissions, avatar } = useWorkspaceContext();
+  const {
+    authDetails: { permissions: loggedPermissions, avatar },
+  } = useWorkspaceContext();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
@@ -146,12 +147,14 @@ const WorkspaceSettingsDrawer = ({
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
+  const {
+    workspaceInfos: { currentWorkspace },
+  } = useWorkspaceContext();
 
   const pathname = window.location.pathname;
 
   const isEditingOrCreatingMember = pathname.includes('/members');
 
-  const request = useGetCurrentWorkspace();
   const { isExtraSmall } = useScreenSize();
 
   return (
@@ -197,13 +200,13 @@ const WorkspaceSettingsDrawer = ({
               }}
             >
               <WorkspaceCard
-                key={request.workspace?.id}
-                workspace={request.workspace!}
+                key={currentWorkspace.workspace?.id}
+                workspace={currentWorkspace.workspace!}
                 counter={{
-                  members: request.workspace!.members.length,
+                  members: currentWorkspace.workspace!.members.length,
                   //In this case, the predicates are coming in an array, so we need to use the length property
-                  vaults: Array.isArray(request.workspace!.predicates)
-                    ? request.workspace!.predicates.length
+                  vaults: Array.isArray(currentWorkspace.workspace!.predicates)
+                    ? currentWorkspace.workspace!.predicates.length
                     : 0,
                 }}
                 mb={10}
@@ -241,8 +244,8 @@ const WorkspaceSettingsDrawer = ({
                     Members
                   </Heading>
                   <Text fontSize="sm" color="grey.400">
-                    {request.workspace?.members.length}{' '}
-                    {request.workspace?.members.length === 1
+                    {currentWorkspace.workspace?.members.length}{' '}
+                    {currentWorkspace.workspace?.members.length === 1
                       ? 'Member'
                       : 'Members'}
                   </Text>
@@ -258,7 +261,7 @@ const WorkspaceSettingsDrawer = ({
                   onClick={() => {
                     navigate(
                       Pages.membersWorkspace({
-                        workspaceId: request.workspace?.id ?? '',
+                        workspaceId: currentWorkspace.workspace?.id ?? '',
                       }),
                     );
                   }}
@@ -272,16 +275,16 @@ const WorkspaceSettingsDrawer = ({
               </Flex>
 
               <VStack w="full" maxW="full">
-                {!!request.workspace?.members &&
-                  request.workspace?.members.map((member) => (
+                {!!currentWorkspace.workspace?.members &&
+                  currentWorkspace.workspace?.members.map((member) => (
                     <MemberCard
                       key={member.id}
                       member={member}
-                      workspace={request.workspace!}
+                      workspace={currentWorkspace.workspace!}
                       onEdit={(memberId) =>
                         navigate(
                           Pages.updateMemberWorkspace({
-                            workspaceId: request.workspace!.id,
+                            workspaceId: currentWorkspace.workspace!.id,
                             memberId,
                           }),
                         )

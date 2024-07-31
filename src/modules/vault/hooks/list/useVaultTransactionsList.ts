@@ -27,7 +27,9 @@ const useVaultTransactionsList = ({
 }: IUseVaultTransactionsListProps = {}) => {
   const navigate = useNavigate();
   const inView = useInView();
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();

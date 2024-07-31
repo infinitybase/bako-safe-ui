@@ -6,7 +6,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 const VAULT_LIST_QUERY_KEY = 'predicate/by-address';
 
 const useUserVaultRequest = () => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
 
   return useQuery({
     queryKey: [VAULT_LIST_QUERY_KEY, account],

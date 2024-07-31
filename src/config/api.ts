@@ -57,7 +57,7 @@ api.interceptors.response.use(
   async (config) => config,
   async (error) => {
     const unauthorizedError = error.response?.status === 401;
-    const auth = useWorkspaceContext();
+    const { authDetails: auth } = useWorkspaceContext();
 
     if (unauthorizedError) {
       auth?.handlers?.logout?.();

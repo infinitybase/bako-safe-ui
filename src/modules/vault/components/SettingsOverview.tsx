@@ -28,7 +28,6 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
-import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -48,9 +47,11 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
     useScreenSize();
 
-  const { hasPermission } = useWorkspace();
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: { hasPermission },
   } = useWorkspaceContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();

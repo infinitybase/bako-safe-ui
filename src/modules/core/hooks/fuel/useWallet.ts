@@ -25,7 +25,9 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const { account: currentAccount } = useWorkspaceContext();
+  const {
+    authDetails: { account: currentAccount },
+  } = useWorkspaceContext();
 
   return useWallet(currentAccount);
 };
@@ -66,7 +68,9 @@ const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { webAuthn, accountType } = useWorkspaceContext();
+  const {
+    authDetails: { webAuthn, accountType },
+  } = useWorkspaceContext();
 
   return useMutation({
     mutationFn: async (message: string) => {

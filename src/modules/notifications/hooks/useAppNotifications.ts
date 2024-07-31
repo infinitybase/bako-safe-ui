@@ -14,7 +14,6 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
-import { useSelectWorkspace } from '@/modules/workspace';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseAppNotificationsParams {
@@ -29,10 +28,12 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+    workspaceInfos: { selectWorkspace },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
-  const { selectWorkspace } = useSelectWorkspace();
   const notificationsListRequest = useListNotificationsRequest(
     account,
     props?.isOpen,

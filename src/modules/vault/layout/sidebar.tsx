@@ -13,8 +13,8 @@ import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
-import { useWorkspace } from '@/modules/workspace';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
 
@@ -24,6 +24,9 @@ interface SidebarProps {
 
 const Sidebar = ({ onDrawer }: SidebarProps) => {
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const {
+    workspaceInfos: { hasPermission },
+  } = useWorkspaceContext();
 
   const {
     isPendingSigner,
@@ -36,8 +39,6 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   const {
     request: { refetch },
   } = useVaultDrawer({ onClose: () => {} });
-
-  const { hasPermission } = useWorkspace();
 
   return (
     <Box

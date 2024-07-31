@@ -7,7 +7,6 @@ import { queryClient } from '@/config';
 import { Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
-import { useSelectWorkspace } from '@/modules/workspace/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseVaultDrawerParams {
@@ -25,15 +24,15 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
 
-  const { selectWorkspace } = useSelectWorkspace();
   const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: { selectWorkspace },
   } = useWorkspaceContext();
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
-    // In local was working fine, but when deploy, the requests wasn't being updated even if invalidating it
-    // so, removing this props solve the problem
     props.isOpen,
   );
 

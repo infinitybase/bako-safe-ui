@@ -22,7 +22,6 @@ import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
 
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useWorkspace } from '../../hooks';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
@@ -41,15 +40,16 @@ const WkHomeTransactions = memo(() => {
     useFilterTxType();
 
   const {
-    account,
-    navigate,
-    workspaceVaults: { recentVaults },
-    pendingSignerTransactions,
-    workspaceHomeRequest,
-  } = useWorkspace();
-
-  const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: {
+      account,
+      navigate,
+      workspaceVaults: { recentVaults },
+      pendingSignerTransactions,
+      workspaceHomeRequest,
+    },
   } = useWorkspaceContext();
 
   const workspaceId = current ?? '';

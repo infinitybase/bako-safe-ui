@@ -17,18 +17,19 @@ import { AssetsBalanceList } from '@/modules/core';
 import { useHome } from '@/modules/home';
 import { limitCharacters } from '@/utils';
 
-import { useWorkspace } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const WorkspaceBalancePage = () => {
   const { goHome } = useHome();
   const {
-    currentWorkspace: { workspace: currentWorkspace },
-    goWorkspace,
-    worksapceBalance,
-  } = useWorkspace();
-  const {
-    workspaces: { current },
+    authDetails: {
+      workspaces: { current },
+    },
+    workspaceInfos: {
+      currentWorkspace: { workspace: currentWorkspace },
+      goWorkspace,
+      worksapceBalance,
+    },
   } = useWorkspaceContext();
 
   const workspaceId = current ?? '';

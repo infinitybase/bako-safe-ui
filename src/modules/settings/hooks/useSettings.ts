@@ -18,7 +18,9 @@ interface UseSettingsProps {
 const { MY_SETTINGS } = SettingsQueryKey;
 
 const useSettings = ({ onClose }: UseSettingsProps) => {
-  const { account } = useWorkspaceContext();
+  const {
+    authDetails: { account },
+  } = useWorkspaceContext();
   const { form } = useSettingsForm();
   const { successToast, errorToast } = useContactToast();
   const mySettingsRequest = useMySettingsRequest(account);
