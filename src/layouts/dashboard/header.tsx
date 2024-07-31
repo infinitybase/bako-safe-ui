@@ -41,7 +41,6 @@ import {
 } from '@/modules/workspace/components';
 import { useWorkspace } from '@/modules/workspace/hooks';
 
-import { useSidebar } from './hook';
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 
@@ -71,7 +70,7 @@ const UserBox = () => {
   const auth = useAuth();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
-  const { drawer } = useSidebar();
+  const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const mySettingsRequest = useMySettingsRequest(auth.account);
   const name = mySettingsRequest.data?.name;
@@ -96,7 +95,10 @@ const UserBox = () => {
         onOpen={settingsDrawer.onOpen}
       />
 
-      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <NotificationsDrawer
+        isOpen={notificationDrawerState.isOpen}
+        onClose={notificationDrawerState.onClose}
+      />
 
       <Popover>
         <PopoverTrigger>
@@ -143,7 +145,7 @@ const UserBox = () => {
                   borderTop={'1px solid'}
                   borderTopColor={'dark.100'}
                   cursor={'pointer'}
-                  onClick={drawer.onOpen}
+                  onClick={notificationDrawerState.onOpen}
                   p={5}
                 >
                   <HStack>
@@ -318,7 +320,7 @@ const WorkspaceBox = ({
 };
 
 const Header = () => {
-  const { drawer } = useSidebar();
+  const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
   const {
     currentWorkspace,
@@ -367,7 +369,10 @@ const Header = () => {
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
-      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <NotificationsDrawer
+        isOpen={notificationDrawerState.isOpen}
+        onClose={notificationDrawerState.onClose}
+      />
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
@@ -414,7 +419,7 @@ const Header = () => {
         <TopBarItem
           display={{ base: 'none', sm: 'flex' }}
           cursor="pointer"
-          onClick={drawer.onOpen}
+          onClick={notificationDrawerState.onOpen}
           width={78}
         >
           <Icon

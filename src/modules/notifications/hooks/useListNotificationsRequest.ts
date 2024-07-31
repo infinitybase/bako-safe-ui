@@ -4,6 +4,7 @@ import { SortOption } from 'bakosafe';
 import { NotificationsQueryKey } from '@/modules/core';
 
 import { NotificationService } from '../services';
+import { TransactionOrderBy } from '@/modules/transactions/services';
 
 const useListNotificationsRequest = (account: string, enabled?: boolean) => {
   const { data, ...query } = useInfiniteQuery({
@@ -12,7 +13,7 @@ const useListNotificationsRequest = (account: string, enabled?: boolean) => {
       NotificationService.getAllWithPagination({
         perPage: 5,
         page: pageParam || 0,
-        orderBy: 'createdAt',
+        orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.desc,
       }),
     initialPageParam: 0,

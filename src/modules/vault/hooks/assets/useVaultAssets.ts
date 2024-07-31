@@ -1,113 +1,40 @@
 import { useQuery } from '@tanstack/react-query';
 import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import BakoIcon from '@/assets/tokens/bako.svg';
 import { useAuth } from '@/modules/auth/hooks';
-import { Asset, assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
+import { assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
+
+const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
+
+const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
+const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
+  localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
 import { VaultService } from '../../services';
-import { useVaultState } from '../../states';
 
-const balancesToAssets = async (
-  setBalanceUSD: (string: string) => void,
-  predicate?: Vault,
-) => {
-  if (!predicate) return [];
+function useVaultAssets(predicateId: string) {
+  const initialVisibility = isVisibleBalance();
+  const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
-  const { balances } = await predicate.getBalances();
-  const { reservedCoins, balanceUSD } = await VaultService.hasReservedCoins(
-    predicate.BakoSafeVaultId,
-  );
-  setBalanceUSD(balanceUSD);
-  const result = balances.reduce((acc, balance) => {
-    const assetInfos = assetsMap[balance.assetId];
-    const reservedCoinAmount = reservedCoins?.find(
-      (item) => item.assetId === balance.assetId,
-    )?.amount;
-    const adjustedAmount = reservedCoinAmount
-      ? balance.amount.sub(reservedCoinAmount)
-      : balance.amount;
-
-    if (adjustedAmount.gt(0)) {
-      acc.push({
-        amount: adjustedAmount.format(),
-        slug: assetInfos?.slug ?? 'UKN',
-        name: assetInfos?.name ?? 'Unknown',
-        assetId: balance.assetId,
-        icon: assetInfos?.icon ?? BakoIcon,
-      });
-    }
-
-    return acc;
-  }, [] as Required<Asset>[]);
-
-  return result;
-};
-
-function useVaultAssets(predicate?: Vault) {
-  const {
-    setVisibleBalance,
-    setBiggerAsset,
-    setBalanceUSD,
-    setIsFirstAssetsLoading,
-  } = useVaultState();
 
   const auth = useAuth();
 
-  const { data: assets, ...rest } = useQuery({
-    queryKey: [
-      'predicate/assets',
-      auth.workspaces.current,
-      predicate?.BakoSafeVaultId,
-    ],
-    queryFn: () =>
-      balancesToAssets(setBalanceUSD, predicate).then((data) => {
-        setTimeout(() => setIsFirstAssetsLoading(false), 500);
-        return data;
-      }),
-    initialData: [],
+  const { data, ...rest } = useQuery({
+    queryKey: ['predicateId/assets', auth.workspaces.current, predicateId],
+    queryFn: () => VaultService.hasReservedCoins(predicateId),
     refetchInterval: 10000,
+    refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
-    enabled: !!predicate,
+    enabled: !!predicateId,
   });
-
-  const findBiggerAsset = () => {
-    let bigger = 0;
-    const isValid = assets && assets.length > 0;
-
-    if (isValid) {
-      setBiggerAsset(assets[0]);
-      assets.map((item, index) => {
-        const _isValid =
-          index > 0 &&
-          item?.amount &&
-          bn(bn.parseUnits(assets[bigger].amount)) <
-            bn(bn.parseUnits(item.amount));
-        if (_isValid) {
-          bigger = index;
-        }
-      });
-      setBiggerAsset(assets[bigger]);
-    } else {
-      setBiggerAsset({
-        assetId: NativeAssetId,
-        name: '',
-        icon: '',
-        slug: '',
-        amount: '0',
-      });
-    }
-  };
-
-  useEffect(() => {
-    findBiggerAsset();
-  }, [assets]);
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
-      const balance = assets?.find((asset) => asset.assetId === assetId);
+      const balance = data?.currentBalance.find(
+        (asset) => asset.assetId === assetId,
+      );
 
       if (!balance) {
         return bn(0);
@@ -115,31 +42,7 @@ function useVaultAssets(predicate?: Vault) {
 
       return bn(bn.parseUnits(balance.amount!));
     },
-    [assets],
-  );
-
-  const getCoinBalance = useCallback(
-    (assetId: string) => {
-      const balance = assets?.find((asset) => asset.assetId === assetId);
-
-      if (!balance) {
-        return bn(0).format();
-      }
-
-      /**
-       * TODO: calculate exact gas fee, get resource to spend in provider
-       * https://github.com/FuelLabs/fuels-wallet/blob/15358f509596d823f201a2bfd3721d4e26fc52cc/packages/app/src/systems/Transaction/services/transaction.tsx#L270-L289C15
-       * **/
-      //const gasConfig = provider?.getGasConfig();
-
-      return (
-        bn(bn.parseUnits(balance.amount!))
-          //.sub(bn.parseUnits('0.001'))
-          //defaultConfigurable['gasPrice'].mul(defaultConfigurable['gasLimit']),
-          .format()
-      );
-    },
-    [assets],
+    [data?.currentBalance],
   );
 
   const getAssetInfo = (assetId: string) => {
@@ -154,35 +57,45 @@ function useVaultAssets(predicate?: Vault) {
 
   const hasAssetBalance = useCallback(
     (assetId: string, value: string) => {
-      const coinBalance = getCoinBalance(assetId);
+      const coinBalance = getCoinAmount(assetId).format();
       const hasBalance = bn(bn.parseUnits(value)).lte(
-        bn.parseUnits(coinBalance),
+        bn.parseUnits(String(coinBalance)),
       );
 
       return hasBalance;
     },
-    [getCoinBalance],
+    [getCoinAmount],
   );
 
   const hasBalance = useMemo(() => {
-    return assets?.some((asset) => bn(bn.parseUnits(asset.amount)).gt(0));
-  }, [assets]);
+    const result = data?.currentBalance.some((asset) =>
+      bn(bn.parseUnits(asset.amount)).gt(0),
+    );
+
+    return result;
+  }, [data?.currentBalance]);
 
   const ethBalance = useMemo(() => {
-    return getCoinBalance(NativeAssetId);
-  }, [getCoinBalance]);
+    return getCoinAmount(NativeAssetId).format();
+  }, [getCoinAmount]);
+
+  const handleSetVisibleBalance = (visible: any) => {
+    setVisibleBalance(visible);
+    setIsVisibleBalance(visible ? 'true' : 'false');
+  };
 
   return {
-    assets,
+    assets: data?.currentBalance,
     ...rest,
     getAssetInfo,
     getCoinAmount,
-    getCoinBalance,
     hasAssetBalance,
-    setVisibleBalance,
+    setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
-    hasAssets: !!assets?.length,
+    hasAssets: !!data?.currentBalance.length,
+    visibleBalance,
+    balanceUSD: data?.currentBalanceUSD,
   };
 }
 

@@ -4,7 +4,11 @@ import { SortOptionTx } from 'bakosafe';
 import { useAuth } from '@/modules/auth';
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 
-import { GetTransactionParams, TransactionService } from '../../services';
+import {
+  GetTransactionParams,
+  TransactionOrderBy,
+  TransactionService,
+} from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
 
@@ -33,7 +37,7 @@ const useTransactionListPaginationRequest = (
         ...params,
         perPage: 5,
         page: pageParam || 0,
-        orderBy: 'createdAt',
+        orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
         id: params.id,
       }).then((data) => {

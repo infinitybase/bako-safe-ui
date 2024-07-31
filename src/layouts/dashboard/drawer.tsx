@@ -7,7 +7,7 @@ import {
 
 import { LineCloseIcon } from '@/components';
 
-import { Sidebar } from './sidebar';
+import { Sidebar } from '../../modules/vault/layout/sidebar';
 
 interface DrawerProps extends Omit<ChakraDrawerProps, 'children'> {}
 

@@ -2,7 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 
-import { SortOption, TransactionService } from '../../services';
+import {
+  SortOption,
+  TransactionOrderBy,
+  TransactionService,
+} from '../../services';
 
 const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
 
@@ -13,7 +17,7 @@ const useUserTransactionsRequest = (options?: { limit?: number }) => {
     queryFn: () =>
       TransactionService.getUserTransactions({
         limit: options?.limit ?? undefined,
-        orderBy: 'createdAt',
+        orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,
         allOfUser: true,
       }),

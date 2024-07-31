@@ -9,6 +9,7 @@ import {
   Icon,
   Spacer,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -17,7 +18,7 @@ import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
+import { useGetParams, useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -27,51 +28,46 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useVaultDetails } from '@/modules/vault/hooks/details/useVaultDetails';
 import { useGetCurrentWorkspace } from '@/modules/workspace';
 import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const VaultDetailsPage = () => {
-  const { handleIncomingAction, handleOutgoingAction, txFilterType } =
-    useFilterTxType();
-
-  const { setTemplateFormInitial } = useTemplateStore();
+  const menuDrawer = useDisclosure();
   const {
-    params,
+    vaultPageParams: { workspaceId: vaultWkId },
+  } = useGetParams();
+  const navigate = useNavigate();
+  const { vaultPageParams } = useGetParams();
+  const {
     vault,
     assets,
-    store,
-    navigate,
     account,
-    inView,
     pendingSignerTransactions,
-    menuDrawer,
-  } = useVaultDetails({ byMonth: true, txFilterType });
+    transactions,
+    isPendingSigner,
+  } = useVaultInfosContext();
+
+  const { setTemplateFormInitial } = useTemplateStore();
   const { goWorkspace, hasPermission } = useWorkspace();
   const { workspace } = useGetCurrentWorkspace();
 
-  const { vaultTransactions, loadingVaultTransactions, isLoading } =
-    vault.transactions;
+  const { homeDetailsLimitedTransactions, isLoading } = transactions;
+
   const { goHome } = useHome();
   const {
     workspaces: { current },
   } = useAuth();
-  const {
-    vaultRequiredSizeToColumnLayout,
-    isSmall,
-    isMobile,
-    isExtraSmall,
-    isLarge,
-  } = useScreenSize();
+  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
+    useScreenSize();
 
   const workspaceId = current ?? '';
-  const hasTransactions =
-    !loadingVaultTransactions && vaultTransactions?.data?.length;
+  const hasTransactions = !isLoading && homeDetailsLimitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
 
@@ -148,7 +144,7 @@ const VaultDetailsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {limitCharacters(vault?.name ?? '', 25)}
+                {limitCharacters(vault?.data?.name ?? '', 25)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -163,22 +159,22 @@ const VaultDetailsPage = () => {
             isDisabled={!canSetTemplate || true} // todo: fix this
             onClick={() => {
               if (
-                !vault.id ||
-                !vault.minSigners ||
-                !vault.members ||
-                !params.workspaceId
+                !vault.data?.id ||
+                !vault.data?.minSigners ||
+                !vault.data.members ||
+                !vaultPageParams.workspaceId
               )
                 return;
               setTemplateFormInitial({
-                minSigners: vault.minSigners!,
+                minSigners: vault.data?.minSigners!,
                 addresses:
-                  vault.members! &&
-                  vault.members.map((signer) => signer.address),
+                  vault.data.members! &&
+                  vault.data?.members.map((signer) => signer.address),
               });
               navigate(
                 Pages.createTemplate({
-                  vaultId: vault.id!,
-                  workspaceId: params.workspaceId!,
+                  vaultId: vault.data.id!,
+                  workspaceId: vaultPageParams.workspaceId!,
                 }),
               );
             }}
@@ -194,7 +190,11 @@ const VaultDetailsPage = () => {
         w="full"
         gap={10}
       >
-        <CardDetails vault={vault} store={store} assets={assets} />
+        <CardDetails
+          vault={vault}
+          assets={assets}
+          isPendingSigner={isPendingSigner}
+        />
 
         {!isLarge && <SignersDetails vault={vault} />}
       </HStack>
@@ -221,23 +221,19 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
+          incomingAction={transactions.handleIncomingAction}
+          outgoingAction={transactions.handleOutgoingAction}
           buttonsFullWidth={isSmall}
         />
       </Box>
 
       <CustomSkeleton
         minH="30vh"
-        isLoaded={!vault.isLoading && !isLoading && !loadingVaultTransactions}
-        h={
-          !vault.isLoading && !isLoading && !loadingVaultTransactions
-            ? 'unset'
-            : '100px'
-        }
+        isLoaded={!vault.isLoading && !isLoading}
+        h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? vaultTransactions.data.map((grouped) => (
+          ? homeDetailsLimitedTransactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -256,7 +252,7 @@ const VaultDetailsPage = () => {
                   maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
                   spacing={0}
                 >
-                  {grouped?.transactions.map((transaction) => {
+                  {grouped?.transactions?.map((transaction) => {
                     const status = transactionStatus({
                       ...transaction,
                       account,
@@ -291,10 +287,6 @@ const VaultDetailsPage = () => {
                             }
                           />
                         )}
-
-                        {!vault.transactions.isLoading && (
-                          <Box ref={inView.ref} />
-                        )}
                       </>
                     );
                   })}
@@ -302,14 +294,14 @@ const VaultDetailsPage = () => {
               </>
             ))
           : !hasTransactions &&
-            !!vaultTransactions && (
+            !!homeDetailsLimitedTransactions && (
               <EmptyState
-                isDisabled={!vault?.hasBalance}
+                isDisabled={!assets.hasBalance}
                 buttonAction={() =>
                   navigate(
                     Pages.createTransaction({
-                      workspaceId: params.workspaceId!,
-                      vaultId: vault.id!,
+                      workspaceId: vaultWkId!,
+                      vaultId: vault?.data?.id!,
                     }),
                   )
                 }

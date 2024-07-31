@@ -128,6 +128,11 @@ export interface ResolveTransactionCostInput {
   vault: Vault;
 }
 
+export enum TransactionOrderBy {
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt',
+}
+
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =

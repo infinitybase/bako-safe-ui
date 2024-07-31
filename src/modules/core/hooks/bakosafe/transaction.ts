@@ -12,7 +12,7 @@ import { TransactionService } from '@/modules/transactions/services';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
-const TRANSACTION_QUERY_KEYS = {
+export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
   VAULT: (id: string, filter?: IListTransactions) => [
@@ -47,7 +47,7 @@ const useBakoSafeCreateTransaction = ({
 };
 
 interface UseBakoSafeListTransactionParams {
-  vault: Vault;
+  vaultId: string;
   filter?: IListTransactions & {
     limit: number;
     byMonth?: boolean;
@@ -56,18 +56,18 @@ interface UseBakoSafeListTransactionParams {
 }
 
 const useBakoSafeTransactionList = ({
-  vault,
+  vaultId,
   filter,
 }: UseBakoSafeListTransactionParams) => {
   return useBakoSafeQuery(
-    TRANSACTION_QUERY_KEYS.VAULT(vault?.BakoSafeVaultId, filter),
+    TRANSACTION_QUERY_KEYS.VAULT(vaultId, filter),
     async () => {
-      return await TransactionService.getTransactions({
-        predicateId: [vault?.BakoSafeVaultId],
+      return await TransactionService.getTransactionsPagination({
+        predicateId: [vaultId],
         ...filter,
       });
     },
-    { enabled: !!vault },
+    { enabled: !!vaultId, refetchOnWindowFocus: false },
   );
 };
 

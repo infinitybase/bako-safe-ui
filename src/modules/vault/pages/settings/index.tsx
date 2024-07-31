@@ -7,6 +7,7 @@ import {
   Icon,
   Text,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
@@ -15,14 +16,17 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import { useHome } from '@/modules/home/hooks/useHome';
-import { useVaultDetails } from '@/modules/vault/hooks';
 import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, menuDrawer } = useVaultDetails();
+  const navigate = useNavigate();
+  const menuDrawer = useDisclosure();
+  const { vault, assets, isPendingSigner } = useVaultInfosContext();
 
   const { goHome } = useHome();
   const {
@@ -102,7 +106,7 @@ const VaultSettingsPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
+                      vaultId: vault.data?.id!,
                       workspaceId: current ?? '',
                     }),
                   )
@@ -110,7 +114,7 @@ const VaultSettingsPage = () => {
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault?.data?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -151,8 +155,8 @@ const VaultSettingsPage = () => {
       <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
         <SettingsOverview
           vault={vault}
-          store={store}
-          blockedTransfers={vault.transactions.isPendingSigner}
+          assets={assets}
+          blockedTransfers={isPendingSigner}
         />
         <SettingsSigners vault={vault} />
       </VStack>

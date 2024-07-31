@@ -39,11 +39,15 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
 
   const { contactByAddress } = useAddressBook(!isSingleWorkspace);
 
-  const isBig = !vault?.members ? 0 : vault?.members.length - 4;
+  const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 
-  const owner = vault.members?.find((member) => member.id === vault.owner?.id);
+  const owner = vault.data?.members?.find(
+    (member) => member.id === vault.data?.owner?.id,
+  );
   const notOwners =
-    vault.members?.filter((member) => member.id !== vault.owner?.id) ?? [];
+    vault.data?.members?.filter(
+      (member) => member.id !== vault.data?.owner?.id,
+    ) ?? [];
 
   // Order members with owner in first position
   const members = [owner, ...notOwners];
@@ -76,7 +80,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                   onClick={() =>
                     navigate(
                       Pages.vaultSettings({
-                        vaultId: vault.id!,
+                        vaultId: vault.data?.id!,
                         workspaceId: current,
                       }),
                     )
@@ -134,7 +138,8 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.minSigners}/{vault.members?.length}
+          Required signers {vault?.data?.minSigners}/
+          {vault.data?.members?.length}
         </Badge>
       </HStack>
 

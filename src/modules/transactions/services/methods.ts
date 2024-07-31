@@ -120,6 +120,11 @@ export class TransactionService {
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets } = input;
 
+    if (!vault)
+      return {
+        fee: bn(0),
+      };
+
     const { transactionRequest } = await Transfer.instance({
       vault,
       transfer: {
@@ -136,7 +141,6 @@ export class TransactionService {
       fee: maxFee.add(
         bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
       ),
-      transactionRequest,
     };
   }
 

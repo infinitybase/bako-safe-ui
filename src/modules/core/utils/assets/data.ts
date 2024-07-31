@@ -54,6 +54,7 @@ const assetsMap: AssetMap = assetsList.reduce((previousValue, currentValue) => {
       name: currentValue.name,
       slug: currentValue.slug,
       icon: currentValue.icon,
+      assetId: currentValue.assetId,
     },
   };
 }, {});
