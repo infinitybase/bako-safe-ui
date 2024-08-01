@@ -49,9 +49,7 @@ const UserTransactionsPage = () => {
     transactionRequest,
     filter,
     inView,
-    account,
     navigate,
-    pendingSignerTransactions,
   } = useTransactionList({ type: txFilterType, byMonth: true });
 
   const {
@@ -63,6 +61,8 @@ const UserTransactionsPage = () => {
       hasPermission,
       goWorkspace,
       currentWorkspace: { workspace },
+      pendingSignerTransactions,
+      account,
     },
   } = useWorkspaceContext();
 

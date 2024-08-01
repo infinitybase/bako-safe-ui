@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
-import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -29,15 +28,9 @@ const useTransactionList = ({
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
-  const {
-    authDetails: { account },
-  } = useWorkspaceContext();
+
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
-
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
 
   const {
     transactions,
@@ -101,9 +94,7 @@ const useTransactionList = ({
       value: filter,
     },
     inView,
-    account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    pendingSignerTransactions,
     hasSkeleton: false,
     infinityTransactions,
     infinityTransactionsRef: lastElementRef,

@@ -23,6 +23,7 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
+  // Verificar para invalidar query e remover essa instância do hook
   const {
     transactionRequest: { refetch: refetchTransactionsRequest },
   } = useTransactionList();
