@@ -9,7 +9,6 @@ import { useWalletSignMessage } from '@/modules/core';
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
-import { useTransactionList } from '../list';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface SignTransactionParams {
@@ -23,11 +22,6 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
-  // Verificar para invalidar query e remover essa instância do hook
-  const {
-    transactionRequest: { refetch: refetchTransactionsRequest },
-  } = useTransactionList();
-
   const toast = useTransactionToast();
 
   const { warningToast } = useContactToast();
@@ -53,7 +47,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
-    await refetchTransactionsRequest();
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),
