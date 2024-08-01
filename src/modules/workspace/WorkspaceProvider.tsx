@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { IUseAuthReturn, UseAddressBookReturn, UseWorkspaceReturn } from '..';
+import { UseAddressBookReturn, UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { IUseAuthReturn } from '../auth/services';
 

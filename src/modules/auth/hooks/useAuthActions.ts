@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AddressUtils, IPermission } from '@/modules/core';
 import { SignWebAuthnPayload, TypeUser } from '../services';
+import { useUserInfo } from './useUserInfo';
 
 export type SingleAuthentication = {
   avatar: string;
@@ -41,23 +41,22 @@ export type IUseAuthActionHandler = {
 export type IUseAuthActions = IUseAuthActionsState & IUseAuthActionHandler;
 
 const useAuthActions = (): IUseAuthActions => {
+  const { userInfos } = useUserInfo();
+
   const [state, setState] = useState<IUseAuthActionsState>({
-    account: CookiesConfig.getCookie(CookieName.ADDRESS)!,
-    // VERIFICAR ESSE AS TYPEUSER
-    accountType: CookiesConfig.getCookie(CookieName.ACCOUNT_TYPE)! as TypeUser,
-    userId: CookiesConfig.getCookie(CookieName.USER_ID)!,
+    account: userInfos?.address!,
+    accountType: userInfos?.type,
+    userId: userInfos?.id ?? '',
     webAuthn: {
-      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
-      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
+      id: userInfos?.webauthn?.id ?? '',
+      publicKey: userInfos?.webauthn?.publicKey!,
     },
     workspaces: {
-      single: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
-      current: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE)!,
+      single: userInfos?.workspace.id ?? '',
+      current: userInfos?.workspace.id ?? '',
     },
-    formattedAccount: AddressUtils.format(
-      CookiesConfig.getCookie(CookieName.ADDRESS)!,
-    )!,
-    avatar: CookiesConfig.getCookie(CookieName.AVATAR)!,
+    formattedAccount: AddressUtils.format(userInfos?.address!)!,
+    avatar: userInfos?.avatar!,
     isInvalidAccount: false,
   });
 

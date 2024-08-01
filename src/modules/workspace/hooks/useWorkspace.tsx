@@ -14,7 +14,7 @@ import { useGetWorkspaceRequest } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
-import { IUseAuthReturn } from '@/modules/auth';
+import { IUseAuthReturn } from '@/modules/auth/services';
 
 const VAULTS_PER_PAGE = 8;
 
