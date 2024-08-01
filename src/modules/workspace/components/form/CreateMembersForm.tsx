@@ -3,10 +3,7 @@ import { Controller } from 'react-hook-form';
 
 import { Autocomplete } from '@/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
-import {
-  useAddressBook,
-  useAddressBookAutocompleteOptions,
-} from '@/modules/addressBook/hooks';
+import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { UseChangeMember } from '../../hooks';
@@ -21,9 +18,8 @@ interface MemberAddressForm {
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const {
     authDetails: { isSingleWorkspace },
+    addressBookInfos: { paginatedContacts, listContactsRequest, workspaceId },
   } = useWorkspaceContext();
-  const { paginatedContacts, listContactsRequest, workspaceId } =
-    useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({

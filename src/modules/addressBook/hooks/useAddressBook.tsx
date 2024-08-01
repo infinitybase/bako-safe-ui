@@ -16,7 +16,7 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { IUseAuthReturn } from '@/modules/auth';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
@@ -26,7 +26,10 @@ interface DialogProps {
   contactToEdit?: string;
 }
 
-const useAddressBook = (isSingleIncluded: boolean = false) => {
+const useAddressBook = (
+  authDetails: IUseAuthReturn,
+  hasPermission: (requiredRoles: PermissionRoles[]) => boolean,
+) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
   const [contactToDelete, setContactToDelete] = useState({
@@ -42,20 +45,16 @@ const useAddressBook = (isSingleIncluded: boolean = false) => {
 
   const { successToast, errorToast, createAndUpdateSuccessToast } =
     useContactToast();
-  const {
-    authDetails,
-    workspaceInfos: { hasPermission },
-  } = useWorkspaceContext();
 
   const listContactsRequest = useListContactsRequest({
     current: workspaceId!,
-    includePersonal: isSingleIncluded ?? authDetails.isSingleWorkspace,
+    includePersonal: authDetails.isSingleWorkspace,
   });
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],
     { q: search },
     workspaceId!,
-    isSingleIncluded,
+    authDetails.isSingleWorkspace,
   );
 
   // FORM

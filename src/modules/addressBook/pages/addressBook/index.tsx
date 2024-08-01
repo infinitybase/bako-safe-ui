@@ -29,7 +29,6 @@ import {
   CreateContactDialog,
   DeleteContactDialog,
 } from '../../components';
-import { useAddressBook } from '../../hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { ADMIN, MANAGER, OWNER } = PermissionRoles;
@@ -41,22 +40,22 @@ const AddressBookPage = () => {
       isSingleWorkspace,
     },
     workspaceInfos: { hasPermission, goWorkspace, currentWorkspace },
+    addressBookInfos: {
+      form,
+      navigate,
+      contactDialog,
+      contactToEdit,
+      contactToDelete,
+      handleOpenDialog,
+      setContactToDelete,
+      listContactsRequest,
+      handleDeleteContact,
+      deleteContactDialog,
+      deleteContactRequest,
+      updateContactRequest,
+      createContactRequest,
+    },
   } = useWorkspaceContext();
-  const {
-    form,
-    navigate,
-    contactDialog,
-    contactToEdit,
-    contactToDelete,
-    handleOpenDialog,
-    setContactToDelete,
-    listContactsRequest,
-    handleDeleteContact,
-    deleteContactDialog,
-    deleteContactRequest,
-    updateContactRequest,
-    createContactRequest,
-  } = useAddressBook(isSingleWorkspace);
 
   const { isExtraSmall } = useScreenSize();
 

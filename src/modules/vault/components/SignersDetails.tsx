@@ -10,7 +10,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { useAddressBook } from '@/modules/addressBook';
 import { useScreenSize } from '@/modules/core/hooks';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
@@ -35,11 +34,9 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const {
     authDetails: {
       workspaces: { current },
-      isSingleWorkspace,
     },
+    addressBookInfos: { contactByAddress },
   } = useWorkspaceContext();
-
-  const { contactByAddress } = useAddressBook(!isSingleWorkspace);
 
   const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 

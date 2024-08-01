@@ -17,7 +17,6 @@ import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
 import {
@@ -57,20 +56,19 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
   const {
     authDetails: { isSingleWorkspace },
+    addressBookInfos: {
+      workspaceId,
+      createContactRequest,
+      handleOpenDialog,
+      form: contactForm,
+      contactDialog,
+      listContactsRequest,
+      inView,
+      canAddMember,
+    },
   } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
-
-  const {
-    workspaceId,
-    createContactRequest,
-    handleOpenDialog,
-    form: contactForm,
-    contactDialog,
-    listContactsRequest,
-    inView,
-    canAddMember,
-  } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({

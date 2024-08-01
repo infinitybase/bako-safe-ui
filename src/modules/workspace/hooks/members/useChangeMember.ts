@@ -2,7 +2,6 @@ import { Address } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
@@ -42,6 +41,7 @@ const useChangeMember = () => {
   const navigate = useNavigate();
   const {
     workspaceInfos: { goWorkspace },
+    addressBookInfos,
   } = useWorkspaceContext();
 
   const { successToast } = useSettingsToast();
@@ -63,7 +63,6 @@ const useChangeMember = () => {
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
     useChangeMemberForm(membersToForm!);
-  const addressBook = useAddressBook();
 
   const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspaceRequest.workspace!,
@@ -303,7 +302,7 @@ const useChangeMember = () => {
   return {
     tabs,
     params,
-    addressBook,
+    addressBook: addressBookInfos,
     memberRequest,
     permissionsRequest,
     handleClose,

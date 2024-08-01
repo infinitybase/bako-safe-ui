@@ -19,7 +19,6 @@ import {
 } from '@/modules/addressBook/components';
 import {
   AddressesFields,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { ITemplate } from '@/modules/core/models';
@@ -39,16 +38,16 @@ export interface VaultAddressesStepProps {
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const {
     authDetails: { isSingleWorkspace },
+    addressBookInfos: {
+      handleOpenDialog,
+      listContactsRequest,
+      createContactRequest,
+      form: contactForm,
+      contactDialog,
+      inView,
+      workspaceId,
+    },
   } = useWorkspaceContext();
-  const {
-    handleOpenDialog,
-    listContactsRequest,
-    createContactRequest,
-    form: contactForm,
-    contactDialog,
-    inView,
-    workspaceId,
-  } = useAddressBook(!isSingleWorkspace);
 
   const hasThreeOrMoreAddress =
     form.watch('addresses') && form.watch('addresses')!.length >= 3;

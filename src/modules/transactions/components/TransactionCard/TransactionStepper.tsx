@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
-import { useAddressBook } from '@/modules/addressBook';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
@@ -57,10 +56,10 @@ const TransactionTypeFormatter = (
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
   const {
     authDetails: { account },
+    addressBookInfos: { contactByAddress },
   } = useWorkspaceContext();
   const { isMobile } = useScreenSize();
 
-  const { contactByAddress } = useAddressBook();
   const { activeStep, setActiveStep } = useSteps({
     index: steps?.length,
     count: steps?.length,

@@ -1,11 +1,12 @@
 import { createContext, useContext } from 'react';
-import { UseWorkspaceReturn } from '..';
+import { IUseAuthReturn, UseAddressBookReturn, UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { IUseAuthReturn } from '../auth/services';
 
 export interface IWorkspaceContext {
   authDetails: IUseAuthReturn;
   workspaceInfos: UseWorkspaceReturn;
+  addressBookInfos: UseAddressBookReturn;
 }
 
 const WorkspaceContext = createContext<IWorkspaceContext | null>(null);

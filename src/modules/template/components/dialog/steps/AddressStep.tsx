@@ -28,7 +28,6 @@ import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
   AddressesFields,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
@@ -44,6 +43,16 @@ interface AddressStepProps {
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const {
     authDetails: { account, isSingleWorkspace },
+    addressBookInfos: {
+      createContactRequest,
+      form: contactForm,
+      contactDialog,
+      listContactsRequest,
+      inView,
+      canAddMember,
+      workspaceId,
+      handleOpenDialog,
+    },
   } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
@@ -52,17 +61,6 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
       setIsFirstLoad(false);
     }
   };
-
-  const {
-    createContactRequest,
-    form: contactForm,
-    contactDialog,
-    listContactsRequest,
-    inView,
-    canAddMember,
-    workspaceId,
-    handleOpenDialog,
-  } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({

@@ -20,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, LineCloseIcon, UserAddIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
-import { useAddressBook } from '@/modules/addressBook';
 import {
   AddressUtils,
   Member,
@@ -46,14 +45,13 @@ interface MemberCardProps {
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
   const {
     authDetails: { permissions: loggedPermissions, avatar },
+    addressBookInfos: { contactByAddress },
   } = useWorkspaceContext();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
     member,
   );
-
-  const { contactByAddress } = useAddressBook();
 
   //TODO: Use this validation to delete button
   const isEditable =
