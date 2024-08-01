@@ -1,10 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { BakoSafe } from 'bakosafe';
-import { Address } from 'fuels';
+import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
-import { Workspace } from '@/modules/core';
+import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
+import { IUseAuthActionsState, IUseAuthActionHandler } from '../hooks';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -78,6 +79,35 @@ export type CheckNicknameResponse = {
     origin: string;
     hardware: string;
   };
+};
+
+export type AuthenticateParams = {
+  userId: string;
+  avatar: string;
+  account: string;
+  accountType: TypeUser;
+  accessToken: string;
+  permissions: IPermission;
+  singleWorkspace: string;
+  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+};
+
+export type AuthenticateWorkspaceParams = {
+  permissions: IPermission;
+  workspace: string;
+};
+
+export type IUseAuthReturn = Omit<IUseAuthActionsState, 'formattedAccount'> & {
+  account: string;
+  hasWallet: () => Promise<{
+    provider: Provider;
+  }>;
+  handlers: Partial<IUseAuthActionHandler> & {
+    authenticate: (params: AuthenticateParams) => void;
+    authenticateWorkspace: (params: AuthenticateWorkspaceParams) => void;
+    authenticateWorkspaceSingle: () => void;
+  };
+  isSingleWorkspace: boolean;
 };
 
 export class UserService {

@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
-import { IUseAuthReturn, UseWorkspaceReturn } from '..';
+import { UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
+import { IUseAuthReturn } from '../auth/services';
 
 export interface IWorkspaceContext {
   authDetails: IUseAuthReturn;

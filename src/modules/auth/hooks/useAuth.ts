@@ -3,91 +3,26 @@ import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { IPermission } from '@/modules/core';
 
-import { SignWebAuthnPayload, TypeUser } from '../services';
-import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import {
-  IUseAuthActions,
-  IUseAuthActionsState,
-  IUseAuthActionHandler,
-} from '..';
-
-type AuthenticateParams = {
-  userId: string;
-  avatar: string;
-  account: string;
-  accountType: TypeUser;
-  accessToken: string;
-  permissions: IPermission;
-  singleWorkspace: string;
-  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
-};
-
-type AuthenticateWorkspaceParams = {
-  permissions: IPermission;
-  workspace: string;
-};
-
-export type IUseAuthReturn = Omit<IUseAuthActionsState, 'formattedAccount'> & {
-  account: string;
-  hasWallet: () => Promise<{
-    provider: Provider;
-  }>;
-  handlers: Partial<IUseAuthActionHandler> & {
-    authenticate: (params: AuthenticateParams) => void;
-    authenticateWorkspace: (params: AuthenticateWorkspaceParams) => void;
-    authenticateWorkspaceSingle: () => void;
-  };
-  isSingleWorkspace: boolean;
-};
+  AuthenticateParams,
+  AuthenticateWorkspaceParams,
+  IUseAuthReturn,
+  TypeUser,
+} from '../services';
+//import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import { IUseAuthActions, useAuthCookies } from '..';
 
 const useAuth = (authContext: IUseAuthActions): IUseAuthReturn => {
   const { fuel } = useFuel();
-  useTokensUSDAmountRequest();
+  const { setAuthCookies, clearAuthCookies } = useAuthCookies();
+  //useTokensUSDAmountRequest(); -> MOVE
 
   const authenticate = (params: AuthenticateParams) => {
-    CookiesConfig.setCookies([
-      {
-        name: CookieName.ACCESS_TOKEN,
-        value: params.accessToken,
-      },
-      {
-        name: CookieName.ADDRESS,
-        value: params.account,
-      },
-      {
-        name: CookieName.USER_ID,
-        value: params.userId,
-      },
-      {
-        name: CookieName.AVATAR,
-        value: params.avatar!,
-      },
-      {
-        name: CookieName.SINGLE_WORKSPACE,
-        value: params.singleWorkspace,
-      },
-      {
-        name: CookieName.WEB_AUTHN_PK,
-        value: params.webAuthn?.publicKey ?? '',
-      },
-      {
-        name: CookieName.WEB_AUTHN_ID,
-        value: params.webAuthn?.id ?? '',
-      },
-      {
-        name: CookieName.ACCOUNT_TYPE,
-        value: params.accountType,
-      },
-    ]);
+    setAuthCookies(params);
     authContext?.singleAuthentication({
-      userId: params.userId,
-      avatar: params.avatar,
-      account: params.account,
-      accountType: params.accountType,
+      ...params,
       workspace: params.singleWorkspace,
-      webAuthn: params.webAuthn,
     });
   };
 
@@ -103,16 +38,7 @@ const useAuth = (authContext: IUseAuthActions): IUseAuthReturn => {
   };
 
   const logout = () => {
-    CookiesConfig.removeCookies([
-      CookieName.ADDRESS,
-      CookieName.AVATAR,
-      CookieName.USER_ID,
-      CookieName.ACCESS_TOKEN,
-      CookieName.SINGLE_WORKSPACE,
-      CookieName.WEB_AUTHN_ID,
-      CookieName.WEB_AUTHN_PK,
-      CookieName.ACCOUNT_TYPE,
-    ]);
+    clearAuthCookies();
     authContext?.logout();
   };
 

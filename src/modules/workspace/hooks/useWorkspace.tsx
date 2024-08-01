@@ -100,6 +100,28 @@ const useWorkspace = (auth: IUseAuthReturn) => {
     [auth.isSingleWorkspace, auth.permissions, vaultId],
   );
 
+  // separe as infos:
+
+  //    - account
+  //        - provider
+  //        - infos gerais:
+  //            - accountType
+  //            - avatar
+  //            - userId
+  //            - account
+  //            - webAuthn
+  //    - currentWorkspace
+  //        - infos gerais:
+  //            - workspaceId
+  //            - permissions
+  //            - avatar
+  //        - adb
+  //        - balance
+  //        - vaults (home)
+  //        - tx:
+  //            - pending
+  //            - home
+
   return {
     account: auth.account,
     currentWorkspace: {
@@ -123,13 +145,14 @@ const useWorkspace = (auth: IUseAuthReturn) => {
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
-    selectWorkspace,
     worksapceBalance,
-    hasPermission,
+
     visibleBalance,
-    setVisibleBalance,
-    goWorkspace,
     pendingSignerTransactions,
+    goWorkspace,
+    selectWorkspace,
+    setVisibleBalance,
+    hasPermission,
   };
 };
 
