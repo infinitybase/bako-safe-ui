@@ -11,6 +11,30 @@ const setAuthCookies = (params: AuthenticateParams) => {
       name: CookieName.ADDRESS,
       value: params.account,
     },
+    {
+      name: CookieName.USER_ID,
+      value: params.userId,
+    },
+    {
+      name: CookieName.AVATAR,
+      value: params.avatar!,
+    },
+    {
+      name: CookieName.SINGLE_WORKSPACE,
+      value: params.singleWorkspace,
+    },
+    {
+      name: CookieName.WEB_AUTHN_PK,
+      value: params.webAuthn?.publicKey ?? '',
+    },
+    {
+      name: CookieName.WEB_AUTHN_ID,
+      value: params.webAuthn?.id ?? '',
+    },
+    {
+      name: CookieName.ACCOUNT_TYPE,
+      value: params.accountType,
+    },
   ]);
 };
 

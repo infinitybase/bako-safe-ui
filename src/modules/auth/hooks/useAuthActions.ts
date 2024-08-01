@@ -44,19 +44,7 @@ const useAuthActions = (): IUseAuthActions => {
   const { userInfos } = useUserInfo();
 
   const [state, setState] = useState<IUseAuthActionsState>({
-    account: userInfos?.address!,
-    accountType: userInfos?.type,
-    userId: userInfos?.id ?? '',
-    webAuthn: {
-      id: userInfos?.webauthn?.id ?? '',
-      publicKey: userInfos?.webauthn?.publicKey!,
-    },
-    workspaces: {
-      single: userInfos?.workspace.id ?? '',
-      current: userInfos?.workspace.id ?? '',
-    },
-    formattedAccount: AddressUtils.format(userInfos?.address!)!,
-    avatar: userInfos?.avatar!,
+    ...userInfos,
     isInvalidAccount: false,
   });
 

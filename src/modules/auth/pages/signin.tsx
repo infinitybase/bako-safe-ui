@@ -32,7 +32,7 @@ const SigninPage = () => {
         title: 'Invalid Account',
         description: 'You need to use the fuel wallet to connect.',
       });
-    auth.handlers.setInvalidAccount(false);
+    auth.handlers.setInvalidAccount?.(false);
   }, [auth.isInvalidAccount]);
 
   const WebauthnDrawer = (

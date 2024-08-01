@@ -6,7 +6,6 @@ import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 import { IUseAuthActionsState, IUseAuthActionHandler } from '../hooks';
-import { User } from '@/modules/core/models/user';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -111,23 +110,6 @@ export type IUseAuthReturn = Omit<IUseAuthActionsState, 'formattedAccount'> & {
   isSingleWorkspace: boolean;
 };
 
-export type IUserInfoResponse = {
-  id: string;
-  name: string;
-  type: TypeUser;
-  avatar: string;
-  address: string;
-  webauthn: Omit<SignWebAuthnPayload, 'challenge'>;
-  onSingleWorkspace: boolean;
-  workspace: {
-    id: string;
-    name: string;
-    owner: User;
-    avatar: string;
-    permission: IPermission;
-  };
-};
-
 export class UserService {
   static async create(payload: CreateUserPayload) {
     const { data } = await api.post<CreateUserResponse>('/user', payload);
@@ -144,12 +126,6 @@ export class UserService {
     if (status !== 200) {
       throw new Error('Invalid signature');
     }
-
-    return data;
-  }
-
-  static async getUserInfo() {
-    const { data } = await api.get<IUserInfoResponse>('/user/me/info');
 
     return data;
   }
