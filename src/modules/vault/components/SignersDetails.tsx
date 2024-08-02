@@ -35,7 +35,9 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
     authDetails: {
       workspaces: { current },
     },
-    addressBookInfos: { contactByAddress },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
   } = useWorkspaceContext();
 
   const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;

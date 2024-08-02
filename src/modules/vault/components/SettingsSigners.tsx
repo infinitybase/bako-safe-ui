@@ -8,7 +8,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const {
-    addressBookInfos: { contactByAddress },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
   } = useWorkspaceContext();
   if (!vault) return null;
   const members = vault?.data?.members;
