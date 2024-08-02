@@ -62,6 +62,7 @@ const WorkspacePage = () => {
   const { goHome } = useHome();
   const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const workspaceDialog = useDisclosure();
 
   const {
     authDetails: {
@@ -74,7 +75,6 @@ const WorkspacePage = () => {
       hasPermission,
       visibleBalance,
       setVisibleBalance,
-      workspaceDialog,
       worksapceBalance,
       workspaceHomeRequest,
       goWorkspace,

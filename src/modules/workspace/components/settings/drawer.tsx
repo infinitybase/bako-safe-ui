@@ -204,7 +204,6 @@ const WorkspaceSettingsDrawer = ({
                 workspace={currentWorkspace.workspace!}
                 counter={{
                   members: currentWorkspace.workspace?.members?.length ?? 0,
-                  //In this case, the predicates are coming in an array, so we need to use the length property
                   vaults: Array.isArray(currentWorkspace.workspace?.predicates)
                     ? currentWorkspace.workspace!.predicates?.length
                     : 0,

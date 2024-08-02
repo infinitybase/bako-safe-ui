@@ -16,7 +16,7 @@ import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useListContactsRequest } from './useListContactsRequest';
 import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { IUseAuthReturn } from '@/modules/auth';
+import { IUseAuthReturn } from '@/modules/auth/services';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
