@@ -43,9 +43,25 @@ const clearAuthCookies = () => {
   return;
 };
 
+const userAuthCookiesInfo = () => {
+  return {
+    accessToken: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    account: CookiesConfig.getCookie(CookieName.ADDRESS),
+    userId: CookiesConfig.getCookie(CookieName.USER_ID),
+    avatar: CookiesConfig.getCookie(CookieName.AVATAR),
+    singleWorkspace: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE),
+    webAuthn: {
+      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID),
+      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK),
+    },
+    accountType: CookiesConfig.getCookie(CookieName.ACCOUNT_TYPE),
+  };
+};
+
 export const useAuthCookies = () => {
   return {
     setAuthCookies,
     clearAuthCookies,
+    userAuthCookiesInfo,
   };
 };

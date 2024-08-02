@@ -87,7 +87,7 @@ const useAuthActions = (): IUseAuthActions => {
     }));
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = () => {
     setState({
       account: '',
       accountType: undefined,
@@ -99,7 +99,7 @@ const useAuthActions = (): IUseAuthActions => {
       permissions: undefined,
       webAuthn: undefined,
     });
-  }, []);
+  };
 
   return {
     ...state,
