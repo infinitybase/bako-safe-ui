@@ -1,7 +1,7 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core/models/workspace';
 import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
-import { IUseAuthReturn } from '@/modules/auth';
+import { IUseAuthReturn } from '@/modules/auth/services';
 
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
