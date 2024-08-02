@@ -45,7 +45,9 @@ interface MemberCardProps {
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
   const {
     authDetails: { permissions: loggedPermissions, avatar },
-    addressBookInfos: { contactByAddress },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
   } = useWorkspaceContext();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(

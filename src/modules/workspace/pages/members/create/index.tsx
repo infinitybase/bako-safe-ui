@@ -39,7 +39,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
   const {
-    addressBookInfos: { contactByAddress },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
   } = useWorkspaceContext();
 
   const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
@@ -188,8 +190,8 @@ const CreateMemberPage = () => {
     >
       <CreateContactDialog
         form={addressBook.form}
-        dialog={addressBook.contactDialog}
-        isLoading={addressBook.createContactRequest.isPending}
+        dialog={addressBook.dialog.contactDialog}
+        isLoading={addressBook.requests.createContactRequest.isPending}
         isEdit={false}
       />
       <Dialog.Header

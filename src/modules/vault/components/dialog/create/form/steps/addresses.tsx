@@ -39,11 +39,10 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const {
     authDetails: { isSingleWorkspace },
     addressBookInfos: {
-      handleOpenDialog,
-      listContactsRequest,
-      createContactRequest,
+      handlers: { handleOpenDialog },
+      dialog: { contactDialog },
+      requests: { listContactsRequest, createContactRequest },
       form: contactForm,
-      contactDialog,
       inView,
       workspaceId,
     },

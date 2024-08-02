@@ -42,18 +42,20 @@ const AddressBookPage = () => {
     workspaceInfos: { hasPermission, goWorkspace, currentWorkspace },
     addressBookInfos: {
       form,
-      navigate,
-      contactDialog,
-      contactToEdit,
-      contactToDelete,
-      handleOpenDialog,
-      setContactToDelete,
-      listContactsRequest,
-      handleDeleteContact,
-      deleteContactDialog,
-      deleteContactRequest,
-      updateContactRequest,
-      createContactRequest,
+      requests: {
+        deleteContactRequest,
+        updateContactRequest,
+        createContactRequest,
+        listContactsRequest,
+      },
+      contacts: { contactToDelete, contactToEdit },
+      dialog: { contactDialog, deleteContactDialog },
+      handlers: {
+        handleDeleteContact,
+        handleOpenDialog,
+        navigate,
+        setContactToDelete,
+      },
     },
   } = useWorkspaceContext();
 

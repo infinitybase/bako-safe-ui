@@ -44,14 +44,13 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const {
     authDetails: { account, isSingleWorkspace },
     addressBookInfos: {
-      createContactRequest,
+      requests: { createContactRequest, listContactsRequest },
       form: contactForm,
-      contactDialog,
-      listContactsRequest,
       inView,
       canAddMember,
       workspaceId,
-      handleOpenDialog,
+      dialog: { contactDialog },
+      handlers: { handleOpenDialog },
     },
   } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);

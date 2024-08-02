@@ -58,7 +58,7 @@ const useChangeMember = () => {
 
   const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
 
-  const membersToForm = workspaceRequest.workspace?.members.map(
+  const membersToForm = workspaceRequest.workspace?.members?.map(
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =

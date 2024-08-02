@@ -18,7 +18,11 @@ interface MemberAddressForm {
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const {
     authDetails: { isSingleWorkspace },
-    addressBookInfos: { paginatedContacts, listContactsRequest, workspaceId },
+    addressBookInfos: {
+      requests: { paginatedContacts, listContactsRequest },
+      handlers: { handleOpenDialog },
+      workspaceId,
+    },
   } = useWorkspaceContext();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
@@ -74,7 +78,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
               <AddToAddressBook
                 visible={showAddToAddressBook}
                 onAdd={() =>
-                  addressBook.handleOpenDialog?.({
+                  handleOpenDialog?.({
                     address: form.getValues('address.value'),
                   })
                 }

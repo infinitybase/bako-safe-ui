@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
+import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
   NativeAssetId,
@@ -61,16 +61,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const { authDetails } = useWorkspaceContext();
+  const {
+    authDetails,
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-
-  const listContactsRequest = useListContactsRequest({
-    current: authDetails.workspaces.current,
-    includePersonal: !authDetails.isSingleWorkspace,
-  });
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
