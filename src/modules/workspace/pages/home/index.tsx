@@ -25,6 +25,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
 
 import {
+  BakoLoading,
   Card,
   CustomSkeleton,
   HomeIcon,
@@ -68,7 +69,7 @@ const WorkspacePage = () => {
     },
     workspaceInfos: {
       navigate,
-      currentWorkspace: { workspace: currentWorkspace },
+      currentWorkspace: { workspace: currentWorkspace, isLoading },
       workspaceVaults: { vaultsMax, extraCount, recentVaults },
       hasPermission,
       visibleBalance,
@@ -80,12 +81,18 @@ const WorkspacePage = () => {
     },
   } = useWorkspaceContext();
 
+  const isWorkspacePageNotReady =
+    !worksapceBalance.isLoading &&
+    !isLoading &&
+    !workspaceHomeRequest.isLoading &&
+    (!currentWorkspace || currentWorkspace.single);
+
   const hasVaults = recentVaults?.length ?? 0;
 
   const workspaceId = current ?? '';
 
-  if (!currentWorkspace || currentWorkspace.single) {
-    return null;
+  if (isWorkspacePageNotReady) {
+    return <BakoLoading />;
   }
 
   const balanceUSD = worksapceBalance.balance.balanceUSD;
@@ -297,7 +304,7 @@ const WorkspacePage = () => {
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
-                    name={currentWorkspace.name}
+                    name={currentWorkspace?.name}
                   >
                     <Box
                       position="absolute"
@@ -328,7 +335,7 @@ const WorkspacePage = () => {
                       textOverflow="ellipsis"
                       isTruncated
                     >
-                      {currentWorkspace.description}
+                      {currentWorkspace?.description}
                     </Text>
                   </Box>
                 </Center>

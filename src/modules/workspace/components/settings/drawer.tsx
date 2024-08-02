@@ -60,7 +60,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member.address!)?.nickname;
+  const contactNickname = contactByAddress(member?.address!)?.nickname;
 
   return (
     <Card
@@ -94,7 +94,9 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
-            name={contactByAddress(member.address!)?.nickname ?? member.address}
+            name={
+              contactByAddress(member?.address!)?.nickname ?? member?.address
+            }
             src={avatar}
           />
           <Box mr={1}>
@@ -105,7 +107,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
               fontWeight={!contactNickname ? 'semibold' : 'normal'}
               color={!contactNickname ? 'grey.200' : 'grey.500'}
             >
-              {AddressUtils.format(member.address)}
+              {AddressUtils.format(member?.address)}
             </Text>
           </Box>
         </Box>
@@ -131,7 +133,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 cursor: 'pointer',
                 opacity: 0.8,
               }}
-              onClick={() => onEdit(member.id)}
+              onClick={() => onEdit(member?.id)}
               boxSize={{ base: 5, xs: 6 }}
             />
           )}
@@ -201,35 +203,14 @@ const WorkspaceSettingsDrawer = ({
                 key={currentWorkspace.workspace?.id}
                 workspace={currentWorkspace.workspace!}
                 counter={{
-                  members: currentWorkspace.workspace!.members.length,
+                  members: currentWorkspace.workspace?.members?.length ?? 0,
                   //In this case, the predicates are coming in an array, so we need to use the length property
-                  vaults: Array.isArray(currentWorkspace.workspace!.predicates)
-                    ? currentWorkspace.workspace!.predicates.length
+                  vaults: Array.isArray(currentWorkspace.workspace?.predicates)
+                    ? currentWorkspace.workspace!.predicates?.length
                     : 0,
                 }}
                 mb={10}
               />
-              {/* <Card mb={10} bgColor="dark.200">
-            <HStack spacing={5}>
-              <Avatar
-                p={10}
-                size="lg"
-                fontSize="md"
-                color="white"
-                bg="grey.900"
-                variant="roundedSquare"
-                name={request.workspace?.name}
-              />
-              <Box>
-                <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
-                  {request.workspace?.name}
-                </Heading>
-                <Text variant="description">
-                  {request.workspace?.description}
-                </Text>
-              </Box>
-            </HStack>
-          </Card> */}
               <Divider mb={6} />
               <Flex
                 w="full"
@@ -242,8 +223,8 @@ const WorkspaceSettingsDrawer = ({
                     Members
                   </Heading>
                   <Text fontSize="sm" color="grey.400">
-                    {currentWorkspace.workspace?.members.length}{' '}
-                    {currentWorkspace.workspace?.members.length === 1
+                    {currentWorkspace.workspace?.members?.length}{' '}
+                    {currentWorkspace.workspace?.members?.length === 1
                       ? 'Member'
                       : 'Members'}
                   </Text>
@@ -274,7 +255,7 @@ const WorkspaceSettingsDrawer = ({
 
               <VStack w="full" maxW="full">
                 {!!currentWorkspace.workspace?.members &&
-                  currentWorkspace.workspace?.members.map((member) => (
+                  currentWorkspace.workspace?.members?.map((member) => (
                     <MemberCard
                       key={member.id}
                       member={member}
