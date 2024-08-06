@@ -30,8 +30,7 @@ const useWorkspaceDetails = () => {
   const isWorkspaceReady =
     !addressBookInfos.requests.listContactsRequest.isLoading &&
     authDetails &&
-    !workspaceInfos.currentWorkspace.isLoading &&
-    !workspaceInfos.predicatesHomeRequest.isLoading &&
+    !workspaceInfos.latestPredicates.isLoading &&
     !workspaceInfos.worksapceBalance.isLoading &&
     showWorkspace;
 

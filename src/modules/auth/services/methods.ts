@@ -132,6 +132,7 @@ export type IGetUserInfosResponse = {
     id: string;
     name: string;
     permission: IPermission;
+    description: string;
   };
 };
 

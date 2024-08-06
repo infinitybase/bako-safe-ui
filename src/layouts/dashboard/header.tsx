@@ -42,6 +42,7 @@ import {
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useGetWorkspaceRequest, useUserWorkspacesRequest } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -323,17 +324,15 @@ const WorkspaceBox = ({
 const Header = () => {
   const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
+  const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
-    workspaceInfos: {
-      currentWorkspace,
-      workspaceDialog,
-      userWorkspacesRequest: {
-        data: userWorkspaces,
-        refetch: refetchUserWorkspaces,
-      },
-      handleWorkspaceSelection,
-    },
+    authDetails,
+    workspaceInfos: { workspaceDialog, handleWorkspaceSelection },
   } = useWorkspaceContext();
+  const currentWorkspace = useGetWorkspaceRequest(
+    authDetails.userInfos?.workspace?.id,
+  );
+
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const { goHome } = useHome();
   const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
@@ -345,12 +344,10 @@ const Header = () => {
   }, []);
 
   const handleCancel = async () => {
-    await refetchUserWorkspaces();
     createWorkspaceDialog.onClose();
   };
 
   const handleClose = async () => {
-    await refetchUserWorkspaces();
     createWorkspaceDialog.onClose();
     workspaceDialog.onClose();
   };

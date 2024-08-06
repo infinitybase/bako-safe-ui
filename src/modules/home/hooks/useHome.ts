@@ -10,7 +10,7 @@ const useHome = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      predicatesHomeRequest,
+      latestPredicates,
       pendingSignerTransactions,
       selectWorkspace,
     },
@@ -19,12 +19,12 @@ const useHome = () => {
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
 
-  const vaultsTotal = predicatesHomeRequest?.data?.predicates.total ?? 0;
+  const vaultsTotal = latestPredicates?.data?.predicates.total ?? 0;
 
   const goHome = () => {
     selectWorkspace(userInfos.singleWorkspaceId, {
       onSelect: async () => {
-        predicatesHomeRequest.refetch();
+        latestPredicates.refetch();
         userInfos.refetch();
         await queryClient.invalidateQueries({
           queryKey: WorkspacesQueryKey.FULL_DATA(
@@ -45,21 +45,21 @@ const useHome = () => {
   return {
     account: userInfos?.address,
     vaultsRequest: {
-      ...predicatesHomeRequest,
+      ...latestPredicates,
       vaults: {
-        recentVaults: predicatesHomeRequest.data?.predicates?.data,
+        recentVaults: latestPredicates.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
         extraCount:
           vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: predicatesHomeRequest.isLoading,
-      refetchVaults: predicatesHomeRequest.refetch,
+      loadingRecentVaults: latestPredicates.isLoading,
+      refetchVaults: latestPredicates.refetch,
     },
     transactionsRequest: {
-      ...predicatesHomeRequest,
-      loadingTransactions: predicatesHomeRequest.isLoading,
+      ...latestPredicates,
+      loadingTransactions: latestPredicates.isLoading,
     },
-    homeRequest: predicatesHomeRequest,
+    homeRequest: latestPredicates,
     navigate,
     goHome,
     pendingSignerTransactions,

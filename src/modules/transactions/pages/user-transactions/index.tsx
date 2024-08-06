@@ -57,7 +57,6 @@ const UserTransactionsPage = () => {
     workspaceInfos: {
       hasPermission,
       goWorkspace,
-      currentWorkspace: { workspace },
       pendingSignerTransactions,
       account,
     },
@@ -126,7 +125,7 @@ const UserTransactionsPage = () => {
                       maxW={40}
                       isTruncated
                     >
-                      {workspace?.name}
+                      {userInfos.workspace?.name}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )}

@@ -79,7 +79,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   } = assets;
   const {
     authDetails: { userInfos },
-    workspaceInfos: { currentWorkspace, hasPermission },
+    workspaceInfos: { hasPermission },
   } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
 
@@ -210,7 +210,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         isTruncated
                         fontSize={{ base: 'small', sm: 'sm' }}
                       >
-                        {currentWorkspace.workspace?.name}
+                        {userInfos.workspace?.name}
                       </Text>
                     </HStack>
                   )}
@@ -364,7 +364,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 {`Vault's balance breakdown`}
               </Text>
               <CustomSkeleton
-                isLoaded={!currentWorkspace.isLoading && !isLoading}
+                isLoaded={!userInfos.isLoading && !isLoading}
                 w="full"
                 h="full"
               >

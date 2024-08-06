@@ -36,7 +36,7 @@ const AddressBookPage = () => {
     authDetails: {
       userInfos: { workspace, onSingleWorkspace },
     },
-    workspaceInfos: { hasPermission, goWorkspace, currentWorkspace },
+    workspaceInfos: { hasPermission, goWorkspace },
     addressBookInfos: {
       form,
       requests: {
@@ -145,7 +145,7 @@ const AddressBookPage = () => {
                     maxW={40}
                     isTruncated
                   >
-                    {currentWorkspace?.workspace?.name}
+                    {workspace?.name}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

@@ -58,7 +58,7 @@ const VaultDetailsPage = () => {
   const { goHome } = useHome();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace, hasPermission, currentWorkspace },
+    workspaceInfos: { goWorkspace, hasPermission },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();
@@ -100,7 +100,7 @@ const VaultDetailsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!currentWorkspace.workspace?.single && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -110,7 +110,7 @@ const VaultDetailsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

@@ -46,7 +46,7 @@ const WkHomeTransactions = memo(() => {
       navigate,
       workspaceVaults: { recentVaults },
       pendingSignerTransactions,
-      predicatesHomeRequest,
+      latestPredicates,
     },
   } = useWorkspaceContext();
 
@@ -84,7 +84,7 @@ const WkHomeTransactions = memo(() => {
         </HStack>
       )}
       <CustomSkeleton
-        isLoaded={!predicatesHomeRequest.isLoading}
+        isLoaded={!latestPredicates.isLoading}
         mt={{
           base: recentVaults?.length ? 16 : 0,
           sm: recentVaults?.length ? 8 : 0,
@@ -169,7 +169,7 @@ const WkHomeTransactions = memo(() => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
