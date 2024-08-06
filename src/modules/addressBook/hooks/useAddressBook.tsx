@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PermissionRoles } from '@/modules/core';
 
 import { useListContactsRequest } from './useListContactsRequest';
-import { useListPaginatedContactsRequest } from './useListPaginatedContactsRequest';
 import { IUseAuthReturn } from '@/modules/auth/services';
 import { useAddressBookMutations } from './useAddressBookMutations';
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
@@ -31,15 +30,9 @@ const useAddressBook = (
   const navigate = useNavigate();
 
   const listContactsRequest = useListContactsRequest({
-    current: workspaceId!,
+    workspaceId: workspaceId!,
     includePersonal: authDetails.userInfos.onSingleWorkspace,
   });
-  const listContactsPaginatedRequest = useListPaginatedContactsRequest(
-    listContactsRequest.data ?? [],
-    { q: search },
-    workspaceId!,
-    authDetails.userInfos.onSingleWorkspace,
-  );
 
   const { contactByAddress, debouncedSearchHandler, handleOpenDialog, form } =
     useAddressBookFormHandlers({
@@ -90,7 +83,7 @@ const useAddressBook = (
       deleteContactRequest,
       updateContactRequest,
       listContactsRequest,
-      paginatedContacts: listContactsPaginatedRequest,
+      // paginatedContacts: listContactsPaginatedRequest,
     },
     form: { ...form, handleCreateContact, handleUpdateContact },
     handlers: {

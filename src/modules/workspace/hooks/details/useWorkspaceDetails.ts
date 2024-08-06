@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
 const useWorkspaceDetails = () => {
-  const [showWorkspace, setShowWorkspace] = useState(false);
+  const [showWorkspace, setShowWorkspace] = useState(true);
   const { pathname } = useLocation();
   const isSignInpage = pathname === '/';
 
@@ -29,7 +29,6 @@ const useWorkspaceDetails = () => {
 
   const isWorkspaceReady =
     !addressBookInfos.requests.listContactsRequest.isLoading &&
-    !addressBookInfos.requests.paginatedContacts.isLoading &&
     authDetails &&
     !workspaceInfos.currentWorkspace.isLoading &&
     !workspaceInfos.predicatesHomeRequest.isLoading &&
