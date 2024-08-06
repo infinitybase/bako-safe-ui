@@ -54,21 +54,20 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
 
   const vaultsCounter = predicatesHomeRequest?.data?.predicates?.total ?? 0;
 
-  const handleWorkspaceSelection = async (selectedWorkspace: string) => {
-    if (
-      selectedWorkspace === authDetails.userInfos?.workspace?.id ||
-      isSelecting
-    ) {
-      return;
-    }
+  const handleWorkspaceSelection = async (
+    selectedWorkspace: string,
+    redirect?: string,
+  ) => {
+    const isValid = selectedWorkspace !== authDetails.userInfos?.workspace?.id;
+
+    if (isSelecting) return;
+    if (!isValid) return !!redirect && navigate(redirect);
 
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        authDetails.userInfos.refetch();
-        if (!workspace?.single) {
-          goWorkspace(workspace?.id);
-        }
+        invalidateRequests();
+        navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },
       onError: () => {
         toast({
@@ -106,6 +105,12 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
       vaultId,
     ],
   );
+
+  const invalidateRequests = () => {
+    worksapceBalance.refetch();
+    predicatesHomeRequest.refetch();
+    authDetails.userInfos.refetch();
+  };
 
   // separe as infos:
 

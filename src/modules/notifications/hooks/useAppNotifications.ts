@@ -30,7 +30,9 @@ export interface TransactionRedirect {
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const {
     authDetails: { userInfos },
-    workspaceInfos: { selectWorkspace },
+    workspaceInfos: {
+      handleWorkspaceSelection: { handler },
+    },
   } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
@@ -81,11 +83,13 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
       : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    selectWorkspace(summaryWorkspaceId, {
-      onSelect: async (_workspace) => {
-        navigate(page);
-      },
-    });
+    // selectWorkspace(summaryWorkspaceId, {
+    //   onSelect: async (_workspace) => {
+    //     navigate(page);
+    //   },
+    // });
+
+    handler(summaryWorkspaceId, page);
   };
 
   useEffect(() => {

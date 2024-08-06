@@ -12,34 +12,16 @@ const useHome = () => {
     workspaceInfos: {
       predicatesHomeRequest,
       pendingSignerTransactions,
-      selectWorkspace,
+      handleWorkspaceSelection: { handler },
     },
   } = useWorkspaceContext();
 
-  const { vaultId } = useParams();
   const vaultsPerPage = 8;
 
   const vaultsTotal = predicatesHomeRequest?.data?.predicates.total ?? 0;
 
   const goHome = () => {
-    selectWorkspace(userInfos.singleWorkspaceId, {
-      onSelect: async () => {
-        predicatesHomeRequest.refetch();
-        userInfos.refetch();
-        await queryClient.invalidateQueries({
-          queryKey: WorkspacesQueryKey.FULL_DATA(
-            userInfos.singleWorkspaceId,
-            vaultId!,
-          ),
-        });
-        await queryClient.invalidateQueries({
-          queryKey: AddressBookQueryKey.LIST_BY_USER(
-            userInfos.singleWorkspaceId,
-          ),
-        });
-        navigate(Pages.home());
-      },
-    });
+    handler(userInfos.singleWorkspaceId, Pages.home());
   };
 
   return {

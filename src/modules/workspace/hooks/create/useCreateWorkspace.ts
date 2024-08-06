@@ -24,7 +24,9 @@ type UserCreateWorkspaceParams = {
 const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   const navigate = useNavigate();
   const {
-    workspaceInfos: { goWorkspace, selectWorkspace },
+    workspaceInfos: {
+      handleWorkspaceSelection: { handler },
+    },
   } = useWorkspaceContext();
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(CreateWorkspaceTabState),
@@ -39,22 +41,17 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   };
 
   const handleGoToWorkspace = () => {
-    selectWorkspace(request?.data!.id, {
-      onSelect: (workspace) => {
-        props.handleCancel();
-        props.onClose();
-        goWorkspace(workspace.id);
-      },
-    });
+    handler(
+      request?.data!.id,
+      Pages.workspace({ workspaceId: request?.data!.id }),
+    );
   };
 
   const handleConfigureMembers = () => {
-    selectWorkspace(request?.data!.id, {
-      onSelect: (workspace) => {
-        props.handleCancel();
-        navigate(Pages.membersWorkspace({ workspaceId: workspace.id }));
-      },
-    });
+    handler(
+      request?.data!.id,
+      Pages.membersWorkspace({ workspaceId: request?.data!.id }),
+    );
   };
 
   const handleCreateWorkspace = form.handleSubmit(async (data) => {

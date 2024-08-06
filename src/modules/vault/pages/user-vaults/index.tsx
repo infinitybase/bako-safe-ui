@@ -45,7 +45,7 @@ const UserVaultsPage = () => {
       goWorkspace,
       hasPermission,
       predicatesHomeRequest,
-      selectWorkspace,
+      handleWorkspaceSelection: { handler },
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -250,18 +250,28 @@ const UserVaultsPage = () => {
                     workspace={workspace}
                     title={description}
                     members={members!}
-                    onClick={async () => {
-                      selectWorkspace(workspace.id, {
-                        onSelect: async (_workspace) => {
-                          navigate(
-                            Pages.detailsVault({
-                              workspaceId: _workspace.id,
-                              vaultId: id,
-                            }),
-                          );
-                        },
-                      });
-                    }}
+                    onClick={
+                      //   async () => {
+                      //   selectWorkspace(workspace.id, {
+                      //     onSelect: async (_workspace) => {
+                      //       navigate(
+                      //         Pages.detailsVault({
+                      //           workspaceId: _workspace.id,
+                      //           vaultId: id,
+                      //         }),
+                      //       );
+                      //     },
+                      //   });
+                      // }
+                      () =>
+                        handler(
+                          workspace.id,
+                          Pages.detailsVault({
+                            workspaceId: workspace.id,
+                            vaultId: id,
+                          }),
+                        )
+                    }
                   />
                 </GridItem>
               </CustomSkeleton>

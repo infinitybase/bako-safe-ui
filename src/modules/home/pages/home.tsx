@@ -39,7 +39,9 @@ const HomePage = () => {
 
   const {
     authDetails: { userInfos },
-    workspaceInfos: { selectWorkspace },
+    workspaceInfos: {
+      handleWorkspaceSelection: { handler },
+    },
   } = useWorkspaceContext();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -198,18 +200,28 @@ const HomePage = () => {
                           workspace={workspace}
                           title={description}
                           members={members!}
-                          onClick={async () => {
-                            selectWorkspace(workspace.id, {
-                              onSelect: async (_workspace) => {
-                                navigate(
-                                  Pages.detailsVault({
-                                    workspaceId: _workspace.id,
-                                    vaultId: id,
-                                  }),
-                                );
-                              },
-                            });
-                          }}
+                          onClick={
+                            // async () => {
+                            //   selectWorkspace(workspace.id, {
+                            //     onSelect: async (_workspace) => {
+                            //       navigate(
+                            //         Pages.detailsVault({
+                            //           workspaceId: _workspace.id,
+                            //           vaultId: id,
+                            //         }),
+                            //       );
+                            //     },
+                            //   });
+                            // }
+                            () =>
+                              handler(
+                                workspace.id,
+                                Pages.detailsVault({
+                                  workspaceId: workspace.id,
+                                  vaultId: id,
+                                }),
+                              )
+                          }
                         />
                       )}
                     </GridItem>
