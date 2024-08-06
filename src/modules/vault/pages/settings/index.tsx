@@ -29,15 +29,12 @@ const VaultSettingsPage = () => {
 
   const { goHome } = useHome();
   const {
-    authDetails: {
-      workspaces: { current },
-      isSingleWorkspace,
-    },
+    authDetails: { userInfos },
     workspaceInfos: { goWorkspace, currentWorkspace },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   if (!vault) return null;
 
@@ -67,13 +64,13 @@ const VaultSettingsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() => goWorkspace(userInfos.workspace?.id)}
                   maxW={40}
                   isTruncated
                 >
@@ -107,7 +104,7 @@ const VaultSettingsPage = () => {
                   navigate(
                     Pages.detailsVault({
                       vaultId: vault.data?.id!,
-                      workspaceId: current ?? '',
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }

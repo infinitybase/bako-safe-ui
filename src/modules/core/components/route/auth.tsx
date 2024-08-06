@@ -18,11 +18,11 @@ const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
 
   useEffect(() => {
     handleWorkspaceSelection.handler(
-      workspaceId ?? authDetails.workspaces.single,
+      workspaceId ?? authDetails.userInfos?.workspace?.id,
     );
   }, [workspaceId]);
 
-  if (!authDetails.account) {
+  if (!authDetails.userInfos?.address) {
     return (
       <Navigate
         to={`${Pages.index()}${search}`}

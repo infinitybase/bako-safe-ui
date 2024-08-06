@@ -26,13 +26,15 @@ const SelectWorkspaceDialog = ({
   isCreatingWorkspace,
 }: SelectWorkspaceDialogProps) => {
   const {
-    authDetails: { workspaces },
+    authDetails: {
+      userInfos: { workspace },
+    },
   } = useWorkspaceContext();
   const listIsEmpty = userWorkspaces.length === 0;
 
   const openDialog = dialog.isOpen && !isCreatingWorkspace;
 
-  const loggedWorkspace = workspaces.current;
+  const loggedWorkspace = workspace?.id;
 
   return (
     <Dialog.Modal

@@ -11,7 +11,7 @@ const VAULT_QUERY_KEYS = {
 const useBakoSafeVault = (id: string) => {
   const { authDetails } = useWorkspaceContext();
   const { data, ...rest } = useBakoSafeQuery(
-    [...VAULT_QUERY_KEYS.VAULT(id), authDetails.workspaces.current],
+    [...VAULT_QUERY_KEYS.VAULT(id), authDetails.userInfos.workspace?.id],
     async (context) => {
       return await Vault.create({
         id,
@@ -43,7 +43,7 @@ interface UseCreateBakoSafeVaultPayload {
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   const {
-    authDetails: { hasWallet },
+    authDetails: { userProvider },
   } = useWorkspaceContext();
 
   const { mutate, ...mutation } = useBakoSafeMutation<
@@ -54,7 +54,7 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
       try {
-        const { provider } = await hasWallet();
+        const { provider } = await userProvider();
         const vault: IPayloadVault = {
           name: params.name,
           description: params.description!,

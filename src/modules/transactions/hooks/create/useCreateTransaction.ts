@@ -100,7 +100,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       queryClient.invalidateQueries({
         queryKey: [
           WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-            authDetails.workspaces.current,
+            authDetails.userInfos.workspace?.id,
           ),
           TRANSACTION_LIST_QUERY_KEY,
           USER_TRANSACTIONS_QUERY_KEY,

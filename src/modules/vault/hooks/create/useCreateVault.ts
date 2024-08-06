@@ -24,7 +24,7 @@ export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const useCreateVault = () => {
   const [vaultId, setVaultId] = useState<string>('');
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
-  const { form, addressesFieldArray } = useCreateVaultForm(account);
+  const { form, addressesFieldArray } = useCreateVaultForm(userInfos.address);
 
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');

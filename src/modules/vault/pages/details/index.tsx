@@ -57,15 +57,13 @@ const VaultDetailsPage = () => {
 
   const { goHome } = useHome();
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: { goWorkspace, hasPermission, currentWorkspace },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
   const hasTransactions = !isLoading && homeDetailsLimitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;

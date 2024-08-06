@@ -27,10 +27,7 @@ const VaultBalancePage = () => {
   const { vault, assets } = useVaultInfosContext();
 
   const {
-    authDetails: {
-      workspaces: { current },
-      isSingleWorkspace,
-    },
+    authDetails: { userInfos },
     workspaceInfos: { currentWorkspace, goWorkspace },
   } = useWorkspaceContext();
   const { goHome } = useHome();
@@ -64,13 +61,13 @@ const VaultBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() => goWorkspace(userInfos.workspace?.id)}
                   maxW={40}
                   isTruncated
                 >
@@ -97,7 +94,7 @@ const VaultBalancePage = () => {
                   navigate(
                     Pages.detailsVault({
                       vaultId: vault?.data?.id!,
-                      workspaceId: current ?? '',
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }

@@ -1,7 +1,6 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core/models/workspace';
 import { SelectWorkspaceResponse, WorkspaceService } from '../../services';
-import { IUseAuthReturn } from '@/modules/auth/services';
 
 const useSelectWorkspaceRequest = (
   options?: UseMutationOptions<SelectWorkspaceResponse, unknown, unknown>,
@@ -18,7 +17,7 @@ interface UseSelectWorkspaceOptions {
   onError?: () => void;
 }
 
-const useSelectWorkspace = (authDetails: IUseAuthReturn) => {
+const useSelectWorkspace = (userId: string) => {
   const { mutate, isPending, data, ...request } = useSelectWorkspaceRequest();
 
   const selectWorkspace = (
@@ -27,16 +26,12 @@ const useSelectWorkspace = (authDetails: IUseAuthReturn) => {
   ) => {
     mutate(
       {
-        user: authDetails.userId,
+        user: userId,
         workspace: workspace,
       },
       {
         onSuccess: ({ workspace }) => {
           options?.onSelect(workspace);
-          authDetails.handlers.authenticateWorkspace({
-            permissions: workspace.permissions,
-            workspace: workspace.id,
-          });
         },
         onError: options?.onError,
       },

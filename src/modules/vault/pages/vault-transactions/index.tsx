@@ -48,13 +48,10 @@ const TransactionsVaultPage = () => {
 
   const menuDrawer = useDisclosure();
   const {
-    authDetails: {
-      workspaces: { current },
-      isSingleWorkspace,
-    },
+    authDetails: { userInfos },
     workspaceInfos: { goWorkspace, currentWorkspace },
   } = useWorkspaceContext();
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const {
     vault,
@@ -104,13 +101,13 @@ const TransactionsVaultPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() => goWorkspace(userInfos.workspace?.id)}
                   maxW={40}
                   isTruncated
                 >
@@ -145,7 +142,7 @@ const TransactionsVaultPage = () => {
                   navigate(
                     Pages.detailsVault({
                       vaultId: vault.data?.id!,
-                      workspaceId: current ?? '',
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }

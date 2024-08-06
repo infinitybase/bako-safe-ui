@@ -65,9 +65,7 @@ const WorkspacePage = () => {
   const workspaceDialog = useDisclosure();
 
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: {
       navigate,
       currentWorkspace: { workspace: currentWorkspace, isLoading },
@@ -76,7 +74,7 @@ const WorkspacePage = () => {
       visibleBalance,
       setVisibleBalance,
       worksapceBalance,
-      workspaceHomeRequest,
+      predicatesHomeRequest,
       goWorkspace,
     },
   } = useWorkspaceContext();
@@ -84,12 +82,12 @@ const WorkspacePage = () => {
   const isWorkspacePageNotReady =
     !worksapceBalance.isLoading &&
     !isLoading &&
-    !workspaceHomeRequest.isLoading &&
+    !predicatesHomeRequest.isLoading &&
     (!currentWorkspace || currentWorkspace.single);
 
   const hasVaults = recentVaults?.length ?? 0;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   if (isWorkspacePageNotReady) {
     return <BakoLoading />;
@@ -215,7 +213,7 @@ const WorkspacePage = () => {
         </HStack>
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="semibold"
@@ -235,7 +233,7 @@ const WorkspacePage = () => {
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="bold"
@@ -258,7 +256,7 @@ const WorkspacePage = () => {
       >
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!workspaceHomeRequest.isLoading}
+          isLoaded={!predicatesHomeRequest.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -423,7 +421,7 @@ const WorkspacePage = () => {
           maxH={450}
           spacing={5}
         >
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
             <ActionCard.Container
               w="full"
               onClick={() => navigate(Pages.userVaults({ workspaceId }))}
@@ -438,7 +436,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -458,7 +456,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -491,7 +489,7 @@ const WorkspacePage = () => {
           Recently used vaults
         </Text>
       </Box>
-      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
         {!hasVaults ? (
           <>
             <EmptyState
@@ -523,7 +521,7 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
-                    <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+                    <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           mt={{ base: 6, sm: 'unset' }}

@@ -11,7 +11,7 @@ const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
 
   return useQuery({
     queryKey: [
-      HomeQueryKey.HOME_WORKSPACE(authDetails.workspaces.current),
+      HomeQueryKey.HOME_WORKSPACE(authDetails.userInfos.workspace?.id),
       type,
     ],
     queryFn: () => HomeService.homeTransactions(type),

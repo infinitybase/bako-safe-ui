@@ -22,9 +22,7 @@ import { useWorkspaceContext } from '../../WorkspaceProvider';
 const WorkspaceBalancePage = () => {
   const { goHome } = useHome();
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: {
       currentWorkspace: { workspace: currentWorkspace },
       goWorkspace,
@@ -32,7 +30,7 @@ const WorkspaceBalancePage = () => {
     },
   } = useWorkspaceContext();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   return (
     <Flex w="full" direction="column">

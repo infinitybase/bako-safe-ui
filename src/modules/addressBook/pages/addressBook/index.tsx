@@ -31,13 +31,10 @@ import {
 } from '../../components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const { ADMIN, MANAGER, OWNER } = PermissionRoles;
-
 const AddressBookPage = () => {
   const {
     authDetails: {
-      workspaces: { current, single },
-      isSingleWorkspace,
+      userInfos: { workspace, onSingleWorkspace },
     },
     workspaceInfos: { hasPermission, goWorkspace, currentWorkspace },
     addressBookInfos: {
@@ -66,7 +63,8 @@ const AddressBookPage = () => {
   const { goHome } = useHome();
 
   const hasContacts = !!contacts?.length;
-  const workspaceId = current ?? '';
+  const workspaceId = workspace?.id ?? '';
+  const single = workspace?.id;
 
   return (
     <>
@@ -136,13 +134,13 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={isSingleWorkspace}>
-                {current && (
+              <BreadcrumbItem hidden={onSingleWorkspace}>
+                {workspace?.id && (
                   <BreadcrumbLink
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(current)}
+                    onClick={() => goWorkspace(workspace?.id)}
                     maxW={40}
                     isTruncated
                   >
@@ -164,7 +162,11 @@ const AddressBookPage = () => {
             </Breadcrumb>
           </HStack>
 
-          {hasPermission([OWNER, ADMIN, MANAGER]) && (
+          {hasPermission([
+            PermissionRoles?.OWNER,
+            PermissionRoles?.ADMIN,
+            PermissionRoles?.MANAGER,
+          ]) && (
             <Box w={isExtraSmall ? 'full' : 'unset'}>
               <Button
                 w="full"
@@ -182,7 +184,9 @@ const AddressBookPage = () => {
         <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
-            onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
+            onClick={() =>
+              navigate(Pages.userVaults({ workspaceId: workspace?.id }))
+            }
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -198,7 +202,7 @@ const AddressBookPage = () => {
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
-                  workspaceId: current,
+                  workspaceId: workspace?.id,
                 }),
               );
             }}
@@ -218,7 +222,7 @@ const AddressBookPage = () => {
           <ActionCard.Container
             flex={1}
             onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: current }))
+              navigate(Pages.addressBook({ workspaceId: workspace?.id }))
             }
           >
             <ActionCard.Icon icon={AddressBookIcon} />
@@ -269,7 +273,11 @@ const AddressBookPage = () => {
                   address={user.address}
                   avatar={user.avatar}
                   dialog={deleteContactDialog}
-                  showActionButtons={hasPermission([OWNER, ADMIN, MANAGER])}
+                  showActionButtons={hasPermission([
+                    PermissionRoles?.OWNER,
+                    PermissionRoles?.ADMIN,
+                    PermissionRoles?.MANAGER,
+                  ])}
                   handleEdit={() =>
                     handleOpenDialog({
                       address: user.address,
@@ -289,7 +297,11 @@ const AddressBookPage = () => {
 
         {!hasContacts && !listContactsRequest.isLoading && (
           <EmptyState
-            showAction={hasPermission([OWNER, ADMIN, MANAGER])}
+            showAction={hasPermission([
+              PermissionRoles?.OWNER,
+              PermissionRoles?.ADMIN,
+              PermissionRoles?.MANAGER,
+            ])}
             buttonAction={() => handleOpenDialog({})}
             subTitle={`It seems you haven't added any favorites yet. Would you like to add one now?`}
             buttonActionTitle="Add a new favorite"

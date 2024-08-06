@@ -17,6 +17,7 @@ export type UseCreateVaultDialogReturn = ReturnType<
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const { form, tabs, vaultNameIsAvailable, vaultId, ...rest } =
     useCreateVault();
+
   const { name, origin, sessionId, request_id } = useQueryParams();
   const createConnectionsMutation = useCreateConnections();
   const { authDetails } = useWorkspaceContext();
@@ -34,7 +35,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         name: name!,
         origin: origin!,
         request_id: request_id!,
-        userAddress: authDetails.account,
+        userAddress: authDetails.userInfos.address,
         vaultId: vaultId,
       });
     }

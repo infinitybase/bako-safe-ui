@@ -16,8 +16,6 @@ import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const { ADMIN, MANAGER, OWNER } = PermissionRoles;
-
 interface SidebarProps {
   onDrawer?: boolean;
 }
@@ -74,7 +72,11 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           }}
           hasBalance={hasBalance}
           isPending={isPendingSigner}
-          hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
+          hasPermission={hasPermission([
+            PermissionRoles?.OWNER,
+            PermissionRoles?.ADMIN,
+            PermissionRoles?.MANAGER,
+          ])}
           onCreateTransaction={() => {
             route.navigate(
               Pages.createTransaction({

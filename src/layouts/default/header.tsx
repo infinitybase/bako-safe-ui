@@ -21,7 +21,7 @@ const Header = () => {
 
   const { fuel } = useFuel();
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
   const { goHome } = useHome();
 
@@ -101,8 +101,8 @@ const Header = () => {
           <Flex py={2} px={5} bg="dark.100" borderRadius="27px">
             <Box mr={4}>
               <Text fontSize="xs" color="gray">
-                {String(account).slice(0, 4)}...
-                {String(account).slice(-4)}
+                {String(userInfos.address).slice(0, 4)}...
+                {String(userInfos.address).slice(-4)}
               </Text>
             </Box>
             <Flex alignItems="center" onClick={disconnect}>

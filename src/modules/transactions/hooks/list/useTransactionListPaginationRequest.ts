@@ -21,14 +21,12 @@ const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-      current,
+      userInfos.workspace?.id,
       params.status as StatusFilter,
       params.predicateId?.[0],
       params.id,

@@ -8,31 +8,32 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 const useHome = () => {
   const navigate = useNavigate();
   const {
-    authDetails,
+    authDetails: { userInfos },
     workspaceInfos: {
-      workspaceHomeRequest,
+      predicatesHomeRequest,
       pendingSignerTransactions,
       selectWorkspace,
     },
   } = useWorkspaceContext();
+
   const { vaultId } = useParams();
   const vaultsPerPage = 8;
 
-  const vaultsTotal = workspaceHomeRequest?.data?.predicates.total ?? 0;
+  const vaultsTotal = predicatesHomeRequest?.data?.predicates.total ?? 0;
 
   const goHome = () => {
-    selectWorkspace(authDetails.workspaces.single, {
+    selectWorkspace(userInfos.singleWorkspaceId, {
       onSelect: async () => {
-        authDetails.handlers.authenticateWorkspaceSingle();
+        predicatesHomeRequest.refetch();
         await queryClient.invalidateQueries({
           queryKey: WorkspacesQueryKey.FULL_DATA(
-            authDetails.workspaces.single,
+            userInfos.singleWorkspaceId,
             vaultId!,
           ),
         });
         await queryClient.invalidateQueries({
           queryKey: AddressBookQueryKey.LIST_BY_USER(
-            authDetails.workspaces.single,
+            userInfos.singleWorkspaceId,
           ),
         });
         navigate(Pages.home());
@@ -41,23 +42,23 @@ const useHome = () => {
   };
 
   return {
-    account: authDetails.account,
+    account: userInfos?.address,
     vaultsRequest: {
-      ...workspaceHomeRequest,
+      ...predicatesHomeRequest,
       vaults: {
-        recentVaults: workspaceHomeRequest.data?.predicates?.data,
+        recentVaults: predicatesHomeRequest.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
         extraCount:
           vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: workspaceHomeRequest.isLoading,
-      refetchVaults: workspaceHomeRequest.refetch,
+      loadingRecentVaults: predicatesHomeRequest.isLoading,
+      refetchVaults: predicatesHomeRequest.refetch,
     },
     transactionsRequest: {
-      ...workspaceHomeRequest,
-      loadingTransactions: workspaceHomeRequest.isLoading,
+      ...predicatesHomeRequest,
+      loadingTransactions: predicatesHomeRequest.isLoading,
     },
-    homeRequest: workspaceHomeRequest,
+    homeRequest: predicatesHomeRequest,
     navigate,
     goHome,
     pendingSignerTransactions,

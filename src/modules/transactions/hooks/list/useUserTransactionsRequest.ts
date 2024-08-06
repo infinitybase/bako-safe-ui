@@ -12,7 +12,10 @@ const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
 const useUserTransactionsRequest = (options?: { limit?: number }) => {
   const { authDetails } = useWorkspaceContext();
   return useQuery({
-    queryKey: [USER_TRANSACTIONS_QUERY_KEY, authDetails.workspaces.current],
+    queryKey: [
+      USER_TRANSACTIONS_QUERY_KEY,
+      authDetails.userInfos.workspace?.id,
+    ],
     queryFn: () =>
       TransactionService.getUserTransactions({
         limit: options?.limit ?? undefined,

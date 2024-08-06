@@ -37,7 +37,7 @@ export interface VaultAddressesStepProps {
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const {
-    authDetails: { isSingleWorkspace },
+    authDetails: { userInfos },
     addressBookInfos: {
       handlers: { handleOpenDialog },
       dialog: { contactDialog },
@@ -65,7 +65,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('addresses') as AddressesFields,
       errors: form.formState.errors.addresses,

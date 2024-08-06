@@ -17,9 +17,7 @@ export const useAuthSocket = () => {
   const { sessionId } = useQueryParams();
   const navigate = useNavigate();
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const [selectedVaultId, setSelectedVaultId] = useState('');
@@ -29,7 +27,7 @@ export const useAuthSocket = () => {
   const createConnectionsMutation = useCreateConnections();
   const makeLinkCreateVault = () => {
     navigate(
-      `${Pages.createVault({ workspaceId: current })}${location.search}`,
+      `${Pages.createVault({ workspaceId: userInfos.workspace?.id })}${location.search}`,
     );
   };
 

@@ -78,7 +78,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     ethBalance,
   } = assets;
   const {
-    authDetails: { workspaces, isSingleWorkspace },
+    authDetails: { userInfos },
     workspaceInfos: { currentWorkspace, hasPermission },
   } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
@@ -89,7 +89,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
-  const workspaceId = workspaces.current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,
@@ -191,7 +191,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && <Update />}
                   </HStack>
 
-                  {!isSingleWorkspace && (
+                  {!userInfos.onSingleWorkspace && (
                     <HStack
                       w="full"
                       alignItems="center"

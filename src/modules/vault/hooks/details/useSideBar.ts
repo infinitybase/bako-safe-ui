@@ -14,7 +14,7 @@ const useSidebar = ({ params }: UseSidebarProps) => {
   const drawer = useDisclosure();
   const {
     authDetails: {
-      workspaces: { current },
+      userInfos: { workspace },
     },
   } = useWorkspaceContext();
 
@@ -30,19 +30,19 @@ const useSidebar = ({ params }: UseSidebarProps) => {
     settings: checkPathname(
       Pages.vaultSettings({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
     transactions: checkPathname(
       Pages.transactions({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
     balance: checkPathname(
       Pages.vaultBalance({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
   };

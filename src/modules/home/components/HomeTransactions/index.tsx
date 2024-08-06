@@ -46,9 +46,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
     useHome();
 
   const {
-    authDetails: {
-      workspaces: { single },
-    },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const { transactions: groupedTransactions } =
@@ -141,7 +139,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           onClick={() =>
             navigate(
               Pages.userTransactions({
-                workspaceId: single,
+                workspaceId: userInfos.workspace?.id,
               }),
             )
           }

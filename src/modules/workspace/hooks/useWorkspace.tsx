@@ -20,7 +20,7 @@ const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = (auth: IUseAuthReturn) => {
+const useWorkspace = (authDetails: IUseAuthReturn) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
 
@@ -31,30 +31,34 @@ const useWorkspace = (auth: IUseAuthReturn) => {
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const worksapceBalance = useGetWorkspaceBalanceRequest(
-    auth.workspaces.current,
+    authDetails.userInfos?.workspace?.id,
   );
 
-  const workspaceHomeRequest = useHomeDataRequest(auth.workspaces.current);
+  const predicatesHomeRequest = useHomeDataRequest(
+    authDetails.userInfos?.workspace?.id,
+  );
   const userWorkspacesRequest = useUserWorkspacesRequest();
-  const singleWorkspace = useGetWorkspaceRequest(auth.workspaces.single);
-  const currentWorkspaceRequest = useGetWorkspaceRequest(
-    auth.workspaces.current,
-  );
-  const {
-    workspaces: { current },
-  } = auth;
 
-  const { selectWorkspace, isSelecting } = useSelectWorkspace(auth);
+  const currentWorkspaceRequest = useGetWorkspaceRequest(
+    authDetails.userInfos?.workspace?.id,
+  );
+
+  const { selectWorkspace, isSelecting } = useSelectWorkspace(
+    authDetails.userInfos.id,
+  );
 
   const goWorkspace = (workspaceId: string) => {
     navigate(Pages.workspace({ workspaceId }));
     return '';
   };
 
-  const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
+  const vaultsCounter = predicatesHomeRequest?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (selectedWorkspace: string) => {
-    if (selectedWorkspace === current || isSelecting) {
+    if (
+      selectedWorkspace === authDetails.userInfos?.workspace?.id ||
+      isSelecting
+    ) {
       return;
     }
 
@@ -63,8 +67,10 @@ const useWorkspace = (auth: IUseAuthReturn) => {
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        if (!workspace.single) {
-          goWorkspace(workspace.id);
+        authDetails.userInfos.refetch();
+        if (!workspace?.single) {
+          goWorkspace(workspace?.id);
+          return;
         }
       },
       onError: () => {
@@ -82,9 +88,9 @@ const useWorkspace = (auth: IUseAuthReturn) => {
 
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
-      if (auth.isSingleWorkspace) return true;
+      if (authDetails.userInfos.onSingleWorkspace) return true;
 
-      const permissions = auth.permissions;
+      const permissions = authDetails.userInfos.workspace?.permission;
 
       if (!permissions) return false;
 
@@ -97,7 +103,11 @@ const useWorkspace = (auth: IUseAuthReturn) => {
 
       return isValid;
     },
-    [auth.isSingleWorkspace, auth.permissions, vaultId],
+    [
+      authDetails.userInfos?.onSingleWorkspace,
+      authDetails.userInfos.workspace?.permission,
+      vaultId,
+    ],
   );
 
   // separe as infos:
@@ -123,12 +133,12 @@ const useWorkspace = (auth: IUseAuthReturn) => {
   //            - home
 
   return {
-    account: auth.account,
+    account: authDetails.userInfos.address,
     currentWorkspace: {
       workspace: currentWorkspaceRequest.workspace,
       isLoading: currentWorkspaceRequest.isLoading,
     },
-    currentPermissions: auth.permissions,
+    currentPermissions: authDetails.userInfos.workspace?.permission,
     userWorkspacesRequest,
     workspaceDialog,
     handleWorkspaceSelection: {
@@ -136,11 +146,10 @@ const useWorkspace = (auth: IUseAuthReturn) => {
       isSelecting,
     },
     navigate,
-    workspaceHomeRequest,
-    singleWorkspace,
+    predicatesHomeRequest,
     workspaceId,
     workspaceVaults: {
-      recentVaults: workspaceHomeRequest.data?.predicates?.data,
+      recentVaults: predicatesHomeRequest.data?.predicates?.data,
       vaultsMax: VAULTS_PER_PAGE,
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,

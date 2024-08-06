@@ -40,14 +40,11 @@ const UserVaultsPage = () => {
   const { goHome } = useHome();
 
   const {
-    authDetails: {
-      workspaces: { current, single },
-      isSingleWorkspace,
-    },
+    authDetails: { userInfos },
     workspaceInfos: {
       goWorkspace,
       hasPermission,
-      workspaceHomeRequest,
+      predicatesHomeRequest,
       currentWorkspace,
       selectWorkspace,
     },
@@ -80,9 +77,7 @@ const UserVaultsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() =>
-              current == single ? goHome() : goWorkspace(current)
-            }
+            onClick={() => goWorkspace(userInfos.workspace?.id)}
           >
             Back home
           </Button>
@@ -98,13 +93,13 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() => goWorkspace(userInfos.workspace?.id)}
                   maxW={40}
                   isTruncated
                 >
@@ -138,14 +133,17 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton display="flex" isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton
+        display="flex"
+        isLoaded={!predicatesHomeRequest.isLoading}
+      >
         <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
               navigate(
                 Pages.userVaults({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               )
             }
@@ -164,7 +162,7 @@ const UserVaultsPage = () => {
             onClick={() => {
               navigate(
                 Pages.userTransactions({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               );
             }}
@@ -186,7 +184,7 @@ const UserVaultsPage = () => {
             onClick={() =>
               navigate(
                 Pages.addressBook({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               )
             }

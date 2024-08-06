@@ -28,7 +28,7 @@ const useVaultTransactionsList = ({
   const navigate = useNavigate();
   const inView = useInView();
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
@@ -91,7 +91,7 @@ const useVaultTransactionsList = ({
       value: filter,
     },
     inView,
-    account,
+    account: userInfos.address,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     hasSkeleton: false,
     infinityTransactions,

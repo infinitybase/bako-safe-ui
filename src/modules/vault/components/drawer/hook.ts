@@ -25,9 +25,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const [search, setSearch] = useState('');
 
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: { selectWorkspace },
   } = useWorkspaceContext();
 
@@ -78,7 +76,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     navigate(
       Pages.detailsVault({
         vaultId: vault.id,
-        workspaceId: current,
+        workspaceId: userInfos.workspace?.id,
       }),
     );
   };

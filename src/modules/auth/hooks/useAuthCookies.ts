@@ -12,34 +12,18 @@ const setAuthCookies = (params: AuthenticateParams) => {
       value: params.account,
     },
     {
-      name: CookieName.USER_ID,
-      value: params.userId,
-    },
-    {
-      name: CookieName.AVATAR,
-      value: params.avatar!,
-    },
-    {
       name: CookieName.SINGLE_WORKSPACE,
       value: params.singleWorkspace,
-    },
-    {
-      name: CookieName.WEB_AUTHN_PK,
-      value: params.webAuthn?.publicKey ?? '',
-    },
-    {
-      name: CookieName.WEB_AUTHN_ID,
-      value: params.webAuthn?.id ?? '',
-    },
-    {
-      name: CookieName.ACCOUNT_TYPE,
-      value: params.accountType,
     },
   ]);
 };
 
 const clearAuthCookies = () => {
-  CookiesConfig.removeCookies([CookieName.ADDRESS, CookieName.ACCESS_TOKEN]);
+  CookiesConfig.removeCookies([
+    CookieName.ADDRESS,
+    CookieName.ACCESS_TOKEN,
+    CookieName.SINGLE_WORKSPACE,
+  ]);
   return;
 };
 
@@ -47,14 +31,7 @@ const userAuthCookiesInfo = () => {
   return {
     accessToken: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
     account: CookiesConfig.getCookie(CookieName.ADDRESS),
-    userId: CookiesConfig.getCookie(CookieName.USER_ID),
-    avatar: CookiesConfig.getCookie(CookieName.AVATAR),
     singleWorkspace: CookiesConfig.getCookie(CookieName.SINGLE_WORKSPACE),
-    webAuthn: {
-      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID),
-      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK),
-    },
-    accountType: CookiesConfig.getCookie(CookieName.ACCOUNT_TYPE),
   };
 };
 

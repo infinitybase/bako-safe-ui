@@ -5,7 +5,7 @@ import { Address, Provider } from 'fuels';
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
-import { IUseAuthActionsState, IUseAuthActionHandler } from '../hooks';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -97,17 +97,42 @@ export type AuthenticateWorkspaceParams = {
   workspace: string;
 };
 
-export type IUseAuthReturn = Omit<IUseAuthActionsState, 'formattedAccount'> & {
-  account: string;
-  hasWallet: () => Promise<{
+export interface IUserInfos extends IGetUserInfosResponse {
+  isLoading: boolean;
+  isFetching: boolean;
+  refetch: (
+    options?: RefetchOptions | undefined,
+  ) => Promise<QueryObserverResult<IGetUserInfosResponse, Error>>;
+  singleWorkspaceId: string;
+}
+
+export type IUseAuthReturn = {
+  userProvider: () => Promise<{
     provider: Provider;
   }>;
-  handlers: Partial<IUseAuthActionHandler> & {
+  invalidAccount: boolean;
+  handlers: {
+    logout: () => void;
     authenticate: (params: AuthenticateParams) => void;
-    authenticateWorkspace: (params: AuthenticateWorkspaceParams) => void;
-    authenticateWorkspaceSingle: () => void;
+    setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
   };
-  isSingleWorkspace: boolean;
+  userInfos: IUserInfos;
+};
+
+export type IGetUserInfosResponse = {
+  address: string;
+  avatar: string;
+  id: string;
+  name: string;
+  onSingleWorkspace: boolean;
+  type: TypeUser;
+  webauthn: SignWebAuthnPayload;
+  workspace: {
+    avatar: string;
+    id: string;
+    name: string;
+    permission: IPermission;
+  };
 };
 
 export class UserService {
@@ -126,6 +151,12 @@ export class UserService {
     if (status !== 200) {
       throw new Error('Invalid signature');
     }
+
+    return data;
+  }
+
+  static async getUserInfos() {
+    const { data } = await api.get<IGetUserInfosResponse>('/user/latest/info');
 
     return data;
   }

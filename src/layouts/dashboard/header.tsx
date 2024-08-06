@@ -71,12 +71,14 @@ const UserBox = () => {
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-  const mySettingsRequest = useMySettingsRequest(authDetails.account);
+  const mySettingsRequest = useMySettingsRequest(
+    authDetails.userInfos?.address,
+  );
   const name = mySettingsRequest.data?.name;
   const hasNickName = !name?.startsWith('fuel');
 
   const logout = async () => {
-    authDetails.accountType === TypeUser.FUEL && (await fuel.disconnect());
+    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
     authDetails.handlers.logout?.();
   };
 
@@ -110,14 +112,14 @@ const UserBox = () => {
             <Box mr={{ base: 2, sm: 4 }}>
               <Avatar
                 variant="roundedSquare"
-                src={authDetails.avatar}
+                src={authDetails.userInfos?.avatar}
                 size={{ base: 'sm', sm: 'md' }}
               />
             </Box>
 
             <Box display={{ base: 'none', sm: 'block' }} mr={9}>
               <Text fontWeight="semibold" color="grey.200">
-                {AddressUtils.format(authDetails.account)}
+                {AddressUtils.format(authDetails.userInfos?.address)}
               </Text>
             </Box>
 
@@ -191,8 +193,8 @@ const UserBox = () => {
                 addressColor="grey.250"
                 spacing={1}
                 flexDir="row"
-                address={AddressUtils.format(authDetails.account)!}
-                addressToCopy={authDetails.account}
+                address={AddressUtils.format(authDetails.userInfos?.address)!}
+                addressToCopy={authDetails.userInfos?.address}
                 bg="transparent"
                 fontSize={14}
                 alignSelf="start"

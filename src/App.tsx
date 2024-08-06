@@ -26,7 +26,10 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
-      if (currentAccount === auth.account || auth.accountType !== TypeUser.FUEL)
+      if (
+        currentAccount === auth.userInfos?.address ||
+        auth.userInfos?.type !== TypeUser.FUEL
+      )
         return;
       clearAll();
     }

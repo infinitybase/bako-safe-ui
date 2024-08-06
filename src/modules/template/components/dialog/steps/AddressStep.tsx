@@ -42,7 +42,7 @@ interface AddressStepProps {
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const {
-    authDetails: { account, isSingleWorkspace },
+    authDetails: { userInfos },
     addressBookInfos: {
       requests: { createContactRequest, listContactsRequest },
       form: contactForm,
@@ -64,7 +64,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('addresses') as AddressesFields,
       errors: form.formState.errors.addresses,
@@ -149,7 +149,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
               name={`addresses.${index}.value`}
               render={({ field, fieldState }) => {
                 const first = index === 0;
-                const anotherAddress = field.value !== account;
+                const anotherAddress = field.value !== userInfos.address;
 
                 const appliedOptions = handleFieldOptions(
                   field.value,

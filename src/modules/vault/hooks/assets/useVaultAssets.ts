@@ -22,7 +22,7 @@ function useVaultAssets(predicateId: string) {
   const { data, ...rest } = useQuery({
     queryKey: [
       'predicateId/assets',
-      authDetails.workspaces.current,
+      authDetails.userInfos.workspace?.id,
       predicateId,
     ],
     queryFn: () => VaultService.hasReservedCoins(predicateId),

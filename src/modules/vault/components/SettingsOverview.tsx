@@ -48,9 +48,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     useScreenSize();
 
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: { hasPermission },
   } = useWorkspaceContext();
 
@@ -64,7 +62,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   } = useCLI(vault);
   const { dialog, steps, tabs, create, list } = APIToken;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,

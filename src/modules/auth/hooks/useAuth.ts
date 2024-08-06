@@ -2,52 +2,45 @@ import { useFuel } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 
-import {
-  AuthenticateParams,
-  AuthenticateWorkspaceParams,
-  IUseAuthReturn,
-  TypeUser,
-} from '../services';
-//import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { IUseAuthActions, useAuthCookies } from '..';
+import { useAuthCookies } from '..';
+import { useNavigate } from 'react-router-dom';
+import { useUserInfoRequest } from './useUserInfoRequest';
+import { useState } from 'react';
 
-const useAuth = (authContext: IUseAuthActions): IUseAuthReturn => {
+export type SingleAuthentication = {
+  workspace: string;
+};
+
+export type WorkspaceAuthentication = {
+  workspace: string;
+};
+
+const useAuth = (): IUseAuthReturn => {
+  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
+  const [invalidAccount, setInvalidAccount] = useState(false);
   const { fuel } = useFuel();
-  const { setAuthCookies, clearAuthCookies } = useAuthCookies();
-  //useTokensUSDAmountRequest(); -> MOVE
+  const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
+    useAuthCookies();
+  const { account, singleWorkspace } = userAuthCookiesInfo();
 
   const authenticate = (params: AuthenticateParams) => {
     setAuthCookies(params);
-    authContext?.singleAuthentication({
-      ...params,
-      workspace: params.singleWorkspace,
-    });
   };
 
-  const authenticateWorkspace = (params: AuthenticateWorkspaceParams) => {
-    authContext?.workspaceAuthentication({
-      permissions: params.permissions,
-      workspace: params.workspace,
-    });
-  };
-
-  const authenticateWorkspaceSingle = () => {
-    authContext?.workspaceAuthenticationSingle();
-  };
-
+  const navigate = useNavigate();
   const logout = () => {
     clearAuthCookies();
-    authContext?.logout();
+    navigate('/');
   };
 
-  const hasWallet = async () => {
-    const _hasWallet = authContext?.accountType != TypeUser.WEB_AUTHN;
+  const userProvider = async () => {
+    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
-        _hasWallet
+        _userProvider
           ? (await fuel.currentNetwork()).url
           : BakoSafe.getProviders('CHAIN_URL'),
       ),
@@ -58,24 +51,24 @@ const useAuth = (authContext: IUseAuthActions): IUseAuthReturn => {
     handlers: {
       logout,
       authenticate,
-      authenticateWorkspace,
-      setInvalidAccount: authContext?.setInvalidAccount,
-      authenticateWorkspaceSingle,
+      setInvalidAccount,
     },
-    hasWallet,
-    accountType: authContext?.accountType,
-    avatar: authContext?.avatar,
-    userId: authContext?.userId,
-    account: authContext?.account,
-    webAuthn: {
-      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
-      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
+    userProvider,
+    invalidAccount,
+    userInfos: {
+      avatar: infos?.avatar!,
+      id: infos?.id!,
+      name: infos?.name!,
+      onSingleWorkspace: infos?.onSingleWorkspace ?? false,
+      type: infos?.type!,
+      webauthn: infos?.webauthn!,
+      workspace: infos?.workspace!,
+      address: account,
+      singleWorkspaceId: singleWorkspace,
+      isLoading,
+      isFetching,
+      refetch,
     },
-    workspaces: authContext?.workspaces,
-    permissions: authContext?.permissions,
-    isInvalidAccount: authContext?.isInvalidAccount,
-    isSingleWorkspace:
-      authContext?.workspaces.current === authContext?.workspaces.single,
   };
 };
 

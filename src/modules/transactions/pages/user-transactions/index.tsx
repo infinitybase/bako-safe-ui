@@ -53,10 +53,7 @@ const UserTransactionsPage = () => {
   } = useTransactionList({ type: txFilterType, byMonth: true });
 
   const {
-    authDetails: {
-      isSingleWorkspace,
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: {
       hasPermission,
       goWorkspace,
@@ -96,7 +93,9 @@ const UserTransactionsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              isSingleWorkspace ? goHome() : goWorkspace(current ?? '')
+              userInfos.onSingleWorkspace
+                ? goHome()
+                : goWorkspace(userInfos.workspace?.id ?? '')
             }
           >
             Back home
@@ -117,13 +116,13 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                {!isSingleWorkspace && (
+                {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
-                      onClick={() => goWorkspace(current)}
+                      onClick={() => goWorkspace(userInfos.workspace?.id)}
                       maxW={40}
                       isTruncated
                     >
@@ -165,7 +164,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }
@@ -193,7 +192,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }

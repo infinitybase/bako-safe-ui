@@ -40,19 +40,17 @@ const WkHomeTransactions = memo(() => {
     useFilterTxType();
 
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     workspaceInfos: {
       account,
       navigate,
       workspaceVaults: { recentVaults },
       pendingSignerTransactions,
-      workspaceHomeRequest,
+      predicatesHomeRequest,
     },
   } = useWorkspaceContext();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);
@@ -86,7 +84,7 @@ const WkHomeTransactions = memo(() => {
         </HStack>
       )}
       <CustomSkeleton
-        isLoaded={!workspaceHomeRequest.isLoading}
+        isLoaded={!predicatesHomeRequest.isLoading}
         mt={{
           base: recentVaults?.length ? 16 : 0,
           sm: recentVaults?.length ? 8 : 0,
@@ -171,7 +169,7 @@ const WkHomeTransactions = memo(() => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,

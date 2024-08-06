@@ -32,13 +32,13 @@ const useAddressBook = (
 
   const listContactsRequest = useListContactsRequest({
     current: workspaceId!,
-    includePersonal: authDetails.isSingleWorkspace,
+    includePersonal: authDetails.userInfos.onSingleWorkspace,
   });
   const listContactsPaginatedRequest = useListPaginatedContactsRequest(
     listContactsRequest.data ?? [],
     { q: search },
     workspaceId!,
-    authDetails.isSingleWorkspace,
+    authDetails.userInfos.onSingleWorkspace,
   );
 
   const { contactByAddress, debouncedSearchHandler, handleOpenDialog, form } =

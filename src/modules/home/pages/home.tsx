@@ -39,9 +39,7 @@ const HomePage = () => {
   } = useHome();
 
   const {
-    authDetails: {
-      workspaces: { current, single },
-    },
+    authDetails: { userInfos },
     workspaceInfos: { selectWorkspace },
   } = useWorkspaceContext();
 
@@ -81,7 +79,11 @@ const HomePage = () => {
         <CustomSkeleton isLoaded={!homeRequest.isLoading}>
           <ActionCard.Container
             flex={1}
-            onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
+            onClick={() =>
+              navigate(
+                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
+              )
+            }
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -99,7 +101,7 @@ const HomePage = () => {
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               );
             }}
@@ -120,7 +122,9 @@ const HomePage = () => {
           <ActionCard.Container
             flex={1}
             onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: current }))
+              navigate(
+                Pages.addressBook({ workspaceId: userInfos.workspace?.id }),
+              )
             }
           >
             <ActionCard.Icon icon={AddressBookIcon} />
@@ -185,7 +189,7 @@ const HomePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.userVaults({
-                                workspaceId: single,
+                                workspaceId: userInfos.workspace?.id,
                               }),
                             )
                           }

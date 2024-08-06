@@ -32,9 +32,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
 
   const {
-    authDetails: {
-      workspaces: { current },
-    },
+    authDetails: { userInfos },
     addressBookInfos: {
       handlers: { contactByAddress },
     },
@@ -82,7 +80,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                     navigate(
                       Pages.vaultSettings({
                         vaultId: vault.data?.id!,
-                        workspaceId: current,
+                        workspaceId: userInfos.workspace?.id,
                       }),
                     )
                   }
