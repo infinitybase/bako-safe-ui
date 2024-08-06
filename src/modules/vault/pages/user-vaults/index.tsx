@@ -45,7 +45,6 @@ const UserVaultsPage = () => {
       goWorkspace,
       hasPermission,
       predicatesHomeRequest,
-      currentWorkspace,
       selectWorkspace,
     },
   } = useWorkspaceContext();
@@ -106,7 +105,7 @@ const UserVaultsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos.workspace?.name}
                   {/* use request of workspace  */}
                 </BreadcrumbLink>
               </BreadcrumbItem>
