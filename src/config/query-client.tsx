@@ -12,9 +12,9 @@ interface BakoSafeQueryClientProviderProps {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnMount: false,
       refetchOnWindowFocus: false,
-      staleTime: 1000, // 1 second to prevent request spam
+      // refetchOnMount: false,
+      // staleTime: 1000, // 1 second to prevent request spam
       retry: 4,
       retryDelay: 1000,
     },

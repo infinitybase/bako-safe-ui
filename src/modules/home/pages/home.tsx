@@ -26,7 +26,6 @@ import { ActionCard } from '../components/ActionCard';
 
 import HomeTransactions from '../components/HomeTransactions';
 
-import { useTokensUSDAmountRequest } from '../hooks/useTokensUSDAmountRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const HomePage = () => {
@@ -44,8 +43,6 @@ const HomePage = () => {
   } = useWorkspaceContext();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  useTokensUSDAmountRequest();
 
   return (
     <VStack

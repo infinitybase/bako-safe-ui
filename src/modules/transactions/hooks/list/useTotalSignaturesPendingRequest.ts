@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { TransactionService } from '../../services';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 
@@ -12,6 +13,7 @@ const useTransactionsSignaturePending = () => {
       return TransactionService.getTransactionsSignaturePending();
     },
     refetchOnWindowFocus: false,
+    enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
   });
 };
 

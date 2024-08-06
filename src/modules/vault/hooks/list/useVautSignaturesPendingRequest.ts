@@ -1,3 +1,4 @@
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { TransactionService } from '@/modules/transactions/services';
 import { useQuery } from '@tanstack/react-query';
 
@@ -9,7 +10,9 @@ const useVaultSignaturesPendingRequest = (predicateId?: string[]) => {
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
-    enabled: predicateId && !!predicateId[0],
+    enabled:
+      (predicateId && !!predicateId[0]) ||
+      !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
     refetchOnWindowFocus: false,
   });
 };
