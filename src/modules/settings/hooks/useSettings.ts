@@ -19,11 +19,11 @@ const { MY_SETTINGS } = SettingsQueryKey;
 
 const useSettings = ({ onClose }: UseSettingsProps) => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
   const { form } = useSettingsForm();
   const { successToast, errorToast } = useContactToast();
-  const mySettingsRequest = useMySettingsRequest(account);
+  const mySettingsRequest = useMySettingsRequest(userInfos.address);
   const updateSettingsRequest = useUpdateSettingsRequest();
 
   const user = mySettingsRequest.data;

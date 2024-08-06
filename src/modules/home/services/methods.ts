@@ -6,7 +6,7 @@ import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { TransactionType } from 'bakosafe';
 
 export interface HomeDataResponse {
-  predicates: IPagination<Predicate>;
+  predicates: IPagination<Predicate & { workspace: Workspace }>;
 }
 
 export interface HomeTransactionsResponse {

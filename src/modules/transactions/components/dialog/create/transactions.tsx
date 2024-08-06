@@ -55,7 +55,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   const asset = form.watch(`transactions.${index}.asset`);
 
   const {
-    authDetails: { isSingleWorkspace },
+    authDetails: { userInfos },
     addressBookInfos: {
       workspaceId,
       dialog: { contactDialog },
@@ -72,7 +72,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('transactions')!,
       errors: form.formState.errors.transactions,

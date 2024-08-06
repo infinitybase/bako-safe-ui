@@ -174,6 +174,8 @@ const HomePage = () => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
+                console.log(recentVaults);
+
                 return (
                   <CustomSkeleton
                     isLoaded={!homeRequest.isLoading || !!recentVaults}

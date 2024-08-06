@@ -7,11 +7,11 @@ const VAULT_LIST_QUERY_KEY = 'predicate/by-address';
 
 const useUserVaultRequest = () => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: [VAULT_LIST_QUERY_KEY, account],
+    queryKey: [VAULT_LIST_QUERY_KEY, userInfos.address],
     queryFn: () => VaultService.getAll(),
     refetchOnWindowFocus: false,
   });

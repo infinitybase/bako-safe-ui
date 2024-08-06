@@ -10,11 +10,11 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: ['predicate/home', account],
+    queryKey: ['predicate/home', userInfos.address],
     queryFn: () =>
       VaultService.getAllWithPagination({
         page: 0,

@@ -44,7 +44,11 @@ interface MemberCardProps {
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
   const {
-    authDetails: { permissions: loggedPermissions, avatar },
+    authDetails: {
+      userInfos: {
+        workspace: { permission: loggedPermissions, avatar },
+      },
+    },
     addressBookInfos: {
       handlers: { contactByAddress },
     },

@@ -26,10 +26,10 @@ const useWallet = (account?: string) => {
 
 const useMyWallet = () => {
   const {
-    authDetails: { account: currentAccount },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
-  return useWallet(currentAccount);
+  return useWallet(userInfos.address);
 };
 
 //sign by webauthn
@@ -69,17 +69,19 @@ const useWalletSignMessage = (
 ) => {
   const { data: wallet } = useMyWallet();
   const {
-    authDetails: { webAuthn, accountType },
+    authDetails: {
+      userInfos: { webauthn, type },
+    },
   } = useWorkspaceContext();
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (accountType) {
+      switch (type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,
-            id: webAuthn!.id,
-            publicKey: webAuthn!.publicKey,
+            id: webauthn!.id,
+            publicKey: webauthn!.publicKey,
           });
         default:
           return signAccountFuel(wallet!, message);

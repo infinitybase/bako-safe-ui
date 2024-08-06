@@ -50,7 +50,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     },
   } = useSignIn();
   const {
-    authDetails: { userId },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
@@ -58,7 +58,9 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const { formState } = formAuthn;
 
   const isNicknameInUse =
-    !!nicknamesData?.name && nicknamesData?.id !== userId && search?.length > 0;
+    !!nicknamesData?.name &&
+    nicknamesData?.id !== userInfos.id &&
+    search?.length > 0;
 
   const name = mySettingsRequest.data?.name;
 
@@ -140,7 +142,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
                     <FormHelperText
                       color={
-                        (nicknamesData?.name && nicknamesData?.id !== userId) ||
+                        (nicknamesData?.name &&
+                          nicknamesData?.id !== userInfos.id) ||
                         form.formState.errors.name?.message ||
                         isNameInputInvalid
                           ? 'error.500'

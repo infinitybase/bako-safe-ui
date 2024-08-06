@@ -10,9 +10,9 @@ const useMeTransactions = () => {
   const navigate = useNavigate();
 
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
-  const transactionsRequest = useMeTransactionsRequest(account);
+  const transactionsRequest = useMeTransactionsRequest(userInfos.address);
 
   const transactions = useMemo(() => {
     return transactionsRequest.data

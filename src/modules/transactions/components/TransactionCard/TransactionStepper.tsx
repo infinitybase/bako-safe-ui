@@ -55,7 +55,7 @@ const TransactionTypeFormatter = (
 
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
     addressBookInfos: {
       handlers: { contactByAddress },
     },
@@ -152,7 +152,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       gap: '4px',
                     }}
                   >
-                    {nickname && step.owner.address !== account && (
+                    {nickname && step.owner.address !== userInfos.address && (
                       <Text>{nickname}</Text>
                     )}
                     <Text
@@ -165,11 +165,11 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       }
                       fontSize="sm"
                     >
-                      {TransactionTypeFormatter(step, account)}
+                      {TransactionTypeFormatter(step, userInfos.address)}
                     </Text>
                     {!nickname && (
                       <Text variant="subtitle" color="grey.425">
-                        {step.owner.address !== account &&
+                        {step.owner.address !== userInfos.address &&
                           AddressUtils.format(`(${step.owner.address})`)}
                       </Text>
                     )}

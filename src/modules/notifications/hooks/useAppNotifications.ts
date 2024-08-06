@@ -29,13 +29,13 @@ export interface TransactionRedirect {
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
     workspaceInfos: { selectWorkspace },
   } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const notificationsListRequest = useListNotificationsRequest(
-    account,
+    userInfos.address,
     props?.isOpen,
   );
 

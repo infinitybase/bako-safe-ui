@@ -30,7 +30,7 @@ export enum CLIFeaturesLabels {
 
 const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   const {
-    authDetails: { userId },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const {
@@ -46,7 +46,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = workspace?.permissions[userId];
+    const memberPermission = workspace?.permissions[userInfos.id];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
@@ -54,7 +54,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
 
     const hasPerm = hasRequiredPermission;
     return hasPerm;
-  }, [userId, vault, workspace]);
+  }, [userInfos.id, vault, workspace]);
 
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);

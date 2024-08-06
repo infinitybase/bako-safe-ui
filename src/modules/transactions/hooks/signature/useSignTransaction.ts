@@ -26,7 +26,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const { warningToast } = useContactToast();
   const {
-    authDetails: { account },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const transactionSendContext = useTransactionSend();
@@ -78,7 +78,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
     await request.mutateAsync(
       {
-        account,
+        account: userInfos.address,
         confirm: true,
         signer: signedMessage,
         id: options.transaction.id,
@@ -99,7 +99,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     await request.mutateAsync({
       id: transactionId,
       confirm: false,
-      account,
+      account: userInfos.address,
     });
   };
 

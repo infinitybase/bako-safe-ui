@@ -17,7 +17,7 @@ interface MemberAddressForm {
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const {
-    authDetails: { isSingleWorkspace },
+    authDetails: { userInfos },
     addressBookInfos: {
       requests: { paginatedContacts, listContactsRequest },
       handlers: { handleOpenDialog },
@@ -28,7 +28,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: [form.watch('address')],
       errors: form.formState.errors.address,
