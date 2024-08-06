@@ -73,7 +73,7 @@ const MeTransactionsPage = () => {
             [] as typeof transaction.assets,
           );
           const isFullSigned =
-            transaction?.witnesses?.length >=
+            transaction?.resume?.witnesses?.length >=
             transaction.resume.requiredSigners;
 
           return (
@@ -141,7 +141,7 @@ const MeTransactionsPage = () => {
                 <Box mt={5} w="100%">
                   <Box mb={2}>
                     <Text fontSize="sm" color="gray">
-                      Signatures ({transaction.witnesses.length}/
+                      Signatures ({transaction.resume.witnesses.length}/
                       {transaction.resume.requiredSigners}):
                     </Text>
                   </Box>
@@ -149,7 +149,7 @@ const MeTransactionsPage = () => {
                     min={0}
                     max={100}
                     value={calculateSignatures(
-                      transaction.witnesses.length,
+                      transaction.resume.witnesses.length,
                       transaction.resume.requiredSigners,
                     )}
                     backgroundColor="gray"

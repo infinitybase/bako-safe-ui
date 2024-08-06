@@ -16,8 +16,9 @@ interface TransactionCardStatusProps {
   showDescription?: boolean;
 }
 
-import { useSignTransaction } from '../../hooks/signature';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+
+import { useSignTransaction } from '../../hooks/signature';
 
 const Status = ({
   transaction,
@@ -30,7 +31,8 @@ const Status = ({
   });
 
   const signaturesCount =
-    transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
+    transaction!.resume?.witnesses?.filter((w) => w.signature != null).length ??
+    0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [
@@ -74,8 +76,8 @@ const Status = ({
               isReproved || isError
                 ? 'error'
                 : isCompleted
-                ? 'success'
-                : 'warning'
+                  ? 'success'
+                  : 'warning'
             }
           >
             {isError && 'Error'}
