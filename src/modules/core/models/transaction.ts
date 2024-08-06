@@ -1,7 +1,6 @@
 import {
   IAsset,
   ITransactionResume,
-  IWitnesses,
   TransactionStatus as BakoSafeTransactionStatus,
 } from 'bakosafe';
 
@@ -36,7 +35,6 @@ export interface Transaction {
   gasUsed: string;
   resume: ITransactionResume;
   assets: IAsset[];
-  witnesses: IWitnesses[];
   predicate: Predicate;
   createdAt: Date;
 }
