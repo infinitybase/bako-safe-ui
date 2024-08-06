@@ -25,6 +25,7 @@ const useHome = () => {
     selectWorkspace(userInfos.singleWorkspaceId, {
       onSelect: async () => {
         predicatesHomeRequest.refetch();
+        userInfos.refetch();
         await queryClient.invalidateQueries({
           queryKey: WorkspacesQueryKey.FULL_DATA(
             userInfos.singleWorkspaceId,
