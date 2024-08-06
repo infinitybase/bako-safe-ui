@@ -1,7 +1,8 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { UseAddressBookReturn, UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { IUseAuthReturn } from '../auth/services';
+import { BakoLoading } from '@/components';
 
 export interface IWorkspaceContext {
   authDetails: IUseAuthReturn;
@@ -14,9 +15,28 @@ const WorkspaceContext = createContext<IWorkspaceContext | null>(null);
 const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
   const workspaceDetails = useWorkspaceDetails();
 
+  const {
+    addressBookInfos: {
+      requests: { listContactsRequest, paginatedContacts },
+    },
+    authDetails: { userInfos },
+    workspaceInfos: {
+      currentWorkspace,
+      predicatesHomeRequest,
+      worksapceBalance,
+    },
+  } = workspaceDetails;
+
+  const isWorkspaceReady =
+    !listContactsRequest.isLoading &&
+    !paginatedContacts.isLoading &&
+    userInfos &&
+    !currentWorkspace.isLoading &&
+    !predicatesHomeRequest.isLoading &&
+    !worksapceBalance.isLoading;
   return (
     <WorkspaceContext.Provider value={workspaceDetails}>
-      {children}
+      {isWorkspaceReady ? children : <BakoLoading />}
     </WorkspaceContext.Provider>
   );
 };

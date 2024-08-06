@@ -64,7 +64,6 @@ const AddressBookPage = () => {
 
   const hasContacts = !!contacts?.length;
   const workspaceId = workspace?.id ?? '';
-  const single = workspace?.id;
 
   return (
     <>
@@ -116,7 +115,9 @@ const AddressBookPage = () => {
               px={3}
               bg="dark.100"
               color="grey.200"
-              onClick={() => (single ? goHome() : goWorkspace(workspaceId))}
+              onClick={() =>
+                onSingleWorkspace ? goHome() : goWorkspace(workspaceId)
+              }
             >
               Back home
             </Button>

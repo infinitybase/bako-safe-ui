@@ -4,7 +4,7 @@ import bakoLoadingGif from '@/assets/bako-loading-gif/Loading-Fill-White.gif';
 
 const BakoLoading = () => {
   return (
-    <Flex alignItems="center" justifyContent="center" w="full">
+    <Flex alignItems="center" justifyContent="center" w="full" h="100vh">
       <Image
         src={bakoLoadingGif}
         alt="Animated loading component"

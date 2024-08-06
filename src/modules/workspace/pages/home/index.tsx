@@ -25,7 +25,6 @@ import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
 
 import {
-  BakoLoading,
   Card,
   CustomSkeleton,
   HomeIcon,
@@ -79,19 +78,9 @@ const WorkspacePage = () => {
     },
   } = useWorkspaceContext();
 
-  const isWorkspacePageNotReady =
-    !worksapceBalance.isLoading &&
-    !isLoading &&
-    !predicatesHomeRequest.isLoading &&
-    (!currentWorkspace || currentWorkspace.single);
-
   const hasVaults = recentVaults?.length ?? 0;
 
   const workspaceId = userInfos.workspace?.id ?? '';
-
-  if (isWorkspacePageNotReady) {
-    return <BakoLoading />;
-  }
 
   const balanceUSD = worksapceBalance.balance.balanceUSD;
 

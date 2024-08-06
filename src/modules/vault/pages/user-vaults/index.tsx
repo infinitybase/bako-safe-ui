@@ -45,10 +45,10 @@ const UserVaultsPage = () => {
       goWorkspace,
       hasPermission,
       predicatesHomeRequest,
-      currentWorkspace,
       selectWorkspace,
     },
   } = useWorkspaceContext();
+  const workspaceId = userInfos?.workspace?.id ?? '';
 
   return (
     <VStack
@@ -77,7 +77,9 @@ const UserVaultsPage = () => {
             px={3}
             bg="dark.100"
             color="grey.200"
-            onClick={() => goWorkspace(userInfos.workspace?.id)}
+            onClick={() =>
+              userInfos.onSingleWorkspace ? goHome() : goWorkspace(workspaceId)
+            }
           >
             Back home
           </Button>
@@ -103,7 +105,7 @@ const UserVaultsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos.workspace?.name}
                   {/* use request of workspace  */}
                 </BreadcrumbLink>
               </BreadcrumbItem>

@@ -62,15 +62,12 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
       return;
     }
 
-    await currentWorkspaceRequest.refetch();
-
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
         authDetails.userInfos.refetch();
         if (!workspace?.single) {
           goWorkspace(workspace?.id);
-          return;
         }
       },
       onError: () => {
@@ -155,7 +152,6 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
     worksapceBalance,
-
     visibleBalance,
     pendingSignerTransactions,
     goWorkspace,
