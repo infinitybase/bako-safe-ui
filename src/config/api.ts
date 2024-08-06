@@ -38,6 +38,7 @@ export interface IApiError {
 
 const api = axios.create({
   baseURL: VITE_API_URL,
+  timeout: 10 * 1000, // limit to try other requests
 });
 
 api.interceptors.request.use(
