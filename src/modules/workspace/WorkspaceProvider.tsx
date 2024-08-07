@@ -19,13 +19,7 @@ const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <WorkspaceContext.Provider value={workspaceDetails}>
-      {workspaceDetails.isSignInpage ? (
-        children
-      ) : workspaceDetails.isWorkspaceReady ? (
-        children
-      ) : (
-        <BakoLoading />
-      )}
+      {workspaceDetails.isWorkspaceReady ? children : <BakoLoading />}
     </WorkspaceContext.Provider>
   );
 };

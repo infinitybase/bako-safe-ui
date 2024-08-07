@@ -2,13 +2,12 @@ import { useAuth } from '@/modules/auth';
 import { useWorkspace } from '../useWorkspace';
 import { useAddressBook } from '@/modules';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import { currentPath } from '@/utils';
 
 const useWorkspaceDetails = () => {
-  const [showWorkspace, setShowWorkspace] = useState(true);
-  const { pathname } = useLocation();
-  const isSignInpage = pathname === '/';
+  const [showWorkspace, setShowWorkspace] = useState(false);
+  const { isSignInpage } = currentPath();
 
   const tokensUSD = useTokensUSDAmountRequest();
   const authDetails = useAuth();
@@ -24,15 +23,23 @@ const useWorkspaceDetails = () => {
       setShowWorkspace(true);
     }, gifDuration);
 
-    return () => clearTimeout(timer);
-  }, [authDetails.userInfos.isLoading]);
+    return () => {
+      clearTimeout(timer);
+      setShowWorkspace(false);
+    };
+  }, [
+    workspaceInfos.latestPredicates.isLoading,
+    workspaceInfos.worksapceBalance.isLoading,
+    addressBookInfos.requests.listContactsRequest.isLoading,
+  ]);
 
-  const isWorkspaceReady =
-    !addressBookInfos.requests.listContactsRequest.isLoading &&
-    authDetails &&
-    !workspaceInfos.latestPredicates.isLoading &&
-    !workspaceInfos.worksapceBalance.isLoading &&
-    showWorkspace;
+  const isWorkspaceReady = isSignInpage
+    ? true
+    : !addressBookInfos.requests.listContactsRequest.isLoading &&
+      authDetails &&
+      !workspaceInfos.latestPredicates.isLoading &&
+      !workspaceInfos.worksapceBalance.isLoading &&
+      showWorkspace;
 
   return {
     isWorkspaceReady,
