@@ -28,7 +28,7 @@ const VaultBalancePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, goHome },
+      handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
 
@@ -68,7 +68,14 @@ const VaultBalancePage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(userInfos.workspace?.id)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >

@@ -39,12 +39,7 @@ const UserVaultsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: {
-        goWorkspace,
-        hasPermission,
-        handleWorkspaceSelection,
-        goHome,
-      },
+      handlers: { hasPermission, handleWorkspaceSelection, goHome },
       requests: { latestPredicates },
     },
   } = useWorkspaceContext();
@@ -78,7 +73,14 @@ const UserVaultsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              userInfos.onSingleWorkspace ? goHome() : goWorkspace(workspaceId)
+              userInfos.onSingleWorkspace
+                ? goHome()
+                : handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
             }
           >
             Back home
@@ -101,7 +103,14 @@ const UserVaultsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(userInfos.workspace?.id)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      workspaceId,
+                      Pages.workspace({
+                        workspaceId,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >

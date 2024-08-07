@@ -13,7 +13,7 @@ import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AssetsBalanceList } from '@/modules/core';
+import { AssetsBalanceList, Pages } from '@/modules/core';
 import { limitCharacters } from '@/utils';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
@@ -22,7 +22,7 @@ const WorkspaceBalancePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, goHome },
+      handlers: { handleWorkspaceSelection, goHome },
       requests: { worksapceBalance },
     },
   } = useWorkspaceContext();
@@ -67,7 +67,14 @@ const WorkspaceBalancePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>

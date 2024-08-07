@@ -48,7 +48,7 @@ const TransactionsVaultPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, goHome },
+      handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -107,7 +107,14 @@ const TransactionsVaultPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(userInfos.workspace?.id)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >

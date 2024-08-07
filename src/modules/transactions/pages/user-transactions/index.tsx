@@ -54,7 +54,7 @@ const UserTransactionsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { hasPermission, goWorkspace, goHome },
+      handlers: { hasPermission, handleWorkspaceSelection, goHome },
       requests: { pendingSignerTransactions },
     },
   } = useWorkspaceContext();
@@ -89,7 +89,7 @@ const UserTransactionsPage = () => {
             onClick={() =>
               userInfos.onSingleWorkspace
                 ? goHome()
-                : goWorkspace(userInfos.workspace?.id ?? '')
+                : handleWorkspaceSelection(userInfos.workspace?.id ?? '')
             }
           >
             Back home
@@ -116,7 +116,14 @@ const UserTransactionsPage = () => {
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
-                      onClick={() => goWorkspace(userInfos.workspace?.id)}
+                      onClick={() =>
+                        handleWorkspaceSelection(
+                          userInfos.workspace?.id,
+                          Pages.workspace({
+                            workspaceId: userInfos.workspace?.id,
+                          }),
+                        )
+                      }
                       maxW={40}
                       isTruncated
                     >

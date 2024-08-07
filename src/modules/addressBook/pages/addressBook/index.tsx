@@ -35,7 +35,7 @@ const AddressBookPage = () => {
       userInfos: { workspace, onSingleWorkspace },
     },
     workspaceInfos: {
-      handlers: { goWorkspace, hasPermission, goHome },
+      handlers: { handleWorkspaceSelection, hasPermission, goHome },
     },
     addressBookInfos: {
       form,
@@ -114,7 +114,14 @@ const AddressBookPage = () => {
               bg="dark.100"
               color="grey.200"
               onClick={() =>
-                onSingleWorkspace ? goHome() : goWorkspace(workspaceId)
+                onSingleWorkspace
+                  ? goHome()
+                  : handleWorkspaceSelection(
+                      workspaceId,
+                      Pages.workspace({
+                        workspaceId,
+                      }),
+                    )
               }
             >
               Back home
@@ -139,7 +146,14 @@ const AddressBookPage = () => {
                     fontSize="sm"
                     color="grey.200"
                     fontWeight="semibold"
-                    onClick={() => goWorkspace(workspace?.id)}
+                    onClick={() =>
+                      handleWorkspaceSelection(
+                        workspace?.id,
+                        Pages.workspace({
+                          workspaceId: workspace?.id,
+                        }),
+                      )
+                    }
                     maxW={40}
                     isTruncated
                   >
@@ -206,10 +220,7 @@ const AddressBookPage = () => {
               );
             }}
           >
-            <ActionCard.Icon
-              icon={TransactionsIcon}
-              //isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon icon={TransactionsIcon} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>

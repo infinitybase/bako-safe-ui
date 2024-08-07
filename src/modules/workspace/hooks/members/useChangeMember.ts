@@ -41,7 +41,7 @@ const useChangeMember = () => {
   const navigate = useNavigate();
   const {
     workspaceInfos: {
-      handlers: { goWorkspace },
+      handlers: { handleWorkspaceSelection },
     },
     addressBookInfos,
   } = useWorkspaceContext();
@@ -95,16 +95,13 @@ const useChangeMember = () => {
     [isEditMember, params.memberId, setMemberValuesByWorkspace],
   );
 
-  const handleClose = () => goWorkspace(params.workspaceId!);
-
-  // const handleAddMember = memberForm.handleSubmit((data) => {
-  //   memberRequest.mutate(data.address, {
-  //     onSuccess: () => {
-  //       tabs.set(MemberTabState.FORM);
-  //       workspaceRequest.refetch();
-  //     },
-  //   });
-  // });
+  const handleClose = () =>
+    handleWorkspaceSelection(
+      params.workspaceId ?? '',
+      Pages.workspace({
+        workspaceId: params.workspaceId ?? '',
+      }),
+    );
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');

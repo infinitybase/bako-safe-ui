@@ -66,7 +66,7 @@ const WorkspacePage = () => {
     workspaceInfos: {
       handlers: {
         navigate,
-        goWorkspace,
+        handleWorkspaceSelection,
         hasPermission,
         setVisibleBalance,
         goHome,
@@ -193,7 +193,14 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>

@@ -57,7 +57,7 @@ const VaultDetailsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, hasPermission, goHome },
+      handlers: { handleWorkspaceSelection, hasPermission, goHome },
     },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
@@ -106,7 +106,14 @@ const VaultDetailsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(workspaceId)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      workspaceId,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >

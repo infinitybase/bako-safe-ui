@@ -36,11 +36,6 @@ const useWorkspace = (userInfos: IUserInfos) => {
 
   const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
 
-  const goWorkspace = (workspaceId: string) => {
-    navigate(Pages.workspace({ workspaceId }));
-    return '';
-  };
-
   const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (
@@ -121,7 +116,6 @@ const useWorkspace = (userInfos: IUserInfos) => {
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      goWorkspace,
       selectWorkspace,
       setVisibleBalance,
       hasPermission,

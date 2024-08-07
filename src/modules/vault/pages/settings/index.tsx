@@ -28,7 +28,7 @@ const VaultSettingsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, goHome },
+      handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
@@ -69,7 +69,14 @@ const VaultSettingsPage = () => {
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(userInfos.workspace?.id)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
@@ -125,27 +132,6 @@ const VaultSettingsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         )}
-
-        {/* <Button
-          variant="secondary"
-          bgColor="dark.100"
-          border="none"
-          onClick={() => {
-            setTemplateFormInitial({
-              minSigners: vault.minSigners!,
-              addresses:
-                vault.signers! && vault.signers.map((signer) => signer.address),
-            });
-            navigate(
-              Pages.createTemplate({
-                vaultId: params.vaultId!,
-                workspaceId: params.workspaceId!,
-              }),
-            );
-          }}
-        >
-          Set as template
-        </Button> */}
       </HStack>
 
       <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
