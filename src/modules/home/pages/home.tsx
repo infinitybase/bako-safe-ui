@@ -21,7 +21,6 @@ import { Pages } from '@/modules/core/routes';
 
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 
-import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
 import HomeTransactions from '../components/HomeTransactions';
@@ -30,19 +29,15 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const HomePage = () => {
   const {
-    navigate,
-    vaultsRequest: {
-      vaults: { recentVaults, extraCount, vaultsMax },
-    },
-    homeRequest,
-  } = useHome();
-
-  const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection },
+      handlers: { handleWorkspaceSelection, navigate },
+      requests: { latestPredicates },
+      workspaceVaults: { extraCount, vaultsMax },
     },
   } = useWorkspaceContext();
+
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -75,7 +70,7 @@ const HomePage = () => {
         </Box>
       </HStack>
       <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
@@ -94,7 +89,7 @@ const HomePage = () => {
           </ActionCard.Container>
         </CustomSkeleton>
 
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() => {
@@ -117,7 +112,7 @@ const HomePage = () => {
             </Box>
           </ActionCard.Container>
         </CustomSkeleton>
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
@@ -139,9 +134,9 @@ const HomePage = () => {
       </Stack>
       {/* RECENT VAULTS */}
       <CustomSkeleton
-        isLoaded={!homeRequest.isLoading}
-        minH={homeRequest.isLoading ? '100vh' : 'fit-content'}
-        mt={homeRequest.isLoading ? 6 : 4}
+        isLoaded={!latestPredicates.isLoading}
+        minH={latestPredicates.isLoading ? '100vh' : 'fit-content'}
+        mt={latestPredicates.isLoading ? 6 : 4}
       >
         {recentVaults?.length ? (
           <Box pb={6} alignSelf="flex-start">
@@ -175,7 +170,7 @@ const HomePage = () => {
 
                 return (
                   <CustomSkeleton
-                    isLoaded={!homeRequest.isLoading || !!recentVaults}
+                    isLoaded={!latestPredicates.isLoading || !!recentVaults}
                     key={id}
                     maxH={{ base: 180, sm: 190 }}
                   >

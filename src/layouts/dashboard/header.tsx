@@ -30,7 +30,6 @@ import { TypeUser } from '@/modules/auth/services';
 import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -329,12 +328,12 @@ const Header = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       workspaceDialog,
-      handlers: { handleWorkspaceSelection },
+      handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
 
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-  const { goHome } = useHome();
+
   const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect

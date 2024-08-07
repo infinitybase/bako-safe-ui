@@ -10,8 +10,6 @@ import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
 import { Pages } from '@/modules/core';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { TabEnum } from './types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -22,8 +20,10 @@ const Header = () => {
   const { fuel } = useFuel();
   const {
     authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { goHome },
+    },
   } = useWorkspaceContext();
-  const { goHome } = useHome();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;
 

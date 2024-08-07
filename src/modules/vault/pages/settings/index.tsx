@@ -14,8 +14,6 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
@@ -27,11 +25,10 @@ const VaultSettingsPage = () => {
   const menuDrawer = useDisclosure();
   const { vault, assets, isPendingSigner } = useVaultInfosContext();
 
-  const { goHome } = useHome();
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace },
+      handlers: { goWorkspace, goHome },
     },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();

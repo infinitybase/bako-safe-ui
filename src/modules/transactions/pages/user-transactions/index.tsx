@@ -26,7 +26,6 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
 import {
   TransactionCard,
@@ -55,12 +54,10 @@ const UserTransactionsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { hasPermission, goWorkspace },
+      handlers: { hasPermission, goWorkspace, goHome },
       requests: { pendingSignerTransactions },
     },
   } = useWorkspaceContext();
-
-  const { goHome } = useHome();
 
   const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 

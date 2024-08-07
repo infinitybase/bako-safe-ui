@@ -39,8 +39,6 @@ import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import {
   AssetsDetails,
   CreateVaultDialog,
@@ -58,7 +56,7 @@ const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
   const assetsContainerRef = useRef(null);
-  const { goHome } = useHome();
+
   const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const workspaceDialog = useDisclosure();
@@ -66,7 +64,13 @@ const WorkspacePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { navigate, goWorkspace, hasPermission, setVisibleBalance },
+      handlers: {
+        navigate,
+        goWorkspace,
+        hasPermission,
+        setVisibleBalance,
+        goHome,
+      },
       infos: { visibleBalance },
       requests: { worksapceBalance, latestPredicates },
       workspaceVaults: { vaultsMax, extraCount },

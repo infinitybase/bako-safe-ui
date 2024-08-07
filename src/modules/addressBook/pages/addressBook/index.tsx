@@ -22,8 +22,6 @@ import { TransactionsIcon } from '@/components/icons/transactions';
 
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import {
   ContactCard,
   CreateContactDialog,
@@ -37,7 +35,7 @@ const AddressBookPage = () => {
       userInfos: { workspace, onSingleWorkspace },
     },
     workspaceInfos: {
-      handlers: { goWorkspace, hasPermission },
+      handlers: { goWorkspace, hasPermission, goHome },
     },
     addressBookInfos: {
       form,
@@ -61,8 +59,6 @@ const AddressBookPage = () => {
   const { isExtraSmall } = useScreenSize();
 
   const { data: contacts } = listContactsRequest;
-
-  const { goHome } = useHome();
 
   const hasContacts = !!contacts?.length;
   const workspaceId = workspace?.id ?? '';

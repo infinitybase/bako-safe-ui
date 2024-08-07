@@ -14,17 +14,15 @@ import { IoChevronBack } from 'react-icons/io5';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AssetsBalanceList } from '@/modules/core';
-import { useHome } from '@/modules/home';
 import { limitCharacters } from '@/utils';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const WorkspaceBalancePage = () => {
-  const { goHome } = useHome();
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace },
+      handlers: { goWorkspace, goHome },
       requests: { worksapceBalance },
     },
   } = useWorkspaceContext();

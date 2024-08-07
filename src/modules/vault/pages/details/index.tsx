@@ -19,7 +19,6 @@ import { Drawer } from '@/layouts/dashboard/drawer';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams, useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
   TransactionCard,
@@ -55,11 +54,10 @@ const VaultDetailsPage = () => {
 
   const { homeDetailsLimitedTransactions, isLoading } = transactions;
 
-  const { goHome } = useHome();
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, hasPermission },
+      handlers: { goWorkspace, hasPermission, goHome },
     },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =

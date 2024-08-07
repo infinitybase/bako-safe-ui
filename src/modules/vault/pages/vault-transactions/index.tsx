@@ -23,7 +23,6 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useGetParams, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -42,7 +41,6 @@ const TransactionsVaultPage = () => {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
 
-  const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
     useScreenSize();
 
@@ -50,7 +48,7 @@ const TransactionsVaultPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace },
+      handlers: { goWorkspace, goHome },
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';

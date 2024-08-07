@@ -21,7 +21,6 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
 import { useHomeTransactions } from '../../hooks/useHomeTransactions';
-import { useHome } from '../../hooks';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -42,11 +41,12 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
 
-  const { account, navigate, pendingSignerTransactions, homeRequest } =
-    useHome();
-
   const {
     authDetails: { userInfos },
+    workspaceInfos: {
+      requests: { latestPredicates, pendingSignerTransactions },
+      handlers: { navigate },
+    },
   } = useWorkspaceContext();
 
   const { transactions: groupedTransactions } =
@@ -90,7 +90,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           </Text>
         </HStack>
       )}
-      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
         <EmptyState showAction={false} />
       </CustomSkeleton>
     </VStack>
@@ -169,14 +169,14 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos?.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos?.address,
                 );
 
                 return (
@@ -185,7 +185,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
                       <TransactionCardMobile
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         mt="15px"
                       />
                     ) : (
@@ -195,7 +195,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
                         status={status}
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         details={
                           <TransactionCard.Details
                             transaction={transaction}

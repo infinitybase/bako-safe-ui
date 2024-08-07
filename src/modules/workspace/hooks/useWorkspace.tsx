@@ -71,6 +71,10 @@ const useWorkspace = (userInfos: IUserInfos) => {
     });
   };
 
+  const goHome = () => {
+    handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
+  };
+
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
       if (userInfos.onSingleWorkspace) return true;
@@ -121,6 +125,7 @@ const useWorkspace = (userInfos: IUserInfos) => {
       selectWorkspace,
       setVisibleBalance,
       hasPermission,
+      goHome,
     },
   };
 };

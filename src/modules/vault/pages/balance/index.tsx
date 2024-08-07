@@ -15,7 +15,6 @@ import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
@@ -29,10 +28,10 @@ const VaultBalancePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace },
+      handlers: { goWorkspace, goHome },
     },
   } = useWorkspaceContext();
-  const { goHome } = useHome();
+
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;

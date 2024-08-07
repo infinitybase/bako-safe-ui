@@ -22,8 +22,6 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -37,12 +35,16 @@ const UserVaultsPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
-  const { goHome } = useHome();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goWorkspace, hasPermission, handleWorkspaceSelection },
+      handlers: {
+        goWorkspace,
+        hasPermission,
+        handleWorkspaceSelection,
+        goHome,
+      },
       requests: { latestPredicates },
     },
   } = useWorkspaceContext();
@@ -241,27 +243,14 @@ const UserVaultsPage = () => {
                     workspace={workspace}
                     title={description}
                     members={members!}
-                    onClick={
-                      //   async () => {
-                      //   selectWorkspace(workspace.id, {
-                      //     onSelect: async (_workspace) => {
-                      //       navigate(
-                      //         Pages.detailsVault({
-                      //           workspaceId: _workspace.id,
-                      //           vaultId: id,
-                      //         }),
-                      //       );
-                      //     },
-                      //   });
-                      // }
-                      () =>
-                        handleWorkspaceSelection(
-                          workspace.id,
-                          Pages.detailsVault({
-                            workspaceId: workspace.id,
-                            vaultId: id,
-                          }),
-                        )
+                    onClick={() =>
+                      handleWorkspaceSelection(
+                        workspace.id,
+                        Pages.detailsVault({
+                          workspaceId: workspace.id,
+                          vaultId: id,
+                        }),
+                      )
                     }
                   />
                 </GridItem>
