@@ -23,11 +23,7 @@ const WorkspaceBalancePage = () => {
   const { goHome } = useHome();
   const {
     authDetails: { userInfos },
-    workspaceInfos: {
-      currentWorkspace: { workspace: currentWorkspace },
-      goWorkspace,
-      worksapceBalance,
-    },
+    workspaceInfos: { goWorkspace, worksapceBalance },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -72,7 +68,7 @@ const WorkspaceBalancePage = () => {
                 fontWeight="semibold"
                 onClick={() => goWorkspace(workspaceId)}
               >
-                {limitCharacters(currentWorkspace?.name ?? '', 10)}
+                {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>

@@ -44,8 +44,8 @@ const UserVaultsPage = () => {
     workspaceInfos: {
       goWorkspace,
       hasPermission,
-      predicatesHomeRequest,
       handleWorkspaceSelection: { handler },
+      latestPredicates,
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -135,10 +135,7 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton
-        display="flex"
-        isLoaded={!predicatesHomeRequest.isLoading}
-      >
+      <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
         <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}

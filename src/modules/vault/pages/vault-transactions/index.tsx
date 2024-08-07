@@ -49,7 +49,7 @@ const TransactionsVaultPage = () => {
   const menuDrawer = useDisclosure();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace, currentWorkspace },
+    workspaceInfos: { goWorkspace },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';
 
@@ -111,7 +111,7 @@ const TransactionsVaultPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

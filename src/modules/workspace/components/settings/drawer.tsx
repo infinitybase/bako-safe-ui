@@ -32,6 +32,7 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { WorkspaceCard } from '../card';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useGetWorkspaceRequest } from '../../hooks';
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
@@ -153,9 +154,11 @@ const WorkspaceSettingsDrawer = ({
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
-  const {
-    workspaceInfos: { currentWorkspace },
-  } = useWorkspaceContext();
+  const { authDetails } = useWorkspaceContext();
+
+  const currentWorkspace = useGetWorkspaceRequest(
+    authDetails.userInfos?.workspace?.id,
+  );
 
   const pathname = window.location.pathname;
 
@@ -257,7 +260,6 @@ const WorkspaceSettingsDrawer = ({
                   Add member
                 </Button>
               </Flex>
-
               <VStack w="full" maxW="full">
                 {!!currentWorkspace.workspace?.members &&
                   currentWorkspace.workspace?.members?.map((member) => (

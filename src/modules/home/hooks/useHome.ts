@@ -10,7 +10,7 @@ const useHome = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      predicatesHomeRequest,
+      latestPredicates,
       pendingSignerTransactions,
       handleWorkspaceSelection: { handler },
     },
@@ -18,7 +18,7 @@ const useHome = () => {
 
   const vaultsPerPage = 8;
 
-  const vaultsTotal = predicatesHomeRequest?.data?.predicates.total ?? 0;
+  const vaultsTotal = latestPredicates?.data?.predicates.total ?? 0;
 
   const goHome = () => {
     handler(userInfos.singleWorkspaceId, Pages.home());
@@ -27,21 +27,21 @@ const useHome = () => {
   return {
     account: userInfos?.address,
     vaultsRequest: {
-      ...predicatesHomeRequest,
+      ...latestPredicates,
       vaults: {
-        recentVaults: predicatesHomeRequest.data?.predicates?.data,
+        recentVaults: latestPredicates.data?.predicates?.data,
         vaultsMax: vaultsPerPage,
         extraCount:
           vaultsTotal <= vaultsPerPage ? 0 : vaultsTotal - vaultsPerPage,
       },
-      loadingRecentVaults: predicatesHomeRequest.isLoading,
-      refetchVaults: predicatesHomeRequest.refetch,
+      loadingRecentVaults: latestPredicates.isLoading,
+      refetchVaults: latestPredicates.refetch,
     },
     transactionsRequest: {
-      ...predicatesHomeRequest,
-      loadingTransactions: predicatesHomeRequest.isLoading,
+      ...latestPredicates,
+      loadingTransactions: latestPredicates.isLoading,
     },
-    homeRequest: predicatesHomeRequest,
+    homeRequest: latestPredicates,
     navigate,
     goHome,
     pendingSignerTransactions,

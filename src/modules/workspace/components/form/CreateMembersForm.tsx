@@ -19,7 +19,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
   const {
     authDetails: { userInfos },
     addressBookInfos: {
-      requests: { paginatedContacts, listContactsRequest },
+      requests: { listContactsRequest },
       handlers: { handleOpenDialog },
       workspaceId,
     },
@@ -50,7 +50,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
           const showAddToAddressBook =
             !fieldState.invalid &&
             AddressUtils.isValid(field.value) &&
-            paginatedContacts.isSuccess &&
+            listContactsRequest.isSuccess &&
             listContactsRequest.data &&
             !listContactsRequest.data
               .map((o) => o.user.address)

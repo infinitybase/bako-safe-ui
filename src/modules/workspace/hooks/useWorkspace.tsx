@@ -13,7 +13,6 @@ import { PermissionRoles } from '../../core/models';
 import { useGetWorkspaceRequest } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
-import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
 import { IUseAuthReturn } from '@/modules/auth/services';
 
 const VAULTS_PER_PAGE = 8;
@@ -34,12 +33,7 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
     authDetails.userInfos?.workspace?.id,
   );
 
-  const predicatesHomeRequest = useHomeDataRequest(
-    authDetails.userInfos?.workspace?.id,
-  );
-  const userWorkspacesRequest = useUserWorkspacesRequest();
-
-  const currentWorkspaceRequest = useGetWorkspaceRequest(
+  const latestPredicates = useHomeDataRequest(
     authDetails.userInfos?.workspace?.id,
   );
 
@@ -52,7 +46,7 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
     return '';
   };
 
-  const vaultsCounter = predicatesHomeRequest?.data?.predicates?.total ?? 0;
+  const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
   const handleWorkspaceSelection = async (
     selectedWorkspace: string,
@@ -108,7 +102,6 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
 
   const invalidateRequests = () => {
     worksapceBalance.refetch();
-    predicatesHomeRequest.refetch();
     authDetails.userInfos.refetch();
   };
 
@@ -136,22 +129,17 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
 
   return {
     account: authDetails.userInfos.address,
-    currentWorkspace: {
-      workspace: currentWorkspaceRequest.workspace,
-      isLoading: currentWorkspaceRequest.isLoading,
-    },
     currentPermissions: authDetails.userInfos.workspace?.permission,
-    userWorkspacesRequest,
     workspaceDialog,
     handleWorkspaceSelection: {
       handler: handleWorkspaceSelection,
       isSelecting,
     },
     navigate,
-    predicatesHomeRequest,
+    latestPredicates,
     workspaceId,
     workspaceVaults: {
-      recentVaults: predicatesHomeRequest.data?.predicates?.data,
+      recentVaults: latestPredicates.data?.predicates?.data,
       vaultsMax: VAULTS_PER_PAGE,
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,

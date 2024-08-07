@@ -28,7 +28,7 @@ const VaultBalancePage = () => {
 
   const {
     authDetails: { userInfos },
-    workspaceInfos: { currentWorkspace, goWorkspace },
+    workspaceInfos: { goWorkspace },
   } = useWorkspaceContext();
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
@@ -71,7 +71,7 @@ const VaultBalancePage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -126,7 +126,7 @@ const VaultBalancePage = () => {
         </Box>
 
         <CustomSkeleton
-          isLoaded={!currentWorkspace.isLoading && !assets.isLoading}
+          isLoaded={!userInfos.isLoading && !assets.isLoading}
           flex={1}
         >
           {assets.hasAssets ? (

@@ -67,13 +67,12 @@ const WorkspacePage = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       navigate,
-      currentWorkspace: { workspace: currentWorkspace, isLoading },
       workspaceVaults: { vaultsMax, extraCount, recentVaults },
       hasPermission,
       visibleBalance,
       setVisibleBalance,
       worksapceBalance,
-      predicatesHomeRequest,
+      latestPredicates,
       goWorkspace,
     },
   } = useWorkspaceContext();
@@ -195,14 +194,14 @@ const WorkspacePage = () => {
                 fontWeight="semibold"
                 onClick={() => goWorkspace(workspaceId)}
               >
-                {limitCharacters(currentWorkspace?.name ?? '', 10)}
+                {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="semibold"
@@ -222,7 +221,7 @@ const WorkspacePage = () => {
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="bold"
@@ -245,7 +244,7 @@ const WorkspacePage = () => {
       >
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!predicatesHomeRequest.isLoading}
+          isLoaded={!latestPredicates.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -291,7 +290,7 @@ const WorkspacePage = () => {
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
-                    name={currentWorkspace?.name}
+                    name={userInfos.workspace?.name}
                   >
                     <Box
                       position="absolute"
@@ -313,7 +312,7 @@ const WorkspacePage = () => {
                       textOverflow="ellipsis"
                       isTruncated
                     >
-                      {currentWorkspace?.name}
+                      {userInfos.workspace?.name}
                     </Heading>
 
                     <Text
@@ -322,7 +321,7 @@ const WorkspacePage = () => {
                       textOverflow="ellipsis"
                       isTruncated
                     >
-                      {currentWorkspace?.description}
+                      {userInfos.workspace?.description}
                     </Text>
                   </Box>
                 </Center>
@@ -410,7 +409,7 @@ const WorkspacePage = () => {
           maxH={450}
           spacing={5}
         >
-          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               w="full"
               onClick={() => navigate(Pages.userVaults({ workspaceId }))}
@@ -425,7 +424,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -445,7 +444,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -478,7 +477,7 @@ const WorkspacePage = () => {
           Recently used vaults
         </Text>
       </Box>
-      <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
         {!hasVaults ? (
           <>
             <EmptyState
@@ -510,7 +509,7 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
-                    <CustomSkeleton isLoaded={!predicatesHomeRequest.isLoading}>
+                    <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           mt={{ base: 6, sm: 'unset' }}

@@ -1,12 +1,11 @@
 import { AxiosError } from 'axios';
-import { IApiError, queryClient } from '@/config';
+import { IApiError } from '@/config';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
 import { useCreateContactRequest } from './useCreateContactRequest';
 import { useContactToast } from './useContactToast';
 import { UseFormReturn } from 'react-hook-form';
 import { UseDisclosureProps } from '@chakra-ui/react';
-import { AddressBookQueryKey } from '@/modules/core';
 import { Address } from 'fuels';
 import { ListContactsResponse } from '../services';
 import { UseQueryResult } from '@tanstack/react-query';
@@ -56,10 +55,7 @@ const useAddressBookMutations = ({
 
   const createContactRequest = useCreateContactRequest({
     onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: [AddressBookQueryKey.DEFAULT],
-        exact: false,
-      });
+      await listContactsRequest.refetch();
       contactDialog.onClose?.();
       createAndUpdateSuccessToast();
     },
