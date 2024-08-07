@@ -49,6 +49,7 @@ import { limitCharacters } from '@/utils';
 import { DepositDetails } from './DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const shakeAnimation = keyframes`
     0% {
@@ -102,6 +103,7 @@ interface DeploymentInfoProps extends StackProps {
 // TODO: Refactor the AssetBox and Details
 const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   const { isMobile } = useScreenSize();
+  const { tokensUSD } = useWorkspaceContext();
 
   const contractId = operation.to!.address;
   const asset = useMemo(() => {
@@ -118,7 +120,11 @@ const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   );
 
   const clipboard = useClipboard(contractId);
-  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
+  const txUSDAmount = useTxAmountToUSD(
+    [asset as ITransferAsset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   return (
     <HStack
@@ -223,6 +229,8 @@ const AssetBoxInfo = ({
   isDeploy,
   ...props
 }: AssetBoxInfoProps) => {
+  const { tokensUSD } = useWorkspaceContext();
+
   const isContract = !!contractAddress;
   const { isMobile, isExtraSmall } = useScreenSize();
 
@@ -231,7 +239,11 @@ const AssetBoxInfo = ({
     [asset?.assetId],
   );
 
-  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
+  const txUSDAmount = useTxAmountToUSD(
+    [asset as ITransferAsset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   const contractWithoutToken = isContract && !hasToken;
 

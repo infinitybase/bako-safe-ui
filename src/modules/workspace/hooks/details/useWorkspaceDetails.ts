@@ -10,7 +10,7 @@ const useWorkspaceDetails = () => {
   const { pathname } = useLocation();
   const isSignInpage = pathname === '/';
 
-  useTokensUSDAmountRequest();
+  const tokensUSD = useTokensUSDAmountRequest();
   const authDetails = useAuth();
   const workspaceInfos = useWorkspace(authDetails);
   const addressBookInfos = useAddressBook(
@@ -40,6 +40,7 @@ const useWorkspaceDetails = () => {
     workspaceInfos,
     addressBookInfos,
     isSignInpage,
+    tokensUSD,
   };
 };
 

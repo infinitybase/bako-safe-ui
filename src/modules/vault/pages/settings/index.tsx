@@ -30,7 +30,7 @@ const VaultSettingsPage = () => {
   const { goHome } = useHome();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace, currentWorkspace },
+    workspaceInfos: { goWorkspace },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
@@ -74,7 +74,7 @@ const VaultSettingsPage = () => {
                   maxW={40}
                   isTruncated
                 >
-                  {currentWorkspace.workspace?.name}
+                  {userInfos?.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

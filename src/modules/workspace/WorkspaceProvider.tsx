@@ -3,11 +3,13 @@ import { UseAddressBookReturn, UseWorkspaceReturn } from '..';
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { IUseAuthReturn } from '../auth/services';
 import { BakoLoading } from '@/components';
+import { IuseTokensUSDAmountRequestReturn } from '../home/hooks/useTokensUSDAmountRequest';
 
 export interface IWorkspaceContext {
   authDetails: IUseAuthReturn;
   workspaceInfos: UseWorkspaceReturn;
   addressBookInfos: UseAddressBookReturn;
+  tokensUSD: IuseTokensUSDAmountRequestReturn;
 }
 
 const WorkspaceContext = createContext<IWorkspaceContext | null>(null);

@@ -417,13 +417,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
             </VStack>
           </VStack>
         </Card>
-        {/*
-        <AmountDetails
-          store={store}
-          vaultAddress={vault.data.predicateAddress!}
-          assets={assets}
-          isLoading={vault.isLoading}
-        /> */}
       </CustomSkeleton>
     </Box>
   );
