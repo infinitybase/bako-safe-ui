@@ -42,7 +42,7 @@ import {
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useGetWorkspaceRequest, useUserWorkspacesRequest } from '@/modules';
+import { useUserWorkspacesRequest } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -238,7 +238,7 @@ const WorkspaceBox = ({
   isLoading,
   currentWorkspace,
 }: {
-  currentWorkspace?: Workspace;
+  currentWorkspace?: Partial<Workspace>;
   isLoading?: boolean;
 }) => {
   const { isMobile } = useScreenSize();
@@ -326,12 +326,9 @@ const Header = () => {
   const createWorkspaceDialog = useDisclosure();
   const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
-    authDetails,
+    authDetails: { userInfos },
     workspaceInfos: { workspaceDialog, handleWorkspaceSelection },
   } = useWorkspaceContext();
-  const currentWorkspace = useGetWorkspaceRequest(
-    authDetails.userInfos?.workspace?.id,
-  );
 
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
   const { goHome } = useHome();
@@ -406,13 +403,16 @@ const Header = () => {
           cursor="pointer"
           w={{
             base: 190,
-            sm: currentWorkspace.workspace?.single ? 235 : 300,
+            sm: userInfos.onSingleWorkspace ? 235 : 300,
           }}
           borderLeftWidth={{ base: 0, sm: 1 }}
         >
           <WorkspaceBox
-            currentWorkspace={currentWorkspace.workspace}
-            isLoading={currentWorkspace.isLoading}
+            currentWorkspace={{
+              single: userInfos?.onSingleWorkspace,
+              ...userInfos?.workspace,
+            }}
+            isLoading={userInfos?.isLoading}
           />
         </TopBarItem>
 
