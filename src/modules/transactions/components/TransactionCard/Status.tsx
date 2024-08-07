@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bakosafe';
+import { ITransaction, TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -31,8 +31,9 @@ const Status = ({
   });
 
   const signaturesCount =
-    transaction!.resume?.witnesses?.filter((w) => w.signature != null).length ??
-    0;
+    transaction!.resume?.witnesses?.filter(
+      (w) => w.status === WitnessStatus.DONE,
+    ).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [

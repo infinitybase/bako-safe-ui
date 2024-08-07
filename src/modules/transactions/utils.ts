@@ -22,7 +22,7 @@ export const transactionStatus = ({
   const minSigners = requiredSigners;
   const vaultMembersCount = totalSigners;
   const signatureCount =
-    witnesses.filter((w) => w.signature !== null).length ?? 0;
+    witnesses.filter((w) => w.status === WitnessStatus.DONE).length ?? 0;
   const witness = witnesses?.find((t) => t.account === account);
   const howManyDeclined =
     witnesses.filter((w) => w.status === WitnessStatus.REJECTED).length ?? 0;
