@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -12,18 +11,10 @@ const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
   const {
     authDetails,
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection },
       infos: { isSelecting },
     },
   } = useWorkspaceContext();
   const { search, pathname } = useLocation();
-  const { workspaceId } = useParams();
-
-  useEffect(() => {
-    handleWorkspaceSelection(
-      workspaceId ?? authDetails.userInfos?.workspace?.id,
-    );
-  }, [workspaceId]);
 
   if (!authDetails.userInfos?.address) {
     return (
