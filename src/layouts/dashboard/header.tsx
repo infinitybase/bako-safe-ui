@@ -327,7 +327,10 @@ const Header = () => {
   const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { workspaceDialog, handleWorkspaceSelection },
+    workspaceInfos: {
+      workspaceDialog,
+      handlers: { handleWorkspaceSelection },
+    },
   } = useWorkspaceContext();
 
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
@@ -373,7 +376,7 @@ const Header = () => {
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
-        onSelect={handleWorkspaceSelection.handler}
+        onSelect={handleWorkspaceSelection}
         onCreate={handleGoToCreateWorkspace}
         isCreatingWorkspace={createWorkspaceDialog.isOpen}
       />

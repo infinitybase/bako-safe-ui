@@ -10,9 +10,8 @@ const useHome = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      latestPredicates,
-      pendingSignerTransactions,
-      handleWorkspaceSelection: { handler },
+      requests: { latestPredicates, pendingSignerTransactions },
+      handlers: { handleWorkspaceSelection },
     },
   } = useWorkspaceContext();
 
@@ -21,7 +20,7 @@ const useHome = () => {
   const vaultsTotal = latestPredicates?.data?.predicates.total ?? 0;
 
   const goHome = () => {
-    handler(userInfos.singleWorkspaceId, Pages.home());
+    handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
   };
 
   return {

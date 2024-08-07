@@ -23,7 +23,10 @@ const WorkspaceBalancePage = () => {
   const { goHome } = useHome();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace, worksapceBalance },
+    workspaceInfos: {
+      handlers: { goWorkspace },
+      requests: { worksapceBalance },
+    },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';

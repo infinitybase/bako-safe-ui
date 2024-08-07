@@ -28,7 +28,9 @@ const VaultBalancePage = () => {
 
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace },
+    workspaceInfos: {
+      handlers: { goWorkspace },
+    },
   } = useWorkspaceContext();
   const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();

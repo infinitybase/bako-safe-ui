@@ -49,7 +49,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
 
   const {
     authDetails: { userInfos },
-    workspaceInfos: { hasPermission },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
   } = useWorkspaceContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();

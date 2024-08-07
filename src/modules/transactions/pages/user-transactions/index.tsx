@@ -55,10 +55,8 @@ const UserTransactionsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      hasPermission,
-      goWorkspace,
-      pendingSignerTransactions,
-      account,
+      handlers: { hasPermission, goWorkspace },
+      requests: { pendingSignerTransactions },
     },
   } = useWorkspaceContext();
 
@@ -320,10 +318,10 @@ const UserTransactionsPage = () => {
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos.address,
                 );
 
                 return (
@@ -338,7 +336,7 @@ const UserTransactionsPage = () => {
                           <TransactionCardMobile
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             mt="15px"
                           />
                         ) : (
@@ -348,7 +346,7 @@ const UserTransactionsPage = () => {
                             status={status}
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             details={
                               <TransactionCard.Details
                                 transaction={transaction}

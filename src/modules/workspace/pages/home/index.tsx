@@ -66,16 +66,14 @@ const WorkspacePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      navigate,
-      workspaceVaults: { vaultsMax, extraCount, recentVaults },
-      hasPermission,
-      visibleBalance,
-      setVisibleBalance,
-      worksapceBalance,
-      latestPredicates,
-      goWorkspace,
+      handlers: { navigate, goWorkspace, hasPermission, setVisibleBalance },
+      infos: { visibleBalance },
+      requests: { worksapceBalance, latestPredicates },
+      workspaceVaults: { vaultsMax, extraCount },
     },
   } = useWorkspaceContext();
+
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
   const hasVaults = recentVaults?.length ?? 0;
 
@@ -148,8 +146,7 @@ const WorkspacePage = () => {
   return (
     <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
-      {/* Resposável por disponibilizar o  "background blur" 
-      para o modal de add/update member */}
+      {/* This outlet components is used to display a blur background */}
       <Outlet />
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}

@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 import { Pages } from '@/modules/core';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
@@ -22,10 +20,9 @@ type UserCreateWorkspaceParams = {
 };
 
 const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
-  const navigate = useNavigate();
   const {
     workspaceInfos: {
-      handleWorkspaceSelection: { handler },
+      handlers: { handleWorkspaceSelection },
     },
   } = useWorkspaceContext();
   const tabs = useTab({
@@ -41,14 +38,14 @@ const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
   };
 
   const handleGoToWorkspace = () => {
-    handler(
+    handleWorkspaceSelection(
       request?.data!.id,
       Pages.workspace({ workspaceId: request?.data!.id }),
     );
   };
 
   const handleConfigureMembers = () => {
-    handler(
+    handleWorkspaceSelection(
       request?.data!.id,
       Pages.membersWorkspace({ workspaceId: request?.data!.id }),
     );

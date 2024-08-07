@@ -42,13 +42,12 @@ const WkHomeTransactions = memo(() => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      account,
-      navigate,
-      workspaceVaults: { recentVaults },
-      pendingSignerTransactions,
-      latestPredicates,
+      handlers: { navigate },
+      requests: { pendingSignerTransactions, latestPredicates },
     },
   } = useWorkspaceContext();
+
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
@@ -173,10 +172,10 @@ const WkHomeTransactions = memo(() => {
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos?.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos?.address,
                 );
 
                 return (
@@ -185,7 +184,7 @@ const WkHomeTransactions = memo(() => {
                       <TransactionCardMobile
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         mt="15px"
                       />
                     ) : (
@@ -195,7 +194,7 @@ const WkHomeTransactions = memo(() => {
                         status={status}
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         details={
                           <TransactionCard.Details
                             transaction={transaction}

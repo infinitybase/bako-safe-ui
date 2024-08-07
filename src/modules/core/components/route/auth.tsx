@@ -11,13 +11,16 @@ export interface AuthRouteProps {
 const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
   const {
     authDetails,
-    workspaceInfos: { handleWorkspaceSelection },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+      infos: { isSelecting },
+    },
   } = useWorkspaceContext();
   const { search, pathname } = useLocation();
   const { workspaceId } = useParams();
 
   useEffect(() => {
-    handleWorkspaceSelection.handler(
+    handleWorkspaceSelection(
       workspaceId ?? authDetails.userInfos?.workspace?.id,
     );
   }, [workspaceId]);
@@ -31,7 +34,7 @@ const AuthRoute = (props: AuthRouteProps): JSX.Element | null => {
     );
   }
 
-  if (handleWorkspaceSelection.isSelecting) {
+  if (isSelecting) {
     return null;
   }
 

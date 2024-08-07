@@ -40,7 +40,9 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 const useChangeMember = () => {
   const navigate = useNavigate();
   const {
-    workspaceInfos: { goWorkspace },
+    workspaceInfos: {
+      handlers: { goWorkspace },
+    },
     addressBookInfos,
   } = useWorkspaceContext();
 

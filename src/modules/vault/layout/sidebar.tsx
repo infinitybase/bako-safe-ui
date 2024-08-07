@@ -23,7 +23,9 @@ interface SidebarProps {
 const Sidebar = ({ onDrawer }: SidebarProps) => {
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
   const {
-    workspaceInfos: { hasPermission },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
   } = useWorkspaceContext();
 
   const {
@@ -140,12 +142,6 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
           </SidebarMenu.Container>
-
-          {/*<SidebarMenu.Container onClick={() => {}}>*/}
-          {/*  <SidebarMenu.Icon as={HiQrCode} />*/}
-          {/*  <SidebarMenu.Title> Address book</SidebarMenu.Title>*/}
-          {/*  <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>*/}
-          {/*</SidebarMenu.Container>*/}
 
           <SidebarMenu.Container
             isActive={menuItems.settings}

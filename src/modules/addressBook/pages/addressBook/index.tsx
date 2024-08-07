@@ -36,7 +36,9 @@ const AddressBookPage = () => {
     authDetails: {
       userInfos: { workspace, onSingleWorkspace },
     },
-    workspaceInfos: { hasPermission, goWorkspace },
+    workspaceInfos: {
+      handlers: { goWorkspace, hasPermission },
+    },
     addressBookInfos: {
       form,
       requests: {

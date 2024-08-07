@@ -79,7 +79,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   } = assets;
   const {
     authDetails: { userInfos },
-    workspaceInfos: { hasPermission },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
   } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
 

@@ -58,7 +58,9 @@ const VaultDetailsPage = () => {
   const { goHome } = useHome();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace, hasPermission },
+    workspaceInfos: {
+      handlers: { goWorkspace, hasPermission },
+    },
   } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();

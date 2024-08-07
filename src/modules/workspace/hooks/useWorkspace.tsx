@@ -10,16 +10,15 @@ import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/li
 
 import { Pages } from '../../core';
 import { PermissionRoles } from '../../core/models';
-import { useGetWorkspaceRequest } from '../hooks/useGetWorkspaceRequest';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
-import { IUseAuthReturn } from '@/modules/auth/services';
+import { IUserInfos } from '@/modules/auth/services';
 
 const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = (authDetails: IUseAuthReturn) => {
+const useWorkspace = (userInfos: IUserInfos) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
 
@@ -30,16 +29,12 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const worksapceBalance = useGetWorkspaceBalanceRequest(
-    authDetails.userInfos?.workspace?.id,
+    userInfos?.workspace?.id,
   );
 
-  const latestPredicates = useHomeDataRequest(
-    authDetails.userInfos?.workspace?.id,
-  );
+  const latestPredicates = useHomeDataRequest(userInfos?.workspace?.id);
 
-  const { selectWorkspace, isSelecting } = useSelectWorkspace(
-    authDetails.userInfos.id,
-  );
+  const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
 
   const goWorkspace = (workspaceId: string) => {
     navigate(Pages.workspace({ workspaceId }));
@@ -52,7 +47,7 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
     selectedWorkspace: string,
     redirect?: string,
   ) => {
-    const isValid = selectedWorkspace !== authDetails.userInfos?.workspace?.id;
+    const isValid = selectedWorkspace !== userInfos?.workspace?.id;
 
     if (isSelecting) return;
     if (!isValid) return !!redirect && navigate(redirect);
@@ -78,9 +73,9 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
 
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
-      if (authDetails.userInfos.onSingleWorkspace) return true;
+      if (userInfos.onSingleWorkspace) return true;
 
-      const permissions = authDetails.userInfos.workspace?.permission;
+      const permissions = userInfos.workspace?.permission;
 
       if (!permissions) return false;
 
@@ -93,64 +88,40 @@ const useWorkspace = (authDetails: IUseAuthReturn) => {
 
       return isValid;
     },
-    [
-      authDetails.userInfos?.onSingleWorkspace,
-      authDetails.userInfos.workspace?.permission,
-      vaultId,
-    ],
+    [userInfos?.onSingleWorkspace, userInfos.workspace?.permission, vaultId],
   );
 
   const invalidateRequests = () => {
     worksapceBalance.refetch();
-    authDetails.userInfos.refetch();
+    userInfos.refetch();
   };
 
-  // separe as infos:
-
-  //    - account
-  //        - provider
-  //        - infos gerais:
-  //            - accountType
-  //            - avatar
-  //            - userId
-  //            - account
-  //            - webAuthn
-  //    - currentWorkspace
-  //        - infos gerais:
-  //            - workspaceId
-  //            - permissions
-  //            - avatar
-  //        - adb
-  //        - balance
-  //        - vaults (home)
-  //        - tx:
-  //            - pending
-  //            - home
-
   return {
-    account: authDetails.userInfos.address,
-    currentPermissions: authDetails.userInfos.workspace?.permission,
     workspaceDialog,
-    handleWorkspaceSelection: {
-      handler: handleWorkspaceSelection,
-      isSelecting,
-    },
-    navigate,
-    latestPredicates,
-    workspaceId,
     workspaceVaults: {
-      recentVaults: latestPredicates.data?.predicates?.data,
       vaultsMax: VAULTS_PER_PAGE,
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
-    worksapceBalance,
-    visibleBalance,
-    pendingSignerTransactions,
-    goWorkspace,
-    selectWorkspace,
-    setVisibleBalance,
-    hasPermission,
+    requests: {
+      latestPredicates,
+      pendingSignerTransactions,
+      worksapceBalance,
+    },
+    infos: {
+      workspaceId,
+      visibleBalance,
+      isSelecting,
+      currentPermissions: userInfos.workspace?.permission,
+    },
+    handlers: {
+      handleWorkspaceSelection,
+      navigate,
+      goWorkspace,
+      selectWorkspace,
+      setVisibleBalance,
+      hasPermission,
+    },
   };
 };
 

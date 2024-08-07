@@ -42,10 +42,8 @@ const UserVaultsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      goWorkspace,
-      hasPermission,
-      handleWorkspaceSelection: { handler },
-      latestPredicates,
+      handlers: { goWorkspace, hasPermission, handleWorkspaceSelection },
+      requests: { latestPredicates },
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -106,7 +104,6 @@ const UserVaultsPage = () => {
                   isTruncated
                 >
                   {userInfos.workspace?.name}
-                  {/* use request of workspace  */}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -166,10 +163,7 @@ const UserVaultsPage = () => {
               );
             }}
           >
-            <ActionCard.Icon
-              icon={TransactionsIcon}
-              //isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon icon={TransactionsIcon} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -261,7 +255,7 @@ const UserVaultsPage = () => {
                       //   });
                       // }
                       () =>
-                        handler(
+                        handleWorkspaceSelection(
                           workspace.id,
                           Pages.detailsVault({
                             workspaceId: workspace.id,

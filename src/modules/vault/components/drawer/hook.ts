@@ -27,8 +27,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      selectWorkspace,
-      handleWorkspaceSelection: { handler },
+      handlers: { handleWorkspaceSelection },
     },
   } = useWorkspaceContext();
 
@@ -75,7 +74,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
     vaultListRequestRequest.refetch();
     setSearch('');
-    handler(vault.workspace.id);
+    handleWorkspaceSelection(vault.workspace.id);
     navigate(
       Pages.detailsVault({
         vaultId: vault.id,

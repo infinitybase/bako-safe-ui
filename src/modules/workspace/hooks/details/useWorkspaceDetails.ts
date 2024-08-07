@@ -11,11 +11,12 @@ const useWorkspaceDetails = () => {
 
   const tokensUSD = useTokensUSDAmountRequest();
   const authDetails = useAuth();
-  const workspaceInfos = useWorkspace(authDetails);
-  const addressBookInfos = useAddressBook(
-    authDetails,
-    workspaceInfos.hasPermission,
-  );
+  const {
+    handlers: { hasPermission, ...handlersData },
+    requests: { worksapceBalance, latestPredicates, ...requestsData },
+    ...rest
+  } = useWorkspace(authDetails.userInfos);
+  const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
   useEffect(() => {
     const gifDuration = 2900;
@@ -28,8 +29,8 @@ const useWorkspaceDetails = () => {
       setShowWorkspace(false);
     };
   }, [
-    workspaceInfos.latestPredicates.isLoading,
-    workspaceInfos.worksapceBalance.isLoading,
+    latestPredicates.isLoading,
+    worksapceBalance.isLoading,
     addressBookInfos.requests.listContactsRequest.isLoading,
   ]);
 
@@ -37,14 +38,18 @@ const useWorkspaceDetails = () => {
     ? true
     : !addressBookInfos.requests.listContactsRequest.isLoading &&
       authDetails &&
-      !workspaceInfos.latestPredicates.isLoading &&
-      !workspaceInfos.worksapceBalance.isLoading &&
+      !latestPredicates.isLoading &&
+      !worksapceBalance.isLoading &&
       showWorkspace;
 
   return {
     isWorkspaceReady,
     authDetails,
-    workspaceInfos,
+    workspaceInfos: {
+      handlers: { hasPermission, ...handlersData },
+      requests: { worksapceBalance, latestPredicates, ...requestsData },
+      ...rest,
+    },
     addressBookInfos,
     isSignInpage,
     tokensUSD,

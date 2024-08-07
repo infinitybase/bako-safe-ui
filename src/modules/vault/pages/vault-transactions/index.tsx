@@ -49,7 +49,9 @@ const TransactionsVaultPage = () => {
   const menuDrawer = useDisclosure();
   const {
     authDetails: { userInfos },
-    workspaceInfos: { goWorkspace },
+    workspaceInfos: {
+      handlers: { goWorkspace },
+    },
   } = useWorkspaceContext();
   const workspaceId = userInfos.workspace?.id ?? '';
 
