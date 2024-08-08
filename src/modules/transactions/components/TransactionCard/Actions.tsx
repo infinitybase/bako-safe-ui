@@ -17,7 +17,7 @@ import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
 import { ITransactionWithType } from '../../services';
-import { TransactionType } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useTransactionSend } from '../../providers';
 import { useEffect } from 'react';
 
@@ -76,7 +76,17 @@ const Actions = ({
   } = useTransactionSend();
 
   useEffect(() => {
-    setCurrentTransaction(transaction!);
+    if (
+      transaction &&
+      transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS
+    ) {
+      setCurrentTransaction(transaction);
+    } else if (
+      isTransactionSuccess &&
+      transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
+    ) {
+      setCurrentTransaction(transaction);
+    }
   }, [transaction]);
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
@@ -124,7 +134,6 @@ const Actions = ({
             isLoading={isTransactionLoading}
             isDisabled={isTransactionSuccess}
             onClick={(e) => {
-              // setCurrentTransaction(transaction);
               e.stopPropagation();
               e.preventDefault();
               confirmTransaction(callBack);
@@ -141,7 +150,6 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              // setCurrentTransaction(transaction);
               declineTransaction(transaction.id);
             }}
             isLoading={isTransactionLoading}

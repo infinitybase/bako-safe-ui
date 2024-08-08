@@ -16,6 +16,8 @@ import {
 } from '@/modules/transactions';
 
 import { TransactionWithVault } from '../../services/types';
+import { useEffect } from 'react';
+import { TransactionStatus } from 'bakosafe';
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
   account: string;
@@ -34,9 +36,23 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
       declineTransaction,
       isTransactionSuccess,
       isTransactionLoading,
-      // setCurrentTransaction,
+      setCurrentTransaction,
     },
   } = useTransactionSend();
+
+  useEffect(() => {
+    if (
+      transaction &&
+      transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS
+    ) {
+      setCurrentTransaction(transaction);
+    } else if (
+      isTransactionSuccess &&
+      transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
+    ) {
+      setCurrentTransaction(transaction);
+    }
+  }, [transaction]);
 
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
 
@@ -105,7 +121,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // declineTransaction(transaction.id);
+                declineTransaction(transaction.id);
               }}
               isLoading={isTransactionLoading}
               isDisabled={isTransactionSuccess}
@@ -120,7 +136,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // confirmTransaction();
+                confirmTransaction();
                 props.callBack && props.callBack();
               }}
             >

@@ -1,13 +1,12 @@
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useAuthStore } from '@/modules/auth';
 import { useWalletSignMessage } from '@/modules/core';
 
-import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { useTransactionList } from '../list';
@@ -22,7 +21,17 @@ export interface UseSignTransactionOptions {
   transaction: ITransaction;
 }
 
-const useSignTransaction = (options: UseSignTransactionOptions) => {
+interface IUseSignTransactionProps {
+  isExecuting: (transaction: ITransaction) => boolean;
+  executeTransaction: (transaction: ITransaction) => void;
+}
+
+const useSignTransaction = ({
+  executeTransaction,
+  isExecuting,
+}: IUseSignTransactionProps) => {
+  const [currentTransaction, setCurrentTransaction] = useState<any>();
+
   const {
     transactionRequest: { refetch: refetchTransactionsRequest },
   } = useTransactionList();
@@ -31,8 +40,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const { warningToast } = useContactToast();
   const { account } = useAuthStore();
-
-  const transactionSendContext = useTransactionSend();
 
   const signMessageRequest = useWalletSignMessage({
     onError: () => {
@@ -44,21 +51,17 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   });
 
   useMemo(() => {
-    const transaction = options.transaction;
+    const transaction = currentTransaction;
+    const toSend =
+      !!transaction &&
+      transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+      !isExecuting(transaction);
 
-    if (transactionSendContext.isExecuting) {
-      const toSend =
-        !!transaction &&
-        transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
-        !transactionSendContext?.isExecuting(transaction);
-
-      if (toSend) {
-        console.log('inTo send?');
-        transactionSendContext?.executeTransaction(transaction);
-      }
-      return options.transaction;
+    if (toSend) {
+      executeTransaction(transaction);
     }
-  }, [options.transaction]);
+    return currentTransaction;
+  }, [currentTransaction]);
 
   const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
@@ -80,7 +83,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const confirmTransaction = async (callback?: () => void) => {
     const signedMessage = await signMessageRequest.mutateAsync(
-      options.transaction.hash,
+      currentTransaction.hash,
     );
 
     await request.mutateAsync(
@@ -88,7 +91,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
         account,
         confirm: true,
         signer: signedMessage,
-        id: options.transaction.id,
+        id: currentTransaction.id,
       },
       {
         onSuccess: () => {
@@ -99,7 +102,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   };
 
   const retryTransaction = async () => {
-    return transactionSendContext.executeTransaction(options.transaction);
+    return executeTransaction(currentTransaction);
   };
 
   const declineTransaction = async (transactionId: string) => {
@@ -111,6 +114,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
   };
 
   return {
+    currentTransaction,
+    setCurrentTransaction,
     request,
     signMessageRequest,
     confirmTransaction,
@@ -119,8 +124,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     isLoading:
       request.isPending ||
       signMessageRequest.isPending ||
-      options.transaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||
-      options.transaction?.status === TransactionStatus.PENDING_SENDER,
+      currentTransaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||
+      currentTransaction?.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,
   };
 };
