@@ -92,6 +92,7 @@ const useWorkspace = (userInfos: IUserInfos) => {
 
   const invalidateRequests = () => {
     worksapceBalance.refetch();
+    pendingSignerTransactions.refetch();
     userInfos.refetch();
   };
 
