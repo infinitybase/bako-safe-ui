@@ -144,9 +144,9 @@ export class TransactionService {
     };
   }
 
-  static async getTransactionsHistory(id: string) {
+  static async getTransactionsHistory(id: string, predicateId: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(
-      `/transaction/history/${id}`,
+      `/transaction/history/${id}/${predicateId}`,
     );
     return data;
   }

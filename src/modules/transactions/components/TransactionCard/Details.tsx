@@ -399,7 +399,10 @@ const Details = ({
   if (!isMobile && !isOpen) return null;
 
   return (
-    <DetailsTransactionStepper transactionId={transaction.id}>
+    <DetailsTransactionStepper
+      transactionId={transaction.id}
+      predicateId={transaction.predicateId}
+    >
       {(isLoading, transactionHistory) => (
         <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
           {isDeposit ? (
