@@ -30,7 +30,9 @@ const useSignTransaction = ({
   executeTransaction,
   isExecuting,
 }: IUseSignTransactionProps) => {
-  const [currentTransaction, setCurrentTransaction] = useState<any>();
+  const [currentTransaction, setCurrentTransaction] = useState<
+    ITransaction | undefined
+  >(undefined);
 
   const {
     transactionRequest: { refetch: refetchTransactionsRequest },
@@ -51,14 +53,13 @@ const useSignTransaction = ({
   });
 
   useMemo(() => {
-    const transaction = currentTransaction;
     const toSend =
-      !!transaction &&
-      transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
-      !isExecuting(transaction);
+      !!currentTransaction &&
+      currentTransaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+      !isExecuting(currentTransaction);
 
     if (toSend) {
-      executeTransaction(transaction);
+      executeTransaction(currentTransaction);
     }
     return currentTransaction;
   }, [currentTransaction]);
@@ -83,7 +84,7 @@ const useSignTransaction = ({
 
   const confirmTransaction = async (callback?: () => void) => {
     const signedMessage = await signMessageRequest.mutateAsync(
-      currentTransaction.hash,
+      currentTransaction!.hash,
     );
 
     await request.mutateAsync(
@@ -91,7 +92,7 @@ const useSignTransaction = ({
         account,
         confirm: true,
         signer: signedMessage,
-        id: currentTransaction.id,
+        id: currentTransaction?.id!,
       },
       {
         onSuccess: () => {
@@ -102,7 +103,7 @@ const useSignTransaction = ({
   };
 
   const retryTransaction = async () => {
-    return executeTransaction(currentTransaction);
+    return executeTransaction(currentTransaction!);
   };
 
   const declineTransaction = async (transactionId: string) => {

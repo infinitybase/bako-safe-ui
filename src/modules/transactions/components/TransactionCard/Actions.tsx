@@ -76,18 +76,20 @@ const Actions = ({
   } = useTransactionSend();
 
   useEffect(() => {
-    if (
-      transaction &&
-      transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS
-    ) {
+    if (transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS) {
       setCurrentTransaction(transaction);
     } else if (
       isTransactionSuccess &&
       transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
     ) {
       setCurrentTransaction(transaction);
+    } else if (
+      isTransactionSuccess &&
+      transaction?.status === TransactionStatus.SUCCESS
+    ) {
+      setCurrentTransaction(transaction);
     }
-  }, [transaction]);
+  }, [transaction, isTransactionLoading, isTransactionSuccess]);
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
 
@@ -132,7 +134,7 @@ const Actions = ({
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess}
+            isDisabled={isTransactionSuccess && !awaitingAnswer}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -153,7 +155,7 @@ const Actions = ({
               declineTransaction(transaction.id);
             }}
             isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess}
+            isDisabled={isTransactionSuccess && !awaitingAnswer}
           >
             Decline
           </Button>
