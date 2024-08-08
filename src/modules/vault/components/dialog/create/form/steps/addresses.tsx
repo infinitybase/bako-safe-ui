@@ -24,8 +24,8 @@ import {
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
-import { scrollToBottom } from '@/utils/scroll-to-bottom';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
