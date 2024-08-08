@@ -16,6 +16,9 @@ const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
     ],
     queryFn: () => HomeService.homeTransactions(type),
     refetchOnWindowFocus: true,
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

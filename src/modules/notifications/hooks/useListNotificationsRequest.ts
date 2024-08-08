@@ -20,6 +20,7 @@ const useListNotificationsRequest = (account: string, enabled?: boolean) => {
     getNextPageParam: ({ totalPages, currentPage, nextPage }) =>
       currentPage !== totalPages ? nextPage : undefined,
     enabled,
+    staleTime: 100, // 500ms second to prevent request spam
     refetchOnWindowFocus: false,
   });
 

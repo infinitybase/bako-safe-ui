@@ -7,7 +7,6 @@ import {
 } from '@/modules/workspace/services';
 
 import { handleAssetsBalance } from '../utils/assets';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useGetWorkspaceBalanceRequest = (
   currentWorkspace: string,
@@ -24,7 +23,10 @@ const useGetWorkspaceBalanceRequest = (
     ...options,
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5, // 5 mins
-    enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    enabled:
+      window.location.pathname != '/' && window.location.pathname != '/home',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 
   return {

@@ -13,7 +13,9 @@ const useTransactionsSignaturePending = () => {
       return TransactionService.getTransactionsSignaturePending();
     },
     refetchOnWindowFocus: false,
-    enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

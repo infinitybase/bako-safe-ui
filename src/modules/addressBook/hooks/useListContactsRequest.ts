@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { AddressBookQueryKey } from '@/modules/core';
 
 import { AddressBookService } from '../services';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 type UseListContactsRequestParams = {
   workspaceId: string;
@@ -21,7 +20,9 @@ const useListContactsRequest = ({
     ],
     queryFn: () => AddressBookService.list(includePersonal),
     refetchOnWindowFocus: false,
-    enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

@@ -116,7 +116,7 @@ const useWorkspace = (userInfos: IUserInfos) => {
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      selectWorkspace,
+      // selectWorkspace,
       setVisibleBalance,
       hasPermission,
       goHome,

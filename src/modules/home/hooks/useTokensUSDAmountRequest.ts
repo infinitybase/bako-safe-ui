@@ -34,6 +34,9 @@ const useTokensUSDAmountRequest = () => {
     queryFn: () => HomeService.getTokensUSDAmount(),
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 10,
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 
   if (data) {
