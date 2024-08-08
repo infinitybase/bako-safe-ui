@@ -3,7 +3,6 @@ import { ChangeEvent, useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
-import { useAuthStore } from '@/modules/auth/store';
 import { invalidateQueries } from '@/modules/core';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -13,6 +12,7 @@ import { useTemplateStore } from '@/modules/template/store';
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm } from './useCreateVaultForm';
 import { Address } from 'fuels';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export enum TabState {
   INFO,
@@ -23,7 +23,9 @@ export enum TabState {
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string }>();
@@ -33,7 +35,7 @@ const useCreateVault = () => {
   const [vaultId, setVaultId] = useState<string>('');
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const { setTemplateFormInitial } = useTemplateStore();
-  const { form, addressesFieldArray } = useCreateVaultForm(account);
+  const { form, addressesFieldArray } = useCreateVaultForm(userInfos.address);
 
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');

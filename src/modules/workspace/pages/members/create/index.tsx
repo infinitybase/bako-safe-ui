@@ -24,7 +24,7 @@ import {
 } from '@/components';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { UserPlusIcon } from '@/components/icons/user-add-icon';
-import { CreateContactDialog, useAddressBook } from '@/modules/addressBook';
+import { CreateContactDialog } from '@/modules/addressBook';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
@@ -34,10 +34,15 @@ import {
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MemberTab = () => {
   const { workspaceId, memberId } = useParams();
-  const { contactByAddress } = useAddressBook();
+  const {
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
 
   const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
 
@@ -185,8 +190,8 @@ const CreateMemberPage = () => {
     >
       <CreateContactDialog
         form={addressBook.form}
-        dialog={addressBook.contactDialog}
-        isLoading={addressBook.createContactRequest.isPending}
+        dialog={addressBook.dialog.contactDialog}
+        isLoading={addressBook.requests.createContactRequest.isPending}
         isEdit={false}
       />
       <Dialog.Header

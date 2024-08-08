@@ -95,7 +95,6 @@ export class VaultService {
     const { data } = await api.get<HasReservedCoins>(
       `/predicate/reserved-coins/${predicateId}`,
     );
-
     return {
       ...data,
       reservedCoins: data.reservedCoins.map((reservedCoin) => ({

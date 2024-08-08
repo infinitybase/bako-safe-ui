@@ -9,19 +9,21 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/logo.svg';
-import { useAuthStore } from '@/modules/auth/store';
 import { Pages } from '@/modules/core';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import { TabEnum } from './types';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const Header = () => {
   const [tab, setTab] = useState<TabEnum>(TabEnum.VAULTS);
   const navigate = useNavigate();
 
   const { fuel } = useFuel();
-  const { account } = useAuthStore();
-  const { goHome } = useHome();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { goHome },
+    },
+  } = useWorkspaceContext();
 
   const isSignatureTab = tab === TabEnum.SIGNATURES;
 
@@ -99,8 +101,8 @@ const Header = () => {
           <Flex py={2} px={5} bg="dark.100" borderRadius="27px">
             <Box mr={4}>
               <Text fontSize="xs" color="gray">
-                {String(account).slice(0, 4)}...
-                {String(account).slice(-4)}
+                {String(userInfos.address).slice(0, 4)}...
+                {String(userInfos.address).slice(-4)}
               </Text>
             </Box>
             <Flex alignItems="center" onClick={disconnect}>

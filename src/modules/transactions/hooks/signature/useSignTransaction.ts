@@ -4,12 +4,11 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useAuthStore } from '@/modules/auth';
 import { useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
-import { useTransactionList } from '../list';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface SignTransactionParams {
   txId: string;
@@ -41,7 +40,9 @@ const useSignTransaction = ({
   const toast = useTransactionToast();
 
   const { warningToast } = useContactToast();
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
   const signMessageRequest = useWalletSignMessage({
     onError: () => {
@@ -66,7 +67,6 @@ const useSignTransaction = ({
 
   const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
-    await refetchTransactionsRequest();
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),
@@ -89,7 +89,7 @@ const useSignTransaction = ({
 
     await request.mutateAsync(
       {
-        account,
+        account: userInfos.address,
         confirm: true,
         signer: signedMessage,
         id: currentTransaction?.id!,
@@ -110,7 +110,7 @@ const useSignTransaction = ({
     await request.mutateAsync({
       id: transactionId,
       confirm: false,
-      account,
+      account: userInfos.address,
     });
   };
 

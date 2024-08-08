@@ -40,12 +40,17 @@ const useDefaultConnectors = () => {
     const fuelConnector = connectors?.find((c) => c.name === connector.name);
     const hasWebAuthn = !!window.navigator.credentials;
     const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
+    const isEnabled =
+      (!!fuelConnector && fuelConnector.installed) ||
+      (isWebAuthn && hasWebAuthn);
+
+    console.log('[CONNECTOR]: ', isEnabled, connector.name, fuelConnector);
     return {
       ...connector,
       imageUrl: undefined,
-      isEnabled:
-        (!!fuelConnector && fuelConnector.installed) ||
-        (isWebAuthn && hasWebAuthn),
+      isEnabled,
+      refetchOnMount: false,
+      staleTime: 500, // 500ms second to prevent request spam
     };
   });
 

@@ -2,110 +2,45 @@ import { useFuel } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { IPermission } from '@/modules/core';
+import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 
-import { SignWebAuthnPayload, TypeUser } from '../services';
-import { useAuthStore } from '../store';
-import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import { useAuthCookies } from '..';
+import { useNavigate } from 'react-router-dom';
+import { useUserInfoRequest } from './useUserInfoRequest';
+import { useState } from 'react';
 
-type AuthenticateParams = {
-  userId: string;
-  avatar: string;
-  account: string;
-  accountType: TypeUser;
-  accessToken: string;
-  permissions: IPermission;
-  singleWorkspace: string;
-  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
-};
-
-type AuthenticateWorkspaceParams = {
-  permissions: IPermission;
+export type SingleAuthentication = {
   workspace: string;
 };
 
-const useAuth = () => {
-  const store = useAuthStore();
+export type WorkspaceAuthentication = {
+  workspace: string;
+};
+
+const useAuth = (): IUseAuthReturn => {
+  const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
+  const [invalidAccount, setInvalidAccount] = useState(false);
   const { fuel } = useFuel();
-  useTokensUSDAmountRequest();
+  const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
+    useAuthCookies();
+  const { account, singleWorkspace } = userAuthCookiesInfo();
 
   const authenticate = (params: AuthenticateParams) => {
-    CookiesConfig.setCookies([
-      {
-        name: CookieName.ACCESS_TOKEN,
-        value: params.accessToken,
-      },
-      {
-        name: CookieName.ADDRESS,
-        value: params.account,
-      },
-      {
-        name: CookieName.USER_ID,
-        value: params.userId,
-      },
-      {
-        name: CookieName.AVATAR,
-        value: params.avatar!,
-      },
-      {
-        name: CookieName.SINGLE_WORKSPACE,
-        value: params.singleWorkspace,
-      },
-      {
-        name: CookieName.WEB_AUTHN_PK,
-        value: params.webAuthn?.publicKey ?? '',
-      },
-      {
-        name: CookieName.WEB_AUTHN_ID,
-        value: params.webAuthn?.id ?? '',
-      },
-      {
-        name: CookieName.ACCOUNT_TYPE,
-        value: params.accountType,
-      },
-    ]);
-    store.singleAuthentication({
-      userId: params.userId,
-      avatar: params.avatar,
-      account: params.account,
-      accountType: params.accountType,
-      workspace: params.singleWorkspace,
-      webAuthn: params.webAuthn,
-    });
+    setAuthCookies(params);
   };
 
-  const authenticateWorkspace = (params: AuthenticateWorkspaceParams) => {
-    store.workspaceAuthentication({
-      permissions: params.permissions,
-      workspace: params.workspace,
-    });
-  };
-
-  const authenticateWorkspaceSingle = () => {
-    store.workspaceAuthenticationSingle();
-  };
-
+  const navigate = useNavigate();
   const logout = () => {
-    CookiesConfig.removeCookies([
-      CookieName.ADDRESS,
-      CookieName.AVATAR,
-      CookieName.USER_ID,
-      CookieName.ACCESS_TOKEN,
-      CookieName.SINGLE_WORKSPACE,
-      CookieName.WEB_AUTHN_ID,
-      CookieName.WEB_AUTHN_PK,
-      CookieName.ACCOUNT_TYPE,
-    ]);
-    store.logout();
+    clearAuthCookies();
+    navigate('/');
   };
 
-  const hasWallet = async () => {
-    const _hasWallet = store.accountType != TypeUser.WEB_AUTHN;
+  const userProvider = async () => {
+    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
-        _hasWallet
+        _userProvider
           ? (await fuel.currentNetwork()).url
           : BakoSafe.getProviders('CHAIN_URL'),
       ),
@@ -116,23 +51,24 @@ const useAuth = () => {
     handlers: {
       logout,
       authenticate,
-      authenticateWorkspace,
-      setInvalidAccount: store.setInvalidAccount,
-      authenticateWorkspaceSingle,
+      setInvalidAccount,
     },
-    hasWallet,
-    accountType: store.accountType,
-    avatar: store.avatar,
-    userId: store.userId,
-    account: store.account,
-    webAuthn: {
-      id: CookiesConfig.getCookie(CookieName.WEB_AUTHN_ID)!,
-      publicKey: CookiesConfig.getCookie(CookieName.WEB_AUTHN_PK)!,
+    userProvider,
+    invalidAccount,
+    userInfos: {
+      avatar: infos?.avatar!,
+      id: infos?.id!,
+      name: infos?.name!,
+      onSingleWorkspace: infos?.onSingleWorkspace ?? false,
+      type: infos?.type!,
+      webauthn: infos?.webauthn!,
+      workspace: infos?.workspace!,
+      address: account,
+      singleWorkspaceId: singleWorkspace,
+      isLoading,
+      isFetching,
+      refetch,
     },
-    workspaces: store.workspaces,
-    permissions: store.permissions,
-    isInvalidAccount: store.invalidAccount,
-    isSingleWorkspace: store.workspaces.current === store.workspaces.single,
   };
 };
 

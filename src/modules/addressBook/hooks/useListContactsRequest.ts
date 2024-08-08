@@ -5,18 +5,24 @@ import { AddressBookQueryKey } from '@/modules/core';
 import { AddressBookService } from '../services';
 
 type UseListContactsRequestParams = {
-  current: string;
+  workspaceId: string;
   includePersonal: boolean;
 };
 
 const useListContactsRequest = ({
-  current,
+  workspaceId,
   includePersonal,
 }: UseListContactsRequestParams) => {
   return useQuery({
-    queryKey: [...AddressBookQueryKey.LIST_BY_USER(current), includePersonal],
+    queryKey: [
+      ...AddressBookQueryKey.LIST_BY_USER(workspaceId),
+      includePersonal,
+    ],
     queryFn: () => AddressBookService.list(includePersonal),
     refetchOnWindowFocus: false,
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

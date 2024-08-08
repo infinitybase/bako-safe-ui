@@ -7,7 +7,6 @@ import { TransactionType } from 'bakosafe';
 
 export interface HomeDataResponse {
   predicates: IPagination<Predicate & { workspace: Workspace }>;
-  workspace: Workspace;
 }
 
 export interface HomeTransactionsResponse {
@@ -17,7 +16,7 @@ export interface HomeTransactionsResponse {
 type TokensUSDResponse = [AssetId, number][];
 export class HomeService {
   static async home() {
-    const { data } = await api.get<HomeDataResponse>(`/user/latest/info`);
+    const { data } = await api.get<HomeDataResponse>(`/user/predicates`);
 
     return data;
   }

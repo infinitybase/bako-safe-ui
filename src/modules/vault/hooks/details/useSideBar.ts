@@ -1,8 +1,8 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth';
 import { Pages } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type UseSidebarProps = {
   params: { workspaceId: string; vaultId: string };
@@ -13,8 +13,10 @@ const useSidebar = ({ params }: UseSidebarProps) => {
   const location = useLocation();
   const drawer = useDisclosure();
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: {
+      userInfos: { workspace },
+    },
+  } = useWorkspaceContext();
 
   const checkPathname = (path: string) => location.pathname === path;
 
@@ -28,19 +30,19 @@ const useSidebar = ({ params }: UseSidebarProps) => {
     settings: checkPathname(
       Pages.vaultSettings({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
     transactions: checkPathname(
       Pages.transactions({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
     balance: checkPathname(
       Pages.vaultBalance({
         vaultId: params?.vaultId ?? '',
-        workspaceId: current ?? '',
+        workspaceId: workspace?.id ?? '',
       }),
     ),
   };

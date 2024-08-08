@@ -19,14 +19,13 @@ import {
 } from '@/modules/addressBook/components';
 import {
   AddressesFields,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
@@ -37,16 +36,17 @@ export interface VaultAddressesStepProps {
 }
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
-  const { isSingleWorkspace } = useAuth();
   const {
-    handleOpenDialog,
-    listContactsRequest,
-    createContactRequest,
-    form: contactForm,
-    contactDialog,
-    inView,
-    workspaceId,
-  } = useAddressBook(!isSingleWorkspace);
+    authDetails: { userInfos },
+    addressBookInfos: {
+      handlers: { handleOpenDialog },
+      dialog: { contactDialog },
+      requests: { listContactsRequest, createContactRequest },
+      form: contactForm,
+      inView,
+      workspaceId,
+    },
+  } = useWorkspaceContext();
 
   const hasThreeOrMoreAddress =
     form.watch('addresses') && form.watch('addresses')!.length >= 3;
@@ -65,7 +65,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('addresses') as AddressesFields,
       errors: form.formState.errors.addresses,
@@ -108,8 +108,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
-          // pr={{ base: 2, sm: 4 }}
-          // h={500}
           h={{ base: '60vh', xs: 500 }}
         >
           <Dialog.Section

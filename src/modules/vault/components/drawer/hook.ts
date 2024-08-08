@@ -4,11 +4,10 @@ import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useAuth } from '@/modules/auth';
 import { Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
-import { useSelectWorkspace } from '@/modules/workspace/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
@@ -25,15 +24,15 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
 
-  const { selectWorkspace } = useSelectWorkspace();
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+  } = useWorkspaceContext();
 
   const vaultListRequestRequest = useVaultListRequest(
     { q: search },
-    // In local was working fine, but when deploy, the requests wasn't being updated even if invalidating it
-    // so, removing this props solve the problem
     props.isOpen,
   );
 
@@ -75,11 +74,11 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
     vaultListRequestRequest.refetch();
     setSearch('');
-    selectWorkspace(vault.workspace.id);
+    handleWorkspaceSelection(vault.workspace.id);
     navigate(
       Pages.detailsVault({
         vaultId: vault.id,
-        workspaceId: current,
+        workspaceId: userInfos.workspace?.id,
       }),
     );
   };

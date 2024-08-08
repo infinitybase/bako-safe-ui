@@ -27,13 +27,13 @@ const SigninPage = () => {
   };
 
   useMemo(() => {
-    auth.isInvalidAccount &&
+    auth.invalidAccount &&
       errorToast({
         title: 'Invalid Account',
         description: 'You need to use the fuel wallet to connect.',
       });
-    auth.handlers.setInvalidAccount(false);
-  }, [auth.isInvalidAccount]);
+    auth.handlers.setInvalidAccount?.(false);
+  }, [auth.invalidAccount]);
 
   const WebauthnDrawer = (
     <DrawerWebAuthn

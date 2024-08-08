@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { Vault } from 'bakosafe';
 import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
 
 const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
@@ -13,16 +11,20 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
 import { VaultService } from '../../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 function useVaultAssets(predicateId: string) {
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
-
-  const auth = useAuth();
+  const { authDetails } = useWorkspaceContext();
 
   const { data, ...rest } = useQuery({
-    queryKey: ['predicateId/assets', auth.workspaces.current, predicateId],
+    queryKey: [
+      'predicateId/assets',
+      authDetails.userInfos.workspace?.id,
+      predicateId,
+    ],
     queryFn: () => VaultService.hasReservedCoins(predicateId),
     refetchInterval: 10000,
     refetchOnWindowFocus: false,
@@ -93,7 +95,7 @@ function useVaultAssets(predicateId: string) {
     setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
-    hasAssets: !!data?.currentBalance.length,
+    hasAssets: !!data?.currentBalance?.length,
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
   };
