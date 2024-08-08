@@ -1,3 +1,4 @@
+import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,11 +9,10 @@ import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm } from './useCreateVaultForm';
-import { Address } from 'fuels';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export enum TabState {
   INFO,

@@ -1,5 +1,3 @@
-import { AddressUtils, useScreenSize } from '@/modules/core';
-import TokenInfos from './TokenInfos';
 import {
   Box,
   Center,
@@ -10,13 +8,17 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { ITransferAsset } from 'bakosafe';
-import AmountsInfo from './AmountsInfo';
-import { limitCharacters } from '@/utils';
 import { Address } from 'fuels';
+
 import { DoubleArrowIcon } from '@/components';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { AddressUtils, useScreenSize } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { limitCharacters } from '@/utils';
+
+import AmountsInfo from './AmountsInfo';
+import TokenInfos from './TokenInfos';
 
 interface DetailItemProps {
   asset: ITransferAsset;
@@ -66,12 +68,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(asset.to ?? '').toAddress(),
+                      Address.fromString(asset.to ?? '').toB256(),
                     ) ?? '',
                     isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
+                    Address.fromString(asset.to ?? '').toB256(),
                     isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
@@ -100,12 +102,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(toAddress ?? '').toAddress(),
+                      Address.fromString(toAddress ?? '').toB256(),
                     ) ?? '',
                     isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toAddress(),
+                    Address.fromString(toAddress ?? '').toB256(),
                     isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
@@ -126,12 +128,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromB256(asset.to ?? '').toAddress(),
+                    Address.fromB256(asset.to ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
+                  Address.fromString(asset.to ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>
@@ -159,12 +161,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toAddress(),
+                    Address.fromString(toAddress ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(toAddress ?? '').toAddress(),
+                  Address.fromString(toAddress ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>

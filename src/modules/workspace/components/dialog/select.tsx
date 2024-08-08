@@ -5,9 +5,9 @@ import { DialogActions } from '@/components/dialog/actions';
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { SelectionEmptyState } from '../';
 import { WorkspaceCard } from '../card';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface SelectWorkspaceDialogProps {
   dialog: UseWorkspaceReturn['workspaceDialog'];
@@ -125,7 +125,7 @@ const SelectWorkspaceDialog = ({
                   key={w.id}
                   workspace={w}
                   counter={{
-                    members: w.members.length,
+                    members: w.members?.length,
                     vaults: w.predicates,
                   }}
                   onClick={() => {
