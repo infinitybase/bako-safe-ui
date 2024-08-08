@@ -19,7 +19,7 @@ interface ContactToDelete {
 
 interface DeleteContactDialogProps {
   contactToDelete: ContactToDelete;
-  dialog: UseAddressBookReturn['deleteContactDialog'];
+  dialog: UseAddressBookReturn['dialog']['deleteContactDialog'];
   isLoading: boolean;
   handleDelete: (id: string) => void;
 }

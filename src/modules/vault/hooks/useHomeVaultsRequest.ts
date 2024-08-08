@@ -1,18 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useAuthStore } from '@/modules/auth';
 import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
 
 import { VaultService } from '../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: ['predicate/home', account],
+    queryKey: ['predicate/home', userInfos.address],
     queryFn: () =>
       VaultService.getAllWithPagination({
         page: 0,

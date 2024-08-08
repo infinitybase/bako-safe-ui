@@ -1,8 +1,8 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { Workspace, WorkspacesQueryKey } from '@/modules/core';
 import { WorkspaceService } from '@/modules/workspace/services';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useGetWorkspaceRequest = (
   workspaceId: string,
@@ -12,7 +12,11 @@ const useGetWorkspaceRequest = (
     queryKey: WorkspacesQueryKey.GET(workspaceId),
     queryFn: () => WorkspaceService.getById(workspaceId),
     ...options,
-    enabled: !!workspaceId || options?.enabled,
+    enabled:
+      !!workspaceId ||
+      options?.enabled ||
+      !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+
     refetchOnWindowFocus: false,
   });
 
@@ -22,20 +26,4 @@ const useGetWorkspaceRequest = (
   };
 };
 
-const useGetCurrentWorkspace = () => {
-  const { workspaces } = useAuth();
-
-  return useGetWorkspaceRequest(workspaces.current);
-};
-
-const useGetSingleWorkspace = () => {
-  const { workspaces } = useAuth();
-
-  return useGetWorkspaceRequest(workspaces.single);
-};
-
-export {
-  useGetCurrentWorkspace,
-  useGetSingleWorkspace,
-  useGetWorkspaceRequest,
-};
+export { useGetWorkspaceRequest };

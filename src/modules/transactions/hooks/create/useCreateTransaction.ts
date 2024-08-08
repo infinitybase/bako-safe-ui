@@ -1,13 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById, Vault } from 'bakosafe';
+import { BakoSafe, IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
+import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
   NativeAssetId,
@@ -26,6 +25,7 @@ import {
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTxRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
@@ -61,16 +61,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const auth = useAuth();
+  const {
+    authDetails,
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-
-  const listContactsRequest = useListContactsRequest({
-    current: auth.workspaces.current,
-    includePersonal: !auth.isSingleWorkspace,
-  });
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
@@ -100,7 +100,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       queryClient.invalidateQueries({
         queryKey: [
           WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-            auth.workspaces.current,
+            authDetails.userInfos.workspace?.id,
           ),
           TRANSACTION_LIST_QUERY_KEY,
           USER_TRANSACTIONS_QUERY_KEY,

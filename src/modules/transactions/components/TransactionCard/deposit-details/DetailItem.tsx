@@ -16,6 +16,7 @@ import AmountsInfo from './AmountsInfo';
 import { limitCharacters } from '@/utils';
 import { Address } from 'fuels';
 import { DoubleArrowIcon } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface DetailItemProps {
   asset: ITransferAsset;
@@ -24,7 +25,12 @@ interface DetailItemProps {
 }
 
 const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
-  const txUSDAmount = useTxAmountToUSD([asset]);
+  const { tokensUSD } = useWorkspaceContext();
+  const txUSDAmount = useTxAmountToUSD(
+    [asset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   const { isExtraSmall, isMobile, isSmall } = useScreenSize();
 

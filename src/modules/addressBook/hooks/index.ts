@@ -5,3 +5,5 @@ export * from './useContactToast';
 export * from './useCreateContactForm';
 export * from './useCreateContactRequest';
 export * from './useListContactsRequest';
+export * from './useAddressBookFormHandlers';
+export * from './useAddressBookMutations';

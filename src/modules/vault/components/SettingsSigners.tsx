@@ -1,13 +1,17 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
-import { useAddressBook } from '@/modules/addressBook';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 
 import { CardMember } from './CardMember';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
-  const { contactByAddress } = useAddressBook();
+  const {
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
   if (!vault) return null;
   const members = vault?.data?.members;
 

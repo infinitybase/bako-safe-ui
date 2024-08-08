@@ -12,11 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
-import { useAddressBook } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
@@ -55,10 +54,14 @@ const TransactionTypeFormatter = (
 };
 
 const TransactionStepper = ({ steps }: TransactionStepperProps) => {
-  const { account } = useAuth();
+  const {
+    authDetails: { userInfos },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
   const { isMobile } = useScreenSize();
 
-  const { contactByAddress } = useAddressBook();
   const { activeStep, setActiveStep } = useSteps({
     index: steps?.length,
     count: steps?.length,
@@ -149,7 +152,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       gap: '4px',
                     }}
                   >
-                    {nickname && step.owner.address !== account && (
+                    {nickname && step.owner.address !== userInfos.address && (
                       <Text>{nickname}</Text>
                     )}
                     <Text
@@ -162,11 +165,11 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                       }
                       fontSize="sm"
                     >
-                      {TransactionTypeFormatter(step, account)}
+                      {TransactionTypeFormatter(step, userInfos.address)}
                     </Text>
                     {!nickname && (
                       <Text variant="subtitle" color="grey.425">
-                        {step.owner.address !== account &&
+                        {step.owner.address !== userInfos.address &&
                           AddressUtils.format(`(${step.owner.address})`)}
                       </Text>
                     )}

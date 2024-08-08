@@ -14,26 +14,24 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
 
-  const { currentWorkspace, goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
-  } = useAuth();
-  const { goHome } = useHome();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, goHome },
+    },
+  } = useWorkspaceContext();
+
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
@@ -64,17 +62,24 @@ const VaultBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -97,7 +102,7 @@ const VaultBalancePage = () => {
                   navigate(
                     Pages.detailsVault({
                       vaultId: vault?.data?.id!,
-                      workspaceId: current ?? '',
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }
@@ -129,7 +134,7 @@ const VaultBalancePage = () => {
         </Box>
 
         <CustomSkeleton
-          isLoaded={!currentWorkspace.isLoading && !assets.isLoading}
+          isLoaded={!userInfos.isLoading && !assets.isLoading}
           flex={1}
         >
           {assets.hasAssets ? (

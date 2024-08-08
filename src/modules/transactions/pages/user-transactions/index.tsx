@@ -24,12 +24,9 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -39,6 +36,7 @@ import {
 import { StatusFilter, useTransactionList } from '../../hooks';
 import { transactionStatus } from '../../utils';
 import { useFilterTxType } from '../../hooks/filter';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserTransactionsPage = () => {
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
@@ -50,20 +48,16 @@ const UserTransactionsPage = () => {
     transactionRequest,
     filter,
     inView,
-    account,
     navigate,
-    pendingSignerTransactions,
   } = useTransactionList({ type: txFilterType, byMonth: true });
 
-  const { hasPermission, goWorkspace } = useWorkspace();
   const {
-    isSingleWorkspace,
-    workspaces: { current },
-  } = useAuth();
-
-  const { workspace } = useGetCurrentWorkspace();
-
-  const { goHome } = useHome();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission, handleWorkspaceSelection, goHome },
+      requests: { pendingSignerTransactions },
+    },
+  } = useWorkspaceContext();
 
   const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 
@@ -93,7 +87,9 @@ const UserTransactionsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              isSingleWorkspace ? goHome() : goWorkspace(current ?? '')
+              userInfos.onSingleWorkspace
+                ? goHome()
+                : handleWorkspaceSelection(userInfos.workspace?.id ?? '')
             }
           >
             Back home
@@ -114,17 +110,24 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                {!isSingleWorkspace && (
+                {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
-                      onClick={() => goWorkspace(current)}
+                      onClick={() =>
+                        handleWorkspaceSelection(
+                          userInfos.workspace?.id,
+                          Pages.workspace({
+                            workspaceId: userInfos.workspace?.id,
+                          }),
+                        )
+                      }
                       maxW={40}
                       isTruncated
                     >
-                      {workspace?.name}
+                      {userInfos.workspace?.name}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )}
@@ -162,7 +165,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }
@@ -190,7 +193,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }
@@ -319,10 +322,10 @@ const UserTransactionsPage = () => {
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos.address,
                 );
 
                 return (
@@ -337,7 +340,7 @@ const UserTransactionsPage = () => {
                           <TransactionCardMobile
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             mt="15px"
                           />
                         ) : (
@@ -347,7 +350,7 @@ const UserTransactionsPage = () => {
                             status={status}
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             details={
                               <TransactionCard.Details
                                 transaction={transaction}

@@ -16,38 +16,30 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 
 import { Pages } from '@/modules/core/routes';
 
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
-import { useSelectWorkspace } from '@/modules/workspace';
 
-import { useHome } from '..';
 import { ActionCard } from '../components/ActionCard';
 
 import HomeTransactions from '../components/HomeTransactions';
 
-import { useTokensUSDAmountRequest } from '../hooks/useTokensUSDAmountRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const HomePage = () => {
   const {
-    navigate,
-    vaultsRequest: {
-      vaults: { recentVaults, extraCount, vaultsMax },
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, navigate },
+      requests: { latestPredicates },
+      workspaceVaults: { extraCount, vaultsMax },
     },
-    homeRequest,
-  } = useHome();
+  } = useWorkspaceContext();
 
-  const {
-    workspaces: { current, single },
-  } = useAuth();
-
-  const { selectWorkspace } = useSelectWorkspace();
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-
-  useTokensUSDAmountRequest();
 
   return (
     <VStack
@@ -78,10 +70,14 @@ const HomePage = () => {
         </Box>
       </HStack>
       <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
-            onClick={() => navigate(Pages.userVaults({ workspaceId: current }))}
+            onClick={() =>
+              navigate(
+                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
+              )
+            }
           >
             <ActionCard.Icon icon={VaultIcon} />
             <Box>
@@ -93,13 +89,13 @@ const HomePage = () => {
           </ActionCard.Container>
         </CustomSkeleton>
 
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               );
             }}
@@ -116,11 +112,13 @@ const HomePage = () => {
             </Box>
           </ActionCard.Container>
         </CustomSkeleton>
-        <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
-              navigate(Pages.addressBook({ workspaceId: current }))
+              navigate(
+                Pages.addressBook({ workspaceId: userInfos.workspace?.id }),
+              )
             }
           >
             <ActionCard.Icon icon={AddressBookIcon} />
@@ -136,9 +134,9 @@ const HomePage = () => {
       </Stack>
       {/* RECENT VAULTS */}
       <CustomSkeleton
-        isLoaded={!homeRequest.isLoading}
-        minH={homeRequest.isLoading ? '100vh' : 'fit-content'}
-        mt={homeRequest.isLoading ? 6 : 4}
+        isLoaded={!latestPredicates.isLoading}
+        minH={latestPredicates.isLoading ? '100vh' : 'fit-content'}
+        mt={latestPredicates.isLoading ? 6 : 4}
       >
         {recentVaults?.length ? (
           <Box pb={6} alignSelf="flex-start">
@@ -172,7 +170,7 @@ const HomePage = () => {
 
                 return (
                   <CustomSkeleton
-                    isLoaded={!homeRequest.isLoading || !!recentVaults}
+                    isLoaded={!latestPredicates.isLoading || !!recentVaults}
                     key={id}
                     maxH={{ base: 180, sm: 190 }}
                   >
@@ -185,7 +183,7 @@ const HomePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.userVaults({
-                                workspaceId: single,
+                                workspaceId: userInfos.workspace?.id,
                               }),
                             )
                           }
@@ -197,18 +195,15 @@ const HomePage = () => {
                           workspace={workspace}
                           title={description}
                           members={members!}
-                          onClick={async () => {
-                            selectWorkspace(workspace.id, {
-                              onSelect: async (_workspace) => {
-                                navigate(
-                                  Pages.detailsVault({
-                                    workspaceId: _workspace.id,
-                                    vaultId: id,
-                                  }),
-                                );
-                              },
-                            });
-                          }}
+                          onClick={() =>
+                            handleWorkspaceSelection(
+                              workspace.id,
+                              Pages.detailsVault({
+                                workspaceId: workspace.id,
+                                vaultId: id,
+                              }),
+                            )
+                          }
                         />
                       )}
                     </GridItem>

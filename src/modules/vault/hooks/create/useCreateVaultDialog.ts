@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 
-import { useAuth, useQueryParams } from '@/modules/auth';
+import { useQueryParams } from '@/modules/auth';
 import { useCreateConnections } from '@/modules/dapp/hooks/useCreateConnection';
 
 import { TabState, useCreateVault } from './useCreateVault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
@@ -16,9 +17,10 @@ export type UseCreateVaultDialogReturn = ReturnType<
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const { form, tabs, vaultNameIsAvailable, vaultId, ...rest } =
     useCreateVault();
+
   const { name, origin, sessionId, request_id } = useQueryParams();
   const createConnectionsMutation = useCreateConnections();
-  const auth = useAuth();
+  const { authDetails } = useWorkspaceContext();
 
   const handleCancel = useCallback(() => {
     props.onClose();
@@ -33,7 +35,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         name: name!,
         origin: origin!,
         request_id: request_id!,
-        userAddress: auth.account,
+        userAddress: authDetails.userInfos.address,
         vaultId: vaultId,
       });
     }
