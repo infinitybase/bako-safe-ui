@@ -32,10 +32,8 @@ const useSignTransaction = ({
   const [currentTransaction, setCurrentTransaction] = useState<
     ITransaction | undefined
   >(undefined);
-
-  const {
-    transactionRequest: { refetch: refetchTransactionsRequest },
-  } = useTransactionList();
+  const [pendingTransactions, setPendingTransactions] =
+    useState<ITransaction[]>();
 
   const toast = useTransactionToast();
 
@@ -53,17 +51,17 @@ const useSignTransaction = ({
     },
   });
 
-  useMemo(() => {
-    const toSend =
-      !!currentTransaction &&
-      currentTransaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
-      !isExecuting(currentTransaction);
+  // useMemo(() => {
+  //   const toSend =
+  //     !!currentTransaction &&
+  //     currentTransaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+  //     !isExecuting(currentTransaction);
 
-    if (toSend) {
-      executeTransaction(currentTransaction);
-    }
-    return currentTransaction;
-  }, [currentTransaction]);
+  //   if (toSend) {
+  //     executeTransaction(currentTransaction);
+  //   }
+  //   return currentTransaction;
+  // }, [currentTransaction]);
 
   const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
@@ -82,7 +80,14 @@ const useSignTransaction = ({
     },
   });
 
-  const confirmTransaction = async (callback?: () => void) => {
+  const confirmTransaction = async (
+    selectedTransactionId: string,
+    callback?: () => void,
+  ) => {
+    const selectedTransaction = pendingTransactions?.find(
+      (transaction) => transaction.id === selectedTransactionId,
+    );
+    setCurrentTransaction(selectedTransaction);
     const signedMessage = await signMessageRequest.mutateAsync(
       currentTransaction!.hash,
     );
@@ -96,6 +101,15 @@ const useSignTransaction = ({
       },
       {
         onSuccess: () => {
+          const toSend =
+            !!currentTransaction &&
+            currentTransaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+            !isExecuting(currentTransaction);
+
+          if (toSend) {
+            executeTransaction(currentTransaction);
+          }
+
           callback && callback();
         },
       },
@@ -115,6 +129,7 @@ const useSignTransaction = ({
   };
 
   return {
+    setPendingTransactions,
     currentTransaction,
     setCurrentTransaction,
     request,

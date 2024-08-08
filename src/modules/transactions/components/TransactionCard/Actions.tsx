@@ -72,26 +72,45 @@ const Actions = ({
       isTransactionSuccess,
       isTransactionLoading,
       setCurrentTransaction,
+      setPendingTransactions,
+      signMessageRequest,
     },
   } = useTransactionSend();
 
+  const { isSigned, isDeclined, isCompleted, isReproved } = status;
+
   useEffect(() => {
     if (transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS) {
-      setCurrentTransaction(transaction);
+      setPendingTransactions((prev) => [...(prev || []), transaction]);
     } else if (
       isTransactionSuccess &&
       transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
     ) {
-      setCurrentTransaction(transaction);
+      setPendingTransactions((prev) => [...(prev || []), transaction]);
     } else if (
       isTransactionSuccess &&
       transaction?.status === TransactionStatus.SUCCESS
     ) {
-      setCurrentTransaction(transaction);
+      setPendingTransactions((prev) => [...(prev || []), transaction]);
     }
   }, [transaction, isTransactionLoading, isTransactionSuccess]);
 
-  const { isSigned, isDeclined, isCompleted, isReproved } = status;
+  // useEffect(() => {
+  //   console.log('transactionStatys:', transaction?.status);
+  //   if (transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS) {
+  //     setCurrentTransaction(transaction);
+  //   } else if (
+  //     isTransactionSuccess &&
+  //     transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
+  //   ) {
+  //     setCurrentTransaction(transaction);
+  //   } else if (
+  //     isTransactionSuccess &&
+  //     transaction?.status === TransactionStatus.SUCCESS
+  //   ) {
+  //     setCurrentTransaction(transaction);
+  //   }
+  // }, [transaction, isTransactionLoading, isTransactionSuccess]);
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
@@ -134,11 +153,11 @@ const Actions = ({
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess && !awaitingAnswer}
+            isDisabled={isTransactionSuccess}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction(callBack);
+              confirmTransaction(transaction.id, callBack);
             }}
           >
             Sign
@@ -155,7 +174,7 @@ const Actions = ({
               declineTransaction(transaction.id);
             }}
             isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess && !awaitingAnswer}
+            isDisabled={isTransactionSuccess}
           >
             Decline
           </Button>

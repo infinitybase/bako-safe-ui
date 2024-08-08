@@ -43,13 +43,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         >
           <SocketProvider>
             <BakoSafeQueryClientProvider>
-              <TransactionSendProvider>
-                <BrowserRouter>
-                  <WorkspaceProvider>
+              <BrowserRouter>
+                <WorkspaceProvider>
+                  <TransactionSendProvider>
                     <App />
-                  </WorkspaceProvider>
-                </BrowserRouter>
-              </TransactionSendProvider>
+                  </TransactionSendProvider>
+                </WorkspaceProvider>
+              </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>
         </FuelProvider>

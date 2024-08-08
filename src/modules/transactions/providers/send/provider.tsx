@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ITransaction, TransactionStatus } from 'bakosafe';
-import { createContext, PropsWithChildren, useContext, useRef } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 
 import { queryClient } from '@/config';
 import { useBakoSafeTransactionSend } from '@/modules/core';
@@ -9,16 +15,24 @@ import { useTransactionToast } from './toast';
 import { expectedCommonErrorMessage } from '../../utils';
 import { useSignTransaction } from '../../hooks/signature';
 import { useNotificationsStore } from '@/modules/notifications/store';
+import { UseMutationResult } from '@tanstack/react-query';
 
 interface TransactionSendContextType {
   clearAll: () => void;
   signTransaction: {
-    confirmTransaction: (callback?: () => void) => Promise<void>;
+    confirmTransaction: (
+      transactionId: string,
+      callback?: () => void,
+    ) => Promise<void>;
     declineTransaction: (transactionId: string) => Promise<void>;
     isTransactionLoading: boolean;
     isTransactionSuccess: boolean;
     setCurrentTransaction: (transaction: ITransaction) => void;
     currentTransaction?: ITransaction;
+    setPendingTransactions: React.Dispatch<
+      React.SetStateAction<ITransaction[] | undefined>
+    >;
+    signMessageRequest: UseMutationResult<string, unknown, string, unknown>;
     retryTransaction: () => Promise<void>;
   };
 }
@@ -69,9 +83,6 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       );
       refetchTransactionList();
       validateResult(transaction);
-
-      console.log('transactionID', transaction.id);
-      console.log('currentID:', currentTransaction?.id);
     },
 
     // @ts-ignore
@@ -110,7 +121,6 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   });
 
   const executeTransaction = (transaction: ITransaction) => {
-    console.log('transaction no execute', transaction);
     if (!isExecuting(transaction)) {
       transactionsRef.current.push(transaction);
       toast.loading(transaction);
@@ -126,6 +136,8 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     isLoading: isTransactionLoading,
     isSuccess: isTransactionSuccess,
     retryTransaction,
+    setPendingTransactions,
+    signMessageRequest,
   } = useSignTransaction({ isExecuting, executeTransaction });
 
   const clearAll = () => {
@@ -138,6 +150,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
       value={{
         clearAll,
         signTransaction: {
+          setPendingTransactions,
           currentTransaction,
           setCurrentTransaction,
           confirmTransaction,
@@ -145,6 +158,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
           retryTransaction,
           isTransactionLoading,
           isTransactionSuccess,
+          signMessageRequest,
         },
       }}
     >
