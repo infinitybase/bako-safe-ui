@@ -17,14 +17,14 @@ export interface HomeTransactionsResponse {
 type TokensUSDResponse = [AssetId, number][];
 export class HomeService {
   static async home() {
-    const { data } = await api.get<HomeDataResponse>(`/user/me`);
+    const { data } = await api.get<HomeDataResponse>(`/user/latest/info`);
 
     return data;
   }
 
   static async homeTransactions(type?: TransactionType) {
     const { data } = await api.get<HomeTransactionsResponse>(
-      `/user/me/transactions`,
+      `/user/latest/transactions`,
       {
         params: {
           type,
@@ -36,7 +36,7 @@ export class HomeService {
   }
 
   static async getTokensUSDAmount() {
-    const { data } = await api.get<TokensUSDResponse>(`/user/me/tokens`);
+    const { data } = await api.get<TokensUSDResponse>(`/user/latest/tokens`);
 
     return data;
   }

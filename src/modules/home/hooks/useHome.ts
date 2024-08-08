@@ -20,7 +20,7 @@ const useHome = () => {
 
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
-  const vaultsTotal = homeDataRequest?.data?.predicates.total ?? 0;
+  const vaultsTotal = homeDataRequest?.data?.predicates?.total ?? 0;
 
   const { selectWorkspace } = useSelectWorkspace();
 
