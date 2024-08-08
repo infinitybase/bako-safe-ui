@@ -9,9 +9,12 @@ import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { TransactionCard, transactionStatus } from '@/modules/transactions';
+import {
+  TransactionCard,
+  transactionStatus,
+  useTransactionSend,
+} from '@/modules/transactions';
 
-import { useSignTransaction } from '../../hooks/signature';
 import { TransactionWithVault } from '../../services/types';
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -25,8 +28,15 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const { onClose, isOpen, transaction, account, status, isSigner } = props;
 
-  const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
-    useSignTransaction({ transaction: transaction! });
+  const {
+    signTransaction: {
+      confirmTransaction,
+      declineTransaction,
+      isTransactionSuccess,
+      isTransactionLoading,
+      // setCurrentTransaction,
+    },
+  } = useTransactionSend();
 
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
 
@@ -95,22 +105,22 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                declineTransaction(transaction.id);
+                // declineTransaction(transaction.id);
               }}
-              isLoading={isLoading}
-              isDisabled={isSuccess}
+              isLoading={isTransactionLoading}
+              isDisabled={isTransactionSuccess}
             >
               Decline
             </Button>
             <Button
               variant="primary"
               w="full"
-              isLoading={isLoading}
-              isDisabled={isSuccess}
+              isLoading={isTransactionLoading}
+              isDisabled={isTransactionSuccess}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                confirmTransaction();
+                // confirmTransaction();
                 props.callBack && props.callBack();
               }}
             >

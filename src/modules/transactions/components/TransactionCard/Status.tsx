@@ -16,8 +16,8 @@ interface TransactionCardStatusProps {
   showDescription?: boolean;
 }
 
-import { useSignTransaction } from '../../hooks/signature';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { useTransactionSend } from '../../providers';
 
 const Status = ({
   transaction,
@@ -25,9 +25,9 @@ const Status = ({
   showDescription = true,
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
-  const { retryTransaction, isLoading } = useSignTransaction({
-    transaction: transaction!,
-  });
+  const {
+    signTransaction: { retryTransaction, isTransactionLoading },
+  } = useTransactionSend();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
@@ -44,7 +44,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isLoading && (
+      {isTransactionLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
@@ -74,8 +74,8 @@ const Status = ({
               isReproved || isError
                 ? 'error'
                 : isCompleted
-                ? 'success'
-                : 'warning'
+                  ? 'success'
+                  : 'warning'
             }
           >
             {isError && 'Error'}
@@ -96,11 +96,11 @@ const Status = ({
               borderRadius="20px"
               fontSize="xs"
               fontWeight="normal"
-              isLoading={isLoading}
+              isLoading={isTransactionLoading}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                retryTransaction();
+                // retryTransaction();
               }}
               leftIcon={<RefreshIcon fontSize="sm" />}
             >

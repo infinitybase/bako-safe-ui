@@ -16,9 +16,10 @@ import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
-import { useSignTransaction } from '../../hooks/signature';
 import { ITransactionWithType } from '../../services';
 import { TransactionType } from 'bakosafe';
+import { useTransactionSend } from '../../providers';
+import { useEffect } from 'react';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -64,10 +65,21 @@ const Actions = ({
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
+  const {
+    signTransaction: {
+      confirmTransaction,
+      declineTransaction,
+      isTransactionSuccess,
+      isTransactionLoading,
+      setCurrentTransaction,
+    },
+  } = useTransactionSend();
+
+  useEffect(() => {
+    setCurrentTransaction(transaction!);
+  }, [transaction]);
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
-  const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
-    useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
@@ -109,9 +121,10 @@ const Actions = ({
             variant="primary"
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            isLoading={isLoading}
-            isDisabled={isSuccess}
+            isLoading={isTransactionLoading}
+            isDisabled={isTransactionSuccess}
             onClick={(e) => {
+              // setCurrentTransaction(transaction);
               e.stopPropagation();
               e.preventDefault();
               confirmTransaction(callBack);
@@ -128,10 +141,11 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
+              // setCurrentTransaction(transaction);
               declineTransaction(transaction.id);
             }}
-            isLoading={isLoading}
-            isDisabled={isSuccess}
+            isLoading={isTransactionLoading}
+            isDisabled={isTransactionSuccess}
           >
             Decline
           </Button>

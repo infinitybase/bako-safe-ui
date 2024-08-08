@@ -34,18 +34,30 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const transactionSendContext = useTransactionSend();
 
+  const signMessageRequest = useWalletSignMessage({
+    onError: () => {
+      warningToast({
+        title: 'Signature failed',
+        description: 'Please try again!',
+      });
+    },
+  });
+
   useMemo(() => {
     const transaction = options.transaction;
 
-    const toSend =
-      !!transaction &&
-      transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
-      !transactionSendContext.isExecuting(transaction);
+    if (transactionSendContext.isExecuting) {
+      const toSend =
+        !!transaction &&
+        transaction.status === TransactionStatus.PROCESS_ON_CHAIN &&
+        !transactionSendContext?.isExecuting(transaction);
 
-    if (toSend) {
-      transactionSendContext.executeTransaction(transaction);
+      if (toSend) {
+        console.log('inTo send?');
+        transactionSendContext?.executeTransaction(transaction);
+      }
+      return options.transaction;
     }
-    return options.transaction;
   }, [options.transaction]);
 
   const refetchTransactionList = useCallback(async () => {
@@ -63,15 +75,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');
-    },
-  });
-
-  const signMessageRequest = useWalletSignMessage({
-    onError: () => {
-      warningToast({
-        title: 'Signature failed',
-        description: 'Please try again!',
-      });
     },
   });
 
@@ -116,8 +119,8 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     isLoading:
       request.isPending ||
       signMessageRequest.isPending ||
-      options.transaction.status === TransactionStatus.PROCESS_ON_CHAIN ||
-      options.transaction.status === TransactionStatus.PENDING_SENDER,
+      options.transaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||
+      options.transaction?.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,
   };
 };

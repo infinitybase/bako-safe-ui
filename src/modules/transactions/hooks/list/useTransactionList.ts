@@ -28,7 +28,7 @@ const useTransactionList = ({
   type = undefined,
 }: IUseTransactionListProps = {}) => {
   const params = useParams<{ vaultId: string }>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const inView = useInView();
   const { account } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
@@ -93,7 +93,7 @@ const useTransactionList = ({
     },
     selectedTransaction,
     setSelectedTransaction,
-    navigate,
+    // navigate,
     params,
     filter: {
       set: setFilter,
