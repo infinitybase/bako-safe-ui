@@ -83,7 +83,7 @@ const WorkspacePage = () => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const balanceUSD = worksapceBalance.balance.balanceUSD;
+  const balanceUSD = worksapceBalance.balance.currentBalanceUSD;
 
   const UpdateBalance = (
     <Text
