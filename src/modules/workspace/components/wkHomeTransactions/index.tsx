@@ -1,12 +1,3 @@
-import { CustomSkeleton, TransactionTypeFilters } from '@/components';
-import { EmptyState } from '@/components/emptyState';
-import { Pages, useScreenSize } from '@/modules/core';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  WaitingSignatureBadge,
-  transactionStatus,
-} from '@/modules/transactions';
 import {
   Box,
   Button,
@@ -17,14 +8,24 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
-import { useAuth } from '@/modules/auth';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
+import { CustomSkeleton } from '@/components';
+import { EmptyState } from '@/components/emptyState';
+import { useAuth } from '@/modules/auth';
+import { Pages, useScreenSize } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useWorkspace } from '../../hooks';
+import {
+  TransactionCard,
+  TransactionCardMobile,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+
+import { useWorkspace } from '../../hooks';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -37,8 +38,7 @@ const shakeAnimation = keyframes`
 const WkHomeTransactions = memo(() => {
   const [hasTransactions, setHasTransactions] = useState(false);
 
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
+  const { txFilterType } = useFilterTxType();
 
   const {
     account,
@@ -120,11 +120,6 @@ const WkHomeTransactions = memo(() => {
           />
         </Box>
         <Spacer />
-        <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
-          buttonsFullWidth={isSmall}
-        />
 
         <Button
           color="grey.75"
