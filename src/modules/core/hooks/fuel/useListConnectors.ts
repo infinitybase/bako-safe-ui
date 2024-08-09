@@ -44,7 +44,6 @@ const useDefaultConnectors = () => {
       (!!fuelConnector && fuelConnector.installed) ||
       (isWebAuthn && hasWebAuthn);
 
-    console.log('[CONNECTOR]: ', isEnabled, connector.name, fuelConnector);
     return {
       ...connector,
       imageUrl: undefined,

@@ -10,23 +10,21 @@ import {
 } from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
   'perPage' | 'page'
-> & {};
+> & {
+  workspaceId: string;
+};
 
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
+  requestInterval: number,
 ) => {
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
-
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-      userInfos.workspace?.id,
+      params.workspaceId,
       params.status as StatusFilter,
       params.predicateId?.[0],
       params.id,
@@ -44,6 +42,7 @@ const useTransactionListPaginationRequest = (
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
         return data;
       }),
+    refetchInterval: requestInterval,
     initialPageParam: 0,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages

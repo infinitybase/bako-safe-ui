@@ -34,14 +34,7 @@ const useWorkspaceDetails = () => {
     addressBookInfos.requests.listContactsRequest.isLoading,
   ]);
 
-  const isWorkspaceReady = isSignInpage
-    ? true
-    : !addressBookInfos.requests.listContactsRequest.isLoading &&
-      authDetails &&
-      !latestPredicates.isLoading &&
-      !worksapceBalance.isLoading &&
-      showWorkspace;
-
+  const isWorkspaceReady = true;
   return {
     isWorkspaceReady,
     authDetails,

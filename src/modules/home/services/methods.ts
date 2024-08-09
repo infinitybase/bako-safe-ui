@@ -10,7 +10,7 @@ export interface HomeDataResponse {
 }
 
 export interface HomeTransactionsResponse {
-  data: IPagination<ITransactionsGroupedByMonth>;
+  data: ITransactionsGroupedByMonth[];
 }
 
 type TokensUSDResponse = [AssetId, number][];

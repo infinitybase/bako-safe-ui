@@ -4,16 +4,13 @@ import { TransactionType } from 'bakosafe';
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const useHomeTransactionsRequest = (type: TransactionType | undefined) => {
-  const { authDetails } = useWorkspaceContext();
-
+const useHomeTransactionsRequest = (
+  workspaceId: string,
+  type: TransactionType | undefined,
+) => {
   return useQuery({
-    queryKey: [
-      HomeQueryKey.HOME_WORKSPACE(authDetails.userInfos.workspace?.id),
-      type,
-    ],
+    queryKey: [HomeQueryKey.HOME_WORKSPACE(workspaceId), type],
     queryFn: () => HomeService.homeTransactions(type),
     refetchOnWindowFocus: true,
     enabled: window.location.pathname != '/',

@@ -19,7 +19,8 @@ import { useScreenSize } from '@/modules/core/hooks';
 import { ITransactionWithType } from '../../services';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useTransactionSend } from '../../providers';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -69,48 +70,12 @@ const Actions = ({
     signTransaction: {
       confirmTransaction,
       declineTransaction,
-      isTransactionSuccess,
-      isTransactionLoading,
-      setCurrentTransaction,
-      setPendingTransactions,
-      signMessageRequest,
+      isLoading,
+      isSuccess,
     },
-  } = useTransactionSend();
+  } = useTransactionsContext();
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
-
-  useEffect(() => {
-    if (transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS) {
-      setPendingTransactions((prev) => [...(prev || []), transaction]);
-    } else if (
-      isTransactionSuccess &&
-      transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
-    ) {
-      setPendingTransactions((prev) => [...(prev || []), transaction]);
-    } else if (
-      isTransactionSuccess &&
-      transaction?.status === TransactionStatus.SUCCESS
-    ) {
-      setPendingTransactions((prev) => [...(prev || []), transaction]);
-    }
-  }, [transaction, isTransactionLoading, isTransactionSuccess]);
-
-  // useEffect(() => {
-  //   console.log('transactionStatys:', transaction?.status);
-  //   if (transaction?.status === TransactionStatus.AWAIT_REQUIREMENTS) {
-  //     setCurrentTransaction(transaction);
-  //   } else if (
-  //     isTransactionSuccess &&
-  //     transaction?.status === TransactionStatus.PROCESS_ON_CHAIN
-  //   ) {
-  //     setCurrentTransaction(transaction);
-  //   } else if (
-  //     isTransactionSuccess &&
-  //     transaction?.status === TransactionStatus.SUCCESS
-  //   ) {
-  //     setCurrentTransaction(transaction);
-  //   }
-  // }, [transaction, isTransactionLoading, isTransactionSuccess]);
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
@@ -152,11 +117,12 @@ const Actions = ({
             variant="primary"
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess}
+            isLoading={isLoading}
+            isDisabled={isSuccess}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
+              console.log('ID Selecionado', transaction.id);
               confirmTransaction(transaction.id, callBack);
             }}
           >
@@ -173,8 +139,8 @@ const Actions = ({
               e.preventDefault();
               declineTransaction(transaction.id);
             }}
-            isLoading={isTransactionLoading}
-            isDisabled={isTransactionSuccess}
+            isLoading={isLoading}
+            isDisabled={isSuccess}
           >
             Decline
           </Button>

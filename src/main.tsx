@@ -15,6 +15,7 @@ import { defaultTheme } from '@/themes';
 import { SocketProvider } from './config/socket';
 import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 import { BrowserRouter } from 'react-router-dom';
+import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 
 BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
@@ -44,11 +45,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <SocketProvider>
             <BakoSafeQueryClientProvider>
               <BrowserRouter>
-                <WorkspaceProvider>
-                  <TransactionSendProvider>
-                    <App />
-                  </TransactionSendProvider>
-                </WorkspaceProvider>
+                <TransactionsProvider>
+                  <WorkspaceProvider>
+                    <TransactionSendProvider>
+                      <App />
+                    </TransactionSendProvider>
+                  </WorkspaceProvider>
+                </TransactionsProvider>
               </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>

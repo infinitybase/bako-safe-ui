@@ -27,12 +27,6 @@ interface TransactionSendContextType {
     declineTransaction: (transactionId: string) => Promise<void>;
     isTransactionLoading: boolean;
     isTransactionSuccess: boolean;
-    setCurrentTransaction: (transaction: ITransaction) => void;
-    currentTransaction?: ITransaction;
-    setPendingTransactions: React.Dispatch<
-      React.SetStateAction<ITransaction[] | undefined>
-    >;
-    signMessageRequest: UseMutationResult<string, unknown, string, unknown>;
     retryTransaction: () => Promise<void>;
   };
 }
@@ -45,9 +39,6 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   const { setHasNewNotification } = useNotificationsStore();
   const toast = useTransactionToast();
   const transactionsRef = useRef<ITransaction[]>([]);
-
-  const isExecuting = (transaction: ITransaction) =>
-    !!transactionsRef.current.find((data) => data.id === transaction.id);
 
   const refetchTransactionList = () => {
     const queries = ['home', 'transaction', 'assets'];
@@ -120,6 +111,9 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     },
   });
 
+  const isExecuting = (transaction: ITransaction) =>
+    !!transactionsRef.current.find((data) => data.id === transaction.id);
+
   const executeTransaction = (transaction: ITransaction) => {
     if (!isExecuting(transaction)) {
       transactionsRef.current.push(transaction);
@@ -128,17 +122,13 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     }
   };
 
-  const {
-    currentTransaction,
-    setCurrentTransaction,
-    confirmTransaction,
-    declineTransaction,
-    isLoading: isTransactionLoading,
-    isSuccess: isTransactionSuccess,
-    retryTransaction,
-    setPendingTransactions,
-    signMessageRequest,
-  } = useSignTransaction({ isExecuting, executeTransaction });
+  // const {
+  //   confirmTransaction,
+  //   declineTransaction,
+  //   isLoading: isTransactionLoading,
+  //   isSuccess: isTransactionSuccess,
+  //   retryTransaction,
+  // } = useSignTransaction({ isExecuting, executeTransaction });
 
   const clearAll = () => {
     transactionsRef.current = [];
@@ -149,17 +139,13 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     <TransactionSendContext.Provider
       value={{
         clearAll,
-        signTransaction: {
-          setPendingTransactions,
-          currentTransaction,
-          setCurrentTransaction,
-          confirmTransaction,
-          declineTransaction,
-          retryTransaction,
-          isTransactionLoading,
-          isTransactionSuccess,
-          signMessageRequest,
-        },
+        // signTransaction: {
+        //   confirmTransaction,
+        //   declineTransaction,
+        //   retryTransaction,
+        //   isTransactionLoading,
+        //   isTransactionSuccess,
+        // },
       }}
     >
       {props.children}

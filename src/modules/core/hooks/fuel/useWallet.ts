@@ -13,6 +13,7 @@ import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useAuth } from '@/modules/auth';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -25,9 +26,7 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
+  const { userInfos } = useAuth();
 
   return useWallet(userInfos.address);
 };
@@ -69,10 +68,8 @@ const useWalletSignMessage = (
 ) => {
   const { data: wallet } = useMyWallet();
   const {
-    authDetails: {
-      userInfos: { webauthn, type },
-    },
-  } = useWorkspaceContext();
+    userInfos: { type, webauthn },
+  } = useAuth();
 
   return useMutation({
     mutationFn: async (message: string) => {

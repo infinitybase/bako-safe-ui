@@ -4,15 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { SignatureUtils } from '@/modules/core';
 
 import { useMeTransactionsRequest } from './useMeTransactionsRequest';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { useAuth } from '@/modules/auth';
+
+export type IUseMeTransactionsReturn = ReturnType<typeof useMeTransactions>;
 
 const useMeTransactions = () => {
   const navigate = useNavigate();
-
   const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
-  const transactionsRequest = useMeTransactionsRequest(userInfos.address);
+    userInfos: { workspace },
+  } = useAuth();
+
+  const transactionsRequest = useMeTransactionsRequest(workspace?.id);
 
   const transactions = useMemo(() => {
     return transactionsRequest.data

@@ -18,6 +18,7 @@ interface TransactionCardStatusProps {
 
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useTransactionSend } from '../../providers';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 const Status = ({
   transaction,
@@ -26,8 +27,8 @@ const Status = ({
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const {
-    signTransaction: { retryTransaction, isTransactionLoading },
-  } = useTransactionSend();
+    signTransaction: { retryTransaction, isLoading },
+  } = useTransactionsContext();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
@@ -44,7 +45,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isTransactionLoading && (
+      {isLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
@@ -96,11 +97,11 @@ const Status = ({
               borderRadius="20px"
               fontSize="xs"
               fontWeight="normal"
-              isLoading={isTransactionLoading}
+              isLoading={isLoading}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // retryTransaction();
+                retryTransaction();
               }}
               leftIcon={<RefreshIcon fontSize="sm" />}
             >

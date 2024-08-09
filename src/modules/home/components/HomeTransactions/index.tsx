@@ -40,6 +40,8 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const [hasTransactions, setHasTransactions] = useState(false);
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
+  const { transactions: groupedTransactions } =
+    useHomeTransactions(txFilterType);
 
   const {
     authDetails: { userInfos },
@@ -48,9 +50,6 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
       handlers: { navigate },
     },
   } = useWorkspaceContext();
-
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
 
   useEffect(() => {
     if (
