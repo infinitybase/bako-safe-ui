@@ -57,7 +57,7 @@ export const useDrawerWebAuth = () => {
           permissions: workspace.permissions,
           webAuthn,
         });
-        navigate(redirectPathBuilder(!!sessionId, location, address));
+        navigate(redirectPathBuilder(!!sessionId, location));
       }, 800);
     },
     onError: () => {

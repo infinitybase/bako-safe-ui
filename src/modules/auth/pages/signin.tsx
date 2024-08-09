@@ -1,5 +1,5 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import {
@@ -26,7 +26,7 @@ const SigninPage = () => {
     title: 'Welcome to Bako Safe',
   };
 
-  useMemo(() => {
+  useEffect(() => {
     auth.invalidAccount &&
       errorToast({
         title: 'Invalid Account',
@@ -90,6 +90,7 @@ const SigninPage = () => {
           <ConnectorsList
             connectors={connectors.items}
             onSelect={connectors.select}
+            isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
           />
 
           <SignInFooter />
@@ -115,6 +116,7 @@ const SigninPage = () => {
       <ConnectorsList
         connectors={connectors.items}
         onSelect={connectors.select}
+        isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
       />
 
       <SignInFooter />

@@ -27,15 +27,17 @@ interface CardConnectorProps {
   connector: ConnectorType;
   isWebAuthn?: boolean;
   onClick: (connector: string) => void;
+  isAnyWalletConnectorOpen: boolean;
 }
 
 interface ConnectorsListProps {
   connectors: ConnectorType[];
   onSelect: (connector: string) => void;
+  isAnyWalletConnectorOpen: boolean;
 }
 
 const CardConnector = (props: CardConnectorProps) => {
-  const { connector, isWebAuthn, onClick } = props;
+  const { connector, isWebAuthn, onClick, isAnyWalletConnectorOpen } = props;
 
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
@@ -77,6 +79,7 @@ const CardConnector = (props: CardConnectorProps) => {
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
+      pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
       _hover={
         isWebAuthn
           ? {
@@ -118,7 +121,11 @@ const CardConnector = (props: CardConnectorProps) => {
   );
 };
 
-const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
+const ConnectorsList = ({
+  connectors,
+  onSelect,
+  isAnyWalletConnectorOpen,
+}: ConnectorsListProps) => {
   const { byConnector, sessionId } = useQueryParams();
   const webAuthnConnector = connectors.find(
     (connector) => connector.name === EConnectors.WEB_AUTHN,
@@ -140,16 +147,11 @@ const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
       </Text>
 
       <CardConnector
+        isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
         connector={webAuthnConnector!}
         isWebAuthn
         onClick={() => {
           const isConnector = byConnector && !!sessionId;
-          // console.log('isConnector', isConnector);
-          // console.log(
-          //   window.location.pathname,
-          //   window.location.search,
-          //   window.origin,
-          // );
 
           if (isConnector) {
             window.open(
@@ -157,6 +159,7 @@ const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
               '_blank',
             );
           }
+
           return onSelect(EConnectors.WEB_AUTHN);
         }}
       />
@@ -176,6 +179,7 @@ const ConnectorsList = ({ connectors, onSelect }: ConnectorsListProps) => {
       >
         {allOtherConnectors.map((connector) => (
           <CardConnector
+            isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
             key={connector.name}
             connector={connector}
             onClick={onSelect}
