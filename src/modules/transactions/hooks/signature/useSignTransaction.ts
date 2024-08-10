@@ -10,7 +10,7 @@ import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useSendTransaction } from '../send/useSendTransaction';
 import { IUseMeTransactionsReturn } from '../me';
-import { IUseHomeTransactionsReturn } from '@/modules/home';
+
 import { IUseTransactionList } from '../list';
 
 export interface SignTransactionParams {
@@ -26,23 +26,19 @@ export interface UseSignTransactionOptions {
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
   meTransactions: IUseMeTransactionsReturn;
-  homeTransactions: IUseHomeTransactionsReturn;
-  setRequestInterval: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const useSignTransaction = ({
   transactionList,
-  homeTransactions,
+
   meTransactions,
-  setRequestInterval,
 }: IUseSignTransactionProps) => {
-  const { transactionRequest, pendingTransactions } = transactionList;
+  const { pendingTransactions } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction>();
   const [canExecute, setCanExecute] = useState(false);
 
   const { executeTransaction } = useSendTransaction({
-    homeTransactions,
     meTransactions,
     transactionList,
   });
@@ -58,16 +54,12 @@ const useSignTransaction = ({
     },
   });
 
-  console.log('pendingTransactions:', pendingTransactions);
-
   const request = useSignTransactionRequest({
     onSuccess: async () => {
-      await transactionRequest.refetch();
-      await homeTransactions.request.refetch();
+      await transactionList.request.refetch();
       await meTransactions.transactionsRequest.refetch();
     },
     onError: () => {
-      console.log('the erro come from here? ');
       toast.generalError(randomBytes.toString(), 'Invalid signature');
     },
   });
@@ -154,11 +146,3 @@ const useSignTransaction = ({
 };
 
 export { useSignTransaction };
-
-// const refetchTransactionList = useCallback(async () => {
-//   const queries = ['home', 'transaction', 'assets', 'balance'];
-//   queryClient.invalidateQueries({
-//     predicate: (query) =>
-//       queries.some((value) => query.queryHash.includes(value)),
-//   });
-// }, []);

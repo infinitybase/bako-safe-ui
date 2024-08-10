@@ -20,7 +20,6 @@ type UseTransactionListPaginationParams = Omit<
 
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
-  requestInterval: number,
 ) => {
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
@@ -42,7 +41,6 @@ const useTransactionListPaginationRequest = (
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
         return data;
       }),
-    refetchInterval: requestInterval,
     initialPageParam: 0,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages

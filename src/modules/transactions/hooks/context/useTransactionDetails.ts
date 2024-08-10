@@ -1,15 +1,12 @@
-import { useHomeTransactions } from '@/modules/home';
 import { useMeTransactions } from '../me';
 import { useTransactionList } from '../list';
 import { useAuth } from '@/modules/auth';
 import { useSignTransaction } from '../signature';
-import { useState } from 'react';
+import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
 const useTransactionDetails = () => {
-  const [requestInterval, setRequestInterval] = useState(1000 * 60 * 5);
-
   // Provavelmente usar cookies para salvar o wkId
   const {
     userInfos: { workspace },
@@ -17,18 +14,19 @@ const useTransactionDetails = () => {
 
   const meTransactions = useMeTransactions();
   const homeTransactions = useHomeTransactions(workspace?.id);
-  const transactionsPages = useTransactionList({ requestInterval });
+  const transactionsPageList = useTransactionList({
+    workspaceId: workspace?.id,
+    byMonth: true,
+  });
   const signTransaction = useSignTransaction({
-    transactionList: transactionsPages,
+    transactionList: transactionsPageList,
     meTransactions,
-    homeTransactions,
-    setRequestInterval,
   });
 
   return {
     meTransactions,
     homeTransactions,
-    transactionsPages,
+    transactionsPageList,
     signTransaction,
   };
 };

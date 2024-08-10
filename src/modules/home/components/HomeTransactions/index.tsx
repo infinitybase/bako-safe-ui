@@ -20,9 +20,8 @@ import {
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
-import { useHomeTransactions } from '../../hooks/useHomeTransactions';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -38,10 +37,13 @@ interface HomeTransactionsProps {
 
 const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const [hasTransactions, setHasTransactions] = useState(false);
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
+
+  const {
+    homeTransactions: {
+      transactions,
+      handlers: { handleIncomingAction, handleOutgoingAction },
+    },
+  } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
@@ -52,20 +54,14 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   } = useWorkspaceContext();
 
   useEffect(() => {
-    if (
-      groupedTransactions &&
-      groupedTransactions.length >= 1 &&
-      !hasTransactions
-    ) {
+    if (transactions && transactions.length >= 1 && !hasTransactions) {
       setHasTransactions(true);
     }
-  }, [groupedTransactions]);
+  }, [transactions]);
 
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions &&
-    groupedTransactions.length <= 0 &&
-    !hasTransactions ? (
+  return transactions && transactions.length <= 0 && !hasTransactions ? (
     <VStack
       w="full"
       spacing={6}
@@ -77,7 +73,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
             : '-5px'
       }
     >
-      {groupedTransactions && (
+      {transactions && (
         <HStack w="full" spacing={4}>
           <Text
             variant="subtitle"
@@ -153,7 +149,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
         </Button>
       </Box>
 
-      {groupedTransactions?.map((grouped) => (
+      {transactions?.map((grouped) => (
         <>
           <HStack>
             <Text

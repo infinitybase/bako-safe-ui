@@ -7,9 +7,7 @@ import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
-import { useAuth } from '@/modules/auth';
-import { useVerifyOnChain } from '../useVerifyOnChain';
-import { useBakoSafeTransactionSend } from '@/modules/core';
+import { useFilterTxType } from '../filter';
 
 export enum StatusFilter {
   ALL = '',
@@ -19,7 +17,7 @@ export enum StatusFilter {
 }
 
 interface IUseTransactionListProps {
-  requestInterval?: number;
+  workspaceId?: string;
   byMonth?: boolean;
   type?: TransactionType;
 }
@@ -33,26 +31,23 @@ export interface IPendingTransactionDetails {
   predicateId: string;
 }
 
-// Interface for the pendingTransactions record
 export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
 const useTransactionList = ({
-  requestInterval = 1000 * 60 * 5,
+  workspaceId = '',
   byMonth = false,
-  type = undefined,
 }: IUseTransactionListProps = {}) => {
+  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
+  const { selectedTransaction, setSelectedTransaction } = useTransactionState();
+
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
+
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
-
-  const {
-    userInfos: { workspace },
-  } = useAuth();
-
-  const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
-  const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const {
     transactions,
@@ -62,18 +57,14 @@ const useTransactionList = ({
     hasNextPage,
     fetchNextPage,
     refetch,
-  } = useTransactionListPaginationRequest(
-    {
-      workspaceId: workspace?.id,
-      predicateId: params.vaultId ? [params.vaultId] : undefined,
-      id: selectedTransaction.id,
-      /* TODO: Change logic this */
-      status: filter ? [filter] : undefined,
-      byMonth,
-      type,
-    },
-    requestInterval,
-  );
+  } = useTransactionListPaginationRequest({
+    workspaceId: workspaceId,
+    predicateId: params.vaultId ? [params.vaultId] : undefined,
+    id: selectedTransaction.id,
+    status: filter ? [filter] : undefined,
+    byMonth,
+    type: txFilterType,
+  });
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
@@ -121,28 +112,34 @@ const useTransactionList = ({
   };
 
   return {
-    transactionRequest: {
-      transactions,
+    request: {
       isLoading,
       isFetching,
       hasNextPage,
       fetchNextPage,
       refetch,
     },
-    selectedTransaction,
-    setSelectedTransaction,
-    navigate,
-    params,
+    handlers: {
+      selectedTransaction,
+      setSelectedTransaction,
+      navigate,
+      handleIncomingAction,
+      handleOutgoingAction,
+    },
     filter: {
       set: setFilter,
       value: filter,
+      txFilterType,
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    hasSkeleton: false,
-    infinityTransactions,
     infinityTransactionsRef: lastElementRef,
     pendingTransactions: pendingTransactions(),
+    lists: {
+      transactions,
+      infinityTransactions,
+      homeDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
+    },
   };
 };
 

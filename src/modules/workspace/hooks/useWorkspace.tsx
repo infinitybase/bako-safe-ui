@@ -18,7 +18,10 @@ const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = (userInfos: IUserInfos) => {
+const useWorkspace = (
+  userInfos: IUserInfos,
+  setShowWorkspace: (showWorkspace: boolean) => void,
+) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
 
@@ -46,10 +49,10 @@ const useWorkspace = (userInfos: IUserInfos) => {
 
     if (isSelecting) return;
     if (!isValid) return !!redirect && navigate(redirect);
-
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
+        setShowWorkspace(false);
         invalidateRequests();
         navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },
@@ -117,7 +120,6 @@ const useWorkspace = (userInfos: IUserInfos) => {
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      // selectWorkspace,
       setVisibleBalance,
       hasPermission,
       goHome,

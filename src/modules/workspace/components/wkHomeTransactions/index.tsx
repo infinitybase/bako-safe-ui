@@ -20,10 +20,8 @@ import {
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
-
-import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -35,9 +33,6 @@ const shakeAnimation = keyframes`
 
 const WkHomeTransactions = memo(() => {
   const [hasTransactions, setHasTransactions] = useState(false);
-
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
 
   const {
     authDetails: { userInfos },
@@ -51,26 +46,24 @@ const WkHomeTransactions = memo(() => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
+  const {
+    homeTransactions: {
+      transactions,
+      handlers: { handleIncomingAction, handleOutgoingAction },
+    },
+  } = useTransactionsContext();
 
   useEffect(() => {
-    if (
-      groupedTransactions &&
-      groupedTransactions.length >= 1 &&
-      !hasTransactions
-    ) {
+    if (transactions && transactions.length >= 1 && !hasTransactions) {
       setHasTransactions(true);
     }
-  }, [groupedTransactions]);
+  }, [transactions]);
 
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions &&
-    groupedTransactions.length <= 0 &&
-    !hasTransactions ? (
+  return transactions && transactions.length <= 0 && !hasTransactions ? (
     <VStack w="full" spacing={6}>
-      {groupedTransactions && (
+      {transactions && (
         <HStack w="full" spacing={4}>
           <Text
             variant="subtitle"
@@ -153,7 +146,7 @@ const WkHomeTransactions = memo(() => {
         </Button>
       </Box>
 
-      {groupedTransactions?.map((grouped) => (
+      {transactions?.map((grouped) => (
         <>
           <HStack>
             <Text
