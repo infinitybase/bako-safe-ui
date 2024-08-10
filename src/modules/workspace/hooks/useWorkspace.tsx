@@ -20,7 +20,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = (
   userInfos: IUserInfos,
-  setShowWorkspace: (showWorkspace: boolean) => void,
+  invalidateGifAnimationRequest: () => void,
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
@@ -52,7 +52,6 @@ const useWorkspace = (
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
         workspaceDialog.onClose();
-        setShowWorkspace(false);
         invalidateRequests();
         navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },
@@ -94,6 +93,7 @@ const useWorkspace = (
   );
 
   const invalidateRequests = () => {
+    invalidateGifAnimationRequest();
     worksapceBalance.refetch();
     pendingSignerTransactions.refetch();
     userInfos.refetch();

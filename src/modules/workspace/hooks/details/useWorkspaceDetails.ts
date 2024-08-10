@@ -1,15 +1,12 @@
 import { useAuth } from '@/modules/auth';
 import { useWorkspace } from '../useWorkspace';
 import { useAddressBook } from '@/modules';
-import { useEffect, useRef, useState } from 'react';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { currentPath } from '@/utils';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import debounce from 'lodash.debounce';
+import { useGitLoadingRequest } from '../useGifLoadingRequest';
 
 const useWorkspaceDetails = () => {
-  const [showWorkspace, setShowWorkspace] = useState(false);
-
   const { isSignInpage } = currentPath();
 
   const {
@@ -24,39 +21,19 @@ const useWorkspaceDetails = () => {
     },
   } = useTransactionsContext();
 
+  const {
+    isLoading: isGifAnimationLoading,
+    isFetching: isGifAnimationFetching,
+    refetch: invalidateGifAnimationRequest,
+  } = useGitLoadingRequest();
   const tokensUSD = useTokensUSDAmountRequest();
   const authDetails = useAuth();
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { worksapceBalance, latestPredicates, ...requestsData },
     ...rest
-  } = useWorkspace(authDetails.userInfos, setShowWorkspace);
+  } = useWorkspace(authDetails.userInfos, invalidateGifAnimationRequest);
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
-
-  const timerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const gifDuration = 1500;
-
-    if (timerRef.current !== null) {
-      console.log('Clearing existing timer:', timerRef.current);
-      clearTimeout(timerRef.current);
-    }
-
-    // Start the timer
-    console.log('Setting new timer');
-    timerRef.current = window.setTimeout(() => {
-      console.log('Timeout finished, setting workspace to true');
-      setShowWorkspace(true);
-    }, gifDuration);
-
-    return () => {
-      if (timerRef.current !== null) {
-        console.log('Clearing timer on cleanup:', timerRef.current);
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [authDetails.userInfos.isLoading, authDetails.userInfos.isFetching]);
 
   const isWorkspaceReady = isSignInpage
     ? true
@@ -67,8 +44,9 @@ const useWorkspaceDetails = () => {
       // !isHomeRequestLoading &&
       // !isMeTransactionsLoading &&
       // !isTransactionsPageListLoading &&
-      !authDetails.userInfos.isLoading &&
-      showWorkspace;
+      !isGifAnimationLoading &&
+      !isGifAnimationFetching &&
+      !authDetails.userInfos.isLoading;
 
   return {
     isWorkspaceReady,
@@ -80,7 +58,6 @@ const useWorkspaceDetails = () => {
     },
     addressBookInfos,
     tokensUSD,
-    setShowWorkspace,
   };
 };
 
