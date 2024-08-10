@@ -19,16 +19,16 @@ import { UseMutationResult } from '@tanstack/react-query';
 
 interface TransactionSendContextType {
   clearAll: () => void;
-  signTransaction: {
-    confirmTransaction: (
-      transactionId: string,
-      callback?: () => void,
-    ) => Promise<void>;
-    declineTransaction: (transactionId: string) => Promise<void>;
-    isTransactionLoading: boolean;
-    isTransactionSuccess: boolean;
-    retryTransaction: () => Promise<void>;
-  };
+  // signTransaction: {
+  //   confirmTransaction: (
+  //     transactionId: string,
+  //     callback?: () => void,
+  //   ) => Promise<void>;
+  //   declineTransaction: (transactionId: string) => Promise<void>;
+  //   isTransactionLoading: boolean;
+  //   isTransactionSuccess: boolean;
+  //   retryTransaction: () => Promise<void>;
+  // };
 }
 
 const TransactionSendContext = createContext<TransactionSendContextType>(
@@ -111,16 +111,16 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
     },
   });
 
-  const isExecuting = (transaction: ITransaction) =>
-    !!transactionsRef.current.find((data) => data.id === transaction.id);
+  // const isExecuting = (transaction: ITransaction) =>
+  //   !!transactionsRef.current.find((data) => data.id === transaction.id);
 
-  const executeTransaction = (transaction: ITransaction) => {
-    if (!isExecuting(transaction)) {
-      transactionsRef.current.push(transaction);
-      toast.loading(transaction);
-      sendTransaction({ transaction });
-    }
-  };
+  // const executeTransaction = (transaction: ITransaction) => {
+  //   if (!isExecuting(transaction)) {
+  //     transactionsRef.current.push(transaction);
+  //     toast.loading(transaction);
+  //     sendTransaction({ transaction });
+  //   }
+  // };
 
   // const {
   //   confirmTransaction,

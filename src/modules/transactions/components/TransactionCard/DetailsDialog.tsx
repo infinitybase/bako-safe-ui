@@ -121,7 +121,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                confirmTransaction();
+                // confirmTransaction();
                 props.callBack && props.callBack();
               }}
             >
