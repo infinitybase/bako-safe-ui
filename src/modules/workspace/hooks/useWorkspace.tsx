@@ -49,9 +49,9 @@ const useWorkspace = (
 
     if (isSelecting) return;
     if (!isValid) return !!redirect && navigate(redirect);
+    workspaceDialog.onClose();
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
-        workspaceDialog.onClose();
         invalidateRequests();
         navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },

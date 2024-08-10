@@ -23,7 +23,6 @@ const useWorkspaceDetails = () => {
 
   const {
     isLoading: isGifAnimationLoading,
-    isFetching: isGifAnimationFetching,
     refetch: invalidateGifAnimationRequest,
   } = useGitLoadingRequest();
   const tokensUSD = useTokensUSDAmountRequest();
@@ -45,7 +44,6 @@ const useWorkspaceDetails = () => {
       // !isMeTransactionsLoading &&
       // !isTransactionsPageListLoading &&
       !isGifAnimationLoading &&
-      !isGifAnimationFetching &&
       !authDetails.userInfos.isLoading;
 
   return {

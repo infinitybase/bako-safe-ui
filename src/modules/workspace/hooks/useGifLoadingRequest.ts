@@ -12,8 +12,7 @@ const useGitLoadingRequest = () => {
   });
 
   return {
-    isLoading,
-    isFetching,
+    isLoading: isLoading || isFetching,
     refetch,
   };
 };
