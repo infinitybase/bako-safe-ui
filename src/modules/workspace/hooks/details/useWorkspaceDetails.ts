@@ -69,17 +69,17 @@ const useWorkspaceDetails = () => {
     isTransactionsPageListLoading,
   ]);
 
-  const isWorkspaceReady =
-    !latestPredicates.isLoading &&
-    !worksapceBalance.isLoading &&
-    !addressBookInfos.requests.listContactsRequest.isLoading &&
-    // The transactions laoding is commented out because it's trigged when use the filters
-    // !isHomeRequestLoading &&
-    // !isMeTransactionsLoading &&
-    // !isTransactionsPageListLoading &&
-    !authDetails.userInfos.isLoading &&
-    showWorkspace &&
-    !isSignInpage;
+  const isWorkspaceReady = isSignInpage
+    ? true
+    : !latestPredicates.isLoading &&
+      !worksapceBalance.isLoading &&
+      !addressBookInfos.requests.listContactsRequest.isLoading &&
+      // The transactions laoding is commented out because it's trigged when use the filters
+      // !isHomeRequestLoading &&
+      // !isMeTransactionsLoading &&
+      // !isTransactionsPageListLoading &&
+      !authDetails.userInfos.isLoading &&
+      showWorkspace;
 
   return {
     isWorkspaceReady,
