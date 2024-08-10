@@ -43,31 +43,20 @@ const useWorkspaceDetails = () => {
       clearTimeout(timerRef.current);
     }
 
-    const debouncedShowWorkspace = debounce(() => {
-      setShowWorkspace(true);
-    }, gifDuration);
-
+    // Start the timer
     console.log('Setting new timer');
     timerRef.current = window.setTimeout(() => {
-      console.log('Timeout finished, checking workspace');
-      debouncedShowWorkspace();
+      console.log('Timeout finished, setting workspace to true');
+      setShowWorkspace(true);
     }, gifDuration);
 
     return () => {
       if (timerRef.current !== null) {
+        console.log('Clearing timer on cleanup:', timerRef.current);
         clearTimeout(timerRef.current);
       }
-      debouncedShowWorkspace.cancel(); // Cancel debounced function if effect runs again
     };
-  }, [
-    authDetails.userInfos.isLoading,
-    latestPredicates.isLoading,
-    worksapceBalance.isLoading,
-    addressBookInfos.requests.listContactsRequest.isLoading,
-    isHomeRequestLoading,
-    isMeTransactionsLoading,
-    isTransactionsPageListLoading,
-  ]);
+  }, [authDetails.userInfos.isLoading, authDetails.userInfos.isFetching]);
 
   const isWorkspaceReady = isSignInpage
     ? true
