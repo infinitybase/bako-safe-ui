@@ -43,7 +43,7 @@ const useSignIn = () => {
   const { authDetails } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
-
+  const { account } = useAccount();
   const { connect } = useSocket();
 
   useEffect(() => {

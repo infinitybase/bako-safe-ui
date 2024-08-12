@@ -544,7 +544,7 @@ const Details = ({
                               fontSize="14px"
                               color="grey.250"
                             >
-                              {transaction.summary?.name}
+                              {transaction.summary?.type}
                               Transaction De mentirinha hihihi
                             </Text>
                             <Text
