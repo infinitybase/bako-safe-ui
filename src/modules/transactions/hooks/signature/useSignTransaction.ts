@@ -9,7 +9,7 @@ import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useSendTransaction } from '../send/useSendTransaction';
-import { IUseMeTransactionsReturn } from '../me';
+import { IUsePredicateTransactionsReturn } from '../predicate';
 
 import { IUseTransactionList } from '../list';
 
@@ -25,13 +25,12 @@ export interface UseSignTransactionOptions {
 
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
-  meTransactions: IUseMeTransactionsReturn;
+  predicateTransactions: IUsePredicateTransactionsReturn;
 }
 
 const useSignTransaction = ({
   transactionList,
-
-  meTransactions,
+  predicateTransactions,
 }: IUseSignTransactionProps) => {
   const { pendingTransactions } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
@@ -39,7 +38,7 @@ const useSignTransaction = ({
   const [canExecute, setCanExecute] = useState(false);
 
   const { executeTransaction } = useSendTransaction({
-    meTransactions,
+    predicateTransactions,
     transactionList,
   });
   const toast = useTransactionToast();
@@ -57,7 +56,7 @@ const useSignTransaction = ({
   const request = useSignTransactionRequest({
     onSuccess: async () => {
       await transactionList.request.refetch();
-      await meTransactions.transactionsRequest.refetch();
+      await predicateTransactions?.request?.refetch();
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');

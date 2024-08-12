@@ -24,6 +24,7 @@ const useFilterTxType = () => {
     txFilterType,
     handleIncomingAction,
     handleOutgoingAction,
+    setTxFilterType,
   };
 };
 

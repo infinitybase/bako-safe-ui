@@ -4,10 +4,14 @@ import { useHomeTransactionsRequest } from './useHomeTransationsRequest';
 export type IUseHomeTransactionsReturn = ReturnType<typeof useHomeTransactions>;
 
 const useHomeTransactions = (workspaceId: string) => {
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
 
-  const { data, ...query } = useHomeTransactionsRequest(
+  const { data, isLoading, isFetching, ...query } = useHomeTransactionsRequest(
     workspaceId,
     txFilterType,
   );
@@ -16,10 +20,12 @@ const useHomeTransactions = (workspaceId: string) => {
     transactions: data?.data,
     request: {
       ...query,
+      isLoading: !data?.data && isLoading && !isFetching,
     },
     handlers: {
       handleIncomingAction,
       handleOutgoingAction,
+      homeTransactionTypeFilter: setTxFilterType,
     },
   };
 };

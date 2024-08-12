@@ -3,22 +3,25 @@ import { useNavigate } from 'react-router-dom';
 
 import { SignatureUtils } from '@/modules/core';
 
-import { useMeTransactionsRequest } from './useMeTransactionsRequest';
+import { usePredicateTransactionsRequest } from './usePredicateTransactionsRequest';
 
 import { useAuth } from '@/modules/auth';
 
-export type IUseMeTransactionsReturn = ReturnType<typeof useMeTransactions>;
+export type IUsePredicateTransactionsReturn = ReturnType<
+  typeof usePredicateTransactions
+>;
 
-const useMeTransactions = () => {
+const usePredicateTransactions = () => {
   const navigate = useNavigate();
   const {
     userInfos: { workspace },
   } = useAuth();
 
-  const transactionsRequest = useMeTransactionsRequest(workspace?.id);
+  const { data, isLoading, isFetching, ...query } =
+    usePredicateTransactionsRequest(workspace?.id);
 
   const transactions = useMemo(() => {
-    return transactionsRequest.data
+    return data
       ?.map((transaction) => {
         const isSigned = transaction?.witnesses?.some((signature) =>
           SignatureUtils.recoverSignerAddress(
@@ -32,19 +35,22 @@ const useMeTransactions = () => {
         };
       })
       .sort((item) => (item.isSigned ? 1 : -1));
-  }, [transactionsRequest.data]);
+  }, [data]);
 
   const calculateSignatures = (signers: number, requiredSigners: number) =>
     (signers * 100) / requiredSigners;
 
   return {
     navigate,
-    request: {
+    lists: {
       transactions,
-      ...transactionsRequest,
+    },
+    request: {
+      isLoading: !data && isLoading && !isFetching,
+      ...query,
     },
     calculateSignatures,
   };
 };
 
-export { useMeTransactions };
+export { usePredicateTransactions };

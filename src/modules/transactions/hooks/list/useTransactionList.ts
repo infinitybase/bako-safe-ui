@@ -113,7 +113,7 @@ const useTransactionList = ({
 
   return {
     request: {
-      isLoading,
+      isLoading: !transactionsPages && isLoading && !isFetching,
       isFetching,
       hasNextPage,
       fetchNextPage,

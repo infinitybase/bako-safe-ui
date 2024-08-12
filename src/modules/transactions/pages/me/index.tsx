@@ -17,12 +17,16 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { Pages } from '@/modules/core/routes';
 import { assetsMap } from '@/modules/core/utils';
 
-import { useMeTransactions } from '../../hooks/me/useMeTransactions';
+import { usePredicateTransactions } from '../../hooks/predicate/usePredicateTransactions';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MeTransactionsPage = () => {
-  const { transactionsRequest, navigate, calculateSignatures } =
-    useMeTransactions();
+  const {
+    request: { isLoading },
+    lists: { transactions },
+    navigate,
+    calculateSignatures,
+  } = usePredicateTransactions();
 
   const {
     workspaceInfos: {
@@ -48,14 +52,14 @@ const MeTransactionsPage = () => {
           </Heading>
         </Flex>
       </CardHeader>
-      <CardBody hidden={!transactionsRequest.isLoading}>
+      <CardBody hidden={!isLoading}>
         <Flex display="flex" justifyContent="center" alignItems="center">
           <Spinner color="brand.500" size="xl" />
         </Flex>
       </CardBody>
 
-      <CardBody hidden={transactionsRequest.isLoading}>
-        {transactionsRequest.transactions?.map((transaction) => {
+      <CardBody hidden={isLoading}>
+        {transactions?.map((transaction) => {
           const assets = transaction.assets.reduce(
             (accumulator, asset) => {
               const { assetId, amount } = asset;
@@ -170,7 +174,7 @@ const MeTransactionsPage = () => {
             </Flex>
           );
         })}
-        {!transactionsRequest.transactions?.length && (
+        {!transactions?.length && (
           <Flex
             flexDirection="column"
             textAlign="center"

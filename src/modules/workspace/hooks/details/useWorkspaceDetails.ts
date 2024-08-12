@@ -12,9 +12,10 @@ const useWorkspaceDetails = () => {
   const {
     homeTransactions: {
       request: { isLoading: isHomeRequestLoading },
+      handlers: { homeTransactionTypeFilter },
     },
-    meTransactions: {
-      request: { isLoading: isMeTransactionsLoading },
+    predicateTransactions: {
+      request: { isLoading: isPredicateTransactionLoading },
     },
     transactionsPageList: {
       request: { isLoading: isTransactionsPageListLoading },
@@ -31,7 +32,11 @@ const useWorkspaceDetails = () => {
     handlers: { hasPermission, ...handlersData },
     requests: { worksapceBalance, latestPredicates, ...requestsData },
     ...rest
-  } = useWorkspace(authDetails.userInfos, invalidateGifAnimationRequest);
+  } = useWorkspace(
+    authDetails.userInfos,
+    invalidateGifAnimationRequest,
+    homeTransactionTypeFilter,
+  );
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
   const isWorkspaceReady = isSignInpage
@@ -39,9 +44,8 @@ const useWorkspaceDetails = () => {
     : !latestPredicates.isLoading &&
       !worksapceBalance.isLoading &&
       !addressBookInfos.requests.listContactsRequest.isLoading &&
-      // The transactions laoding is commented out because it's trigged when use the filters
       !isHomeRequestLoading &&
-      !isMeTransactionsLoading &&
+      !isPredicateTransactionLoading &&
       !isTransactionsPageListLoading &&
       !isGifAnimationLoading &&
       !authDetails.userInfos.isLoading;

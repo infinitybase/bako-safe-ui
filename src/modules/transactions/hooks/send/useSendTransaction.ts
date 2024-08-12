@@ -2,16 +2,16 @@ import { useNotificationsStore } from '@/modules/notifications/store';
 import { useTransactionToast } from '../../providers/send/toast';
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { useBakoSafeTransactionSend } from '@/modules/core';
-import { IUseMeTransactionsReturn } from '../me';
+import { IUsePredicateTransactionsReturn } from '../predicate';
 import { IPendingTransactionsRecord, IUseTransactionList } from '../list';
 
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
-  meTransactions: IUseMeTransactionsReturn;
+  predicateTransactions: IUsePredicateTransactionsReturn;
 }
 
 const useSendTransaction = ({
-  meTransactions,
+  predicateTransactions,
   transactionList,
 }: IUseSignTransactionProps) => {
   const { setHasNewNotification } = useNotificationsStore();
