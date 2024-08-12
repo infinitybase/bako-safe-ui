@@ -22,7 +22,7 @@ const useMeTransactions = () => {
   const transactions = useMemo(() => {
     return data
       ?.map((transaction) => {
-        const isSigned = transaction?.witnesses?.some((signature) =>
+        const isSigned = transaction?.resume?.witnesses?.some((signature) =>
           SignatureUtils.recoverSignerAddress(
             signature.signature!,
             `${transaction.hash}`,

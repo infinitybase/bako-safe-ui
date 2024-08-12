@@ -58,15 +58,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
-              <TransactionCard.Amount
-                assets={
-                  transaction?.assets.map((asset) => ({
-                    amount: asset.amount,
-                    assetId: asset.assetId,
-                    to: asset.to,
-                  })) ?? []
-                }
-              />
+              <TransactionCard.Amount assets={transaction.assets} />
 
               <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}

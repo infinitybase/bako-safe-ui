@@ -1,9 +1,4 @@
-import {
-  ITransaction,
-  ITransactionResume,
-  IWitnesses,
-  TransactionStatus,
-} from 'bakosafe';
+import { ITransaction, ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { AssetModel, WitnessStatus } from '../core/models';
@@ -14,27 +9,23 @@ const { REJECTED, DONE, PENDING } = WitnessStatus;
 export interface TransactionStatusParams {
   account: string;
   resume: ITransactionResume;
-  witnesses: IWitnesses[];
   status: TransactionStatus;
 }
 
 /* TODO: Fix this to use bako safe SDK */
 export const transactionStatus = ({
-  witnesses,
+  resume,
   account,
   ...transaction
 }: TransactionStatusParams) => {
-  const {
-    requiredSigners,
-    totalSigners,
-    witnesses: witnessesResume,
-  } = transaction.resume;
+  const { requiredSigners, totalSigners, witnesses } = resume;
   const minSigners = requiredSigners;
   const vaultMembersCount = totalSigners;
-  const signatureCount = witnessesResume?.filter((w) => w !== null).length ?? 0;
+  const signatureCount =
+    witnesses.filter((w) => w.status === WitnessStatus.DONE).length ?? 0;
   const witness = witnesses?.find((t) => t.account === account);
   const howManyDeclined =
-    witnessesResume?.filter((w) => w === null).length ?? 0;
+    witnesses.filter((w) => w.status === WitnessStatus.REJECTED).length ?? 0;
 
   return {
     isCompleted:
@@ -62,7 +53,6 @@ export const waitingSignatures = ({
       {
         resume: transaction.resume,
         account,
-        witnesses: transaction.witnesses,
         status: transaction.status,
       },
     );

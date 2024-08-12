@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus } from 'bakosafe';
+import { ITransaction, TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -20,6 +20,8 @@ import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { useTransactionSend } from '../../providers';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
+import { useSignTransaction } from '../../hooks/signature';
+
 const Status = ({
   transaction,
   status,
@@ -31,7 +33,9 @@ const Status = ({
   } = useTransactionsContext();
 
   const signaturesCount =
-    transaction!.resume?.witnesses?.filter((w) => w != null).length ?? 0;
+    transaction!.resume?.witnesses?.filter(
+      (w) => w.status === WitnessStatus.DONE,
+    ).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
   const isPending = [

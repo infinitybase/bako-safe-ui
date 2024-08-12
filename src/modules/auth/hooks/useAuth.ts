@@ -1,13 +1,12 @@
 import { useFuel } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
-
-import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuthCookies } from '..';
-import { useNavigate } from 'react-router-dom';
+import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
-import { useState } from 'react';
 
 export type SingleAuthentication = {
   workspace: string;

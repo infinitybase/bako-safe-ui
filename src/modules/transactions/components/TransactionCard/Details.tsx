@@ -44,12 +44,12 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
 import { DepositDetails } from './DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const shakeAnimation = keyframes`
     0% {
@@ -331,12 +331,12 @@ const AssetBoxInfo = ({
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(asset?.to ?? '').toAddress(),
+                      Address.fromString(asset?.to ?? '').toB256(),
                     ) ?? '',
                     7,
                   )
                 : AddressUtils.format(
-                    Address.fromString(asset?.to ?? '').toAddress(),
+                    Address.fromString(asset?.to ?? '').toB256(),
                     isMobile ? 10 : 24,
                   )}
             </Text>
@@ -366,12 +366,12 @@ const AssetBoxInfo = ({
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
+                    Address.fromString(asset.to ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
+                  Address.fromString(asset.to ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>
@@ -544,7 +544,7 @@ const Details = ({
                               fontSize="14px"
                               color="grey.250"
                             >
-                              {transaction.summary?.name}
+                              {transaction.summary?.type}
                               Transaction De mentirinha hihihi
                             </Text>
                             <Text
