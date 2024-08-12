@@ -49,6 +49,8 @@ const useWorkspace = (
 
     if (isSelecting) return;
     if (!isValid) return !!redirect && navigate(redirect);
+
+    invalidateGifAnimationRequest();
     workspaceDialog.onClose();
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
@@ -93,7 +95,6 @@ const useWorkspace = (
   );
 
   const invalidateRequests = () => {
-    invalidateGifAnimationRequest();
     worksapceBalance.refetch();
     pendingSignerTransactions.refetch();
     userInfos.refetch();
