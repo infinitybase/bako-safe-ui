@@ -32,15 +32,11 @@ const useSignTransaction = ({
   transactionList,
   meTransactions,
 }: IUseSignTransactionProps) => {
+  const { executeTransaction } = useSendTransaction();
   const { pendingTransactions } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction>();
-  const [canExecute, setCanExecute] = useState(false);
 
-  const { executeTransaction } = useSendTransaction({
-    meTransactions,
-    transactionList,
-  });
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();
 
@@ -69,6 +65,8 @@ const useSignTransaction = ({
   ) => {
     const transaction = pendingTransactions?.[selectedTransactionId];
 
+    console.log('selectedTransactionId;', selectedTransactionId);
+
     const signedMessage = await signMessageRequest.mutateAsync(
       transaction!.hash,
     );
@@ -83,39 +81,11 @@ const useSignTransaction = ({
       },
       {
         onSuccess: async () => {
-          // setCanExecute(true);
-          // console.log(
-          //   'Success Signed:',
-          //   pendingTransactions?.[selectedTransaction!.id],
-          // );
-          const tx = pendingTransactions?.[selectedTransaction!.id];
-          const toSend =
-            !!tx && tx.status === TransactionStatus.PROCESS_ON_CHAIN;
-          // !isExecuting(transaction);
-
-          if (toSend) {
-            executeTransaction(tx);
-            setSelectedTransaction(tx);
-          }
           callback && callback();
         },
       },
     );
   };
-
-  useEffect(() => {
-    if (canExecute) {
-      const tx = pendingTransactions?.[selectedTransaction!.id];
-      const toSend = !!tx && tx.status === TransactionStatus.PROCESS_ON_CHAIN;
-      // !isExecuting(transaction);
-
-      if (toSend) {
-        executeTransaction(tx);
-        setSelectedTransaction(tx);
-      }
-    }
-    setCanExecute(false);
-  }, [canExecute, pendingTransactions, selectedTransaction]);
 
   const retryTransaction = async () => {
     return executeTransaction(selectedTransaction!);

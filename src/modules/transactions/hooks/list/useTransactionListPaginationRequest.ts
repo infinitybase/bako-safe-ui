@@ -25,6 +25,15 @@ type UseTransactionListPaginationParams = Omit<
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
+  const { mutate: sendTransaction } = useBakoSafeTransactionSend({
+    onError: (e) => {
+      console.log('ERROR WHILE SEND TO CHAIN', e);
+    },
+    onSuccess: () => {
+      console.log('sucesso');
+    },
+  });
+
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       params.workspaceId,
@@ -43,22 +52,15 @@ const useTransactionListPaginationRequest = (
         id: params.id,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
-        const pending = data.data
-          .map((item) =>
+        data.data
+          .flatMap((item) =>
             item.transactions.filter(
-              (tx) => tx.status === TransactionStatus.SUCCESS,
+              (tx) => tx.status === TransactionStatus.PROCESS_ON_CHAIN,
             ),
           )
-          .map((filteredTx) => {
-            return filteredTx;
-            // useBakoSafeTransactionSend({
-            //   onSuccess: () => {
-            //     query.refetch();
-            //   },
-            //   onError: () => {},
-            //   transactionId: filteredTx.id,
-            //   predicateId: params.predicateId?[0]
-            // });
+          .forEach((transaction) => {
+            console.log('transaction:', transaction);
+            sendTransaction({ transaction: transaction! });
           });
 
         return data;

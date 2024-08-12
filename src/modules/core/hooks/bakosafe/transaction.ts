@@ -4,6 +4,8 @@ import {
   ITransaction,
   Vault,
   TransactionType,
+  IBakoSafeAuth,
+  TransactionStatus,
 } from 'bakosafe';
 
 import { TransactionService } from '@/modules/transactions/services';
@@ -73,8 +75,11 @@ const useBakoSafeTransactionList = ({
 interface UseBakoSafeSendTransactionParams {
   onSuccess: (transaction: ITransaction) => void;
   onError: (error: any) => void;
-  predicateId: string;
-  transactionId: string;
+}
+
+interface BakoSafeTransactionSendVariables {
+  transaction: ITransaction;
+  auth?: IBakoSafeAuth;
 }
 
 // Receber predicateId e txID
@@ -86,19 +91,19 @@ const useBakoSafeTransactionSend = (
 ) => {
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
-    // @ts-ignore
-    async (predicateId: string, transactionId: string) => {
+    async ({ transaction, auth }: BakoSafeTransactionSendVariables) => {
+      console.log('transaction:', transaction);
       const vault = await Vault.create({
-        id: predicateId,
-        token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
-        address: CookiesConfig.getCookie(CookieName.ADDRESS),
+        id: transaction.predicateId,
+        token: auth!.token,
+        address: auth!.address,
       });
 
-      const transfer = await vault.BakoSafeGetTransaction(transactionId);
+      const transfer = await vault.BakoSafeGetTransaction(transaction.id);
 
       await transfer.wait();
 
-      return (await vault.BakoSafeGetTransaction(transactionId))
+      return (await vault.BakoSafeGetTransaction(transaction.id))
         .BakoSafeTransaction;
     },
     {
