@@ -1,10 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { BakoSafe } from 'bakosafe';
-import { Address } from 'fuels';
+import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
-import { Workspace } from '@/modules/core';
+import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -80,6 +81,61 @@ export type CheckNicknameResponse = {
   };
 };
 
+export type AuthenticateParams = {
+  userId: string;
+  avatar: string;
+  account: string;
+  accountType: TypeUser;
+  accessToken: string;
+  permissions: IPermission;
+  singleWorkspace: string;
+  webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+};
+
+export type AuthenticateWorkspaceParams = {
+  permissions: IPermission;
+  workspace: string;
+};
+
+export interface IUserInfos extends IGetUserInfosResponse {
+  isLoading: boolean;
+  isFetching: boolean;
+  refetch: (
+    options?: RefetchOptions | undefined,
+  ) => Promise<QueryObserverResult<IGetUserInfosResponse, Error>>;
+  singleWorkspaceId: string;
+}
+
+export type IUseAuthReturn = {
+  userProvider: () => Promise<{
+    provider: Provider;
+  }>;
+  invalidAccount: boolean;
+  handlers: {
+    logout: () => void;
+    authenticate: (params: AuthenticateParams) => void;
+    setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  userInfos: IUserInfos;
+};
+
+export type IGetUserInfosResponse = {
+  address: string;
+  avatar: string;
+  id: string;
+  name: string;
+  onSingleWorkspace: boolean;
+  type: TypeUser;
+  webauthn: SignWebAuthnPayload;
+  workspace: {
+    avatar: string;
+    id: string;
+    name: string;
+    permission: IPermission;
+    description: string;
+  };
+};
+
 export class UserService {
   static async create(payload: CreateUserPayload) {
     const { data } = await api.post<CreateUserResponse>('/user', payload);
@@ -96,6 +152,12 @@ export class UserService {
     if (status !== 200) {
       throw new Error('Invalid signature');
     }
+
+    return data;
+  }
+
+  static async getUserInfos() {
+    const { data } = await api.get<IGetUserInfosResponse>('/user/latest/info');
 
     return data;
   }

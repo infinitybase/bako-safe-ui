@@ -16,14 +16,20 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 import { Pages } from '@/modules/core/routes';
 import { assetsMap } from '@/modules/core/utils';
-import { useHome } from '@/modules/home/hooks/useHome';
 
 import { useMeTransactions } from '../../hooks/me/useMeTransactions';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MeTransactionsPage = () => {
   const { transactionsRequest, navigate, calculateSignatures } =
     useMeTransactions();
-  const { goHome } = useHome();
+
+  const {
+    workspaceInfos: {
+      handlers: { goHome },
+    },
+  } = useWorkspaceContext();
+
   return (
     <Card mb={4} bg="dark.500" minW={700} boxShadow="xl" minH={550}>
       <CardHeader>
@@ -50,7 +56,6 @@ const MeTransactionsPage = () => {
 
       <CardBody hidden={transactionsRequest.isLoading}>
         {transactionsRequest.transactions?.map((transaction) => {
-          // const userSigned = transaction?.witnesses?.some(signature => signer(signature, `${transaction.hash}`));
           const assets = transaction.assets.reduce(
             (accumulator, asset) => {
               const { assetId, amount } = asset;

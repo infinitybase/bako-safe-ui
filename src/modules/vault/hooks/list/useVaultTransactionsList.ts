@@ -3,9 +3,9 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth/store';
 import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { useTransactionState } from '@/modules/transactions/states';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
@@ -29,7 +29,9 @@ const useVaultTransactionsList = ({
 }: IUseVaultTransactionsListProps = {}) => {
   const navigate = useNavigate();
   const inView = useInView();
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
@@ -90,7 +92,7 @@ const useVaultTransactionsList = ({
       value: filter,
     },
     inView,
-    account,
+    account: userInfos.address,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     hasSkeleton: false,
     infinityTransactions,

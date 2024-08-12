@@ -22,9 +22,10 @@ import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useAuthStore, useSignIn } from '@/modules/auth';
+import { useSignIn } from '@/modules/auth';
 
 import { useSettings } from '../../hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
   onOpen: () => void;
@@ -48,14 +49,18 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
       setSearch,
     },
   } = useSignIn();
-  const { userId } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 
   const { formState } = formAuthn;
 
   const isNicknameInUse =
-    !!nicknamesData?.name && nicknamesData?.id !== userId && search?.length > 0;
+    !!nicknamesData?.name &&
+    nicknamesData?.id !== userInfos.id &&
+    search?.length > 0;
 
   const name = mySettingsRequest.data?.name;
 
@@ -137,7 +142,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
                     <FormHelperText
                       color={
-                        (nicknamesData?.name && nicknamesData?.id !== userId) ||
+                        (nicknamesData?.name &&
+                          nicknamesData?.id !== userInfos.id) ||
                         form.formState.errors.name?.message ||
                         isNameInputInvalid
                           ? 'error.500'

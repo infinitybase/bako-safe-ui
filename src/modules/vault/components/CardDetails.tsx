@@ -19,15 +19,14 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
-import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -78,8 +77,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     hasBalance,
     ethBalance,
   } = assets;
-  const { currentWorkspace, hasPermission } = useWorkspace();
-  const { workspaces, isSingleWorkspace } = useAuth();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
+  } = useWorkspaceContext();
   const { isMobile, isExtraSmall } = useScreenSize();
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
@@ -88,7 +91,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
-  const workspaceId = workspaces.current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,
@@ -190,7 +193,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && <Update />}
                   </HStack>
 
-                  {!isSingleWorkspace && (
+                  {!userInfos.onSingleWorkspace && (
                     <HStack
                       w="full"
                       alignItems="center"
@@ -209,7 +212,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         isTruncated
                         fontSize={{ base: 'small', sm: 'sm' }}
                       >
-                        {currentWorkspace.workspace?.name}
+                        {userInfos.workspace?.name}
                       </Text>
                     </HStack>
                   )}
@@ -363,7 +366,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 {`Vault's balance breakdown`}
               </Text>
               <CustomSkeleton
-                isLoaded={!currentWorkspace.isLoading && !isLoading}
+                isLoaded={!userInfos.isLoading && !isLoading}
                 w="full"
                 h="full"
               >
@@ -416,13 +419,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
             </VStack>
           </VStack>
         </Card>
-        {/*
-        <AmountDetails
-          store={store}
-          vaultAddress={vault.data.predicateAddress!}
-          assets={assets}
-          isLoading={vault.isLoading}
-        /> */}
       </CustomSkeleton>
     </Box>
   );

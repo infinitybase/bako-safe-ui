@@ -44,6 +44,7 @@ import {
   TransactionState,
   useScreenSize,
 } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
 import { DepositDetails } from './DepositDetails';
@@ -102,6 +103,7 @@ interface DeploymentInfoProps extends StackProps {
 // TODO: Refactor the AssetBox and Details
 const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   const { isMobile } = useScreenSize();
+  const { tokensUSD } = useWorkspaceContext();
 
   const contractId = operation.to!.address;
   const asset = useMemo(() => {
@@ -118,7 +120,11 @@ const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   );
 
   const clipboard = useClipboard(contractId);
-  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
+  const txUSDAmount = useTxAmountToUSD(
+    [asset as ITransferAsset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   return (
     <HStack
@@ -223,6 +229,8 @@ const AssetBoxInfo = ({
   isDeploy,
   ...props
 }: AssetBoxInfoProps) => {
+  const { tokensUSD } = useWorkspaceContext();
+
   const isContract = !!contractAddress;
   const { isMobile, isExtraSmall } = useScreenSize();
 
@@ -231,7 +239,11 @@ const AssetBoxInfo = ({
     [asset?.assetId],
   );
 
-  const txUSDAmount = useTxAmountToUSD([asset as ITransferAsset]);
+  const txUSDAmount = useTxAmountToUSD(
+    [asset as ITransferAsset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   const contractWithoutToken = isContract && !hasToken;
 
@@ -319,12 +331,12 @@ const AssetBoxInfo = ({
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(asset?.to ?? '').toAddress(),
+                      Address.fromString(asset?.to ?? '').toB256(),
                     ) ?? '',
                     7,
                   )
                 : AddressUtils.format(
-                    Address.fromString(asset?.to ?? '').toAddress(),
+                    Address.fromString(asset?.to ?? '').toB256(),
                     isMobile ? 10 : 24,
                   )}
             </Text>
@@ -354,12 +366,12 @@ const AssetBoxInfo = ({
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
+                    Address.fromString(asset.to ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
+                  Address.fromString(asset.to ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>
@@ -535,7 +547,7 @@ const Details = ({
                               fontSize="14px"
                               color="grey.250"
                             >
-                              {transaction.summary?.name}
+                              {transaction.summary?.type}
                               Transaction De mentirinha hihihi
                             </Text>
                             <Text

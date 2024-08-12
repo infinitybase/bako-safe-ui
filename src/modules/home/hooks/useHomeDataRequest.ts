@@ -1,17 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
 
-const useHomeDataRequest = () => {
-  const auth = useAuth();
-
+const useHomeDataRequest = (currentWorkspace: string) => {
   return useQuery({
-    queryKey: HomeQueryKey.HOME_WORKSPACE(auth.workspaces.current),
+    queryKey: HomeQueryKey.HOME_WORKSPACE(currentWorkspace),
     queryFn: () => HomeService.home(),
     refetchOnWindowFocus: false,
+    enabled: window.location.pathname != '/',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

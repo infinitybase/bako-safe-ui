@@ -11,6 +11,8 @@ const useVaultByIdRequest = (vaultId: string) => {
     queryFn: () => VaultService.getById(vaultId),
     refetchOnWindowFocus: false,
     enabled: !!vaultId,
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 
   return {

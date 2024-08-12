@@ -1,11 +1,12 @@
+import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { ITransferAsset } from 'bakosafe';
 
-import { useTokensStore } from '../store';
-
-const useTxAmountToUSD = (assets: ITransferAsset[]) => {
-  const { tokens, isLoading } = useTokensStore();
-
-  if (!isLoading) {
+const useTxAmountToUSD = (
+  assets: ITransferAsset[],
+  isLoading: boolean,
+  tokens: ITokens,
+) => {
+  if (!isLoading && tokens) {
     const totalAmount = assets
       .filter((asset) => !!asset)
       .reduce((acc, asset) => {

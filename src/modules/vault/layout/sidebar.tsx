@@ -13,10 +13,8 @@ import { AddressUtils } from '@/modules/core/utils';
 import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
-import { useWorkspace } from '@/modules/workspace';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-
-const { ADMIN, MANAGER, OWNER } = PermissionRoles;
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SidebarProps {
   onDrawer?: boolean;
@@ -24,6 +22,11 @@ interface SidebarProps {
 
 const Sidebar = ({ onDrawer }: SidebarProps) => {
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
+  const {
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
+  } = useWorkspaceContext();
 
   const {
     isPendingSigner,
@@ -36,8 +39,6 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   const {
     request: { refetch },
   } = useVaultDrawer({ onClose: () => {} });
-
-  const { hasPermission } = useWorkspace();
 
   return (
     <Box
@@ -73,7 +74,11 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           }}
           hasBalance={hasBalance}
           isPending={isPendingSigner}
-          hasPermission={hasPermission([ADMIN, MANAGER, OWNER])}
+          hasPermission={hasPermission([
+            PermissionRoles?.OWNER,
+            PermissionRoles?.ADMIN,
+            PermissionRoles?.MANAGER,
+          ])}
           onCreateTransaction={() => {
             route.navigate(
               Pages.createTransaction({
@@ -137,12 +142,6 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
               {isPendingSigner && pendingSignerTransactionsLength}
             </SidebarMenu.Badge>
           </SidebarMenu.Container>
-
-          {/*<SidebarMenu.Container onClick={() => {}}>*/}
-          {/*  <SidebarMenu.Icon as={HiQrCode} />*/}
-          {/*  <SidebarMenu.Title> Address book</SidebarMenu.Title>*/}
-          {/*  <SidebarMenu.Badge>Upcoming</SidebarMenu.Badge>*/}
-          {/*</SidebarMenu.Container>*/}
 
           <SidebarMenu.Container
             isActive={menuItems.settings}

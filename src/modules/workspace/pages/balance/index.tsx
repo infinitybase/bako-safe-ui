@@ -13,25 +13,21 @@ import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { useAuth } from '@/modules/auth';
-import { AssetsBalanceList } from '@/modules/core';
-import { useHome } from '@/modules/home';
+import { AssetsBalanceList, Pages } from '@/modules/core';
 import { limitCharacters } from '@/utils';
 
-import { useWorkspace } from '../../hooks';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const WorkspaceBalancePage = () => {
-  const { goHome } = useHome();
   const {
-    currentWorkspace: { workspace: currentWorkspace },
-    goWorkspace,
-    worksapceBalance,
-  } = useWorkspace();
-  const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, goHome },
+      requests: { worksapceBalance },
+    },
+  } = useWorkspaceContext();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   return (
     <Flex w="full" direction="column">
@@ -71,9 +67,16 @@ const WorkspaceBalancePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
-                {limitCharacters(currentWorkspace?.name ?? '', 10)}
+                {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>

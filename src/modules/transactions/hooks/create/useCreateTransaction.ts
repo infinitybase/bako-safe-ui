@@ -6,8 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
+import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
   NativeAssetId,
@@ -20,6 +19,7 @@ import {
 import { TransactionService } from '@/modules/transactions/services';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   TRANSACTION_LIST_QUERY_KEY,
@@ -61,16 +61,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const auth = useAuth();
+  const {
+    authDetails,
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-
-  const listContactsRequest = useListContactsRequest({
-    current: auth.workspaces.current,
-    includePersonal: !auth.isSingleWorkspace,
-  });
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
@@ -100,7 +100,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       queryClient.invalidateQueries({
         queryKey: [
           WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-            auth.workspaces.current,
+            authDetails.userInfos.workspace?.id,
           ),
           TRANSACTION_LIST_QUERY_KEY,
           USER_TRANSACTIONS_QUERY_KEY,

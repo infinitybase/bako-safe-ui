@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -15,7 +14,7 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
-import { useSelectWorkspace } from '@/modules/workspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -29,12 +28,16 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
-  const { selectWorkspace } = useSelectWorkspace();
   const notificationsListRequest = useListNotificationsRequest(
-    account,
+    userInfos.address,
     props?.isOpen,
   );
 
@@ -80,11 +83,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
       : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    selectWorkspace(summaryWorkspaceId, {
-      onSelect: async (_workspace) => {
-        navigate(page);
-      },
-    });
+    handleWorkspaceSelection(summaryWorkspaceId, page);
   };
 
   useEffect(() => {

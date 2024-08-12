@@ -22,11 +22,11 @@ const routes = (
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
+    <>
       <ScrollTop />
       <VaultRoutes />
       <Routes>{routes}</Routes>
-    </BrowserRouter>
+    </>
   );
 };
 

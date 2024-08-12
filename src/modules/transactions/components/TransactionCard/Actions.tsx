@@ -66,6 +66,7 @@ const Actions = ({
   const { isOpen } = useAccordionItemState();
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
+
   const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
     useSignTransaction({ transaction: transaction! });
 

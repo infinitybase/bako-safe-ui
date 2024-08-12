@@ -6,14 +6,13 @@ import {
 } from '@tanstack/react-query';
 import { Account } from 'fuels';
 
-import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
-import { useAuthStore } from '@/modules/auth/store';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -26,9 +25,11 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const { account: currentAccount } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
-  return useWallet(currentAccount);
+  return useWallet(userInfos.address);
 };
 
 //sign by webauthn
@@ -67,16 +68,20 @@ const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { webAuthn, accountType } = useAuth();
+  const {
+    authDetails: {
+      userInfos: { webauthn, type },
+    },
+  } = useWorkspaceContext();
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (accountType) {
+      switch (type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,
-            id: webAuthn!.id,
-            publicKey: webAuthn!.publicKey,
+            id: webauthn!.id,
+            publicKey: webauthn!.publicKey,
           });
         default:
           return signAccountFuel(wallet!, message);

@@ -10,9 +10,9 @@ import {
   UserQueryKey,
   UserService,
 } from '../services';
-import { useAuth } from './useAuth';
 import { useQueryParams } from './usePopup';
 import { redirectPathBuilder } from './useSignIn';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const createAccount = async (name: string) => {
   return await UserService.createWebAuthnAccount(name);
@@ -23,7 +23,7 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 };
 
 export const useDrawerWebAuth = () => {
-  const auth = useAuth();
+  const { authDetails } = useWorkspaceContext();
   const navigate = useNavigate();
   const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
@@ -47,7 +47,7 @@ export const useDrawerWebAuth = () => {
       webAuthn,
     }) => {
       setTimeout(() => {
-        auth.handlers.authenticate({
+        authDetails.handlers.authenticate({
           userId: user_id,
           avatar,
           account: address,
@@ -57,7 +57,7 @@ export const useDrawerWebAuth = () => {
           permissions: workspace.permissions,
           webAuthn,
         });
-        navigate(redirectPathBuilder(!!sessionId, location, address));
+        navigate(redirectPathBuilder(!!sessionId, location));
       }, 800);
     },
     onError: () => {

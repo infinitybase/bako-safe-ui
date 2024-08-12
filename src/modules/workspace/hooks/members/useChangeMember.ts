@@ -2,7 +2,6 @@ import { Address } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
@@ -16,13 +15,13 @@ import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
 import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
-import { useWorkspace } from '../useWorkspace';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export enum MemberTabState {
   FORM = 0,
@@ -40,8 +39,13 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
+  const {
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+    addressBookInfos,
+  } = useWorkspaceContext();
 
-  const { goWorkspace } = useWorkspace();
   const { successToast } = useSettingsToast();
 
   const params = useParams<{ workspaceId: string; memberId: string }>();
@@ -56,12 +60,11 @@ const useChangeMember = () => {
 
   const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
 
-  const membersToForm = workspaceRequest.workspace?.members.map(
+  const membersToForm = workspaceRequest.workspace?.members?.map(
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
     useChangeMemberForm(membersToForm!);
-  const addressBook = useAddressBook();
 
   const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspaceRequest.workspace!,
@@ -92,16 +95,13 @@ const useChangeMember = () => {
     [isEditMember, params.memberId, setMemberValuesByWorkspace],
   );
 
-  const handleClose = () => goWorkspace(params.workspaceId!);
-
-  // const handleAddMember = memberForm.handleSubmit((data) => {
-  //   memberRequest.mutate(data.address, {
-  //     onSuccess: () => {
-  //       tabs.set(MemberTabState.FORM);
-  //       workspaceRequest.refetch();
-  //     },
-  //   });
-  // });
+  const handleClose = () =>
+    handleWorkspaceSelection(
+      params.workspaceId ?? '',
+      Pages.workspace({
+        workspaceId: params.workspaceId ?? '',
+      }),
+    );
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');
@@ -301,7 +301,7 @@ const useChangeMember = () => {
   return {
     tabs,
     params,
-    addressBook,
+    addressBook: addressBookInfos,
     memberRequest,
     permissionsRequest,
     handleClose,

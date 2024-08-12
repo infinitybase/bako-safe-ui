@@ -14,7 +14,6 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
 import {
   TransactionCard,
@@ -23,8 +22,8 @@ import {
   WaitingSignatureBadge,
 } from '@/modules/transactions';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useHome } from '../../hooks';
 import { useHomeTransactions } from '../../hooks/useHomeTransactions';
 
 const shakeAnimation = keyframes`
@@ -43,12 +42,13 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
   const [hasTransactions, setHasTransactions] = useState(false);
   const { txFilterType } = useFilterTxType();
 
-  const { account, navigate, pendingSignerTransactions, homeRequest } =
-    useHome();
-
   const {
-    workspaces: { single },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      requests: { latestPredicates, pendingSignerTransactions },
+      handlers: { navigate },
+    },
+  } = useWorkspaceContext();
 
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);
@@ -91,7 +91,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           </Text>
         </HStack>
       )}
-      <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
         <EmptyState showAction={false} />
       </CustomSkeleton>
     </VStack>
@@ -135,7 +135,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           onClick={() =>
             navigate(
               Pages.userTransactions({
-                workspaceId: single,
+                workspaceId: userInfos.workspace?.id,
               }),
             )
           }
@@ -165,14 +165,14 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!homeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos?.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos?.address,
                 );
 
                 return (
@@ -181,7 +181,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
                       <TransactionCardMobile
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         mt="15px"
                       />
                     ) : (
@@ -191,7 +191,7 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
                         status={status}
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         details={
                           <TransactionCard.Details
                             transaction={transaction}

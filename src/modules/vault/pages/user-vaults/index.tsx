@@ -20,16 +20,11 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
-import { useGetCurrentWorkspace } from '@/modules/workspace';
-import { useSelectWorkspace } from '@/modules/workspace/hooks/select';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
-
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserVaultsPage = () => {
   const {
@@ -40,15 +35,15 @@ const UserVaultsPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
-  const { hasPermission, goWorkspace, workspaceHomeRequest } = useWorkspace();
-  const { goHome } = useHome();
-  const { selectWorkspace } = useSelectWorkspace();
-  const {
-    workspaces: { current, single },
-    isSingleWorkspace,
-  } = useAuth();
 
-  const { workspace } = useGetCurrentWorkspace();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission, handleWorkspaceSelection, goHome },
+      requests: { latestPredicates },
+    },
+  } = useWorkspaceContext();
+  const workspaceId = userInfos?.workspace?.id ?? '';
 
   return (
     <VStack
@@ -78,7 +73,14 @@ const UserVaultsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              current == single ? goHome() : goWorkspace(current)
+              userInfos.onSingleWorkspace
+                ? goHome()
+                : handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
             }
           >
             Back home
@@ -95,18 +97,24 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      workspaceId,
+                      Pages.workspace({
+                        workspaceId,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
-                  {/* use request of workspace  */}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -135,14 +143,14 @@ const UserVaultsPage = () => {
         </Box>
       </HStack>
 
-      <CustomSkeleton display="flex" isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
         <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
           <ActionCard.Container
             flex={1}
             onClick={() =>
               navigate(
                 Pages.userVaults({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               )
             }
@@ -161,15 +169,12 @@ const UserVaultsPage = () => {
             onClick={() => {
               navigate(
                 Pages.userTransactions({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               );
             }}
           >
-            <ActionCard.Icon
-              icon={TransactionsIcon}
-              //isUpcoming={hasTransactions ? false : true}
-            />
+            <ActionCard.Icon icon={TransactionsIcon} />
             <Box>
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
@@ -183,7 +188,7 @@ const UserVaultsPage = () => {
             onClick={() =>
               navigate(
                 Pages.addressBook({
-                  workspaceId: current,
+                  workspaceId: userInfos.workspace?.id,
                 }),
               )
             }
@@ -247,18 +252,15 @@ const UserVaultsPage = () => {
                     workspace={workspace}
                     title={description}
                     members={members!}
-                    onClick={async () => {
-                      selectWorkspace(workspace.id, {
-                        onSelect: async (_workspace) => {
-                          navigate(
-                            Pages.detailsVault({
-                              workspaceId: _workspace.id,
-                              vaultId: id,
-                            }),
-                          );
-                        },
-                      });
-                    }}
+                    onClick={() =>
+                      handleWorkspaceSelection(
+                        workspace.id,
+                        Pages.detailsVault({
+                          workspaceId: workspace.id,
+                          vaultId: id,
+                        }),
+                      )
+                    }
                   />
                 </GridItem>
               </CustomSkeleton>
