@@ -5,7 +5,7 @@ import { useAuth } from '@/modules/auth';
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 
 import {
-  GetTransactionParams,
+  GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
   TransactionService,
 } from '../../services';
@@ -13,9 +13,9 @@ import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingReque
 import { StatusFilter } from './useTransactionList';
 
 type UseTransactionListPaginationParams = Omit<
-  GetTransactionParams,
-  'perPage' | 'page'
-> & {};
+  GetTransactionsWithIncomingsParams,
+  'perPage' | 'offsetDb' | 'offsetFuel'
+>;
 
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
@@ -29,26 +29,28 @@ const useTransactionListPaginationRequest = (
       current,
       params.status as StatusFilter,
       params.predicateId?.[0],
-      params.id,
       params.type,
     ),
-    queryFn: ({ pageParam }) =>
-      TransactionService.getTransactionsPagination({
+    queryFn: ({ pageParam: { offsetDb, offsetFuel } }) =>
+      TransactionService.getTransactionsWithIncomingsPagination({
         ...params,
         perPage: 5,
-        page: pageParam || 0,
+        offsetDb: offsetDb || 0,
+        offsetFuel: offsetFuel || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
-        id: params.id,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
         return data;
       }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) =>
-      lastPage.currentPage !== lastPage.totalPages
-        ? lastPage.nextPage
-        : undefined,
+    initialPageParam: { offsetDb: 0, offsetFuel: 0 },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.data.length === 0) {
+        return undefined;
+      }
+
+      return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
+    },
   });
 
   return {
