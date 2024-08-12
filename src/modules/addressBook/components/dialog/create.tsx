@@ -5,7 +5,7 @@ import { UseAddressBookReturn } from '../../hooks';
 
 interface CreateContactDialogProps {
   form: UseAddressBookReturn['form'];
-  dialog: UseAddressBookReturn['contactDialog'];
+  dialog: UseAddressBookReturn['dialog']['contactDialog'];
   isLoading: boolean;
   isEdit: boolean;
 }

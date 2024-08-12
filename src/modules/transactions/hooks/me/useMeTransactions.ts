@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth/store';
 import { SignatureUtils } from '@/modules/core';
 
 import { useMeTransactionsRequest } from './useMeTransactionsRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useMeTransactions = () => {
   const navigate = useNavigate();
 
-  const { account } = useAuthStore();
-  const transactionsRequest = useMeTransactionsRequest(account);
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
+  const transactionsRequest = useMeTransactionsRequest(userInfos.address);
 
   const transactions = useMemo(() => {
     return transactionsRequest.data

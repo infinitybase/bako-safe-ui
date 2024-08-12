@@ -10,13 +10,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { useAddressBook } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
 import { useScreenSize } from '@/modules/core/hooks';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 
 import { CardMember } from './CardMember';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -33,11 +32,11 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
 
   const {
-    workspaces: { current },
-    isSingleWorkspace,
-  } = useAuth();
-
-  const { contactByAddress } = useAddressBook(!isSingleWorkspace);
+    authDetails: { userInfos },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
 
   const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 
@@ -81,7 +80,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                     navigate(
                       Pages.vaultSettings({
                         vaultId: vault.data?.id!,
-                        workspaceId: current,
+                        workspaceId: userInfos.workspace?.id,
                       }),
                     )
                   }

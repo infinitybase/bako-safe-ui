@@ -4,13 +4,12 @@ import { useCallback, useMemo } from 'react';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useAuthStore } from '@/modules/auth';
 import { useWalletSignMessage } from '@/modules/core';
 
 import { useTransactionSend } from '../../providers';
 import { useTransactionToast } from '../../providers/send/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
-import { useTransactionList } from '../list';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface SignTransactionParams {
   txId: string;
@@ -23,14 +22,12 @@ export interface UseSignTransactionOptions {
 }
 
 const useSignTransaction = (options: UseSignTransactionOptions) => {
-  const {
-    transactionRequest: { refetch: refetchTransactionsRequest },
-  } = useTransactionList();
-
   const toast = useTransactionToast();
 
   const { warningToast } = useContactToast();
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
   const transactionSendContext = useTransactionSend();
 
@@ -50,7 +47,6 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
   const refetchTransactionList = useCallback(async () => {
     const queries = ['home', 'transaction', 'assets', 'balance'];
-    await refetchTransactionsRequest();
     queryClient.invalidateQueries({
       predicate: (query) =>
         queries.some((value) => query.queryHash.includes(value)),
@@ -82,7 +78,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
 
     await request.mutateAsync(
       {
-        account,
+        account: userInfos.address,
         confirm: true,
         signer: signedMessage,
         id: options.transaction.id,
@@ -103,7 +99,7 @@ const useSignTransaction = (options: UseSignTransactionOptions) => {
     await request.mutateAsync({
       id: transactionId,
       confirm: false,
-      account,
+      account: userInfos.address,
     });
   };
 

@@ -22,20 +22,18 @@ import {
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { Pages, useGetParams, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home';
 import {
   TransactionCard,
   TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionsVaultPage = () => {
   const navigate = useNavigate();
@@ -43,19 +41,18 @@ const TransactionsVaultPage = () => {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
 
-  const { goHome } = useHome();
   const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
     useScreenSize();
 
   const menuDrawer = useDisclosure();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
-  } = useAuth();
-  const workspaceId = current ?? '';
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, goHome },
+    },
+  } = useWorkspaceContext();
+  const workspaceId = userInfos.workspace?.id ?? '';
 
-  const { goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
   const {
     vault,
     transactions: vaultTransaction,
@@ -104,17 +101,24 @@ const TransactionsVaultPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -145,7 +149,7 @@ const TransactionsVaultPage = () => {
                   navigate(
                     Pages.detailsVault({
                       vaultId: vault.data?.id!,
-                      workspaceId: current ?? '',
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }

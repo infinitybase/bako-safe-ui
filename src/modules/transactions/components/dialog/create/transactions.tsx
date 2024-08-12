@@ -17,10 +17,8 @@ import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth/hooks';
 import {
   AddressUtils,
   AssetSelect,
@@ -31,6 +29,7 @@ import { UseCreateTransaction } from '@/modules/transactions/hooks';
 
 import { TransactionAccordion } from './accordion';
 import { UseVaultDetailsReturn } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
@@ -55,25 +54,25 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
   const asset = form.watch(`transactions.${index}.asset`);
 
-  const { isSingleWorkspace } = useAuth();
+  const {
+    authDetails: { userInfos },
+    addressBookInfos: {
+      workspaceId,
+      dialog: { contactDialog },
+      handlers: { handleOpenDialog },
+      requests: { listContactsRequest, createContactRequest },
+      form: contactForm,
+      inView,
+      canAddMember,
+    },
+  } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
-
-  const {
-    workspaceId,
-    createContactRequest,
-    handleOpenDialog,
-    form: contactForm,
-    contactDialog,
-    listContactsRequest,
-    inView,
-    canAddMember,
-  } = useAddressBook(!isSingleWorkspace);
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('transactions')!,
       errors: form.formState.errors.transactions,

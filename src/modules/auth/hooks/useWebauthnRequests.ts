@@ -12,6 +12,7 @@ const useCheckNickname = (nickname: string) => {
 
 const useGetAccountsByHardwareId = () => {
   let hardwareId: string | null = null;
+  const validPath = window.location.pathname === '/';
   hardwareId = localStorage.getItem(localStorageKeys.HARDWARE_ID);
   if (!hardwareId || hardwareId == null) {
     hardwareId = crypto.randomUUID();
@@ -21,7 +22,7 @@ const useGetAccountsByHardwareId = () => {
     queryKey: UserQueryKey.ACCOUNTS(hardwareId),
     queryFn: () => UserService.getByHardwareId(hardwareId!),
     refetchOnWindowFocus: false,
-    enabled: !!hardwareId,
+    enabled: !!hardwareId && validPath,
   });
 };
 

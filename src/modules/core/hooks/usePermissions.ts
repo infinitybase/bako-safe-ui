@@ -1,7 +1,7 @@
-import { useAuth } from '@/modules/auth';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
 import { PermissionRoles, Workspace } from '../models';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface usePermissionsProps {
   id: string;
@@ -9,11 +9,11 @@ interface usePermissionsProps {
 }
 
 export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
-  const auth = useAuth();
+  const { authDetails } = useWorkspaceContext();
   const userRole = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
     {
-      id: auth.userId,
+      id: authDetails.userInfos.id,
     },
   );
 
@@ -31,9 +31,13 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
   }
 
   const isOwner =
-    workspace.permissions[auth.userId][PermissionRoles.OWNER]?.includes('*');
+    workspace.permissions[authDetails.userInfos.id][
+      PermissionRoles.OWNER
+    ]?.includes('*');
   const isSigner =
-    workspace.permissions[auth.userId][PermissionRoles.SIGNER]?.includes(id);
+    workspace.permissions[authDetails.userInfos.id][
+      PermissionRoles.SIGNER
+    ]?.includes(id);
 
   const isViewer =
     permissions?.title ===
@@ -48,8 +52,8 @@ export const usePermissions = ({ id, workspace }: usePermissionsProps) => {
   const role = isOwner
     ? PermissionRoles.OWNER
     : isSigner
-    ? PermissionRoles.SIGNER
-    : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
+      ? PermissionRoles.SIGNER
+      : userRole?.title?.toUpperCase() ?? PermissionRoles.SIGNER;
 
   return {
     isSigner: true,

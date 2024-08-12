@@ -9,8 +9,10 @@ const useVaultSignaturesPendingRequest = (predicateId?: string[]) => {
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
-    enabled: predicateId && !!predicateId[0],
+    enabled: predicateId && !!predicateId[0] && window.location.pathname != '/',
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
   });
 };
 

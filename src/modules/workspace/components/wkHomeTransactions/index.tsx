@@ -20,11 +20,10 @@ import {
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { memo, useEffect, useState } from 'react';
-import { useAuth } from '@/modules/auth';
 
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useWorkspace } from '../../hooks';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -41,18 +40,16 @@ const WkHomeTransactions = memo(() => {
     useFilterTxType();
 
   const {
-    account,
-    navigate,
-    workspaceVaults: { recentVaults },
-    pendingSignerTransactions,
-    workspaceHomeRequest,
-  } = useWorkspace();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { navigate },
+      requests: { pendingSignerTransactions, latestPredicates },
+    },
+  } = useWorkspaceContext();
 
-  const {
-    workspaces: { current },
-  } = useAuth();
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const { transactions: groupedTransactions } =
     useHomeTransactions(txFilterType);
@@ -86,7 +83,7 @@ const WkHomeTransactions = memo(() => {
         </HStack>
       )}
       <CustomSkeleton
-        isLoaded={!workspaceHomeRequest.isLoading}
+        isLoaded={!latestPredicates.isLoading}
         mt={{
           base: recentVaults?.length ? 16 : 0,
           sm: recentVaults?.length ? 8 : 0,
@@ -171,14 +168,14 @@ const WkHomeTransactions = memo(() => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos?.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos?.address,
                 );
 
                 return (
@@ -187,7 +184,7 @@ const WkHomeTransactions = memo(() => {
                       <TransactionCardMobile
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         mt="15px"
                       />
                     ) : (
@@ -197,7 +194,7 @@ const WkHomeTransactions = memo(() => {
                         status={status}
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         details={
                           <TransactionCard.Details
                             transaction={transaction}

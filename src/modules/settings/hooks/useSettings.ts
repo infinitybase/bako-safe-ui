@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 
 import { IApiError, queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
-import { useAuthStore } from '@/modules/auth';
 import { SettingsQueryKey } from '@/modules/core';
 
 import { useUpdateSettingsRequest } from './';
 import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseSettingsProps {
   onOpen?: () => void;
@@ -18,10 +18,12 @@ interface UseSettingsProps {
 const { MY_SETTINGS } = SettingsQueryKey;
 
 const useSettings = ({ onClose }: UseSettingsProps) => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
   const { form } = useSettingsForm();
   const { successToast, errorToast } = useContactToast();
-  const mySettingsRequest = useMySettingsRequest(account);
+  const mySettingsRequest = useMySettingsRequest(userInfos.address);
   const updateSettingsRequest = useUpdateSettingsRequest();
 
   const user = mySettingsRequest.data;

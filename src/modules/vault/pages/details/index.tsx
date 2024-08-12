@@ -16,11 +16,9 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams, useScreenSize } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
   TransactionCard,
@@ -28,14 +26,13 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useGetCurrentWorkspace } from '@/modules/workspace';
-import { useWorkspace } from '@/modules/workspace/hooks/useWorkspace';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultDetailsPage = () => {
   const menuDrawer = useDisclosure();
@@ -54,19 +51,19 @@ const VaultDetailsPage = () => {
   } = useVaultInfosContext();
 
   const { setTemplateFormInitial } = useTemplateStore();
-  const { goWorkspace, hasPermission } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
 
   const { homeDetailsLimitedTransactions, isLoading } = transactions;
 
-  const { goHome } = useHome();
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, hasPermission, goHome },
+    },
+  } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
     useScreenSize();
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
   const hasTransactions = !isLoading && homeDetailsLimitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
@@ -103,17 +100,24 @@ const VaultDetailsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!workspace?.single && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(workspaceId)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      workspaceId,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}

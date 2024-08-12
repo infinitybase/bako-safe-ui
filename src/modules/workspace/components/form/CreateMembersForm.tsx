@@ -3,14 +3,11 @@ import { Controller } from 'react-hook-form';
 
 import { Autocomplete } from '@/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
-import {
-  useAddressBook,
-  useAddressBookAutocompleteOptions,
-} from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
+import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { UseChangeMember } from '../../hooks';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface MemberAddressForm {
   form: UseChangeMember['form']['memberForm'];
@@ -19,14 +16,19 @@ interface MemberAddressForm {
 
 /* TODO: Move to components folder */
 export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
-  const { isSingleWorkspace } = useAuth();
-  const { paginatedContacts, listContactsRequest, workspaceId } =
-    useAddressBook(!isSingleWorkspace);
+  const {
+    authDetails: { userInfos },
+    addressBookInfos: {
+      requests: { listContactsRequest },
+      handlers: { handleOpenDialog },
+      workspaceId,
+    },
+  } = useWorkspaceContext();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: [form.watch('address')],
       errors: form.formState.errors.address,
@@ -48,7 +50,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
           const showAddToAddressBook =
             !fieldState.invalid &&
             AddressUtils.isValid(field.value) &&
-            paginatedContacts.isSuccess &&
+            listContactsRequest.isSuccess &&
             listContactsRequest.data &&
             !listContactsRequest.data
               .map((o) => o.user.address)
@@ -76,7 +78,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
               <AddToAddressBook
                 visible={showAddToAddressBook}
                 onAdd={() =>
-                  addressBook.handleOpenDialog?.({
+                  handleOpenDialog?.({
                     address: form.getValues('address.value'),
                   })
                 }

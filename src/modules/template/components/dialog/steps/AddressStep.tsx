@@ -28,13 +28,12 @@ import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
   AddressesFields,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -42,7 +41,18 @@ interface AddressStepProps {
 }
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
-  const { account, isSingleWorkspace } = useAuth();
+  const {
+    authDetails: { userInfos },
+    addressBookInfos: {
+      requests: { createContactRequest, listContactsRequest },
+      form: contactForm,
+      inView,
+      canAddMember,
+      workspaceId,
+      dialog: { contactDialog },
+      handlers: { handleOpenDialog },
+    },
+  } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const handleFirstIsFirstLoad = () => {
@@ -51,21 +61,10 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     }
   };
 
-  const {
-    createContactRequest,
-    form: contactForm,
-    contactDialog,
-    listContactsRequest,
-    inView,
-    canAddMember,
-    workspaceId,
-    handleOpenDialog,
-  } = useAddressBook(!isSingleWorkspace);
-
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('addresses') as AddressesFields,
       errors: form.formState.errors.addresses,
@@ -150,7 +149,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
               name={`addresses.${index}.value`}
               render={({ field, fieldState }) => {
                 const first = index === 0;
-                const anotherAddress = field.value !== account;
+                const anotherAddress = field.value !== userInfos.address;
 
                 const appliedOptions = handleFieldOptions(
                   field.value,

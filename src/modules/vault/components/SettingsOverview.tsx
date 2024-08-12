@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
-import { useAuth } from '@/modules/auth';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
 import { useCLI } from '@/modules/cli/hooks';
@@ -29,11 +28,11 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
-import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
@@ -48,10 +47,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
     useScreenSize();
 
-  const { hasPermission } = useWorkspace();
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
+  } = useWorkspaceContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
@@ -63,7 +64,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   } = useCLI(vault);
   const { dialog, steps, tabs, create, list } = APIToken;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,
