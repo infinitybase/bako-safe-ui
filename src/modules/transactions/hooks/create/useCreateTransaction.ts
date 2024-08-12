@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById, Vault } from 'bakosafe';
+import { BakoSafe, IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -18,14 +18,14 @@ import {
   WorkspacesQueryKey,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
+import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
 
 import {
   TRANSACTION_LIST_QUERY_KEY,
   USER_TRANSACTIONS_QUERY_KEY,
 } from '../list';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
-import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
-import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTxRequest';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
