@@ -1,20 +1,23 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useFuel, useIsConnected } from '@fuels/react';
+import { useAccount, useFuel, useIsConnected } from '@fuels/react';
+import { Address } from 'fuels';
 import { useEffect, useState } from 'react';
+
 import { Location, useNavigate } from 'react-router-dom';
+
 import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
 import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -83,7 +86,7 @@ const useSignIn = () => {
       authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
-        account: address,
+        account: Address.fromString(account!).toB256(),
         accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
