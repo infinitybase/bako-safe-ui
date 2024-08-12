@@ -33,19 +33,22 @@ import {
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
-import { StatusFilter, useTransactionList } from '../../hooks';
+import { StatusFilter } from '../../hooks';
 import { transactionStatus } from '../../utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 const UserTransactionsPage = () => {
   const {
-    infinityTransactionsRef,
-    request: { isLoading },
-    filter,
-    inView,
-    handlers: { navigate, handleIncomingAction, handleOutgoingAction },
-    lists: { infinityTransactions, transactions },
-  } = useTransactionList({ byMonth: true });
+    transactionsPageList: {
+      infinityTransactionsRef,
+      request: { isLoading },
+      filter,
+      inView,
+      handlers: { navigate, handleIncomingAction, handleOutgoingAction },
+      lists: { infinityTransactions, transactions },
+    },
+  } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },

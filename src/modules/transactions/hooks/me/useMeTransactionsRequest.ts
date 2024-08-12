@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { TransactionService } from '../../services';
 
-const usePredicateTransactionsRequest = (predicateId: string) => {
+const useMeTransactionsRequest = (predicateId: string) => {
   return useQuery({
     queryKey: ['transaction/by-predicateId', predicateId],
     queryFn: async () =>
@@ -12,4 +12,4 @@ const usePredicateTransactionsRequest = (predicateId: string) => {
   });
 };
 
-export { usePredicateTransactionsRequest };
+export { useMeTransactionsRequest };

@@ -42,8 +42,12 @@ const useTransactionList = ({
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
 
   const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
@@ -125,6 +129,7 @@ const useTransactionList = ({
       navigate,
       handleIncomingAction,
       handleOutgoingAction,
+      listTransactionTypeFilter: setTxFilterType,
     },
     filter: {
       set: setFilter,
@@ -134,12 +139,12 @@ const useTransactionList = ({
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     infinityTransactionsRef: lastElementRef,
-    pendingTransactions: pendingTransactions(),
     lists: {
       transactions,
       infinityTransactions,
-      homeDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
+      vaultDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
     },
+    pendingTransactions: pendingTransactions(),
   };
 };
 

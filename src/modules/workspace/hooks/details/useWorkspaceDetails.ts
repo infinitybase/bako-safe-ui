@@ -10,11 +10,11 @@ const useWorkspaceDetails = () => {
   const { isSignInpage } = currentPath();
 
   const {
+    invalidateAllTransactionsTypeFilters,
     homeTransactions: {
       request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
-      handlers: { homeTransactionTypeFilter },
     },
-    predicateTransactions: {
+    meTransactions: {
       request: {
         isLoading: isPredicateTransactionLoading,
         isFetching: isPredicateFetching,
@@ -41,7 +41,7 @@ const useWorkspaceDetails = () => {
   } = useWorkspace(
     authDetails.userInfos,
     invalidateGifAnimationRequest,
-    homeTransactionTypeFilter,
+    invalidateAllTransactionsTypeFilters,
   );
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 

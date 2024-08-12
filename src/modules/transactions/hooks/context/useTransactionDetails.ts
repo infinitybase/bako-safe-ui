@@ -1,4 +1,4 @@
-import { usePredicateTransactions } from '../predicate';
+import { useMeTransactions } from '../me';
 import { useTransactionList } from '../list';
 import { useAuth } from '@/modules/auth';
 import { useSignTransaction } from '../signature';
@@ -11,7 +11,7 @@ const useTransactionDetails = () => {
     userInfos: { workspace },
   } = useAuth();
 
-  const predicateTransactions = usePredicateTransactions();
+  const meTransactions = useMeTransactions();
   const homeTransactions = useHomeTransactions(workspace?.id);
   const transactionsPageList = useTransactionList({
     workspaceId: workspace?.id,
@@ -19,14 +19,20 @@ const useTransactionDetails = () => {
   });
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
-    predicateTransactions,
+    meTransactions,
   });
 
+  const invalidateAllTransactionsTypeFilters = () => {
+    homeTransactions.handlers.homeTransactionTypeFilter(undefined);
+    transactionsPageList.handlers.listTransactionTypeFilter(undefined);
+  };
+
   return {
-    predicateTransactions,
+    meTransactions,
     homeTransactions,
     transactionsPageList,
     signTransaction,
+    invalidateAllTransactionsTypeFilters,
   };
 };
 

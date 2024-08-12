@@ -1,7 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOptionTx } from 'bakosafe';
+import { SortOptionTx, TransactionStatus } from 'bakosafe';
 
-import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
+import {
+  invalidateQueries,
+  useBakoSafeTransactionSend,
+  WorkspacesQueryKey,
+} from '@/modules/core';
 
 import {
   GetTransactionParams,
@@ -39,6 +43,24 @@ const useTransactionListPaginationRequest = (
         id: params.id,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
+        const pending = data.data
+          .map((item) =>
+            item.transactions.filter(
+              (tx) => tx.status === TransactionStatus.SUCCESS,
+            ),
+          )
+          .map((filteredTx) => {
+            return filteredTx;
+            // useBakoSafeTransactionSend({
+            //   onSuccess: () => {
+            //     query.refetch();
+            //   },
+            //   onError: () => {},
+            //   transactionId: filteredTx.id,
+            //   predicateId: params.predicateId?[0]
+            // });
+          });
+
         return data;
       }),
     initialPageParam: 0,

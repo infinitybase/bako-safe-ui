@@ -52,6 +52,7 @@ const TransactionSendProvider = (props: PropsWithChildren) => {
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
+      // remover a tx da lista após o sucesso
     }
 
     if (transaction.status == TransactionStatus.FAILED) {

@@ -1,9 +1,7 @@
 import {
-  IBakoSafeAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
-  TransactionStatus,
   Vault,
   TransactionType,
 } from 'bakosafe';
@@ -78,6 +76,10 @@ interface UseBakoSafeSendTransactionParams {
   predicateId: string;
   transactionId: string;
 }
+
+// Receber predicateId e txID
+//  Ao confirmar (ao término do .wait) e invalidar as transações
+//  no onSuccess invalidar a request de tx (da página específica onde ocorre a assinatura)
 
 const useBakoSafeTransactionSend = (
   options: UseBakoSafeSendTransactionParams,

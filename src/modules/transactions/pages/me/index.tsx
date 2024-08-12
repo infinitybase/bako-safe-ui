@@ -17,7 +17,7 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { Pages } from '@/modules/core/routes';
 import { assetsMap } from '@/modules/core/utils';
 
-import { usePredicateTransactions } from '../../hooks/predicate/usePredicateTransactions';
+import { useMeTransactions } from '../../hooks/me/useMeTransactions';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MeTransactionsPage = () => {
@@ -26,7 +26,7 @@ const MeTransactionsPage = () => {
     lists: { transactions },
     navigate,
     calculateSignatures,
-  } = usePredicateTransactions();
+  } = useMeTransactions();
 
   const {
     workspaceInfos: {
