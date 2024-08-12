@@ -42,7 +42,7 @@ const useVaultTransactionsList = ({
     fetchNextPage,
   } = useVaultTransactionsRequest({
     predicateId: vaultId ? [vaultId] : undefined,
-    status: filter,
+    status: filter ? [filter] : undefined,
     byMonth,
     type,
   });

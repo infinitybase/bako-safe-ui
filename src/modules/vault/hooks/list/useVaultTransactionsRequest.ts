@@ -1,7 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SortOptionTx, TransactionType } from 'bakosafe';
 
-import { StatusFilter } from '@/modules/transactions';
 import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
@@ -10,10 +9,8 @@ import {
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,
-  'perPage' | 'offsetDb' | 'offsetFuel' | 'status'
-> & {
-  status: StatusFilter;
-};
+  'perPage' | 'offsetDb' | 'offsetFuel'
+>;
 
 export const VAULT_TRANSACTIONS_LIST_PAGINATION =
   'vault-transaction-list-pagination';
