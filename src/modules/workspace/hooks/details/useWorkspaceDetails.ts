@@ -14,7 +14,7 @@ const useWorkspaceDetails = () => {
       request: { isLoading: isHomeRequestLoading },
     },
     meTransactions: {
-      transactionsRequest: { isLoading: isMeTransactionsLoading },
+      request: { isLoading: isMeTransactionsLoading },
     },
     transactionsPageList: {
       request: { isLoading: isTransactionsPageListLoading },
@@ -40,9 +40,9 @@ const useWorkspaceDetails = () => {
       !worksapceBalance.isLoading &&
       !addressBookInfos.requests.listContactsRequest.isLoading &&
       // The transactions laoding is commented out because it's trigged when use the filters
-      // !isHomeRequestLoading &&
-      // !isMeTransactionsLoading &&
-      // !isTransactionsPageListLoading &&
+      !isHomeRequestLoading &&
+      !isMeTransactionsLoading &&
+      !isTransactionsPageListLoading &&
       !isGifAnimationLoading &&
       !authDetails.userInfos.isLoading;
 

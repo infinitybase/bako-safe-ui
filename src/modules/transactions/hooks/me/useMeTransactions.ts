@@ -39,7 +39,7 @@ const useMeTransactions = () => {
 
   return {
     navigate,
-    transactionsRequest: {
+    request: {
       transactions,
       ...transactionsRequest,
     },
