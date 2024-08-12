@@ -11,14 +11,20 @@ const useWorkspaceDetails = () => {
 
   const {
     homeTransactions: {
-      request: { isLoading: isHomeRequestLoading },
+      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
       handlers: { homeTransactionTypeFilter },
     },
     predicateTransactions: {
-      request: { isLoading: isPredicateTransactionLoading },
+      request: {
+        isLoading: isPredicateTransactionLoading,
+        isFetching: isPredicateFetching,
+      },
     },
     transactionsPageList: {
-      request: { isLoading: isTransactionsPageListLoading },
+      request: {
+        isLoading: isTransactionsPageListLoading,
+        isFetching: isTransactionsPageListFetching,
+      },
     },
   } = useTransactionsContext();
 
@@ -39,19 +45,25 @@ const useWorkspaceDetails = () => {
   );
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
-  const isWorkspaceReady = isSignInpage
-    ? true
-    : !latestPredicates.isLoading &&
-      !worksapceBalance.isLoading &&
-      !addressBookInfos.requests.listContactsRequest.isLoading &&
-      !isHomeRequestLoading &&
-      !isPredicateTransactionLoading &&
-      !isTransactionsPageListLoading &&
-      !isGifAnimationLoading &&
-      !authDetails.userInfos.isLoading;
+  const isFilteringInProgress =
+    (isHomeFetching || isPredicateFetching || isTransactionsPageListFetching) &&
+    !isGifAnimationLoading;
+
+  const isWorkspaceReady =
+    (isSignInpage
+      ? true
+      : !latestPredicates.isLoading &&
+        !worksapceBalance.isLoading &&
+        !addressBookInfos.requests.listContactsRequest.isLoading &&
+        !isHomeRequestLoading &&
+        !isPredicateTransactionLoading &&
+        !isTransactionsPageListLoading &&
+        !isGifAnimationLoading &&
+        !authDetails.userInfos.isLoading) || isFilteringInProgress;
 
   return {
     isWorkspaceReady,
+    isFilteringInProgress,
     authDetails,
     workspaceInfos: {
       handlers: { hasPermission, ...handlersData },

@@ -17,8 +17,9 @@ const usePredicateTransactions = () => {
     userInfos: { workspace },
   } = useAuth();
 
-  const { data, isLoading, isFetching, ...query } =
-    usePredicateTransactionsRequest(workspace?.id);
+  const { data, isLoading, isFetching } = usePredicateTransactionsRequest(
+    workspace?.id,
+  );
 
   const transactions = useMemo(() => {
     return data
@@ -46,8 +47,8 @@ const usePredicateTransactions = () => {
       transactions,
     },
     request: {
-      isLoading: !data && isLoading && !isFetching,
-      ...query,
+      isLoading,
+      isFetching,
     },
     calculateSignatures,
   };
