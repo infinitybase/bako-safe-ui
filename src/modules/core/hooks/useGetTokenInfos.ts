@@ -1,16 +1,15 @@
 import { bn } from 'fuels';
+
 import { Asset, assetsMap } from '../utils';
 
-const useGetTokenInfos = (asset: Asset) => {
-  const isAmountBnFormat = asset.amount?.startsWith('0x');
-  let assetAmount: string | undefined = '';
+const useGetTokenInfos = ({ assetId, amount = '0.000' }: Asset) => {
+  const isHex = (value: string) => {
+    const hexRegex = /^0x[0-9a-fA-F]+$/;
+    return typeof value === 'string' && hexRegex.test(value);
+  };
 
-  const assetsInfo = assetsMap[asset.assetId];
-  if (isAmountBnFormat) {
-    assetAmount = bn(asset.amount!).format();
-  } else {
-    assetAmount = asset.amount;
-  }
+  const assetsInfo = assetsMap[assetId];
+  const assetAmount = isHex(amount) ? bn(amount).format() : amount;
 
   return { assetsInfo, assetAmount };
 };

@@ -1,7 +1,8 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useAccount, useFuel, useIsConnected } from '@fuels/react';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import { Location, useNavigate } from 'react-router-dom';
 
 import { useSocket } from '@/modules/core';
@@ -18,18 +19,9 @@ import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
 
-export const redirectPathBuilder = (
-  isDapp: boolean,
-  location: Location,
-  account: string,
-) => {
+export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
-  // console.log('[PARAMS]: ', {
-  //   isDapp,
-  //   location,
-  //   account,
-  //   isRedirectToPrevious,
-  // });
+
   if (isDapp && isRedirectToPrevious) {
     return location.state.from;
   }
@@ -44,12 +36,13 @@ export const redirectPathBuilder = (
 const useSignIn = () => {
   const navigate = useNavigate();
   const connectorDrawer = useDisclosure();
+  const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
+    useState(false);
 
   const { fuel } = useFuel();
   const { authDetails } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
-  const { account } = useAccount();
 
   const { connect } = useSocket();
 
@@ -80,8 +73,16 @@ const useSignIn = () => {
   };
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
+    onSuccess: ({
+      accessToken,
+      avatar,
+      user_id,
+      workspace,
+      webAuthn,
+      address,
+    }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
+
       authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
@@ -93,7 +94,7 @@ const useSignIn = () => {
         webAuthn: _webAuthn,
       });
 
-      navigate(redirectPathBuilder(!!sessionId, location, account!));
+      navigate(redirectPathBuilder(!!sessionId, location));
     },
   });
 
@@ -110,7 +111,9 @@ const useSignIn = () => {
     window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
 
   const selectConnector = async (connector: string) => {
-    await fuel.selectConnector(connector);
+    const isWalletConnectorOpen = await fuel.selectConnector(connector);
+    setIsAnyWalletConnectorOpen(isWalletConnectorOpen);
+
     connectorDrawer.onClose();
     const isbyWallet = connector !== EConnectors.WEB_AUTHN;
     if (isbyWallet) {
@@ -139,9 +142,22 @@ const useSignIn = () => {
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
     } catch (e) {
+      setIsAnyWalletConnectorOpen(false);
       authDetails.handlers.setInvalidAccount?.(true);
     }
   };
+
+  useEffect(() => {
+    const fueletConnectionStatus = () => (data: boolean) => {
+      setIsAnyWalletConnectorOpen(data);
+    };
+
+    fuel.on(fuel.events.connection, fueletConnectionStatus());
+
+    return () => {
+      fuel.off(fuel.events.connection, fueletConnectionStatus);
+    };
+  }, [fuel]);
 
   return {
     auth: authDetails,
@@ -159,6 +175,7 @@ const useSignIn = () => {
       drawer: connectorDrawer,
       select: selectConnector,
       has: !!connectors?.length,
+      isAnyWalletConnectorOpen,
     },
     hasFuel,
     redirectToWalletLink,
