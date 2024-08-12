@@ -1,4 +1,4 @@
-import { TransactionStatus } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/modules/auth/store';
 
 import { ITransactionsGroupedByMonth } from '../../services';
-import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -48,7 +47,6 @@ const useTransactionList = ({
     refetch,
   } = useTransactionListPaginationRequest({
     predicateId: params.vaultId ? [params.vaultId] : undefined,
-    id: selectedTransaction.id,
     /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
     byMonth,
