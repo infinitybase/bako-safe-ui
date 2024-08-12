@@ -26,10 +26,14 @@ export const vaultInfinityQueryKey = {
 const useVaultTransactionsRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
+  const status = Array.isArray(params.status)
+    ? params.status.join('-')
+    : params.status;
+
   const queryKey =
     vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       params.predicateId?.[0],
-      params.status,
+      status,
       params.type,
     );
 
