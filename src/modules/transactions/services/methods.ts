@@ -13,6 +13,8 @@ import {
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
   GetTransactionsResponse,
+  GetTransactionsWithIncomingsPaginationResponse,
+  GetTransactionsWithIncomingsParams,
   GetUserTransactionsParams,
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
@@ -86,6 +88,19 @@ export class TransactionService {
         params: { ...params },
       },
     );
+    return data;
+  }
+
+  static async getTransactionsWithIncomingsPagination(
+    params: GetTransactionsWithIncomingsParams,
+  ) {
+    const { data } =
+      await api.get<GetTransactionsWithIncomingsPaginationResponse>(
+        `/transaction/with-incomings`,
+        {
+          params: { ...params },
+        },
+      );
     return data;
   }
 

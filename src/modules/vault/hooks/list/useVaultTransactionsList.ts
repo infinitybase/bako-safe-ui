@@ -2,10 +2,12 @@ import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
+
 import { useAuthStore } from '@/modules/auth/store';
-import { useVaultTxRequest } from './useVaultTxRequest';
-import { useTransactionState } from '@/modules/transactions/states';
 import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+import { useTransactionState } from '@/modules/transactions/states';
+
+import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 export enum StatusFilter {
   ALL = '',
@@ -38,9 +40,8 @@ const useVaultTransactionsList = ({
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useVaultTxRequest({
+  } = useVaultTransactionsRequest({
     predicateId: vaultId ? [vaultId] : undefined,
-    id: selectedTransaction.id,
     status: filter,
     byMonth,
     type,
