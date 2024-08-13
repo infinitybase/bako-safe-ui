@@ -1,7 +1,8 @@
 import { Route } from 'react-router-dom';
 
 import { Container } from '@/layouts/dapp/container';
-import { AuthRoute, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { AuthRoute } from '@/modules/core/components/route/auth';
 
 import { TransactionConfirm, VaultConnector } from './pages';
 
