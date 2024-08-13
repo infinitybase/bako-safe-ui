@@ -17,10 +17,7 @@ interface TransactionCardStatusProps {
 }
 
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { useTransactionSend } from '../../providers';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-
-import { useSignTransaction } from '../../hooks/signature';
 
 const Status = ({
   transaction,

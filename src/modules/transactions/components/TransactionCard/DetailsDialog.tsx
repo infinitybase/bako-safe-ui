@@ -9,11 +9,7 @@ import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
-import {
-  TransactionCard,
-  transactionStatus,
-  useTransactionSend,
-} from '@/modules/transactions';
+import { TransactionCard, transactionStatus } from '@/modules/transactions';
 
 import { TransactionWithVault } from '../../services/types';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
