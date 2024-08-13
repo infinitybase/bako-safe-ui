@@ -112,6 +112,9 @@ const useTransactionList = ({
           hash: transaction.hash,
           id: transaction.id,
           predicateId: transaction.predicateId,
+          resume: {
+            witnesses: transaction.resume.witnesses,
+          },
         };
       });
     });

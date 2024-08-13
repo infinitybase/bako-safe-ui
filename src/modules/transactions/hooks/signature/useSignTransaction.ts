@@ -61,7 +61,8 @@ const useSignTransaction = ({
 
   const request = useSignTransactionRequest({
     onSuccess: async () => {
-      await transactionList.request.refetch();
+      transactionsPageRefetch();
+      homeTransactionsRefetch();
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');
