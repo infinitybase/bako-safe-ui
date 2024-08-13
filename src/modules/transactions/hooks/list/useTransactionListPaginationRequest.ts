@@ -2,19 +2,19 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { SortOptionTx } from 'bakosafe';
 
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
-  GetTransactionsWithIncomingsParams,
+  GetTransactionParams,
   TransactionOrderBy,
   TransactionService,
 } from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type UseTransactionListPaginationParams = Omit<
-  GetTransactionsWithIncomingsParams,
-  'perPage' | 'offsetDb' | 'offsetFuel'
+  GetTransactionParams,
+  'perPage' | 'page'
 >;
 
 const useTransactionListPaginationRequest = (
@@ -29,28 +29,25 @@ const useTransactionListPaginationRequest = (
       userInfos.workspace?.id,
       params.status as StatusFilter,
       params.predicateId?.[0],
+      params.id,
       params.type,
     ),
-    queryFn: ({ pageParam: { offsetDb, offsetFuel } }) =>
-      TransactionService.getTransactionsWithIncomingsPagination({
+    queryFn: ({ pageParam }) =>
+      TransactionService.getTransactionsPagination({
         ...params,
         perPage: 5,
-        offsetDb: offsetDb || 0,
-        offsetFuel: offsetFuel || 0,
+        page: pageParam || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
         return data;
       }),
-    initialPageParam: { offsetDb: 0, offsetFuel: 0 },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.data.length === 0) {
-        return undefined;
-      }
-
-      return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
-    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.currentPage !== lastPage.totalPages
+        ? lastPage.nextPage
+        : undefined,
   });
 
   return {
