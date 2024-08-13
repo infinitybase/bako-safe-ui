@@ -225,7 +225,6 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const isContract = !!contractAddress;
   const { isMobile, isExtraSmall } = useScreenSize();
-
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
     [asset?.assetId],
@@ -304,7 +303,7 @@ const AssetBoxInfo = ({
         />
       </Center>
 
-      {isContract && (
+      {isContract && !asset?.to && (
         <VStack spacing={0} alignItems="flex-end">
           <HStack spacing={3}>
             <Text
@@ -317,18 +316,13 @@ const AssetBoxInfo = ({
               ml="2px"
             >
               {isExtraSmall
-                ? limitCharacters(
-                    AddressUtils.format(
-                      Address.fromString(asset?.to ?? '').toAddress(),
-                    ) ?? '',
-                    7,
-                  )
-                : AddressUtils.format(
-                    Address.fromString(asset?.to ?? '').toAddress(),
-                    isMobile ? 10 : 24,
-                  )}
+                ? limitCharacters(AddressUtils.format(contractAddress) ?? '', 7)
+                : AddressUtils.format(contractAddress, isMobile ? 10 : 24)}
             </Text>
           </HStack>
+          <Text color="grey.500" fontSize="xs">
+            Contract
+          </Text>
         </VStack>
       )}
 
@@ -484,16 +478,14 @@ const Details = ({
                     {isContract && !isDeploy && !transaction.assets.length && (
                       <AssetBoxInfo
                         isDeposit={isDeposit}
-                        contractAddress={Address.fromB256(
-                          mainOperation.to?.address ?? '',
-                        ).toString()}
+                        contractAddress={mainOperation.to?.address}
                         borderColor={'transparent'}
                         hasToken={hasToken}
                       />
                     )}
                   </Box>
 
-                  {isContract && !isDeploy && (
+                  {fromConnector && !isDeploy && (
                     <>
                       <Card
                         bgColor="grey.825"
@@ -521,9 +513,8 @@ const Details = ({
                             borderRadius="6.4px"
                             color="white"
                             bgColor="dark.950"
-                            // src={transaction.summary?.image}
-                            // name={transaction.summary?.name}
-                            name="Eita Assim"
+                            src={transaction.summary?.image}
+                            name={transaction.summary?.name}
                             size="sm"
                           />
                           <VStack alignItems="flex-start" spacing={0}>
@@ -533,19 +524,17 @@ const Details = ({
                               color="grey.250"
                             >
                               {transaction.summary?.name}
-                              Transaction De mentirinha hihihi
                             </Text>
                             <Text
                               color="brand.500"
                               variant="description"
                               fontSize="xs"
                             >
-                              bakoconnector-git-gr-featbakosafe-infinity-base.vercel.app
-                              {/* {transaction.summary?.origin.split('//')[1]} */}
+                              {transaction.summary?.origin.split('//')[1]}
                             </Text>
                           </VStack>
                         </HStack>
-                        {isPending && notSigned && isContract && (
+                        {isPending && notSigned && fromConnector && (
                           <HStack
                             bg="warning.700"
                             borderColor="warning.700"
