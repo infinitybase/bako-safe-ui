@@ -94,7 +94,6 @@ const useVaultTransactionsList = ({
     inView,
     account: userInfos.address,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    hasSkeleton: false,
     infinityTransactions,
     infinityTransactionsRef: lastElementRef,
   };

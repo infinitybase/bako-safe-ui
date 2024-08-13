@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { AuthRoute, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { AuthRoute } from '@/modules/core/components/route/auth';
 import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '@/modules/transactions/pages';
 import {

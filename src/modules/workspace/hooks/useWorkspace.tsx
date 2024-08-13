@@ -18,7 +18,11 @@ const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = (userInfos: IUserInfos) => {
+const useWorkspace = (
+  userInfos: IUserInfos,
+  invalidateGifAnimationRequest: () => void,
+  invalidateAllTransactionsTypeFilters: () => void,
+) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
 
@@ -47,9 +51,10 @@ const useWorkspace = (userInfos: IUserInfos) => {
     if (isSelecting) return;
     if (!isValid) return !!redirect && navigate(redirect);
 
+    invalidateGifAnimationRequest();
+    workspaceDialog.onClose();
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
-        workspaceDialog.onClose();
         invalidateRequests();
         navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },
@@ -91,6 +96,7 @@ const useWorkspace = (userInfos: IUserInfos) => {
   );
 
   const invalidateRequests = () => {
+    invalidateAllTransactionsTypeFilters();
     worksapceBalance.refetch();
     pendingSignerTransactions.refetch();
     userInfos.refetch();
@@ -117,7 +123,6 @@ const useWorkspace = (userInfos: IUserInfos) => {
     handlers: {
       handleWorkspaceSelection,
       navigate,
-      // selectWorkspace,
       setVisibleBalance,
       hasPermission,
       goHome,

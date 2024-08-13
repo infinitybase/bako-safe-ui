@@ -215,7 +215,7 @@ const HomePage = () => {
         ) : null}
         {/* TRANSACTION LIST */}
         <Box minH="650px">
-          <HomeTransactions hasRecentVaults={!!recentVaults?.length} />
+          <HomeTransactions />
         </Box>
       </CustomSkeleton>
     </VStack>

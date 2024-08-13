@@ -1,4 +1,4 @@
-import { BakoSafe, Transfer } from 'bakosafe';
+import { BakoSafe, ITransactionResume, Transfer } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { api } from '@/config/api';
@@ -162,6 +162,13 @@ export class TransactionService {
   static async getTransactionsHistory(id: string, predicateId: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(
       `/transaction/history/${id}/${predicateId}`,
+    );
+    return data;
+  }
+
+  static async verifyOnChain(id: string) {
+    const { data } = await api.get<ITransactionResume>(
+      `/transaction/verify/${id}`,
     );
     return data;
   }

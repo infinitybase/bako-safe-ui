@@ -2,7 +2,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { SortOptionTx } from 'bakosafe';
 
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   GetTransactionParams,
@@ -15,18 +14,16 @@ import { StatusFilter } from './useTransactionList';
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
   'perPage' | 'page'
->;
+> & {
+  workspaceId: string;
+};
 
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
-
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-      userInfos.workspace?.id,
+      params.workspaceId,
       params.status as StatusFilter,
       params.predicateId?.[0],
       params.id,
@@ -41,6 +38,7 @@ const useTransactionListPaginationRequest = (
         sort: SortOptionTx.DESC,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
+
         return data;
       }),
     initialPageParam: 0,

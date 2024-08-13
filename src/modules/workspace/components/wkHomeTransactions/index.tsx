@@ -6,23 +6,21 @@ import {
   Icon,
   Spacer,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { css, keyframes } from '@emotion/react';
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, useScreenSize } from '@/modules/core';
-import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import {
   TransactionCard,
   TransactionCardMobile,
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
@@ -34,10 +32,8 @@ const shakeAnimation = keyframes`
   100% { transform: translateX(0); }
 `;
 
-const WkHomeTransactions = memo(() => {
+const WkHomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);
-
-  const { txFilterType } = useFilterTxType();
 
   const {
     authDetails: { userInfos },
@@ -47,53 +43,24 @@ const WkHomeTransactions = memo(() => {
     },
   } = useWorkspaceContext();
 
-  const recentVaults = latestPredicates.data?.predicates?.data;
-
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
+  const {
+    homeTransactions: {
+      transactions,
+      request: { isLoading },
+    },
+  } = useTransactionsContext();
 
   useEffect(() => {
-    if (
-      groupedTransactions &&
-      groupedTransactions.length >= 1 &&
-      !hasTransactions
-    ) {
+    if (transactions && transactions.length >= 1 && !hasTransactions) {
       setHasTransactions(true);
     }
-  }, [groupedTransactions]);
+  }, [transactions]);
 
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions &&
-    groupedTransactions.length <= 0 &&
-    !hasTransactions ? (
-    <VStack w="full" spacing={6}>
-      {groupedTransactions && (
-        <HStack w="full" spacing={4}>
-          <Text
-            variant="subtitle"
-            fontWeight={700}
-            fontSize="md"
-            color="grey.50"
-          >
-            Transactions
-          </Text>
-        </HStack>
-      )}
-      <CustomSkeleton
-        isLoaded={!latestPredicates.isLoading}
-        mt={{
-          base: recentVaults?.length ? 16 : 0,
-          sm: recentVaults?.length ? 8 : 0,
-          md: recentVaults?.length ? 8 : 2,
-        }}
-      >
-        <EmptyState showAction={false} />
-      </CustomSkeleton>
-    </VStack>
-  ) : (
+  return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>
       <Box
         w="full"
@@ -148,7 +115,9 @@ const WkHomeTransactions = memo(() => {
         </Button>
       </Box>
 
-      {groupedTransactions?.map((grouped) => (
+      {!isLoading && !transactions?.length && <EmptyState showAction={false} />}
+
+      {transactions?.map((grouped) => (
         <>
           <HStack>
             <Text
@@ -207,5 +176,5 @@ const WkHomeTransactions = memo(() => {
       ))}
     </Box>
   );
-});
+};
 export default WkHomeTransactions;

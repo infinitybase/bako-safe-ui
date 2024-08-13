@@ -1,11 +1,9 @@
-import { useDisclosure } from '@chakra-ui/react';
-import { useAccount, useFuel, useIsConnected } from '@fuels/react';
-import { Address } from 'fuels';
+import { useSocket } from '@/modules/core';
 import { useEffect, useState } from 'react';
-
+import { useDisclosure } from '@chakra-ui/react';
+import { useFuel, useIsConnected } from '@fuels/react';
 import { Location, useNavigate } from 'react-router-dom';
 
-import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
@@ -18,6 +16,7 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -40,10 +39,9 @@ const useSignIn = () => {
     useState(false);
 
   const { fuel } = useFuel();
-  const { authDetails } = useWorkspaceContext();
+  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
-  const { account } = useAccount();
   const { connect } = useSocket();
 
   useEffect(() => {
@@ -86,13 +84,14 @@ const useSignIn = () => {
       authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
-        account: Address.fromString(account!).toB256(),
+        account: address,
         accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
+      invalidateGifAnimationRequest();
 
       navigate(redirectPathBuilder(!!sessionId, location));
     },
@@ -141,6 +140,7 @@ const useSignIn = () => {
         provider: network!.url,
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
+      setIsAnyWalletConnectorOpen(false);
     } catch (e) {
       setIsAnyWalletConnectorOpen(false);
       authDetails.handlers.setInvalidAccount?.(true);

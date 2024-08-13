@@ -31,21 +31,21 @@ import {
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
-import { StatusFilter, useTransactionList } from '../../hooks';
-import { useFilterTxType } from '../../hooks/filter';
+import { StatusFilter } from '../../hooks';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const { txFilterType } = useFilterTxType();
-
   const {
-    infinityTransactions,
-    infinityTransactionsRef,
-    transactionRequest,
-    filter,
-    inView,
-    navigate,
-  } = useTransactionList({ type: txFilterType, byMonth: true });
+    transactionsPageList: {
+      infinityTransactionsRef,
+      request: { isLoading },
+      filter,
+      inView,
+      handlers: { navigate },
+      lists: { infinityTransactions, transactions },
+    },
+  } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
@@ -85,7 +85,10 @@ const UserTransactionsPage = () => {
             onClick={() =>
               userInfos.onSingleWorkspace
                 ? goHome()
-                : handleWorkspaceSelection(userInfos.workspace?.id ?? '')
+                : handleWorkspaceSelection(
+                    userInfos.workspace?.id,
+                    Pages.workspace({ workspaceId: userInfos.workspace?.id }),
+                  )
             }
           >
             Back home
@@ -280,10 +283,9 @@ const UserTransactionsPage = () => {
           },
         }}
       >
-        {!transactionRequest.isLoading &&
-          !transactionRequest?.transactions.length && (
-            <EmptyState showAction={false} />
-          )}
+        {!isLoading && !transactions.length && (
+          <EmptyState showAction={false} />
+        )}
         {infinityTransactions?.map((grouped) => (
           <>
             <HStack w="full">
@@ -315,7 +317,7 @@ const UserTransactionsPage = () => {
                       ref={infinityTransactionsRef}
                       w="full"
                     >
-                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                      <CustomSkeleton isLoaded={!isLoading}>
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}

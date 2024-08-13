@@ -1,49 +1,62 @@
 import { useAuth } from '@/modules/auth';
 import { useWorkspace } from '../useWorkspace';
 import { useAddressBook } from '@/modules';
-import { useEffect, useState } from 'react';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { currentPath } from '@/utils';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useGitLoadingRequest } from '../useGifLoadingRequest';
 
 const useWorkspaceDetails = () => {
-  const [showWorkspace, setShowWorkspace] = useState(false);
   const { isSignInpage } = currentPath();
 
+  const {
+    invalidateAllTransactionsTypeFilters,
+    homeTransactions: {
+      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
+    },
+    transactionsPageList: {
+      request: {
+        isLoading: isTransactionsPageListLoading,
+        isFetching: isTransactionsPageListFetching,
+      },
+    },
+  } = useTransactionsContext();
+
+  const {
+    isLoading: isGifAnimationLoading,
+    refetch: invalidateGifAnimationRequest,
+  } = useGitLoadingRequest();
   const tokensUSD = useTokensUSDAmountRequest();
   const authDetails = useAuth();
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { worksapceBalance, latestPredicates, ...requestsData },
     ...rest
-  } = useWorkspace(authDetails.userInfos);
+  } = useWorkspace(
+    authDetails.userInfos,
+    invalidateGifAnimationRequest,
+    invalidateAllTransactionsTypeFilters,
+  );
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
-  useEffect(() => {
-    const gifDuration = 2900;
-    const timer = setTimeout(() => {
-      setShowWorkspace(true);
-    }, gifDuration);
+  const isFilteringInProgress =
+    (isHomeFetching || isTransactionsPageListFetching) &&
+    !isGifAnimationLoading;
 
-    return () => {
-      clearTimeout(timer);
-      setShowWorkspace(false);
-    };
-  }, [
-    latestPredicates.isLoading,
-    worksapceBalance.isLoading,
-    addressBookInfos.requests.listContactsRequest.isLoading,
-  ]);
-
-  const isWorkspaceReady = isSignInpage
-    ? true
-    : !addressBookInfos.requests.listContactsRequest.isLoading &&
-      authDetails &&
-      !latestPredicates.isLoading &&
-      !worksapceBalance.isLoading &&
-      showWorkspace;
+  const isWorkspaceReady =
+    (isSignInpage
+      ? true
+      : !latestPredicates.isLoading &&
+        !worksapceBalance.isLoading &&
+        !addressBookInfos.requests.listContactsRequest.isLoading &&
+        !isHomeRequestLoading &&
+        !isTransactionsPageListLoading &&
+        !isGifAnimationLoading &&
+        !authDetails.userInfos.isLoading) || isFilteringInProgress;
 
   return {
     isWorkspaceReady,
+    isFilteringInProgress,
     authDetails,
     workspaceInfos: {
       handlers: { hasPermission, ...handlersData },
@@ -51,8 +64,8 @@ const useWorkspaceDetails = () => {
       ...rest,
     },
     addressBookInfos,
-    isSignInpage,
     tokensUSD,
+    invalidateGifAnimationRequest,
   };
 };
 

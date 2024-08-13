@@ -1,7 +1,8 @@
 import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
-import { AuthRoute, Pages } from '@/modules/core';
+import { Pages } from '@/modules/core/routes';
+import { AuthRoute } from '@/modules/core/components/route/auth';
 import { HomePage } from '@/modules/home/pages';
 import { UserVaultsPage } from '@/modules/vault/pages';
 

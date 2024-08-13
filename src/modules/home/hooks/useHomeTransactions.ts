@@ -1,13 +1,33 @@
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useHomeTransactionsRequest } from './useHomeTransationsRequest';
-import { TransactionType } from 'bakosafe';
 
-const useHomeTransactions = (txFilterType?: TransactionType | undefined) => {
-  const homeTranscationsRequest = useHomeTransactionsRequest(txFilterType);
+export type IUseHomeTransactionsReturn = ReturnType<typeof useHomeTransactions>;
+
+const useHomeTransactions = (workspaceId: string) => {
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
+
+  const { data, isFetching, isLoading, refetch } = useHomeTransactionsRequest(
+    workspaceId,
+    txFilterType,
+  );
 
   return {
-    transactions: homeTranscationsRequest?.data
-      ?.data as unknown as ITransactionsGroupedByMonth[],
+    transactions: data?.data,
+    request: {
+      isFetching,
+      isLoading,
+      refetch,
+    },
+    handlers: {
+      handleIncomingAction,
+      handleOutgoingAction,
+      homeTransactionTypeFilter: setTxFilterType,
+    },
   };
 };
 

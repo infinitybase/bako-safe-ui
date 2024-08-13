@@ -16,9 +16,9 @@ import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
-import { useSignTransaction } from '../../hooks/signature';
 import { ITransactionWithType } from '../../services';
 import { TransactionType } from 'bakosafe';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -64,11 +64,16 @@ const Actions = ({
 }: TransactionActionsProps) => {
   const { isMobile } = useScreenSize();
   const { isOpen } = useAccordionItemState();
+  const {
+    signTransaction: {
+      confirmTransaction,
+      declineTransaction,
+      isLoading,
+      isSuccess,
+    },
+  } = useTransactionsContext();
 
   const { isSigned, isDeclined, isCompleted, isReproved } = status;
-
-  const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
-    useSignTransaction({ transaction: transaction! });
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
@@ -111,11 +116,11 @@ const Actions = ({
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isLoading}
-            isDisabled={isSuccess}
+            isDisabled={isSuccess && !awaitingAnswer}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              confirmTransaction(callBack);
+              confirmTransaction(transaction.id, callBack);
             }}
           >
             Sign
@@ -132,7 +137,7 @@ const Actions = ({
               declineTransaction(transaction.id);
             }}
             isLoading={isLoading}
-            isDisabled={isSuccess}
+            isDisabled={isSuccess && !awaitingAnswer}
           >
             Decline
           </Button>

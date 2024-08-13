@@ -5,7 +5,6 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
@@ -14,17 +13,11 @@ import {
   useBakoSafeVault,
   useGetParams,
   useGetTokenInfosArray,
-  WorkspacesQueryKey,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
-import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
-import { PENDING_VAULT_TRANSACTIONS_QUERY_KEY } from '@/modules/vault/hooks/list/useVautSignaturesPendingRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import {
-  TRANSACTION_LIST_QUERY_KEY,
-  USER_TRANSACTIONS_QUERY_KEY,
-} from '../list';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 const recipientMock =
@@ -54,6 +47,14 @@ const useTransactionAccordion = () => {
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const {
+    transactionsPageList: {
+      request: { refetch: refetchTransactionsList },
+    },
+    homeTransactions: {
+      request: { refetch: refetchHomeTransactionsList },
+    },
+  } = useTransactionsContext();
+  const {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
@@ -62,7 +63,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   >(undefined);
 
   const {
-    authDetails,
     addressBookInfos: {
       requests: { listContactsRequest },
     },
@@ -97,25 +97,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-      queryClient.invalidateQueries({
-        queryKey: [
-          WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-            authDetails.userInfos.workspace?.id,
-          ),
-          TRANSACTION_LIST_QUERY_KEY,
-          USER_TRANSACTIONS_QUERY_KEY,
-        ],
-      });
-
-      queryClient.invalidateQueries({
-        predicate: (query) => {
-          return (
-            query.queryHash.includes(VAULT_TRANSACTIONS_LIST_PAGINATION) ||
-            query.queryKey.includes(PENDING_VAULT_TRANSACTIONS_QUERY_KEY)
-          );
-        },
-      });
-
+      refetchTransactionsList();
+      refetchHomeTransactionsList();
       handleClose();
     },
 

@@ -1,16 +1,9 @@
 import { createContext, useContext } from 'react';
-import { UseAddressBookReturn, UseWorkspaceReturn } from '..';
-import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
-import { IUseAuthReturn } from '../auth/services';
-import { BakoLoading } from '@/components';
-import { IuseTokensUSDAmountRequestReturn } from '../home/hooks/useTokensUSDAmountRequest';
 
-export interface IWorkspaceContext {
-  authDetails: IUseAuthReturn;
-  workspaceInfos: UseWorkspaceReturn;
-  addressBookInfos: UseAddressBookReturn;
-  tokensUSD: IuseTokensUSDAmountRequestReturn;
-}
+import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
+import { BakoLoading } from '@/components';
+
+export type IWorkspaceContext = ReturnType<typeof useWorkspaceDetails>;
 
 const WorkspaceContext = createContext<IWorkspaceContext | null>(null);
 

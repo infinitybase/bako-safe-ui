@@ -6,10 +6,9 @@ import {
   Icon,
   Spacer,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { css, keyframes } from '@emotion/react';
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton } from '@/components';
@@ -21,10 +20,8 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { useHomeTransactions } from '../../hooks/useHomeTransactions';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -34,13 +31,15 @@ const shakeAnimation = keyframes`
   100% { transform: translateX(0); }
 `;
 
-interface HomeTransactionsProps {
-  hasRecentVaults: boolean;
-}
-
-const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
+const HomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);
-  const { txFilterType } = useFilterTxType();
+
+  const {
+    homeTransactions: {
+      transactions,
+      request: { isLoading },
+    },
+  } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
@@ -50,52 +49,15 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
     },
   } = useWorkspaceContext();
 
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
-
   useEffect(() => {
-    if (
-      groupedTransactions &&
-      groupedTransactions.length >= 1 &&
-      !hasTransactions
-    ) {
+    if (transactions && transactions.length >= 1 && !hasTransactions) {
       setHasTransactions(true);
     }
-  }, [groupedTransactions]);
+  }, [transactions]);
 
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions &&
-    groupedTransactions.length <= 0 &&
-    !hasTransactions ? (
-    <VStack
-      w="full"
-      spacing={6}
-      mt={
-        hasRecentVaults && !isMobile
-          ? 8
-          : hasRecentVaults && isMobile
-            ? 16
-            : '-5px'
-      }
-    >
-      {groupedTransactions && (
-        <HStack w="full" spacing={4}>
-          <Text
-            variant="subtitle"
-            fontWeight={700}
-            fontSize="md"
-            color="grey.50"
-          >
-            Transactions
-          </Text>
-        </HStack>
-      )}
-      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
-        <EmptyState showAction={false} />
-      </CustomSkeleton>
-    </VStack>
-  ) : (
+  return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>
       <Box
         w="full"
@@ -149,8 +111,9 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
           View all
         </Button>
       </Box>
+      {!isLoading && !transactions?.length && <EmptyState showAction={false} />}
 
-      {groupedTransactions?.map((grouped) => (
+      {transactions?.map((grouped) => (
         <>
           <HStack>
             <Text
@@ -209,5 +172,5 @@ const HomeTransactions = memo(({ hasRecentVaults }: HomeTransactionsProps) => {
       ))}
     </Box>
   );
-});
+};
 export default HomeTransactions;

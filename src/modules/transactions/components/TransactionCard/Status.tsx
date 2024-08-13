@@ -17,8 +17,7 @@ interface TransactionCardStatusProps {
 }
 
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-
-import { useSignTransaction } from '../../hooks/signature';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 const Status = ({
   transaction,
@@ -26,9 +25,9 @@ const Status = ({
   showDescription = true,
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
-  const { retryTransaction, isLoading } = useSignTransaction({
-    transaction: transaction!,
-  });
+  const {
+    signTransaction: { retryTransaction, isLoading },
+  } = useTransactionsContext();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter(
@@ -47,7 +46,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isLoading && (
+      {(isLoading || isPending) && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
