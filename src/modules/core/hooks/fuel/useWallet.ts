@@ -12,8 +12,8 @@ import { signChallange } from '@/modules/core/utils/webauthn';
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useAuth } from '@/modules/auth';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -26,9 +26,7 @@ const useWallet = (account?: string) => {
 };
 
 const useMyWallet = () => {
-  const { userInfos } = useAuth();
-
-  return useWallet(userInfos.address);
+  return useWallet(CookiesConfig.getCookie(CookieName.ADDRESS));
 };
 
 //sign by webauthn

@@ -6,37 +6,31 @@ import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
-import { CookieName, CookiesConfig } from './config/cookies';
+import { Address } from 'fuels';
 
 function App() {
   const { fuel } = useFuel();
   const { authDetails: auth } = useWorkspaceContext();
 
   useEffect(() => {
-    // async function clearAll() {
-    //   console.log('clearing all');
-    //   // auth.handlers.logout?.();
-    //   invalidateQueries();
-    // }
+    async function clearAll() {
+      auth.handlers.logout?.();
+      invalidateQueries();
+    }
 
     function onConnection(isConnected: boolean) {
       if (isConnected) return;
-      // clearAll();
+      clearAll();
     }
 
     function onCurrentAccount(currentAccount: string) {
-      // console.log('onCurrentAccount', currentAccount);
-      // console.log(
-      //   'COOKIE ADDRESS',
-      //   CookiesConfig.getCookie(CookieName.ADDRESS),
-      // );
-      // console.log('USER INFOS ADDRESS', auth.userInfos.address);
+      const parsedCurrentAccount = Address.fromString(currentAccount).toB256();
       if (
-        currentAccount === auth.userInfos?.address ||
+        parsedCurrentAccount === auth.userInfos?.address ||
         auth.userInfos?.type !== TypeUser.FUEL
       )
         return;
-      // clearAll();
+      clearAll();
     }
 
     fuel.on(fuel.events.connection, onConnection);

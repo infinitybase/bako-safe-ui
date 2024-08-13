@@ -46,7 +46,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isLoading && (
+      {(isLoading || isPending) && (
         <CircularProgress
           trackColor="dark.100"
           size={30}

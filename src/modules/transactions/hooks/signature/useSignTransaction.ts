@@ -8,14 +8,9 @@ import { useWalletSignMessage } from '@/modules/core';
 import { useTransactionToast } from '../../providers/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { IUseMeTransactionsReturn } from '../me';
 
-import {
-  IUseTransactionList,
-  IUseTransactionSignaturePendingReturn,
-} from '../list';
+import { IUseTransactionList } from '../list';
 import { useSendTransaction } from '../send/useSendTransaction';
-import { IUseHomeTransactionsReturn } from '@/modules/home/hooks/useHomeTransactions';
 
 export interface SignTransactionParams {
   txId: string;
@@ -29,20 +24,18 @@ export interface UseSignTransactionOptions {
 
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
-  meTransactions: IUseMeTransactionsReturn;
-  pendingSignerTransactions: IUseTransactionSignaturePendingReturn;
-  homeTransactions: IUseHomeTransactionsReturn;
+  pendingSignerTransactionsRefetch: () => void;
+  homeTransactionsRefetch: () => void;
 }
 
 const useSignTransaction = ({
   transactionList,
-  meTransactions,
-  pendingSignerTransactions,
-  homeTransactions,
+  pendingSignerTransactionsRefetch,
+  homeTransactionsRefetch,
 }: IUseSignTransactionProps) => {
   const {
     pendingTransactions,
-    request: { refetch },
+    request: { refetch: transactionsPageRefetch },
   } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction>();
@@ -51,15 +44,14 @@ const useSignTransaction = ({
   const { warningToast } = useContactToast();
   const { executeTransaction } = useSendTransaction({
     onTransactionSuccess: () => {
-      refetch();
-      meTransactions.request.refetch();
-      pendingSignerTransactions.refetch();
-      homeTransactions.request.refetch();
+      transactionsPageRefetch();
+      pendingSignerTransactionsRefetch();
+      homeTransactionsRefetch();
     },
   });
 
   const signMessageRequest = useWalletSignMessage({
-    onError: (e) => {
+    onError: () => {
       warningToast({
         title: 'Signature failed',
         description: 'Please try again!',
@@ -116,8 +108,6 @@ const useSignTransaction = ({
   };
 
   return {
-    request,
-    signMessageRequest,
     confirmTransaction,
     retryTransaction,
     declineTransaction,

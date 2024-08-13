@@ -26,9 +26,8 @@ const useTransactionDetails = () => {
 
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
-    meTransactions,
-    pendingSignerTransactions,
-    homeTransactions,
+    pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
+    homeTransactionsRefetch: homeTransactions.request.refetch,
   });
 
   const invalidateAllTransactionsTypeFilters = () => {

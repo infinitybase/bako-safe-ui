@@ -1,13 +1,14 @@
 import { TransactionStatus } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 import { useFilterTxType } from '../filter';
+import { useGetParams } from '@/modules/core';
 
 export enum StatusFilter {
   ALL = '',
@@ -43,13 +44,16 @@ const useTransactionList = ({
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
   const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
+  const {
     txFilterType,
     handleIncomingAction,
     handleOutgoingAction,
     setTxFilterType,
   } = useFilterTxType();
 
-  const params = useParams<{ vaultId: string }>();
   const navigate = useNavigate();
   const inView = useInView();
 
@@ -63,7 +67,7 @@ const useTransactionList = ({
     refetch,
   } = useTransactionListPaginationRequest({
     workspaceId: workspaceId,
-    predicateId: params.vaultId ? [params.vaultId] : undefined,
+    predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     byMonth,

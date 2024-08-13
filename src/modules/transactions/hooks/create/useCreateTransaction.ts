@@ -49,6 +49,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     transactionsPageList: {
       request: { refetch: refetchTransactionsList },
     },
+    homeTransactions: {
+      request: { refetch: refetchHomeTransactionsList },
+    },
   } = useTransactionsContext();
   const {
     vaultPageParams: { vaultId },
@@ -93,9 +96,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-
       refetchTransactionsList();
-
+      refetchHomeTransactionsList();
       handleClose();
     },
 

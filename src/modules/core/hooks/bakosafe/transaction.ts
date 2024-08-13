@@ -97,8 +97,6 @@ const useBakoSafeTransactionSend = (
       await transfer.wait();
 
       return transfer.BakoSafeTransaction;
-      // return (await vault.BakoSafeGetTransaction(transaction.id))
-      //   .BakoSafeTransaction;
     },
     {
       onSuccess: options.onSuccess,

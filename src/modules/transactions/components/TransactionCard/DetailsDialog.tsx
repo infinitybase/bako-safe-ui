@@ -97,7 +97,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 declineTransaction(transaction.id);
               }}
               isLoading={isLoading}
-              isDisabled={isSuccess}
+              isDisabled={isSuccess && !awaitingAnswer}
             >
               Decline
             </Button>
@@ -105,11 +105,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               variant="primary"
               w="full"
               isLoading={isLoading}
-              isDisabled={isSuccess}
+              isDisabled={isSuccess && !awaitingAnswer}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                // confirmTransaction();
+                confirmTransaction(transaction.id);
                 props.callBack && props.callBack();
               }}
             >

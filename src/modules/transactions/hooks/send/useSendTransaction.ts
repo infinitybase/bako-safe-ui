@@ -13,18 +13,15 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction: ITransaction) => {
-      console.log('Transaction Successfully sended:', transaction);
       onTransactionSuccess();
       validateResult(transaction);
-      clearAll();
     },
     onError: (e) => {
-      console.log('ERROR WHILE SEND TO CHAIN', e);
+      console.log('ERROR WHILE SENDING TO CHAIN', e);
     },
   });
 
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
-    console.log('validating Result', transaction.status);
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
     }
@@ -42,11 +39,8 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     setHasNewNotification(true);
   };
 
-  const clearAll = () => {
-    toast.closeAll();
-  };
-
   const executeTransaction = (transaction: ITransaction) => {
+    toast.loading(transaction);
     sendTransaction({ transaction: transaction! });
   };
 
