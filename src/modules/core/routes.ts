@@ -48,8 +48,6 @@ const Pages = {
     '/vault/:vaultId/transactions/:transactionId',
   ),
 
-  signatures: pageRoute('/signatures'),
-
   //dapp
   dappAuth: pageRoute('/dapp'),
   dappTransaction: pageRoute('/dapp/transaction'),
