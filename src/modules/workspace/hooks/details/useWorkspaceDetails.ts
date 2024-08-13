@@ -14,12 +14,6 @@ const useWorkspaceDetails = () => {
     homeTransactions: {
       request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
     },
-    meTransactions: {
-      request: {
-        isLoading: isPredicateTransactionLoading,
-        isFetching: isPredicateFetching,
-      },
-    },
     transactionsPageList: {
       request: {
         isLoading: isTransactionsPageListLoading,
@@ -46,7 +40,7 @@ const useWorkspaceDetails = () => {
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
   const isFilteringInProgress =
-    (isHomeFetching || isPredicateFetching || isTransactionsPageListFetching) &&
+    (isHomeFetching || isTransactionsPageListFetching) &&
     !isGifAnimationLoading;
 
   const isWorkspaceReady =
@@ -56,7 +50,6 @@ const useWorkspaceDetails = () => {
         !worksapceBalance.isLoading &&
         !addressBookInfos.requests.listContactsRequest.isLoading &&
         !isHomeRequestLoading &&
-        !isPredicateTransactionLoading &&
         !isTransactionsPageListLoading &&
         !isGifAnimationLoading &&
         !authDetails.userInfos.isLoading) || isFilteringInProgress;

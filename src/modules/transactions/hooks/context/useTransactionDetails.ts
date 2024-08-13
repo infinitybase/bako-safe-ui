@@ -1,4 +1,3 @@
-import { useMeTransactions } from '../me';
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { useAuth } from '@/modules/auth';
 import { useSignTransaction } from '../signature';
@@ -14,8 +13,6 @@ const useTransactionDetails = () => {
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
-
-  const meTransactions = useMeTransactions();
 
   const homeTransactions = useHomeTransactions(workspace?.id);
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
@@ -36,7 +33,6 @@ const useTransactionDetails = () => {
   };
 
   return {
-    meTransactions,
     homeTransactions,
     transactionsPageList,
     signTransaction,
