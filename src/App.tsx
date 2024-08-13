@@ -5,19 +5,17 @@ import { useEffect } from 'react';
 import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
-import { useTransactionSend } from './modules/transactions';
 import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
+import { Address } from 'fuels';
 
 function App() {
   const { fuel } = useFuel();
   const { authDetails: auth } = useWorkspaceContext();
-  const transactionSend = useTransactionSend();
 
   useEffect(() => {
     async function clearAll() {
       auth.handlers.logout?.();
       invalidateQueries();
-      transactionSend.clearAll();
     }
 
     function onConnection(isConnected: boolean) {
@@ -26,8 +24,9 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
+      const parsedCurrentAccount = Address.fromString(currentAccount).toB256();
       if (
-        currentAccount === auth.userInfos?.address ||
+        parsedCurrentAccount === auth.userInfos?.address ||
         auth.userInfos?.type !== TypeUser.FUEL
       )
         return;

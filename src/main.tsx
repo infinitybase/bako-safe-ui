@@ -9,12 +9,12 @@ import TagManager from 'react-gtm-module';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
-import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
 import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 import { BrowserRouter } from 'react-router-dom';
+import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 
 BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
@@ -43,13 +43,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         >
           <SocketProvider>
             <BakoSafeQueryClientProvider>
-              <TransactionSendProvider>
-                <BrowserRouter>
+              <BrowserRouter>
+                <TransactionsProvider>
                   <WorkspaceProvider>
                     <App />
                   </WorkspaceProvider>
-                </BrowserRouter>
-              </TransactionSendProvider>
+                </TransactionsProvider>
+              </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>
         </FuelProvider>

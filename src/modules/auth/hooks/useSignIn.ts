@@ -1,11 +1,9 @@
+import { useSocket } from '@/modules/core';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useFuel, useIsConnected } from '@fuels/react';
-import { Address } from 'fuels';
-import { useEffect, useState } from 'react';
-
 import { Location, useNavigate } from 'react-router-dom';
 
-import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
@@ -18,6 +16,7 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -40,7 +39,7 @@ const useSignIn = () => {
     useState(false);
 
   const { fuel } = useFuel();
-  const { authDetails } = useWorkspaceContext();
+  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
   const { connect } = useSocket();
@@ -92,6 +91,7 @@ const useSignIn = () => {
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
+      invalidateGifAnimationRequest();
 
       navigate(redirectPathBuilder(!!sessionId, location));
     },

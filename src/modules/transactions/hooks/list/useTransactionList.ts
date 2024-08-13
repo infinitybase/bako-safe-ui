@@ -1,13 +1,14 @@
 import { TransactionStatus } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { ITransactionsGroupedByMonth } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useFilterTxType } from '../filter';
+import { useGetParams } from '@/modules/core';
 
 export enum StatusFilter {
   ALL = '',
@@ -17,20 +18,44 @@ export enum StatusFilter {
 }
 
 interface IUseTransactionListProps {
+  workspaceId?: string;
   byMonth?: boolean;
   type?: TransactionType;
 }
 
-const useTransactionList = ({
-  byMonth = false,
-  type = undefined,
-}: IUseTransactionListProps = {}) => {
-  const params = useParams<{ vaultId: string }>();
-  const navigate = useNavigate();
-  const inView = useInView();
+export type IUseTransactionList = ReturnType<typeof useTransactionList>;
 
+export interface IPendingTransactionDetails {
+  status: string;
+  hash: string;
+  id: string;
+  predicateId: string;
+}
+
+export interface IPendingTransactionsRecord {
+  [transactionId: string]: IPendingTransactionDetails;
+}
+
+const useTransactionList = ({
+  workspaceId = '',
+  byMonth = false,
+}: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
+
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
+
+  const navigate = useNavigate();
+  const inView = useInView();
 
   const {
     transactions,
@@ -41,12 +66,12 @@ const useTransactionList = ({
     fetchNextPage,
     refetch,
   } = useTransactionListPaginationRequest({
-    predicateId: params.vaultId ? [params.vaultId] : undefined,
+    workspaceId: workspaceId,
+    predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
-    /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
     byMonth,
-    type,
+    type: txFilterType,
   });
 
   const observer = useRef<IntersectionObserver>();
@@ -76,28 +101,57 @@ const useTransactionList = ({
     );
   }, [transactionsPages]);
 
+  const pendingTransactions = () => {
+    const result = {};
+    infinityTransactions?.forEach((item) => {
+      return item.transactions.forEach((transaction) => {
+        if (result[transaction.id]) return;
+
+        result[transaction.id] = {
+          status: transaction.status,
+          hash: transaction.hash,
+          id: transaction.id,
+          predicateId: transaction.predicateId,
+          resume: {
+            witnesses: transaction.resume.witnesses,
+          },
+        };
+      });
+    });
+
+    return result;
+  };
+
   return {
-    transactionRequest: {
-      transactions,
-      isLoading,
+    request: {
+      isLoading: !transactionsPages && isLoading && !isFetching,
       isFetching,
       hasNextPage,
       fetchNextPage,
       refetch,
     },
-    selectedTransaction,
-    setSelectedTransaction,
-    navigate,
-    params,
+    handlers: {
+      selectedTransaction,
+      setSelectedTransaction,
+      navigate,
+      handleIncomingAction,
+      handleOutgoingAction,
+      listTransactionTypeFilter: setTxFilterType,
+    },
     filter: {
       set: setFilter,
       value: filter,
+      txFilterType,
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    hasSkeleton: false,
-    infinityTransactions,
     infinityTransactionsRef: lastElementRef,
+    lists: {
+      transactions,
+      infinityTransactions,
+      vaultDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
+    },
+    pendingTransactions: pendingTransactions(),
   };
 };
 

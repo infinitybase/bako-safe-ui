@@ -83,7 +83,6 @@ const useAddressBook = (
       deleteContactRequest,
       updateContactRequest,
       listContactsRequest,
-      // paginatedContacts: listContactsPaginatedRequest,
     },
     form: { ...form, handleCreateContact, handleUpdateContact },
     handlers: {

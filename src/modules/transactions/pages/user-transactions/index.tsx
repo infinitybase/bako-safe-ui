@@ -33,23 +33,22 @@ import {
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
-import { StatusFilter, useTransactionList } from '../../hooks';
+import { StatusFilter } from '../../hooks';
 import { transactionStatus } from '../../utils';
-import { useFilterTxType } from '../../hooks/filter';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 const UserTransactionsPage = () => {
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
-
   const {
-    infinityTransactions,
-    infinityTransactionsRef,
-    transactionRequest,
-    filter,
-    inView,
-    navigate,
-  } = useTransactionList({ type: txFilterType, byMonth: true });
+    transactionsPageList: {
+      infinityTransactionsRef,
+      request: { isLoading },
+      filter,
+      inView,
+      handlers: { navigate, handleIncomingAction, handleOutgoingAction },
+      lists: { infinityTransactions, transactions },
+    },
+  } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
@@ -89,7 +88,10 @@ const UserTransactionsPage = () => {
             onClick={() =>
               userInfos.onSingleWorkspace
                 ? goHome()
-                : handleWorkspaceSelection(userInfos.workspace?.id ?? '')
+                : handleWorkspaceSelection(
+                    userInfos.workspace?.id,
+                    Pages.workspace({ workspaceId: userInfos.workspace?.id }),
+                  )
             }
           >
             Back home
@@ -233,7 +235,7 @@ const UserTransactionsPage = () => {
           </Box>
           {!isSmall && (
             <TransactionTypeFilters
-              currentFilter={txFilterType}
+              currentFilter={filter.txFilterType}
               incomingAction={handleIncomingAction}
               outgoingAction={handleOutgoingAction}
             />
@@ -267,7 +269,7 @@ const UserTransactionsPage = () => {
           {isSmall && (
             <TransactionTypeFilters
               mt={2}
-              currentFilter={txFilterType}
+              currentFilter={filter.txFilterType}
               incomingAction={handleIncomingAction}
               outgoingAction={handleOutgoingAction}
               buttonsFullWidth
@@ -300,10 +302,9 @@ const UserTransactionsPage = () => {
           },
         }}
       >
-        {!transactionRequest.isLoading &&
-          !transactionRequest?.transactions.length && (
-            <EmptyState showAction={false} />
-          )}
+        {!isLoading && !transactions.length && (
+          <EmptyState showAction={false} />
+        )}
         {infinityTransactions?.map((grouped) => (
           <>
             <HStack w="full">
@@ -335,7 +336,7 @@ const UserTransactionsPage = () => {
                       ref={infinityTransactionsRef}
                       w="full"
                     >
-                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                      <CustomSkeleton isLoaded={!isLoading}>
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}

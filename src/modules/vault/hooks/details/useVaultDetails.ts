@@ -5,7 +5,7 @@ import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useVaultByIdRequest } from '@/modules';
 import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
-import { useVaultSignaturesPendingRequest } from '../list/useVautSignaturesPendingRequest';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const useVaultDetails = () => {
   const {
@@ -17,9 +17,7 @@ const useVaultDetails = () => {
     useFilterTxType();
 
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
-  const pendingSignerTransactions = useVaultSignaturesPendingRequest([
-    vaultId!,
-  ]);
+  const { pendingSignerTransactions } = useTransactionsContext();
 
   const {
     transactionRequest,

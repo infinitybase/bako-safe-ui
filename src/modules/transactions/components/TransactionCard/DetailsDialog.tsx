@@ -11,8 +11,9 @@ import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { TransactionCard, transactionStatus } from '@/modules/transactions';
 
-import { useSignTransaction } from '../../hooks/signature';
 import { TransactionWithVault } from '../../services/types';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
+
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
   account: string;
@@ -25,8 +26,14 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const { onClose, isOpen, transaction, account, status, isSigner } = props;
 
-  const { confirmTransaction, declineTransaction, isLoading, isSuccess } =
-    useSignTransaction({ transaction: transaction! });
+  const {
+    signTransaction: {
+      confirmTransaction,
+      declineTransaction,
+      isLoading,
+      isSuccess,
+    },
+  } = useTransactionsContext();
 
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
 
@@ -90,7 +97,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 declineTransaction(transaction.id);
               }}
               isLoading={isLoading}
-              isDisabled={isSuccess}
+              isDisabled={isSuccess && !awaitingAnswer}
             >
               Decline
             </Button>
@@ -98,11 +105,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               variant="primary"
               w="full"
               isLoading={isLoading}
-              isDisabled={isSuccess}
+              isDisabled={isSuccess && !awaitingAnswer}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                confirmTransaction();
+                confirmTransaction(transaction.id);
                 props.callBack && props.callBack();
               }}
             >

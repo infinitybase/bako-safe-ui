@@ -1,16 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { TransactionService } from '../../services';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 
-const useTransactionsSignaturePending = () => {
+export type IUseTransactionSignaturePendingReturn = ReturnType<
+  typeof useTransactionsSignaturePending
+>;
+
+const useTransactionsSignaturePending = (predicateId?: string[]) => {
   return useQuery({
     queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
 
     queryFn: () => {
-      return TransactionService.getTransactionsSignaturePending();
+      return TransactionService.getTransactionsSignaturePending(predicateId);
     },
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',

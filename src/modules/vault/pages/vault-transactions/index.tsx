@@ -32,11 +32,10 @@ import {
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { useNavigate } from 'react-router-dom';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const TransactionsVaultPage = () => {
-  const navigate = useNavigate();
   const {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
@@ -55,25 +54,27 @@ const TransactionsVaultPage = () => {
 
   const {
     vault,
-    transactions: vaultTransaction,
     assets: { hasBalance },
   } = useVaultInfosContext();
 
   const {
-    isLoading,
-    infinityTransactionsRef,
-    infinityTransactions,
-    filter,
-    inView,
-    account,
-    selectedTransaction,
-    setSelectedTransaction,
-    defaultIndex,
-    isFetching,
-    txFilterType,
-    handleIncomingAction,
-    handleOutgoingAction,
-  } = vaultTransaction;
+    transactionsPageList: {
+      defaultIndex,
+      filter,
+      inView,
+      infinityTransactionsRef,
+      lists: { infinityTransactions },
+      handlers: {
+        selectedTransaction,
+        handleIncomingAction,
+        handleOutgoingAction,
+        setSelectedTransaction,
+        navigate,
+      },
+      request: { isLoading, isFetching },
+    },
+  } = useTransactionsContext();
+
   const hasTransactions = !isLoading && infinityTransactions?.length;
 
   return (
@@ -202,7 +203,7 @@ const TransactionsVaultPage = () => {
         {!isSmall && (
           <TransactionTypeFilters
             mt={2}
-            currentFilter={txFilterType}
+            currentFilter={filter.txFilterType}
             incomingAction={handleIncomingAction}
             outgoingAction={handleOutgoingAction}
           />
@@ -248,119 +249,121 @@ const TransactionsVaultPage = () => {
       {isSmall && (
         <TransactionTypeFilters
           mt={3}
-          currentFilter={txFilterType}
+          currentFilter={filter.txFilterType}
           incomingAction={handleIncomingAction}
           outgoingAction={handleOutgoingAction}
           buttonsFullWidth
         />
       )}
       {/* TRANSACTION LIST */}
-      {hasTransactions ? (
-        <VStack
-          maxH="77.5vh"
-          overflowY="scroll"
-          scrollBehavior="smooth"
-          sx={{
-            '&::-webkit-scrollbar': {
-              display: 'none',
-              width: '5px',
-              maxHeight: '330px',
-              backgroundColor: 'grey.200',
-              borderRadius: '30px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'transparent',
-              borderRadius: '30px',
-              height: '10px',
-            },
-          }}
-          pb={10}
-          mt={3}
-        >
-          {infinityTransactions?.map((grouped) => (
-            <>
-              <HStack w="full">
-                <Text
-                  fontSize="sm"
-                  fontWeight="semibold"
-                  color="grey.425"
-                  whiteSpace="nowrap"
-                >
-                  {grouped.monthYear}
-                </Text>
-
-                <Divider w="full" borderColor="grey.950" />
-              </HStack>
-              {grouped?.transactions?.map((transaction) => {
-                const status = transactionStatus({
-                  ...transaction,
-                  account,
-                });
-                const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
-                );
-
-                return (
-                  <TransactionCard.List
-                    w="full"
-                    spacing={0}
-                    openIndex={defaultIndex}
-                    key={defaultIndex.join(',')}
+      <CustomSkeleton isLoaded={!isLoading}>
+        {hasTransactions ? (
+          <VStack
+            maxH="77.5vh"
+            overflowY="scroll"
+            scrollBehavior="smooth"
+            sx={{
+              '&::-webkit-scrollbar': {
+                display: 'none',
+                width: '5px',
+                maxHeight: '330px',
+                backgroundColor: 'grey.200',
+                borderRadius: '30px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'transparent',
+                borderRadius: '30px',
+                height: '10px',
+              },
+            }}
+            pb={10}
+            mt={3}
+          >
+            {infinityTransactions?.map((grouped) => (
+              <>
+                <HStack w="full">
+                  <Text
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color="grey.425"
+                    whiteSpace="nowrap"
                   >
-                    <Box
-                      key={transaction.id}
-                      ref={infinityTransactionsRef}
-                      w="full"
-                    >
-                      <CustomSkeleton isLoaded={!isLoading}>
-                        {isMobile ? (
-                          <TransactionCardMobile
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            mt={1.5}
-                          />
-                        ) : (
-                          <TransactionCard.Container
-                            mb={0.5}
-                            key={transaction.id}
-                            status={status}
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            details={
-                              <TransactionCard.Details
-                                transaction={transaction}
-                                status={status}
-                              />
-                            }
-                          />
-                        )}
-                      </CustomSkeleton>
-                    </Box>
+                    {grouped.monthYear}
+                  </Text>
 
-                    <Box ref={inView.ref} />
-                  </TransactionCard.List>
-                );
-              })}
-            </>
-          ))}
-        </VStack>
-      ) : (
-        <EmptyState
-          h="calc(100% - 170px)"
-          mt={7}
-          isDisabled={hasBalance}
-          buttonAction={() =>
-            navigate(
-              Pages.createTransaction({
-                workspaceId: vaultWkId!,
-                vaultId: vault.data?.id!,
-              }),
-            )
-          }
-        />
-      )}
+                  <Divider w="full" borderColor="grey.950" />
+                </HStack>
+                {grouped?.transactions?.map((transaction) => {
+                  const status = transactionStatus({
+                    ...transaction,
+                    account: userInfos?.address,
+                  });
+                  const isSigner = !!transaction.predicate?.members?.find(
+                    (member) => member.address === userInfos?.address,
+                  );
+
+                  return (
+                    <TransactionCard.List
+                      w="full"
+                      spacing={0}
+                      openIndex={defaultIndex}
+                      key={defaultIndex.join(',')}
+                    >
+                      <Box
+                        key={transaction.id}
+                        ref={infinityTransactionsRef}
+                        w="full"
+                      >
+                        <CustomSkeleton isLoaded={!isLoading}>
+                          {isMobile ? (
+                            <TransactionCardMobile
+                              isSigner={isSigner}
+                              transaction={transaction}
+                              account={userInfos?.address}
+                              mt={1.5}
+                            />
+                          ) : (
+                            <TransactionCard.Container
+                              mb={0.5}
+                              key={transaction.id}
+                              status={status}
+                              isSigner={isSigner}
+                              transaction={transaction}
+                              account={userInfos?.address}
+                              details={
+                                <TransactionCard.Details
+                                  transaction={transaction}
+                                  status={status}
+                                />
+                              }
+                            />
+                          )}
+                        </CustomSkeleton>
+                      </Box>
+
+                      <Box ref={inView.ref} />
+                    </TransactionCard.List>
+                  );
+                })}
+              </>
+            ))}
+          </VStack>
+        ) : (
+          <EmptyState
+            h="calc(100% - 170px)"
+            mt={7}
+            isDisabled={hasBalance}
+            buttonAction={() =>
+              navigate(
+                Pages.createTransaction({
+                  workspaceId: vaultWkId!,
+                  vaultId: vault.data?.id!,
+                }),
+              )
+            }
+          />
+        )}
+      </CustomSkeleton>
     </Box>
   );
 };

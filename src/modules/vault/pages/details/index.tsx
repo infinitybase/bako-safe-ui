@@ -33,6 +33,7 @@ import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const VaultDetailsPage = () => {
   const menuDrawer = useDisclosure();
@@ -41,18 +42,18 @@ const VaultDetailsPage = () => {
   } = useGetParams();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
+  const { vault, assets, account, pendingSignerTransactions, isPendingSigner } =
+    useVaultInfosContext();
+
   const {
-    vault,
-    assets,
-    account,
-    pendingSignerTransactions,
-    transactions,
-    isPendingSigner,
-  } = useVaultInfosContext();
+    transactionsPageList: {
+      lists: { vaultDetailsLimitedTransactions },
+      request: { isLoading },
+      handlers: { handleIncomingAction, handleOutgoingAction },
+    },
+  } = useTransactionsContext();
 
   const { setTemplateFormInitial } = useTemplateStore();
-
-  const { homeDetailsLimitedTransactions, isLoading } = transactions;
 
   const {
     authDetails: { userInfos },
@@ -64,7 +65,7 @@ const VaultDetailsPage = () => {
     useScreenSize();
 
   const workspaceId = userInfos.workspace?.id ?? '';
-  const hasTransactions = !isLoading && homeDetailsLimitedTransactions?.length;
+  const hasTransactions = !isLoading && vaultDetailsLimitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
 
@@ -225,8 +226,8 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
-          incomingAction={transactions.handleIncomingAction}
-          outgoingAction={transactions.handleOutgoingAction}
+          incomingAction={handleIncomingAction}
+          outgoingAction={handleOutgoingAction}
           buttonsFullWidth={isSmall}
         />
       </Box>
@@ -237,7 +238,7 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? homeDetailsLimitedTransactions?.map((grouped) => (
+          ? vaultDetailsLimitedTransactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -298,7 +299,7 @@ const VaultDetailsPage = () => {
               </>
             ))
           : !hasTransactions &&
-            !!homeDetailsLimitedTransactions && (
+            !!vaultDetailsLimitedTransactions && (
               <EmptyState
                 isDisabled={!assets.hasBalance}
                 buttonAction={() =>

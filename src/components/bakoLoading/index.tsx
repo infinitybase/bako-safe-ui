@@ -1,15 +1,21 @@
-import { Flex, Image } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
+import Lottie from 'lottie-react';
 
-import bakoLoadingGif from '@/assets/bako-loading-gif/Loading-Fill-White.gif';
+import bakoLoading from '@/assets/bako-loading/bako-loading.json';
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: bakoLoading,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 const BakoLoading = () => {
   return (
     <Flex alignItems="center" justifyContent="center" w="full" h="100vh">
-      <Image
-        src={bakoLoadingGif}
-        alt="Animated loading component"
-        width={{ base: '30%', xs: '15%', sm: '10%' }}
-      />
+      <Lottie {...defaultOptions} size={20} style={{ height: 180 }} />
     </Flex>
   );
 };
