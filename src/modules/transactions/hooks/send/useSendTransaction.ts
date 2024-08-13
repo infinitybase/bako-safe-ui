@@ -1,18 +1,21 @@
 import { useNotificationsStore } from '@/modules/notifications/store';
-import { useTransactionToast } from '../../providers/send/toast';
+import { useTransactionToast } from '../../providers/toast';
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { useBakoSafeTransactionSend } from '@/modules/core';
 
-const useSendTransaction = (listToRefetch?: () => void) => {
+export type IUseSendTransaction = {
+  onTransactionSuccess: () => void;
+};
+
+const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setHasNewNotification } = useNotificationsStore();
   const toast = useTransactionToast();
-  const transactionsInExecution: ITransaction[] = [];
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction: ITransaction) => {
-      console.log('transaction:', transaction);
+      console.log('Transaction Successfully sended:', transaction);
+      onTransactionSuccess();
       validateResult(transaction);
-      listToRefetch && listToRefetch();
       clearAll();
     },
     onError: (e) => {
@@ -21,6 +24,7 @@ const useSendTransaction = (listToRefetch?: () => void) => {
   });
 
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
+    console.log('validating Result', transaction.status);
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
     }
@@ -38,18 +42,12 @@ const useSendTransaction = (listToRefetch?: () => void) => {
     setHasNewNotification(true);
   };
 
-  const isExecuting = (transaction: ITransaction) => {
-    return transactionsInExecution[transaction?.id];
+  const clearAll = () => {
+    toast.closeAll();
   };
 
   const executeTransaction = (transaction: ITransaction) => {
-    console.log('EXECUTING:', transaction);
-    toast.loading(transaction);
-    sendTransaction({ transaction });
-  };
-
-  const clearAll = () => {
-    toast.closeAll();
+    sendTransaction({ transaction: transaction! });
   };
 
   return {

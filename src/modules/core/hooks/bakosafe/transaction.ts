@@ -5,13 +5,11 @@ import {
   Vault,
   TransactionType,
   IBakoSafeAuth,
-  TransactionStatus,
 } from 'bakosafe';
 
 import { TransactionService } from '@/modules/transactions/services';
 
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
@@ -82,17 +80,12 @@ interface BakoSafeTransactionSendVariables {
   auth?: IBakoSafeAuth;
 }
 
-// Receber predicateId e txID
-//  Ao confirmar (ao término do .wait) e invalidar as transações
-//  no onSuccess invalidar a request de tx (da página específica onde ocorre a assinatura)
-
 const useBakoSafeTransactionSend = (
   options: UseBakoSafeSendTransactionParams,
 ) => {
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction, auth }: BakoSafeTransactionSendVariables) => {
-      console.log('transaction:', transaction);
       const vault = await Vault.create({
         id: transaction.predicateId,
         token: auth!.token,
@@ -103,8 +96,9 @@ const useBakoSafeTransactionSend = (
 
       await transfer.wait();
 
-      return (await vault.BakoSafeGetTransaction(transaction.id))
-        .BakoSafeTransaction;
+      return transfer.BakoSafeTransaction;
+      // return (await vault.BakoSafeGetTransaction(transaction.id))
+      //   .BakoSafeTransaction;
     },
     {
       onSuccess: options.onSuccess,

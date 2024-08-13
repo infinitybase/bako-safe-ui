@@ -1,17 +1,21 @@
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useWalletSignMessage } from '@/modules/core';
 
-import { useTransactionToast } from '../../providers/send/toast';
+import { useTransactionToast } from '../../providers/toast';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useSendTransaction } from '../send/useSendTransaction';
 import { IUseMeTransactionsReturn } from '../me';
 
-import { IUseTransactionList } from '../list';
+import {
+  IUseTransactionList,
+  IUseTransactionSignaturePendingReturn,
+} from '../list';
+import { useSendTransaction } from '../send/useSendTransaction';
+import { IUseHomeTransactionsReturn } from '@/modules/home/hooks/useHomeTransactions';
 
 export interface SignTransactionParams {
   txId: string;
@@ -26,22 +30,36 @@ export interface UseSignTransactionOptions {
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
   meTransactions: IUseMeTransactionsReturn;
+  pendingSignerTransactions: IUseTransactionSignaturePendingReturn;
+  homeTransactions: IUseHomeTransactionsReturn;
 }
 
 const useSignTransaction = ({
   transactionList,
   meTransactions,
+  pendingSignerTransactions,
+  homeTransactions,
 }: IUseSignTransactionProps) => {
-  const { executeTransaction } = useSendTransaction();
-  const { pendingTransactions } = transactionList;
+  const {
+    pendingTransactions,
+    request: { refetch },
+  } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction>();
 
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();
+  const { executeTransaction } = useSendTransaction({
+    onTransactionSuccess: () => {
+      refetch();
+      meTransactions.request.refetch();
+      pendingSignerTransactions.refetch();
+      homeTransactions.request.refetch();
+    },
+  });
 
   const signMessageRequest = useWalletSignMessage({
-    onError: () => {
+    onError: (e) => {
       warningToast({
         title: 'Signature failed',
         description: 'Please try again!',
@@ -52,7 +70,6 @@ const useSignTransaction = ({
   const request = useSignTransactionRequest({
     onSuccess: async () => {
       await transactionList.request.refetch();
-      await meTransactions?.request?.refetch();
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');
@@ -64,8 +81,6 @@ const useSignTransaction = ({
     callback?: () => void,
   ) => {
     const transaction = pendingTransactions?.[selectedTransactionId];
-
-    console.log('selectedTransactionId;', selectedTransactionId);
 
     const signedMessage = await signMessageRequest.mutateAsync(
       transaction!.hash,
@@ -81,6 +96,7 @@ const useSignTransaction = ({
       },
       {
         onSuccess: async () => {
+          executeTransaction(transaction);
           callback && callback();
         },
       },

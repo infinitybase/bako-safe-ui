@@ -5,33 +5,38 @@ import { useEffect } from 'react';
 import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
-import { useTransactionSend } from './modules/transactions';
 import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
+import { CookieName, CookiesConfig } from './config/cookies';
 
 function App() {
   const { fuel } = useFuel();
   const { authDetails: auth } = useWorkspaceContext();
-  const transactionSend = useTransactionSend();
 
   useEffect(() => {
-    async function clearAll() {
-      auth.handlers.logout?.();
-      invalidateQueries();
-      transactionSend.clearAll();
-    }
+    // async function clearAll() {
+    //   console.log('clearing all');
+    //   // auth.handlers.logout?.();
+    //   invalidateQueries();
+    // }
 
     function onConnection(isConnected: boolean) {
       if (isConnected) return;
-      clearAll();
+      // clearAll();
     }
 
     function onCurrentAccount(currentAccount: string) {
+      // console.log('onCurrentAccount', currentAccount);
+      // console.log(
+      //   'COOKIE ADDRESS',
+      //   CookiesConfig.getCookie(CookieName.ADDRESS),
+      // );
+      // console.log('USER INFOS ADDRESS', auth.userInfos.address);
       if (
         currentAccount === auth.userInfos?.address ||
         auth.userInfos?.type !== TypeUser.FUEL
       )
         return;
-      clearAll();
+      // clearAll();
     }
 
     fuel.on(fuel.events.connection, onConnection);

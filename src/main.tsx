@@ -9,7 +9,6 @@ import TagManager from 'react-gtm-module';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
-import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
@@ -47,9 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <BrowserRouter>
                 <TransactionsProvider>
                   <WorkspaceProvider>
-                    <TransactionSendProvider>
-                      <App />
-                    </TransactionSendProvider>
+                    <App />
                   </WorkspaceProvider>
                 </TransactionsProvider>
               </BrowserRouter>

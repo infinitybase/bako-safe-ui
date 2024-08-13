@@ -1,11 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOptionTx, TransactionStatus } from 'bakosafe';
+import { SortOptionTx } from 'bakosafe';
 
-import {
-  invalidateQueries,
-  useBakoSafeTransactionSend,
-  WorkspacesQueryKey,
-} from '@/modules/core';
+import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
 
 import {
   GetTransactionParams,
@@ -25,15 +21,6 @@ type UseTransactionListPaginationParams = Omit<
 const useTransactionListPaginationRequest = (
   params: UseTransactionListPaginationParams,
 ) => {
-  const { mutate: sendTransaction } = useBakoSafeTransactionSend({
-    onError: (e) => {
-      console.log('ERROR WHILE SEND TO CHAIN', e);
-    },
-    onSuccess: () => {
-      console.log('sucesso');
-    },
-  });
-
   const { data, ...query } = useInfiniteQuery({
     queryKey: WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       params.workspaceId,
@@ -52,16 +39,6 @@ const useTransactionListPaginationRequest = (
         id: params.id,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
-        data.data
-          .flatMap((item) =>
-            item.transactions.filter(
-              (tx) => tx.status === TransactionStatus.PROCESS_ON_CHAIN,
-            ),
-          )
-          .forEach((transaction) => {
-            console.log('transaction:', transaction);
-            sendTransaction({ transaction: transaction! });
-          });
 
         return data;
       }),

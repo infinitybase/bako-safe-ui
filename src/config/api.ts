@@ -7,12 +7,8 @@ const { VITE_API_URL } = import.meta.env;
 const {
   ACCESS_TOKEN,
   ADDRESS,
-  AVATAR,
-  USER_ID,
+
   SINGLE_WORKSPACE,
-  SINGLE_CONTACTS,
-  WORKSPACE,
-  PERMISSIONS,
 } = CookieName;
 
 export enum ApiUnauthorizedErrorsTitles {
@@ -62,16 +58,7 @@ api.interceptors.response.use(
 
     if (unauthorizedError) {
       auth?.handlers?.logout?.();
-      CookiesConfig.removeCookies([
-        ACCESS_TOKEN,
-        ADDRESS,
-        AVATAR,
-        USER_ID,
-        SINGLE_CONTACTS,
-        SINGLE_WORKSPACE,
-        WORKSPACE,
-        PERMISSIONS,
-      ]);
+      CookiesConfig.removeCookies([ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE]);
     }
 
     return Promise.reject(error);

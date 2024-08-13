@@ -1,5 +1,5 @@
 import { TransactionStatus } from 'bakosafe';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -8,7 +8,6 @@ import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 import { useFilterTxType } from '../filter';
-import { useBakoSafeTransactionSend } from '@/modules/core';
 
 export enum StatusFilter {
   ALL = '',

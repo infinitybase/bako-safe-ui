@@ -11,7 +11,7 @@ const useHomeTransactions = (workspaceId: string) => {
     setTxFilterType,
   } = useFilterTxType();
 
-  const { data, isFetching, isLoading } = useHomeTransactionsRequest(
+  const { data, isFetching, isLoading, refetch } = useHomeTransactionsRequest(
     workspaceId,
     txFilterType,
   );
@@ -21,6 +21,7 @@ const useHomeTransactions = (workspaceId: string) => {
     request: {
       isFetching,
       isLoading,
+      refetch,
     },
     handlers: {
       handleIncomingAction,

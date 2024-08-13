@@ -17,9 +17,7 @@ import { TransactionState } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
 import { ITransactionWithType } from '../../services';
-import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useTransactionSend } from '../../providers';
-import { useEffect, useState } from 'react';
+import { TransactionType } from 'bakosafe';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 
 interface ActionsMobileProps {
@@ -118,11 +116,10 @@ const Actions = ({
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isLoading}
-            isDisabled={isSuccess}
+            isDisabled={isSuccess && !awaitingAnswer}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              console.log('ID Selecionado', transaction.id);
               confirmTransaction(transaction.id, callBack);
             }}
           >
@@ -140,7 +137,7 @@ const Actions = ({
               declineTransaction(transaction.id);
             }}
             isLoading={isLoading}
-            isDisabled={isSuccess}
+            isDisabled={isSuccess && !awaitingAnswer}
           >
             Decline
           </Button>
