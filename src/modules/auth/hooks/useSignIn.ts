@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useAccount, useFuel, useIsConnected } from '@fuels/react';
+import { useFuel, useIsConnected } from '@fuels/react';
 import { Address } from 'fuels';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +43,6 @@ const useSignIn = () => {
   const { authDetails } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
-  const { account } = useAccount();
   const { connect } = useSocket();
 
   useEffect(() => {
@@ -86,7 +85,7 @@ const useSignIn = () => {
       authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
-        account: Address.fromString(account!).toB256(),
+        account: address,
         accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
@@ -141,6 +140,7 @@ const useSignIn = () => {
         provider: network!.url,
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
+      setIsAnyWalletConnectorOpen(false);
     } catch (e) {
       setIsAnyWalletConnectorOpen(false);
       authDetails.handlers.setInvalidAccount?.(true);
