@@ -105,6 +105,9 @@ const useSignTransaction = ({
       confirm: false,
       account: CookiesConfig.getCookie(CookieName.ADDRESS),
     });
+    transactionsPageRefetch();
+    pendingSignerTransactionsRefetch();
+    homeTransactionsRefetch();
   };
 
   return {

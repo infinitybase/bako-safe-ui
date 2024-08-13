@@ -72,6 +72,7 @@ const useWorkspaceDetails = () => {
     },
     addressBookInfos,
     tokensUSD,
+    invalidateGifAnimationRequest,
   };
 };
 
