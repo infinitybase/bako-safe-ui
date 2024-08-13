@@ -1,11 +1,9 @@
+import { useSocket } from '@/modules/core';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useFuel, useIsConnected } from '@fuels/react';
-
-import { useEffect, useState } from 'react';
-
 import { Location, useNavigate } from 'react-router-dom';
 
-import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
