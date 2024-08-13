@@ -15,18 +15,16 @@ import {
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
-import {
-  CustomSkeleton,
-  HomeIcon,
-  TransactionTypeFilters,
-  VaultIcon,
-} from '@/components';
+
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -34,13 +32,11 @@ import {
   WaitingSignatureBadge,
 } from '../../components';
 import { StatusFilter, useTransactionList } from '../../hooks';
-import { transactionStatus } from '../../utils';
 import { useFilterTxType } from '../../hooks/filter';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
+  const { txFilterType } = useFilterTxType();
 
   const {
     infinityTransactions,
@@ -231,13 +227,6 @@ const UserTransactionsPage = () => {
               quantity={pendingSignerTransactions.data?.ofUser ?? 0}
             />
           </Box>
-          {!isSmall && (
-            <TransactionTypeFilters
-              currentFilter={txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-            />
-          )}
         </HStack>
 
         {/* FILTER */}
@@ -264,15 +253,6 @@ const UserTransactionsPage = () => {
               />
             </TransactionFilter.Control>
           </Box>
-          {isSmall && (
-            <TransactionTypeFilters
-              mt={2}
-              currentFilter={txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-              buttonsFullWidth
-            />
-          )}
         </VStack>
       </VStack>
 
