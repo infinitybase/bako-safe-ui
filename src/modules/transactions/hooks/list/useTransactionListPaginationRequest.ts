@@ -41,6 +41,7 @@ const useTransactionListPaginationRequest = (
 
         return data;
       }),
+    enabled: window.location.pathname != '/',
     initialPageParam: 0,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
