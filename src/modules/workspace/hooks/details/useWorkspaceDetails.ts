@@ -36,6 +36,9 @@ const useWorkspaceDetails = () => {
       },
     },
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
+    vaultTransactions: {
+      request: { isLoading: isVaultTransactionsLoading },
+    },
   } = useTransactionsContext();
 
   const {
@@ -73,7 +76,8 @@ const useWorkspaceDetails = () => {
         !isGifAnimationLoading &&
         !authDetails.userInfos.isLoading &&
         !vaultRequest.isLoading &&
-        !vaultAssets.isLoading) || isFilteringInProgress;
+        !vaultAssets.isLoading &&
+        !isVaultTransactionsLoading) || isFilteringInProgress;
 
   return {
     isWorkspaceReady,

@@ -1,11 +1,13 @@
-import { TransactionStatus, TransactionType } from 'bakosafe';
+import { TransactionStatus } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
-import { useVaultTxRequest } from './useVaultTxRequest';
-import { useTransactionState } from '@/modules/transactions/states';
+
+import { useFilterTxType } from '@/modules/transactions/hooks/filter/useFilterTxType';
 import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionState } from '@/modules/transactions/states';
+
+import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
 
 export enum StatusFilter {
   ALL = '',
@@ -16,23 +18,29 @@ export enum StatusFilter {
 
 interface IUseVaultTransactionsListProps {
   byMonth?: boolean;
-  type?: TransactionType;
   vaultId?: string;
 }
 
+export type IUseVaultTransactionsList = ReturnType<
+  typeof useVaultTransactionsList
+>;
+
 const useVaultTransactionsList = ({
   byMonth = false,
-  type = undefined,
   vaultId,
 }: IUseVaultTransactionsListProps = {}) => {
   const navigate = useNavigate();
   const inView = useInView();
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
+
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
 
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
 
   const {
     transactionsPages,
@@ -40,12 +48,12 @@ const useVaultTransactionsList = ({
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useVaultTxRequest({
+    refetch,
+  } = useVaultTransactionsRequest({
     predicateId: vaultId ? [vaultId] : undefined,
-    id: selectedTransaction.id,
-    status: filter,
+    status: filter ? [filter] : undefined,
     byMonth,
-    type,
+    type: txFilterType,
   });
 
   const observer = useRef<IntersectionObserver>();
@@ -76,24 +84,33 @@ const useVaultTransactionsList = ({
   }, [transactionsPages]);
 
   return {
-    transactionRequest: {
+    request: {
       isLoading,
       isFetching,
       hasNextPage,
       fetchNextPage,
+      refetch,
     },
-    selectedTransaction,
-    setSelectedTransaction,
-    navigate,
-    params: { vaultId },
+    handlers: {
+      selectedTransaction,
+      setSelectedTransaction,
+      navigate,
+      handleIncomingAction,
+      handleOutgoingAction,
+      listTransactionTypeFilter: setTxFilterType,
+    },
     filter: {
       set: setFilter,
       value: filter,
+      txFilterType,
     },
     inView,
-    account: userInfos.address,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    infinityTransactions,
+    lists: {
+      transactionsPages,
+      infinityTransactions,
+      limitedTransactions: infinityTransactions?.slice(0, 1),
+    },
     infinityTransactionsRef: lastElementRef,
   };
 };

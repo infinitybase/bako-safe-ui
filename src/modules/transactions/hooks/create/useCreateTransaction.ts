@@ -4,6 +4,7 @@ import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
@@ -14,10 +15,10 @@ import {
   useGetTokenInfosArray,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
-
-import { useCreateTransactionForm } from './useCreateTransactionForm';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 const recipientMock =
   'fuel1tn37x48zw6e3tylz2p0r6h6ua4l6swanmt8jzzpqt4jxmmkgw3lszpcedp';
@@ -51,6 +52,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     homeTransactions: {
       request: { refetch: refetchHomeTransactionsList },
+    },
+    vaultTransactions: {
+      request: { refetch: refetchVaultTransactionsList },
     },
   } = useTransactionsContext();
   const {
@@ -98,6 +102,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       });
       refetchTransactionsList();
       refetchHomeTransactionsList();
+      refetchVaultTransactionsList();
       handleClose();
     },
 

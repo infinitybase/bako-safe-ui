@@ -28,12 +28,12 @@ import {
   TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const TransactionsVaultPage = () => {
   const {
@@ -58,7 +58,7 @@ const TransactionsVaultPage = () => {
   } = useVaultInfosContext();
 
   const {
-    transactionsPageList: {
+    vaultTransactions: {
       defaultIndex,
       filter,
       inView,

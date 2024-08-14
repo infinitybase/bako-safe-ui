@@ -1,12 +1,3 @@
-import { CustomSkeleton, TransactionTypeFilters } from '@/components';
-import { EmptyState } from '@/components/emptyState';
-import { Pages, useScreenSize } from '@/modules/core';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  WaitingSignatureBadge,
-  transactionStatus,
-} from '@/modules/transactions';
 import {
   Box,
   Button,
@@ -16,11 +7,21 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import { MdKeyboardArrowRight } from 'react-icons/md';
 import { css, keyframes } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { MdKeyboardArrowRight } from 'react-icons/md';
+
+import { CustomSkeleton } from '@/components';
+import { EmptyState } from '@/components/emptyState';
+import { Pages, useScreenSize } from '@/modules/core';
+import {
+  TransactionCard,
+  TransactionCardMobile,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const shakeAnimation = keyframes`
   0% { transform: translateX(0); }
@@ -36,7 +37,6 @@ const HomeTransactions = () => {
   const {
     homeTransactions: {
       transactions,
-      handlers: { handleIncomingAction, handleOutgoingAction },
       request: { isLoading },
     },
     pendingSignerTransactions,
@@ -82,11 +82,6 @@ const HomeTransactions = () => {
           />
         </Box>
         <Spacer />
-        <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
-          buttonsFullWidth={isSmall}
-        />
 
         <Button
           color="grey.75"

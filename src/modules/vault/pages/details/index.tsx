@@ -12,6 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
@@ -26,14 +27,13 @@ import {
   transactionStatus,
   WaitingSignatureBadge,
 } from '@/modules/transactions';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
-import { useNavigate } from 'react-router-dom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const VaultDetailsPage = () => {
   const menuDrawer = useDisclosure();
@@ -46,8 +46,8 @@ const VaultDetailsPage = () => {
     useVaultInfosContext();
 
   const {
-    transactionsPageList: {
-      lists: { vaultDetailsLimitedTransactions },
+    vaultTransactions: {
+      lists: { limitedTransactions },
       request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
@@ -65,7 +65,7 @@ const VaultDetailsPage = () => {
     useScreenSize();
 
   const workspaceId = userInfos.workspace?.id ?? '';
-  const hasTransactions = !isLoading && vaultDetailsLimitedTransactions?.length;
+  const hasTransactions = !isLoading && limitedTransactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
 
@@ -239,7 +239,7 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? vaultDetailsLimitedTransactions?.map((grouped) => (
+          ? limitedTransactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -300,7 +300,7 @@ const VaultDetailsPage = () => {
               </>
             ))
           : !hasTransactions &&
-            !!vaultDetailsLimitedTransactions && (
+            !!limitedTransactions && (
               <EmptyState
                 isDisabled={!assets.hasBalance}
                 buttonAction={() =>

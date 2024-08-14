@@ -1,18 +1,16 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SortOptionTx, TransactionType } from 'bakosafe';
-import { StatusFilter } from '@/modules/transactions';
+
 import {
-  GetTransactionParams,
+  GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
   TransactionService,
 } from '@/modules/transactions/services';
 
 type UseTransactionListPaginationParams = Omit<
-  GetTransactionParams,
-  'perPage' | 'page' | 'status'
-> & {
-  status: StatusFilter;
-};
+  GetTransactionsWithIncomingsParams,
+  'perPage' | 'offsetDb' | 'offsetFuel'
+>;
 
 export const VAULT_TRANSACTIONS_LIST_PAGINATION =
   'vault-transaction-list-pagination';
@@ -21,30 +19,34 @@ export const vaultInfinityQueryKey = {
   VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY: (
     vaultId?: string,
     status?: string,
-    id?: string,
     type?: TransactionType,
-  ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, id, type],
+  ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, type],
 };
 
-const useVaultTxRequest = (params: UseTransactionListPaginationParams) => {
+const useVaultTransactionsRequest = (
+  params: UseTransactionListPaginationParams,
+) => {
+  const status = Array.isArray(params.status)
+    ? params.status.join('-')
+    : params.status;
+
   const queryKey =
     vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       params.predicateId?.[0],
-      params.status,
-      params.id,
+      status,
       params.type,
     );
 
   const { data, ...query } = useInfiniteQuery({
     queryKey,
-    queryFn: ({ pageParam }) =>
-      TransactionService.getTransactionsPagination({
+    queryFn: ({ pageParam: { offsetDb, offsetFuel } }) =>
+      TransactionService.getTransactionsWithIncomingsPagination({
         ...params,
         perPage: 5,
-        page: pageParam || 0,
+        offsetDb: offsetDb || 0,
+        offsetFuel: offsetFuel || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
-        id: params.id,
       }).then((data) => {
         return data;
       }),
@@ -52,12 +54,14 @@ const useVaultTxRequest = (params: UseTransactionListPaginationParams) => {
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: !!params.predicateId && !!params.predicateId[0],
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) =>
-      lastPage.currentPage !== lastPage.totalPages
-        ? lastPage.nextPage
-        : undefined,
-    maxPages: 2,
+    initialPageParam: { offsetDb: 0, offsetFuel: 0 },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.data.length === 0) {
+        return undefined;
+      }
+
+      return { offsetDb: lastPage.offsetDb, offsetFuel: lastPage.offsetFuel };
+    },
   });
 
   return {
@@ -66,4 +70,4 @@ const useVaultTxRequest = (params: UseTransactionListPaginationParams) => {
   };
 };
 
-export { useVaultTxRequest };
+export { useVaultTransactionsRequest };

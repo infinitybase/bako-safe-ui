@@ -30,9 +30,9 @@ import {
 } from '@/modules/core';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { WorkspaceCard } from '../card';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { useGetWorkspaceRequest } from '../../hooks';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
+import { WorkspaceCard } from '../card';
 
 interface WorkspaceSettingsDrawerProps
   extends Pick<DrawerProps, 'isOpen' | 'onClose'> {}
@@ -213,9 +213,7 @@ const WorkspaceSettingsDrawer = ({
                 workspace={currentWorkspace.workspace!}
                 counter={{
                   members: currentWorkspace.workspace?.members?.length ?? 0,
-                  vaults: Array.isArray(currentWorkspace.workspace?.predicates)
-                    ? currentWorkspace.workspace!.predicates?.length
-                    : 0,
+                  vaults: currentWorkspace.workspace?.predicates ?? 0,
                 }}
                 mb={10}
               />

@@ -1,4 +1,3 @@
-import { Address } from 'fuels';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -105,16 +104,15 @@ const useChangeMember = () => {
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');
-    const _memberAddress = Address.fromString(memberAddress).bech32Address;
     const updatedMemberPermission = editForm.getValues('permission');
     const permission = data.permission as PermissionRoles;
 
     // If not has an updated member permission and has a memberAddress it means that comes from the memberForm(creation)
-    if (!updatedMemberPermission && _memberAddress) {
-      memberRequest.mutate(_memberAddress, {
+    if (!updatedMemberPermission && memberAddress) {
+      memberRequest.mutate(memberAddress, {
         onSuccess: (data: Workspace) => {
           const newMember = data?.members.find(
-            (member) => member.address === _memberAddress,
+            (member) => member.address === memberAddress,
           );
 
           if (newMember) {
@@ -175,6 +173,7 @@ const useChangeMember = () => {
       },
       {
         onSuccess: () => {
+          workspaceRequest.refetch();
           handleClose(),
             successToast({
               title: 'Success!',

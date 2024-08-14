@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSidebar } from '../details';
 import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
-import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -14,27 +13,26 @@ const useVaultDetails = () => {
 
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
+
   const {
     vaultDetails: { vaultRequest, assets },
+    authDetails: {
+      userInfos: { address: account },
+    },
   } = useWorkspaceContext();
 
-  const { pendingSignerTransactions } = useTransactionsContext();
-
   const {
-    transactionRequest,
-    infinityTransactionsRef,
-    infinityTransactions,
-    filter,
-    inView,
-    account,
-    selectedTransaction,
-    setSelectedTransaction,
-    defaultIndex,
-  } = useVaultTransactionsList({
-    byMonth: true,
-    type: txFilterType,
-    vaultId: vaultId!,
-  });
+    pendingSignerTransactions,
+    vaultTransactions: {
+      request,
+      infinityTransactionsRef,
+      lists: { infinityTransactions },
+      filter,
+      inView,
+      defaultIndex,
+      handlers: { selectedTransaction, setSelectedTransaction },
+    },
+  } = useTransactionsContext();
 
   const sideBarDetails = useSidebar({
     params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
@@ -45,7 +43,7 @@ const useVaultDetails = () => {
       ...vaultRequest,
     },
     transactions: {
-      ...transactionRequest,
+      ...request,
       byMonth,
       setByMonth,
       txFilterType,
