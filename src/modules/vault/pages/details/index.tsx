@@ -47,6 +47,7 @@ const VaultDetailsPage = () => {
 
   const {
     vaultTransactions: {
+      filter: { txFilterType },
       lists: { limitedTransactions },
       request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
@@ -226,6 +227,7 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
+          currentFilter={txFilterType}
           incomingAction={handleIncomingAction}
           outgoingAction={handleOutgoingAction}
           buttonsFullWidth={isSmall}
