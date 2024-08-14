@@ -1,13 +1,10 @@
-import { useScreenSize } from '@/modules';
 import { BoxProps, Button, HStack, Icon } from '@chakra-ui/react';
-import {
-  DownLeftArrow,
-  DownLeftArrowWhite,
-  UpRightArrow,
-  UpRightArrowWhite,
-} from '../icons';
 import { css, keyframes } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
+
+import { useScreenSize } from '@/modules';
+
+import { DownLeftArrow, UpRightArrow } from '../icons';
 
 const shakeAnimation = keyframes`
   0% { transform: translateY(0); }
@@ -49,7 +46,8 @@ const TransactionTypeFilters = ({
         `}
         rightIcon={
           <Icon
-            as={isDeposit ? DownLeftArrow : DownLeftArrowWhite}
+            as={DownLeftArrow}
+            textColor={isDeposit ? 'success.700' : 'grey.75'}
             fontSize="lg"
             ml={isSmall ? -1 : 0}
             className="btn-icon-1"
@@ -71,7 +69,8 @@ const TransactionTypeFilters = ({
         `}
         rightIcon={
           <Icon
-            as={isTransfer ? UpRightArrow : UpRightArrowWhite}
+            as={UpRightArrow}
+            textColor={isTransfer ? 'warning.550' : 'grey.75'}
             fontSize="lg"
             ml={isSmall ? -1 : 0}
             className="btn-icon-2"

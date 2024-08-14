@@ -33,7 +33,7 @@ import {
   CustomSkeleton,
   DoubleArrowIcon,
   MinimalAlertIcon,
-  UpRightArrowWhite,
+  UpRightArrow,
 } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -643,7 +643,8 @@ const Details = ({
                   `}
                   rightIcon={
                     <Icon
-                      as={UpRightArrowWhite}
+                      as={UpRightArrow}
+                      textColor="grey.75"
                       fontSize="lg"
                       className="btn-icon"
                     />
