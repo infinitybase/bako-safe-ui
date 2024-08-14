@@ -53,6 +53,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     homeTransactions: {
       request: { refetch: refetchHomeTransactionsList },
     },
+    vaultTransactions: {
+      request: { refetch: refetchVaultTransactionsList },
+    },
   } = useTransactionsContext();
   const {
     vaultPageParams: { vaultId },
@@ -99,6 +102,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       });
       refetchTransactionsList();
       refetchHomeTransactionsList();
+      refetchVaultTransactionsList();
       handleClose();
     },
 
