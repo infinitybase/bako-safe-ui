@@ -15,18 +15,16 @@ import {
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
-import {
-  CustomSkeleton,
-  HomeIcon,
-  TransactionTypeFilters,
-  VaultIcon,
-} from '@/components';
+
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -34,9 +32,8 @@ import {
   WaitingSignatureBadge,
 } from '../../components';
 import { StatusFilter } from '../../hooks';
-import { transactionStatus } from '../../utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
   const {
@@ -45,7 +42,7 @@ const UserTransactionsPage = () => {
       request: { isLoading },
       filter,
       inView,
-      handlers: { navigate, handleIncomingAction, handleOutgoingAction },
+      handlers: { navigate },
       lists: { infinityTransactions, transactions },
     },
   } = useTransactionsContext();
@@ -233,13 +230,6 @@ const UserTransactionsPage = () => {
               quantity={pendingSignerTransactions.data?.ofUser ?? 0}
             />
           </Box>
-          {!isSmall && (
-            <TransactionTypeFilters
-              currentFilter={filter.txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-            />
-          )}
         </HStack>
 
         {/* FILTER */}
@@ -266,15 +256,6 @@ const UserTransactionsPage = () => {
               />
             </TransactionFilter.Control>
           </Box>
-          {isSmall && (
-            <TransactionTypeFilters
-              mt={2}
-              currentFilter={filter.txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-              buttonsFullWidth
-            />
-          )}
         </VStack>
       </VStack>
 

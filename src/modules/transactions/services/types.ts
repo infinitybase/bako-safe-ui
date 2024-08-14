@@ -2,12 +2,19 @@ import {
   ITransaction,
   ITransactionResume,
   SortOptionTx,
-  Vault,
   TransactionType,
+  Vault,
 } from 'bakosafe';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
+
+export interface ITransactionPagination<T> {
+  perPage: number;
+  offsetDb: number;
+  offsetFuel: number;
+  data: T[];
+}
 
 export enum SortOption {
   ASC = 'ASC',
@@ -65,6 +72,18 @@ export interface GetTransactionParams {
   allOfUser?: boolean;
   byMonth?: boolean;
   type?: TransactionType;
+}
+
+export interface GetTransactionsWithIncomingsParams {
+  status?: TransactionStatus[] | string[] | string;
+  predicateId?: string[];
+  orderBy?: string;
+  sort?: SortOptionTx;
+  perPage?: number;
+  byMonth?: boolean;
+  type?: TransactionType;
+  offsetDb?: number;
+  offsetFuel?: number;
 }
 
 export interface GetUserTransactionsParams {
@@ -137,6 +156,8 @@ export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
   IPagination<ITransactionsGroupedByMonth>;
+export type GetTransactionsWithIncomingsPaginationResponse =
+  ITransactionPagination<ITransactionsGroupedByMonth>;
 export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];

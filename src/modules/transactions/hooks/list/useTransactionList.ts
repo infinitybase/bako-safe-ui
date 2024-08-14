@@ -1,14 +1,14 @@
-import { TransactionStatus } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { ITransactionsGroupedByMonth } from '../../services';
-import { TransactionType } from 'bakosafe';
-import { useTransactionState } from '../../states';
-import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
-import { useFilterTxType } from '../filter';
 import { useGetParams } from '@/modules/core';
+
+import { ITransactionsGroupedByMonth } from '../../services';
+import { useTransactionState } from '../../states';
+import { useFilterTxType } from '../filter';
+import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 
 export enum StatusFilter {
   ALL = '',
@@ -149,7 +149,6 @@ const useTransactionList = ({
     lists: {
       transactions,
       infinityTransactions,
-      vaultDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
     },
     pendingTransactions: pendingTransactions(),
   };

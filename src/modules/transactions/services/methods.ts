@@ -13,6 +13,8 @@ import {
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
   GetTransactionsResponse,
+  GetTransactionsWithIncomingsPaginationResponse,
+  GetTransactionsWithIncomingsParams,
   GetUserTransactionsParams,
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
@@ -89,6 +91,19 @@ export class TransactionService {
     return data;
   }
 
+  static async getTransactionsWithIncomingsPagination(
+    params: GetTransactionsWithIncomingsParams,
+  ) {
+    const { data } =
+      await api.get<GetTransactionsWithIncomingsPaginationResponse>(
+        `/transaction/with-incomings`,
+        {
+          params: { ...params },
+        },
+      );
+    return data;
+  }
+
   static async send(BakoSafeTransactionId: string) {
     const { data } = await api.post(
       `/transaction/send/${BakoSafeTransactionId}`,
@@ -144,9 +159,9 @@ export class TransactionService {
     };
   }
 
-  static async getTransactionsHistory(id: string) {
+  static async getTransactionsHistory(id: string, predicateId: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(
-      `/transaction/history/${id}`,
+      `/transaction/history/${id}/${predicateId}`,
     );
     return data;
   }
