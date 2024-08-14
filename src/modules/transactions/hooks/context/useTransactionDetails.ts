@@ -31,7 +31,6 @@ const useTransactionDetails = () => {
     transactionList: transactionsPageList,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
     homeTransactionsRefetch: homeTransactions.request.refetch,
-    vaultTransactionsRefetch: vaultTransactions.request.refetch,
   });
 
   const invalidateAllTransactionsTypeFilters = () => {
