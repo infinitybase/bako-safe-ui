@@ -1,13 +1,11 @@
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
-
-import { queryClient } from '@/config';
 import { Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
@@ -20,7 +18,6 @@ interface UseVaultDrawerParams {
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
-  const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
   const [search, setSearch] = useState('');
 
@@ -28,13 +25,31 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { handleWorkspaceSelection },
+      requests: {
+        workspaceBalance: { refetch: refetchWorkspaceBalance },
+      },
     },
+    vaultDetails: {
+      vaultRequest: { refetch: refetchVaultRequest },
+    },
+    invalidateGifAnimationRequest,
   } = useWorkspaceContext();
 
-  const vaultListRequestRequest = useVaultListRequest(
-    { q: search },
-    props.isOpen,
-  );
+  const {
+    transactionsPageList: {
+      request: { refetch: refetchTransactions },
+    },
+  } = useTransactionsContext();
+
+  const vaultList = useVaultListRequest({ q: search }, props.isOpen);
+
+  const invalidateRequests = () => {
+    invalidateGifAnimationRequest();
+    refetchVaultRequest();
+    refetchWorkspaceBalance();
+    refetchTransactions();
+    vaultList.refetch();
+  };
 
   const debouncedSearchHandler = useCallback(
     debounce((event: string | ChangeEvent<HTMLInputElement>) => {
@@ -49,19 +64,15 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   );
 
   useEffect(() => {
-    if (
-      inView.inView &&
-      vaultListRequestRequest.hasNextPage &&
-      !vaultListRequestRequest.isLoading
-    ) {
-      vaultListRequestRequest.fetchNextPage();
+    if (inView.inView && vaultList.hasNextPage && !vaultList.isLoading) {
+      vaultList.fetchNextPage();
     }
   }, [
     inView.inView,
-    vaultListRequestRequest.isFetching,
-    vaultListRequestRequest.isLoading,
-    vaultListRequestRequest.fetchNextPage,
-    vaultListRequestRequest.hasNextPage,
+    vaultList.isFetching,
+    vaultList.isLoading,
+    vaultList.fetchNextPage,
+    vaultList.hasNextPage,
   ]);
 
   const onSelectVault = (
@@ -70,12 +81,10 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     },
   ) => {
     props.onClose?.();
-    queryClient.resetQueries();
-    queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
-    vaultListRequestRequest.refetch();
+    invalidateRequests();
     setSearch('');
-    handleWorkspaceSelection(vault.workspace.id);
-    navigate(
+    handleWorkspaceSelection(
+      vault.workspace.id,
       Pages.detailsVault({
         vaultId: vault.id,
         workspaceId: userInfos.workspace?.id,
@@ -85,8 +94,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
 
   const onCloseDrawer = () => {
     props.onClose?.();
-    queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
-    queryClient.resetQueries();
     setSearch('');
   };
 
@@ -99,7 +106,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       value: search,
       handler: debouncedSearchHandler,
     },
-    request: vaultListRequestRequest,
+    request: vaultList,
     inView,
   };
 };

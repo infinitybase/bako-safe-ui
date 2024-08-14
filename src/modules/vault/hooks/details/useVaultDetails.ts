@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useVaultAssets } from '../assets';
 import { useSidebar } from '../details';
 import { useGetParams } from '@/modules/core';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter';
-import { useVaultByIdRequest } from '@/modules';
 import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useVaultDetails = () => {
   const {
@@ -15,8 +14,10 @@ const useVaultDetails = () => {
 
   const { txFilterType, handleIncomingAction, handleOutgoingAction } =
     useFilterTxType();
+  const {
+    vaultDetails: { vaultRequest, assets },
+  } = useWorkspaceContext();
 
-  const vaultRequest = useVaultByIdRequest(vaultId ?? '');
   const { pendingSignerTransactions } = useTransactionsContext();
 
   const {
@@ -38,8 +39,6 @@ const useVaultDetails = () => {
   const sideBarDetails = useSidebar({
     params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
   });
-
-  const assets = useVaultAssets(vaultId!);
 
   return {
     vault: {

@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { Pages } from '../../core';
 import { PermissionRoles } from '../../core/models';
@@ -22,6 +21,7 @@ const useWorkspace = (
   userInfos: IUserInfos,
   invalidateGifAnimationRequest: () => void,
   invalidateAllTransactionsTypeFilters: () => void,
+  refetchPendingSingerTransactions: () => void,
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
@@ -30,7 +30,6 @@ const useWorkspace = (
 
   const toast = useNotification();
   const workspaceDialog = useDisclosure();
-  const pendingSignerTransactions = useTransactionsSignaturePending();
 
   const workspaceBalance = useGetWorkspaceBalanceRequest(
     userInfos?.workspace?.id,
@@ -103,7 +102,7 @@ const useWorkspace = (
   const invalidateRequests = () => {
     invalidateAllTransactionsTypeFilters();
     workspaceBalance.refetch();
-    pendingSignerTransactions.refetch();
+    refetchPendingSingerTransactions();
     userInfos.refetch();
   };
 
@@ -116,7 +115,6 @@ const useWorkspace = (
     },
     requests: {
       latestPredicates,
-      pendingSignerTransactions,
       workspaceBalance,
     },
     infos: {

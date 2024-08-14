@@ -39,12 +39,13 @@ const HomeTransactions = () => {
       handlers: { handleIncomingAction, handleOutgoingAction },
       request: { isLoading },
     },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      requests: { latestPredicates, pendingSignerTransactions },
+      requests: { latestPredicates },
       handlers: { navigate },
     },
   } = useWorkspaceContext();

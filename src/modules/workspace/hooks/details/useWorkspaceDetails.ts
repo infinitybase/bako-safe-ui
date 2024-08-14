@@ -1,13 +1,28 @@
 import { useAuth } from '@/modules/auth';
 import { useWorkspace } from '../useWorkspace';
-import { useAddressBook } from '@/modules';
+import {
+  useAddressBook,
+  useGetParams,
+  useVaultAssets,
+  useVaultByIdRequest,
+} from '@/modules';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { currentPath } from '@/utils';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useGitLoadingRequest } from '../useGifLoadingRequest';
 
 const useWorkspaceDetails = () => {
+  const authDetails = useAuth();
   const { isSignInpage } = currentPath();
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
+  const vaultRequest = useVaultByIdRequest(vaultId ?? '');
+  const vaultAssets = useVaultAssets(
+    authDetails.userInfos.workspace?.id,
+    vaultId ?? '',
+  );
 
   const {
     invalidateAllTransactionsTypeFilters,
@@ -20,14 +35,16 @@ const useWorkspaceDetails = () => {
         isFetching: isTransactionsPageListFetching,
       },
     },
+    pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGitLoadingRequest();
+
   const tokensUSD = useTokensUSDAmountRequest();
-  const authDetails = useAuth();
+
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { workspaceBalance, latestPredicates, ...requestsData },
@@ -36,7 +53,9 @@ const useWorkspaceDetails = () => {
     authDetails.userInfos,
     invalidateGifAnimationRequest,
     invalidateAllTransactionsTypeFilters,
+    refetchPendingSingerTransactions,
   );
+
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
   const isFilteringInProgress =
@@ -52,7 +71,9 @@ const useWorkspaceDetails = () => {
         !isHomeRequestLoading &&
         !isTransactionsPageListLoading &&
         !isGifAnimationLoading &&
-        !authDetails.userInfos.isLoading) || isFilteringInProgress;
+        !authDetails.userInfos.isLoading &&
+        !vaultRequest.isLoading &&
+        !vaultAssets.isLoading) || isFilteringInProgress;
 
   return {
     isWorkspaceReady,
@@ -62,6 +83,10 @@ const useWorkspaceDetails = () => {
       handlers: { hasPermission, ...handlersData },
       requests: { workspaceBalance, latestPredicates, ...requestsData },
       ...rest,
+    },
+    vaultDetails: {
+      vaultRequest,
+      assets: vaultAssets,
     },
     addressBookInfos,
     tokensUSD,

@@ -37,7 +37,7 @@ const WkHomeTransactions = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { navigate },
-      requests: { pendingSignerTransactions, latestPredicates },
+      requests: { latestPredicates },
     },
   } = useWorkspaceContext();
 
@@ -49,6 +49,7 @@ const WkHomeTransactions = () => {
       handlers: { handleIncomingAction, handleOutgoingAction },
       request: { isLoading },
     },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   useEffect(() => {

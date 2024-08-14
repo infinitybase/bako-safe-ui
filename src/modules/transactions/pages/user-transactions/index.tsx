@@ -48,13 +48,13 @@ const UserTransactionsPage = () => {
       handlers: { navigate, handleIncomingAction, handleOutgoingAction },
       lists: { infinityTransactions, transactions },
     },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
-      requests: { pendingSignerTransactions },
     },
   } = useWorkspaceContext();
 
