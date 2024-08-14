@@ -25,6 +25,7 @@ const useVaultDetails = () => {
       userInfos: { address: account },
     },
   } = useWorkspaceContext();
+
   const {
     pendingSignerTransactions,
     vaultTransactions: {
