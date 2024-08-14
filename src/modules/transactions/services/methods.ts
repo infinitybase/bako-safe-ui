@@ -172,11 +172,4 @@ export class TransactionService {
     );
     return data;
   }
-
-  static async verifyOnChain(id: string) {
-    const { data } = await api.get<ITransactionResume>(
-      `/transaction/verify/${id}`,
-    );
-    return data;
-  }
 }
