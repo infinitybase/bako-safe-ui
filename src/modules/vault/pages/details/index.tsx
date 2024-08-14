@@ -113,6 +113,7 @@ const VaultDetailsPage = () => {
                       Pages.workspace({
                         workspaceId: userInfos.workspace?.id,
                       }),
+                      true,
                     )
                   }
                   maxW={40}

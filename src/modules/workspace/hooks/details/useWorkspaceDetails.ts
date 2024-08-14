@@ -30,7 +30,7 @@ const useWorkspaceDetails = () => {
   const authDetails = useAuth();
   const {
     handlers: { hasPermission, ...handlersData },
-    requests: { worksapceBalance, latestPredicates, ...requestsData },
+    requests: { workspaceBalance, latestPredicates, ...requestsData },
     ...rest
   } = useWorkspace(
     authDetails.userInfos,
@@ -47,7 +47,7 @@ const useWorkspaceDetails = () => {
     (isSignInpage
       ? true
       : !latestPredicates.isLoading &&
-        !worksapceBalance.isLoading &&
+        !workspaceBalance.isLoading &&
         !addressBookInfos.requests.listContactsRequest.isLoading &&
         !isHomeRequestLoading &&
         !isTransactionsPageListLoading &&
@@ -60,7 +60,7 @@ const useWorkspaceDetails = () => {
     authDetails,
     workspaceInfos: {
       handlers: { hasPermission, ...handlersData },
-      requests: { worksapceBalance, latestPredicates, ...requestsData },
+      requests: { workspaceBalance, latestPredicates, ...requestsData },
       ...rest,
     },
     addressBookInfos,

@@ -72,7 +72,7 @@ const WorkspacePage = () => {
         goHome,
       },
       infos: { visibleBalance },
-      requests: { worksapceBalance, latestPredicates },
+      requests: { workspaceBalance, latestPredicates },
       workspaceVaults: { vaultsMax, extraCount },
     },
   } = useWorkspaceContext();
@@ -83,7 +83,7 @@ const WorkspacePage = () => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const balanceUSD = worksapceBalance.balance.currentBalanceUSD;
+  const balanceUSD = workspaceBalance.balance.currentBalanceUSD;
 
   const UpdateBalance = (
     <Text
@@ -97,7 +97,7 @@ const WorkspacePage = () => {
         cursor: 'pointer',
         color: 'grey.200',
       }}
-      onClick={() => worksapceBalance.refetch()}
+      onClick={() => workspaceBalance.refetch()}
     >
       Update
       <RefreshIcon
@@ -364,11 +364,11 @@ const WorkspacePage = () => {
                 >{`Workspace's balance breakdown`}</Text>
 
                 <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
+                  isLoaded={!workspaceBalance.isLoading}
                   w="full"
                   h="full"
                 >
-                  {worksapceBalance.balance.assetsBalance.length === 0 ? (
+                  {workspaceBalance.balance.assetsBalance.length === 0 ? (
                     <Card
                       w="full"
                       h="full"
@@ -396,7 +396,7 @@ const WorkspacePage = () => {
                     >
                       <AssetsDetails
                         containerRef={assetsContainerRef}
-                        assets={worksapceBalance.balance.assetsBalance}
+                        assets={workspaceBalance.balance.assetsBalance}
                         visibleBalance={visibleBalance}
                         viewAllRedirect={Pages.balanceWorkspace({
                           workspaceId,

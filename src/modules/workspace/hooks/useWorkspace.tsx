@@ -32,7 +32,7 @@ const useWorkspace = (
   const workspaceDialog = useDisclosure();
   const pendingSignerTransactions = useTransactionsSignaturePending();
 
-  const worksapceBalance = useGetWorkspaceBalanceRequest(
+  const workspaceBalance = useGetWorkspaceBalanceRequest(
     userInfos?.workspace?.id,
   );
 
@@ -45,11 +45,16 @@ const useWorkspace = (
   const handleWorkspaceSelection = async (
     selectedWorkspace: string,
     redirect?: string,
+    needUpdateWorkspaceBalance?: boolean,
   ) => {
     const isValid = selectedWorkspace !== userInfos?.workspace?.id;
 
     if (isSelecting) return;
-    if (!isValid) return !!redirect && navigate(redirect);
+    if (!isValid) {
+      !!redirect && navigate(redirect);
+      needUpdateWorkspaceBalance && workspaceBalance.refetch();
+      return;
+    }
 
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
@@ -97,7 +102,7 @@ const useWorkspace = (
 
   const invalidateRequests = () => {
     invalidateAllTransactionsTypeFilters();
-    worksapceBalance.refetch();
+    workspaceBalance.refetch();
     pendingSignerTransactions.refetch();
     userInfos.refetch();
   };
@@ -112,7 +117,7 @@ const useWorkspace = (
     requests: {
       latestPredicates,
       pendingSignerTransactions,
-      worksapceBalance,
+      workspaceBalance,
     },
     infos: {
       workspaceId,
