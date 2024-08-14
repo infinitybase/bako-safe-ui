@@ -149,7 +149,6 @@ const useTransactionList = ({
     lists: {
       transactions,
       infinityTransactions,
-      vaultDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
     },
     pendingTransactions: pendingTransactions(),
   };
