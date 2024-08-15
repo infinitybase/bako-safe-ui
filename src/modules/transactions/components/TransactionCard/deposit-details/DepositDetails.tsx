@@ -1,23 +1,15 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
-import { TransactionUI } from './Details';
-import DetailItem from './deposit-details/DetailItem';
-import { css, keyframes } from '@emotion/react';
+
+import DetailItem from './DetailItem';
+import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
 import { UpRightArrowWhite } from '@/components';
-import { useScreenSize } from '@/modules/core';
-import { TransactionWithVault } from '../../services';
+import { shakeAnimationY, useScreenSize } from '@/modules/core';
+import { TransactionWithVault } from '../../../services';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
 };
-
-const shakeAnimation = keyframes`
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-2px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
-`;
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const toAddress = transaction.predicate?.predicateAddress;
@@ -74,7 +66,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           onClick={handleViewInExplorer}
           css={css`
             &:hover .btn-icon {
-              animation: ${shakeAnimation} 0.5s ease-in-out;
+              animation: ${shakeAnimationY} 0.5s ease-in-out;
             }
           `}
           rightIcon={
