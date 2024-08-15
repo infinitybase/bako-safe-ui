@@ -14,7 +14,7 @@ const useGetParams = () => {
   const workspaceId = getPathParam('workspace');
 
   const vaultPageParams = {
-    vaultId,
+    vaultId: vaultId !== 'me' ? vaultId : undefined,
     workspaceId,
   };
 

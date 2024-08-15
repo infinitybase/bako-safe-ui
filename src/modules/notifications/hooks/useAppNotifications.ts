@@ -38,7 +38,6 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const inView = useInView({ delay: 300 });
   const notificationsListRequest = useListNotificationsRequest(
     userInfos.address,
-    props?.isOpen,
   );
 
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
@@ -51,16 +50,14 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     setHasNewNotification,
   } = useNotificationsStore();
 
-  const onCloseDrawer = async () => {
+  const onCloseDrawer = () => {
     const hasUnread = !!unreadCounter;
 
-    setUnreadCounter(0);
+    if (hasUnread && unreadCounter > 0) {
+      invalidateQueries([NotificationsQueryKey.UNREAD_COUNTER]);
+      setUnreadCounter(0);
+    }
     props?.onClose?.();
-
-    await invalidateQueries([
-      NotificationsQueryKey.PAGINATED_LIST,
-      NotificationsQueryKey.UNREAD_COUNTER,
-    ]);
 
     if (hasUnread) setNotificationAsReadRequest.mutate({});
   };

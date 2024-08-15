@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { Pages } from '../../core';
 import { PermissionRoles } from '../../core/models';
@@ -22,6 +21,7 @@ const useWorkspace = (
   userInfos: IUserInfos,
   invalidateGifAnimationRequest: () => void,
   invalidateAllTransactionsTypeFilters: () => void,
+  refetchPendingSingerTransactions: () => void,
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
@@ -30,9 +30,8 @@ const useWorkspace = (
 
   const toast = useNotification();
   const workspaceDialog = useDisclosure();
-  const pendingSignerTransactions = useTransactionsSignaturePending();
 
-  const worksapceBalance = useGetWorkspaceBalanceRequest(
+  const workspaceBalance = useGetWorkspaceBalanceRequest(
     userInfos?.workspace?.id,
   );
 
@@ -45,11 +44,16 @@ const useWorkspace = (
   const handleWorkspaceSelection = async (
     selectedWorkspace: string,
     redirect?: string,
+    needUpdateWorkspaceBalance?: boolean,
   ) => {
     const isValid = selectedWorkspace !== userInfos?.workspace?.id;
 
     if (isSelecting) return;
-    if (!isValid) return !!redirect && navigate(redirect);
+    if (!isValid) {
+      !!redirect && navigate(redirect);
+      needUpdateWorkspaceBalance && workspaceBalance.refetch();
+      return;
+    }
 
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
@@ -97,8 +101,8 @@ const useWorkspace = (
 
   const invalidateRequests = () => {
     invalidateAllTransactionsTypeFilters();
-    worksapceBalance.refetch();
-    pendingSignerTransactions.refetch();
+    workspaceBalance.refetch();
+    refetchPendingSingerTransactions();
     userInfos.refetch();
   };
 
@@ -111,8 +115,7 @@ const useWorkspace = (
     },
     requests: {
       latestPredicates,
-      pendingSignerTransactions,
-      worksapceBalance,
+      workspaceBalance,
     },
     infos: {
       workspaceId,
