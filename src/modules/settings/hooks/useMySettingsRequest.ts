@@ -9,6 +9,7 @@ const useMySettingsRequest = (account: string) => {
     queryKey: [SettingsQueryKey.MY_SETTINGS, account],
     queryFn: async () => SettingsService.getSettings(),
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 

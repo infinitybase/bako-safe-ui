@@ -15,7 +15,11 @@ const defaultOptions = {
 const BakoLoading = () => {
   return (
     <Flex alignItems="center" justifyContent="center" w="full" h="100vh">
-      <Lottie {...defaultOptions} style={{ height: 180 }} />
+      <Lottie
+        {...defaultOptions}
+        size={20}
+        style={{ height: '120px', width: '120px' }}
+      />
     </Flex>
   );
 };

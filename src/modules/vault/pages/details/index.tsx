@@ -47,6 +47,7 @@ const VaultDetailsPage = () => {
 
   const {
     vaultTransactions: {
+      filter: { txFilterType },
       lists: { limitedTransactions },
       request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
@@ -113,6 +114,7 @@ const VaultDetailsPage = () => {
                       Pages.workspace({
                         workspaceId: userInfos.workspace?.id,
                       }),
+                      true,
                     )
                   }
                   maxW={40}
@@ -226,6 +228,7 @@ const VaultDetailsPage = () => {
         </Box>
         <Spacer />
         <TransactionTypeFilters
+          currentFilter={txFilterType}
           incomingAction={handleIncomingAction}
           outgoingAction={handleOutgoingAction}
           buttonsFullWidth={isSmall}

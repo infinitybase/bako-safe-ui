@@ -31,12 +31,13 @@ const HomeTransactions = () => {
       transactions,
       request: { isLoading },
     },
+    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      requests: { latestPredicates, pendingSignerTransactions },
+      requests: { latestPredicates },
       handlers: { navigate },
     },
   } = useWorkspaceContext();

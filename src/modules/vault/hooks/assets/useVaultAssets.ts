@@ -11,25 +11,19 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
 import { VaultService } from '../../services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-function useVaultAssets(predicateId: string) {
+function useVaultAssets(workspaceId: string, predicateId: string) {
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
 
-  const { authDetails } = useWorkspaceContext();
-
   const { data, ...rest } = useQuery({
-    queryKey: [
-      'predicateId/assets',
-      authDetails.userInfos.workspace?.id,
-      predicateId,
-    ],
+    queryKey: ['predicateId/assets', workspaceId, predicateId],
     queryFn: () => VaultService.hasReservedCoins(predicateId),
     refetchInterval: 10000,
     refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
+    staleTime: 500,
   });
 
   const getCoinAmount = useCallback(

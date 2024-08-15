@@ -23,7 +23,7 @@ const WorkspaceBalancePage = () => {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { handleWorkspaceSelection, goHome },
-      requests: { worksapceBalance },
+      requests: { workspaceBalance },
     },
   } = useWorkspaceContext();
 
@@ -100,10 +100,10 @@ const WorkspaceBalancePage = () => {
           </Text>
         </Box>
 
-        <CustomSkeleton isLoaded={!worksapceBalance.isLoading} flex={1}>
-          {worksapceBalance.balance.assetsBalance.length > 0 ? (
+        <CustomSkeleton isLoaded={!workspaceBalance.isLoading} flex={1}>
+          {workspaceBalance.balance.assetsBalance.length > 0 ? (
             <AssetsBalanceList
-              assets={worksapceBalance.balance.assetsBalance}
+              assets={workspaceBalance.balance.assetsBalance}
             />
           ) : (
             <EmptyState

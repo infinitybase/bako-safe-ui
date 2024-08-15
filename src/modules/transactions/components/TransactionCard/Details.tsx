@@ -10,7 +10,7 @@ import { css } from '@emotion/react';
 
 import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
 
-import { CustomSkeleton, UpRightArrowWhite } from '@/components';
+import { CustomSkeleton, UpRightArrow } from '@/components';
 
 import { shakeAnimationY, TransactionState } from '@/modules/core';
 
@@ -113,7 +113,8 @@ const Details = ({
                   `}
                   rightIcon={
                     <Icon
-                      as={UpRightArrowWhite}
+                      as={UpRightArrow}
+                      textColor="grey.75"
                       fontSize="lg"
                       className="btn-icon"
                     />

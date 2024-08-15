@@ -10,6 +10,7 @@ const useUserWorkspacesRequest = () => {
     queryKey: WorkspacesQueryKey.LIST_BY_USER(),
     queryFn: () => WorkspaceService.list(),
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
   });
 };
