@@ -26,7 +26,8 @@ function App() {
     function onCurrentAccount(currentAccount: string) {
       const parsedCurrentAccount = Address.fromString(currentAccount).toB256();
       if (
-        parsedCurrentAccount === auth.userInfos?.address ||
+        parsedCurrentAccount ===
+          Address.fromString(auth.userInfos?.address).toB256() ||
         auth.userInfos?.type !== TypeUser.FUEL
       )
         return;

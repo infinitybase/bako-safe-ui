@@ -1,24 +1,15 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
-import { css, keyframes } from '@emotion/react';
+
+import DetailItem from './DetailItem';
+import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-
+import { shakeAnimationY, useScreenSize } from '@/modules/core';
+import { TransactionWithVault } from '../../../services';
 import { UpRightArrow } from '@/components';
-import { useScreenSize } from '@/modules/core';
-
-import { TransactionWithVault } from '../../services';
-import DetailItem from './deposit-details/DetailItem';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
 };
-
-const shakeAnimation = keyframes`
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-2px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
-`;
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   // @ts-ignore
@@ -76,16 +67,11 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           onClick={handleViewInExplorer}
           css={css`
             &:hover .btn-icon {
-              animation: ${shakeAnimation} 0.5s ease-in-out;
+              animation: ${shakeAnimationY} 0.5s ease-in-out;
             }
           `}
           rightIcon={
-            <Icon
-              as={UpRightArrow}
-              textColor="grey.75"
-              fontSize="lg"
-              className="btn-icon"
-            />
+            <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
           }
         >
           View on Explorer

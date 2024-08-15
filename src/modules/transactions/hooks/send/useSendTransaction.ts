@@ -16,9 +16,6 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       onTransactionSuccess();
       validateResult(transaction);
     },
-    onError: (e) => {
-      console.log('ERROR WHILE SENDING TO CHAIN', e);
-    },
   });
 
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
