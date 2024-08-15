@@ -23,10 +23,10 @@ import TokenInfos from './TokenInfos';
 interface DetailItemProps {
   asset: ITransferAsset;
   index: number;
-  toAddress: string;
+  sentBy: string;
 }
 
-const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
+const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const { tokensUSD } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
@@ -68,12 +68,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(asset.to ?? '').toB256(),
+                      Address.fromString(sentBy ?? '').toB256(),
                     ) ?? '',
                     isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toB256(),
+                    Address.fromString(sentBy ?? '').toB256(),
                     isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
@@ -102,12 +102,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               {isExtraSmall
                 ? limitCharacters(
                     AddressUtils.format(
-                      Address.fromString(toAddress ?? '').toB256(),
+                      Address.fromString(asset?.to ?? '').toB256(),
                     ) ?? '',
                     isMobile ? 16 : 24,
                   )
                 : AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toB256(),
+                    Address.fromString(asset?.to ?? '').toB256(),
                     isSmall ? 8 : isMobile ? 16 : 24,
                   )}
             </Text>
@@ -128,12 +128,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromB256(asset.to ?? '').toB256(),
+                    Address.fromB256(sentBy ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toB256(),
+                  Address.fromString(sentBy ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>
@@ -161,12 +161,12 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             {isExtraSmall
               ? limitCharacters(
                   AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toB256(),
+                    Address.fromString(asset.to ?? '').toB256(),
                   ) ?? '',
                   7,
                 )
               : AddressUtils.format(
-                  Address.fromString(toAddress ?? '').toB256(),
+                  Address.fromString(asset.to ?? '').toB256(),
                   isMobile ? 10 : 24,
                 )}
           </Text>
