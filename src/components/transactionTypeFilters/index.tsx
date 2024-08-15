@@ -1,18 +1,10 @@
 import { BoxProps, Button, HStack, Icon } from '@chakra-ui/react';
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
 
-import { useScreenSize } from '@/modules';
+import { shakeAnimationY, useScreenSize } from '@/modules';
 
 import { DownLeftArrow, UpRightArrow } from '../icons';
-
-const shakeAnimation = keyframes`
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-2px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
-`;
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;
@@ -41,7 +33,7 @@ const TransactionTypeFilters = ({
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-1 {
-            animation: ${shakeAnimation} 0.5s ease-in-out;
+            animation: ${shakeAnimationY} 0.5s ease-in-out;
           }
         `}
         rightIcon={
@@ -64,7 +56,7 @@ const TransactionTypeFilters = ({
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-2 {
-            animation: ${shakeAnimation} 0.5s ease-in-out;
+            animation: ${shakeAnimationY} 0.5s ease-in-out;
           }
         `}
         rightIcon={

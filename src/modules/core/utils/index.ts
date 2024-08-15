@@ -7,3 +7,4 @@ export * from './react-query';
 export * from './routes';
 export * from './signatures';
 export * from './types';
+export * from './shake-animation';

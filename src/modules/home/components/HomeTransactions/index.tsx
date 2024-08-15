@@ -7,13 +7,13 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { Pages, useScreenSize } from '@/modules/core';
+import { Pages, shakeAnimationX, useScreenSize } from '@/modules/core';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -22,14 +22,6 @@ import {
 } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-const shakeAnimation = keyframes`
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  50% { transform: translateX(2px); }
-  75% { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
-`;
 
 const HomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);
@@ -105,7 +97,7 @@ const HomeTransactions = () => {
             }
             css={css`
               &:hover .btn-icon {
-                animation: ${shakeAnimation} 0.5s ease-in-out;
+                animation: ${shakeAnimationX} 0.5s ease-in-out;
               }
             `}
             px={isExtraSmall ? 3 : 4}

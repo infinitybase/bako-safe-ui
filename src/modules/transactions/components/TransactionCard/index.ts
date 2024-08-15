@@ -9,7 +9,7 @@ import { Name } from './Name';
 import { Status } from './Status';
 import { TransactionStepper } from './TransactionStepper';
 import { BasicInfos } from './VaultInfo';
-import { DepositDetails } from './DepositDetails';
+import { DepositDetails } from './deposit-details/DepositDetails';
 
 const TransactionCard = {
   Actions,
