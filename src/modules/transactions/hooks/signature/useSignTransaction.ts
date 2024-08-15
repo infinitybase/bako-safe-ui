@@ -2,15 +2,16 @@ import { ITransaction, TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useState } from 'react';
 
+import { queryClient } from '@/config';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useWalletSignMessage } from '@/modules/core';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import { useSignTransactionRequest } from './useSignTransactionRequest';
-import { CookieName, CookiesConfig } from '@/config/cookies';
-
 import { IUseTransactionList } from '../list';
 import { useSendTransaction } from '../send/useSendTransaction';
+import { useSignTransactionRequest } from './useSignTransactionRequest';
 
 export interface SignTransactionParams {
   txId: string;
@@ -47,6 +48,9 @@ const useSignTransaction = ({
       transactionsPageRefetch();
       pendingSignerTransactionsRefetch();
       homeTransactionsRefetch();
+      queryClient.invalidateQueries({
+        queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+      });
     },
   });
 
@@ -63,6 +67,9 @@ const useSignTransaction = ({
     onSuccess: async () => {
       transactionsPageRefetch();
       homeTransactionsRefetch();
+      queryClient.invalidateQueries({
+        queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+      });
     },
     onError: () => {
       toast.generalError(randomBytes.toString(), 'Invalid signature');
@@ -109,6 +116,9 @@ const useSignTransaction = ({
     transactionsPageRefetch();
     pendingSignerTransactionsRefetch();
     homeTransactionsRefetch();
+    queryClient.invalidateQueries({
+      queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+    });
   };
 
   return {

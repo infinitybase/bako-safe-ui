@@ -36,12 +36,12 @@ const useTransactionListPaginationRequest = (
         page: pageParam || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
-        id: params.id,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
 
         return data;
       }),
+    enabled: window.location.pathname != '/',
     initialPageParam: 0,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
