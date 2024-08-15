@@ -72,7 +72,7 @@ const useBakoSafeTransactionList = ({
 
 interface UseBakoSafeSendTransactionParams {
   onSuccess: (transaction: ITransaction) => void;
-  onError: (error: any) => void;
+  onError?: (error: any) => void;
 }
 
 interface BakoSafeTransactionSendVariables {
@@ -100,7 +100,7 @@ const useBakoSafeTransactionSend = (
     },
     {
       onSuccess: options.onSuccess,
-      onError: options.onError,
+      onError: options?.onError,
     },
   );
 };
