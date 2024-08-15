@@ -13,7 +13,7 @@ import {
 import { TransactionType } from 'bakosafe';
 import { ReactNode } from 'react';
 
-import { Card, DownLeftArrow, UpRightArrow } from '@/components';
+import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState, useScreenSize } from '@/modules/core';
@@ -103,8 +103,8 @@ const Container = ({
                 : isContract
                   ? ContractIcon
                   : isDeposit
-                    ? DownLeftArrow
-                    : UpRightArrow
+                    ? DownLeftArrowGreen
+                    : UpRightArrowYellow
             }
             mt={8}
             fontSize={isDeploy || isContract ? 'inherit' : '12px'}

@@ -1,11 +1,12 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
-import { TransactionUI } from './Details';
-import DetailItem from './deposit-details/DetailItem';
 import { css, keyframes } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-import { UpRightArrowWhite } from '@/components';
+
+import { UpRightArrow } from '@/components';
 import { useScreenSize } from '@/modules/core';
+
 import { TransactionWithVault } from '../../services';
+import DetailItem from './deposit-details/DetailItem';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
@@ -78,7 +79,12 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
             }
           `}
           rightIcon={
-            <Icon as={UpRightArrowWhite} fontSize="lg" className="btn-icon" />
+            <Icon
+              as={UpRightArrow}
+              textColor="grey.75"
+              fontSize="lg"
+              className="btn-icon"
+            />
           }
         >
           View on Explorer

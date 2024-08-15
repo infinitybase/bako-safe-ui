@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { TransactionType } from 'bakosafe';
 
-import { DownLeftArrow, UpRightArrow } from '@/components';
+import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 
@@ -87,8 +87,8 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                   : props.isContract
                     ? ContractIcon
                     : isDeposit
-                      ? DownLeftArrow
-                      : UpRightArrow
+                      ? DownLeftArrowGreen
+                      : UpRightArrowYellow
               }
               fontSize={props.isDeploy || props.isContract ? 'inherit' : '12px'}
             />
