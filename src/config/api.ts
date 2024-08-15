@@ -1,15 +1,9 @@
 import axios from 'axios';
 
 import { CookieName, CookiesConfig } from './cookies';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const { VITE_API_URL } = import.meta.env;
-const {
-  ACCESS_TOKEN,
-  ADDRESS,
-
-  SINGLE_WORKSPACE,
-} = CookieName;
+const { ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE } = CookieName;
 
 export enum ApiUnauthorizedErrorsTitles {
   MISSING_CREDENTIALS = 'Missing credentials',
@@ -54,10 +48,8 @@ api.interceptors.response.use(
   async (config) => config,
   async (error) => {
     const unauthorizedError = error.response?.status === 401;
-    const { authDetails: auth } = useWorkspaceContext();
 
     if (unauthorizedError) {
-      auth?.handlers?.logout?.();
       CookiesConfig.removeCookies([ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE]);
     }
 
