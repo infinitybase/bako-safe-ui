@@ -2,7 +2,6 @@ import { useNotificationsStore } from '@/modules/notifications/store';
 import { useTransactionToast } from '../../providers/toast';
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { WitnessStatus, useBakoSafeTransactionSend } from '@/modules/core';
-import { expectedCommonErrorMessage } from '../../utils';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -18,29 +17,8 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       validateResult(transaction);
     },
 
-    // @ts-ignore
-    onError: (error, { transaction }: { transaction: ITransaction }) => {
-      const [errorMessage] = error.message.split(':');
-      const errorMessageSecondCase = error.message || error.toString();
-
-      const isNotEnoughError =
-        errorMessage.includes(expectedCommonErrorMessage) ||
-        errorMessageSecondCase?.includes(expectedCommonErrorMessage);
-      if (isNotEnoughError) {
-        onTransactionSuccess();
-        const { requiredSigners, witnesses: witnessesResume } =
-          transaction.resume;
-
-        const signatureCount =
-          witnessesResume?.filter((w) => w !== null).length ?? 0;
-
-        const isCompleted = signatureCount >= requiredSigners;
-        if (transaction.status === TransactionStatus.SUCCESS && isCompleted) {
-          validateResult(transaction, isCompleted);
-        }
-
-        return;
-      }
+    onError: (e) => {
+      console.log('Something went wrong while sending to chain:', e);
     },
   });
 
