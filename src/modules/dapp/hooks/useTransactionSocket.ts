@@ -81,6 +81,9 @@ export const useTransactionSocket = () => {
   const sendTransaction = async () => {
     if (!tx) return;
     setSending(true);
+
+    console.log('[EMITINDO TRNSACTION]');
+
     socket.emit(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
