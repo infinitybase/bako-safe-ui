@@ -42,7 +42,12 @@ const TransactionBreakdown = ({
         </Text>
       </Box>
 
-      <Box alignItems="flex-start" flexWrap="wrap" mb={fromConnector ? 4 : 0}>
+      <Box
+        alignItems="flex-start"
+        flexWrap="wrap"
+        mb={fromConnector ? 4 : 0}
+        w={{ base: 'full', xs: 'unset' }}
+      >
         {transaction.assets.map((asset, index) => (
           <>
             <AssetBoxInfo

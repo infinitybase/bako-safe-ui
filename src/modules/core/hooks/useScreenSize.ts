@@ -1,6 +1,7 @@
 import { useMediaQuery } from '@chakra-ui/react';
 
 const useScreenSize = () => {
+  const [isExtraLarge] = useMediaQuery('(min-width: 85em)'); //1360px
   const [isLarge] = useMediaQuery('(max-width: 84em)'); //1344px
   const [isMobile] = useMediaQuery('(max-width: 62em)'); //992px
   const [isSmall] = useMediaQuery('(max-width: 37.48em)'); //600px
@@ -27,6 +28,7 @@ const useScreenSize = () => {
     isSmallHeight,
     isSmHeight,
     isExtraSmallDevice,
+    isExtraLarge,
   };
 };
 
