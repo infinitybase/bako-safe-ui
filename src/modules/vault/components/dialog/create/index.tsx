@@ -100,7 +100,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         bottom={0}
         px={isSecondTabAndMobile ? 6 : 'unset'}
       >
-        <VStack w="full" alignItems="center" bg="dark.950" zIndex={100}>
+        <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
           {isSecondTab && (
             <HStack my={6} w="full" justifyContent="space-between">
               <Text variant="description" fontSize="xs">
