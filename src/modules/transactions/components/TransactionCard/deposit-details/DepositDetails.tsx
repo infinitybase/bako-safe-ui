@@ -12,8 +12,7 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  // @ts-ignore
-  const sentBy = transaction.txData.inputs[0].owner;
+  const sentBy = transaction.txData.inputs[0]['owner'];
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
