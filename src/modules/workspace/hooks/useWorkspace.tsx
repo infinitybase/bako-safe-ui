@@ -51,6 +51,9 @@ const useWorkspace = (
     if (isSelecting) return;
     if (!isValid) {
       !!redirect && navigate(redirect);
+      if (redirect !== '/home') {
+        invalidateGifAnimationRequest();
+      }
       needUpdateWorkspaceBalance && workspaceBalance.refetch();
       return;
     }

@@ -37,7 +37,10 @@ const useWorkspaceDetails = () => {
     },
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
     vaultTransactions: {
-      request: { isLoading: isVaultTransactionsLoading },
+      request: {
+        isLoading: isVaultTransactionsLoading,
+        isFetching: isVaultTransactionsFetching,
+      },
     },
   } = useTransactionsContext();
 
@@ -62,7 +65,9 @@ const useWorkspaceDetails = () => {
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
 
   const isFilteringInProgress =
-    (isHomeFetching || isTransactionsPageListFetching) &&
+    (isHomeFetching ||
+      isTransactionsPageListFetching ||
+      isVaultTransactionsFetching) &&
     !isGifAnimationLoading;
 
   const isWorkspaceReady =
