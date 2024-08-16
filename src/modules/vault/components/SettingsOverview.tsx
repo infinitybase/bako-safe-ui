@@ -20,7 +20,6 @@ import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { useCLI } from '@/modules/cli/hooks';
 import {
   AddressUtils,
   Pages,
@@ -33,6 +32,7 @@ import { limitCharacters } from '@/utils';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useVaultInfosContext } from '../VaultInfosProvider';
 
 export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
@@ -57,11 +57,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
-    settings,
-    hasPermission: hasCLIPermission,
-    APIToken,
-    commingSoonFeatures: { commingSoonDialog, selectedFeature },
-  } = useCLI(vault);
+    CLIInfos: {
+      CLISettings,
+      hasCLIPermission,
+      APIToken,
+      commingSoonFeatures: { commingSoonDialog, selectedFeature },
+    },
+  } = useVaultInfosContext();
   const { dialog, steps, tabs, create, list } = APIToken;
 
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -370,7 +372,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   xl: isLarge ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
                 }}
               >
-                {settings.map((setting) => (
+                {CLISettings.map((setting) => (
                   <CLISettingsCard
                     key={setting.label}
                     onClick={setting.onClick}

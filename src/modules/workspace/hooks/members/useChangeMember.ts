@@ -13,7 +13,6 @@ import {
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
-import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
@@ -41,6 +40,10 @@ const useChangeMember = () => {
   const {
     workspaceInfos: {
       handlers: { handleWorkspaceSelection },
+      currentWorkspaceRequest: {
+        currentWorkspace,
+        refetch: refetchCurrentWorkspace,
+      },
     },
     addressBookInfos,
   } = useWorkspaceContext();
@@ -57,16 +60,14 @@ const useChangeMember = () => {
     defaultTab: MemberTabState.FORM,
   });
 
-  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!);
-
-  const membersToForm = workspaceRequest.workspace?.members?.map(
+  const membersToForm = currentWorkspace?.members?.map(
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
     useChangeMemberForm(membersToForm!);
 
   const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
-    workspaceRequest.workspace!,
+    currentWorkspace!,
     {
       id: params.memberId,
     } as Member,
@@ -124,7 +125,7 @@ const useChangeMember = () => {
               {
                 onSuccess: () => {
                   tabs.set(MemberTabState.SUCCESS);
-                  workspaceRequest.refetch();
+                  refetchCurrentWorkspace();
                 },
               },
             );
@@ -133,7 +134,7 @@ const useChangeMember = () => {
       });
     }
 
-    const workspace = workspaceRequest.workspace!;
+    const workspace = currentWorkspace!;
     const member = workspace.members.find(
       (member) => member.address === memberAddress,
     );
@@ -149,7 +150,7 @@ const useChangeMember = () => {
       {
         onSuccess: () => {
           tabs.set(MemberTabState.SUCCESS);
-          workspaceRequest.refetch();
+          refetchCurrentWorkspace();
           successToast({
             title: 'Success!',
             description: 'Your member permissions were updated.',
@@ -160,7 +161,7 @@ const useChangeMember = () => {
   });
 
   const handleDeleteMember = () => {
-    const workspace = workspaceRequest.workspace!;
+    const workspace = currentWorkspace!;
     const member = workspace.members.find(
       (member) => member.id === params.memberId,
     );
@@ -173,7 +174,7 @@ const useChangeMember = () => {
       },
       {
         onSuccess: () => {
-          workspaceRequest.refetch();
+          refetchCurrentWorkspace();
           handleClose(),
             successToast({
               title: 'Success!',
@@ -294,7 +295,7 @@ const useChangeMember = () => {
   };
 
   useEffect(() => {
-    handleEditMemberPermission(workspaceRequest.workspace!);
+    handleEditMemberPermission(currentWorkspace!);
   }, []);
 
   return {

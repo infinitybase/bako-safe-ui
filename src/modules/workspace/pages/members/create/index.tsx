@@ -28,7 +28,6 @@ import { CreateContactDialog } from '@/modules/addressBook';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
-import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 import {
   MemberTabState,
   useChangeMember,
@@ -37,22 +36,25 @@ import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MemberTab = () => {
-  const { workspaceId, memberId } = useParams();
+  const { memberId } = useParams();
   const {
     addressBookInfos: {
       handlers: { contactByAddress },
     },
+    workspaceInfos: {
+      currentWorkspaceRequest: { currentWorkspace },
+    },
   } = useWorkspaceContext();
 
-  const { workspace } = useGetWorkspaceRequest(workspaceId ?? '');
-
-  const member = workspace?.members.find((member) => member.id === memberId);
+  const member = currentWorkspace?.members.find(
+    (member) => member.id === memberId,
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
   const contactNickname = contactByAddress(member?.address!)?.nickname;
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
-    workspace!,
+    currentWorkspace!,
     member!,
   );
 

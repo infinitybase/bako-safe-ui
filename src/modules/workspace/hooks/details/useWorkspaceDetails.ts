@@ -3,6 +3,7 @@ import { useWorkspace } from '../useWorkspace';
 import {
   useAddressBook,
   useGetParams,
+  useGetWorkspaceRequest,
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
@@ -38,6 +39,9 @@ const useWorkspaceDetails = () => {
     refetchPendingSingerTransactions,
   );
 
+  const { workspace: currentWorkspace, ...currentWorkspaceData } =
+    useGetWorkspaceRequest(authDetails.userInfos.workspace?.id);
+
   const tokensUSD = useTokensUSDAmountRequest();
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
@@ -62,6 +66,10 @@ const useWorkspaceDetails = () => {
     isFilteringInProgress,
     authDetails,
     workspaceInfos: {
+      currentWorkspaceRequest: {
+        currentWorkspace,
+        ...currentWorkspaceData,
+      },
       handlers: { hasPermission, ...handlersData },
       requests: { workspaceBalance, latestPredicates, ...requestsData },
       ...rest,

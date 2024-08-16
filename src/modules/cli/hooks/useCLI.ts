@@ -7,13 +7,10 @@ import {
   RecoveryIcon,
 } from '@/components';
 import { PermissionRoles } from '@/modules/core/models';
-import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
-import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
-import { useGetParams } from '@/modules';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { Workspace } from '@/modules';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -28,25 +25,19 @@ export enum CLIFeaturesLabels {
   SPEND_LIMIT = 'Spend limit',
 }
 
-const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
-  const {
-    authDetails: { userInfos },
-  } = useWorkspaceContext();
+export interface IUseCLIProps {
+  vaultId: string;
+  userId: string;
+  currentWorkspace?: Workspace;
+}
 
-  const {
-    vaultPageParams: { workspaceId },
-  } = useGetParams();
-  // Temporary solution to solve build/type problem, while the BakoSafeVault type is adjusted(needs to include workspace on it)
-  const { workspace } = useGetWorkspaceRequest(
-    workspaceId ?? '',
-    // vault?.predicate.workspace?.id ?? '',
-  );
+const useCLI = ({ currentWorkspace, userId, vaultId }: IUseCLIProps) => {
   const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
     null,
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = workspace?.permissions[userInfos.id];
+    const memberPermission = currentWorkspace?.permissions[userId];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
@@ -54,7 +45,7 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
 
     const hasPerm = hasRequiredPermission;
     return hasPerm;
-  }, [userInfos.id, vault, workspace]);
+  }, [userId, vaultId, currentWorkspace]);
 
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);

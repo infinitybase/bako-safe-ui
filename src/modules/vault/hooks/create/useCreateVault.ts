@@ -4,7 +4,6 @@ import { ChangeEvent, useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
-import { invalidateQueries } from '@/modules/core';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { TemplateService } from '@/modules/template/services/methods';
@@ -25,6 +24,11 @@ export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 const useCreateVault = () => {
   const {
     authDetails: { userInfos },
+    workspaceInfos: {
+      requests: {
+        latestPredicates: { refetch: refetchLatestPredicates },
+      },
+    },
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
@@ -42,7 +46,7 @@ const useCreateVault = () => {
 
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
-      invalidateQueries();
+      refetchLatestPredicates();
       setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);
       form.reset();

@@ -30,7 +30,6 @@ import {
 } from '@/modules/core';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { useGetWorkspaceRequest } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { WorkspaceCard } from '../card';
 
@@ -154,11 +153,11 @@ const WorkspaceSettingsDrawer = ({
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
-  const { authDetails } = useWorkspaceContext();
-
-  const currentWorkspace = useGetWorkspaceRequest(
-    authDetails.userInfos?.workspace?.id,
-  );
+  const {
+    workspaceInfos: {
+      currentWorkspaceRequest: { currentWorkspace },
+    },
+  } = useWorkspaceContext();
 
   const pathname = window.location.pathname;
 
@@ -209,11 +208,11 @@ const WorkspaceSettingsDrawer = ({
               }}
             >
               <WorkspaceCard
-                key={currentWorkspace.workspace?.id}
-                workspace={currentWorkspace.workspace!}
+                key={currentWorkspace?.id!}
+                workspace={currentWorkspace!}
                 counter={{
-                  members: currentWorkspace.workspace?.members?.length ?? 0,
-                  vaults: currentWorkspace.workspace?.predicates ?? 0,
+                  members: currentWorkspace?.members?.length ?? 0,
+                  vaults: currentWorkspace?.predicates ?? 0,
                 }}
                 mb={10}
               />
@@ -229,8 +228,8 @@ const WorkspaceSettingsDrawer = ({
                     Members
                   </Heading>
                   <Text fontSize="sm" color="grey.400">
-                    {currentWorkspace.workspace?.members?.length}{' '}
-                    {currentWorkspace.workspace?.members?.length === 1
+                    {currentWorkspace?.members?.length}{' '}
+                    {currentWorkspace?.members?.length === 1
                       ? 'Member'
                       : 'Members'}
                   </Text>
@@ -246,7 +245,7 @@ const WorkspaceSettingsDrawer = ({
                   onClick={() => {
                     navigate(
                       Pages.membersWorkspace({
-                        workspaceId: currentWorkspace.workspace?.id ?? '',
+                        workspaceId: currentWorkspace?.id ?? '',
                       }),
                     );
                   }}
@@ -259,16 +258,16 @@ const WorkspaceSettingsDrawer = ({
                 </Button>
               </Flex>
               <VStack w="full" maxW="full">
-                {!!currentWorkspace.workspace?.members &&
-                  currentWorkspace.workspace?.members?.map((member) => (
+                {!!currentWorkspace?.members &&
+                  currentWorkspace?.members?.map((member) => (
                     <MemberCard
                       key={member.id}
                       member={member}
-                      workspace={currentWorkspace.workspace!}
+                      workspace={currentWorkspace!}
                       onEdit={(memberId) =>
                         navigate(
                           Pages.updateMemberWorkspace({
-                            workspaceId: currentWorkspace.workspace!.id,
+                            workspaceId: currentWorkspace!.id,
                             memberId,
                           }),
                         )
