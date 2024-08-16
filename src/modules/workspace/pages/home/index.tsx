@@ -524,7 +524,8 @@ const WorkspacePage = () => {
                           maxH={{ base: 185, sm: 190 }}
                           extra={extraCount}
                           onClick={() =>
-                            navigate(
+                            handleWorkspaceSelection(
+                              workspaceId,
                               Pages.userVaults({
                                 workspaceId,
                               }),
@@ -539,7 +540,8 @@ const WorkspacePage = () => {
                           title={description}
                           members={members!}
                           onClick={() =>
-                            navigate(
+                            handleWorkspaceSelection(
+                              workspaceId,
                               Pages.detailsVault({
                                 workspaceId,
                                 vaultId: id,

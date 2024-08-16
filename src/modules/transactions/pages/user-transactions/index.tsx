@@ -39,7 +39,7 @@ const UserTransactionsPage = () => {
   const {
     transactionsPageList: {
       infinityTransactionsRef,
-      request: { isLoading },
+      request: { isLoading, isFetching },
       filter,
       inView,
       handlers: { navigate },
@@ -259,65 +259,72 @@ const UserTransactionsPage = () => {
         </VStack>
       </VStack>
 
-      {/* LIST */}
-      <VStack
-        minH="55vh"
-        maxH="74vh"
-        mt={-3}
-        overflowY="scroll"
-        overflowX="hidden"
-        scrollBehavior="smooth"
-        w="full"
-        sx={{
-          '&::-webkit-scrollbar': {
-            display: 'none',
-            width: '5px',
-            maxHeight: '330px',
-            backgroundColor: 'grey.200',
-            borderRadius: '30px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '30px',
-            height: '10px',
-          },
-        }}
+      <CustomSkeleton
+        isLoaded={
+          !filter.value
+            ? true
+            : !isFetching && !pendingSignerTransactions.isFetching
+        }
       >
-        {!isLoading && !transactions.length && (
-          <EmptyState showAction={false} />
-        )}
-        {infinityTransactions?.map((grouped) => (
-          <>
-            <HStack w="full">
-              <Text
-                fontSize="sm"
-                fontWeight="semibold"
-                color="grey.425"
-                whiteSpace="nowrap"
-              >
-                {grouped.monthYear}
-              </Text>
+        {/* LIST */}
+        <VStack
+          minH="55vh"
+          maxH="74vh"
+          mt={-3}
+          overflowY="scroll"
+          overflowX="hidden"
+          scrollBehavior="smooth"
+          w="full"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'grey.200',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
+        >
+          {!isLoading && !transactions.length && !isFetching && (
+            <EmptyState showAction={false} />
+          )}
 
-              <Divider w="full" borderColor="grey.950" />
-            </HStack>
-            <TransactionCard.List mt={1} w="full" spacing={0}>
-              {grouped?.transactions.map((transaction) => {
-                const status = transactionStatus({
-                  ...transaction,
-                  account: userInfos.address,
-                });
-                const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === userInfos.address,
-                );
+          {infinityTransactions?.map((grouped) => (
+            <>
+              <HStack w="full">
+                <Text
+                  fontSize="sm"
+                  fontWeight="semibold"
+                  color="grey.425"
+                  whiteSpace="nowrap"
+                >
+                  {grouped.monthYear}
+                </Text>
 
-                return (
-                  <>
-                    <Box
-                      key={transaction.id}
-                      ref={infinityTransactionsRef}
-                      w="full"
-                    >
-                      <CustomSkeleton isLoaded={!isLoading}>
+                <Divider w="full" borderColor="grey.950" />
+              </HStack>
+              <TransactionCard.List mt={1} w="full" spacing={0}>
+                {grouped?.transactions.map((transaction) => {
+                  const status = transactionStatus({
+                    ...transaction,
+                    account: userInfos.address,
+                  });
+                  const isSigner = !!transaction.predicate?.members?.find(
+                    (member) => member.address === userInfos.address,
+                  );
+
+                  return (
+                    <>
+                      <Box
+                        key={transaction.id}
+                        ref={infinityTransactionsRef}
+                        w="full"
+                      >
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}
@@ -341,17 +348,17 @@ const UserTransactionsPage = () => {
                             }
                           />
                         )}
-                      </CustomSkeleton>
-                    </Box>
+                      </Box>
 
-                    <Box ref={inView.ref} />
-                  </>
-                );
-              })}
-            </TransactionCard.List>
-          </>
-        ))}
-      </VStack>
+                      <Box ref={inView.ref} />
+                    </>
+                  );
+                })}
+              </TransactionCard.List>
+            </>
+          ))}
+        </VStack>
+      </CustomSkeleton>
     </VStack>
   );
 };

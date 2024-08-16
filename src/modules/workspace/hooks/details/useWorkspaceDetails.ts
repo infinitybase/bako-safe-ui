@@ -3,50 +3,30 @@ import { useWorkspace } from '../useWorkspace';
 import {
   useAddressBook,
   useGetParams,
+  useGetWorkspaceRequest,
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { currentPath } from '@/utils';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useGitLoadingRequest } from '../useGifLoadingRequest';
+import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 
 const useWorkspaceDetails = () => {
   const authDetails = useAuth();
-  const { isSignInpage } = currentPath();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
-  const vaultRequest = useVaultByIdRequest(vaultId ?? '');
-  const vaultAssets = useVaultAssets(
-    authDetails.userInfos.workspace?.id,
-    vaultId ?? '',
-  );
-
   const {
     invalidateAllTransactionsTypeFilters,
-    homeTransactions: {
-      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
-    },
-    transactionsPageList: {
-      request: {
-        isLoading: isTransactionsPageListLoading,
-        isFetching: isTransactionsPageListFetching,
-      },
-    },
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
-    vaultTransactions: {
-      request: { isLoading: isVaultTransactionsLoading },
-    },
   } = useTransactionsContext();
 
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGitLoadingRequest();
-
-  const tokensUSD = useTokensUSDAmountRequest();
 
   const {
     handlers: { hasPermission, ...handlersData },
@@ -59,31 +39,37 @@ const useWorkspaceDetails = () => {
     refetchPendingSingerTransactions,
   );
 
+  const { workspace: currentWorkspace, ...currentWorkspaceData } =
+    useGetWorkspaceRequest(authDetails.userInfos.workspace?.id);
+
+  const tokensUSD = useTokensUSDAmountRequest();
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
+  const vaultRequest = useVaultByIdRequest(vaultId ?? '');
+  const vaultAssets = useVaultAssets(
+    authDetails.userInfos.workspace?.id,
+    vaultId ?? '',
+  );
 
-  const isFilteringInProgress =
-    (isHomeFetching || isTransactionsPageListFetching) &&
-    !isGifAnimationLoading;
-
-  const isWorkspaceReady =
-    (isSignInpage
-      ? true
-      : !latestPredicates.isLoading &&
-        !workspaceBalance.isLoading &&
-        !addressBookInfos.requests.listContactsRequest.isLoading &&
-        !isHomeRequestLoading &&
-        !isTransactionsPageListLoading &&
-        !isGifAnimationLoading &&
-        !authDetails.userInfos.isLoading &&
-        !vaultRequest.isLoading &&
-        !vaultAssets.isLoading &&
-        !isVaultTransactionsLoading) || isFilteringInProgress;
+  const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({
+    isAddressbookInfosLoading:
+      addressBookInfos.requests.listContactsRequest.isLoading,
+    isGifAnimationLoading,
+    isLatestsPredicatesLoading: latestPredicates.isLoading,
+    isUserInfosLoading: authDetails.userInfos.isLoading,
+    isVaultAssetsLoading: vaultAssets.isLoading,
+    isVaultRequestLoading: vaultRequest.isLoading,
+    isWorkspaceBalanceLoading: workspaceBalance.isLoading,
+  });
 
   return {
     isWorkspaceReady,
     isFilteringInProgress,
     authDetails,
     workspaceInfos: {
+      currentWorkspaceRequest: {
+        currentWorkspace,
+        ...currentWorkspaceData,
+      },
       handlers: { hasPermission, ...handlersData },
       requests: { workspaceBalance, latestPredicates, ...requestsData },
       ...rest,

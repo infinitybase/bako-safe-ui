@@ -11,7 +11,9 @@ const useGetAPITokensRequest = (predicateId: string, hasPermission = false) => {
       APITokenService.getAll({
         predicateId,
       }),
-    enabled: hasPermission,
+    enabled: !!predicateId && hasPermission,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };
 

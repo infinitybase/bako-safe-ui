@@ -51,6 +51,10 @@ const useWorkspace = (
     if (isSelecting) return;
     if (!isValid) {
       !!redirect && navigate(redirect);
+      if (redirect?.includes('vault')) {
+        // That' means he's accessing a vault, then it should show the gif.
+        invalidateGifAnimationRequest();
+      }
       needUpdateWorkspaceBalance && workspaceBalance.refetch();
       return;
     }
