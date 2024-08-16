@@ -78,34 +78,36 @@ const WkHomeTransactions = () => {
         </Box>
         <Spacer />
 
-        <Button
-          color="grey.75"
-          variant="txFilterType"
-          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-          rightIcon={
-            <Icon
-              as={MdKeyboardArrowRight}
-              fontSize="lg"
-              ml={isSmall ? -1 : 0}
-              className="btn-icon"
-            />
-          }
-          onClick={() =>
-            navigate(
-              Pages.userTransactions({
-                workspaceId,
-              }),
-            )
-          }
-          css={css`
-            &:hover .btn-icon {
-              animation: ${shakeAnimationX} 0.5s ease-in-out;
+        {hasTransactions && (
+          <Button
+            color="grey.75"
+            variant="txFilterType"
+            alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+            rightIcon={
+              <Icon
+                as={MdKeyboardArrowRight}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
             }
-          `}
-          px={isExtraSmall ? 3 : 4}
-        >
-          View all
-        </Button>
+            onClick={() =>
+              navigate(
+                Pages.userTransactions({
+                  workspaceId,
+                }),
+              )
+            }
+            css={css`
+              &:hover .btn-icon {
+                animation: ${shakeAnimationX} 0.5s ease-in-out;
+              }
+            `}
+            px={isExtraSmall ? 3 : 4}
+          >
+            View all
+          </Button>
+        )}
       </Box>
 
       {!isLoading && !transactions?.length && <EmptyState showAction={false} />}

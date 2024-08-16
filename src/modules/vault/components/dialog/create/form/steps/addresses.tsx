@@ -258,17 +258,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
           <HStack
             position="relative"
-            mt={{ base: 4, xs: 8 }}
+            mt={{ base: 2, xs: 8 }}
             border="1px solid"
             borderColor="grey.925"
             borderRadius="xl"
-            p={4}
-            mb={{ base: 8, xs: 4 }}
+            py={{ base: 2, xs: 4 }}
+            px={4}
+            mb={{ base: 12, xs: 4 }}
           >
             <Dialog.Section
               w="full"
               maxW={350}
-              mb={{ base: 5, sm: 'unset' }}
+              mb={{ base: 0, xs: 5, sm: 'unset' }}
               title={
                 <Heading fontSize="sm" color="grey.200">
                   Min signatures required?
