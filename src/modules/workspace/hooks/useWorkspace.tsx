@@ -8,10 +8,11 @@ import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
 
 import { Pages } from '../../core';
-import { PermissionRoles } from '../../core/models';
+import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 import { IUserInfos } from '@/modules/auth/services';
+import { queryClient } from '@/config';
 
 const VAULTS_PER_PAGE = 8;
 
@@ -76,6 +77,9 @@ const useWorkspace = (
   };
 
   const goHome = () => {
+    queryClient.invalidateQueries({
+      queryKey: WorkspacesQueryKey.LIST_BY_USER(),
+    });
     handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
   };
 
