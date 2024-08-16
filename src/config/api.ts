@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { CookieName, CookiesConfig } from './cookies';
+import { queryClient } from './query-client';
 
 const { VITE_API_URL } = import.meta.env;
 const { ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE } = CookieName;
@@ -50,6 +51,7 @@ api.interceptors.response.use(
     const unauthorizedError = error.response?.status === 401;
 
     if (unauthorizedError) {
+      queryClient.clear();
       CookiesConfig.removeCookies([ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE]);
     }
 
