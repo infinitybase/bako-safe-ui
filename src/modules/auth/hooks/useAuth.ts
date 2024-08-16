@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthCookies } from '..';
 import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
+import { queryClient } from '@/config';
 
 export type SingleAuthentication = {
   workspace: string;
@@ -31,6 +32,7 @@ const useAuth = (): IUseAuthReturn => {
   const navigate = useNavigate();
   const logout = () => {
     clearAuthCookies();
+    queryClient.clear();
     navigate('/');
   };
 
