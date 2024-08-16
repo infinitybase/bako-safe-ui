@@ -15,7 +15,6 @@ import { DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AddressUtils, useScreenSize } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { limitCharacters } from '@/utils';
 
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
@@ -23,10 +22,10 @@ import TokenInfos from './TokenInfos';
 interface DetailItemProps {
   asset: ITransferAsset;
   index: number;
-  toAddress: string;
+  sentBy: string;
 }
 
-const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
+const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const { tokensUSD } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
@@ -65,17 +64,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {isExtraSmall
-                ? limitCharacters(
-                    AddressUtils.format(
-                      Address.fromString(asset.to ?? '').toB256(),
-                    ) ?? '',
-                    isMobile ? 16 : 24,
-                  )
-                : AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toB256(),
-                    isSmall ? 8 : isMobile ? 16 : 24,
-                  )}
+              {AddressUtils.format(
+                Address.fromString(sentBy ?? '').toB256(),
+                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+              )}
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -99,17 +91,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               isTruncated
               textAlign="end"
             >
-              {isExtraSmall
-                ? limitCharacters(
-                    AddressUtils.format(
-                      Address.fromString(toAddress ?? '').toB256(),
-                    ) ?? '',
-                    isMobile ? 16 : 24,
-                  )
-                : AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toB256(),
-                    isSmall ? 8 : isMobile ? 16 : 24,
-                  )}
+              {AddressUtils.format(
+                Address.fromString(asset?.to ?? '').toB256(),
+                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+              )}
             </Text>
           </Flex>
         </VStack>
@@ -125,17 +110,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {isExtraSmall
-              ? limitCharacters(
-                  AddressUtils.format(
-                    Address.fromB256(asset.to ?? '').toB256(),
-                  ) ?? '',
-                  7,
-                )
-              : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toB256(),
-                  isMobile ? 10 : 24,
-                )}
+            {AddressUtils.format(
+              Address.fromString(sentBy ?? '').toB256(),
+              isMobile ? 10 : 14,
+            )}
           </Text>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -158,17 +136,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {isExtraSmall
-              ? limitCharacters(
-                  AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toB256(),
-                  ) ?? '',
-                  7,
-                )
-              : AddressUtils.format(
-                  Address.fromString(toAddress ?? '').toB256(),
-                  isMobile ? 10 : 24,
-                )}
+            {AddressUtils.format(
+              Address.fromString(asset.to ?? '').toB256(),
+              isMobile ? 10 : 14,
+            )}
           </Text>
         </>
       )}

@@ -12,7 +12,8 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  const toAddress = transaction.predicate?.predicateAddress;
+  // @ts-ignore
+  const sentBy = transaction.txData.inputs[0].owner;
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -46,7 +47,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
               key={index}
               asset={asset}
               index={index}
-              toAddress={toAddress ?? ''}
+              sentBy={sentBy}
             />
           ))}
         </Box>
