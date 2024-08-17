@@ -2,22 +2,20 @@ import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useEffect } from 'react';
 
-import { useAuth } from '@/modules/auth/hooks';
 import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
-import { useTransactionSend } from './modules/transactions';
+import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
+import { Address } from 'fuels';
 
 function App() {
   const { fuel } = useFuel();
-  const auth = useAuth();
-  const transactionSend = useTransactionSend();
+  const { authDetails: auth } = useWorkspaceContext();
 
   useEffect(() => {
     async function clearAll() {
-      auth.handlers.logout();
+      auth.handlers.logout?.();
       invalidateQueries();
-      transactionSend.clearAll();
     }
 
     function onConnection(isConnected: boolean) {
@@ -26,7 +24,12 @@ function App() {
     }
 
     function onCurrentAccount(currentAccount: string) {
-      if (currentAccount === auth.account || auth.accountType !== TypeUser.FUEL)
+      const parsedCurrentAccount = Address.fromString(currentAccount).toB256();
+      if (
+        parsedCurrentAccount ===
+          Address.fromString(auth.userInfos?.address).toB256() ||
+        auth.userInfos?.type !== TypeUser.FUEL
+      )
         return;
       clearAll();
     }

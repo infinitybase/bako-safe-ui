@@ -18,12 +18,13 @@ import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 
 import { CreateTransactionForm } from './form';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
+  const { assets } = useVaultInfosContext();
   const {
     form,
     nicks,
-    assets,
     accordion,
     transactionsFields,
     transactionRequest,
@@ -32,7 +33,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction({
+    assets: assets.assets,
+    hasAssetBalance: assets.hasAssetBalance,
+    getCoinAmount: assets.getCoinAmount,
     onClose: props.onClose,
+    isOpen: props.isOpen,
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -66,7 +71,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           accordion={accordion}
           transactionsFields={transactionsFields}
           isFeeCalcLoading={
-            resolveTransactionCosts.isLoading || !transactionFee
+            resolveTransactionCosts.isPending || !transactionFee
           }
           getBalanceAvailable={getBalanceAvailable}
         />
@@ -140,10 +145,10 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           isDisabled={
             !form.formState.isValid ||
             isCurrentAmountZero ||
-            resolveTransactionCosts.isLoading ||
+            resolveTransactionCosts.isPending ||
             !transactionFee
           }
-          isLoading={transactionRequest.isLoading}
+          isLoading={transactionRequest.isPending}
           onClick={form.handleCreateTransaction}
           _hover={{
             opacity: form.formState.isValid && 0.8,

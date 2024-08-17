@@ -1,32 +1,32 @@
 import { useFuel } from '@fuels/react';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from '@tanstack/react-query';
 import { Account } from 'fuels';
-import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 
-import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
-import { useAuthStore } from '@/modules/auth/store';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
+import { useAuth } from '@/modules/auth';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
 
-  return useQuery(
-    [FuelQueryKeys.WALLET, account],
-    () => fuel?.getWallet(account!),
-    {
-      enabled: !!fuel && !!account,
-    },
-  );
+  return useQuery({
+    queryKey: [FuelQueryKeys.WALLET, account],
+    queryFn: () => fuel?.getWallet(account!),
+    enabled: !!fuel && !!account,
+  });
 };
 
 const useMyWallet = () => {
-  const { account: currentAccount } = useAuthStore();
-
-  return useWallet(currentAccount);
+  return useWallet(CookiesConfig.getCookie(CookieName.ADDRESS));
 };
 
 //sign by webauthn
@@ -65,26 +65,26 @@ const useWalletSignMessage = (
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
   const { data: wallet } = useMyWallet();
-  const { webAuthn, accountType } = useAuth();
+  const {
+    userInfos: { type, webauthn },
+  } = useAuth();
 
-  return useMutation(
-    async (message: string) => {
-      switch (accountType) {
+  return useMutation({
+    mutationFn: async (message: string) => {
+      switch (type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,
-            id: webAuthn!.id,
-            publicKey: webAuthn!.publicKey,
+            id: webauthn!.id,
+            publicKey: webauthn!.publicKey,
           });
         default:
           return signAccountFuel(wallet!, message);
       }
     },
-    {
-      retry: false,
-      ...options,
-    },
-  );
+    retry: false,
+    ...options,
+  });
 };
 
 export { useMyWallet, useWallet, useWalletSignMessage };

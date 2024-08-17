@@ -1,6 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
 
-import HomeBackgroundHd from '@/assets/home-background-hd.png';
 import NewHomeBackgroundHd from '@/assets/new-home-bg.png';
 import { colors } from '@/themes/colors';
 import { components } from '@/themes/components';
@@ -37,6 +36,10 @@ const defaultTheme = extendTheme({
           sm: 'md',
         },
       },
+      html: {
+        bg: 'transparent',
+      },
+
       '#chakra-toast-manager-top-right': {
         mt: 20,
       },

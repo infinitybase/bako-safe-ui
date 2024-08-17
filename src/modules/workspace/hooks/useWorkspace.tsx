@@ -4,64 +4,68 @@ import { useCallback, useState } from 'react';
 import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 import { useNotification } from '@/modules/notification';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
 
 import { Pages } from '../../core';
-import { PermissionRoles } from '../../core/models';
-import { useGetCurrentWorkspace } from '../hooks/useGetWorkspaceRequest';
+import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
 import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
-import { useUserWorkspacesRequest } from './useUserWorkspacesRequest';
+import { IUserInfos } from '@/modules/auth/services';
+import { queryClient } from '@/config';
 
 const VAULTS_PER_PAGE = 8;
 
 export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
-const useWorkspace = () => {
+const useWorkspace = (
+  userInfos: IUserInfos,
+  invalidateGifAnimationRequest: () => void,
+  invalidateAllTransactionsTypeFilters: () => void,
+  refetchPendingSingerTransactions: () => void,
+) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
-
-  const auth = useAuth();
 
   const [visibleBalance, setVisibleBalance] = useState(false);
 
   const toast = useNotification();
   const workspaceDialog = useDisclosure();
 
-  const workspaceHomeRequest = useHomeDataRequest();
-  const userWorkspacesRequest = useUserWorkspacesRequest();
-  const pendingSignerTransactions = useTransactionsSignaturePending();
+  const workspaceBalance = useGetWorkspaceBalanceRequest(
+    userInfos?.workspace?.id,
+  );
 
-  const worksapceBalance = useGetWorkspaceBalanceRequest();
-  const workspaceRequest = useGetCurrentWorkspace();
-  const {
-    workspaces: { current },
-  } = useAuth();
+  const latestPredicates = useHomeDataRequest(userInfos?.workspace?.id);
 
-  const { selectWorkspace, isSelecting } = useSelectWorkspace();
+  const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
 
-  const goWorkspace = (workspaceId: string) => {
-    navigate(Pages.workspace({ workspaceId }));
-  };
+  const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
-  const vaultsCounter = workspaceHomeRequest?.data?.predicates?.total ?? 0;
+  const handleWorkspaceSelection = async (
+    selectedWorkspace: string,
+    redirect?: string,
+    needUpdateWorkspaceBalance?: boolean,
+  ) => {
+    const isValid = selectedWorkspace !== userInfos?.workspace?.id;
 
-  const handleWorkspaceSelection = async (selectedWorkspace: string) => {
-    if (selectedWorkspace === current || isSelecting) {
+    if (isSelecting) return;
+    if (!isValid) {
+      !!redirect && navigate(redirect);
+      if (redirect?.includes('vault')) {
+        // That' means he's accessing a vault, then it should show the gif.
+        invalidateGifAnimationRequest();
+      }
+      needUpdateWorkspaceBalance && workspaceBalance.refetch();
       return;
     }
 
-    await workspaceRequest.refetch();
-
+    invalidateGifAnimationRequest();
+    workspaceDialog.onClose();
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
-        workspaceDialog.onClose();
-        if (!workspace.single) {
-          goWorkspace(workspace.id);
-        }
+        invalidateRequests();
+        navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
       },
       onError: () => {
         toast({
@@ -76,11 +80,18 @@ const useWorkspace = () => {
     });
   };
 
+  const goHome = () => {
+    queryClient.invalidateQueries({
+      queryKey: WorkspacesQueryKey.LIST_BY_USER(),
+    });
+    handleWorkspaceSelection(userInfos.singleWorkspaceId, Pages.home());
+  };
+
   const hasPermission = useCallback(
     (requiredRoles: PermissionRoles[]) => {
-      if (auth.isSingleWorkspace) return true;
+      if (userInfos.onSingleWorkspace) return true;
 
-      const permissions = auth.permissions;
+      const permissions = userInfos.workspace?.permission;
 
       if (!permissions) return false;
 
@@ -93,38 +104,40 @@ const useWorkspace = () => {
 
       return isValid;
     },
-    [auth.isSingleWorkspace, auth.permissions, vaultId],
+    [userInfos?.onSingleWorkspace, userInfos.workspace?.permission, vaultId],
   );
 
+  const invalidateRequests = () => {
+    invalidateAllTransactionsTypeFilters();
+    workspaceBalance.refetch();
+    refetchPendingSingerTransactions();
+    userInfos.refetch();
+  };
+
   return {
-    account: auth.account,
-    currentWorkspace: {
-      workspace: workspaceRequest.workspace,
-      isLoading: workspaceRequest.isLoading,
-    },
-    currentPermissions: auth.permissions,
-    userWorkspacesRequest,
     workspaceDialog,
-    handleWorkspaceSelection: {
-      handler: handleWorkspaceSelection,
-      isSelecting,
-    },
-    navigate,
-    workspaceHomeRequest,
-    workspaceId,
     workspaceVaults: {
-      recentVaults: workspaceHomeRequest.data?.predicates?.data,
       vaultsMax: VAULTS_PER_PAGE,
       extraCount:
         vaultsCounter <= VAULTS_PER_PAGE ? 0 : vaultsCounter - VAULTS_PER_PAGE,
     },
-
-    worksapceBalance,
-    hasPermission,
-    visibleBalance,
-    setVisibleBalance,
-    goWorkspace,
-    pendingSignerTransactions,
+    requests: {
+      latestPredicates,
+      workspaceBalance,
+    },
+    infos: {
+      workspaceId,
+      visibleBalance,
+      isSelecting,
+      currentPermissions: userInfos.workspace?.permission,
+    },
+    handlers: {
+      handleWorkspaceSelection,
+      navigate,
+      setVisibleBalance,
+      hasPermission,
+      goHome,
+    },
   };
 };
 

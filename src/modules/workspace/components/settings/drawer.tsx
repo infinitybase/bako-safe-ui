@@ -20,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, LineCloseIcon, UserAddIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
-import { useAddressBook } from '@/modules/addressBook';
 import {
   AddressUtils,
   Member,
@@ -29,10 +28,9 @@ import {
   useScreenSize,
   Workspace,
 } from '@/modules/core';
-import { useGetCurrentWorkspace } from '@/modules/workspace/hooks';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 
-import { useAuth } from '../../../auth/hooks/useAuth';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { WorkspaceCard } from '../card';
 
 interface WorkspaceSettingsDrawerProps
@@ -45,14 +43,21 @@ interface MemberCardProps {
 }
 
 const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
-  const { permissions: loggedPermissions, avatar } = useAuth();
+  const {
+    authDetails: {
+      userInfos: {
+        workspace: { permission: loggedPermissions, avatar },
+      },
+    },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
     workspace!,
     member,
   );
-
-  const { contactByAddress } = useAddressBook();
 
   //TODO: Use this validation to delete button
   const isEditable =
@@ -61,7 +66,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member.address!)?.nickname;
+  const contactNickname = contactByAddress(member?.address!)?.nickname;
 
   return (
     <Card
@@ -95,7 +100,9 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             color="white"
             bg="grey.900"
             variant="roundedSquare"
-            name={contactByAddress(member.address!)?.nickname ?? member.address}
+            name={
+              contactByAddress(member?.address!)?.nickname ?? member?.address
+            }
             src={avatar}
           />
           <Box mr={1}>
@@ -106,7 +113,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
               fontWeight={!contactNickname ? 'semibold' : 'normal'}
               color={!contactNickname ? 'grey.200' : 'grey.500'}
             >
-              {AddressUtils.format(member.address)}
+              {AddressUtils.format(member?.address)}
             </Text>
           </Box>
         </Box>
@@ -132,7 +139,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
                 cursor: 'pointer',
                 opacity: 0.8,
               }}
-              onClick={() => onEdit(member.id)}
+              onClick={() => onEdit(member?.id)}
               boxSize={{ base: 5, xs: 6 }}
             />
           )}
@@ -146,12 +153,16 @@ const WorkspaceSettingsDrawer = ({
   ...drawerProps
 }: WorkspaceSettingsDrawerProps) => {
   const navigate = useNavigate();
+  const {
+    workspaceInfos: {
+      currentWorkspaceRequest: { currentWorkspace },
+    },
+  } = useWorkspaceContext();
 
   const pathname = window.location.pathname;
 
   const isEditingOrCreatingMember = pathname.includes('/members');
 
-  const request = useGetCurrentWorkspace();
   const { isExtraSmall } = useScreenSize();
 
   return (
@@ -197,38 +208,14 @@ const WorkspaceSettingsDrawer = ({
               }}
             >
               <WorkspaceCard
-                key={request.workspace?.id}
-                workspace={request.workspace!}
+                key={currentWorkspace?.id!}
+                workspace={currentWorkspace!}
                 counter={{
-                  members: request.workspace!.members.length,
-                  //In this case, the predicates are coming in an array, so we need to use the length property
-                  vaults: Array.isArray(request.workspace!.predicates)
-                    ? request.workspace!.predicates.length
-                    : 0,
+                  members: currentWorkspace?.members?.length ?? 0,
+                  vaults: currentWorkspace?.predicates ?? 0,
                 }}
                 mb={10}
               />
-              {/* <Card mb={10} bgColor="dark.200">
-            <HStack spacing={5}>
-              <Avatar
-                p={10}
-                size="lg"
-                fontSize="md"
-                color="white"
-                bg="grey.900"
-                variant="roundedSquare"
-                name={request.workspace?.name}
-              />
-              <Box>
-                <Heading mb={1} variant="title-xl" isTruncated maxW={600}>
-                  {request.workspace?.name}
-                </Heading>
-                <Text variant="description">
-                  {request.workspace?.description}
-                </Text>
-              </Box>
-            </HStack>
-          </Card> */}
               <Divider mb={6} />
               <Flex
                 w="full"
@@ -241,8 +228,8 @@ const WorkspaceSettingsDrawer = ({
                     Members
                   </Heading>
                   <Text fontSize="sm" color="grey.400">
-                    {request.workspace?.members.length}{' '}
-                    {request.workspace?.members.length === 1
+                    {currentWorkspace?.members?.length}{' '}
+                    {currentWorkspace?.members?.length === 1
                       ? 'Member'
                       : 'Members'}
                   </Text>
@@ -258,7 +245,7 @@ const WorkspaceSettingsDrawer = ({
                   onClick={() => {
                     navigate(
                       Pages.membersWorkspace({
-                        workspaceId: request.workspace?.id ?? '',
+                        workspaceId: currentWorkspace?.id ?? '',
                       }),
                     );
                   }}
@@ -270,18 +257,17 @@ const WorkspaceSettingsDrawer = ({
                   Add member
                 </Button>
               </Flex>
-
               <VStack w="full" maxW="full">
-                {!!request.workspace?.members &&
-                  request.workspace?.members.map((member) => (
+                {!!currentWorkspace?.members &&
+                  currentWorkspace?.members?.map((member) => (
                     <MemberCard
                       key={member.id}
                       member={member}
-                      workspace={request.workspace!}
+                      workspace={currentWorkspace!}
                       onEdit={(memberId) =>
                         navigate(
                           Pages.updateMemberWorkspace({
-                            workspaceId: request.workspace!.id,
+                            workspaceId: currentWorkspace!.id,
                             memberId,
                           }),
                         )

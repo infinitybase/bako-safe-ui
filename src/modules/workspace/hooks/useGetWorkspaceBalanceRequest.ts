@@ -1,7 +1,5 @@
-import { useQuery } from 'react-query';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth';
 import { WorkspacesQueryKey } from '@/modules/core';
 import {
   IWroskapceBalance,
@@ -11,6 +9,7 @@ import {
 import { handleAssetsBalance } from '../utils/assets';
 
 const useGetWorkspaceBalanceRequest = (
+  currentWorkspace: string,
   options?: UseQueryOptions<
     IWroskapceBalance,
     unknown,
@@ -18,25 +17,24 @@ const useGetWorkspaceBalanceRequest = (
     string[]
   >,
 ) => {
-  const {
-    workspaces: { current },
-  } = useAuth();
-  const { data, ...request } = useQuery(
-    WorkspacesQueryKey.GET_BALANCE(current),
-    () => WorkspaceService.getBalance(),
-    {
-      ...options,
-      refetchOnWindowFocus: false,
-      refetchInterval: 1000 * 60 * 5, // 5 mins
-    },
-  );
+  const { data, ...request } = useQuery({
+    queryKey: WorkspacesQueryKey.GET_BALANCE(currentWorkspace),
+    queryFn: () => WorkspaceService.getBalance(),
+    ...options,
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000 * 60 * 5, // 5 mins
+    enabled:
+      window.location.pathname != '/' && window.location.pathname != '/home',
+    refetchOnMount: false,
+    staleTime: 500, // 500ms second to prevent request spam
+  });
 
   return {
     balance: {
       ...data,
-      balanceUSD: data?.balanceUSD,
-      workspaceId: data?.workspaceId,
-      assetsBalance: handleAssetsBalance(data?.assetsBalance),
+      balanceUSD: data?.currentBalanceUSD,
+      workspaceId: '',
+      assetsBalance: handleAssetsBalance(data?.currentBalance),
     },
     ...request,
   };

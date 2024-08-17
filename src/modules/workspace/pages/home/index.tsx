@@ -37,11 +37,8 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
-
 import {
   AssetsDetails,
   CreateVaultDialog,
@@ -52,43 +49,41 @@ import {
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
 import { limitCharacters } from '@/utils';
 
-import { useWorkspace } from '../../hooks';
 import WkHomeTransactions from '../../components/wkHomeTransactions';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 
 const WorkspacePage = () => {
   const assetsContainerRef = useRef(null);
-  const {
-    navigate,
-    currentWorkspace: { workspace: currentWorkspace },
-    workspaceVaults: { vaultsMax, extraCount, recentVaults },
-    hasPermission,
-    visibleBalance,
-    setVisibleBalance,
-    workspaceDialog,
-    worksapceBalance,
 
-    workspaceHomeRequest,
-    goWorkspace,
-  } = useWorkspace();
-  const { goHome } = useHome();
   const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const workspaceDialog = useDisclosure();
 
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: {
+        navigate,
+        handleWorkspaceSelection,
+        hasPermission,
+        setVisibleBalance,
+        goHome,
+      },
+      infos: { visibleBalance },
+      requests: { workspaceBalance, latestPredicates },
+      workspaceVaults: { vaultsMax, extraCount },
+    },
+  } = useWorkspaceContext();
+
+  const recentVaults = latestPredicates.data?.predicates?.data;
 
   const hasVaults = recentVaults?.length ?? 0;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
-  if (!currentWorkspace || currentWorkspace.single) {
-    return null;
-  }
-
-  const balanceUSD = worksapceBalance.balance.balanceUSD;
+  const balanceUSD = workspaceBalance.balance.currentBalanceUSD;
 
   const UpdateBalance = (
     <Text
@@ -102,7 +97,7 @@ const WorkspacePage = () => {
         cursor: 'pointer',
         color: 'grey.200',
       }}
-      onClick={() => worksapceBalance.refetch()}
+      onClick={() => workspaceBalance.refetch()}
     >
       Update
       <RefreshIcon
@@ -155,8 +150,7 @@ const WorkspacePage = () => {
   return (
     <VStack w="full" spacing={6} px={{ base: 0, sm: 8 }}>
       <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
-      {/* Resposável por disponibilizar o  "background blur" 
-      para o modal de add/update member */}
+      {/* This outlet components is used to display a blur background */}
       <Outlet />
       <WorkspaceSettingsDrawer
         isOpen={workspaceDialog.isOpen}
@@ -199,16 +193,23 @@ const WorkspacePage = () => {
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
-                onClick={() => goWorkspace(workspaceId)}
+                onClick={() =>
+                  handleWorkspaceSelection(
+                    workspaceId,
+                    Pages.workspace({
+                      workspaceId,
+                    }),
+                  )
+                }
               >
-                {limitCharacters(currentWorkspace?.name ?? '', 10)}
+                {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
         <HStack spacing={3}>
           {hasPermission([OWNER, ADMIN]) && (
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="semibold"
@@ -228,7 +229,7 @@ const WorkspacePage = () => {
           )}
 
           {hasPermission([OWNER, ADMIN, MANAGER]) && (
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               <Button
                 variant="primary"
                 fontWeight="bold"
@@ -251,7 +252,7 @@ const WorkspacePage = () => {
       >
         {/* WORKSPACE OVERVIEW */}
         <CustomSkeleton
-          isLoaded={!workspaceHomeRequest.isLoading}
+          isLoaded={!latestPredicates.isLoading}
           style={{ padding: 0, margin: 0 }}
           w="full"
           h="full"
@@ -297,7 +298,7 @@ const WorkspacePage = () => {
                     bgColor="grey.600"
                     color="grey.450"
                     fontWeight="bold"
-                    name={currentWorkspace.name}
+                    name={userInfos.workspace?.name}
                   >
                     <Box
                       position="absolute"
@@ -319,7 +320,7 @@ const WorkspacePage = () => {
                       textOverflow="ellipsis"
                       isTruncated
                     >
-                      {currentWorkspace?.name}
+                      {userInfos.workspace?.name}
                     </Heading>
 
                     <Text
@@ -328,7 +329,7 @@ const WorkspacePage = () => {
                       textOverflow="ellipsis"
                       isTruncated
                     >
-                      {currentWorkspace.description}
+                      {userInfos.workspace?.description}
                     </Text>
                   </Box>
                 </Center>
@@ -363,11 +364,11 @@ const WorkspacePage = () => {
                 >{`Workspace's balance breakdown`}</Text>
 
                 <CustomSkeleton
-                  isLoaded={!worksapceBalance.isLoading}
+                  isLoaded={!workspaceBalance.isLoading}
                   w="full"
                   h="full"
                 >
-                  {worksapceBalance.balance.assetsBalance.length === 0 ? (
+                  {workspaceBalance.balance.assetsBalance.length === 0 ? (
                     <Card
                       w="full"
                       h="full"
@@ -395,7 +396,7 @@ const WorkspacePage = () => {
                     >
                       <AssetsDetails
                         containerRef={assetsContainerRef}
-                        assets={worksapceBalance.balance.assetsBalance}
+                        assets={workspaceBalance.balance.assetsBalance}
                         visibleBalance={visibleBalance}
                         viewAllRedirect={Pages.balanceWorkspace({
                           workspaceId,
@@ -416,7 +417,7 @@ const WorkspacePage = () => {
           maxH={450}
           spacing={5}
         >
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               w="full"
               onClick={() => navigate(Pages.userVaults({ workspaceId }))}
@@ -431,7 +432,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -451,7 +452,7 @@ const WorkspacePage = () => {
             </ActionCard.Container>
           </CustomSkeleton>
 
-          <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+          <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
             <ActionCard.Container
               onClick={() =>
                 navigate(
@@ -484,7 +485,7 @@ const WorkspacePage = () => {
           Recently used vaults
         </Text>
       </Box>
-      <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+      <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
         {!hasVaults ? (
           <>
             <EmptyState
@@ -516,14 +517,15 @@ const WorkspacePage = () => {
 
                 return (
                   <GridItem key={id} maxH={{ base: 180, sm: 190 }}>
-                    <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+                    <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
                       {lastCard && hasMore ? (
                         <ExtraVaultCard
                           mt={{ base: 6, sm: 'unset' }}
                           maxH={{ base: 185, sm: 190 }}
                           extra={extraCount}
                           onClick={() =>
-                            navigate(
+                            handleWorkspaceSelection(
+                              workspaceId,
                               Pages.userVaults({
                                 workspaceId,
                               }),
@@ -538,7 +540,8 @@ const WorkspacePage = () => {
                           title={description}
                           members={members!}
                           onClick={() =>
-                            navigate(
+                            handleWorkspaceSelection(
+                              workspaceId,
                               Pages.detailsVault({
                                 workspaceId,
                                 vaultId: id,

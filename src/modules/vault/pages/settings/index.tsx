@@ -7,33 +7,33 @@ import {
   Icon,
   Text,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { useAuth } from '@/modules/auth';
 import { Pages, useScreenSize } from '@/modules/core';
-import { useHome } from '@/modules/home/hooks/useHome';
-import { useVaultDetails } from '@/modules/vault/hooks';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
-
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
+import { useVaultInfosContext } from '../../VaultInfosProvider';
+import { useNavigate } from 'react-router-dom';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultSettingsPage = () => {
-  const { vault, store, navigate, menuDrawer } = useVaultDetails();
+  const navigate = useNavigate();
+  const menuDrawer = useDisclosure();
+  const { vault, assets, isPendingSigner } = useVaultInfosContext();
 
-  const { goHome } = useHome();
   const {
-    workspaces: { current },
-    isSingleWorkspace,
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection, goHome },
+    },
+  } = useWorkspaceContext();
   const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
-  const { goWorkspace } = useWorkspace();
-  const { workspace } = useGetCurrentWorkspace();
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   if (!vault) return null;
 
@@ -63,17 +63,24 @@ const VaultSettingsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!isSingleWorkspace && (
+            {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
-                  onClick={() => goWorkspace(current)}
+                  onClick={() =>
+                    handleWorkspaceSelection(
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
                   maxW={40}
                   isTruncated
                 >
-                  {workspace?.name}
+                  {userInfos?.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )}
@@ -102,15 +109,15 @@ const VaultSettingsPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.id!,
-                      workspaceId: current ?? '',
+                      vaultId: vault.data?.id!,
+                      workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
                 }
                 isTruncated
                 maxW={640}
               >
-                {vault.name}
+                {vault?.data?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -125,34 +132,13 @@ const VaultSettingsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         )}
-
-        {/* <Button
-          variant="secondary"
-          bgColor="dark.100"
-          border="none"
-          onClick={() => {
-            setTemplateFormInitial({
-              minSigners: vault.minSigners!,
-              addresses:
-                vault.signers! && vault.signers.map((signer) => signer.address),
-            });
-            navigate(
-              Pages.createTemplate({
-                vaultId: params.vaultId!,
-                workspaceId: params.workspaceId!,
-              }),
-            );
-          }}
-        >
-          Set as template
-        </Button> */}
       </HStack>
 
       <VStack mb={14} alignItems="flex-start" w="100%" maxW="full" spacing={12}>
         <SettingsOverview
           vault={vault}
-          store={store}
-          blockedTransfers={vault.transactions.isPendingSigner}
+          assets={assets}
+          blockedTransfers={isPendingSigner}
         />
         <SettingsSigners vault={vault} />
       </VStack>

@@ -1,12 +1,3 @@
-import { CustomSkeleton, TransactionTypeFilters } from '@/components';
-import { EmptyState } from '@/components/emptyState';
-import { Pages, useScreenSize } from '@/modules/core';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  WaitingSignatureBadge,
-  transactionStatus,
-} from '@/modules/transactions';
 import {
   Box,
   Button,
@@ -15,88 +6,54 @@ import {
   Icon,
   Spacer,
   Text,
-  VStack,
 } from '@chakra-ui/react';
+import { css } from '@emotion/react';
+import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { css, keyframes } from '@emotion/react';
-import { memo, useEffect, useState } from 'react';
-import { useAuth } from '@/modules/auth';
 
-import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useWorkspace } from '../../hooks';
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { CustomSkeleton } from '@/components';
+import { EmptyState } from '@/components/emptyState';
+import { Pages, shakeAnimationX, useScreenSize } from '@/modules/core';
+import {
+  TransactionCard,
+  TransactionCardMobile,
+  transactionStatus,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-const shakeAnimation = keyframes`
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  50% { transform: translateX(2px); }
-  75% { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
-`;
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
-const WkHomeTransactions = memo(() => {
+const WkHomeTransactions = () => {
   const [hasTransactions, setHasTransactions] = useState(false);
 
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { navigate },
+      requests: { latestPredicates },
+    },
+  } = useWorkspaceContext();
+
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const {
-    account,
-    navigate,
-    workspaceVaults: { recentVaults },
+    homeTransactions: {
+      transactions,
+      request: { isLoading },
+    },
     pendingSignerTransactions,
-    workspaceHomeRequest,
-  } = useWorkspace();
-
-  const {
-    workspaces: { current },
-  } = useAuth();
-
-  const workspaceId = current ?? '';
-
-  const { transactions: groupedTransactions } =
-    useHomeTransactions(txFilterType);
+  } = useTransactionsContext();
 
   useEffect(() => {
-    if (
-      groupedTransactions &&
-      groupedTransactions.length >= 1 &&
-      !hasTransactions
-    ) {
+    if (transactions && transactions.length >= 1 && !hasTransactions) {
       setHasTransactions(true);
     }
-  }, [groupedTransactions]);
+  }, [transactions]);
 
   const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
-  return groupedTransactions &&
-    groupedTransactions.length <= 0 &&
-    !hasTransactions ? (
-    <VStack w="full" spacing={6}>
-      {groupedTransactions && (
-        <HStack w="full" spacing={4}>
-          <Text
-            variant="subtitle"
-            fontWeight={700}
-            fontSize="md"
-            color="grey.50"
-          >
-            Transactions
-          </Text>
-        </HStack>
-      )}
-      <CustomSkeleton
-        isLoaded={!workspaceHomeRequest.isLoading}
-        mt={{
-          base: recentVaults?.length ? 16 : 0,
-          sm: recentVaults?.length ? 8 : 0,
-          md: recentVaults?.length ? 8 : 2,
-        }}
-      >
-        <EmptyState showAction={false} />
-      </CustomSkeleton>
-    </VStack>
-  ) : (
+  return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>
       <Box
         w="full"
@@ -120,43 +77,42 @@ const WkHomeTransactions = memo(() => {
           />
         </Box>
         <Spacer />
-        <TransactionTypeFilters
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
-          buttonsFullWidth={isSmall}
-        />
 
-        <Button
-          color="grey.75"
-          variant="txFilterType"
-          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-          rightIcon={
-            <Icon
-              as={MdKeyboardArrowRight}
-              fontSize="lg"
-              ml={isSmall ? -1 : 0}
-              className="btn-icon"
-            />
-          }
-          onClick={() =>
-            navigate(
-              Pages.userTransactions({
-                workspaceId,
-              }),
-            )
-          }
-          css={css`
-            &:hover .btn-icon {
-              animation: ${shakeAnimation} 0.5s ease-in-out;
+        {hasTransactions && (
+          <Button
+            color="grey.75"
+            variant="txFilterType"
+            alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+            rightIcon={
+              <Icon
+                as={MdKeyboardArrowRight}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
             }
-          `}
-          px={isExtraSmall ? 3 : 4}
-        >
-          View all
-        </Button>
+            onClick={() =>
+              navigate(
+                Pages.userTransactions({
+                  workspaceId,
+                }),
+              )
+            }
+            css={css`
+              &:hover .btn-icon {
+                animation: ${shakeAnimationX} 0.5s ease-in-out;
+              }
+            `}
+            px={isExtraSmall ? 3 : 4}
+          >
+            View all
+          </Button>
+        )}
       </Box>
 
-      {groupedTransactions?.map((grouped) => (
+      {!isLoading && !transactions?.length && <EmptyState showAction={false} />}
+
+      {transactions?.map((grouped) => (
         <>
           <HStack>
             <Text
@@ -171,14 +127,14 @@ const WkHomeTransactions = memo(() => {
             <Divider w="full" borderColor="grey.950" />
           </HStack>
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
-            <CustomSkeleton isLoaded={!workspaceHomeRequest.isLoading}>
+            <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({
                   ...transaction,
-                  account,
+                  account: userInfos?.address,
                 });
                 const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
+                  (member) => member.address === userInfos?.address,
                 );
 
                 return (
@@ -187,7 +143,7 @@ const WkHomeTransactions = memo(() => {
                       <TransactionCardMobile
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         mt="15px"
                       />
                     ) : (
@@ -197,7 +153,7 @@ const WkHomeTransactions = memo(() => {
                         status={status}
                         isSigner={isSigner}
                         transaction={transaction}
-                        account={account}
+                        account={userInfos?.address}
                         details={
                           <TransactionCard.Details
                             transaction={transaction}
@@ -215,5 +171,5 @@ const WkHomeTransactions = memo(() => {
       ))}
     </Box>
   );
-});
+};
 export default WkHomeTransactions;

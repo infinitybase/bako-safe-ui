@@ -5,13 +5,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import TagManager from 'react-gtm-module';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
-import { TransactionSendProvider } from '@/modules/transactions';
 import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
+import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
+import { BrowserRouter } from 'react-router-dom';
+import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 
 BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
@@ -20,7 +23,14 @@ BakoSafe.setProviders({
 });
 BakoSafe.setGasConfig({ BASE_FEE: 0.001 });
 
+const gtmId = import.meta.env.VITE_GTM_ID;
+
+const tagManagerArgs = {
+  gtmId,
+};
+
 const fuelConnectorsQueryClient = new QueryClient();
+TagManager.initialize(tagManagerArgs);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -33,9 +43,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         >
           <SocketProvider>
             <BakoSafeQueryClientProvider>
-              <TransactionSendProvider>
-                <App />
-              </TransactionSendProvider>
+              <BrowserRouter>
+                <TransactionsProvider>
+                  <WorkspaceProvider>
+                    <App />
+                  </WorkspaceProvider>
+                </TransactionsProvider>
+              </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>
         </FuelProvider>

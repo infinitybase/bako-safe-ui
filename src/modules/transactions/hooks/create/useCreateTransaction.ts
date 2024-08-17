@@ -1,25 +1,23 @@
+import { useMutation } from '@tanstack/react-query';
 import { BakoSafe, IAssetGroupById } from 'bakosafe';
-import { bn } from 'fuels';
+import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { queryClient } from '@/config';
-import { useContactToast, useListContactsRequest } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
+import { useContactToast } from '@/modules/addressBook';
 import {
+  Asset,
   NativeAssetId,
   useBakoSafeCreateTransaction,
-  WorkspacesQueryKey,
+  useBakoSafeVault,
+  useGetParams,
+  useGetTokenInfosArray,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import {
-  TRANSACTION_LIST_QUERY_KEY,
-  USER_TRANSACTIONS_QUERY_KEY,
-} from '../list';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 const recipientMock =
@@ -27,6 +25,10 @@ const recipientMock =
 
 interface UseCreateTransactionParams {
   onClose: () => void;
+  isOpen: boolean;
+  assets: Asset[] | undefined;
+  hasAssetBalance: (assetId: string, value: string) => boolean;
+  getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
 }
 
 const useTransactionAccordion = () => {
@@ -44,21 +46,34 @@ const useTransactionAccordion = () => {
 };
 
 const useCreateTransaction = (props?: UseCreateTransactionParams) => {
+  const {
+    transactionsPageList: {
+      request: { refetch: refetchTransactionsList },
+    },
+    homeTransactions: {
+      request: { refetch: refetchHomeTransactionsList },
+    },
+    vaultTransactions: {
+      request: { refetch: refetchVaultTransactionsList },
+    },
+  } = useTransactionsContext();
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
   const [validTransactionFee, setValidTransactionFee] = useState<
     string | undefined
   >(undefined);
 
-  const auth = useAuth();
+  const {
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
-  const params = useParams<{ vaultId: string }>();
 
   const { successToast, errorToast } = useContactToast();
   const accordion = useTransactionAccordion();
-
-  const listContactsRequest = useListContactsRequest({
-    current: auth.workspaces.current,
-    includePersonal: !auth.isSingleWorkspace,
-  });
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
@@ -66,35 +81,31 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionFee = resolveTransactionCosts.data?.fee.format();
 
-  // Vault
-  const vaultDetails = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultDetails?.predicateInstance);
-
   const { transactionsFields, form } = useCreateTransactionForm({
-    assets: vaultAssets.assets?.map((asset) => ({
-      amount: asset.amount,
+    assets: props?.assets?.map((asset) => ({
+      amount: asset.amount!,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => vaultAssets.getCoinAmount(asset),
-    validateBalance: (asset, amount) =>
-      vaultAssets.hasAssetBalance(asset, amount),
+    getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
+
+    validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
+
+  const { vault } = useBakoSafeVault(vaultId!);
+
   const transactionRequest = useBakoSafeCreateTransaction({
-    vault: vaultDetails.predicateInstance!,
+    vault: vault!,
     onSuccess: () => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-      queryClient.invalidateQueries([
-        WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-          auth.workspaces.current,
-        ),
-        TRANSACTION_LIST_QUERY_KEY,
-        USER_TRANSACTIONS_QUERY_KEY,
-      ]);
+      refetchTransactionsList();
+      refetchHomeTransactionsList();
+      refetchVaultTransactionsList();
       handleClose();
     },
+
     onError: () => {
       errorToast({
         title: 'There was an error creating the transaction',
@@ -103,8 +114,20 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
   });
 
+  const handleCreateTransaction = form.handleSubmit((data) => {
+    transactionRequest.mutate({
+      name: data.name,
+      assets: data.transactions!.map((transaction) => ({
+        amount: transaction.amount,
+        assetId: transaction.asset,
+        to: transaction.value,
+      })),
+    });
+  });
+
   // Balance available
-  const currentVaultAssets = vaultAssets.assets;
+  const currentVaultAssets = props?.assets;
+
   const currentFieldAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
@@ -129,9 +152,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     }, {} as IAssetGroupById);
 
   const getBalanceAvailable = useCallback(() => {
+    const formattedCurrentAssetBalance = useGetTokenInfosArray(
+      currentVaultAssets ?? [],
+    );
     const currentAssetBalance = bn.parseUnits(
-      currentVaultAssets?.find((asset) => asset.assetId === currentFieldAsset)
-        ?.amount ?? '0',
+      formattedCurrentAssetBalance?.find(
+        (asset) => asset.assetId === currentFieldAsset,
+      )?.amount ?? '0',
     );
 
     const currentAssetAmount =
@@ -171,7 +198,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = vaultAssets.getCoinBalance(NativeAssetId);
+  const currentEthBalance = props?.getCoinAmount(NativeAssetId);
   const isEthBalanceLowerThanReservedAmount =
     Number(currentEthBalance) <=
     Number(
@@ -181,17 +208,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const handleClose = () => {
     props?.onClose();
   };
-
-  const handleCreateTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
-  });
 
   const debouncedResolveTransactionCosts = useCallback(
     debounce((assets, vault) => {
@@ -241,7 +257,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
             assetId: asset.assetId,
           }));
 
-    debouncedResolveTransactionCosts(assets, vaultDetails.predicateInstance!);
+    debouncedResolveTransactionCosts(assets, vault!);
   }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
 
   return {
@@ -252,8 +268,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       ...form,
       handleCreateTransaction,
     },
-    vault: vaultDetails,
-    assets: vaultAssets,
     nicks: listContactsRequest.data ?? [],
     navigate,
     accordion,

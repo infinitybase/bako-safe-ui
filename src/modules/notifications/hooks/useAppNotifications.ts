@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth';
 import {
   invalidateQueries,
   NotificationsQueryKey,
@@ -15,7 +14,7 @@ import { useNotificationsStore } from '../store/useNotificationsStore';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';
-import { useSelectWorkspace } from '@/modules/workspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseAppNotificationsParams {
   onClose?: () => void;
@@ -29,13 +28,16 @@ export interface TransactionRedirect {
 }
 
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
   const inView = useInView({ delay: 300 });
-  const { selectWorkspace } = useSelectWorkspace();
   const notificationsListRequest = useListNotificationsRequest(
-    account,
-    props?.isOpen,
+    userInfos.address,
   );
 
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
@@ -48,16 +50,14 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     setHasNewNotification,
   } = useNotificationsStore();
 
-  const onCloseDrawer = async () => {
+  const onCloseDrawer = () => {
     const hasUnread = !!unreadCounter;
 
-    setUnreadCounter(0);
+    if (hasUnread && unreadCounter > 0) {
+      invalidateQueries([NotificationsQueryKey.UNREAD_COUNTER]);
+      setUnreadCounter(0);
+    }
     props?.onClose?.();
-
-    await invalidateQueries([
-      NotificationsQueryKey.PAGINATED_LIST,
-      NotificationsQueryKey.UNREAD_COUNTER,
-    ]);
 
     if (hasUnread) setNotificationAsReadRequest.mutate({});
   };
@@ -80,11 +80,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       ? Pages.transactions({ vaultId, workspaceId: summaryWorkspaceId })
       : Pages.detailsVault({ vaultId, workspaceId: summaryWorkspaceId });
 
-    selectWorkspace(summaryWorkspaceId, {
-      onSelect: async (_workspace) => {
-        navigate(page);
-      },
-    });
+    handleWorkspaceSelection(summaryWorkspaceId, page);
   };
 
   useEffect(() => {

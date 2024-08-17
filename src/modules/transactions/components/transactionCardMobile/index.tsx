@@ -7,16 +7,17 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
+import { TransactionType } from 'bakosafe';
+
+import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 
 import { useDetailsDialog } from '../../hooks/details';
+import { TransactionWithVault } from '../../services/types';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
-import { DownLeftArrow, UpRightArrow } from '@/components';
-import { DeployIcon } from '@/components/icons/tx-deploy';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { TransactionType } from 'bakosafe';
-import { TransactionWithVault } from '../../services/types';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
@@ -86,8 +87,8 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                   : props.isContract
                     ? ContractIcon
                     : isDeposit
-                      ? DownLeftArrow
-                      : UpRightArrow
+                      ? DownLeftArrowGreen
+                      : UpRightArrowYellow
               }
               fontSize={props.isDeploy || props.isContract ? 'inherit' : '12px'}
             />
@@ -112,7 +113,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <Divider borderColor="grey.950" />
 
             <HStack justifyContent="space-between" w="full">
-              <TransactionCard.Amount assets={transaction.resume.outputs} />
+              <TransactionCard.Amount assets={transaction.assets} />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
             </HStack>

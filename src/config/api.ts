@@ -1,20 +1,10 @@
 import axios from 'axios';
 
-import { useAuthStore } from '@/modules/auth/store';
-
 import { CookieName, CookiesConfig } from './cookies';
+import { queryClient } from './query-client';
 
 const { VITE_API_URL } = import.meta.env;
-const {
-  ACCESS_TOKEN,
-  ADDRESS,
-  AVATAR,
-  USER_ID,
-  SINGLE_WORKSPACE,
-  SINGLE_CONTACTS,
-  WORKSPACE,
-  PERMISSIONS,
-} = CookieName;
+const { ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE } = CookieName;
 
 export enum ApiUnauthorizedErrorsTitles {
   MISSING_CREDENTIALS = 'Missing credentials',
@@ -39,6 +29,7 @@ export interface IApiError {
 
 const api = axios.create({
   baseURL: VITE_API_URL,
+  timeout: 10 * 1000, // limit to try other requests
 });
 
 api.interceptors.request.use(
@@ -60,17 +51,8 @@ api.interceptors.response.use(
     const unauthorizedError = error.response?.status === 401;
 
     if (unauthorizedError) {
-      useAuthStore.getState().logout();
-      CookiesConfig.removeCookies([
-        ACCESS_TOKEN,
-        ADDRESS,
-        AVATAR,
-        USER_ID,
-        SINGLE_CONTACTS,
-        SINGLE_WORKSPACE,
-        WORKSPACE,
-        PERMISSIONS,
-      ]);
+      queryClient.clear();
+      CookiesConfig.removeCookies([ACCESS_TOKEN, ADDRESS, SINGLE_WORKSPACE]);
     }
 
     return Promise.reject(error);

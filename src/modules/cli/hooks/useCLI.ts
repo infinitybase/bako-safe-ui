@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   BitCoinIcon,
@@ -6,12 +6,11 @@ import {
   MoreLessIcon,
   RecoveryIcon,
 } from '@/components';
-import { useAuth } from '@/modules/auth';
 import { PermissionRoles } from '@/modules/core/models';
-import { UseVaultDetailsReturn } from '@/modules/vault/hooks';
-import { useGetWorkspaceRequest } from '@/modules/workspace/hooks';
 
 import { TabState, useAPIToken } from './APIToken';
+import { FeatureConfig, useCommingSoon } from './CommingSoon';
+import { Workspace } from '@/modules';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -19,12 +18,26 @@ export const requiredCLIRoles = [
   PermissionRoles.MANAGER,
 ];
 
-const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
-  const { userId } = useAuth();
-  const { workspace } = useGetWorkspaceRequest(vault?.workspace?.id ?? '');
+export enum CLIFeaturesLabels {
+  API_TOKEN = 'API Tokens',
+  ADD_OTHER_TOKENS = 'Add other tokens',
+  RECOVERY = 'Recovery',
+  SPEND_LIMIT = 'Spend limit',
+}
+
+export interface IUseCLIProps {
+  vaultId: string;
+  userId: string;
+  currentWorkspace?: Workspace;
+}
+
+const useCLI = ({ currentWorkspace, userId, vaultId }: IUseCLIProps) => {
+  const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
+    null,
+  );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = workspace?.permissions[userId];
+    const memberPermission = currentWorkspace?.permissions[userId];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
@@ -32,14 +45,21 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
 
     const hasPerm = hasRequiredPermission;
     return hasPerm;
-  }, [userId, vault, workspace]);
+  }, [userId, vaultId, currentWorkspace]);
 
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);
 
+  const { commingSoonDialog, features, handleAction } = useCommingSoon();
+
+  const handleOpen = (feature: FeatureConfig) => {
+    setSelectedFeature(feature);
+    commingSoonDialog.onOpen();
+  };
+
   const settings = [
     {
-      label: 'API Tokens',
+      label: CLIFeaturesLabels.API_TOKEN,
       icon: CoinsIcon,
       disabled: !hasPermission,
       onClick: () => {
@@ -48,22 +68,31 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       },
     },
     {
-      label: 'Add other tokens',
+      label: CLIFeaturesLabels.ADD_OTHER_TOKENS,
       icon: BitCoinIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.ADD_OTHER_TOKENS]);
+        handleAction(CLIFeaturesLabels.ADD_OTHER_TOKENS);
+      },
     },
     {
-      label: 'Recovery',
+      label: CLIFeaturesLabels.RECOVERY,
       icon: RecoveryIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.RECOVERY]);
+        handleAction(CLIFeaturesLabels.RECOVERY);
+      },
     },
     {
-      label: 'Spend limit',
+      label: CLIFeaturesLabels.SPEND_LIMIT,
       icon: MoreLessIcon,
-      disabled: true,
-      onClick: () => {},
+      disabled: !hasPermission,
+      onClick: () => {
+        handleOpen(features[CLIFeaturesLabels.SPEND_LIMIT]);
+        handleAction(CLIFeaturesLabels.SPEND_LIMIT);
+      },
     },
   ];
 
@@ -77,6 +106,11 @@ const useCLI = (vault: UseVaultDetailsReturn['vault']) => {
       create,
       remove,
       list,
+    },
+    commingSoonFeatures: {
+      commingSoonDialog,
+      features,
+      selectedFeature,
     },
   };
 };

@@ -1,21 +1,10 @@
-import { useScreenSize } from '@/modules';
 import { BoxProps, Button, HStack, Icon } from '@chakra-ui/react';
-import {
-  DownLeftArrow,
-  DownLeftArrowWhite,
-  UpRightArrow,
-  UpRightArrowWhite,
-} from '../icons';
-import { css, keyframes } from '@emotion/react';
+import { css } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
 
-const shakeAnimation = keyframes`
-  0% { transform: translateY(0); }
-  25% { transform: translateY(-2px); }
-  50% { transform: translateY(2px); }
-  75% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
-`;
+import { shakeAnimationY, useScreenSize } from '@/modules';
+
+import { DownLeftArrow, UpRightArrow } from '../icons';
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;
@@ -44,12 +33,13 @@ const TransactionTypeFilters = ({
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-1 {
-            animation: ${shakeAnimation} 0.5s ease-in-out;
+            animation: ${shakeAnimationY} 0.5s ease-in-out;
           }
         `}
         rightIcon={
           <Icon
-            as={isDeposit ? DownLeftArrow : DownLeftArrowWhite}
+            as={DownLeftArrow}
+            textColor={isDeposit ? 'success.700' : 'grey.75'}
             fontSize="lg"
             ml={isSmall ? -1 : 0}
             className="btn-icon-1"
@@ -66,12 +56,13 @@ const TransactionTypeFilters = ({
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         css={css`
           &:hover .btn-icon-2 {
-            animation: ${shakeAnimation} 0.5s ease-in-out;
+            animation: ${shakeAnimationY} 0.5s ease-in-out;
           }
         `}
         rightIcon={
           <Icon
-            as={isTransfer ? UpRightArrow : UpRightArrowWhite}
+            as={UpRightArrow}
+            textColor={isTransfer ? 'warning.550' : 'grey.75'}
             fontSize="lg"
             ml={isSmall ? -1 : 0}
             className="btn-icon-2"

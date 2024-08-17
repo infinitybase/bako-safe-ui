@@ -1,4 +1,5 @@
 import { BN, CoinQuantity } from 'fuels';
+import { Asset } from '@/modules/core';
 
 import { api } from '@/config';
 import { Predicate, Workspace } from '@/modules/core/models';
@@ -16,8 +17,9 @@ export interface GetAllPredicatesPayload extends PaginationParams {
 }
 
 export interface HasReservedCoins {
-  balanceUSD: string;
+  currentBalanceUSD: string;
   reservedCoins: CoinQuantity[];
+  currentBalance: Required<Asset>[];
 }
 
 export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
@@ -87,11 +89,12 @@ export class VaultService {
     return data;
   }
 
-  static async hasReservedCoins(predicate: string): Promise<HasReservedCoins> {
+  static async hasReservedCoins(
+    predicateId: string,
+  ): Promise<HasReservedCoins> {
     const { data } = await api.get<HasReservedCoins>(
-      `/predicate/reserved-coins/${predicate}`,
+      `/predicate/reserved-coins/${predicateId}`,
     );
-
     return {
       ...data,
       reservedCoins: data.reservedCoins.map((reservedCoin) => ({

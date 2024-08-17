@@ -40,7 +40,7 @@ export const useTransactionSocket = () => {
 
   useEffect(() => {
     connect(sessionId!);
-  }, [summary.isLoading]);
+  }, [summary.isPending]);
 
   useEffect(() => {
     console.log('[SOCKET_CONN]: ', socket.connected);

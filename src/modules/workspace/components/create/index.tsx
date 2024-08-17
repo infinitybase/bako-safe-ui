@@ -80,7 +80,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     handleGoToWorkspace,
     handleConfigureMembers,
   } = useCreateWorkspace({
-    onClose: props.handleCancel,
+    onClose: props.onClose,
+    handleCancel: props.handleCancel,
   });
 
   return (
@@ -180,8 +181,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           onClick={form.handleCreateWorkspace}
           fontSize="md"
           leftIcon={<SquarePlusIcon w={4} h={4} />}
-          isDisabled={request.isLoading}
-          isLoading={request.isLoading}
+          isDisabled={request.isPending}
+          isLoading={request.isPending}
           _hover={{
             opacity: 0.8,
           }}

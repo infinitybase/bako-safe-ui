@@ -15,10 +15,10 @@ import { LineCloseIcon, SquarePlusIcon } from '@/components/icons';
 import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth';
 import { DappError, DappTransaction } from '@/modules/dapp/components';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 
 import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionConfirm = () => {
   const {
@@ -26,12 +26,18 @@ const TransactionConfirm = () => {
     cancelTransaction,
     vault,
     pendingSignerTransactions,
-    summary: { transactionSummary, isLoading: isLoadingTransactionSummary },
+    summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     isLoading,
     send,
     socket,
     validAt,
   } = useTransactionSocket();
+
+  const {
+    workspaceInfos: {
+      handlers: { goHome },
+    },
+  } = useWorkspaceContext();
 
   const [closePopover, setClosePopover] = useState(false);
 
@@ -39,7 +45,6 @@ const TransactionConfirm = () => {
 
   const { sessionId, request_id, name, origin } = useQueryParams();
 
-  const { goHome } = useHome();
   const { isSafariBrowser } = useVerifyBrowserType();
 
   if (!sessionId || !request_id) {

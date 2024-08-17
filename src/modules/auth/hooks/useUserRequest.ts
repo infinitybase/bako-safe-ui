@@ -1,5 +1,5 @@
 import { useFuel } from '@fuels/react';
-import { useMutation, UseMutationOptions } from 'react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import {
   CreateUserPayload,
@@ -13,7 +13,11 @@ import {
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,
 ) => {
-  return useMutation('user/create', UserService.create, options);
+  return useMutation({
+    mutationKey: ['user/create'],
+    mutationFn: UserService.create,
+    ...options,
+  });
 };
 
 const useSignInRequest = (
@@ -21,9 +25,9 @@ const useSignInRequest = (
 ) => {
   const { fuel } = useFuel();
 
-  return useMutation(
-    'auth/sign-in',
-    async (params: UseSignInRequestParams) => {
+  return useMutation({
+    mutationKey: ['auth/sign-in'],
+    mutationFn: async (params: UseSignInRequestParams) => {
       const account = await fuel.currentAccount();
 
       const payload = {
@@ -34,8 +38,8 @@ const useSignInRequest = (
 
       return UserService.signIn(payload);
     },
-    options,
-  );
+    ...options,
+  });
 };
 
 export { useCreateUserRequest, useSignInRequest };

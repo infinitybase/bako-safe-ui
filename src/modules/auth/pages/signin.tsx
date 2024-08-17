@@ -1,5 +1,5 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
 import {
@@ -26,14 +26,14 @@ const SigninPage = () => {
     title: 'Welcome to Bako Safe',
   };
 
-  useMemo(() => {
-    auth.isInvalidAccount &&
+  useEffect(() => {
+    auth.invalidAccount &&
       errorToast({
         title: 'Invalid Account',
         description: 'You need to use the fuel wallet to connect.',
       });
-    auth.handlers.setInvalidAccount(false);
-  }, [auth.isInvalidAccount]);
+    auth.handlers.setInvalidAccount?.(false);
+  }, [auth.invalidAccount]);
 
   const WebauthnDrawer = (
     <DrawerWebAuthn
@@ -90,6 +90,7 @@ const SigninPage = () => {
           <ConnectorsList
             connectors={connectors.items}
             onSelect={connectors.select}
+            isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
           />
 
           <SignInFooter />
@@ -115,6 +116,7 @@ const SigninPage = () => {
       <ConnectorsList
         connectors={connectors.items}
         onSelect={connectors.select}
+        isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
       />
 
       <SignInFooter />

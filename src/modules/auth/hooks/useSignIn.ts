@@ -1,34 +1,26 @@
+import { useSocket } from '@/modules/core';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
-import { useAccount, useFuel, useIsConnected } from '@fuels/react';
-import { useEffect } from 'react';
+import { useFuel, useIsConnected } from '@fuels/react';
 import { Location, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
-import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
 import { Pages } from '@/modules/core/routes';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
 import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-export const redirectPathBuilder = (
-  isDapp: boolean,
-  location: Location,
-  account: string,
-) => {
+export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
-  // console.log('[PARAMS]: ', {
-  //   isDapp,
-  //   location,
-  //   account,
-  //   isRedirectToPrevious,
-  // });
+
   if (isDapp && isRedirectToPrevious) {
     return location.state.from;
   }
@@ -43,13 +35,13 @@ export const redirectPathBuilder = (
 const useSignIn = () => {
   const navigate = useNavigate();
   const connectorDrawer = useDisclosure();
+  const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
+    useState(false);
 
   const { fuel } = useFuel();
-  const auth = useAuth();
+  const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
-  const { account } = useAccount();
-
   const { connect } = useSocket();
 
   useEffect(() => {
@@ -79,20 +71,29 @@ const useSignIn = () => {
   };
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace, webAuthn }) => {
+    onSuccess: ({
+      accessToken,
+      avatar,
+      user_id,
+      workspace,
+      webAuthn,
+      address,
+    }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
-      auth.handlers.authenticate({
+
+      authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
-        account: account!,
+        account: address,
         accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
         webAuthn: _webAuthn,
       });
+      invalidateGifAnimationRequest();
 
-      navigate(redirectPathBuilder(!!sessionId, location, account!));
+      navigate(redirectPathBuilder(!!sessionId, location));
     },
   });
 
@@ -109,7 +110,9 @@ const useSignIn = () => {
     window.open(import.meta.env.VITE_FUEL_WALLET_URL, '_BLANK');
 
   const selectConnector = async (connector: string) => {
-    await fuel.selectConnector(connector);
+    const isWalletConnectorOpen = await fuel.selectConnector(connector);
+    setIsAnyWalletConnectorOpen(isWalletConnectorOpen);
+
     connectorDrawer.onClose();
     const isbyWallet = connector !== EConnectors.WEB_AUTHN;
     if (isbyWallet) {
@@ -137,13 +140,27 @@ const useSignIn = () => {
         provider: network!.url,
         type: account ? TypeUser.FUEL : TypeUser.WEB_AUTHN,
       });
+      setIsAnyWalletConnectorOpen(false);
     } catch (e) {
-      auth.handlers.setInvalidAccount(true);
+      setIsAnyWalletConnectorOpen(false);
+      authDetails.handlers.setInvalidAccount?.(true);
     }
   };
 
+  useEffect(() => {
+    const fueletConnectionStatus = () => (data: boolean) => {
+      setIsAnyWalletConnectorOpen(data);
+    };
+
+    fuel.on(fuel.events.connection, fueletConnectionStatus());
+
+    return () => {
+      fuel.off(fuel.events.connection, fueletConnectionStatus);
+    };
+  }, [fuel]);
+
   return {
-    auth,
+    auth: authDetails,
     connectByWallet,
     webauthn: {
       ...rest,
@@ -151,13 +168,14 @@ const useSignIn = () => {
     },
     signInRequest,
     isConnected,
-    isConnecting: signInRequest.isLoading || createUserRequest.isLoading,
+    isConnecting: signInRequest.isPending || createUserRequest.isPending,
     createUserRequest,
     connectors: {
       items: connectors,
       drawer: connectorDrawer,
       select: selectConnector,
       has: !!connectors?.length,
+      isAnyWalletConnectorOpen,
     },
     hasFuel,
     redirectToWalletLink,

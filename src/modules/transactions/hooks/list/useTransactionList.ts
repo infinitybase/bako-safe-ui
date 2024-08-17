@@ -1,15 +1,13 @@
-import { TransactionStatus } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { useAuthStore } from '@/modules/auth/store';
-import { useVaultAssets, useVaultDetailsRequest } from '@/modules/vault/hooks';
+import { useGetParams } from '@/modules/core';
 
 import { ITransactionsGroupedByMonth } from '../../services';
-import { TransactionType } from 'bakosafe';
 import { useTransactionState } from '../../states';
-import { useTransactionsSignaturePending } from './useTotalSignaturesPendingRequest';
+import { useFilterTxType } from '../filter';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
 
 export enum StatusFilter {
@@ -20,26 +18,45 @@ export enum StatusFilter {
 }
 
 interface IUseTransactionListProps {
+  workspaceId?: string;
   byMonth?: boolean;
   type?: TransactionType;
 }
 
+export type IUseTransactionList = ReturnType<typeof useTransactionList>;
+
+export interface IPendingTransactionDetails {
+  status: string;
+  hash: string;
+  id: string;
+  predicateId: string;
+}
+
+export interface IPendingTransactionsRecord {
+  [transactionId: string]: IPendingTransactionDetails;
+}
+
 const useTransactionList = ({
+  workspaceId = '',
   byMonth = false,
-  type = undefined,
 }: IUseTransactionListProps = {}) => {
-  const params = useParams<{ vaultId: string }>();
-  const navigate = useNavigate();
-  const inView = useInView();
-  const { account } = useAuthStore();
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
 
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
-  const vaultRequest = useVaultDetailsRequest(params.vaultId!);
-  const vaultAssets = useVaultAssets(vaultRequest.predicateInstance);
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
+  const {
+    txFilterType,
+    handleIncomingAction,
+    handleOutgoingAction,
+    setTxFilterType,
+  } = useFilterTxType();
+
+  const navigate = useNavigate();
+  const inView = useInView();
+
   const {
     transactions,
     transactionsPages,
@@ -47,13 +64,14 @@ const useTransactionList = ({
     isFetching,
     hasNextPage,
     fetchNextPage,
+    refetch,
   } = useTransactionListPaginationRequest({
-    predicateId: params.vaultId ? [params.vaultId] : undefined,
+    workspaceId: workspaceId,
+    predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
-    /* TODO: Change logic this */
     status: filter ? [filter] : undefined,
     byMonth,
-    type,
+    type: txFilterType,
   });
 
   const observer = useRef<IntersectionObserver>();
@@ -83,62 +101,56 @@ const useTransactionList = ({
     );
   }, [transactionsPages]);
 
-  // // const { homeRequest } = useHome();
-  // const [firstRender, setFirstRender] = useState<boolean>(true);
-  // const [hasSkeleton, setHasSkeleton] = useState<boolean>(false);
+  const pendingTransactions = () => {
+    const result = {};
+    infinityTransactions?.forEach((item) => {
+      return item.transactions.forEach((transaction) => {
+        if (result[transaction.id]) return;
 
-  // useMemo(() => {
-  //   if (firstRender && transactionRequest.status === 'loading') {
-  //     setHasSkeleton(true);
-  //     setFirstRender(false);
-  //   }
+        result[transaction.id] = {
+          status: transaction.status,
+          hash: transaction.hash,
+          id: transaction.id,
+          predicateId: transaction.predicateId,
+          resume: {
+            witnesses: transaction.resume.witnesses,
+          },
+        };
+      });
+    });
 
-  //   if (!firstRender && transactionRequest.status === 'success') {
-  //     setHasSkeleton(false);
-  //   }
-  // }, [transactionRequest.status]);
-
-  // useEffect(() => {
-  //   if (selectedTransaction.id) setFilter(undefined);
-
-  //   if (
-  //     inView.inView &&
-  //     !transactionRequest.isFetching &&
-  //     transactionRequest.hasNextPage
-  //   ) {
-  //     transactionRequest.fetchNextPage();
-  //   }
-  // }, [
-  //   inView.inView,
-  //   transactionRequest.isFetching,
-  //   transactionRequest.hasNextPage,
-  // ]);
+    return result;
+  };
 
   return {
-    transactionRequest: {
-      transactions,
-      isLoading,
+    request: {
+      isLoading: !transactionsPages && isLoading && !isFetching,
       isFetching,
       hasNextPage,
       fetchNextPage,
+      refetch,
     },
-    selectedTransaction,
-    setSelectedTransaction,
-    vaultRequest: vaultRequest,
-    vaultAssets,
-    navigate,
-    params,
+    handlers: {
+      selectedTransaction,
+      setSelectedTransaction,
+      navigate,
+      handleIncomingAction,
+      handleOutgoingAction,
+      listTransactionTypeFilter: setTxFilterType,
+    },
     filter: {
       set: setFilter,
       value: filter,
+      txFilterType,
     },
     inView,
-    account,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    pendingSignerTransactions,
-    hasSkeleton: false,
-    infinityTransactions,
     infinityTransactionsRef: lastElementRef,
+    lists: {
+      transactions,
+      infinityTransactions,
+    },
+    pendingTransactions: pendingTransactions(),
   };
 };
 

@@ -1,4 +1,4 @@
-import { BakoSafe, Transfer } from 'bakosafe';
+import { BakoSafe, ITransactionResume, Transfer } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { api } from '@/config/api';
@@ -13,6 +13,8 @@ import {
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
   GetTransactionsResponse,
+  GetTransactionsWithIncomingsPaginationResponse,
+  GetTransactionsWithIncomingsParams,
   GetUserTransactionsParams,
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
@@ -89,6 +91,19 @@ export class TransactionService {
     return data;
   }
 
+  static async getTransactionsWithIncomingsPagination(
+    params: GetTransactionsWithIncomingsParams,
+  ) {
+    const { data } =
+      await api.get<GetTransactionsWithIncomingsPaginationResponse>(
+        `/transaction/with-incomings`,
+        {
+          params: { ...params },
+        },
+      );
+    return data;
+  }
+
   static async send(BakoSafeTransactionId: string) {
     const { data } = await api.post(
       `/transaction/send/${BakoSafeTransactionId}`,
@@ -120,6 +135,11 @@ export class TransactionService {
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets } = input;
 
+    if (!vault)
+      return {
+        fee: bn(0),
+      };
+
     const { transactionRequest } = await Transfer.instance({
       vault,
       transfer: {
@@ -136,13 +156,19 @@ export class TransactionService {
       fee: maxFee.add(
         bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
       ),
-      transactionRequest,
     };
   }
 
-  static async getTransactionsHistory(id: string) {
+  static async getTransactionsHistory(id: string, predicateId: string) {
     const { data } = await api.get<GetTransactionHistoryResponse>(
-      `/transaction/history/${id}`,
+      `/transaction/history/${id}/${predicateId}`,
+    );
+    return data;
+  }
+
+  static async verifyOnChain(id: string) {
+    const { data } = await api.get<ITransactionResume>(
+      `/transaction/verify/${id}`,
     );
     return data;
   }

@@ -10,13 +10,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { useAddressBook } from '@/modules/addressBook';
-import { useAuth } from '@/modules/auth';
 import { useScreenSize } from '@/modules/core/hooks';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 
 import { CardMember } from './CardMember';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -33,17 +32,21 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const navigate = useNavigate();
 
   const {
-    workspaces: { current },
-    isSingleWorkspace,
-  } = useAuth();
+    authDetails: { userInfos },
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
 
-  const { contactByAddress } = useAddressBook(!isSingleWorkspace);
+  const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 
-  const isBig = !vault?.members ? 0 : vault?.members.length - 4;
-
-  const owner = vault.members?.find((member) => member.id === vault.owner?.id);
+  const owner = vault.data?.members?.find(
+    (member) => member.id === vault.data?.owner?.id,
+  );
   const notOwners =
-    vault.members?.filter((member) => member.id !== vault.owner?.id) ?? [];
+    vault.data?.members?.filter(
+      (member) => member.id !== vault.data?.owner?.id,
+    ) ?? [];
 
   // Order members with owner in first position
   const members = [owner, ...notOwners];
@@ -76,8 +79,8 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                   onClick={() =>
                     navigate(
                       Pages.vaultSettings({
-                        vaultId: vault.id!,
-                        workspaceId: current,
+                        vaultId: vault.data?.id!,
+                        workspaceId: userInfos.workspace?.id,
                       }),
                     )
                   }
@@ -134,7 +137,8 @@ const SignersDetails = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.minSigners}/{vault.members?.length}
+          Required signers {vault?.data?.minSigners}/
+          {vault.data?.members?.length}
         </Badge>
       </HStack>
 

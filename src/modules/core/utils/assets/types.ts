@@ -3,6 +3,7 @@ export type AssetMap = {
     name: string;
     slug: string;
     icon?: string;
+    assetId: string;
   };
 };
 

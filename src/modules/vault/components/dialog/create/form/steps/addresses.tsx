@@ -19,13 +19,12 @@ import {
 } from '@/modules/addressBook/components';
 import {
   AddressesFields,
-  useAddressBook,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { useAuth } from '@/modules/auth/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 export interface VaultAddressesStepProps {
@@ -37,16 +36,17 @@ export interface VaultAddressesStepProps {
 }
 
 const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
-  const { isSingleWorkspace } = useAuth();
   const {
-    handleOpenDialog,
-    listContactsRequest,
-    createContactRequest,
-    form: contactForm,
-    contactDialog,
-    inView,
-    workspaceId,
-  } = useAddressBook(!isSingleWorkspace);
+    authDetails: { userInfos },
+    addressBookInfos: {
+      handlers: { handleOpenDialog },
+      dialog: { contactDialog },
+      requests: { listContactsRequest, createContactRequest },
+      form: contactForm,
+      inView,
+      workspaceId,
+    },
+  } = useWorkspaceContext();
 
   const hasThreeOrMoreAddress =
     form.watch('addresses') && form.watch('addresses')!.length >= 3;
@@ -65,7 +65,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
-      includePersonal: !isSingleWorkspace,
+      includePersonal: !userInfos.onSingleWorkspace,
       contacts: listContactsRequest.data!,
       fields: form.watch('addresses') as AddressesFields,
       errors: form.formState.errors.addresses,
@@ -88,7 +88,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
       <CreateContactDialog
         form={contactForm}
         dialog={contactDialog}
-        isLoading={createContactRequest.isLoading}
+        isLoading={createContactRequest.isPending}
         isEdit={false}
       />
 
@@ -108,8 +108,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
-          // pr={{ base: 2, sm: 4 }}
-          // h={500}
           h={{ base: '60vh', xs: 500 }}
         >
           <Dialog.Section
@@ -260,17 +258,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
           <HStack
             position="relative"
-            mt={{ base: 4, xs: 8 }}
+            mt={{ base: 2, xs: 8 }}
             border="1px solid"
             borderColor="grey.925"
             borderRadius="xl"
-            p={4}
-            mb={{ base: 8, xs: 4 }}
+            py={{ base: 2, xs: 4 }}
+            px={4}
+            mb={{ base: 12, xs: 4 }}
           >
             <Dialog.Section
               w="full"
               maxW={350}
-              mb={{ base: 5, sm: 'unset' }}
+              mb={{ base: 0, xs: 5, sm: 'unset' }}
               title={
                 <Heading fontSize="sm" color="grey.200">
                   Min signatures required?

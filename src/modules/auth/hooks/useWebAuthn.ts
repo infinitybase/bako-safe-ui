@@ -8,7 +8,8 @@ import {
   useState,
 } from 'react';
 
-import { EnumUtils, useTab, useToast } from '@/modules/core';
+import { useContactToast } from '@/modules/addressBook';
+import { EnumUtils, useTab } from '@/modules/core';
 
 import { localStorageKeys, UserService } from '../services';
 import { useDrawerWebAuth } from './useDrawerWebAuthn';
@@ -18,7 +19,6 @@ import {
   useCheckNickname,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
-import { useContactToast } from '@/modules/addressBook';
 
 export enum WebAuthnState {
   LOGIN = 0,
@@ -225,7 +225,7 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleCreate,
       handlePrimaryActionUsingEnterKey: handleCreateUsingEnterKey,
       handleSecondaryAction: resetDialogForms,
-      isLoading: createAccountMutate.isLoading,
+      isLoading: createAccountMutate.isPending,
       isDisabled: createBtnIsDisabled,
       title: 'Create Passkey account',
       description: 'Create a new account for this device.',
@@ -237,7 +237,7 @@ const useWebAuthn = () => {
       handlePrimaryAction: handleLogin,
       handlePrimaryActionUsingEnterKey: handleLoginUsingEnterKey,
       handleSecondaryAction: () => handleChangeTab(WebAuthnState.REGISTER),
-      isLoading: signAccountMutate.isLoading,
+      isLoading: signAccountMutate.isPending,
       isDisabled: loginBtnIsDisabled,
       title: 'Login with Passkey',
       description:

@@ -1,23 +1,18 @@
-import { useQuery } from 'react-query';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { useQuery } from '@tanstack/react-query';
 
-import { useAuth } from '@/modules/auth/hooks/useAuth';
-import { Workspace, WorkspacesQueryKey } from '@/modules/core';
+import { WorkspacesQueryKey } from '@/modules/core';
 import { WorkspaceService } from '@/modules/workspace/services';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
-const useGetWorkspaceRequest = (
-  workspaceId: string,
-  options?: UseQueryOptions<Workspace, unknown, Workspace, string[]>,
-) => {
-  const { data, ...request } = useQuery(
-    WorkspacesQueryKey.GET(workspaceId),
-    () => WorkspaceService.getById(workspaceId),
-    {
-      ...options,
-      enabled: !!workspaceId || options?.enabled,
-      refetchOnWindowFocus: false,
-    },
-  );
+const useGetWorkspaceRequest = (workspaceId: string) => {
+  const { data, ...request } = useQuery({
+    queryKey: WorkspacesQueryKey.GET(workspaceId),
+    queryFn: () => WorkspaceService.getById(workspaceId),
+    enabled:
+      !!workspaceId && !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   return {
     workspace: data,
@@ -25,20 +20,4 @@ const useGetWorkspaceRequest = (
   };
 };
 
-const useGetCurrentWorkspace = () => {
-  const { workspaces } = useAuth();
-
-  return useGetWorkspaceRequest(workspaces.current);
-};
-
-const useGetSingleWorkspace = () => {
-  const { workspaces } = useAuth();
-
-  return useGetWorkspaceRequest(workspaces.single);
-};
-
-export {
-  useGetCurrentWorkspace,
-  useGetSingleWorkspace,
-  useGetWorkspaceRequest,
-};
+export { useGetWorkspaceRequest };

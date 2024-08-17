@@ -15,55 +15,45 @@ import {
 } from '@chakra-ui/react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
-import {
-  CustomSkeleton,
-  HomeIcon,
-  TransactionTypeFilters,
-  VaultIcon,
-} from '@/components';
+
+import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { useAuth } from '@/modules/auth';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { CreateVaultDialog } from '@/modules/vault';
-import { useGetCurrentWorkspace, useWorkspace } from '@/modules/workspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import {
   TransactionCard,
   TransactionCardMobile,
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
-import { StatusFilter, useTransactionList } from '../../hooks';
+import { StatusFilter } from '../../hooks';
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { transactionStatus } from '../../utils';
-import { useFilterTxType } from '../../hooks/filter';
 
 const UserTransactionsPage = () => {
-  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
-    useFilterTxType();
-
   const {
-    infinityTransactions,
-    infinityTransactionsRef,
-    transactionRequest,
-    filter,
-    inView,
-    account,
-    navigate,
+    transactionsPageList: {
+      infinityTransactionsRef,
+      request: { isLoading, isFetching },
+      filter,
+      inView,
+      handlers: { navigate },
+      lists: { infinityTransactions, transactions },
+    },
     pendingSignerTransactions,
-  } = useTransactionList({ type: txFilterType, byMonth: true });
+  } = useTransactionsContext();
 
-  const { hasPermission, goWorkspace } = useWorkspace();
   const {
-    isSingleWorkspace,
-    workspaces: { current },
-  } = useAuth();
-
-  const { workspace } = useGetCurrentWorkspace();
-
-  const { goHome } = useHome();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission, handleWorkspaceSelection, goHome },
+    },
+  } = useWorkspaceContext();
 
   const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 
@@ -93,7 +83,12 @@ const UserTransactionsPage = () => {
             bg="dark.100"
             color="grey.200"
             onClick={() =>
-              isSingleWorkspace ? goHome() : goWorkspace(current ?? '')
+              userInfos.onSingleWorkspace
+                ? goHome()
+                : handleWorkspaceSelection(
+                    userInfos.workspace?.id,
+                    Pages.workspace({ workspaceId: userInfos.workspace?.id }),
+                  )
             }
           >
             Back home
@@ -114,17 +109,24 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                {!isSingleWorkspace && (
+                {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       fontSize="sm"
                       color="grey.200"
                       fontWeight="semibold"
-                      onClick={() => goWorkspace(current)}
+                      onClick={() =>
+                        handleWorkspaceSelection(
+                          userInfos.workspace?.id,
+                          Pages.workspace({
+                            workspaceId: userInfos.workspace?.id,
+                          }),
+                        )
+                      }
                       maxW={40}
                       isTruncated
                     >
-                      {workspace?.name}
+                      {userInfos.workspace?.name}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )}
@@ -162,7 +164,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.userVaults({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }
@@ -190,7 +192,7 @@ const UserTransactionsPage = () => {
           onClick={() =>
             navigate(
               Pages.addressBook({
-                workspaceId: current ?? '',
+                workspaceId: userInfos.workspace?.id ?? '',
               }),
             )
           }
@@ -228,13 +230,6 @@ const UserTransactionsPage = () => {
               quantity={pendingSignerTransactions.data?.ofUser ?? 0}
             />
           </Box>
-          {!isSmall && (
-            <TransactionTypeFilters
-              currentFilter={txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-            />
-          )}
         </HStack>
 
         {/* FILTER */}
@@ -261,83 +256,80 @@ const UserTransactionsPage = () => {
               />
             </TransactionFilter.Control>
           </Box>
-          {isSmall && (
-            <TransactionTypeFilters
-              mt={2}
-              currentFilter={txFilterType}
-              incomingAction={handleIncomingAction}
-              outgoingAction={handleOutgoingAction}
-              buttonsFullWidth
-            />
-          )}
         </VStack>
       </VStack>
 
-      {/* LIST */}
-      <VStack
-        minH="55vh"
-        maxH="74vh"
-        mt={-3}
-        overflowY="scroll"
-        overflowX="hidden"
-        scrollBehavior="smooth"
-        w="full"
-        sx={{
-          '&::-webkit-scrollbar': {
-            display: 'none',
-            width: '5px',
-            maxHeight: '330px',
-            backgroundColor: 'grey.200',
-            borderRadius: '30px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#2C2C2C',
-            borderRadius: '30px',
-            height: '10px',
-          },
-        }}
+      <CustomSkeleton
+        isLoaded={
+          !filter.value
+            ? true
+            : !isFetching && !pendingSignerTransactions.isFetching
+        }
       >
-        {!transactionRequest.isLoading &&
-          !transactionRequest?.transactions.length && (
+        {/* LIST */}
+        <VStack
+          minH="55vh"
+          maxH="74vh"
+          mt={-3}
+          overflowY="scroll"
+          overflowX="hidden"
+          scrollBehavior="smooth"
+          w="full"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'grey.200',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
+          }}
+        >
+          {!isLoading && !transactions.length && !isFetching && (
             <EmptyState showAction={false} />
           )}
-        {infinityTransactions?.map((grouped) => (
-          <>
-            <HStack w="full">
-              <Text
-                fontSize="sm"
-                fontWeight="semibold"
-                color="grey.425"
-                whiteSpace="nowrap"
-              >
-                {grouped.monthYear}
-              </Text>
 
-              <Divider w="full" borderColor="grey.950" />
-            </HStack>
-            <TransactionCard.List mt={1} w="full" spacing={0}>
-              {grouped?.transactions.map((transaction) => {
-                const status = transactionStatus({
-                  ...transaction,
-                  account,
-                });
-                const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === account,
-                );
+          {infinityTransactions?.map((grouped) => (
+            <>
+              <HStack w="full">
+                <Text
+                  fontSize="sm"
+                  fontWeight="semibold"
+                  color="grey.425"
+                  whiteSpace="nowrap"
+                >
+                  {grouped.monthYear}
+                </Text>
 
-                return (
-                  <>
-                    <Box
-                      key={transaction.id}
-                      ref={infinityTransactionsRef}
-                      w="full"
-                    >
-                      <CustomSkeleton isLoaded={!transactionRequest.isLoading}>
+                <Divider w="full" borderColor="grey.950" />
+              </HStack>
+              <TransactionCard.List mt={1} w="full" spacing={0}>
+                {grouped?.transactions.map((transaction) => {
+                  const status = transactionStatus({
+                    ...transaction,
+                    account: userInfos.address,
+                  });
+                  const isSigner = !!transaction.predicate?.members?.find(
+                    (member) => member.address === userInfos.address,
+                  );
+
+                  return (
+                    <>
+                      <Box
+                        key={transaction.id}
+                        ref={infinityTransactionsRef}
+                        w="full"
+                      >
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             mt="15px"
                           />
                         ) : (
@@ -347,7 +339,7 @@ const UserTransactionsPage = () => {
                             status={status}
                             isSigner={isSigner}
                             transaction={transaction}
-                            account={account}
+                            account={userInfos.address}
                             details={
                               <TransactionCard.Details
                                 transaction={transaction}
@@ -356,17 +348,17 @@ const UserTransactionsPage = () => {
                             }
                           />
                         )}
-                      </CustomSkeleton>
-                    </Box>
+                      </Box>
 
-                    <Box ref={inView.ref} />
-                  </>
-                );
-              })}
-            </TransactionCard.List>
-          </>
-        ))}
-      </VStack>
+                      <Box ref={inView.ref} />
+                    </>
+                  );
+                })}
+              </TransactionCard.List>
+            </>
+          ))}
+        </VStack>
+      </CustomSkeleton>
     </VStack>
   );
 };

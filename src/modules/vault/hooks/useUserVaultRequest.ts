@@ -1,21 +1,20 @@
-import { useQuery } from 'react-query';
-
-import { useAuthStore } from '@/modules/auth';
+import { useQuery } from '@tanstack/react-query';
 
 import { VaultService } from '../services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VAULT_LIST_QUERY_KEY = 'predicate/by-address';
 
 const useUserVaultRequest = () => {
-  const { account } = useAuthStore();
+  const {
+    authDetails: { userInfos },
+  } = useWorkspaceContext();
 
-  return useQuery(
-    [VAULT_LIST_QUERY_KEY, account],
-    () => VaultService.getAll(),
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery({
+    queryKey: [VAULT_LIST_QUERY_KEY, userInfos.address],
+    queryFn: () => VaultService.getAll(),
+    refetchOnWindowFocus: false,
+  });
 };
 
 export { useUserVaultRequest, VAULT_LIST_QUERY_KEY };

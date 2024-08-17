@@ -1,15 +1,19 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
-import { useAddressBook } from '@/modules/addressBook';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 
 import { CardMember } from './CardMember';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
-  const { contactByAddress } = useAddressBook();
+  const {
+    addressBookInfos: {
+      handlers: { contactByAddress },
+    },
+  } = useWorkspaceContext();
   if (!vault) return null;
-  const members = vault.members;
+  const members = vault?.data?.members;
 
   return (
     <Box w={{ base: 'full', sm: 'auto' }}>
@@ -18,7 +22,8 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.minSigners}/{vault?.members?.length}
+          Required signers {vault?.data?.minSigners}/
+          {vault?.data?.members?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>
@@ -35,7 +40,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <CardMember
-                  isOwner={vault.owner?.id === member.id}
+                  isOwner={vault?.data?.owner?.id === member.id}
                   member={{
                     ...member,
                     nickname:

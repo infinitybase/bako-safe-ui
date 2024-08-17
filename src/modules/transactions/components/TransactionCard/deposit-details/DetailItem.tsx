@@ -1,5 +1,3 @@
-import { AddressUtils, useScreenSize } from '@/modules/core';
-import TokenInfos from './TokenInfos';
 import {
   Box,
   Center,
@@ -10,21 +8,30 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { ITransferAsset } from 'bakosafe';
-import AmountsInfo from './AmountsInfo';
-import { limitCharacters } from '@/utils';
 import { Address } from 'fuels';
+
 import { DoubleArrowIcon } from '@/components';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { AddressUtils, useScreenSize } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import AmountsInfo from './AmountsInfo';
+import TokenInfos from './TokenInfos';
 
 interface DetailItemProps {
   asset: ITransferAsset;
   index: number;
-  toAddress: string;
+  sentBy: string;
 }
 
-const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
-  const txUSDAmount = useTxAmountToUSD([asset]);
+const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
+  const { tokensUSD } = useWorkspaceContext();
+  const txUSDAmount = useTxAmountToUSD(
+    [asset],
+    tokensUSD?.isLoading,
+    tokensUSD?.data!,
+  );
 
   const { isExtraSmall, isMobile, isSmall } = useScreenSize();
 
@@ -57,17 +64,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {isExtraSmall
-                ? limitCharacters(
-                    AddressUtils.format(
-                      Address.fromString(asset.to ?? '').toAddress(),
-                    ) ?? '',
-                    isMobile ? 16 : 24,
-                  )
-                : AddressUtils.format(
-                    Address.fromString(asset.to ?? '').toAddress(),
-                    isSmall ? 8 : isMobile ? 16 : 24,
-                  )}
+              {AddressUtils.format(
+                Address.fromString(sentBy ?? '').toB256(),
+                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+              )}
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -91,17 +91,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
               isTruncated
               textAlign="end"
             >
-              {isExtraSmall
-                ? limitCharacters(
-                    AddressUtils.format(
-                      Address.fromString(toAddress ?? '').toAddress(),
-                    ) ?? '',
-                    isMobile ? 16 : 24,
-                  )
-                : AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toAddress(),
-                    isSmall ? 8 : isMobile ? 16 : 24,
-                  )}
+              {AddressUtils.format(
+                Address.fromString(asset?.to ?? '').toB256(),
+                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+              )}
             </Text>
           </Flex>
         </VStack>
@@ -117,17 +110,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {isExtraSmall
-              ? limitCharacters(
-                  AddressUtils.format(
-                    Address.fromB256(asset.to ?? '').toAddress(),
-                  ) ?? '',
-                  7,
-                )
-              : AddressUtils.format(
-                  Address.fromString(asset.to ?? '').toAddress(),
-                  isMobile ? 10 : 24,
-                )}
+            {AddressUtils.format(
+              Address.fromString(sentBy ?? '').toB256(),
+              isMobile ? 10 : 14,
+            )}
           </Text>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -150,17 +136,10 @@ const DetailItem = ({ asset, index, toAddress }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {isExtraSmall
-              ? limitCharacters(
-                  AddressUtils.format(
-                    Address.fromString(toAddress ?? '').toAddress(),
-                  ) ?? '',
-                  7,
-                )
-              : AddressUtils.format(
-                  Address.fromString(toAddress ?? '').toAddress(),
-                  isMobile ? 10 : 24,
-                )}
+            {AddressUtils.format(
+              Address.fromString(asset.to ?? '').toB256(),
+              isMobile ? 10 : 14,
+            )}
           </Text>
         </>
       )}

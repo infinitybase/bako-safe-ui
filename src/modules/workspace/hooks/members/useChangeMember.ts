@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useAddressBook } from '@/modules/addressBook';
 import {
   defaultPermissions,
   EnumUtils,
@@ -14,15 +13,13 @@ import {
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
-import { useGetWorkspaceRequest } from '../useGetWorkspaceRequest';
-import { useWorkspace } from '../useWorkspace';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
-import { Address } from 'fuels';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export enum MemberTabState {
   FORM = 0,
@@ -40,8 +37,17 @@ export type UseChangeMember = ReturnType<typeof useChangeMember>;
 
 const useChangeMember = () => {
   const navigate = useNavigate();
+  const {
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+      currentWorkspaceRequest: {
+        currentWorkspace,
+        refetch: refetchCurrentWorkspace,
+      },
+    },
+    addressBookInfos,
+  } = useWorkspaceContext();
 
-  const { goWorkspace } = useWorkspace();
   const { successToast } = useSettingsToast();
 
   const params = useParams<{ workspaceId: string; memberId: string }>();
@@ -54,23 +60,14 @@ const useChangeMember = () => {
     defaultTab: MemberTabState.FORM,
   });
 
-  const workspaceRequest = useGetWorkspaceRequest(params.workspaceId!, {
-    onSuccess: (workspace) => {
-      if (!isEditMember) return;
-
-      setMemberValuesByWorkspace(workspace, params.memberId);
-    },
-  });
-
-  const membersToForm = workspaceRequest.workspace?.members.map(
+  const membersToForm = currentWorkspace?.members?.map(
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
     useChangeMemberForm(membersToForm!);
-  const addressBook = useAddressBook();
 
   const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
-    workspaceRequest.workspace!,
+    currentWorkspace!,
     {
       id: params.memberId,
     } as Member,
@@ -87,55 +84,57 @@ const useChangeMember = () => {
     });
   }, [permissionForm.watch('permission')]);
 
-  const memberRequest = useIncludeMemberRequest(params.workspaceId!);
-  const permissionsRequest = useChangePermissionsRequest(params.workspaceId!);
-  const deleteRequest = useDeleteMemberRequest(params.workspaceId!);
+  const memberRequest = useIncludeMemberRequest();
+  const permissionsRequest = useChangePermissionsRequest();
+  const deleteRequest = useDeleteMemberRequest();
 
-  const handleClose = () => goWorkspace(params.workspaceId!);
+  const handleEditMemberPermission = useCallback(
+    (workspace: Workspace) => {
+      isEditMember && setMemberValuesByWorkspace(workspace, params.memberId);
+    },
+    [isEditMember, params.memberId, setMemberValuesByWorkspace],
+  );
 
-  // const handleAddMember = memberForm.handleSubmit((data) => {
-  //   memberRequest.mutate(data.address, {
-  //     onSuccess: () => {
-  //       tabs.set(MemberTabState.FORM);
-  //       workspaceRequest.refetch();
-  //     },
-  //   });
-  // });
+  const handleClose = () =>
+    handleWorkspaceSelection(
+      params.workspaceId ?? '',
+      Pages.workspace({
+        workspaceId: params.workspaceId ?? '',
+      }),
+    );
 
   const handlePermissions = permissionForm.handleSubmit((data) => {
     const memberAddress = memberForm.getValues('address.value');
-    const _memberAddress = Address.fromString(memberAddress).bech32Address;
     const updatedMemberPermission = editForm.getValues('permission');
     const permission = data.permission as PermissionRoles;
 
     // If not has an updated member permission and has a memberAddress it means that comes from the memberForm(creation)
-    if (!updatedMemberPermission && _memberAddress) {
-      memberRequest.mutate(_memberAddress, {
-        onSettled: (data?: Workspace) => {
-          workspaceRequest.refetch().then(() => {
-            const newMember = data?.members.find(
-              (member) => member.address === _memberAddress,
+    if (!updatedMemberPermission && memberAddress) {
+      memberRequest.mutate(memberAddress, {
+        onSuccess: (data: Workspace) => {
+          const newMember = data?.members.find(
+            (member) => member.address === memberAddress,
+          );
+
+          if (newMember) {
+            permissionsRequest.mutate(
+              {
+                member: newMember.id,
+                permissions: defaultPermissions[permission],
+              },
+              {
+                onSuccess: () => {
+                  tabs.set(MemberTabState.SUCCESS);
+                  refetchCurrentWorkspace();
+                },
+              },
             );
-            if (newMember) {
-              permissionsRequest.mutate(
-                {
-                  member: newMember.id,
-                  permissions: defaultPermissions[permission],
-                },
-                {
-                  onSuccess: () => {
-                    tabs.set(MemberTabState.SUCCESS);
-                    workspaceRequest.refetch();
-                  },
-                },
-              );
-            }
-          });
+          }
         },
       });
     }
 
-    const workspace = workspaceRequest.workspace!;
+    const workspace = currentWorkspace!;
     const member = workspace.members.find(
       (member) => member.address === memberAddress,
     );
@@ -151,7 +150,7 @@ const useChangeMember = () => {
       {
         onSuccess: () => {
           tabs.set(MemberTabState.SUCCESS);
-          workspaceRequest.refetch();
+          refetchCurrentWorkspace();
           successToast({
             title: 'Success!',
             description: 'Your member permissions were updated.',
@@ -162,7 +161,7 @@ const useChangeMember = () => {
   });
 
   const handleDeleteMember = () => {
-    const workspace = workspaceRequest.workspace!;
+    const workspace = currentWorkspace!;
     const member = workspace.members.find(
       (member) => member.id === params.memberId,
     );
@@ -171,11 +170,11 @@ const useChangeMember = () => {
 
     deleteRequest.mutate(
       {
-        id: workspace.id,
         member: member.id,
       },
       {
         onSuccess: () => {
+          refetchCurrentWorkspace();
           handleClose(),
             successToast({
               title: 'Success!',
@@ -238,7 +237,7 @@ const useChangeMember = () => {
         ? handleSetUpdateStep
         : handlePermissions,
       handleSecondaryAction: handleClose,
-      isLoading: permissionsRequest.isLoading || deleteRequest.isLoading,
+      isLoading: permissionsRequest.isPending || deleteRequest.isPending,
       title: isEditMember ? 'Member permission' : 'User permission',
       description: undefined,
       tertiaryAction: isEditMember ? 'Remove' : undefined,
@@ -295,10 +294,14 @@ const useChangeMember = () => {
     },
   };
 
+  useEffect(() => {
+    handleEditMemberPermission(currentWorkspace!);
+  }, []);
+
   return {
     tabs,
     params,
-    addressBook,
+    addressBook: addressBookInfos,
     memberRequest,
     permissionsRequest,
     handleClose,

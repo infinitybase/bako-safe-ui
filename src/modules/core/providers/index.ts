@@ -1,1 +1,1 @@
-export * from './bakosafe';
+export * from './';

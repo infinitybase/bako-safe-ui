@@ -16,12 +16,10 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton } from '@/components';
+import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
-import { useAuth } from '@/modules/auth';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { useCLI } from '@/modules/cli/hooks';
 import {
   AddressUtils,
   Pages,
@@ -29,36 +27,46 @@ import {
   useScreenSize,
 } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
-import { useWorkspace } from '@/modules/workspace';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useVaultInfosContext } from '../VaultInfosProvider';
 
 export interface CardDetailsProps {
-  store: UseVaultDetailsReturn['store'];
+  assets: UseVaultDetailsReturn['assets'];
   vault: UseVaultDetailsReturn['vault'];
   blockedTransfers: boolean;
 }
 
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { vault, store, blockedTransfers } = props;
-  const { balanceUSD } = store;
+  const { vault, assets, blockedTransfers } = props;
+  const { balanceUSD } = assets;
   const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
     useScreenSize();
 
-  const { hasPermission } = useWorkspace();
   const {
-    workspaces: { current },
-  } = useAuth();
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { hasPermission },
+    },
+  } = useWorkspaceContext();
 
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
-  const { settings, hasPermission: hasCLIPermission, APIToken } = useCLI(vault);
+  const {
+    CLIInfos: {
+      CLISettings,
+      hasCLIPermission,
+      APIToken,
+      commingSoonFeatures: { commingSoonDialog, selectedFeature },
+    },
+  } = useVaultInfosContext();
   const { dialog, steps, tabs, create, list } = APIToken;
 
-  const workspaceId = current ?? '';
+  const workspaceId = userInfos.workspace?.id ?? '';
 
   const reqPerm = [
     PermissionRoles.ADMIN,
@@ -69,7 +77,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const makeTransactionsPerm = useMemo(() => {
     const as = hasPermission(reqPerm);
     return as;
-  }, [vault.id]);
+  }, [vault.data?.id]);
 
   if (!vault) return null;
 
@@ -120,7 +128,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     <Center>
                       <Avatar
                         variant="roundedSquare"
-                        name={vault.name}
+                        name={vault.data?.name}
                         bg="grey.900"
                         color="white"
                         size={'lg'}
@@ -136,12 +144,14 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
                       >
                         {isExtraSmall
-                          ? limitCharacters(vault?.name ?? '', 10)
-                          : vault?.name}
+                          ? limitCharacters(vault.data?.name ?? '', 10)
+                          : vault.data?.name}
                       </Heading>
 
                       <Box maxW={420}>
-                        <Text variant="description">{vault?.description}</Text>
+                        <Text variant="description">
+                          {vault?.data?.description}
+                        </Text>
                       </Box>
                     </Box>
                   </Stack>
@@ -162,7 +172,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           maxW={{ base: 20, xs: 'unset' }}
                           noOfLines={2}
                         >
-                          {/* Vault {isExtraSmall ? <Text>balance</Text> : 'balance'} */}
                           Vault balance
                         </Text>
                         <HStack spacing={2}>
@@ -171,7 +180,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                               variant="title-xl"
                               fontSize={{ base: 'md', sm: 'lg' }}
                             >
-                              {store.visebleBalance
+                              {assets.visibleBalance
                                 ? `${balanceUSD} USD`
                                 : '-----'}
                             </Heading>
@@ -182,10 +191,10 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             justifyContent="center"
                             alignItems="center"
                             onClick={() =>
-                              store.setVisibleBalance(!store.visebleBalance)
+                              assets.setVisibleBalance(!assets.visibleBalance)
                             }
                           >
-                            {store.visebleBalance ? (
+                            {assets.visibleBalance ? (
                               <ViewIcon boxSize={{ base: 5, sm: 6 }} />
                             ) : (
                               <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
@@ -210,7 +219,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
-                          onClick={() => openFaucet(vault.predicateAddress!)}
+                          onClick={() =>
+                            openFaucet(vault.data?.predicateAddress!)
+                          }
                           position="relative"
                         >
                           Faucet
@@ -236,7 +247,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           variant="primary"
                           alignSelf="end"
                           isDisabled={
-                            !vault?.hasBalance ||
+                            !assets?.hasBalance ||
                             blockedTransfers ||
                             !makeTransactionsPerm ||
                             isEthBalanceLowerThanReservedAmount
@@ -244,7 +255,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           onClick={() =>
                             navigate(
                               Pages.createTransaction({
-                                vaultId: vault.id!,
+                                vaultId: vault.data?.id!,
                                 workspaceId,
                               }),
                             )
@@ -323,7 +334,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                   >
                     <QRCodeSVG
-                      value={vault.predicateAddress!}
+                      value={vault?.data?.predicateAddress!}
                       fgColor="black"
                       bgColor="white"
                       style={{
@@ -337,8 +348,10 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     w="full"
                     mb={{ base: 4, sm: 0 }}
                     maxW={{ base: '40', sm: 180 }}
-                    address={AddressUtils.format(vault.predicateAddress)!}
-                    addressToCopy={vault.predicateAddress!}
+                    address={
+                      AddressUtils.format(vault?.data?.predicateAddress ?? '')!
+                    }
+                    addressToCopy={vault?.data?.predicateAddress!}
                   />
                 </VStack>
               </Stack>
@@ -359,7 +372,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   xl: isLarge ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
                 }}
               >
-                {settings.map((setting) => (
+                {CLISettings.map((setting) => (
                   <CLISettingsCard
                     key={setting.label}
                     onClick={setting.onClick}
@@ -381,6 +394,16 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
         create={create}
         list={list}
       />
+
+      {selectedFeature && (
+        <CommingSoonDialog
+          description={selectedFeature.dialogDescription}
+          isOpen={commingSoonDialog.isOpen}
+          onClose={commingSoonDialog.onClose}
+          notifyHandler={selectedFeature.notifyHandler}
+          title="Coming Soon"
+        />
+      )}
     </>
   );
 };

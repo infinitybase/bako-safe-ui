@@ -1,111 +1,94 @@
-import { useDisclosure } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useSidebar } from '../details';
+import { useGetParams } from '@/modules/core';
+import { useFilterTxType } from '@/modules/transactions/hooks/filter';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useCLI } from '@/modules/cli/hooks';
 
-import { useAuthStore } from '@/modules/auth/store';
-import { PredicateWithWorkspace } from '@/modules/core/models/predicate';
-import { useTransactionsSignaturePending } from '@/modules/transactions/hooks/list';
-import { useVaultState } from '@/modules/vault/states';
-
-import { useVaultAssets } from '../assets';
-import { useVaultDetailsRequest } from '../details';
-import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
-import { IPagination } from '@/modules/core';
-import { TransactionType } from 'bakosafe';
-
-interface IUseVaultDetails {
-  byMonth?: boolean;
-  txFilterType?: TransactionType;
-}
-
-const useVaultDetails = ({
-  byMonth = false,
-  txFilterType,
-}: IUseVaultDetails = {}) => {
-  const navigate = useNavigate();
-  const params = useParams<{ workspaceId: string; vaultId: string }>();
-  const { account } = useAuthStore();
-  const store = useVaultState();
-  const inView = useInView();
-  const menuDrawer = useDisclosure();
-
-  const { predicate, predicateInstance, isLoading, isFetching } =
-    useVaultDetailsRequest(params.vaultId!);
-  const vaultTransactionsRequest = useVaultTransactionsRequest(
-    predicateInstance!,
-    byMonth,
-    txFilterType,
-  );
-
-  const pendingSignerTransactions = useTransactionsSignaturePending([
-    params.vaultId!,
-  ]);
-
-  useMemo(() => {
-    pendingSignerTransactions.refetch();
-  }, [predicate, params]);
+const useVaultDetails = () => {
+  const [byMonth, setByMonth] = useState(false);
 
   const {
-    assets,
-    ethBalance,
-    isLoading: isLoadingAssets,
-    hasBalance,
-    hasAssets,
-    refetch,
-  } = useVaultAssets(predicateInstance);
+    vaultPageParams: { vaultId, workspaceId },
+  } = useGetParams();
 
-  const configurable = useMemo(
-    () => predicateInstance?.getConfigurable(),
-    [predicateInstance],
-  );
+  const { txFilterType, handleIncomingAction, handleOutgoingAction } =
+    useFilterTxType();
 
-  const signersOrdination = useMemo(() => {
-    if (!predicate) return [];
+  const {
+    vaultDetails: { vaultRequest, assets },
+    authDetails: {
+      userInfos: { address: account, id: userId },
+    },
+    workspaceInfos: {
+      currentWorkspaceRequest: { currentWorkspace },
+    },
+  } = useWorkspaceContext();
 
-    return (
-      predicate.addresses
-        ?.map((address) => ({
-          address,
-          isOwner: address === predicate.owner.address,
-        }))
-        .sort((address) => (address.isOwner ? -1 : 0)) ?? []
-    );
-  }, [predicate]);
+  const {
+    pendingSignerTransactions,
+    vaultTransactions: {
+      request,
+      infinityTransactionsRef,
+      lists: { infinityTransactions },
+      filter,
+      inView,
+      defaultIndex,
+      handlers: { selectedTransaction, setSelectedTransaction },
+    },
+  } = useTransactionsContext();
+
+  const {
+    settings: CLISettings,
+    hasPermission: hasCLIPermission,
+    APIToken,
+    commingSoonFeatures: { commingSoonDialog, selectedFeature },
+  } = useCLI({
+    vaultId: vaultRequest.data.id ?? '',
+    userId,
+    currentWorkspace: currentWorkspace,
+  });
+
+  const sideBarDetails = useSidebar({
+    params: { vaultId: vaultId ?? '', workspaceId: workspaceId ?? '' },
+  });
 
   return {
+    CLIInfos: {
+      CLISettings,
+      hasCLIPermission,
+      APIToken,
+      commingSoonFeatures: { commingSoonDialog, selectedFeature },
+    },
     vault: {
-      ...(predicate as PredicateWithWorkspace),
-      configurable,
-      signers: signersOrdination,
-      isLoading,
-      isFetching,
-      hasBalance,
-      ethBalance,
-      transactions: {
-        ...vaultTransactionsRequest,
-        vaultTransactions:
-          vaultTransactionsRequest.transactions as unknown as IPagination<ITransactionsGroupedByMonth>,
-        loadingVaultTransactions: vaultTransactionsRequest.isLoading,
-        isPendingSigner:
-          pendingSignerTransactions.data?.transactionsBlocked ?? false,
-      },
+      ...vaultRequest,
     },
-    assets: {
-      hasAssets,
-      isLoadingAssets,
-      ethBalance,
-      value: assets,
-      refetchBalance: refetch,
+    transactions: {
+      ...request,
+      byMonth,
+      setByMonth,
+      txFilterType,
+      handleIncomingAction,
+      handleOutgoingAction,
+      infinityTransactionsRef,
+      infinityTransactions,
+      homeDetailsLimitedTransactions: infinityTransactions?.slice(0, 1),
+      filter,
+      inView,
+      account,
+      selectedTransaction,
+      setSelectedTransaction,
+      defaultIndex,
     },
-    inView,
-    navigate,
+    sideBarDetails,
+    assets,
     account,
-    store,
-    params,
     pendingSignerTransactions,
-    menuDrawer,
+    isPendingSigner:
+      pendingSignerTransactions.data?.transactionsBlocked ?? false,
+    pendingSignerTransactionsLength:
+      pendingSignerTransactions.data?.ofUser || 0,
   };
 };
 

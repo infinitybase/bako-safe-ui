@@ -1,5 +1,4 @@
 import { Dispatch, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
@@ -12,6 +11,7 @@ import { GET_API_TOKENS_QUERY_KEY } from '../list';
 import { TabState } from '../useAPIToken';
 import { useCreateAPITokenForm } from './useCreateAPITokenForm';
 import { useCreateAPITokenRequest } from './useCreateAPITokenRequest';
+import { useGetParams } from '@/modules';
 
 export type UseCreateAPITokenReturn = ReturnType<typeof useCreateAPIToken>;
 
@@ -19,8 +19,9 @@ const useCreateAPIToken = (
   setTab: Dispatch<React.SetStateAction<TabState>>,
 ) => {
   const [createdAPIKey, setCreatedAPIKey] = useState<string>('');
-
-  const { vaultId } = useParams<{ workspaceId: string; vaultId: string }>();
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
 
   const { form } = useCreateAPITokenForm();
   const { mutate, isLoading, isError } = useCreateAPITokenRequest(vaultId!);
@@ -36,7 +37,7 @@ const useCreateAPIToken = (
 
     await mutate(formattdeData, {
       onSuccess: (data: CreateAPITokenResponse) => {
-        queryClient.invalidateQueries([GET_API_TOKENS_QUERY_KEY]);
+        queryClient.invalidateQueries({ queryKey: [GET_API_TOKENS_QUERY_KEY] });
         successToast({
           title: 'API Token created!',
           description: 'Your API Token was successfully created.',

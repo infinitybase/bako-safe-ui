@@ -22,7 +22,7 @@ interface ContactCardProps extends CardProps {
   nickname: string;
   address: string;
   avatar: string;
-  dialog: UseAddressBookReturn['deleteContactDialog'];
+  dialog: UseAddressBookReturn['dialog']['deleteContactDialog'];
   showActionButtons: boolean;
   handleDelete: () => void;
   handleEdit: () => void;

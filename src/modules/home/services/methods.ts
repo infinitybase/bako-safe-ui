@@ -7,24 +7,23 @@ import { TransactionType } from 'bakosafe';
 
 export interface HomeDataResponse {
   predicates: IPagination<Predicate & { workspace: Workspace }>;
-  workspace: Workspace;
 }
 
 export interface HomeTransactionsResponse {
-  data: IPagination<ITransactionsGroupedByMonth>;
+  data: ITransactionsGroupedByMonth[];
 }
 
 type TokensUSDResponse = [AssetId, number][];
 export class HomeService {
   static async home() {
-    const { data } = await api.get<HomeDataResponse>(`/user/me`);
+    const { data } = await api.get<HomeDataResponse>(`/user/predicates`);
 
     return data;
   }
 
   static async homeTransactions(type?: TransactionType) {
     const { data } = await api.get<HomeTransactionsResponse>(
-      `/user/me/transactions`,
+      `/user/latest/transactions`,
       {
         params: {
           type,
@@ -36,7 +35,7 @@ export class HomeService {
   }
 
   static async getTokensUSDAmount() {
-    const { data } = await api.get<TokensUSDResponse>(`/user/me/tokens`);
+    const { data } = await api.get<TokensUSDResponse>(`/user/latest/tokens`);
 
     return data;
   }

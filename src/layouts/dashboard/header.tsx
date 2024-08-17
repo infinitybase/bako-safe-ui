@@ -26,12 +26,10 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
-import { useAuth } from '@/modules/auth/hooks';
 import { TypeUser } from '@/modules/auth/services';
 import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
-import { useHome } from '@/modules/home/hooks/useHome';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -39,11 +37,11 @@ import {
   CreateWorkspaceDialog,
   SelectWorkspaceDialog,
 } from '@/modules/workspace/components';
-import { useWorkspace } from '@/modules/workspace/hooks';
 
-import { useSidebar } from './hook';
 import { AddressCopy } from '@/components/addressCopy';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useUserWorkspacesRequest } from '@/modules';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -68,18 +66,20 @@ const TopBarItem = chakra(SpacedBox, {
 
 const UserBox = () => {
   const { isMobile } = useScreenSize();
-  const auth = useAuth();
+  const { authDetails } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
-  const { drawer } = useSidebar();
+  const notificationDrawerState = useDisclosure();
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-  const mySettingsRequest = useMySettingsRequest(auth.account);
+  const mySettingsRequest = useMySettingsRequest(
+    authDetails.userInfos?.address,
+  );
   const name = mySettingsRequest.data?.name;
   const hasNickName = !name?.startsWith('fuel');
 
   const logout = async () => {
-    auth.accountType === TypeUser.FUEL && (await fuel.disconnect());
-    auth.handlers.logout();
+    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
+    authDetails.handlers.logout?.();
   };
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -96,7 +96,10 @@ const UserBox = () => {
         onOpen={settingsDrawer.onOpen}
       />
 
-      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <NotificationsDrawer
+        isOpen={notificationDrawerState.isOpen}
+        onClose={notificationDrawerState.onClose}
+      />
 
       <Popover>
         <PopoverTrigger>
@@ -109,14 +112,14 @@ const UserBox = () => {
             <Box mr={{ base: 2, sm: 4 }}>
               <Avatar
                 variant="roundedSquare"
-                src={auth.avatar}
+                src={authDetails.userInfos?.avatar}
                 size={{ base: 'sm', sm: 'md' }}
               />
             </Box>
 
             <Box display={{ base: 'none', sm: 'block' }} mr={9}>
               <Text fontWeight="semibold" color="grey.200">
-                {AddressUtils.format(auth.account)}
+                {AddressUtils.format(authDetails.userInfos?.address)}
               </Text>
             </Box>
 
@@ -143,7 +146,7 @@ const UserBox = () => {
                   borderTop={'1px solid'}
                   borderTopColor={'dark.100'}
                   cursor={'pointer'}
-                  onClick={drawer.onOpen}
+                  onClick={notificationDrawerState.onOpen}
                   p={5}
                 >
                   <HStack>
@@ -190,8 +193,8 @@ const UserBox = () => {
                 addressColor="grey.250"
                 spacing={1}
                 flexDir="row"
-                address={AddressUtils.format(auth.account)!}
-                addressToCopy={auth.account}
+                address={AddressUtils.format(authDetails.userInfos?.address)!}
+                addressToCopy={authDetails.userInfos?.address}
                 bg="transparent"
                 fontSize={14}
                 alignSelf="start"
@@ -234,7 +237,7 @@ const WorkspaceBox = ({
   isLoading,
   currentWorkspace,
 }: {
-  currentWorkspace?: Workspace;
+  currentWorkspace?: Partial<Workspace>;
   isLoading?: boolean;
 }) => {
   const { isMobile } = useScreenSize();
@@ -318,19 +321,19 @@ const WorkspaceBox = ({
 };
 
 const Header = () => {
-  const { drawer } = useSidebar();
+  const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
+  const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
-    currentWorkspace,
-    workspaceDialog,
-    userWorkspacesRequest: {
-      data: userWorkspaces,
-      refetch: refetchUserWorkspaces,
+    authDetails: { userInfos },
+    workspaceInfos: {
+      workspaceDialog,
+      handlers: { handleWorkspaceSelection, goHome },
     },
-    handleWorkspaceSelection,
-  } = useWorkspace();
+  } = useWorkspaceContext();
+
   const { unreadCounter, setUnreadCounter } = useAppNotifications();
-  const { goHome } = useHome();
+
   const handleGoToCreateWorkspace = () => createWorkspaceDialog.onOpen();
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -340,12 +343,10 @@ const Header = () => {
   }, []);
 
   const handleCancel = async () => {
-    await refetchUserWorkspaces();
     createWorkspaceDialog.onClose();
   };
 
   const handleClose = async () => {
-    await refetchUserWorkspaces();
     createWorkspaceDialog.onClose();
     workspaceDialog.onClose();
   };
@@ -367,11 +368,14 @@ const Header = () => {
       justifyContent="space-between"
       borderBottomColor="dark.100"
     >
-      <NotificationsDrawer isOpen={drawer.isOpen} onClose={drawer.onClose} />
+      <NotificationsDrawer
+        isOpen={notificationDrawerState.isOpen}
+        onClose={notificationDrawerState.onClose}
+      />
       <SelectWorkspaceDialog
         dialog={workspaceDialog}
         userWorkspaces={userWorkspaces ?? []}
-        onSelect={handleWorkspaceSelection.handler}
+        onSelect={handleWorkspaceSelection}
         onCreate={handleGoToCreateWorkspace}
         isCreatingWorkspace={createWorkspaceDialog.isOpen}
       />
@@ -401,20 +405,23 @@ const Header = () => {
           cursor="pointer"
           w={{
             base: 190,
-            sm: currentWorkspace.workspace?.single ? 235 : 300,
+            sm: userInfos.onSingleWorkspace ? 235 : 300,
           }}
           borderLeftWidth={{ base: 0, sm: 1 }}
         >
           <WorkspaceBox
-            currentWorkspace={currentWorkspace.workspace}
-            isLoading={currentWorkspace.isLoading}
+            currentWorkspace={{
+              single: userInfos?.onSingleWorkspace,
+              ...userInfos?.workspace,
+            }}
+            isLoading={userInfos?.isLoading}
           />
         </TopBarItem>
 
         <TopBarItem
           display={{ base: 'none', sm: 'flex' }}
           cursor="pointer"
-          onClick={drawer.onOpen}
+          onClick={notificationDrawerState.onOpen}
           width={78}
         >
           <Icon
