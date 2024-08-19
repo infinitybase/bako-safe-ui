@@ -19,7 +19,7 @@ const useWorkspaceDetails = () => {
   } = useGetParams();
 
   const {
-    invalidateAllTransactionsTypeFilters,
+    resetAllTransactionsTypeFilters,
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
@@ -35,7 +35,7 @@ const useWorkspaceDetails = () => {
   } = useWorkspace(
     authDetails.userInfos,
     invalidateGifAnimationRequest,
-    invalidateAllTransactionsTypeFilters,
+    resetAllTransactionsTypeFilters,
     refetchPendingSingerTransactions,
   );
 

@@ -1,17 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { TransactionType } from 'bakosafe';
 
 import { HomeQueryKey } from '@/modules/core/models';
 
 import { HomeService } from '../services';
 
-const useHomeTransactionsRequest = (
-  workspaceId: string,
-  type: TransactionType | undefined,
-) => {
+const useHomeTransactionsRequest = (workspaceId: string) => {
   return useQuery({
-    queryKey: [HomeQueryKey.HOME_WORKSPACE(workspaceId), type],
-    queryFn: () => HomeService.homeTransactions(type),
+    queryKey: [HomeQueryKey.HOME_WORKSPACE(workspaceId)],
+    queryFn: () => HomeService.homeTransactions(),
     refetchOnWindowFocus: true,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,

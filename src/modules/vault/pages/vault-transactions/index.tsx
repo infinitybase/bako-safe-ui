@@ -34,8 +34,11 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const TransactionsVaultPage = () => {
+  const { pathname } = useLocation();
   const {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
@@ -50,6 +53,7 @@ const TransactionsVaultPage = () => {
       handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
+
   const workspaceId = userInfos.workspace?.id ?? '';
 
   const {
@@ -73,7 +77,22 @@ const TransactionsVaultPage = () => {
       },
       request: { isLoading, isFetching },
     },
+    resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
+
+  const isVaultTransactionsPage =
+    pathname === Pages.transactions({ workspaceId, vaultId: vault.data?.id! });
+
+  console.log('isVaultTransactionsPage:', isVaultTransactionsPage);
+
+  useEffect(() => {
+    return () => {
+      resetAllTransactionsTypeFilters();
+      if (!isVaultTransactionsPage) {
+        setSelectedTransaction({});
+      }
+    };
+  }, [pathname]);
 
   const hasTransactions = !isLoading && infinityTransactions?.length;
 
