@@ -11,10 +11,10 @@ import { VaultRoutes } from '@/modules/vault';
 const routes = (
   <>
     {signinRoutes}
-    {workspaceRoutes}
+    {/* {workspaceRoutes} */}
     {homeRoutes}
-    {dappRoutes}
-    {addressBookRoutes}
+    {/* {dappRoutes} */}
+    {/* {addressBookRoutes} */}
   </>
 );
 
@@ -22,7 +22,7 @@ const AppRoutes = () => {
   return (
     <>
       <ScrollTop />
-      <VaultRoutes />
+      {/* <VaultRoutes /> */}
       <Routes>{routes}</Routes>
     </>
   );
