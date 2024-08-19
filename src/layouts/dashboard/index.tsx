@@ -15,7 +15,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = (props: DashboardLayoutProps) => {
   return (
     <DashboardLayout.Container>
-      {/* <DashboardLayout.Header /> */}
+      <DashboardLayout.Header />
       <Flex w="100%" flex={1}>
         <DashboardLayout.Content>{props.children}</DashboardLayout.Content>
       </Flex>

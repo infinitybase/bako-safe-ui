@@ -1,4 +1,4 @@
-import { Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { signinRoutes } from '@/modules/auth';
 import { homeRoutes } from '@/modules/home';
@@ -11,10 +11,10 @@ import { VaultRoutes } from '@/modules/vault';
 const routes = (
   <>
     {signinRoutes}
-    {/* {workspaceRoutes} */}
+    {/* {workspaceRoutes}
     {homeRoutes}
-    {/* {dappRoutes} */}
-    {/* {addressBookRoutes} */}
+    {dappRoutes}
+    {addressBookRoutes} */}
   </>
 );
 
@@ -23,7 +23,10 @@ const AppRoutes = () => {
     <>
       <ScrollTop />
       {/* <VaultRoutes /> */}
-      <Routes>{routes}</Routes>
+      <Routes>
+        {routes}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 };
