@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -12,12 +12,6 @@ import {
 import { useScreenSize } from '@/modules/core';
 
 import { useSignIn } from '../hooks/useSignIn';
-import {
-  DiscordIcon,
-  TelegramIcon,
-  TwitterIcon,
-} from '@/components/icons/social';
-import { Link } from 'react-router-dom';
 
 const SigninPage = () => {
   const {
@@ -88,59 +82,18 @@ const SigninPage = () => {
         <VStack
           justifyContent="center"
           w="full"
-          // pt={14}
-          // pb={2}
+          pt={14}
+          pb={2}
           px={6}
           spacing={8}
-          // comming soon part
-
-          minH="325px"
         >
-          <Heading
-            fontWeight={700}
-            fontSize="24px"
-            textAlign="center"
-            sx={{
-              background:
-                'linear-gradient(132.19deg, #FFC010 0%, #EBA312 48%, #D38015 71%, #B24F18 99%)',
-              backgroundClip: 'text',
-              textFillColor: 'transparent',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Welcome to Bako Safe
-          </Heading>
-
-          <Text
-            maxW="491px"
-            fontSize="14px"
-            fontWeight={500}
-            textAlign="center"
-            color="grey.75"
-          >
-            We are excited to announce that something amazing is on the way!
-            Bako Safe will be available soon. Stay tuned for updates and get
-            ready to explore a new world of possibilities!
-          </Text>
-          <HStack spacing="24px">
-            <Link to="https://x.com/bakosafe" target="_blank">
-              <Icon as={TwitterIcon} fontSize={24} />
-            </Link>
-            <Link to="https://discord.com/invite/E5kYKSKncj" target="_blank">
-              <Icon as={DiscordIcon} fontSize={24} />
-            </Link>
-            <Link to="https://t.me/BSAFE_fuel" target="_blank">
-              <Icon as={TelegramIcon} fontSize={24} />
-            </Link>
-          </HStack>
-          {/* <ConnectorsList
+          <ConnectorsList
             connectors={connectors.items}
             onSelect={connectors.select}
             isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
           />
 
-          <SignInFooter /> */}
+          <SignInFooter />
         </VStack>
       </SigninContainerMobile>
     );
@@ -149,12 +102,7 @@ const SigninPage = () => {
   return (
     <SigninContainer>
       {WebauthnDrawer}
-      <VStack
-        justifyContent="center"
-        textAlign="center"
-        w="full"
-        spacing="40px"
-      >
+      <VStack justifyContent="center" textAlign="center" w="full" spacing={0}>
         <Text
           fontSize={32}
           fontWeight="bold"
@@ -163,40 +111,15 @@ const SigninPage = () => {
         >
           {pageSections.title}
         </Text>
-
-        {/* Comming Soon part */}
-        <Text
-          maxW="491px"
-          fontSize="14px"
-          fontWeight={500}
-          textAlign="center"
-          color="grey.75"
-        >
-          We are excited to announce that something amazing is on the way! Bako
-          Safe will be available soon. Stay tuned for updates and get ready to
-          explore a new world of possibilities!
-        </Text>
-
-        <HStack spacing="24px">
-          <Link to="https://x.com/bakosafe" target="_blank">
-            <Icon as={TwitterIcon} fontSize={24} />
-          </Link>
-          <Link to="https://discord.com/invite/E5kYKSKncj" target="_blank">
-            <Icon as={DiscordIcon} fontSize={24} />
-          </Link>
-          <Link to="https://t.me/BSAFE_fuel" target="_blank">
-            <Icon as={TelegramIcon} fontSize={24} />
-          </Link>
-        </HStack>
       </VStack>
 
-      {/* <ConnectorsList
+      <ConnectorsList
         connectors={connectors.items}
         onSelect={connectors.select}
         isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
       />
 
-      <SignInFooter /> */}
+      <SignInFooter />
     </SigninContainer>
   );
 };

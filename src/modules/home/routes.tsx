@@ -23,7 +23,7 @@ const homeRoutes = (
       }
     />
 
-    {/* <Route
+    <Route
       path={Pages.userVaults()}
       element={
         <AuthRoute>
@@ -38,7 +38,7 @@ const homeRoutes = (
           <UserTransactionsPage />
         </AuthRoute>
       }
-    /> */}
+    />
   </Route>
 );
 
