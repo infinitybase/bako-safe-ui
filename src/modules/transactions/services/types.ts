@@ -84,6 +84,7 @@ export interface GetTransactionsWithIncomingsParams {
   type?: TransactionType;
   offsetDb?: number;
   offsetFuel?: number;
+  id?: string;
 }
 
 export interface GetUserTransactionsParams {

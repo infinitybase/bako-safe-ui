@@ -1,20 +1,10 @@
-import { useFilterTxType } from '@/modules/transactions/hooks/filter';
 import { useHomeTransactionsRequest } from './useHomeTransationsRequest';
 
 export type IUseHomeTransactionsReturn = ReturnType<typeof useHomeTransactions>;
 
 const useHomeTransactions = (workspaceId: string) => {
-  const {
-    txFilterType,
-    handleIncomingAction,
-    handleOutgoingAction,
-    setTxFilterType,
-  } = useFilterTxType();
-
-  const { data, isFetching, isLoading, refetch } = useHomeTransactionsRequest(
-    workspaceId,
-    txFilterType,
-  );
+  const { data, isFetching, isLoading, refetch } =
+    useHomeTransactionsRequest(workspaceId);
 
   return {
     transactions: data?.data,
@@ -22,11 +12,6 @@ const useHomeTransactions = (workspaceId: string) => {
       isFetching,
       isLoading,
       refetch,
-    },
-    handlers: {
-      handleIncomingAction,
-      handleOutgoingAction,
-      homeTransactionTypeFilter: setTxFilterType,
     },
   };
 };

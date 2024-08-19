@@ -34,6 +34,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
+import { useEffect } from 'react';
 
 const TransactionsVaultPage = () => {
   const {
@@ -50,6 +51,7 @@ const TransactionsVaultPage = () => {
       handlers: { handleWorkspaceSelection, goHome },
     },
   } = useWorkspaceContext();
+
   const workspaceId = userInfos.workspace?.id ?? '';
 
   const {
@@ -73,7 +75,14 @@ const TransactionsVaultPage = () => {
       },
       request: { isLoading, isFetching },
     },
+    resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
+
+  useEffect(() => {
+    return () => {
+      resetAllTransactionsTypeFilters();
+    };
+  }, []);
 
   const hasTransactions = !isLoading && infinityTransactions?.length;
 

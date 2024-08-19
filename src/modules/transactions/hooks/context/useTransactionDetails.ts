@@ -1,7 +1,10 @@
 import { useAuth } from '@/modules/auth';
 import { useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
-import { useVaultTransactionsList } from '@/modules/vault/hooks/list/useVaultTransactionsList';
+import {
+  StatusFilter,
+  useVaultTransactionsList,
+} from '@/modules/vault/hooks/list/useVaultTransactionsList';
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { useSignTransaction } from '../signature';
@@ -33,10 +36,11 @@ const useTransactionDetails = () => {
     homeTransactionsRefetch: homeTransactions.request.refetch,
   });
 
-  const invalidateAllTransactionsTypeFilters = () => {
-    homeTransactions.handlers.homeTransactionTypeFilter(undefined);
+  const resetAllTransactionsTypeFilters = () => {
     transactionsPageList.handlers.listTransactionTypeFilter(undefined);
+    transactionsPageList.filter.set(StatusFilter.ALL);
     vaultTransactions.handlers.listTransactionTypeFilter(undefined);
+    vaultTransactions.filter.set(StatusFilter.ALL);
   };
 
   return {
@@ -45,7 +49,7 @@ const useTransactionDetails = () => {
     transactionsPageList,
     signTransaction,
     pendingSignerTransactions,
-    invalidateAllTransactionsTypeFilters,
+    resetAllTransactionsTypeFilters,
   };
 };
 
