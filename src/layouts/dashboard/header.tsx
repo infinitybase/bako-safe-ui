@@ -27,7 +27,6 @@ import {
   SettingsIcon,
 } from '@/components';
 import { TypeUser } from '@/modules/auth/services';
-import { useScreenSize } from '@/modules/core/hooks';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
@@ -65,8 +64,10 @@ const TopBarItem = chakra(SpacedBox, {
 });
 
 const UserBox = () => {
-  const { isMobile } = useScreenSize();
-  const { authDetails } = useWorkspaceContext();
+  const {
+    authDetails,
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
@@ -240,7 +241,9 @@ const WorkspaceBox = ({
   currentWorkspace?: Partial<Workspace>;
   isLoading?: boolean;
 }) => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   if (isLoading)
     return (

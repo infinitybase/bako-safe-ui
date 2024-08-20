@@ -4,6 +4,7 @@ import {
   useAddressBook,
   useGetParams,
   useGetWorkspaceRequest,
+  useScreenSize,
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
@@ -13,6 +14,8 @@ import { useGitLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 
 const useWorkspaceDetails = () => {
+  const screenSizes = useScreenSize();
+
   const authDetails = useAuth();
   const {
     vaultPageParams: { vaultId },
@@ -81,6 +84,7 @@ const useWorkspaceDetails = () => {
     addressBookInfos,
     tokensUSD,
     invalidateGifAnimationRequest,
+    screenSizes,
   };
 };
 

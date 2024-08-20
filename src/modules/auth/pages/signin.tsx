@@ -9,9 +9,9 @@ import {
   SigninContainerMobile,
   SignInFooter,
 } from '@/modules/auth/components';
-import { useScreenSize } from '@/modules/core';
 
 import { useSignIn } from '../hooks/useSignIn';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SigninPage = () => {
   const {
@@ -20,7 +20,9 @@ const SigninPage = () => {
     webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
   } = useSignIn();
   const { errorToast } = useContactToast();
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   const pageSections = {
     title: 'Welcome to Bako Safe',

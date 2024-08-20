@@ -1,10 +1,12 @@
 import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
 
 import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
-import { useScreenSize } from '@/modules/core';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export const SelectionEmptyState = () => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <VStack spacing={4}>

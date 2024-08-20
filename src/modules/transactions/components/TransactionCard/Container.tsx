@@ -16,12 +16,13 @@ import { ReactNode } from 'react';
 import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
-import { TransactionState, useScreenSize } from '@/modules/core';
+import { TransactionState } from '@/modules/core';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
@@ -47,10 +48,13 @@ const Container = ({
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
 
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
+
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const { isMobile } = useScreenSize();
   const detailsDialog = useDetailsDialog();
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
 

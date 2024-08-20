@@ -1,4 +1,4 @@
-import { Box, Divider, Icon, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import {
   CoinsIcon,
@@ -16,11 +16,11 @@ import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-interface SidebarProps {
+interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
 }
 
-const Sidebar = ({ onDrawer }: SidebarProps) => {
+const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
   const {
     workspaceInfos: {
@@ -49,6 +49,7 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
       borderRightColor="dark.100"
       py={6}
       px={6}
+      {...rest}
     >
       <VStack position="fixed" width="275px">
         {/* VAULT DRAWER LIST */}

@@ -7,7 +7,7 @@ import {
   ModalProps,
 } from '@chakra-ui/react';
 
-import { useScreenSize } from '@/modules';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
@@ -17,7 +17,9 @@ export interface DialogModalProps extends ModalProps {
 
 const DialogModal = (props: DialogModalProps) => {
   const { children, ...rest } = props;
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <Modal

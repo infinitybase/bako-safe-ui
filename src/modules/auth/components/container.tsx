@@ -3,7 +3,7 @@ import React from 'react';
 
 import logo from '@/assets/bakoLogoDark.svg';
 import bakoSymbol from '@/assets/bakoSymbol.svg';
-import { useScreenSize } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SigninContainerBackgroundProps {
   children: React.ReactNode;
@@ -78,8 +78,9 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
 };
 
 const SigninContainer = (props: SigninContainerProps) => {
-  const { isSmHeight, isSmallHeight, isMdHeight } = useScreenSize();
-
+  const {
+    screenSizes: { isXSHeight, isSmallHeight, isMdHeight },
+  } = useWorkspaceContext();
   return (
     <SigninContainerBackground>
       <Box
@@ -128,9 +129,9 @@ const SigninContainer = (props: SigninContainerProps) => {
         </Box>
 
         <Box
-          flex={isSmHeight ? 4 : isSmallHeight ? 3 : 2}
+          flex={isXSHeight ? 4 : isSmallHeight ? 3 : 2}
           mr={16}
-          ml={isSmHeight ? '15.5%' : isSmallHeight ? '17.5%' : '20.5%'}
+          ml={isXSHeight ? '15.5%' : isSmallHeight ? '17.5%' : '20.5%'}
           py={8}
           position="sticky"
           display="flex"

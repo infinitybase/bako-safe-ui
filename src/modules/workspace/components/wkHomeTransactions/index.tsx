@@ -13,7 +13,7 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { Pages, shakeAnimationX, useScreenSize } from '@/modules/core';
+import { Pages, shakeAnimationX } from '@/modules/core';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -33,6 +33,7 @@ const WkHomeTransactions = () => {
       handlers: { navigate },
       requests: { latestPredicates },
     },
+    screenSizes: { isSmall, isMobile, isExtraSmall },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -50,8 +51,6 @@ const WkHomeTransactions = () => {
       setHasTransactions(true);
     }
   }, [transactions]);
-
-  const { isSmall, isMobile, isExtraSmall } = useScreenSize();
 
   return (
     <Box w="full" mt={{ base: 16, sm: 8 }}>

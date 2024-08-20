@@ -12,7 +12,7 @@ import {
 import { FiPlusSquare } from 'react-icons/fi';
 
 import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
   name: string;
@@ -64,7 +64,9 @@ const VaultBox = (props: VaultBoxPropx) => {
     isFirstAssetsLoading,
   } = props;
 
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <Box w="100%">

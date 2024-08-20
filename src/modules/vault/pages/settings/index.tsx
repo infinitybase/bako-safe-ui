@@ -13,7 +13,7 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages, useScreenSize } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
@@ -30,8 +30,8 @@ const VaultSettingsPage = () => {
     workspaceInfos: {
       handlers: { handleWorkspaceSelection, goHome },
     },
+    screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
-  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
