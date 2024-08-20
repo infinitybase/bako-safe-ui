@@ -64,8 +64,13 @@ const useWorkspace = (
     workspaceDialog.onClose();
     selectWorkspace(selectedWorkspace, {
       onSelect: (workspace) => {
-        invalidateRequests();
-        navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
+        console.log('PRE', new Date());
+        setTimeout(() => {
+          console.log('timeout');
+          invalidateRequests();
+          console.log('POST', new Date());
+          navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
+        }, 900);
       },
       onError: () => {
         toast({
