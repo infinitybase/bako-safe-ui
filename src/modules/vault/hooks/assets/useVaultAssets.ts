@@ -36,7 +36,7 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
         return bn(0);
       }
 
-      return bn(bn.parseUnits(balance.amount!));
+      return bn(balance.amount);
     },
     [data?.currentBalance],
   );
