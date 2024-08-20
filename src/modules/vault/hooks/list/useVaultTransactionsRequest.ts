@@ -20,7 +20,8 @@ export const vaultInfinityQueryKey = {
     vaultId?: string,
     status?: string,
     type?: TransactionType,
-  ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, type],
+    id?: string,
+  ) => [VAULT_TRANSACTIONS_LIST_PAGINATION, vaultId, status, type, id],
 };
 
 const useVaultTransactionsRequest = (
@@ -35,6 +36,7 @@ const useVaultTransactionsRequest = (
       params.predicateId?.[0],
       status,
       params.type,
+      params.id,
     );
 
   const { data, ...query } = useInfiniteQuery({

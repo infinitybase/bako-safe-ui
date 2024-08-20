@@ -34,6 +34,7 @@ import {
 import { StatusFilter } from '../../hooks';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { transactionStatus } from '../../utils';
+import { useEffect } from 'react';
 
 const UserTransactionsPage = () => {
   const {
@@ -46,6 +47,7 @@ const UserTransactionsPage = () => {
       lists: { infinityTransactions, transactions },
     },
     pendingSignerTransactions,
+    resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
 
   const {
@@ -59,6 +61,10 @@ const UserTransactionsPage = () => {
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  useEffect(() => {
+    return () => resetAllTransactionsTypeFilters();
+  }, []);
 
   return (
     <VStack

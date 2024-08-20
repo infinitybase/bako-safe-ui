@@ -21,7 +21,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 const useWorkspace = (
   userInfos: IUserInfos,
   invalidateGifAnimationRequest: () => void,
-  invalidateAllTransactionsTypeFilters: () => void,
+  resetAllTransactionsTypeFilters: () => void,
   refetchPendingSingerTransactions: () => void,
 ) => {
   const navigate = useNavigate();
@@ -108,7 +108,7 @@ const useWorkspace = (
   );
 
   const invalidateRequests = () => {
-    invalidateAllTransactionsTypeFilters();
+    resetAllTransactionsTypeFilters();
     workspaceBalance.refetch();
     refetchPendingSingerTransactions();
     userInfos.refetch();

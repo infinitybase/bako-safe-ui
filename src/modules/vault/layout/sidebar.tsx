@@ -15,6 +15,7 @@ import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 interface SidebarProps {
   onDrawer?: boolean;
@@ -37,8 +38,19 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
   } = useVaultInfosContext();
 
   const {
+    vaultTransactions: {
+      handlers: { setSelectedTransaction },
+    },
+  } = useTransactionsContext();
+
+  const {
     request: { refetch },
   } = useVaultDrawer({ onClose: () => {} });
+
+  const handleClick = (navigate: void) => {
+    setSelectedTransaction({});
+    navigate;
+  };
 
   return (
     <Box
@@ -96,11 +108,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           <SidebarMenu.Container
             isActive={menuItems.home}
             onClick={() =>
-              route.navigate(
-                Pages.detailsVault({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
+              handleClick(
+                route.navigate(
+                  Pages.detailsVault({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
               )
             }
           >
@@ -111,11 +125,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           <SidebarMenu.Container
             isActive={menuItems.balance}
             onClick={() =>
-              route.navigate(
-                Pages.vaultBalance({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
+              handleClick(
+                route.navigate(
+                  Pages.vaultBalance({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
               )
             }
           >
@@ -127,11 +143,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
             isActive={menuItems.transactions}
             cursor={'pointer'}
             onClick={() =>
-              route.navigate(
-                Pages.transactions({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
+              handleClick(
+                route.navigate(
+                  Pages.transactions({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
               )
             }
           >
@@ -146,11 +164,13 @@ const Sidebar = ({ onDrawer }: SidebarProps) => {
           <SidebarMenu.Container
             isActive={menuItems.settings}
             onClick={() =>
-              route.navigate(
-                Pages.vaultSettings({
-                  workspaceId: route.params.workspaceId!,
-                  vaultId: route.params.vaultId!,
-                }),
+              handleClick(
+                route.navigate(
+                  Pages.vaultSettings({
+                    workspaceId: route.params.workspaceId!,
+                    vaultId: route.params.vaultId!,
+                  }),
+                ),
               )
             }
           >

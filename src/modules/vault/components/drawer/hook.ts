@@ -36,18 +36,19 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   } = useWorkspaceContext();
 
   const {
-    transactionsPageList: {
-      request: { refetch: refetchTransactions },
+    vaultTransactions: {
+      request: { refetch: refetchVaultTransactions },
     },
+    resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
 
   const vaultList = useVaultListRequest({ q: search }, props.isOpen);
 
   const invalidateRequests = () => {
     invalidateGifAnimationRequest();
+    refetchVaultTransactions();
     refetchVaultRequest();
     refetchWorkspaceBalance();
-    refetchTransactions();
     vaultList.refetch();
   };
 
@@ -81,6 +82,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     },
   ) => {
     props.onClose?.();
+    resetAllTransactionsTypeFilters();
     invalidateRequests();
     setSearch('');
     handleWorkspaceSelection(
