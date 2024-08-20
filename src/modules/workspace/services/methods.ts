@@ -87,7 +87,7 @@ export class WorkspaceService {
     return new Promise<SelectWorkspaceResponse>((resolve) => {
       setTimeout(() => {
         resolve(data);
-      }, 500);
+      }, 900);
     });
   }
 
