@@ -10,7 +10,7 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 
-import { RemoveIcon } from '@/components';
+import { CheckIcon, RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
 import { useScreenSize } from '@/modules/core';
 
@@ -48,6 +48,9 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
       maxW="fit-content"
       bgColor="brand.500"
       border="none"
+      p={2}
+      borderRadius={6}
+      size="sm"
       isDisabled={props.isDisabled}
       onClick={props.onClick}
       _hover={{
@@ -57,7 +60,7 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
       isLoading={props.isLoading}
       {...props}
     >
-      Confirm
+      <Icon fontSize="sm" color="dark.950" as={CheckIcon} />
       <AccordionButton hidden />
     </Button>
   );
