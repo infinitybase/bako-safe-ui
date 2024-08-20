@@ -84,7 +84,7 @@ export class WorkspaceService {
       payload,
     );
 
-    return new Promise((resolve) => {
+    return new Promise<SelectWorkspaceResponse>((resolve) => {
       setTimeout(() => {
         resolve(data);
       }, 500);
