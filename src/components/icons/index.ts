@@ -2,6 +2,7 @@ export * from './alert';
 export * from './arrow-down';
 export * from './bit-coin';
 export * from './chart-bullet';
+export * from './check-icon';
 export * from './coins';
 export * from './connectors';
 export * from './copy';
