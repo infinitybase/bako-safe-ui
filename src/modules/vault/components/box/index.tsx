@@ -25,7 +25,6 @@ interface VaultBoxPropx {
   hasBalance?: boolean;
   hasPermission?: boolean;
   isFetching: boolean;
-  isEthBalanceLowerThanReservedAmount: boolean;
   isFirstAssetsLoading: boolean;
 }
 
@@ -123,12 +122,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             variant="primary"
             fontWeight="bold"
             onClick={onCreateTransaction}
-            isDisabled={
-              !hasBalance ||
-              isPending ||
-              props.isEthBalanceLowerThanReservedAmount ||
-              isFirstAssetsLoading
-            }
+            isDisabled={!hasBalance || isPending || isFirstAssetsLoading}
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction
@@ -138,13 +132,11 @@ const VaultBox = (props: VaultBoxPropx) => {
               This vault has pending transactions.
             </Text>
           )}
-          {!isPending &&
-            !isFirstAssetsLoading &&
-            props.isEthBalanceLowerThanReservedAmount && (
-              <Text variant="description" mt={2} color="error.500">
-                Not enough balance.
-              </Text>
-            )}
+          {!isPending && !isFirstAssetsLoading && !hasBalance && (
+            <Text variant="description" mt={2} color="error.500">
+              Not enough balance.
+            </Text>
+          )}
         </Box>
       )}
     </Box>

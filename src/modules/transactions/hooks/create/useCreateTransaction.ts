@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -87,7 +87,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       assetId: asset.assetId,
     })),
     getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
-
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
@@ -198,13 +197,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = props?.getCoinAmount(NativeAssetId);
-  const isEthBalanceLowerThanReservedAmount =
-    Number(currentEthBalance) <=
-    Number(
-      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
-    );
-
   const handleClose = () => {
     props?.onClose();
   };
@@ -223,7 +215,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     } else if (validTransactionFee) {
       form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
     } else {
-      const txFee = BakoSafe.getGasConfig('BASE_FEE').toString();
+      const txFee = '0.000';
       setValidTransactionFee(txFee);
       form.setValue(`transactions.${accordion.index}.fee`, txFee);
     }
@@ -274,7 +266,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
-    isEthBalanceLowerThanReservedAmount,
   };
 };
 

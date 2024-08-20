@@ -6,22 +6,21 @@ import { BakoSafe } from 'bakosafe';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import TagManager from 'react-gtm-module';
+import { BrowserRouter } from 'react-router-dom';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
 import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
-import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
-import { BrowserRouter } from 'react-router-dom';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
+import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 
 BakoSafe.setProviders({
   SERVER_URL: import.meta.env.VITE_API_URL,
   CLIENT_URL: window.location.origin,
   CHAIN_URL: import.meta.env.VITE_NETWORK,
 });
-BakoSafe.setGasConfig({ BASE_FEE: 0.001 });
 
 const gtmId = import.meta.env.VITE_GTM_ID;
 

@@ -26,12 +26,11 @@ import {
   PermissionRoles,
   useScreenSize,
 } from '@/modules/core';
-import { useCreateTransaction } from '@/modules/transactions';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useVaultInfosContext } from '../VaultInfosProvider';
 
 export interface CardDetailsProps {
@@ -53,8 +52,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
       handlers: { hasPermission },
     },
   } = useWorkspaceContext();
-
-  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     CLIInfos: {
@@ -249,8 +246,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           isDisabled={
                             !assets?.hasBalance ||
                             blockedTransfers ||
-                            !makeTransactionsPerm ||
-                            isEthBalanceLowerThanReservedAmount
+                            !makeTransactionsPerm
                           }
                           onClick={() =>
                             navigate(
@@ -264,21 +260,20 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           Send
                         </Button>
 
-                        {isEthBalanceLowerThanReservedAmount &&
-                          !blockedTransfers && (
-                            <Text
-                              variant="description"
-                              textAlign={isExtraSmall ? 'left' : 'right'}
-                              fontSize="xs"
-                              w="full"
-                              mt={2}
-                              color="error.500"
-                              position={{ base: 'unset', xs: 'absolute' }}
-                              bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
-                            >
-                              Not enough balance.
-                            </Text>
-                          )}
+                        {!blockedTransfers && !assets?.hasBalance && (
+                          <Text
+                            variant="description"
+                            textAlign={isExtraSmall ? 'left' : 'right'}
+                            fontSize="xs"
+                            w="full"
+                            mt={2}
+                            color="error.500"
+                            position={{ base: 'unset', xs: 'absolute' }}
+                            bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
+                          >
+                            Not enough balance.
+                          </Text>
+                        )}
 
                         {blockedTransfers ? (
                           <Text

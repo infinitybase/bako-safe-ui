@@ -20,13 +20,12 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
-import { useCreateTransaction } from '@/modules/transactions';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -88,8 +87,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
     precision: 4,
   });
-
-  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
@@ -311,8 +308,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       isDisabled={
                         !hasBalance ||
                         !makeTransactionsPerm ||
-                        props.isPendingSigner ||
-                        isEthBalanceLowerThanReservedAmount
+                        props.isPendingSigner
                       }
                       variant="primary"
                       leftIcon={<SquarePlusIcon />}
@@ -320,17 +316,16 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       Send
                     </Button>
-                    {isEthBalanceLowerThanReservedAmount &&
-                      !props.isPendingSigner && (
-                        <Text
-                          variant="description"
-                          textAlign={{ base: 'end', sm: 'left' }}
-                          fontSize="xs"
-                          color="error.500"
-                        >
-                          Not enough balance.
-                        </Text>
-                      )}
+                    {!props.isPendingSigner && !hasBalance && (
+                      <Text
+                        variant="description"
+                        textAlign={{ base: 'end', sm: 'left' }}
+                        fontSize="xs"
+                        color="error.500"
+                      >
+                        Not enough balance.
+                      </Text>
+                    )}
                     {props.isPendingSigner ? (
                       <Text
                         variant="description"
