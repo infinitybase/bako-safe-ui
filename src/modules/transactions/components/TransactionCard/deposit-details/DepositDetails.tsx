@@ -3,9 +3,10 @@ import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
 import DetailItem from './DetailItem';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-import { shakeAnimationY, useScreenSize } from '@/modules/core';
+import { shakeAnimationY } from '@/modules/core';
 import { TransactionWithVault } from '../../../services';
 import { UpRightArrow } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
@@ -22,7 +23,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
     );
   };
 
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <Box

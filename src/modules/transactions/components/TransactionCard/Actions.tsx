@@ -14,11 +14,11 @@ import {
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 
 import { ITransactionWithType } from '../../services';
 import { TransactionType } from 'bakosafe';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -33,7 +33,9 @@ interface TransactionActionsProps {
 }
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
-  const { isSmall, isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isSmall, isExtraSmall },
+  } = useWorkspaceContext();
   return (
     <HStack w="full" justifyContent="end" spacing={1}>
       <Button
@@ -62,7 +64,9 @@ const Actions = ({
   isSigner,
   callBack,
 }: TransactionActionsProps) => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
   const { isOpen } = useAccordionItemState();
   const {
     signTransaction: {

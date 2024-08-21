@@ -3,7 +3,8 @@ import { Avatar, Box, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Card, CardProps } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
-import { useScreenSize, Workspace } from '@/modules/core';
+import { Workspace } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultDrawerBoxProps extends CardProps {
   isActive?: boolean;
@@ -19,7 +20,9 @@ const VaultDrawerBox = (props: VaultDrawerBoxProps) => {
   const { isActive, name, description, workspace, isSingleWorkspace, ...rest } =
     props;
 
-  const { isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
 
   return (
     <Card

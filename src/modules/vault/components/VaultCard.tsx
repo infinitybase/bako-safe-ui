@@ -15,11 +15,11 @@ import {
 
 import { Card } from '@/components';
 import { HandbagIcon } from '@/components/icons/handbag';
-import { useScreenSize } from '@/modules/core';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import { Workspace } from '@/modules/core/models/workspace';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultCardProps extends CardProps {
   id: string;
@@ -35,7 +35,9 @@ export const VaultCard = ({
   ...rest
 }: VaultCardProps) => {
   const { role } = usePermissions({ id, workspace });
-  const { isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
 
   return (
     <Card

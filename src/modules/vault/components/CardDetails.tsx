@@ -19,7 +19,7 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { useCreateTransaction } from '@/modules/transactions';
 import { limitCharacters } from '@/utils/limit-characters';
 
@@ -82,8 +82,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
+    screenSizes: { isMobile, isExtraSmall },
   } = useWorkspaceContext();
-  const { isMobile, isExtraSmall } = useScreenSize();
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
     precision: 4,
@@ -183,7 +183,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     <Heading
                       alignSelf="flex-start"
                       maxW={{ base: '35vw', sm: '70%', md: '80%' }}
-                      variant={isMobile ? 'title-md' : 'title-xl'}
+                      variant={{ base: 'title-md', sm: 'title-xl' }}
                       isTruncated
                     >
                       {isExtraSmall
@@ -255,7 +255,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         customStartColor="grey.75"
                         customEndColor="dark.100"
                       >
-                        <Heading variant={isMobile ? 'title-lg' : 'title-xl'}>
+                        <Heading variant={{ base: 'title-lg', sm: 'title-xl' }}>
                           {visibleBalance ? `${balanceUSD} USD` : '-----'}
                         </Heading>
                       </CustomSkeleton>

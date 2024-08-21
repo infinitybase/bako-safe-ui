@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
-import { useScreenSize } from '@/modules/core';
 
 import {
   SignWebAuthnPayload,
@@ -23,9 +22,11 @@ const signAccount = async (sign: SignWebAuthnPayload) => {
 };
 
 export const useDrawerWebAuth = () => {
-  const { authDetails } = useWorkspaceContext();
+  const {
+    authDetails,
+    screenSizes: { isSmall },
+  } = useWorkspaceContext();
   const navigate = useNavigate();
-  const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
 
   const { location, sessionId } = useQueryParams();

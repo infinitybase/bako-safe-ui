@@ -25,7 +25,6 @@ import {
   Member,
   Pages,
   PermissionRoles,
-  useScreenSize,
   Workspace,
 } from '@/modules/core';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
@@ -157,13 +156,12 @@ const WorkspaceSettingsDrawer = ({
     workspaceInfos: {
       currentWorkspaceRequest: { currentWorkspace },
     },
+    screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
 
   const pathname = window.location.pathname;
 
   const isEditingOrCreatingMember = pathname.includes('/members');
-
-  const { isExtraSmall } = useScreenSize();
 
   return (
     <Drawer {...drawerProps} size="md" variant="solid-dark" placement="right">

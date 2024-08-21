@@ -12,7 +12,7 @@ import {
 
 import { RemoveIcon } from '@/components';
 import { EditIcon } from '@/components/icons/edit-icon';
-import { useScreenSize } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type AccordionActionProp = Pick<
   ButtonProps,
@@ -78,7 +78,9 @@ const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
 );
 
 const AccordionActions = ({ children, ...rest }: StackProps) => {
-  const { isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
   return (
     <HStack
       spacing={4}

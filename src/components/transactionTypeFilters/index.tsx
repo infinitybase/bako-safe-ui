@@ -2,9 +2,10 @@ import { BoxProps, Button, HStack, Icon } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
 
-import { shakeAnimationY, useScreenSize } from '@/modules';
+import { shakeAnimationY } from '@/modules';
 
 import { DownLeftArrow, UpRightArrow } from '../icons';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;
@@ -20,13 +21,18 @@ const TransactionTypeFilters = ({
   buttonsFullWidth,
   ...rest
 }: ITransactionTypeFiltersProps) => {
-  const { isSmall } = useScreenSize();
+  const {
+    screenSizes: { isSmall },
+  } = useWorkspaceContext();
 
   const isDeposit = currentFilter === TransactionType.DEPOSIT;
   const isTransfer = currentFilter === TransactionType.TRANSACTION_SCRIPT;
 
   return (
-    <HStack w={buttonsFullWidth ? 'full' : 'unset'} {...rest}>
+    <HStack
+      w={{ base: 'full', xs: buttonsFullWidth ? 'full' : 'unset' }}
+      {...rest}
+    >
       <Button
         color="grey.75"
         onClick={incomingAction}
@@ -45,7 +51,7 @@ const TransactionTypeFilters = ({
             className="btn-icon-1"
           />
         }
-        w={buttonsFullWidth ? 'full' : 'unset'}
+        w={{ base: 'full', xs: buttonsFullWidth ? 'full' : 'unset' }}
         variant="txFilterType"
       >
         Incoming
@@ -68,7 +74,7 @@ const TransactionTypeFilters = ({
             className="btn-icon-2"
           />
         }
-        w={buttonsFullWidth ? 'full' : 'unset'}
+        w={{ base: 'full', xs: buttonsFullWidth ? 'full' : 'unset' }}
         variant="txFilterType"
       >
         Outgoing

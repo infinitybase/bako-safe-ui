@@ -20,7 +20,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -55,9 +55,8 @@ const UserTransactionsPage = () => {
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
     },
+    screenSizes: { isMobile, isExtraSmall, isSmall },
   } = useWorkspaceContext();
-
-  const { isMobile, isExtraSmall, isSmall } = useScreenSize();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
   const { isOpen, onClose, onOpen } = useDisclosure();

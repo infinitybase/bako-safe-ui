@@ -6,7 +6,6 @@ import {
   AssetModel,
   assetsMap,
   useGetParams,
-  useScreenSize,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { Icon } from '@chakra-ui/icons';
@@ -40,7 +39,10 @@ const AssetBoxInfo = ({
   isDeploy,
   ...props
 }: AssetBoxInfoProps) => {
-  const { tokensUSD } = useWorkspaceContext();
+  const {
+    tokensUSD,
+    screenSizes: { isMobile, isExtraSmall, isExtraLarge, isLitteSmall },
+  } = useWorkspaceContext();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -48,8 +50,6 @@ const AssetBoxInfo = ({
   const isVaultPage = !!vaultId;
 
   const isContract = !!contractAddress;
-  const { isMobile, isExtraSmall, isExtraLarge, isLitteSmall } =
-    useScreenSize();
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
