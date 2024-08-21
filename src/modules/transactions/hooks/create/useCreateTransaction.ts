@@ -250,7 +250,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           }));
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
+  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
 
   return {
     resolveTransactionCosts,
