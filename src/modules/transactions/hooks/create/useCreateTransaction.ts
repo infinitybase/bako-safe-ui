@@ -150,10 +150,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       return acc;
     }, {} as IAssetGroupById);
 
+  const formattedCurrentAssetBalance = useGetTokenInfosArray(
+    currentVaultAssets ?? [],
+  );
+
   const getBalanceAvailable = useCallback(() => {
-    const formattedCurrentAssetBalance = useGetTokenInfosArray(
-      currentVaultAssets ?? [],
-    );
     const currentAssetBalance = bn.parseUnits(
       formattedCurrentAssetBalance?.find(
         (asset) => asset.assetId === currentFieldAsset,
@@ -209,16 +210,14 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    if (transactionFee) {
-      setValidTransactionFee(transactionFee);
-      form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
-    } else if (validTransactionFee) {
-      form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
-    } else {
-      const txFee = '0.000';
-      setValidTransactionFee(txFee);
-      form.setValue(`transactions.${accordion.index}.fee`, txFee);
-    }
+    const newFee = transactionFee || validTransactionFee || '0.000';
+    const transactions = form.getValues('transactions') || [];
+
+    transactions.forEach((_, index) => {
+      form.setValue(`transactions.${index}.fee`, newFee);
+    });
+
+    setValidTransactionFee(newFee);
   }, [transactionFee]);
 
   useEffect(() => {
@@ -234,7 +233,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     )
       return;
 
-    const { transactions } = form.getValues();
+    const transactions = form.getValues('transactions');
 
     const assets =
       Number(transactionTotalAmount) > 0
