@@ -228,6 +228,12 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
 
   useEffect(() => {
+    if (
+      (currentFieldAsset && !currentFieldAmount) ||
+      Number(currentFieldAmount) === 0
+    )
+      return;
+
     const { transactions } = form.getValues();
 
     const assets =
