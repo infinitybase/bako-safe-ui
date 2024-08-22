@@ -2,7 +2,7 @@ import { createIcon } from '@chakra-ui/react';
 
 const NotifyIcon = createIcon({
   displayName: 'NotifyIcon',
-  viewBox: '0 0 80 80',
+  viewBox: '0 0 97 97',
   path: (
     <>
       <svg
