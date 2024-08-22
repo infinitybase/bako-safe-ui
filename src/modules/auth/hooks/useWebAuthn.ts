@@ -135,8 +135,8 @@ const useWebAuthn = (invalidateGifAnimationRequest?: () => void) => {
         },
         onSuccess: () => {
           setSignInProgress(100);
-          invalidateGifAnimationRequest && invalidateGifAnimationRequest();
           setTimeout(() => {
+            invalidateGifAnimationRequest && invalidateGifAnimationRequest();
             setIsSigningIn(false);
             setBtnDisabled(false);
             setLastLoginUsername(name);
