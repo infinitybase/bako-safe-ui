@@ -25,7 +25,7 @@ import {
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { UserPlusIcon } from '@/components/icons/user-add-icon';
 import { CreateContactDialog } from '@/modules/addressBook';
-import { AddressUtils, useScreenSize } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';
 import { MemberPermissionForm } from '@/modules/workspace/components/form/MemberPermissionsForm';
 import {
@@ -121,7 +121,9 @@ const CreateMemberPage = () => {
   const { form, handleClose, tabs, addressBook, dialog, isEditMember } =
     useChangeMember();
   const { formState, memberForm, permissionForm } = form;
-  const { isExtraSmallDevice } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmallDevice },
+  } = useWorkspaceContext();
 
   const TabsPanels = (
     <TabPanels>

@@ -20,12 +20,7 @@ import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import {
-  AddressUtils,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
@@ -43,14 +38,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { vault, assets, blockedTransfers } = props;
   const { balanceUSD } = assets;
-  const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
-    useScreenSize();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission },
     },
+    screenSizes: { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge },
   } = useWorkspaceContext();
 
   const {

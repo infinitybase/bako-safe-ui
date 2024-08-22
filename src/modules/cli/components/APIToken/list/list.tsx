@@ -16,7 +16,7 @@ import { EmptyState } from '@/components/emptyState';
 import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
-import { useScreenSize } from '@/modules/core/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface APITokenCardProps {
   apiToken: APIToken;
@@ -25,8 +25,9 @@ interface APITokenCardProps {
 const APITokenCard = (props: APITokenCardProps) => {
   const { apiToken } = props;
   const { confirm, handler, request } = useRemoveAPIToken();
-
-  const { isLitteSmall, isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmall, isLitteSmall },
+  } = useWorkspaceContext();
 
   return (
     <Card

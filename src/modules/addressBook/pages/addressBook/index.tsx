@@ -20,7 +20,7 @@ import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 
-import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import {
   ContactCard,
@@ -54,9 +54,8 @@ const AddressBookPage = () => {
         setContactToDelete,
       },
     },
+    screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
-
-  const { isExtraSmall } = useScreenSize();
 
   const { data: contacts } = listContactsRequest;
 

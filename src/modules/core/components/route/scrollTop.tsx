@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { useScreenSize } from '@/modules/core/hooks/useScreenSize';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const ScrollTop = () => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
   const { pathname } = useLocation();
 
   useEffect(() => {
