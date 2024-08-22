@@ -51,7 +51,9 @@ const useSignIn = () => {
   }, []);
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, ...rest } = useWebAuthn();
+  const { openWebAuthnDrawer, ...rest } = useWebAuthn(
+    invalidateGifAnimationRequest,
+  );
 
   const hasFuel = !!fuel;
 
