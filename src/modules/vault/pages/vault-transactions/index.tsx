@@ -22,7 +22,7 @@ import {
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages, useGetParams, useScreenSize } from '@/modules/core';
+import { Pages, useGetParams } from '@/modules/core';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -41,15 +41,13 @@ const TransactionsVaultPage = () => {
     vaultPageParams: { workspaceId: vaultWkId },
   } = useGetParams();
 
-  const { vaultRequiredSizeToColumnLayout, isMobile, isSmall } =
-    useScreenSize();
-
   const menuDrawer = useDisclosure();
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { handleWorkspaceSelection, goHome },
     },
+    screenSizes: { vaultRequiredSizeToColumnLayout, isMobile, isSmall },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';

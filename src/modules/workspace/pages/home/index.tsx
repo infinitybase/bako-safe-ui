@@ -37,7 +37,7 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { Pages, PermissionRoles, useScreenSize } from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import {
   AssetsDetails,
@@ -57,7 +57,6 @@ const { OWNER, ADMIN, MANAGER } = PermissionRoles;
 const WorkspacePage = () => {
   const assetsContainerRef = useRef(null);
 
-  const { isMobile } = useScreenSize();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const workspaceDialog = useDisclosure();
 
@@ -75,6 +74,7 @@ const WorkspacePage = () => {
       requests: { workspaceBalance, latestPredicates },
       workspaceVaults: { vaultsMax, extraCount },
     },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const recentVaults = latestPredicates.data?.predicates?.data;

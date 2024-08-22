@@ -1,4 +1,5 @@
-import { AssetModel, useScreenSize } from '@/modules/core';
+import { AssetModel } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { Box, Text } from '@chakra-ui/react';
 
 interface AmountsInfoProps {
@@ -7,7 +8,9 @@ interface AmountsInfoProps {
 }
 
 const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <Box mt={0.5} w={{ base: '105px' }}>

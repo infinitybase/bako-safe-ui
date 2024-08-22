@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-import { useScreenSize } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AccordionItemProps {
   title: string;
@@ -22,7 +22,9 @@ const AccordionItem = ({
   children,
   resume,
 }: AccordionItemProps) => {
-  const { isExtraSmall } = useScreenSize();
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
   const { isOpen } = useAccordionItemState();
 
   return (

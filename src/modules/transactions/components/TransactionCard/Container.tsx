@@ -15,13 +15,14 @@ import { ReactNode } from 'react';
 import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
-import { TransactionState, useScreenSize } from '@/modules/core';
+import { TransactionState } from '@/modules/core';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
@@ -44,13 +45,17 @@ const Container = ({
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
+
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
+
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
   const { isFromConnector, isDeploy, isDeposit } =
     useVerifyTransactionInformations(transaction);
 
-  const { isMobile } = useScreenSize();
   const detailsDialog = useDetailsDialog();
 
   return (
