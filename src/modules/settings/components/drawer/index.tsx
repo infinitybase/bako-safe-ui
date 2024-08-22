@@ -18,14 +18,15 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { isB256, isBech32 } from 'fuels';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useSignIn } from '@/modules/auth';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useSettings } from '../../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
   onOpen: () => void;
@@ -62,10 +63,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     nicknamesData?.id !== userInfos.id &&
     search?.length > 0;
 
-  const name = mySettingsRequest.data?.name;
+  const name = mySettingsRequest.data?.name ?? '';
 
   useEffect(() => {
-    setSearch(name ?? '');
+    const _search = isB256(name) || isBech32(name) ? '' : name;
+    setSearch(_search);
   }, [name, props.isOpen]);
 
   return (
