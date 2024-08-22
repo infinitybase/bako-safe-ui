@@ -15,7 +15,7 @@ const memberSchema = (members: string[]) => {
           AddressUtils.isValid(address),
         )
         .test('is-not-owner', 'This address is already a member', (address) => {
-          return !members.includes(address);
+          return !members?.includes(address);
         }),
     }),
   });
@@ -63,23 +63,23 @@ const useChangeMemberForm = (owner: string[]) => {
     workspace: Workspace,
     memberId: string,
   ) => {
-    const member = workspace.members
+    const member = workspace?.members
       .filter((member) => member.id === memberId)
       .map((member) => member.address);
-    const permission = workspace.permissions[memberId];
-    const permissionRole = Object.keys(permission).filter((role) =>
-      permission[role].includes('*'),
-    );
+    const permission = workspace?.permissions?.[memberId];
+    const permissionRole =
+      permission &&
+      Object.keys(permission).filter((role) => permission[role].includes('*'));
 
-    permissionForm.setValue('permission', permissionRole[0], {
+    permissionForm.setValue('permission', permissionRole?.[0], {
       shouldValidate: true,
     });
     memberForm.setValue(
       'address',
-      { value: member[0] },
+      { value: member?.[0] },
       { shouldValidate: true },
     );
-    editForm.setValue('permission', permissionRole[0], {
+    editForm.setValue('permission', permissionRole?.[0], {
       shouldValidate: true,
     });
   };
