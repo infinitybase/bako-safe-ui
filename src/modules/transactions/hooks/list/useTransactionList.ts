@@ -26,7 +26,7 @@ interface IUseTransactionListProps {
 export type IUseTransactionList = ReturnType<typeof useTransactionList>;
 
 export interface IPendingTransactionDetails {
-  status: string;
+  status: TransactionStatus;
   hash: string;
   id: string;
   predicateId: string;
@@ -101,27 +101,6 @@ const useTransactionList = ({
     );
   }, [transactionsPages]);
 
-  const pendingTransactions = () => {
-    const result = {};
-    infinityTransactions?.forEach((item) => {
-      return item.transactions.forEach((transaction) => {
-        if (result[transaction.id]) return;
-
-        result[transaction.id] = {
-          status: transaction.status,
-          hash: transaction.hash,
-          id: transaction.id,
-          predicateId: transaction.predicateId,
-          resume: {
-            witnesses: transaction.resume.witnesses,
-          },
-        };
-      });
-    });
-
-    return result;
-  };
-
   return {
     request: {
       isLoading: !transactionsPages && isLoading && !isFetching,
@@ -150,7 +129,6 @@ const useTransactionList = ({
       transactions,
       infinityTransactions,
     },
-    pendingTransactions: pendingTransactions(),
   };
 };
 

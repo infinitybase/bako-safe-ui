@@ -1,8 +1,7 @@
 import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { ITransferAsset } from 'bakosafe';
 
 const useTxAmountToUSD = (
-  assets: ITransferAsset[],
+  assets: { assetId: string; amount: string }[],
   isLoading: boolean,
   tokens: ITokens,
 ) => {

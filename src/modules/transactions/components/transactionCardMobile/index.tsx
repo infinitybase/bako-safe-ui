@@ -7,7 +7,6 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionType } from 'bakosafe';
 
 import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
@@ -18,19 +17,20 @@ import { TransactionWithVault } from '../../services/types';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
   account: string;
   isSigner: boolean;
-  isContract?: boolean;
-  isDeploy?: boolean;
   callBack?: () => void;
 }
 
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
-  const isDeposit = transaction.type === TransactionType.DEPOSIT;
+
+  const { isFromConnector, isDeploy, isDeposit } =
+    useVerifyTransactionInformations(transaction);
 
   const status = transactionStatus({
     ...transaction,
@@ -82,15 +82,15 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
           >
             <Icon
               as={
-                props.isDeploy
+                isDeploy
                   ? DeployIcon
-                  : props.isContract
+                  : isFromConnector
                     ? ContractIcon
                     : isDeposit
                       ? DownLeftArrowGreen
                       : UpRightArrowYellow
               }
-              fontSize={props.isDeploy || props.isContract ? 'inherit' : '12px'}
+              fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
             />
           </Flex>
           <VStack w="full">

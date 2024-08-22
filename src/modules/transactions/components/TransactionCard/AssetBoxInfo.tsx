@@ -4,6 +4,7 @@ import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD
 import {
   AddressUtils,
   AssetModel,
+  IGetTokenInfos,
   assetsMap,
   useGetParams,
   useScreenSize,
@@ -30,6 +31,7 @@ interface AssetBoxInfoProps extends StackProps {
   isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
+  contractAssetInfo?: IGetTokenInfos;
 }
 
 const AssetBoxInfo = ({
@@ -38,6 +40,8 @@ const AssetBoxInfo = ({
   hasToken,
   isDeposit,
   isDeploy,
+  isContract,
+  contractAssetInfo,
   ...props
 }: AssetBoxInfoProps) => {
   const { tokensUSD } = useWorkspaceContext();
@@ -47,7 +51,6 @@ const AssetBoxInfo = ({
 
   const isVaultPage = !!vaultId;
 
-  const isContract = !!contractAddress;
   const { isMobile, isExtraSmall, isExtraLarge, isLitteSmall } =
     useScreenSize();
 
@@ -57,7 +60,14 @@ const AssetBoxInfo = ({
   );
 
   const txUSDAmount = useTxAmountToUSD(
-    [asset as ITransferAsset],
+    [
+      asset
+        ? asset
+        : {
+            amount: contractAssetInfo?.assetAmount!,
+            assetId: contractAssetInfo?.assetsInfo.assetId!,
+          },
+    ],
     tokensUSD?.isLoading,
     tokensUSD?.data!,
   );
@@ -83,6 +93,19 @@ const AssetBoxInfo = ({
           </Text>
         </HStack>
       )}
+      {contractAssetInfo && isContract && !assetInfo && (
+        <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
+          <Avatar
+            name={contractAssetInfo.assetsInfo.slug}
+            size="xs"
+            src={contractAssetInfo.assetsInfo.icon}
+            ignoreFallback
+          />
+          <Text fontSize="sm" color="grey.500">
+            {contractAssetInfo.assetsInfo.slug}
+          </Text>
+        </HStack>
+      )}
 
       <Box mt={0.5} minW="105px">
         <Text
@@ -93,6 +116,7 @@ const AssetBoxInfo = ({
         >
           {isDeposit ? null : '-'}
           {asset?.amount}
+          {!asset?.amount && contractAssetInfo && contractAssetInfo.assetAmount}
         </Text>
         <Text
           textAlign="center"
@@ -135,6 +159,27 @@ const AssetBoxInfo = ({
               )
             : AddressUtils.format(
                 Address.fromString(asset.to ?? '').toB256(),
+                !isVaultPage && isExtraLarge ? 24 : 12,
+              )}
+        </Text>
+      )}
+
+      {isContract && contractAddress && (
+        <Text
+          w="full"
+          fontSize="sm"
+          color="grey.75"
+          textOverflow="ellipsis"
+          isTruncated
+          ml="2px"
+        >
+          {isLitteSmall
+            ? AddressUtils.format(
+                Address.fromString(contractAddress ?? '').toB256(),
+                isExtraSmall ? 0 : 7,
+              )
+            : AddressUtils.format(
+                Address.fromString(contractAddress ?? '').toB256(),
                 !isVaultPage && isExtraLarge ? 24 : 12,
               )}
         </Text>

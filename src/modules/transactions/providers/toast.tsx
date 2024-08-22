@@ -31,9 +31,9 @@ const useTransactionToast = () => {
     });
   };
 
-  const loading = (transaction: ITransaction) => {
-    if (toast.isActive(transaction.id)) return;
-    transactionsToastRef.current[transaction.id] = toast({
+  const loading = (transaction: Partial<ITransaction>) => {
+    if (toast.isActive(transaction.id!)) return;
+    transactionsToastRef.current[transaction.id!] = toast({
       position: 'top-right',
       duration: 100000,
       isClosable: true,

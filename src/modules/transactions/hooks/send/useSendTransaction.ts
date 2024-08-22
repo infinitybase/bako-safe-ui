@@ -36,9 +36,9 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     setHasNewNotification(true);
   };
 
-  const executeTransaction = (transaction: ITransaction) => {
+  const executeTransaction = (transaction: Partial<ITransaction>) => {
     const wasTheLastSignature =
-      transaction.resume.witnesses.filter(
+      transaction!.resume!.witnesses.filter(
         (witness) => witness.status === WitnessStatus.PENDING,
       ).length <= 1;
     if (wasTheLastSignature) {

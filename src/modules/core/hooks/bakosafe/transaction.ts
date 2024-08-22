@@ -76,7 +76,7 @@ interface UseBakoSafeSendTransactionParams {
 }
 
 interface BakoSafeTransactionSendVariables {
-  transaction: ITransaction;
+  transaction: Partial<ITransaction>;
   auth?: IBakoSafeAuth;
 }
 
@@ -92,7 +92,7 @@ const useBakoSafeTransactionSend = (
         address: auth!.address,
       });
 
-      const transfer = await vault.BakoSafeGetTransaction(transaction.id);
+      const transfer = await vault.BakoSafeGetTransaction(transaction.id!);
 
       await transfer.wait();
 
