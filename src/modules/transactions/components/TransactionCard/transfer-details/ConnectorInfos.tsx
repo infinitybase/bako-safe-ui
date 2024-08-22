@@ -16,11 +16,24 @@ export interface IConnectorInfos {
   isNotSigned: boolean;
 }
 
+export enum ETransactionSummaryNames {
+  FUEL = 'Fuel Connectors',
+  SPARK = 'Spark | Faucet',
+}
+
 const ConnectorInfos = ({
   transaction,
   isPending,
   isNotSigned,
 }: IConnectorInfos) => {
+  const txSummaryName = transaction.summary?.['name'];
+  const originName =
+    txSummaryName === ETransactionSummaryNames.FUEL
+      ? 'Connector'
+      : txSummaryName === ETransactionSummaryNames.SPARK
+        ? 'SPARK'
+        : txSummaryName;
+
   return (
     <Card
       bgColor="grey.825"
@@ -53,7 +66,7 @@ const ConnectorInfos = ({
             color="grey.250"
             textTransform="capitalize"
           >
-            {transaction.summary?.type}
+            {originName}
           </Text>
           <Text color="brand.500" variant="description" fontSize="xs">
             {transaction.summary?.type === 'connector' &&
