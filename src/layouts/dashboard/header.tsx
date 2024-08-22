@@ -16,6 +16,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { isB256, isBech32 } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -26,21 +27,21 @@ import {
   ReplaceIcon,
   SettingsIcon,
 } from '@/components';
+import { AddressCopy } from '@/components/addressCopy';
+import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
+import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import {
   CreateWorkspaceDialog,
   SelectWorkspaceDialog,
 } from '@/modules/workspace/components';
-
-import { AddressCopy } from '@/components/addressCopy';
-import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useUserWorkspacesRequest } from '@/modules';
+import { limitCharacters } from '@/utils';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -75,8 +76,8 @@ const UserBox = () => {
   const mySettingsRequest = useMySettingsRequest(
     authDetails.userInfos?.address,
   );
-  const name = mySettingsRequest.data?.name;
-  const hasNickName = !name?.startsWith('fuel');
+  const name = mySettingsRequest.data?.name ?? '';
+  const hasNickName = !isB256(name) && !isBech32(name);
 
   const logout = async () => {
     authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
@@ -186,8 +187,8 @@ const UserBox = () => {
               alignItems="start"
             >
               {hasNickName && (
-                <Text color="grey.50" fontWeight={500} fontSize="16px" mb="4px">
-                  {name}
+                <Text color="grey.50" fontWeight={500} mb="4px">
+                  {limitCharacters(name, 25)}
                 </Text>
               )}
               <AddressCopy
