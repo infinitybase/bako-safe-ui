@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useCreateAPIToken } from './create';
 import { useListAPITokens } from './list';
 import { useRemoveAPIToken } from './remove';
+import { useGetParams } from '@/modules';
 
 export enum TabState {
   LIST,
@@ -14,6 +15,9 @@ export enum TabState {
 export type UseAPITokenReturn = ReturnType<typeof useAPIToken>;
 
 const useAPIToken = (hasPermission: boolean) => {
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
   const [tab, setTab] = useState<TabState>(TabState.LIST);
 
   const dialog = useDisclosure();
@@ -23,7 +27,7 @@ const useAPIToken = (hasPermission: boolean) => {
     request: createRequest,
     createdAPIKey,
   } = useCreateAPIToken(setTab);
-  const { request: listRequest } = useListAPITokens(hasPermission);
+  const { request: listRequest } = useListAPITokens(vaultId!, hasPermission);
   const { confirm, request: removeRequest, handler } = useRemoveAPIToken();
 
   const hasToken = useMemo(() => {
