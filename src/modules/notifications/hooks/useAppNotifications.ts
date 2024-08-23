@@ -92,13 +92,18 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   }, [hasNewNotification]);
 
   useEffect(() => {
-    if (inView.inView && !notificationsListRequest.isLoading) {
+    if (
+      inView.inView &&
+      !notificationsListRequest.isLoading &&
+      notificationsListRequest.hasNextPage
+    ) {
       notificationsListRequest.fetchNextPage();
     }
   }, [
     inView.inView,
     notificationsListRequest.isLoading,
     notificationsListRequest.fetchNextPage,
+    notificationsListRequest.hasNextPage,
   ]);
 
   useEffect(() => {
