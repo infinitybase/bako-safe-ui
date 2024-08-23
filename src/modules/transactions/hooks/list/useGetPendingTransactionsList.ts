@@ -5,7 +5,10 @@ const usePendingTransactionsList = (
   homeTransactions: ITransactionsGroupedByMonth[],
   transactionsPageList: ITransactionsGroupedByMonth[],
 ): IPendingTransactionsRecord => {
-  const mergedTransactionsList = [...homeTransactions, ...transactionsPageList];
+  const mergedTransactionsList = [
+    ...(homeTransactions ?? []),
+    ...(transactionsPageList ?? []),
+  ];
 
   const result = {};
   mergedTransactionsList?.forEach((item) => {
