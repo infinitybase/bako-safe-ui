@@ -1,4 +1,9 @@
-import { TransactionStatus, TransactionType } from 'bakosafe';
+import {
+  ITransaction,
+  ITransactionResume,
+  TransactionStatus,
+  TransactionType,
+} from 'bakosafe';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
@@ -25,12 +30,10 @@ interface IUseTransactionListProps {
 
 export type IUseTransactionList = ReturnType<typeof useTransactionList>;
 
-export interface IPendingTransactionDetails {
-  status: TransactionStatus;
-  hash: string;
-  id: string;
-  predicateId: string;
-}
+export type IPendingTransactionDetails = Pick<
+  ITransaction,
+  'status' | 'hash' | 'id' | 'predicateId' | 'resume' | 'name'
+>;
 
 export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;

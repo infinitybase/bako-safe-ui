@@ -1,7 +1,10 @@
+import { AssetModel } from '@/modules/core';
 import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
+export type IAssetsInfoToUSD = Pick<AssetModel, 'assetId' | 'amount'>;
+
 const useTxAmountToUSD = (
-  assets: { assetId: string; amount: string }[],
+  assets: IAssetsInfoToUSD[],
   isLoading: boolean,
   tokens: ITokens,
 ) => {

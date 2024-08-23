@@ -11,11 +11,12 @@ export const useIsFilteringInProgress = ({
   isTransactionsPageListFetching,
   isVaultTransactionsFetching,
 }: IUseIsFilteringInProgress) => {
-  const isFilteringInProgress =
-    (isHomeFetching ||
-      isTransactionsPageListFetching ||
-      isVaultTransactionsFetching) &&
-    !isGifAnimationLoading;
+  const isSomeTxListFetching =
+    isHomeFetching ||
+    isTransactionsPageListFetching ||
+    isVaultTransactionsFetching;
+
+  const isFilteringInProgress = isSomeTxListFetching && !isGifAnimationLoading;
 
   return isFilteringInProgress;
 };

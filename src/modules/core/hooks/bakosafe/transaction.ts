@@ -76,7 +76,7 @@ interface UseBakoSafeSendTransactionParams {
 }
 
 interface BakoSafeTransactionSendVariables {
-  transaction: Partial<ITransaction>;
+  transaction: Pick<ITransaction, 'id' | 'predicateId'>;
   auth?: IBakoSafeAuth;
 }
 

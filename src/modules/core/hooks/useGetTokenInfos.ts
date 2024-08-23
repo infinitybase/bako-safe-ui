@@ -4,7 +4,10 @@ import { Asset, assetsMap } from '../utils';
 
 export type IGetTokenInfos = ReturnType<typeof useGetTokenInfos>;
 
-const useGetTokenInfos = ({ assetId, amount = '0.000' }: Partial<Asset>) => {
+const useGetTokenInfos = ({
+  assetId,
+  amount = '0.000',
+}: Pick<Asset, 'assetId' | 'amount'>) => {
   const isHex = (value: string) => {
     const hexRegex = /^0x[0-9a-fA-F]+$/;
     return typeof value === 'string' && hexRegex.test(value);
