@@ -30,8 +30,6 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   } = useWorkspaceContext();
 
   const {
-    isPendingSigner,
-    pendingSignerTransactionsLength,
     assets: { isLoading, hasBalance },
     vault,
     sideBarDetails: { route, drawer, menuItems },
@@ -41,6 +39,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     vaultTransactions: {
       handlers: { setSelectedTransaction },
     },
+    isPendingSigner,
+    pendingSignerTransactionsLength,
   } = useTransactionsContext();
 
   const {

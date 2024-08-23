@@ -1,10 +1,9 @@
 import { TransactionStatus } from 'bakosafe';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { useFilterTxType } from '@/modules/transactions/hooks/filter/useFilterTxType';
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
 import { useTransactionState } from '@/modules/transactions/states';
 
 import { useVaultTransactionsRequest } from './useVaultTransactionsRequest';
@@ -17,7 +16,6 @@ export enum StatusFilter {
 }
 
 interface IUseVaultTransactionsListProps {
-  byMonth?: boolean;
   vaultId?: string;
 }
 
@@ -26,7 +24,6 @@ export type IUseVaultTransactionsList = ReturnType<
 >;
 
 const useVaultTransactionsList = ({
-  byMonth = false,
   vaultId,
 }: IUseVaultTransactionsListProps = {}) => {
   const navigate = useNavigate();
@@ -43,7 +40,7 @@ const useVaultTransactionsList = ({
   } = useFilterTxType();
 
   const {
-    transactionsPages,
+    transactions,
     isLoading,
     isFetching,
     hasNextPage,
@@ -52,7 +49,6 @@ const useVaultTransactionsList = ({
   } = useVaultTransactionsRequest({
     predicateId: vaultId ? [vaultId] : undefined,
     status: filter ? [filter] : undefined,
-    byMonth,
     type: txFilterType,
     id: selectedTransaction.id,
   });
@@ -80,15 +76,6 @@ const useVaultTransactionsList = ({
     [fetchNextPage, hasNextPage, isFetching, isLoading],
   );
 
-  const infinityTransactions = useMemo(() => {
-    return transactionsPages?.pages?.reduce(
-      (acc: ITransactionsGroupedByMonth[], page) => {
-        return [...acc, ...page.data];
-      },
-      [],
-    );
-  }, [transactionsPages]);
-
   return {
     request: {
       isLoading,
@@ -113,11 +100,10 @@ const useVaultTransactionsList = ({
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     lists: {
-      transactionsPages,
-      infinityTransactions,
-      limitedTransactions: infinityTransactions?.slice(0, 1),
+      transactions,
+      limitedTransactions: transactions?.slice(0, 1),
     },
-    infinityTransactionsRef: lastElementRef,
+    transactionsRef: lastElementRef,
   };
 };
 

@@ -1,11 +1,10 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { useGetParams } from '@/modules/core';
 
-import { ITransactionsGroupedByMonth } from '../../services';
 import { useTransactionState } from '../../states';
 import { useFilterTxType } from '../filter';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -19,7 +18,6 @@ export enum StatusFilter {
 
 interface IUseTransactionListProps {
   workspaceId?: string;
-  byMonth?: boolean;
   type?: TransactionType;
 }
 
@@ -38,7 +36,6 @@ export interface IPendingTransactionsRecord {
 
 const useTransactionList = ({
   workspaceId = '',
-  byMonth = false,
 }: IUseTransactionListProps = {}) => {
   const [filter, setFilter] = useState<StatusFilter>(StatusFilter.ALL);
   const { selectedTransaction, setSelectedTransaction } = useTransactionState();
@@ -59,7 +56,6 @@ const useTransactionList = ({
 
   const {
     transactions,
-    transactionsPages,
     isLoading,
     isFetching,
     hasNextPage,
@@ -70,7 +66,6 @@ const useTransactionList = ({
     predicateId: vaultId ? [vaultId] : undefined,
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
-    byMonth,
     type: txFilterType,
   });
 
@@ -92,39 +87,9 @@ const useTransactionList = ({
     [fetchNextPage, hasNextPage, isFetching, isLoading],
   );
 
-  const infinityTransactions = useMemo(() => {
-    return transactionsPages?.pages.reduce(
-      (acc: ITransactionsGroupedByMonth[], page) => {
-        return [...acc, ...page.data];
-      },
-      [],
-    );
-  }, [transactionsPages]);
-
-  const pendingTransactions = () => {
-    const result = {};
-    infinityTransactions?.forEach((item) => {
-      return item.transactions.forEach((transaction) => {
-        if (result[transaction.id]) return;
-
-        result[transaction.id] = {
-          status: transaction.status,
-          hash: transaction.hash,
-          id: transaction.id,
-          predicateId: transaction.predicateId,
-          resume: {
-            witnesses: transaction.resume.witnesses,
-          },
-        };
-      });
-    });
-
-    return result;
-  };
-
   return {
     request: {
-      isLoading: !transactionsPages && isLoading && !isFetching,
+      isLoading: !transactions && isLoading && !isFetching,
       isFetching,
       hasNextPage,
       fetchNextPage,
@@ -145,12 +110,10 @@ const useTransactionList = ({
     },
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
-    infinityTransactionsRef: lastElementRef,
+    transactionsRef: lastElementRef,
     lists: {
       transactions,
-      infinityTransactions,
     },
-    pendingTransactions: pendingTransactions(),
   };
 };
 

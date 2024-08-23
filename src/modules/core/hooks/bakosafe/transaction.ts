@@ -49,7 +49,6 @@ interface UseBakoSafeListTransactionParams {
   vaultId: string;
   filter?: IListTransactions & {
     limit: number;
-    byMonth?: boolean;
     type?: TransactionType;
   };
 }

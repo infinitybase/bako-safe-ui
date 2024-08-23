@@ -62,8 +62,8 @@ const TransactionsVaultPage = () => {
       defaultIndex,
       filter,
       inView,
-      infinityTransactionsRef,
-      lists: { infinityTransactions },
+      transactionsRef,
+      lists: { transactions },
       handlers: {
         selectedTransaction,
         handleIncomingAction,
@@ -82,7 +82,7 @@ const TransactionsVaultPage = () => {
     };
   }, []);
 
-  const hasTransactions = !isLoading && infinityTransactions?.length;
+  const hasTransactions = !isLoading && transactions?.length;
 
   return (
     <Box w="full" height="100%" maxH="100%">
@@ -286,7 +286,7 @@ const TransactionsVaultPage = () => {
             pb={10}
             mt={3}
           >
-            {infinityTransactions?.map((grouped) => (
+            {transactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -316,11 +316,7 @@ const TransactionsVaultPage = () => {
                       openIndex={defaultIndex}
                       key={defaultIndex.join(',')}
                     >
-                      <Box
-                        key={transaction.id}
-                        ref={infinityTransactionsRef}
-                        w="full"
-                      >
+                      <Box key={transaction.id} ref={transactionsRef} w="full">
                         <CustomSkeleton isLoaded={!isLoading}>
                           {isMobile ? (
                             <TransactionCardMobile

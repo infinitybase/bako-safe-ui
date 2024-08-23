@@ -10,6 +10,7 @@ import {
 } from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
+import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,
@@ -49,10 +50,11 @@ const useTransactionListPaginationRequest = (
         : undefined,
   });
 
+  const transactionsList = data?.pages.map((page) => page.data).flat() ?? [];
+
   return {
     ...query,
-    transactionsPages: data,
-    transactions: data?.pages.map((page) => page.data).flat() ?? [],
+    transactions: useGroupTransactionsByMonth(transactionsList),
   };
 };
 

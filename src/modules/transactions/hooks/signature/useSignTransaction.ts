@@ -27,15 +27,16 @@ interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
   pendingSignerTransactionsRefetch: () => void;
   homeTransactionsRefetch: () => void;
+  pendingTransactions: any;
 }
 
 const useSignTransaction = ({
   transactionList,
   pendingSignerTransactionsRefetch,
   homeTransactionsRefetch,
+  pendingTransactions,
 }: IUseSignTransactionProps) => {
   const {
-    pendingTransactions,
     request: { refetch: transactionsPageRefetch },
   } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =

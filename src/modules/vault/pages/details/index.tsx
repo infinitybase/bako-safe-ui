@@ -42,8 +42,7 @@ const VaultDetailsPage = () => {
   } = useGetParams();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
-  const { vault, assets, account, pendingSignerTransactions, isPendingSigner } =
-    useVaultInfosContext();
+  const { vault, assets, account } = useVaultInfosContext();
 
   const {
     vaultTransactions: {
@@ -52,6 +51,8 @@ const VaultDetailsPage = () => {
       request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
+    pendingSignerTransactions,
+    isPendingSigner,
   } = useTransactionsContext();
 
   const { setTemplateFormInitial } = useTemplateStore();
