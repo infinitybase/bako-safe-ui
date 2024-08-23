@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { IAssetGroupById } from 'bakosafe';
+import { BakoSafe, IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -210,7 +210,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    const newFee = transactionFee || validTransactionFee || '0.000';
+    const newFee =
+      transactionFee ||
+      validTransactionFee ||
+      BakoSafe.getGasConfig('BASE_FEE').toString();
     const transactions = form.getValues('transactions') || [];
 
     transactions.forEach((_, index) => {

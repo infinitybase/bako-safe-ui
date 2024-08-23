@@ -30,7 +30,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   const {
     isPendingSigner,
     pendingSignerTransactionsLength,
-    assets: { isLoading, hasBalance },
+    assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
@@ -75,6 +75,9 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           name={String(`${vault.data?.name?.slice(0, 9)}...`)}
           fullName={String(vault.data?.name)}
           address={AddressUtils.format(vault?.data?.predicateAddress ?? '')!}
+          isEthBalanceLowerThanReservedAmount={
+            isEthBalanceLowerThanReservedAmount
+          }
           isLoading={vault.isLoading}
           isFetching={vault.isFetching}
           onChangeVault={() => {

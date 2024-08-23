@@ -75,6 +75,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     isLoading,
     hasBalance,
     ethBalance,
+    isEthBalanceLowerThanReservedAmount,
   } = assets;
   const {
     authDetails: { userInfos },
@@ -308,7 +309,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       isDisabled={
                         !hasBalance ||
                         !makeTransactionsPerm ||
-                        props.isPendingSigner
+                        props.isPendingSigner ||
+                        isEthBalanceLowerThanReservedAmount
                       }
                       variant="primary"
                       leftIcon={<SquarePlusIcon />}
@@ -316,16 +318,17 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       Send
                     </Button>
-                    {!props.isPendingSigner && !hasBalance && (
-                      <Text
-                        variant="description"
-                        textAlign={{ base: 'end', sm: 'left' }}
-                        fontSize="xs"
-                        color="error.500"
-                      >
-                        Not enough balance.
-                      </Text>
-                    )}
+                    {isEthBalanceLowerThanReservedAmount &&
+                      !props.isPendingSigner && (
+                        <Text
+                          variant="description"
+                          textAlign={{ base: 'end', sm: 'left' }}
+                          fontSize="xs"
+                          color="error.500"
+                        >
+                          Not enough balance.
+                        </Text>
+                      )}
                     {props.isPendingSigner ? (
                       <Text
                         variant="description"
