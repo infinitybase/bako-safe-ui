@@ -6,6 +6,7 @@ import {
   TransactionOrderBy,
   TransactionService,
 } from '@/modules/transactions/services';
+import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,
@@ -67,9 +68,11 @@ const useVaultTransactionsRequest = (
     },
   });
 
+  const transactionsList = data?.pages.map((page) => page.data).flat() ?? [];
+
   return {
     ...query,
-    transactionsPages: data,
+    transactions: useGroupTransactionsByMonth(transactionsList),
   };
 };
 

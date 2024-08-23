@@ -39,12 +39,12 @@ import { useEffect } from 'react';
 const UserTransactionsPage = () => {
   const {
     transactionsPageList: {
-      infinityTransactionsRef,
+      transactionsRef,
       request: { isLoading, isFetching },
       filter,
       inView,
       handlers: { navigate },
-      lists: { infinityTransactions, transactions },
+      lists: { transactions },
     },
     pendingSignerTransactions,
     resetAllTransactionsTypeFilters,
@@ -299,7 +299,7 @@ const UserTransactionsPage = () => {
             <EmptyState showAction={false} />
           )}
 
-          {infinityTransactions?.map((grouped) => (
+          {transactions?.map((grouped) => (
             <>
               <HStack w="full">
                 <Text
@@ -325,11 +325,7 @@ const UserTransactionsPage = () => {
 
                   return (
                     <>
-                      <Box
-                        key={transaction.id}
-                        ref={infinityTransactionsRef}
-                        w="full"
-                      >
+                      <Box key={transaction.id} ref={transactionsRef} w="full">
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}

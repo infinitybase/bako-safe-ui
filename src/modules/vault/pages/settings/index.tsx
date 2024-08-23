@@ -19,11 +19,13 @@ import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const VaultSettingsPage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
-  const { vault, assets, isPendingSigner } = useVaultInfosContext();
+  const { vault, assets } = useVaultInfosContext();
+  const { isPendingSigner } = useTransactionsContext();
 
   const {
     authDetails: { userInfos },

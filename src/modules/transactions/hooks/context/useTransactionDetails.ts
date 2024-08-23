@@ -24,16 +24,14 @@ const useTransactionDetails = () => {
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
   const vaultTransactions = useVaultTransactionsList({
     vaultId: vaultId!,
-    byMonth: true,
   });
   const transactionsPageList = useTransactionList({
     workspaceId: workspace?.id,
-    byMonth: true,
   });
 
   const pendingTransactions = usePendingTransactionsList(
     homeTransactions.transactions!,
-    transactionsPageList.lists.infinityTransactions!,
+    transactionsPageList.lists.transactions!,
   );
 
   const signTransaction = useSignTransaction({
@@ -56,6 +54,10 @@ const useTransactionDetails = () => {
     transactionsPageList,
     signTransaction,
     pendingSignerTransactions,
+    isPendingSigner:
+      pendingSignerTransactions.data?.transactionsBlocked ?? false,
+    pendingSignerTransactionsLength:
+      pendingSignerTransactions.data?.ofUser || 0,
     resetAllTransactionsTypeFilters,
   };
 };

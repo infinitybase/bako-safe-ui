@@ -1,7 +1,7 @@
 import { api } from '@/config';
 import { IPagination, Predicate, Workspace } from '@/modules/core';
 import { AssetId } from '@/modules/core/utils/assets/address';
-import { ITransactionsGroupedByMonth } from '@/modules/transactions/services';
+import { TransactionWithVault } from '@/modules/transactions/services';
 
 import { TransactionType } from 'bakosafe';
 
@@ -10,7 +10,7 @@ export interface HomeDataResponse {
 }
 
 export interface HomeTransactionsResponse {
-  data: ITransactionsGroupedByMonth[];
+  data: TransactionWithVault[];
 }
 
 type TokensUSDResponse = [AssetId, number][];
