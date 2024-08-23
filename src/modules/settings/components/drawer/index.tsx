@@ -23,9 +23,10 @@ import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useSignIn } from '@/modules/auth';
+import { AddressUtils } from '@/modules/core/utils/address';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useSettings } from '../../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SettingsDrawerProps extends Omit<DrawerProps, 'children'> {
   onOpen: () => void;
@@ -62,10 +63,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     nicknamesData?.id !== userInfos.id &&
     search?.length > 0;
 
-  const name = mySettingsRequest.data?.name;
+  const name = mySettingsRequest.data?.name ?? '';
 
   useEffect(() => {
-    setSearch(name ?? '');
+    const _search = AddressUtils.isValid(name) ? '' : name;
+    setSearch(_search);
   }, [name, props.isOpen]);
 
   return (
