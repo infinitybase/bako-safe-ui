@@ -230,7 +230,9 @@ const useChangeMember = () => {
     //   isEditMember,
     // },
     [MemberTabState.FORM]: {
-      isValid: permissionForm.formState.isValid || editForm.formState.isValid,
+      isValid:
+        (permissionForm.formState.isValid && memberForm?.formState?.isValid) ||
+        editForm.formState.isValid,
       primaryAction: isEditMember ? 'Update' : 'Add member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: isEditMember
