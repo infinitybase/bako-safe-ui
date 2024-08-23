@@ -8,6 +8,7 @@ import {
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { useSignTransaction } from '../signature';
+import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
@@ -30,10 +31,16 @@ const useTransactionDetails = () => {
     byMonth: true,
   });
 
+  const pendingTransactions = usePendingTransactionsList(
+    homeTransactions.transactions!,
+    transactionsPageList.lists.infinityTransactions!,
+  );
+
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
     homeTransactionsRefetch: homeTransactions.request.refetch,
+    pendingTransactions: pendingTransactions,
   });
 
   const resetAllTransactionsTypeFilters = () => {

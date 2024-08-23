@@ -10,7 +10,6 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionType } from 'bakosafe';
 import { ReactNode } from 'react';
 
 import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
@@ -22,6 +21,7 @@ import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardContainerProps extends CardProps {
@@ -31,7 +31,6 @@ interface TransactionCardContainerProps extends CardProps {
   account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
-  isContract?: boolean;
   callBack?: () => void;
 }
 
@@ -43,7 +42,6 @@ const Container = ({
   isSigner,
   isInTheVaultPage,
   callBack,
-  isContract,
   ...rest
 }: TransactionCardContainerProps) => {
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
@@ -55,10 +53,11 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const detailsDialog = useDetailsDialog();
-  const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const { isFromConnector, isDeploy, isDeposit } =
+    useVerifyTransactionInformations(transaction);
 
-  const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
+  const detailsDialog = useDetailsDialog();
+
   return (
     <>
       {transaction && (
@@ -104,14 +103,14 @@ const Container = ({
             as={
               isDeploy
                 ? DeployIcon
-                : isContract
+                : isFromConnector
                   ? ContractIcon
                   : isDeposit
                     ? DownLeftArrowGreen
                     : UpRightArrowYellow
             }
             mt={8}
-            fontSize={isDeploy || isContract ? 'inherit' : '12px'}
+            fontSize={isDeploy || isFromConnector ? 'inherit' : '12px'}
           />
         </Flex>
         <VStack
