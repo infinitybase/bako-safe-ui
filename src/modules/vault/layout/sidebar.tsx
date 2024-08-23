@@ -10,19 +10,17 @@ import {
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { AddressUtils } from '@/modules/core/utils';
-import { useCreateTransaction } from '@/modules/transactions/hooks/create/useCreateTransaction';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
 }
 
 const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
-  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
   const {
     workspaceInfos: {
       handlers: { hasPermission },
@@ -32,7 +30,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   const {
     isPendingSigner,
     pendingSignerTransactionsLength,
-    assets: { isLoading, hasBalance },
+    assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();

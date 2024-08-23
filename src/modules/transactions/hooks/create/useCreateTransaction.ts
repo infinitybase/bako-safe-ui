@@ -87,7 +87,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       assetId: asset.assetId,
     })),
     getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
-
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
@@ -151,10 +150,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       return acc;
     }, {} as IAssetGroupById);
 
+  const formattedCurrentAssetBalance = useGetTokenInfosArray(
+    currentVaultAssets ?? [],
+  );
+
   const getBalanceAvailable = useCallback(() => {
-    const formattedCurrentAssetBalance = useGetTokenInfosArray(
-      currentVaultAssets ?? [],
-    );
     const currentAssetBalance = bn.parseUnits(
       formattedCurrentAssetBalance?.find(
         (asset) => asset.assetId === currentFieldAsset,
@@ -198,13 +198,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = props?.getCoinAmount(NativeAssetId);
-  const isEthBalanceLowerThanReservedAmount =
-    Number(currentEthBalance) <=
-    Number(
-      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
-    );
-
   const handleClose = () => {
     props?.onClose();
   };
@@ -217,16 +210,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    if (transactionFee) {
-      setValidTransactionFee(transactionFee);
-      form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
-    } else if (validTransactionFee) {
-      form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
-    } else {
-      const txFee = BakoSafe.getGasConfig('BASE_FEE').toString();
-      setValidTransactionFee(txFee);
-      form.setValue(`transactions.${accordion.index}.fee`, txFee);
-    }
+    const newFee =
+      transactionFee ||
+      validTransactionFee ||
+      BakoSafe.getGasConfig('BASE_FEE').toString();
+    const transactions = form.getValues('transactions') || [];
+
+    transactions.forEach((_, index) => {
+      form.setValue(`transactions.${index}.fee`, newFee);
+    });
+
+    setValidTransactionFee(newFee);
   }, [transactionFee]);
 
   useEffect(() => {
@@ -236,7 +230,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
 
   useEffect(() => {
-    const { transactions } = form.getValues();
+    if (
+      (currentFieldAsset && !currentFieldAmount) ||
+      Number(currentFieldAmount) === 0
+    )
+      return;
+
+    const transactions = form.getValues('transactions');
 
     const assets =
       Number(transactionTotalAmount) > 0
@@ -258,7 +258,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           }));
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
+  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
 
   return {
     resolveTransactionCosts,
@@ -274,7 +274,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
-    isEthBalanceLowerThanReservedAmount,
   };
 };
 
