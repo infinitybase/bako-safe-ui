@@ -28,7 +28,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   } = useWorkspaceContext();
 
   const {
-    assets: { isLoading, hasBalance },
+    assets: { isLoading, hasBalance, isEthBalanceLowerThanReservedAmount },
     vault,
     sideBarDetails: { route, drawer, menuItems },
   } = useVaultInfosContext();
