@@ -1,4 +1,4 @@
-import { BaseTransfer, ITransactionResume, Transfer } from 'bakosafe';
+import { BakoSafe, ITransactionResume, Transfer } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { api } from '@/config/api';
@@ -149,13 +149,13 @@ export class TransactionService {
       },
     });
 
-    const { maxFee } = await BaseTransfer.prepareTransaction(
-      vault,
-      transactionRequest,
-    );
+    const { maxFee } =
+      await vault.provider.getTransactionCost(transactionRequest);
 
     return {
-      fee: maxFee,
+      fee: maxFee.add(
+        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()),
+      ),
     };
   }
 
