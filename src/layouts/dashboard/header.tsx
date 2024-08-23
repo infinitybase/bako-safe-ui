@@ -16,7 +16,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { isB256, isBech32 } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -77,7 +76,7 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
   const name = mySettingsRequest.data?.name ?? '';
-  const hasNickName = !isB256(name) && !isBech32(name);
+  const hasNickName = !AddressUtils.isValid(name);
 
   const logout = async () => {
     authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());

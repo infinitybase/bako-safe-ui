@@ -18,12 +18,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { isB256, isBech32 } from 'fuels';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
 import { useSignIn } from '@/modules/auth';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useSettings } from '../../hooks';
@@ -66,7 +66,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
   const name = mySettingsRequest.data?.name ?? '';
 
   useEffect(() => {
-    const _search = isB256(name) || isBech32(name) ? '' : name;
+    const _search = AddressUtils.isValid(name) ? '' : name;
     setSearch(_search);
   }, [name, props.isOpen]);
 
