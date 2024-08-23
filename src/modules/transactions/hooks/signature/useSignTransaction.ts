@@ -9,7 +9,11 @@ import { useWalletSignMessage } from '@/modules/core';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import { IUseTransactionList } from '../list';
+import {
+  IPendingTransactionDetails,
+  IPendingTransactionsRecord,
+  IUseTransactionList,
+} from '../list';
 import { useSendTransaction } from '../send/useSendTransaction';
 import { useSignTransactionRequest } from './useSignTransactionRequest';
 
@@ -27,7 +31,7 @@ interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
   pendingSignerTransactionsRefetch: () => void;
   homeTransactionsRefetch: () => void;
-  pendingTransactions: any;
+  pendingTransactions: IPendingTransactionsRecord;
 }
 
 const useSignTransaction = ({
@@ -40,7 +44,7 @@ const useSignTransaction = ({
     request: { refetch: transactionsPageRefetch },
   } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
-    useState<ITransaction>();
+    useState<IPendingTransactionDetails>();
 
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();

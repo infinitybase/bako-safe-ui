@@ -4,9 +4,11 @@ const currentPath = () => {
   const { pathname } = useLocation();
 
   const isSignInpage = pathname === '/';
+  const isFromDapp = pathname.startsWith('/dapp');
 
   return {
     isSignInpage,
+    isFromDapp,
   };
 };
 

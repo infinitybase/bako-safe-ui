@@ -1,6 +1,6 @@
-import { Dialog } from '@/components';
-import { Heading, Icon, Text, VStack } from '@chakra-ui/react';
-import { NotifyIcon } from '@/components';
+import { Heading, Text, VStack } from '@chakra-ui/react';
+
+import { Dialog, NotifyIcon } from '@/components';
 
 interface CommingSoonDialogProps {
   isOpen: boolean;
@@ -49,14 +49,19 @@ const CommingSoonDialog = ({
         mb="18px"
         mt={{ base: 40, sm: '2px' }}
       >
-        <VStack w="full" spacing={10}>
-          <Icon as={NotifyIcon} w="full" h="80px" />
+        <VStack w="full" spacing={8}>
+          <NotifyIcon w={24} h={24} />
 
           <VStack spacing={6}>
             <Heading fontSize="xl" color="grey.75">
               {title}
             </Heading>
-            <Text variant="description" color="grey.250" fontSize="xs">
+            <Text
+              variant="description"
+              color="grey.250"
+              fontSize="xs"
+              textAlign="center"
+            >
               {description}
             </Text>
           </VStack>

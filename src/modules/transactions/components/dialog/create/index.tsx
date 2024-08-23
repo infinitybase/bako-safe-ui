@@ -16,9 +16,9 @@ import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 import { CreateTransactionForm } from './form';
-import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
   const { assets } = useVaultInfosContext();
@@ -45,6 +45,12 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
+
+  const isDisabled =
+    !form.formState.isValid ||
+    isCurrentAmountZero ||
+    resolveTransactionCosts.isPending ||
+    !transactionFee;
 
   return (
     <Dialog.Modal
@@ -142,16 +148,11 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         </Dialog.SecondaryAction>
         <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
-          isDisabled={
-            !form.formState.isValid ||
-            isCurrentAmountZero ||
-            resolveTransactionCosts.isPending ||
-            !transactionFee
-          }
+          isDisabled={isDisabled}
           isLoading={transactionRequest.isPending}
           onClick={form.handleCreateTransaction}
           _hover={{
-            opacity: form.formState.isValid && 0.8,
+            opacity: !isDisabled && 0.8,
           }}
         >
           Create transaction

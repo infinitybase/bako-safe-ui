@@ -35,6 +35,11 @@ export interface IOutput {
   assetsSent?: ISent[];
 }
 
+export enum IFuelTransactionNames {
+  CONTRACT_CALL = 'Contract call',
+  TRANSFER_ASSET = 'Transfer asset',
+}
+
 // export declare enum AddressType {
 //   contract = 0,
 //   account = 1,
@@ -75,7 +80,7 @@ class FuelTransactionService {
               type: AddressType.account,
               address: Address.fromString(from).toHexString(),
             },
-            name: 'Transfer asset',
+            name: IFuelTransactionNames.TRANSFER_ASSET,
             assetsSent: [
               {
                 amount: bn(output.amount).format(),
@@ -106,7 +111,7 @@ class FuelTransactionService {
               type: AddressType.account,
               address: Address.fromString(from).toHexString(),
             },
-            name: 'Contract call',
+            name: IFuelTransactionNames.CONTRACT_CALL,
           };
         }
         if (operation) acc.push(operation);

@@ -55,7 +55,8 @@ const useVaultTransactionsRequest = (
       }),
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 3, // 3 minutes
+    refetchInterval: 1000 * 60 * 3,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
     getNextPageParam: (lastPage) => {

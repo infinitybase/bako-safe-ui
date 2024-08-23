@@ -62,6 +62,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     onChangeVault,
     onCreateTransaction,
     isFirstAssetsLoading,
+    isEthBalanceLowerThanReservedAmount,
   } = props;
 
   const {
@@ -128,7 +129,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             isDisabled={
               !hasBalance ||
               isPending ||
-              props.isEthBalanceLowerThanReservedAmount ||
+              isEthBalanceLowerThanReservedAmount ||
               isFirstAssetsLoading
             }
             leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
@@ -142,7 +143,7 @@ const VaultBox = (props: VaultBoxPropx) => {
           )}
           {!isPending &&
             !isFirstAssetsLoading &&
-            props.isEthBalanceLowerThanReservedAmount && (
+            isEthBalanceLowerThanReservedAmount && (
               <Text variant="description" mt={2} color="error.500">
                 Not enough balance.
               </Text>
