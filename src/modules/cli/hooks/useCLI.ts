@@ -26,7 +26,7 @@ export enum CLIFeaturesLabels {
 }
 
 export interface IUseCLIProps {
-  vault: PredicateAndWorkspace;
+  vault?: PredicateAndWorkspace;
   userId: string;
   currentWorkspace?: Workspace;
 }
@@ -37,7 +37,7 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = vault.workspace?.permissions[userId];
+    const memberPermission = vault?.workspace?.permissions[userId];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))

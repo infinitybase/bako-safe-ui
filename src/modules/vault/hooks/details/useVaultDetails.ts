@@ -15,6 +15,9 @@ const useVaultDetails = () => {
     },
     workspaceInfos: {
       currentWorkspaceRequest: { currentWorkspace },
+      requests: {
+        latestPredicates: { data },
+      },
     },
   } = useWorkspaceContext();
 
@@ -24,7 +27,9 @@ const useVaultDetails = () => {
     APIToken,
     commingSoonFeatures: { commingSoonDialog, selectedFeature },
   } = useCLI({
-    vault: vaultRequest.data,
+    vault: data?.predicates?.data.find(
+      (predicate) => predicate.id === vaultRequest?.data?.id,
+    ),
     userId,
     currentWorkspace: currentWorkspace,
   });
