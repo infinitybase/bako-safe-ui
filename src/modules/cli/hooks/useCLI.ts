@@ -10,7 +10,7 @@ import { PermissionRoles } from '@/modules/core/models';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
-import { Workspace } from '@/modules';
+import { PredicateAndWorkspace, Workspace } from '@/modules';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -26,18 +26,18 @@ export enum CLIFeaturesLabels {
 }
 
 export interface IUseCLIProps {
-  vaultId: string;
+  vault: PredicateAndWorkspace;
   userId: string;
   currentWorkspace?: Workspace;
 }
 
-const useCLI = ({ currentWorkspace, userId, vaultId }: IUseCLIProps) => {
+const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   const [selectedFeature, setSelectedFeature] = useState<FeatureConfig | null>(
     null,
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = currentWorkspace?.permissions[userId];
+    const memberPermission = vault.workspace?.permissions[userId];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
@@ -45,7 +45,7 @@ const useCLI = ({ currentWorkspace, userId, vaultId }: IUseCLIProps) => {
 
     const hasPerm = hasRequiredPermission;
     return hasPerm;
-  }, [userId, vaultId, currentWorkspace]);
+  }, [userId, vault?.id, currentWorkspace]);
 
   const { dialog, steps, tabs, create, remove, list, hasToken } =
     useAPIToken(hasPermission);
