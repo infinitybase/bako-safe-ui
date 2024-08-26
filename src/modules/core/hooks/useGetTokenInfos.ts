@@ -13,7 +13,7 @@ const useGetTokenInfos = ({
     return typeof value === 'string' && hexRegex.test(value);
   };
 
-  const assetsInfo = assetsMap[assetId!];
+  const assetsInfo = assetsMap[assetId!] ?? assetsMap['UNKNOWN'];
   const assetAmount = isHex(amount) ? bn(amount).format() : amount;
 
   return { assetsInfo, assetAmount };
