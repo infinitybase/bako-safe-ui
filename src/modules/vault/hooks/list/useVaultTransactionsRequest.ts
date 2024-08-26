@@ -60,7 +60,7 @@ const useVaultTransactionsRequest = (
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
     getNextPageParam: (lastPage) => {
-      if (lastPage.data.length === 0) {
+      if (lastPage?.data?.length === 0) {
         return undefined;
       }
 
@@ -68,7 +68,8 @@ const useVaultTransactionsRequest = (
     },
   });
 
-  const transactionsList = data?.pages.map((page) => page.data).flat() ?? [];
+  const transactionsList =
+    data?.pages.map((page) => page.data ?? page).flat() ?? [];
 
   return {
     ...query,
