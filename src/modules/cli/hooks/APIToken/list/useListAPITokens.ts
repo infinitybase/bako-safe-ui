@@ -1,10 +1,6 @@
-import { useParams } from 'react-router-dom';
-
 import { useGetAPITokensRequest } from '.';
 
-const useListAPITokens = (hasPermission: boolean) => {
-  const { vaultId } = useParams<{ workspaceId: string; vaultId: string }>();
-
+const useListAPITokens = (vaultId: string, hasPermission: boolean) => {
   const request = useGetAPITokensRequest(vaultId!, hasPermission);
 
   return {

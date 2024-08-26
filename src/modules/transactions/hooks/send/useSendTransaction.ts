@@ -2,6 +2,7 @@ import { useNotificationsStore } from '@/modules/notifications/store';
 import { useTransactionToast } from '../../providers/toast';
 import { ITransaction, TransactionStatus } from 'bakosafe';
 import { WitnessStatus, useBakoSafeTransactionSend } from '@/modules/core';
+import { IPendingTransactionDetails } from '../list';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -36,9 +37,11 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     setHasNewNotification(true);
   };
 
-  const executeTransaction = (transaction: ITransaction) => {
+  const executeTransaction = (
+    transaction: Pick<ITransaction, 'id' | 'predicateId' | 'resume' | 'name'>,
+  ) => {
     const wasTheLastSignature =
-      transaction.resume.witnesses.filter(
+      transaction!.resume!.witnesses.filter(
         (witness) => witness.status === WitnessStatus.PENDING,
       ).length <= 1;
     if (wasTheLastSignature) {

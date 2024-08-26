@@ -1,13 +1,12 @@
 import { Box, HStack, Text } from '@chakra-ui/react';
 
-import { AddressType } from '@fuel-wallet/types';
-import { TransactionStatus, TransactionType } from 'bakosafe';
-import { Address } from 'fuels';
+import { TransactionStatus } from 'bakosafe';
 
 import { AddressUtils, TransactionState } from '@/modules/core';
 import { AssetBoxInfo, TransactionUI } from '../Details';
-import { ContractInfos } from './ContractInfos';
+import { ConnectorInfos } from './ConnectorInfos';
 import { DeploymentInfo } from './DeploymentInfos';
+import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 
 interface ITransactionBreakdown {
   transaction: TransactionUI;
@@ -18,15 +17,19 @@ const TransactionBreakdown = ({
   transaction,
   status,
 }: ITransactionBreakdown) => {
-  const fromConnector = !!transaction?.summary;
+  const {
+    isFromConnector,
+    isContract,
+    mainOperation,
+    hasToken,
+    isPending,
+    isDeploy,
+    isDeposit,
+    contractAddress,
+    contractAssetInfo,
+  } = useVerifyTransactionInformations(transaction);
 
-  const mainOperation = transaction?.summary?.operations?.[0];
-  const isContract = mainOperation?.to?.type === AddressType.contract;
-  const hasToken = !!mainOperation?.assetsSent?.length;
-  const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
-  const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
-  const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
   return (
     <Box
@@ -45,70 +48,43 @@ const TransactionBreakdown = ({
       <Box
         alignItems="flex-start"
         flexWrap="wrap"
-        mb={fromConnector ? 4 : 0}
+        mb={isFromConnector ? 4 : 0}
         w={{ base: 'full', xs: 'unset' }}
       >
         {transaction.assets.map((asset, index) => (
-          <>
-            <AssetBoxInfo
-              isContract={isContract}
-              isDeploy={isDeploy}
-              isDeposit={isDeposit}
-              key={index}
-              asset={{
-                assetId: asset.assetId,
-                amount: asset.amount,
-                to: asset.to,
-                transactionID: transaction.id,
-                recipientNickname: AddressUtils.format(
-                  asset?.recipientNickname ?? '',
-                ),
-              }}
-              borderColor="grey.950"
-              borderBottomWidth={
-                index === transaction.assets.length - 1 ? 1 : 0
-              }
-              hasToken={hasToken}
-            />
-            {isContract && !isDeploy && (
-              <AssetBoxInfo
-                borderTop="none"
-                isContract={false}
-                isDeploy={isDeploy}
-                isDeposit={isDeposit}
-                key={index}
-                asset={{
-                  assetId: asset.assetId,
-                  amount: asset.amount,
-                  to: asset.to,
-                  transactionID: transaction.id,
-                  recipientNickname: AddressUtils.format(
-                    asset?.recipientNickname ?? '',
-                  ),
-                }}
-                borderColor="grey.950"
-                borderBottomWidth={
-                  index === transaction.assets.length - 1 ? 1 : 0
-                }
-                hasToken={hasToken}
-              />
-            )}
-          </>
+          <AssetBoxInfo
+            isContract={isContract}
+            isDeploy={isDeploy}
+            isDeposit={isDeposit}
+            key={index}
+            asset={{
+              assetId: asset.assetId,
+              amount: asset.amount,
+              to: asset.to,
+              transactionID: transaction.id,
+              recipientNickname: AddressUtils.format(
+                asset?.recipientNickname ?? '',
+              ),
+            }}
+            borderColor="grey.950"
+            borderBottomWidth={index === transaction.assets.length - 1 ? 1 : 0}
+            hasToken={hasToken}
+          />
         ))}
         {isContract && !isDeploy && !transaction.assets.length && (
           <AssetBoxInfo
-            isDeposit={isDeposit}
-            contractAddress={Address.fromB256(
-              mainOperation?.to?.address ?? '',
-            ).toString()}
-            borderColor={'transparent'}
+            contractAddress={contractAddress}
+            isContract
             hasToken={hasToken}
+            contractAssetInfo={contractAssetInfo}
+            borderColor="grey.950"
+            borderBottomWidth={1}
           />
         )}
       </Box>
 
-      {isContract && !isDeploy && (
-        <ContractInfos
+      {isFromConnector && !isDeploy && (
+        <ConnectorInfos
           transaction={transaction}
           isNotSigned={isNotSigned}
           isPending={isPending}
