@@ -169,7 +169,6 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                           id={`Address ${index + 1}`}
                         >
                           <Autocomplete
-                            isFromTransactions
                             label={
                               first ? 'Your address' : `Address ${index + 1}`
                             }
