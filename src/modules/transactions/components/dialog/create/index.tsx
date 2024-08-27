@@ -30,6 +30,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     transactionRequest,
     resolveTransactionCosts,
     transactionFee,
+    isLoadingVault,
     getBalanceAvailable,
     handleClose,
   } = useCreateTransaction({
@@ -45,12 +46,14 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
+  const isTransactionFeeLoading =
+    isLoadingVault ||
+    resolveTransactionCosts.isPending ||
+    !transactionFee ||
+    Number(transactionFee) === 0;
 
   const isDisabled =
-    !form.formState.isValid ||
-    isCurrentAmountZero ||
-    resolveTransactionCosts.isPending ||
-    !transactionFee;
+    !form.formState.isValid || isCurrentAmountZero || isTransactionFeeLoading;
 
   return (
     <Dialog.Modal
@@ -76,9 +79,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           assets={assets}
           accordion={accordion}
           transactionsFields={transactionsFields}
-          isFeeCalcLoading={
-            resolveTransactionCosts.isPending || !transactionFee
-          }
+          isFeeCalcLoading={isTransactionFeeLoading}
           getBalanceAvailable={getBalanceAvailable}
         />
       </Dialog.Body>

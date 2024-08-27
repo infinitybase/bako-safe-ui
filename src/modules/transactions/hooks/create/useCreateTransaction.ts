@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -61,6 +61,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
+  const [firstRender, setFirstRender] = useState(true);
   const [validTransactionFee, setValidTransactionFee] = useState<
     string | undefined
   >(undefined);
@@ -90,7 +91,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
-  const { vault } = useBakoSafeVault(vaultId!);
+  const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
@@ -210,14 +211,15 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    const newFee =
-      transactionFee ||
-      validTransactionFee ||
-      BakoSafe.getGasConfig('BASE_FEE').toString();
+    const _transactionFee =
+      transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
+    const newFee = _transactionFee || validTransactionFee || '0.000';
     const transactions = form.getValues('transactions') || [];
 
     transactions.forEach((_, index) => {
-      form.setValue(`transactions.${index}.fee`, newFee);
+      form.setValue(`transactions.${index}.fee`, newFee, {
+        shouldValidate: true,
+      });
     });
 
     setValidTransactionFee(newFee);
@@ -260,6 +262,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     debouncedResolveTransactionCosts(assets, vault!);
   }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
 
+  useEffect(() => {
+    if (firstRender && vault) {
+      debouncedResolveTransactionCosts([], vault!);
+      setFirstRender(false);
+    }
+  }, [vault]);
+
   return {
     resolveTransactionCosts,
     transactionsFields,
@@ -274,6 +283,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
+    isLoadingVault,
   };
 };
 
