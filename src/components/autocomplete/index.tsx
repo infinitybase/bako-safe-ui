@@ -55,7 +55,6 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   optionsContainerRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
   onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
-  isFromTransactions?: boolean;
   actionOnFocus?: () => void;
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
@@ -78,7 +77,6 @@ const Autocomplete = ({
   onInputChange,
   optionsRef,
   optionsContainerRef,
-  isFromTransactions,
   actionOnFocus = () => {},
   actionOnSelect = () => {},
   actionOnRemoveInput = () => {},
@@ -204,12 +202,7 @@ const Autocomplete = ({
           borderWidth={1}
           borderRadius={10}
           padding={2}
-          maxW={
-            isFromTransactions
-              ? 'unset'
-              : { base: 'calc(100% - 89px)', xs: 405 }
-          }
-          position={isFromTransactions ? 'absolute' : 'fixed'}
+          position="absolute"
           zIndex={300}
           sx={{
             animation: `${slideToPosition} 0.3s ease-out`,
