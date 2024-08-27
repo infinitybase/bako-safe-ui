@@ -91,7 +91,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
-  const { vault } = useBakoSafeVault(vaultId!);
+  const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
@@ -283,6 +283,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
+    isLoadingVault,
   };
 };
 
