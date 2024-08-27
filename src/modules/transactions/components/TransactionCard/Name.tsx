@@ -1,7 +1,7 @@
 import { Center, Heading, HStack, Text } from '@chakra-ui/react';
 
-import { useScreenSize } from '@/modules/core/hooks';
 import { limitCharacters } from '@/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardNameProps {
   showTransaction?: boolean;
@@ -12,7 +12,9 @@ const Name = ({
   showTransaction = true,
   transactionName,
 }: TransactionCardNameProps) => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   return (
     <Center

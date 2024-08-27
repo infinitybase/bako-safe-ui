@@ -21,37 +21,51 @@ export const useIsWorkspaceReady = ({
   isVaultRequestLoading,
   isWorkspaceBalanceLoading,
 }: IUseIsWorkspaceReady) => {
-  const { isSignInpage } = currentPath();
+  const { isSignInpage, isFromDapp } = currentPath();
 
   const {
     homeTransactions: {
-      request: { isLoading: isHomeRequestLoading },
+      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
     },
     transactionsPageList: {
-      request: { isLoading: isTransactionsPageListLoading },
+      request: {
+        isLoading: isTransactionsPageListLoading,
+        isFetching: isTransactionsPageListFetching,
+      },
     },
     vaultTransactions: {
-      request: { isLoading: isVaultTransactionsLoading },
+      request: {
+        isLoading: isVaultTransactionsLoading,
+        isFetching: isVaultTransactionsFetching,
+      },
     },
   } = useTransactionsContext();
 
   const isFilteringInProgress = useIsFilteringInProgress({
     isGifAnimationLoading,
+    isHomeFetching,
+    isTransactionsPageListFetching,
+    isVaultTransactionsFetching,
   });
 
-  const isWorkspaceReady =
-    (isSignInpage
-      ? true
-      : !isLatestsPredicatesLoading &&
-        !isWorkspaceBalanceLoading &&
-        !isAddressbookInfosLoading &&
-        !isHomeRequestLoading &&
-        !isTransactionsPageListLoading &&
-        !isGifAnimationLoading &&
-        !isUserInfosLoading &&
-        !isVaultRequestLoading &&
-        !isVaultAssetsLoading &&
-        !isVaultTransactionsLoading) || isFilteringInProgress;
+  if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
+    return { isWorkspaceReady: true, isFilteringInProgress };
+  }
+
+  const loadingConditions = [
+    isAddressbookInfosLoading,
+    isGifAnimationLoading,
+    isLatestsPredicatesLoading,
+    isUserInfosLoading,
+    isVaultAssetsLoading,
+    isVaultRequestLoading,
+    isWorkspaceBalanceLoading,
+    isHomeRequestLoading,
+    isTransactionsPageListLoading,
+    isVaultTransactionsLoading,
+  ];
+
+  const isWorkspaceReady = !loadingConditions.some((condition) => condition);
 
   return { isWorkspaceReady, isFilteringInProgress };
 };

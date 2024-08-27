@@ -14,7 +14,7 @@ import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { AssetsBalanceList, Pages, useScreenSize } from '@/modules/core';
+import { AssetsBalanceList, Pages } from '@/modules/core';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 import { useNavigate } from 'react-router-dom';
@@ -30,9 +30,8 @@ const VaultBalancePage = () => {
     workspaceInfos: {
       handlers: { handleWorkspaceSelection, goHome },
     },
+    screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
-
-  const { vaultRequiredSizeToColumnLayout } = useScreenSize();
 
   if (!vault) return null;
 

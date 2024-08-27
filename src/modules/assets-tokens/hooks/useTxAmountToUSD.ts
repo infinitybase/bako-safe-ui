@@ -1,8 +1,10 @@
+import { AssetModel } from '@/modules/core';
 import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { ITransferAsset } from 'bakosafe';
+
+export type IAssetsInfoToUSD = Pick<AssetModel, 'assetId' | 'amount'>;
 
 const useTxAmountToUSD = (
-  assets: ITransferAsset[],
+  assets: IAssetsInfoToUSD[],
   isLoading: boolean,
   tokens: ITokens,
 ) => {

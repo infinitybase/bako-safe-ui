@@ -121,7 +121,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   options={appliedOptions}
                   inView={inView}
                   clearable={false}
-                  isFromTransactions
                   optionsRef={optionRef}
                 />
                 <FormHelperText color="error.500">

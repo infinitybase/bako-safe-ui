@@ -70,7 +70,6 @@ export interface GetTransactionParams {
   orderBy?: string;
   sort?: SortOptionTx;
   allOfUser?: boolean;
-  byMonth?: boolean;
   type?: TransactionType;
 }
 
@@ -80,7 +79,6 @@ export interface GetTransactionsWithIncomingsParams {
   orderBy?: string;
   sort?: SortOptionTx;
   perPage?: number;
-  byMonth?: boolean;
   type?: TransactionType;
   offsetDb?: number;
   offsetFuel?: number;
@@ -156,9 +154,9 @@ export enum TransactionOrderBy {
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
-  IPagination<ITransactionsGroupedByMonth>;
+  IPagination<TransactionWithVault>;
 export type GetTransactionsWithIncomingsPaginationResponse =
-  ITransactionPagination<ITransactionsGroupedByMonth>;
+  ITransactionPagination<TransactionWithVault>;
 export type GetUserTransactionsResponse = TransactionWithVault[];
 export type GetVaultTransactionsResponse = ITransaction[];
 export type GetTransactionByAddressesResponse = ITransaction[];

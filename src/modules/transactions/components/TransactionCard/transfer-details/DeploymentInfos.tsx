@@ -1,6 +1,6 @@
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap, useScreenSize } from '@/modules/core';
+import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
@@ -24,8 +24,10 @@ interface DeploymentInfoProps extends StackProps {
 }
 
 const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
-  const { isMobile } = useScreenSize();
-  const { tokensUSD } = useWorkspaceContext();
+  const {
+    tokensUSD,
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   const contractId = operation.to!.address;
   const asset = useMemo(() => {

@@ -10,6 +10,8 @@ const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
 const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
+import { BakoSafe } from 'bakosafe';
+
 import { VaultService } from '../../services';
 
 function useVaultAssets(workspaceId: string, predicateId: string) {
@@ -36,7 +38,7 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
         return bn(0);
       }
 
-      return bn(bn.parseUnits(balance.amount!));
+      return bn(balance.amount);
     },
     [data?.currentBalance],
   );
@@ -75,6 +77,15 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
     return getCoinAmount(NativeAssetId).format();
   }, [getCoinAmount]);
 
+  const isEthBalanceLowerThanReservedAmount = useMemo(() => {
+    return (
+      Number(ethBalance) <=
+      Number(
+        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
+      )
+    );
+  }, [ethBalance]);
+
   const handleSetVisibleBalance = (visible: any) => {
     setVisibleBalance(visible);
     setIsVisibleBalance(visible ? 'true' : 'false');
@@ -89,6 +100,7 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
     setVisibleBalance: handleSetVisibleBalance,
     hasBalance,
     ethBalance,
+    isEthBalanceLowerThanReservedAmount,
     hasAssets: !!data?.currentBalance?.length,
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,

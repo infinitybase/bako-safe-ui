@@ -1,6 +1,10 @@
-import { useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
-import { CLIFeaturesLabels } from '../useCLI';
+import { Icon, useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
+
+import { useNotification } from '@/modules/notification/hooks/useNotification';
 import { createGTMCustomEvent } from '@/utils';
+
+import { CLIFeaturesLabels } from '../useCLI';
 
 export interface FeatureConfig {
   dialogDescription: string;
@@ -16,6 +20,7 @@ export interface UseCommingSoonProps {
 
 const useCommingSoon = () => {
   const commingSoonDialog = useDisclosure();
+  const toast = useNotification();
 
   const handleAction = (field: CLIFeaturesLabels) => {
     switch (field) {
@@ -43,6 +48,21 @@ const useCommingSoon = () => {
     }
   };
 
+  const handleNotify = () => {
+    toast({
+      status: 'success',
+      duration: 5000,
+      isClosable: false,
+      title: 'Email notification activated!',
+      description: 'We will notify you when this feature becomes available.',
+      icon: (
+        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
+      ),
+    });
+
+    commingSoonDialog.onClose();
+  };
+
   const features = {
     [CLIFeaturesLabels.API_TOKEN]: {
       dialogDescription: '',
@@ -52,15 +72,15 @@ const useCommingSoon = () => {
     [CLIFeaturesLabels.ADD_OTHER_TOKENS]: {
       dialogDescription:
         'This Add other tokens method is not available for now',
-      notifyHandler: () => {},
+      notifyHandler: handleNotify,
     },
     [CLIFeaturesLabels.RECOVERY]: {
       dialogDescription: 'This Recovery method is not available for now',
-      notifyHandler: () => {},
+      notifyHandler: handleNotify,
     },
     [CLIFeaturesLabels.SPEND_LIMIT]: {
       dialogDescription: 'This Spend limit method is not available for now',
-      notifyHandler: () => {},
+      notifyHandler: handleNotify,
     },
   };
 

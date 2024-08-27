@@ -9,11 +9,11 @@ const useScreenSize = () => {
   const [isExtraSmall] = useMediaQuery('(max-width: 21em)'); //336px
   const [vaultRequiredSizeToColumnLayout] = useMediaQuery(
     '(max-width: 75.62em)',
-  ); //1029px
+  ); //1210px
 
   const [isMdHeight] = useMediaQuery('(max-height: 48em)'); //768px
   const [isSmallHeight] = useMediaQuery('(max-height: 37.48em)'); //600px
-  const [isSmHeight] = useMediaQuery('(max-height: 33.125em)'); //530px
+  const [isXSHeight] = useMediaQuery('(max-height: 33.125em)'); //530px
 
   const isExtraSmallDevice = isMdHeight && isMobile;
 
@@ -26,7 +26,7 @@ const useScreenSize = () => {
     isExtraSmall,
     isMdHeight,
     isSmallHeight,
-    isSmHeight,
+    isXSHeight,
     isExtraSmallDevice,
     isExtraLarge,
   };

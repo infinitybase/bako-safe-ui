@@ -13,7 +13,7 @@ import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AddressUtils, useScreenSize } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import AmountsInfo from './AmountsInfo';
@@ -26,14 +26,16 @@ interface DetailItemProps {
 }
 
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
-  const { tokensUSD } = useWorkspaceContext();
+  const {
+    tokensUSD,
+
+    screenSizes: { isExtraSmall, isMobile, isSmall },
+  } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
     tokensUSD?.data!,
   );
-
-  const { isExtraSmall, isMobile, isSmall } = useScreenSize();
 
   const isFirstItem = index === 0;
 

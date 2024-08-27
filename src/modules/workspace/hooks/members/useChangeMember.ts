@@ -216,6 +216,15 @@ const useChangeMember = () => {
     );
   };
 
+  const isValidToAddMember = useMemo(
+    () => permissionForm.formState.isValid && memberForm?.formState?.isValid,
+    [
+      memberForm.formState.errors,
+      memberForm.formState.isValid,
+      permissionForm.formState.isValid,
+    ],
+  );
+
   const formState = {
     // [MemberTabState.ADDRESS]: {
     //   isValid: memberForm.formState.isValid,
@@ -230,7 +239,7 @@ const useChangeMember = () => {
     //   isEditMember,
     // },
     [MemberTabState.FORM]: {
-      isValid: permissionForm.formState.isValid || editForm.formState.isValid,
+      isValid: isValidToAddMember || editForm.formState.isValid,
       primaryAction: isEditMember ? 'Update' : 'Add member',
       secondaryAction: 'Cancel',
       handlePrimaryAction: isEditMember

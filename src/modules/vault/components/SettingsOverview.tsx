@@ -20,18 +20,12 @@ import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import {
-  AddressUtils,
-  Pages,
-  PermissionRoles,
-  useScreenSize,
-} from '@/modules/core';
-import { useCreateTransaction } from '@/modules/transactions';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useVaultInfosContext } from '../VaultInfosProvider';
 
 export interface CardDetailsProps {
@@ -43,18 +37,15 @@ export interface CardDetailsProps {
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { vault, assets, blockedTransfers } = props;
-  const { balanceUSD } = assets;
-  const { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge } =
-    useScreenSize();
+  const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: { hasPermission },
     },
+    screenSizes: { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge },
   } = useWorkspaceContext();
-
-  const { isEthBalanceLowerThanReservedAmount } = useCreateTransaction();
 
   const {
     CLIInfos: {

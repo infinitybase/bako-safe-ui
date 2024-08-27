@@ -1,10 +1,10 @@
 import {
+  IBakoSafeAuth,
   IListTransactions,
   IPayloadTransfer,
   ITransaction,
-  Vault,
   TransactionType,
-  IBakoSafeAuth,
+  Vault,
 } from 'bakosafe';
 
 import { TransactionService } from '@/modules/transactions/services';
@@ -49,7 +49,6 @@ interface UseBakoSafeListTransactionParams {
   vaultId: string;
   filter?: IListTransactions & {
     limit: number;
-    byMonth?: boolean;
     type?: TransactionType;
   };
 }
@@ -72,11 +71,14 @@ const useBakoSafeTransactionList = ({
 
 interface UseBakoSafeSendTransactionParams {
   onSuccess: (transaction: ITransaction) => void;
-  onError?: (error: any) => void;
+  onError?: (
+    transaction: BakoSafeTransactionSendVariables['transaction'],
+    error: any,
+  ) => void | Promise<void>;
 }
 
 interface BakoSafeTransactionSendVariables {
-  transaction: ITransaction;
+  transaction: Pick<ITransaction, 'id' | 'predicateId'>;
   auth?: IBakoSafeAuth;
 }
 
@@ -86,21 +88,25 @@ const useBakoSafeTransactionSend = (
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction, auth }: BakoSafeTransactionSendVariables) => {
-      const vault = await Vault.create({
-        id: transaction.predicateId,
-        token: auth!.token,
-        address: auth!.address,
-      });
+      try {
+        const vault = await Vault.create({
+          id: transaction.predicateId,
+          token: auth!.token,
+          address: auth!.address,
+        });
 
-      const transfer = await vault.BakoSafeGetTransaction(transaction.id);
+        const transfer = await vault.BakoSafeGetTransaction(transaction.id!);
 
-      await transfer.wait();
+        await transfer.wait();
 
-      return transfer.BakoSafeTransaction;
+        return transfer.BakoSafeTransaction;
+      } catch (e) {
+        options?.onError?.(transaction, e);
+        throw e;
+      }
     },
     {
       onSuccess: options.onSuccess,
-      onError: options?.onError,
     },
   );
 };

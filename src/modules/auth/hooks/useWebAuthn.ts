@@ -27,7 +27,7 @@ export enum WebAuthnState {
 
 export type UseWebAuthn = ReturnType<typeof useWebAuthn>;
 
-const useWebAuthn = () => {
+const useWebAuthn = (invalidateGifAnimationRequest?: () => void) => {
   //drawer for webauthn
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(WebAuthnState.LOGIN);
@@ -136,6 +136,7 @@ const useWebAuthn = () => {
         onSuccess: () => {
           setSignInProgress(100);
           setTimeout(() => {
+            invalidateGifAnimationRequest && invalidateGifAnimationRequest();
             setIsSigningIn(false);
             setBtnDisabled(false);
             setLastLoginUsername(name);

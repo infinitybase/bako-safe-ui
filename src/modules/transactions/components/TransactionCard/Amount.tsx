@@ -11,7 +11,6 @@ import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { assetsMap } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 import bakoIcon from '@/assets/tokens/bako.svg';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { CustomSkeleton } from '@/components';
@@ -23,9 +22,10 @@ interface TransactionCardAmountProps {
 
 const Amount = ({ assets }: TransactionCardAmountProps) => {
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
-  const { tokensUSD } = useWorkspaceContext();
-
-  const { isMobile, isExtraSmall } = useScreenSize();
+  const {
+    tokensUSD,
+    screenSizes: { isMobile, isExtraSmall },
+  } = useWorkspaceContext();
 
   const totalAmoutSent = assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))

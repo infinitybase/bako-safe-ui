@@ -5,7 +5,9 @@ import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
   TransactionService,
+  TransactionWithVault,
 } from '@/modules/transactions/services';
+import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,
@@ -45,6 +47,7 @@ const useVaultTransactionsRequest = (
       TransactionService.getTransactionsWithIncomingsPagination({
         ...params,
         perPage: 5,
+
         offsetDb: offsetDb || 0,
         offsetFuel: offsetFuel || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
@@ -54,11 +57,12 @@ const useVaultTransactionsRequest = (
       }),
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 3, // 3 minutes
+    refetchInterval: 1000 * 60 * 3,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
     getNextPageParam: (lastPage) => {
-      if (lastPage.data.length === 0) {
+      if (lastPage?.data?.length === 0) {
         return undefined;
       }
 
@@ -66,9 +70,12 @@ const useVaultTransactionsRequest = (
     },
   });
 
+  const transactionsList =
+    data?.pages.map((page) => page.data ?? page).flat() ?? [];
+
   return {
     ...query,
-    transactionsPages: data,
+    transactions: useGroupTransactionsByMonth(transactionsList),
   };
 };
 

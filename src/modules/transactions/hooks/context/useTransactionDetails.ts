@@ -8,6 +8,7 @@ import {
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { useSignTransaction } from '../signature';
+import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
@@ -23,17 +24,21 @@ const useTransactionDetails = () => {
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
   const vaultTransactions = useVaultTransactionsList({
     vaultId: vaultId!,
-    byMonth: true,
   });
   const transactionsPageList = useTransactionList({
     workspaceId: workspace?.id,
-    byMonth: true,
   });
+
+  const pendingTransactions = usePendingTransactionsList(
+    homeTransactions.transactions!,
+    transactionsPageList.lists.transactions!,
+  );
 
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
     homeTransactionsRefetch: homeTransactions.request.refetch,
+    pendingTransactions: pendingTransactions,
   });
 
   const resetAllTransactionsTypeFilters = () => {
@@ -49,6 +54,10 @@ const useTransactionDetails = () => {
     transactionsPageList,
     signTransaction,
     pendingSignerTransactions,
+    isPendingSigner:
+      pendingSignerTransactions.data?.transactionsBlocked ?? false,
+    pendingSignerTransactionsLength:
+      pendingSignerTransactions.data?.ofUser || 0,
     resetAllTransactionsTypeFilters,
   };
 };

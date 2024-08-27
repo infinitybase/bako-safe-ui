@@ -36,7 +36,6 @@ interface TransactionDetailsProps {
   status?: TransactionState;
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
-  isContract?: boolean;
 }
 
 const Details = ({

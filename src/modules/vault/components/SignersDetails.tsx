@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  BoxProps,
   chakra,
   Grid,
   HStack,
@@ -10,12 +11,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 
 import { CardMember } from './CardMember';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { UseVaultDetailsReturn } from '../hooks';
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -102,7 +103,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
               member={{
                 ...member,
                 nickname: member?.address
-                  ? contactByAddress(member?.address)?.nickname ?? undefined
+                  ? (contactByAddress(member?.address)?.nickname ?? undefined)
                   : undefined,
                 avatar: member?.avatar ?? '',
                 address: member?.address ?? '',
@@ -115,13 +116,19 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   );
 };
 
-const SignersDetails = ({ vault }: SignersDetailsProps) => {
-  const { isLarge } = useScreenSize();
+export interface ISignersDetailsExtendedProps extends BoxProps {
+  vault: UseVaultDetailsReturn['vault'];
+}
+
+const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
+  const {
+    screenSizes: { isLarge },
+  } = useWorkspaceContext();
 
   if (!vault) return null;
 
   return (
-    <Box w={isLarge ? 'full' : 'md'} mb={4}>
+    <Box w={isLarge ? 'full' : 'md'} mb={4} {...rest}>
       <HStack
         alignItems="center"
         justify="flex-start"

@@ -17,7 +17,7 @@ const useVaultByIdRequest = (vaultId: string) => {
 
   return {
     data: {
-      ...data,
+      ...data!,
       members: ordinateMembers(data?.members!, data?.owner!),
     },
     ...query,

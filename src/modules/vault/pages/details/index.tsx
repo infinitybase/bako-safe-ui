@@ -18,7 +18,7 @@ import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { PermissionRoles } from '@/modules/core';
-import { useGetParams, useScreenSize } from '@/modules/core/hooks';
+import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
@@ -42,8 +42,7 @@ const VaultDetailsPage = () => {
   } = useGetParams();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
-  const { vault, assets, account, pendingSignerTransactions, isPendingSigner } =
-    useVaultInfosContext();
+  const { vault, assets, account } = useVaultInfosContext();
 
   const {
     vaultTransactions: {
@@ -52,6 +51,8 @@ const VaultDetailsPage = () => {
       request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
+    pendingSignerTransactions,
+    isPendingSigner,
   } = useTransactionsContext();
 
   const { setTemplateFormInitial } = useTemplateStore();
@@ -61,9 +62,13 @@ const VaultDetailsPage = () => {
     workspaceInfos: {
       handlers: { handleWorkspaceSelection, hasPermission, goHome },
     },
+    screenSizes: {
+      vaultRequiredSizeToColumnLayout,
+      isSmall,
+      isMobile,
+      isLarge,
+    },
   } = useWorkspaceContext();
-  const { vaultRequiredSizeToColumnLayout, isSmall, isMobile, isLarge } =
-    useScreenSize();
 
   const workspaceId = userInfos.workspace?.id ?? '';
   const hasTransactions = !isLoading && limitedTransactions?.length;
@@ -203,19 +208,22 @@ const VaultDetailsPage = () => {
           isPendingSigner={isPendingSigner}
         />
 
-        {!isLarge && <SignersDetails vault={vault} />}
+        <SignersDetails
+          vault={vault}
+          display={{ base: 'none', xs: !isLarge ? 'block' : 'none' }}
+        />
       </HStack>
       <Box
         w="full"
         display="flex"
-        flexDir={isSmall ? 'column' : 'row'}
+        flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
         gap={4}
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={isSmall ? 'column' : 'row'}
-          alignItems={isSmall ? 'unset' : 'center'}
+          flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
+          alignItems={{ base: 'start', xs: isSmall ? 'unset' : 'center' }}
           gap={isSmall ? 2 : 4}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">

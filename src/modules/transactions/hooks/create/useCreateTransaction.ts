@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { BakoSafe, IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -61,6 +61,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
+  const [firstRender, setFirstRender] = useState(true);
   const [validTransactionFee, setValidTransactionFee] = useState<
     string | undefined
   >(undefined);
@@ -87,11 +88,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       assetId: asset.assetId,
     })),
     getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
-
     validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
   });
 
-  const { vault } = useBakoSafeVault(vaultId!);
+  const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
@@ -151,10 +151,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       return acc;
     }, {} as IAssetGroupById);
 
+  const formattedCurrentAssetBalance = useGetTokenInfosArray(
+    currentVaultAssets ?? [],
+  );
+
   const getBalanceAvailable = useCallback(() => {
-    const formattedCurrentAssetBalance = useGetTokenInfosArray(
-      currentVaultAssets ?? [],
-    );
     const currentAssetBalance = bn.parseUnits(
       formattedCurrentAssetBalance?.find(
         (asset) => asset.assetId === currentFieldAsset,
@@ -198,13 +199,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentVaultAssets,
   ]);
 
-  const currentEthBalance = props?.getCoinAmount(NativeAssetId);
-  const isEthBalanceLowerThanReservedAmount =
-    Number(currentEthBalance) <=
-    Number(
-      bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
-    );
-
   const handleClose = () => {
     props?.onClose();
   };
@@ -217,16 +211,18 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   );
 
   useEffect(() => {
-    if (transactionFee) {
-      setValidTransactionFee(transactionFee);
-      form.setValue(`transactions.${accordion.index}.fee`, transactionFee);
-    } else if (validTransactionFee) {
-      form.setValue(`transactions.${accordion.index}.fee`, validTransactionFee);
-    } else {
-      const txFee = BakoSafe.getGasConfig('BASE_FEE').toString();
-      setValidTransactionFee(txFee);
-      form.setValue(`transactions.${accordion.index}.fee`, txFee);
-    }
+    const _transactionFee =
+      transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
+    const newFee = _transactionFee || validTransactionFee || '0.000';
+    const transactions = form.getValues('transactions') || [];
+
+    transactions.forEach((_, index) => {
+      form.setValue(`transactions.${index}.fee`, newFee, {
+        shouldValidate: true,
+      });
+    });
+
+    setValidTransactionFee(newFee);
   }, [transactionFee]);
 
   useEffect(() => {
@@ -236,7 +232,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
 
   useEffect(() => {
-    const { transactions } = form.getValues();
+    if (
+      (currentFieldAsset && !currentFieldAmount) ||
+      Number(currentFieldAmount) === 0
+    )
+      return;
+
+    const transactions = form.getValues('transactions');
 
     const assets =
       Number(transactionTotalAmount) > 0
@@ -258,7 +260,14 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           }));
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]);
+  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
+
+  useEffect(() => {
+    if (firstRender && vault) {
+      debouncedResolveTransactionCosts([], vault!);
+      setFirstRender(false);
+    }
+  }, [vault]);
 
   return {
     resolveTransactionCosts,
@@ -274,7 +283,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     handleClose,
     transactionFee: validTransactionFee,
     getBalanceAvailable,
-    isEthBalanceLowerThanReservedAmount,
+    isLoadingVault,
   };
 };
 
