@@ -1,6 +1,7 @@
 import { Dispatch, useState } from 'react';
 
 import { queryClient } from '@/config';
+import { useGetParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
 import {
   CreateAPITokenPayload,
@@ -11,7 +12,6 @@ import { GET_API_TOKENS_QUERY_KEY } from '../list';
 import { TabState } from '../useAPIToken';
 import { useCreateAPITokenForm } from './useCreateAPITokenForm';
 import { useCreateAPITokenRequest } from './useCreateAPITokenRequest';
-import { useGetParams } from '@/modules';
 
 export type UseCreateAPITokenReturn = ReturnType<typeof useCreateAPIToken>;
 
@@ -30,9 +30,11 @@ const useCreateAPIToken = (
   const handleSubmit = form.handleSubmit(async (data) => {
     const formattdeData: CreateAPITokenPayload = {
       name: data.name,
-      config: {
-        transactionTitle: data.transactionName,
-      },
+      ...(data.transactionName && {
+        config: {
+          transactionTitle: data.transactionName,
+        },
+      }),
     };
 
     await mutate(formattdeData, {

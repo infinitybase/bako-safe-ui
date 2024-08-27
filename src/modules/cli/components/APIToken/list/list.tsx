@@ -76,7 +76,7 @@ const APITokenCard = (props: APITokenCardProps) => {
           </Text>
 
           <Text color="grey.250" fontSize="xs">
-            Creation date: {format(new Date(apiToken.createdAt), 'yyyy/mm/dd')}
+            Creation date: {format(new Date(apiToken.createdAt), 'yyyy/MM/dd')}
           </Text>
         </VStack>
 
