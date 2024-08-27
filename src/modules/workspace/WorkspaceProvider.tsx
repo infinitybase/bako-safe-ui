@@ -1,7 +1,8 @@
 import { createContext, useContext } from 'react';
 
-import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { BakoLoading } from '@/components';
+
+import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 
 export type IWorkspaceContext = ReturnType<typeof useWorkspaceDetails>;
 
@@ -29,4 +30,5 @@ const useWorkspaceContext = () => {
   return context;
 };
 
-export { WorkspaceProvider, useWorkspaceContext };
+// TODO: Check eslint warning about exportting useWorkspaceContext
+export { useWorkspaceContext, WorkspaceProvider };
