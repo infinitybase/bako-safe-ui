@@ -24,7 +24,7 @@ const useVaultDetails = () => {
     APIToken,
     commingSoonFeatures: { commingSoonDialog, selectedFeature },
   } = useCLI({
-    vaultId: vaultRequest.data.id ?? '',
+    vault: vaultRequest?.data,
     userId,
     currentWorkspace: currentWorkspace,
   });

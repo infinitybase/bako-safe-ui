@@ -23,8 +23,6 @@ export interface HasReservedCoins {
 }
 
 export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
-
-export type GetPredicateResponse = Predicate;
 export type GetHasReservedCoins = HasReservedCoins;
 export type CreatePredicateResponse = Predicate;
 export type GetAllPredicateResponse = PredicateAndWorkspace[];
@@ -65,12 +63,12 @@ export class VaultService {
   }
 
   static async getById(id: string) {
-    const { data } = await api.get<GetPredicateResponse>(`/predicate/${id}`);
+    const { data } = await api.get<PredicateAndWorkspace>(`/predicate/${id}`);
     return data;
   }
 
   static async getByAddress(address: string) {
-    const { data } = await api.get<GetPredicateResponse>(
+    const { data } = await api.get<PredicateAndWorkspace>(
       `/predicate/by-address/${address}`,
     );
     return data;
