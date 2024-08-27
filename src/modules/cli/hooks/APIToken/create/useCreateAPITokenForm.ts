@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 const schema = yup.object({
   name: yup.string().required('Key name is required.'),
-  transactionName: yup.string().required('Transaction name is required.'),
+  transactionName: yup.string(),
 });
 
 export type UseCreateVaultFormFields = yup.InferType<typeof schema>;
