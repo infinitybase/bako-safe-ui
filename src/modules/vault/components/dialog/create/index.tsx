@@ -122,7 +122,9 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               bgColor="transparent"
               border="1px solid white"
               w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
-              onClick={steps.step.onCancel}
+              onClick={
+                tabs.tab === 2 ? steps.step.onContinue : steps.step.onCancel
+              }
               _hover={{
                 borderColor: 'brand.500',
                 color: 'brand.500',

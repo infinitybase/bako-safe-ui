@@ -74,7 +74,7 @@ const useCreateVault = () => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setSearch(value.trim());
+    setSearch(value.trimStart());
     debouncedSearchHandler(value);
   };
 

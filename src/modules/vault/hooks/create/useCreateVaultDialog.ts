@@ -82,12 +82,13 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       disable: false,
       description: null,
       onContinue: () => {
-        // handleWorkspaceSelection(
-        //   Pages.detailsVault({
-        //     vaultId,
-        //     workspaceId: userInfos?.workspace?.id,
-        //   }),
-        // );
+        handleWorkspaceSelection(
+          userInfos?.workspace?.id,
+          Pages.detailsVault({
+            vaultId,
+            workspaceId: userInfos?.workspace?.id,
+          }),
+        );
       },
       onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
       closeText: `Done`,
