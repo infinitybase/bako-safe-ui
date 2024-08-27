@@ -38,11 +38,6 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const isSecondTabAndMobile = isSecondTab && isMobile;
 
-  const mobileStylesForHeader = {
-    top: 0,
-    position: 'sticky',
-  };
-
   return (
     <Dialog.Modal
       size={{ base: 'full', md: 'xl' }}
