@@ -39,6 +39,7 @@ export const useTransactionSocket = () => {
   const summary = useTransactionSummary();
 
   useEffect(() => {
+    console.log('connected?', socket.connected);
     if (!socket.connected) {
       connect(sessionId!);
     }
