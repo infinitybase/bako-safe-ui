@@ -1,5 +1,6 @@
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
+
 import { useIsFilteringInProgress } from './useIsFilteringInProgress';
 
 export type IUseIsWorkspaceReady = {
@@ -25,7 +26,7 @@ export const useIsWorkspaceReady = ({
 
   const {
     homeTransactions: {
-      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
+      request: { isLoading: isHomeRequestLoading },
     },
     transactionsPageList: {
       request: {
@@ -43,7 +44,6 @@ export const useIsWorkspaceReady = ({
 
   const isFilteringInProgress = useIsFilteringInProgress({
     isGifAnimationLoading,
-    isHomeFetching,
     isTransactionsPageListFetching,
     isVaultTransactionsFetching,
   });
