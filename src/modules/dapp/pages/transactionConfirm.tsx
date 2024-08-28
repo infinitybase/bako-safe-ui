@@ -22,14 +22,12 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionConfirm = () => {
   const {
-    init,
     cancelTransaction,
     vault,
     pendingSignerTransactions,
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     isLoading,
     send,
-    socket,
     validAt,
   } = useTransactionSocket();
 
@@ -55,10 +53,6 @@ const TransactionConfirm = () => {
   useEffect(() => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
-
-  useEffect(() => {
-    init();
-  }, [socket.connected]);
 
   return (
     <>
