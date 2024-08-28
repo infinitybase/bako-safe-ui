@@ -47,8 +47,6 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  console.log('isFromDapp:', isFromDapp);
-
   if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
     return { isWorkspaceReady: true, isFilteringInProgress };
   }
