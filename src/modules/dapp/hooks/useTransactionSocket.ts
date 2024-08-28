@@ -42,12 +42,6 @@ export const useTransactionSocket = () => {
     console.log('connected?', socket.connected);
     if (!socket.connected) {
       connect(sessionId!);
-    }
-  }, [summary.isPending, summary.isSuccess, request_id, socket.connected]);
-
-  useEffect(() => {
-    console.log('[SOCKET_CONN]: ', socket.connected);
-    if (socket.connected) {
       console.log('[ENVIANDO MENSAGEM]');
       socket.emit(SocketEvents.DEFAULT, {
         sessionId,
@@ -57,7 +51,7 @@ export const useTransactionSocket = () => {
         data: {},
       });
     }
-  }, [socket.connected, request_id]);
+  }, [summary.isPending, summary.isSuccess, request_id, socket.connected]);
 
   useEffect(() => {
     //todo: default typing of the events

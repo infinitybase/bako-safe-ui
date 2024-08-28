@@ -43,10 +43,11 @@ export const useIsWorkspaceReady = ({
 
   const isFilteringInProgress = useIsFilteringInProgress({
     isGifAnimationLoading,
-    isHomeFetching,
     isTransactionsPageListFetching,
     isVaultTransactionsFetching,
   });
+
+  console.log('isFromDapp:', isFromDapp);
 
   if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
     return { isWorkspaceReady: true, isFilteringInProgress };
