@@ -39,7 +39,9 @@ export const useTransactionSocket = () => {
   const summary = useTransactionSummary();
 
   useEffect(() => {
-    connect(sessionId!);
+    if (!socket.connected) {
+      connect(sessionId!);
+    }
   }, [summary.isPending, summary.isSuccess, request_id, socket.connected]);
 
   useEffect(() => {
