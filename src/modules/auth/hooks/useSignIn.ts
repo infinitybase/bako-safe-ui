@@ -16,7 +16,7 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useCreateFirstVault } from '@/modules/core/hooks/useCreateFirstVault';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -34,6 +34,9 @@ export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
 
 const useSignIn = () => {
   const navigate = useNavigate();
+  const [workspaceId, setWorkspaceId] = useState('');
+  const { handleCreateFirstVault } = useCreateFirstVault(workspaceId);
+
   const connectorDrawer = useDisclosure();
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
@@ -80,8 +83,10 @@ const useSignIn = () => {
       workspace,
       webAuthn,
       address,
+      first_login,
     }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
+      setWorkspaceId(workspace.id);
 
       authDetails.handlers.authenticate({
         userId: user_id,
@@ -94,6 +99,12 @@ const useSignIn = () => {
         webAuthn: _webAuthn,
       });
       invalidateGifAnimationRequest();
+
+      if (first_login) {
+        handleCreateFirstVault(address, user_id);
+
+        return;
+      }
 
       navigate(redirectPathBuilder(!!sessionId, location));
     },

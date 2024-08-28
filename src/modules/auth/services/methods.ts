@@ -60,7 +60,7 @@ export type SignInResponse = {
   workspace: Workspace;
   id: string;
   notify: boolean;
-  firstLogin: boolean;
+  first_login: boolean;
   webAuthn?: {
     id: string;
     publicKey: string;
@@ -134,6 +134,7 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
+  firstLogin: boolean;
 };
 
 export class UserService {
