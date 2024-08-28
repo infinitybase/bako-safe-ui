@@ -39,8 +39,10 @@ export const useTransactionSocket = () => {
   const summary = useTransactionSummary();
 
   useEffect(() => {
-    connect(sessionId!);
-  }, [summary.isPending]);
+    if (!socket.connected) {
+      connect(sessionId!);
+    }
+  }, [summary.isPending, summary.isSuccess, request_id, socket.connected]);
 
   useEffect(() => {
     console.log('[SOCKET_CONN]: ', socket.connected);
@@ -54,7 +56,7 @@ export const useTransactionSocket = () => {
         data: {},
       });
     }
-  }, [socket.connected]);
+  }, [socket.connected, request_id]);
 
   useEffect(() => {
     //todo: default typing of the events
@@ -88,11 +90,6 @@ export const useTransactionSocket = () => {
       operations: summary.transactionSummary,
       tx,
     });
-
-    // setTimeout(() => {
-    //   setSending(false);
-    //   window.close();
-    // }, 2000);
   };
 
   // emmit message to the server and close window
@@ -107,12 +104,7 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const init = () => {
-    return;
-  };
-
   return {
-    init,
     vault,
     summary,
     validAt,
