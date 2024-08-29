@@ -21,14 +21,13 @@ export enum TabState {
 
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
-const useCreateVault = (redirectToNewVault?: boolean, workspaceId?: string) => {
+const useCreateVault = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       requests: {
         latestPredicates: { refetch: refetchLatestPredicates },
       },
-      handlers: { handleWorkspaceSelection },
     },
   } = useWorkspaceContext();
 
@@ -47,17 +46,6 @@ const useCreateVault = (redirectToNewVault?: boolean, workspaceId?: string) => {
 
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
-      if (redirectToNewVault) {
-        handleWorkspaceSelection(
-          userInfos?.workspace?.id,
-          Pages.detailsVault({
-            vaultId: data.BakoSafeVaultId,
-            workspaceId: workspaceId ?? '',
-          }),
-        );
-
-        return;
-      }
       refetchLatestPredicates();
       setVaultId(data.BakoSafeVaultId);
       setTab(TabState.SUCCESS);

@@ -1,10 +1,30 @@
-import { useCreateVault } from '@/modules';
+import { Pages, useCreateBakoSafeVault } from '@/modules';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { Address } from 'fuels';
 
 const useCreateFirstVault = (workspaceId: string) => {
   const updateUserMutation = useUpdateSettingsRequest();
-  const { bakoSafeVault } = useCreateVault(true, workspaceId);
+  const {
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+  } = useWorkspaceContext();
+
+  const bakoSafeVault = useCreateBakoSafeVault({
+    onSuccess: (data) => {
+      handleWorkspaceSelection(
+        workspaceId,
+        Pages.detailsVault({
+          vaultId: data.BakoSafeVaultId,
+          workspaceId: workspaceId ?? '',
+        }),
+      );
+    },
+    onError: () => {
+      console.log('Error while creating the first users vault');
+    },
+  });
 
   const handleCreateFirstVault = (
     address: string,
