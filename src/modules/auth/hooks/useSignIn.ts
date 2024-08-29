@@ -54,7 +54,7 @@ const useSignIn = () => {
   }, []);
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, ...rest } = useWebAuthn(
+  const { openWebAuthnDrawer, userName, ...rest } = useWebAuthn(
     invalidateGifAnimationRequest,
   );
 
@@ -101,8 +101,7 @@ const useSignIn = () => {
       invalidateGifAnimationRequest();
 
       if (first_login) {
-        handleCreateFirstVault(address, user_id);
-
+        handleCreateFirstVault(address, user_id, !!webAuthn, userName);
         return;
       }
 

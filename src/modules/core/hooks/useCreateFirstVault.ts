@@ -6,7 +6,12 @@ const useCreateFirstVault = (workspaceId: string) => {
   const updateUserMutation = useUpdateSettingsRequest();
   const { bakoSafeVault } = useCreateVault(true, workspaceId);
 
-  const handleCreateFirstVault = (address: string, userId: string) => {
+  const handleCreateFirstVault = (
+    address: string,
+    userId: string,
+    isFromWebAuthn?: boolean,
+    userName?: string,
+  ) => {
     updateUserMutation.mutate({
       id: userId,
       first_login: false,
@@ -15,7 +20,7 @@ const useCreateFirstVault = (workspaceId: string) => {
     const userAddress = Address.fromString(address).bech32Address;
 
     bakoSafeVault.create({
-      name: 'Personal Vault ',
+      name: isFromWebAuthn ? `${userName} Vault` : 'Personal Vault ',
       description: 'Pegar com Fábio',
       minSigners: 1,
       addresses: [userAddress],
