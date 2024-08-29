@@ -46,6 +46,7 @@ const useSignIn = () => {
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
   const { connect } = useSocket();
+  const isSignInFromDapp = location.search.includes('Connectors') && sessionId;
 
   useEffect(() => {
     if (isOpenWebAuth) {
@@ -100,7 +101,7 @@ const useSignIn = () => {
       });
       invalidateGifAnimationRequest();
 
-      if (first_login) {
+      if (first_login && !isSignInFromDapp) {
         handleCreateFirstVault(address, user_id, !!webAuthn, userName);
         return;
       }
