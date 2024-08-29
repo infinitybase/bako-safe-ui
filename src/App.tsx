@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 import { AppRoutes } from '@/routes';
 
-// import { setupAxiosInterceptors } from './config/api';
 import { invalidateQueries } from './modules/core/utils';
 import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
 
