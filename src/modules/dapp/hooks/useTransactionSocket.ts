@@ -45,6 +45,7 @@ export const useTransactionSocket = (isWorkspaceReady: boolean) => {
   }, [summary.isPending, request_id, socket.connected, sessionId]);
 
   useEffect(() => {
+    console.log('SOCKET_CONNECTED:', socket.connected);
     if (socket.connected) {
       console.log('[ENVIANDO MENSAGEM]');
       socket.emit(SocketEvents.DEFAULT, {
@@ -77,7 +78,7 @@ export const useTransactionSocket = (isWorkspaceReady: boolean) => {
         from: vault.address,
       });
     });
-  }, [socket.connected]);
+  }, [socket.connected, isWorkspaceReady]);
 
   const sendTransaction = async () => {
     if (!tx) return;
