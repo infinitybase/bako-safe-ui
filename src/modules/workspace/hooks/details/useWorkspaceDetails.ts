@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
@@ -11,7 +13,7 @@ import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-import { useGitLoadingRequest } from '../useGifLoadingRequest';
+import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 import { useWorkspace } from '../useWorkspace';
 
@@ -31,9 +33,7 @@ const useWorkspaceDetails = () => {
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest();
-
-  setupAxiosInterceptors(authDetails.handlers.logout);
+  } = useGifLoadingRequest();
 
   const {
     handlers: { hasPermission, ...handlersData },
@@ -67,6 +67,10 @@ const useWorkspaceDetails = () => {
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
   });
+
+  useEffect(() => {
+    setupAxiosInterceptors(authDetails.handlers.logout);
+  }, []);
 
   return {
     isWorkspaceReady,
