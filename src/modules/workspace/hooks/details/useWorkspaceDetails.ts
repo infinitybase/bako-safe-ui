@@ -12,6 +12,7 @@ import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmou
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useGitLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
+import { setupAxiosInterceptors } from '@/config';
 
 const useWorkspaceDetails = () => {
   const screenSizes = useScreenSize();
@@ -25,6 +26,8 @@ const useWorkspaceDetails = () => {
     resetAllTransactionsTypeFilters,
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
+
+  setupAxiosInterceptors(authDetails.handlers.logout);
 
   const {
     isLoading: isGifAnimationLoading,
