@@ -23,7 +23,7 @@ import { CreateWebAuthnForm } from './form/CreateWebauthnAccount';
 import { LoginWebAuthnForm } from './form/LoginWebauthnAccount';
 
 interface DrawerWebAuthnProps extends Pick<DrawerProps, 'isOpen' | 'onClose'> {
-  webauthn: UseWebAuthn;
+  webauthn: Omit<UseWebAuthn, 'userName'>;
 }
 
 const DrawerWebAuthn = (props: DrawerWebAuthnProps) => {

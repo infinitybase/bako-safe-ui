@@ -66,6 +66,7 @@ const useAuth = (): IUseAuthReturn => {
       workspace: infos?.workspace!,
       address: account,
       singleWorkspaceId: singleWorkspace,
+      firstLogin: infos?.firstLogin!,
       isLoading,
       isFetching,
       refetch,
