@@ -22,6 +22,13 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionConfirm = () => {
   const {
+    workspaceInfos: {
+      handlers: { goHome },
+    },
+    isWorkspaceReady,
+  } = useWorkspaceContext();
+
+  const {
     cancelTransaction,
     vault,
     pendingSignerTransactions,
@@ -29,13 +36,7 @@ const TransactionConfirm = () => {
     isLoading,
     send,
     validAt,
-  } = useTransactionSocket();
-
-  const {
-    workspaceInfos: {
-      handlers: { goHome },
-    },
-  } = useWorkspaceContext();
+  } = useTransactionSocket(isWorkspaceReady);
 
   const [closePopover, setClosePopover] = useState(false);
 
