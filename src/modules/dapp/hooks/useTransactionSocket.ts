@@ -20,7 +20,7 @@ interface IDappEvent {
   origin: string;
 }
 
-export const useTransactionSocket = (isWorkspaceReady: boolean) => {
+export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
     name: '',
     address: '',
@@ -73,12 +73,11 @@ export const useTransactionSocket = (isWorkspaceReady: boolean) => {
       setTx(tx);
       setValidAt(validAt);
       summary.getTransactionSummary({
-        providerUrl: vault.provider,
         transactionLike: tx,
         from: vault.address,
       });
     });
-  }, [socket.connected, isWorkspaceReady]);
+  }, []);
 
   const sendTransaction = async () => {
     if (!tx) return;

@@ -6,15 +6,15 @@ import {
   InputType,
   OperationTransactionAddress,
   OutputType,
-  Provider,
   ScriptTransactionRequest,
   TransactionRequestLike,
 } from 'fuels';
 
 import { NativeAssetId } from '@/modules/core';
+import { BaseTransfer, Vault } from 'bakosafe';
+import { authCredentials } from '@/modules';
 
 export interface TransactionSimulateParams {
-  providerUrl: string;
   transactionLike: TransactionRequestLike;
   from: string;
 }
@@ -40,20 +40,21 @@ export enum IFuelTransactionNames {
   TRANSFER_ASSET = 'Transfer asset',
 }
 
-// export declare enum AddressType {
-//   contract = 0,
-//   account = 1,
-// }
-
 class FuelTransactionService {
-  static async simulate({
-    providerUrl,
-    transactionLike,
-    from,
-  }: TransactionSimulateParams) {
-    const provider = await Provider.create(providerUrl);
-    const transactionRequest = ScriptTransactionRequest.from(transactionLike);
-    const fee = await provider.getTransactionCost(transactionRequest);
+  static async simulate({ transactionLike, from }: TransactionSimulateParams) {
+    const auth = authCredentials();
+    const vault = await Vault.create({
+      predicateAddress: from,
+      token: auth.token,
+      address: auth.address,
+    });
+
+    let transactionRequest = ScriptTransactionRequest.from(transactionLike);
+    transactionRequest = await BaseTransfer.prepareTransaction(
+      vault,
+      transactionRequest,
+    );
+
     // console.log('auqi', transactionLike.outputs[0].type)
     //OutputType.Coin
     /**
@@ -121,7 +122,7 @@ class FuelTransactionService {
     );
 
     return {
-      fee: fee.maxFee.format(),
+      fee: transactionRequest.maxFee.format(),
       operations: operations,
     };
   }
