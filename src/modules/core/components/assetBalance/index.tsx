@@ -2,6 +2,7 @@ import { Avatar, Card, Grid, Text, VStack } from '@chakra-ui/react';
 
 import BakoIcon from '@/assets/tokens/bako.svg';
 import { Asset } from '@/modules/core/utils';
+
 import { useGetTokenInfos } from '../../hooks';
 
 interface AssetsBalanceProps {
@@ -26,6 +27,7 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
+        {/* TODO: Replace avatar with icon/image */}
         <Avatar
           size="sm"
           name={assetsInfo.slug}

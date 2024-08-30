@@ -8,8 +8,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Asset, assetsMap, NativeAssetId } from '../../utils';
 import { useGetTokenInfos } from '../../hooks';
+import { Asset, assetsMap, NativeAssetId } from '../../utils';
 
 interface DefaultAsset {
   assetId: string;
@@ -76,6 +76,7 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={2}
         mb={1}
       >
+        {/* TODO: Replace with image or icon component */}
         <Avatar
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}

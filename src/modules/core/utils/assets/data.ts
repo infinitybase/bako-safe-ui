@@ -3,6 +3,7 @@ import UNIIcon from '@/assets/tokens/uniswap.svg';
 import UnknownIcon from '@/assets/tokens/unknown.svg';
 import USDCIcon from '@/assets/tokens/usdc.svg';
 
+// TODO: Use chakra icon
 import { tokensIDS } from './address';
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';

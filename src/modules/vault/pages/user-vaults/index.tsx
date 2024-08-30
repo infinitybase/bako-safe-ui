@@ -22,9 +22,10 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserVaultsPage = () => {
   const {
@@ -217,9 +218,10 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
 
-      {!vaults?.length && (
+      {!vaults?.length && !loadingVaults && (
         <CustomSkeleton isLoaded={!loadingVaults}>
           <EmptyState
+            bg={'red'}
             showAction={hasPermission([OWNER, MANAGER, ADMIN])}
             title={`Let's Begin!`}
             subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}
