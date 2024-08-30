@@ -13,21 +13,25 @@ import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { AssetsBalanceList, Pages } from '@/modules/core';
-import { limitCharacters } from '@/utils';
+import { AssetsBalanceList } from '@/modules/core';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const WorkspaceBalancePage = () => {
   const {
-    authDetails: { userInfos },
+    // authDetails: {
+    //   userInfos
+    // },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        goHome,
+      },
       requests: { workspaceBalance },
     },
   } = useWorkspaceContext();
 
-  const workspaceId = userInfos.workspace?.id ?? '';
+  // const workspaceId = userInfos.workspace?.id ?? '';
 
   return (
     <Flex w="full" direction="column">
@@ -62,7 +66,8 @@ const WorkspaceBalancePage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbItem>
+
+            {/* <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -78,7 +83,8 @@ const WorkspaceBalancePage = () => {
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
-            </BreadcrumbItem>
+            </BreadcrumbItem> */}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"

@@ -3,7 +3,6 @@ import {
   Box,
   Center,
   chakra,
-  CircularProgress,
   Flex,
   HStack,
   Icon,
@@ -20,16 +19,10 @@ import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import {
-  ExitIcon,
-  NotificationIcon,
-  ReplaceIcon,
-  SettingsIcon,
-} from '@/components';
+import { ExitIcon, NotificationIcon, SettingsIcon } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
-import { Workspace } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -234,101 +227,101 @@ const UserBox = () => {
   );
 };
 
-const WorkspaceBox = ({
-  isLoading,
-  currentWorkspace,
-}: {
-  currentWorkspace?: Partial<Workspace>;
-  isLoading?: boolean;
-}) => {
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
+// const WorkspaceBox = ({
+//   isLoading,
+//   currentWorkspace,
+// }: {
+//   currentWorkspace?: Partial<Workspace>;
+//   isLoading?: boolean;
+// }) => {
+//   const {
+//     screenSizes: { isMobile },
+//   } = useWorkspaceContext();
 
-  if (isLoading)
-    return (
-      <CircularProgress
-        trackColor="dark.100"
-        size={18}
-        isIndeterminate
-        color="brand.500"
-      />
-    );
+//   if (isLoading)
+//     return (
+//       <CircularProgress
+//         trackColor="dark.100"
+//         size={18}
+//         isIndeterminate
+//         color="brand.500"
+//       />
+//     );
 
-  if (!currentWorkspace) return null;
+//   if (!currentWorkspace) return null;
 
-  const { avatar, name, single: isMyWorkspace } = currentWorkspace;
+//   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
 
-  return (
-    <Flex
-      w="full"
-      alignItems="center"
-      justifyContent={{ base: 'flex-end', sm: 'space-between' }}
-    >
-      <Flex>
-        {isMyWorkspace && (
-          <Text
-            fontSize={{ base: 'xs', sm: 'md' }}
-            fontWeight="semibold"
-            color="grey.200"
-            border="2px"
-            padding={2}
-            borderRadius="lg"
-            borderColor="grey.500"
-            _hover={{ opacity: 0.8 }}
-          >
-            Choose a workspace
-          </Text>
-        )}
-        {!isMyWorkspace && (
-          <HStack
-            spacing={{ base: 2, sm: 4 }}
-            flexDirection={{ base: 'row-reverse', sm: 'row' }}
-          >
-            <Avatar
-              variant="roundedSquare"
-              src={avatar}
-              size={{ base: 'sm', sm: 'md' }}
-            />
-            <Box w={{ base: 100, sm: 150 }}>
-              <Text
-                fontSize={{ base: 'xs', sm: 'md' }}
-                fontWeight="semibold"
-                color="grey.200"
-                isTruncated
-                maxW={150}
-                textAlign={{
-                  base: 'right',
-                  sm: 'left',
-                }}
-              >
-                {name}
-              </Text>
-              <Text
-                fontSize={{ base: 'xs', sm: 'sm' }}
-                color="grey.500"
-                textAlign={{
-                  base: 'right',
-                  sm: 'left',
-                }}
-              >
-                {isMobile ? 'Workspace' : 'Current workspace'}
-              </Text>
-            </Box>
-            {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
-          </HStack>
-        )}
-      </Flex>
-    </Flex>
-  );
-};
+//   return (
+//     <Flex
+//       w="full"
+//       alignItems="center"
+//       justifyContent={{ base: 'flex-end', sm: 'space-between' }}
+//     >
+//       <Flex>
+//         {isMyWorkspace && (
+//           <Text
+//             fontSize={{ base: 'xs', sm: 'md' }}
+//             fontWeight="semibold"
+//             color="grey.200"
+//             border="2px"
+//             padding={2}
+//             borderRadius="lg"
+//             borderColor="grey.500"
+//             _hover={{ opacity: 0.8 }}
+//           >
+//             Choose a workspace
+//           </Text>
+//         )}
+//         {!isMyWorkspace && (
+//           <HStack
+//             spacing={{ base: 2, sm: 4 }}
+//             flexDirection={{ base: 'row-reverse', sm: 'row' }}
+//           >
+//             <Avatar
+//               variant="roundedSquare"
+//               src={avatar}
+//               size={{ base: 'sm', sm: 'md' }}
+//             />
+//             <Box w={{ base: 100, sm: 150 }}>
+//               <Text
+//                 fontSize={{ base: 'xs', sm: 'md' }}
+//                 fontWeight="semibold"
+//                 color="grey.200"
+//                 isTruncated
+//                 maxW={150}
+//                 textAlign={{
+//                   base: 'right',
+//                   sm: 'left',
+//                 }}
+//               >
+//                 {name}
+//               </Text>
+//               <Text
+//                 fontSize={{ base: 'xs', sm: 'sm' }}
+//                 color="grey.500"
+//                 textAlign={{
+//                   base: 'right',
+//                   sm: 'left',
+//                 }}
+//               >
+//                 {isMobile ? 'Workspace' : 'Current workspace'}
+//               </Text>
+//             </Box>
+//             {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
+//           </HStack>
+//         )}
+//       </Flex>
+//     </Flex>
+//   );
+// };
 
 const Header = () => {
   const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
   const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
-    authDetails: { userInfos },
+    // authDetails: { userInfos },
     workspaceInfos: {
       workspaceDialog,
       handlers: { handleWorkspaceSelection, goHome },
@@ -403,7 +396,7 @@ const Header = () => {
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
-        <TopBarItem
+        {/* <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
           w={{
@@ -419,7 +412,7 @@ const Header = () => {
             }}
             isLoading={userInfos?.isLoading}
           />
-        </TopBarItem>
+        </TopBarItem> */}
 
         <TopBarItem
           display={{ base: 'none', sm: 'flex' }}

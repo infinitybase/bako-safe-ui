@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
-import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -191,7 +190,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && <Update />}
                   </HStack>
 
-                  {!userInfos.onSingleWorkspace && (
+                  {/* {!userInfos.onSingleWorkspace && (
                     <HStack
                       w="full"
                       alignItems="center"
@@ -213,7 +212,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         {userInfos.workspace?.name}
                       </Text>
                     </HStack>
-                  )}
+                  )} */}
 
                   <Text
                     maxW="200px"

@@ -19,15 +19,15 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import {
   ContactCard,
   CreateContactDialog,
   DeleteContactDialog,
 } from '../../components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const AddressBookPage = () => {
   const {
@@ -139,7 +139,7 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={onSingleWorkspace}>
+              {/* <BreadcrumbItem hidden={onSingleWorkspace}>
                 {workspace?.id && (
                   <BreadcrumbLink
                     fontSize="sm"
@@ -159,7 +159,7 @@ const AddressBookPage = () => {
                     {workspace?.name}
                   </BreadcrumbLink>
                 )}
-              </BreadcrumbItem>
+              </BreadcrumbItem> */}
 
               <BreadcrumbItem>
                 <BreadcrumbLink

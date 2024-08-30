@@ -12,6 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
+import { useEffect } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import {
@@ -34,7 +35,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
-import { useEffect } from 'react';
 
 const TransactionsVaultPage = () => {
   const {
@@ -45,7 +45,10 @@ const TransactionsVaultPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        goHome,
+      },
     },
     screenSizes: { vaultRequiredSizeToColumnLayout, isMobile, isSmall },
   } = useWorkspaceContext();
@@ -109,7 +112,7 @@ const TransactionsVaultPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!userInfos.onSingleWorkspace && (
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -129,7 +132,7 @@ const TransactionsVaultPage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -156,7 +159,7 @@ const TransactionsVaultPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.data?.id!,
+                      vaultId: vault.data?.id,
                       workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
@@ -360,7 +363,7 @@ const TransactionsVaultPage = () => {
               navigate(
                 Pages.createTransaction({
                   workspaceId: vaultWkId!,
-                  vaultId: vault.data?.id!,
+                  vaultId: vault.data?.id,
                 }),
               )
             }

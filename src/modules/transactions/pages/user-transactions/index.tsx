@@ -13,6 +13,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
@@ -34,7 +35,6 @@ import {
 import { StatusFilter } from '../../hooks';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { transactionStatus } from '../../utils';
-import { useEffect } from 'react';
 
 const UserTransactionsPage = () => {
   const {
@@ -114,7 +114,7 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                {!userInfos.onSingleWorkspace && (
+                {/* {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
                       fontSize="sm"
@@ -134,7 +134,7 @@ const UserTransactionsPage = () => {
                       {userInfos.workspace?.name}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                )}
+                )} */}
 
                 <BreadcrumbItem>
                   <BreadcrumbLink
