@@ -1,21 +1,21 @@
 import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
-import { Pages } from '@/modules/core/routes';
 import { AuthRoute } from '@/modules/core/components/route/auth';
+import { Pages } from '@/modules/core/routes';
 
 import { CreateMemberPage, WorkspaceBalancePage } from './pages';
-import { WorkspacePage } from './pages/home';
 
 const workspaceRoutes = (
   <Route element={<DashboardLayoutRouter />}>
     <Route
       path={Pages.workspace()}
-      element={
-        <AuthRoute>
-          <WorkspacePage />
-        </AuthRoute>
-      }
+      // element={
+      //   <AuthRoute>
+      //     <></>
+      //     {/* <WorkspacePage /> */}
+      //   </AuthRoute>
+      // }
     >
       <Route
         path={Pages.membersWorkspace()}
