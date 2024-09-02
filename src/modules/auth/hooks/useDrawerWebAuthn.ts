@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   SignWebAuthnPayload,
@@ -9,9 +10,9 @@ import {
   UserQueryKey,
   UserService,
 } from '../services';
+import { SignInOrigin } from './signIn/types';
+import { useSignInFactory } from './signIn/useSignInFactory';
 import { useQueryParams } from './usePopup';
-import { redirectPathBuilder } from './useSignIn';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const createAccount = async (name: string) => {
   return await UserService.createWebAuthnAccount(name);
@@ -29,7 +30,9 @@ export const useDrawerWebAuth = () => {
   const navigate = useNavigate();
   const { warningToast } = useContactToast();
 
-  const { location, sessionId } = useQueryParams();
+  const { sessionId } = useQueryParams();
+  const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
+  const { redirect } = useSignInFactory(signInOrigin);
 
   const createAccountMutate = useMutation({
     mutationKey: UserQueryKey.CREATE_WEB_AUTHN_ACCOUNT(),
@@ -58,7 +61,7 @@ export const useDrawerWebAuth = () => {
           permissions: workspace.permissions,
           webAuthn,
         });
-        navigate(redirectPathBuilder(!!sessionId, location));
+        navigate(redirect());
       }, 800);
     },
     onError: () => {
