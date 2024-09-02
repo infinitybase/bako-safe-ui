@@ -9,9 +9,9 @@ import {
   SigninContainerMobile,
   SignInFooter,
 } from '@/modules/auth/components';
-
-import { useSignIn } from '../hooks/useSignIn';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { useSignIn } from '../hooks/signIn/useSignIn';
 
 const SigninPage = () => {
   const {
