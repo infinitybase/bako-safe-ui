@@ -1,27 +1,20 @@
-import { DoubleArrowIcon } from '@/components';
+import { Icon } from '@chakra-ui/icons';
+import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
+import { Address } from 'fuels';
+import { useMemo } from 'react';
+import { FaPlay } from 'react-icons/fa';
+
+import { DoubleArrowIcon, UnknownIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
   AddressUtils,
   AssetModel,
-  IGetTokenInfos,
   assetsMap,
+  IGetTokenInfos,
   useGetParams,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { Icon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  StackProps,
-  Text,
-} from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
-import { Address } from 'fuels';
-import { useMemo } from 'react';
-import { FaPlay } from 'react-icons/fa';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -81,11 +74,10 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={assetInfo.slug}
-            size="xs"
-            src={assetInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={assetInfo?.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
@@ -94,11 +86,10 @@ const AssetBoxInfo = ({
       )}
       {contractAssetInfo && isContract && !assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={contractAssetInfo.assetsInfo.slug}
-            size="xs"
-            src={contractAssetInfo.assetsInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={contractAssetInfo.assetsInfo.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {contractAssetInfo.assetsInfo.slug}

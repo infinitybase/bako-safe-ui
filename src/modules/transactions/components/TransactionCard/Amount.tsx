@@ -1,19 +1,17 @@
 import {
-  Avatar,
   AvatarGroup,
   Flex,
   HStack,
+  Icon,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
-
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { assetsMap } from '@/modules/core';
-import bakoIcon from '@/assets/tokens/bako.svg';
+import { CustomSkeleton, UnknownIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { CustomSkeleton } from '@/components';
+import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardAmountProps {
@@ -44,7 +42,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   const txUSDAmount = useTxAmountToUSD(
     assets,
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (
@@ -60,12 +58,11 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
         position="relative"
       >
         {oneAssetOfEach.map((asset) => (
-          <Avatar
-            name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
-            src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
-            ignoreFallback
-            boxSize={24}
-            border="none"
+          <Icon
+            key={asset.assetId}
+            w={{ base: 8, sm: 8 }}
+            h={{ base: 8, sm: 8 }}
+            as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
           />
         ))}
       </AvatarGroup>

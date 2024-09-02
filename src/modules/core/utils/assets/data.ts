@@ -1,9 +1,11 @@
-import BTCIcon from '@/assets/tokens/bitcoin.svg';
-import UNIIcon from '@/assets/tokens/uniswap.svg';
-import UnknownIcon from '@/assets/tokens/unknown.svg';
-import USDCIcon from '@/assets/tokens/usdc.svg';
+import {
+  BitcoinIcon,
+  EthereumIcon,
+  UniswapIcon,
+  UnknownIcon,
+  UsdcIcon,
+} from '@/components/icons';
 
-// TODO: Use chakra icon
 import { tokensIDS } from './address';
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
@@ -15,37 +17,37 @@ const assetsList: Asset[] = [
     name: 'Ethereum',
     slug: 'ETH',
     assetId: NativeAssetId,
-    icon: ETHDefault,
+    icon: EthereumIcon,
   },
   {
     name: 'Bitcoin',
     slug: 'BTC',
     assetId: tokensIDS['BTC'],
-    icon: BTCIcon,
+    icon: BitcoinIcon,
   },
   {
     name: 'USDC',
     slug: 'USDC',
     assetId: tokensIDS['USDC'],
-    icon: USDCIcon,
+    icon: UsdcIcon,
   },
   {
     name: 'Uniswap',
     slug: 'UNI',
     assetId: tokensIDS['UNI'],
-    icon: UNIIcon,
+    icon: UniswapIcon,
   },
   {
     name: 'Dai',
     slug: 'DAI',
     assetId: tokensIDS['DAI'],
-    icon: ETHDefault,
+    icon: EthereumIcon,
   },
   {
     name: 'sEther',
     slug: 'sETH',
     assetId: tokensIDS['sETH'],
-    icon: ETHDefault,
+    icon: EthereumIcon,
   },
   {
     name: 'Unknown',
