@@ -286,7 +286,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Button
                     hidden={hasBalance}
                     variant="primary"
-                    onClick={() => openFaucet(vault.data?.predicateAddress!)}
+                    onClick={() => openFaucet(vault.data?.predicateAddress)}
                     leftIcon={<PlusSquareIcon />}
                   >
                     Faucet
@@ -408,7 +408,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       assets={assets.assets!}
                       visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
-                        vaultId: vault.data?.id!,
+                        vaultId: vault.data?.id,
                         workspaceId,
                       })}
                     />
