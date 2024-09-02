@@ -4,10 +4,11 @@ import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { queryClient } from '@/config';
+
 import { useAuthCookies } from '..';
 import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
-import { queryClient } from '@/config';
 
 export type SingleAuthentication = {
   workspace: string;
@@ -36,6 +37,12 @@ const useAuth = (): IUseAuthReturn => {
     navigate('/');
   };
 
+  const logoutWhenExpired = async () => {
+    clearAuthCookies();
+    queryClient.clear();
+    navigate('/?expired=true');
+  };
+
   const userProvider = async () => {
     const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
 
@@ -51,6 +58,7 @@ const useAuth = (): IUseAuthReturn => {
   return {
     handlers: {
       logout,
+      logoutWhenExpired,
       authenticate,
       setInvalidAccount,
     },

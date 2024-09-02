@@ -20,7 +20,6 @@ export const useIsWorkspaceReady = ({
   isUserInfosLoading,
   isVaultAssetsLoading,
   isVaultRequestLoading,
-  isWorkspaceBalanceLoading,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
 
@@ -48,7 +47,10 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
+  const expired =
+    new URLSearchParams(window.location.search).get('expired') === 'true';
+
+  if ((isSignInpage && !expired) || (isFilteringInProgress && !isFromDapp)) {
     return { isWorkspaceReady: true, isFilteringInProgress };
   }
 
@@ -59,7 +61,6 @@ export const useIsWorkspaceReady = ({
     isUserInfosLoading,
     isVaultAssetsLoading,
     isVaultRequestLoading,
-    isWorkspaceBalanceLoading,
     isHomeRequestLoading,
     isTransactionsPageListLoading,
     isVaultTransactionsLoading,

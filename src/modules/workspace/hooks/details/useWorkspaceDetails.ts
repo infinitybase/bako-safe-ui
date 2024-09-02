@@ -69,7 +69,7 @@ const useWorkspaceDetails = () => {
   });
 
   useEffect(() => {
-    setupAxiosInterceptors(authDetails.handlers.logout);
+    setupAxiosInterceptors(authDetails.handlers.logoutWhenExpired);
   }, []);
 
   return {
