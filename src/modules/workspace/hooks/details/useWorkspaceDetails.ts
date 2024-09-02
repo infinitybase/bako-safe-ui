@@ -30,6 +30,8 @@ const useWorkspaceDetails = () => {
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
+  setupAxiosInterceptors(authDetails.handlers.logout);
+
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,

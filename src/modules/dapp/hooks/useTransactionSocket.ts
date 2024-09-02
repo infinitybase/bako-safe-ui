@@ -42,10 +42,10 @@ export const useTransactionSocket = () => {
     if (!socket.connected) {
       connect(sessionId!);
     }
-  }, [summary.isPending, summary.isSuccess, request_id, socket.connected]);
+  }, [summary.isPending, request_id, socket.connected, sessionId]);
 
   useEffect(() => {
-    console.log('[SOCKET_CONN]: ', socket.connected);
+    console.log('SOCKET_CONNECTED:', socket.connected);
     if (socket.connected) {
       console.log('[ENVIANDO MENSAGEM]');
       socket.emit(SocketEvents.DEFAULT, {
@@ -73,19 +73,17 @@ export const useTransactionSocket = () => {
       setTx(tx);
       setValidAt(validAt);
       summary.getTransactionSummary({
-        providerUrl: vault.provider,
         transactionLike: tx,
         from: vault.address,
       });
     });
-  }, [socket]);
+  }, []);
 
   const sendTransaction = async () => {
     if (!tx) return;
     setSending(true);
 
     console.log('[EMITINDO TRNSACTION]');
-
     socket.emit(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
