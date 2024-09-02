@@ -139,6 +139,8 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
+              {/* Commented out code to temporarily disable workspaces. */}
+
               {/* <BreadcrumbItem hidden={onSingleWorkspace}>
                 {workspace?.id && (
                   <BreadcrumbLink
@@ -160,7 +162,6 @@ const AddressBookPage = () => {
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem> */}
-
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"

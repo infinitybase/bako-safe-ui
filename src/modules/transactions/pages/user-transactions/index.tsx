@@ -114,6 +114,8 @@ const UserTransactionsPage = () => {
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
+                {/* Commented out code to temporarily disable workspaces. */}
+
                 {/* {!userInfos.onSingleWorkspace && (
                   <BreadcrumbItem>
                     <BreadcrumbLink
@@ -135,7 +137,6 @@ const UserTransactionsPage = () => {
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )} */}
-
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     fontSize="sm"

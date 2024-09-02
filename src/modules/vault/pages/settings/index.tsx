@@ -69,6 +69,8 @@ const VaultSettingsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
+            {/* Commented out code to temporarily disable workspaces. */}
+
             {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
@@ -90,7 +92,6 @@ const VaultSettingsPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
             )} */}
-
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"

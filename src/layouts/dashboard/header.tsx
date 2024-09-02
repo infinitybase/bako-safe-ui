@@ -227,6 +227,8 @@ const UserBox = () => {
   );
 };
 
+// Commented out code to temporarily disable workspaces.
+
 // const WorkspaceBox = ({
 //   isLoading,
 //   currentWorkspace,
@@ -396,6 +398,8 @@ const Header = () => {
       </SpacedBox>
 
       <HStack spacing={0} height="100%">
+        {/* Commented out code to temporarily disable workspaces. */}
+
         {/* <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
@@ -413,7 +417,6 @@ const Header = () => {
             isLoading={userInfos?.isLoading}
           />
         </TopBarItem> */}
-
         <TopBarItem
           display={{ base: 'none', sm: 'flex' }}
           cursor="pointer"
@@ -441,7 +444,6 @@ const Header = () => {
             </Center>
           )}
         </TopBarItem>
-
         <TopBarItem>
           <UserBox />
         </TopBarItem>

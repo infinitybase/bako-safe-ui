@@ -190,6 +190,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && <Update />}
                   </HStack>
 
+                  {/* Commented out code to temporarily disable workspaces. */}
+
                   {/* {!userInfos.onSingleWorkspace && (
                     <HStack
                       w="full"
@@ -300,7 +302,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       onClick={() =>
                         navigate(
                           Pages.createTransaction({
-                            vaultId: vault.data?.id!,
+                            vaultId: vault.data?.id,
                             workspaceId,
                           }),
                         )

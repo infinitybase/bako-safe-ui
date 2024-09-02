@@ -68,6 +68,8 @@ export const VaultCard = ({
               bg="grey.600"
             />
             <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
+              {/* Commented out code to temporarily disable workspaces. */}
+
               {/* {!workspace.single && (
                 <HStack>
                   <Icon

@@ -10,6 +10,8 @@ const workspaceRoutes = (
   <Route element={<DashboardLayoutRouter />}>
     <Route
       path={Pages.workspace()}
+      // Commented out code to temporarily disable workspaces.
+
       // element={
       //   <AuthRoute>
       //     <></>

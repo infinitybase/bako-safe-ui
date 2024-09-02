@@ -64,6 +64,8 @@ const VaultBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
+            {/* Commented out code to temporarily disable workspaces. */}
+
             {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink

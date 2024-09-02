@@ -20,6 +20,9 @@ const BasicInfos = ({
       <Text maxW={106} color="grey.425" mt={0} isTruncated fontSize="xs">
         {vault.name}
       </Text>
+
+      {/* Commented out code to temporarily disable workspaces. */}
+
       {/* {!vault.workspace.single && (
         <HStack spacing={1}>
           <Icon

@@ -67,6 +67,8 @@ const WorkspaceBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
+            {/* Commented out code to temporarily disable workspaces. */}
+
             {/* <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
