@@ -1,19 +1,35 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
-
-import DetailItem from './DetailItem';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-import { shakeAnimationY } from '@/modules/core';
-import { TransactionWithVault } from '../../../services';
+import { bn } from 'fuels';
+
 import { UpRightArrow } from '@/components';
+import { shakeAnimationY } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { TransactionWithVault } from '../../../services';
+import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  const sentBy = transaction.txData.inputs[0]['owner'];
+  const correctTransactionInput = transaction.txData.inputs.filter(
+    (input) => input.type === 0,
+  )[0];
+
+  const hasNoAssets = !transaction.assets.length;
+
+  const amountFromInput = hasNoAssets
+    ? {
+        amount: bn(correctTransactionInput['amount']).format(),
+        assetId: correctTransactionInput['assetId'],
+        to: transaction.predicate?.predicateAddress,
+      }
+    : null;
+
+  const sentBy = correctTransactionInput['owner'];
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -44,6 +60,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
+          {hasNoAssets && amountFromInput && (
+            <DetailItem asset={amountFromInput} sentBy={sentBy} />
+          )}
           {transaction.assets.map((asset, index) => (
             <DetailItem
               key={index}

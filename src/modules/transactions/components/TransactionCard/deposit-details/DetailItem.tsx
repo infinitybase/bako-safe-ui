@@ -34,7 +34,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   const isFirstItem = index === 0;
