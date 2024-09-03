@@ -1,4 +1,3 @@
-import { useDisclosure } from '@chakra-ui/react';
 import { useFuel, useIsConnected } from '@fuels/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +17,6 @@ import { SignInOrigin, useSignInOriginFactory } from './origin';
 
 const useSignIn = () => {
   const navigate = useNavigate();
-  const connectorDrawer = useDisclosure();
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
 
@@ -80,7 +78,6 @@ const useSignIn = () => {
     const isWalletConnectorOpen = await fuel.selectConnector(connector);
     setIsAnyWalletConnectorOpen(isWalletConnectorOpen);
 
-    connectorDrawer.onClose();
     const isbyWallet = connector !== EConnectors.WEB_AUTHN;
     if (isbyWallet) {
       return connectByWallet();
@@ -139,7 +136,6 @@ const useSignIn = () => {
     createUserRequest,
     connectors: {
       items: connectors,
-      drawer: connectorDrawer,
       select: selectConnector,
       has: !!connectors?.length,
       isAnyWalletConnectorOpen,
