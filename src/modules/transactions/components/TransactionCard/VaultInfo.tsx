@@ -1,14 +1,4 @@
-import { Icon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  BoxProps,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-
-import { HandbagIcon } from '@/components/icons/handbag';
+import { BoxProps, Text, VStack } from '@chakra-ui/react';
 
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
@@ -30,7 +20,10 @@ const BasicInfos = ({
       <Text maxW={106} color="grey.425" mt={0} isTruncated fontSize="xs">
         {vault.name}
       </Text>
-      {!vault.workspace.single && (
+
+      {/* Commented out code to temporarily disable workspaces. */}
+
+      {/* {!vault.workspace.single && (
         <HStack spacing={1}>
           <Icon
             as={HandbagIcon}
@@ -47,7 +40,7 @@ const BasicInfos = ({
             {vault.workspace?.name}
           </Text>
         </HStack>
-      )}
+      )} */}
     </VStack>
   );
 };

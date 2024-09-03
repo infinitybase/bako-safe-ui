@@ -15,7 +15,6 @@ const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <WorkspaceContext.Provider value={workspaceDetails}>
-      {/* {workspaceDetails.isWorkspaceReady ? children : <BakoLoading />} */}
       {workspaceDetails.isWorkspaceReady || isFromDapp ? (
         children
       ) : (
@@ -37,5 +36,4 @@ const useWorkspaceContext = () => {
   return context;
 };
 
-// TODO: Check eslint warning about exportting useWorkspaceContext
 export { useWorkspaceContext, WorkspaceProvider };

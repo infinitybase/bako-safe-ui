@@ -1,4 +1,3 @@
-import { Icon } from '@chakra-ui/icons';
 import {
   Avatar,
   AvatarGroup,
@@ -14,11 +13,13 @@ import {
 } from '@chakra-ui/react';
 
 import { Card } from '@/components';
-import { HandbagIcon } from '@/components/icons/handbag';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import { Workspace } from '@/modules/core/models/workspace';
-import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import {
+  PermissionDetails,
+  WorkspacePermissionUtils,
+} from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultCardProps extends CardProps {
@@ -67,7 +68,9 @@ export const VaultCard = ({
               bg="grey.600"
             />
             <VStack ml={2} maxW="full" alignItems="flex-start" spacing={1}>
-              {!workspace.single && (
+              {/* Commented out code to temporarily disable workspaces. */}
+
+              {/* {!workspace.single && (
                 <HStack>
                   <Icon
                     w={4}
@@ -89,7 +92,7 @@ export const VaultCard = ({
                     {workspace?.name}
                   </Text>
                 </HStack>
-              )}
+              )} */}
               <Heading
                 maxW={{
                   base: 150,
@@ -148,10 +151,14 @@ export const VaultCard = ({
             <Badge
               h={6}
               variant={
-                WorkspacePermissionUtils.permissions[role].variant ?? 'warning'
+                WorkspacePermissionUtils.permissions[
+                  role as keyof PermissionDetails
+                ].variant ?? 'warning'
               }
             >
-              {WorkspacePermissionUtils.permissions[role]?.title ?? ''}
+              {WorkspacePermissionUtils.permissions[
+                role as keyof PermissionDetails
+              ]?.title ?? ''}
             </Badge>
           </VStack>
         </HStack>

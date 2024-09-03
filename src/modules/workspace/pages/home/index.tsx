@@ -19,7 +19,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
@@ -45,9 +44,7 @@ import {
   ExtraVaultCard,
   VaultCard,
 } from '@/modules/vault';
-
 import { WorkspaceSettingsDrawer } from '@/modules/workspace/components';
-import { limitCharacters } from '@/utils';
 
 import WkHomeTransactions from '../../components/wkHomeTransactions';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
@@ -188,7 +185,10 @@ const WorkspacePage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbItem>
+
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
                 color="grey.200"
@@ -204,7 +204,7 @@ const WorkspacePage = () => {
               >
                 {limitCharacters(userInfos.workspace?.name ?? '', 10)}
               </BreadcrumbLink>
-            </BreadcrumbItem>
+            </BreadcrumbItem> */}
           </Breadcrumb>
         </HStack>
         <HStack spacing={3}>

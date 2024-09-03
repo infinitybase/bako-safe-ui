@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
-import { HandbagIcon } from '@/components/icons/handbag';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -191,7 +190,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     {isMobile && <Update />}
                   </HStack>
 
-                  {!userInfos.onSingleWorkspace && (
+                  {/* Commented out code to temporarily disable workspaces. */}
+
+                  {/* {!userInfos.onSingleWorkspace && (
                     <HStack
                       w="full"
                       alignItems="center"
@@ -213,7 +214,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         {userInfos.workspace?.name}
                       </Text>
                     </HStack>
-                  )}
+                  )} */}
 
                   <Text
                     maxW="200px"
@@ -285,7 +286,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Button
                     hidden={hasBalance}
                     variant="primary"
-                    onClick={() => openFaucet(vault.data?.predicateAddress!)}
+                    onClick={() => openFaucet(vault.data?.predicateAddress)}
                     leftIcon={<PlusSquareIcon />}
                   >
                     Faucet
@@ -301,7 +302,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       onClick={() =>
                         navigate(
                           Pages.createTransaction({
-                            vaultId: vault.data?.id!,
+                            vaultId: vault.data?.id,
                             workspaceId,
                           }),
                         )
@@ -407,7 +408,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       assets={assets.assets!}
                       visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
-                        vaultId: vault.data?.id!,
+                        vaultId: vault.data?.id,
                         workspaceId,
                       })}
                     />

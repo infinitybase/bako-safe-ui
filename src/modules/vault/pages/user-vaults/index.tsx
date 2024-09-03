@@ -98,7 +98,10 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!userInfos.onSingleWorkspace && (
+
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -118,7 +121,8 @@ const UserVaultsPage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
