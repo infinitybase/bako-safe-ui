@@ -25,7 +25,6 @@ const TransactionConfirm = () => {
     workspaceInfos: {
       handlers: { goHome },
     },
-    isWorkspaceReady,
   } = useWorkspaceContext();
 
   const {
@@ -36,7 +35,7 @@ const TransactionConfirm = () => {
     isLoading,
     send,
     validAt,
-  } = useTransactionSocket(isWorkspaceReady);
+  } = useTransactionSocket();
 
   const [closePopover, setClosePopover] = useState(false);
 
