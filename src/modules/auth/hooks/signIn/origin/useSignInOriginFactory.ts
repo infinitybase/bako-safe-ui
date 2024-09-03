@@ -2,7 +2,7 @@ import { SignInFactory, SignInOrigin } from './types';
 import { useDappSignIn } from './useDappSignIn';
 import { useWebSignIn } from './useWebSignIn';
 
-const useSignInFactory = (type: SignInOrigin): SignInFactory => {
+const useSignInOriginFactory = (type: SignInOrigin): SignInFactory => {
   const dappSignIn = useDappSignIn();
   const webSignIn = useWebSignIn();
 
@@ -15,4 +15,4 @@ const useSignInFactory = (type: SignInOrigin): SignInFactory => {
   }
 };
 
-export { useSignInFactory };
+export { useSignInOriginFactory };

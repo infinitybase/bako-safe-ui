@@ -14,8 +14,7 @@ import { TypeUser } from '../../services';
 import { useQueryParams } from '../usePopup';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 import { useWebAuthn } from '../useWebAuthn';
-import { SignInOrigin } from './types';
-import { useSignInFactory } from './useSignInFactory';
+import { SignInOrigin, useSignInOriginFactory } from './origin';
 
 const useSignIn = () => {
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const useSignIn = () => {
   const { sessionId, isOpenWebAuth } = useQueryParams();
 
   const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInFactory(signInOrigin);
+  const { redirect } = useSignInOriginFactory(signInOrigin);
 
   useEffect(() => {
     if (isOpenWebAuth) {

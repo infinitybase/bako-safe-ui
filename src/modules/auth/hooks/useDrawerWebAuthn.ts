@@ -10,8 +10,7 @@ import {
   UserQueryKey,
   UserService,
 } from '../services';
-import { SignInOrigin } from './signIn/types';
-import { useSignInFactory } from './signIn/useSignInFactory';
+import { SignInOrigin, useSignInOriginFactory } from './signIn';
 import { useQueryParams } from './usePopup';
 
 const createAccount = async (name: string) => {
@@ -32,7 +31,7 @@ export const useDrawerWebAuth = () => {
 
   const { sessionId } = useQueryParams();
   const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInFactory(signInOrigin);
+  const { redirect } = useSignInOriginFactory(signInOrigin);
 
   const createAccountMutate = useMutation({
     mutationKey: UserQueryKey.CREATE_WEB_AUTHN_ACCOUNT(),

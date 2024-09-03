@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useSocket } from '@/modules/core/hooks/socket';
 import { Pages } from '@/modules/core/routes';
 
-import { useQueryParams } from '../usePopup';
+import { useQueryParams } from '../../usePopup';
 import { ISignInRedirect } from './types';
 
 export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
