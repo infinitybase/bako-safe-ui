@@ -18,6 +18,7 @@ const useQueryParams = () => {
     const byConnector = searchParams.get('byConnector') === 'true';
 
     return {
+      searchParams,
       sessionId,
       address,
       isNew,

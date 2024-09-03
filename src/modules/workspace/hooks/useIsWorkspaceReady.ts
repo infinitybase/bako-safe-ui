@@ -1,3 +1,4 @@
+import { useQueryParams } from '@/modules';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
 
@@ -22,6 +23,7 @@ export const useIsWorkspaceReady = ({
   isVaultRequestLoading,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
+  const { searchParams } = useQueryParams();
 
   const {
     homeTransactions: {
@@ -47,8 +49,7 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  const expired =
-    new URLSearchParams(window.location.search).get('expired') === 'true';
+  const expired = searchParams.get('expired') === 'true';
 
   if ((isSignInpage && !expired) || (isFilteringInProgress && !isFromDapp)) {
     return { isWorkspaceReady: true, isFilteringInProgress };
