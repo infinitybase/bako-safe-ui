@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react';
 
-import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 import { BakoLoading } from '@/components';
 import { currentPath } from '@/utils';
+
+import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';
 
 export type IWorkspaceContext = ReturnType<typeof useWorkspaceDetails>;
 
@@ -14,7 +15,6 @@ const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <WorkspaceContext.Provider value={workspaceDetails}>
-      {/* {workspaceDetails.isWorkspaceReady ? children : <BakoLoading />} */}
       {workspaceDetails.isWorkspaceReady || isFromDapp ? (
         children
       ) : (
@@ -36,4 +36,4 @@ const useWorkspaceContext = () => {
   return context;
 };
 
-export { WorkspaceProvider, useWorkspaceContext };
+export { useWorkspaceContext, WorkspaceProvider };
