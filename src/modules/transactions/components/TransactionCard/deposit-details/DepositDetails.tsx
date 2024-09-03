@@ -19,13 +19,20 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
     (input) => input.type === 0,
   )[0];
 
+  // const sentBy = transaction.txData.inputs[0]['owner'];
+
   const hasNoAssets = !transaction.assets.length;
+
+  const test = transaction.txData.outputs.filter(
+    (output) => output.type === 3,
+  )[0];
 
   const amountFromInput = hasNoAssets
     ? {
         amount: bn(correctTransactionInput['amount']).format(),
-        assetId: correctTransactionInput['assetId'],
-        to: transaction.predicate?.predicateAddress,
+        // assetId: correctTransactionInput['assetId'],
+        assetId: test['assetId'],
+        to: transaction.predicate?.predicateAddress, //this logic is also wrong
       }
     : null;
 
@@ -38,6 +45,8 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       '_BLANK',
     );
   };
+
+  console.log('trasnction', transaction);
 
   const {
     screenSizes: { isMobile },
@@ -60,7 +69,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
-          {hasNoAssets && amountFromInput && (
+          {hasNoAssets && test && (
             <DetailItem asset={amountFromInput} sentBy={sentBy} />
           )}
           {transaction.assets.map((asset, index) => (

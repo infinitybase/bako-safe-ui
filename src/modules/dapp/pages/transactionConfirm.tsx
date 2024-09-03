@@ -16,9 +16,9 @@ import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth';
 import { DappError, DappTransaction } from '@/modules/dapp/components';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionConfirm = () => {
   const {
