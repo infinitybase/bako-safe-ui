@@ -5,14 +5,15 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
+import { TransactionType } from 'bakosafe';
 import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { TransactionCard, transactionStatus } from '@/modules/transactions';
 
-import { TransactionWithVault } from '../../services/types';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -54,7 +55,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                transaction={transaction}
+                isDeposit={transaction?.type === TransactionType.DEPOSIT}
+              />
 
               <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
