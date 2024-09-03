@@ -1,6 +1,7 @@
 import { Box, HStack, VStack } from '@chakra-ui/react';
 import { AddressType } from '@fuel-ts/providers';
 import { Vault } from 'bakosafe';
+import { bn, Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
 import { assetsMap } from '@/modules/core/utils';
@@ -8,11 +9,9 @@ import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asse
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 
-import { IOutput } from '../../services/fuel-transaction';
-
 interface OperationProps {
   vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
-  operation?: IOutput;
+  operation?: Operation;
 }
 
 export const DappTransactionOperationSekeleton = () => (
@@ -36,17 +35,17 @@ export const DappTransactionOperationSekeleton = () => (
 );
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { to, assetId, amount } = operation ?? {};
+  const { to, assetsSent } = operation ?? {};
 
-  if (!to || !assetId || !amount || !vault) return null;
+  if (!to || !assetsSent || !vault) return null;
 
-  const assetData = assetsMap[assetId];
+  const assetData = assetsMap[assetsSent[0].assetId];
 
   const assets = [
     {
       icon: assetData.icon,
-      amount,
-      assetId,
+      amount: bn(assetsSent[0].amount ?? '').format(),
+      assetId: assetsSent[0].assetId,
       name: assetData.name,
       slug: assetData.slug,
     },

@@ -1,10 +1,10 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-import { bn } from 'fuels';
 
 import { UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
+import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionWithVault } from '../../../services';
@@ -15,28 +15,8 @@ type DepositDetailsProps = {
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  const correctTransactionInput = transaction.txData.inputs.filter(
-    (input) => input.type === 0,
-  )[0];
-
-  // const sentBy = transaction.txData.inputs[0]['owner'];
-
-  const hasNoAssets = !transaction.assets.length;
-
-  const test = transaction.txData.outputs.filter(
-    (output) => output.type === 3,
-  )[0];
-
-  const amountFromInput = hasNoAssets
-    ? {
-        amount: bn(correctTransactionInput['amount']).format(),
-        // assetId: correctTransactionInput['assetId'],
-        assetId: test['assetId'],
-        to: transaction.predicate?.predicateAddress, //this logic is also wrong
-      }
-    : null;
-
-  const sentBy = correctTransactionInput['owner'];
+  const { operationAssets, sentBy, hasNoDefaultAssets } =
+    useGetAssetsByOperations(transaction);
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -45,8 +25,6 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       '_BLANK',
     );
   };
-
-  console.log('trasnction', transaction);
 
   const {
     screenSizes: { isMobile },
@@ -69,8 +47,8 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
-          {hasNoAssets && test && (
-            <DetailItem asset={amountFromInput} sentBy={sentBy} />
+          {hasNoDefaultAssets && operationAssets && (
+            <DetailItem asset={operationAssets} sentBy={sentBy} />
           )}
           {transaction.assets.map((asset, index) => (
             <DetailItem

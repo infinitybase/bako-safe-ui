@@ -21,7 +21,7 @@ import TokenInfos from './TokenInfos';
 
 interface DetailItemProps {
   asset: ITransferAsset;
-  index: number;
+  index?: number;
   sentBy: string;
 }
 

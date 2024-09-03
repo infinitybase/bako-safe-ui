@@ -45,6 +45,7 @@ export const useTransactionSocket = () => {
     summary.getTransactionSummary({
       transactionLike: tx,
       from: vault.address,
+      providerUrl: vault.provider,
     });
   };
 

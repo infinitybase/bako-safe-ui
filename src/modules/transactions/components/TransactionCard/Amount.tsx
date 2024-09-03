@@ -6,32 +6,37 @@ import {
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
-
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { assetsMap } from '@/modules/core';
 import bakoIcon from '@/assets/tokens/bako.svg';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { CustomSkeleton } from '@/components';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { useGetAssetsByOperations } from '../../hooks';
+import { TransactionWithVault } from '../../services';
 interface TransactionCardAmountProps {
-  assets: ITransferAsset[];
+  transaction: TransactionWithVault;
+  isDeposit: boolean;
 }
 
-const Amount = ({ assets }: TransactionCardAmountProps) => {
+const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
+  const { operationAssets, hasNoDefaultAssets } =
+    useGetAssetsByOperations(transaction);
+
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
   } = useWorkspaceContext();
 
-  const totalAmoutSent = assets
+  const totalAmoutSent = transaction.assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
     .format();
 
-  const oneAssetOfEach = assets.reduce((uniqueAssets, current) => {
+  const oneAssetOfEach = transaction.assets.reduce((uniqueAssets, current) => {
     if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
       uniqueAssets.push(current);
     }
@@ -42,9 +47,9 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    assets,
+    hasNoDefaultAssets && isDeposit ? [operationAssets] : transaction.assets,
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (
@@ -59,8 +64,9 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
         justifyContent={isMobile ? 'start' : 'end'}
         position="relative"
       >
-        {oneAssetOfEach.map((asset) => (
+        {oneAssetOfEach.map((asset, index) => (
           <Avatar
+            key={index}
             name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
             src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
             ignoreFallback
@@ -81,7 +87,9 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
           </Text>
         ) : (
           <Text color="grey.75" fontSize="sm">
-            {totalAmoutSent}
+            {hasNoDefaultAssets && isDeposit
+              ? operationAssets.amount
+              : totalAmoutSent}
           </Text>
         )}
         <Text
