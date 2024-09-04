@@ -22,9 +22,10 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserVaultsPage = () => {
   const {
@@ -97,7 +98,10 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!userInfos.onSingleWorkspace && (
+
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -117,7 +121,8 @@ const UserVaultsPage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"

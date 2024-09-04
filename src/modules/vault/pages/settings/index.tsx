@@ -6,20 +6,21 @@ import {
   HStack,
   Icon,
   Text,
-  VStack,
   useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { HomeIcon } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
-import { useNavigate } from 'react-router-dom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 const VaultSettingsPage = () => {
   const navigate = useNavigate();
@@ -30,7 +31,10 @@ const VaultSettingsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        goHome,
+      },
     },
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
@@ -65,7 +69,9 @@ const VaultSettingsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!userInfos.onSingleWorkspace && (
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -85,7 +91,7 @@ const VaultSettingsPage = () => {
                   {userInfos?.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -111,7 +117,7 @@ const VaultSettingsPage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault.data?.id!,
+                      vaultId: vault.data?.id,
                       workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )

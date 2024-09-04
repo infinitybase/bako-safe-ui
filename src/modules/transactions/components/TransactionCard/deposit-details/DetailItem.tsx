@@ -21,7 +21,7 @@ import TokenInfos from './TokenInfos';
 
 interface DetailItemProps {
   asset: ITransferAsset;
-  index: number;
+  index?: number;
   sentBy: string;
 }
 
@@ -34,7 +34,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   const isFirstItem = index === 0;

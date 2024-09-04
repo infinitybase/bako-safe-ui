@@ -43,7 +43,6 @@ export const useIsWorkspaceReady = ({
 
   const isFilteringInProgress = useIsFilteringInProgress({
     isGifAnimationLoading,
-    isHomeFetching,
     isTransactionsPageListFetching,
     isVaultTransactionsFetching,
   });

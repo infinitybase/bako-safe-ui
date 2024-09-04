@@ -16,28 +16,26 @@ import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth';
 import { DappError, DappTransaction } from '@/modules/dapp/components';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const TransactionConfirm = () => {
   const {
-    init,
+    workspaceInfos: {
+      handlers: { goHome },
+    },
+  } = useWorkspaceContext();
+
+  const {
     cancelTransaction,
     vault,
     pendingSignerTransactions,
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     isLoading,
     send,
-    socket,
     validAt,
   } = useTransactionSocket();
-
-  const {
-    workspaceInfos: {
-      handlers: { goHome },
-    },
-  } = useWorkspaceContext();
 
   const [closePopover, setClosePopover] = useState(false);
 
@@ -55,10 +53,6 @@ const TransactionConfirm = () => {
   useEffect(() => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
-
-  useEffect(() => {
-    init();
-  }, [socket.connected]);
 
   return (
     <>

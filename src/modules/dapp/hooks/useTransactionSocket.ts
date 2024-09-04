@@ -14,12 +14,6 @@ interface IVaultEvent {
   pending_tx: boolean;
 }
 
-interface IDappEvent {
-  name: string;
-  description: string;
-  origin: string;
-}
-
 export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
     name: '',
@@ -28,7 +22,6 @@ export const useTransactionSocket = () => {
     provider: '',
     pending_tx: true,
   });
-  const [dapp, setDapp] = useState<IDappEvent | undefined>(undefined);
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
@@ -38,61 +31,54 @@ export const useTransactionSocket = () => {
 
   const summary = useTransactionSummary();
 
-  useEffect(() => {
-    connect(sessionId!);
-  }, [summary.isPending]);
+  const handleSocketEvent = (data: any) => {
+    const { to, type, data: content } = data;
+    const { vault, tx, validAt } = content;
+    const isValid =
+      to === SocketUsernames.UI && type === SocketEvents.TX_REQUEST;
 
-  useEffect(() => {
-    console.log('[SOCKET_CONN]: ', socket.connected);
-    if (socket.connected) {
-      console.log('[ENVIANDO MENSAGEM]');
-      socket.emit(SocketEvents.DEFAULT, {
-        sessionId,
-        to: SocketUsernames.CONNECTOR,
-        request_id,
-        type: SocketEvents.CONNECTED,
-        data: {},
-      });
-    }
-  }, [socket.connected]);
+    if (!isValid) return;
 
-  useEffect(() => {
-    //todo: default typing of the events
-    socket.on(SocketEvents.DEFAULT, (data) => {
-      const { to, type, data: content } = data;
-      const { dapp, vault, tx, validAt } = content;
-      const isValid =
-        to === SocketUsernames.UI && type === SocketEvents.TX_REQUEST;
-
-      if (!isValid) return;
-
-      setDapp(dapp);
-      setVault(vault);
-      setTx(tx);
-      setValidAt(validAt);
-      summary.getTransactionSummary({
-        providerUrl: vault.provider,
-        transactionLike: tx,
-        from: vault.address,
-      });
+    setVault(vault);
+    setTx(tx);
+    setValidAt(validAt);
+    summary.getTransactionSummary({
+      transactionLike: tx,
+      from: vault.address,
+      providerUrl: vault.provider,
     });
-  }, [socket]);
+  };
+
+  useEffect(() => {
+    console.log('SOCKET_CONNECTED:', socket.connected);
+    if (!socket.connected) {
+      console.log('CONNECTING_SOCKET');
+      connect(sessionId!);
+      return;
+    }
+
+    console.log('SENDING_MESSAGE');
+    socket.emit(SocketEvents.DEFAULT, {
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      request_id,
+      type: SocketEvents.CONNECTED,
+      data: {},
+    });
+
+    console.log('GETTING_SUMMARY');
+    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+  }, [socket.connected]);
 
   const sendTransaction = async () => {
     if (!tx) return;
     setSending(true);
 
     console.log('[EMITINDO TRNSACTION]');
-
     socket.emit(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
     });
-
-    // setTimeout(() => {
-    //   setSending(false);
-    //   window.close();
-    // }, 2000);
   };
 
   // emmit message to the server and close window
@@ -107,16 +93,10 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const init = () => {
-    return;
-  };
-
   return {
-    init,
     vault,
     summary,
     validAt,
-    connection: dapp,
     cancelTransaction: () => {
       cancelTransaction();
     },

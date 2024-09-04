@@ -1,13 +1,14 @@
 import { useFuel } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthCookies } from '..';
+import { queryClient } from '@/config';
+
+import { useAuthCookies, useQueryParams } from '..';
 import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
-import { queryClient } from '@/config';
 
 export type SingleAuthentication = {
   workspace: string;
@@ -24,16 +25,32 @@ const useAuth = (): IUseAuthReturn => {
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
   const { account, singleWorkspace } = userAuthCookiesInfo();
+  const { sessionId, origin, name, request_id } = useQueryParams();
+  const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
     setAuthCookies(params);
   };
 
-  const navigate = useNavigate();
+  const generateLogoutURLQueryParams = useCallback(() => {
+    const queryParams = [
+      sessionId && `sessionId=${sessionId}`,
+      origin && `origin=${origin}`,
+      name && `name=${name}`,
+      request_id && `request_id=${request_id}`,
+    ]
+      .filter(Boolean)
+      .join('&');
+
+    return queryParams ? `?${queryParams}` : '';
+  }, [sessionId, origin, name, request_id]);
+
   const logout = () => {
     clearAuthCookies();
     queryClient.clear();
-    navigate('/');
+
+    const queryParams = generateLogoutURLQueryParams();
+    navigate(`/${queryParams}`);
   };
 
   const userProvider = async () => {

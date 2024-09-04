@@ -14,6 +14,17 @@ const useTransactionSummary = () => {
       await delay(600);
       return FuelTransactionService.simulate(params);
     },
+
+    retry: (failureCount, error) => {
+      console.log('GET_SUMMARY_ERROR:', error);
+      console.log('FAILURE_COUNT:', failureCount);
+      if (failureCount >= 1 && failureCount < 3) {
+        console.log('ACTVATING_RETRY_MUTATION');
+        return true; // Do the retry
+      }
+      return false; // Do not retry
+    },
+    retryDelay: 1000 * 60 * 1, // 1 min delay
   });
 
   return {

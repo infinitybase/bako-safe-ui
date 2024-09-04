@@ -1,8 +1,10 @@
-import { useNotificationsStore } from '@/modules/notifications/store';
-import { useTransactionToast } from '../../providers/toast';
 import { ITransaction, TransactionStatus } from 'bakosafe';
-import { WitnessStatus, useBakoSafeTransactionSend } from '@/modules/core';
-import { IPendingTransactionDetails } from '../list';
+
+import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
+import { useNotificationsStore } from '@/modules/notifications/store';
+import { TransactionService } from '@/modules/transactions/services';
+
+import { useTransactionToast } from '../../providers/toast';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -16,6 +18,11 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     onSuccess: (transaction: ITransaction) => {
       onTransactionSuccess();
       validateResult(transaction);
+    },
+    onError: async (transaction) => {
+      const tx = await TransactionService.getById(transaction.id);
+      validateResult(tx);
+      onTransactionSuccess();
     },
   });
 

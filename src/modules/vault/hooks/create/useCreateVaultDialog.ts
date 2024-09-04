@@ -5,6 +5,7 @@ import { useCreateConnections } from '@/modules/dapp/hooks/useCreateConnection';
 
 import { TabState, useCreateVault } from './useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { Pages } from '@/modules/core';
 
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
@@ -20,9 +21,21 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
 
   const { name, origin, sessionId, request_id } = useQueryParams();
   const createConnectionsMutation = useCreateConnections();
-  const { authDetails } = useWorkspaceContext();
+  const {
+    authDetails: { userInfos },
+    workspaceInfos: {
+      handlers: { handleWorkspaceSelection },
+    },
+  } = useWorkspaceContext();
 
   const handleCancel = useCallback(() => {
+    tabs.set(TabState.INFO);
+    rest.setSearch('');
+    form.resetField('addresses');
+    form.resetField('description');
+    form.resetField('name');
+    form.resetField('minSigners');
+
     props.onClose();
   }, [form, props, tabs]);
 
@@ -35,20 +48,18 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         name: name!,
         origin: origin!,
         request_id: request_id!,
-        userAddress: authDetails.userInfos.address,
+        userAddress: userInfos?.address,
         vaultId: vaultId,
       });
     }
     tabs.set(TabState.INFO);
-    form.reset();
-
     return close_call();
   };
 
   const stepActions = {
     [TabState.INFO]: {
       hide: false,
-      disable: form.watch('name').length === 0 || vaultNameIsAvailable,
+      disable: !form.formState.isValid,
       onContinue: () => tabs.set(TabState.ADDRESSES),
       description:
         'Define the name and description of this vault. These details will be visible to all members.',
@@ -70,7 +81,15 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       hide: true,
       disable: false,
       description: null,
-      onContinue: () => {},
+      onContinue: () => {
+        handleWorkspaceSelection(
+          userInfos?.workspace?.id,
+          Pages.detailsVault({
+            vaultId,
+            workspaceId: userInfos?.workspace?.id,
+          }),
+        );
+      },
       onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
       closeText: `Done`,
       nextStepText: '',
