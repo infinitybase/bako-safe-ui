@@ -34,7 +34,7 @@ const DEFAULT_CONNECTORS = [
   },
 ];
 
-const useDefaultConnectors = () => {
+const useListConnectors = () => {
   const { connectors, ...query } = useConnectors();
 
   const getFuelConnector = useCallback(
@@ -76,4 +76,4 @@ const useDefaultConnectors = () => {
   };
 };
 
-export { DEFAULT_CONNECTORS, useDefaultConnectors };
+export { DEFAULT_CONNECTORS, useListConnectors };

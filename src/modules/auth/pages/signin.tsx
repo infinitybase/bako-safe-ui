@@ -10,11 +10,11 @@ import {
   SigninContainerMobile,
   SignInFooter,
 } from '@/modules/auth/components';
-import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SigninPage = () => {
-  const { connectors } = useDefaultConnectors();
+  const { connectors } = useListConnectors();
   const {
     isOpen,
     closeWebAuthnDrawer,
