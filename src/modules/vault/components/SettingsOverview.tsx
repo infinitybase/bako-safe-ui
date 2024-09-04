@@ -211,7 +211,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
-                            openFaucet(vault.data?.predicateAddress!)
+                            openFaucet(vault.data?.predicateAddress)
                           }
                           position="relative"
                         >
@@ -232,6 +232,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         spacing={0}
                         position="relative"
                         alignSelf={{ base: 'flex-start', xs: 'unset' }}
+                        alignItems={'flex-end'}
                       >
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
@@ -246,7 +247,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           onClick={() =>
                             navigate(
                               Pages.createTransaction({
-                                vaultId: vault.data?.id!,
+                                vaultId: vault.data?.id,
                                 workspaceId,
                               }),
                             )
@@ -287,10 +288,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         ) : !makeTransactionsPerm ? (
                           <Text
                             variant="description"
+                            textAlign={isExtraSmall ? 'left' : 'right'}
                             fontSize="xs"
+                            // w="full"
+                            mt={2}
                             color="error.500"
-                            position="absolute"
-                            bottom={[-1, 2]}
+                            position={{ base: 'unset', xs: 'absolute' }}
+                            bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
                           >
                             You dont have permission to send transactions.
                           </Text>
@@ -325,7 +329,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                   >
                     <QRCodeSVG
-                      value={vault?.data?.predicateAddress!}
+                      value={vault?.data?.predicateAddress}
                       fgColor="black"
                       bgColor="white"
                       style={{
@@ -337,12 +341,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   </Box>
                   <AddressCopy
                     w="full"
+                    h="2.5rem"
                     mb={{ base: 4, sm: 0 }}
                     maxW={{ base: '40', sm: 180 }}
                     address={
                       AddressUtils.format(vault?.data?.predicateAddress ?? '')!
                     }
-                    addressToCopy={vault?.data?.predicateAddress!}
+                    addressToCopy={vault?.data?.predicateAddress}
                   />
                 </VStack>
               </Stack>
