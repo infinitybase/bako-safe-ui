@@ -16,13 +16,13 @@ import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
-import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
@@ -139,7 +139,10 @@ const Container = ({
                 />
               )}
 
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                transaction={transaction}
+                isDeposit={isDeposit}
+              />
               <TransactionCard.Status
                 transaction={transaction}
                 status={transactionStatus({
