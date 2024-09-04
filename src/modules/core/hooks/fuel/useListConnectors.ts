@@ -1,4 +1,5 @@
 import { useConnectors } from '@fuels/react';
+import { useCallback } from 'react';
 
 import { FueletIcon, FuelIcon } from '@/components';
 import { PasskeyIcon } from '@/components/icons/passkey-icon';
@@ -36,20 +37,36 @@ const DEFAULT_CONNECTORS = [
 const useDefaultConnectors = () => {
   const { connectors, ...query } = useConnectors();
 
+  const getFuelConnector = useCallback(
+    (name: EConnectors) => {
+      return connectors?.find((connector) => connector.name === name);
+    },
+    [connectors],
+  );
+
+  const isConnectorEnabled = useCallback(
+    (name: EConnectors, installed: boolean) => {
+      if (name === EConnectors.WEB_AUTHN) {
+        return installed || !!window.navigator.credentials;
+      }
+
+      return installed;
+    },
+    [],
+  );
+
   const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
-    const fuelConnector = connectors?.find((c) => c.name === connector.name);
-    const hasWebAuthn = !!window.navigator.credentials;
-    const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
-    const isEnabled =
-      (!!fuelConnector && fuelConnector.installed) ||
-      (isWebAuthn && hasWebAuthn);
+    const fuelConnector = getFuelConnector(connector.name);
+    const isEnabled = isConnectorEnabled(
+      connector.name,
+      !!fuelConnector?.installed,
+    );
 
     return {
       ...connector,
       imageUrl: undefined,
       isEnabled,
       refetchOnMount: false,
-      staleTime: 500, // 500ms second to prevent request spam
     };
   });
 
