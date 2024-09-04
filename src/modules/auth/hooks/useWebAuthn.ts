@@ -264,7 +264,6 @@ const useWebAuthn = (invalidateGifAnimationRequest?: () => void) => {
     search,
     searchAccount: { value: searchAccount, handler: debouncedSearchAccount },
     page,
-    userName: currentUsername,
     form: {
       memberForm,
       loginForm,

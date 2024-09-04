@@ -1,11 +1,12 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { PredicateAndWorkspace } from '@/modules/vault';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -61,6 +62,7 @@ export type SignInResponse = {
   id: string;
   notify: boolean;
   first_login: boolean;
+  first_vault: PredicateAndWorkspace;
   webAuthn?: {
     id: string;
     publicKey: string;

@@ -1,13 +1,14 @@
-import { useSocket } from '@/modules/core';
-import { useEffect, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useFuel, useIsConnected } from '@fuels/react';
+import { useEffect, useState } from 'react';
 import { Location, useNavigate } from 'react-router-dom';
 
+import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useRedirectToFirstVault } from '@/modules/core/hooks/useRedirectToFirstVault';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -16,7 +17,6 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
-import { useCreateFirstVault } from '@/modules/core/hooks/useCreateFirstVault';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -34,8 +34,7 @@ export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
 
 const useSignIn = () => {
   const navigate = useNavigate();
-  const [workspaceId, setWorkspaceId] = useState('');
-  const { handleCreateFirstVault } = useCreateFirstVault(workspaceId);
+  const { handleRedirectToFirstVault } = useRedirectToFirstVault();
 
   const connectorDrawer = useDisclosure();
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
@@ -55,7 +54,7 @@ const useSignIn = () => {
   }, []);
 
   const { connectors } = useDefaultConnectors();
-  const { openWebAuthnDrawer, userName, ...rest } = useWebAuthn(
+  const { openWebAuthnDrawer, ...rest } = useWebAuthn(
     invalidateGifAnimationRequest,
   );
 
@@ -85,9 +84,9 @@ const useSignIn = () => {
       webAuthn,
       address,
       first_login,
+      first_vault,
     }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
-      setWorkspaceId(workspace.id);
 
       authDetails.handlers.authenticate({
         userId: user_id,
@@ -101,8 +100,12 @@ const useSignIn = () => {
       });
       invalidateGifAnimationRequest();
 
-      if (first_login && !isSignInFromDapp) {
-        handleCreateFirstVault(address, user_id, !!webAuthn, userName);
+      if (first_login && first_vault && !isSignInFromDapp) {
+        handleRedirectToFirstVault(
+          first_vault.id,
+          first_vault.workspace.id,
+          user_id,
+        );
         return;
       }
 
