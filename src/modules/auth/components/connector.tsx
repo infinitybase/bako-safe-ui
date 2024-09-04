@@ -13,7 +13,6 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { useQueryParams } from '@/modules/auth/hooks';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 type ConnectorType = {
   name: string;
@@ -32,7 +31,8 @@ interface CardConnectorProps {
 
 interface ConnectorsListProps {
   connectors: ConnectorType[];
-  onSelect: (connector: string) => void;
+  onWalletSelect: (connector: string) => Promise<void>;
+  onWebAuthnSelect: () => void;
   isAnyWalletConnectorOpen: boolean;
 }
 
@@ -123,10 +123,10 @@ const CardConnector = (props: CardConnectorProps) => {
 
 const ConnectorsList = ({
   connectors,
-  onSelect,
+  onWalletSelect,
+  onWebAuthnSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
-  const { byConnector, sessionId } = useQueryParams();
   const webAuthnConnector = connectors.find(
     (connector) => connector.name === EConnectors.WEB_AUTHN,
   );
@@ -150,18 +150,7 @@ const ConnectorsList = ({
         isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
         connector={webAuthnConnector!}
         isWebAuthn
-        onClick={() => {
-          const isConnector = byConnector && !!sessionId;
-
-          if (isConnector) {
-            window.open(
-              `${window.origin}/${window.location.search}&openWebAuth=true`,
-              '_blank',
-            );
-          }
-
-          return onSelect(EConnectors.WEB_AUTHN);
-        }}
+        onClick={onWebAuthnSelect}
       />
 
       <HStack w="full" spacing={5}>
@@ -182,7 +171,7 @@ const ConnectorsList = ({
             isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
             key={connector.name}
             connector={connector}
-            onClick={onSelect}
+            onClick={onWalletSelect}
           />
         ))}
       </Stack>

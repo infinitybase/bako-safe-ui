@@ -1,6 +1,7 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
+import { useWalletSignIn, useWebAuthnSignIn } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
 import {
   ConnectorsList,
@@ -9,18 +10,22 @@ import {
   SigninContainerMobile,
   SignInFooter,
 } from '@/modules/auth/components';
+import { useDefaultConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useSignIn } from '../hooks/signIn/useSignIn';
-
 const SigninPage = () => {
+  const { connectors } = useDefaultConnectors();
   const {
-    connectors,
-    auth,
-    webauthn: { isOpen, closeWebAuthnDrawer, ...rest },
-  } = useSignIn();
+    isOpen,
+    closeWebAuthnDrawer,
+    openWebAuthnDrawer,
+    handleSelectWebAuthn,
+    ...rest
+  } = useWebAuthnSignIn();
+  const { handleSelectWallet, isAnyWalletConnectorOpen } = useWalletSignIn();
   const { errorToast } = useContactToast();
   const {
+    authDetails: auth,
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
@@ -44,6 +49,7 @@ const SigninPage = () => {
       webauthn={{
         ...rest,
         isOpen,
+        openWebAuthnDrawer,
         closeWebAuthnDrawer,
       }}
     />
@@ -90,9 +96,10 @@ const SigninPage = () => {
           spacing={8}
         >
           <ConnectorsList
-            connectors={connectors.items}
-            onSelect={connectors.select}
-            isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
+            connectors={connectors}
+            onWalletSelect={handleSelectWallet}
+            onWebAuthnSelect={handleSelectWebAuthn}
+            isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
           />
 
           <SignInFooter />
@@ -116,9 +123,10 @@ const SigninPage = () => {
       </VStack>
 
       <ConnectorsList
-        connectors={connectors.items}
-        onSelect={connectors.select}
-        isAnyWalletConnectorOpen={connectors.isAnyWalletConnectorOpen}
+        connectors={connectors}
+        onWalletSelect={handleSelectWallet}
+        onWebAuthnSelect={handleSelectWebAuthn}
+        isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
       />
 
       <SignInFooter />
