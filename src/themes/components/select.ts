@@ -9,6 +9,14 @@ const baseStyle = defineStyle({
   },
 });
 
+const darkStyle = defineStyle({
+  ...baseStyle,
+  field: {
+    ...baseStyle.field,
+    bg: `grey.825`,
+  },
+});
+
 const Select = defineStyleConfig({
   baseStyle,
   defaultProps: {
@@ -16,6 +24,7 @@ const Select = defineStyleConfig({
   },
   variants: {
     custom: baseStyle,
+    dark: darkStyle,
   },
 });
 

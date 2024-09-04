@@ -49,6 +49,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
+              variant="dark"
             />
             <FormLabel>Transaction name</FormLabel>
             <FormHelperText color="error.500">
