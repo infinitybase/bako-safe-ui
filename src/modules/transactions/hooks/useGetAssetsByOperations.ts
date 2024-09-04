@@ -1,6 +1,8 @@
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
+import { isHex } from '@/utils';
+
 import { TransactionWithVault } from '../services';
 
 interface UseGetAssetsByOperationsResult {
@@ -27,9 +29,12 @@ const useGetAssetsByOperations = (
     operations: [firstOperation],
   } = transaction.summary;
   const { assetsSent = [], to, from } = firstOperation;
+  const amount = String(assetsSent[0].amount);
+
+  const assetAmount = isHex(amount) ? bn(amount).format() : amount;
 
   const operationAssets = {
-    amount: bn(assetsSent[0]?.amount ?? '').format() ?? '',
+    amount: assetAmount ?? '',
     assetId: assetsSent[0]?.assetId ?? '',
     to: to?.address ?? '',
   };
