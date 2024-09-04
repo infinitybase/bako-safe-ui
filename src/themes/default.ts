@@ -1,6 +1,6 @@
 import { extendTheme } from '@chakra-ui/react';
 
-import NewHomeBackgroundHd from '@/assets/new-home-bg.png';
+import NewHomeBackgroundHd from '@/assets/new-home-bg.jpg';
 import { colors } from '@/themes/colors';
 import { components } from '@/themes/components';
 import { fonts } from '@/themes/fonts';

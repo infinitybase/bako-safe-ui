@@ -1,19 +1,22 @@
 import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
-
-import DetailItem from './DetailItem';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
-import { shakeAnimationY } from '@/modules/core';
-import { TransactionWithVault } from '../../../services';
+
 import { UpRightArrow } from '@/components';
+import { shakeAnimationY } from '@/modules/core';
+import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { TransactionWithVault } from '../../../services';
+import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
 };
 
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
-  const sentBy = transaction.txData.inputs[0]['owner'];
+  const { operationAssets, sentBy, hasNoDefaultAssets } =
+    useGetAssetsByOperations(transaction);
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -44,6 +47,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
+          {hasNoDefaultAssets && operationAssets && (
+            <DetailItem asset={operationAssets} sentBy={sentBy} />
+          )}
           {transaction.assets.map((asset, index) => (
             <DetailItem
               key={index}

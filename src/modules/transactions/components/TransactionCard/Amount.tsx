@@ -14,22 +14,28 @@ import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD
 import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { useGetAssetsByOperations } from '../../hooks';
+import { TransactionWithVault } from '../../services';
 interface TransactionCardAmountProps {
-  assets: ITransferAsset[];
+  transaction: TransactionWithVault;
+  isDeposit: boolean;
 }
 
-const Amount = ({ assets }: TransactionCardAmountProps) => {
+const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
+  const { operationAssets, hasNoDefaultAssets } =
+    useGetAssetsByOperations(transaction);
+
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
   } = useWorkspaceContext();
 
-  const totalAmoutSent = assets
+  const totalAmoutSent = transaction.assets
     .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
     .format();
 
-  const oneAssetOfEach = assets.reduce((uniqueAssets, current) => {
+  const oneAssetOfEach = transaction.assets.reduce((uniqueAssets, current) => {
     if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
       uniqueAssets.push(current);
     }
@@ -40,7 +46,7 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    assets,
+    hasNoDefaultAssets && isDeposit ? [operationAssets] : transaction.assets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );
@@ -78,7 +84,9 @@ const Amount = ({ assets }: TransactionCardAmountProps) => {
           </Text>
         ) : (
           <Text color="grey.75" fontSize="sm">
-            {totalAmoutSent}
+            {hasNoDefaultAssets && isDeposit
+              ? operationAssets.amount
+              : totalAmoutSent}
           </Text>
         )}
         <Text
