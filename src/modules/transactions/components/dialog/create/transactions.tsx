@@ -26,10 +26,10 @@ import {
   NativeAssetId,
 } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
-
-import { TransactionAccordion } from './accordion';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { TransactionAccordion } from './accordion';
 
 interface TransactionAccordionProps {
   form: UseCreateTransaction['form'];
@@ -251,9 +251,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               key={field.id}
               mb={6}
               borderWidth={1}
-              borderColor="dark.600"
+              borderColor="grey.925"
               borderRadius={10}
-              backgroundColor="dark.600"
+              backgroundColor="dark.950"
             >
               <TransactionAccordion.Item
                 title={`Recipient ${index + 1}`}
