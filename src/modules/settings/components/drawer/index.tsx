@@ -22,7 +22,7 @@ import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useSignIn } from '@/modules/auth';
+import { useWebAuthnSignIn } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -41,15 +41,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const {
-    webauthn: {
-      nicknamesData,
-      nicknamesRequest,
-      search,
-      handleInputChange,
-      form: formAuthn,
-      setSearch,
-    },
-  } = useSignIn();
+    nicknamesData,
+    nicknamesRequest,
+    search,
+    handleInputChange,
+    form: formAuthn,
+    setSearch,
+  } = useWebAuthnSignIn();
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
