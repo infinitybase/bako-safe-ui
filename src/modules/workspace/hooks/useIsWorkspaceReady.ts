@@ -23,7 +23,7 @@ export const useIsWorkspaceReady = ({
   isVaultRequestLoading,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
-  const { searchParams } = useQueryParams();
+  const { expiredSession } = useQueryParams();
 
   const {
     homeTransactions: {
@@ -49,11 +49,11 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  const expired = searchParams.get('expired') === 'true';
+  const onLogout = isSignInpage && !expiredSession;
+  const onFilter = isFilteringInProgress && !isFromDapp;
 
-  if ((isSignInpage && !expired) || (isFilteringInProgress && !isFromDapp)) {
-    return { isWorkspaceReady: true, isFilteringInProgress };
-  }
+  if (onLogout) return { isWorkspaceReady: true, isFilteringInProgress };
+  if (onFilter) return { isWorkspaceReady: true, isFilteringInProgress };
 
   const loadingConditions = [
     isAddressbookInfosLoading,
