@@ -1,11 +1,13 @@
 import { ITransaction, TransactionStatus } from 'bakosafe';
 
+import { queryClient } from '@/config';
 import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';
+import { TRANSACTION_HISTORY_QUERY_KEY } from '../details';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -32,6 +34,13 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
       setIsCurrentTxPending(false);
+      queryClient.invalidateQueries({
+        queryKey: [
+          TRANSACTION_HISTORY_QUERY_KEY,
+          transaction.id,
+          transaction.predicateId,
+        ],
+      });
     }
 
     if (transaction.status == TransactionStatus.FAILED) {
