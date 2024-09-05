@@ -52,8 +52,9 @@ export const useIsWorkspaceReady = ({
   const onLogout = isSignInpage && !expiredSession;
   const onFilter = isFilteringInProgress && !isFromDapp;
 
-  if (onLogout) return { isWorkspaceReady: true, isFilteringInProgress };
-  if (onFilter) return { isWorkspaceReady: true, isFilteringInProgress };
+  if (onLogout || onFilter) {
+    return { isWorkspaceReady: true, isFilteringInProgress };
+  }
 
   const loadingConditions = [
     isAddressbookInfosLoading,
