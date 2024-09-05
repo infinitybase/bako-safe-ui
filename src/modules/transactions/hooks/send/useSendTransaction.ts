@@ -5,6 +5,7 @@ import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
 import { useTransactionToast } from '../../providers/toast';
+import { useTransactionState } from '../../states';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -12,6 +13,7 @@ export type IUseSendTransaction = {
 
 const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setHasNewNotification } = useNotificationsStore();
+  const { setIsCurrentTxPending } = useTransactionState();
   const toast = useTransactionToast();
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
@@ -29,6 +31,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
+      setIsCurrentTxPending(false);
     }
 
     if (transaction.status == TransactionStatus.FAILED) {
@@ -53,6 +56,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       ).length <= 1;
     if (wasTheLastSignature) {
       toast.loading(transaction);
+      setIsCurrentTxPending(true);
     }
     sendTransaction({ transaction: transaction! });
   };
