@@ -12,6 +12,7 @@ import { ITransferAsset } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
+import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -28,14 +29,20 @@ interface DetailItemProps {
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
-
     screenSizes: { isExtraSmall, isMobile, isSmall },
+    addressBookInfos: {
+      requests: {
+        listContactsRequest: { data },
+      },
+    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );
+
+  const { savedContact } = useGetContactByAddress(sentBy ?? '', data);
 
   const isFirstItem = index === 0;
 
@@ -66,10 +73,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {AddressUtils.format(
-                Address.fromString(sentBy ?? '').toB256(),
-                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
-              )}
+              {savedContact?.nickname
+                ? savedContact.nickname
+                : AddressUtils.format(
+                    Address.fromString(sentBy ?? '').toB256(),
+                    isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+                  )}
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -112,10 +121,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(sentBy ?? '').toB256(),
-              isMobile ? 10 : 14,
-            )}
+            {savedContact?.nickname
+              ? savedContact.nickname
+              : AddressUtils.format(
+                  Address.fromString(sentBy ?? '').toB256(),
+                  isMobile ? 10 : 14,
+                )}
           </Text>
 
           <Box display="flex" justifyContent="center" w="full">
