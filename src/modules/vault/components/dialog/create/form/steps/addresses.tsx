@@ -177,6 +177,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                                 setCurrentInputIndex(index);
                               }
                             }}
+                            variant="dark"
                             optionsRef={optionRef}
                             value={field.value}
                             onChange={field.onChange}

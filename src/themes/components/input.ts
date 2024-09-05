@@ -7,16 +7,16 @@ const inputActiveStyle = {
     // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
     '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
   '~ .chakra-input__right-element': {
-    background: 'dark.250',
+    background: 'grey.825',
   },
 };
 
 const inputInvalidStyle = {
   borderColor: `error.500`,
-  // bg: `dark.250`,
+  bg: `grey.825`,
   boxShadow: 'error.600',
   '~ .chakra-input__right-element': {
-    background: 'dark.250',
+    background: 'grey.825',
   },
 };
 

@@ -1,4 +1,3 @@
-import { MinimalAlertIcon } from '@/components';
 import {
   Avatar,
   Card,
@@ -8,6 +7,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+
+import { MinimalAlertIcon } from '@/components';
 import { TransactionWithVault } from '@/modules/transactions/services';
 
 export interface IConnectorInfos {
@@ -81,16 +82,12 @@ const ConnectorInfos = ({
           borderColor="#FFC0104D"
           borderWidth="1px"
           borderRadius={10}
+          justify={'center'}
           mt={{ base: 4, xs: 8 }}
           py={4}
           px={4}
         >
-          <Icon
-            as={MinimalAlertIcon}
-            color="warning.600"
-            fontSize={28}
-            mt={-7}
-          />
+          <Icon as={MinimalAlertIcon} color="warning.600" fontSize={28} />
 
           <VStack spacing={0} alignItems="flex-start">
             <Text fontWeight="bold" color="#FFC010" fontSize="sm">
