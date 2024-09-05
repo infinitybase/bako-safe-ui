@@ -63,6 +63,15 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
         justifyContent={isMobile ? 'start' : 'end'}
         position="relative"
       >
+        {hasNoDefaultAssets && (
+          <Icon
+            key={assetsMap[operationAssets.assetId]?.assetId}
+            w={{ base: 8, sm: 8 }}
+            h={{ base: 8, sm: 8 }}
+            as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
+          />
+        )}
+
         {oneAssetOfEach.map((asset) => (
           <Icon
             key={asset.assetId}
