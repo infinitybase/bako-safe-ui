@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  generateRedirectQueryParams,
-  Pages,
-  useAuthCookies,
-  useQueryParams,
-} from '@/modules';
+import { Pages, useAuthCookies, useQueryParams } from '@/modules';
 
 const useRedirectAuthUser = () => {
   const [syncingAuth, setSyncingAuth] = useState(true);
@@ -14,7 +9,7 @@ const useRedirectAuthUser = () => {
   const navigate = useNavigate();
   const { userAuthCookiesInfo } = useAuthCookies();
   const { account, accessToken } = userAuthCookiesInfo();
-  const { sessionId, origin, name, request_id } = useQueryParams();
+  const { sessionId, location } = useQueryParams();
 
   const isAuthenticated = useMemo(
     () => account && accessToken,
@@ -23,13 +18,7 @@ const useRedirectAuthUser = () => {
 
   useEffect(() => {
     if (isAuthenticated && sessionId) {
-      const queryParams = generateRedirectQueryParams({
-        sessionId,
-        origin,
-        name,
-        request_id,
-      });
-      navigate(`${Pages.dappAuth()}${queryParams}`);
+      navigate(`${Pages.dappAuth()}${location.search}`);
     } else if (isAuthenticated) {
       navigate(Pages.home());
     }
