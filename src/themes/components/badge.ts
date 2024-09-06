@@ -1,9 +1,9 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const success = defineStyle({
-  bgColor: 'success.900',
-  color: 'success.500',
-  borderColor: 'success.900',
+  bgColor: 'rgb(0, 244, 139, 0.10)',
+  color: 'success.700',
+  borderColor: 'rgb(0, 244, 139, 0.25)',
 });
 
 const error = defineStyle({

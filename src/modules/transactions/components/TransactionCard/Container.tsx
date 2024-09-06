@@ -88,13 +88,12 @@ const Container = ({
         maxW="full"
         {...rest}
         display="flex"
-        minH="78px"
       >
         <Flex
           alignItems="flex-start"
           justifyContent="center"
           bgColor="grey.925"
-          w="32px"
+          minW="32px"
           p={0}
           borderRadius="10px 0 0 10px"
           h="auto"
@@ -134,6 +133,8 @@ const Container = ({
             >
               {transaction.predicate && (
                 <TransactionCard.BasicInfos
+                  h={'59px'}
+                  justifyContent={'center'}
                   vault={transaction.predicate}
                   transactionName={transaction.name}
                 />

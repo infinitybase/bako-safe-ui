@@ -247,12 +247,7 @@ const AddressBookPage = () => {
         </Stack>
 
         <Box mt={4} mb={-4} alignSelf="flex-start">
-          <Text
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="xl"
-            color="grey.200"
-          >
+          <Text variant="subtitle" fontWeight="semibold" color="grey.75">
             Address book
           </Text>
         </Box>

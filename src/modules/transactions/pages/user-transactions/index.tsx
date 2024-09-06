@@ -5,7 +5,6 @@ import {
   BreadcrumbLink,
   Button,
   Divider,
-  Heading,
   HStack,
   Icon,
   Stack,
@@ -225,12 +224,13 @@ const UserTransactionsPage = () => {
           <Box
             w="full"
             display="flex"
+            alignItems={'center'}
             flexDir={isExtraSmall ? 'column' : 'row'}
             gap={isExtraSmall ? 2 : 4}
           >
-            <Heading fontSize="sm" color="grey.200">
+            <Text variant="subtitle" fontWeight="semibold" color="grey.75">
               Transactions
-            </Heading>
+            </Text>
             <WaitingSignatureBadge
               isLoading={pendingSignerTransactions.isLoading}
               quantity={pendingSignerTransactions.data?.ofUser ?? 0}

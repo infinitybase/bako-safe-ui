@@ -197,8 +197,8 @@ const TransactionsVaultPage = () => {
         <HStack spacing={5}>
           <Text
             variant="subtitle"
-            fontWeight={700}
-            fontSize="md"
+            fontWeight="bold"
+            fontSize={{ base: 'sm', sm: 'unset' }}
             color="grey.50"
           >
             Transactions

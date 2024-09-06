@@ -134,7 +134,11 @@ const VaultBalancePage = () => {
 
       <Flex w="full" direction="column" flex={1}>
         <Box mb={5} w="full">
-          <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+          <Text
+            color="grey.50"
+            fontWeight="bold"
+            fontSize={{ base: 'sm', sm: 'unset' }}
+          >
             Balance
           </Text>
         </Box>

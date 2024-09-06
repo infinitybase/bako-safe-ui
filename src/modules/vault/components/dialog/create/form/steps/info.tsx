@@ -39,6 +39,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
           render={({ field, fieldState }) => (
             <FormControl>
               <Input
+                variant="dark"
                 value={search}
                 defaultValue={search || form.watch('name')}
                 onChange={(e) => {
@@ -62,10 +63,10 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 {!!vaultNameIsAvailable && search.length > 0
                   ? 'Vault name already exists in this workspace'
                   : form.formState.errors.name?.message
-                  ? form.formState.errors.name?.message
-                  : search.length > 0
-                  ? 'This vault is available'
-                  : ''}
+                    ? form.formState.errors.name?.message
+                    : search.length > 0
+                      ? 'This vault is available'
+                      : ''}
               </FormHelperText>
             </FormControl>
           )}
@@ -80,6 +81,8 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
           <Textarea
             {...form.register('description')}
             placeholder="Description"
+            bg={`grey.825`}
+            borderColor={`grey.800`}
           />
           <FormHelperText>Optional</FormHelperText>
         </FormControl>

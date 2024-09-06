@@ -41,8 +41,7 @@ const AmountInput = (props: AmountInputProps) => (
         {...props}
         {...maskedInputProps}
         autoComplete="off"
-        variant="filled"
-        bg="dark.100"
+        variant="dark"
         color="gray"
         step="any"
         ref={(input) => maskedInputRef(input as HTMLInputElement)}
