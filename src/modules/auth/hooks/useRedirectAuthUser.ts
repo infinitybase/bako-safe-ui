@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   generateRedirectQueryParams,
+  Pages,
   useAuthCookies,
   useQueryParams,
 } from '@/modules';
@@ -28,9 +29,9 @@ const useRedirectAuthUser = () => {
         name,
         request_id,
       });
-      navigate(`/dapp${queryParams}`);
+      navigate(`${Pages.dappAuth()}${queryParams}`);
     } else if (isAuthenticated) {
-      navigate('/home');
+      navigate(Pages.home());
     }
 
     setSyncingAuth(false);
