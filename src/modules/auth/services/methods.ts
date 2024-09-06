@@ -1,11 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -119,6 +119,14 @@ export type IUseAuthReturn = {
   userInfos: IUserInfos;
 };
 
+export type IUserInfosWorkspace = {
+  avatar: string;
+  id: string;
+  name: string;
+  permission: IPermission;
+  description: string;
+};
+
 export type IGetUserInfosResponse = {
   address: string;
   avatar: string;
@@ -127,13 +135,7 @@ export type IGetUserInfosResponse = {
   onSingleWorkspace: boolean;
   type: TypeUser;
   webauthn: SignWebAuthnPayload;
-  workspace: {
-    avatar: string;
-    id: string;
-    name: string;
-    permission: IPermission;
-    description: string;
-  };
+  workspace: IUserInfosWorkspace;
 };
 
 export class UserService {
