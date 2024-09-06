@@ -48,7 +48,7 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { limitedTransactions },
-      request: { isLoading },
+      request: { isLoading, isFetching },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
     pendingSignerTransactions,
@@ -251,7 +251,7 @@ const VaultDetailsPage = () => {
 
       <CustomSkeleton
         minH="30vh"
-        isLoaded={!vault.isLoading && !isLoading}
+        isLoaded={!vault.isLoading && !isLoading && !isFetching}
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
