@@ -6,21 +6,25 @@ import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
 
 import { useTransactionSummary } from './useTransactionSummary';
 
-interface IVaultEvent {
+export interface IVaultEvent {
+  id: string;
   name: string;
   address: string;
   description: string;
   provider: string;
   pending_tx: boolean;
+  workspace_id: string;
 }
 
 export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
+    id: '',
     name: '',
     address: '',
     description: '',
     provider: '',
     pending_tx: true,
+    workspace_id: '',
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
