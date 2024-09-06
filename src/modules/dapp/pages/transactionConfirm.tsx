@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { CustomSkeleton, Dialog, TransactionExpire } from '@/components';
@@ -19,11 +19,16 @@ import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
+import { useHasPermissionToCreateTransaction } from '../hooks/useHasPermissionToCreateTransaction';
 
 const TransactionConfirm = () => {
   const {
     workspaceInfos: {
       handlers: { goHome },
+    },
+    authDetails: {
+      userInfos,
+      handlers: { logout },
     },
   } = useWorkspaceContext();
 
@@ -37,6 +42,8 @@ const TransactionConfirm = () => {
     validAt,
   } = useTransactionSocket();
 
+  const { hasPermission } = useHasPermissionToCreateTransaction();
+
   const [closePopover, setClosePopover] = useState(false);
 
   const inView = useInView();
@@ -44,6 +51,21 @@ const TransactionConfirm = () => {
   const { sessionId, request_id, name, origin } = useQueryParams();
 
   const { isSafariBrowser } = useVerifyBrowserType();
+
+  const userWorkspace = userInfos?.workspace;
+  const notAllowedToCreateTransaction = useMemo(
+    () => !hasPermission(userWorkspace, vault),
+    [hasPermission, userWorkspace, vault],
+  );
+
+  if (
+    userWorkspace?.id &&
+    vault?.id &&
+    vault?.workspace_id &&
+    notAllowedToCreateTransaction
+  ) {
+    logout?.();
+  }
 
   if (!sessionId || !request_id) {
     window.close();
