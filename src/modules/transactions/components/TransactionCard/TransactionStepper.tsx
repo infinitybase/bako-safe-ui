@@ -13,9 +13,10 @@ import {
 import { useEffect } from 'react';
 
 import { AddressUtils } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { limitCharacters } from '@/utils';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
@@ -58,6 +59,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
     authDetails: { userInfos },
     addressBookInfos: {
       handlers: { contactByAddress },
+      requests: {
+        listContactsRequest: { data },
+      },
     },
     screenSizes: { isMobile },
   } = useWorkspaceContext();
@@ -102,6 +106,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
           const failed = step.type === TransactionHistoryType.FAILED;
           const canceled = step.type === TransactionHistoryType.CANCEL;
           const sended = step.type === TransactionHistoryType.SEND;
+          const savedContact = data?.find(
+            (contact) => contact.user.address === step.owner.address,
+          );
 
           const badOptions = (declined || failed || canceled) && lastStep;
 
@@ -170,7 +177,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     {!nickname && (
                       <Text variant="subtitle" color="grey.425">
                         {step.owner.address !== userInfos.address &&
-                          AddressUtils.format(`(${step.owner.address})`)}
+                        savedContact
+                          ? limitCharacters(savedContact.nickname, 15)
+                          : AddressUtils.format(`(${step.owner.address})`)}
                       </Text>
                     )}
                   </StepTitle>
