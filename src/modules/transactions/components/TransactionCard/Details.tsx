@@ -61,7 +61,10 @@ const Details = ({
                 direction={{ base: 'column', md: 'row' }}
                 alignItems="start"
                 justify="space-between"
-                columnGap={isInTheVaultPage ? '3rem' : '72px'}
+                columnGap={{
+                  base: isInTheVaultPage ? '3rem' : '72px',
+                  lg: '150px',
+                }}
                 w="full"
               >
                 {/* Transaction Breakdown */}
@@ -74,7 +77,7 @@ const Details = ({
                 <Box
                   alignSelf="flex-start"
                   w="full"
-                  minW={{ base: 200, sm: '476px' }}
+                  minW={{ base: 200, sm: 'full' }}
                 >
                   <TransactionStepper steps={transactionHistory!} />
                 </Box>

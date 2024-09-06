@@ -13,6 +13,18 @@ import { FaPlay } from 'react-icons/fa';
 
 import { DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import {
+  AddressUtils,
+  AssetModel,
+  assetsMap,
+  IGetTokenInfos,
+  useGetParams,
+} from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { DoubleArrowIcon } from '@/components';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
@@ -82,7 +94,7 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 14 }}
+      spacing={{ base: 1, xs: 10 }}
       w="full"
       borderTopWidth={1}
       {...props}

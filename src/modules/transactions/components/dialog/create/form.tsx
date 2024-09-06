@@ -38,6 +38,8 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
 
   return (
     <Box w="full" {...props}>
+      <Divider mt={2} mb={7} borderColor={'grey.425'} />
+
       <Controller
         control={form.control}
         name="name"
@@ -47,6 +49,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
+              variant="dark"
             />
             <FormLabel>Transaction name</FormLabel>
             <FormHelperText color="error.500">
@@ -56,16 +59,16 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         )}
       />
 
-      <Divider mt={7} mb={4} />
-
       <Dialog.Section
         mb={8}
+        mt={7}
         title={
           <Heading fontSize="lg" fontWeight="bold" color="white">
             Who for?
           </Heading>
         }
         description="Set the recipient(s) for this transfer. You can set up to 10 recipients."
+        descriptionFontSize="sm"
       />
 
       <TransactionAccordions

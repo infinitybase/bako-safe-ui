@@ -68,6 +68,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   isLoading={!optionsRequests[0].isSuccess}
                   inView={addressBook.inView}
                   clearable={false}
+                  variant={'dark'}
                 />
 
                 <FormHelperText color="error.500">
