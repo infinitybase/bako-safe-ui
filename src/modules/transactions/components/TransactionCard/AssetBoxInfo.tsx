@@ -12,6 +12,7 @@ import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
 import { DoubleArrowIcon } from '@/components';
+import { CopyAddressButton } from '@/components/copyAddressButton';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
@@ -36,7 +37,6 @@ interface AssetBoxInfoProps extends StackProps {
 const AssetBoxInfo = ({
   asset,
   contractAddress,
-  hasToken,
   isDeposit,
   isDeploy,
   isContract,
@@ -63,12 +63,12 @@ const AssetBoxInfo = ({
       asset
         ? asset
         : {
-            amount: contractAssetInfo?.assetAmount!,
-            assetId: contractAssetInfo?.assetsInfo.assetId!,
+            amount: contractAssetInfo?.assetAmount ?? '',
+            assetId: contractAssetInfo?.assetsInfo.assetId ?? '',
           },
     ],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (
@@ -160,6 +160,9 @@ const AssetBoxInfo = ({
                 Address.fromString(asset.to ?? '').toB256(),
                 !isVaultPage && isExtraLarge ? 24 : 12,
               )}
+          <CopyAddressButton
+            addressToCopy={Address.fromString(asset.to ?? '').toB256()}
+          />
         </Text>
       )}
 
@@ -181,6 +184,9 @@ const AssetBoxInfo = ({
                 Address.fromString(contractAddress ?? '').toB256(),
                 !isVaultPage && isExtraLarge ? 24 : 12,
               )}
+          <CopyAddressButton
+            addressToCopy={Address.fromString(contractAddress ?? '').toB256()}
+          />
         </Text>
       )}
     </HStack>
