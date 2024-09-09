@@ -16,6 +16,7 @@ const useQueryParams = () => {
     const request_id = searchParams.get('request_id');
     const isOpenWebAuth = searchParams.get('openWebAuth') === 'true';
     const byConnector = searchParams.get('byConnector') === 'true';
+    const byLanding = searchParams.get('_gl');
 
     return {
       sessionId,
@@ -28,6 +29,7 @@ const useQueryParams = () => {
       request_id,
       isOpenWebAuth,
       byConnector,
+      byLanding,
     };
   }, [location]);
 
