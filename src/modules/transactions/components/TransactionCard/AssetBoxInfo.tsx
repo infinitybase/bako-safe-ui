@@ -7,22 +7,21 @@ import {
   StackProps,
   Text,
 } from '@chakra-ui/react';
-import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
 import { DoubleArrowIcon } from '@/components';
-import { CopyAddressButton } from '@/components/copyAddressButton';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
-  AddressUtils,
   AssetModel,
   assetsMap,
   IGetTokenInfos,
   useGetParams,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { AddressWithCopyBtn } from './transfer-details';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -45,7 +44,7 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isExtraSmall, isExtraLarge, isLitteSmall },
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
   const {
     vaultPageParams: { vaultId },
@@ -74,7 +73,8 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 10 }}
+      spacing={{ base: 0, xs: 10 }}
+      justifyContent={{ base: 'space-between' }}
       w="full"
       borderTopWidth={1}
       {...props}
@@ -83,8 +83,8 @@ const AssetBoxInfo = ({
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
           <Avatar
             name={assetInfo.slug}
-            size="xs"
             src={assetInfo.icon}
+            boxSize={isLowerThanFourHundredAndThirty ? '18px' : '24px'}
             ignoreFallback
           />
           <Text fontSize="sm" color="grey.500">
@@ -111,7 +111,7 @@ const AssetBoxInfo = ({
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
           color="grey.75"
-          fontSize="sm"
+          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
           {asset?.amount}
@@ -143,51 +143,14 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && (
-        <Text
-          w="full"
-          fontSize="sm"
-          color="grey.75"
-          textOverflow="ellipsis"
-          isTruncated
-          ml="2px"
-        >
-          {isLitteSmall
-            ? AddressUtils.format(
-                Address.fromString(asset.to ?? '').toB256(),
-                isExtraSmall ? 0 : 7,
-              )
-            : AddressUtils.format(
-                Address.fromString(asset.to ?? '').toB256(),
-                !isVaultPage && isExtraLarge ? 24 : 12,
-              )}
-          <CopyAddressButton
-            addressToCopy={Address.fromString(asset.to ?? '').toB256()}
-          />
-        </Text>
+        <AddressWithCopyBtn address={asset?.to} isVaultPage={isVaultPage} />
       )}
 
       {isContract && contractAddress && (
-        <Text
-          w="full"
-          fontSize="sm"
-          color="grey.75"
-          textOverflow="ellipsis"
-          isTruncated
-          ml="2px"
-        >
-          {isLitteSmall
-            ? AddressUtils.format(
-                Address.fromString(contractAddress ?? '').toB256(),
-                isExtraSmall ? 0 : 7,
-              )
-            : AddressUtils.format(
-                Address.fromString(contractAddress ?? '').toB256(),
-                !isVaultPage && isExtraLarge ? 24 : 12,
-              )}
-          <CopyAddressButton
-            addressToCopy={Address.fromString(contractAddress ?? '').toB256()}
-          />
-        </Text>
+        <AddressWithCopyBtn
+          address={contractAddress}
+          isVaultPage={isVaultPage}
+        />
       )}
     </HStack>
   );

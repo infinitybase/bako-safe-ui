@@ -1,7 +1,3 @@
-import { DeployIcon } from '@/components/icons/tx-deploy';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -15,9 +11,14 @@ import {
   useClipboard,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
-import { Operation, bn } from 'fuels';
+import { bn, Operation } from 'fuels';
 import { useMemo } from 'react';
 import { IoIosCheckmark } from 'react-icons/io';
+
+import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { assetsMap } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface DeploymentInfoProps extends StackProps {
   operation: Operation;
@@ -47,7 +48,7 @@ const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   const txUSDAmount = useTxAmountToUSD(
     [asset as ITransferAsset],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (

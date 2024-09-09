@@ -13,9 +13,10 @@ import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AddressUtils } from '@/modules/core';
+import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AddressWithCopyBtn } from '../transfer-details';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
 
@@ -27,9 +28,11 @@ interface DetailItemProps {
 
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+  const {
     tokensUSD,
-
-    screenSizes: { isExtraSmall, isMobile, isSmall },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
@@ -66,10 +69,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {AddressUtils.format(
-                Address.fromString(sentBy ?? '').toB256(),
-                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
-              )}
+              <AddressWithCopyBtn
+                address={sentBy}
+                isVaultPage={!!vaultId}
+                isDeposit={true}
+              />
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -93,10 +97,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               isTruncated
               textAlign="end"
             >
-              {AddressUtils.format(
-                Address.fromString(asset?.to ?? '').toB256(),
-                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
-              )}
+              <AddressWithCopyBtn
+                address={sentBy}
+                isVaultPage={!!vaultId}
+                isDeposit={true}
+              />
             </Text>
           </Flex>
         </VStack>
@@ -138,10 +143,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toB256(),
-              isMobile ? 10 : 14,
-            )}
+            {AddressUtils.format(sentBy ?? '', isMobile ? 10 : 14)}
           </Text>
         </>
       )}

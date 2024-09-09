@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
 
@@ -27,7 +27,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   };
 
   const {
-    screenSizes: { isMobile },
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   return (
@@ -40,8 +40,13 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       minH={{ base: 560, xs: 400, sm: 'unset' }}
     >
       <VStack w="full">
-        <Box pb={3} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text color="grey.425" fontSize="sm">
+        <Divider my={5} borderColor="grey.425" />
+
+        <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
+          <Text
+            color="grey.425"
+            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          >
             Transaction breakdown
           </Text>
         </Box>

@@ -1,6 +1,7 @@
 import {
   Avatar,
   AvatarGroup,
+  BoxProps,
   Flex,
   HStack,
   Text,
@@ -17,12 +18,18 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
-interface TransactionCardAmountProps {
+interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
+  isInDetailsDialog?: boolean;
 }
 
-const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
+const Amount = ({
+  transaction,
+  isDeposit,
+  isInDetailsDialog,
+  ...rest
+}: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
 
@@ -57,6 +64,7 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
       alignItems="center"
       justifyContent="flex-start"
       w={isExtraSmall ? 150 : 200}
+      {...rest}
     >
       <AvatarGroup
         max={showOnlyOneAsset ? 1 : 3}
@@ -69,7 +77,7 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
             name={assetsMap[operationAssets.assetId]?.slug ?? 'UKN'}
             src={assetsMap[operationAssets.assetId]?.icon ?? bakoIcon}
             ignoreFallback
-            boxSize={24}
+            boxSize={isInDetailsDialog ? '24px !important' : 24}
             border="none"
           />
         )}
@@ -80,7 +88,7 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
             name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
             src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
             ignoreFallback
-            boxSize={24}
+            boxSize={isInDetailsDialog ? '24px !important' : 24}
             border="none"
           />
         ))}
@@ -96,13 +104,18 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
             Multi-token
           </Text>
         ) : (
-          <Text color="grey.75" fontSize="sm">
+          <Text
+            color="grey.75"
+            fontSize={isInDetailsDialog ? 'xs' : 'sm'}
+            lineHeight={isInDetailsDialog ? '14.52px' : 'inherit'}
+          >
             {hasNoDefaultAssets && isDeposit
               ? operationAssets.amount
               : totalAmoutSent}
           </Text>
         )}
         <Text
+          lineHeight={isInDetailsDialog ? '14.52px' : 'inherit'}
           variant="description"
           fontSize={isMultiToken ? 'sm' : 'xs'}
           color={isMultiToken ? ' grey.75' : 'grey.425'}

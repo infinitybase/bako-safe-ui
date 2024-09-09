@@ -1,12 +1,13 @@
-import { Box, HStack, Text } from '@chakra-ui/react';
-
+import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
 import { AddressUtils, TransactionState } from '@/modules/core';
+import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { AssetBoxInfo, TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { DeploymentInfo } from './DeploymentInfos';
-import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 
 interface ITransactionBreakdown {
   transaction: TransactionUI;
@@ -24,10 +25,13 @@ const TransactionBreakdown = ({
     hasToken,
     isPending,
     isDeploy,
-    isDeposit,
     contractAddress,
     contractAssetInfo,
   } = useVerifyTransactionInformations(transaction);
+
+  const {
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+  } = useWorkspaceContext();
 
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
 
@@ -39,8 +43,23 @@ const TransactionBreakdown = ({
       minW={{ base: 200, sm: '476px' }}
       flexWrap="wrap"
     >
-      <Box mb={4}>
-        <Text color="grey.425" fontSize="sm">
+      {isFromConnector && !isDeploy && isMobile && (
+        <>
+          <ConnectorInfos
+            transaction={transaction}
+            isNotSigned={isNotSigned}
+            isPending={isPending}
+          />
+        </>
+      )}
+
+      {isMobile && <Divider my={6} borderColor="grey.425" />}
+
+      <Box mb={isMobile ? 6 : 4}>
+        <Text
+          color="grey.425"
+          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        >
           Transaction breakdown
         </Text>
       </Box>
@@ -53,9 +72,6 @@ const TransactionBreakdown = ({
       >
         {transaction.assets.map((asset, index) => (
           <AssetBoxInfo
-            isContract={isContract}
-            isDeploy={isDeploy}
-            isDeposit={isDeposit}
             key={index}
             asset={{
               assetId: asset.assetId,
@@ -83,7 +99,7 @@ const TransactionBreakdown = ({
         )}
       </Box>
 
-      {isFromConnector && !isDeploy && (
+      {isFromConnector && !isDeploy && !isMobile && (
         <ConnectorInfos
           transaction={transaction}
           isNotSigned={isNotSigned}

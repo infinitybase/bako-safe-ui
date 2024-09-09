@@ -1,16 +1,32 @@
 import {
   AccordionItem,
+  Avatar,
   Button,
-  Divider,
+  Center,
+  Heading,
   HStack,
+  Icon,
+  Text,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionType } from 'bakosafe';
 import format from 'date-fns/format';
 
-import { Dialog, DialogModalProps } from '@/components';
+import {
+  Dialog,
+  DialogModalProps,
+  DownLeftArrowGreen,
+  UpRightArrow,
+  UpRightArrowYellow,
+} from '@/components';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { TransactionCard, transactionStatus } from '@/modules/transactions';
+import {
+  TransactionCard,
+  transactionStatus,
+  useVerifyTransactionInformations,
+} from '@/modules/transactions';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { TransactionWithVault } from '../../services/types';
@@ -26,6 +42,20 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const {
+    screenSizes: { isExtraSmall },
+  } = useWorkspaceContext();
+
+  const handleViewInExplorer = async () => {
+    const { hash } = transaction;
+    window.open(
+      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
+      '_BLANK',
+    );
+  };
+
+  const { isDeploy, isFromConnector, isDeposit } =
+    useVerifyTransactionInformations(transaction);
 
   const {
     signTransaction: {
@@ -53,20 +83,114 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
           title="Transaction Details"
         />
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
-          <VStack w="full" spacing={3}>
+          <VStack w="full" spacing={4} justifyContent="space-between">
             <HStack w="full">
-              <TransactionCard.Amount
-                transaction={transaction}
-                isDeposit={transaction?.type === TransactionType.DEPOSIT}
-              />
+              <HStack minH="38px">
+                <Center
+                  borderRadius="4px"
+                  width={6}
+                  height={6}
+                  bgColor="grey.925"
+                  padding="0 8px 0 8px"
+                >
+                  <Icon
+                    color="grey.250"
+                    fontSize="16px"
+                    p="1.6px"
+                    as={
+                      isFromConnector
+                        ? ContractIcon
+                        : isDeploy
+                          ? DeployIcon
+                          : isDeposit
+                            ? DownLeftArrowGreen
+                            : UpRightArrowYellow
+                    }
+                  />
+                </Center>
+                <Center
+                  w="fit-content"
+                  alignItems="flex-start"
+                  flexDir="column"
+                  gridRow={2}
+                >
+                  <Heading
+                    variant={'title-sm'}
+                    color="grey.200"
+                    textOverflow="ellipsis"
+                    textAlign="left"
+                    noOfLines={1}
+                    maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                  >
+                    {transaction.name}
+                  </Heading>
 
+                  <Text
+                    variant="description"
+                    textAlign="left"
+                    fontSize={{ base: 'xs', sm: 'sm' }}
+                    color="grey.500"
+                  >
+                    Transaction
+                  </Text>
+                </Center>
+              </HStack>
+
+              <Button
+                border="none"
+                bgColor="#F5F5F50D"
+                fontSize="xs"
+                fontWeight="normal"
+                letterSpacing=".5px"
+                ml="auto"
+                variant="secondary"
+                h="28px"
+                p="6px 8px"
+                onClick={handleViewInExplorer}
+                rightIcon={
+                  <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
+                }
+              >
+                View on Explorer
+              </Button>
+            </HStack>
+
+            <HStack w="full" justifyContent="space-between" h="38px">
+              <HStack>
+                <Avatar
+                  name={transaction.predicate?.name ?? ''}
+                  color="grey.425"
+                  bgColor="grey.925"
+                  boxSize={6}
+                  borderRadius="4px"
+                  sx={{
+                    '&>div': {
+                      fontSize: '10px',
+                    },
+                  }}
+                />
+
+                <TransactionCard.BasicInfos
+                  transactionName={transaction.predicate?.name ?? ''}
+                  vault={transaction.predicate!}
+                  spacingBetweenNameAndDesc={false}
+                  nameSxProps={{ maxW: [120, 170, 300], lineHeight: '14.52px' }}
+                  descSxProps={{ lineHeight: '14.52px' }}
+                />
+              </HStack>
               <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
               </TransactionCard.CreationDate>
             </HStack>
 
-            <HStack w="full" justifyContent="space-between">
-              <TransactionCard.Name transactionName={transaction.name} />
+            <HStack w="full" justifyContent="space-between" h="38px">
+              <TransactionCard.Amount
+                isDeposit={isDeploy}
+                transaction={transaction}
+                w="fit-content"
+                isInDetailsDialog
+                h="26px"
+              />
 
               <TransactionCard.Status
                 transaction={transaction}
@@ -77,7 +201,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               />
             </HStack>
           </VStack>
-          <Divider mt={4} />
 
           <TransactionCard.Details transaction={transaction} isMobile />
         </VStack>

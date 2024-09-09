@@ -1,17 +1,25 @@
 import { CopyIcon } from '@chakra-ui/icons';
-import { Icon, IconButton, useClipboard } from '@chakra-ui/react';
+import {
+  Icon,
+  IconButton,
+  IconButtonProps,
+  useClipboard,
+} from '@chakra-ui/react';
 import { IoIosCheckmark } from 'react-icons/io';
 
-export interface CopyAddressButtonProps {
+export interface CopyAddressButtonProps extends IconButtonProps {
   addressToCopy: string;
 }
 
-const CopyAddressButton = ({ addressToCopy }: CopyAddressButtonProps) => {
+const CopyAddressButton = ({
+  addressToCopy,
+  ...rest
+}: CopyAddressButtonProps) => {
   const clipboard = useClipboard(addressToCopy);
   return (
     <IconButton
+      {...rest}
       variant="icon"
-      aria-label="Copy"
       background={{ base: 'dark.950', md: 'none' }}
       icon={
         <Icon
