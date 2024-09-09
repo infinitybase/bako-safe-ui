@@ -1,10 +1,13 @@
 import { ITransaction, TransactionStatus } from 'bakosafe';
 
+import { queryClient } from '@/config';
 import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
 import { useTransactionToast } from '../../providers/toast';
+import { useTransactionState } from '../../states';
+import { TRANSACTION_HISTORY_QUERY_KEY } from '../details';
 
 export type IUseSendTransaction = {
   onTransactionSuccess: () => void;
@@ -12,6 +15,7 @@ export type IUseSendTransaction = {
 
 const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setHasNewNotification } = useNotificationsStore();
+  const { setIsCurrentTxPending } = useTransactionState();
   const toast = useTransactionToast();
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
@@ -29,6 +33,14 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
+      setIsCurrentTxPending(false);
+      queryClient.invalidateQueries({
+        queryKey: [
+          TRANSACTION_HISTORY_QUERY_KEY,
+          transaction.id,
+          transaction.predicateId,
+        ],
+      });
     }
 
     if (transaction.status == TransactionStatus.FAILED) {
@@ -53,6 +65,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       ).length <= 1;
     if (wasTheLastSignature) {
       toast.loading(transaction);
+      setIsCurrentTxPending(true);
     }
     sendTransaction({ transaction: transaction! });
   };

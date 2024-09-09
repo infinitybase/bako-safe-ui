@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Icon,
-  Stack,
-  useAccordionItemState,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
 
@@ -39,7 +32,6 @@ const Details = ({
   transaction,
   status,
   isInTheVaultPage,
-  isMobile,
 }: TransactionDetailsProps) => {
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
@@ -50,10 +42,6 @@ const Details = ({
       '_BLANK',
     );
   };
-
-  const { isOpen } = useAccordionItemState();
-
-  if (!isMobile && !isOpen) return null;
 
   return (
     <DetailsTransactionStepper
