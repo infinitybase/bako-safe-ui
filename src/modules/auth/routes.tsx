@@ -2,6 +2,7 @@ import { Route } from 'react-router-dom';
 
 import { Pages } from '@/modules/core/routes';
 
+import { RedirectAuthUser } from './components/redirectAuthUser';
 import { RedirectFromLandingPage } from './components/redirectFromLandingPage';
 import { SigninPage } from './pages';
 
@@ -11,7 +12,9 @@ const signinRoutes = (
       index
       element={
         <RedirectFromLandingPage>
-          <SigninPage />
+          <RedirectAuthUser>
+            <SigninPage />
+          </RedirectAuthUser>
         </RedirectFromLandingPage>
       }
     />
