@@ -51,7 +51,7 @@ const AddressWithCopyBtn = ({
               : 'inherit'
         }
       >
-        {isExtraSmall
+        {/* {isExtraSmall
           ? (address ?? '')
           : AddressUtils.format(
               address ?? '',
@@ -64,23 +64,23 @@ const AddressWithCopyBtn = ({
                     : !isVaultPage && isExtraLarge
                       ? 24
                       : 12,
-            )}
+            )} */}
 
-        {/* {isDeposit &&
-          (isExtraSmall
-            ? (address ?? '')
-            : AddressUtils.format(
-                address ?? '',
-                isLitteSmall
-                  ? 3
-                  : isLowerThanFourHundredAndThirty
-                    ? 4
-                    : isSmall
-                      ? 7
-                      : !isVaultPage && isExtraLarge
-                        ? 24
-                        : 12,
-              ))} */}
+        {isDeposit &&
+          AddressUtils.format(
+            address ?? '',
+            isExtraSmall
+              ? 2
+              : isLitteSmall
+                ? 3
+                : isLowerThanFourHundredAndThirty
+                  ? 4
+                  : isSmall
+                    ? 7
+                    : !isVaultPage && isExtraLarge
+                      ? 24
+                      : 12,
+          )}
       </Text>
 
       <CopyAddressButton

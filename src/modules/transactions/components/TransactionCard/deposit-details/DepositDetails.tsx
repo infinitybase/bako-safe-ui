@@ -66,7 +66,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
       </VStack>
 
-      {transaction.status === TransactionStatus.SUCCESS && (
+      {!isMobile && transaction.status === TransactionStatus.SUCCESS && (
         <Button
           w={isMobile ? 'full' : 'unset'}
           mt={isMobile ? 'auto' : '32px'}
