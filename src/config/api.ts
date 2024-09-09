@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { useAuthCookies } from '@/modules';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 import { CookieName, CookiesConfig } from './cookies';
@@ -52,8 +53,10 @@ const setupAxiosInterceptors = () => {
     async (config) => config,
     async (error) => {
       const unauthorizedError = error.response?.status === 401;
+      const { clearAuthCookies } = useAuthCookies();
 
       if (unauthorizedError) {
+        clearAuthCookies();
         return await queryClient.invalidateQueries({
           queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
         });
