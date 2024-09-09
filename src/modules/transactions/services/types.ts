@@ -8,6 +8,7 @@ import {
 import { Operation } from 'fuels';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import { PredicateAndWorkspace } from '@/modules/vault';
 
 export interface ITransactionPagination<T> {
   perPage: number;
@@ -131,10 +132,10 @@ export type OperationWithAssets = Operation & {
   assetsSent?: { assetId?: string; amount?: string }[];
 };
 
-export interface TransactionWithVault extends Omit<ITransaction, 'operations'> {
-  operations: OperationWithAssets[]; // Make this an array
-}
-
+export type TransactionWithVault = ITransaction & {
+  predicate?: PredicateAndWorkspace;
+  type: TransactionType;
+};
 export interface ITransactionWithType extends ITransaction {
   type: TransactionType;
 }
