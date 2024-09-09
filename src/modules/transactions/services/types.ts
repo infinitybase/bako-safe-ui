@@ -5,9 +5,9 @@ import {
   TransactionType,
   Vault,
 } from 'bakosafe';
+import { Operation } from 'fuels';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
-import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 
 export interface ITransactionPagination<T> {
   perPage: number;
@@ -123,10 +123,17 @@ export interface CloseTransactionPayload {
   transactionResult: string;
 }
 
-export type TransactionWithVault = ITransaction & {
-  predicate?: PredicateAndWorkspace;
-  type: TransactionType;
+export type OperationWithAssets = Operation & {
+  assetId?: string;
+  amount?: string;
+  from?: { address?: string };
+  to?: { address?: string };
+  assetsSent?: { assetId?: string; amount?: string }[];
 };
+
+export interface TransactionWithVault extends Omit<ITransaction, 'operations'> {
+  operations: OperationWithAssets[]; // Make this an array
+}
 
 export interface ITransactionWithType extends ITransaction {
   type: TransactionType;
