@@ -1,5 +1,7 @@
+import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
+
 import { useIsFilteringInProgress } from './useIsFilteringInProgress';
 
 export type IUseIsWorkspaceReady = {
@@ -22,10 +24,11 @@ export const useIsWorkspaceReady = ({
   isWorkspaceBalanceLoading,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
+  const { isTokenExpired } = useAuthStore();
 
   const {
     homeTransactions: {
-      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
+      request: { isLoading: isHomeRequestLoading },
     },
     transactionsPageList: {
       request: {
@@ -47,7 +50,10 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
+  if (
+    (isSignInpage && !isTokenExpired) ||
+    (isFilteringInProgress && !isFromDapp)
+  ) {
     return { isWorkspaceReady: true, isFilteringInProgress };
   }
 

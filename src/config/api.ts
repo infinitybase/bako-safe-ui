@@ -1,6 +1,9 @@
 import axios from 'axios';
 
+import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
+
 import { CookieName, CookiesConfig } from './cookies';
+import { queryClient } from './query-client';
 
 const { VITE_API_URL } = import.meta.env;
 const { ACCESS_TOKEN, ADDRESS } = CookieName;
@@ -31,7 +34,7 @@ const api = axios.create({
   timeout: 10 * 1000, // limit to try other requests
 });
 
-const setupAxiosInterceptors = (logout: () => void) => {
+const setupAxiosInterceptors = () => {
   api.interceptors.request.use(
     (value) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
@@ -51,7 +54,9 @@ const setupAxiosInterceptors = (logout: () => void) => {
       const unauthorizedError = error.response?.status === 401;
 
       if (unauthorizedError) {
-        logout?.();
+        return await queryClient.invalidateQueries({
+          queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
+        });
       }
 
       return Promise.reject(error);

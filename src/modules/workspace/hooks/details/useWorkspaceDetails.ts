@@ -1,5 +1,4 @@
-import { useAuth } from '@/modules/auth';
-import { useWorkspace } from '../useWorkspace';
+import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
   useGetParams,
@@ -8,11 +7,13 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+
 import { useGitLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
-import { setupAxiosInterceptors } from '@/config';
+import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
   const screenSizes = useScreenSize();
@@ -27,13 +28,12 @@ const useWorkspaceDetails = () => {
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
-  setupAxiosInterceptors(authDetails.handlers.logout);
-
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest();
+  } = useGitLoadingRequest(authDetails.handlers.logout, authDetails.userInfos);
 
+  setupAxiosInterceptors();
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { workspaceBalance, latestPredicates, ...requestsData },
