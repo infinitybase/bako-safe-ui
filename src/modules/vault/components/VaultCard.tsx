@@ -150,6 +150,7 @@ export const VaultCard = ({
             <Text variant="description">Role</Text>
             <Badge
               h={6}
+              rounded="full"
               variant={
                 WorkspacePermissionUtils.permissions[
                   role as keyof PermissionDetails

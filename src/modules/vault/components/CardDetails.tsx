@@ -118,9 +118,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     <Box w="full">
       <Box mb="1.2em" w="full">
         <Text
-          color="grey.400"
-          fontWeight="semibold"
-          fontSize={{ base: 'md', sm: 'xl' }}
+          color="grey.50"
+          fontWeight="bold"
+          fontSize={{ base: 'sm', sm: 'unset' }}
         >
           Overview
         </Text>

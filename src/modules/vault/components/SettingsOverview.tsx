@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Grid,
   Heading,
   HStack,
@@ -106,7 +105,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                 <VStack
                   spacing={{ base: 6, sm: 9 }}
                   w="full"
-                  pr={3}
+                  pr={{ base: 0, sm: 3 }}
                   justifyContent="space-between"
                 >
                   <Stack
@@ -195,23 +194,21 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       </Stack>
                     </Box>
 
-                    <Divider
-                      w="full"
-                      mt={{ base: 0, sm: 0 }}
-                      borderColor="dark.100"
-                    />
-
                     <HStack
                       w="full"
                       justifySelf="end"
                       spacing={{ base: 8, sm: 40 }}
+                      borderTopWidth={'1px'}
+                      borderTopColor={'dark.100'}
+                      justifyContent={'flex-start'}
+                      pt={4}
                     >
                       <VStack w="full" spacing={2} alignItems="flex-start">
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
-                            openFaucet(vault.data?.predicateAddress!)
+                            openFaucet(vault.data?.predicateAddress)
                           }
                           position="relative"
                         >
@@ -230,13 +227,14 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       <VStack
                         w="full"
                         spacing={0}
-                        position="relative"
                         alignSelf={{ base: 'flex-start', xs: 'unset' }}
+                        alignItems={'flex-end'}
                       >
                         <Button
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           alignSelf="end"
+                          position={'relative'}
                           isDisabled={
                             !assets?.hasBalance ||
                             blockedTransfers ||
@@ -246,7 +244,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           onClick={() =>
                             navigate(
                               Pages.createTransaction({
-                                vaultId: vault.data?.id!,
+                                vaultId: vault.data?.id,
                                 workspaceId,
                               }),
                             )
@@ -261,11 +259,11 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                               variant="description"
                               textAlign={isExtraSmall ? 'left' : 'right'}
                               fontSize="xs"
-                              w="full"
+                              flex={1}
                               mt={2}
                               color="error.500"
                               position={{ base: 'unset', xs: 'absolute' }}
-                              bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
+                              bottom={{ base: -1, sm: 2 }}
                             >
                               Not enough balance.
                             </Text>
@@ -276,23 +274,26 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             variant="description"
                             textAlign={isExtraSmall ? 'left' : 'right'}
                             fontSize="xs"
-                            w="full"
+                            flex={1}
                             mt={2}
                             color="error.500"
                             position={{ base: 'unset', xs: 'absolute' }}
-                            bottom={isExtraSmall ? -10 : { base: -5, sm: -6 }}
+                            bottom={{ base: -1, sm: 2 }}
                           >
                             Pending transactions
                           </Text>
                         ) : !makeTransactionsPerm ? (
                           <Text
                             variant="description"
+                            textAlign={isExtraSmall ? 'left' : 'right'}
                             fontSize="xs"
+                            flex={1}
+                            mt={2}
                             color="error.500"
-                            position="absolute"
-                            bottom={[-1, 2]}
+                            position={{ base: 'unset', xs: 'absolute' }}
+                            bottom={{ base: -1, sm: 2 }}
                           >
-                            You dont have permission to send transactions.
+                            {`You don't have permission to send transactions.`}
                           </Text>
                         ) : (
                           <Text
@@ -313,9 +314,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   position={{ base: 'absolute', sm: 'relative' }}
                   top={{ base: 4, sm: 0 }}
                   right={{ base: 4, sm: 0 }}
-                  spacing={4}
                   align={{ base: 'flex-end', sm: 'center' }}
                   justifyContent="flex-start"
+                  gap={0}
                 >
                   <Box
                     p={3}
@@ -325,7 +326,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                   >
                     <QRCodeSVG
-                      value={vault?.data?.predicateAddress!}
+                      value={vault?.data?.predicateAddress}
                       fgColor="black"
                       bgColor="white"
                       style={{
@@ -337,12 +338,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   </Box>
                   <AddressCopy
                     w="full"
-                    mb={{ base: 4, sm: 0 }}
+                    h="2.5rem"
+                    mt={4}
                     maxW={{ base: '40', sm: 180 }}
                     address={
                       AddressUtils.format(vault?.data?.predicateAddress ?? '')!
                     }
-                    addressToCopy={vault?.data?.predicateAddress!}
+                    addressToCopy={vault?.data?.predicateAddress}
                   />
                 </VStack>
               </Stack>

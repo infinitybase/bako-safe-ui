@@ -7,18 +7,15 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-
 import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
-
 import { shakeAnimationY, TransactionState } from '@/modules/core';
 
+import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
-
-import { AssetBoxInfo } from './AssetBoxInfo';
 import { TransactionBreakdown } from './transfer-details';
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
@@ -76,7 +73,10 @@ const Details = ({
                 direction={{ base: 'column', md: 'row' }}
                 alignItems="start"
                 justify="space-between"
-                columnGap={isInTheVaultPage ? '3rem' : '72px'}
+                columnGap={{
+                  base: isInTheVaultPage ? '3rem' : '72px',
+                  lg: '150px',
+                }}
                 w="full"
               >
                 {/* Transaction Breakdown */}
@@ -89,7 +89,7 @@ const Details = ({
                 <Box
                   alignSelf="flex-start"
                   w="full"
-                  minW={{ base: 200, sm: '476px' }}
+                  minW={{ base: 200, sm: 'full' }}
                 >
                   <TransactionStepper steps={transactionHistory!} />
                 </Box>

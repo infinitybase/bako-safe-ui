@@ -43,6 +43,7 @@ const CreateWorkspaceForm = ({
             value={field.value}
             onChange={field.onChange}
             placeholder=" "
+            variant="dark"
           />
           <FormLabel py={1}>Name your workspace</FormLabel>
           <FormHelperText color="error.500">
@@ -56,6 +57,8 @@ const CreateWorkspaceForm = ({
         size="lg"
         {...form.register('description')}
         placeholder="Description"
+        bg={`grey.825`}
+        borderColor={`grey.800`}
         sx={{
           'textarea::placeholder': {
             color: 'grey.500',

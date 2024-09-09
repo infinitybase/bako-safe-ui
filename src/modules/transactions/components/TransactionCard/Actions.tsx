@@ -6,6 +6,7 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
+import { TransactionType } from 'bakosafe';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -14,11 +15,10 @@ import {
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
-
-import { ITransactionWithType } from '../../services';
-import { TransactionType } from 'bakosafe';
-import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { ITransactionWithType } from '../../services';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -92,21 +92,21 @@ const Actions = ({
   return (
     <HStack minW={140} justifySelf="end">
       {isSigned && (
-        <Badge h={6} variant="success">
+        <Badge h={6} rounded="full" px={2} variant="success">
           You signed
-          <Icon as={SuccessIcon} />
+          <Icon as={SuccessIcon} color="success.700" />
         </Badge>
       )}
 
       {isDeclined && (
-        <Badge h={6} variant="error">
+        <Badge h={6} rounded="full" px={2} variant="error">
           You declined
-          <Icon as={ErrorIcon} />
+          <Icon as={ErrorIcon} fontSize={17} />
         </Badge>
       )}
 
       {!isDeposit && notAnswered && (
-        <Badge h={6} variant="info">
+        <Badge h={6} rounded="full" px={2} variant="info">
           {`You didn't sign`}
         </Badge>
       )}

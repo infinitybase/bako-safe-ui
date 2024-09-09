@@ -1,10 +1,18 @@
 import { Icon } from '@chakra-ui/icons';
-import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
+
+import {
+  Avatar,
+  Box,
+  Center,
+  HStack,
+  StackProps,
+  Text,
+} from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { DoubleArrowIcon, UnknownIcon } from '@/components';
+import { DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
@@ -67,7 +75,7 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 14 }}
+      spacing={{ base: 1, xs: 10 }}
       w="full"
       borderTopWidth={1}
       {...props}
