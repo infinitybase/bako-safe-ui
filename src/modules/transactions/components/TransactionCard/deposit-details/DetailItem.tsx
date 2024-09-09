@@ -9,7 +9,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
-import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
 import { useGetContactByAddress } from '@/modules/addressBook';
@@ -73,12 +72,10 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              {savedContact?.nickname
-                ? savedContact.nickname
-                : AddressUtils.format(
-                    Address.fromString(sentBy ?? '').toB256(),
-                    isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
-                  )}
+              {AddressUtils.format(
+                sentBy ?? '',
+                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+              )}
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -103,7 +100,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textAlign="end"
             >
               {AddressUtils.format(
-                Address.fromString(asset?.to ?? '').toB256(),
+                asset?.to ?? '',
                 isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
               )}
             </Text>
@@ -121,12 +118,10 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {savedContact?.nickname
-              ? savedContact.nickname
-              : AddressUtils.format(
-                  Address.fromString(sentBy ?? '').toB256(),
-                  isMobile ? 10 : 14,
-                )}
+            {AddressUtils.format(
+              sentBy ?? '',
+              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+            )}
           </Text>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -150,8 +145,8 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             isTruncated
           >
             {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toB256(),
-              isMobile ? 10 : 14,
+              asset?.to ?? '',
+              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
             )}
           </Text>
         </>
