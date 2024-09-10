@@ -1,4 +1,5 @@
 import {
+  BAKOIcon,
   BitcoinIcon,
   EthereumIcon,
   UniswapIcon,
