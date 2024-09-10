@@ -1,5 +1,6 @@
-import { useAuth } from '@/modules/auth';
-import { useWorkspace } from '../useWorkspace';
+import { useEffect, useState } from 'react';
+
+import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
   useGetParams,
@@ -8,13 +9,16 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useGitLoadingRequest } from '../useGifLoadingRequest';
+
+import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
-import { setupAxiosInterceptors } from '@/config';
+import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
@@ -27,13 +31,17 @@ const useWorkspaceDetails = () => {
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
-  setupAxiosInterceptors(authDetails.handlers.logout);
-
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest();
+  } = useGifLoadingRequest(
+    authDetails.handlers.logout,
+    authDetails.userInfos,
+    isTokenExpired,
+    setIsTokenExpired,
+  );
 
+  setupAxiosInterceptors();
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { workspaceBalance, latestPredicates, ...requestsData },
@@ -65,7 +73,12 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
+    isTokenExpired,
   });
+
+  useEffect(() => {
+    setupAxiosInterceptors();
+  }, []);
 
   return {
     isWorkspaceReady,

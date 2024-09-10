@@ -49,6 +49,12 @@ const useAuth = (): IUseAuthReturn => {
     navigate(`/${queryParams}`);
   };
 
+  const logoutWhenExpired = async () => {
+    clearAuthCookies();
+    queryClient.clear();
+    navigate('/?expired=true');
+  };
+
   const userProvider = async () => {
     const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
 
@@ -64,6 +70,7 @@ const useAuth = (): IUseAuthReturn => {
   return {
     handlers: {
       logout,
+      logoutWhenExpired,
       authenticate,
       setInvalidAccount,
     },
