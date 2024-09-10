@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
@@ -16,6 +18,7 @@ import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
@@ -31,7 +34,12 @@ const useWorkspaceDetails = () => {
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest(authDetails.handlers.logout, authDetails.userInfos);
+  } = useGitLoadingRequest(
+    authDetails.handlers.logout,
+    authDetails.userInfos,
+    isTokenExpired,
+    setIsTokenExpired,
+  );
 
   setupAxiosInterceptors();
   const {
@@ -65,6 +73,7 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
+    isTokenExpired,
   });
 
   return {

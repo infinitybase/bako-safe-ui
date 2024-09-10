@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
 
@@ -12,6 +11,7 @@ export type IUseIsWorkspaceReady = {
   isAddressbookInfosLoading: boolean;
   isLatestsPredicatesLoading: boolean;
   isWorkspaceBalanceLoading: boolean;
+  isTokenExpired: boolean;
 };
 
 export const useIsWorkspaceReady = ({
@@ -22,9 +22,9 @@ export const useIsWorkspaceReady = ({
   isVaultAssetsLoading,
   isVaultRequestLoading,
   isWorkspaceBalanceLoading,
+  isTokenExpired,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
-  const { isTokenExpired } = useAuthStore();
 
   const {
     homeTransactions: {
