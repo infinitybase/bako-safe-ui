@@ -1,5 +1,11 @@
-import BAKOIcon from '@/assets/tokens/bako.svg';
-import UnknownIcon from '@/assets/tokens/unknown.svg';
+import {
+  BitcoinIcon,
+  EthereumIcon,
+  UniswapIcon,
+  UnknownIcon,
+  UsdcIcon,
+} from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 
 import { tokensIDS } from './address';
 import { Asset, AssetMap } from './types';
@@ -54,7 +60,7 @@ const assetsList: Asset[] = [
     name: 'BAKO',
     slug: 'BAKO',
     assetId: tokensIDS['BAKO'],
-    icon: BAKOIcon,
+    icon: BakoIcon,
   },
 ];
 
