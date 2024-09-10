@@ -1,16 +1,15 @@
 import {
-  Avatar,
   AvatarGroup,
   Flex,
   HStack,
+  Icon,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import bakoIcon from '@/assets/tokens/bako.svg';
-import { CustomSkeleton } from '@/components';
+import { CustomSkeleton, UnknownIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -65,23 +64,20 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
         position="relative"
       >
         {hasNoDefaultAssets && (
-          <Avatar
-            name={assetsMap[operationAssets.assetId]?.slug ?? 'UKN'}
-            src={assetsMap[operationAssets.assetId]?.icon ?? bakoIcon}
-            ignoreFallback
-            boxSize={24}
-            border="none"
+          <Icon
+            key={assetsMap[operationAssets.assetId]?.assetId}
+            w={{ base: 8, sm: 8 }}
+            h={{ base: 8, sm: 8 }}
+            as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
           />
         )}
 
-        {oneAssetOfEach.map((asset, index) => (
-          <Avatar
-            key={index}
-            name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
-            src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
-            ignoreFallback
-            boxSize={24}
-            border="none"
+        {oneAssetOfEach.map((asset) => (
+          <Icon
+            key={asset.assetId}
+            w={{ base: 8, sm: 8 }}
+            h={{ base: 8, sm: 8 }}
+            as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
           />
         ))}
       </AvatarGroup>

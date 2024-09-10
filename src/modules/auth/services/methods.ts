@@ -1,11 +1,11 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { BakoSafe } from 'bakosafe';
 import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -113,6 +113,7 @@ export type IUseAuthReturn = {
   invalidAccount: boolean;
   handlers: {
     logout: () => void;
+    logoutWhenExpired: () => void;
     authenticate: (params: AuthenticateParams) => void;
     setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
   };
