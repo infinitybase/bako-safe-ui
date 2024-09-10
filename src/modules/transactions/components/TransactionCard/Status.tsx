@@ -17,7 +17,9 @@ interface TransactionCardStatusProps {
 }
 
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { useTransactionState } from '../../states';
 
 const Status = ({
   transaction,
@@ -35,10 +37,11 @@ const Status = ({
     ).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
-  const isPending = [
-    TransactionStatus.PROCESS_ON_CHAIN,
-    TransactionStatus.PENDING_SENDER,
-  ].includes(transaction.status);
+
+  const { isCurrentTxPending } = useTransactionState();
+
+  const isPending =
+    isCurrentTxPending && transaction.status !== TransactionStatus.SUCCESS;
 
   return (
     <HStack

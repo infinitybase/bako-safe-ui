@@ -1,6 +1,8 @@
-import { AssetModel, assetsMap } from '@/modules/core';
-import { Avatar, HStack, Text } from '@chakra-ui/react';
+import { HStack, Icon, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
+
+import { UnknownIcon } from '@/components';
+import { AssetModel, assetsMap } from '@/modules/core';
 
 interface TokenInfosProps {
   asset: AssetModel;
@@ -13,11 +15,10 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
   );
   return (
     <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-      <Avatar
-        name={assetInfo?.slug}
-        size="xs"
-        src={assetInfo?.icon}
-        ignoreFallback
+      <Icon
+        w={{ base: 6, sm: 6 }}
+        h={{ base: 6, sm: 6 }}
+        as={assetInfo?.icon ?? UnknownIcon}
       />
       <Text fontSize="sm" color="grey.500">
         {assetInfo?.slug}

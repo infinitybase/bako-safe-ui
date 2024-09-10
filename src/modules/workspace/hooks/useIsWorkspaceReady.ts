@@ -11,6 +11,7 @@ export type IUseIsWorkspaceReady = {
   isAddressbookInfosLoading: boolean;
   isLatestsPredicatesLoading: boolean;
   isWorkspaceBalanceLoading: boolean;
+  isTokenExpired: boolean;
 };
 
 export const useIsWorkspaceReady = ({
@@ -20,7 +21,7 @@ export const useIsWorkspaceReady = ({
   isUserInfosLoading,
   isVaultAssetsLoading,
   isVaultRequestLoading,
-  isWorkspaceBalanceLoading,
+  isTokenExpired,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
 
@@ -48,7 +49,10 @@ export const useIsWorkspaceReady = ({
     isVaultTransactionsFetching,
   });
 
-  if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
+  if (
+    (isSignInpage && !isTokenExpired) ||
+    (isFilteringInProgress && !isFromDapp)
+  ) {
     return { isWorkspaceReady: true, isFilteringInProgress };
   }
 
@@ -59,7 +63,6 @@ export const useIsWorkspaceReady = ({
     isUserInfosLoading,
     isVaultAssetsLoading,
     isVaultRequestLoading,
-    isWorkspaceBalanceLoading,
     isHomeRequestLoading,
     isTransactionsPageListLoading,
     isVaultTransactionsLoading,

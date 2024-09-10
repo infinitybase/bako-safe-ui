@@ -212,19 +212,15 @@ const UserVaultsPage = () => {
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
-        <Text
-          variant="subtitle"
-          fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
-        >
+        <Text variant="subtitle" fontWeight="semibold" color="grey.75">
           Vaults
         </Text>
       </Box>
 
-      {!vaults?.length && (
+      {!vaults?.length && !loadingVaults && (
         <CustomSkeleton isLoaded={!loadingVaults}>
           <EmptyState
+            bg={'red'}
             showAction={hasPermission([OWNER, MANAGER, ADMIN])}
             title={`Let's Begin!`}
             subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}

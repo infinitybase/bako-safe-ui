@@ -9,9 +9,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
-import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
+import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -28,14 +28,20 @@ interface DetailItemProps {
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
-
     screenSizes: { isExtraSmall, isMobile, isSmall },
+    addressBookInfos: {
+      requests: {
+        listContactsRequest: { data },
+      },
+    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );
+
+  const { savedContact } = useGetContactByAddress(sentBy ?? '', data);
 
   const isFirstItem = index === 0;
 
@@ -67,7 +73,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               isTruncated
             >
               {AddressUtils.format(
-                Address.fromString(sentBy ?? '').toB256(),
+                sentBy ?? '',
                 isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
               )}
             </Text>
@@ -94,7 +100,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textAlign="end"
             >
               {AddressUtils.format(
-                Address.fromString(asset?.to ?? '').toB256(),
+                asset?.to ?? '',
                 isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
               )}
             </Text>
@@ -113,8 +119,8 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             isTruncated
           >
             {AddressUtils.format(
-              Address.fromString(sentBy ?? '').toB256(),
-              isMobile ? 10 : 14,
+              sentBy ?? '',
+              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
             )}
           </Text>
 
@@ -139,8 +145,8 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             isTruncated
           >
             {AddressUtils.format(
-              Address.fromString(asset.to ?? '').toB256(),
-              isMobile ? 10 : 14,
+              asset?.to ?? '',
+              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
             )}
           </Text>
         </>

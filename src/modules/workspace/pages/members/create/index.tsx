@@ -222,10 +222,7 @@ const CreateMemberPage = () => {
           <MemberAddressForm form={memberForm} addressBook={addressBook} />
         </>
       )}
-      <Dialog.Body
-        mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}
-        maxW={480}
-      >
+      <Dialog.Body mb={{ base: formState.isEditMember ? 6 : 2, sm: 1 }}>
         <Tabs
           index={tabs.tab}
           maxH="full"
