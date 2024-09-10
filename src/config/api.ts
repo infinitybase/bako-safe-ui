@@ -31,7 +31,7 @@ const api = axios.create({
   timeout: 10 * 1000, // limit to try other requests
 });
 
-const setupAxiosInterceptors = (logout: () => void) => {
+const setupAxiosInterceptors = (isFromDapp: boolean, logout: () => void) => {
   api.interceptors.request.use(
     (value) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
@@ -50,7 +50,7 @@ const setupAxiosInterceptors = (logout: () => void) => {
     async (error) => {
       const unauthorizedError = error.response?.status === 401;
 
-      if (unauthorizedError) {
+      if (unauthorizedError && !isFromDapp) {
         logout?.();
       }
 
