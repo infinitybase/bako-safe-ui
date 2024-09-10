@@ -9,11 +9,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
-import { Address } from 'fuels';
 
 import { DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AddressWithCopyBtn } from '../transfer-details';
@@ -27,9 +25,6 @@ interface DetailItemProps {
 }
 
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
-  const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
   const {
     tokensUSD,
     screenSizes: { isMobile },
@@ -69,11 +64,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              <AddressWithCopyBtn
-                address={sentBy}
-                isVaultPage={!!vaultId}
-                isDeposit={true}
-              />
+              <AddressWithCopyBtn address={asset.to} isDeposit={true} />
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -97,11 +88,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               isTruncated
               textAlign="end"
             >
-              <AddressWithCopyBtn
-                address={sentBy}
-                isVaultPage={!!vaultId}
-                isDeposit={true}
-              />
+              <AddressWithCopyBtn address={sentBy} isDeposit={true} />
             </Text>
           </Flex>
         </VStack>
@@ -117,10 +104,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(
-              Address.fromString(sentBy ?? '').toB256(),
-              isMobile ? 10 : 14,
-            )}
+            <AddressWithCopyBtn address={asset.to} isDeposit={true} />
           </Text>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -143,7 +127,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             textOverflow="ellipsis"
             isTruncated
           >
-            {AddressUtils.format(sentBy ?? '', isMobile ? 10 : 14)}
+            <AddressWithCopyBtn address={sentBy} isDeposit={true} />
           </Text>
         </>
       )}

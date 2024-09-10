@@ -2,20 +2,22 @@ import { Flex, Text } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
 import { CopyAddressButton } from '@/components/copyAddressButton';
-import { AddressUtils } from '@/modules/core';
+import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface AddressWithCopyBtnProps {
   address: string;
-  isVaultPage: boolean;
   isDeposit?: boolean;
 }
 
 const AddressWithCopyBtn = ({
   address,
-  isVaultPage,
   isDeposit,
 }: AddressWithCopyBtnProps) => {
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+  const isVaultPage = !!vaultId;
   const {
     screenSizes: {
       isExtraSmall,
@@ -51,36 +53,33 @@ const AddressWithCopyBtn = ({
               : 'inherit'
         }
       >
-        {/* {isExtraSmall
-          ? (address ?? '')
-          : AddressUtils.format(
+        {isDeposit
+          ? AddressUtils.format(
               address ?? '',
-              isLitteSmall
-                ? 4
-                : isLowerThanFourHundredAndThirty
-                  ? 10
-                  : isSmall
-                    ? 7
-                    : !isVaultPage && isExtraLarge
-                      ? 24
-                      : 12,
-            )} */}
-
-        {isDeposit &&
-          AddressUtils.format(
-            address ?? '',
-            isExtraSmall
-              ? 2
-              : isLitteSmall
-                ? 3
-                : isLowerThanFourHundredAndThirty
+              isExtraSmall
+                ? 1
+                : isLitteSmall
                   ? 4
-                  : isSmall
+                  : isLowerThanFourHundredAndThirty
                     ? 7
                     : !isVaultPage && isExtraLarge
                       ? 24
-                      : 12,
-          )}
+                      : 10,
+            )
+          : isExtraSmall
+            ? (address ?? '')
+            : AddressUtils.format(
+                address ?? '',
+                isLitteSmall
+                  ? 4
+                  : isLowerThanFourHundredAndThirty
+                    ? 10
+                    : isSmall
+                      ? 7
+                      : !isVaultPage && isExtraLarge
+                        ? 18
+                        : 12,
+              )}
       </Text>
 
       <CopyAddressButton

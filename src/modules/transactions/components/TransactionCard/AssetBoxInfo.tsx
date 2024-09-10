@@ -13,12 +13,7 @@ import { FaPlay } from 'react-icons/fa';
 import { DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import {
-  AssetModel,
-  assetsMap,
-  IGetTokenInfos,
-  useGetParams,
-} from '@/modules/core';
+import { AssetModel, assetsMap, IGetTokenInfos } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AddressWithCopyBtn } from './transfer-details';
@@ -46,11 +41,6 @@ const AssetBoxInfo = ({
     tokensUSD,
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
-  const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
-
-  const isVaultPage = !!vaultId;
 
   const assetInfo = useMemo(
     () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
@@ -142,15 +132,10 @@ const AssetBoxInfo = ({
         />
       </Center>
 
-      {!!asset && (
-        <AddressWithCopyBtn address={asset?.to} isVaultPage={isVaultPage} />
-      )}
+      {!!asset && <AddressWithCopyBtn address={asset?.to} />}
 
       {isContract && contractAddress && (
-        <AddressWithCopyBtn
-          address={contractAddress}
-          isVaultPage={isVaultPage}
-        />
+        <AddressWithCopyBtn address={contractAddress} />
       )}
     </HStack>
   );

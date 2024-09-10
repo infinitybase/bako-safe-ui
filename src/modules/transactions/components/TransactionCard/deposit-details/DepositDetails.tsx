@@ -39,8 +39,8 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       flexWrap="wrap"
       minH={{ base: 560, xs: 400, sm: 'unset' }}
     >
-      <VStack w="full">
-        <Divider my={5} borderColor="grey.425" />
+      <VStack w="full" mt={isMobile ? 'unset' : 5}>
+        {isMobile && <Divider my={5} borderColor="grey.425" />}
 
         <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
           <Text
