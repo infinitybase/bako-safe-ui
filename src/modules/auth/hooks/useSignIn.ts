@@ -84,7 +84,7 @@ const useSignIn = () => {
       webAuthn,
       address,
       first_login,
-      first_vault,
+      default_vault,
     }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
 
@@ -100,12 +100,8 @@ const useSignIn = () => {
       });
       invalidateGifAnimationRequest();
 
-      if (first_login && first_vault && !isSignInFromDapp) {
-        handleRedirectToFirstVault(
-          first_vault.id,
-          first_vault.workspace.id,
-          user_id,
-        );
+      if (first_login && default_vault && !isSignInFromDapp) {
+        handleRedirectToFirstVault(default_vault, workspace.id, user_id);
         return;
       }
 
