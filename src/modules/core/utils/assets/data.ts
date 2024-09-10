@@ -1,4 +1,5 @@
 import {
+  BAKOIcon,
   BitcoinIcon,
   EthereumIcon,
   UniswapIcon,
@@ -54,6 +55,12 @@ const assetsList: Asset[] = [
     slug: 'UNK',
     assetId: 'UNKNOWN',
     icon: UnknownIcon,
+  },
+  {
+    name: 'BAKO',
+    slug: 'BAKO',
+    assetId: tokensIDS['BAKO'],
+    icon: BAKOIcon,
   },
 ];
 
