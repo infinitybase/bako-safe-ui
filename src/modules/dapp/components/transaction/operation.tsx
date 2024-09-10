@@ -39,7 +39,7 @@ const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
 
   if (!to || !assetsSent || !vault) return null;
 
-  const assetData = assetsMap[assetsSent[0].assetId];
+  const assetData = assetsMap[assetsSent[0].assetId] ?? assetsMap['UNKNOWN'];
 
   const assets = [
     {

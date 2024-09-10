@@ -1,3 +1,4 @@
+import BAKOIcon from '@/assets/tokens/bako.svg';
 import BTCIcon from '@/assets/tokens/bitcoin.svg';
 import UNIIcon from '@/assets/tokens/uniswap.svg';
 import UnknownIcon from '@/assets/tokens/unknown.svg';
@@ -51,6 +52,12 @@ const assetsList: Asset[] = [
     slug: 'UNK',
     assetId: 'UNKNOWN',
     icon: UnknownIcon,
+  },
+  {
+    name: 'BAKO',
+    slug: 'BAKO',
+    assetId: tokensIDS['BAKO'],
+    icon: BAKOIcon,
   },
 ];
 
