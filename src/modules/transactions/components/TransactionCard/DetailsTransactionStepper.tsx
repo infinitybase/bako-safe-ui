@@ -6,7 +6,7 @@ interface DetailsTransactionStepperProps {
   predicateId: string;
   children: (
     isLoading: boolean,
-    transactionHistory: ITransactionHistory[] | null,
+    transactionHistory: ITransactionHistory[] | undefined,
   ) => React.ReactNode;
 }
 

@@ -34,14 +34,16 @@ const useWorkspaceDetails = () => {
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGifLoadingRequest(
-    authDetails.handlers.logout,
-    authDetails.userInfos,
-    isTokenExpired,
-    setIsTokenExpired,
-  );
+  } = useGifLoadingRequest();
 
-  setupAxiosInterceptors();
+  useEffect(() => {
+    setupAxiosInterceptors(
+      isTokenExpired,
+      setIsTokenExpired,
+      authDetails.handlers.logout,
+    );
+  }, []);
+
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { workspaceBalance, latestPredicates, ...requestsData },
@@ -75,10 +77,6 @@ const useWorkspaceDetails = () => {
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
     isTokenExpired,
   });
-
-  useEffect(() => {
-    setupAxiosInterceptors();
-  }, []);
 
   return {
     isWorkspaceReady,
