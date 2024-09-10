@@ -41,9 +41,7 @@ const FeedbackSuccess = ({
     <Center
       mt={hasCloseButton ? -8 : 'unset'}
       flexDirection="column"
-      mb={5}
       pt={{ xs: 40, sm: 'unset' }}
-      pb={{ base: 0, sm: 5 }}
       h={{ base: 600, xs: 500, sm: 'unset' }}
     >
       <Box m={8}>
@@ -58,7 +56,7 @@ const FeedbackSuccess = ({
           {title}
         </Heading>
       </Box>
-      <Box maxW={650}>
+      <Box maxW={500}>
         <Text
           color="grey.400"
           fontSize={{ base: 'sm', sm: 'md' }}
@@ -70,7 +68,7 @@ const FeedbackSuccess = ({
 
       <VStack
         mt={{ base: 'auto', sm: 8 }}
-        w={{ base: '80%' }}
+        w={{ base: '80%', sm: '100%' }}
         position={{ base: 'absolute', sm: 'unset' }}
         bottom={4}
       >

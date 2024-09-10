@@ -127,6 +127,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                     <Input
                       // value={field.value}
                       // onChange={field.onChange}
+                      variant="dark"
                       placeholder=" "
                       value={search}
                       onChange={(e) => {
@@ -170,6 +171,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
+                      variant="dark"
                       value={field.value}
                       onChange={field.onChange}
                       placeholder=" "

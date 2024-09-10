@@ -34,6 +34,7 @@ function AssetSelect(props: Props) {
   return (
     <FormControl>
       <Select
+        variant="dark"
         label="Asset"
         value={props.value}
         isInvalid={props.isInvalid}

@@ -7,7 +7,7 @@ import { Address } from 'fuels';
 
 const schema = yup
   .object({
-    name: yup.string().required('Name is required.'),
+    name: yup.string().required('Name is required.').trim(),
     description: yup.string().optional(),
     addresses: yup.array().of(
       yup.object({

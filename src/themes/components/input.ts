@@ -3,30 +3,27 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 const inputActiveStyle = {
   borderColor: `grey.200`,
   color: 'white',
-  bg: `dark.250`,
   boxShadow:
     // '0 0 0 3px color-mix(in srgb, var(--chakra-colors-brand-500)) 70%, transparent)',
     '0 0 0 1px color-mix(in srgb, var(--chakra-colors-brand-500) 100%, transparent)',
   '~ .chakra-input__right-element': {
-    background: 'dark.250',
+    background: 'grey.825',
   },
 };
 
 const inputInvalidStyle = {
   borderColor: `error.500`,
-  bg: `dark.250`,
+  bg: `grey.825`,
   boxShadow: 'error.600',
   '~ .chakra-input__right-element': {
-    background: 'dark.250',
+    background: 'grey.825',
   },
 };
 
 const baseStyle = defineStyle({
   field: {
-    bg: `dark.250`,
     color: 'grey.200',
     fontSize: 'md',
-    borderColor: `grey.600`,
     boxShadow: 'none',
     borderWidth: 1,
     pt: 5,
@@ -52,13 +49,33 @@ const baseStyle = defineStyle({
   element: {},
 });
 
+const defaultStyle = defineStyle({
+  ...baseStyle,
+  field: {
+    ...baseStyle.field,
+    bg: `dark.250`,
+    borderColor: `grey.600`,
+  },
+});
+
+const darkStyle = defineStyle({
+  ...baseStyle,
+  field: {
+    ...baseStyle.field,
+    bg: `grey.825`,
+    borderColor: `grey.800`,
+  },
+});
+
 const Input = defineStyleConfig({
   baseStyle,
   defaultProps: {
+    variant: 'default',
     colorScheme: 'grey',
   },
   variants: {
-    custom: baseStyle,
+    default: defaultStyle,
+    dark: darkStyle,
   },
 });
 

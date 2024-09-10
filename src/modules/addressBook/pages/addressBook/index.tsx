@@ -19,15 +19,15 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import {
   ContactCard,
   CreateContactDialog,
   DeleteContactDialog,
 } from '../../components';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const AddressBookPage = () => {
   const {
@@ -139,7 +139,9 @@ const AddressBookPage = () => {
                 </BreadcrumbLink>
               </BreadcrumbItem>
 
-              <BreadcrumbItem hidden={onSingleWorkspace}>
+              {/* Commented out code to temporarily disable workspaces. */}
+
+              {/* <BreadcrumbItem hidden={onSingleWorkspace}>
                 {workspace?.id && (
                   <BreadcrumbLink
                     fontSize="sm"
@@ -159,8 +161,7 @@ const AddressBookPage = () => {
                     {workspace?.name}
                   </BreadcrumbLink>
                 )}
-              </BreadcrumbItem>
-
+              </BreadcrumbItem> */}
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -246,12 +247,7 @@ const AddressBookPage = () => {
         </Stack>
 
         <Box mt={4} mb={-4} alignSelf="flex-start">
-          <Text
-            variant="subtitle"
-            fontWeight="semibold"
-            fontSize="xl"
-            color="grey.200"
-          >
+          <Text variant="subtitle" fontWeight="semibold" color="grey.75">
             Address book
           </Text>
         </Box>

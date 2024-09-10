@@ -5,6 +5,7 @@ enum AssetId {
   UNI = 'UNI',
   DAI = 'DAI',
   sETH = 'sETH',
+  BAKO = 'BAKO',
 }
 
 const tokensIDS = {
@@ -20,6 +21,8 @@ const tokensIDS = {
     '0x0d9be25f6bef5c945ce44db64b33da9235fbf1a9f690298698d899ad550abae1',
   [AssetId.sETH]:
     '0x1bdeed96ee1e5eca0bd1d7eeeb51d03b0202c1faf764fec1b276ba27d5d61d89',
+  [AssetId.BAKO]:
+    '0xff888c76839aa50c21ed519d5eb6fad5ed0fab21a56370ccd502a041a5a64691',
 };
 
 export { AssetId, tokensIDS };

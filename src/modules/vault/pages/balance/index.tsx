@@ -10,15 +10,15 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, Pages } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
-import { useNavigate } from 'react-router-dom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultBalancePage = () => {
   const navigate = useNavigate();
@@ -28,7 +28,10 @@ const VaultBalancePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        goHome,
+      },
     },
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
@@ -61,14 +64,17 @@ const VaultBalancePage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!userInfos.onSingleWorkspace && (
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
                   color="grey.200"
                   fontWeight="semibold"
                   onClick={() =>
-                    handleWorkspaceSelection(
+                    
+                  (
                       userInfos.workspace?.id,
                       Pages.workspace({
                         workspaceId: userInfos.workspace?.id,
@@ -81,7 +87,8 @@ const VaultBalancePage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -100,7 +107,7 @@ const VaultBalancePage = () => {
                 onClick={() =>
                   navigate(
                     Pages.detailsVault({
-                      vaultId: vault?.data?.id!,
+                      vaultId: vault?.data?.id,
                       workspaceId: userInfos.workspace?.id ?? '',
                     }),
                   )
@@ -127,7 +134,11 @@ const VaultBalancePage = () => {
 
       <Flex w="full" direction="column" flex={1}>
         <Box mb={5} w="full">
-          <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+          <Text
+            color="grey.50"
+            fontWeight="bold"
+            fontSize={{ base: 'sm', sm: 'unset' }}
+          >
             Balance
           </Text>
         </Box>

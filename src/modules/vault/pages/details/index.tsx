@@ -48,7 +48,7 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { limitedTransactions },
-      request: { isLoading },
+      request: { isLoading, isFetching },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
     pendingSignerTransactions,
@@ -60,7 +60,11 @@ const VaultDetailsPage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { handleWorkspaceSelection, hasPermission, goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        hasPermission,
+        goHome,
+      },
     },
     screenSizes: {
       vaultRequiredSizeToColumnLayout,
@@ -107,7 +111,9 @@ const VaultDetailsPage = () => {
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {!userInfos.onSingleWorkspace && (
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -128,7 +134,7 @@ const VaultDetailsPage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -178,7 +184,7 @@ const VaultDetailsPage = () => {
               )
                 return;
               setTemplateFormInitial({
-                minSigners: vault.data?.minSigners!,
+                minSigners: vault.data?.minSigners,
                 addresses:
                   vault.data.members! &&
                   vault.data?.members.map((signer) => signer.address),
@@ -245,7 +251,7 @@ const VaultDetailsPage = () => {
 
       <CustomSkeleton
         minH="30vh"
-        isLoaded={!vault.isLoading && !isLoading}
+        isLoaded={!vault.isLoading && !isLoading && !isFetching}
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
@@ -317,7 +323,7 @@ const VaultDetailsPage = () => {
                   navigate(
                     Pages.createTransaction({
                       workspaceId: vaultWkId!,
-                      vaultId: vault?.data?.id!,
+                      vaultId: vault?.data?.id,
                     }),
                   )
                 }

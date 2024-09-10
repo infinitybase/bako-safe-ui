@@ -35,6 +35,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
           render={({ field, fieldState }) => (
             <FormControl isInvalid={fieldState.invalid}>
               <Input
+                variant="dark"
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
@@ -53,6 +54,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
           render={({ field, fieldState }) => (
             <FormControl isInvalid={fieldState.invalid}>
               <Input
+                variant="dark"
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "

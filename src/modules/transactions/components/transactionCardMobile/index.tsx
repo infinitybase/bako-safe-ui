@@ -13,11 +13,11 @@ import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 
 import { useDetailsDialog } from '../../hooks/details';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
-import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
@@ -113,7 +113,10 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <Divider borderColor="grey.950" />
 
             <HStack justifyContent="space-between" w="full">
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                transaction={transaction}
+                isDeposit={isDeposit}
+              />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
             </HStack>

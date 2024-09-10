@@ -1,27 +1,21 @@
-import { DoubleArrowIcon } from '@/components';
+import { Icon } from '@chakra-ui/icons';
+import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
+import { Address } from 'fuels';
+import { useMemo } from 'react';
+import { FaPlay } from 'react-icons/fa';
+
+import { DoubleArrowIcon, UnknownIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import {
   AddressUtils,
   AssetModel,
-  IGetTokenInfos,
   assetsMap,
+  IGetTokenInfos,
   useGetParams,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { Icon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  StackProps,
-  Text,
-} from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
-import { Address } from 'fuels';
-import { useMemo } from 'react';
-import { FaPlay } from 'react-icons/fa';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -36,7 +30,6 @@ interface AssetBoxInfoProps extends StackProps {
 const AssetBoxInfo = ({
   asset,
   contractAddress,
-  hasToken,
   isDeposit,
   isDeploy,
   isContract,
@@ -46,7 +39,15 @@ const AssetBoxInfo = ({
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall, isExtraLarge, isLitteSmall },
+    addressBookInfos: {
+      requests: {
+        listContactsRequest: { data },
+      },
+    },
   } = useWorkspaceContext();
+
+  const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
+
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -63,29 +64,28 @@ const AssetBoxInfo = ({
       asset
         ? asset
         : {
-            amount: contractAssetInfo?.assetAmount!,
-            assetId: contractAssetInfo?.assetsInfo.assetId!,
+            amount: contractAssetInfo?.assetAmount ?? '',
+            assetId: contractAssetInfo?.assetsInfo.assetId ?? '',
           },
     ],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 14 }}
+      spacing={{ base: 1, xs: 10 }}
       w="full"
       borderTopWidth={1}
       {...props}
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={assetInfo.slug}
-            size="xs"
-            src={assetInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={assetInfo?.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
@@ -94,11 +94,10 @@ const AssetBoxInfo = ({
       )}
       {contractAssetInfo && isContract && !assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={contractAssetInfo.assetsInfo.slug}
-            size="xs"
-            src={contractAssetInfo.assetsInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={contractAssetInfo.assetsInfo.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {contractAssetInfo.assetsInfo.slug}
@@ -151,15 +150,25 @@ const AssetBoxInfo = ({
           isTruncated
           ml="2px"
         >
-          {isLitteSmall
-            ? AddressUtils.format(
-                Address.fromString(asset.to ?? '').toB256(),
-                isExtraSmall ? 0 : 7,
-              )
-            : AddressUtils.format(
-                Address.fromString(asset.to ?? '').toB256(),
-                !isVaultPage && isExtraLarge ? 24 : 12,
-              )}
+          {savedContact?.nickname ? (
+            <Text
+              isTruncated
+              textOverflow="ellipsis"
+              maxW={{ base: '150px', xs: '95px', xl: 'full' }}
+            >
+              {savedContact.nickname}
+            </Text>
+          ) : isLitteSmall ? (
+            AddressUtils.format(
+              Address.fromString(asset.to ?? '').toB256(),
+              isExtraSmall ? 0 : 7,
+            )
+          ) : (
+            AddressUtils.format(
+              Address.fromString(asset.to ?? '').toB256(),
+              !isVaultPage && isExtraLarge ? 24 : 12,
+            )
+          )}
         </Text>
       )}
 
@@ -172,15 +181,25 @@ const AssetBoxInfo = ({
           isTruncated
           ml="2px"
         >
-          {isLitteSmall
-            ? AddressUtils.format(
-                Address.fromString(contractAddress ?? '').toB256(),
-                isExtraSmall ? 0 : 7,
-              )
-            : AddressUtils.format(
-                Address.fromString(contractAddress ?? '').toB256(),
-                !isVaultPage && isExtraLarge ? 24 : 12,
-              )}
+          {savedContact?.nickname ? (
+            <Text
+              isTruncated
+              textOverflow="ellipsis"
+              maxW={{ base: '150px', xs: '95px', xl: 'full' }}
+            >
+              {savedContact.nickname}
+            </Text>
+          ) : isLitteSmall ? (
+            AddressUtils.format(
+              Address.fromString(contractAddress ?? '').toB256(),
+              isExtraSmall ? 0 : 7,
+            )
+          ) : (
+            AddressUtils.format(
+              Address.fromString(contractAddress ?? '').toB256(),
+              !isVaultPage && isExtraLarge ? 24 : 12,
+            )
+          )}
         </Text>
       )}
     </HStack>
