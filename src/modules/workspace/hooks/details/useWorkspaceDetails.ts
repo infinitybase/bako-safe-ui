@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { setupAxiosInterceptors } from '@/config';
 import {
@@ -10,13 +10,11 @@ import {
   useVaultByIdRequest,
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
-import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
-import { useGitLoadingRequest } from '../useGifLoadingRequest';
+import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
-import { useWorkspace } from '../useWorkspace';
 import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
@@ -36,7 +34,7 @@ const useWorkspaceDetails = () => {
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest(
+  } = useGifLoadingRequest(
     authDetails.handlers.logout,
     authDetails.userInfos,
     isTokenExpired,
@@ -79,7 +77,7 @@ const useWorkspaceDetails = () => {
   });
 
   useEffect(() => {
-    setupAxiosInterceptors(authDetails.handlers.logoutWhenExpired);
+    setupAxiosInterceptors();
   }, []);
 
   return {

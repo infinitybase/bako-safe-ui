@@ -7,7 +7,7 @@ export enum GifLoadingRequestQueryKey {
   ANIMATION_LOADING = 'animation-loading',
 }
 
-const useGitLoadingRequest = (
+const useGifLoadingRequest = (
   logout?: () => void,
   userInfos?: IUserInfos,
   isTokenExpired?: boolean,
@@ -16,7 +16,6 @@ const useGitLoadingRequest = (
   const { address, token } = authCredentials();
 
   const { isLoading, isFetching, refetch } = useQuery({
-    queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
     queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
     queryFn: () =>
       new Promise((resolve) => {

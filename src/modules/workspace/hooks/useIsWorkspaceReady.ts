@@ -1,4 +1,3 @@
-import { useQueryParams } from '@/modules';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
 
@@ -22,11 +21,9 @@ export const useIsWorkspaceReady = ({
   isUserInfosLoading,
   isVaultAssetsLoading,
   isVaultRequestLoading,
-  isWorkspaceBalanceLoading,
   isTokenExpired,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
-  const { expiredSession } = useQueryParams();
 
   const {
     homeTransactions: {
