@@ -1,18 +1,10 @@
 import { Icon } from '@chakra-ui/icons';
-
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  StackProps,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
 import { Address } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { DoubleArrowIcon } from '@/components';
+import { DoubleArrowIcon, UnknownIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
