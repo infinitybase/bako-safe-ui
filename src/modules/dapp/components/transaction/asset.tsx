@@ -1,12 +1,19 @@
-import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  ComponentWithAs,
+  HStack,
+  Icon,
+  IconProps,
+  Text,
+} from '@chakra-ui/react';
 
-import { Card } from '@/components';
+import { Card, UnknownIcon } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { AddressUtils } from '@/modules/core/utils';
 
 export interface FeeProps {
   assets: {
-    icon?: string;
+    icon?: ComponentWithAs<'svg', IconProps>;
     amount: string;
     assetId: string;
     name: string;
@@ -27,13 +34,10 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
           px={3}
           maxW={356}
         >
-          <Avatar
-            color="white"
-            bgColor={asset.icon ? 'transparent' : 'grey.950'}
-            variant="roundedSquare"
-            src={asset.icon}
-            name={asset.name}
-            boxSize={10}
+          <Icon
+            w={{ base: 6, sm: 6 }}
+            h={{ base: 6, sm: 6 }}
+            as={asset?.icon ?? UnknownIcon}
           />
           <Box w="full">
             <Text variant="subtitle" fontSize={12} color="grey.75">

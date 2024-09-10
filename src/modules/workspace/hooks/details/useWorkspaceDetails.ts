@@ -10,11 +10,13 @@ import {
   useVaultByIdRequest,
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
+import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useGitLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
+import { useWorkspace } from '../useWorkspace';
 import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
@@ -75,6 +77,10 @@ const useWorkspaceDetails = () => {
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
     isTokenExpired,
   });
+
+  useEffect(() => {
+    setupAxiosInterceptors(authDetails.handlers.logoutWhenExpired);
+  }, []);
 
   return {
     isWorkspaceReady,

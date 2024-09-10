@@ -1,4 +1,5 @@
 import { Icon } from '@chakra-ui/icons';
+
 import {
   Avatar,
   Box,
@@ -89,11 +90,10 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={assetInfo.slug}
-            size="xs"
-            src={assetInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={assetInfo?.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
@@ -102,11 +102,10 @@ const AssetBoxInfo = ({
       )}
       {contractAssetInfo && isContract && !assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={contractAssetInfo.assetsInfo.slug}
-            size="xs"
-            src={contractAssetInfo.assetsInfo.icon}
-            ignoreFallback
+          <Icon
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            as={contractAssetInfo.assetsInfo.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {contractAssetInfo.assetsInfo.slug}

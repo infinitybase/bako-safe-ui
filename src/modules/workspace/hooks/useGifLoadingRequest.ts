@@ -17,6 +17,7 @@ const useGitLoadingRequest = (
 
   const { isLoading, isFetching, refetch } = useQuery({
     queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
+    queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
     queryFn: () =>
       new Promise((resolve) => {
         if (
@@ -44,4 +45,4 @@ const useGitLoadingRequest = (
   };
 };
 
-export { useGitLoadingRequest };
+export { useGifLoadingRequest };

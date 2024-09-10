@@ -7,6 +7,7 @@ const useQueryParams = () => {
   const queryParams = useMemo(() => {
     const searchParams = new URLSearchParams(location.search);
     const sessionId = searchParams.get('sessionId');
+    const expiredSession = searchParams.get('expired') === 'true';
     const address = searchParams.get('address');
     const isNew = searchParams.get('new');
     const name = searchParams.get('name');
@@ -18,6 +19,7 @@ const useQueryParams = () => {
     const byConnector = searchParams.get('byConnector') === 'true';
 
     return {
+      expiredSession,
       sessionId,
       address,
       isNew,
