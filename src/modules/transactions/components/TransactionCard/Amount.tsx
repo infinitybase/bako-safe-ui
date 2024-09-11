@@ -66,8 +66,8 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
         {hasNoDefaultAssets && (
           <Icon
             key={assetsMap[operationAssets.assetId]?.assetId}
-            w={{ base: 8, sm: 8 }}
-            h={{ base: 8, sm: 8 }}
+            w={6}
+            h={6}
             as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
           />
         )}
@@ -75,8 +75,8 @@ const Amount = ({ transaction, isDeposit }: TransactionCardAmountProps) => {
         {oneAssetOfEach.map((asset) => (
           <Icon
             key={asset.assetId}
-            w={{ base: 8, sm: 8 }}
-            h={{ base: 8, sm: 8 }}
+            w={6}
+            h={6}
             as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
           />
         ))}
