@@ -9,7 +9,6 @@ import {
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
-import { AddressUtils } from '@/modules/core/utils';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultDrawer } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
@@ -53,15 +52,15 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   return (
     <Box
       w="100%"
-      maxW="350px"
-      bgColor={onDrawer ? 'transparent' : 'dark.500'}
+      maxW="300px"
+      bgColor={onDrawer ? 'transparent' : 'dark.950'}
       borderRightWidth={1}
       borderRightColor="dark.100"
-      py={6}
-      px={6}
+      boxShadow="8px 0px 6px 0px rgba(0, 0, 0, 0.15)"
+      p="24px 16px 16px 16px"
       {...rest}
     >
-      <VStack position="fixed" width="275px">
+      <VStack position="fixed" width="268px">
         {/* VAULT DRAWER LIST */}
         <VaultDrawer
           isOpen={drawer.isOpen}
@@ -74,7 +73,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           isFirstAssetsLoading={isLoading}
           name={String(`${vault.data?.name?.slice(0, 9)}...`)}
           fullName={String(vault.data?.name)}
-          address={AddressUtils.format(vault?.data?.predicateAddress ?? '')!}
+          address={vault?.data?.predicateAddress ?? ''}
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount
           }
@@ -118,7 +117,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             }
           >
             <SidebarMenu.Icon as={HomeIcon} />
-            <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+            <SidebarMenu.Title isActive>Overview</SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container

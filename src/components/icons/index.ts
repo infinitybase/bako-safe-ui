@@ -23,6 +23,7 @@ export * from './exchange';
 export * from './exit';
 export * from './forward-icon';
 export * from './home';
+export * from './left-and-right-arrow';
 export * from './line-close-icon';
 export * from './minimal-alert';
 export * from './more-less';

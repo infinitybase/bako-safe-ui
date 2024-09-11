@@ -47,8 +47,10 @@ const Icon = (props: MergeWithAs<IconProps, never>) => (
 const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (
   <Text
     variant="subtitle"
-    fontSize={{ base: 'md', sm: 'lg' }}
-    fontWeight={isActive ? 'bold' : 'semibold'}
+    fontSize="sm"
+    fontWeight={600}
+    color={isActive ? 'grey.50' : 'grey.425'}
+    lineHeight="16.94px"
     {...props}
   />
 );
