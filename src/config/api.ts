@@ -30,7 +30,7 @@ export interface IApiError {
 }
 
 export interface ISetupAxiosInterceptors {
-  isFromDapp: boolean;
+  isTxFromDapp: boolean;
   isTokenExpired: boolean;
   setIsTokenExpired: (value: boolean) => void;
   logout: () => void;
@@ -42,7 +42,7 @@ const api = axios.create({
 });
 
 const setupAxiosInterceptors = ({
-  isFromDapp,
+  isTxFromDapp,
   isTokenExpired,
   setIsTokenExpired,
   logout,
@@ -65,7 +65,7 @@ const setupAxiosInterceptors = ({
     async (error) => {
       const unauthorizedError = error.response?.status === 401;
 
-      if (unauthorizedError && !isTokenExpired && !isFromDapp) {
+      if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
         setIsTokenExpired(true);
         logout();
         queryClient.invalidateQueries({
