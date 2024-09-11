@@ -8,6 +8,8 @@ import {
   TransactionRequestLike,
 } from 'fuels';
 
+import { EthereumIcon } from '@/components';
+
 export interface TransactionSimulateParams {
   transactionLike: TransactionRequestLike;
   providerUrl: string;
@@ -61,9 +63,23 @@ class FuelTransactionService {
       provider,
     });
 
+    const incrementContractCallAsset =
+      operations.length === 1 && !operations[0].assetsSent
+        ? {
+            to: operations[0].to,
+            from: operations[0].from,
+            amount: transactionLike.inputs?.[1]?.['amount'],
+            assetId: transactionLike.inputs?.[1]?.['assetId'],
+            name: 'Ethereum',
+            slug: 'ETH',
+            icon: EthereumIcon,
+          }
+        : null;
+
     return {
       fee: transactionRequest.maxFee.format(),
       operations: operations,
+      incrementContractCallAsset,
     };
   }
 }

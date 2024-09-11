@@ -1,7 +1,13 @@
-import { Box, HStack, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  ComponentWithAs,
+  HStack,
+  IconProps,
+  VStack,
+} from '@chakra-ui/react';
 import { AddressType } from '@fuel-ts/providers';
 import { Vault } from 'bakosafe';
-import { bn, Operation } from 'fuels';
+import { bn, Operation, OperationTransactionAddress } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
 import { assetsMap } from '@/modules/core/utils';
@@ -12,6 +18,14 @@ import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 interface OperationProps {
   vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
   operation?: Operation;
+  incrementContractCallAsset: {
+    to: OperationTransactionAddress | undefined;
+    from: OperationTransactionAddress | undefined;
+    amount: string;
+    assetId: string;
+    name: string;
+    icon: ComponentWithAs<'svg', IconProps>;
+  } | null;
 }
 
 export const DappTransactionOperationSekeleton = () => (
@@ -34,20 +48,37 @@ export const DappTransactionOperationSekeleton = () => (
   </VStack>
 );
 
-const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
+const DappTransactionOperation = ({
+  vault,
+  operation,
+  incrementContractCallAsset,
+}: OperationProps) => {
   const { to, assetsSent } = operation ?? {};
 
-  if (!to || !assetsSent || !vault) return null;
+  if (!to || (!assetsSent && !incrementContractCallAsset) || !vault)
+    return null;
 
-  const assetData = assetsMap[assetsSent[0].assetId] ?? assetsMap['UNKNOWN'];
+  const assetData = assetsSent
+    ? assetsMap[assetsSent[0].assetId]
+    : incrementContractCallAsset && !assetsSent
+      ? assetsMap[incrementContractCallAsset.assetId]
+      : assetsMap['UNKNOWN'];
 
   const assets = [
     {
-      icon: assetData.icon,
-      amount: bn(assetsSent[0].amount ?? '').format(),
-      assetId: assetsSent[0].assetId,
-      name: assetData.name,
-      slug: assetData.slug,
+      icon: assetData?.icon,
+      amount: bn(
+        assetsSent
+          ? assetsSent[0].amount
+          : incrementContractCallAsset
+            ? incrementContractCallAsset?.amount
+            : '',
+      ).format(),
+      assetId: assetsSent
+        ? assetsSent[0].assetId
+        : (incrementContractCallAsset?.assetId ?? ''),
+      name: assetData?.name,
+      slug: assetData?.slug,
     },
   ];
   const hasAssets = !!assets?.length;

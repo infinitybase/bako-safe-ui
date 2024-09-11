@@ -167,6 +167,9 @@ const TransactionConfirm = () => {
                   predicateAddress: vault?.address || '',
                 }}
                 operation={operation}
+                incrementContractCallAsset={
+                  transactionSummary.incrementContractCallAsset
+                }
               />
             ))}
           </VStack>
