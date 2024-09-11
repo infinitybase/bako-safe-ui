@@ -1,5 +1,9 @@
 export * from './alert';
 export * from './arrow-down';
+export * from './assets/bitcoin';
+export * from './assets/ethereum';
+export * from './assets/uniswap';
+export * from './assets/unknown';
 export * from './bit-coin';
 export * from './chart-bullet';
 export * from './check-icon';
@@ -39,6 +43,7 @@ export * from './square-plus';
 export * from './success';
 export * from './up-right-arrow';
 export * from './up-right-arrow-yellow';
+export * from './usdc';
 export * from './user-add';
 export * from './vault';
 export * from './vault-success';

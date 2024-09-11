@@ -217,9 +217,10 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
 
-      {!vaults?.length && (
+      {!vaults?.length && !loadingVaults && (
         <CustomSkeleton isLoaded={!loadingVaults}>
           <EmptyState
+            bg={'red'}
             showAction={hasPermission([OWNER, MANAGER, ADMIN])}
             title={`Let's Begin!`}
             subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}

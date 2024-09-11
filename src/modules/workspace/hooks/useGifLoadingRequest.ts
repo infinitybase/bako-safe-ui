@@ -4,7 +4,7 @@ export enum GifLoadingRequestQueryKey {
   ANIMATION_LOADING = 'animation-loading',
 }
 
-const useGitLoadingRequest = () => {
+const useGifLoadingRequest = () => {
   const { isLoading, isFetching, refetch } = useQuery({
     queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
     queryFn: () =>
@@ -21,4 +21,4 @@ const useGitLoadingRequest = () => {
   };
 };
 
-export { useGitLoadingRequest };
+export { useGifLoadingRequest };
