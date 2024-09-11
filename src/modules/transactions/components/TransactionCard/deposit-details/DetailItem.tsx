@@ -10,11 +10,10 @@ import {
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 
-import { DoubleArrowIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { AddressWithCopyBtn } from '../transfer-details';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
 

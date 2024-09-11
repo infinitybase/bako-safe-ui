@@ -10,13 +10,11 @@ import {
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { DoubleArrowIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel, assetsMap, IGetTokenInfos } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { AddressWithCopyBtn } from './transfer-details';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
