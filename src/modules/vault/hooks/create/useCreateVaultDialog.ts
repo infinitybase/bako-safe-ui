@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 
+import { queryClient } from '@/config';
 import { useQueryParams } from '@/modules/auth';
+import { Pages } from '@/modules/core';
 import { useCreateConnections } from '@/modules/dapp/hooks/useCreateConnection';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TabState, useCreateVault } from './useCreateVault';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { Pages } from '@/modules/core';
 
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
@@ -20,6 +21,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     useCreateVault();
 
   const { name, origin, sessionId, request_id } = useQueryParams();
+  const isSignInFromDapp = location.search.includes('Connectors') && sessionId;
+
   const createConnectionsMutation = useCreateConnections();
   const {
     authDetails: { userInfos },
@@ -27,6 +30,11 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       handlers: { handleWorkspaceSelection },
     },
   } = useWorkspaceContext();
+
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
+    props.onClose();
+  };
 
   const handleCancel = useCallback(() => {
     tabs.set(TabState.INFO);
@@ -82,13 +90,16 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       disable: false,
       description: null,
       onContinue: () => {
-        handleWorkspaceSelection(
-          userInfos?.workspace?.id,
-          Pages.detailsVault({
-            vaultId,
-            workspaceId: userInfos?.workspace?.id,
-          }),
-        );
+        if (!isSignInFromDapp) {
+          handleWorkspaceSelection(
+            userInfos?.workspace?.id,
+            Pages.detailsVault({
+              vaultId,
+              workspaceId: userInfos?.workspace?.id,
+            }),
+          );
+        }
+        handleClose();
       },
       onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
       closeText: `Done`,
