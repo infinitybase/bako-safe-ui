@@ -5,6 +5,7 @@ import {
   useAddressBook,
   useGetParams,
   useGetWorkspaceRequest,
+  useQueryParams,
   useScreenSize,
   useVaultAssets,
   useVaultByIdRequest,
@@ -20,6 +21,7 @@ import { useWorkspace } from '../useWorkspace';
 const useWorkspaceDetails = () => {
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
+  const { sessionId } = useQueryParams();
 
   const authDetails = useAuth();
   const {
@@ -37,11 +39,12 @@ const useWorkspaceDetails = () => {
   } = useGifLoadingRequest();
 
   useEffect(() => {
-    setupAxiosInterceptors(
+    setupAxiosInterceptors({
+      isFromDapp: !!sessionId,
       isTokenExpired,
       setIsTokenExpired,
-      authDetails.handlers.logout,
-    );
+      logout: authDetails.handlers.logout,
+    });
   }, []);
 
   const {

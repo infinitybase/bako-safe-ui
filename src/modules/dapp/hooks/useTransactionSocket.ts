@@ -12,6 +12,8 @@ interface IVaultEvent {
   description: string;
   provider: string;
   pending_tx: boolean;
+  configurable: string;
+  version: string;
 }
 
 export const useTransactionSocket = () => {
@@ -21,6 +23,8 @@ export const useTransactionSocket = () => {
     description: '',
     provider: '',
     pending_tx: true,
+    configurable: '',
+    version: '',
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
@@ -44,8 +48,9 @@ export const useTransactionSocket = () => {
     setValidAt(validAt);
     summary.getTransactionSummary({
       transactionLike: tx,
-      from: vault.address,
       providerUrl: vault.provider,
+      configurable: vault.configurable,
+      version: vault.version,
     });
   };
 
