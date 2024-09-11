@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
+  useAuthUrlParams,
   useGetParams,
   useGetWorkspaceRequest,
-  useQueryParams,
   useScreenSize,
   useVaultAssets,
   useVaultByIdRequest,
@@ -21,9 +21,9 @@ import { useWorkspace } from '../useWorkspace';
 const useWorkspaceDetails = () => {
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
-  const { sessionId } = useQueryParams();
 
   const authDetails = useAuth();
+  const { isTxFromDapp } = useAuthUrlParams();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -40,7 +40,7 @@ const useWorkspaceDetails = () => {
 
   useEffect(() => {
     setupAxiosInterceptors({
-      isFromDapp: !!sessionId,
+      isTxFromDapp,
       isTokenExpired,
       setIsTokenExpired,
       logout: authDetails.handlers.logout,
