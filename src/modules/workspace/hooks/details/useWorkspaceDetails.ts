@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
+  useAuthUrlParams,
   useGetParams,
   useGetWorkspaceRequest,
-  useQueryParams,
   useScreenSize,
   useVaultAssets,
   useVaultByIdRequest,
@@ -21,12 +21,9 @@ import { useWorkspace } from '../useWorkspace';
 const useWorkspaceDetails = () => {
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
-  const {
-    sessionId,
-    location: { pathname },
-  } = useQueryParams();
 
   const authDetails = useAuth();
+  const { isTxFromDapp } = useAuthUrlParams();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -40,14 +37,6 @@ const useWorkspaceDetails = () => {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
-
-  const isTxFromDapp = useMemo(() => {
-    return (
-      !!sessionId &&
-      pathname.includes('dapp') &&
-      pathname.includes('transaction')
-    );
-  }, [sessionId, pathname]);
 
   useEffect(() => {
     setupAxiosInterceptors({
