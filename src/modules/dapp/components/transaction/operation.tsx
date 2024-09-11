@@ -58,11 +58,14 @@ const DappTransactionOperation = ({
   if (!to || (!assetsSent && !incrementContractCallAsset) || !vault)
     return null;
 
-  const assetData = assetsSent
-    ? assetsMap[assetsSent[0].assetId]
-    : incrementContractCallAsset && !assetsSent
-      ? assetsMap[incrementContractCallAsset.assetId]
-      : assetsMap['UNKNOWN'];
+  const assetData =
+    assetsSent && !assetsMap[assetsSent[0].assetId]
+      ? assetsMap['UNKNOWN']
+      : assetsSent && assetsMap[assetsSent[0].assetId]
+        ? assetsMap[assetsSent[0].assetId]
+        : incrementContractCallAsset && !assetsSent
+          ? assetsMap[incrementContractCallAsset.assetId]
+          : assetsMap['UNKNOWN'];
 
   const assets = [
     {
