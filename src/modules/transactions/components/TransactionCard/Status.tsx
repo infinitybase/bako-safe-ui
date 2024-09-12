@@ -40,8 +40,13 @@ const Status = ({
 
   const { isCurrentTxPending } = useTransactionState();
 
+  const isTransactionDeclined =
+    transaction?.status === TransactionStatus.DECLINED;
+
   const isPending =
-    isCurrentTxPending && transaction.status !== TransactionStatus.SUCCESS;
+    isCurrentTxPending &&
+    transaction.status !== TransactionStatus.SUCCESS &&
+    !isTransactionDeclined;
 
   return (
     <HStack
