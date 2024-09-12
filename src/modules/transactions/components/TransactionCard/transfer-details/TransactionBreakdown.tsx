@@ -88,8 +88,6 @@ const TransactionBreakdown = ({
           transaction={transaction}
           isNotSigned={isNotSigned}
           isPending={isPending}
-          isContract={isContract}
-          isMint={isMint}
         />
       )}
 
