@@ -89,7 +89,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
           </VStack>
           <Divider mt={4} />
 
-          <TransactionCard.Details transaction={transaction} isMobile />
+          <TransactionCard.Details
+            transaction={transaction}
+            isMobile
+            isMobileDetailsOpen={isOpen}
+          />
         </VStack>
       </Dialog.Body>
 
