@@ -8,6 +8,7 @@ import { AssetBoxInfo, TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
 import { DeploymentInfo } from './DeploymentInfos';
+import MintTokenInfos from './mint-token/MintToken';
 
 interface ITransactionBreakdown {
   transaction: TransactionUI;
@@ -26,6 +27,7 @@ const TransactionBreakdown = ({
     isPending,
     isDeploy,
     isDeposit,
+    isMint,
   } = useVerifyTransactionInformations(transaction);
 
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
@@ -71,13 +73,14 @@ const TransactionBreakdown = ({
           />
         ))}
 
-        {isContract && (
+        {isContract && !isMint && (
           <ContractAddresses
             transaction={transaction}
             borderColor="grey.950"
             borderBottomWidth={1}
           />
         )}
+        {isMint && <MintTokenInfos transaction={transaction} />}
       </Box>
 
       {isFromConnector && !isDeploy && (
@@ -85,6 +88,8 @@ const TransactionBreakdown = ({
           transaction={transaction}
           isNotSigned={isNotSigned}
           isPending={isPending}
+          isContract={isContract}
+          isMint={isMint}
         />
       )}
 

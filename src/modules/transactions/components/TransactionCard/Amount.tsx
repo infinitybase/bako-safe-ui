@@ -100,9 +100,7 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {hasNoDefaultAssets && isDeposit
-                  ? operationAssets.amount
-                  : totalAmoutSent}
+                {hasNoDefaultAssets ? operationAssets.amount : totalAmoutSent}
               </Text>
             )}
             <Text
