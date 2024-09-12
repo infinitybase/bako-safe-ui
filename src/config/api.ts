@@ -29,16 +29,24 @@ export interface IApiError {
   detail: string;
 }
 
+export interface ISetupAxiosInterceptors {
+  isTxFromDapp: boolean;
+  isTokenExpired: boolean;
+  setIsTokenExpired: (value: boolean) => void;
+  logout: () => void;
+}
+
 const api = axios.create({
   baseURL: VITE_API_URL,
   timeout: 10 * 1000, // limit to try other requests
 });
 
-const setupAxiosInterceptors = (
-  isTokenExpired: boolean,
-  setIsTokenExpired: (value: boolean) => void,
-  logout: () => void,
-) => {
+const setupAxiosInterceptors = ({
+  isTxFromDapp,
+  isTokenExpired,
+  setIsTokenExpired,
+  logout,
+}: ISetupAxiosInterceptors) => {
   api.interceptors.request.use(
     (value) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
@@ -57,7 +65,7 @@ const setupAxiosInterceptors = (
     async (error) => {
       const unauthorizedError = error.response?.status === 401;
 
-      if (unauthorizedError && !isTokenExpired) {
+      if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
         setIsTokenExpired(true);
         logout();
         queryClient.invalidateQueries({
