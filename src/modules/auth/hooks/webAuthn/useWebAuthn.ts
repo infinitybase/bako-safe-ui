@@ -1,7 +1,8 @@
-import { KeyboardEvent, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
+import { ActionKeys, handleActionUsingKeys } from '@/utils';
 
 import { TypeUser } from '../../services/methods';
 import {
@@ -65,22 +66,17 @@ const useWebAuthn = () => {
     }
   }, [checkNicknameRequest.data?.type]);
 
-  const handleActionUsingEnterKey = (
-    e: KeyboardEvent<HTMLInputElement>,
-    enabled: boolean,
-    action: () => void,
-  ) => {
-    if (e.key === 'Enter' && enabled) {
-      action();
-    }
-  };
-
   const formState = {
     [WebAuthnModeState.SEARCH]: {
       label: 'Continue',
       handleAction: handleNextStep,
-      handleActionUsingEnterKey: (e: KeyboardEvent<HTMLInputElement>) =>
-        handleActionUsingEnterKey(e, isSearchModeBtnDisabled, handleNextStep),
+      handleActionUsingEnterKey: (pressedKey: string) =>
+        handleActionUsingKeys({
+          pressedKey,
+          allowedKeys: [ActionKeys.Enter],
+          action: handleNextStep,
+          enabled: !isSearchModeBtnDisabled,
+        }),
       isLoading: false,
       isDisabled: isSearchModeBtnDisabled,
       actionProgress: 0,
@@ -88,8 +84,13 @@ const useWebAuthn = () => {
     [WebAuthnModeState.LOGIN]: {
       label: 'Login account',
       handleAction: handleLogin,
-      handleActionUsingEnterKey: (e: KeyboardEvent<HTMLInputElement>) =>
-        handleActionUsingEnterKey(e, isLoginModeBtnDisabled, handleLogin),
+      handleActionUsingEnterKey: (pressedKey: string) =>
+        handleActionUsingKeys({
+          pressedKey,
+          allowedKeys: [ActionKeys.Enter],
+          action: handleLogin,
+          enabled: !isLoginModeBtnDisabled,
+        }),
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       actionProgress: signInProgress,
@@ -97,8 +98,13 @@ const useWebAuthn = () => {
     [WebAuthnModeState.REGISTER]: {
       label: 'Create account',
       handleAction: handleRegister,
-      handleActionUsingEnterKey: (e: KeyboardEvent<HTMLInputElement>) =>
-        handleActionUsingEnterKey(e, isRegisterModeBtnDisabled, handleRegister),
+      handleActionUsingEnterKey: (pressedKey: string) =>
+        handleActionUsingKeys({
+          pressedKey,
+          allowedKeys: [ActionKeys.Enter],
+          action: handleRegister,
+          enabled: !isRegisterModeBtnDisabled,
+        }),
       isLoading: isRegistering,
       isDisabled: isRegisterModeBtnDisabled,
       actionProgress: registerProgress,
@@ -106,8 +112,7 @@ const useWebAuthn = () => {
     [WebAuthnModeState.ACCOUNT_CREATED]: {
       label: 'Begin',
       handleAction: handleLogin,
-      handleActionUsingEnterKey: (e: KeyboardEvent<HTMLInputElement>) =>
-        handleActionUsingEnterKey(e, isLoginModeBtnDisabled, handleLogin),
+      handleActionUsingEnterKey: undefined,
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       actionProgress: signInProgress,
