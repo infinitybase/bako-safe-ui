@@ -1,7 +1,6 @@
 import { Box, useMediaQuery, VStack } from '@chakra-ui/react';
 import React from 'react';
 
-import logo from '@/assets/bakoLogoDark.svg';
 import bakoSymbol from '@/assets/bakoSymbol.svg';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -65,12 +64,25 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
           style={{
             position: 'absolute',
             top: '117px',
-            left: '77px',
+            left: '50%',
             transform: 'translate(-50%, -50%)',
             height: '100%',
             maxHeight: '10.75rem',
           }}
         />
+
+        <Box
+          w="full"
+          minH={173}
+          display="flex"
+          backgroundColor="brand.500"
+          bgGradient="linear(to-br, brand.500 , brand.800)"
+          borderRadius="10px 10px 0px 0px"
+          p={6}
+          pl={{ base: '40%', sm: '30%' }}
+          mb={16}
+        />
+
         {props.children}
       </VStack>
     </SigninContainerBackground>
@@ -108,14 +120,6 @@ const SigninContainer = (props: SigninContainerProps) => {
           position="relative"
         >
           <img
-            src={logo}
-            alt=""
-            style={{
-              width: '65%',
-              marginTop: 'auto',
-            }}
-          />
-          <img
             src={bakoSymbol}
             alt=""
             style={{
@@ -135,10 +139,6 @@ const SigninContainer = (props: SigninContainerProps) => {
           py={8}
           position="sticky"
           display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="space-evenly"
-          gap={4}
         >
           {props.children}
         </Box>

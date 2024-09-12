@@ -1,39 +1,26 @@
-import { useEffect } from 'react';
+import { useWebAuthn } from '../webAuthn';
 
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { useQueryParams } from '../usePopup';
-import { useWebAuthn } from '../useWebAuthn';
+export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
 const useWebAuthnSignIn = () => {
-  const { sessionId, isOpenWebAuth, byConnector } = useQueryParams();
-  const { invalidateGifAnimationRequest } = useWorkspaceContext();
-  const { openWebAuthnDrawer, ...rest } = useWebAuthn(
-    invalidateGifAnimationRequest,
-  );
+  // const { sessionId, isOpenWebAuth, byConnector } = useQueryParams();
 
-  const handleSelectWebAuthn = () => {
-    const isConnector = byConnector && !!sessionId;
+  const { ...rest } = useWebAuthn();
 
-    if (isConnector) {
-      window.open(
-        `${window.origin}/${window.location.search}&openWebAuth=true`,
-        '_blank',
-      );
-    }
+  // const handleSelectWebAuthn = () => {
+  //   const isConnector = byConnector && !!sessionId;
 
-    return openWebAuthnDrawer();
-  };
+  //   if (isConnector) {
+  //     window.open(
+  //       `${window.origin}/${window.location.search}&openWebAuth=true`,
+  //       '_blank',
+  //     );
+  //   }
 
-  useEffect(() => {
-    if (isOpenWebAuth) {
-      openWebAuthnDrawer();
-    }
-  }, []);
+  //   return openWebAuthnDrawer();
+  // };
 
   return {
-    handleSelectWebAuthn,
-    openWebAuthnDrawer,
     ...rest,
   };
 };

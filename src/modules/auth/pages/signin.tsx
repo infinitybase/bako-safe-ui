@@ -1,28 +1,31 @@
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { TabPanel, TabPanels, Tabs, VStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { useWalletSignIn, useWebAuthnSignIn } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
 import {
   ConnectorsList,
-  DrawerWebAuthn,
   SigninContainer,
   SigninContainerMobile,
   SignInFooter,
+  SignInHeader,
+  WebAuthnAccountCreated,
+  WebAuthnSignIn,
 } from '@/modules/auth/components';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SigninPage = () => {
   const { connectors } = useListConnectors();
-  const {
-    isOpen,
-    closeWebAuthnDrawer,
-    openWebAuthnDrawer,
-    handleSelectWebAuthn,
-    ...rest
-  } = useWebAuthnSignIn();
   const { handleSelectWallet, isAnyWalletConnectorOpen } = useWalletSignIn();
+  const {
+    tabs,
+    formData,
+    formState,
+    accountsOptions,
+    createdAcccountUsername,
+    handleInputChange,
+  } = useWebAuthnSignIn();
   const { errorToast } = useContactToast();
   const {
     authDetails: auth,
@@ -42,94 +45,93 @@ const SigninPage = () => {
     auth.handlers.setInvalidAccount?.(false);
   }, [auth.invalidAccount]);
 
-  const WebauthnDrawer = (
-    <DrawerWebAuthn
-      isOpen={isOpen} // todo: move the complete item with webauthn to component
-      onClose={closeWebAuthnDrawer}
-      webauthn={{
-        ...rest,
-        isOpen,
-        openWebAuthnDrawer,
-        closeWebAuthnDrawer,
-      }}
-    />
-  );
-
   if (isMobile) {
     return (
       <SigninContainerMobile>
-        {WebauthnDrawer}
-        <Box
-          w="full"
-          minH={173}
-          display="flex"
-          backgroundColor="brand.500"
-          bgGradient="linear(to-br, brand.500 , brand.800)"
-          borderRadius="10px 10px 0px 0px"
-          p={6}
-          pl={{ base: '40%', sm: '30%' }}
-        >
-          <Box
-            flex={1}
-            display="flex"
-            alignItems="center"
-            justifyContent="flex-end"
-          >
-            <Heading
-              fontSize={28}
-              fontWeight="extrabold"
-              bgClip="text"
-              color="dark.300"
-              textAlign="end"
-            >
-              {pageSections.title}
-            </Heading>
-          </Box>
-        </Box>
+        <Tabs index={tabs.tab} flex={1} w="full">
+          <TabPanels h="full">
+            <TabPanel h="full" p={0}>
+              <SignInHeader title={pageSections.title} />
 
-        <VStack
-          justifyContent="center"
-          w="full"
-          pt={14}
-          pb={2}
-          px={6}
-          spacing={8}
-        >
-          <ConnectorsList
-            connectors={connectors}
-            onWalletSelect={handleSelectWallet}
-            onWebAuthnSelect={handleSelectWebAuthn}
-            isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-          />
+              <VStack
+                justifyContent="center"
+                w="full"
+                pt={14}
+                pb={2}
+                px={6}
+                spacing={8}
+              >
+                <WebAuthnSignIn
+                  formData={formData}
+                  formState={formState}
+                  accountsOptions={accountsOptions}
+                  handleInputChange={handleInputChange}
+                />
 
-          <SignInFooter />
-        </VStack>
+                <ConnectorsList
+                  connectors={connectors}
+                  onWalletSelect={handleSelectWallet}
+                  //onWebAuthnSelect={handleSelectWebAuthn}
+                  onWebAuthnSelect={() => console.log('onWebAuthnSelect')}
+                  isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+                />
+
+                <SignInFooter />
+              </VStack>
+            </TabPanel>
+
+            <TabPanel h="full">
+              <WebAuthnAccountCreated
+                title={createdAcccountUsername}
+                formState={formState}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </SigninContainerMobile>
     );
   }
 
   return (
     <SigninContainer>
-      {WebauthnDrawer}
-      <VStack justifyContent="center" textAlign="center" w="full" spacing={0}>
-        <Text
-          fontSize={32}
-          fontWeight="bold"
-          bgGradient="linear(to-br, brand.500, brand.800)"
-          bgClip="text"
-        >
-          {pageSections.title}
-        </Text>
-      </VStack>
+      <Tabs index={tabs.tab} flex={1} w="full">
+        <TabPanels h="full">
+          <TabPanel h="full" p={0}>
+            <VStack
+              h="full"
+              spacing={4}
+              alignItems="center"
+              justifyContent="space-evenly"
+            >
+              <SignInHeader title={pageSections.title} />
 
-      <ConnectorsList
-        connectors={connectors}
-        onWalletSelect={handleSelectWallet}
-        onWebAuthnSelect={handleSelectWebAuthn}
-        isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-      />
+              <WebAuthnSignIn
+                formData={formData}
+                formState={formState}
+                accountsOptions={accountsOptions}
+                handleInputChange={handleInputChange}
+              />
 
-      <SignInFooter />
+              <ConnectorsList
+                connectors={connectors}
+                onWalletSelect={handleSelectWallet}
+                //onWebAuthnSelect={handleSelectWebAuthn}
+                onWebAuthnSelect={() => console.log('onWebAuthnSelect')}
+                isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+              />
+
+              <SignInFooter />
+            </VStack>
+          </TabPanel>
+
+          <TabPanel h="full">
+            <WebAuthnAccountCreated
+              title={createdAcccountUsername}
+              formState={formState}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </SigninContainer>
   );
 };

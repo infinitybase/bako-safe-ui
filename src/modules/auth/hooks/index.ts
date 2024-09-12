@@ -4,4 +4,4 @@ export * from './useAuthCookies';
 export * from './usePopup';
 export * from './useRedirectAuthUser';
 export * from './useRedirectFromLandingPage';
-export * from './useWebAuthn';
+export * from './webAuthn';
