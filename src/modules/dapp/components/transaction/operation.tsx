@@ -1,13 +1,6 @@
-import {
-  Box,
-  ComponentWithAs,
-  HStack,
-  IconProps,
-  VStack,
-} from '@chakra-ui/react';
-import { AddressType } from '@fuel-ts/providers';
+import { Box, HStack, VStack } from '@chakra-ui/react';
 import { Vault } from 'bakosafe';
-import { bn, Operation, OperationTransactionAddress } from 'fuels';
+import { bn, Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
 import { assetsMap } from '@/modules/core/utils';
@@ -15,17 +8,11 @@ import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asse
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 
+import { IFuelTransactionNames } from '../../services';
+
 interface OperationProps {
   vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
   operation?: Operation;
-  incrementContractCallAsset: {
-    to: OperationTransactionAddress | undefined;
-    from: OperationTransactionAddress | undefined;
-    amount: string;
-    assetId: string;
-    name: string;
-    icon: ComponentWithAs<'svg', IconProps>;
-  } | null;
 }
 
 export const DappTransactionOperationSekeleton = () => (
@@ -48,51 +35,50 @@ export const DappTransactionOperationSekeleton = () => (
   </VStack>
 );
 
-const DappTransactionOperation = ({
-  vault,
-  operation,
-  incrementContractCallAsset,
-}: OperationProps) => {
-  const { to, assetsSent } = operation ?? {};
+const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
+  const { to, assetsSent, from, name } = operation ?? {};
 
-  if (!to || (!assetsSent && !incrementContractCallAsset) || !vault)
-    return null;
+  const isContract =
+    (name as unknown as IFuelTransactionNames) ===
+    IFuelTransactionNames.CONTRACT_CALL;
 
-  const assetData =
-    assetsSent && !assetsMap[assetsSent[0].assetId]
-      ? assetsMap['UNKNOWN']
-      : assetsSent && assetsMap[assetsSent[0].assetId]
-        ? assetsMap[assetsSent[0].assetId]
-        : incrementContractCallAsset && !assetsSent
-          ? assetsMap[incrementContractCallAsset.assetId]
-          : assetsMap['UNKNOWN'];
+  if (!to || !from || !vault) return null;
 
-  const assets = [
-    {
-      icon: assetData?.icon,
-      amount: bn(
-        assetsSent
-          ? assetsSent[0].amount
-          : incrementContractCallAsset
-            ? incrementContractCallAsset?.amount
-            : '',
-      ).format(),
-      assetId: assetsSent
-        ? assetsSent[0].assetId
-        : (incrementContractCallAsset?.assetId ?? ''),
-      name: assetData?.name,
-      slug: assetData?.slug,
-    },
-  ];
+  const assetData = isContract
+    ? null
+    : assetsSent?.map((sent) => {
+        return assetsMap[sent.assetId] && assetsMap[sent.assetId]
+          ? { ...assetsMap[sent.assetId], amount: sent.amount }
+          : {
+              ...assetsMap['UNKNOWN'],
+              amount: sent.amount,
+            };
+      });
+
+  const assets = isContract
+    ? null
+    : assetData?.map((data) => {
+        return {
+          icon: data?.icon,
+          amount: bn(data?.amount ?? '').format(),
+          assetId: data?.assetId,
+          name: data?.name,
+          slug: data?.slug,
+        };
+      });
+
   const hasAssets = !!assets?.length;
 
   return (
     <Box w="full" mb={7}>
       <DappTransactionFromTo
-        to={to}
         from={{
-          address: vault.predicateAddress,
-          type: AddressType.contract,
+          address: from.address,
+          type: from.type,
+        }}
+        to={{
+          address: to.address,
+          type: to.type,
         }}
         vault={vault}
         hasAssets={hasAssets}

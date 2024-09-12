@@ -55,6 +55,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
               <AddressCopy
                 flexDir="row-reverse"
                 address={AddressUtils.format(asset.assetId)!}
+                fontSize={asset?.slug === 'UNK' ? '12px' : 'unset'}
                 addressToCopy={asset.assetId}
                 w="100%"
                 bg="transparent"
