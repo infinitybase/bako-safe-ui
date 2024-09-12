@@ -50,7 +50,10 @@ const AssetBoxInfo = ({
   const isVaultPage = !!vaultId;
 
   const assetInfo = useMemo(
-    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    () =>
+      asset?.assetId && assetsMap[asset?.assetId]
+        ? assetsMap[asset?.assetId]
+        : assetsMap['UNKNOWN'],
     [asset?.assetId],
   );
 
@@ -146,7 +149,7 @@ const AssetBoxInfo = ({
           ) : (
             AddressUtils.format(
               Address.fromString(asset.to ?? '').toB256(),
-              !isVaultPage && isExtraLarge ? 24 : 12,
+              !isVaultPage && isExtraLarge ? 10 : 12,
             )
           )}
         </Text>

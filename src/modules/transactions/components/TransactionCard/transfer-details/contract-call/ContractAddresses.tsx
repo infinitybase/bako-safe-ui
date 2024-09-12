@@ -18,12 +18,7 @@ const ContractAddresses = ({
 }: ContractAddressesProps) => {
   const mainOperation = transaction.summary?.operations[0];
   const {
-    screenSizes: {
-      isExtraSmall,
-      isLowerThanFourHundredAndThirty,
-      isMobile,
-      isExtraLarge,
-    },
+    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty, isMobile },
   } = useWorkspaceContext();
 
   if (!mainOperation) {
@@ -56,9 +51,7 @@ const ContractAddresses = ({
                 ? 9
                 : isMobile
                   ? 10
-                  : isExtraLarge
-                    ? 18
-                    : 15,
+                  : 14,
           )}
         </Text>
       </Box>
@@ -91,9 +84,7 @@ const ContractAddresses = ({
                 ? 9
                 : isMobile
                   ? 10
-                  : isExtraLarge
-                    ? 18
-                    : 15,
+                  : 14,
           )}
         </Text>
       </Box>
