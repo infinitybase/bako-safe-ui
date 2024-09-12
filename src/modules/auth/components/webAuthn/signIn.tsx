@@ -1,6 +1,7 @@
 import { VStack } from '@chakra-ui/react';
 
 import { ProgressButton } from '@/components';
+import { useScreenSize } from '@/modules/core/hooks';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 import { WebAuthnForm } from './form';
@@ -15,8 +16,10 @@ interface WebAuthnSignInProps {
 const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
   const { formData, formState, accountsOptions, handleInputChange } = props;
 
+  const { isMobile } = useScreenSize();
+
   return (
-    <VStack w="full" spacing={6}>
+    <VStack w="full" spacing={isMobile ? 4 : 6}>
       <WebAuthnForm
         formData={formData}
         accountsOptions={accountsOptions}
