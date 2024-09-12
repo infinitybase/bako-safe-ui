@@ -48,45 +48,49 @@ const AddressWithCopyBtn = ({
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         ml={isSidebarAddress ? 0 : 3}
         maxW={
-          isExtraSmall && isDeposit
-            ? '48px'
-            : isExtraSmall && !isDeposit
-              ? '35px'
-              : 'inherit'
+          isSidebarAddress
+            ? 'full'
+            : isExtraSmall && isDeposit
+              ? '48px'
+              : isExtraSmall && !isDeposit
+                ? '35px'
+                : 'inherit'
         }
       >
-        {isDeposit
-          ? AddressUtils.format(
-              address ?? '',
-              isExtraSmall
-                ? 1
-                : isLitteSmall
-                  ? 4
-                  : isLowerThanFourHundredAndThirty
-                    ? 7
-                    : !isVaultPage && isExtraLarge
-                      ? 24
-                      : 10,
-            )
-          : isExtraSmall
-            ? (address ?? '')
-            : AddressUtils.format(
+        {isSidebarAddress
+          ? AddressUtils.format(address ?? '', 10)
+          : isDeposit
+            ? AddressUtils.format(
                 address ?? '',
-                isLitteSmall
-                  ? 4
-                  : isLowerThanFourHundredAndThirty
-                    ? 10
-                    : isSmall
+                isExtraSmall
+                  ? 1
+                  : isLitteSmall
+                    ? 4
+                    : isLowerThanFourHundredAndThirty
                       ? 7
                       : !isVaultPage && isExtraLarge
-                        ? 18
-                        : 12,
-              )}
+                        ? 24
+                        : 10,
+              )
+            : isExtraSmall
+              ? (address ?? '')
+              : AddressUtils.format(
+                  address ?? '',
+                  isLitteSmall
+                    ? 4
+                    : isLowerThanFourHundredAndThirty
+                      ? 10
+                      : isSmall
+                        ? 7
+                        : !isVaultPage && isExtraLarge
+                          ? 18
+                          : 12,
+                )}
       </Text>
 
       <CopyAddressButton
         ml={isSidebarAddress ? -1 : 2}
-        size={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        size={isLowerThanFourHundredAndThirty || isSidebarAddress ? 'xs' : 'sm'}
         p={0}
         aria-label="Copy"
         addressToCopy={Address.fromString(address ?? '').toB256()}

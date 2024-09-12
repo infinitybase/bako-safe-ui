@@ -157,20 +157,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   variant="roundedSquare"
                   size={{ base: 'md', sm: 'lg' }}
                   p={{ base: 8, sm: 14 }}
-                  bgColor="grey.600"
+                  bgColor="grey.950"
                   color="grey.450"
                   fontWeight="bold"
                   name={vault.data?.name}
-                >
-                  <Box
-                    position="absolute"
-                    borderRadius="lg"
-                    w={{ base: 14, sm: 102 }}
-                    h={{ base: 14, sm: 102 }}
-                    border="3px solid"
-                    borderColor="grey.450"
-                  />
-                </Avatar>
+                  boxShadow="0px 6.5px 6.5px 0px rgba(0, 0, 0, 0.4);"
+                />
                 <Box
                   w={{ base: 'full', sm: '90%' }}
                   alignItems="center"

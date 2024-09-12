@@ -40,8 +40,15 @@ const Container = ({
   </Box>
 );
 
-const Icon = (props: MergeWithAs<IconProps, never>) => (
-  <ChakraIcon fontSize={{ base: 'lg', sm: 'xl' }} {...props} />
+const Icon = ({
+  isActive,
+  ...props
+}: MergeWithAs<IconProps, never> & { isActive?: boolean }) => (
+  <ChakraIcon
+    fontSize="lg"
+    {...props}
+    color={isActive ? 'grey.50' : 'grey.425'}
+  />
 );
 
 const Title = ({ isActive, ...props }: TextProps & { isActive?: boolean }) => (

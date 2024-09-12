@@ -104,7 +104,9 @@ const VaultBox = (props: VaultBoxPropx) => {
           />
         </CustomSkeleton>
         <VStack alignItems="start" spacing={3} justifyContent="center">
-          <Heading size="xs">{name}</Heading>
+          <Heading size="xs" isTruncated textOverflow="ellipsis" maxW="170px">
+            {name}
+          </Heading>
           <AddressWithCopyBtn
             address={address}
             isSidebarAddress

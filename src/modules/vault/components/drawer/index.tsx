@@ -50,7 +50,7 @@ const VaultDrawer = ({ vaultId, ...props }: VaultDrawerProps) => {
     >
       <DrawerOverlay />
       <DrawerContent>
-        <DrawerHeader mb={10}>
+        <DrawerHeader mb={10} bg="pink">
           <VStack alignItems="flex-start" spacing={5}>
             <HStack w="full" justifyContent="space-between">
               <Heading fontSize="xl" fontWeight="semibold" color="grey.200">

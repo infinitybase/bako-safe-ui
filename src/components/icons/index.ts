@@ -30,6 +30,7 @@ export * from './more-less';
 export * from './not-found';
 export * from './notification';
 export * from './notify-icon';
+export * from './overview';
 export * from './pending';
 export * from './play-icon';
 export * from './question';
