@@ -1,4 +1,3 @@
-export * from './useWebAuthn';
 export * from './useWebAuthnForm';
 export * from './useWebAuthnInput';
 export * from './useWebAuthnLastLogin';

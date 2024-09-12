@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
-import { WebAuthnModeState, WebAuthnTabState } from '@/modules';
-
+import {
+  WebAuthnModeState,
+  WebAuthnTabState,
+} from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useCreateWebAuthnAccount } from './useWebauthnRequests';
 

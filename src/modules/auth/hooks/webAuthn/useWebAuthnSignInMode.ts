@@ -6,8 +6,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TypeUser, UserService } from '../../services';
 import { SignInOrigin, useSignInOriginFactory } from '../signIn';
+import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { useQueryParams } from '../usePopup';
-import { WebAuthnModeState } from './useWebAuthn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useSignMessageWebAuthn } from './useWebauthnRequests';
 
