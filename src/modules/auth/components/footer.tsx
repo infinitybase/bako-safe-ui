@@ -2,33 +2,28 @@ import { Heading, Icon, Link, Text, VStack } from '@chakra-ui/react';
 import { FiArrowUpRight } from 'react-icons/fi';
 
 const SignInFooter = () => (
-  <VStack spacing={1}>
-    <VStack spacing={0} textAlign="center">
-      <Heading fontSize="sm" color="grey.50">
-        New to Fuel Network?
-      </Heading>
-      <Text fontSize="xs" color="grey.500" maxW={{ base: '80%', md: 'full' }}>
-        Fuel is an operating system purpose-built for Ethereum rollups
-      </Text>
-    </VStack>
+  <VStack spacing={1} textAlign="center">
+    <Heading fontSize="sm" color="grey.75">
+      New to Fuel Network?
+    </Heading>
+
     <Link
       fontSize="xs"
-      color="grey.100"
+      color="grey.250"
       href="https://www.fuel.network/"
       target="_blank"
       display="flex"
-      gap={2}
-      p={2}
+      gap={1}
       textDecoration="none"
       fontWeight="medium"
       borderRadius={8}
       _hover={{
         textDecoration: 'none',
-        bgColor: 'dark.100',
+        color: 'grey.75',
       }}
     >
       <Text fontSize="xs" fontWeight="normal">
-        Learn more about Fuel
+        Learn more
       </Text>
       <Icon as={FiArrowUpRight} fontSize="md" />
     </Link>
