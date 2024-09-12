@@ -51,30 +51,29 @@ const SigninPage = () => {
         <Tabs index={tabs.tab} flex={1} w="full">
           <TabPanels h="full">
             <TabPanel h="full" p={0}>
-              <SignInHeader title={pageSections.title} />
-
               <VStack
                 justifyContent="center"
                 w="full"
-                pt={14}
-                pb={2}
+                pb={6}
                 px={6}
-                spacing={8}
+                spacing={14}
               >
-                <WebAuthnSignIn
-                  formData={formData}
-                  formState={formState}
-                  accountsOptions={accountsOptions}
-                  handleInputChange={handleInputChange}
-                />
+                <SignInHeader title={pageSections.title} />
 
-                <ConnectorsList
-                  connectors={connectors}
-                  onWalletSelect={handleSelectWallet}
-                  //onWebAuthnSelect={handleSelectWebAuthn}
-                  onWebAuthnSelect={() => console.log('onWebAuthnSelect')}
-                  isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-                />
+                <VStack w="full" spacing={6}>
+                  <WebAuthnSignIn
+                    formData={formData}
+                    formState={formState}
+                    accountsOptions={accountsOptions}
+                    handleInputChange={handleInputChange}
+                  />
+
+                  <ConnectorsList
+                    connectors={connectors}
+                    onConnectorSelect={handleSelectWallet}
+                    isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+                  />
+                </VStack>
 
                 <SignInFooter />
               </VStack>
@@ -105,20 +104,20 @@ const SigninPage = () => {
             >
               <SignInHeader title={pageSections.title} />
 
-              <WebAuthnSignIn
-                formData={formData}
-                formState={formState}
-                accountsOptions={accountsOptions}
-                handleInputChange={handleInputChange}
-              />
+              <VStack w="full" spacing={8}>
+                <WebAuthnSignIn
+                  formData={formData}
+                  formState={formState}
+                  accountsOptions={accountsOptions}
+                  handleInputChange={handleInputChange}
+                />
 
-              <ConnectorsList
-                connectors={connectors}
-                onWalletSelect={handleSelectWallet}
-                //onWebAuthnSelect={handleSelectWebAuthn}
-                onWebAuthnSelect={() => console.log('onWebAuthnSelect')}
-                isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-              />
+                <ConnectorsList
+                  connectors={connectors}
+                  onConnectorSelect={handleSelectWallet}
+                  isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
+                />
+              </VStack>
 
               <SignInFooter />
             </VStack>
