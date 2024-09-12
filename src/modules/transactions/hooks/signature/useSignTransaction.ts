@@ -87,17 +87,18 @@ const useSignTransaction = ({
   ) => {
     const transaction = pendingTransactions?.[selectedTransactionId];
 
+    setSelectedTransaction(transaction);
+
     const signedMessage = await signMessageRequest.mutateAsync(
       transaction!.hash,
     );
-    setSelectedTransaction(transaction);
 
     await request.mutateAsync(
       {
         account: CookiesConfig.getCookie(CookieName.ADDRESS),
         confirm: true,
         signer: signedMessage,
-        id: transaction?.id!,
+        id: transaction?.id,
       },
       {
         onSuccess: async () => {
@@ -136,6 +137,7 @@ const useSignTransaction = ({
       selectedTransaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||
       selectedTransaction?.status === TransactionStatus.PENDING_SENDER,
     isSuccess: request.isSuccess,
+    selectedTransaction,
   };
 };
 

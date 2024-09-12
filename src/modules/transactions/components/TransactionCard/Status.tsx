@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus, WitnessStatus } from 'bakosafe';
+import { ITransaction, WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -40,13 +40,9 @@ const Status = ({
 
   const { isCurrentTxPending } = useTransactionState();
 
-  const isTransactionDeclined =
-    transaction?.status === TransactionStatus.DECLINED;
-
-  const isPending =
-    isCurrentTxPending &&
-    transaction.status !== TransactionStatus.SUCCESS &&
-    !isTransactionDeclined;
+  const isCurrentTxLoading =
+    isCurrentTxPending.isPending &&
+    transaction.id === isCurrentTxPending.transactionId;
 
   return (
     <HStack
@@ -54,7 +50,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isPending && (
+      {isCurrentTxLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
@@ -63,7 +59,7 @@ const Status = ({
         />
       )}
       <VStack
-        hidden={isPending}
+        hidden={isCurrentTxLoading}
         minW={100}
         spacing={0}
         w="full"
