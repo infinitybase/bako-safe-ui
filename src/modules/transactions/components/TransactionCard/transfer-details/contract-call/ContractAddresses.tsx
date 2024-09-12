@@ -18,7 +18,12 @@ const ContractAddresses = ({
 }: ContractAddressesProps) => {
   const mainOperation = transaction.summary?.operations[0];
   const {
-    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
+    screenSizes: {
+      isExtraSmall,
+      isLowerThanFourHundredAndThirty,
+      isMobile,
+      isExtraLarge,
+    },
   } = useWorkspaceContext();
 
   if (!mainOperation) {
@@ -35,18 +40,28 @@ const ContractAddresses = ({
       borderTopWidth={1}
       {...props}
     >
-      <Text
-        w="full"
-        fontSize="sm"
-        color="grey.75"
-        textOverflow="ellipsis"
-        isTruncated
-      >
-        {AddressUtils.format(
-          from?.address ?? '',
-          isExtraSmall ? 5 : isLowerThanFourHundredAndThirty ? 9 : 10,
-        )}
-      </Text>
+      <Box w="full">
+        <Text
+          w="full"
+          fontSize="sm"
+          color="grey.75"
+          textOverflow="ellipsis"
+          isTruncated
+        >
+          {AddressUtils.format(
+            from?.address ?? '',
+            isExtraSmall
+              ? 5
+              : isLowerThanFourHundredAndThirty
+                ? 9
+                : isMobile
+                  ? 10
+                  : isExtraLarge
+                    ? 18
+                    : 15,
+          )}
+        </Text>
+      </Box>
       <Box display="flex" justifyContent="center" w="full">
         <Center
           borderRadius={5}
@@ -59,19 +74,29 @@ const ContractAddresses = ({
         </Center>
       </Box>
 
-      <Text
-        w="full"
-        fontSize="sm"
-        color="grey.75"
-        textOverflow="ellipsis"
-        isTruncated
-        textAlign="end"
-      >
-        {AddressUtils.format(
-          to?.address ?? '',
-          isExtraSmall ? 4 : isLowerThanFourHundredAndThirty ? 9 : 10,
-        )}
-      </Text>
+      <Box w="full">
+        <Text
+          w="full"
+          fontSize="sm"
+          color="grey.75"
+          textOverflow="ellipsis"
+          isTruncated
+          textAlign="end"
+        >
+          {AddressUtils.format(
+            to?.address ?? '',
+            isExtraSmall
+              ? 5
+              : isLowerThanFourHundredAndThirty
+                ? 9
+                : isMobile
+                  ? 10
+                  : isExtraLarge
+                    ? 18
+                    : 15,
+          )}
+        </Text>
+      </Box>
     </HStack>
   );
 };

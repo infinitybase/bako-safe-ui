@@ -127,12 +127,14 @@ const AssetBoxInfo = ({
           textOverflow="ellipsis"
           isTruncated
           ml="2px"
+          textAlign="end"
         >
           {savedContact?.nickname ? (
             <Text
               isTruncated
               textOverflow="ellipsis"
               maxW={{ base: '150px', xs: '95px', xl: 'full' }}
+              textAlign="end"
             >
               {savedContact.nickname}
             </Text>
