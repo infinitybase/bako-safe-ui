@@ -25,6 +25,10 @@ import { LineCloseIcon } from '@/components';
 import { useWebAuthnSignIn } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import {
+  ActionKeys,
+  handleActionUsingKeys,
+} from '@/utils/handle-action-using-keys';
 
 import { useSettings } from '../../hooks';
 
@@ -40,32 +44,30 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
-  const {
-    nicknamesData,
-    nicknamesRequest,
-    search,
-    handleInputChange,
-    form: formAuthn,
-    setSearch,
-  } = useWebAuthnSignIn();
+  const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
+    useWebAuthnSignIn();
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 
-  const { formState } = formAuthn;
-
   const isNicknameInUse =
-    !!nicknamesData?.name &&
-    nicknamesData?.id !== userInfos.id &&
-    search?.length > 0;
+    !!checkNicknameRequest.data?.name &&
+    checkNicknameRequest.data?.id !== userInfos.id &&
+    inputValue?.length > 0;
 
   const name = mySettingsRequest.data?.name ?? '';
 
+  const disableUpdateButton =
+    isLoading ||
+    isNicknameInUse ||
+    checkNicknameRequest.isLoading ||
+    isNameInputInvalid;
+
   useEffect(() => {
     const _search = AddressUtils.isValid(name) ? '' : name;
-    setSearch(_search);
+    setInputValue(_search);
   }, [name, props.isOpen]);
 
   return (
@@ -125,17 +127,20 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 render={({ field, fieldState }) => (
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
-                      // value={field.value}
-                      // onChange={field.onChange}
                       variant="dark"
                       placeholder=" "
-                      value={search}
+                      value={inputValue}
                       onChange={(e) => {
-                        handleInputChange(e);
+                        handleInputChange(e.target.value);
                         field.onChange(e.target.value);
                       }}
                       onKeyDown={(e) =>
-                        formState.handlePrimaryActionUsingEnterKey(e)
+                        handleActionUsingKeys({
+                          pressedKey: e.key,
+                          allowedKeys: [ActionKeys.Enter],
+                          action: handleSubmitSettings,
+                          enabled: !disableUpdateButton,
+                        })
                       }
                       isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
@@ -143,8 +148,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
                     <FormHelperText
                       color={
-                        (nicknamesData?.name &&
-                          nicknamesData?.id !== userInfos.id) ||
+                        (checkNicknameRequest.data?.name &&
+                          checkNicknameRequest.data?.id !== userInfos.id) ||
                         form.formState.errors.name?.message ||
                         isNameInputInvalid
                           ? 'error.500'
@@ -155,10 +160,10 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                         ? 'Name already exists'
                         : form.formState.errors.name?.message
                           ? form.formState.errors.name?.message
-                          : search.length >= 3
+                          : inputValue.length >= 3
                             ? 'This name is available'
                             : isNameInputInvalid
-                              ? 'Username must be at least 3 characters'
+                              ? 'Name must be at least 3 characters'
                               : ''}
                     </FormHelperText>
                   </FormControl>
@@ -224,12 +229,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
               </Button>
               <Button
                 variant="primary"
-                isDisabled={
-                  isLoading ||
-                  isNicknameInUse ||
-                  nicknamesRequest.isLoading ||
-                  isNameInputInvalid
-                }
+                isDisabled={disableUpdateButton}
                 onClick={handleSubmitSettings}
                 isLoading={isLoading}
                 w="full"
