@@ -1,12 +1,13 @@
 import { Box, HStack, Text } from '@chakra-ui/react';
-
 import { TransactionStatus } from 'bakosafe';
 
 import { AddressUtils, TransactionState } from '@/modules/core';
+import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
+
 import { AssetBoxInfo, TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
+import { ContractAddresses } from './contract-call/ContractAddresses';
 import { DeploymentInfo } from './DeploymentInfos';
-import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 
 interface ITransactionBreakdown {
   transaction: TransactionUI;
@@ -25,8 +26,6 @@ const TransactionBreakdown = ({
     isPending,
     isDeploy,
     isDeposit,
-    contractAddress,
-    contractAssetInfo,
   } = useVerifyTransactionInformations(transaction);
 
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
@@ -71,12 +70,10 @@ const TransactionBreakdown = ({
             hasToken={hasToken}
           />
         ))}
-        {isContract && !isDeploy && !transaction.assets.length && (
-          <AssetBoxInfo
-            contractAddress={contractAddress}
-            isContract
-            hasToken={hasToken}
-            contractAssetInfo={contractAssetInfo}
+
+        {isContract && (
+          <ContractAddresses
+            transaction={transaction}
             borderColor="grey.950"
             borderBottomWidth={1}
           />
