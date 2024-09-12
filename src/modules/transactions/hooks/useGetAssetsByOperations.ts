@@ -17,6 +17,10 @@ const useGetAssetsByOperations = (
   const hasNoDefaultAssets = !transaction?.assets?.length;
   const defaultSentBy = transaction?.txData?.inputs[0]?.['owner'] ?? '';
 
+  const txDataInput = transaction.txData.inputs.find(
+    (input) => input.type === 0,
+  );
+
   if (!transaction?.summary?.operations?.length) {
     return {
       operationAssets: {
@@ -25,7 +29,6 @@ const useGetAssetsByOperations = (
         to: '',
       },
       sentBy: defaultSentBy,
-
       hasNoDefaultAssets,
     };
   }
@@ -34,6 +37,30 @@ const useGetAssetsByOperations = (
 
   if (!firstOperation.assetsSent) {
     const { amount, assetId, to, from } = firstOperation;
+    if (
+      (!amount || !assetId) &&
+      txDataInput?.['assetId'] &&
+      txDataInput?.['amount']
+    ) {
+      const stringfiedAmount = String(txDataInput?.['amount']);
+      const assetAmount = isHex(stringfiedAmount)
+        ? bn(stringfiedAmount).format()
+        : stringfiedAmount;
+
+      const operationAssets = {
+        amount: assetAmount ?? '',
+        assetId: txDataInput?.['assetId'] ?? '',
+        to: to?.address ?? '',
+      };
+
+      const sentBy = from?.address ?? '';
+
+      return {
+        operationAssets,
+        sentBy,
+        hasNoDefaultAssets,
+      };
+    }
 
     const stringfiedAmount = amount ?? '';
 

@@ -82,11 +82,7 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Icon
-            w={{ base: 8, sm: 10 }}
-            h={{ base: 8, sm: 10 }}
-            as={assetInfo?.icon ?? UnknownIcon}
-          />
+          <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
           </Text>
@@ -95,8 +91,8 @@ const AssetBoxInfo = ({
       {contractAssetInfo && isContract && !assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
           <Icon
-            w={{ base: 8, sm: 10 }}
-            h={{ base: 8, sm: 10 }}
+            w={6}
+            h={6}
             as={contractAssetInfo.assetsInfo.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
