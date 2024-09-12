@@ -50,7 +50,9 @@ const useWebAuthn = () => {
     });
 
   const isSearchModeBtnDisabled =
-    checkNicknameRequest.isLoading || !form.formState.isValid;
+    checkNicknameRequest.isLoading ||
+    !form.formState.isValid ||
+    !window.navigator.credentials;
   const isLoginModeBtnDisabled = isSigningIn || !form.formState.isValid;
   const isRegisterModeBtnDisabled = isRegistering || !form.formState.isValid;
 
