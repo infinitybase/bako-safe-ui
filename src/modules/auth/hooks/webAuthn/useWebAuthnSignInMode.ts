@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useWebAuthnLastLogin } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -36,6 +37,7 @@ const useWebAuthnSignInMode = (
   const { sessionId } = useQueryParams();
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
+  const { setLastLoginUsername } = useWebAuthnLastLogin();
 
   const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
   const { redirect } = useSignInOriginFactory(signInOrigin);
@@ -77,6 +79,7 @@ const useWebAuthnSignInMode = (
           setTimeout(() => {
             invalidateGifAnimationRequest && invalidateGifAnimationRequest();
             setIsSigningIn(false);
+            setLastLoginUsername(username);
 
             authDetails.handlers.authenticate({
               userId: user_id,

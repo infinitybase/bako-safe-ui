@@ -8,6 +8,7 @@ import { TypeUser } from '../../services/methods';
 import {
   useWebAuthnForm,
   useWebAuthnInput,
+  useWebAuthnLastLogin,
   useWebAuthnRegisterMode,
   useWebAuthnSignInMode,
 } from '../webAuthn';
@@ -49,6 +50,7 @@ const useWebAuthnSignIn = () => {
       setTab: tabs.set,
       setCreatedAcccountUsername,
     });
+  const { lastLoginUsername } = useWebAuthnLastLogin();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
   const isSearchModeBtnDisabled =
@@ -116,6 +118,13 @@ const useWebAuthnSignIn = () => {
       showAccountsOptions: false,
     },
   };
+
+  useEffect(() => {
+    if (lastLoginUsername) {
+      form.setValue('username', lastLoginUsername ?? '');
+      setMode(WebAuthnModeState.LOGIN);
+    }
+  }, []);
 
   useEffect(() => {
     if (checkNicknameRequest.data) {
