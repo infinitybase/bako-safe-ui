@@ -102,7 +102,7 @@ const Status = ({
               borderRadius="20px"
               fontSize="xs"
               fontWeight="normal"
-              isLoading={isLoading}
+              isLoading={isLoading && isCurrentTxLoading}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
