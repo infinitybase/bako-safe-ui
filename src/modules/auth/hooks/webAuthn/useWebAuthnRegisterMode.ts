@@ -29,10 +29,12 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
     await createWebAuthnAccount.mutateAsync(username, {
       onSuccess: async () => {
         setRegisterProgress(100);
-        setIsRegistering(false);
-        setCreatedAcccountUsername(username);
-        setMode(WebAuthnModeState.ACCOUNT_CREATED);
-        setTab(WebAuthnTabState.ACCOUNT_CREATED);
+        setTimeout(() => {
+          setIsRegistering(false);
+          setCreatedAcccountUsername(username);
+          setMode(WebAuthnModeState.ACCOUNT_CREATED);
+          setTab(WebAuthnTabState.ACCOUNT_CREATED);
+        }, 800);
       },
       onError: (error) => {
         setRegisterProgress(0);
