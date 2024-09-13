@@ -6,13 +6,18 @@ import {
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
 
-const useWebAuthnInput = () => {
+const useWebAuthnInput = (shouldCheckNickname: boolean) => {
   const [inputValue, setInputValue] = useState('');
   const [accountSearch, setAccountSearch] = useState('');
   const [accountFilter, setAccountFilter] = useState('');
 
   const accountsRequest = useGetAccountsByHardwareId();
-  const checkNicknameRequest = useCheckNickname(accountSearch);
+
+  const checkNicknameRequestEnabled = shouldCheckNickname && !!accountSearch;
+  const checkNicknameRequest = useCheckNickname(
+    accountSearch,
+    checkNicknameRequestEnabled,
+  );
 
   const accountsOptions = useMemo(() => {
     const filteredAccounts = accountsRequest.data?.filter((account) =>

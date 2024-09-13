@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
@@ -30,13 +30,14 @@ const useWebAuthnSignIn = () => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
 
-  const isRegisterMode = mode === WebAuthnModeState.REGISTER;
   const tabs = useTab({
     tabs: EnumUtils.toNumberArray(WebAuthnTabState),
     defaultTab: WebAuthnTabState.LOGIN,
   });
-  const { form } = useWebAuthnForm(isRegisterMode);
-  const { checkNicknameRequest, accountsRequest, ...rest } = useWebAuthnInput();
+  const { form } = useWebAuthnForm(mode);
+  const { checkNicknameRequest, accountsRequest, ...rest } = useWebAuthnInput(
+    !form.formState.errors.username,
+  );
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode(
     form,
     setMode,
@@ -49,6 +50,7 @@ const useWebAuthnSignIn = () => {
       setCreatedAcccountUsername,
     });
 
+  const isRegisterMode = mode === WebAuthnModeState.REGISTER;
   const isSearchModeBtnDisabled =
     checkNicknameRequest.isLoading ||
     !form.formState.isValid ||
@@ -56,29 +58,19 @@ const useWebAuthnSignIn = () => {
   const isLoginModeBtnDisabled = isSigningIn || !form.formState.isValid;
   const isRegisterModeBtnDisabled = isRegistering || !form.formState.isValid;
 
-  const handleChangeMode = (newMode: WebAuthnModeState) => {
-    setMode(newMode);
-  };
-
-  const handleNextStep = useCallback(() => {
+  const handleChangeMode = useCallback(() => {
     if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      handleChangeMode(WebAuthnModeState.LOGIN);
+      setMode(WebAuthnModeState.LOGIN);
     } else {
-      handleChangeMode(WebAuthnModeState.REGISTER);
+      setMode(WebAuthnModeState.REGISTER);
     }
   }, [checkNicknameRequest.data?.type]);
 
   const formState = {
     [WebAuthnModeState.SEARCH]: {
       label: 'Continue',
-      handleAction: handleNextStep,
-      handleActionUsingEnterKey: (pressedKey: string) =>
-        handleActionUsingKeys({
-          pressedKey,
-          allowedKeys: [ActionKeys.Enter],
-          action: handleNextStep,
-          enabled: !isSearchModeBtnDisabled,
-        }),
+      handleAction: () => {},
+      handleActionUsingEnterKey: undefined,
       isLoading: false,
       isDisabled: isSearchModeBtnDisabled,
       actionProgress: 0,
@@ -124,6 +116,12 @@ const useWebAuthnSignIn = () => {
       showAccountsOptions: false,
     },
   };
+
+  useEffect(() => {
+    if (checkNicknameRequest.data) {
+      handleChangeMode();
+    }
+  }, [handleChangeMode, checkNicknameRequest.data]);
 
   return {
     formData: {

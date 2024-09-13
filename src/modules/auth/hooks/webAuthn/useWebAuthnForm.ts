@@ -1,6 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+
+import { WebAuthnModeState } from '@/modules';
 
 export type UseWebAuthnForm = ReturnType<typeof useWebAuthnForm>;
 
@@ -26,8 +29,8 @@ const createSchema = (isRegisterMode: boolean) =>
       ),
   });
 
-const useWebAuthnForm = (isRegisterMode: boolean) => {
-  const schema = createSchema(isRegisterMode);
+const useWebAuthnForm = (mode: WebAuthnModeState) => {
+  const schema = createSchema(mode === WebAuthnModeState.REGISTER);
 
   const form = useForm({
     mode: 'onChange',
@@ -38,6 +41,10 @@ const useWebAuthnForm = (isRegisterMode: boolean) => {
       termsOfUse: false,
     },
   });
+
+  useEffect(() => {
+    form.setValue('termsOfUse', false, { shouldValidate: true });
+  }, [mode]);
 
   return { form };
 };
