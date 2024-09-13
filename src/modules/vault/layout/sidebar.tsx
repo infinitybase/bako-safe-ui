@@ -55,9 +55,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
       w="100%"
       maxW={isMobile ? 'full' : '300px'}
       bgColor={onDrawer ? 'transparent' : 'dark.950'}
-      borderRightWidth={isMobile ? 0 : 1}
-      borderRightColor="dark.100"
-      boxShadow="8px 0px 6px 0px rgba(0, 0, 0, 0.15)"
+      boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
       p="24px 16px 16px 16px"
       {...rest}
     >
