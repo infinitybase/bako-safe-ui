@@ -10,11 +10,12 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { UseWebAuthnSignIn } from '../../hooks';
-import { WebAuthnLoginInput } from '../webAuthnLoginInput';
+import { WebAuthnLoginInput } from './input';
 
 interface WebAuthnFormProps {
   formData: UseWebAuthnSignIn['formData'];
   accountsOptions: UseWebAuthnSignIn['accountsOptions'];
+  inputBadge: UseWebAuthnSignIn['inputBadge'];
   showAccountsOptions: boolean;
   accountSeachHandler: UseWebAuthnSignIn['handleInputChange'];
   onSubmitUsingEnterKey: UseWebAuthnSignIn['formState']['handleActionUsingEnterKey'];
@@ -24,6 +25,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   const {
     formData,
     accountsOptions,
+    inputBadge,
     showAccountsOptions,
     accountSeachHandler,
     onSubmitUsingEnterKey,
@@ -55,6 +57,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 options={accountsOptions}
                 showOptions={showAccountsOptions}
                 isDisabled={!window.navigator.credentials}
+                badgeStatus={inputBadge.status}
+                badgeLabel={inputBadge.label}
               />
               <FormHelperText
                 ml={2}

@@ -1,19 +1,25 @@
 import debounce from 'lodash.debounce';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { WebAuthnInputBadgeStatus } from '../../components/webAuthn/input';
+import { TypeUser } from '../../services/methods';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
 
-const useWebAuthnInput = (shouldCheckNickname: boolean) => {
-  const [inputValue, setInputValue] = useState('');
-  const [accountSearch, setAccountSearch] = useState('');
-  const [accountFilter, setAccountFilter] = useState('');
+const useWebAuthnInput = (validUsername: boolean) => {
+  const [inputValue, setInputValue] = useState<string>('');
+  const [accountSearch, setAccountSearch] = useState<string>('');
+  const [accountFilter, setAccountFilter] = useState<string>('');
+  const [badgeLabel, setBadgeLabel] = useState<string>('');
+  const [badgeStatus, setBadgeStatus] = useState<
+    WebAuthnInputBadgeStatus | undefined
+  >(undefined);
 
   const accountsRequest = useGetAccountsByHardwareId();
 
-  const checkNicknameRequestEnabled = shouldCheckNickname && !!accountSearch;
+  const checkNicknameRequestEnabled = validUsername && !!accountSearch;
   const checkNicknameRequest = useCheckNickname(
     accountSearch,
     checkNicknameRequestEnabled,
@@ -46,11 +52,37 @@ const useWebAuthnInput = (shouldCheckNickname: boolean) => {
     [],
   );
 
-  const handleInputChange = (newValue: string) => {
+  const handleInputChange = useCallback((newValue: string) => {
     setInputValue(newValue);
     debouncedAccountSearch(newValue);
     debouncedAccountFilter(newValue);
-  };
+  }, []);
+
+  const handleBadgeChange = useCallback(
+    (newStatus: WebAuthnInputBadgeStatus, newLabel: string) => {
+      setBadgeStatus(newStatus);
+      setBadgeLabel(newLabel);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (checkNicknameRequest.isLoading) {
+      handleBadgeChange(WebAuthnInputBadgeStatus.SEARCHING, 'Searching...');
+    } else if (!validUsername) {
+      handleBadgeChange(WebAuthnInputBadgeStatus.ERROR, 'Invalid username');
+    } else if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
+      handleBadgeChange(WebAuthnInputBadgeStatus.INFO, 'Account found');
+    } else if (checkNicknameRequest.isSuccess) {
+      handleBadgeChange(WebAuthnInputBadgeStatus.SUCCESS, 'Available');
+    }
+  }, [
+    checkNicknameRequest.data?.type,
+    checkNicknameRequest.isLoading,
+    checkNicknameRequest.isSuccess,
+    validUsername,
+    handleBadgeChange,
+  ]);
 
   return {
     inputValue,
@@ -58,6 +90,10 @@ const useWebAuthnInput = (shouldCheckNickname: boolean) => {
     debouncedAccountFilter,
     accountsRequest,
     checkNicknameRequest,
+    badge: {
+      status: badgeStatus,
+      label: badgeLabel,
+    },
     setInputValue,
     handleInputChange,
   };

@@ -36,9 +36,8 @@ const useWebAuthnSignIn = () => {
     defaultTab: WebAuthnTabState.LOGIN,
   });
   const { form } = useWebAuthnForm(mode);
-  const { checkNicknameRequest, accountsRequest, ...rest } = useWebAuthnInput(
-    !form.formState.errors.username,
-  );
+  const { checkNicknameRequest, accountsRequest, badge, ...rest } =
+    useWebAuthnInput(!form.formState.errors.username);
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode(
     form,
     setMode,
@@ -53,12 +52,21 @@ const useWebAuthnSignIn = () => {
   const { lastLoginUsername } = useWebAuthnLastLogin();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
+
   const isSearchModeBtnDisabled =
-    checkNicknameRequest.isLoading ||
     !form.formState.isValid ||
+    checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
-  const isLoginModeBtnDisabled = isSigningIn || !form.formState.isValid;
-  const isRegisterModeBtnDisabled = isRegistering || !form.formState.isValid;
+  const isLoginModeBtnDisabled =
+    isSigningIn ||
+    !form.formState.isValid ||
+    checkNicknameRequest.isLoading ||
+    !window.navigator.credentials;
+  const isRegisterModeBtnDisabled =
+    isRegistering ||
+    !form.formState.isValid ||
+    checkNicknameRequest.isLoading ||
+    !window.navigator.credentials;
 
   const handleChangeMode = useCallback(() => {
     if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
@@ -141,6 +149,7 @@ const useWebAuthnSignIn = () => {
     checkNicknameRequest,
     tabs,
     createdAcccountUsername,
+    inputBadge: badge,
     ...rest,
   };
 };

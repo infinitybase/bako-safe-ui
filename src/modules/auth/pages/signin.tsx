@@ -24,6 +24,7 @@ const SigninPage = () => {
     formState,
     accountsOptions,
     createdAcccountUsername,
+    inputBadge,
     handleInputChange,
   } = useWebAuthnSignIn();
   const { errorToast } = useContactToast();
@@ -65,6 +66,7 @@ const SigninPage = () => {
                     formData={formData}
                     formState={formState}
                     accountsOptions={accountsOptions}
+                    inputBadge={inputBadge}
                     handleInputChange={handleInputChange}
                   />
 
@@ -109,6 +111,7 @@ const SigninPage = () => {
                   formData={formData}
                   formState={formState}
                   accountsOptions={accountsOptions}
+                  inputBadge={inputBadge}
                   handleInputChange={handleInputChange}
                 />
 

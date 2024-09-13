@@ -1,6 +1,7 @@
 import {
+  Badge,
+  BadgeProps,
   Box,
-  CircularProgress,
   Flex,
   FormLabel,
   HStack,
@@ -9,6 +10,7 @@ import {
   InputProps,
   InputRightElement,
   keyframes,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -27,19 +29,39 @@ const slideToPosition = keyframes`
   }
 `;
 
+enum WebAuthnInputBadgeStatus {
+  SEARCHING = 0,
+  SUCCESS = 1,
+  ERROR = 2,
+  INFO = 3,
+}
+
 interface WebAuthnInputProps extends Omit<InputProps, 'value' | 'onChange'> {
   value?: string;
   options?: AutocompleteOption[];
   isLoading?: boolean;
+  disabled?: boolean;
   showOptions?: boolean;
+  badgeStatus?: WebAuthnInputBadgeStatus;
+  badgeLabel?: string;
   onChange: (value: string) => void;
 }
+
+const InputBadge = (props: BadgeProps) => {
+  return (
+    <Badge border="none" px={2} {...props}>
+      {props.children}
+    </Badge>
+  );
+};
 
 const WebAuthnLoginInput = ({
   value,
   options = [],
   isLoading,
   showOptions,
+  badgeStatus,
+  badgeLabel,
   onChange,
   ...rest
 }: WebAuthnInputProps) => {
@@ -49,10 +71,30 @@ const WebAuthnLoginInput = ({
     isFocused && options && options.length > 0 && !isLoading && showOptions;
   const showClearIcon = !!value;
 
+  const CurrentBadge = (() => {
+    switch (badgeStatus) {
+      case WebAuthnInputBadgeStatus.SEARCHING:
+        return (
+          <InputBadge variant="grey">
+            {badgeLabel} <Spinner w={3} h={3} />
+          </InputBadge>
+        );
+      case WebAuthnInputBadgeStatus.INFO:
+        return <InputBadge variant="grey">{badgeLabel}</InputBadge>;
+      case WebAuthnInputBadgeStatus.SUCCESS:
+        return <InputBadge variant="success">{badgeLabel}</InputBadge>;
+      case WebAuthnInputBadgeStatus.ERROR:
+        return <InputBadge variant="error">{badgeLabel}</InputBadge>;
+      default:
+        return null;
+    }
+  })();
+
   return (
     <>
       <InputGroup mt="1px">
         <Input
+          variant="dark"
           value={value}
           placeholder=" "
           autoComplete="off"
@@ -65,35 +107,26 @@ const WebAuthnLoginInput = ({
         <FormLabel color="grey.500">Username</FormLabel>
 
         <InputRightElement
-          pr={1}
           top="3px"
-          right="1px"
+          right={4}
           borderRadius={10}
-          bgColor="dark.250"
+          bg="grey.825"
           h="calc(100% - 6px)"
-          w={10}
+          w="fit-content"
+          pl={2}
         >
-          {isLoading ? (
-            <CircularProgress
-              trackColor="dark.100"
-              size={18}
-              isIndeterminate
-              color="brand.500"
-            />
-          ) : (
-            <>
-              {showClearIcon && (
-                <HStack>
-                  <LineCloseIcon
-                    fontSize={16}
-                    color="grey.100"
-                    cursor="pointer"
-                    onClick={() => onChange('')}
-                  />
-                </HStack>
-              )}
-            </>
-          )}
+          <HStack spacing={4}>
+            {CurrentBadge}
+
+            {showClearIcon && (
+              <LineCloseIcon
+                fontSize={16}
+                color="grey.100"
+                cursor="pointer"
+                onClick={() => onChange('')}
+              />
+            )}
+          </HStack>
         </InputRightElement>
       </InputGroup>
 
@@ -153,4 +186,4 @@ const WebAuthnLoginInput = ({
   );
 };
 
-export { WebAuthnLoginInput };
+export { WebAuthnInputBadgeStatus, WebAuthnLoginInput };
