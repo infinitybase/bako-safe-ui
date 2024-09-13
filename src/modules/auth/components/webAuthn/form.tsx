@@ -54,6 +54,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 onKeyDown={(e) => onSubmitUsingEnterKey?.(e.key)}
                 options={accountsOptions}
                 showOptions={showAccountsOptions}
+                isDisabled={!window.navigator.credentials}
               />
               <FormHelperText
                 ml={2}
