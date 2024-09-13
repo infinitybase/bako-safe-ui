@@ -8,8 +8,8 @@ const createSchema = (isRegisterMode: boolean) =>
   yup.object({
     username: yup
       .string()
+      .required('You must enter your username to continue')
       .min(3, 'Username must be at least 3 characters')
-      .required('You must provide a username')
       .test(
         'is-valid-name',
         "The username can't contain special characters or symbols",
