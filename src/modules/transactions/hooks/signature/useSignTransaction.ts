@@ -9,7 +9,6 @@ import { useWalletSignMessage } from '@/modules/core';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import { TRANSACTION_HISTORY_QUERY_KEY } from '../details';
 import {
   IPendingTransactionDetails,
   IPendingTransactionsRecord,
@@ -56,13 +55,6 @@ const useSignTransaction = ({
       homeTransactionsRefetch();
       queryClient.invalidateQueries({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [
-          TRANSACTION_HISTORY_QUERY_KEY,
-          selectedTransaction?.id,
-          selectedTransaction?.predicateId,
-        ],
       });
     },
   });

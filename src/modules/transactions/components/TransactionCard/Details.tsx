@@ -50,6 +50,7 @@ const Details = ({
       transactionId={transaction.id}
       predicateId={transaction.predicateId}
       isMobileDetailsOpen={isMobileDetailsOpen ?? false}
+      isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
     >
       {(isLoading, transactionHistory) => (
         <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
