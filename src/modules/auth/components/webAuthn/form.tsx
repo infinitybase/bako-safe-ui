@@ -9,15 +9,15 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { UseWebAuthn } from '../../hooks';
+import { UseWebAuthnSignIn } from '../../hooks';
 import { WebAuthnLoginInput } from '../webAuthnLoginInput';
 
 interface WebAuthnFormProps {
-  formData: UseWebAuthn['formData'];
-  accountsOptions: UseWebAuthn['accountsOptions'];
+  formData: UseWebAuthnSignIn['formData'];
+  accountsOptions: UseWebAuthnSignIn['accountsOptions'];
   showAccountsOptions: boolean;
-  accountSeachHandler: UseWebAuthn['handleInputChange'];
-  onSubmitUsingEnterKey: UseWebAuthn['formState']['handleActionUsingEnterKey'];
+  accountSeachHandler: UseWebAuthnSignIn['handleInputChange'];
+  onSubmitUsingEnterKey: UseWebAuthnSignIn['formState']['handleActionUsingEnterKey'];
 }
 
 const WebAuthnForm = (props: WebAuthnFormProps) => {
