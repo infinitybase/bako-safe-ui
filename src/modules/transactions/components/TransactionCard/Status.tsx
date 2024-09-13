@@ -28,7 +28,7 @@ const Status = ({
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const {
-    signTransaction: { retryTransaction, isLoading },
+    signTransaction: { isLoading },
   } = useTransactionsContext();
 
   const signaturesCount =
@@ -106,7 +106,7 @@ const Status = ({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                retryTransaction();
+                // retryTransaction();
               }}
               leftIcon={<RefreshIcon fontSize="sm" />}
             >
