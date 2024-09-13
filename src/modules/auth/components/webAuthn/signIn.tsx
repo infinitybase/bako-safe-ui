@@ -23,7 +23,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
       <WebAuthnForm
         formData={formData}
         accountsOptions={accountsOptions}
-        showAccountsOptions={true}
+        showAccountsOptions={formState.showAccountsOptions}
         accountSeachHandler={handleInputChange}
         onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
       />

@@ -51,6 +51,7 @@ const useWebAuthnInput = () => {
     inputValue,
     accountsOptions,
     debouncedAccountFilter,
+    accountsRequest,
     checkNicknameRequest,
     setInputValue,
     handleInputChange,

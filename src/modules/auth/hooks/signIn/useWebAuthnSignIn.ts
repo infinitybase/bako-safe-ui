@@ -36,7 +36,7 @@ const useWebAuthnSignIn = () => {
     defaultTab: WebAuthnTabState.LOGIN,
   });
   const { form } = useWebAuthnForm(isRegisterMode);
-  const { checkNicknameRequest, ...rest } = useWebAuthnInput();
+  const { checkNicknameRequest, accountsRequest, ...rest } = useWebAuthnInput();
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode(
     form,
     setMode,
@@ -82,6 +82,7 @@ const useWebAuthnSignIn = () => {
       isLoading: false,
       isDisabled: isSearchModeBtnDisabled,
       actionProgress: 0,
+      showAccountsOptions: !accountsRequest.isLoading,
     },
     [WebAuthnModeState.LOGIN]: {
       label: 'Login account',
@@ -96,6 +97,7 @@ const useWebAuthnSignIn = () => {
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       actionProgress: signInProgress,
+      showAccountsOptions: !accountsRequest.isLoading,
     },
     [WebAuthnModeState.REGISTER]: {
       label: 'Create account',
@@ -110,6 +112,7 @@ const useWebAuthnSignIn = () => {
       isLoading: isRegistering,
       isDisabled: isRegisterModeBtnDisabled,
       actionProgress: registerProgress,
+      showAccountsOptions: false,
     },
     [WebAuthnModeState.ACCOUNT_CREATED]: {
       label: 'Begin',
@@ -118,6 +121,7 @@ const useWebAuthnSignIn = () => {
       isLoading: isSigningIn,
       isDisabled: isLoginModeBtnDisabled,
       actionProgress: signInProgress,
+      showAccountsOptions: false,
     },
   };
 
