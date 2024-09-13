@@ -1,8 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryState, useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
-import { assetsMap, ETHDefault, NativeAssetId } from '@/modules/core';
+import {
+  assetsMap,
+  ETHDefault,
+  NativeAssetId,
+  useGetParams,
+} from '@/modules/core';
 
 const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
 
@@ -12,15 +17,48 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
 
 import { BakoSafe } from 'bakosafe';
 
-import { VaultService } from '../../services';
+import { queryClient } from '@/config';
+
+import { HasReservedCoins, VaultService } from '../../services';
+import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
+
+export const vaultAssetsQueryKey = {
+  VAULT_ASSETS_QUERY_KEY: (workspaceId: string, predicateId: string) => [
+    'predicateId/assets',
+    workspaceId,
+    predicateId,
+  ],
+};
 
 function useVaultAssets(workspaceId: string, predicateId: string) {
+  const {
+    vaultPageParams: { vaultId },
+  } = useGetParams();
+
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
+  const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
+    queryClient.getQueryState(
+      vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
+    );
+
+  const vaultTxListRequestQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vaultId ?? '',
+    );
 
   const { data, ...rest } = useQuery({
-    queryKey: ['predicateId/assets', workspaceId, predicateId],
-    queryFn: () => VaultService.hasReservedCoins(predicateId),
+    queryKey: vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
+      workspaceId,
+      predicateId,
+    ),
+    queryFn: async () => {
+      const response = await VaultService.hasReservedCoins(predicateId);
+      if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
+        queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
+      }
+      return response;
+    },
     refetchInterval: 10000,
     refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,

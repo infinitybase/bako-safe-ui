@@ -13,11 +13,11 @@ import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 
 import { useDetailsDialog } from '../../hooks/details';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';
-import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 
 interface TransactionCardMobileProps extends CardProps {
   transaction: TransactionWithVault;
@@ -29,7 +29,7 @@ interface TransactionCardMobileProps extends CardProps {
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
 
-  const { isFromConnector, isDeploy, isDeposit } =
+  const { isFromConnector, isDeploy, isDeposit, isContract } =
     useVerifyTransactionInformations(transaction);
 
   const status = transactionStatus({
@@ -56,6 +56,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         status={status}
         isSigner={isSigner}
         callBack={props.callBack}
+        isContract={isContract}
       />
 
       <Card
@@ -113,7 +114,11 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <Divider borderColor="grey.950" />
 
             <HStack justifyContent="space-between" w="full">
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                transaction={transaction}
+                isDeposit={isDeposit}
+                isContract={isContract}
+              />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
             </HStack>

@@ -1,10 +1,5 @@
-import { DeployIcon } from '@/components/icons/tx-deploy';
-import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap } from '@/modules/core';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { CopyIcon } from '@chakra-ui/icons';
 import {
-  Avatar,
   Box,
   Center,
   HStack,
@@ -15,9 +10,15 @@ import {
   useClipboard,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
-import { Operation, bn } from 'fuels';
+import { bn, Operation } from 'fuels';
 import { useMemo } from 'react';
 import { IoIosCheckmark } from 'react-icons/io';
+
+import { UnknownIcon } from '@/components';
+import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { assetsMap } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface DeploymentInfoProps extends StackProps {
   operation: Operation;
@@ -47,7 +48,7 @@ const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
   const txUSDAmount = useTxAmountToUSD(
     [asset as ITransferAsset],
     tokensUSD?.isLoading,
-    tokensUSD?.data!,
+    tokensUSD?.data,
   );
 
   return (
@@ -64,12 +65,11 @@ const DeploymentInfo = ({ operation, ...props }: DeploymentInfoProps) => {
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }}>
-          <Avatar
-            size="xs"
-            src={assetInfo.icon}
-            name={assetInfo.slug}
-            mr={{ base: 1, sm: 1 }}
-            ignoreFallback
+          <Icon
+            key={asset.assetId}
+            w={{ base: 6, sm: 6 }}
+            h={{ base: 6, sm: 6 }}
+            as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
           />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}

@@ -21,7 +21,7 @@ type PermissionDetail = {
   description: string;
 };
 
-type PermissionDetails = {
+export type PermissionDetails = {
   [key in PermissionKey]: PermissionDetail;
 };
 

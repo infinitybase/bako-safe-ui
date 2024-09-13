@@ -22,9 +22,10 @@ import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { CreateVaultDialog, VaultCard } from '../../components';
 import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const UserVaultsPage = () => {
   const {
@@ -97,7 +98,10 @@ const UserVaultsPage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {!userInfos.onSingleWorkspace && (
+
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
               <BreadcrumbItem>
                 <BreadcrumbLink
                   fontSize="sm"
@@ -117,7 +121,8 @@ const UserVaultsPage = () => {
                   {userInfos.workspace?.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            )}
+            )} */}
+
             <BreadcrumbItem>
               <BreadcrumbLink
                 fontSize="sm"
@@ -207,19 +212,15 @@ const UserVaultsPage = () => {
 
       {/* USER VAULTS */}
       <Box mt={4} mb={-2} alignSelf="flex-start">
-        <Text
-          variant="subtitle"
-          fontWeight="semibold"
-          fontSize="xl"
-          color="grey.200"
-        >
+        <Text variant="subtitle" fontWeight="semibold" color="grey.75">
           Vaults
         </Text>
       </Box>
 
-      {!vaults?.length && (
+      {!vaults?.length && !loadingVaults && (
         <CustomSkeleton isLoaded={!loadingVaults}>
           <EmptyState
+            bg={'red'}
             showAction={hasPermission([OWNER, MANAGER, ADMIN])}
             title={`Let's Begin!`}
             subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}

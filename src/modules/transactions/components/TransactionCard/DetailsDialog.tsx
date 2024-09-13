@@ -5,14 +5,15 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
+import { TransactionType } from 'bakosafe';
 import format from 'date-fns/format';
 
 import { Dialog, DialogModalProps } from '@/components';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { TransactionCard, transactionStatus } from '@/modules/transactions';
 
-import { TransactionWithVault } from '../../services/types';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -20,11 +21,20 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
+  isContract: boolean;
   callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const {
+    onClose,
+    isOpen,
+    transaction,
+    account,
+    status,
+    isSigner,
+    isContract,
+  } = props;
 
   const {
     signTransaction: {
@@ -54,7 +64,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
         <VStack spacing={{ base: 3, xs: 5 }} display="block">
           <VStack w="full" spacing={3}>
             <HStack w="full">
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                isContract={isContract}
+                transaction={transaction}
+                isDeposit={transaction?.type === TransactionType.DEPOSIT}
+              />
 
               <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
@@ -75,7 +89,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
           </VStack>
           <Divider mt={4} />
 
-          <TransactionCard.Details transaction={transaction} isMobile />
+          <TransactionCard.Details
+            transaction={transaction}
+            isMobile
+            isMobileDetailsOpen={isOpen}
+          />
         </VStack>
       </Dialog.Body>
 

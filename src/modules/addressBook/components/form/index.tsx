@@ -26,6 +26,7 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
+              variant="dark"
             />
             <FormLabel>Name or Label</FormLabel>
             <FormHelperText color="error.500">
@@ -41,6 +42,7 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
         render={({ field, fieldState }) => (
           <FormControl isInvalid={fieldState.invalid}>
             <Input
+              variant="dark"
               value={field.value}
               onChange={field.onChange}
               placeholder=" "

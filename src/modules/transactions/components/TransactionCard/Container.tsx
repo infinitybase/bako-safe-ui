@@ -16,13 +16,13 @@ import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
+import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
-import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
@@ -53,7 +53,7 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const { isFromConnector, isDeploy, isDeposit } =
+  const { isFromConnector, isDeploy, isDeposit, isContract } =
     useVerifyTransactionInformations(transaction);
 
   const detailsDialog = useDetailsDialog();
@@ -70,6 +70,7 @@ const Container = ({
           isSigner={isSigner}
           isInTheVaultPage={isInTheVaultPage}
           callBack={callBack}
+          isContract={isContract}
         />
       )}
 
@@ -88,13 +89,12 @@ const Container = ({
         maxW="full"
         {...rest}
         display="flex"
-        minH="78px"
       >
         <Flex
           alignItems="flex-start"
           justifyContent="center"
           bgColor="grey.925"
-          w="32px"
+          minW="32px"
           p={0}
           borderRadius="10px 0 0 10px"
           h="auto"
@@ -134,12 +134,18 @@ const Container = ({
             >
               {transaction.predicate && (
                 <TransactionCard.BasicInfos
+                  h={'59px'}
+                  justifyContent={'center'}
                   vault={transaction.predicate}
                   transactionName={transaction.name}
                 />
               )}
 
-              <TransactionCard.Amount assets={transaction.assets} />
+              <TransactionCard.Amount
+                transaction={transaction}
+                isDeposit={isDeposit}
+                isContract={isContract}
+              />
               <TransactionCard.Status
                 transaction={transaction}
                 status={transactionStatus({

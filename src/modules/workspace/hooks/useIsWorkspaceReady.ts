@@ -1,5 +1,6 @@
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { currentPath } from '@/utils';
+
 import { useIsFilteringInProgress } from './useIsFilteringInProgress';
 
 export type IUseIsWorkspaceReady = {
@@ -10,6 +11,7 @@ export type IUseIsWorkspaceReady = {
   isAddressbookInfosLoading: boolean;
   isLatestsPredicatesLoading: boolean;
   isWorkspaceBalanceLoading: boolean;
+  isTokenExpired: boolean;
 };
 
 export const useIsWorkspaceReady = ({
@@ -19,13 +21,13 @@ export const useIsWorkspaceReady = ({
   isUserInfosLoading,
   isVaultAssetsLoading,
   isVaultRequestLoading,
-  isWorkspaceBalanceLoading,
+  isTokenExpired,
 }: IUseIsWorkspaceReady) => {
   const { isSignInpage, isFromDapp } = currentPath();
 
   const {
     homeTransactions: {
-      request: { isLoading: isHomeRequestLoading, isFetching: isHomeFetching },
+      request: { isLoading: isHomeRequestLoading },
     },
     transactionsPageList: {
       request: {
@@ -43,12 +45,14 @@ export const useIsWorkspaceReady = ({
 
   const isFilteringInProgress = useIsFilteringInProgress({
     isGifAnimationLoading,
-    isHomeFetching,
     isTransactionsPageListFetching,
     isVaultTransactionsFetching,
   });
 
-  if (isSignInpage || (isFilteringInProgress && !isFromDapp)) {
+  if (
+    (isSignInpage && !isTokenExpired) ||
+    (isFilteringInProgress && !isFromDapp)
+  ) {
     return { isWorkspaceReady: true, isFilteringInProgress };
   }
 
@@ -59,7 +63,6 @@ export const useIsWorkspaceReady = ({
     isUserInfosLoading,
     isVaultAssetsLoading,
     isVaultRequestLoading,
-    isWorkspaceBalanceLoading,
     isHomeRequestLoading,
     isTransactionsPageListLoading,
     isVaultTransactionsLoading,

@@ -6,6 +6,7 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
+import { TransactionType } from 'bakosafe';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -14,11 +15,10 @@ import {
 
 import { ErrorIcon, SuccessIcon } from '@/components';
 import { TransactionState } from '@/modules/core';
-
-import { ITransactionWithType } from '../../services';
-import { TransactionType } from 'bakosafe';
-import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { ITransactionWithType } from '../../services';
 
 interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
@@ -72,6 +72,7 @@ const Actions = ({
     signTransaction: {
       confirmTransaction,
       declineTransaction,
+      selectedTransaction,
       isLoading,
       isSuccess,
     },
@@ -83,6 +84,16 @@ const Actions = ({
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
 
+  const isTxActionsInLoading =
+    isLoading && selectedTransaction?.id === transaction?.id;
+
+  const disableActionButtons =
+    isSuccess && !awaitingAnswer
+      ? false
+      : isLoading && selectedTransaction
+        ? !isTxActionsInLoading
+        : false;
+
   const isDeposit = transaction?.type === TransactionType.DEPOSIT;
 
   if (isMobile) {
@@ -92,21 +103,21 @@ const Actions = ({
   return (
     <HStack minW={140} justifySelf="end">
       {isSigned && (
-        <Badge h={6} variant="success">
+        <Badge h={6} rounded="full" px={2} variant="success">
           You signed
-          <Icon as={SuccessIcon} />
+          <Icon as={SuccessIcon} color="success.700" />
         </Badge>
       )}
 
       {isDeclined && (
-        <Badge h={6} variant="error">
+        <Badge h={6} rounded="full" px={2} variant="error">
           You declined
-          <Icon as={ErrorIcon} />
+          <Icon as={ErrorIcon} fontSize={17} />
         </Badge>
       )}
 
       {!isDeposit && notAnswered && (
-        <Badge h={6} variant="info">
+        <Badge h={6} rounded="full" px={2} variant="info">
           {`You didn't sign`}
         </Badge>
       )}
@@ -119,8 +130,8 @@ const Actions = ({
             variant="primary"
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            isLoading={isLoading}
-            isDisabled={isSuccess && !awaitingAnswer}
+            isLoading={isTxActionsInLoading}
+            isDisabled={disableActionButtons}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -140,8 +151,8 @@ const Actions = ({
               e.preventDefault();
               declineTransaction(transaction.id);
             }}
-            isLoading={isLoading}
-            isDisabled={isSuccess && !awaitingAnswer}
+            isLoading={isTxActionsInLoading}
+            isDisabled={disableActionButtons}
           >
             Decline
           </Button>

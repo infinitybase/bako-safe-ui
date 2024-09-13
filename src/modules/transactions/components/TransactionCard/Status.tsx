@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, TransactionStatus, WitnessStatus } from 'bakosafe';
+import { ITransaction, WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -17,7 +17,9 @@ interface TransactionCardStatusProps {
 }
 
 import { RefreshIcon } from '@/components/icons/refresh-icon';
+
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { useTransactionState } from '../../states';
 
 const Status = ({
   transaction,
@@ -26,7 +28,7 @@ const Status = ({
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const {
-    signTransaction: { retryTransaction, isLoading },
+    signTransaction: { isLoading },
   } = useTransactionsContext();
 
   const signaturesCount =
@@ -35,10 +37,12 @@ const Status = ({
     ).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
-  const isPending = [
-    TransactionStatus.PROCESS_ON_CHAIN,
-    TransactionStatus.PENDING_SENDER,
-  ].includes(transaction.status);
+
+  const { isCurrentTxPending } = useTransactionState();
+
+  const isCurrentTxLoading =
+    isCurrentTxPending.isPending &&
+    transaction.id === isCurrentTxPending.transactionId;
 
   return (
     <HStack
@@ -46,7 +50,7 @@ const Status = ({
       ml={{ base: 0, sm: 6 }}
       maxW="full"
     >
-      {isPending && (
+      {isCurrentTxLoading && (
         <CircularProgress
           trackColor="dark.100"
           size={30}
@@ -55,7 +59,7 @@ const Status = ({
         />
       )}
       <VStack
-        hidden={isPending}
+        hidden={isCurrentTxLoading}
         minW={100}
         spacing={0}
         w="full"
@@ -98,11 +102,11 @@ const Status = ({
               borderRadius="20px"
               fontSize="xs"
               fontWeight="normal"
-              isLoading={isLoading}
+              isLoading={isLoading && isCurrentTxLoading}
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                retryTransaction();
+                // retryTransaction();
               }}
               leftIcon={<RefreshIcon fontSize="sm" />}
             >
