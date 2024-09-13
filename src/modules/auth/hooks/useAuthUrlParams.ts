@@ -12,7 +12,7 @@ const useAuthUrlParams = () => {
 
   const isTxFromDapp = useMemo(
     () =>
-      !sessionId &&
+      !!sessionId &&
       pathname.includes('dapp') &&
       pathname.includes('transaction'),
     [pathname, sessionId],
