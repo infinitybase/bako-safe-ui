@@ -15,7 +15,7 @@ import { LineCloseIcon, SquarePlusIcon } from '@/components/icons';
 import { Dapp } from '@/layouts/dapp';
 import { useQueryParams } from '@/modules/auth';
 import { DappError, DappTransaction } from '@/modules/dapp/components';
-import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
+import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionSocket, useVerifyBrowserType } from '../hooks';
@@ -86,16 +86,13 @@ const TransactionConfirm = () => {
           isLoaded={!isLoadingTransactionSummary && !!transactionSummary}
         >
           <Divider borderColor="dark.100" my={6} />
-
           {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
           <Box ref={inView?.ref} />
-
           {pendingSignerTransactions && (
             <Dapp.Section maxW={356}>
               <DappError />
             </Dapp.Section>
           )}
-
           {/* Vault */}
           <Dapp.Section>
             <Card h={106} gap={4} bg="transparent" mb={8}>
@@ -140,7 +137,7 @@ const TransactionConfirm = () => {
                 <Text mb={2} fontSize={12} fontWeight={700}>
                   Vault:
                 </Text>
-                <VaultDrawerBox
+                <VaultItemBox
                   name={vault?.name}
                   address={vault?.address}
                   isSingleWorkspace
@@ -150,11 +147,9 @@ const TransactionConfirm = () => {
               </>
             )}
           </Dapp.Section>
-
           <Text mb={2} fontWeight={700} fontSize={12}>
             Details:
           </Text>
-
           <VStack spacing={1} mb={-4}>
             {(isLoadingTransactionSummary || !transactionSummary) && (
               <DappTransaction.OperationSkeleton />
@@ -170,15 +165,12 @@ const TransactionConfirm = () => {
               />
             ))}
           </VStack>
-
           <DappTransaction.Fee
             closePopover={closePopover}
             fee={transactionSummary?.fee}
           />
-
           {/* Actions */}
           <Divider borderColor="grey.950" w="full" my={6} />
-
           <Dialog.Actions
             hideDivider
             hidden={isLoadingTransactionSummary || !transactionSummary}

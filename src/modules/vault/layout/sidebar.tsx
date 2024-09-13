@@ -10,8 +10,8 @@ import {
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { VaultBox, VaultDrawer } from '@/modules/vault/components';
-import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
+import { VaultBox, VaultListModal } from '@/modules/vault/components';
+import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -66,8 +66,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         width={isMobile ? 'full' : '268px'}
         pr={isMobile ? 8 : 'unset'}
       >
-        {/* VAULT DRAWER LIST */}
-        <VaultDrawer
+        {/* VAULT Modal LIST */}
+        <VaultListModal
           isOpen={drawer.isOpen}
           onClose={drawer.onClose}
           vaultId={route.params.vaultId!}
@@ -77,7 +77,6 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         <VaultBox
           isFirstAssetsLoading={isLoading}
           name={vault?.data.name}
-          fullName={String(vault.data?.name)}
           address={vault?.data?.predicateAddress ?? ''}
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount

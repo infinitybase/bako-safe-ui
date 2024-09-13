@@ -24,7 +24,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
   name: string;
-  fullName: string;
   address: string;
   onChangeVault: () => void;
   onCreateTransaction: () => void;
@@ -63,7 +62,6 @@ const VaultBox = (props: VaultBoxPropx) => {
   const {
     name,
     address,
-    fullName,
     isLoading,
     isPending,
     hasBalance,
@@ -98,7 +96,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             variant="roundedSquare"
             bgColor="dark.150"
             color="grey.75"
-            name={fullName}
+            name={name}
             boxShadow="0px 3.5px 3.5px 0px rgba(0, 0, 0, 0.4);"
             boxSize="56px"
           />
@@ -112,6 +110,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             isSidebarAddress
             h="20px"
             flexDir="row-reverse"
+            justifyContent="start"
           />
         </VStack>
       </HStack>
