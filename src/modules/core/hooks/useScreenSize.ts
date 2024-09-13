@@ -7,6 +7,7 @@ const useScreenSize = () => {
   const [isSmall] = useMediaQuery('(max-width: 37.48em)'); //600px
   const [isLitteSmall] = useMediaQuery('(max-width: 25em)'); //400px
   const [isExtraSmall] = useMediaQuery('(max-width: 21em)'); //336px
+  const [isLowerThanFourHundredAndThirty] = useMediaQuery('(max-width: 27em)');
   const [vaultRequiredSizeToColumnLayout] = useMediaQuery(
     '(max-width: 75.62em)',
   ); //1210px

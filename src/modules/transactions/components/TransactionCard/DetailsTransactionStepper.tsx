@@ -4,6 +4,7 @@ import { ITransactionHistory } from '../../services';
 interface DetailsTransactionStepperProps {
   transactionId: string;
   predicateId: string;
+  isMobileDetailsOpen: boolean;
   children: (
     isLoading: boolean,
     transactionHistory: ITransactionHistory[] | undefined,
@@ -13,11 +14,13 @@ interface DetailsTransactionStepperProps {
 const DetailsTransactionStepper = ({
   transactionId,
   predicateId,
+  isMobileDetailsOpen,
   children,
 }: DetailsTransactionStepperProps) => {
   const { transactionHistory, isLoading } = useTransactionHistory(
     transactionId,
     predicateId,
+    isMobileDetailsOpen,
   );
 
   return <>{children(isLoading, transactionHistory)}</>;

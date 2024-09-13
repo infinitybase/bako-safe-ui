@@ -1,5 +1,4 @@
 import { Box, HStack, VStack } from '@chakra-ui/react';
-import { AddressType } from '@fuel-ts/providers';
 import { Vault } from 'bakosafe';
 import { bn, Operation } from 'fuels';
 
@@ -8,6 +7,8 @@ import { assetsMap } from '@/modules/core/utils';
 import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
+
+import { IFuelTransactionNames } from '../../services';
 
 interface OperationProps {
   vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
@@ -35,30 +36,49 @@ export const DappTransactionOperationSekeleton = () => (
 );
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { to, assetsSent } = operation ?? {};
+  const { to, assetsSent, from, name } = operation ?? {};
 
-  if (!to || !assetsSent || !vault) return null;
+  const isContract =
+    (name as unknown as IFuelTransactionNames) ===
+    IFuelTransactionNames.CONTRACT_CALL;
 
-  const assetData = assetsMap[assetsSent[0].assetId] ?? assetsMap['UNKNOWN'];
+  if (!to || !from || !vault) return null;
 
-  const assets = [
-    {
-      icon: assetData.icon,
-      amount: bn(assetsSent[0].amount ?? '').format(),
-      assetId: assetsSent[0].assetId,
-      name: assetData.name,
-      slug: assetData.slug,
-    },
-  ];
+  const assetData = isContract
+    ? null
+    : assetsSent?.map((sent) => {
+        return assetsMap[sent.assetId] && assetsMap[sent.assetId]
+          ? { ...assetsMap[sent.assetId], amount: sent.amount }
+          : {
+              ...assetsMap['UNKNOWN'],
+              amount: sent.amount,
+            };
+      });
+
+  const assets = isContract
+    ? null
+    : assetData?.map((data) => {
+        return {
+          icon: data?.icon,
+          amount: bn(data?.amount ?? '').format(),
+          assetId: data?.assetId,
+          name: data?.name,
+          slug: data?.slug,
+        };
+      });
+
   const hasAssets = !!assets?.length;
 
   return (
     <Box w="full" mb={7}>
       <DappTransactionFromTo
-        to={to}
         from={{
-          address: vault.predicateAddress,
-          type: AddressType.contract,
+          address: from.address,
+          type: from.type,
+        }}
+        to={{
+          address: to.address,
+          type: to.type,
         }}
         vault={vault}
         hasAssets={hasAssets}

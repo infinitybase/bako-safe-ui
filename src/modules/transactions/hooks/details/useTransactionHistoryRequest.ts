@@ -6,10 +6,17 @@ import { TransactionService } from '@/modules/transactions/services';
 
 export const TRANSACTION_HISTORY_QUERY_KEY = 'transaction/history';
 
-const useTransactionHistoryRequest = (
-  transactionId: string,
-  predicateId: string,
-) => {
+export interface UseTransactionHistoryRequestProps {
+  transactionId: string;
+  predicateId: string;
+  isMobileDetailsOpen: boolean;
+}
+
+const useTransactionHistoryRequest = ({
+  isMobileDetailsOpen,
+  predicateId,
+  transactionId,
+}: UseTransactionHistoryRequestProps) => {
   const { isOpen } = useAccordionItemState();
 
   const { cachedData } = useGetCachedQueryData([
@@ -22,7 +29,9 @@ const useTransactionHistoryRequest = (
     queryKey: [TRANSACTION_HISTORY_QUERY_KEY, transactionId, predicateId],
     queryFn: () =>
       TransactionService.getTransactionsHistory(transactionId, predicateId),
-    enabled: isOpen && !cachedData?.data,
+    enabled:
+      (isOpen && !cachedData?.data) ||
+      (!cachedData?.data && isMobileDetailsOpen),
   });
 };
 
