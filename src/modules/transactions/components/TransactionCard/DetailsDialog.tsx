@@ -21,11 +21,20 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
+  isContract: boolean;
   callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const {
+    onClose,
+    isOpen,
+    transaction,
+    account,
+    status,
+    isSigner,
+    isContract,
+  } = props;
 
   const {
     signTransaction: {
@@ -56,6 +65,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
           <VStack w="full" spacing={3}>
             <HStack w="full">
               <TransactionCard.Amount
+                isContract={isContract}
                 transaction={transaction}
                 isDeposit={transaction?.type === TransactionType.DEPOSIT}
               />
