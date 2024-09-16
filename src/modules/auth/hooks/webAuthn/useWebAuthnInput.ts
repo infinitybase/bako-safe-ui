@@ -9,14 +9,28 @@ import {
   useGetAccountsByHardwareId,
 } from './useWebauthnRequests';
 
+interface IWebauthnInputBadge {
+  status: AutocompleteBadgeStatus;
+  label: string;
+}
+
+const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
+  SEARCHING: {
+    status: AutocompleteBadgeStatus.SEARCHING,
+    label: 'Searching...',
+  },
+  INFO: { status: AutocompleteBadgeStatus.INFO, label: 'Account found' },
+  SUCCESS: { status: AutocompleteBadgeStatus.SUCCESS, label: 'Available' },
+  ERROR: { status: AutocompleteBadgeStatus.ERROR, label: 'Invalid username' },
+};
+
 const useWebAuthnInput = (validUsername: boolean) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [accountSearch, setAccountSearch] = useState<string>('');
   const [accountFilter, setAccountFilter] = useState<string>('');
-  const [badgeLabel, setBadgeLabel] = useState<string>('');
-  const [badgeStatus, setBadgeStatus] = useState<
-    AutocompleteBadgeStatus | undefined
-  >(undefined);
+  const [badge, setBadge] = useState<IWebauthnInputBadge | undefined>(
+    undefined,
+  );
 
   const accountsRequest = useGetAccountsByHardwareId();
 
@@ -59,30 +73,21 @@ const useWebAuthnInput = (validUsername: boolean) => {
     debouncedAccountFilter(newValue);
   }, []);
 
-  const handleBadgeChange = useCallback(
-    (newStatus: AutocompleteBadgeStatus, newLabel: string) => {
-      setBadgeStatus(newStatus);
-      setBadgeLabel(newLabel);
-    },
-    [],
-  );
-
   useEffect(() => {
     if (checkNicknameRequest.isLoading) {
-      handleBadgeChange(AutocompleteBadgeStatus.SEARCHING, 'Searching...');
+      setBadge(WebauthnInputBadge.SEARCHING);
     } else if (!validUsername) {
-      handleBadgeChange(AutocompleteBadgeStatus.ERROR, 'Invalid username');
+      setBadge(WebauthnInputBadge.ERROR);
     } else if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      handleBadgeChange(AutocompleteBadgeStatus.INFO, 'Account found');
+      setBadge(WebauthnInputBadge.INFO);
     } else if (checkNicknameRequest.isSuccess) {
-      handleBadgeChange(AutocompleteBadgeStatus.SUCCESS, 'Available');
+      setBadge(WebauthnInputBadge.SUCCESS);
     }
   }, [
     checkNicknameRequest.data?.type,
     checkNicknameRequest.isLoading,
     checkNicknameRequest.isSuccess,
     validUsername,
-    handleBadgeChange,
   ]);
 
   return {
@@ -91,10 +96,7 @@ const useWebAuthnInput = (validUsername: boolean) => {
     debouncedAccountFilter,
     accountsRequest,
     checkNicknameRequest,
-    badge: {
-      status: badgeStatus,
-      label: badgeLabel,
-    },
+    badge,
     setInputValue,
     handleInputChange,
   };

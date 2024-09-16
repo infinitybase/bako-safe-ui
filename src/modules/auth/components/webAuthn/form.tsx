@@ -59,8 +59,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 options={accountsOptions}
                 showOptions={showAccountsOptions}
                 isDisabled={!window.navigator.credentials}
-                badgeStatus={inputBadge.status}
-                badgeLabel={inputBadge.label}
+                badgeStatus={inputBadge?.status}
+                badgeLabel={inputBadge?.label}
               />
               <FormHelperText
                 ml={2}
