@@ -49,7 +49,14 @@ interface WebAuthnInputProps extends Omit<InputProps, 'value' | 'onChange'> {
 
 const InputBadge = (props: BadgeProps) => {
   return (
-    <Badge border="none" px={2} {...props}>
+    <Badge
+      border="none"
+      borderRadius={4}
+      h={19}
+      px={2}
+      fontSize="2xs"
+      {...props}
+    >
       {props.children}
     </Badge>
   );
