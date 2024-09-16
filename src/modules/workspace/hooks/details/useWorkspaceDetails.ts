@@ -1,23 +1,29 @@
-import { useAuth } from '@/modules/auth';
-import { useWorkspace } from '../useWorkspace';
+import { useEffect, useState } from 'react';
+
+import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
+  useAuthUrlParams,
   useGetParams,
   useGetWorkspaceRequest,
   useScreenSize,
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { useGitLoadingRequest } from '../useGifLoadingRequest';
+
+import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
-import { setupAxiosInterceptors } from '@/config';
+import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
+  const { isTxFromDapp } = useAuthUrlParams();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -27,12 +33,19 @@ const useWorkspaceDetails = () => {
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
   } = useTransactionsContext();
 
-  setupAxiosInterceptors(authDetails.handlers.logout);
-
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGitLoadingRequest();
+  } = useGifLoadingRequest();
+
+  useEffect(() => {
+    setupAxiosInterceptors({
+      isTxFromDapp,
+      isTokenExpired,
+      setIsTokenExpired,
+      logout: authDetails.handlers.logout,
+    });
+  }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },
@@ -65,6 +78,7 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
+    isTokenExpired,
   });
 
   return {

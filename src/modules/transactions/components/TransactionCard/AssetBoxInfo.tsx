@@ -1,38 +1,27 @@
 import { Icon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  Box,
-  Center,
-  HStack,
-  StackProps,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon, UnknownIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AssetModel, assetsMap, IGetTokenInfos } from '@/modules/core';
+import { AssetModel, assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
-  contractAddress?: string;
   hasToken?: boolean;
   isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
-  contractAssetInfo?: IGetTokenInfos;
 }
 
 const AssetBoxInfo = ({
   asset,
-  contractAddress,
   isDeposit,
   isDeploy,
   isContract,
-  contractAssetInfo,
   ...props
 }: AssetBoxInfoProps) => {
   const {
@@ -41,7 +30,10 @@ const AssetBoxInfo = ({
   } = useWorkspaceContext();
 
   const assetInfo = useMemo(
-    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    () =>
+      asset?.assetId && assetsMap[asset?.assetId]
+        ? assetsMap[asset?.assetId]
+        : assetsMap['UNKNOWN'],
     [asset?.assetId],
   );
 
@@ -50,8 +42,8 @@ const AssetBoxInfo = ({
       asset
         ? asset
         : {
-            amount: contractAssetInfo?.assetAmount ?? '',
-            assetId: contractAssetInfo?.assetsInfo.assetId ?? '',
+            amount: '',
+            assetId: '',
           },
     ],
     tokensUSD?.isLoading,
@@ -69,27 +61,9 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={assetInfo.slug}
-            src={assetInfo.icon}
-            boxSize={isLowerThanFourHundredAndThirty ? '18px' : '24px'}
-            ignoreFallback
-          />
+          <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
-          </Text>
-        </HStack>
-      )}
-      {contractAssetInfo && isContract && !assetInfo && (
-        <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Avatar
-            name={contractAssetInfo.assetsInfo.slug}
-            size="xs"
-            src={contractAssetInfo.assetsInfo.icon}
-            ignoreFallback
-          />
-          <Text fontSize="sm" color="grey.500">
-            {contractAssetInfo.assetsInfo.slug}
           </Text>
         </HStack>
       )}
@@ -103,7 +77,6 @@ const AssetBoxInfo = ({
         >
           {isDeposit ? null : '-'}
           {asset?.amount}
-          {!asset?.amount && contractAssetInfo && contractAssetInfo.assetAmount}
         </Text>
         <Text
           textAlign="center"
@@ -131,10 +104,6 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && <AddressWithCopyBtn address={asset?.to} />}
-
-      {isContract && contractAddress && (
-        <AddressWithCopyBtn address={contractAddress} />
-      )}
     </HStack>
   );
 };

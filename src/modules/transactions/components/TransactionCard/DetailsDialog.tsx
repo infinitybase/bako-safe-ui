@@ -37,11 +37,20 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
+  isContract: boolean;
   callBack?: () => void;
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const {
+    onClose,
+    isOpen,
+    transaction,
+    account,
+    status,
+    isSigner,
+    isContract,
+  } = props;
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
@@ -190,6 +199,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 w="fit-content"
                 isInDetailsDialog
                 h="26px"
+                isContract={isContract}
               />
 
               <TransactionCard.Status
@@ -202,7 +212,11 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             </HStack>
           </VStack>
 
-          <TransactionCard.Details transaction={transaction} isMobile />
+          <TransactionCard.Details
+            transaction={transaction}
+            isMobile
+            isMobileDetailsOpen={isOpen}
+          />
         </VStack>
       </Dialog.Body>
 

@@ -1,11 +1,11 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { BoxProps, Flex, Text } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
 import { CopyAddressButton } from '@/components/copyAddressButton';
 import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-export interface AddressWithCopyBtnProps {
+export interface AddressWithCopyBtnProps extends BoxProps {
   address: string;
   isDeposit?: boolean;
 }
@@ -13,6 +13,7 @@ export interface AddressWithCopyBtnProps {
 const AddressWithCopyBtn = ({
   address,
   isDeposit,
+  ...rest
 }: AddressWithCopyBtnProps) => {
   const {
     vaultPageParams: { vaultId },
@@ -24,11 +25,8 @@ const AddressWithCopyBtn = ({
       isLowerThanFourHundredAndThirty,
       isExtraLarge,
       isLitteSmall,
-      isSmall,
     },
   } = useWorkspaceContext();
-
-  console.log('address:', address);
 
   return (
     <Flex
@@ -38,13 +36,15 @@ const AddressWithCopyBtn = ({
       textAlign={isExtraSmall ? 'start' : 'end'}
       overflow="hidden"
       alignItems="center"
+      justifyContent="end"
+      gap={3}
+      {...rest}
     >
       <Text
         color="grey.75"
         textOverflow="ellipsis"
         isTruncated
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        ml={3}
         maxW={
           isExtraSmall && isDeposit
             ? '48px'
@@ -70,21 +70,13 @@ const AddressWithCopyBtn = ({
             ? (address ?? '')
             : AddressUtils.format(
                 address ?? '',
-                isLitteSmall
-                  ? 4
-                  : isLowerThanFourHundredAndThirty
-                    ? 10
-                    : isSmall
-                      ? 7
-                      : !isVaultPage && isExtraLarge
-                        ? 18
-                        : 12,
+                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
               )}
       </Text>
 
       <CopyAddressButton
-        ml={2}
-        size={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        minW={2}
+        size="xs"
         aria-label="Copy"
         addressToCopy={Address.fromString(address ?? '').toB256()}
       />

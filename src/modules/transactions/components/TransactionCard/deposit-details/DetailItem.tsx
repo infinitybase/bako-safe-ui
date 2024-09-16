@@ -63,7 +63,13 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               textOverflow="ellipsis"
               isTruncated
             >
-              <AddressWithCopyBtn address={asset.to} isDeposit={true} />
+              <AddressWithCopyBtn
+                address={asset.to}
+                isDeposit={true}
+                justifyContent="start"
+                textAlign="start"
+                p={0}
+              />
             </Text>
 
             <Box display="flex" justifyContent="center" w="full">

@@ -1,8 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-const useGitLoadingRequest = () => {
+export enum GifLoadingRequestQueryKey {
+  ANIMATION_LOADING = 'animation-loading',
+}
+
+const useGifLoadingRequest = () => {
   const { isLoading, isFetching, refetch } = useQuery({
-    queryKey: ['animation-loading'],
+    queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
     queryFn: () =>
       new Promise((resolve) => {
         setTimeout(() => {
@@ -17,4 +21,4 @@ const useGitLoadingRequest = () => {
   };
 };
 
-export { useGitLoadingRequest };
+export { useGifLoadingRequest };

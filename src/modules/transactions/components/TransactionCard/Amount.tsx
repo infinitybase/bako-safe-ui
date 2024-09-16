@@ -1,17 +1,16 @@
 import {
-  Avatar,
   AvatarGroup,
   BoxProps,
   Flex,
   HStack,
+  Icon,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import bakoIcon from '@/assets/tokens/bako.svg';
-import { CustomSkeleton } from '@/components';
+import { CustomSkeleton, UnknownIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -22,12 +21,14 @@ interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
   isInDetailsDialog?: boolean;
+  isContract: boolean;
 }
 
 const Amount = ({
   transaction,
   isDeposit,
   isInDetailsDialog,
+  isContract,
   ...rest
 }: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
@@ -66,65 +67,59 @@ const Amount = ({
       w={isExtraSmall ? 150 : 200}
       {...rest}
     >
-      <AvatarGroup
-        max={showOnlyOneAsset ? 1 : 3}
-        w={isMobile ? 'unset' : 56}
-        justifyContent={isMobile ? 'start' : 'end'}
-        position="relative"
-      >
-        {hasNoDefaultAssets && (
-          <Avatar
-            name={assetsMap[operationAssets.assetId]?.slug ?? 'UKN'}
-            src={assetsMap[operationAssets.assetId]?.icon ?? bakoIcon}
-            ignoreFallback
-            boxSize={isInDetailsDialog ? '24px !important' : 24}
-            border="none"
-          />
-        )}
-
-        {oneAssetOfEach.map((asset, index) => (
-          <Avatar
-            key={index}
-            name={assetsMap[asset.assetId]?.slug ?? 'UKN'}
-            src={assetsMap[asset.assetId]?.icon ?? bakoIcon}
-            ignoreFallback
-            boxSize={isInDetailsDialog ? '24px !important' : 24}
-            border="none"
-          />
-        ))}
-      </AvatarGroup>
-      <Flex
-        flexDir={isMultiToken ? 'column-reverse' : 'column'}
-        w="full"
-        mt={0.5}
-        textAlign="center"
-      >
-        {isMultiToken ? (
-          <Text color="grey.425" fontSize="xs">
-            Multi-token
-          </Text>
-        ) : (
-          <Text
-            color="grey.75"
-            fontSize={isInDetailsDialog ? 'xs' : 'sm'}
-            lineHeight={isInDetailsDialog ? '14.52px' : 'inherit'}
+      {isContract ? null : (
+        <>
+          <AvatarGroup
+            max={showOnlyOneAsset ? 1 : 3}
+            w={isMobile ? 'unset' : 56}
+            justifyContent={isMobile ? 'start' : 'end'}
+            position="relative"
           >
-            {hasNoDefaultAssets && isDeposit
-              ? operationAssets.amount
-              : totalAmoutSent}
-          </Text>
-        )}
-        <Text
-          lineHeight={isInDetailsDialog ? '14.52px' : 'inherit'}
-          variant="description"
-          fontSize={isMultiToken ? 'sm' : 'xs'}
-          color={isMultiToken ? ' grey.75' : 'grey.425'}
-        >
-          <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-            ${txUSDAmount ?? 0}
-          </CustomSkeleton>
-        </Text>
-      </Flex>
+            {hasNoDefaultAssets && (
+              <Icon
+                key={assetsMap[operationAssets.assetId]?.assetId}
+                w={6}
+                h={6}
+                as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
+              />
+            )}
+
+            {oneAssetOfEach.map((asset) => (
+              <Icon
+                key={asset.assetId}
+                w={6}
+                h={6}
+                as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
+              />
+            ))}
+          </AvatarGroup>
+          <Flex
+            flexDir={isMultiToken ? 'column-reverse' : 'column'}
+            w="full"
+            mt={0.5}
+            textAlign="center"
+          >
+            {isMultiToken ? (
+              <Text color="grey.425" fontSize="xs">
+                Multi-token
+              </Text>
+            ) : (
+              <Text color="grey.75" fontSize="sm">
+                {hasNoDefaultAssets ? operationAssets.amount : totalAmoutSent}
+              </Text>
+            )}
+            <Text
+              variant="description"
+              fontSize={isMultiToken ? 'sm' : 'xs'}
+              color={isMultiToken ? ' grey.75' : 'grey.425'}
+            >
+              <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
+                ${txUSDAmount ?? 0}
+              </CustomSkeleton>
+            </Text>
+          </Flex>
+        </>
+      )}
     </HStack>
   );
 };

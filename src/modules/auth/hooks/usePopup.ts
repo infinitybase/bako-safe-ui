@@ -7,6 +7,7 @@ const useQueryParams = () => {
   const queryParams = useMemo(() => {
     const searchParams = new URLSearchParams(location.search);
     const sessionId = searchParams.get('sessionId');
+    const expiredSession = searchParams.get('expired') === 'true';
     const address = searchParams.get('address');
     const isNew = searchParams.get('new');
     const name = searchParams.get('name');
@@ -16,8 +17,10 @@ const useQueryParams = () => {
     const request_id = searchParams.get('request_id');
     const isOpenWebAuth = searchParams.get('openWebAuth') === 'true';
     const byConnector = searchParams.get('byConnector') === 'true';
+    const byLanding = searchParams.get('_gl');
 
     return {
+      expiredSession,
       sessionId,
       address,
       isNew,
@@ -28,6 +31,7 @@ const useQueryParams = () => {
       request_id,
       isOpenWebAuth,
       byConnector,
+      byLanding,
     };
   }, [location]);
 

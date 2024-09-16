@@ -13,9 +13,9 @@ import {
 import { useEffect } from 'react';
 
 import { AddressUtils } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
@@ -153,7 +153,15 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     {nickname && step.owner.address !== userInfos.address && (
-                      <Text>{nickname}</Text>
+                      <Text
+                        fontSize="sm"
+                        color="grey.75"
+                        isTruncated
+                        textOverflow="ellipsis"
+                        maxW={{ base: '150px', xs: '95px', xl: 'full' }}
+                      >
+                        {nickname}
+                      </Text>
                     )}
                     <Text
                       color={

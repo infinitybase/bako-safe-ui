@@ -1,16 +1,10 @@
-import {
-  Box,
-  Button,
-  Icon,
-  Stack,
-  useAccordionItemState,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
@@ -33,15 +27,19 @@ interface TransactionDetailsProps {
   status?: TransactionState;
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
+  isMobileDetailsOpen?: boolean;
 }
 
 const Details = ({
   transaction,
   status,
   isInTheVaultPage,
-  isMobile,
+  isMobileDetailsOpen,
 }: TransactionDetailsProps) => {
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -51,14 +49,12 @@ const Details = ({
     );
   };
 
-  const { isOpen } = useAccordionItemState();
-
-  if (!isMobile && !isOpen) return null;
-
   return (
     <DetailsTransactionStepper
       transactionId={transaction.id}
       predicateId={transaction.predicateId}
+      isMobileDetailsOpen={isMobileDetailsOpen ?? false}
+      isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
     >
       {(isLoading, transactionHistory) => (
         <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>

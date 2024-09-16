@@ -4,13 +4,13 @@ import {
   chakra,
   Heading,
   HStack,
-  Image,
+  Icon,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 
-import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
+import { Card, CustomSkeleton, NotFoundIcon, UnknownIcon } from '@/components';
 
 import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
@@ -131,7 +131,12 @@ const AmountDetails = (props: AmountDetailsProps) => {
               <CustomSkeleton isLoaded={!isLoading} key={index}>
                 <AssetCard>
                   <HStack w="full" spacing={4}>
-                    <Image src={assetsMap[asset.assetId].icon} boxSize="38px" />
+                    {/* This code is probably not being used, just to fix a build issue */}
+                    <Icon
+                      w={{ base: 8, sm: 8 }}
+                      h={{ base: 8, sm: 8 }}
+                      as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
+                    />
                     <Box>
                       <Text
                         color="grey.200"

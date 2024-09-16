@@ -1,12 +1,20 @@
-import { Avatar, Box, HStack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  ComponentWithAs,
+  HStack,
+  Icon,
+  IconProps,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
-import { Card } from '@/components';
+import { Card, UnknownIcon } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { AddressUtils } from '@/modules/core/utils';
 
 export interface FeeProps {
   assets: {
-    icon?: string;
+    icon?: ComponentWithAs<'svg', IconProps>;
     amount: string;
     assetId: string;
     name: string;
@@ -26,31 +34,41 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
           bg="grey.825"
           px={3}
           maxW={356}
+          alignItems="center"
+          gap={4}
         >
-          <Avatar
-            color="white"
-            bgColor={asset.icon ? 'transparent' : 'grey.950'}
-            variant="roundedSquare"
-            src={asset.icon}
-            name={asset.name}
-            boxSize={10}
-          />
-          <Box w="full">
-            <Text variant="subtitle" fontSize={12} color="grey.75">
-              {asset.name}
-            </Text>
-            <AddressCopy
-              flexDir="row-reverse"
-              address={AddressUtils.format(asset.assetId)!}
-              addressToCopy={asset.assetId}
-              bg="transparent"
-              fontSize={14}
-              p={0}
-              pr={8}
+          <HStack maxW="190px">
+            <Icon
+              w={{ base: 6, sm: 6 }}
+              h={{ base: 6, sm: 6 }}
+              as={asset?.icon ?? UnknownIcon}
             />
-          </Box>
-          <Box minW="max-content">
-            <Text variant="subtitle" color="grey.75" fontSize="sm">
+            <VStack spacing={0}>
+              <Text
+                variant="subtitle"
+                fontSize={12}
+                color="grey.75"
+                alignSelf="start"
+              >
+                {asset.name}
+              </Text>
+              <AddressCopy
+                flexDir="row-reverse"
+                address={AddressUtils.format(asset.assetId)!}
+                fontSize={asset?.slug === 'UNK' ? '12px' : 'unset'}
+                addressToCopy={asset.assetId}
+                w="100%"
+                bg="transparent"
+                p={0}
+              />
+            </VStack>
+          </HStack>
+          <Box minW="max-content" mt={4}>
+            <Text
+              variant="subtitle"
+              color="grey.75"
+              fontSize={asset.amount.length >= 8 ? 'xs' : 'sm'}
+            >
               {asset.amount} {asset.slug}
             </Text>
           </Box>

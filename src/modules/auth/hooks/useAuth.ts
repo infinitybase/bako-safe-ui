@@ -1,12 +1,16 @@
 import { useFuel } from '@fuels/react';
 import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 
-import { useAuthCookies, useQueryParams } from '..';
+import {
+  generateRedirectQueryParams,
+  useAuthCookies,
+  useQueryParams,
+} from '..';
 import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
@@ -32,25 +36,23 @@ const useAuth = (): IUseAuthReturn => {
     setAuthCookies(params);
   };
 
-  const generateLogoutURLQueryParams = useCallback(() => {
-    const queryParams = [
-      sessionId && `sessionId=${sessionId}`,
-      origin && `origin=${origin}`,
-      name && `name=${name}`,
-      request_id && `request_id=${request_id}`,
-    ]
-      .filter(Boolean)
-      .join('&');
-
-    return queryParams ? `?${queryParams}` : '';
-  }, [sessionId, origin, name, request_id]);
-
   const logout = () => {
     clearAuthCookies();
     queryClient.clear();
 
-    const queryParams = generateLogoutURLQueryParams();
+    const queryParams = generateRedirectQueryParams({
+      sessionId,
+      origin,
+      name,
+      request_id,
+    });
     navigate(`/${queryParams}`);
+  };
+
+  const logoutWhenExpired = async () => {
+    clearAuthCookies();
+    queryClient.clear();
+    navigate('/?expired=true');
   };
 
   const userProvider = async () => {
@@ -68,6 +70,7 @@ const useAuth = (): IUseAuthReturn => {
   return {
     handlers: {
       logout,
+      logoutWhenExpired,
       authenticate,
       setInvalidAccount,
     },
