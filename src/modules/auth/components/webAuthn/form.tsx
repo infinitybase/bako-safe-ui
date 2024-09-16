@@ -9,8 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
+import { AutocompleteBadge } from '@/components';
+
 import { UseWebAuthnSignIn } from '../../hooks';
-import { WebAuthnLoginInput } from './input';
 
 interface WebAuthnFormProps {
   formData: UseWebAuthnSignIn['formData'];
@@ -47,7 +48,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
         render={({ field, fieldState }) => {
           return (
             <FormControl isInvalid={fieldState.invalid}>
-              <WebAuthnLoginInput
+              <AutocompleteBadge
+                label="Username"
                 value={field.value}
                 onChange={(e) => {
                   accountSeachHandler(e);

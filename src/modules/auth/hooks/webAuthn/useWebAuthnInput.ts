@@ -1,7 +1,8 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { WebAuthnInputBadgeStatus } from '../../components/webAuthn/input';
+import { AutocompleteBadgeStatus } from '@/components';
+
 import { TypeUser } from '../../services/methods';
 import {
   useCheckNickname,
@@ -14,7 +15,7 @@ const useWebAuthnInput = (validUsername: boolean) => {
   const [accountFilter, setAccountFilter] = useState<string>('');
   const [badgeLabel, setBadgeLabel] = useState<string>('');
   const [badgeStatus, setBadgeStatus] = useState<
-    WebAuthnInputBadgeStatus | undefined
+    AutocompleteBadgeStatus | undefined
   >(undefined);
 
   const accountsRequest = useGetAccountsByHardwareId();
@@ -59,7 +60,7 @@ const useWebAuthnInput = (validUsername: boolean) => {
   }, []);
 
   const handleBadgeChange = useCallback(
-    (newStatus: WebAuthnInputBadgeStatus, newLabel: string) => {
+    (newStatus: AutocompleteBadgeStatus, newLabel: string) => {
       setBadgeStatus(newStatus);
       setBadgeLabel(newLabel);
     },
@@ -68,13 +69,13 @@ const useWebAuthnInput = (validUsername: boolean) => {
 
   useEffect(() => {
     if (checkNicknameRequest.isLoading) {
-      handleBadgeChange(WebAuthnInputBadgeStatus.SEARCHING, 'Searching...');
+      handleBadgeChange(AutocompleteBadgeStatus.SEARCHING, 'Searching...');
     } else if (!validUsername) {
-      handleBadgeChange(WebAuthnInputBadgeStatus.ERROR, 'Invalid username');
+      handleBadgeChange(AutocompleteBadgeStatus.ERROR, 'Invalid username');
     } else if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
-      handleBadgeChange(WebAuthnInputBadgeStatus.INFO, 'Account found');
+      handleBadgeChange(AutocompleteBadgeStatus.INFO, 'Account found');
     } else if (checkNicknameRequest.isSuccess) {
-      handleBadgeChange(WebAuthnInputBadgeStatus.SUCCESS, 'Available');
+      handleBadgeChange(AutocompleteBadgeStatus.SUCCESS, 'Available');
     }
   }, [
     checkNicknameRequest.data?.type,
