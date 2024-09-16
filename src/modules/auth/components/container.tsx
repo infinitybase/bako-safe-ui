@@ -51,7 +51,6 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
         borderRadius="10px"
         backgroundColor="dark.50"
         backdropFilter="blur(6px)"
-        display="flex"
         minW={isLowerThanMobile[0] ? '90vw' : '55vw'}
         spacing={0}
         border={'1px solid transparent'}
@@ -91,33 +90,23 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
 
 const SigninContainer = (props: SigninContainerProps) => {
   const {
-    screenSizes: { isXSHeight, isSmallHeight, isMdHeight },
+    screenSizes: { isSmallHeight, isMdHeight },
   } = useWorkspaceContext();
+
   return (
-    <SigninContainerBackground>
+    <Box display="flex" minH="100vh" w="100%">
       <Box
-        borderRadius="10px"
+        flex={1}
+        display="flex"
         backgroundColor="dark.50"
         backdropFilter="blur(6px)"
-        minH={isMdHeight ? '90vh' : '41.25rem'}
-        minW={{ md: '85vw', lg: '75vw', xl: '65rem' }}
-        display="flex"
-        alignItems="stretch"
-        border={'1px solid transparent'}
-        borderColor="dark.150"
-        boxShadow="lg"
       >
         <Box
-          flex={1}
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
-          borderRadius="10px 0px 0px 10px"
-          p={3}
           display="flex"
-          justifyContent="flex-start"
-          alignItems="center"
-          flexDirection="column"
           position="relative"
+          flex={1}
         >
           <img
             src={bakoSymbol}
@@ -125,25 +114,25 @@ const SigninContainer = (props: SigninContainerProps) => {
             style={{
               position: 'absolute',
               top: '50%',
-              left: '96.5%',
+              left: '98%',
               transform: 'translate(-50%, -50%)',
-              minWidth: '120%',
+              minWidth: '75%',
             }}
           />
         </Box>
 
         <Box
-          flex={isXSHeight ? 4 : isSmallHeight ? 3 : 2}
-          mr={16}
-          ml={isXSHeight ? '15.5%' : isSmallHeight ? '17.5%' : '20.5%'}
-          py={8}
-          position="sticky"
+          pl={{ base: '10%', lg: '8%', xl: '5%' }}
           display="flex"
+          flex={isSmallHeight ? 4 : isMdHeight ? 3 : 2}
+          justifyContent="center"
         >
-          {props.children}
+          <VStack flex={1} p={4} maxW={400}>
+            {props.children}
+          </VStack>
         </Box>
       </Box>
-    </SigninContainerBackground>
+    </Box>
   );
 };
 

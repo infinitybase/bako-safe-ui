@@ -100,9 +100,9 @@ const SigninPage = () => {
           <TabPanel h="full" p={0}>
             <VStack
               h="full"
-              spacing={4}
+              spacing={20}
               alignItems="center"
-              justifyContent="space-evenly"
+              justifyContent="center"
             >
               <SignInHeader title={pageSections.title} />
 
