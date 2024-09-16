@@ -10,6 +10,7 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
+import { CheckIcon } from '@/components/icons';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 
@@ -82,16 +83,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
               <Checkbox
                 position="relative"
                 ml={2}
+                icon={<CheckIcon fontSize={8} />}
                 size="sm"
-                colorScheme="gray"
-                borderColor="grey.75"
-                iconColor="grey.850"
-                _checked={{
-                  '& .chakra-checkbox__control': {
-                    background: 'grey.75',
-                    borderColor: 'grey.75',
-                  },
-                }}
                 isChecked={!!field.value}
                 onChange={field.onChange}
               />
