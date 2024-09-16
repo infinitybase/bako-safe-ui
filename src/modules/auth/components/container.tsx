@@ -106,7 +106,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           flex={isSmallHeight ? 4 : isMdHeight ? 3 : 2}
           justifyContent="center"
         >
-          <VStack flex={1} p={4} maxW={400}>
+          <VStack flex={1} p={4}>
             {props.children}
           </VStack>
         </Box>

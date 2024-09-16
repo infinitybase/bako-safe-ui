@@ -63,7 +63,7 @@ const SigninPage = () => {
               >
                 <SignInHeader title={pageSections.title} />
 
-                <VStack w="full" maxW={292} spacing={6}>
+                <VStack w="full" maxW={390} spacing={6}>
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
@@ -108,7 +108,7 @@ const SigninPage = () => {
             >
               <SignInHeader title={pageSections.title} />
 
-              <VStack w="full" spacing={8}>
+              <VStack w="full" spacing={8} maxW={390}>
                 <WebAuthnSignIn
                   formData={formData}
                   formState={formState}
