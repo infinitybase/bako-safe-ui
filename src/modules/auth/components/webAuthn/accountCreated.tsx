@@ -25,6 +25,7 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
 
       <ProgressButton
         w="full"
+        maxW={{ base: 292, md: 390 }}
         variant="primary"
         onClick={formState.handleAction}
         _hover={{

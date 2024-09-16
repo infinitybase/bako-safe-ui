@@ -12,6 +12,7 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
+import { useScreenSize } from '@/modules/core';
 type ConnectorType = {
   name: string;
   label: string;
@@ -105,6 +106,8 @@ const ConnectorsList = ({
   onConnectorSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
+  const { isMobile } = useScreenSize();
+
   return (
     <VStack spacing={{ base: 6, md: 8 }} w="full">
       <HStack w="full" spacing={5}>
@@ -115,11 +118,7 @@ const ConnectorsList = ({
         <Divider borderColor="grey.500" />
       </HStack>
 
-      <Stack
-        flexDirection={{ base: 'column', sm: 'row' }}
-        w="full"
-        spacing={{ base: 4, sm: 2 }}
-      >
+      <Stack flexDirection={isMobile ? 'column' : 'row'} w="full" spacing={2}>
         {connectors.map((connector) => (
           <CardConnector
             isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}

@@ -49,19 +49,20 @@ const SigninPage = () => {
   if (isMobile) {
     return (
       <SigninContainerMobile>
-        <Tabs index={tabs.tab} flex={1} w="full">
-          <TabPanels h="full">
+        <Tabs index={tabs.tab} flex={1} w="full" display="flex">
+          <TabPanels flex={1}>
             <TabPanel h="full" p={0}>
               <VStack
                 justifyContent="center"
                 w="full"
+                pt={20}
                 pb={6}
                 px={6}
                 spacing={14}
               >
                 <SignInHeader title={pageSections.title} />
 
-                <VStack w="full" spacing={6}>
+                <VStack w="full" maxW={292} spacing={6}>
                   <WebAuthnSignIn
                     formData={formData}
                     formState={formState}
