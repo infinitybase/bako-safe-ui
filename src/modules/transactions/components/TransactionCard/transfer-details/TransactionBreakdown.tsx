@@ -24,7 +24,6 @@ const TransactionBreakdown = ({
     isFromConnector,
     isContract,
     mainOperation,
-    hasToken,
     isPending,
     isDeploy,
     isMint,
@@ -85,7 +84,6 @@ const TransactionBreakdown = ({
             }}
             borderColor="grey.950"
             borderBottomWidth={index === transaction.assets.length - 1 ? 1 : 0}
-            hasToken={hasToken}
           />
         ))}
 
@@ -108,7 +106,7 @@ const TransactionBreakdown = ({
       )}
 
       {isDeploy && !!mainOperation && (
-        <DeploymentInfo operation={mainOperation} />
+        <DeploymentInfo operation={mainOperation} w="full" />
       )}
 
       <Box

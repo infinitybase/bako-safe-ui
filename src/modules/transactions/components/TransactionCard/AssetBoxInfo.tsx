@@ -1,17 +1,17 @@
 import { Icon } from '@chakra-ui/icons';
-import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
+import { Center, HStack, StackProps, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
 import { AddressWithCopyBtn, DoubleArrowIcon, UnknownIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel, assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
-  hasToken?: boolean;
   isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
@@ -26,8 +26,15 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
+    addressBookInfos: {
+      requests: {
+        listContactsRequest: { data },
+      },
+    },
   } = useWorkspaceContext();
+
+  const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
 
   const assetInfo = useMemo(
     () =>
@@ -53,22 +60,21 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 0, xs: 10 }}
       justifyContent={{ base: 'space-between' }}
       w="full"
       borderTopWidth={1}
       {...props}
     >
       {assetInfo && (
-        <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
+        <VStack spacing={2} alignItems="start" minW="40px">
           <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
           </Text>
-        </HStack>
+        </VStack>
       )}
 
-      <Box mt={0.5} minW="105px">
+      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'} spacing={2}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
@@ -86,7 +92,7 @@ const AssetBoxInfo = ({
         >
           ${txUSDAmount}
         </Text>
-      </Box>
+      </VStack>
 
       <Center
         p={{ base: 1.5, sm: 3 }}
@@ -103,7 +109,30 @@ const AssetBoxInfo = ({
         />
       </Center>
 
-      {!!asset && <AddressWithCopyBtn address={asset?.to} />}
+      {!!asset && (
+        <VStack alignItems="end" spacing={2}>
+          {savedContact?.nickname && (
+            <Text
+              isTruncated
+              textOverflow="ellipsis"
+              maxW={{
+                base: isExtraSmall ? '80px' : '100px',
+                xs: '130px',
+                lg: '130px',
+              }}
+              fontSize="sm"
+            >
+              {savedContact.nickname}
+            </Text>
+          )}
+          <AddressWithCopyBtn
+            address={asset?.to}
+            addressProps={{
+              color: savedContact?.nickname ? 'grey.500' : 'white',
+            }}
+          />
+        </VStack>
+      )}
     </HStack>
   );
 };

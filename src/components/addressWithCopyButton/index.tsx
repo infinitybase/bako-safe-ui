@@ -1,4 +1,4 @@
-import { BoxProps, Flex, Text } from '@chakra-ui/react';
+import { BoxProps, Flex, Text, TextProps } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
 import { CopyAddressButton } from '@/components/copyAddressButton';
@@ -8,11 +8,13 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 export interface AddressWithCopyBtnProps extends BoxProps {
   address: string;
   isDeposit?: boolean;
+  addressProps?: TextProps;
 }
 
 const AddressWithCopyBtn = ({
   address,
   isDeposit,
+  addressProps,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -41,17 +43,11 @@ const AddressWithCopyBtn = ({
       {...rest}
     >
       <Text
-        color="grey.75"
+        {...addressProps}
         textOverflow="ellipsis"
         isTruncated
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        maxW={
-          isExtraSmall && isDeposit
-            ? '48px'
-            : isExtraSmall && !isDeposit
-              ? '35px'
-              : 'inherit'
-        }
+        maxW={isExtraSmall && isDeposit ? '48px' : 'inherit'}
       >
         {isDeposit
           ? AddressUtils.format(
@@ -66,12 +62,10 @@ const AddressWithCopyBtn = ({
                       ? 24
                       : 10,
             )
-          : isExtraSmall
-            ? (address ?? '')
-            : AddressUtils.format(
-                address ?? '',
-                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-              )}
+          : AddressUtils.format(
+              address ?? '',
+              isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+            )}
       </Text>
 
       <CopyAddressButton

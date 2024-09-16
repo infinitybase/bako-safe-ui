@@ -1,4 +1,4 @@
-import { HStack, Icon, Text } from '@chakra-ui/react';
+import { Icon, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { UnknownIcon } from '@/components';
@@ -10,11 +10,14 @@ interface TokenInfosProps {
 
 const TokenInfos = ({ asset }: TokenInfosProps) => {
   const assetInfo = useMemo(
-    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    () =>
+      asset?.assetId && assetsMap[asset?.assetId]
+        ? assetsMap[asset?.assetId]
+        : assetsMap['UNKNOWN'],
     [asset?.assetId],
   );
   return (
-    <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
+    <VStack spacing={2} minW="76px" alignItems="start">
       <Icon
         w={{ base: 6, sm: 6 }}
         h={{ base: 6, sm: 6 }}
@@ -23,7 +26,7 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
       <Text fontSize="sm" color="grey.500">
         {assetInfo?.slug}
       </Text>
-    </HStack>
+    </VStack>
   );
 };
 export default TokenInfos;
