@@ -86,6 +86,7 @@ const SigninContainer = (props: SigninContainerProps) => {
           display="flex"
           position="relative"
           flex={1}
+          maxW="35rem"
         >
           <img
             src={bakoSymbol}
@@ -93,9 +94,10 @@ const SigninContainer = (props: SigninContainerProps) => {
             style={{
               position: 'absolute',
               top: '50%',
-              left: '98%',
+              left: '97.75%',
               transform: 'translate(-50%, -50%)',
-              minWidth: '75%',
+              height: '200%',
+              maxHeight: '45rem',
             }}
           />
         </Box>
