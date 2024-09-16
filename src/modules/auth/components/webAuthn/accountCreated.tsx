@@ -27,6 +27,7 @@ const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
         w="full"
         maxW={{ base: 292, md: 390 }}
         variant="primary"
+        fontSize="sm"
         onClick={formState.handleAction}
         _hover={{
           opacity: formState.isDisabled && 0.8,

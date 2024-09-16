@@ -39,6 +39,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
       <ProgressButton
         w="full"
         variant="primary"
+        fontSize="sm"
         onClick={formState.handleAction}
         _hover={{
           opacity: formState.isDisabled && 0.8,
