@@ -59,7 +59,7 @@ const SigninPage = () => {
                 px={6}
                 spacing={14}
               >
-                <SignInHeader title={createdAcccountUsername} />
+                <SignInHeader title={pageSections.title} />
 
                 <VStack w="full" spacing={6}>
                   <WebAuthnSignIn
