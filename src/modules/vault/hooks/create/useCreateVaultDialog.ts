@@ -21,7 +21,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     useCreateVault();
 
   const { name, origin, sessionId, request_id } = useQueryParams();
-  const isSignInFromDapp = location.search.includes('Connectors') && sessionId;
+  const isSignInFromDapp = sessionId && sessionId.length === 36;
 
   const createConnectionsMutation = useCreateConnections();
   const {
