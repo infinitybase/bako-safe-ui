@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
+import { Dialog, DialogModalProps, Select } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
@@ -143,11 +143,23 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       </Flex>
 
       <Dialog.Actions maxW={480} hideDivider mt="auto">
-        {/* TODO: Colocar o Transactions Fee entre o Divider e os botoes */}
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
+        <Select
+          bgColor="brand.500"
+          color="dark.300"
+          options={[
+            { label: 'Create and sign', value: 'sim' },
+            {
+              label: 'Create',
+              value: 'não',
+            },
+          ]}
+          p={0}
+          onChange={() => console.log('ok')}
+        />
+        {/* <Dialog.PrimaryAction
           leftIcon={<SquarePlusIcon />}
           isDisabled={isDisabled}
           isLoading={transactionRequest.isPending}
@@ -157,7 +169,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           }}
         >
           Create transaction
-        </Dialog.PrimaryAction>
+        </Dialog.PrimaryAction> */}
       </Dialog.Actions>
     </Dialog.Modal>
   );

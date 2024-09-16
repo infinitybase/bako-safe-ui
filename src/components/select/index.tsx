@@ -61,7 +61,7 @@ const Select = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<any>('');
-  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [showOptions, setShowOptions] = useState<boolean>(true);
   const [isOptionsVisible, setIsOptionsVisible] = useState<boolean>(false);
   const [optionsPositionAbove, setOptionsPositionAbove] =
     useState<boolean>(false);
@@ -211,6 +211,7 @@ const Select = ({
           borderColor="dark.100"
           borderWidth={1}
           borderRadius={10}
+          // adjust this padding
           padding={2}
           position="absolute"
           zIndex={999}
