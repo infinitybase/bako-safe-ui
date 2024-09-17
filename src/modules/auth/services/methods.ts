@@ -60,8 +60,7 @@ export type SignInResponse = {
   workspace: Workspace;
   id: string;
   notify: boolean;
-  first_login: boolean;
-  default_vault: string;
+  rootWallet: string;
   webAuthn?: {
     id: string;
     publicKey: string;

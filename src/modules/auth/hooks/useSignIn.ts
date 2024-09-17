@@ -8,7 +8,7 @@ import {
   EConnectors,
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
-import { useRedirectToFirstVault } from '@/modules/core/hooks/useRedirectToFirstVault';
+import { useRedirectToRootWallet } from '@/modules/core/hooks/useRedirectToRootWallet';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -34,18 +34,19 @@ export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
 
 const useSignIn = () => {
   const navigate = useNavigate();
-  const { handleRedirectToFirstVault } = useRedirectToFirstVault();
 
   const connectorDrawer = useDisclosure();
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
 
+  const { handleRedirectToRootWallet } = useRedirectToRootWallet();
+
   const { fuel } = useFuel();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
+  const isSignInFromDapp = sessionId && sessionId.length === 36;
   const { connect } = useSocket();
-  const isSignInFromDapp = location.search.includes('Connectors') && sessionId;
 
   useEffect(() => {
     if (isOpenWebAuth) {
@@ -83,8 +84,7 @@ const useSignIn = () => {
       workspace,
       webAuthn,
       address,
-      first_login,
-      default_vault,
+      rootWallet,
     }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
 
@@ -100,8 +100,8 @@ const useSignIn = () => {
       });
       invalidateGifAnimationRequest();
 
-      if (first_login && default_vault && !isSignInFromDapp) {
-        handleRedirectToFirstVault(default_vault, workspace.id, user_id);
+      if (rootWallet && rootWallet.length === 36 && !isSignInFromDapp) {
+        handleRedirectToRootWallet(rootWallet, workspace.id);
         return;
       }
 
