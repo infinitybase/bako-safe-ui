@@ -1,31 +1,22 @@
-import { useEffect, useState } from 'react';
-
-import { ITransactionHistory } from '../../services';
 import { useTransactionHistoryRequest } from './useTransactionHistoryRequest';
 
 export const useTransactionHistory = (
   transactionId: string,
   predicateId: string,
+  isMobileDetailsOpen: boolean,
+  isTransactionSuccess: boolean,
 ) => {
-  const [transactionHistory, setTransactionHistory] = useState<
-    ITransactionHistory[] | null
-  >(null);
-
-  const transactionHistoryRequest = useTransactionHistoryRequest(
+  const transactionHistoryRequest = useTransactionHistoryRequest({
     transactionId,
     predicateId,
-  );
-
-  useEffect(() => {
-    if (transactionHistoryRequest.data) {
-      setTransactionHistory(
-        transactionHistoryRequest.data.map((transaction) => transaction),
-      );
-    }
-  }, [transactionHistoryRequest.data, transactionId]);
+    isMobileDetailsOpen,
+    isTransactionSuccess,
+  });
 
   return {
     ...transactionHistoryRequest,
-    transactionHistory,
+    transactionHistory: transactionHistoryRequest?.data?.map(
+      (transaction) => transaction,
+    ),
   };
 };

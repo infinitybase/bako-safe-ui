@@ -11,11 +11,11 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
 import { EmptyState } from '@/components/emptyState';
+import { MenuIcon } from '@/components/icons/menu';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
@@ -48,7 +48,7 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { limitedTransactions },
-      request: { isLoading, isFetching },
+      request: { isLoading },
       handlers: { handleIncomingAction, handleOutgoingAction },
     },
     pendingSignerTransactions,
@@ -91,8 +91,8 @@ const VaultDetailsPage = () => {
 
       <HStack mb={9} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
-          <HStack gap={1.5} onClick={menuDrawer.onOpen}>
-            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+          <HStack gap={4} onClick={menuDrawer.onOpen}>
+            <Icon as={MenuIcon} fontSize="md" color="grey.200" />
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
             </Text>
@@ -251,7 +251,7 @@ const VaultDetailsPage = () => {
 
       <CustomSkeleton
         minH="30vh"
-        isLoaded={!vault.isLoading && !isLoading && !isFetching}
+        isLoaded={!vault.isLoading && !isLoading}
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions

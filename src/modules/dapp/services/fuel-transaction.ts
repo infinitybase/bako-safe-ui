@@ -8,12 +8,11 @@ import {
   TransactionRequestLike,
 } from 'fuels';
 
-import { authCredentials } from '@/modules';
-
 export interface TransactionSimulateParams {
   transactionLike: TransactionRequestLike;
-  from: string;
   providerUrl: string;
+  configurable: string;
+  version: string;
 }
 
 export interface ISent {
@@ -40,16 +39,15 @@ export enum IFuelTransactionNames {
 class FuelTransactionService {
   static async simulate({
     transactionLike,
-    from,
     providerUrl,
+    configurable,
+    version,
   }: TransactionSimulateParams) {
     const provider = await Provider.create(providerUrl);
 
-    const auth = authCredentials();
     const vault = await Vault.create({
-      predicateAddress: from,
-      token: auth.token,
-      address: auth.address,
+      configurable: JSON.parse(configurable),
+      version,
     });
 
     let transactionRequest = ScriptTransactionRequest.from(transactionLike);

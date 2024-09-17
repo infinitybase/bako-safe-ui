@@ -4,7 +4,7 @@ import {
   UniswapIcon,
   UnknownIcon,
   UsdcIcon,
-} from '@/components';
+} from '@/components/icons';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 
 import { tokensIDS } from './address';

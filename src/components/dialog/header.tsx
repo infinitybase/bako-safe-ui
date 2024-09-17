@@ -1,6 +1,7 @@
 import {
   Box,
   Heading,
+  HeadingProps,
   HStack,
   StackProps,
   Text,
@@ -15,6 +16,7 @@ interface DialogHeaderProps extends StackProps {
   descriptionFontSize?: string;
   descriptionColor?: string;
   hideCloseButton?: boolean;
+  titleSxProps?: HeadingProps;
   onClose?: () => void;
 }
 
@@ -25,6 +27,7 @@ const DialogHeader = ({
   descriptionColor,
   hideCloseButton,
   onClose,
+  titleSxProps,
   ...stackProps
 }: DialogHeaderProps) => (
   <VStack
@@ -36,7 +39,11 @@ const DialogHeader = ({
     {...stackProps}
   >
     <HStack w="full" justifyContent="space-between" alignItems="center">
-      <Heading fontSize={{ base: 'lg', sm: '3xl' }} color="white">
+      <Heading
+        fontSize={{ base: 'lg', sm: '3xl' }}
+        color="white"
+        {...titleSxProps}
+      >
         {title}
       </Heading>
       {!hideCloseButton && (

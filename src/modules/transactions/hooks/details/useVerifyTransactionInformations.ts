@@ -1,15 +1,21 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
+import { Address } from 'fuels';
+
+import { IFuelTransactionNames } from '@/modules/dapp/services';
+
 import { TransactionUI } from '../../components/TransactionCard/Details';
 import { TransactionWithVault } from '../../services';
-import { IFuelTransactionNames } from '@/modules/dapp/services';
-import { Address, bn } from 'fuels';
-import { useGetTokenInfos } from '@/modules';
 
 const useVerifyTransactionInformations = (
   transaction: TransactionUI | TransactionWithVault,
 ) => {
   const mainOperation = transaction?.summary?.operations?.[0];
   mainOperation?.to?.address;
+  const transferAssetsOperations = transaction.summary?.operations.filter(
+    (operation) =>
+      (operation.name as unknown as IFuelTransactionNames) ===
+      IFuelTransactionNames.TRANSFER_ASSET,
+  );
 
   const isFromConnector = transaction.summary?.type === 'connector';
   const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
@@ -18,19 +24,20 @@ const useVerifyTransactionInformations = (
     (mainOperation?.name as unknown as IFuelTransactionNames) ===
     IFuelTransactionNames.CONTRACT_CALL;
 
+  const isMint = ['CONTRACT_CALL', 'TRANSFER_ASSET'].every((name) =>
+    transaction?.summary?.operations?.some(
+      (operation) =>
+        (operation.name as unknown as IFuelTransactionNames) ===
+        IFuelTransactionNames[name],
+    ),
+  );
+
   const hasToken = !!mainOperation?.assetsSent?.length;
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const contractAddress = isContract
     ? Address.fromB256(mainOperation?.to?.address ?? '').toString()
     : '';
-  const contractAmount = bn(transaction.txData.inputs[1]?.['amount']).format();
-  const contractAssetId = transaction.txData.inputs[1]?.['assetId'];
-
-  const contractAssetInfo = useGetTokenInfos({
-    assetId: contractAssetId,
-    amount: contractAmount,
-  });
 
   return {
     mainOperation,
@@ -41,7 +48,8 @@ const useVerifyTransactionInformations = (
     hasToken,
     isPending,
     contractAddress,
-    contractAssetInfo,
+    isMint,
+    transferAssetsOperations,
   };
 };
 

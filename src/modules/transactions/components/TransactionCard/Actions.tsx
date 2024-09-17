@@ -72,6 +72,7 @@ const Actions = ({
     signTransaction: {
       confirmTransaction,
       declineTransaction,
+      selectedTransaction,
       isLoading,
       isSuccess,
     },
@@ -82,6 +83,16 @@ const Actions = ({
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
   const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
+
+  const isTxActionsInLoading =
+    isLoading && selectedTransaction?.id === transaction?.id;
+
+  const disableActionButtons =
+    isSuccess && !awaitingAnswer
+      ? false
+      : isLoading && selectedTransaction
+        ? !isTxActionsInLoading
+        : false;
 
   const isDeposit = transaction?.type === TransactionType.DEPOSIT;
 
@@ -119,8 +130,8 @@ const Actions = ({
             variant="primary"
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            isLoading={isLoading}
-            isDisabled={isSuccess && !awaitingAnswer}
+            isLoading={isTxActionsInLoading}
+            isDisabled={disableActionButtons}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -140,8 +151,8 @@ const Actions = ({
               e.preventDefault();
               declineTransaction(transaction.id);
             }}
-            isLoading={isLoading}
-            isDisabled={isSuccess && !awaitingAnswer}
+            isLoading={isTxActionsInLoading}
+            isDisabled={disableActionButtons}
           >
             Decline
           </Button>

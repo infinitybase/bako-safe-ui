@@ -23,7 +23,14 @@ const useWalletSignIn = () => {
   const { redirect } = useSignInOriginFactory(signInOrigin);
 
   const signInRequest = useSignInRequest({
-    onSuccess: ({ accessToken, avatar, user_id, workspace, address }) => {
+    onSuccess: ({
+      accessToken,
+      avatar,
+      user_id,
+      workspace,
+      address,
+      rootWallet,
+    }) => {
       authDetails.handlers.authenticate({
         userId: user_id,
         avatar: avatar!,
@@ -34,7 +41,7 @@ const useWalletSignIn = () => {
         permissions: workspace.permissions,
       });
       invalidateGifAnimationRequest();
-      navigate(redirect());
+      navigate(redirect(rootWallet, workspace.id));
     },
   });
 

@@ -7,7 +7,7 @@ export enum SignInOrigin {
 }
 
 export interface ISignInRedirect {
-  redirect: () => string;
+  redirect: (vaultId?: string, workspaceId?: string) => string;
 }
 
 export type SignInFactory = UseDappSignIn | UseWebSignIn;

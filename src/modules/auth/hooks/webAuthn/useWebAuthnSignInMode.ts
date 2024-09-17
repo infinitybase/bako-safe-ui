@@ -73,6 +73,7 @@ const useWebAuthnSignInMode = (
           accessToken,
           workspace,
           address,
+          rootWallet,
           webAuthn,
         }) => {
           setSignInProgress(100);
@@ -91,7 +92,7 @@ const useWebAuthnSignInMode = (
               permissions: workspace.permissions,
               webAuthn,
             });
-            navigate(redirect());
+            navigate(redirect(rootWallet, workspace.id));
           }, 800);
         },
         onError: () => {

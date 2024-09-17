@@ -33,7 +33,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const validateResult = (transaction: ITransaction, isCompleted?: boolean) => {
     if (transaction.status == TransactionStatus.SUCCESS || isCompleted) {
       toast.success(transaction);
-      setIsCurrentTxPending(false);
+      setIsCurrentTxPending({ isPending: false, transactionId: '' });
       queryClient.invalidateQueries({
         queryKey: [
           TRANSACTION_HISTORY_QUERY_KEY,
@@ -65,7 +65,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       ).length <= 1;
     if (wasTheLastSignature) {
       toast.loading(transaction);
-      setIsCurrentTxPending(true);
+      setIsCurrentTxPending({ isPending: true, transactionId: transaction.id });
     }
     sendTransaction({ transaction: transaction! });
   };

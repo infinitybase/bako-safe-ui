@@ -1,5 +1,9 @@
+export * from './addressWithCopyButton';
 export * from './autocomplete';
+export * from './bakoLoading';
 export * from './card';
+export * from './commingSoonDialog';
+export * from './copyAddressButton';
 export * from './dialog';
 export * from './feedback';
 export * from './icons';
@@ -12,5 +16,3 @@ export * from './skeleton';
 export * from './tooltip';
 export * from './transactionExpire';
 export * from './transactionTypeFilters';
-export * from './commingSoonDialog';
-export * from './bakoLoading';

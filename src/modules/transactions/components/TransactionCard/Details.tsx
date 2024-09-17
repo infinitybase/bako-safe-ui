@@ -26,12 +26,14 @@ interface TransactionDetailsProps {
   status?: TransactionState;
   isInTheVaultPage?: boolean;
   isMobile?: boolean;
+  isMobileDetailsOpen?: boolean;
 }
 
 const Details = ({
   transaction,
   status,
   isInTheVaultPage,
+  isMobileDetailsOpen,
 }: TransactionDetailsProps) => {
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
 
@@ -47,6 +49,8 @@ const Details = ({
     <DetailsTransactionStepper
       transactionId={transaction.id}
       predicateId={transaction.predicateId}
+      isMobileDetailsOpen={isMobileDetailsOpen ?? false}
+      isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
     >
       {(isLoading, transactionHistory) => (
         <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>

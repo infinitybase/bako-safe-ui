@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
+  useAuthUrlParams,
   useGetParams,
   useGetWorkspaceRequest,
   useScreenSize,
@@ -22,6 +23,7 @@ const useWorkspaceDetails = () => {
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
+  const { isTxFromDapp } = useAuthUrlParams();
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -34,14 +36,17 @@ const useWorkspaceDetails = () => {
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
-  } = useGifLoadingRequest(
-    authDetails.handlers.logout,
-    authDetails.userInfos,
-    isTokenExpired,
-    setIsTokenExpired,
-  );
+  } = useGifLoadingRequest();
 
-  setupAxiosInterceptors();
+  useEffect(() => {
+    setupAxiosInterceptors({
+      isTxFromDapp,
+      isTokenExpired,
+      setIsTokenExpired,
+      logout: authDetails.handlers.logout,
+    });
+  }, []);
+
   const {
     handlers: { hasPermission, ...handlersData },
     requests: { workspaceBalance, latestPredicates, ...requestsData },
@@ -75,10 +80,6 @@ const useWorkspaceDetails = () => {
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
     isTokenExpired,
   });
-
-  useEffect(() => {
-    setupAxiosInterceptors();
-  }, []);
 
   return {
     isWorkspaceReady,

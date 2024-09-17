@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { useAuthCookies } from '@/modules';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 import { CookieName, CookiesConfig } from './cookies';
@@ -30,12 +29,24 @@ export interface IApiError {
   detail: string;
 }
 
+export interface ISetupAxiosInterceptors {
+  isTxFromDapp: boolean;
+  isTokenExpired: boolean;
+  setIsTokenExpired: (value: boolean) => void;
+  logout: () => void;
+}
+
 const api = axios.create({
   baseURL: VITE_API_URL,
   timeout: 10 * 1000, // limit to try other requests
 });
 
-const setupAxiosInterceptors = () => {
+const setupAxiosInterceptors = ({
+  isTxFromDapp,
+  isTokenExpired,
+  setIsTokenExpired,
+  logout,
+}: ISetupAxiosInterceptors) => {
   api.interceptors.request.use(
     (value) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
@@ -53,11 +64,11 @@ const setupAxiosInterceptors = () => {
     async (config) => config,
     async (error) => {
       const unauthorizedError = error.response?.status === 401;
-      const { clearAuthCookies } = useAuthCookies();
 
-      if (unauthorizedError) {
-        clearAuthCookies();
-        return await queryClient.invalidateQueries({
+      if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
+        setIsTokenExpired(true);
+        logout();
+        queryClient.invalidateQueries({
           queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
         });
       }

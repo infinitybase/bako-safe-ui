@@ -11,7 +11,6 @@ import {
 import { ITransferAsset } from 'bakosafe';
 
 import { DoubleArrowIcon } from '@/components';
-import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -29,19 +28,12 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
     screenSizes: { isExtraSmall, isMobile, isSmall },
-    addressBookInfos: {
-      requests: {
-        listContactsRequest: { data },
-      },
-    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );
-
-  const { savedContact } = useGetContactByAddress(sentBy ?? '', data);
 
   const isFirstItem = index === 0;
 
