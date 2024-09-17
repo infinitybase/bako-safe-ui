@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { useContactToast } from '@/modules/addressBook/hooks';
+import { useScreenSize } from '@/modules/core';
+
 import {
   WebAuthnModeState,
   WebAuthnTabState,
@@ -20,6 +23,8 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerProgress, setRegisterProgress] = useState(0);
 
+  const { isSmall } = useScreenSize();
+  const { warningToast } = useContactToast();
   const createWebAuthnAccount = useCreateWebAuthnAccount();
 
   const handleRegister = form.handleSubmit(async ({ username }) => {
@@ -36,10 +41,15 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
           setTab(WebAuthnTabState.ACCOUNT_CREATED);
         }, 800);
       },
-      onError: (error) => {
+      onError: () => {
         setRegisterProgress(0);
         setIsRegistering(false);
-        console.error(error);
+        warningToast({
+          title: 'Account creation failed',
+          description:
+            'Sorry, something went wrong while creating your account. Please try again.',
+          position: isSmall ? 'bottom' : 'top-right',
+        });
       },
     });
   });
