@@ -1,5 +1,6 @@
 import {
   AvatarGroup,
+  BoxProps,
   Flex,
   HStack,
   Icon,
@@ -16,16 +17,19 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
-interface TransactionCardAmountProps {
+interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
+  isInDetailsDialog?: boolean;
   isContract: boolean;
 }
 
 const Amount = ({
   transaction,
   isDeposit,
+  isInDetailsDialog,
   isContract,
+  ...rest
 }: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
@@ -61,6 +65,7 @@ const Amount = ({
       alignItems="center"
       justifyContent="flex-start"
       w={isExtraSmall ? 150 : 200}
+      {...rest}
     >
       {isContract ? null : (
         <>

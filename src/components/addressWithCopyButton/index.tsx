@@ -1,4 +1,4 @@
-import { BoxProps, Flex, Text } from '@chakra-ui/react';
+import { BoxProps, Flex, Text, TextProps } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
 import { CopyAddressButton } from '@/components/copyAddressButton';
@@ -9,12 +9,14 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   address: string;
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
+  addressProps?: TextProps;
 }
 
 const AddressWithCopyBtn = ({
   address,
   isDeposit,
   isSidebarAddress,
+  addressProps,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -27,7 +29,6 @@ const AddressWithCopyBtn = ({
       isLowerThanFourHundredAndThirty,
       isExtraLarge,
       isLitteSmall,
-      isSmall,
     },
   } = useWorkspaceContext();
 
@@ -40,20 +41,22 @@ const AddressWithCopyBtn = ({
       textAlign={isExtraSmall ? 'start' : 'end'}
       overflow="hidden"
       alignItems="center"
+      justifyContent="end"
+      gap={3}
     >
       <Text
+        {...addressProps}
         color="grey.75"
         textOverflow="ellipsis"
         isTruncated
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        ml={isSidebarAddress ? 0 : 3}
         maxW={
           isSidebarAddress
             ? 'full'
             : isExtraSmall && isDeposit
               ? '48px'
               : isExtraSmall && !isDeposit
-                ? '35px'
+                ? 'inherit'
                 : 'inherit'
         }
       >
@@ -72,26 +75,15 @@ const AddressWithCopyBtn = ({
                         ? 24
                         : 10,
               )
-            : isExtraSmall
-              ? (address ?? '')
-              : AddressUtils.format(
-                  address ?? '',
-                  isLitteSmall
-                    ? 4
-                    : isLowerThanFourHundredAndThirty
-                      ? 10
-                      : isSmall
-                        ? 7
-                        : !isVaultPage && isExtraLarge
-                          ? 18
-                          : 12,
-                )}
+            : AddressUtils.format(
+                address ?? '',
+                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+              )}
       </Text>
 
       <CopyAddressButton
-        ml={isSidebarAddress ? -1 : 2}
-        size={isLowerThanFourHundredAndThirty || isSidebarAddress ? 'xs' : 'sm'}
-        p={0}
+        size="xs"
+        minW={2}
         aria-label="Copy"
         addressToCopy={Address.fromString(address ?? '').toB256()}
       />
@@ -99,4 +91,31 @@ const AddressWithCopyBtn = ({
   );
 };
 
+{
+  /* <Text
+{...addressProps}
+textOverflow="ellipsis"
+isTruncated
+fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+maxW={isExtraSmall && isDeposit ? '48px' : 'inherit'}
+>
+{isDeposit
+  ? AddressUtils.format(
+      address ?? '',
+      isExtraSmall
+        ? 1
+        : isLitteSmall
+          ? 4
+          : isLowerThanFourHundredAndThirty
+            ? 7
+            : !isVaultPage && isExtraLarge
+              ? 24
+              : 10,
+    )
+  : AddressUtils.format(
+      address ?? '',
+      isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+    )}
+</Text> */
+}
 export { AddressWithCopyBtn };

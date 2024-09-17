@@ -139,7 +139,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       </Heading>
 
                       <Box maxW={420}>
-                        <Text variant="description">
+                        <Text
+                          maxW={{ base: '110px', xs: 'unset' }}
+                          variant="description"
+                          isTruncated
+                          textOverflow="ellipsis"
+                        >
                           {vault?.data?.description}
                         </Text>
                       </Box>

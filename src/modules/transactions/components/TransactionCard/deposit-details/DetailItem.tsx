@@ -10,9 +10,9 @@ import {
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 
-import { DoubleArrowIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
+import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import AmountsInfo from './AmountsInfo';
@@ -27,7 +27,12 @@ interface DetailItemProps {
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
-    screenSizes: { isExtraSmall, isMobile, isSmall },
+    screenSizes: { isMobile, isExtraSmall },
+    addressBookInfos: {
+      requests: {
+        listContactsRequest: { data },
+      },
+    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
@@ -38,6 +43,15 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const isFirstItem = index === 0;
 
   const gridColumnsNumber = isMobile ? 1 : 5;
+
+  const { savedContact: savedContactFrom } = useGetContactByAddress(
+    sentBy ?? '',
+    data,
+  );
+  const { savedContact: savedContactTo } = useGetContactByAddress(
+    asset?.to ?? '',
+    data,
+  );
 
   return (
     <Grid
@@ -56,19 +70,28 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
           </HStack>
           <Flex justifyContent="space-between" w="full" alignItems="center">
-            <Text
-              maxW="288px"
-              w="full"
-              fontSize="sm"
-              color="grey.75"
-              textOverflow="ellipsis"
-              isTruncated
-            >
-              {AddressUtils.format(
-                sentBy ?? '',
-                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+            <VStack alignItems="start" spacing={2}>
+              {savedContactFrom?.nickname && (
+                <Text
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW={{ base: '95px', xs: '95px', xl: 'full' }}
+                  fontSize={isExtraSmall ? 'xs' : 'sm'}
+                  textAlign="start"
+                >
+                  {savedContactFrom.nickname}
+                </Text>
               )}
-            </Text>
+              <AddressWithCopyBtn
+                address={sentBy}
+                isDeposit={true}
+                justifyContent="start"
+                textAlign="start"
+                addressProps={{
+                  color: savedContactFrom?.nickname ? 'grey.500' : 'white',
+                }}
+              />
+            </VStack>
 
             <Box display="flex" justifyContent="center" w="full">
               <Center
@@ -82,39 +105,55 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               </Center>
             </Box>
 
-            <Text
-              maxW="288px"
-              w="full"
-              fontSize="sm"
-              color="grey.75"
-              textOverflow="ellipsis"
-              isTruncated
-              textAlign="end"
-            >
-              {AddressUtils.format(
-                asset?.to ?? '',
-                isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+            <VStack alignItems="end" spacing={2}>
+              {savedContactTo?.nickname && (
+                <Text
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW="288px"
+                  fontSize={isExtraSmall ? 'xs' : 'sm'}
+                  textAlign="end"
+                >
+                  {savedContactTo.nickname}
+                </Text>
               )}
-            </Text>
+              <AddressWithCopyBtn
+                address={asset?.to ?? ''}
+                isDeposit={true}
+                addressProps={{
+                  color: savedContactTo?.nickname ? 'grey.500' : 'white',
+                }}
+              />
+            </VStack>
           </Flex>
         </VStack>
       ) : (
         <>
           <TokenInfos asset={asset} />
           <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
-          <Text
-            maxW="288px"
-            w="full"
-            fontSize="sm"
-            color="grey.75"
-            textOverflow="ellipsis"
-            isTruncated
+
+          <VStack
+            alignItems="end"
+            h={savedContactFrom?.nickname ? '47px' : 'unset'}
           >
-            {AddressUtils.format(
-              sentBy ?? '',
-              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+            {savedContactFrom?.nickname && (
+              <Text
+                isTruncated
+                textOverflow="ellipsis"
+                maxW="288px"
+                fontSize="sm"
+              >
+                {savedContactFrom.nickname}
+              </Text>
             )}
-          </Text>
+            <AddressWithCopyBtn
+              address={sentBy}
+              isDeposit={true}
+              addressProps={{
+                color: savedContactFrom?.nickname ? 'grey.500' : 'white',
+              }}
+            />
+          </VStack>
 
           <Box display="flex" justifyContent="center" w="full">
             <Center
@@ -128,19 +167,28 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Center>
           </Box>
 
-          <Text
-            maxW="288px"
-            w="full"
-            fontSize="sm"
-            color="grey.75"
-            textOverflow="ellipsis"
-            isTruncated
+          <VStack
+            alignItems="end"
+            h={savedContactTo?.nickname ? '47px' : 'unset'}
           >
-            {AddressUtils.format(
-              asset?.to ?? '',
-              isExtraSmall ? 4 : isSmall ? 8 : isMobile ? 16 : 24,
+            {savedContactTo?.nickname && (
+              <Text
+                isTruncated
+                textOverflow="ellipsis"
+                maxW="288px"
+                fontSize="sm"
+              >
+                {savedContactTo.nickname}
+              </Text>
             )}
-          </Text>
+            <AddressWithCopyBtn
+              address={asset?.to ?? ''}
+              isDeposit={true}
+              addressProps={{
+                color: savedContactTo?.nickname ? 'grey.500' : 'white',
+              }}
+            />
+          </VStack>
         </>
       )}
     </Grid>
