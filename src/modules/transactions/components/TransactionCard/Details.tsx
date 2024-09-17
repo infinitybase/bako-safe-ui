@@ -82,15 +82,14 @@ const Details = ({
                 />
 
                 {/* Transaction History */}
-                {!isMobile && (
-                  <Box
-                    alignSelf="flex-start"
-                    w="full"
-                    minW={{ base: 200, sm: 'full' }}
-                  >
-                    <TransactionStepper steps={transactionHistory!} />
-                  </Box>
-                )}
+                <Box
+                  alignSelf="flex-start"
+                  w="full"
+                  minW={{ base: 200, sm: 'full' }}
+                  mt={isMobile ? 3 : 'unset'}
+                >
+                  <TransactionStepper steps={transactionHistory!} />
+                </Box>
               </Stack>
 
               {transaction.status === TransactionStatus.SUCCESS &&
