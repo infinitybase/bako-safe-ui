@@ -1,7 +1,14 @@
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import {
+  Button,
   Divider,
   Flex,
+  Heading,
   Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Popover,
   PopoverBody,
   PopoverCloseButton,
@@ -12,15 +19,26 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-import { Dialog, DialogModalProps, Select } from '@/components';
+import { Dialog, DialogModalProps } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
+export enum ECreateTransactionMethods {
+  CREATE = 'Create',
+  CREATE_AND_SIGN = 'Create and sign',
+}
+
+import { useState } from 'react';
+
 import { CreateTransactionForm } from './form';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
+  const [createTxMethod, setCreateTxMethod] =
+    useState<ECreateTransactionMethods>(
+      ECreateTransactionMethods.CREATE_AND_SIGN,
+    );
   const { assets } = useVaultInfosContext();
   const {
     form,
@@ -146,30 +164,78 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Select
-          bgColor="brand.500"
-          color="dark.300"
-          options={[
-            { label: 'Create and sign', value: 'sim' },
-            {
-              label: 'Create',
-              value: 'não',
-            },
-          ]}
-          p={0}
-          onChange={() => console.log('ok')}
-        />
-        {/* <Dialog.PrimaryAction
-          leftIcon={<SquarePlusIcon />}
-          isDisabled={isDisabled}
-          isLoading={transactionRequest.isPending}
-          onClick={form.handleCreateTransaction}
-          _hover={{
-            opacity: !isDisabled && 0.8,
-          }}
-        >
-          Create transaction
-        </Dialog.PrimaryAction> */}
+
+        <Menu>
+          <Dialog.PrimaryAction
+            // leftIcon={<SquarePlusIcon />}
+            isDisabled={isDisabled}
+            isLoading={transactionRequest.isPending}
+            onClick={form.handleCreateTransaction}
+            _hover={{
+              opacity: !isDisabled && 0.8,
+            }}
+          >
+            {createTxMethod}
+          </Dialog.PrimaryAction>
+          <MenuList>
+            <MenuItem
+              display="flex"
+              flexDir="column"
+              alignItems="center"
+              gap={2}
+            >
+              <Heading
+                fontSize="sm"
+                color={
+                  createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN
+                    ? 'warning.500'
+                    : 'white'
+                }
+                fontWeight={400}
+                lineHeight="14.52px"
+              >
+                {ECreateTransactionMethods.CREATE_AND_SIGN}
+              </Heading>
+              <Text
+                variant="description"
+                color={'grey.425'}
+                fontSize="xs"
+                lineHeight="12.1px"
+              >
+                Create and sign the transaction
+              </Text>
+            </MenuItem>
+            <MenuItem
+              display="flex"
+              flexDir="column"
+              alignItems="center"
+              gap={2}
+            >
+              <Heading
+                fontSize="sm"
+                color={
+                  createTxMethod === ECreateTransactionMethods.CREATE
+                    ? 'warning.500'
+                    : 'white'
+                }
+                fontWeight={400}
+                lineHeight="14.52px"
+              >
+                {ECreateTransactionMethods.CREATE}
+              </Heading>
+              <Text
+                variant="description"
+                color={'grey.425'}
+                fontSize="xs"
+                lineHeight="12.1px"
+              >
+                Just create the transaction
+              </Text>
+            </MenuItem>
+          </MenuList>
+
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />} />
+        </Menu>
       </Dialog.Actions>
     </Dialog.Modal>
   );
