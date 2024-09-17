@@ -26,16 +26,16 @@ import { CreateVaultDialog } from '@/modules/vault';
 import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
 import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
   const {
-    authDetails: { userInfos },
+    authDetails: { userInfos, handlers },
   } = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
 
@@ -276,7 +276,10 @@ const VaultConnector = () => {
             <Button
               variant="secondary"
               borderColor="grey.75"
-              onClick={() => window.close()}
+              onClick={() => {
+                handlers.logout?.();
+                window.close();
+              }}
               w={noVaultOnFirstLoad ? 'full' : 'unset'}
             >
               Cancel
