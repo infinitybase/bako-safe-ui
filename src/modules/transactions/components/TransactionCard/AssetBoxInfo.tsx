@@ -66,7 +66,7 @@ const AssetBoxInfo = ({
       {...props}
     >
       {assetInfo && (
-        <VStack spacing={2} alignItems="start" minW="40px">
+        <VStack alignItems="start" minW="40px">
           <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
@@ -74,7 +74,7 @@ const AssetBoxInfo = ({
         </VStack>
       )}
 
-      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'} spacing={2}>
+      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
@@ -110,7 +110,7 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && (
-        <VStack alignItems="end" spacing={2}>
+        <VStack alignItems="end" h={savedContact?.nickname ? '47px' : 'unset'}>
           {savedContact?.nickname && (
             <Text
               isTruncated

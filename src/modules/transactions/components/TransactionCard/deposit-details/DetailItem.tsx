@@ -132,7 +132,10 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           <TokenInfos asset={asset} />
           <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
 
-          <VStack alignItems="end" spacing={2}>
+          <VStack
+            alignItems="end"
+            h={savedContactFrom?.nickname ? '47px' : 'unset'}
+          >
             {savedContactFrom?.nickname && (
               <Text
                 isTruncated
@@ -164,7 +167,10 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Center>
           </Box>
 
-          <VStack alignItems="end" spacing={2}>
+          <VStack
+            alignItems="end"
+            h={savedContactTo?.nickname ? '47px' : 'unset'}
+          >
             {savedContactTo?.nickname && (
               <Text
                 isTruncated

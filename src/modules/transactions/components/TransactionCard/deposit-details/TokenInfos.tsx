@@ -17,7 +17,7 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
     [asset?.assetId],
   );
   return (
-    <VStack spacing={2} minW="76px" alignItems="start">
+    <VStack minW="76px" alignItems="start">
       <Icon
         w={{ base: 6, sm: 6 }}
         h={{ base: 6, sm: 6 }}

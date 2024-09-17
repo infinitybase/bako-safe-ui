@@ -6,7 +6,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import format from 'date-fns/format';
@@ -52,7 +51,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     isContract,
   } = props;
   const {
-    screenSizes: { isExtraSmall },
+    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const handleViewInExplorer = async () => {
@@ -133,35 +132,28 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   >
                     {transaction.name}
                   </Heading>
-
-                  <Text
-                    variant="description"
-                    textAlign="left"
-                    fontSize={{ base: 'xs', sm: 'sm' }}
-                    color="grey.500"
-                  >
-                    Transaction
-                  </Text>
                 </Center>
               </HStack>
 
-              <Button
-                border="none"
-                bgColor="#F5F5F50D"
-                fontSize="xs"
-                fontWeight="normal"
-                letterSpacing=".5px"
-                ml="auto"
-                variant="secondary"
-                h="28px"
-                p="6px 8px"
-                onClick={handleViewInExplorer}
-                rightIcon={
-                  <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
-                }
-              >
-                View on Explorer
-              </Button>
+              {!isLowerThanFourHundredAndThirty && (
+                <Button
+                  border="none"
+                  bgColor="#F5F5F50D"
+                  fontSize="xs"
+                  fontWeight="normal"
+                  letterSpacing=".5px"
+                  ml="auto"
+                  variant="secondary"
+                  h="28px"
+                  p="6px 8px"
+                  onClick={handleViewInExplorer}
+                  rightIcon={
+                    <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
+                  }
+                >
+                  View on Explorer
+                </Button>
+              )}
             </HStack>
 
             <HStack w="full" justifyContent="space-between" h="38px">
@@ -179,13 +171,16 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   }}
                 />
 
-                <TransactionCard.BasicInfos
-                  transactionName={transaction.predicate?.name ?? ''}
-                  vault={transaction.predicate!}
-                  spacingBetweenNameAndDesc={false}
-                  nameSxProps={{ maxW: [120, 170, 300], lineHeight: '14.52px' }}
-                  descSxProps={{ lineHeight: '14.52px' }}
-                />
+                <Heading
+                  variant={'title-sm'}
+                  color="grey.200"
+                  textOverflow="ellipsis"
+                  textAlign="left"
+                  noOfLines={1}
+                  maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                >
+                  {transaction.predicate?.name}
+                </Heading>
               </HStack>
               <TransactionCard.CreationDate>
                 {format(new Date(transaction?.createdAt), 'EEE, dd MMM')}
@@ -201,7 +196,6 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 h="26px"
                 isContract={isContract}
               />
-
               <TransactionCard.Status
                 transaction={transaction}
                 status={transactionStatus({
@@ -210,6 +204,26 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 })}
               />
             </HStack>
+            {isLowerThanFourHundredAndThirty && (
+              <Button
+                mt={4}
+                w="full"
+                border="none"
+                bgColor="#F5F5F50D"
+                fontSize="xs"
+                fontWeight="normal"
+                letterSpacing=".5px"
+                variant="secondary"
+                h="28px"
+                p="6px 8px"
+                onClick={handleViewInExplorer}
+                rightIcon={
+                  <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
+                }
+              >
+                View on Explorer
+              </Button>
+            )}
           </VStack>
 
           <TransactionCard.Details
