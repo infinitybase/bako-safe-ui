@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { WorkspacesQueryKey } from '@/modules/core/models/workspace';
 
 import { WorkspaceService } from '../services';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useUserWorkspacesRequest = () => {
   return useQuery({
@@ -11,7 +10,8 @@ const useUserWorkspacesRequest = () => {
     queryFn: () => WorkspaceService.list(),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    // enabled: !!CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    enabled: false,
   });
 };
 

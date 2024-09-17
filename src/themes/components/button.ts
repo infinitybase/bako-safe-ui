@@ -30,6 +30,20 @@ const secondary = defineStyle({
   },
 });
 
+const secondaryV2 = defineStyle({
+  bgColor: '#F5F5F50D',
+  border: 'none',
+  color: 'grey.75',
+  _hover: {
+    _disabled: {
+      bgColor: 'initial',
+    },
+  },
+  fontWeight: 'normal',
+  letterSpacing: '.5px',
+  fontSize: 'xs',
+});
+
 const tertiary = defineStyle({
   bgColor: 'error.600',
   borderWidth: 1,
@@ -92,6 +106,7 @@ const Button = defineStyleConfig({
     tertiary,
     emptyState,
     txFilterType,
+    secondaryV2,
   },
 });
 

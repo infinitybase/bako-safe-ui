@@ -3,6 +3,7 @@ export * from './autocomplete';
 export * from './bakoLoading';
 export * from './card';
 export * from './commingSoonDialog';
+export * from './copyAddressButton';
 export * from './dialog';
 export * from './feedback';
 export * from './icons';
