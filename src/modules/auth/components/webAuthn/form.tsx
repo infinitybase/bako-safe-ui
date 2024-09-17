@@ -11,6 +11,7 @@ import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
 import { CheckIcon } from '@/components/icons';
+import { useScreenSize } from '@/modules/core/hooks';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 
@@ -40,6 +41,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
     },
     isRegisterMode,
   } = formData;
+
+  const { isMobile } = useScreenSize();
 
   return (
     <VStack w="full" alignItems="flex-start" spacing={2}>
@@ -79,7 +82,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           name="termsOfUse"
           control={control}
           render={({ field }) => (
-            <HStack gap={1}>
+            <HStack gap={1} mb={isMobile ? 0 : 2}>
               <Checkbox
                 position="relative"
                 ml={2}
