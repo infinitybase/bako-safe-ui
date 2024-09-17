@@ -1,13 +1,14 @@
-import { useSocket } from '@/modules/core';
-import { useEffect, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useFuel, useIsConnected } from '@fuels/react';
+import { useEffect, useState } from 'react';
 import { Location, useNavigate } from 'react-router-dom';
 
+import { useSocket } from '@/modules/core';
 import {
   EConnectors,
   useDefaultConnectors,
 } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useRedirectToRootWallet } from '@/modules/core/hooks/useRedirectToRootWallet';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -16,7 +17,6 @@ import { TypeUser } from '../services';
 import { useQueryParams } from './usePopup';
 import { useCreateUserRequest, useSignInRequest } from './useUserRequest';
 import { useWebAuthn } from './useWebAuthn';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
   const isRedirectToPrevious = !!location.state?.from;
@@ -34,14 +34,18 @@ export const redirectPathBuilder = (isDapp: boolean, location: Location) => {
 
 const useSignIn = () => {
   const navigate = useNavigate();
+
   const connectorDrawer = useDisclosure();
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
+
+  const { handleRedirectToRootWallet } = useRedirectToRootWallet();
 
   const { fuel } = useFuel();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { isConnected } = useIsConnected();
   const { openConnect, location, sessionId, isOpenWebAuth } = useQueryParams();
+  const isSignInFromDapp = sessionId && sessionId.length === 36;
   const { connect } = useSocket();
 
   useEffect(() => {
@@ -80,6 +84,7 @@ const useSignIn = () => {
       workspace,
       webAuthn,
       address,
+      rootWallet,
     }) => {
       const _webAuthn = webAuthn ? { ...webAuthn } : undefined;
 
@@ -94,6 +99,11 @@ const useSignIn = () => {
         webAuthn: _webAuthn,
       });
       invalidateGifAnimationRequest();
+
+      if (rootWallet && rootWallet.length === 36 && !isSignInFromDapp) {
+        handleRedirectToRootWallet(rootWallet, workspace.id);
+        return;
+      }
 
       navigate(redirectPathBuilder(!!sessionId, location));
     },
