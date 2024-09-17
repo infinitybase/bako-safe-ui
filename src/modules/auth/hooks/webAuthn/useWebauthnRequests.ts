@@ -1,12 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { localStorageKeys, UserQueryKey, UserService } from '../services';
+import { localStorageKeys, UserQueryKey, UserService } from '../../services';
 
-const useCheckNickname = (nickname: string) => {
+const useCheckNickname = (nickname: string, enabled: boolean) => {
   return useQuery({
     queryKey: UserQueryKey.NICKNAME(nickname),
     queryFn: () => UserService.verifyNickname(nickname),
     refetchOnWindowFocus: false,
+    enabled,
   });
 };
 
@@ -26,4 +27,23 @@ const useGetAccountsByHardwareId = () => {
   });
 };
 
-export { useCheckNickname, useGetAccountsByHardwareId };
+const useSignMessageWebAuthn = () => {
+  return useMutation({
+    mutationKey: UserQueryKey.SIGN_MESSAGE_WEB_AUTHN(),
+    mutationFn: UserService.signMessageWebAuthn,
+  });
+};
+
+const useCreateWebAuthnAccount = () => {
+  return useMutation({
+    mutationKey: UserQueryKey.CREATE_WEB_AUTHN_ACCOUNT(),
+    mutationFn: UserService.createWebAuthnAccount,
+  });
+};
+
+export {
+  useCheckNickname,
+  useCreateWebAuthnAccount,
+  useGetAccountsByHardwareId,
+  useSignMessageWebAuthn,
+};

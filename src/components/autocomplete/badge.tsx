@@ -1,6 +1,7 @@
 import {
+  Badge,
+  BadgeProps,
   Box,
-  CircularProgress,
   Flex,
   FormLabel,
   HStack,
@@ -9,6 +10,7 @@ import {
   InputProps,
   InputRightElement,
   keyframes,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -27,32 +29,82 @@ const slideToPosition = keyframes`
   }
 `;
 
-interface WebAuthnInputProps extends Omit<InputProps, 'value' | 'onChange'> {
+enum AutocompleteBadgeStatus {
+  SEARCHING = 0,
+  SUCCESS = 1,
+  ERROR = 2,
+  INFO = 3,
+}
+
+interface AutocompleteBadgeProps
+  extends Omit<InputProps, 'value' | 'onChange'> {
+  label?: string;
   value?: string;
   options?: AutocompleteOption[];
   isLoading?: boolean;
+  disabled?: boolean;
   showOptions?: boolean;
+  badgeStatus?: AutocompleteBadgeStatus;
+  badgeLabel?: string;
   onChange: (value: string) => void;
 }
 
-const WebAuthnLoginInput = ({
+const InputBadge = (props: BadgeProps) => {
+  return (
+    <Badge
+      border="none"
+      borderRadius={4}
+      h={19}
+      px={2}
+      fontSize="2xs"
+      {...props}
+    >
+      {props.children}
+    </Badge>
+  );
+};
+
+const AutocompleteBadge = ({
+  label,
   value,
   options = [],
   isLoading,
   showOptions,
+  badgeStatus,
+  badgeLabel,
   onChange,
   ...rest
-}: WebAuthnInputProps) => {
+}: AutocompleteBadgeProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const isOpen =
     isFocused && options && options.length > 0 && !isLoading && showOptions;
   const showClearIcon = !!value;
 
+  const CurrentBadge = (() => {
+    switch (badgeStatus) {
+      case AutocompleteBadgeStatus.SEARCHING:
+        return (
+          <InputBadge variant="grey">
+            {badgeLabel} <Spinner w={3} h={3} />
+          </InputBadge>
+        );
+      case AutocompleteBadgeStatus.INFO:
+        return <InputBadge variant="grey">{badgeLabel}</InputBadge>;
+      case AutocompleteBadgeStatus.SUCCESS:
+        return <InputBadge variant="success">{badgeLabel}</InputBadge>;
+      case AutocompleteBadgeStatus.ERROR:
+        return <InputBadge variant="error">{badgeLabel}</InputBadge>;
+      default:
+        return null;
+    }
+  })();
+
   return (
     <>
       <InputGroup mt="1px">
         <Input
+          variant="dark"
           value={value}
           placeholder=" "
           autoComplete="off"
@@ -62,38 +114,29 @@ const WebAuthnLoginInput = ({
           {...rest}
         />
 
-        <FormLabel color="grey.500">Username</FormLabel>
+        <FormLabel color="grey.500">{label}</FormLabel>
 
         <InputRightElement
-          pr={1}
           top="3px"
-          right="1px"
+          right={4}
           borderRadius={10}
-          bgColor="dark.250"
+          bg="grey.825"
           h="calc(100% - 6px)"
-          w={10}
+          w="fit-content"
+          pl={2}
         >
-          {isLoading ? (
-            <CircularProgress
-              trackColor="dark.100"
-              size={18}
-              isIndeterminate
-              color="brand.500"
-            />
-          ) : (
-            <>
-              {showClearIcon && (
-                <HStack>
-                  <LineCloseIcon
-                    fontSize={16}
-                    color="grey.100"
-                    cursor="pointer"
-                    onClick={() => onChange('')}
-                  />
-                </HStack>
-              )}
-            </>
-          )}
+          <HStack spacing={4}>
+            {CurrentBadge}
+
+            {showClearIcon && (
+              <LineCloseIcon
+                fontSize={16}
+                color="grey.100"
+                cursor="pointer"
+                onClick={() => onChange('')}
+              />
+            )}
+          </HStack>
         </InputRightElement>
       </InputGroup>
 
@@ -153,4 +196,4 @@ const WebAuthnLoginInput = ({
   );
 };
 
-export { WebAuthnLoginInput };
+export { AutocompleteBadge, AutocompleteBadgeStatus };
