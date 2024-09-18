@@ -23,6 +23,9 @@ const useDappSignIn = () => {
     return `${Pages.dappAuth()}${location.search}`;
   }, [location]);
 
+  const walletSignIn = useWalletSignIn(redirect);
+  const webAuthnSignIn = useWebAuthnSignIn(redirect);
+
   const getSessionId = useCallback(() => {
     let _sessionId = sessionId;
     if (!_sessionId) {
@@ -36,9 +39,6 @@ const useDappSignIn = () => {
   useEffect(() => {
     connect(getSessionId());
   });
-
-  const walletSignIn = useWalletSignIn(redirect);
-  const webAuthnSignIn = useWebAuthnSignIn(redirect);
 
   return {
     ...walletSignIn,
