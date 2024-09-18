@@ -45,7 +45,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
-    useWebAuthnInput();
+    useWebAuthnInput(!form.formState.errors.name);
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
