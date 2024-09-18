@@ -10,7 +10,7 @@ import { useWebAuthnSignIn } from './useWebAuthnSignIn';
 export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
 
 const useDappSignIn = () => {
-  const { location, sessionId } = useQueryParams();
+  const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
 
   const redirect = useCallback(() => {
@@ -23,8 +23,18 @@ const useDappSignIn = () => {
     return `${Pages.dappAuth()}${location.search}`;
   }, [location]);
 
+  const handleLoginOnSafariBrowser = useCallback((username: string) => {
+    window.open(
+      `${window.origin}/${window.location.search}&openWebAuth=true&username=${username}`,
+      '_blank',
+    );
+  }, []);
+
+  const customHandleLogin =
+    byConnector && !username ? handleLoginOnSafariBrowser : undefined;
+
   const walletSignIn = useWalletSignIn(redirect);
-  const webAuthnSignIn = useWebAuthnSignIn(redirect);
+  const webAuthnSignIn = useWebAuthnSignIn(redirect, customHandleLogin);
 
   const getSessionId = useCallback(() => {
     let _sessionId = sessionId;
