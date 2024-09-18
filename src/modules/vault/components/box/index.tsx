@@ -2,21 +2,28 @@ import {
   Avatar,
   Box,
   Button,
-  Flex,
   Heading,
   HStack,
+  Icon,
   SkeletonCircle,
   SkeletonText,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import { FiPlusSquare } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
-import { ChartBulletIcon, CustomSkeleton, ReplaceIcon } from '@/components';
+import {
+  AddressWithCopyBtn,
+  ChartBulletIcon,
+  CustomSkeleton,
+  HomeIcon,
+  LeftAndRightArrow,
+} from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
   name: string;
-  fullName: string;
   address: string;
   onChangeVault: () => void;
   onCreateTransaction: () => void;
@@ -51,10 +58,10 @@ const VaultBoxSkeleton = () => (
 );
 
 const VaultBox = (props: VaultBoxPropx) => {
+  const navigate = useNavigate();
   const {
     name,
     address,
-    fullName,
     isLoading,
     isPending,
     hasBalance,
@@ -71,54 +78,43 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   return (
     <Box w="100%">
-      <HStack width="100%" alignItems="center" spacing={5} mb={5}>
+      {/* Headers BTNS */}
+      <HStack>
+        <Button w="full" variant="secondaryV2" onClick={() => navigate('/')}>
+          <Icon as={HomeIcon} fontSize="lg" mr="auto" />
+          <Text mr="auto">Home</Text>
+        </Button>
+        <Button w="full" variant="secondaryV2" onClick={() => onChangeVault()}>
+          <Icon as={LeftAndRightArrow} fontSize="lg" mr="auto" />
+          <Text mr="auto">Vault</Text>
+        </Button>
+      </HStack>
+      {/* Vault Avatar and Address */}
+      <HStack width="100%" alignItems="center" spacing={4} my={6}>
         <CustomSkeleton w="min-content" isLoaded={!isLoading}>
           <Avatar
             variant="roundedSquare"
             bgColor="dark.150"
-            color="white"
-            name={fullName}
+            color="grey.75"
+            name={name}
+            boxShadow="0px 3.5px 3.5px 0px rgba(0, 0, 0, 0.4);"
+            boxSize="56px"
           />
         </CustomSkeleton>
-        <Box w="100%" maxW="100%">
-          <Flex alignItems="center" justifyContent="space-between">
-            <Box maxW="48%">
-              <CustomSkeleton borderRadius={2} isLoaded={!isLoading}>
-                <Heading variant="title-md" noOfLines={1}>
-                  {name}
-                </Heading>
-              </CustomSkeleton>
-            </Box>
-            <Box ml={2}>
-              <Button
-                size="sm"
-                variant="link"
-                color="brand.500"
-                onClick={onChangeVault}
-                leftIcon={
-                  !isMobile ? <ReplaceIcon color="brand.500" /> : undefined
-                }
-                rightIcon={
-                  isMobile ? <ReplaceIcon color="brand.500" /> : undefined
-                }
-                isDisabled={isLoading}
-              >
-                Change {!isMobile && 'vault'}
-              </Button>
-            </Box>
-          </Flex>
-          <Box mt={1}>
-            <CustomSkeleton
-              w="full"
-              minH="20px"
-              borderRadius={2}
-              isLoaded={!isLoading}
-            >
-              <Text variant="description">{address}</Text>
-            </CustomSkeleton>
-          </Box>
-        </Box>
+        <VStack alignItems="start" spacing={3} justifyContent="center">
+          <Heading size="xs" isTruncated textOverflow="ellipsis" maxW="170px">
+            {name}
+          </Heading>
+          <AddressWithCopyBtn
+            address={address}
+            isSidebarAddress
+            h="20px"
+            flexDir="row-reverse"
+            justifyContent="start"
+          />
+        </VStack>
       </HStack>
+      {/* Create Tx Btn */}
       {hasPermission && (
         <Box w="100%">
           <Button

@@ -23,19 +23,19 @@ import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
 import { AddressUtils, PermissionRoles } from '@/modules/core';
 import { CreateVaultDialog } from '@/modules/vault';
-import { VaultDrawerBox } from '@/modules/vault/components/drawer/box';
-import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
+import { VaultItemBox } from '@/modules/vault/components/modal/box';
+import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
   const {
-    authDetails: { userInfos },
+    authDetails: { userInfos, handlers },
   } = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
 
@@ -231,33 +231,36 @@ const VaultConnector = () => {
               scrollbarWidth: 'none',
             }}
           >
-            {vaults?.map(({ id, name, predicateAddress, workspace }) => {
-              const isViewer = WorkspacePermissionUtils.is(
-                PermissionRoles.VIEWER,
-                {
-                  permissions: workspace.permissions,
-                  userId: userInfos?.id,
-                },
-              );
+            {vaults?.map(
+              ({ id, name, predicateAddress, workspace, members }) => {
+                const isViewer = WorkspacePermissionUtils.is(
+                  PermissionRoles.VIEWER,
+                  {
+                    permissions: workspace.permissions,
+                    userId: userInfos?.id,
+                  },
+                );
 
-              if (isViewer) return null;
+                if (isViewer) return null;
 
-              if (id === currentVault && !selectedVaultId)
-                setSelectedVaultId(id);
+                if (id === currentVault && !selectedVaultId)
+                  setSelectedVaultId(id);
 
-              return (
-                <VaultDrawerBox
-                  key={id}
-                  name={name}
-                  workspace={workspace}
-                  address={predicateAddress}
-                  isActive={selectedVaultId === id}
-                  isSingleWorkspace={workspace.single}
-                  onClick={() => setSelectedVaultId(id)}
-                  isInDapp
-                />
-              );
-            })}
+                return (
+                  <VaultItemBox
+                    key={id}
+                    name={name}
+                    workspace={workspace}
+                    members={members?.length}
+                    address={predicateAddress}
+                    isActive={selectedVaultId === id}
+                    isSingleWorkspace={workspace.single}
+                    onClick={() => setSelectedVaultId(id)}
+                    isInDapp
+                  />
+                );
+              },
+            )}
 
             {isFetching && vaults.length && (
               <Flex justifyContent="center" alignItems="center">
@@ -276,7 +279,10 @@ const VaultConnector = () => {
             <Button
               variant="secondary"
               borderColor="grey.75"
-              onClick={() => window.close()}
+              onClick={() => {
+                handlers.logout?.();
+                window.close();
+              }}
               w={noVaultOnFirstLoad ? 'full' : 'unset'}
             >
               Cancel

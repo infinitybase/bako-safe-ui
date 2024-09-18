@@ -4,6 +4,7 @@ import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
@@ -36,6 +37,9 @@ const Details = ({
   isMobileDetailsOpen,
 }: TransactionDetailsProps) => {
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   const handleViewInExplorer = async () => {
     const { hash } = transaction;
@@ -82,38 +86,40 @@ const Details = ({
                   alignSelf="flex-start"
                   w="full"
                   minW={{ base: 200, sm: 'full' }}
+                  mt={isMobile ? 3 : 'unset'}
                 >
                   <TransactionStepper steps={transactionHistory!} />
                 </Box>
               </Stack>
 
-              {transaction.status === TransactionStatus.SUCCESS && (
-                <Button
-                  border="none"
-                  bgColor="#F5F5F50D"
-                  fontSize="xs"
-                  fontWeight="normal"
-                  letterSpacing=".5px"
-                  alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                  variant="secondary"
-                  onClick={handleViewInExplorer}
-                  css={css`
-                    &:hover .btn-icon {
-                      animation: ${shakeAnimationY} 0.5s ease-in-out;
+              {transaction.status === TransactionStatus.SUCCESS &&
+                !isMobile && (
+                  <Button
+                    border="none"
+                    bgColor="#F5F5F50D"
+                    fontSize="xs"
+                    fontWeight="normal"
+                    letterSpacing=".5px"
+                    alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                    variant="secondary"
+                    onClick={handleViewInExplorer}
+                    css={css`
+                      &:hover .btn-icon {
+                        animation: ${shakeAnimationY} 0.5s ease-in-out;
+                      }
+                    `}
+                    rightIcon={
+                      <Icon
+                        as={UpRightArrow}
+                        textColor="grey.75"
+                        fontSize="lg"
+                        className="btn-icon"
+                      />
                     }
-                  `}
-                  rightIcon={
-                    <Icon
-                      as={UpRightArrow}
-                      textColor="grey.75"
-                      fontSize="lg"
-                      className="btn-icon"
-                    />
-                  }
-                >
-                  View on Explorer
-                </Button>
-              )}
+                  >
+                    View on Explorer
+                  </Button>
+                )}
             </VStack>
           )}
         </CustomSkeleton>

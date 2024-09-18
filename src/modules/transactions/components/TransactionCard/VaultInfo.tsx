@@ -5,19 +5,40 @@ import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 interface TransactionBasicInfosProps extends BoxProps {
   vault: PredicateAndWorkspace;
   transactionName: string;
+  spacingBetweenNameAndDesc?: boolean;
+  nameSxProps?: BoxProps;
+  descSxProps?: BoxProps;
 }
 
 const BasicInfos = ({
   vault,
   transactionName,
+  spacingBetweenNameAndDesc = true,
+  nameSxProps,
+  descSxProps,
   ...rest
 }: TransactionBasicInfosProps) => {
   return (
     <VStack alignItems="flex-start" spacing={0} w={180} {...rest}>
-      <Text maxW={122} color="grey.75" mt={0} isTruncated fontSize="sm" mb={2}>
+      <Text
+        maxW={122}
+        color="grey.75"
+        mt={0}
+        isTruncated
+        fontSize="sm"
+        {...nameSxProps}
+        mb={spacingBetweenNameAndDesc ? 2 : 0}
+      >
         {transactionName}
       </Text>
-      <Text maxW={106} color="grey.425" mt={0} isTruncated fontSize="xs">
+      <Text
+        maxW={106}
+        color="grey.425"
+        mt={0}
+        isTruncated
+        fontSize="xs"
+        {...descSxProps}
+      >
         {vault.name}
       </Text>
 

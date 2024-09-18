@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
 
@@ -27,7 +27,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   };
 
   const {
-    screenSizes: { isMobile },
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   return (
@@ -39,9 +39,14 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       flexWrap="wrap"
       minH={{ base: 560, xs: 400, sm: 'unset' }}
     >
-      <VStack w="full">
-        <Box pb={3} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text color="grey.425" fontSize="sm">
+      <VStack w="full" mt={isMobile ? 'unset' : 5}>
+        {isMobile && <Divider my={5} borderColor="grey.425" />}
+
+        <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
+          <Text
+            color="grey.425"
+            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          >
             Transaction breakdown
           </Text>
         </Box>
@@ -61,7 +66,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
       </VStack>
 
-      {transaction.status === TransactionStatus.SUCCESS && (
+      {!isMobile && transaction.status === TransactionStatus.SUCCESS && (
         <Button
           w={isMobile ? 'full' : 'unset'}
           mt={isMobile ? 'auto' : '32px'}
