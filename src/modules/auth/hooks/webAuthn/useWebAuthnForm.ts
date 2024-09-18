@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { WebAuthnModeState } from '@/modules';
+import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 
 export type UseWebAuthnForm = ReturnType<typeof useWebAuthnForm>;
 
