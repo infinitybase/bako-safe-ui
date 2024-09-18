@@ -61,19 +61,19 @@ const useWebAuthnSignIn = (
 
   const isSearchModeBtnDisabled =
     !form.formState.isValid ||
-    form.formState.errors.username ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isLoginModeBtnDisabled =
     isSigningIn ||
     !form.formState.isValid ||
-    form.formState.errors.username ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isRegisterModeBtnDisabled =
     isRegistering ||
     !form.formState.isValid ||
-    form.formState.errors.username ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
 
