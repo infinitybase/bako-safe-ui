@@ -6,21 +6,19 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
 import { TypeUser } from '../../services';
-import { useQueryParams } from '../usePopup';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
-import { SignInOrigin, useSignInOriginFactory } from './origin';
 
-const useWalletSignIn = () => {
+export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
+
+const useWalletSignIn = (
+  redirect: (vaultId?: string, workspaceId?: string) => string,
+) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
 
   const navigate = useNavigate();
   const { fuel } = useFuel();
-  const { sessionId } = useQueryParams();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
-
-  const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInOriginFactory(signInOrigin);
 
   const signInRequest = useSignInRequest({
     onSuccess: ({

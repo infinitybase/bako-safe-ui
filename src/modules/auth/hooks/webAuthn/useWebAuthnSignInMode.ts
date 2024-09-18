@@ -6,9 +6,7 @@ import { useContactToast } from '@/modules/addressBook/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TypeUser, UserService } from '../../services';
-import { SignInOrigin, useSignInOriginFactory } from '../signIn';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
-import { useQueryParams } from '../usePopup';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useSignMessageWebAuthn } from './useWebauthnRequests';
 
@@ -23,6 +21,7 @@ const generateSignInCode = async (address: string) => {
 const useWebAuthnSignInMode = (
   form: UseWebAuthnForm['form'],
   setMode: (mode: WebAuthnModeState) => void,
+  redirect: (vaultId?: string, workspaceId?: string) => string,
 ) => {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
@@ -34,13 +33,9 @@ const useWebAuthnSignInMode = (
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
-  const { sessionId } = useQueryParams();
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();
-
-  const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInOriginFactory(signInOrigin);
 
   const handleLogin = form.handleSubmit(async ({ username }) => {
     setIsSigningIn(true);

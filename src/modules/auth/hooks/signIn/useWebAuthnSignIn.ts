@@ -27,7 +27,9 @@ export enum WebAuthnModeState {
 
 export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
-const useWebAuthnSignIn = () => {
+const useWebAuthnSignIn = (
+  redirect: (vaultId?: string, workspaceId?: string) => string,
+) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
 
@@ -41,6 +43,7 @@ const useWebAuthnSignIn = () => {
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode(
     form,
     setMode,
+    redirect,
   );
   const { isRegistering, registerProgress, handleRegister } =
     useWebAuthnRegisterMode({
