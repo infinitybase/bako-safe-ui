@@ -18,6 +18,7 @@ const useQueryParams = () => {
     const isOpenWebAuth = searchParams.get('openWebAuth') === 'true';
     const byConnector = searchParams.get('byConnector') === 'true';
     const byLanding = searchParams.get('_gl');
+    const username = searchParams.get('username');
 
     return {
       expiredSession,
@@ -32,6 +33,7 @@ const useQueryParams = () => {
       isOpenWebAuth,
       byConnector,
       byLanding,
+      username,
     };
   }, [location]);
 
