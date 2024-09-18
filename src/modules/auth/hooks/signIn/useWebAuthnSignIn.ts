@@ -61,22 +61,28 @@ const useWebAuthnSignIn = (
 
   const isSearchModeBtnDisabled =
     !form.formState.isValid ||
+    form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isLoginModeBtnDisabled =
     isSigningIn ||
     !form.formState.isValid ||
+    form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isRegisterModeBtnDisabled =
     isRegistering ||
     !form.formState.isValid ||
+    form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
 
-  const handleChangeMode = useCallback(() => {
+  const handleCheckUsername = useCallback(() => {
     if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
       setMode(WebAuthnModeState.LOGIN);
+    } else if (checkNicknameRequest.data?.type) {
+      setMode(WebAuthnModeState.SEARCH);
+      form.setError('username', { message: 'Username is already being used' });
     } else {
       setMode(WebAuthnModeState.REGISTER);
     }
@@ -142,9 +148,9 @@ const useWebAuthnSignIn = (
 
   useEffect(() => {
     if (checkNicknameRequest.data) {
-      handleChangeMode();
+      handleCheckUsername();
     }
-  }, [handleChangeMode, checkNicknameRequest.data]);
+  }, [handleCheckUsername, checkNicknameRequest.data]);
 
   return {
     formData: {
