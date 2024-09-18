@@ -110,7 +110,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         confirmTransaction(
           result.BakoSafeTransaction.id,
           undefined,
-          result.BakoSafeTransaction.hash,
+          result.BakoSafeTransaction,
         );
       }
       handleClose();

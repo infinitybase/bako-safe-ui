@@ -84,14 +84,16 @@ const useSignTransaction = ({
   const confirmTransaction = async (
     selectedTransactionId: string,
     callback?: () => void,
-    selectedTransactionTransactionHash?: string,
+    transactionInformations?: IPendingTransactionDetails,
   ) => {
-    const transaction = pendingTransactions?.[selectedTransactionId];
+    const transaction = transactionInformations
+      ? transactionInformations
+      : pendingTransactions?.[selectedTransactionId];
 
     setSelectedTransaction(transaction);
 
     const signedMessage = await signMessageRequest.mutateAsync(
-      selectedTransactionTransactionHash ?? transaction?.hash,
+      transaction?.hash,
     );
 
     await request.mutateAsync(
@@ -99,7 +101,7 @@ const useSignTransaction = ({
         account: CookiesConfig.getCookie(CookieName.ADDRESS),
         confirm: true,
         signer: signedMessage,
-        id: selectedTransactionId ?? transaction?.id,
+        id: transaction?.id,
       },
       {
         onSuccess: async () => {
