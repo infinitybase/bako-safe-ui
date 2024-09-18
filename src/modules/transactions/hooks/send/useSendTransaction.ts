@@ -63,7 +63,8 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       transaction!.resume!.witnesses.filter(
         (witness) => witness.status === WitnessStatus.PENDING,
       ).length <= 1;
-    if (wasTheLastSignature) {
+
+    if (wasTheLastSignature || transaction.resume.requiredSigners === 1) {
       toast.loading(transaction);
       setIsCurrentTxPending({ isPending: true, transactionId: transaction.id });
     }
