@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById, Transfer } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -89,28 +89,30 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount!,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
-    validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
+    getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
+    validateBalance: (asset, amount) =>
+      props?.hasAssetBalance(asset, amount) ?? false,
   });
 
   const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    onSuccess: (result) => {
+    onSuccess: (result: Transfer) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
-      console.log('resutlado, oida', result);
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
-      confirmTransaction(
-        result.BakoSafeTransaction.id,
-        undefined,
-        result.BakoSafeTransaction.hash,
-      );
+      if (props?.createTransactionAndSign) {
+        confirmTransaction(
+          result.BakoSafeTransaction.id,
+          undefined,
+          result.BakoSafeTransaction.hash,
+        );
+      }
       handleClose();
     },
 

@@ -44,6 +44,12 @@ const CreateTxMenuButton = ({
     }
   };
 
+  const handleCreateTransactionByMethod = () => {
+    return createTxMethod === ECreateTransactionMethods.CREATE
+      ? handleCreateTransaction?.()
+      : handleCreateAndSignTransaction?.();
+  };
+
   useEffect(() => {
     updateMenuWidth();
 
@@ -66,8 +72,7 @@ const CreateTxMenuButton = ({
           <Dialog.PrimaryAction
             isDisabled={isDisabled}
             isLoading={isLoading}
-            // onClick={handleCreateTransaction}
-            onClick={handleCreateAndSignTransaction}
+            onClick={() => handleCreateTransactionByMethod()}
             _hover={{
               opacity: !isDisabled && 0.8,
             }}
@@ -82,7 +87,7 @@ const CreateTxMenuButton = ({
             w="20px"
             pl={2}
             borderRadius="0px 8px 8px 0px"
-            isDisabled={isDisabled}
+            isDisabled={isDisabled || isLoading}
           />
         </HStack>
 
