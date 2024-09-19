@@ -15,7 +15,6 @@ const useQueryParams = () => {
     const currentVault = searchParams.get('currentVault');
     const openConnect = searchParams.get('openConnect') === 'true';
     const request_id = searchParams.get('request_id');
-    const isOpenWebAuth = searchParams.get('openWebAuth') === 'true';
     const byConnector = searchParams.get('byConnector') === 'true';
     const byLanding = searchParams.get('_gl');
     const username = searchParams.get('username');
@@ -30,7 +29,6 @@ const useQueryParams = () => {
       currentVault,
       openConnect,
       request_id,
-      isOpenWebAuth,
       byConnector,
       byLanding,
       username,

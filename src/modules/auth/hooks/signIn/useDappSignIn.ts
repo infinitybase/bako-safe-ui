@@ -25,7 +25,7 @@ const useDappSignIn = () => {
 
   const handleLoginOnSafariBrowser = useCallback((username: string) => {
     window.open(
-      `${window.origin}/${window.location.search}&openWebAuth=true&username=${username}`,
+      `${window.origin}/${window.location.search}&username=${username}`,
       '_blank',
     );
   }, []);
