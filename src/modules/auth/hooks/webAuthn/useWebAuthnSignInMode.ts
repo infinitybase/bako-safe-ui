@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -6,7 +6,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TypeUser, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
-import { useQueryParams } from '../usePopup';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
 import { useSignMessageWebAuthn } from './useWebauthnRequests';
@@ -15,7 +14,6 @@ interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
   redirect: (vaultId?: string, workspaceId?: string) => string;
-  customHandleLogin?: (username: string) => void;
 }
 
 const verifyNickname = async (username: string) => {
@@ -27,7 +25,7 @@ const generateSignInCode = async (address: string) => {
 };
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
-  const { form, setMode, redirect, customHandleLogin } = params;
+  const { form, setMode, redirect } = params;
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
@@ -39,17 +37,11 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
-  const { username } = useQueryParams();
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();
 
   const handleLogin = form.handleSubmit(async ({ username }) => {
-    if (customHandleLogin) {
-      customHandleLogin(username);
-      return;
-    }
-
     setIsSigningIn(true);
 
     const acc = await verifyNickname(username);
@@ -115,12 +107,6 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
       },
     );
   });
-
-  useEffect(() => {
-    if (!customHandleLogin && username && !isSigningIn) {
-      handleLogin();
-    }
-  }, []);
 
   return { isSigningIn, signInProgress, handleLogin };
 };

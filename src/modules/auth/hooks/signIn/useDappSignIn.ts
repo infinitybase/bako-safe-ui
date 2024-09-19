@@ -1,15 +1,22 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useSocket } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
+import {
+  ActionKeys,
+  handleActionUsingKeys,
+} from '@/utils/handle-action-using-keys';
 
 import { useQueryParams } from '../usePopup';
+import { useWebAuthnLastLogin } from '../webAuthn';
 import { useWalletSignIn } from './useWalletSignIn';
-import { useWebAuthnSignIn } from './useWebAuthnSignIn';
+import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 
 export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
 
 const useDappSignIn = () => {
+  const isMounted = useRef(false);
+
   const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
 
@@ -23,18 +30,48 @@ const useDappSignIn = () => {
     return `${Pages.dappAuth()}${location.search}`;
   }, [location]);
 
-  const handleLoginOnSafariBrowser = useCallback((username: string) => {
+  const walletSignIn = useWalletSignIn(redirect);
+  const {
+    formData,
+    fullFormState,
+    isSigningIn,
+    mode,
+    setMode,
+    handleLogin,
+    ...rest
+  } = useWebAuthnSignIn(redirect);
+  const { lastLoginUsername } = useWebAuthnLastLogin();
+
+  const handleLoginOnSafariBrowser = useCallback(() => {
+    const username = formData.form.getValues('username');
+
     window.open(
       `${window.origin}/${window.location.search}&username=${username}`,
       '_blank',
     );
-  }, []);
+  }, [formData.form]);
 
   const customHandleLogin =
-    byConnector && !username ? handleLoginOnSafariBrowser : undefined;
+    byConnector && !username ? handleLoginOnSafariBrowser : handleLogin;
 
-  const walletSignIn = useWalletSignIn(redirect);
-  const webAuthnSignIn = useWebAuthnSignIn(redirect, customHandleLogin);
+  const customFormState = {
+    ...fullFormState,
+    [WebAuthnModeState.LOGIN]: {
+      ...fullFormState[WebAuthnModeState.LOGIN],
+      handleAction: customHandleLogin,
+      handleActionUsingEnterKey: (pressedKey: string) =>
+        handleActionUsingKeys({
+          pressedKey,
+          allowedKeys: [ActionKeys.Enter],
+          action: customHandleLogin,
+          enabled: !fullFormState[WebAuthnModeState.LOGIN].isDisabled,
+        }),
+    },
+    [WebAuthnModeState.ACCOUNT_CREATED]: {
+      ...fullFormState[WebAuthnModeState.ACCOUNT_CREATED],
+      handleAction: customHandleLogin,
+    },
+  };
 
   const getSessionId = useCallback(() => {
     let _sessionId = sessionId;
@@ -50,9 +87,25 @@ const useDappSignIn = () => {
     connect(getSessionId());
   });
 
+  useEffect(() => {
+    if (isMounted.current) {
+      if (username && !isSigningIn) {
+        formData.form.setValue('username', username);
+        setMode(WebAuthnModeState.LOGIN);
+        handleLogin();
+      } else if (lastLoginUsername && !username) {
+        formData.form.setValue('username', lastLoginUsername);
+        setMode(WebAuthnModeState.LOGIN);
+      }
+    }
+    isMounted.current = true;
+  }, []);
+
   return {
     ...walletSignIn,
-    ...webAuthnSignIn,
+    ...rest,
+    formData,
+    formState: customFormState[mode],
   };
 };
 

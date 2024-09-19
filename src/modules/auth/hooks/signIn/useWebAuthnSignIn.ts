@@ -8,7 +8,6 @@ import { TypeUser } from '../../services/methods';
 import {
   useWebAuthnForm,
   useWebAuthnInput,
-  useWebAuthnLastLogin,
   useWebAuthnRegisterMode,
   useWebAuthnSignInMode,
 } from '../webAuthn';
@@ -29,7 +28,6 @@ export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
 const useWebAuthnSignIn = (
   redirect: (vaultId?: string, workspaceId?: string) => string,
-  customHandleLogin?: (username: string) => void,
 ) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
@@ -46,7 +44,6 @@ const useWebAuthnSignIn = (
     form,
     setMode,
     redirect,
-    customHandleLogin,
   });
   const { isRegistering, registerProgress, handleRegister } =
     useWebAuthnRegisterMode({
@@ -55,7 +52,6 @@ const useWebAuthnSignIn = (
       setTab: tabs.set,
       setCreatedAcccountUsername,
     });
-  const { lastLoginUsername } = useWebAuthnLastLogin();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
 
@@ -140,13 +136,6 @@ const useWebAuthnSignIn = (
   };
 
   useEffect(() => {
-    if (lastLoginUsername) {
-      form.setValue('username', lastLoginUsername ?? '');
-      setMode(WebAuthnModeState.LOGIN);
-    }
-  }, []);
-
-  useEffect(() => {
     if (checkNicknameRequest.data) {
       handleCheckUsername();
     }
@@ -157,11 +146,16 @@ const useWebAuthnSignIn = (
       form,
       isRegisterMode,
     },
+    fullFormState: formState,
     formState: formState[mode],
     checkNicknameRequest,
     tabs,
     createdAcccountUsername,
     inputBadge: badge,
+    isSigningIn,
+    mode,
+    setMode,
+    handleLogin,
     ...rest,
   };
 };
