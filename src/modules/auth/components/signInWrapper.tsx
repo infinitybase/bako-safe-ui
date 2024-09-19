@@ -5,7 +5,12 @@ import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { UseWalletSignIn, UseWebAuthnSignIn } from '../hooks/signIn';
+import {
+  UseDappSignIn,
+  UseWalletSignIn,
+  UseWebAuthnSignIn,
+  UseWebSignIn,
+} from '../hooks/signIn';
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
 import { SignInFooter } from './footer';
@@ -16,7 +21,7 @@ interface SignInWrapperProps {
   isAnyWalletConnectorOpen: UseWalletSignIn['isAnyWalletConnectorOpen'];
   tabs: UseWebAuthnSignIn['tabs'];
   formData: UseWebAuthnSignIn['formData'];
-  formState: UseWebAuthnSignIn['formState'];
+  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
   accountsOptions: UseWebAuthnSignIn['accountsOptions'];
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   createdAcccountUsername: UseWebAuthnSignIn['createdAcccountUsername'];
