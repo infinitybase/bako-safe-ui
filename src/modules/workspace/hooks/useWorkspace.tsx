@@ -1,18 +1,16 @@
-import { Icon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
-import { MdOutlineError } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { queryClient } from '@/config';
+import { IUserInfos } from '@/modules/auth/services';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
-import { useNotification } from '@/modules/notification';
 
+// import { useNotification } from '@/modules/notification';
 import { Pages } from '../../core';
 import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
-import { useSelectWorkspace } from './select';
+// import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
-import { IUserInfos } from '@/modules/auth/services';
-import { queryClient } from '@/config';
 
 const VAULTS_PER_PAGE = 8;
 
@@ -29,7 +27,7 @@ const useWorkspace = (
 
   const [visibleBalance, setVisibleBalance] = useState(false);
 
-  const toast = useNotification();
+  // const toast = useNotification();
   const workspaceDialog = useDisclosure();
 
   const workspaceBalance = useGetWorkspaceBalanceRequest(
@@ -38,7 +36,7 @@ const useWorkspace = (
 
   const latestPredicates = useHomeDataRequest(userInfos?.workspace?.id);
 
-  const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
+  // const { selectWorkspace, isSelecting } = useSelectWorkspace(userInfos.id);
 
   const vaultsCounter = latestPredicates?.data?.predicates?.total ?? 0;
 
@@ -49,7 +47,7 @@ const useWorkspace = (
   ) => {
     const isValid = selectedWorkspace !== userInfos?.workspace?.id;
 
-    if (isSelecting) return;
+    // if (isSelecting) return;
     if (!isValid) {
       !!redirect && navigate(redirect);
       if (redirect?.includes('vault')) {
@@ -62,22 +60,30 @@ const useWorkspace = (
 
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
-    selectWorkspace(selectedWorkspace, {
-      onSelect: (workspace) => {
-        invalidateRequests();
-        navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
-      },
-      onError: () => {
-        toast({
-          status: 'error',
-          duration: 4000,
-          isClosable: false,
-          title: 'Error!',
-          description: 'Try again, please...',
-          icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-        });
-      },
-    });
+    invalidateRequests();
+    navigate(
+      redirect ?? Pages.workspace({ workspaceId: selectedWorkspace ?? '' }),
+    );
+
+    // Commented out this workspace select/auth logic.
+    // Now we only use navigate to redirect the user instead of authenticate him in the workspace
+
+    // selectWorkspace(selectedWorkspace, {
+    //   onSelect: (workspace) => {
+    //     invalidateRequests();
+    //     navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
+    //   },
+    //   onError: () => {
+    //     toast({
+    //       status: 'error',
+    //       duration: 4000,
+    //       isClosable: false,
+    //       title: 'Error!',
+    //       description: 'Try again, please...',
+    //       icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+    //     });
+    //   },
+    // });
   };
 
   const goHome = () => {
@@ -128,7 +134,7 @@ const useWorkspace = (
     infos: {
       workspaceId,
       visibleBalance,
-      isSelecting,
+      isSelecting: false,
       currentPermissions: userInfos.workspace?.permission,
     },
     handlers: {

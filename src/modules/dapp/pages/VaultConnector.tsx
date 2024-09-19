@@ -35,7 +35,7 @@ const VaultConnector = () => {
   const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
   const {
-    authDetails: { userInfos },
+    authDetails: { userInfos, handlers },
   } = useWorkspaceContext();
   const { isSafariBrowser } = useVerifyBrowserType();
 
@@ -279,7 +279,10 @@ const VaultConnector = () => {
             <Button
               variant="secondary"
               borderColor="grey.75"
-              onClick={() => window.close()}
+              onClick={() => {
+                handlers.logout?.();
+                window.close();
+              }}
               w={noVaultOnFirstLoad ? 'full' : 'unset'}
             >
               Cancel
