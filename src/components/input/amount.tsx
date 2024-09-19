@@ -29,7 +29,7 @@ const AmountInput = (props: AmountInputProps) => (
       const isComma = nativeEvent.data === ',';
 
       // This if case just handle the comma (',') to replace it to a dot ('.')
-      if (isComma && !inputValue.includes('.')) {
+      if (isComma && !inputValue.endsWith('.')) {
         const caretPosition = event.target.selectionStart ?? 0;
 
         // Determine if the comma is the first character
