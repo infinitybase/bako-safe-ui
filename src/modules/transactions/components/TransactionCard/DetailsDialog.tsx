@@ -8,7 +8,7 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import {
   Dialog,
