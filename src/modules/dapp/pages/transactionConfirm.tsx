@@ -143,6 +143,7 @@ const TransactionConfirm = () => {
                   isSingleWorkspace
                   isInDapp
                   px={4}
+                  mt={4}
                 />
               </>
             )}

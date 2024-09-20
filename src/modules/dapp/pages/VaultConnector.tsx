@@ -261,6 +261,7 @@ const VaultConnector = () => {
                     isSingleWorkspace={workspace.single}
                     onClick={() => setSelectedVaultId(id)}
                     isInDapp
+                    mt={0}
                   />
                 );
               },

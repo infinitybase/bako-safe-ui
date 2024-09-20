@@ -29,7 +29,6 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
       display="flex"
       flexDir="column"
       justifyContent="center"
-      mt={4}
     >
       <HStack width="100%" alignItems="center" spacing={4} h="32px">
         <Avatar
