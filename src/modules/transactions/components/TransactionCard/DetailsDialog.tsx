@@ -192,9 +192,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 isDeposit={isDeploy}
                 transaction={transaction}
                 w="fit-content"
-                isInDetailsDialog
                 h="26px"
                 isContract={isContract}
+                isDeploy={isDeploy}
               />
               <TransactionCard.Status
                 transaction={transaction}

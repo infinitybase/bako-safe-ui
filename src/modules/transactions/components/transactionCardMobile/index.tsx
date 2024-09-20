@@ -118,6 +118,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                 transaction={transaction}
                 isDeposit={isDeposit}
                 isContract={isContract}
+                isDeploy={isDeploy}
               />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />
