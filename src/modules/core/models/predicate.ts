@@ -30,6 +30,7 @@ export interface Predicate {
   chainId?: number;
   members?: PredicateMember[];
   transactions: Transaction[];
+  root?: boolean;
 }
 
 export type PredicateWithWorkspace = IPredicate & WorkspaceOnVault;

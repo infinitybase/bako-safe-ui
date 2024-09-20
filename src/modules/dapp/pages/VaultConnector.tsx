@@ -191,7 +191,7 @@ const VaultConnector = () => {
             }}
           >
             {vaults?.map(
-              ({ id, name, predicateAddress, workspace, members }) => {
+              ({ id, name, predicateAddress, workspace, members, root }) => {
                 const isViewer = WorkspacePermissionUtils.is(
                   PermissionRoles.VIEWER,
                   {
@@ -212,6 +212,7 @@ const VaultConnector = () => {
                     workspace={workspace}
                     members={members?.length}
                     address={predicateAddress}
+                    root={root}
                     isActive={selectedVaultId === id}
                     isSingleWorkspace={workspace.single}
                     onClick={() => setSelectedVaultId(id)}
