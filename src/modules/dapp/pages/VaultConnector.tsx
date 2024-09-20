@@ -205,6 +205,9 @@ const VaultConnector = () => {
                 if (id === currentVault && !selectedVaultId)
                   setSelectedVaultId(id);
 
+                if (id !== currentVault && !selectedVaultId && root)
+                  setSelectedVaultId(id);
+
                 return (
                   <VaultItemBox
                     key={id}
