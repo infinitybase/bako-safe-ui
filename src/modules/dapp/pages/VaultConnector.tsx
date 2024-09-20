@@ -53,7 +53,7 @@ const VaultConnector = () => {
 
   useEffect(() => {
     const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 1.75 : 2.15;
+    const dividedBy = clientWindowHeight >= 750 ? 1.67 : 2.07;
 
     setDynamicHeight(clientWindowHeight / dividedBy);
   }, []);
@@ -68,15 +68,9 @@ const VaultConnector = () => {
           justifyContent="space-between"
           alignItems="flex-start"
         >
-          <VStack alignItems="flex-start">
-            <Heading fontSize="md" fontWeight="semibold" color="grey.50">
-              Select Vault
-            </Heading>
-            <Text maxWidth={300} variant="description" fontSize={12}>
-              {/* Select a vault. You can search for a specific vault by name. */}
-              You can search for a specific vault by name.
-            </Text>
-          </VStack>
+          <Heading fontSize="md" fontWeight="semibold" color="grey.50">
+            Select Vault
+          </Heading>
 
           {isSafariBrowser && (
             <LineCloseIcon
