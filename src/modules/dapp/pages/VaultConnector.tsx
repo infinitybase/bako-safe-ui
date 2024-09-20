@@ -75,12 +75,12 @@ const VaultConnector = () => {
           alignItems="flex-start"
         >
           <VStack alignItems="flex-start">
-            <Heading fontSize="xl" fontWeight="semibold" color="grey.200">
-              Select a vault
+            <Heading fontSize="md" fontWeight="semibold" color="grey.50">
+              Select Vault
             </Heading>
             <Text maxWidth={300} variant="description" fontSize={12}>
               {/* Select a vault. You can search for a specific vault by name. */}
-              You can search for a specific vault by name
+              You can search for a specific vault by name.
             </Text>
           </VStack>
 
@@ -95,38 +95,42 @@ const VaultConnector = () => {
           )}
         </HStack>
 
-        <Divider borderColor="dark.100" my={4} />
+        <Divider borderColor="grey.425" mt={4} mb={5} />
 
         {/* Requester */}
-        <Card h={106} gap={4} bg="transparent" mb={6}>
-          <Text fontSize={12} color="grey.50" fontWeight={700}>
+        <Card
+          bgColor="dark.500"
+          borderColor="grey.925"
+          borderRadius={8}
+          p={4}
+          borderWidth="1px"
+          mb={6}
+        >
+          <Text fontSize={12} color="grey.550">
             Requesting a transaction from:
           </Text>
-          <Card
-            bgColor="grey.825"
-            borderColor="dark.100"
-            borderRadius={8}
-            p={4}
-            borderWidth="1px"
-            height={24}
-          >
-            <HStack width="100%" spacing={4} h="49px">
-              <Avatar
-                variant="roundedSquare"
-                color="white"
-                bgColor="dark.950"
-                boxSize={10}
-                name={name!}
-              />
-              <VStack alignItems="flex-start" spacing={0}>
-                <Text variant="subtitle">{name}</Text>
-                <Text color="brand.500" variant="description" lineHeight={4}>
-                  {origin?.split('//')[1]}
-                  {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
-                </Text>
-              </VStack>
-            </HStack>
-          </Card>
+
+          <Divider borderColor="grey.950" my={3} />
+
+          <HStack width="100%" spacing={3.5}>
+            <Avatar
+              variant="roundedSquare"
+              color="white"
+              bgColor="dark.950"
+              size="sm"
+              borderRadius="6.4px"
+              name={name!}
+            />
+            <VStack alignItems="flex-start" spacing={0}>
+              <Text color="grey.250" fontSize="sm" fontWeight="semibold">
+                {name}
+              </Text>
+              <Text color="brand.500" fontSize="xs" lineHeight={4}>
+                {origin?.split('//')[1]}
+                {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
+              </Text>
+            </VStack>
+          </HStack>
         </Card>
 
         {/* Search */}
