@@ -53,7 +53,7 @@ const VaultConnector = () => {
 
   useEffect(() => {
     const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 1.67 : 2.07;
+    const dividedBy = clientWindowHeight >= 750 ? 1.26 : 1.38;
 
     setDynamicHeight(clientWindowHeight / dividedBy);
   }, []);
@@ -83,98 +83,14 @@ const VaultConnector = () => {
           )}
         </HStack>
 
-        <Divider borderColor="grey.425" mt={4} mb={5} />
+        <Divider borderColor="grey.425" mt={4} />
 
-        {/* Requester */}
-        <Card
-          bgColor="dark.500"
-          borderColor="grey.925"
-          borderRadius={8}
-          p={4}
-          borderWidth="1px"
-          mb={4}
-        >
-          <Text fontSize={12} color="grey.550">
-            Requesting a transaction from:
-          </Text>
-
-          <Divider borderColor="grey.950" my={3} />
-
-          <HStack width="100%" spacing={3.5}>
-            <Avatar
-              variant="roundedSquare"
-              color="white"
-              bgColor="dark.950"
-              size="sm"
-              borderRadius="6.4px"
-              name={name!}
-            />
-            <VStack alignItems="flex-start" spacing={0}>
-              <Text color="grey.250" fontSize="sm" fontWeight="semibold">
-                {name}
-              </Text>
-              <Text color="brand.500" fontSize="xs" lineHeight={4}>
-                {origin?.split('//')[1]}
-                {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
-              </Text>
-            </VStack>
-          </HStack>
-        </Card>
-
-        <CustomSkeleton h={450} isLoaded={!isLoading}>
-          {isSuccess && !isFetching && noVaultOnFirstLoad && (
-            <VStack>
-              <Card
-                w="full"
-                bgColor="transparent"
-                display="flex"
-                borderWidth={1}
-                borderColor="grey.300"
-                justifyContent="center"
-                flexDirection="column"
-                alignItems="center"
-                h={224}
-                my={10}
-              >
-                <Flex
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="linear-gradient(132.19deg, rgba(255, 192, 16, 0.1) 0%, rgba(235, 163, 18, 0.1) 48%, rgba(211, 128, 21, 0.1) 71%, rgba(178, 79, 24, 0.1) 99%);"
-                  rounded={10}
-                  w="57px"
-                  h="56px"
-                >
-                  <EmptyBox w="33px" h="33px" />
-                </Flex>
-                <Flex
-                  w={305}
-                  alignItems="center"
-                  flexDir="column"
-                  gap={6}
-                  mt={4}
-                >
-                  <Heading color="grey.75" fontSize={20}>
-                    Nothing to show here.
-                  </Heading>
-                  <Text
-                    color="grey.450"
-                    fontSize={12}
-                    textAlign="center"
-                    fontWeight="medium"
-                  >
-                    It seems like you {"haven't"} any Vault yet.
-                  </Text>
-                </Flex>
-              </Card>
-              <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
-                Create new Vault
-              </Button>
-            </VStack>
-          )}
+        <CustomSkeleton h={564} isLoaded={!isLoading} mt={isLoading ? 4 : 0}>
           {/* Result */}
           <VStack
             w="full"
             h={noVaultOnFirstLoad ? 140 : `${dynamicHeight}px`}
+            pt={4}
             spacing={2}
             overflowY="scroll"
             css={{
@@ -182,6 +98,43 @@ const VaultConnector = () => {
               scrollbarWidth: 'none',
             }}
           >
+            {/* Requester */}
+            <Card
+              bgColor="dark.500"
+              borderColor="grey.925"
+              borderRadius={8}
+              p={4}
+              borderWidth="1px"
+              mb={2}
+              w="full"
+            >
+              <Text fontSize={12} color="grey.550">
+                Requesting a transaction from:
+              </Text>
+
+              <Divider borderColor="grey.950" my={3} />
+
+              <HStack width="100%" spacing={3.5}>
+                <Avatar
+                  variant="roundedSquare"
+                  color="white"
+                  bgColor="dark.950"
+                  size="sm"
+                  borderRadius="6.4px"
+                  name={name!}
+                />
+                <VStack alignItems="flex-start" spacing={0}>
+                  <Text color="grey.250" fontSize="sm" fontWeight="semibold">
+                    {name}
+                  </Text>
+                  <Text color="brand.500" fontSize="xs" lineHeight={4}>
+                    {origin?.split('//')[1]}
+                    {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
+                  </Text>
+                </VStack>
+              </HStack>
+            </Card>
+
             {vaults?.map(
               ({ id, name, predicateAddress, workspace, members, root }) => {
                 const isViewer = WorkspacePermissionUtils.is(
@@ -230,7 +183,60 @@ const VaultConnector = () => {
               ...
             </Box>
           </VStack>
-          {!noVaultOnFirstLoad && <Divider borderColor="grey.75" mb={6} />}
+
+          {/* No vaults */}
+          {isSuccess && !isFetching && noVaultOnFirstLoad && (
+            <VStack mb={6}>
+              <Card
+                w="full"
+                bgColor="transparent"
+                display="flex"
+                borderWidth={1}
+                borderColor="grey.300"
+                justifyContent="center"
+                flexDirection="column"
+                alignItems="center"
+                h={224}
+                my={10}
+              >
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  bg="linear-gradient(132.19deg, rgba(255, 192, 16, 0.1) 0%, rgba(235, 163, 18, 0.1) 48%, rgba(211, 128, 21, 0.1) 71%, rgba(178, 79, 24, 0.1) 99%);"
+                  rounded={10}
+                  w="57px"
+                  h="56px"
+                >
+                  <EmptyBox w="33px" h="33px" />
+                </Flex>
+                <Flex
+                  w={305}
+                  alignItems="center"
+                  flexDir="column"
+                  gap={6}
+                  mt={4}
+                >
+                  <Heading color="grey.75" fontSize={20}>
+                    Nothing to show here.
+                  </Heading>
+                  <Text
+                    color="grey.450"
+                    fontSize={12}
+                    textAlign="center"
+                    fontWeight="medium"
+                  >
+                    It seems like you {"haven't"} any Vault yet.
+                  </Text>
+                </Flex>
+              </Card>
+              <Button bg="grey.75" fontSize={14} onClick={onOpen} w="full">
+                Create new Vault
+              </Button>
+            </VStack>
+          )}
+
+          {!noVaultOnFirstLoad && <Divider borderColor="grey.425" mb={6} />}
+
           <HStack w="full" justifyContent="center" pb={10}>
             <Button
               variant="secondary"
