@@ -45,8 +45,6 @@ const VaultConnector = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const noVaultsFound = !vaults.length;
-
   useEffect(() => {
     if (vaults.length && noVaultOnFirstLoad) {
       setNoVaultOnFirstLoad(false);
@@ -129,7 +127,7 @@ const VaultConnector = () => {
           </HStack>
         </Card>
 
-        <CustomSkeleton h={450} isLoaded={noVaultsFound || !isLoading}>
+        <CustomSkeleton h={450} isLoaded={!isLoading}>
           {isSuccess && !isFetching && noVaultOnFirstLoad && (
             <VStack>
               <Card
