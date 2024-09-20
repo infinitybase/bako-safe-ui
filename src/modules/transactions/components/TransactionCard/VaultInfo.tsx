@@ -1,6 +1,7 @@
 import { BoxProps, Text, VStack } from '@chakra-ui/react';
 
 import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
+import { limitCharacters } from '@/utils';
 
 interface TransactionBasicInfosProps extends BoxProps {
   vault: PredicateAndWorkspace;
@@ -19,17 +20,17 @@ const BasicInfos = ({
   ...rest
 }: TransactionBasicInfosProps) => {
   return (
-    <VStack alignItems="flex-start" spacing={0} w={180} {...rest}>
+    <VStack alignItems="flex-start" spacing={0} {...rest} w="full">
       <Text
-        maxW={122}
         color="grey.75"
         mt={0}
-        isTruncated
         fontSize="sm"
+        wordBreak="break-all"
+        noOfLines={1}
         {...nameSxProps}
         mb={spacingBetweenNameAndDesc ? 2 : 0}
       >
-        {transactionName}
+        {limitCharacters(transactionName, 28)}
       </Text>
       <Text
         maxW={106}

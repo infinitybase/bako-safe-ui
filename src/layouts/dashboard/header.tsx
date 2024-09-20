@@ -107,7 +107,7 @@ const UserBox = () => {
           >
             <Text fontWeight="semibold" color="grey.200">
               {!name ? (
-                name
+                limitCharacters(name, 20)
               ) : (
                 <AddressWithCopyBtn
                   address={authDetails.userInfos?.address ?? ''}

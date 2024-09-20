@@ -1,5 +1,6 @@
 import {
   Badge,
+  BoxProps,
   Button,
   CircularProgress,
   HStack,
@@ -10,7 +11,7 @@ import { ITransaction, WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
-interface TransactionCardStatusProps {
+interface TransactionCardStatusProps extends BoxProps {
   status: TransactionState;
   transaction: ITransaction;
   showDescription?: boolean;
@@ -25,6 +26,7 @@ const Status = ({
   transaction,
   status,
   showDescription = true,
+  ...rest
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
   const {
@@ -49,6 +51,7 @@ const Status = ({
       justifyContent={{ base: 'flex-end', sm: 'center' }}
       ml={{ base: 0, sm: 6 }}
       maxW="full"
+      {...rest}
     >
       {isCurrentTxLoading && (
         <CircularProgress
