@@ -1,7 +1,7 @@
 import { BN, CoinQuantity } from 'fuels';
-import { Asset } from '@/modules/core';
 
 import { api } from '@/config';
+import { Asset } from '@/modules/core';
 import { Predicate, Workspace } from '@/modules/core/models';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
@@ -14,6 +14,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   owner?: string;
   orderBy?: string;
   sort?: SortOption;
+  orderByRoot?: boolean;
 }
 
 export interface HasReservedCoins {

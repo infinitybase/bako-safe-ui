@@ -38,7 +38,7 @@ const VaultConnector = () => {
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
     inView,
-  } = useVaultDrawer({});
+  } = useVaultDrawer({ orderByRoot: true });
 
   const { selectedVaultId, setSelectedVaultId, currentVault, send } =
     useAuthSocket();

@@ -16,6 +16,7 @@ interface UseVaultDrawerParams {
       workspace: Workspace;
     },
   ) => void;
+  orderByRoot?: boolean;
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
@@ -43,7 +44,10 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
 
-  const vaultList = useVaultListRequest({ q: search }, props.isOpen);
+  const vaultList = useVaultListRequest(
+    { q: search, orderByRoot: props.orderByRoot },
+    props.isOpen,
+  );
 
   const invalidateRequests = () => {
     invalidateGifAnimationRequest();
