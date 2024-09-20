@@ -10,8 +10,7 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
-import { parseISO } from 'date-fns';
-import { formatInTimeZone } from 'date-fns-tz';
+import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
 
 import { AddressUtils } from '@/modules/core';
@@ -109,8 +108,6 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
           const failed = step.type === TransactionHistoryType.FAILED;
           const canceled = step.type === TransactionHistoryType.CANCEL;
           const sended = step.type === TransactionHistoryType.SEND;
-          const isoDate = parseISO(step.date);
-          const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
           const badOptions = (declined || failed || canceled) && lastStep;
 
@@ -199,12 +196,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
-                      {/* {format(parseISO(step.date), 'EEE MMM d yyyy hh:mm:s')} */}
-                      {formatInTimeZone(
-                        isoDate,
-                        userTimeZone,
-                        'EEE MMM d yyyy HH:mm:ss',
-                      )}
+                      {format(parseISO(step.date), 'EEE MMM d yyyy hh:mm:s')}
                     </Text>
                   </StepDescription>
                 </Box>
