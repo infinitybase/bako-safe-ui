@@ -32,8 +32,6 @@ export interface CardDetailsProps {
   isPendingSigner: boolean;
 }
 
-const MAX_DESCRIPTION_CHARS = 80;
-
 const Update = () => {
   return (
     <Text
@@ -102,16 +100,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     return as;
   }, [vault.data?.id, balanceFormatted]);
 
-  const vaultDescription = useMemo(() => {
-    if (!vault?.data?.description) return '';
-
-    let description = vault.data?.description;
-    if (description.length > MAX_DESCRIPTION_CHARS) {
-      description = description.substring(0, MAX_DESCRIPTION_CHARS) + '...';
-    }
-    return description;
-  }, [vault]);
-
   if (!vault) return null;
 
   return (
@@ -135,22 +123,20 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
           backdropFilter="blur(16px)"
           dropShadow="0px 8px 6px 0px #00000026"
         >
-          <VStack spacing={4} w="full" maxW="full">
+          <VStack spacing={4} w="full">
             <Flex
               w="full"
-              maxW="full"
-              flex={1}
-              id="asd"
-              flexDir={{ base: 'column', sm: 'row' }}
+              flexDir={{ base: 'column', md: 'row' }}
               alignItems="flex-start"
               justify="space-between"
-              gap={{ base: 6, sm: 0 }}
+              gap={6}
             >
+              {/* VAULTNAME BOX */}
               <HStack
-                w={{ base: 'full', sm: '70%' }}
-                display="flex"
                 gap={{ base: 4, sm: 6 }}
                 alignItems="flex-start"
+                display="flex"
+                flex={1}
               >
                 <Avatar
                   position="relative"
@@ -163,15 +149,11 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   name={vault.data?.name}
                   boxShadow="0px 6.5px 6.5px 0px rgba(0, 0, 0, 0.4);"
                 />
-                <Box
-                  w={{ base: 'full', sm: '90%' }}
-                  alignItems="center"
-                  justifyContent="center"
-                >
+                <Box alignItems="center" justifyContent="center" w="full">
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW={{ base: '35vw', sm: '70%', md: '80%' }}
+                      // maxW={{ base: '35vw', sm: '70%', md: '100%' }}
                       variant={{ base: 'title-md', sm: 'title-xl' }}
                       isTruncated
                     >
@@ -209,24 +191,25 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   )} */}
 
                   <Text
-                    maxW="200px"
                     variant="description"
-                    textOverflow="ellipsis"
-                    isTruncated
+                    noOfLines={4}
+                    wordBreak="break-all"
                   >
-                    {vaultDescription}
+                    {vault?.data?.description}
                   </Text>
                 </Box>
               </HStack>
 
+              {/* BALANCE BOX */}
               <Flex
-                w="full"
+                minW="140px"
+                w={{ base: 'full', md: 'fit-content' }}
                 gap={4}
-                flexDirection={{ base: 'row', sm: 'column' }}
+                flexDirection={{ base: 'row', md: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
               >
-                <Box width="auto">
+                <Box>
                   <HStack
                     minW={20}
                     display="flex"
