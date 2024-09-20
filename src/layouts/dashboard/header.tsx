@@ -106,7 +106,7 @@ const UserBox = () => {
             pl={4}
           >
             <Text fontWeight="semibold" color="grey.200">
-              {!name ? (
+              {name ? (
                 limitCharacters(name, 20)
               ) : (
                 <AddressWithCopyBtn
