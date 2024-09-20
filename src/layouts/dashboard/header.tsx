@@ -379,18 +379,17 @@ const Header = () => {
     <Flex
       h={{
         base: '64px',
-        sm: 82,
+        sm: '72px',
       }}
       zIndex={100}
       w="100%"
-      bgColor="dark.300"
+      bgColor="dark.950"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
-      borderBottomWidth={1}
       position="sticky"
       top="0"
       justifyContent="space-between"
-      borderBottomColor="dark.100"
+      boxShadow="0px 8px 12px 0px rgba(0, 0, 0, 0.2)"
     >
       <NotificationsDrawer
         isOpen={notificationDrawerState.isOpen}
@@ -412,21 +411,19 @@ const Header = () => {
         />
       )} */}
 
-      <SpacedBox
+      <Box
         cursor="pointer"
         onClick={() => {
           goHome();
         }}
-        pl={{ base: 1, sm: 6 }}
-        mr={{ base: -8, sm: 0 }}
       >
-        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" />
-      </SpacedBox>
+        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
+      </Box>
 
-      <HStack spacing={0} height="100%">
-        {/* Commented out code to temporarily disable workspaces. */}
+      {/* <HStack spacing={0} height="100%"> */}
+      {/* Commented out code to temporarily disable workspaces. */}
 
-        {/* <TopBarItem
+      {/* <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
           w={{
@@ -443,37 +440,11 @@ const Header = () => {
             isLoading={userInfos?.isLoading}
           />
         </TopBarItem> */}
-        {/* <TopBarItem
-          display={{ base: 'none', sm: 'flex' }}
-          cursor="pointer"
-          onClick={notificationDrawerState.onOpen}
-          width={78}
-        >
-          <Icon
-            color="grey.200"
-            as={NotificationIcon}
-            fontSize={30}
-            position="absolute"
-          />
 
-          {unreadCounter > 0 && (
-            <Center
-              px={1}
-              py={0}
-              bg="error.600"
-              borderRadius={10}
-              position="relative"
-              top={-1.5}
-              right={-2.5}
-            >
-              <Text fontSize="xs">+{unreadCounter}</Text>
-            </Center>
-          )}
-        </TopBarItem> */}
-        <TopBarItem>
-          <UserBox />
-        </TopBarItem>
-      </HStack>
+      <TopBarItem>
+        <UserBox />
+      </TopBarItem>
+      {/* </HStack> */}
     </Flex>
   );
 };
