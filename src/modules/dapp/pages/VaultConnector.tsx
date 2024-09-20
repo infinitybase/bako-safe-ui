@@ -5,12 +5,8 @@ import {
   Card,
   Divider,
   Flex,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   Heading,
   HStack,
-  Input,
   Spinner,
   Text,
   useDisclosure,
@@ -21,7 +17,7 @@ import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
-import { AddressUtils, PermissionRoles } from '@/modules/core';
+import { PermissionRoles } from '@/modules/core';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
@@ -40,7 +36,6 @@ const VaultConnector = () => {
   const { isSafariBrowser } = useVerifyBrowserType();
 
   const {
-    search,
     request: { vaults, isSuccess, isLoading, isFetching },
     inView,
   } = useVaultDrawer({});
@@ -48,18 +43,19 @@ const VaultConnector = () => {
   const { selectedVaultId, setSelectedVaultId, currentVault, send } =
     useAuthSocket();
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const noVaultsFound = !vaults.length;
+
   useEffect(() => {
     if (vaults.length && noVaultOnFirstLoad) {
       setNoVaultOnFirstLoad(false);
     }
   }, [vaults.length]);
 
-  const noVaultsFound = search.value.length >= 1 && !vaults.length;
-  const { isOpen, onClose, onOpen } = useDisclosure();
-
   useEffect(() => {
     const clientWindowHeight = window.innerHeight;
-    const dividedBy = clientWindowHeight >= 750 ? 2.1 : 2.5;
+    const dividedBy = clientWindowHeight >= 750 ? 1.75 : 2.15;
 
     setDynamicHeight(clientWindowHeight / dividedBy);
   }, []);
@@ -104,7 +100,7 @@ const VaultConnector = () => {
           borderRadius={8}
           p={4}
           borderWidth="1px"
-          mb={6}
+          mb={4}
         >
           <Text fontSize={12} color="grey.550">
             Requesting a transaction from:
@@ -132,45 +128,6 @@ const VaultConnector = () => {
             </VStack>
           </HStack>
         </Card>
-
-        {/* Search */}
-        {!noVaultOnFirstLoad && (
-          <CustomSkeleton isLoaded={noVaultsFound || !isLoading}>
-            <Box w="full" mb={8}>
-              <FormControl
-                sx={{
-                  '&>input': {
-                    bg: 'grey.825',
-                  },
-                  '&>label': {
-                    color: 'grey.75',
-                  },
-                }}
-              >
-                <Input
-                  placeholder=" "
-                  variant="custom"
-                  colorScheme="dark"
-                  onChange={(e) => {
-                    setSelectedVaultId('');
-                    search.handler(e);
-                  }}
-                />
-                <Box>
-                  <FormLabel fontWeight="normal">Search vault</FormLabel>
-                </Box>
-                {noVaultsFound && (
-                  <FormHelperText color="grey.250" mb={-6}>
-                    {`We couldn't find any results for "${AddressUtils.format(
-                      search.value,
-                      1,
-                    )}"`}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
-          </CustomSkeleton>
-        )}
 
         <CustomSkeleton h={450} isLoaded={noVaultsFound || !isLoading}>
           {isSuccess && !isFetching && noVaultOnFirstLoad && (
@@ -222,10 +179,8 @@ const VaultConnector = () => {
               </Button>
             </VStack>
           )}
-          {!noVaultOnFirstLoad ? <Divider borderColor="grey.75" /> : null}
           {/* Result */}
           <VStack
-            pt={4}
             w="full"
             h={noVaultOnFirstLoad ? 140 : `${dynamicHeight}px`}
             spacing={2}
