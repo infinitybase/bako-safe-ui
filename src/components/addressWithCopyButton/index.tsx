@@ -10,6 +10,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
   addressProps?: TextProps;
+  hideCopyButton?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -17,6 +18,7 @@ const AddressWithCopyBtn = ({
   isDeposit,
   isSidebarAddress,
   addressProps,
+  hideCopyButton = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -82,6 +84,7 @@ const AddressWithCopyBtn = ({
       </Text>
 
       <CopyAddressButton
+        display={hideCopyButton ? 'none' : 'initial'}
         size="xs"
         minW={2}
         aria-label="Copy"

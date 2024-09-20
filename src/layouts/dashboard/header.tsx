@@ -106,9 +106,18 @@ const UserBox = () => {
             pl={4}
           >
             <Text fontWeight="semibold" color="grey.200">
-              {name
-                ? name
-                : AddressUtils.format(authDetails.userInfos?.address)}
+              {!name ? (
+                name
+              ) : (
+                <AddressWithCopyBtn
+                  address={authDetails.userInfos?.address ?? ''}
+                  justifyContent="start"
+                  aria-label="Copy address"
+                  isSidebarAddress
+                  flexDir="row-reverse"
+                  hideCopyButton
+                />
+              )}
             </Text>
 
             <Avatar
