@@ -68,8 +68,8 @@ const VaultConnector = () => {
           justifyContent="space-between"
           alignItems="flex-start"
         >
-          <Heading fontSize="md" fontWeight="semibold" color="grey.50">
-            Select Vault
+          <Heading fontSize="md" fontWeight="semibold" color="grey.200">
+            Select vault
           </Heading>
 
           {isSafariBrowser && (
