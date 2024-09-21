@@ -19,25 +19,25 @@ import { DappTransaction } from '.';
 
 interface DappTransactionWrapperProps {
   title: string;
-  actionLoading: boolean;
+  primaryActionLoading: boolean;
+  primaryActionButton: ReactNode;
   validAt: UseTransactionSocket['validAt'];
   vault?: UseTransactionSocket['vault'];
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
   summary: UseTransactionSocket['summary'];
   cancelTransaction: UseTransactionSocket['cancelTransaction'];
-  actionButton: ReactNode;
 }
 
 const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   const {
     title,
     validAt,
-    actionLoading,
+    primaryActionButton,
+    primaryActionLoading,
     vault,
     pendingSignerTransactions,
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     cancelTransaction,
-    actionButton,
   } = props;
 
   const [closePopover, setClosePopover] = useState(false);
@@ -157,13 +157,13 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                 <Dialog.SecondaryAction
                   size="md"
                   onClick={cancelTransaction}
-                  isDisabled={actionLoading}
+                  isDisabled={primaryActionLoading}
                   borderColor="grey.75"
                   fontSize={14}
                 >
                   Cancel
                 </Dialog.SecondaryAction>
-                {actionButton}
+                {primaryActionButton}
               </>
             ) : (
               <>
@@ -172,7 +172,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                   width="full"
                   onClick={cancelTransaction}
                   fontSize={14}
-                  isDisabled={actionLoading}
+                  isDisabled={primaryActionLoading}
                 >
                   Back
                 </Dialog.SecondaryAction>
