@@ -1,4 +1,4 @@
-import { TransactionRequestLike } from 'fuels';
+import { TransactionRequestLike } from '@fuel-ts/providers';
 import { useEffect, useState } from 'react';
 
 import { useQueryParams } from '@/modules/auth/hooks';
@@ -15,6 +15,8 @@ interface IVaultEvent {
   configurable: string;
   version: string;
 }
+
+export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
@@ -54,26 +56,41 @@ export const useTransactionSocket = () => {
     });
   };
 
-  useEffect(() => {
-    console.log('SOCKET_CONNECTED:', socket.connected);
+  const tryConnectSocket = () => {
     if (!socket.connected) {
-      console.log('CONNECTING_SOCKET');
       connect(sessionId!);
-      return;
     }
 
-    console.log('SENDING_MESSAGE');
-    socket.emit(SocketEvents.DEFAULT, {
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      request_id,
-      type: SocketEvents.CONNECTED,
-      data: {},
+    socket.on('connect', () => {
+      console.log('SOCKET_CONNECTED:', socket.connected);
+      console.log('SENDING_MESSAGE');
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
+
+      console.log('GETTING_SUMMARY');
+      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
     });
 
-    console.log('GETTING_SUMMARY');
-    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-  }, [socket.connected]);
+    socket.on('disconnect', () => {
+      console.log('SOCKET_DISCONNECTED');
+      tryConnectSocket();
+    });
+  };
+
+  useEffect(() => {
+    tryConnectSocket();
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
+    };
+  }, []);
 
   const sendTransaction = async () => {
     if (!tx) return;
