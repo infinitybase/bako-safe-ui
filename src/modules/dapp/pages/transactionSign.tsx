@@ -3,7 +3,7 @@ import { Dialog, SquarePlusIcon } from '@/components';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 
-const TransactionConfirm = () => {
+const TransactionSign = () => {
   const {
     cancelTransaction,
     vault,
@@ -11,10 +11,9 @@ const TransactionConfirm = () => {
     summary,
     isLoading,
     send,
-    validAt,
   } = useTransactionSocket();
 
-  const CreateTransactionButton = () => (
+  const SignTransactionButton = () => (
     <Dialog.PrimaryAction
       size="md"
       isLoading={isLoading}
@@ -23,22 +22,21 @@ const TransactionConfirm = () => {
       fontWeight={700}
       fontSize={14}
     >
-      Create transaction
+      Sign
     </Dialog.PrimaryAction>
   );
 
   return (
     <DappTransactionWrapper
-      title="Create transaction"
+      title="Sign transaction"
       actionLoading={isLoading}
-      validAt={validAt}
       vault={vault}
       pendingSignerTransactions={pendingSignerTransactions}
       summary={summary}
       cancelTransaction={cancelTransaction}
-      actionButton={<CreateTransactionButton />}
+      actionButton={<SignTransactionButton />}
     />
   );
 };
 
-export { TransactionConfirm };
+export { TransactionSign };
