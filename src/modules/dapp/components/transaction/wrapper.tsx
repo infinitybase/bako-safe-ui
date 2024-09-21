@@ -20,7 +20,7 @@ import { DappTransaction } from '.';
 interface DappTransactionWrapperProps {
   title: string;
   actionLoading: boolean;
-  validAt?: UseTransactionSocket['validAt'];
+  validAt: UseTransactionSocket['validAt'];
   vault?: UseTransactionSocket['vault'];
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
   summary: UseTransactionSocket['summary'];
@@ -63,11 +63,9 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
   return (
     <>
-      {validAt && (
-        <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
-          <TransactionExpire validAt={validAt} callBack={cancelTransaction} />
-        </Box>
-      )}
+      <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
+        <TransactionExpire validAt={validAt} callBack={cancelTransaction} />
+      </Box>
       <Dapp.Content maxW={404} bg="dark.950">
         <Dapp.Section mb={-7}>
           <Dapp.Header
