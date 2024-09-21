@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById, Transfer } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ interface UseCreateTransactionParams {
   assets: Asset[] | undefined;
   hasAssetBalance: (assetId: string, value: string) => boolean;
   getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
+  createTransactionAndSign: boolean;
 }
 
 const useTransactionAccordion = () => {
@@ -56,6 +57,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     vaultTransactions: {
       request: { refetch: refetchVaultTransactionsList },
     },
+    signTransaction: { confirmTransaction },
   } = useTransactionsContext();
   const {
     vaultPageParams: { vaultId },
@@ -87,15 +89,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount!,
       assetId: asset.assetId,
     })),
-    getCoinAmount: (asset) => props?.getCoinAmount(asset)!,
-    validateBalance: (asset, amount) => props?.hasAssetBalance(asset, amount)!,
+    getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
+    validateBalance: (asset, amount) =>
+      props?.hasAssetBalance(asset, amount) ?? false,
   });
 
   const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    onSuccess: () => {
+    onSuccess: (result: Transfer) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
@@ -103,6 +106,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
+      if (props?.createTransactionAndSign) {
+        confirmTransaction(
+          result.BakoSafeTransaction.id,
+          undefined,
+          result.BakoSafeTransaction,
+        );
+      }
       handleClose();
     },
 
@@ -115,6 +125,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const handleCreateTransaction = form.handleSubmit((data) => {
+    transactionRequest.mutate({
+      name: data.name,
+      assets: data.transactions!.map((transaction) => ({
+        amount: transaction.amount,
+        assetId: transaction.asset,
+        to: transaction.value,
+      })),
+    });
+  });
+
+  const handleCreateAndSignTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate({
       name: data.name,
       assets: data.transactions!.map((transaction) => ({
@@ -276,6 +297,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     form: {
       ...form,
       handleCreateTransaction,
+      handleCreateAndSignTransaction,
     },
     nicks: listContactsRequest.data ?? [],
     navigate,

@@ -4,6 +4,7 @@ import {
   IPayloadTransfer,
   ITransaction,
   TransactionType,
+  Transfer,
   Vault,
 } from 'bakosafe';
 
@@ -24,7 +25,7 @@ export const TRANSACTION_QUERY_KEYS = {
 
 interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
-  onSuccess: () => void;
+  onSuccess: (result: Transfer) => void;
   onError: () => void;
 }
 

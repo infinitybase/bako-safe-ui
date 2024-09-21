@@ -21,6 +21,7 @@ const usePendingTransactionsList = (
         predicateId: transaction.predicateId,
         resume: {
           witnesses: transaction.resume.witnesses,
+          requiredSigners: transaction.resume.requiredSigners,
         },
       };
     });
