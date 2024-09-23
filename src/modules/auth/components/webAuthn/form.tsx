@@ -11,6 +11,7 @@ import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
 import { CheckIcon } from '@/components/icons';
+import { Pages } from '@/modules/core';
 import { useScreenSize } from '@/modules/core/hooks';
 
 import { UseWebAuthnSignIn } from '../../hooks';
@@ -94,7 +95,12 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
               <Text ml={1} textColor="grey.250" fontSize="xs">
                 I agree to the
               </Text>
-              <Link textColor="grey.250" fontSize="xs">
+              <Link
+                target="_blank"
+                textColor="grey.250"
+                fontSize="xs"
+                href={Pages.termsOfUse()}
+              >
                 Terms of use
               </Link>
             </HStack>
