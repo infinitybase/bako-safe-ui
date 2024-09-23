@@ -100,7 +100,6 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                 <TransactionCard.BasicInfos
                   vault={transaction.predicate}
                   transactionName={transaction.name}
-                  maxW={100}
                 />
               )}
 

@@ -20,7 +20,6 @@ import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -79,7 +78,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isMobile, isExtraSmall },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
@@ -153,13 +152,11 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      // maxW={{ base: '35vw', sm: '70%', md: '100%' }}
                       variant={{ base: 'title-md', sm: 'title-xl' }}
-                      isTruncated
+                      noOfLines={1}
+                      wordBreak="break-all"
                     >
-                      {isExtraSmall
-                        ? limitCharacters(vault?.data?.name ?? '', 8)
-                        : vault?.data?.name}
+                      {vault?.data.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
