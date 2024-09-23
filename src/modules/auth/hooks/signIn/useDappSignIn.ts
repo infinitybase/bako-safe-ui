@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useSocket } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
@@ -17,6 +18,7 @@ export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
 const useDappSignIn = () => {
   const isMounted = useRef(false);
 
+  const navigate = useNavigate();
   const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
 
@@ -24,10 +26,11 @@ const useDappSignIn = () => {
     const isRedirectToPrevious = !!location.state?.from;
 
     if (isRedirectToPrevious) {
-      return location.state.from;
+      navigate(location.state.from);
+      return;
     }
 
-    return `${Pages.dappAuth()}${location.search}`;
+    navigate(`${Pages.dappAuth()}${location.search}`);
   }, [location]);
 
   const walletSignIn = useWalletSignIn(redirect);

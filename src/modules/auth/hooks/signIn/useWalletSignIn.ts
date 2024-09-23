@@ -1,6 +1,5 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -11,12 +10,11 @@ import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
 const useWalletSignIn = (
-  redirect: (vaultId?: string, workspaceId?: string) => string,
+  callback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
 
-  const navigate = useNavigate();
   const { fuel } = useFuel();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
 
@@ -39,7 +37,7 @@ const useWalletSignIn = (
         permissions: workspace.permissions,
       });
       invalidateGifAnimationRequest();
-      navigate(redirect(rootWallet, workspace.id));
+      callback(rootWallet, workspace.id);
     },
   });
 
