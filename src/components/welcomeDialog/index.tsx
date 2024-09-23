@@ -24,9 +24,9 @@ const WelcomeDialog = ({
       isLitteSmall,
       isLowerThanFourHundredAndThirty,
     },
-    authDetails: {
-      userInfos: { first_login },
-    },
+    // authDetails: {
+    //   userInfos: { first_login },
+    // },
   } = useWorkspaceContext();
 
   const handleOpenDepositDialog = () => {
@@ -41,7 +41,8 @@ const WelcomeDialog = ({
   return (
     <Dialog.Modal
       onClose={() => setIsWelcomeDialogOpen(false)}
-      isOpen={(first_login && first_login && isOpen) ?? false}
+      // isOpen={(first_login && first_login && isOpen) ?? false}
+      isOpen={isOpen}
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'lg' }}

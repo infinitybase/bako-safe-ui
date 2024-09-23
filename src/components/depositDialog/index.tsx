@@ -132,10 +132,11 @@ const DepositDialog = ({
               </Heading>
 
               <AddressWithCopyBtn
-                h="15px"
+                h="18px"
                 address={vault.predicateAddress}
                 flexDir="row-reverse"
                 gap="4px"
+                alignItems="center"
                 addressProps={{
                   textAlign: 'start',
                   maxW: 'full',
@@ -143,6 +144,7 @@ const DepositDialog = ({
                   noOfLines: 1,
                   isTruncated: false,
                   fontSize: 'xs',
+                  pt: 1,
                 }}
                 justifyContent="start"
                 customAddress={AddressUtils.format(

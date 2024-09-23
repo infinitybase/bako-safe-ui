@@ -36,6 +36,7 @@ const WelcomeCard = ({
       onClick={onClick}
       opacity={commingSoon ? 0.5 : 'initial'}
       pointerEvents={commingSoon ? 'none' : 'auto'}
+      cursor={commingSoon ? 'auto' : 'pointer'}
     >
       <Icon as={icon} color="grey.250" fontSize={iconSize} />
       <VStack alignItems="start" w="full" spacing={1}>
