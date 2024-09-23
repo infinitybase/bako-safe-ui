@@ -20,15 +20,15 @@ import { TransactionWithVault } from '../../services';
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
-  isInDetailsDialog?: boolean;
   isContract: boolean;
+  isDeploy: boolean;
 }
 
 const Amount = ({
   transaction,
   isDeposit,
-  isInDetailsDialog,
   isContract,
+  isDeploy,
   ...rest
 }: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
@@ -67,7 +67,7 @@ const Amount = ({
       w={isExtraSmall ? 150 : 200}
       {...rest}
     >
-      {isContract ? null : (
+      {isContract || isDeploy ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 3}

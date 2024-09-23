@@ -59,13 +59,7 @@ const ContactCard = ({
               <Heading
                 variant="title-md"
                 color="grey.200"
-                maxW={{
-                  sm: 148,
-                  md: 148,
-                  lg: 148,
-                  xl: 172,
-                  '2xl': 240,
-                }}
+                maxW="300px"
                 isTruncated
               >
                 {nickname}

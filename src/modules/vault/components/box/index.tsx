@@ -110,7 +110,6 @@ const VaultBox = (props: VaultBoxPropx) => {
             isSidebarAddress
             h="20px"
             flexDir="row-reverse"
-            justifyContent="start"
           />
         </VStack>
       </HStack>

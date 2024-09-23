@@ -11,6 +11,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isSidebarAddress?: boolean;
   addressProps?: TextProps;
   customAddress?: string;
+  hideCopyButton?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -19,6 +20,7 @@ const AddressWithCopyBtn = ({
   isSidebarAddress,
   addressProps,
   customAddress,
+  hideCopyButton = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -42,7 +44,7 @@ const AddressWithCopyBtn = ({
       textAlign={isExtraSmall ? 'start' : 'end'}
       overflow="hidden"
       alignItems="center"
-      justifyContent="end"
+      justifyContent={isSidebarAddress ? 'start' : 'end'}
       gap={3}
       {...rest}
     >
@@ -51,6 +53,7 @@ const AddressWithCopyBtn = ({
         textOverflow="ellipsis"
         isTruncated
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        {...addressProps}
         maxW={
           isSidebarAddress
             ? 'full'
@@ -86,6 +89,7 @@ const AddressWithCopyBtn = ({
       </Text>
 
       <CopyAddressButton
+        display={hideCopyButton ? 'none' : 'initial'}
         size="xs"
         minW={2}
         aria-label="Copy"
