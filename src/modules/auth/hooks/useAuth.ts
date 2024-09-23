@@ -45,7 +45,7 @@ const useAuth = (): IUseAuthReturn => {
       origin,
       name,
       request_id,
-      byConnector: String(byConnector),
+      byConnector: byConnector ? String(byConnector) : undefined,
     });
     navigate(`/${queryParams}`);
   };
