@@ -10,6 +10,7 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
+import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
 
 import { AddressUtils } from '@/modules/core';
@@ -195,9 +196,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
-                      {new Date(step.date).toDateString() +
-                        ' ' +
-                        new Date(step.date).toLocaleTimeString()}
+                      {format(parseISO(step.date), 'EEE MMM d yyyy hh:mm:s')}
                     </Text>
                   </StepDescription>
                 </Box>
