@@ -2,12 +2,12 @@ import { Text, VStack } from '@chakra-ui/react';
 
 import { ProgressButton } from '@/components/progressButton';
 
-import { UseWebAuthnSignIn } from '../../hooks';
+import { UseDappSignIn, UseWebSignIn } from '../../hooks';
 import { SignInHeader } from '../header';
 
 interface WebAuthnAccountCreatedProps {
   title: string;
-  formState: UseWebAuthnSignIn['formState'];
+  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
 }
 
 const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {

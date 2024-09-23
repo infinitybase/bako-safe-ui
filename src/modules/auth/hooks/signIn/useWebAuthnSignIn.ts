@@ -8,7 +8,6 @@ import { TypeUser } from '../../services/methods';
 import {
   useWebAuthnForm,
   useWebAuthnInput,
-  useWebAuthnLastLogin,
   useWebAuthnRegisterMode,
   useWebAuthnSignInMode,
 } from '../webAuthn';
@@ -27,7 +26,9 @@ export enum WebAuthnModeState {
 
 export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
-const useWebAuthnSignIn = () => {
+const useWebAuthnSignIn = (
+  redirect: (vaultId?: string, workspaceId?: string) => string,
+) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
 
@@ -35,13 +36,15 @@ const useWebAuthnSignIn = () => {
     tabs: EnumUtils.toNumberArray(WebAuthnTabState),
     defaultTab: WebAuthnTabState.LOGIN,
   });
+
   const { form } = useWebAuthnForm(mode);
   const { checkNicknameRequest, accountsRequest, badge, ...rest } =
     useWebAuthnInput(!form.formState.errors.username);
-  const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode(
+  const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
     form,
     setMode,
-  );
+    redirect,
+  });
   const { isRegistering, registerProgress, handleRegister } =
     useWebAuthnRegisterMode({
       form,
@@ -49,28 +52,33 @@ const useWebAuthnSignIn = () => {
       setTab: tabs.set,
       setCreatedAcccountUsername,
     });
-  const { lastLoginUsername } = useWebAuthnLastLogin();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
 
   const isSearchModeBtnDisabled =
     !form.formState.isValid ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isLoginModeBtnDisabled =
     isSigningIn ||
     !form.formState.isValid ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
   const isRegisterModeBtnDisabled =
     isRegistering ||
     !form.formState.isValid ||
+    !!form.formState.errors.username ||
     checkNicknameRequest.isLoading ||
     !window.navigator.credentials;
 
-  const handleChangeMode = useCallback(() => {
+  const handleCheckUsername = useCallback(() => {
     if (checkNicknameRequest.data?.type === TypeUser.WEB_AUTHN) {
       setMode(WebAuthnModeState.LOGIN);
+    } else if (checkNicknameRequest.data?.type) {
+      setMode(WebAuthnModeState.SEARCH);
+      form.setError('username', { message: 'Username is already being used' });
     } else {
       setMode(WebAuthnModeState.REGISTER);
     }
@@ -128,28 +136,26 @@ const useWebAuthnSignIn = () => {
   };
 
   useEffect(() => {
-    if (lastLoginUsername) {
-      form.setValue('username', lastLoginUsername ?? '');
-      setMode(WebAuthnModeState.LOGIN);
-    }
-  }, []);
-
-  useEffect(() => {
     if (checkNicknameRequest.data) {
-      handleChangeMode();
+      handleCheckUsername();
     }
-  }, [handleChangeMode, checkNicknameRequest.data]);
+  }, [handleCheckUsername, checkNicknameRequest.data]);
 
   return {
     formData: {
       form,
       isRegisterMode,
     },
+    fullFormState: formState,
     formState: formState[mode],
     checkNicknameRequest,
     tabs,
     createdAcccountUsername,
     inputBadge: badge,
+    isSigningIn,
+    mode,
+    setMode,
+    handleLogin,
     ...rest,
   };
 };
