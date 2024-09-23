@@ -10,6 +10,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
   addressProps?: TextProps;
+  customAddress?: string;
 }
 
 const AddressWithCopyBtn = ({
@@ -17,6 +18,7 @@ const AddressWithCopyBtn = ({
   isDeposit,
   isSidebarAddress,
   addressProps,
+  customAddress,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -34,7 +36,6 @@ const AddressWithCopyBtn = ({
 
   return (
     <Flex
-      {...rest}
       minW={isExtraSmall ? 'inherit' : '105px'}
       ml="auto"
       w="full"
@@ -43,9 +44,9 @@ const AddressWithCopyBtn = ({
       alignItems="center"
       justifyContent="end"
       gap={3}
+      {...rest}
     >
       <Text
-        {...addressProps}
         color="grey.75"
         textOverflow="ellipsis"
         isTruncated
@@ -59,26 +60,29 @@ const AddressWithCopyBtn = ({
                 ? 'inherit'
                 : 'inherit'
         }
+        {...addressProps}
       >
-        {isSidebarAddress
-          ? AddressUtils.format(address ?? '', 10)
-          : isDeposit
-            ? AddressUtils.format(
-                address ?? '',
-                isExtraSmall
-                  ? 1
-                  : isLitteSmall
-                    ? 4
-                    : isLowerThanFourHundredAndThirty
-                      ? 7
-                      : !isVaultPage && isExtraLarge
-                        ? 24
-                        : 10,
-              )
-            : AddressUtils.format(
-                address ?? '',
-                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-              )}
+        {customAddress
+          ? customAddress
+          : isSidebarAddress
+            ? AddressUtils.format(address ?? '', 10)
+            : isDeposit
+              ? AddressUtils.format(
+                  address ?? '',
+                  isExtraSmall
+                    ? 1
+                    : isLitteSmall
+                      ? 4
+                      : isLowerThanFourHundredAndThirty
+                        ? 7
+                        : !isVaultPage && isExtraLarge
+                          ? 24
+                          : 10,
+                )
+              : AddressUtils.format(
+                  address ?? '',
+                  isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+                )}
       </Text>
 
       <CopyAddressButton
@@ -91,31 +95,4 @@ const AddressWithCopyBtn = ({
   );
 };
 
-{
-  /* <Text
-{...addressProps}
-textOverflow="ellipsis"
-isTruncated
-fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-maxW={isExtraSmall && isDeposit ? '48px' : 'inherit'}
->
-{isDeposit
-  ? AddressUtils.format(
-      address ?? '',
-      isExtraSmall
-        ? 1
-        : isLitteSmall
-          ? 4
-          : isLowerThanFourHundredAndThirty
-            ? 7
-            : !isVaultPage && isExtraLarge
-              ? 24
-              : 10,
-    )
-  : AddressUtils.format(
-      address ?? '',
-      isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-    )}
-</Text> */
-}
 export { AddressWithCopyBtn };
