@@ -1,10 +1,10 @@
 import { Route } from 'react-router-dom';
 
 import { Container } from '@/layouts/dapp/container';
-import { Pages } from '@/modules/core/routes';
 import { AuthRoute } from '@/modules/core/components/route/auth';
+import { Pages } from '@/modules/core/routes';
 
-import { TransactionConfirm, VaultConnector } from './pages';
+import { TransactionConfirm, TransactionSign, VaultConnector } from './pages';
 
 const dappRoutes = (
   <>
@@ -26,6 +26,15 @@ const dappRoutes = (
       element={
         <Container>
           <TransactionConfirm />
+        </Container>
+      }
+    />
+
+    <Route
+      path={Pages.dappTransactionSign()}
+      element={
+        <Container>
+          <TransactionSign />
         </Container>
       }
     />

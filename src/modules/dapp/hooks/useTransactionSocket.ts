@@ -31,6 +31,7 @@ export const useTransactionSocket = () => {
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
+  const [signing, setSigning] = useState(false);
 
   const { connect, socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
@@ -82,29 +83,32 @@ export const useTransactionSocket = () => {
     });
   };
 
-  useEffect(() => {
-    tryConnectSocket();
-
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
-    };
-  }, []);
+  const openSignInTab = () => {
+    window.open(
+      `${window.origin}/dapp/transaction/sign/${window.location.search}`,
+      '_blank',
+    );
+  };
 
   const sendTransaction = async () => {
     if (!tx) return;
     setSending(true);
 
-    console.log('[EMITINDO TRNSACTION]');
+    console.log('[EMITINDO TRANSACTION]');
     socket.emit(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
     });
   };
 
+  // TODO: check another way to redirect to sign page
+  const sendTransactionAndRedirectToSign = async () => {
+    sendTransaction();
+    openSignInTab();
+  };
+
   // emmit message to the server and close window
-  const cancelTransaction = () => {
+  const cancelSendTransaction = () => {
     socket.emit(SocketEvents.DEFAULT, {
       username: SocketUsernames.UI,
       sessionId,
@@ -115,16 +119,46 @@ export const useTransactionSocket = () => {
     });
   };
 
+  // TODO: add logic to sign transaction
+  const signTransaction = () => {
+    setSigning(true);
+    console.log('[ASSINANDO TRANSACTION]');
+    setTimeout(() => {
+      window.close();
+    }, 2500);
+  };
+
+  const cancelSignTransaction = () => {
+    cancelSendTransaction();
+    window.close();
+  };
+
+  useEffect(() => {
+    tryConnectSocket();
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
+    };
+  }, []);
+
   return {
     vault,
     summary,
     validAt,
-    cancelTransaction: () => {
-      cancelTransaction();
-    },
-    send: sendTransaction,
     pendingSignerTransactions: vault?.pending_tx ?? true,
-    isLoading: sending,
     socket,
+    send: {
+      isLoading: sending,
+      handler: sendTransaction,
+      redirectHandler: sendTransactionAndRedirectToSign,
+      cancel: cancelSignTransaction,
+    },
+    sign: {
+      isLoading: signing,
+      handler: signTransaction,
+      cancel: cancelSignTransaction,
+    },
   };
 };

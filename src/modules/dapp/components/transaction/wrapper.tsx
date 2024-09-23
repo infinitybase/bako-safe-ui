@@ -25,7 +25,7 @@ interface DappTransactionWrapperProps {
   vault?: UseTransactionSocket['vault'];
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
   summary: UseTransactionSocket['summary'];
-  cancelTransaction: UseTransactionSocket['cancelTransaction'];
+  cancel: UseTransactionSocket['send']['cancel'];
 }
 
 const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
@@ -37,7 +37,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     vault,
     pendingSignerTransactions,
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
-    cancelTransaction,
+    cancel,
   } = props;
 
   const [closePopover, setClosePopover] = useState(false);
@@ -64,7 +64,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   return (
     <>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
-        <TransactionExpire validAt={validAt} callBack={cancelTransaction} />
+        <TransactionExpire validAt={validAt} callBack={cancel} />
       </Box>
       <Dapp.Content maxW={404} bg="dark.950">
         <Dapp.Section mb={-7}>
@@ -77,7 +77,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
           {isSafariBrowser && (
             <LineCloseIcon
-              onClick={cancelTransaction}
+              onClick={cancel}
               fontSize="24px"
               style={{
                 position: 'absolute',
@@ -156,7 +156,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
               <>
                 <Dialog.SecondaryAction
                   size="md"
-                  onClick={cancelTransaction}
+                  onClick={cancel}
                   isDisabled={primaryActionLoading}
                   borderColor="grey.75"
                   fontSize={14}
@@ -170,7 +170,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
                 <Dialog.SecondaryAction
                   size="lg"
                   width="full"
-                  onClick={cancelTransaction}
+                  onClick={cancel}
                   fontSize={14}
                   isDisabled={primaryActionLoading}
                 >

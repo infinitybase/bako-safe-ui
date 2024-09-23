@@ -51,6 +51,7 @@ const Pages = {
   //dapp
   dappAuth: pageRoute('/dapp'),
   dappTransaction: pageRoute('/dapp/transaction'),
+  dappTransactionSign: pageRoute('/dapp/transaction/sign'),
 
   //workspace
   membersWorkspace: pageRoute<{ workspaceId: string }>(
