@@ -36,6 +36,8 @@ const AddressWithCopyBtn = ({
     },
   } = useWorkspaceContext();
 
+  const b256Address = Address.fromString(address ?? '').toB256();
+
   return (
     <Flex
       minW={isExtraSmall ? 'inherit' : '105px'}
@@ -68,10 +70,10 @@ const AddressWithCopyBtn = ({
         {customAddress
           ? customAddress
           : isSidebarAddress
-            ? AddressUtils.format(address ?? '', 10)
+            ? AddressUtils.format(b256Address ?? '', 10)
             : isDeposit
               ? AddressUtils.format(
-                  address ?? '',
+                  b256Address ?? '',
                   isExtraSmall
                     ? 1
                     : isLitteSmall
@@ -83,7 +85,7 @@ const AddressWithCopyBtn = ({
                           : 10,
                 )
               : AddressUtils.format(
-                  address ?? '',
+                  b256Address ?? '',
                   isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
                 )}
       </Text>

@@ -1,5 +1,6 @@
 import { Button, VStack } from '@chakra-ui/react';
 
+import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Dialog } from '../dialog';
@@ -24,13 +25,33 @@ const WelcomeDialog = ({
       isLitteSmall,
       isLowerThanFourHundredAndThirty,
     },
-    // authDetails: {
-    //   userInfos: { first_login },
-    // },
+    authDetails: {
+      userInfos: { first_login, id, refetch },
+    },
   } = useWorkspaceContext();
 
+  const updateUserMutation = useUpdateSettingsRequest();
+
+  const handleUpdateUser = async () => {
+    updateUserMutation.mutate(
+      {
+        id,
+        first_login: false,
+      },
+      {
+        onSuccess: () => refetch(),
+      },
+    );
+  };
+
   const handleOpenDepositDialog = () => {
+    handleUpdateUser();
     setIsDepositDialogOpen(true);
+    setIsWelcomeDialogOpen(false);
+  };
+
+  const handleClose = () => {
+    handleUpdateUser();
     setIsWelcomeDialogOpen(false);
   };
 
@@ -40,9 +61,8 @@ const WelcomeDialog = ({
 
   return (
     <Dialog.Modal
-      onClose={() => setIsWelcomeDialogOpen(false)}
-      // isOpen={(first_login && first_login && isOpen) ?? false}
-      isOpen={isOpen}
+      onClose={() => handleClose()}
+      isOpen={(first_login && first_login && isOpen) ?? false}
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'lg' }}
@@ -55,7 +75,7 @@ const WelcomeDialog = ({
         <Dialog.Header
           mt={0}
           mb={0}
-          onClose={() => setIsWelcomeDialogOpen(false)}
+          onClose={() => handleClose()}
           w="full"
           maxW={{ base: 480, xs: 'unset' }}
           title="Welcome to Bako Safe!"
@@ -122,7 +142,7 @@ const WelcomeDialog = ({
             _hover={{
               bg: '#f5f5f513',
             }}
-            onClick={() => setIsWelcomeDialogOpen(false)}
+            onClick={() => handleClose()}
           >
             Skip this step and take a look into bako
           </Button>

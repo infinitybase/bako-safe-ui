@@ -15,6 +15,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { Address } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -59,7 +60,12 @@ const TopBarItem = chakra(SpacedBox, {
 const UserBox = () => {
   const {
     authDetails,
-    screenSizes: { isMobile },
+    screenSizes: {
+      isMobile,
+      isExtraSmall,
+      isLitteSmall,
+      isLowerThanFourHundredAndThirty,
+    },
   } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
@@ -82,6 +88,10 @@ const UserBox = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  const b256UserAddress = Address.fromString(
+    authDetails.userInfos.address ?? '',
+  ).toB256();
 
   return (
     <>
@@ -106,19 +116,33 @@ const UserBox = () => {
             position="relative"
             border={isMobile ? '1px solid #353230' : 'none'}
             borderRadius="6px"
-            pl={4}
           >
             <HStack
               w="full"
               flexDir={isMobile ? 'row' : 'row-reverse'}
-              spacing={isMobile ? 0 : 4}
+              spacing={4}
             >
-              <Text fontWeight="semibold" color="grey.200">
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                pl={isMobile ? 4 : 0}
+                noOfLines={1}
+              >
                 {hasNickName ? (
                   limitCharacters(name, 20)
                 ) : (
                   <AddressWithCopyBtn
                     address={authDetails.userInfos?.address ?? ''}
+                    customAddress={AddressUtils.format(
+                      b256UserAddress,
+                      isExtraSmall
+                        ? 8
+                        : isLitteSmall
+                          ? 10
+                          : isLowerThanFourHundredAndThirty
+                            ? 15
+                            : 18,
+                    )}
                     justifyContent="start"
                     aria-label="Copy address"
                     flexDir="row-reverse"
@@ -134,6 +158,7 @@ const UserBox = () => {
                 variant="roundedSquare"
                 src={authDetails.userInfos?.avatar}
                 boxSize={isMobile ? '32px' : '40px'}
+                border="1px solid #CFCCC9"
               />
               {!isMobile && (
                 <HStack
