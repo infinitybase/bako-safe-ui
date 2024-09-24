@@ -52,6 +52,9 @@ const Pages = {
   dappAuth: pageRoute('/dapp'),
   dappTransaction: pageRoute('/dapp/transaction'),
 
+  //terms
+  termsOfUse: pageRoute('/terms-of-use'),
+
   //workspace
   membersWorkspace: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/members',
