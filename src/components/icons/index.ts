@@ -5,6 +5,7 @@ export * from './assets/ethereum';
 export * from './assets/uniswap';
 export * from './assets/unknown';
 export * from './bit-coin';
+export * from './bridge';
 export * from './chart-bullet';
 export * from './check-icon';
 export * from './coins';
