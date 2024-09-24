@@ -84,13 +84,16 @@ const useSignTransaction = ({
   const confirmTransaction = async (
     selectedTransactionId: string,
     callback?: () => void,
+    transactionInformations?: IPendingTransactionDetails,
   ) => {
-    const transaction = pendingTransactions?.[selectedTransactionId];
+    const transaction = transactionInformations
+      ? transactionInformations
+      : pendingTransactions?.[selectedTransactionId];
 
     setSelectedTransaction(transaction);
 
     const signedMessage = await signMessageRequest.mutateAsync(
-      transaction!.hash,
+      transaction?.hash,
     );
 
     await request.mutateAsync(

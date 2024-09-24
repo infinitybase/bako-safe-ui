@@ -24,16 +24,50 @@ const AmountInput = (props: AmountInputProps) => (
     mask={currencyMask}
     value={props.value}
     onChange={(event) => {
-      const value = event.target.value;
-      const isBackspace = value.length < (props.value as string).length;
+      const inputValue = event.target.value;
+      const nativeEvent = event.nativeEvent as InputEvent;
+      const isComma = nativeEvent.data === ',';
 
-      if (value.startsWith('0') && value.length === 1 && isBackspace) {
+      // This if case just handle the comma (',') to replace it to a dot ('.')
+      if (isComma && !inputValue.endsWith('.')) {
+        const caretPosition = event.target.selectionStart ?? 0;
+
+        // Determine if the comma is the first character
+        const isFirstChar = inputValue.length === 0;
+        const complement = isFirstChar ? '0.' : '.';
+
+        // Build the new value by appending or replacing the comma with a dot
+        const newValue = isFirstChar
+          ? complement
+          : inputValue.slice(0, caretPosition) +
+            complement +
+            inputValue.slice(caretPosition);
+
+        // Update the input value with the new value containing the dot
+        event.target.value = newValue;
+
+        // Adjust the "focus" position after the dot is inserted
+        const newCaretPosition = caretPosition + (isFirstChar ? 2 : 1);
+        event.target.setSelectionRange(newCaretPosition, newCaretPosition);
+
+        props.onChange?.(event);
+        return;
+      }
+
+      const isBackspace = inputValue.length < (props.value as string).length;
+
+      if (
+        inputValue.startsWith('0') &&
+        inputValue.length === 1 &&
+        isBackspace
+      ) {
         event.target.value = ``;
-      } else if (value.startsWith('0') && value.length === 1) {
+      } else if (inputValue.startsWith('0') && inputValue.length === 1) {
         event.target.value = `0.`;
       }
 
       event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+
       props.onChange?.(event);
     }}
     render={(maskedInputRef, maskedInputProps) => (
