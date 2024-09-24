@@ -1,13 +1,14 @@
 import { Dialog } from '@/components';
+import { useQueryParams } from '@/modules';
 
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionSign = () => {
+  const { transactionId, transactionHash } = useQueryParams();
   const {
     validAt,
     vault,
-    pendingSignerTransactions,
     summary,
     sign: { handler, cancel, isLoading },
   } = useTransactionSocket();
@@ -16,7 +17,7 @@ const TransactionSign = () => {
     <Dialog.PrimaryAction
       size="md"
       isLoading={isLoading}
-      onClick={handler}
+      onClick={() => handler(transactionId!, transactionHash!)}
       fontWeight={700}
       fontSize={14}
     >
@@ -29,7 +30,7 @@ const TransactionSign = () => {
       title="Sign transaction"
       validAt={validAt}
       vault={vault}
-      pendingSignerTransactions={pendingSignerTransactions}
+      pendingSignerTransactions={false}
       summary={summary}
       primaryActionButton={<SignTransactionButton />}
       primaryActionLoading={isLoading}

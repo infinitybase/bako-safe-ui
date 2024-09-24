@@ -1,10 +1,19 @@
 import { TransactionRequestLike } from '@fuel-ts/providers';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useQueryParams } from '@/modules/auth/hooks';
-import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
+import {
+  IEventTX_CONFIRM,
+  SocketEvents,
+  SocketUsernames,
+  useSocket,
+} from '@/modules/core/hooks';
+import { Pages } from '@/modules/core/routes';
 
+import { useSignTransaction } from './useSignTransaction';
 import { useTransactionSummary } from './useTransactionSummary';
+import { useVerifyBrowserType } from './useVerifyBrowserType';
 
 interface IVaultEvent {
   name: string;
@@ -33,18 +42,41 @@ export const useTransactionSocket = () => {
   const [sending, setSending] = useState(false);
   const [signing, setSigning] = useState(false);
 
+  const navigate = useNavigate();
   const { connect, socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
 
   const summary = useTransactionSummary();
+  const { confirmSignTransaction } = useSignTransaction();
 
-  const handleSocketEvent = (data: any) => {
-    const { to, type, data: content } = data;
+  const { isSafariBrowser } = useVerifyBrowserType();
+
+  const openSignTab = (url: string) => {
+    const newTab = window.open(`${window.origin}${url}`, '_blank');
+
+    if (newTab) {
+      setTimeout(() => {
+        window.close();
+      }, 600);
+    }
+  };
+
+  const handleRedirectToSign = (data: any) => {
+    console.log('HANDLE_REDIRECT_TO_SIGN');
+    const queryParams = `${window.location.search}&transaction_id=${data.id}&transaction_hash=${data.hash}`;
+    const url = `${Pages.dappTransactionSign()}${queryParams}`;
+
+    if (isSafariBrowser) {
+      openSignTab(url);
+    } else {
+      navigate(url);
+    }
+  };
+
+  const handleGetSummary = (data: any) => {
+    console.log('GETTING_SUMMARY');
+    const { data: content } = data;
     const { vault, tx, validAt } = content;
-    const isValid =
-      to === SocketUsernames.UI && type === SocketEvents.TX_REQUEST;
-
-    if (!isValid) return;
 
     setVault(vault);
     setTx(tx);
@@ -57,54 +89,46 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const tryConnectSocket = () => {
-    if (!socket.connected) {
-      connect(sessionId!);
+  const handleSocketEvent = useCallback((data: any) => {
+    console.log('SOCKET EVENT DATA:', data);
+    if (data.to !== SocketUsernames.UI) return;
+
+    switch (data.type) {
+      case SocketEvents.TX_CONFIRM:
+        handleRedirectToSign(data);
+        break;
+      case SocketEvents.TX_REQUEST:
+        handleGetSummary(data);
+        break;
+      default:
+        break;
     }
+  }, []);
 
-    socket.on('connect', () => {
-      console.log('SOCKET_CONNECTED:', socket.connected);
-      console.log('SENDING_MESSAGE');
-      socket.emit(SocketEvents.DEFAULT, {
-        sessionId,
-        to: SocketUsernames.CONNECTOR,
-        request_id,
-        type: SocketEvents.CONNECTED,
-        data: {},
-      });
+  const emitCreateTransactionEvent = (
+    event: SocketEvents,
+    data: IEventTX_CONFIRM,
+  ) => {
+    if (!data.tx) return;
+    setSending(true);
 
-      console.log('GETTING_SUMMARY');
-      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('SOCKET_DISCONNECTED');
-      tryConnectSocket();
-    });
-  };
-
-  const openSignInTab = () => {
-    window.open(
-      `${window.origin}/dapp/transaction/sign/${window.location.search}`,
-      '_blank',
-    );
+    console.log('[EMITTING CREATE TRANSACTION]');
+    socket.emit(event, data);
   };
 
   const sendTransaction = async () => {
-    if (!tx) return;
-    setSending(true);
-
-    console.log('[EMITINDO TRANSACTION]');
-    socket.emit(SocketEvents.TX_CONFIRM, {
+    emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
     });
   };
 
-  // TODO: check another way to redirect to sign page
   const sendTransactionAndRedirectToSign = async () => {
-    sendTransaction();
-    openSignInTab();
+    emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
+      operations: summary.transactionSummary,
+      tx,
+      sign: true,
+    });
   };
 
   // emmit message to the server and close window
@@ -119,29 +143,41 @@ export const useTransactionSocket = () => {
     });
   };
 
-  // TODO: add logic to sign transaction
-  const signTransaction = () => {
-    setSigning(true);
-    console.log('[ASSINANDO TRANSACTION]');
-    setTimeout(() => {
-      window.close();
-    }, 2500);
+  const signTransaction = (transacionId: string, transactionHash: string) => {
+    confirmSignTransaction(transactionHash, (signedMessage: string) => {
+      setSigning(true);
+      socket.emit(SocketEvents.TX_SIGN, {
+        id: transacionId,
+        hash: transactionHash,
+        signedMessage,
+      });
+    });
   };
 
   const cancelSignTransaction = () => {
     cancelSendTransaction();
-    window.close();
+    isSafariBrowser && window.close();
   };
 
   useEffect(() => {
-    tryConnectSocket();
+    console.log('SOCKET_CONNECTED:', socket.connected);
+    if (!socket.connected) {
+      console.log('CONNECTING_SOCKET');
+      connect(sessionId!);
+      return;
+    }
 
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
-    };
-  }, []);
+    console.log('SENDING_MESSAGE');
+    socket.emit(SocketEvents.DEFAULT, {
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      request_id,
+      type: SocketEvents.CONNECTED,
+      data: {},
+    });
+
+    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+  }, [socket.connected]);
 
   return {
     vault,
