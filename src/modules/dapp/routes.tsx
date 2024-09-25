@@ -21,23 +21,9 @@ const dappRoutes = (
       />
     </Route>
 
-    <Route
-      path={Pages.dappTransaction()}
-      element={
-        <Container>
-          <TransactionConfirm />
-        </Container>
-      }
-    />
+    <Route path={Pages.dappTransaction()} element={<TransactionConfirm />} />
 
-    <Route
-      path={Pages.dappTransactionSign()}
-      element={
-        <Container>
-          <TransactionSign />
-        </Container>
-      }
-    />
+    <Route path={Pages.dappTransactionSign()} element={<TransactionSign />} />
   </>
 );
 
