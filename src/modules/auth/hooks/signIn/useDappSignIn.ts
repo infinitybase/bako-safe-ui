@@ -94,7 +94,9 @@ const useDappSignIn = () => {
         setMode(WebAuthnModeState.LOGIN);
         handleLogin();
       } else if (lastLoginUsername && !username) {
-        formData.form.setValue('username', lastLoginUsername);
+        formData.form.setValue('username', lastLoginUsername, {
+          shouldValidate: true,
+        });
         setMode(WebAuthnModeState.LOGIN);
       }
     }

@@ -26,7 +26,9 @@ const useWebSignIn = () => {
 
   useEffect(() => {
     if (lastLoginUsername) {
-      formData.form.setValue('username', lastLoginUsername ?? '');
+      formData.form.setValue('username', lastLoginUsername ?? '', {
+        shouldValidate: true,
+      });
       setMode(WebAuthnModeState.LOGIN);
     }
   }, []);

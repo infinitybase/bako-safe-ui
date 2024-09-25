@@ -1,4 +1,11 @@
-import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Divider,
+  HStack,
+  Text,
+  useMediaQuery,
+  VStack,
+} from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
 
@@ -20,6 +27,22 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     onClose,
   } = useTermsDialog();
 
+  const [isLargerThan600] = useMediaQuery('(min-height: 600px)');
+  const [isLargerThan660] = useMediaQuery('(min-height: 660px)');
+  const [isLargerThan768] = useMediaQuery('(min-height: 768px)');
+  const [isLargerThan900] = useMediaQuery('(min-height: 900px)');
+
+  const textHeight = () => {
+    if (isMobile) {
+      if (isLargerThan900) return 600;
+      if (isLargerThan768) return 460;
+      if (isLargerThan660) return 340;
+      if (isLargerThan600) return 300;
+      return 200;
+    }
+    return 420;
+  };
+
   return (
     <Dialog.Modal
       size={{ base: 'full', md: '2xl' }}
@@ -33,7 +56,8 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
         onClose={handleClose}
         maxW={585}
         mb={0}
-        pt={isSafariBrowser && isMobile ? 6 : 'unset'}
+        mt={isMobile ? 10 : 0}
+        pt={isSafariBrowser && isMobile ? 6 : isMobile ? 0 : 'unset'}
         title="Terms of Use"
         description={
           'You must accept the Terms of Use before you finish creating your account.'
@@ -43,24 +67,35 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
       <Divider maxW={585} borderColor={'grey.500'} mt={6} mb={6} />
 
-      <Dialog.Body maxW={585}>
+      <Dialog.Body maxW={585} pb={6}>
         <VStack
-          maxH={420}
+          h={textHeight()}
           spacing={0}
           overflowY={'scroll'}
-          css={{
-            '&::-webkit-scrollbar': { width: '0' },
-            scrollbarWidth: 'none',
+          pr={4}
+          sx={{
+            '&::-webkit-scrollbar': {
+              width: '6px',
+              maxHeight: '330px',
+              backgroundColor: 'grey.900',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'brand.500',
+              borderRadius: '30px',
+              height: '10px',
+            },
           }}
         >
-          <VStack w="full" alignItems={'flex-start'} maxW={'1032px'}>
-            {termsOfUse.map(({ title, paragraphs }) => (
+          <VStack w="full" alignItems={'flex-start'}>
+            {termsOfUse.map(({ title, paragraphs }, index) => (
               <Box key={title}>
                 <Text
                   fontSize={'sm'}
                   color={'grey.75'}
                   fontWeight={'bold'}
-                  my={4}
+                  mb={4}
+                  mt={!index ? 0 : 4}
                 >
                   {title}
                 </Text>
@@ -80,13 +115,13 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
             ))}
           </VStack>
 
-          <Divider my={10} maxW={'1032px'} />
+          <Divider my={10} borderColor={'grey.500'} />
 
           <Text fontSize={'lg'} fontWeight={'bold'}>
             Bako Safe Privacy Policy
           </Text>
 
-          <VStack w="full" alignItems={'flex-start'} maxW={'1032px'} mb={16}>
+          <VStack w="full" alignItems={'flex-start'}>
             {privacyPolicy.map(({ title, paragraphs }) => (
               <Box key={title}>
                 <Text
@@ -120,12 +155,12 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
       <Dialog.Actions
         w="full"
         maxW={585}
-        mt={'auto'}
         sx={{ '&>hr': { mt: 0, mb: 8 } }}
         bgColor="dark.950"
-        position={'unset'}
-        bottom={0}
-        px={'unset'}
+        position={isMobile ? 'absolute' : 'unset'}
+        bottom={2}
+        px={isMobile ? 6 : 'unset'}
+        mb={2}
       >
         <VStack w="full" alignItems="center" bg="dark.950" zIndex={999}>
           <HStack w="full" justifyContent="space-between">
