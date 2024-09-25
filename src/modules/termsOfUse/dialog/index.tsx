@@ -1,27 +1,36 @@
 import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
-import { Dialog, DialogModalProps } from '@/components';
+import { Dialog } from '@/components';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';
 import { privacyPolicy, termsOfUse } from '../utils/data';
 
-type TermsOfUseDialogProps = Omit<DialogModalProps, 'children'> & {
+type TermsOfUseDialogProps = {
   actionHandler: () => void;
 };
 
 const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
-  const { isSafariBrowser, isMobile, read, inView, handleCancel } =
-    useTermsDialog({ onClose: props.onClose });
+  const {
+    isSafariBrowser,
+    isMobile,
+    read,
+    inView,
+    handleClose,
+    modalIsOpen,
+    onClose,
+  } = useTermsDialog();
 
   return (
     <Dialog.Modal
       size={{ base: 'full', md: '2xl' }}
       {...props}
+      isOpen={modalIsOpen}
+      onClose={onClose}
       closeOnOverlayClick={false}
     >
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
-        onClose={handleCancel}
+        onClose={handleClose}
         maxW={585}
         mb={0}
         pt={isSafariBrowser && isMobile ? 6 : 'unset'}
@@ -124,7 +133,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
               bgColor="transparent"
               border="1px solid white"
               w={'50%'}
-              onClick={handleCancel}
+              onClick={handleClose}
               _hover={{ borderColor: 'brand.500', color: 'brand.500' }}
             >
               Decline

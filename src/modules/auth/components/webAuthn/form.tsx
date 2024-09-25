@@ -1,18 +1,7 @@
-import {
-  Checkbox,
-  FormControl,
-  FormHelperText,
-  HStack,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { FormControl, FormHelperText, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
-import { CheckIcon } from '@/components/icons';
-import { Pages } from '@/modules/core';
-import { useScreenSize } from '@/modules/core/hooks';
 
 import { UseWebAuthnSignIn } from '../../hooks';
 
@@ -40,10 +29,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
       control,
       formState: { errors },
     },
-    isRegisterMode,
   } = formData;
-
-  const { isMobile } = useScreenSize();
 
   return (
     <VStack w="full" alignItems="flex-start" spacing={2}>
@@ -77,36 +63,6 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           );
         }}
       />
-
-      {isRegisterMode && (
-        <Controller
-          name="termsOfUse"
-          control={control}
-          render={({ field }) => (
-            <HStack gap={1} mb={isMobile ? 0 : 2}>
-              <Checkbox
-                position="relative"
-                ml={2}
-                icon={<CheckIcon fontSize={8} />}
-                size="sm"
-                isChecked={!!field.value}
-                onChange={field.onChange}
-              />
-              <Text ml={1} textColor="grey.250" fontSize="xs">
-                I agree to the
-              </Text>
-              <Link
-                target="_blank"
-                textColor="grey.250"
-                fontSize="xs"
-                href={Pages.termsOfUse()}
-              >
-                Terms of use
-              </Link>
-            </HStack>
-          )}
-        />
-      )}
     </VStack>
   );
 };

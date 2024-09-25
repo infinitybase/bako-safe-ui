@@ -1,13 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
-
 export type UseWebAuthnForm = ReturnType<typeof useWebAuthnForm>;
 
-const createSchema = (isRegisterMode: boolean) =>
+const createSchema = () =>
   yup.object({
     username: yup
       .string()
@@ -18,19 +15,10 @@ const createSchema = (isRegisterMode: boolean) =>
         "The username can't contain special characters or symbols",
         (name) => /^@?[a-zA-Z0-9_]+$/.test(name),
       ),
-    termsOfUse: yup
-      .boolean()
-      .when([], (_, schema) =>
-        isRegisterMode
-          ? schema
-              .required('You must agree to the Terms of use')
-              .oneOf([true], 'You must agree to the Terms of use')
-          : schema.notRequired(),
-      ),
   });
 
-const useWebAuthnForm = (mode: WebAuthnModeState) => {
-  const schema = createSchema(mode === WebAuthnModeState.REGISTER);
+const useWebAuthnForm = () => {
+  const schema = createSchema();
 
   const form = useForm({
     mode: 'onChange',
@@ -38,13 +26,8 @@ const useWebAuthnForm = (mode: WebAuthnModeState) => {
     resolver: yupResolver(schema),
     defaultValues: {
       username: '',
-      termsOfUse: false,
     },
   });
-
-  useEffect(() => {
-    form.setValue('termsOfUse', false, { shouldValidate: true });
-  }, [mode]);
 
   return { form };
 };

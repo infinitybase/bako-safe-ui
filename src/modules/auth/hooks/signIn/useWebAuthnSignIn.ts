@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
+import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 import { ActionKeys, handleActionUsingKeys } from '@/utils';
 
 import { TypeUser } from '../../services/methods';
@@ -37,7 +38,8 @@ const useWebAuthnSignIn = (
     defaultTab: WebAuthnTabState.LOGIN,
   });
 
-  const { form } = useWebAuthnForm(mode);
+  const { form } = useWebAuthnForm();
+  // mode
   const { checkNicknameRequest, accountsRequest, badge, ...rest } =
     useWebAuthnInput(!form.formState.errors.username);
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
@@ -52,6 +54,7 @@ const useWebAuthnSignIn = (
       setTab: tabs.set,
       setCreatedAcccountUsername,
     });
+  const { setModalIsOpen } = useTermsStore();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
 
@@ -111,7 +114,7 @@ const useWebAuthnSignIn = (
     },
     [WebAuthnModeState.REGISTER]: {
       label: 'Create account',
-      handleAction: handleRegister,
+      handleAction: () => setModalIsOpen(true),
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
           pressedKey,
@@ -148,6 +151,7 @@ const useWebAuthnSignIn = (
     },
     fullFormState: formState,
     formState: formState[mode],
+    handleRegister,
     checkNicknameRequest,
     tabs,
     createdAcccountUsername,
