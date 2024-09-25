@@ -61,6 +61,7 @@ export type SignInResponse = {
   id: string;
   notify: boolean;
   rootWallet: string;
+  first_login: boolean;
   webAuthn?: {
     id: string;
     publicKey: string;
@@ -90,6 +91,7 @@ export type AuthenticateParams = {
   permissions: IPermission;
   singleWorkspace: string;
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+  first_login?: boolean;
 };
 
 export type AuthenticateWorkspaceParams = {
@@ -128,6 +130,7 @@ export type IGetUserInfosResponse = {
   onSingleWorkspace: boolean;
   type: TypeUser;
   webauthn: SignWebAuthnPayload;
+  first_login?: boolean;
   workspace: {
     avatar: string;
     id: string;
@@ -135,7 +138,6 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
-  firstLogin: boolean;
 };
 
 export class UserService {

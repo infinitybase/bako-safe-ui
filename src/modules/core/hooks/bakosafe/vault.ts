@@ -42,9 +42,9 @@ interface UseCreateBakoSafeVaultPayload {
 }
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const {
-    authDetails: { userProvider },
-  } = useWorkspaceContext();
+  // const {
+  //   authDetails: { userProvider },
+  // } = useWorkspaceContext();
 
   const { mutate, ...mutation } = useBakoSafeMutation<
     Vault,
@@ -54,12 +54,12 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ auth, ...params }) => {
       try {
-        const { provider } = await userProvider();
+        // const { provider } = await userProvider();
         const vault: IPayloadVault = {
           name: params.name,
           description: params.description!,
           configurable: {
-            network: provider.url ?? BakoSafe.getProviders('CHAIN_URL'),
+            network: BakoSafe.getProviders('CHAIN_URL'),
             SIGNATURES_COUNT: params.minSigners,
             SIGNERS: params.addresses,
           },

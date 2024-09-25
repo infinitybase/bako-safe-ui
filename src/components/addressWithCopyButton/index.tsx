@@ -10,6 +10,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
   addressProps?: TextProps;
+  customAddress?: string;
   hideCopyButton?: boolean;
 }
 
@@ -18,6 +19,7 @@ const AddressWithCopyBtn = ({
   isDeposit,
   isSidebarAddress,
   addressProps,
+  customAddress,
   hideCopyButton = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
@@ -33,6 +35,8 @@ const AddressWithCopyBtn = ({
       isLitteSmall,
     },
   } = useWorkspaceContext();
+
+  const b256Address = Address.fromString(address ?? '').toB256();
 
   return (
     <Flex
@@ -61,26 +65,29 @@ const AddressWithCopyBtn = ({
                 ? 'inherit'
                 : 'inherit'
         }
+        {...addressProps}
       >
-        {isSidebarAddress
-          ? AddressUtils.format(address ?? '', 10)
-          : isDeposit
-            ? AddressUtils.format(
-                address ?? '',
-                isExtraSmall
-                  ? 1
-                  : isLitteSmall
-                    ? 4
-                    : isLowerThanFourHundredAndThirty
-                      ? 7
-                      : !isVaultPage && isExtraLarge
-                        ? 24
-                        : 10,
-              )
-            : AddressUtils.format(
-                address ?? '',
-                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-              )}
+        {customAddress
+          ? customAddress
+          : isSidebarAddress
+            ? AddressUtils.format(b256Address ?? '', 10)
+            : isDeposit
+              ? AddressUtils.format(
+                  b256Address ?? '',
+                  isExtraSmall
+                    ? 1
+                    : isLitteSmall
+                      ? 4
+                      : isLowerThanFourHundredAndThirty
+                        ? 7
+                        : !isVaultPage && isExtraLarge
+                          ? 24
+                          : 10,
+                )
+              : AddressUtils.format(
+                  b256Address ?? '',
+                  isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+                )}
       </Text>
 
       <CopyAddressButton
