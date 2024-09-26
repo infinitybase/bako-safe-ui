@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { VaultService } from '../services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const VAULT_LIST_QUERY_KEY = 'predicate/by-address';
+import { VaultService } from '../services';
+
+const VAULT_LIST_QUERY_KEY = 'predicate/by-user-address';
 
 const useUserVaultRequest = () => {
   const {
