@@ -47,7 +47,7 @@ const useCreateVault = () => {
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       refetchLatestPredicates();
-      setVaultId(data.BakoSafeVaultId);
+      setVaultId(data.id);
       setTab(TabState.SUCCESS);
       form.reset();
       setSearch('');
@@ -112,12 +112,12 @@ const useCreateVault = () => {
   const onDeposit = async () => {
     if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.address}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.predicateAddress}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bakoSafeVault.data.BakoSafeVaultId,
+          vaultId: bakoSafeVault.data.id,
           workspaceId: params.workspaceId!,
         }),
       );

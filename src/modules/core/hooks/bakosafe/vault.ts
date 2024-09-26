@@ -1,23 +1,43 @@
-import { BakoSafe, IPayloadVault, Vault } from 'bakosafe';
-
-import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
+import { PredicateAndWorkspace } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { createVault } from './createVault';
+import { instantiateVault } from './instantiateVault';
+import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
   VAULT: (id: string) => [...VAULT_QUERY_KEYS.DEFAULT, id],
 };
 
-const useBakoSafeVault = (id: string) => {
+interface UseCreateBakoSafeVaultParams {
+  onSuccess: (data: PredicateAndWorkspace) => void;
+  onError: () => void;
+}
+
+interface UseCreateBakoSafeVaultPayload {
+  name: string;
+  description: string;
+  addresses: string[];
+  minSigners: number;
+}
+
+interface IUseBakoSafeVault {
+  provider: string;
+  address: string;
+  id: string;
+}
+
+const useBakoSafeVault = async ({ address, id }: IUseBakoSafeVault) => {
   const { authDetails } = useWorkspaceContext();
   const { data, ...rest } = useBakoSafeQuery(
     [...VAULT_QUERY_KEYS.VAULT(id), authDetails.userInfos.workspace?.id],
-    async (context) => {
-      return await Vault.create({
-        id,
-        token: context.auth.token,
-        address: context.auth.address,
+    async () => {
+      const vault = await instantiateVault({
+        predicateAddress: address,
       });
+
+      return vault;
     },
     {
       enabled: !!id,
@@ -29,44 +49,21 @@ const useBakoSafeVault = (id: string) => {
   };
 };
 
-interface UseCreateBakoSafeVaultParams {
-  onSuccess: (data: Vault) => void;
-  onError: () => void;
-}
-
-interface UseCreateBakoSafeVaultPayload {
-  name: string;
-  description: string;
-  addresses: string[];
-  minSigners: number;
-}
-
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const {
-    authDetails: { userProvider },
-  } = useWorkspaceContext();
-
   const { mutate, ...mutation } = useBakoSafeMutation<
-    Vault,
+    PredicateAndWorkspace,
     unknown,
     UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
-    async ({ auth, ...params }) => {
+    async ({ minSigners, addresses }) => {
       try {
-        const { provider } = await userProvider();
-        const vault: IPayloadVault = {
-          name: params.name,
-          description: params.description!,
-          configurable: {
-            network: provider.url ?? BakoSafe.getProviders('CHAIN_URL'),
-            SIGNATURES_COUNT: params.minSigners,
-            SIGNERS: params.addresses,
-          },
-          BakoSafeAuth: auth,
-        };
+        const newVault = await createVault({
+          minSigners,
+          signers: addresses,
+        });
 
-        return await Vault.create(vault);
+        return newVault;
       } catch (e) {
         console.log('[ERROR_ON_VAULT_CREATE]', e);
         throw e;

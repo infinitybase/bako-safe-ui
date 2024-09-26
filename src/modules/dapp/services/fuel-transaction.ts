@@ -1,4 +1,3 @@
-import { BaseTransfer, Vault } from 'bakosafe';
 import {
   getTransactionSummaryFromRequest,
   OperationTransactionAddress,
@@ -8,11 +7,12 @@ import {
   TransactionRequestLike,
 } from 'fuels';
 
+import { instantiateVault } from '@/modules';
+
 export interface TransactionSimulateParams {
   transactionLike: TransactionRequestLike;
   providerUrl: string;
   configurable: string;
-  version: string;
 }
 
 export interface ISent {
@@ -36,28 +36,24 @@ export enum IFuelTransactionNames {
   TRANSFER_ASSET = 'Transfer asset',
 }
 
-class FuelTransactionService {
-  static async simulate({
+const useFuelTransactionService = () => {
+  const simulate = async ({
     transactionLike,
     providerUrl,
     configurable,
-    version,
-  }: TransactionSimulateParams) {
+  }: TransactionSimulateParams) => {
     const provider = await Provider.create(providerUrl);
 
-    const vault = await Vault.create({
-      configurable: JSON.parse(configurable),
-      version,
+    const vaultInstance = await instantiateVault({
+      configurable,
     });
 
-    let transactionRequest = ScriptTransactionRequest.from(transactionLike);
-    transactionRequest = await BaseTransfer.prepareTransaction(
-      vault,
-      transactionRequest,
-    );
+    const transactionRequest = ScriptTransactionRequest.from(transactionLike);
+    const transactionRequestResult =
+      await vaultInstance.prepareTransaction(transactionRequest);
 
     const { operations } = await getTransactionSummaryFromRequest({
-      transactionRequest,
+      transactionRequest: transactionRequestResult,
       provider,
     });
 
@@ -65,7 +61,11 @@ class FuelTransactionService {
       fee: transactionRequest.maxFee.format(),
       operations: operations,
     };
-  }
-}
+  };
 
-export { FuelTransactionService };
+  return {
+    simulate,
+  };
+};
+
+export { useFuelTransactionService };

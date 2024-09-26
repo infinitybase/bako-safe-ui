@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOption } from 'bakosafe';
 
 import { NotificationsQueryKey } from '@/modules/core';
+import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
+import { TransactionOrderBy } from '@/modules/transactions/services';
 
 import { NotificationService } from '../services';
-import { TransactionOrderBy } from '@/modules/transactions/services';
 
 const useListNotificationsRequest = (account: string) => {
   const { data, ...query } = useInfiniteQuery({
@@ -14,7 +14,7 @@ const useListNotificationsRequest = (account: string) => {
         perPage: 5,
         page: pageParam || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOption.desc,
+        sort: SortOptionTx.DESC,
       }),
     initialPageParam: 0,
     getNextPageParam: ({ totalPages, currentPage, nextPage }) =>

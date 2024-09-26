@@ -30,6 +30,7 @@ const useWalletSignIn = () => {
       workspace,
       address,
       rootWallet,
+      provider,
     }) => {
       authDetails.handlers.authenticate({
         userId: user_id,
@@ -39,6 +40,7 @@ const useWalletSignIn = () => {
         accessToken: accessToken,
         singleWorkspace: workspace.id,
         permissions: workspace.permissions,
+        provider_url: provider,
       });
       invalidateGifAnimationRequest();
       navigate(redirect(rootWallet, workspace.id));

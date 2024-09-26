@@ -3,7 +3,15 @@ import {
   QueryKey,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { IBakoSafeAuth } from 'bakosafe';
+import {
+  IBakoSafeAuth,
+  ITransactionResume,
+  ITransactionSummary,
+  ITransferAsset,
+  TransactionStatus,
+  TransactionType,
+} from 'bakosafe';
+import { TransactionRequest } from 'fuels';
 
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
@@ -33,3 +41,46 @@ export interface BakoSafeQueryOptions<
   > {
   queryFn?: BakoSafeQueryFunction<TQueryFnData, TQueryKey>;
 }
+
+export interface ICreateTransactionPayload {
+  predicateAddress: string; // ADDRESS OF PREDICATE
+  name?: string;
+  hash: string; // HASH OF TRANSACTION
+  txData: TransactionRequest;
+  status: TransactionStatus;
+  assets: ITransferAsset[];
+  sendTime?: Date;
+  gasUsed?: string;
+}
+
+export interface ITransaction extends ICreateTransactionPayload {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  predicateId: string;
+  type: TransactionType;
+  resume: ITransactionResume; // RESULT
+  assets: ITransferAsset[];
+  summary?: ITransactionSummary;
+}
+
+export enum SortOptionTx {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export interface GetTransactionParams {
+  predicateId?: string[];
+  to?: string;
+  hash?: string;
+  status?: TransactionStatus[];
+  perPage?: number;
+  page?: number;
+  orderBy?: string;
+  sort?: SortOptionTx;
+}
+
+export interface IListTransactions
+  extends GetTransactionParams,
+    Omit<GetTransactionParams, 'predicateId'> {}

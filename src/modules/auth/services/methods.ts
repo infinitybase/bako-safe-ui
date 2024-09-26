@@ -1,6 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { BakoSafe } from 'bakosafe';
 import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
@@ -65,6 +64,7 @@ export type SignInResponse = {
     id: string;
     publicKey: string;
   };
+  provider: string;
 };
 
 export type CheckNicknameResponse = {
@@ -90,6 +90,7 @@ export type AuthenticateParams = {
   permissions: IPermission;
   singleWorkspace: string;
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+  provider_url: string;
 };
 
 export type AuthenticateWorkspaceParams = {
@@ -186,7 +187,7 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      provider: BakoSafe.getProviders('CHAIN_URL'),
+      provider: 'http://localhost:4000/v1/graphql',
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
