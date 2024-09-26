@@ -33,9 +33,12 @@ export interface VaultAddressesStepProps {
   templates: ITemplate[];
   selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
   setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
+  validateAddress: UseCreateVaultReturn['validateAddress'];
 }
 
-const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
+const VaultAddressesStep = (props: VaultAddressesStepProps) => {
+  const { form, addresses, validateAddress } = props;
+
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -76,7 +79,8 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
   const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
-  const isDisable = !!form.formState.errors.addresses;
+  const isDisable =
+    !!form.formState.errors.addresses || validateAddress.isLoading;
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
@@ -151,7 +155,13 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                         first,
                       );
 
-                      const isLoading = !optionsRequests[index].isSuccess;
+                      if (index && !fieldState.invalid && field.value) {
+                        validateAddress.handler(field.value, index);
+                      }
+
+                      const isLoading =
+                        !optionsRequests[index].isSuccess ||
+                        validateAddress.isLoading;
 
                       const showAddToAddressBook =
                         !first &&
@@ -251,7 +261,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                   opacity: 0.8,
                 }}
               >
-                Add more address
+                Add more addresses
               </Button>
             </VStack>
           </Dialog.Section>

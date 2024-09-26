@@ -17,8 +17,14 @@ export type UseCreateVaultDialogReturn = ReturnType<
 >;
 
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
-  const { form, tabs, vaultNameIsAvailable, vaultId, ...rest } =
-    useCreateVault();
+  const {
+    form,
+    tabs,
+    vaultNameIsAvailable,
+    vaultId,
+    validateAddress,
+    ...rest
+  } = useCreateVault();
 
   const { name, origin, sessionId, request_id } = useQueryParams();
   const isSignInFromDapp = sessionId && sessionId.length === 36;
@@ -77,7 +83,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     [TabState.ADDRESSES]: {
       hide: false,
-      disable: !form.formState.isValid,
+      disable: !form.formState.isValid || validateAddress.isLoading,
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
@@ -116,6 +122,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       actions: stepActions,
     },
     vaultNameIsAvailable,
+    validateAddress,
     ...rest,
   };
 };

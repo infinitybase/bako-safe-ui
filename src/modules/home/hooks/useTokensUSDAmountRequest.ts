@@ -1,23 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { HomeService } from '../services';
-import { tokensIDS } from '@/modules/core/utils/assets/address';
-
-let tokens = {
-  [tokensIDS.ETH]: {
-    usdAmount: 0,
-  },
-  [tokensIDS.BTC]: {
-    usdAmount: 0,
-  },
-  [tokensIDS.USDC]: {
-    usdAmount: 0,
-  },
-  [tokensIDS.UNI]: {
-    usdAmount: 0,
-  },
-};
-
+import { Address } from 'fuels';
 export type IuseTokensUSDAmountRequestReturn = ReturnType<
   typeof useTokensUSDAmountRequest
 >;
@@ -37,17 +21,18 @@ const useTokensUSDAmountRequest = () => {
     enabled: window.location.pathname != '/',
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
+    initialData: [[Address.fromRandom().toString(), 0.0]],
   });
 
-  if (data) {
-    data.forEach(([assetId, amount]) => {
-      if (tokens[assetId]) {
-        tokens[assetId].usdAmount = amount;
-      }
-    });
-  }
+  const result = data?.reduce<Record<string, { usdAmount: number }>>(
+    (acc, [address, usdAmount]) => {
+      acc[String(address)] = { usdAmount: Number(usdAmount) };
+      return acc;
+    },
+    {},
+  );
 
-  return { data: tokens, ...query };
+  return { data: result, ...query };
 };
 
 export { useTokensUSDAmountRequest };
