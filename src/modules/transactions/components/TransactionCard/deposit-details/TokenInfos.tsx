@@ -1,7 +1,6 @@
-import { Icon, Text, VStack } from '@chakra-ui/react';
+import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { UnknownIcon } from '@/components';
 import { AssetModel, assetsMap } from '@/modules/core';
 
 interface TokenInfosProps {
@@ -18,10 +17,12 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
   );
   return (
     <VStack minW="76px" alignItems="start">
-      <Icon
-        w={{ base: 6, sm: 6 }}
-        h={{ base: 6, sm: 6 }}
-        as={assetInfo?.icon ?? UnknownIcon}
+      <Image
+        w={{ base: 8, sm: 10 }}
+        h={{ base: 8, sm: 10 }}
+        src={assetInfo?.icon ?? ''}
+        alt="Asset Icon"
+        objectFit="cover"
       />
       <Text fontSize="sm" color="grey.500">
         {assetInfo?.slug}
