@@ -131,8 +131,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       placeholder=" "
                       value={inputValue}
                       onChange={(e) => {
-                        handleInputChange(e.target.value);
-                        field.onChange(e.target.value);
+                        handleInputChange(e.target.value.toLowerCase());
+                        field.onChange(e.target.value.toLowerCase());
                       }}
                       onKeyDown={(e) =>
                         handleActionUsingKeys({
