@@ -1,6 +1,5 @@
 import { Route } from 'react-router-dom';
 
-import { Container } from '@/layouts/dapp/container';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
@@ -13,9 +12,7 @@ const dappRoutes = (
         index
         element={
           <AuthRoute>
-            <Container>
-              <VaultConnector />
-            </Container>
+            <VaultConnector />
           </AuthRoute>
         }
       />
