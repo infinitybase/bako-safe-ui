@@ -2,15 +2,11 @@ import {
   Box,
   Card,
   CardProps,
-  ComponentWithAs,
   Flex,
-  Icon,
-  IconProps,
+  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
-
-import { UnknownIcon } from '@/components';
 
 import { useGetTokenInfos } from '../../hooks';
 import { Asset, assetsMap, NativeAssetId } from '../../utils';
@@ -20,7 +16,7 @@ interface DefaultAsset {
   amount: string;
   name: string;
   slug: string;
-  icon?: ComponentWithAs<'svg', IconProps>;
+  icon?: string;
 }
 
 interface AssetDetailsProps {
@@ -80,12 +76,13 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={2}
         mb={1}
       >
-        <Icon
+        <Image
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
-          as={assetsInfo?.icon ?? UnknownIcon}
+          src={assetsInfo?.icon ?? ''}
+          alt="Asset Icon"
+          objectFit="cover"
         />
-
         <AssetDetails
           assetName={assetsInfo.name}
           assetSlug={assetsInfo.slug}

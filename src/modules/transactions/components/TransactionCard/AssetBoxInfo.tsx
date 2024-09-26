@@ -1,9 +1,16 @@
 import { Icon } from '@chakra-ui/icons';
-import { Center, HStack, StackProps, Text, VStack } from '@chakra-ui/react';
+import {
+  Center,
+  HStack,
+  StackProps,
+  Text,
+  VStack,
+  Image,
+} from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AddressWithCopyBtn, DoubleArrowIcon, UnknownIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -67,7 +74,14 @@ const AssetBoxInfo = ({
     >
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
-          <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
+          <Image
+            w={{ base: 8, sm: 10 }} // Largura responsiva
+            h={{ base: 8, sm: 10 }} // Altura responsiva
+            src={assetInfo?.icon ?? ''} // URL da imagem com fallback
+            alt="Asset Icon" // Texto alternativo para acessibilidade
+            objectFit="cover" // Ajuste da imagem
+          />
+
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
           </Text>
