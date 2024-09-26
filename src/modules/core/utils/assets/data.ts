@@ -1,4 +1,5 @@
 import { assets } from 'fuels';
+
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
@@ -45,21 +46,30 @@ const NativeAssetId =
 //     ]
 // }
 
+export const UNKNOWN_ASSET = {
+  name: 'Unknown',
+  slug: 'UNK',
+  assetId: 'UNKNOWN',
+  icon: '/src/assets/tokens/unknown.svg',
+};
+
 export const formatedAssets = (chainId: number): Asset[] =>
-  assets.reduce<Asset[]>((acc, asset) => {
-    const network = asset.networks.find(
-      (network) => network && network.chainId === chainId,
-    );
-    if (network && network.type === 'fuel') {
-      acc.push({
-        name: asset.name,
-        slug: asset.symbol,
-        assetId: network.assetId,
-        icon: asset.icon,
-      });
-    }
-    return acc;
-  }, []);
+  assets
+    .reduce<Asset[]>((acc, asset) => {
+      const network = asset.networks.find(
+        (network) => network && network.chainId === chainId,
+      );
+      if (network && network.type === 'fuel') {
+        acc.push({
+          name: asset.name,
+          slug: asset.symbol,
+          assetId: network.assetId,
+          icon: asset.icon,
+        });
+      }
+      return acc;
+    }, [])
+    .concat(UNKNOWN_ASSET);
 
 const assetsList: Asset[] = formatedAssets(
   Number(import.meta.env.VITE_CHAIN_ID),
