@@ -41,7 +41,7 @@ export class TransactionService {
   }
   static async getByHash(hash: string) {
     const { data } = await api.get<GetTransactionResponse>(
-      `/transaction/by-hash/${hash}`,
+      `/transaction/by-hash/x0${hash}`,
     );
     return data;
   }
