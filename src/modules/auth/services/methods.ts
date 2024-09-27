@@ -221,9 +221,9 @@ export class UserService {
   }
 
   static async generateSignInCode(address: string) {
-    const { data } = await api.post<CreateUserResponse>(
-      `/auth/code/${address}`,
-    );
+    const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
+      address,
+    });
     return data;
   }
 }
