@@ -9,11 +9,9 @@ import {
   SocketUsernames,
   useSocket,
 } from '@/modules/core/hooks';
-import { Pages } from '@/modules/core/routes';
 
-import { useSignTransaction } from './useSignTransaction';
+// import { useSignTransaction } from './useSignTransaction'; [CONNECTOR SIGNATURE]
 import { useTransactionSummary } from './useTransactionSummary';
-import { useVerifyBrowserType } from './useVerifyBrowserType';
 
 interface IVaultEvent {
   name: string;
@@ -40,38 +38,40 @@ export const useTransactionSocket = () => {
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
-  const [signing, setSigning] = useState(false);
+  //const [signing, setSigning] = useState(false); [CONNECTOR SIGNATURE]
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // do not remove, makes socket connection work
   const { connect, socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
 
   const summary = useTransactionSummary();
-  const { confirmSignTransaction } = useSignTransaction();
+  // const { confirmSignTransaction } = useSignTransaction(); [CONNECTOR SIGNATURE]
 
-  const { isSafariBrowser } = useVerifyBrowserType();
+  //const { isSafariBrowser } = useVerifyBrowserType(); [CONNECTOR SIGNATURE]
 
-  const openSignTab = (url: string) => {
-    const newTab = window.open(`${window.origin}${url}`, '_blank');
+  //[CONNECTOR SIGNATURE]
+  // const openSignTab = (url: string) => {
+  //   const newTab = window.open(`${window.origin}${url}`, '_blank');
 
-    if (newTab) {
-      setTimeout(() => {
-        window.close();
-      }, 600);
-    }
-  };
+  //   if (newTab) {
+  //     setTimeout(() => {
+  //       window.close();
+  //     }, 600);
+  //   }
+  // };
 
-  const handleRedirectToSign = (data: any) => {
-    console.log('HANDLE_REDIRECT_TO_SIGN');
-    const queryParams = `${window.location.search}&transaction_id=${data.id}&transaction_hash=${data.hash}`;
-    const url = `${Pages.dappTransactionSign()}${queryParams}`;
+  //[CONNECTOR SIGNATURE]
+  // const handleRedirectToSign = (data: any) => {
+  //   console.log('HANDLE_REDIRECT_TO_SIGN');
+  //   const queryParams = `${window.location.search}&transaction_id=${data.id}&transaction_hash=${data.hash}`;
+  //   const url = `${Pages.dappTransactionSign()}${queryParams}`;
 
-    if (isSafariBrowser) {
-      openSignTab(url);
-    } else {
-      navigate(url);
-    }
-  };
+  //   if (isSafariBrowser) {
+  //     openSignTab(url);
+  //   } else {
+  //     navigate(url);
+  //   }
+  // };
 
   const handleGetSummary = (data: any) => {
     console.log('GETTING_SUMMARY');
@@ -94,9 +94,10 @@ export const useTransactionSocket = () => {
     if (data.to !== SocketUsernames.UI) return;
 
     switch (data.type) {
-      case SocketEvents.TX_CONFIRM:
-        handleRedirectToSign(data);
-        break;
+      // [CONNECTOR SIGNATURE]
+      // case SocketEvents.TX_CONFIRM:
+      //   handleRedirectToSign(data);
+      //   break;
       case SocketEvents.TX_REQUEST:
         handleGetSummary(data);
         break;
@@ -123,13 +124,14 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const sendTransactionAndRedirectToSign = async () => {
-    emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
-      operations: summary.transactionSummary,
-      tx,
-      sign: true,
-    });
-  };
+  // [CONNECTOR SIGNATURE]
+  // const sendTransactionAndRedirectToSign = async () => {
+  //   emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
+  //     operations: summary.transactionSummary,
+  //     tx,
+  //     sign: true,
+  //   });
+  // };
 
   // emmit message to the server and close window
   const cancelSendTransaction = () => {
@@ -143,21 +145,23 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const signTransaction = (transacionId: string, transactionHash: string) => {
-    confirmSignTransaction(transactionHash, (signedMessage: string) => {
-      setSigning(true);
-      socket.emit(SocketEvents.TX_SIGN, {
-        id: transacionId,
-        hash: transactionHash,
-        signedMessage,
-      });
-    });
-  };
+  // [CONNECTOR SIGNATURE]
+  // const signTransaction = (transacionId: string, transactionHash: string) => {
+  //   confirmSignTransaction(transactionHash, (signedMessage: string) => {
+  //     setSigning(true);
+  //     socket.emit(SocketEvents.TX_SIGN, {
+  //       id: transacionId,
+  //       hash: transactionHash,
+  //       signedMessage,
+  //     });
+  //   });
+  // };
 
-  const cancelSignTransaction = () => {
-    cancelSendTransaction();
-    isSafariBrowser && window.close();
-  };
+  // [CONNECTOR SIGNATURE]
+  // const cancelSignTransaction = () => {
+  //   cancelSendTransaction();
+  //   isSafariBrowser && window.close();
+  // };
 
   useEffect(() => {
     console.log('SOCKET_CONNECTED:', socket.connected);
@@ -177,6 +181,10 @@ export const useTransactionSocket = () => {
     });
 
     socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+
+    return () => {
+      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
+    };
   }, [socket.connected]);
 
   return {
@@ -188,13 +196,14 @@ export const useTransactionSocket = () => {
     send: {
       isLoading: sending,
       handler: sendTransaction,
-      redirectHandler: sendTransactionAndRedirectToSign,
-      cancel: cancelSignTransaction,
+      //redirectHandler: sendTransactionAndRedirectToSign, [CONNECTOR SIGNATURE]
+      cancel: cancelSendTransaction,
     },
-    sign: {
-      isLoading: signing,
-      handler: signTransaction,
-      cancel: cancelSignTransaction,
-    },
+    // [CONNECTOR SIGNATURE]
+    // sign: {
+    //   isLoading: signing,
+    //   handler: signTransaction,
+    //   cancel: cancelSignTransaction,
+    // },
   };
 };

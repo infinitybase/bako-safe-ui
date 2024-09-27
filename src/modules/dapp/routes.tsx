@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
-import { TransactionConfirm, TransactionSign, VaultConnector } from './pages';
+import { TransactionConfirm, VaultConnector } from './pages';
 
 const dappRoutes = (
   <>
@@ -20,7 +20,9 @@ const dappRoutes = (
 
     <Route path={Pages.dappTransaction()} element={<TransactionConfirm />} />
 
-    <Route path={Pages.dappTransactionSign()} element={<TransactionSign />} />
+    {/* [CONNECTOR SIGNATURE]
+    <Route path={Pages.dappTransactionSign()} element={<TransactionSign />} /> 
+    */}
   </>
 );
 

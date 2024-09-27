@@ -1,3 +1,3 @@
 export * from './transactionConfirm';
-export * from './transactionSign';
+//export * from './transactionSign'; [CONNECTOR SIGNATURE]
 export * from './VaultConnector';
