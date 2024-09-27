@@ -67,7 +67,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     isLoadingVault,
     resolveTransactionCosts: resolveTransactionCosts.isPending,
     transactionFee,
-    transactionFee,
   });
 
   const isDisabled =
