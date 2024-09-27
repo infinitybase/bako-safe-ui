@@ -1,9 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { PredicateAndWorkspace } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { createVault } from './createVault';
 import { instantiateVault } from './instantiateVault';
-import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
+import { useBakoSafeMutation } from './utils';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
@@ -30,19 +32,32 @@ interface IUseBakoSafeVault {
 
 const useBakoSafeVault = async ({ address, id }: IUseBakoSafeVault) => {
   const { authDetails } = useWorkspaceContext();
-  const { data, ...rest } = useBakoSafeQuery(
-    [...VAULT_QUERY_KEYS.VAULT(id), authDetails.userInfos.workspace?.id],
-    async () => {
+  const { data, ...rest } = useQuery({
+    queryKey: [
+      ...VAULT_QUERY_KEYS.VAULT(id),
+      authDetails.userInfos.workspace?.id,
+    ],
+    queryFn: async () => {
       const vault = await instantiateVault({
         predicateAddress: address,
       });
-
       return vault;
     },
-    {
-      enabled: !!id,
-    },
-  );
+    enabled: !!id,
+  });
+  console.log({ data });
+  // const { data, ...rest } = useBakoSafeQuery(
+  //   [...VAULT_QUERY_KEYS.VAULT(id), authDetails.userInfos.workspace?.id],
+  //   async () => {
+  //     const vault = await instantiateVault({
+  //       predicateAddress: address,
+  //     });
+  //     return vault;
+  //   },
+  //   {
+  //     enabled: !!id,
+  //   },
+  // );
   return {
     vault: data,
     ...rest,

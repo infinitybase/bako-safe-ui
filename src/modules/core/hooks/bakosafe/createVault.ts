@@ -10,9 +10,7 @@ interface ICreateVaultPayload {
 }
 
 const createVault = async ({ minSigners, signers }: ICreateVaultPayload) => {
-  // Vault não aceita name. Na SDK, por padrão ele usa o predicateAddress 256
-
-  const providerUrl = CookiesConfig.getCookie(CookieName.PROVIDER_URL);
+  const providerUrl = import.meta.env.VITE_NETWORK;
   const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
   const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
 
@@ -21,21 +19,12 @@ const createVault = async ({ minSigners, signers }: ICreateVaultPayload) => {
     SIGNERS: signers,
   };
 
-  const challenge = await BakoProvider.setup({
+  const vaultProvider = await BakoProvider.create(providerUrl, {
     address: userAddress,
-    provider: providerUrl,
-  });
-
-  console.log('challenge:', challenge);
-
-  const vaultProvider = await BakoProvider.authenticate(providerUrl, {
-    address: userAddress,
-    challenge,
-    // challenge:
-    //   'code0xf352b2a05182558b22b1914247673b65d76491780f48630f3e871e8bd56cc4ff',
-
     token,
   });
+
+  console.log({ a: vaultProvider.getBaseAssetId() });
 
   const predicate = new Vault(vaultProvider, {
     ...configurable,
@@ -43,7 +32,6 @@ const createVault = async ({ minSigners, signers }: ICreateVaultPayload) => {
   });
 
   const savedPredicate = await predicate.save();
-
   const vault = await VaultService.getByAddress(
     savedPredicate.predicateAddress,
   );

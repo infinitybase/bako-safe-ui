@@ -1,5 +1,4 @@
-import { Asset, FAKE_WITNESSES, ITransactionResume } from 'bakosafe';
-import { bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
+import { ITransactionResume } from 'bakosafe';
 
 import { api } from '@/config/api';
 
@@ -133,76 +132,13 @@ export class TransactionService {
   }
 
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
+    debugger;
     const { vault, assets } = input;
-
-    const predicateGasUsed = await vault.maxGasUsed();
-
-    let transactionRequest = new ScriptTransactionRequest();
-
-    const outputs = await Asset.assetsGroupByTo(assets);
-    const coins = await Asset.assetsGroupById(assets);
-    const transactionCoins = await Asset.addTransactionFee(
-      coins,
-      bn(0),
-      vault.provider,
-    );
-
-    const _coins = await vault.getResourcesToSpend(transactionCoins);
-
-    // Add outputs
-    Object.entries(outputs).map(([, value]) => {
-      transactionRequest.addCoinOutput(
-        vault.address,
-        value.amount,
-        value.assetId,
-      );
+    const request = await vault.transaction({
+      assets,
     });
-
-    // Add resources
-    transactionRequest.addResources(_coins);
-
-    // Add witnesses
-    const signatureCount = vault.getConfigurable().SIGNATURES_COUNT;
-    const fakeSignatures = Array.from(
-      { length: signatureCount },
-      () => FAKE_WITNESSES,
-    );
-    fakeSignatures.forEach((signature) =>
-      transactionRequest.addWitness(signature),
-    );
-
-    const transactionCost = await vault.getTransactionCost(transactionRequest);
-
-    transactionRequest = await vault.fund(transactionRequest, transactionCost);
-
-    // Calculate the total gas usage for the transaction
-    let totalGasUsed = bn(0);
-    transactionRequest.inputs.forEach((input) => {
-      if ('predicate' in input && input.predicate) {
-        input.witnessIndex = 0;
-        input.predicateGasUsed = undefined;
-        totalGasUsed = totalGasUsed.add(predicateGasUsed);
-      }
-    });
-
-    transactionRequest.witnesses.push(...fakeSignatures);
-
-    // Estimate the max fee for the transaction and calculate fee difference
-    const { gasPriceFactor } = vault.provider.getGasConfig();
-    const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
-      transactionRequest,
-    });
-
-    const predicateSuccessFeeDiff = calculateGasFee({
-      gas: totalGasUsed,
-      priceFactor: gasPriceFactor,
-      gasPrice,
-    });
-
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff);
-
     return {
-      fee: maxFeeWithDiff,
+      fee: request.tx.maxFee,
     };
   }
 

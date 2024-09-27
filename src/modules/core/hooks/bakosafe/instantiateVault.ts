@@ -23,20 +23,13 @@ const instantiateVault = async ({
     return vault;
   }
 
-  const providerUrl = CookiesConfig.getCookie(CookieName.PROVIDER_URL);
+  const providerUrl = import.meta.env.VITE_NETWORK;
   const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
   const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
 
-  const challenge = await BakoProvider.setup({
+  const vaultProvider = await BakoProvider.create(providerUrl, {
     address: userAddress,
-    provider: providerUrl,
-  });
-
-  const vaultProvider = await BakoProvider.authenticate(providerUrl, {
-    address: userAddress,
-    // I was using this with static value
-    challenge,
-    token: token,
+    token,
   });
 
   return await Vault.fromAddress(predicateAddress ?? '', vaultProvider);
