@@ -11,7 +11,7 @@ export enum EConnectors {
 
 export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
   'Fuel Wallet': 'FUEL',
-  'Fuelet Wallet': 'FULLET',
+  'Fuelet Wallet': 'FUEL',
 };
 
 export enum EConnectorsLabels {
