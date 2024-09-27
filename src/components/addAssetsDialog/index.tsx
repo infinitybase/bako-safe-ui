@@ -5,18 +5,18 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Dialog } from '../dialog';
 import { BridgeIcon, CoinsIcon, DownLeftArrow } from '../icons';
-import WelcomeCard from './card';
+import WelcomeCard from '../welcomeDialog/card';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;
-  setIsWelcomeDialogOpen: (value: boolean) => void;
+  setIsAddAssetDialogOpen: (value: boolean) => void;
   setIsDepositDialogOpen: (value: boolean) => void;
 }
 
-const WelcomeDialog = ({
+const AddAssetsDialog = ({
   isOpen,
   setIsDepositDialogOpen,
-  setIsWelcomeDialogOpen,
+  setIsAddAssetDialogOpen,
 }: IWelcomeDialogProps) => {
   const {
     screenSizes: {
@@ -26,7 +26,7 @@ const WelcomeDialog = ({
       isLowerThanFourHundredAndThirty,
     },
     authDetails: {
-      userInfos: { first_login, id, refetch },
+      userInfos: { id, refetch },
     },
   } = useWorkspaceContext();
 
@@ -34,25 +34,20 @@ const WelcomeDialog = ({
 
   const handleUpdateUser = async () => {
     updateUserMutation.mutate(
-      {
-        id,
-        first_login: false,
-      },
-      {
-        onSuccess: () => refetch(),
-      },
+      { id, first_login: false },
+      { onSuccess: () => refetch() },
     );
   };
 
   const handleOpenDepositDialog = () => {
     handleUpdateUser();
     setIsDepositDialogOpen(true);
-    setIsWelcomeDialogOpen(false);
+    setIsAddAssetDialogOpen(false);
   };
 
   const handleClose = () => {
     handleUpdateUser();
-    setIsWelcomeDialogOpen(false);
+    setIsAddAssetDialogOpen(false);
   };
 
   const handleRedirectToMainNet = async () => {
@@ -62,7 +57,7 @@ const WelcomeDialog = ({
   return (
     <Dialog.Modal
       onClose={() => handleClose()}
-      isOpen={(first_login && first_login && isOpen) ?? false}
+      isOpen={isOpen}
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'lg' }}
@@ -78,8 +73,8 @@ const WelcomeDialog = ({
           onClose={() => handleClose()}
           w="full"
           maxW={{ base: 480, xs: 'unset' }}
-          title="Welcome to Bako Safe!"
-          description={`Let's start by adding some funds to your personal vault.`}
+          title="Add your assets"
+          description={`Select your preferred method for adding funds to your personal vault.`}
           descriptionFontSize="12px"
           titleSxProps={{
             fontSize: '16px',
@@ -139,12 +134,10 @@ const WelcomeDialog = ({
             color="grey.75"
             borderColor="grey.75"
             w="full"
-            _hover={{
-              bg: '#f5f5f513',
-            }}
+            _hover={{ bg: '#f5f5f513' }}
             onClick={() => handleClose()}
           >
-            Skip this step and take a look into bako
+            Cancel
           </Button>
         </Dialog.Actions>
       </Dialog.Body>
@@ -152,4 +145,4 @@ const WelcomeDialog = ({
   );
 };
 
-export default WelcomeDialog;
+export default AddAssetsDialog;

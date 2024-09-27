@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
+import AddAssetsDialog from '@/components/addAssetsDialog';
 import DepositDialog from '@/components/depositDialog';
 import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
@@ -40,6 +41,7 @@ import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
+  const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
   const [depositDialogState, setDepositDialogState] = useState(false);
   const menuDrawer = useDisclosure();
   const {
@@ -104,6 +106,12 @@ const VaultDetailsPage = () => {
         isOpen={depositDialogState}
         setIsDepositDialogOpen={setDepositDialogState}
         vault={vault.data}
+      />
+
+      <AddAssetsDialog
+        isOpen={addAssetsDialogState}
+        setIsAddAssetDialogOpen={setAddAssetsDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
       />
 
       <HStack mb={9} w="full" justifyContent="space-between">
@@ -229,6 +237,7 @@ const VaultDetailsPage = () => {
           vault={vault}
           assets={assets}
           isPendingSigner={isPendingSigner}
+          setAddAssetsDialogState={setAddAssetsDialogState}
         />
 
         <SignersDetails
