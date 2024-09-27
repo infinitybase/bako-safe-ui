@@ -47,12 +47,16 @@ const useBakoSafeCreateTransaction = ({
         name: payload.name!,
         assets: payload.assets,
       });
-
+      console.log('asdasd');
       const transaction = await TransactionService.getByHash(hashTxId);
-
       return transaction;
     },
-    options,
+    {
+      ...options,
+      retry: (failureCount) => {
+        return failureCount < 5;
+      },
+    },
   );
 };
 

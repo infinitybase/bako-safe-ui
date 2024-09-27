@@ -120,7 +120,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       }
       handleClose();
     },
-
     onError: () => {
       errorToast({
         title: 'There was an error creating the transaction',
