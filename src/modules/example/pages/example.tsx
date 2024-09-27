@@ -249,7 +249,7 @@ const ExamplePage = () => {
                   <Icon as={ErrorIcon} />
                 </Badge>
                 <Badge variant="warning">
-                  <Icon as={PendingIcon} />1 waiting for your signature
+                  <Icon as={PendingIcon} />1 pending transaction
                 </Badge>
                 <Badge variant="warning">
                   <Icon as={PendingIcon} /> 1

@@ -30,7 +30,7 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
   return (
     <Badge h={5} variant="yellow" fontSize="xs">
       <Icon as={PendingIcon} fontSize={12} />
-      {`${quantity} waiting for your signature`}
+      {`${quantity} pending transaction`}
     </Badge>
   );
 };
