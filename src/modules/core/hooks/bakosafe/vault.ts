@@ -56,9 +56,11 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
     UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
-    async ({ minSigners, addresses }) => {
+    async ({ name, minSigners, addresses }) => {
+      console.log('[CREATE_VAULT]', name, minSigners, addresses);
       try {
         const newVault = await createVault({
+          name,
           minSigners,
           signers: addresses,
         });
