@@ -1,6 +1,6 @@
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
@@ -11,6 +11,7 @@ import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {

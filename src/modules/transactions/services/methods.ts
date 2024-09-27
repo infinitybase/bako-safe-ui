@@ -47,10 +47,13 @@ export class TransactionService {
   }
 
   static async signer(payload: SignerTransactionPayload) {
-    const { id, ...body } = payload;
+    const { hash, ...body } = payload;
     const { data } = await api.put<SignerTransactionResponse>(
-      `/transaction/signer/${id}`,
-      body,
+      `/transaction/sign/${hash}`,
+      {
+        signature: body.signer,
+        approve: !!body.confirm,
+      },
     );
     return data;
   }
@@ -139,30 +142,41 @@ export class TransactionService {
 
     let transactionRequest = new ScriptTransactionRequest();
 
-    const outputs = await Asset.assetsGroupByTo(assets);
-    const coins = await Asset.assetsGroupById(assets);
-    const transactionCoins = await Asset.addTransactionFee(
-      coins,
-      bn(0),
-      vault.provider,
-    );
+    if (assets.length) {
+      const outputs = Asset.assetsGroupByTo(assets);
+      const coins = Asset.assetsGroupById(assets);
+      const baseAssetId = vault.provider.getBaseAssetId();
+      const containETH = !!coins[baseAssetId];
 
-    const _coins = await vault.getResourcesToSpend(transactionCoins);
+      if (containETH) {
+        const value = bn(0).add(coins[baseAssetId]);
+        coins[baseAssetId] = value;
+      } else {
+        coins[baseAssetId] = bn(0);
+      }
+      const transactionCoins = Object.entries(coins).map(([key, value]) => {
+        return {
+          amount: value,
+          assetId: key,
+        };
+      });
+      const _coins = await vault.getResourcesToSpend(transactionCoins);
 
-    // Add outputs
-    Object.entries(outputs).map(([, value]) => {
-      transactionRequest.addCoinOutput(
-        vault.address,
-        value.amount,
-        value.assetId,
-      );
-    });
+      // Add outputs
+      Object.entries(outputs).map(([, value]) => {
+        transactionRequest.addCoinOutput(
+          vault.address,
+          value.amount,
+          value.assetId,
+        );
+      });
 
-    // Add resources
-    transactionRequest.addResources(_coins);
+      // Add resources
+      transactionRequest.addResources(_coins);
+    }
 
     // Add witnesses
-    const signatureCount = vault.getConfigurable().SIGNATURES_COUNT;
+    const signatureCount = vault.configurable.SIGNATURES_COUNT;
     const fakeSignatures = Array.from(
       { length: signatureCount },
       () => FAKE_WITNESSES,
@@ -172,7 +186,6 @@ export class TransactionService {
     );
 
     const transactionCost = await vault.getTransactionCost(transactionRequest);
-
     transactionRequest = await vault.fund(transactionRequest, transactionCost);
 
     // Calculate the total gas usage for the transaction

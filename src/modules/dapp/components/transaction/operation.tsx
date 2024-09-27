@@ -11,7 +11,10 @@ import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 import { IFuelTransactionNames } from '../../services';
 
 interface OperationProps {
-  vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
+  vault?: {
+    name: string;
+    predicateAddress: string;
+  };
   operation?: Operation;
 }
 

@@ -1,7 +1,6 @@
-import { SortOption } from 'bakosafe';
-
 import { api } from '@/config';
 import { IPagination, Notification, PaginationParams } from '@/modules/core';
+import { SortOption } from '@/modules/transactions/services';
 
 export interface GetAllNotificationsPayload extends PaginationParams {
   unread?: boolean;
