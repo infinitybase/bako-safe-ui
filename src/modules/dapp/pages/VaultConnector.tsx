@@ -53,30 +53,31 @@ const VaultConnector = () => {
   useEffect(() => {
     if (
       vaults.length === 1 &&
+      vaults[0].id &&
       !send.isPending &&
       name &&
       origin &&
       sessionId &&
-      request_id
+      request_id &&
+      userInfos.address
     ) {
       send.mutate({
         name: name,
         origin: origin,
         sessionId: sessionId,
         request_id: request_id,
-        vaultId: selectedVaultId,
+        vaultId: vaults[0].id,
         userAddress: userInfos.address,
       });
     }
   }, [
     name,
     origin,
-    request_id,
-    selectedVaultId,
-    send,
     sessionId,
+    request_id,
     userInfos.address,
     vaults.length,
+    send,
   ]);
 
   useEffect(() => {
