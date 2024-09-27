@@ -4,9 +4,11 @@ import {
   TransactionType,
   Vault,
 } from 'bakosafe';
-import { TransactionRequest } from 'fuels';
 
-import { TransactionService } from '@/modules/transactions/services';
+import {
+  TransactionService,
+  TransactionWithVault,
+} from '@/modules/transactions/services';
 
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
@@ -30,7 +32,7 @@ export interface IPayloadTransfer {
 
 interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
-  onSuccess: (result: TransactionRequest) => void;
+  onSuccess: (result: TransactionWithVault) => void;
   onError: () => void;
 }
 
@@ -41,11 +43,14 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      const { tx } = await vault.transaction({
+      const { hashTxId } = await vault.transaction({
         name: payload.name!,
         assets: payload.assets,
       });
-      return tx;
+
+      const transaction = await TransactionService.getByHash(hashTxId);
+
+      return transaction;
     },
     options,
   );
@@ -102,11 +107,7 @@ const useBakoSafeTransactionSend = (
       });
 
       try {
-        const txResult = await sendTransaction(
-          vaultInstance,
-          transaction.hash,
-          transaction.id,
-        );
+        const txResult = await sendTransaction(vaultInstance, transaction.hash);
 
         return txResult;
       } catch (e) {
