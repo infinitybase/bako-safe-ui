@@ -30,6 +30,7 @@ const instantiateVault = async ({
   const vaultProvider = await BakoProvider.create(providerUrl, {
     address: userAddress,
     token,
+    serverApi: import.meta.env.VITE_API_URL,
   });
 
   return await Vault.fromAddress(predicateAddress ?? '', vaultProvider);
