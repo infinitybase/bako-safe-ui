@@ -4,6 +4,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import {
+  EConnectors,
+  EConnectorsInverse,
+} from '@/modules/core/hooks/fuel/useListConnectors';
 
 import {
   generateRedirectQueryParams,
@@ -74,6 +78,14 @@ const useAuth = (): IUseAuthReturn => {
     };
   };
 
+  const userType = (): TypeUser => {
+    if (infos?.webauthn) return TypeUser.WEB_AUTHN;
+
+    const currentConnector = fuel.currentConnector()?.name as EConnectors;
+
+    return TypeUser[EConnectorsInverse[currentConnector]];
+  };
+
   return {
     handlers: {
       logout,
@@ -88,7 +100,7 @@ const useAuth = (): IUseAuthReturn => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
-      type: infos?.type!,
+      type: userType(),
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
       address: account,

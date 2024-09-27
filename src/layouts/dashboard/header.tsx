@@ -79,8 +79,15 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
-    authDetails.handlers.logout?.();
+    try {
+      authDetails.userInfos?.type === TypeUser.FUEL &&
+        (await fuel.disconnect());
+      // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
+      authDetails.handlers.logout?.();
+    }
   };
 
   // Bug fix to unread counter that keeps previous state after redirect

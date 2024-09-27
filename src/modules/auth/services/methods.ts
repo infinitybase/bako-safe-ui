@@ -14,6 +14,7 @@ export enum Encoder {
 
 export enum TypeUser {
   FUEL = 'FUEL',
+  FULLET = 'FULLET',
   WEB_AUTHN = 'WEB_AUTHN',
 }
 
