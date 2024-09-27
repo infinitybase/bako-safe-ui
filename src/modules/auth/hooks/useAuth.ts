@@ -33,7 +33,7 @@ const useAuth = (): IUseAuthReturn => {
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
   const signOutRequest = useSignOut();
-  const { account, singleWorkspace } = userAuthCookiesInfo();
+  const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
   const { sessionId, origin, name, request_id } = useQueryParams();
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const logout = () => {
-    if (!signOutRequest.isPending && account) {
+    if (accessToken) {
       signOutRequest.mutate();
     }
 
@@ -57,7 +57,7 @@ const useAuth = (): IUseAuthReturn => {
         request_id,
       });
       navigate(`/${queryParams}`);
-    }, 300);
+    }, 200);
   };
 
   const logoutWhenExpired = async () => {

@@ -6,6 +6,7 @@ const useSignOut = () => {
   return useMutation({
     mutationKey: ['auth/sign-out'],
     mutationFn: UserService.signOut,
+    retry: false,
   });
 };
 
