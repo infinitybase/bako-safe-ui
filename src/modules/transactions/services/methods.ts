@@ -173,14 +173,15 @@ export class TransactionService {
 
       // Add resources
       transactionRequest.addResources(_coins);
+    } else {
+      const resources = vault.generateFakeResources([
+        { amount: bn(0), assetId: vault.provider.getBaseAssetId() },
+      ]);
+      transactionRequest.addResources(resources);
     }
 
     // Add witnesses
-    const signatureCount = vault.configurable.SIGNATURES_COUNT;
-    const fakeSignatures = Array.from(
-      { length: signatureCount },
-      () => FAKE_WITNESSES,
-    );
+    const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
     fakeSignatures.forEach((signature) =>
       transactionRequest.addWitness(signature),
     );
@@ -198,8 +199,6 @@ export class TransactionService {
       }
     });
 
-    transactionRequest.witnesses.push(...fakeSignatures);
-
     // Estimate the max fee for the transaction and calculate fee difference
     const { gasPriceFactor } = vault.provider.getGasConfig();
     const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
@@ -213,6 +212,8 @@ export class TransactionService {
     });
 
     const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff);
+
+    console.log(`UI`, transactionRequest);
 
     return {
       fee: maxFeeWithDiff,
