@@ -19,7 +19,7 @@ const usePendingTransactionsList = (
         hash: transaction.hash,
         id: transaction.id,
         predicateId: transaction.predicateId,
-        predicateAddress: transaction.predicateAddress,
+        predicateAddress: transaction.predicate?.predicateAddress,
         resume: {
           witnesses: transaction.resume.witnesses,
           requiredSigners: transaction.resume.requiredSigners,
