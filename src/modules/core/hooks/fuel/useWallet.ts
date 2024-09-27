@@ -6,14 +6,14 @@ import {
 } from '@tanstack/react-query';
 import { Account } from 'fuels';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
-import { useAuth } from '@/modules/auth';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -71,7 +71,7 @@ const useWalletSignMessage = (
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (type) {
+      switch (type.type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,
