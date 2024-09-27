@@ -151,7 +151,7 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              declineTransaction(transaction.id);
+              declineTransaction(transaction.hash);
             }}
             isLoading={isTxActionsInLoading}
             isDisabled={disableActionButtons}

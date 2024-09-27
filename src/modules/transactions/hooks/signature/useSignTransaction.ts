@@ -117,18 +117,24 @@ const useSignTransaction = ({
     return executeTransaction(selectedTransaction!);
   };
 
-  const declineTransaction = async (transactionId: string) => {
-    await request.mutateAsync({
-      id: transactionId,
-      confirm: false,
-      account: CookiesConfig.getCookie(CookieName.ADDRESS),
-    });
-    transactionsPageRefetch();
-    pendingSignerTransactionsRefetch();
-    homeTransactionsRefetch();
-    queryClient.invalidateQueries({
-      queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
-    });
+  const declineTransaction = async (transactionHash: string) => {
+    await request.mutateAsync(
+      {
+        confirm: false,
+        account: CookiesConfig.getCookie(CookieName.ADDRESS),
+        hash: transactionHash,
+      },
+      {
+        onSuccess: async () => {
+          transactionsPageRefetch();
+          pendingSignerTransactionsRefetch();
+          homeTransactionsRefetch();
+          queryClient.invalidateQueries({
+            queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+          });
+        },
+      },
+    );
   };
 
   return {

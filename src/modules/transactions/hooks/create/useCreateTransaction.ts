@@ -13,6 +13,7 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -98,7 +99,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       props?.hasAssetBalance(asset, amount) ?? false,
   });
 
-  // Need to fix this type
   const { vault, isLoading: isLoadingVault } = useBakoSafeVault({
     address: predicateAddress,
     provider,
@@ -107,20 +107,17 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    onSuccess: (result: any) => {
+    onSuccess: (transaction: ITransaction) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
+
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
       if (props?.createTransactionAndSign) {
-        confirmTransaction(
-          result.BakoSafeTransaction.id,
-          undefined,
-          result.BakoSafeTransaction,
-        );
+        confirmTransaction(transaction.id, undefined, transaction);
       }
       handleClose();
     },
@@ -294,7 +291,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   useEffect(() => {
     if (firstRender && vault) {
-      console.log({ firstRender, vault });
       debouncedResolveTransactionCosts([], vault!);
       setFirstRender(false);
     }

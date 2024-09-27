@@ -249,7 +249,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                declineTransaction(transaction.id);
+                declineTransaction(transaction.hash);
               }}
               isLoading={isLoading}
               isDisabled={isSuccess && !awaitingAnswer}
