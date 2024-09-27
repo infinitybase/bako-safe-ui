@@ -10,6 +10,7 @@ import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
+import { TransactionWithVault } from '../../services';
 import {
   IPendingTransactionDetails,
   IPendingTransactionsRecord,
@@ -85,10 +86,19 @@ const useSignTransaction = ({
   const confirmTransaction = async (
     selectedTransactionId: string,
     callback?: () => void,
-    transactionInformations?: IPendingTransactionDetails,
+    transactionInformations?: TransactionWithVault,
   ) => {
     const transaction = transactionInformations
-      ? transactionInformations
+      ? {
+          hash: transactionInformations?.hash,
+          id: transactionInformations?.id,
+          predicateAddress:
+            transactionInformations?.predicate?.predicateAddress ?? '',
+          name: transactionInformations?.name,
+          predicateId: transactionInformations?.predicate?.id ?? '',
+          resume: transactionInformations?.resume,
+          status: transactionInformations?.status,
+        }
       : pendingTransactions?.[selectedTransactionId];
 
     setSelectedTransaction(transaction);

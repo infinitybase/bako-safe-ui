@@ -5,7 +5,10 @@ import {
   Vault,
 } from 'bakosafe';
 
-import { TransactionService } from '@/modules/transactions/services';
+import {
+  TransactionService,
+  TransactionWithVault,
+} from '@/modules/transactions/services';
 
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
@@ -29,7 +32,7 @@ export interface IPayloadTransfer {
 
 interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
-  onSuccess: (result: ITransaction) => void;
+  onSuccess: (result: TransactionWithVault) => void;
   onError: () => void;
 }
 
@@ -100,9 +103,7 @@ const useBakoSafeTransactionSend = (
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction }: BakoSafeTransactionSendVariables) => {
       const vaultInstance = await instantiateVault({
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - TODO: Change transaction type
-        predicateAddress: transaction.predicate.predicateAddress,
+        predicateAddress: transaction.predicateAddress,
       });
 
       try {
