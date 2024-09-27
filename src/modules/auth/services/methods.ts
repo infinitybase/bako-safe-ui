@@ -60,6 +60,7 @@ export type SignInResponse = {
   id: string;
   notify: boolean;
   rootWallet: string;
+  first_login: boolean;
   webAuthn?: {
     id: string;
     publicKey: string;
@@ -91,6 +92,7 @@ export type AuthenticateParams = {
   singleWorkspace: string;
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
   provider_url: string;
+  first_login?: boolean;
 };
 
 export type AuthenticateWorkspaceParams = {
@@ -129,6 +131,7 @@ export type IGetUserInfosResponse = {
   onSingleWorkspace: boolean;
   type: TypeUser;
   webauthn: SignWebAuthnPayload;
+  first_login?: boolean;
   workspace: {
     avatar: string;
     id: string;
@@ -136,7 +139,6 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
-  firstLogin: boolean;
 };
 
 export class UserService {
@@ -187,7 +189,7 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      provider: 'http://localhost:4000/v1/graphql',
+      provider: import.meta.env.VITE_NETWORK,
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain

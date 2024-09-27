@@ -1,6 +1,6 @@
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -11,7 +11,7 @@ import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
-import { useCreateVaultForm } from './useCreateVaultForm';
+import { useCreateVaultForm, useValidateAddress } from '.';
 
 export enum TabState {
   INFO,
@@ -59,6 +59,13 @@ const useCreateVault = () => {
       });
     },
   });
+
+  const {
+    currentValidateAddressIndex,
+    isAddressValid,
+    validatingAddress,
+    validateAddress,
+  } = useValidateAddress();
 
   let vaultNameIsAvailable = false;
 
@@ -157,6 +164,15 @@ const useCreateVault = () => {
     });
   };
 
+  useEffect(() => {
+    if (!isAddressValid) {
+      form.setError(`addresses.${currentValidateAddressIndex}.value`, {
+        type: 'custom',
+        message: 'You cannot add a vault as a signer',
+      });
+    }
+  }, [currentValidateAddressIndex, isAddressValid]);
+
   return {
     form: {
       ...form,
@@ -184,6 +200,10 @@ const useCreateVault = () => {
     selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
+    validateAddress: {
+      handler: validateAddress,
+      isLoading: validatingAddress,
+    },
   };
 };
 

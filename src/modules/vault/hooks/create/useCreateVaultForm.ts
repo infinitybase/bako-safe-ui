@@ -3,11 +3,10 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils } from '@/modules/core/utils';
-import { Address } from 'fuels';
 
 const schema = yup
   .object({
-    name: yup.string().required('Name is required.').trim(),
+    name: yup.string().required('Name is required').trim(),
     description: yup.string().optional(),
     addresses: yup.array().of(
       yup.object({
@@ -19,7 +18,7 @@ const schema = yup
           )
           .test(
             'is-equal-addresses',
-            'Address registered.',
+            'Address registered',
             (address, context) => {
               const schema = context.from?.at(1);
               const addresses = schema?.value.addresses.map(
@@ -28,11 +27,7 @@ const schema = yup
               const addressIndex = context.path.replace(/\D/g, '');
               const hasAddress = addresses.some(
                 (value: string, _index: number) => {
-                  return (
-                    Number(addressIndex) !== _index &&
-                    Address.fromString(value).bech32Address ===
-                      Address.fromString(address).bech32Address
-                  );
+                  return Number(addressIndex) !== _index && value === address;
                 },
               );
 

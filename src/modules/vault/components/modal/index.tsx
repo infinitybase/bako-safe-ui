@@ -80,7 +80,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
             <FormControl>
               <Input
                 placeholder=" "
-                // variant="custom"
                 bg="transparent"
                 colorScheme="dark"
                 onChange={search.handler}

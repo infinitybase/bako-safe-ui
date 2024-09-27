@@ -3,14 +3,14 @@ import {
   BoxProps,
   Flex,
   HStack,
-  Icon,
   Text,
+  Image,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { CustomSkeleton, UnknownIcon } from '@/components';
+import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -76,20 +76,24 @@ const Amount = ({
             position="relative"
           >
             {hasNoDefaultAssets && (
-              <Icon
+              <Image
                 key={assetsMap[operationAssets.assetId]?.assetId}
                 w={6}
                 h={6}
-                as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
+                src={assetsMap[operationAssets.assetId]?.icon ?? ''}
+                alt="Asset Icon"
+                objectFit="cover"
               />
             )}
 
             {oneAssetOfEach.map((asset) => (
-              <Icon
+              <Image
                 key={asset.assetId}
                 w={6}
                 h={6}
-                as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
+                src={assetsMap[asset.assetId]?.icon ?? ''}
+                alt="Asset Icon"
+                objectFit="cover"
               />
             ))}
           </AvatarGroup>

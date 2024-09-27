@@ -95,6 +95,7 @@ const icon = defineStyle({
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
+  _focus: { ring: 'none' },
 });
 
 const Button = defineStyleConfig({
