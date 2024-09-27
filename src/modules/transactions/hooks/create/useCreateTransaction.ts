@@ -13,7 +13,6 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -107,7 +106,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    onSuccess: (transaction: ITransaction) => {
+    onSuccess: (transaction) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
