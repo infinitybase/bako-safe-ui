@@ -31,7 +31,6 @@ import { useAuthSocket, useUserVaults, useVerifyBrowserType } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
-  const [noVaultOnFirstLoad, setNoVaultOnFirstLoad] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState(0);
   const [connectingManually, setConnectingManually] = useState(false);
 
@@ -49,6 +48,8 @@ const VaultConnector = () => {
     useAuthSocket();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const noVaultsAvailable = isSuccess && !vaults.length;
 
   useEffect(() => {
     if (
@@ -79,12 +80,6 @@ const VaultConnector = () => {
     vaults.length,
     send,
   ]);
-
-  useEffect(() => {
-    if (vaults.length && noVaultOnFirstLoad) {
-      setNoVaultOnFirstLoad(false);
-    }
-  }, [vaults.length]);
 
   useEffect(() => {
     const clientWindowHeight = window.innerHeight;
@@ -129,7 +124,7 @@ const VaultConnector = () => {
             {/* Result */}
             <VStack
               w="full"
-              h={noVaultOnFirstLoad ? 140 : `${dynamicHeight}px`}
+              h={noVaultsAvailable ? 140 : `${dynamicHeight}px`}
               pt={4}
               spacing={2}
               overflowY="scroll"
@@ -184,7 +179,7 @@ const VaultConnector = () => {
             </VStack>
 
             {/* No vaults */}
-            {isSuccess && !isFetching && noVaultOnFirstLoad && (
+            {!isFetching && noVaultsAvailable && (
               <VStack mb={6}>
                 <Card
                   w="full"
@@ -234,7 +229,7 @@ const VaultConnector = () => {
               </VStack>
             )}
 
-            {!noVaultOnFirstLoad && <Divider borderColor="grey.425" mb={6} />}
+            {!noVaultsAvailable && <Divider borderColor="grey.425" mb={6} />}
 
             <HStack w="full" justifyContent="center" pb={10}>
               <Button
@@ -244,12 +239,12 @@ const VaultConnector = () => {
                   handlers.logout?.();
                   window.close();
                 }}
-                w={noVaultOnFirstLoad ? 'full' : 'unset'}
+                w={noVaultsAvailable ? 'full' : 'unset'}
               >
                 Cancel
               </Button>
 
-              {!noVaultOnFirstLoad && (
+              {!noVaultsAvailable && (
                 <Button
                   variant="primary"
                   width="100%"
