@@ -161,6 +161,11 @@ export class UserService {
     return data;
   }
 
+  static async signOut() {
+    const { data } = await api.delete<void>('/auth/sign-out');
+    return data;
+  }
+
   static async getUserInfos() {
     const { data } = await api.get<IGetUserInfosResponse>('/user/latest/info');
 

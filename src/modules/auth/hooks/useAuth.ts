@@ -9,6 +9,7 @@ import {
   generateRedirectQueryParams,
   useAuthCookies,
   useQueryParams,
+  useSignOut,
 } from '..';
 import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
@@ -27,6 +28,7 @@ const useAuth = (): IUseAuthReturn => {
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
+  const signOutRequest = useSignOut();
   const { account, singleWorkspace } = userAuthCookiesInfo();
   const { sessionId, origin, name, request_id } = useQueryParams();
   const navigate = useNavigate();
@@ -36,16 +38,22 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const logout = () => {
-    clearAuthCookies();
-    queryClient.clear();
+    if (!signOutRequest.isPending && account) {
+      signOutRequest.mutate();
+    }
 
-    const queryParams = generateRedirectQueryParams({
-      sessionId,
-      origin,
-      name,
-      request_id,
-    });
-    navigate(`/${queryParams}`);
+    setTimeout(() => {
+      clearAuthCookies();
+      queryClient.clear();
+
+      const queryParams = generateRedirectQueryParams({
+        sessionId,
+        origin,
+        name,
+        request_id,
+      });
+      navigate(`/${queryParams}`);
+    }, 300);
   };
 
   const logoutWhenExpired = async () => {
