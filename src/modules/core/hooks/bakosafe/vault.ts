@@ -30,7 +30,7 @@ interface IUseBakoSafeVault {
   id: string;
 }
 
-const useBakoSafeVault = async ({ address, id }: IUseBakoSafeVault) => {
+const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
   const { authDetails } = useWorkspaceContext();
   const { data, ...rest } = useQuery({
     queryKey: [
