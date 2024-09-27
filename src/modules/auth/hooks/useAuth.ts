@@ -41,8 +41,8 @@ const useAuth = (): IUseAuthReturn => {
     setAuthCookies(params);
   };
 
-  const logout = () => {
-    if (accessToken) {
+  const logout = (removeTokenFromDb = true) => {
+    if (accessToken && removeTokenFromDb) {
       signOutRequest.mutate();
     }
 

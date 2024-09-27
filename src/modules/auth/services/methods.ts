@@ -116,7 +116,7 @@ export type IUseAuthReturn = {
   }>;
   invalidAccount: boolean;
   handlers: {
-    logout: () => void;
+    logout: (removeTokenFromDb?: boolean) => void;
     logoutWhenExpired: () => void;
     authenticate: (params: AuthenticateParams) => void;
     setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
