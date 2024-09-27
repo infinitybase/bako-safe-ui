@@ -24,8 +24,6 @@ const createVault = async ({ minSigners, signers }: ICreateVaultPayload) => {
     token,
   });
 
-  console.log({ a: vaultProvider.getBaseAssetId() });
-
   const predicate = new Vault(vaultProvider, {
     ...configurable,
     HASH_PREDICATE: Address.fromRandom().toB256(),

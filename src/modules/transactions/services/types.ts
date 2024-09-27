@@ -100,7 +100,7 @@ export interface GetVaultTransactionsParams {
 }
 
 export interface SignerTransactionPayload {
-  id: string;
+  hash: string;
   signer?: string;
   account: string;
   confirm: boolean;
