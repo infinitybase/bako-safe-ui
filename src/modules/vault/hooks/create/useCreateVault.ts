@@ -65,6 +65,7 @@ const useCreateVault = () => {
     isAddressValid,
     validatingAddress,
     validateAddress,
+    setCurrentValidateAddressIndex,
   } = useValidateAddress();
 
   let vaultNameIsAvailable = false;
@@ -165,11 +166,12 @@ const useCreateVault = () => {
   };
 
   useEffect(() => {
-    if (!isAddressValid) {
+    if (!isAddressValid && currentValidateAddressIndex) {
       form.setError(`addresses.${currentValidateAddressIndex}.value`, {
         type: 'custom',
         message: 'You cannot add a vault as a signer',
       });
+      setCurrentValidateAddressIndex(null);
     }
   }, [currentValidateAddressIndex, isAddressValid]);
 
