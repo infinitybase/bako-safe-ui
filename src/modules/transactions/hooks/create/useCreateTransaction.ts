@@ -294,6 +294,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   useEffect(() => {
     if (firstRender && vault) {
+      console.log({ firstRender, vault });
       debouncedResolveTransactionCosts([], vault!);
       setFirstRender(false);
     }

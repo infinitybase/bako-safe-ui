@@ -102,7 +102,7 @@ const useSignTransaction = ({
         account: CookiesConfig.getCookie(CookieName.ADDRESS),
         confirm: true,
         signer: signedMessage,
-        id: transaction?.id,
+        hash: transaction?.hash,
       },
       {
         onSuccess: async () => {

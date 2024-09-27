@@ -62,6 +62,14 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     !transactionFee ||
     Number(transactionFee) === 0;
 
+  console.log({
+    isTransactionFeeLoading,
+    isLoadingVault,
+    resolveTransactionCosts: resolveTransactionCosts.isPending,
+    transactionFee,
+    transactionFee,
+  });
+
   const isDisabled =
     !form.formState.isValid || isCurrentAmountZero || isTransactionFeeLoading;
 
