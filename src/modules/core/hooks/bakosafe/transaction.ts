@@ -100,7 +100,9 @@ const useBakoSafeTransactionSend = (
     TRANSACTION_QUERY_KEYS.SEND(),
     async ({ transaction }: BakoSafeTransactionSendVariables) => {
       const vaultInstance = await instantiateVault({
-        predicateAddress: transaction.predicateAddress,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - TODO: Change transaction type
+        predicateAddress: transaction.predicate.predicateAddress,
       });
 
       try {
