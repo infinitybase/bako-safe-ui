@@ -13,7 +13,7 @@ const useUserVaults = () => {
   const {
     request: { vaults, ...rest },
     inView,
-  } = useVaultDrawer({ orderByRoot: true });
+  } = useVaultDrawer({ perPage: 10, orderByRoot: true });
 
   const userValidVaults = useMemo(() => {
     return vaults.filter(({ workspace }) => {

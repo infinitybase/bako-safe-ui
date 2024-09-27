@@ -17,6 +17,7 @@ interface UseVaultDrawerParams {
     },
   ) => void;
   orderByRoot?: boolean;
+  perPage?: number;
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
@@ -45,7 +46,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   } = useTransactionsContext();
 
   const vaultList = useVaultListRequest(
-    { q: search, orderByRoot: props.orderByRoot },
+    { q: search, perPage: props.perPage, orderByRoot: props.orderByRoot },
     props.isOpen,
   );
 
