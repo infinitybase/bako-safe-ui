@@ -22,6 +22,7 @@ const createVault = async ({ minSigners, signers }: ICreateVaultPayload) => {
   const vaultProvider = await BakoProvider.create(providerUrl, {
     address: userAddress,
     token,
+    serverApi: import.meta.env.VITE_API_URL,
   });
 
   const predicate = new Vault(vaultProvider, {
