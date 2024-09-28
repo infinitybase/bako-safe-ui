@@ -111,7 +111,7 @@ const WorkspaceBalancePage = () => {
         <CustomSkeleton isLoaded={!workspaceBalance.isLoading} flex={1}>
           {workspaceBalance.balance.assetsBalance.length > 0 ? (
             <AssetsBalanceList
-              assets={workspaceBalance.balance.assetsBalance}
+              assets={{ ...workspaceBalance.balance.assetsBalance }}
             />
           ) : (
             <EmptyState
