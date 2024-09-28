@@ -7,8 +7,8 @@ import {
 } from '@/modules/vault/hooks/list/useVaultTransactionsList';
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
-import { useSignTransaction } from '../signature';
 import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
+import { useSignTransaction } from '../signature';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
@@ -16,6 +16,7 @@ const useTransactionDetails = () => {
   const {
     userInfos: { workspace },
   } = useAuth();
+
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();

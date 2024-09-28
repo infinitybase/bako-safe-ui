@@ -1,5 +1,4 @@
 import { useFuel } from '@fuels/react';
-import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -64,7 +63,7 @@ const useAuth = (): IUseAuthReturn => {
       provider: await Provider.create(
         _userProvider
           ? (await fuel.currentNetwork()).url
-          : BakoSafe.getProviders('CHAIN_URL'),
+          : 'http://localhost:4000/v1/graphql',
       ),
     };
   };

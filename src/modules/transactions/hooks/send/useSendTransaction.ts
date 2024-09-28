@@ -1,7 +1,8 @@
-import { ITransaction, TransactionStatus } from 'bakosafe';
+import { TransactionStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
 import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
@@ -57,7 +58,10 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   };
 
   const executeTransaction = (
-    transaction: Pick<ITransaction, 'id' | 'predicateId' | 'resume' | 'name'>,
+    transaction: Pick<
+      ITransaction,
+      'id' | 'predicateId' | 'resume' | 'name' | 'predicateAddress' | 'hash'
+    >,
   ) => {
     const wasTheLastSignature =
       transaction!.resume!.witnesses.filter(

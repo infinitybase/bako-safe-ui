@@ -5,7 +5,7 @@ import { useVaultByAddressRequest } from '../useVaultByAddressRequest';
 const useValidateAddress = () => {
   const [address, setAddress] = useState('');
   const [enabled, setEnabled] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   const request = useVaultByAddressRequest(address, enabled);
 
@@ -20,6 +20,7 @@ const useValidateAddress = () => {
     isAddressValid: !request.data?.id,
     validatingAddress: request.isLoading,
     validateAddress,
+    setCurrentValidateAddressIndex: setCurrentIndex,
   };
 };
 

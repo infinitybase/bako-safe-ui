@@ -79,13 +79,18 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
 
   const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
+  const hasOneAddress = addresses.fields.length === 1;
+  const hasTenAddress = addresses.fields.length >= 10;
+
   const isDisable =
-    !!form.formState.errors.addresses || validateAddress.isLoading;
+    (!!form.formState.errors.addresses ||
+      validateAddress.isLoading ||
+      hasTenAddress) &&
+    !hasOneAddress;
+
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
-
-  const hasTenAddress = addresses.fields.length >= 10;
 
   return (
     <>
@@ -244,7 +249,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                 bgColor="grey.200"
                 variant="secondary"
                 mt="auto"
-                isDisabled={isDisable || hasTenAddress}
+                isDisabled={isDisable}
                 onClick={() => {
                   addresses.append();
                   form.setValue(

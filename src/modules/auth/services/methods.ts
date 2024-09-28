@@ -1,6 +1,5 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { BakoSafe } from 'bakosafe';
 import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
@@ -66,6 +65,7 @@ export type SignInResponse = {
     id: string;
     publicKey: string;
   };
+  provider: string;
 };
 
 export type CheckNicknameResponse = {
@@ -91,6 +91,7 @@ export type AuthenticateParams = {
   permissions: IPermission;
   singleWorkspace: string;
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+  provider_url: string;
   first_login?: boolean;
 };
 
@@ -188,7 +189,7 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      provider: BakoSafe.getProviders('CHAIN_URL'),
+      provider: import.meta.env.VITE_NETWORK,
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -220,9 +221,9 @@ export class UserService {
   }
 
   static async generateSignInCode(address: string) {
-    const { data } = await api.post<CreateUserResponse>(
-      `/auth/code/${address}`,
-    );
+    const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
+      address,
+    });
     return data;
   }
 }

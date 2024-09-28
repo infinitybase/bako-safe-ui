@@ -47,7 +47,7 @@ const useCreateVault = () => {
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       refetchLatestPredicates();
-      setVaultId(data.BakoSafeVaultId);
+      setVaultId(data.id);
       setTab(TabState.SUCCESS);
       form.reset();
       setSearch('');
@@ -65,6 +65,7 @@ const useCreateVault = () => {
     isAddressValid,
     validatingAddress,
     validateAddress,
+    setCurrentValidateAddressIndex,
   } = useValidateAddress();
 
   let vaultNameIsAvailable = false;
@@ -119,12 +120,12 @@ const useCreateVault = () => {
   const onDeposit = async () => {
     if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.address}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.predicateAddress}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bakoSafeVault.data.BakoSafeVaultId,
+          vaultId: bakoSafeVault.data.id,
           workspaceId: params.workspaceId!,
         }),
       );
@@ -165,11 +166,12 @@ const useCreateVault = () => {
   };
 
   useEffect(() => {
-    if (!isAddressValid) {
+    if (!isAddressValid && currentValidateAddressIndex) {
       form.setError(`addresses.${currentValidateAddressIndex}.value`, {
         type: 'custom',
         message: 'You cannot add a vault as a signer',
       });
+      setCurrentValidateAddressIndex(null);
     }
   }, [currentValidateAddressIndex, isAddressValid]);
 
