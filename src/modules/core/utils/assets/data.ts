@@ -51,6 +51,7 @@ export const UNKNOWN_ASSET = {
   slug: 'UNK',
   assetId: 'UNKNOWN',
   icon: '/src/assets/tokens/unknown.svg',
+  units: 18,
 };
 
 export const formatedAssets = (chainId: number): Asset[] =>
@@ -65,6 +66,7 @@ export const formatedAssets = (chainId: number): Asset[] =>
           slug: asset.symbol,
           assetId: network.assetId,
           icon: asset.icon,
+          units: network.decimals,
         });
       }
       return acc;
@@ -85,6 +87,7 @@ const assetsMap: AssetMap = formatedAssets(
       slug: currentValue.slug,
       icon: currentValue.icon,
       assetId: currentValue.assetId,
+      units: currentValue.units,
     },
   };
 }, {});
