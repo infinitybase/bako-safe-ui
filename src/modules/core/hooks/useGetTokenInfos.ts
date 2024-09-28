@@ -11,7 +11,11 @@ const useGetTokenInfos = ({
   amount = '0.000',
 }: Pick<Asset, 'assetId' | 'amount'>) => {
   const assetsInfo = assetsMap[assetId!] ?? assetsMap['UNKNOWN'];
-  const assetAmount = isHex(amount) ? bn(amount).format() : amount;
+  const assetAmount = isHex(amount)
+    ? bn(amount).format({
+        units: assetsInfo.units,
+      })
+    : amount;
 
   return { assetsInfo, assetAmount };
 };
