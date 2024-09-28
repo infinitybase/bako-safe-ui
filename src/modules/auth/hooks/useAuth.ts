@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import {
+  EConnectors,
+  EConnectorsInverse,
+} from '@/modules/core/hooks/fuel/useListConnectors';
 
 import {
   generateRedirectQueryParams,
   useAuthCookies,
   useQueryParams,
 } from '..';
-import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
+import {
+  AuthenticateParams,
+  IUseAuthReturn,
+  TypeUser,
+  UserType,
+} from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -55,7 +64,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
+    const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
@@ -63,6 +72,19 @@ const useAuth = (): IUseAuthReturn => {
           ? (await fuel.currentNetwork()).url
           : 'http://localhost:4000/v1/graphql',
       ),
+    };
+  };
+
+  const userType = (): UserType => {
+    if (infos?.webauthn)
+      return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
+
+    const currentConnector = fuel.currentConnector()?.name as EConnectors;
+    console.log('🚀 ~ userType ~ currentConnector:', currentConnector);
+
+    return {
+      type: TypeUser[EConnectorsInverse[currentConnector]],
+      name: currentConnector,
     };
   };
 
@@ -80,7 +102,7 @@ const useAuth = (): IUseAuthReturn => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
-      type: infos?.type!,
+      type: userType(),
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
       address: account,
