@@ -87,7 +87,10 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
-      onCancel: close(() => tabs.set(TabState.INFO)),
+      onCancel: close(() => {
+        tabs.set(TabState.INFO);
+        close(handleCancel)();
+      }),
       closeText: 'Cancel',
       nextStepText: 'Create Vault',
     },

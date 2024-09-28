@@ -80,14 +80,14 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    if (
+    try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
-      authDetails.userInfos?.type.name !== EConnectors.FULLET
-    ) {
-      await fuel.disconnect().catch(() => {
-        authDetails.handlers.logout?.();
-      });
-    } else {
+        authDetails.userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+      // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
       authDetails.handlers.logout?.();
     }
   };

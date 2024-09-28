@@ -39,6 +39,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
+                maxLength={27}
               />
               <FormLabel>Key name</FormLabel>
               <FormHelperText color="error.500">
@@ -58,6 +59,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 value={field.value}
                 onChange={field.onChange}
                 placeholder=" "
+                maxLength={199}
               />
               <FormLabel>Transaction name</FormLabel>
               <FormHelperText color="error.500">
