@@ -46,6 +46,7 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         render={({ field, fieldState }) => (
           <FormControl isInvalid={fieldState.invalid}>
             <Input
+              maxLength={27}
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
