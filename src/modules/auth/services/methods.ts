@@ -117,7 +117,7 @@ export type IUseAuthReturn = {
   }>;
   invalidAccount: boolean;
   handlers: {
-    logout: () => void;
+    logout: (removeTokenFromDb?: boolean) => void;
     logoutWhenExpired: () => void;
     authenticate: (params: AuthenticateParams) => void;
     setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
@@ -165,6 +165,11 @@ export class UserService {
       throw new Error('Invalid signature');
     }
 
+    return data;
+  }
+
+  static async signOut() {
+    const { data } = await api.delete<void>('/auth/sign-out');
     return data;
   }
 

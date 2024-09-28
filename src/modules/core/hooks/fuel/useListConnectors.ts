@@ -2,7 +2,7 @@ import { useConnectors } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
 
-import { FueletIcon, FuelIcon } from '@/components';
+import { FueletIcon, FuelIcon } from '@/components/icons/connectors';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
