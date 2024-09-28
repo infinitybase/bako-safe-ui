@@ -23,7 +23,12 @@ import {
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import {
+  NetworkType,
+  Pages,
+  PermissionRoles,
+  useCurrentNetwork,
+} from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
@@ -35,12 +40,16 @@ export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
   vault: UseVaultDetailsReturn['vault'];
   blockedTransfers: boolean;
+  setAddAssetsDialogState: (state: boolean) => void;
 }
 
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { vault, assets, blockedTransfers } = props;
+  const { vault, assets, blockedTransfers, setAddAssetsDialogState } = props;
   const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
+  const { checkNetwork } = useCurrentNetwork();
+
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const {
     authDetails: { userInfos },
@@ -217,11 +226,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
-                            openFaucet(vault.data?.predicateAddress)
+                            isTestnet
+                              ? openFaucet(vault.data?.predicateAddress)
+                              : setAddAssetsDialogState(true)
                           }
                           position="relative"
                         >
-                          Faucet
+                          {isTestnet ? 'Faucet' : 'Add Assets'}
                         </Button>
                         <Text
                           variant="description"

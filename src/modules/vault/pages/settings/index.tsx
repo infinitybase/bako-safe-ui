@@ -9,10 +9,13 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import { HomeIcon } from '@/components';
+import AddAssetsDialog from '@/components/addAssetsDialog';
+import DepositDialog from '@/components/depositDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -23,6 +26,8 @@ import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultSettingsPage = () => {
+  const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
+  const [depositDialogState, setDepositDialogState] = useState(false);
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
@@ -46,6 +51,18 @@ const VaultSettingsPage = () => {
   return (
     <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+
+      <DepositDialog
+        isOpen={depositDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
+        vault={vault.data}
+      />
+
+      <AddAssetsDialog
+        isOpen={addAssetsDialogState}
+        setIsAddAssetDialogOpen={setAddAssetsDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
+      />
 
       <HStack mb={8} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
@@ -147,6 +164,7 @@ const VaultSettingsPage = () => {
           vault={vault}
           assets={assets}
           blockedTransfers={isPendingSigner}
+          setAddAssetsDialogState={setAddAssetsDialogState}
         />
         <SettingsSigners vault={vault} />
       </VStack>

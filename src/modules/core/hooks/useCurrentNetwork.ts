@@ -8,9 +8,10 @@ export enum NetworkType {
 export const useCurrentNetwork = () => {
   const { network: fuelsNetwork } = useNetwork();
 
-  // const network = {
+  // Mock to emulate a mainnet network
+  // const fuelsNetwork = {
   //   url: 'https://app-mainnet.fuel.network',
-  //   chainId: '071234',
+  //   chainId: 'chainId',
   // };
 
   const network = fuelsNetwork ?? { url: import.meta.env.VITE_NETWORK };
