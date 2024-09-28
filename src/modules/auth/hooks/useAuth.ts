@@ -15,7 +15,12 @@ import {
   useQueryParams,
   useSignOut,
 } from '..';
-import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
+import {
+  AuthenticateParams,
+  IUseAuthReturn,
+  TypeUser,
+  UserType,
+} from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -67,7 +72,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
+    const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
@@ -78,12 +83,17 @@ const useAuth = (): IUseAuthReturn => {
     };
   };
 
-  const userType = (): TypeUser => {
-    if (infos?.webauthn) return TypeUser.WEB_AUTHN;
+  const userType = (): UserType => {
+    if (infos?.webauthn)
+      return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
 
     const currentConnector = fuel.currentConnector()?.name as EConnectors;
+    console.log('🚀 ~ userType ~ currentConnector:', currentConnector);
 
-    return TypeUser[EConnectorsInverse[currentConnector]];
+    return {
+      type: TypeUser[EConnectorsInverse[currentConnector]],
+      name: currentConnector,
+    };
   };
 
   return {

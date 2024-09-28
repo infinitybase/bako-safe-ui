@@ -4,6 +4,7 @@ import { Address, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
@@ -124,13 +125,18 @@ export type IUseAuthReturn = {
   userInfos: IUserInfos;
 };
 
+export type UserType = {
+  type: TypeUser;
+  name: EConnectors;
+};
+
 export type IGetUserInfosResponse = {
   address: string;
   avatar: string;
   id: string;
   name: string;
   onSingleWorkspace: boolean;
-  type: TypeUser;
+  type: UserType;
   webauthn: SignWebAuthnPayload;
   first_login?: boolean;
   workspace: {

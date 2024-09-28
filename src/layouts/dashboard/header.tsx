@@ -28,6 +28,7 @@ import {
 } from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -79,7 +80,10 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    if (authDetails.userInfos?.type === TypeUser.FUEL) {
+    if (
+      authDetails.userInfos?.type.type === TypeUser.FUEL &&
+      authDetails.userInfos?.type.name !== EConnectors.FULLET
+    ) {
       await fuel.disconnect().catch(() => {
         authDetails.handlers.logout?.();
       });

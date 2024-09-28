@@ -2,16 +2,18 @@ import { useConnectors } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
 
-import { FueletIcon, FuelIcon } from '@/components';
+import { FueletIcon, FuelIcon } from '@/components/icons/connectors';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
   FULLET = 'Fuelet Wallet',
+  WEB_AUTHN = 'Webauthn',
 }
 
 export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
   'Fuel Wallet': 'FUEL',
-  'Fuelet Wallet': 'FULLET',
+  'Fuelet Wallet': 'FUEL',
+  Webauthn: 'WEB_AUTHN',
 };
 
 export enum EConnectorsLabels {
