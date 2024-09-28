@@ -1,5 +1,6 @@
 import { Button, VStack } from '@chakra-ui/react';
 
+import { NetworkType, useCurrentNetwork } from '@/modules';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -31,6 +32,9 @@ const WelcomeDialog = ({
   } = useWorkspaceContext();
 
   const updateUserMutation = useUpdateSettingsRequest();
+
+  const { checkNetwork } = useCurrentNetwork();
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const handleUpdateUser = async () => {
     updateUserMutation.mutate(
@@ -103,7 +107,8 @@ const WelcomeDialog = ({
             title="Bridge"
             description="Transfer between different networks."
             icon={BridgeIcon}
-            onClick={() => handleRedirectToMainNet()}
+            commingSoon={isTestnet}
+            onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
           />
           <WelcomeCard
             title="Purchase"
