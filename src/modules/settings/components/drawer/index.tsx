@@ -128,6 +128,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
                       variant="dark"
+                      maxLength={19}
                       placeholder=" "
                       value={inputValue}
                       onChange={(e) => {

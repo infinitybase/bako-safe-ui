@@ -15,7 +15,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { Address } from 'fuels';
 import { useEffect } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
@@ -26,6 +28,7 @@ import {
 } from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
@@ -47,7 +50,6 @@ const SpacedBox = chakra(Box, {
 
 const TopBarItem = chakra(SpacedBox, {
   baseStyle: {
-    // borderLeftWidth: 1,
     borderColor: 'dark.100',
     display: 'flex',
     alignItems: 'center',
@@ -57,7 +59,15 @@ const TopBarItem = chakra(SpacedBox, {
 });
 
 const UserBox = () => {
-  const { authDetails } = useWorkspaceContext();
+  const {
+    authDetails,
+    screenSizes: {
+      isMobile,
+      isExtraSmall,
+      isLitteSmall,
+      isLowerThanFourHundredAndThirty,
+    },
+  } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
@@ -67,11 +77,19 @@ const UserBox = () => {
   );
 
   const name = mySettingsRequest.data?.name ?? '';
-  const hasNickName = !AddressUtils.isValid(name);
+  const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
-    authDetails.handlers.logout?.();
+    try {
+      authDetails.userInfos?.type.type === TypeUser.FUEL &&
+        authDetails.userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+      // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
+      authDetails.handlers.logout?.();
+    }
   };
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -79,6 +97,10 @@ const UserBox = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  const b256UserAddress = Address.fromString(
+    authDetails.userInfos.address ?? '',
+  ).toB256();
 
   return (
     <>
@@ -99,34 +121,89 @@ const UserBox = () => {
             w="100%"
             alignItems="center"
             cursor={'pointer'}
-            spacing={2}
+            spacing={isMobile ? 2 : 4}
             position="relative"
-            border="1px solid #353230"
+            border={isMobile ? '1px solid #353230' : 'none'}
             borderRadius="6px"
-            pl={4}
           >
-            <Text fontWeight="semibold" color="grey.200">
-              {name ? (
-                name
-              ) : (
-                <AddressWithCopyBtn
-                  address={authDetails.userInfos?.address ?? ''}
-                  justifyContent="start"
-                  aria-label="Copy address"
-                  isSidebarAddress
-                  flexDir="row-reverse"
-                  hideCopyButton
-                />
+            <HStack
+              w="full"
+              flexDir={isMobile ? 'row' : 'row-reverse'}
+              spacing={4}
+            >
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                pl={isMobile ? 4 : 0}
+                noOfLines={1}
+              >
+                {hasNickName ? (
+                  limitCharacters(name, 20)
+                ) : (
+                  <AddressWithCopyBtn
+                    address={authDetails.userInfos?.address ?? ''}
+                    customAddress={AddressUtils.format(
+                      b256UserAddress,
+                      isExtraSmall
+                        ? 8
+                        : isLitteSmall
+                          ? 10
+                          : isLowerThanFourHundredAndThirty
+                            ? 15
+                            : 18,
+                    )}
+                    justifyContent="start"
+                    aria-label="Copy address"
+                    flexDir="row-reverse"
+                    hideCopyButton
+                    addressProps={{
+                      fontSize: isMobile ? 'xs' : 'md',
+                    }}
+                  />
+                )}
+              </Text>
+
+              <Avatar
+                variant="roundedSquare"
+                src={authDetails.userInfos?.avatar}
+                boxSize={isMobile ? '32px' : '40px'}
+                border="1px solid #CFCCC9"
+              />
+              {!isMobile && (
+                <HStack
+                  position="relative"
+                  mr={3}
+                  onClick={notificationDrawerState.onOpen}
+                >
+                  <Icon color="grey.75" as={NotificationIcon} fontSize="28px" />
+                  {unreadCounter > 0 && (
+                    <Text
+                      fontSize="10px"
+                      rounded="full"
+                      bgColor="error.600"
+                      color="white"
+                      border="none"
+                      w="12px"
+                      textAlign="center"
+                      position="absolute"
+                      top={-1}
+                      right={-1}
+                    >
+                      {unreadCounter}
+                    </Text>
+                  )}
+                </HStack>
               )}
-            </Text>
+            </HStack>
+            {!isMobile && (
+              <Icon
+                color="grey.200"
+                fontSize={{ base: 'sm', sm: 'lg' }}
+                as={FaChevronDown}
+              />
+            )}
 
-            <Avatar
-              variant="roundedSquare"
-              src={authDetails.userInfos?.avatar}
-              size={{ base: 'sm' }}
-            />
-
-            {unreadCounter > 0 && (
+            {unreadCounter > 0 && isMobile && (
               <Text
                 fontSize="xs"
                 rounded="full"
@@ -177,37 +254,38 @@ const UserBox = () => {
               />
             </VStack>
 
-            <VStack
-              borderTop={'1px solid'}
-              borderTopColor={'dark.100'}
-              cursor={'pointer'}
-              alignItems="start"
-              justifyContent="center"
-              px={4}
-              h="70px"
-              onClick={notificationDrawerState.onOpen}
-            >
-              <HStack>
-                <Icon color="grey.75" as={NotificationIcon} fontSize="xl" />
-                <Text color="grey.75" fontWeight={500}>
-                  Notifications
-                </Text>
-                {unreadCounter > 0 && (
-                  <Text
-                    fontSize="xs"
-                    rounded="full"
-                    bgColor="error.600"
-                    color="white"
-                    border="none"
-                    w="16px"
-                    textAlign="center"
-                  >
-                    {unreadCounter}
+            {isMobile && (
+              <VStack
+                borderTop={'1px solid'}
+                borderTopColor={'dark.100'}
+                cursor={'pointer'}
+                alignItems="start"
+                justifyContent="center"
+                px={4}
+                h="70px"
+                onClick={notificationDrawerState.onOpen}
+              >
+                <HStack>
+                  <Icon color="grey.75" as={NotificationIcon} fontSize="xl" />
+                  <Text color="grey.75" fontWeight={500}>
+                    Notifications
                   </Text>
-                )}
-              </HStack>
-            </VStack>
-
+                  {unreadCounter > 0 && (
+                    <Text
+                      fontSize="xs"
+                      rounded="full"
+                      bgColor="error.600"
+                      color="white"
+                      border="none"
+                      w="16px"
+                      textAlign="center"
+                    >
+                      {unreadCounter}
+                    </Text>
+                  )}
+                </HStack>
+              </VStack>
+            )}
             <VStack
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}

@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransaction, WitnessStatus } from 'bakosafe';
+import { WitnessStatus } from 'bakosafe';
 
 import { TransactionState } from '@/modules/core';
 
@@ -21,6 +21,7 @@ import { RefreshIcon } from '@/components/icons/refresh-icon';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useTransactionState } from '../../states';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 const Status = ({
   transaction,

@@ -36,24 +36,31 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
     isOpen: props.isOpen,
   });
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const {
+    isOpen: isCreateVaultModalOpen,
+    onClose: createVaultModalOnClose,
+    onOpen: createVaultModalOnOpen,
+  } = useDisclosure();
 
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
   return (
     <>
-      <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
+      <CreateVaultDialog
+        isOpen={isCreateVaultModalOpen}
+        onClose={createVaultModalOnClose}
+      />
 
       <Dialog.Modal
         onClose={drawer.onClose}
-        isOpen={props.isOpen}
+        isOpen={isCreateVaultModalOpen ? false : props.isOpen}
         modalContentProps={{
           px: 10,
           py: 10,
         }}
       >
-        <Dialog.Body display={isOpen ? 'none' : 'block'}>
+        <Dialog.Body>
           <Dialog.Header
             mt={0}
             mb={0}
@@ -80,7 +87,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
             <FormControl>
               <Input
                 placeholder=" "
-                // variant="custom"
                 bg="transparent"
                 colorScheme="dark"
                 onChange={search.handler}
@@ -162,7 +168,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
               _hover={{
                 bg: '#f5f5f513',
               }}
-              onClick={onOpen}
+              onClick={createVaultModalOnOpen}
             >
               Create new vault
             </Button>

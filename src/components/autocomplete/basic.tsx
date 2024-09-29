@@ -11,7 +11,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { keyframes } from '@emotion/react';
 import {
   ChangeEvent,
   CSSProperties,
@@ -28,17 +27,6 @@ export interface AutocompleteOption {
   value: string;
   label: string;
 }
-
-const slideToPosition = keyframes`
-  from {
-    transform: translateY(20px); 
-    opacity: 0; 
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1; 
-  }
-`;
 
 interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   label?: string;
@@ -204,9 +192,6 @@ const Autocomplete = ({
           padding={2}
           position="absolute"
           zIndex={300}
-          sx={{
-            animation: `${slideToPosition} 0.3s ease-out`,
-          }}
           w="full"
           mt={2}
         >

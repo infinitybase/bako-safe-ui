@@ -33,7 +33,7 @@ export interface ISetupAxiosInterceptors {
   isTxFromDapp: boolean;
   isTokenExpired: boolean;
   setIsTokenExpired: (value: boolean) => void;
-  logout: () => void;
+  logout: (removeTokenFromDb?: boolean) => void;
 }
 
 const api = axios.create({
@@ -66,8 +66,11 @@ const setupAxiosInterceptors = ({
       const unauthorizedError = error.response?.status === 401;
 
       if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
+        const tokenExpiredError =
+          error.response?.title === ApiUnauthorizedErrorsTitles.EXPIRED_TOKEN;
+
         setIsTokenExpired(true);
-        logout();
+        logout(tokenExpiredError);
         queryClient.invalidateQueries({
           queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
         });

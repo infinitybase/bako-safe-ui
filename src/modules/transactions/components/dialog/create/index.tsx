@@ -11,16 +11,24 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 
-import { Dialog, DialogModalProps, SquarePlusIcon } from '@/components';
+import { Dialog, DialogModalProps } from '@/components';
 import { TooltipIcon } from '@/components/icons/tooltip';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 
+import CreateTxMenuButton, {
+  ECreateTransactionMethods,
+} from './createTxMenuButton';
 import { CreateTransactionForm } from './form';
 
 const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
+  const [createTxMethod, setCreateTxMethod] =
+    useState<ECreateTransactionMethods>(
+      ECreateTransactionMethods.CREATE_AND_SIGN,
+    );
   const { assets } = useVaultInfosContext();
   const {
     form,
@@ -39,6 +47,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     getCoinAmount: assets.getCoinAmount,
     onClose: props.onClose,
     isOpen: props.isOpen,
+    createTransactionAndSign:
+      createTxMethod === ECreateTransactionMethods.CREATE_AND_SIGN,
   });
 
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -143,21 +153,18 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       </Flex>
 
       <Dialog.Actions maxW={480} hideDivider mt="auto">
-        {/* TODO: Colocar o Transactions Fee entre o Divider e os botoes */}
         <Dialog.SecondaryAction onClick={handleClose}>
           Cancel
         </Dialog.SecondaryAction>
-        <Dialog.PrimaryAction
-          leftIcon={<SquarePlusIcon />}
-          isDisabled={isDisabled}
+
+        <CreateTxMenuButton
+          createTxMethod={createTxMethod}
+          setCreateTxMethod={setCreateTxMethod}
           isLoading={transactionRequest.isPending}
-          onClick={form.handleCreateTransaction}
-          _hover={{
-            opacity: !isDisabled && 0.8,
-          }}
-        >
-          Create transaction
-        </Dialog.PrimaryAction>
+          isDisabled={isDisabled}
+          handleCreateTransaction={form.handleCreateTransaction}
+          handleCreateAndSignTransaction={form.handleCreateAndSignTransaction}
+        />
       </Dialog.Actions>
     </Dialog.Modal>
   );

@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import { useAuth } from '@/modules/auth';
 import { useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
@@ -7,15 +10,18 @@ import {
 } from '@/modules/vault/hooks/list/useVaultTransactionsList';
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
-import { useSignTransaction } from '../signature';
 import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
+import { useSignTransaction } from '../signature';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
 const useTransactionDetails = () => {
+  const location = useLocation();
+
   const {
     userInfos: { workspace },
   } = useAuth();
+
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -47,6 +53,23 @@ const useTransactionDetails = () => {
     vaultTransactions.handlers.listTransactionTypeFilter(undefined);
     vaultTransactions.filter.set(StatusFilter.ALL);
   };
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const hasSelectedTransaction =
+      !!vaultTransactions.handlers.selectedTransaction?.id;
+
+    return () => {
+      const newPath = location.pathname;
+
+      const isNavigatingAway = newPath !== currentPath;
+      const isLeavingVault = !newPath.includes('vault');
+
+      if ((isNavigatingAway || isLeavingVault) && hasSelectedTransaction) {
+        vaultTransactions.handlers.setSelectedTransaction({ id: '', name: '' });
+      }
+    };
+  }, [location, vaultTransactions.handlers.selectedTransaction?.id]);
 
   return {
     homeTransactions,

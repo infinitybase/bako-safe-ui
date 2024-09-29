@@ -1,6 +1,6 @@
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -11,7 +11,7 @@ import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
-import { useCreateVaultForm } from './useCreateVaultForm';
+import { useCreateVaultForm, useValidateAddress } from '.';
 
 export enum TabState {
   INFO,
@@ -47,7 +47,7 @@ const useCreateVault = () => {
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       refetchLatestPredicates();
-      setVaultId(data.BakoSafeVaultId);
+      setVaultId(data.id);
       setTab(TabState.SUCCESS);
       form.reset();
       setSearch('');
@@ -59,6 +59,14 @@ const useCreateVault = () => {
       });
     },
   });
+
+  const {
+    currentValidateAddressIndex,
+    isAddressValid,
+    validatingAddress,
+    validateAddress,
+    setCurrentValidateAddressIndex,
+  } = useValidateAddress();
 
   let vaultNameIsAvailable = false;
 
@@ -112,12 +120,12 @@ const useCreateVault = () => {
   const onDeposit = async () => {
     if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.address}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.predicateAddress}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bakoSafeVault.data.BakoSafeVaultId,
+          vaultId: bakoSafeVault.data.id,
           workspaceId: params.workspaceId!,
         }),
       );
@@ -157,6 +165,16 @@ const useCreateVault = () => {
     });
   };
 
+  useEffect(() => {
+    if (!isAddressValid && currentValidateAddressIndex) {
+      form.setError(`addresses.${currentValidateAddressIndex}.value`, {
+        type: 'custom',
+        message: 'You cannot add a vault as a signer',
+      });
+      setCurrentValidateAddressIndex(null);
+    }
+  }, [currentValidateAddressIndex, isAddressValid]);
+
   return {
     form: {
       ...form,
@@ -184,6 +202,10 @@ const useCreateVault = () => {
     selectedTemplate,
     setFormWithTemplate,
     onSaveTemplate,
+    validateAddress: {
+      handler: validateAddress,
+      isLoading: validatingAddress,
+    },
   };
 };
 

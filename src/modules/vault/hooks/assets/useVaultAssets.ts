@@ -15,9 +15,8 @@ const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
 const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
-import { BakoSafe } from 'bakosafe';
-
 import { queryClient } from '@/config';
+import { gasConfig } from '@/modules/core/hooks/bakosafe/utils/gas-config';
 
 import { HasReservedCoins, VaultService } from '../../services';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
@@ -116,11 +115,9 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
   }, [getCoinAmount]);
 
   const isEthBalanceLowerThanReservedAmount = useMemo(() => {
+    // Needs to be fixed using the correct baseFee format or method
     return (
-      Number(ethBalance) <=
-      Number(
-        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
-      )
+      Number(ethBalance) <= Number(bn.parseUnits(gasConfig.toString()).format())
     );
   }, [ethBalance]);
 
