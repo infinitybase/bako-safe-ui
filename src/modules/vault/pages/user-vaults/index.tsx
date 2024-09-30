@@ -236,7 +236,7 @@ const UserVaultsPage = () => {
           mt={-2}
           pb={{ base: 8, sm: 0 }}
           overflowY="scroll"
-          overflowX="visible"
+          overflowX="hidden"
           scrollBehavior="smooth"
           sx={{
             '&::-webkit-scrollbar': {
