@@ -51,7 +51,7 @@ const AddAssetsDialog = ({
   };
 
   const handleRedirectToMainNet = async () => {
-    window.open('https://app-mainnet.fuel.network/bridge', '_BLANK');
+    window.open(import.meta.env.VITE_BRIDGE, '_BLANK');
   };
 
   return (
