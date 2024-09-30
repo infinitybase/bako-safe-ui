@@ -1,4 +1,8 @@
 import { useNetwork } from '@fuels/react';
+import { useState } from 'react';
+
+import { UnknownIcon } from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 
 export enum NetworkType {
   MAINNET = 'mainnet',
@@ -6,6 +10,25 @@ export enum NetworkType {
 }
 
 export const useCurrentNetwork = () => {
+  const availableNetWorks = [
+    {
+      identifier: NetworkType.MAINNET,
+      name: 'Mainnet',
+      icon: BakoIcon,
+    },
+    {
+      identifier: NetworkType.TESTNET,
+      name: 'Testnet',
+      icon: UnknownIcon,
+    },
+  ];
+
+  const [selectedNetwork, setSelectedNetwork] = useState(
+    availableNetWorks.find(
+      ({ identifier }) => identifier === NetworkType.MAINNET,
+    ),
+  );
+
   const { network: fuelsNetwork } = useNetwork();
 
   // Mock to emulate a mainnet network
@@ -21,5 +44,8 @@ export const useCurrentNetwork = () => {
   return {
     network,
     checkNetwork,
+    selectedNetwork,
+    setSelectedNetwork,
+    availableNetWorks,
   };
 };

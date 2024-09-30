@@ -20,15 +20,20 @@ import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
+import { AddressWithCopyBtn, NotificationIcon } from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { DisconnectIcon } from '@/components/icons/disconnect';
+import { FeedbackIcon } from '@/components/icons/feedback';
+import { NetworkIcon } from '@/components/icons/network';
+import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import {
-  AddressWithCopyBtn,
-  ExitIcon,
-  NotificationIcon,
-  SettingsIcon,
-} from '@/components';
-import { useUserWorkspacesRequest } from '@/modules';
+  NetworkType,
+  useCurrentNetwork,
+  useUserWorkspacesRequest,
+} from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { AddressUtils } from '@/modules/core/utils/address';
+import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -67,6 +72,12 @@ const UserBox = () => {
       isLowerThanFourHundredAndThirty,
     },
   } = useWorkspaceContext();
+
+  const { availableNetWorks, selectedNetwork, setSelectedNetwork } =
+    useCurrentNetwork();
+  const networkPopoverState = useDisclosure();
+  const networkDrawerState = useDisclosure();
+
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
@@ -82,6 +93,9 @@ const UserBox = () => {
     authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
     authDetails.handlers.logout?.();
   };
+
+  const feedbackForm = () =>
+    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -100,16 +114,135 @@ const UserBox = () => {
         onClose={settingsDrawer.onClose}
         onOpen={settingsDrawer.onOpen}
       />
-
       <NotificationsDrawer
         isOpen={notificationDrawerState.isOpen}
         onClose={notificationDrawerState.onClose}
       />
 
+      <NetworkDrawer
+        isOpen={networkDrawerState.isOpen}
+        onClose={networkDrawerState.onClose}
+      />
+
+      {!isMobile && (
+        <Popover isOpen={networkPopoverState.isOpen}>
+          <PopoverTrigger>
+            <HStack
+              w={165}
+              alignItems="center"
+              cursor={'pointer'}
+              onClick={networkPopoverState.onOpen}
+              spacing={isMobile ? 2 : 4}
+              position="relative"
+              border={'1px solid #353230'}
+              justifyContent={'space-between'}
+              borderRadius="6px"
+              py={2}
+              px={4}
+              mr={4}
+            >
+              <HStack>
+                <Icon as={selectedNetwork?.icon} fontSize={16} />
+
+                <Text
+                  fontSize={12}
+                  fontWeight={500}
+                  color="grey.200"
+                  noOfLines={1}
+                >
+                  {selectedNetwork?.name}
+                </Text>
+              </HStack>
+
+              <Icon
+                color="grey.200"
+                fontSize={{ base: 'sm', sm: 'lg' }}
+                as={FaChevronDown}
+              />
+            </HStack>
+          </PopoverTrigger>
+
+          <PopoverContent
+            bg={'dark.300'}
+            w={165}
+            borderTop="none"
+            border="1px solid #353230"
+            _focus={{ ring: 'none' }}
+          >
+            <PopoverBody>
+              <VStack cursor={'pointer'} alignItems="start">
+                <VStack
+                  cursor={'pointer'}
+                  alignItems="start"
+                  justifyContent="center"
+                  onClick={() => {
+                    setSelectedNetwork(
+                      availableNetWorks.find(
+                        (network) => network.identifier === NetworkType.MAINNET,
+                      ),
+                    );
+                    networkPopoverState.onClose();
+                  }}
+                >
+                  <HStack>
+                    <Icon as={BakoIcon} fontSize={16} />
+                    <Text color="grey.200" fontSize={12} fontWeight={500}>
+                      {
+                        availableNetWorks.find(
+                          (network) =>
+                            network.identifier === NetworkType.MAINNET,
+                        )?.name
+                      }
+                    </Text>
+                  </HStack>
+                </VStack>
+
+                <VStack
+                  borderTop={'1px solid'}
+                  borderTopColor={'dark.100'}
+                  cursor={'pointer'}
+                  alignItems="start"
+                  justifyContent="center"
+                  onClick={() => {
+                    setSelectedNetwork(
+                      availableNetWorks.find(
+                        (network) => network.identifier === NetworkType.TESTNET,
+                      ),
+                    );
+                    networkPopoverState.onClose();
+                  }}
+                >
+                  <HStack>
+                    <Icon
+                      as={
+                        availableNetWorks.find(
+                          (network) =>
+                            network.identifier === NetworkType.TESTNET,
+                        )?.icon
+                      }
+                      fontSize={16}
+                    />
+                    <Text color="grey.200" fontSize={12} fontWeight={500}>
+                      {
+                        availableNetWorks.find(
+                          (network) =>
+                            network.identifier === NetworkType.TESTNET,
+                        )?.name
+                      }
+                    </Text>
+                  </HStack>
+                </VStack>
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* TOP MENU */}
       <Popover placement="bottom-end">
         <PopoverTrigger>
           <HStack
-            w="100%"
+            // w="100%"
             alignItems="center"
             cursor={'pointer'}
             spacing={isMobile ? 2 : 4}
@@ -160,6 +293,7 @@ const UserBox = () => {
                 boxSize={isMobile ? '32px' : '40px'}
                 border="1px solid #CFCCC9"
               />
+
               {!isMobile && (
                 <HStack
                   position="relative"
@@ -215,7 +349,7 @@ const UserBox = () => {
 
         <PopoverContent
           bg={'dark.300'}
-          w="100%"
+          // w="100%"
           m={0}
           p={0}
           borderTop="none"
@@ -254,10 +388,36 @@ const UserBox = () => {
                 justifyContent="center"
                 px={4}
                 h="70px"
+                onClick={networkDrawerState.onOpen}
+              >
+                <HStack spacing={4}>
+                  <Icon color="grey.75" w={5} h={5} as={NetworkIcon} />
+                  <Text color="grey.75" fontWeight={500}>
+                    Network
+                  </Text>
+                </HStack>
+              </VStack>
+            )}
+
+            {isMobile && (
+              <VStack
+                borderTop={'1px solid'}
+                borderTopColor={'dark.100'}
+                cursor={'pointer'}
+                alignItems="start"
+                justifyContent="center"
+                px={4}
+                h="70px"
                 onClick={notificationDrawerState.onOpen}
               >
-                <HStack>
-                  <Icon color="grey.75" as={NotificationIcon} fontSize="xl" />
+                <HStack spacing={4}>
+                  <Icon
+                    color="grey.75"
+                    as={NotificationIcon}
+                    fontSize={20}
+                    w={5}
+                    h={5}
+                  />
                   <Text color="grey.75" fontWeight={500}>
                     Notifications
                   </Text>
@@ -277,6 +437,7 @@ const UserBox = () => {
                 </HStack>
               </VStack>
             )}
+
             <VStack
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
@@ -287,15 +448,15 @@ const UserBox = () => {
               h="70px"
               onClick={settingsDrawer.onOpen}
             >
-              <HStack>
-                <Icon color="grey.75" w={6} h={6} as={SettingsIcon} />
+              <HStack spacing={4}>
+                <Icon color="grey.75" w={5} h={5} as={SettingsTopMenuIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Settings
                 </Text>
               </HStack>
-              <Text color="grey.500" fontSize="sm">
+              {/* <Text color="grey.500" fontSize="sm">
                 Personalize Your Preferences.
-              </Text>
+              </Text> */}
             </VStack>
 
             <VStack
@@ -307,8 +468,31 @@ const UserBox = () => {
               px={4}
               h="70px"
             >
-              <HStack cursor={'pointer'} onClick={logout}>
-                <Icon color="grey.75" fontSize="xl" as={ExitIcon} />
+              <HStack cursor={'pointer'} onClick={feedbackForm} spacing={4}>
+                <Icon
+                  w={5}
+                  h={5}
+                  color="grey.75"
+                  fontSize={18}
+                  as={FeedbackIcon}
+                />
+                <Text color="grey.75" fontWeight={500}>
+                  Send a feedback
+                </Text>
+              </HStack>
+            </VStack>
+
+            <VStack
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              alignItems="start"
+              justifyContent="center"
+              px={4}
+              h="70px"
+            >
+              <HStack cursor={'pointer'} onClick={logout} spacing={4}>
+                <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect
                 </Text>
