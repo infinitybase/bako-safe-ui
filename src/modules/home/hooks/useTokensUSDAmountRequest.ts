@@ -23,15 +23,15 @@ const useTokensUSDAmountRequest = () => {
     staleTime: 500, // 500ms second to prevent request spam
   });
 
-  const result = data
-    ? data?.reduce<Record<string, { usdAmount: number }>>(
-        (acc, [address, usdAmount]) => {
-          acc[String(address)] = { usdAmount: Number(usdAmount) };
-          return acc;
-        },
-        {},
-      )
-    : [Address.fromRandom().toString(), 0.0];
+  const response = data ?? [[Address.fromRandom().toString(), 0.0]];
+
+  const result = response?.reduce<Record<string, { usdAmount: number }>>(
+    (acc, [address, usdAmount]) => {
+      acc[String(address)] = { usdAmount: Number(usdAmount) };
+      return acc;
+    },
+    {},
+  );
 
   return { data: result, ...query };
 };
