@@ -7,6 +7,7 @@ import {
   useGetParams,
   useGetWorkspaceRequest,
   useScreenSize,
+  useUserVaults,
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
@@ -62,6 +63,7 @@ const useWorkspaceDetails = () => {
     useGetWorkspaceRequest(authDetails.userInfos.workspace?.id);
 
   const tokensUSD = useTokensUSDAmountRequest();
+  const userVaults = useUserVaults(authDetails.userInfos.address);
   const addressBookInfos = useAddressBook(authDetails, hasPermission);
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
   const vaultAssets = useVaultAssets(
@@ -70,6 +72,7 @@ const useWorkspaceDetails = () => {
   );
 
   const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({
+    isUserVaultsLoading: userVaults.request.isLoading,
     isAddressbookInfosLoading:
       addressBookInfos.requests.listContactsRequest.isLoading,
     isGifAnimationLoading,
@@ -98,6 +101,7 @@ const useWorkspaceDetails = () => {
       vaultRequest,
       assets: vaultAssets,
     },
+    userVaults,
     addressBookInfos,
     tokensUSD,
     invalidateGifAnimationRequest,
