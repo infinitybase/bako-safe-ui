@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, Provider, sha256 } from 'fuels';
+import { Address, Network, Provider, sha256 } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
@@ -103,6 +103,12 @@ export type AuthenticateWorkspaceParams = {
   workspace: string;
 };
 
+export type ChangeNetworkPayload = {
+  url: string;
+};
+
+export type ChangeNetworkResponse = boolean;
+
 export interface IUserInfos extends IGetUserInfosResponse {
   isLoading: boolean;
   isFetching: boolean;
@@ -147,6 +153,7 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
+  network: Network;
 };
 
 export class UserService {
@@ -238,6 +245,19 @@ export class UserService {
     const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
       address,
     });
+    return data;
+  }
+
+  static async changeNetwork({ url }: ChangeNetworkPayload) {
+    console.log('🚀 ~ UserService ~ changeNetwork ~ url:', url);
+    // TODO: Replace with real service
+    const { data } = await api.post<ChangeNetworkResponse>(
+      `/user/select-network/`,
+      {
+        network: url,
+      },
+    );
+
     return data;
   }
 }

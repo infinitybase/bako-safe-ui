@@ -21,16 +21,11 @@ import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn, NotificationIcon } from '@/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import {
-  NetworkType,
-  useCurrentNetwork,
-  useUserWorkspacesRequest,
-} from '@/modules';
+import { useCurrentNetwork, useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -74,7 +69,7 @@ const UserBox = () => {
     },
   } = useWorkspaceContext();
 
-  const { availableNetWorks, selectedNetwork, setSelectedNetwork } =
+  const { availableNetWorks, currentNetwork, handleUpdateNetwork } =
     useCurrentNetwork();
   const networkPopoverState = useDisclosure();
   const networkDrawerState = useDisclosure();
@@ -127,23 +122,27 @@ const UserBox = () => {
         isOpen={notificationDrawerState.isOpen}
         onClose={notificationDrawerState.onClose}
       />
-
       <NetworkDrawer
         isOpen={networkDrawerState.isOpen}
         onClose={networkDrawerState.onClose}
       />
 
       {!isMobile && (
-        <Popover isOpen={networkPopoverState.isOpen}>
+        <Popover
+          isOpen={networkPopoverState.isOpen}
+          onClose={networkPopoverState.onClose}
+        >
           <PopoverTrigger>
             <HStack
               w={165}
+              h={'32px'}
               alignItems="center"
               cursor={'pointer'}
               onClick={networkPopoverState.onOpen}
               spacing={isMobile ? 2 : 4}
               position="relative"
-              border={'1px solid #353230'}
+              border={'1px solid'}
+              borderColor="grey.925"
               justifyContent={'space-between'}
               borderRadius="6px"
               py={2}
@@ -151,7 +150,14 @@ const UserBox = () => {
               mr={4}
             >
               <HStack>
-                <Icon as={selectedNetwork?.icon} fontSize={16} />
+                <Icon
+                  as={
+                    availableNetWorks.find(
+                      ({ url }) => url === currentNetwork.url,
+                    )?.icon
+                  }
+                  fontSize={16}
+                />
 
                 <Text
                   fontSize={12}
@@ -159,13 +165,17 @@ const UserBox = () => {
                   color="grey.200"
                   noOfLines={1}
                 >
-                  {selectedNetwork?.name}
+                  {
+                    availableNetWorks.find(
+                      ({ url }) => url === currentNetwork.url,
+                    )?.name
+                  }
                 </Text>
               </HStack>
 
               <Icon
                 color="grey.200"
-                fontSize={{ base: 'sm', sm: 'lg' }}
+                fontSize={{ base: 'sm', sm: 'sm' }}
                 as={FaChevronDown}
               />
             </HStack>
@@ -178,69 +188,32 @@ const UserBox = () => {
             border="1px solid #353230"
             _focus={{ ring: 'none' }}
           >
-            <PopoverBody>
-              <VStack cursor={'pointer'} alignItems="start">
-                <VStack
-                  cursor={'pointer'}
-                  alignItems="start"
-                  justifyContent="center"
-                  onClick={() => {
-                    setSelectedNetwork(
-                      availableNetWorks.find(
-                        (network) => network.identifier === NetworkType.MAINNET,
-                      ),
-                    );
-                    networkPopoverState.onClose();
-                  }}
-                >
-                  <HStack>
-                    <Icon as={BakoIcon} fontSize={16} />
-                    <Text color="grey.200" fontSize={12} fontWeight={500}>
-                      {
-                        availableNetWorks.find(
-                          (network) =>
-                            network.identifier === NetworkType.MAINNET,
-                        )?.name
-                      }
-                    </Text>
-                  </HStack>
-                </VStack>
-
-                <VStack
-                  borderTop={'1px solid'}
-                  borderTopColor={'dark.100'}
-                  cursor={'pointer'}
-                  alignItems="start"
-                  justifyContent="center"
-                  onClick={() => {
-                    setSelectedNetwork(
-                      availableNetWorks.find(
-                        (network) => network.identifier === NetworkType.TESTNET,
-                      ),
-                    );
-                    networkPopoverState.onClose();
-                  }}
-                >
-                  <HStack>
-                    <Icon
-                      as={
-                        availableNetWorks.find(
-                          (network) =>
-                            network.identifier === NetworkType.TESTNET,
-                        )?.icon
-                      }
-                      fontSize={16}
-                    />
-                    <Text color="grey.200" fontSize={12} fontWeight={500}>
-                      {
-                        availableNetWorks.find(
-                          (network) =>
-                            network.identifier === NetworkType.TESTNET,
-                        )?.name
-                      }
-                    </Text>
-                  </HStack>
-                </VStack>
+            <PopoverBody p={0}>
+              <VStack cursor={'pointer'} alignItems="start" spacing={0}>
+                {availableNetWorks.map((network, index) => (
+                  <VStack
+                    w="full"
+                    key={network.url}
+                    cursor={'pointer'}
+                    alignItems="start"
+                    justifyContent="center"
+                    borderBottom={!index ? '1px solid' : 'unset'}
+                    borderColor="grey.925"
+                    px={4}
+                    onClick={() => {
+                      handleUpdateNetwork(network.url);
+                      networkPopoverState.onClose?.();
+                    }}
+                    py={4}
+                  >
+                    <HStack>
+                      <Icon as={network.icon} fontSize={16} />
+                      <Text color="grey.200" fontSize={12} fontWeight={500}>
+                        {network.name}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                ))}
               </VStack>
             </PopoverBody>
           </PopoverContent>
@@ -361,11 +334,12 @@ const UserBox = () => {
           // w="100%"
           m={0}
           p={0}
+          pb={0}
           borderTop="none"
           border="1px solid #353230"
           _focus={{ ring: 'none' }}
         >
-          <PopoverBody>
+          <PopoverBody pb={0}>
             <VStack
               cursor={'pointer'}
               alignItems="start"
@@ -463,9 +437,6 @@ const UserBox = () => {
                   Settings
                 </Text>
               </HStack>
-              {/* <Text color="grey.500" fontSize="sm">
-                Personalize Your Preferences.
-              </Text> */}
             </VStack>
 
             <VStack
@@ -499,6 +470,7 @@ const UserBox = () => {
               justifyContent="center"
               px={4}
               h="70px"
+              mb={0}
             >
               <HStack cursor={'pointer'} onClick={logout} spacing={4}>
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
