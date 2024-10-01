@@ -144,8 +144,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
           Signers
         </Text>
         <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers{' '}
-          {JSON.parse(vault.data.configurable).SIGNATURES_COUNT}/
+          Required signers {vault.data?.configurable.SIGNATURES_COUNT}/
           {vault.data?.members?.length}
         </Badge>
       </HStack>
