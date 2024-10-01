@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, Provider } from 'fuels';
+import { Address, Provider, sha256 } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
@@ -49,6 +49,7 @@ export type SignInPayload = {
   encoder: Encoder;
   signature: string;
   digest: string;
+  userAddress: string;
 };
 
 export type SignInResponse = {
@@ -217,6 +218,7 @@ export class UserService {
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
+      userAddress: sha256(publicKey),
     });
   }
 
