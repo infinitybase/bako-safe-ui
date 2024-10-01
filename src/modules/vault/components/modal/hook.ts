@@ -12,12 +12,6 @@ import { PredicateAndWorkspace } from '../../services/methods';
 interface UseVaultDrawerParams {
   onClose?: () => void;
   isOpen?: boolean;
-
-  onSelect?: (
-    vault: Predicate & {
-      workspace: Workspace;
-    },
-  ) => void;
   orderByRoot?: boolean;
   perPage?: number;
 }
