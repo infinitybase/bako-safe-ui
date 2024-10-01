@@ -3,12 +3,12 @@ import { VStack } from '@chakra-ui/react';
 import { ProgressButton } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
 
-import { UseWebAuthnSignIn } from '../../hooks';
+import { UseDappSignIn, UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
 import { WebAuthnForm } from './form';
 
 interface WebAuthnSignInProps {
   formData: UseWebAuthnSignIn['formData'];
-  formState: UseWebAuthnSignIn['formState'];
+  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
   accountsOptions: UseWebAuthnSignIn['accountsOptions'];
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];

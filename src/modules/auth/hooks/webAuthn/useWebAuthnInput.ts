@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { AutocompleteBadgeStatus } from '@/components';
+import { AutocompleteBadgeStatus } from '@/components/autocomplete';
 
 import { TypeUser } from '../../services/methods';
 import {
@@ -24,7 +24,7 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
   ERROR: { status: AutocompleteBadgeStatus.ERROR, label: 'Invalid username' },
 };
 
-const useWebAuthnInput = (validUsername: boolean) => {
+const useWebAuthnInput = (validUsername?: boolean) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [accountSearch, setAccountSearch] = useState<string>('');
   const [accountFilter, setAccountFilter] = useState<string>('');
@@ -34,7 +34,7 @@ const useWebAuthnInput = (validUsername: boolean) => {
 
   const accountsRequest = useGetAccountsByHardwareId();
 
-  const checkNicknameRequestEnabled = validUsername && !!accountSearch;
+  const checkNicknameRequestEnabled = !!validUsername && !!accountSearch;
   const checkNicknameRequest = useCheckNickname(
     accountSearch,
     checkNicknameRequestEnabled,

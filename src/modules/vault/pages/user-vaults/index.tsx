@@ -265,30 +265,32 @@ const UserVaultsPage = () => {
               '2xl': 'repeat(4, 1fr)',
             }}
           >
-            {vaults?.map(({ id, name, workspace, members, description }) => {
-              return (
-                <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
-                  <GridItem>
-                    <VaultCard
-                      id={id}
-                      name={name}
-                      workspace={workspace}
-                      title={description}
-                      members={members!}
-                      onClick={() =>
-                        handleWorkspaceSelection(
-                          workspace.id,
-                          Pages.detailsVault({
-                            workspaceId: workspace.id,
-                            vaultId: id,
-                          }),
-                        )
-                      }
-                    />
-                  </GridItem>
-                </CustomSkeleton>
-              );
-            })}
+            {vaults?.map(
+              ({ id, name, workspace, members, description, owner }) => {
+                return (
+                  <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
+                    <GridItem>
+                      <VaultCard
+                        ownerId={owner.id}
+                        name={name}
+                        workspace={workspace}
+                        title={description}
+                        members={members!}
+                        onClick={() =>
+                          handleWorkspaceSelection(
+                            workspace.id,
+                            Pages.detailsVault({
+                              workspaceId: workspace.id,
+                              vaultId: id,
+                            }),
+                          )
+                        }
+                      />
+                    </GridItem>
+                  </CustomSkeleton>
+                );
+              },
+            )}
           </Grid>
           <Box ref={inView.ref} />
         </Box>

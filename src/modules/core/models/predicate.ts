@@ -18,6 +18,7 @@ export interface IVaultConfigurable {
 
 export interface Predicate extends Omit<IPredicate, 'configurable'> {
   configurable: IVaultConfigurable;
+  root?: boolean;
 }
 
 export interface SignersDetailsProps {

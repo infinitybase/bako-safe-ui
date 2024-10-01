@@ -5,6 +5,7 @@ interface IGenerateRedirectQueryParams {
   origin?: string | null;
   name?: string | null;
   request_id?: string | null;
+  byConnector?: string | null;
 }
 
 const authCredentials = () => ({
@@ -28,12 +29,14 @@ const generateRedirectQueryParams = ({
   origin,
   name,
   request_id,
+  byConnector,
 }: IGenerateRedirectQueryParams) => {
   const queryParams = [
     sessionId && `sessionId=${sessionId}`,
     origin && `origin=${origin}`,
     name && `name=${name}`,
     request_id && `request_id=${request_id}`,
+    byConnector && `byConnector=${byConnector}`,
   ]
     .filter(Boolean)
     .join('&');

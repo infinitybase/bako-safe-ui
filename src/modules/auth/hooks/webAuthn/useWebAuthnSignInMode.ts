@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { useWebAuthnLastLogin } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TypeUser, UserService } from '../../services';
-import { SignInOrigin, useSignInOriginFactory } from '../signIn';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
-import { useQueryParams } from '../usePopup';
 import { UseWebAuthnForm } from './useWebAuthnForm';
+import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
 import { useSignMessageWebAuthn } from './useWebauthnRequests';
+
+interface UseWebAuthnSignInParams {
+  form: UseWebAuthnForm['form'];
+  setMode: (mode: WebAuthnModeState) => void;
+  callback: (vaultId?: string, workspaceId?: string) => void;
+}
 
 const verifyNickname = async (username: string) => {
   return await UserService.verifyNickname(username);
@@ -20,10 +23,9 @@ const generateSignInCode = async (address: string) => {
   return await UserService.generateSignInCode(address);
 };
 
-const useWebAuthnSignInMode = (
-  form: UseWebAuthnForm['form'],
-  setMode: (mode: WebAuthnModeState) => void,
-) => {
+const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
+  const { form, setMode, callback } = params;
+
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
 
@@ -33,14 +35,9 @@ const useWebAuthnSignInMode = (
     invalidateGifAnimationRequest,
   } = useWorkspaceContext();
 
-  const navigate = useNavigate();
-  const { sessionId } = useQueryParams();
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();
-
-  const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInOriginFactory(signInOrigin);
 
   const handleLogin = form.handleSubmit(async ({ username }) => {
     setIsSigningIn(true);
@@ -93,7 +90,7 @@ const useWebAuthnSignInMode = (
               webAuthn,
               provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
-            navigate(redirect(rootWallet, workspace.id));
+            callback(rootWallet, workspace.id);
           }, 800);
         },
         onError: () => {

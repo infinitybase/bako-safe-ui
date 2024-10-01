@@ -1,8 +1,7 @@
 import { SignInWrapper } from '@/modules/auth/components';
+import { useDappSignIn } from '@/modules/auth/hooks/signIn/useDappSignIn';
 
-import { useWebSignIn } from '../hooks/signIn/useWebSignIn';
-
-const WebSignInPage = () => {
+const DappSignInPage = () => {
   const {
     isAnyWalletConnectorOpen,
     tabs,
@@ -13,7 +12,7 @@ const WebSignInPage = () => {
     inputBadge,
     handleSelectWallet,
     handleInputChange,
-  } = useWebSignIn();
+  } = useDappSignIn();
 
   return (
     <SignInWrapper
@@ -30,4 +29,4 @@ const WebSignInPage = () => {
   );
 };
 
-export { WebSignInPage };
+export { DappSignInPage };
