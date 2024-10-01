@@ -32,6 +32,7 @@ import {
   useUserWorkspacesRequest,
 } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { NotificationsDrawer } from '@/modules/notifications/components';
@@ -90,8 +91,16 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
-    authDetails.handlers.logout?.();
+    try {
+      authDetails.userInfos?.type.type === TypeUser.FUEL &&
+        authDetails.userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+      // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
+      authDetails.handlers.logout?.();
+    }
   };
 
   const feedbackForm = () =>

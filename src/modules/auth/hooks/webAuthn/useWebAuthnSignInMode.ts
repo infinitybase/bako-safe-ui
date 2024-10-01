@@ -91,6 +91,7 @@ const useWebAuthnSignInMode = (
               singleWorkspace: workspace.id,
               permissions: workspace.permissions,
               webAuthn,
+              provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
             navigate(redirect(rootWallet, workspace.id));
           }, 800);

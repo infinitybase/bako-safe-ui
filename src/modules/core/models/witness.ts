@@ -1,4 +1,5 @@
-import { ITransaction } from 'bakosafe';
+import { ITransaction } from '../hooks/bakosafe/utils/types';
+
 export enum WitnessStatus {
   REJECTED = 'REJECTED',
   DONE = 'DONE',

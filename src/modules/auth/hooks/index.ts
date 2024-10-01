@@ -5,4 +5,5 @@ export * from './useAuthUrlParams';
 export * from './usePopup';
 export * from './useRedirectAuthUser';
 export * from './useRedirectFromLandingPage';
+export * from './useSignOut';
 export * from './webAuthn';

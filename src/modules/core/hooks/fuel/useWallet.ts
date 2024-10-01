@@ -4,16 +4,16 @@ import {
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
+import { bakoCoder, SignatureType } from 'bakosafe';
 import { Account } from 'fuels';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { useAuth } from '@/modules/auth';
 import { SignWebAuthnPayload, TypeUser } from '@/modules/auth/services';
 import { signChallange } from '@/modules/core/utils/webauthn';
 
 import { recoverPublicKey } from '../../utils/webauthn/crypto';
-import { encodeSignature, SignatureType } from '../../utils/webauthn/encoder';
 import { FuelQueryKeys } from './types';
-import { useAuth } from '@/modules/auth';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useWallet = (account?: string) => {
   const { fuel } = useFuel();
@@ -48,8 +48,8 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
     throw new Error('Invalid signature');
   }
 
-  const result = encodeSignature({
-    type: SignatureType.WEB_AUTHN,
+  const result = bakoCoder.encode({
+    type: SignatureType.WebAuthn,
     ...signature!,
   });
 
@@ -58,7 +58,11 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
 };
 
 const signAccountFuel = async (account: Account, message: string) => {
-  return await account.signMessage(message);
+  const signature = await account.signMessage(message);
+  return bakoCoder.encode({
+    type: SignatureType.Fuel,
+    signature,
+  });
 };
 
 const useWalletSignMessage = (
@@ -71,7 +75,7 @@ const useWalletSignMessage = (
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (type) {
+      switch (type.type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,

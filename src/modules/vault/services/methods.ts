@@ -1,7 +1,7 @@
 import { BN, CoinQuantity } from 'fuels';
-import { Asset } from '@/modules/core';
 
 import { api } from '@/config';
+import { Asset } from '@/modules/core';
 import { Predicate, Workspace } from '@/modules/core/models';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
@@ -52,12 +52,6 @@ export class VaultService {
         params,
       },
     );
-
-    return data;
-  }
-
-  static async getAll() {
-    const { data } = await api.get<GetAllPredicateResponse>('/predicate');
 
     return data;
   }

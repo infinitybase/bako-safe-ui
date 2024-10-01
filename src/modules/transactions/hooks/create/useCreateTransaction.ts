@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { IAssetGroupById, Transfer } from 'bakosafe';
+import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,7 +11,6 @@ import {
   NativeAssetId,
   useBakoSafeCreateTransaction,
   useBakoSafeVault,
-  useGetParams,
   useGetTokenInfosArray,
 } from '@/modules/core';
 import { TransactionService } from '@/modules/transactions/services';
@@ -59,9 +58,14 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     signTransaction: { confirmTransaction },
   } = useTransactionsContext();
+
   const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
+    vaultDetails: {
+      vaultRequest: {
+        data: { predicateAddress, provider, id },
+      },
+    },
+  } = useWorkspaceContext();
 
   const [firstRender, setFirstRender] = useState(true);
   const [validTransactionFee, setValidTransactionFee] = useState<
@@ -94,28 +98,28 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       props?.hasAssetBalance(asset, amount) ?? false,
   });
 
-  const { vault, isLoading: isLoadingVault } = useBakoSafeVault(vaultId!);
+  const { vault, isLoading: isLoadingVault } = useBakoSafeVault({
+    address: predicateAddress,
+    provider,
+    id,
+  });
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    onSuccess: (result: Transfer) => {
+    onSuccess: (transaction) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
       });
+
       refetchTransactionsList();
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
       if (props?.createTransactionAndSign) {
-        confirmTransaction(
-          result.BakoSafeTransaction.id,
-          undefined,
-          result.BakoSafeTransaction,
-        );
+        confirmTransaction(transaction.id, undefined, transaction);
       }
       handleClose();
     },
-
     onError: () => {
       errorToast({
         title: 'There was an error creating the transaction',
