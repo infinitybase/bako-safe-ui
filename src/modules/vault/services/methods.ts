@@ -22,8 +22,9 @@ export interface HasReservedCoins {
   currentBalance: Required<Asset>[];
 }
 
+export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
 export type PredicateAndWorkspace = Predicate & {
-  workspace: Omit<Workspace, 'permissions'>;
+  workspace: PredicateWorkspace;
 };
 export type GetHasReservedCoins = HasReservedCoins;
 export type CreatePredicateResponse = Predicate;

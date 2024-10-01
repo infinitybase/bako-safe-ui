@@ -15,18 +15,19 @@ import {
 import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
-import { Workspace } from '@/modules/core/models/workspace';
 import {
   PermissionDetails,
   WorkspacePermissionUtils,
 } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { PredicateWorkspace } from '../services';
+
 interface VaultCardProps extends CardProps {
   ownerId: string;
   name: string;
   members: PredicateMember[];
-  workspace: Omit<Workspace, 'permissions'>;
+  workspace: PredicateWorkspace;
 }
 export const VaultCard = ({
   ownerId,
