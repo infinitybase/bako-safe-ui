@@ -28,7 +28,7 @@ function App() {
       if (
         parsedCurrentAccount ===
           Address.fromString(auth.userInfos?.address).toB256() ||
-        auth.userInfos?.type !== TypeUser.FUEL
+        auth.userInfos?.type?.type !== TypeUser.FUEL
       )
         return;
       clearAll();

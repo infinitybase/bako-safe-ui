@@ -39,6 +39,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   const {
     vaultTransactions: {
       request: { refetch: refetchVaultTransactions },
+      handlers: { setSelectedTransaction, selectedTransaction },
     },
     resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
@@ -82,6 +83,10 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       workspace: Workspace;
     },
   ) => {
+    if (selectedTransaction?.id?.length) {
+      setSelectedTransaction({ id: '', name: '' });
+    }
+
     props.onClose?.();
     resetAllTransactionsTypeFilters();
     invalidateRequests();

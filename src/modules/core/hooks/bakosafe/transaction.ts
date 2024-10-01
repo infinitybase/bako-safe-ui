@@ -50,12 +50,7 @@ const useBakoSafeCreateTransaction = ({
       const transaction = await TransactionService.getByHash(hashTxId);
       return transaction;
     },
-    {
-      ...options,
-      retry: (failureCount) => {
-        return failureCount < 5;
-      },
-    },
+    options,
   );
 };
 
