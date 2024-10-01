@@ -88,7 +88,6 @@ const useAuth = (): IUseAuthReturn => {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
 
     const currentConnector = fuel.currentConnector()?.name as EConnectors;
-    console.log('🚀 ~ userType ~ currentConnector:', currentConnector);
 
     return {
       type: TypeUser[EConnectorsInverse[currentConnector]],
