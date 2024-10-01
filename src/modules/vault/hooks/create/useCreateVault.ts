@@ -29,6 +29,9 @@ const useCreateVault = () => {
         latestPredicates: { refetch: refetchLatestPredicates },
       },
     },
+    userVaults: {
+      request: { refetch: refetchUserVaults },
+    },
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
@@ -47,6 +50,7 @@ const useCreateVault = () => {
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       refetchLatestPredicates();
+      refetchUserVaults();
       setVaultId(data.id);
       setTab(TabState.SUCCESS);
       form.reset();
