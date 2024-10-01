@@ -24,10 +24,11 @@ import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
+import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { DappTransaction } from '../components';
-import { useAuthSocket, useUserVaults, useVerifyBrowserType } from '../hooks';
+import { useAuthSocket, useVerifyBrowserType } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
@@ -42,7 +43,7 @@ const VaultConnector = () => {
   const {
     request: { vaults, isSuccess, isLoading, isFetching },
     inView,
-  } = useUserVaults();
+  } = useVaultDrawer({ perPage: 10, orderByRoot: true });
 
   const { selectedVaultId, setSelectedVaultId, currentVault, send } =
     useAuthSocket();
