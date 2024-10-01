@@ -42,6 +42,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
                 variant="dark"
                 value={search}
                 defaultValue={search || form.watch('name')}
+                maxLength={27}
                 onChange={(e) => {
                   searchHandler(e);
                   field.onChange(e.target.value);
@@ -80,9 +81,11 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
         >
           <Textarea
             {...form.register('description')}
+            maxLength={199}
             placeholder="Description"
             bg={`grey.825`}
             borderColor={`grey.800`}
+            resize="none"
           />
           <FormHelperText>Optional</FormHelperText>
         </FormControl>

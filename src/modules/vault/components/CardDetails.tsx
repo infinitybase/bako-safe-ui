@@ -18,9 +18,13 @@ import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { Pages, PermissionRoles } from '@/modules/core';
+import {
+  NetworkType,
+  Pages,
+  PermissionRoles,
+  useCurrentNetwork,
+} from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { limitCharacters } from '@/utils/limit-characters';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -30,9 +34,8 @@ export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
   assets: UseVaultDetailsReturn['assets'];
   isPendingSigner: boolean;
+  setAddAssetsDialogState: (value: boolean) => void;
 }
-
-const MAX_DESCRIPTION_CHARS = 80;
 
 const Update = () => {
   return (
@@ -66,7 +69,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const { vault, assets } = props;
+  const { vault, assets, setAddAssetsDialogState } = props;
   const {
     balanceUSD,
     visibleBalance,
@@ -81,8 +84,11 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isMobile, isExtraSmall },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
+  const { checkNetwork } = useCurrentNetwork();
+
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
     precision: 4,
@@ -101,16 +107,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     const as = hasPermission(reqPerm);
     return as;
   }, [vault.data?.id, balanceFormatted]);
-
-  const vaultDescription = useMemo(() => {
-    if (!vault?.data?.description) return '';
-
-    let description = vault.data?.description;
-    if (description.length > MAX_DESCRIPTION_CHARS) {
-      description = description.substring(0, MAX_DESCRIPTION_CHARS) + '...';
-    }
-    return description;
-  }, [vault]);
 
   if (!vault) return null;
 
@@ -135,22 +131,20 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
           backdropFilter="blur(16px)"
           dropShadow="0px 8px 6px 0px #00000026"
         >
-          <VStack spacing={4} w="full" maxW="full">
+          <VStack spacing={4} w="full">
             <Flex
               w="full"
-              maxW="full"
-              flex={1}
-              id="asd"
-              flexDir={{ base: 'column', sm: 'row' }}
+              flexDir={{ base: 'column', md: 'row' }}
               alignItems="flex-start"
               justify="space-between"
-              gap={{ base: 6, sm: 0 }}
+              gap={6}
             >
+              {/* VAULTNAME BOX */}
               <HStack
-                w={{ base: 'full', sm: '70%' }}
-                display="flex"
                 gap={{ base: 4, sm: 6 }}
                 alignItems="flex-start"
+                display="flex"
+                flex={1}
               >
                 <Avatar
                   position="relative"
@@ -163,21 +157,15 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   name={vault.data?.name}
                   boxShadow="0px 6.5px 6.5px 0px rgba(0, 0, 0, 0.4);"
                 />
-                <Box
-                  w={{ base: 'full', sm: '90%' }}
-                  alignItems="center"
-                  justifyContent="center"
-                >
+                <Box alignItems="center" justifyContent="center" w="full">
                   <HStack justifyContent="space-between" gap={2} maxW="full">
                     <Heading
                       alignSelf="flex-start"
-                      maxW={{ base: '35vw', sm: '70%', md: '80%' }}
                       variant={{ base: 'title-md', sm: 'title-xl' }}
-                      isTruncated
+                      noOfLines={1}
+                      wordBreak="break-all"
                     >
-                      {isExtraSmall
-                        ? limitCharacters(vault?.data?.name ?? '', 8)
-                        : vault?.data?.name}
+                      {vault?.data.name}
                     </Heading>
                     {isMobile && <Update />}
                   </HStack>
@@ -209,24 +197,25 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   )} */}
 
                   <Text
-                    maxW="200px"
                     variant="description"
-                    textOverflow="ellipsis"
-                    isTruncated
+                    noOfLines={4}
+                    wordBreak="break-all"
                   >
-                    {vaultDescription}
+                    {vault?.data?.description}
                   </Text>
                 </Box>
               </HStack>
 
+              {/* BALANCE BOX */}
               <Flex
-                w="full"
+                minW="140px"
+                w={{ base: 'full', md: 'fit-content' }}
                 gap={4}
-                flexDirection={{ base: 'row', sm: 'column' }}
+                flexDirection={{ base: 'row', md: 'column' }}
                 alignItems={{ base: 'center', sm: 'flex-end' }}
                 justifyContent="space-between"
               >
-                <Box width="auto">
+                <Box>
                   <HStack
                     minW={20}
                     display="flex"
@@ -278,10 +267,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Button
                     hidden={hasBalance}
                     variant="primary"
-                    onClick={() => openFaucet(vault.data?.predicateAddress)}
+                    onClick={() =>
+                      isTestnet
+                        ? openFaucet(vault.data?.predicateAddress)
+                        : setAddAssetsDialogState(true)
+                    }
                     leftIcon={<PlusSquareIcon />}
                   >
-                    Faucet
+                    {isTestnet ? 'Faucet' : 'Add Assets'}
                   </Button>
 
                   <VStack

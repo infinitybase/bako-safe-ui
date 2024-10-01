@@ -1,9 +1,8 @@
-import { SortOption } from 'bakosafe';
-
 import { IPagination } from '@/modules/core';
 import { AddressBook } from '@/modules/core/models/';
 
 import { WorkspaceContact } from '../../core/models/workspace';
+import { SortOption } from '@/modules/transactions/services';
 
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;

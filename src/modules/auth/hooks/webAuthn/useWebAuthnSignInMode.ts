@@ -88,6 +88,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
               singleWorkspace: workspace.id,
               permissions: workspace.permissions,
               webAuthn,
+              provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
             callback(rootWallet, workspace.id);
           }, 800);

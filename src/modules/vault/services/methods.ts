@@ -57,12 +57,6 @@ export class VaultService {
     return data;
   }
 
-  static async getAll() {
-    const { data } = await api.get<GetAllPredicateResponse>('/predicate');
-
-    return data;
-  }
-
   static async getById(id: string) {
     const { data } = await api.get<PredicateAndWorkspace>(`/predicate/${id}`);
     return data;

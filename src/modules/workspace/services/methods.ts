@@ -1,4 +1,4 @@
-import { ITransaction } from 'bakosafe';
+import { TransactionStatus } from 'bakosafe';
 import { BN } from 'fuels';
 
 import { api } from '@/config';
@@ -7,8 +7,33 @@ import {
   IPermission,
   IPermissions,
   Predicate,
+  WitnessStatus,
   Workspace,
 } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+
+export interface IWitnesses {
+  account: string;
+  signature: string;
+  status: WitnessStatus;
+  updatedAt: string;
+}
+
+export interface ITransactionResume {
+  id: string;
+  hash: string;
+  totalSigners: number;
+  requiredSigners: number;
+  predicate: {
+    id: string;
+    address: string;
+  };
+  status: TransactionStatus;
+  witnesses: IWitnesses[];
+  gasUsed?: string;
+  sendTime?: Date;
+  error?: string;
+}
 
 export interface CreateWorkspacePayload {
   name: string;

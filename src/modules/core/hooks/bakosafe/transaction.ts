@@ -1,16 +1,19 @@
 import {
   IBakoSafeAuth,
-  IListTransactions,
-  IPayloadTransfer,
-  ITransaction,
+  ITransferAsset,
   TransactionType,
-  Transfer,
   Vault,
 } from 'bakosafe';
 
-import { TransactionService } from '@/modules/transactions/services';
+import {
+  TransactionService,
+  TransactionWithVault,
+} from '@/modules/transactions/services';
 
+import { instantiateVault } from './instantiateVault';
+import { sendTransaction } from './sendTransaction';
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
+import { IListTransactions, ITransaction } from './utils/types';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
@@ -22,10 +25,14 @@ export const TRANSACTION_QUERY_KEYS = {
     filter,
   ],
 };
+export interface IPayloadTransfer {
+  assets: ITransferAsset[];
+  name?: string;
+}
 
 interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
-  onSuccess: (result: Transfer) => void;
+  onSuccess: (result: TransactionWithVault) => void;
   onError: () => void;
 }
 
@@ -36,11 +43,12 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      return vault?.BakoSafeIncludeTransaction({
+      const { hashTxId } = await vault.transaction({
         name: payload.name!,
-        witnesses: payload.witnesses,
         assets: payload.assets,
       });
+      const transaction = await TransactionService.getByHash(hashTxId);
+      return transaction;
     },
     options,
   );
@@ -79,7 +87,10 @@ interface UseBakoSafeSendTransactionParams {
 }
 
 interface BakoSafeTransactionSendVariables {
-  transaction: Pick<ITransaction, 'id' | 'predicateId'>;
+  transaction: Pick<
+    ITransaction,
+    'id' | 'predicateId' | 'predicateAddress' | 'hash'
+  >;
   auth?: IBakoSafeAuth;
 }
 
@@ -88,19 +99,15 @@ const useBakoSafeTransactionSend = (
 ) => {
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
-    async ({ transaction, auth }: BakoSafeTransactionSendVariables) => {
+    async ({ transaction }: BakoSafeTransactionSendVariables) => {
+      const vaultInstance = await instantiateVault({
+        predicateAddress: transaction.predicateAddress,
+      });
+
       try {
-        const vault = await Vault.create({
-          id: transaction.predicateId,
-          token: auth!.token,
-          address: auth!.address,
-        });
+        const txResult = await sendTransaction(vaultInstance, transaction.hash);
 
-        const transfer = await vault.BakoSafeGetTransaction(transaction.id!);
-
-        await transfer.wait();
-
-        return transfer.BakoSafeTransaction;
+        return txResult;
       } catch (e) {
         options?.onError?.(transaction, e);
         throw e;

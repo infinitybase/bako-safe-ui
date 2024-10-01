@@ -26,7 +26,7 @@ const APITokenCard = (props: APITokenCardProps) => {
   const { apiToken } = props;
   const { confirm, handler, request } = useRemoveAPIToken();
   const {
-    screenSizes: { isExtraSmall, isLitteSmall },
+    screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
 
   return (
@@ -40,38 +40,31 @@ const APITokenCard = (props: APITokenCardProps) => {
       p={4}
       borderRadius={8}
     >
-      <HStack alignItems="center" justifyContent="space-between">
+      <HStack alignItems="center" justifyContent="space-between" spacing={4}>
         <VStack
           spacing={3}
           alignItems="flex-start"
           justifyContent="space-between"
-          flex={2}
           w="full"
-          maxW={{
-            base:
-              confirm.show && isExtraSmall
-                ? 160
-                : confirm.show && isLitteSmall
-                  ? 175
-                  : isLitteSmall
-                    ? 205
-                    : confirm.show
-                      ? 205
-                      : 270,
-            xs: 275,
-          }}
         >
           <Text
             color="grey.50"
             fontSize="xs"
             fontWeight={700}
             maxW="full"
-            isTruncated
+            noOfLines={1}
+            wordBreak="break-all"
           >
             {apiToken.name}
           </Text>
 
-          <Text color="grey.250" fontSize="xs" maxW="full" isTruncated>
+          <Text
+            color="grey.250"
+            fontSize="xs"
+            maxW="full"
+            noOfLines={4}
+            wordBreak="break-all"
+          >
             Transaction name: {apiToken.config?.transactionTitle}
           </Text>
 
@@ -173,7 +166,6 @@ const APITokensList = (props: APITokensListProps) => {
                 '&::-webkit-scrollbar': {
                   display: 'none',
                   width: '5px',
-                  //maxHeight: '330px',
                   backgroundColor: '#2B2927',
                 },
                 '&::-webkit-scrollbar-thumb': {

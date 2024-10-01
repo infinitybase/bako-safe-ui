@@ -8,7 +8,7 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import {
   Dialog,
@@ -192,9 +192,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 isDeposit={isDeploy}
                 transaction={transaction}
                 w="fit-content"
-                isInDetailsDialog
                 h="26px"
                 isContract={isContract}
+                isDeploy={isDeploy}
               />
               <TransactionCard.Status
                 transaction={transaction}
@@ -249,7 +249,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                declineTransaction(transaction.id);
+                declineTransaction(transaction.hash);
               }}
               isLoading={isLoading}
               isDisabled={isSuccess && !awaitingAnswer}

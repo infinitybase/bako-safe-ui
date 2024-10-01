@@ -143,6 +143,7 @@ const Container = ({
 
               <TransactionCard.Amount
                 transaction={transaction}
+                isDeploy={isDeploy}
                 isDeposit={isDeposit}
                 isContract={isContract}
               />

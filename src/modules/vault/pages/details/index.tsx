@@ -11,11 +11,15 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
+import AddAssetsDialog from '@/components/addAssetsDialog';
+import DepositDialog from '@/components/depositDialog';
 import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
+import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
@@ -36,6 +40,9 @@ import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 const VaultDetailsPage = () => {
+  const [welcomeDialogState, setWelcomeDialogState] = useState(true);
+  const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
+  const [depositDialogState, setDepositDialogState] = useState(false);
   const menuDrawer = useDisclosure();
   const {
     vaultPageParams: { workspaceId: vaultWkId },
@@ -88,6 +95,24 @@ const VaultDetailsPage = () => {
   return (
     <Box w="full">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
+
+      <WelcomeDialog
+        isOpen={welcomeDialogState}
+        setIsWelcomeDialogOpen={setWelcomeDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
+      />
+
+      <DepositDialog
+        isOpen={depositDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
+        vault={vault.data}
+      />
+
+      <AddAssetsDialog
+        isOpen={addAssetsDialogState}
+        setIsAddAssetDialogOpen={setAddAssetsDialogState}
+        setIsDepositDialogOpen={setDepositDialogState}
+      />
 
       <HStack mb={9} w="full" justifyContent="space-between">
         {vaultRequiredSizeToColumnLayout ? (
@@ -212,6 +237,7 @@ const VaultDetailsPage = () => {
           vault={vault}
           assets={assets}
           isPendingSigner={isPendingSigner}
+          setAddAssetsDialogState={setAddAssetsDialogState}
         />
 
         <SignersDetails

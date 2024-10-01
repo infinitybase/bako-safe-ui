@@ -8,7 +8,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AssetBoxInfo, TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
-import { DeploymentInfo } from './DeploymentInfos';
 import MintTokenInfos from './mint-token/MintToken';
 
 interface ITransactionBreakdown {
@@ -20,14 +19,8 @@ const TransactionBreakdown = ({
   transaction,
   status,
 }: ITransactionBreakdown) => {
-  const {
-    isFromConnector,
-    isContract,
-    mainOperation,
-    isPending,
-    isDeploy,
-    isMint,
-  } = useVerifyTransactionInformations(transaction);
+  const { isFromConnector, isContract, isPending, isDeploy, isMint } =
+    useVerifyTransactionInformations(transaction);
 
   const {
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
@@ -87,13 +80,14 @@ const TransactionBreakdown = ({
           />
         ))}
 
-        {isContract && !isMint && (
-          <ContractAddresses
-            transaction={transaction}
-            borderColor="grey.950"
-            borderBottomWidth={1}
-          />
-        )}
+        {(isContract && !isMint) ||
+          (isDeploy && (
+            <ContractAddresses
+              transaction={transaction}
+              borderColor="grey.950"
+              borderBottomWidth={1}
+            />
+          ))}
         {isMint && <MintTokenInfos transaction={transaction} />}
       </Box>
 
@@ -103,10 +97,6 @@ const TransactionBreakdown = ({
           isNotSigned={isNotSigned}
           isPending={isPending}
         />
-      )}
-
-      {isDeploy && !!mainOperation && (
-        <DeploymentInfo operation={mainOperation} w="full" />
       )}
 
       <Box

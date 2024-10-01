@@ -1,10 +1,9 @@
-import { IPredicate } from 'bakosafe';
-
 import { Owner, WorkspaceOnVault } from '@/modules/core/models/workspace';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 
 import { Transaction } from './transaction';
 import { User } from './user';
+import { IPredicate } from '../hooks/bakosafe/utils/types';
 
 export interface PredicateMember {
   id: string;

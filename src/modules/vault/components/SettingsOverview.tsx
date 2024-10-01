@@ -15,11 +15,20 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CommingSoonDialog, CustomSkeleton } from '@/components';
-import { AddressCopy } from '@/components/addressCopy';
+import {
+  AddressWithCopyBtn,
+  Card,
+  CommingSoonDialog,
+  CustomSkeleton,
+} from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
+import {
+  NetworkType,
+  Pages,
+  PermissionRoles,
+  useCurrentNetwork,
+} from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
@@ -31,12 +40,16 @@ export interface CardDetailsProps {
   assets: UseVaultDetailsReturn['assets'];
   vault: UseVaultDetailsReturn['vault'];
   blockedTransfers: boolean;
+  setAddAssetsDialogState: (state: boolean) => void;
 }
 
 const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
-  const { vault, assets, blockedTransfers } = props;
+  const { vault, assets, blockedTransfers, setAddAssetsDialogState } = props;
   const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
+  const { checkNetwork } = useCurrentNetwork();
+
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const {
     authDetails: { userInfos },
@@ -213,11 +226,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
-                            openFaucet(vault.data?.predicateAddress)
+                            isTestnet
+                              ? openFaucet(vault.data?.predicateAddress)
+                              : setAddAssetsDialogState(true)
                           }
                           position="relative"
                         >
-                          Faucet
+                          {isTestnet ? 'Faucet' : 'Add Assets'}
                         </Button>
                         <Text
                           variant="description"
@@ -321,7 +336,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   right={{ base: 4, sm: 0 }}
                   align={{ base: 'flex-end', sm: 'center' }}
                   justifyContent="flex-start"
-                  gap={0}
                 >
                   <Box
                     p={3}
@@ -341,15 +355,17 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       }}
                     />
                   </Box>
-                  <AddressCopy
-                    w="full"
-                    h="2.5rem"
-                    mt={4}
-                    maxW={{ base: '40', sm: 180 }}
-                    address={
-                      AddressUtils.format(vault?.data?.predicateAddress ?? '')!
-                    }
-                    addressToCopy={vault?.data?.predicateAddress}
+                  <AddressWithCopyBtn
+                    mt="auto"
+                    address={vault?.data?.predicateAddress ?? ''}
+                    p={2}
+                    px={3}
+                    flexDir="row-reverse"
+                    cursor="pointer"
+                    borderRadius={10}
+                    backgroundColor="dark.100"
+                    isSidebarAddress
+                    addressProps={{ color: 'grey.500' }}
                   />
                 </VStack>
               </Stack>

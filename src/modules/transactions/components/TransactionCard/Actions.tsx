@@ -1,5 +1,6 @@
 import {
   Badge,
+  BoxProps,
   Button,
   HStack,
   Icon,
@@ -24,7 +25,7 @@ interface ActionsMobileProps {
   awaitingAnswer?: boolean | ITransactionWithType;
 }
 
-interface TransactionActionsProps {
+interface TransactionActionsProps extends BoxProps {
   status: TransactionState;
   transaction?: ITransactionWithType;
   isInTheVaultPage?: boolean;
@@ -63,6 +64,7 @@ const Actions = ({
   status,
   isSigner,
   callBack,
+  ...rest
 }: TransactionActionsProps) => {
   const {
     screenSizes: { isMobile },
@@ -101,7 +103,7 @@ const Actions = ({
   }
 
   return (
-    <HStack minW={140} justifySelf="end">
+    <HStack minW={140} justifySelf="end" {...rest}>
       {isSigned && (
         <Badge h={6} rounded="full" px={2} variant="success">
           You signed
@@ -149,7 +151,7 @@ const Actions = ({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              declineTransaction(transaction.id);
+              declineTransaction(transaction.hash);
             }}
             isLoading={isTxActionsInLoading}
             isDisabled={disableActionButtons}

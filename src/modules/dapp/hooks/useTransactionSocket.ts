@@ -85,7 +85,6 @@ export const useTransactionSocket = () => {
       transactionLike: tx,
       providerUrl: vault.provider,
       configurable: vault.configurable,
-      version: vault.version,
     });
   };
 
