@@ -13,10 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CustomSkeleton } from '@/components';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
-
-import { CardMember } from './CardMember';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { UseVaultDetailsReturn } from '../hooks';
+import { CardMember } from './CardMember';
 
 const SignerCard = chakra(Card, {
   baseStyle: {
@@ -80,7 +80,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
                   onClick={() =>
                     navigate(
                       Pages.vaultSettings({
-                        vaultId: vault.data?.id!,
+                        vaultId: vault.data?.id ?? '',
                         workspaceId: userInfos.workspace?.id,
                       }),
                     )
@@ -144,7 +144,8 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
           Signers
         </Text>
         <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.data?.minSigners}/
+          Required signers{' '}
+          {JSON.parse(vault.data.configurable).SIGNATURES_COUNT}/
           {vault.data?.members?.length}
         </Badge>
       </HStack>
