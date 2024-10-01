@@ -34,6 +34,7 @@ const useSignInRequest = (
         encoder: Encoder.FUEL,
         digest: params.code,
         signature: await fuel.signMessage(account!, params.code),
+        userAddress: account!,
       };
 
       return UserService.signIn(payload);
