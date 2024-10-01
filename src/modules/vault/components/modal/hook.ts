@@ -2,15 +2,17 @@ import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { Predicate, Workspace } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { PredicateAndWorkspace } from '../../services/methods';
+
 interface UseVaultDrawerParams {
   onClose?: () => void;
   isOpen?: boolean;
+
   onSelect?: (
     vault: Predicate & {
       workspace: Workspace;
@@ -83,11 +85,7 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     vaultList.hasNextPage,
   ]);
 
-  const onSelectVault = (
-    vault: Predicate & {
-      workspace: Workspace;
-    },
-  ) => {
+  const onSelectVault = (vault: PredicateAndWorkspace) => {
     if (selectedTransaction?.id?.length) {
       setSelectedTransaction({ id: '', name: '' });
     }

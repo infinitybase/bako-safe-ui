@@ -22,6 +22,9 @@ import {
 } from '@/components';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
+
+import { AddressUtils } from '@/modules/core';
+
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';

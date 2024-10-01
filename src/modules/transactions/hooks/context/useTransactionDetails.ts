@@ -38,6 +38,7 @@ const useTransactionDetails = () => {
   const pendingTransactions = usePendingTransactionsList(
     homeTransactions.transactions!,
     transactionsPageList.lists.transactions!,
+    vaultTransactions.lists.transactions,
   );
 
   const signTransaction = useSignTransaction({
