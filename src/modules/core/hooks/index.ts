@@ -1,6 +1,7 @@
 export * from './bakosafe';
 export * from './fuel';
 export * from './socket';
+export * from './useCurrentNetwork';
 export * from './useGetCachedQueryData';
 export * from './useGetParams';
 export * from './useGetTokenInfos';

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -14,6 +13,7 @@ interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
   redirect: (vaultId?: string, workspaceId?: string) => string;
+  callback: (vaultId?: string, workspaceId?: string) => void;
 }
 
 const verifyNickname = async (username: string) => {
@@ -26,6 +26,7 @@ const generateSignInCode = async (address: string) => {
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   const { form, setMode, redirect } = params;
+  const { form, setMode, callback } = params;
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [signInProgress, setSignInProgress] = useState(0);
@@ -92,7 +93,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
               webAuthn,
               provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
-            navigate(redirect(rootWallet, workspace.id));
+            callback(rootWallet, workspace.id);
           }, 800);
         },
         onError: () => {

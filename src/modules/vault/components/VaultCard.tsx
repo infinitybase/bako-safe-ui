@@ -15,27 +15,28 @@ import {
 import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
-import { Workspace } from '@/modules/core/models/workspace';
 import {
   PermissionDetails,
   WorkspacePermissionUtils,
 } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { PredicateWorkspace } from '../services';
+
 interface VaultCardProps extends CardProps {
-  id: string;
+  ownerId: string;
   name: string;
   members: PredicateMember[];
-  workspace: Workspace;
+  workspace: PredicateWorkspace;
 }
 export const VaultCard = ({
-  id,
+  ownerId,
   name,
   workspace,
   members,
   ...rest
 }: VaultCardProps) => {
-  const { role } = usePermissions({ id, workspace });
+  const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
@@ -51,10 +52,6 @@ export const VaultCard = ({
       maxW={isExtraSmall ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}
       cursor="pointer"
-      _hover={{
-        transform: 'scale(1.03)',
-        transition: 'ease .3s',
-      }}
       zIndex={100}
       {...rest}
     >

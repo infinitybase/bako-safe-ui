@@ -29,6 +29,7 @@ export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
 const useWebAuthnSignIn = (
   redirect: (vaultId?: string, workspaceId?: string) => string,
+  signInCallback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');
@@ -38,14 +39,14 @@ const useWebAuthnSignIn = (
     defaultTab: WebAuthnTabState.LOGIN,
   });
 
-  const { form } = useWebAuthnForm();
-  // mode
+  const { form } = useWebAuthnForm(mode);
   const { checkNicknameRequest, accountsRequest, badge, ...rest } =
     useWebAuthnInput(!form.formState.errors.username);
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
     form,
     setMode,
     redirect,
+    callback: signInCallback,
   });
   const { isRegistering, registerProgress, handleRegister } =
     useWebAuthnRegisterMode({

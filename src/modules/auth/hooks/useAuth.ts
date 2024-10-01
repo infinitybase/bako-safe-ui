@@ -37,7 +37,8 @@ const useAuth = (): IUseAuthReturn => {
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
-  const { account, singleWorkspace } = userAuthCookiesInfo();
+  const signOutRequest = useSignOut();
+  const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
   const { sessionId, origin, name, request_id, byConnector } = useQueryParams();
   const navigate = useNavigate();
 
@@ -54,13 +55,14 @@ const useAuth = (): IUseAuthReturn => {
       clearAuthCookies();
       queryClient.clear();
 
-
-    const queryParams = generateRedirectQueryParams({
-      sessionId,
-      origin,
-      name,
-      request_id,
-      byConnector: String(byConnector),
+      const queryParams = generateRedirectQueryParams({
+        sessionId,
+        origin,
+        name,
+        request_id,
+        byConnector: byConnector ? String(byConnector) : undefined,
+      });
+      navigate(`/${queryParams}`);
     }, 200);
   };
 
@@ -87,7 +89,6 @@ const useAuth = (): IUseAuthReturn => {
       return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
 
     const currentConnector = fuel.currentConnector()?.name as EConnectors;
-    console.log('🚀 ~ userType ~ currentConnector:', currentConnector);
 
     return {
       type: TypeUser[EConnectorsInverse[currentConnector]],

@@ -126,8 +126,10 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
                   return (
                     <VaultItemBox
                       key={vault.id}
+                      mt={4}
                       name={vault.name}
                       address={vault.predicateAddress}
+                      root={vault.root}
                       // workspace={vault.workspace}
                       isActive={vaultId === vault.id}
                       members={vault.members?.length}
