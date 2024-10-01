@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { AutocompleteBadgeStatus } from '@/components';
+import { AutocompleteBadgeStatus } from '@/components/autocomplete';
 
 import { TypeUser } from '../../services/methods';
 import {
