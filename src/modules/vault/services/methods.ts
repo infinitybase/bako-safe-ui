@@ -22,15 +22,15 @@ export interface HasReservedCoins {
   currentBalance: Required<Asset>[];
 }
 
-export type PredicateAndWorkspace = Predicate & { workspace: Workspace };
+export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
+export type PredicateAndWorkspace = Predicate & {
+  workspace: PredicateWorkspace;
+};
 export type GetHasReservedCoins = HasReservedCoins;
 export type CreatePredicateResponse = Predicate;
 export type GetAllPredicateResponse = PredicateAndWorkspace[];
-export type GetAllPredicatePaginationResponse = IPagination<
-  Predicate & {
-    workspace: Workspace;
-  }
->;
+export type GetAllPredicatePaginationResponse =
+  IPagination<PredicateAndWorkspace>;
 export type CreatePredicatePayload = Omit<
   Predicate,
   'id' | 'transactions' | 'completeAddress' | 'owner'

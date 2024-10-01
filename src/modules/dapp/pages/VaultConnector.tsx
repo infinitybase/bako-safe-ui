@@ -21,11 +21,10 @@ import { RiLink } from 'react-icons/ri';
 
 import { CustomSkeleton, EmptyBox, LineCloseIcon } from '@/components';
 import { useQueryParams } from '@/modules/auth';
-import { AddressUtils, PermissionRoles } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
-import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useAuthSocket, useVerifyBrowserType } from '../hooks';
@@ -233,16 +232,6 @@ const VaultConnector = () => {
           >
             {vaults?.map(
               ({ id, name, predicateAddress, workspace, members }) => {
-                const isViewer = WorkspacePermissionUtils.is(
-                  PermissionRoles.VIEWER,
-                  {
-                    permissions: workspace.permissions,
-                    userId: userInfos?.id,
-                  },
-                );
-
-                if (isViewer) return null;
-
                 if (id === currentVault && !selectedVaultId)
                   setSelectedVaultId(id);
 

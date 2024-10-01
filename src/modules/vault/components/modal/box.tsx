@@ -1,13 +1,14 @@
 import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Card, CardProps } from '@/components';
-import { Workspace } from '@/modules/core';
+
+import { PredicateWorkspace } from '../../services';
 
 interface VaultDrawerBoxProps extends CardProps {
   isActive?: boolean;
   name: string;
   address: string;
-  workspace?: Workspace;
+  workspace?: PredicateWorkspace;
   isSingleWorkspace?: boolean;
   isInDapp?: boolean;
   members?: number;

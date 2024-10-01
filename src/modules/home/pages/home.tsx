@@ -13,19 +13,14 @@ import {
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
-
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-
 import { Pages } from '@/modules/core/routes';
-
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ActionCard } from '../components/ActionCard';
-
 import HomeTransactions from '../components/HomeTransactions';
-
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const HomePage = () => {
   const {
@@ -164,7 +159,7 @@ const HomePage = () => {
             }}
           >
             {recentVaults?.map(
-              ({ id, name, workspace, members, description }, index) => {
+              ({ id, name, workspace, members, description, owner }, index) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -190,7 +185,7 @@ const HomePage = () => {
                         />
                       ) : (
                         <VaultCard
-                          id={id}
+                          ownerId={owner.id}
                           name={name}
                           workspace={workspace}
                           title={description}
