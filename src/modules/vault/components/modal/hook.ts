@@ -12,6 +12,14 @@ import { PredicateAndWorkspace } from '../../services/methods';
 interface UseVaultDrawerParams {
   onClose?: () => void;
   isOpen?: boolean;
+
+  onSelect?: (
+    vault: Predicate & {
+      workspace: Workspace;
+    },
+  ) => void;
+  orderByRoot?: boolean;
+  perPage?: number;
 }
 
 const useVaultDrawer = (props: UseVaultDrawerParams) => {
@@ -40,7 +48,10 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
 
-  const vaultList = useVaultListRequest({ q: search }, props.isOpen);
+  const vaultList = useVaultListRequest(
+    { q: search, perPage: props.perPage, orderByRoot: props.orderByRoot },
+    props.isOpen,
+  );
 
   const invalidateRequests = () => {
     invalidateGifAnimationRequest();
