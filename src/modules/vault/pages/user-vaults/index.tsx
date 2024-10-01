@@ -25,14 +25,8 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog, VaultCard } from '../../components';
-import { useUserVaults } from '../../hooks/user-vaults/useUserVaults';
 
 const UserVaultsPage = () => {
-  const {
-    navigate,
-    vaultsRequest: { vaults, loadingVaults },
-  } = useUserVaults();
-
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { MANAGER, OWNER, ADMIN } = PermissionRoles;
@@ -42,6 +36,11 @@ const UserVaultsPage = () => {
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
       requests: { latestPredicates },
+    },
+    userVaults: {
+      request: { vaults, isLoading },
+      handlers: { navigate },
+      inView,
     },
   } = useWorkspaceContext();
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -217,8 +216,8 @@ const UserVaultsPage = () => {
         </Text>
       </Box>
 
-      {!vaults?.length && !loadingVaults && (
-        <CustomSkeleton isLoaded={!loadingVaults}>
+      {!vaults?.length && !isLoading && (
+        <CustomSkeleton isLoaded={!isLoading}>
           <EmptyState
             bg={'red'}
             showAction={hasPermission([OWNER, MANAGER, ADMIN])}
@@ -230,46 +229,71 @@ const UserVaultsPage = () => {
         </CustomSkeleton>
       )}
       {vaults?.length && (
-        <Grid
-          mt={{ base: -8, sm: -2 }}
-          pb={{ base: 8, sm: 0 }}
+        <Box
           w="full"
-          maxW="full"
-          gap={6}
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
+          minH="60vh"
+          maxH="79vh"
+          mt={-2}
+          pb={{ base: 8, sm: 0 }}
+          overflowY="scroll"
+          overflowX="hidden"
+          scrollBehavior="smooth"
+          sx={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+              width: '5px',
+              maxHeight: '330px',
+              backgroundColor: 'grey.200',
+              borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#2C2C2C',
+              borderRadius: '30px',
+              height: '10px',
+            },
           }}
         >
-          {vaults?.map(
-            ({ id, name, workspace, members, description, owner }) => {
-              return (
-                <CustomSkeleton isLoaded={!loadingVaults} key={id} maxH="180px">
-                  <GridItem>
-                    <VaultCard
-                      ownerId={owner.id}
-                      name={name}
-                      workspace={workspace}
-                      title={description}
-                      members={members!}
-                      onClick={() =>
-                        handleWorkspaceSelection(
-                          workspace.id,
-                          Pages.detailsVault({
-                            workspaceId: workspace.id,
-                            vaultId: id,
-                          }),
-                        )
-                      }
-                    />
-                  </GridItem>
-                </CustomSkeleton>
-              );
-            },
-          )}
-        </Grid>
+          <Grid
+            mt={{ base: -6, sm: 0 }}
+            w="full"
+            maxW="full"
+            gap={6}
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              '2xl': 'repeat(4, 1fr)',
+            }}
+          >
+            {vaults?.map(
+              ({ id, name, workspace, members, description, owner }) => {
+                return (
+                  <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
+                    <GridItem>
+                      <VaultCard
+                        ownerId={owner.id}
+                        name={name}
+                        workspace={workspace}
+                        title={description}
+                        members={members!}
+                        onClick={() =>
+                          handleWorkspaceSelection(
+                            workspace.id,
+                            Pages.detailsVault({
+                              workspaceId: workspace.id,
+                              vaultId: id,
+                            }),
+                          )
+                        }
+                      />
+                    </GridItem>
+                  </CustomSkeleton>
+                );
+              },
+            )}
+          </Grid>
+          <Box ref={inView.ref} />
+        </Box>
       )}
     </VStack>
   );

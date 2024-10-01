@@ -52,10 +52,6 @@ export const VaultCard = ({
       maxW={isExtraSmall ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}
       cursor="pointer"
-      _hover={{
-        transform: 'scale(1.03)',
-        transition: 'ease .3s',
-      }}
       zIndex={100}
       {...rest}
     >
