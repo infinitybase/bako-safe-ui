@@ -23,19 +23,19 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultCardProps extends CardProps {
-  id: string;
+  ownerId: string;
   name: string;
   members: PredicateMember[];
-  workspace: Workspace;
+  workspace: Omit<Workspace, 'permissions'>;
 }
 export const VaultCard = ({
-  id,
+  ownerId,
   name,
   workspace,
   members,
   ...rest
 }: VaultCardProps) => {
-  const { role } = usePermissions({ id, workspace });
+  const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
