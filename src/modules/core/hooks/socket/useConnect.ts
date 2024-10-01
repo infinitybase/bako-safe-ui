@@ -1,3 +1,4 @@
+import { TransactionRequestLike } from 'fuels';
 import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
@@ -12,6 +13,7 @@ export enum SocketEvents {
   DISCONNECTED = '[CLIENT_DISCONNECTED]',
 
   TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
+  //TX_SIGN = '[TX_EVENT_SIGNED]', [CONNECTOR SIGNATURE]
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
 }
 
@@ -19,6 +21,12 @@ export enum SocketUsernames {
   UI = '[UI]',
   CONNECTOR = '[CONNECTOR]',
   API = '[API]',
+}
+
+export interface IEventTX_CONFIRM {
+  tx?: TransactionRequestLike;
+  operations: any;
+  sign?: boolean;
 }
 
 export interface IDefaultMessage {
