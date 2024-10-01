@@ -1,13 +1,11 @@
-import {
-  ITransaction,
-  ITransactionResume,
-  SortOptionTx,
-  TransactionType,
-  Vault,
-} from 'bakosafe';
+import { ITransactionResume, TransactionType, Vault } from 'bakosafe';
 import { Operation } from 'fuels';
 
 import { AssetModel, IPagination, TransactionStatus } from '@/modules/core';
+import {
+  ITransaction,
+  SortOptionTx,
+} from '@/modules/core/hooks/bakosafe/utils/types';
 import { PredicateAndWorkspace } from '@/modules/vault';
 
 export interface ITransactionPagination<T> {
@@ -102,7 +100,8 @@ export interface GetVaultTransactionsParams {
 }
 
 export interface SignerTransactionPayload {
-  id: string;
+  hash?: string;
+  id?: string;
   signer?: string;
   account: string;
   confirm: boolean;

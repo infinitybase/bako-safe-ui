@@ -12,6 +12,7 @@ export const handleAssetsBalance = (balances: CoinQuantity[] = []) => {
       name: assetInfos?.name ?? 'Unknown',
       assetId: balance.assetId,
       icon: assetInfos?.icon,
+      units: assetInfos?.units ?? 0,
     };
   });
 

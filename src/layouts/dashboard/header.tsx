@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Center,
   chakra,
   Flex,
   HStack,
@@ -13,25 +12,29 @@ import {
   PopoverTrigger,
   Text,
   useDisclosure,
+  VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { Address } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import { ExitIcon, NotificationIcon, SettingsIcon } from '@/components';
-import { AddressCopy } from '@/components/addressCopy';
+import {
+  AddressWithCopyBtn,
+  ExitIcon,
+  NotificationIcon,
+  SettingsIcon,
+} from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
 import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequest';
-import {
-  CreateWorkspaceDialog,
-  SelectWorkspaceDialog,
-} from '@/modules/workspace/components';
+import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
@@ -47,7 +50,6 @@ const SpacedBox = chakra(Box, {
 
 const TopBarItem = chakra(SpacedBox, {
   baseStyle: {
-    borderLeftWidth: 1,
     borderColor: 'dark.100',
     display: 'flex',
     alignItems: 'center',
@@ -59,7 +61,12 @@ const TopBarItem = chakra(SpacedBox, {
 const UserBox = () => {
   const {
     authDetails,
-    screenSizes: { isMobile },
+    screenSizes: {
+      isMobile,
+      isExtraSmall,
+      isLitteSmall,
+      isLowerThanFourHundredAndThirty,
+    },
   } = useWorkspaceContext();
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
@@ -68,12 +75,21 @@ const UserBox = () => {
   const mySettingsRequest = useMySettingsRequest(
     authDetails.userInfos?.address,
   );
+
   const name = mySettingsRequest.data?.name ?? '';
-  const hasNickName = !AddressUtils.isValid(name);
+  const hasNickName = name && !AddressUtils.isValid(name);
 
   const logout = async () => {
-    authDetails.userInfos?.type === TypeUser.FUEL && (await fuel.disconnect());
-    authDetails.handlers.logout?.();
+    try {
+      authDetails.userInfos?.type.type === TypeUser.FUEL &&
+        authDetails.userInfos?.type.name !== EConnectors.FULLET &&
+        (await fuel.disconnect());
+      // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    } finally {
+      authDetails.handlers.logout?.();
+    }
   };
 
   // Bug fix to unread counter that keeps previous state after redirect
@@ -81,6 +97,10 @@ const UserBox = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  const b256UserAddress = Address.fromString(
+    authDetails.userInfos.address ?? '',
+  ).toB256();
 
   return (
     <>
@@ -95,131 +115,214 @@ const UserBox = () => {
         onClose={notificationDrawerState.onClose}
       />
 
-      <Popover>
+      <Popover placement="bottom-end">
         <PopoverTrigger>
-          <Flex
+          <HStack
             w="100%"
             alignItems="center"
             cursor={'pointer'}
-            px={{ base: 0, sm: 2 }}
+            spacing={isMobile ? 2 : 4}
+            position="relative"
+            border={isMobile ? '1px solid #353230' : 'none'}
+            borderRadius="6px"
           >
-            <Box mr={{ base: 2, sm: 4 }}>
+            <HStack
+              w="full"
+              flexDir={isMobile ? 'row' : 'row-reverse'}
+              spacing={4}
+            >
+              <Text
+                fontWeight="semibold"
+                color="grey.200"
+                pl={isMobile ? 4 : 0}
+                noOfLines={1}
+              >
+                {hasNickName ? (
+                  limitCharacters(name, 20)
+                ) : (
+                  <AddressWithCopyBtn
+                    address={authDetails.userInfos?.address ?? ''}
+                    customAddress={AddressUtils.format(
+                      b256UserAddress,
+                      isExtraSmall
+                        ? 8
+                        : isLitteSmall
+                          ? 10
+                          : isLowerThanFourHundredAndThirty
+                            ? 15
+                            : 18,
+                    )}
+                    justifyContent="start"
+                    aria-label="Copy address"
+                    flexDir="row-reverse"
+                    hideCopyButton
+                    addressProps={{
+                      fontSize: isMobile ? 'xs' : 'md',
+                    }}
+                  />
+                )}
+              </Text>
+
               <Avatar
                 variant="roundedSquare"
                 src={authDetails.userInfos?.avatar}
-                size={{ base: 'sm', sm: 'md' }}
+                boxSize={isMobile ? '32px' : '40px'}
+                border="1px solid #CFCCC9"
               />
-            </Box>
+              {!isMobile && (
+                <HStack
+                  position="relative"
+                  mr={3}
+                  onClick={notificationDrawerState.onOpen}
+                >
+                  <Icon color="grey.75" as={NotificationIcon} fontSize="28px" />
+                  {unreadCounter > 0 && (
+                    <Text
+                      fontSize="10px"
+                      rounded="full"
+                      bgColor="error.600"
+                      color="white"
+                      border="none"
+                      w="12px"
+                      textAlign="center"
+                      position="absolute"
+                      top={-1}
+                      right={-1}
+                    >
+                      {unreadCounter}
+                    </Text>
+                  )}
+                </HStack>
+              )}
+            </HStack>
+            {!isMobile && (
+              <Icon
+                color="grey.200"
+                fontSize={{ base: 'sm', sm: 'lg' }}
+                as={FaChevronDown}
+              />
+            )}
 
-            <Box display={{ base: 'none', sm: 'block' }} mr={9}>
-              <Text fontWeight="semibold" color="grey.200">
-                {AddressUtils.format(authDetails.userInfos?.address)}
+            {unreadCounter > 0 && isMobile && (
+              <Text
+                fontSize="xs"
+                rounded="full"
+                bgColor="error.600"
+                color="white"
+                border="none"
+                w="16px"
+                textAlign="center"
+                position="absolute"
+                right={-2}
+                top={-2}
+              >
+                {unreadCounter}
               </Text>
-            </Box>
-
-            <Icon
-              color="grey.200"
-              fontSize={{ base: 'sm', sm: 'lg' }}
-              as={FaChevronDown}
-            />
-          </Flex>
+            )}
+          </HStack>
         </PopoverTrigger>
 
         <PopoverContent
           bg={'dark.300'}
-          border={'none'}
           w="100%"
           m={0}
           p={0}
-          boxShadow="lg"
+          borderTop="none"
+          border="1px solid #353230"
+          _focus={{ ring: 'none' }}
         >
           <PopoverBody>
-            {isMobile && (
-              <>
-                <Box
-                  borderTop={'1px solid'}
-                  borderTopColor={'dark.100'}
-                  cursor={'pointer'}
-                  onClick={notificationDrawerState.onOpen}
-                  p={5}
-                >
-                  <HStack>
-                    <Icon
-                      color="grey.200"
-                      as={NotificationIcon}
-                      fontSize="xl"
-                    />
-                    <Text color="grey.200" fontWeight={'bold'}>
-                      Notifications
-                    </Text>
-
-                    {unreadCounter > 0 && (
-                      <Center
-                        px={1}
-                        py={0}
-                        bg="error.600"
-                        borderRadius={10}
-                        position="relative"
-                      >
-                        <Text fontSize="xs">+{unreadCounter}</Text>
-                      </Center>
-                    )}
-                  </HStack>
-                </Box>
-              </>
-            )}
-
-            <Box
-              borderTop={'1px solid'}
-              borderTopColor={'dark.100'}
+            <VStack
               cursor={'pointer'}
-              p={5}
-              display="flex"
-              flexDir={'column'}
               alignItems="start"
+              px={4}
+              py={2}
+              spacing={1.5}
             >
               {hasNickName && (
-                <Text color="grey.50" fontWeight={500} mb="4px">
+                <Text color="grey.50" fontWeight={500}>
                   {limitCharacters(name, 25)}
                 </Text>
               )}
-              <AddressCopy
-                addressColor="grey.250"
-                spacing={1}
-                flexDir="row"
-                address={AddressUtils.format(authDetails.userInfos?.address)!}
-                addressToCopy={authDetails.userInfos?.address}
-                bg="transparent"
-                fontSize={14}
-                alignSelf="start"
-                p={0}
+              <AddressWithCopyBtn
+                address={authDetails.userInfos?.address ?? ''}
+                justifyContent="start"
+                aria-label="Copy address"
+                isSidebarAddress
+                flexDir="row-reverse"
+                addressProps={{ color: '#AAA6A1' }}
               />
-            </Box>
+            </VStack>
 
-            <Box
+            {isMobile && (
+              <VStack
+                borderTop={'1px solid'}
+                borderTopColor={'dark.100'}
+                cursor={'pointer'}
+                alignItems="start"
+                justifyContent="center"
+                px={4}
+                h="70px"
+                onClick={notificationDrawerState.onOpen}
+              >
+                <HStack>
+                  <Icon color="grey.75" as={NotificationIcon} fontSize="xl" />
+                  <Text color="grey.75" fontWeight={500}>
+                    Notifications
+                  </Text>
+                  {unreadCounter > 0 && (
+                    <Text
+                      fontSize="xs"
+                      rounded="full"
+                      bgColor="error.600"
+                      color="white"
+                      border="none"
+                      w="16px"
+                      textAlign="center"
+                    >
+                      {unreadCounter}
+                    </Text>
+                  )}
+                </HStack>
+              </VStack>
+            )}
+            <VStack
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
               cursor={'pointer'}
+              alignItems="start"
+              justifyContent="center"
+              px={4}
+              h="70px"
               onClick={settingsDrawer.onOpen}
-              p={5}
             >
               <HStack>
-                <Icon color="grey.200" w={6} h={6} as={SettingsIcon} />
-                <Text color="grey.200" fontWeight={'bold'}>
+                <Icon color="grey.75" w={6} h={6} as={SettingsIcon} />
+                <Text color="grey.75" fontWeight={500}>
                   Settings
                 </Text>
               </HStack>
-              <Text color="grey.500">Personalize Your Preferences.</Text>
-            </Box>
+              <Text color="grey.500" fontSize="sm">
+                Personalize Your Preferences.
+              </Text>
+            </VStack>
 
-            <Box borderTop={'1px solid'} borderTopColor={'dark.100'} p={4}>
+            <VStack
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              alignItems="start"
+              justifyContent="center"
+              px={4}
+              h="70px"
+            >
               <HStack cursor={'pointer'} onClick={logout}>
-                <Icon color="grey.200" fontSize="xl" as={ExitIcon} />
-                <Text color="grey.200" fontWeight={'bold'}>
-                  Logout
+                <Icon color="grey.75" fontSize="xl" as={ExitIcon} />
+                <Text color="grey.75" fontWeight={500}>
+                  Disconnect
                 </Text>
               </HStack>
-            </Box>
+            </VStack>
           </PopoverBody>
         </PopoverContent>
       </Popover>
@@ -340,31 +443,31 @@ const Header = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
-  const handleCancel = async () => {
-    createWorkspaceDialog.onClose();
-  };
+  // WorkspaceLogic
+  // const handleCancel = async () => {
+  //   createWorkspaceDialog.onClose();
+  // };
 
-  const handleClose = async () => {
-    createWorkspaceDialog.onClose();
-    workspaceDialog.onClose();
-  };
+  // const handleClose = async () => {
+  //   createWorkspaceDialog.onClose();
+  //   workspaceDialog.onClose();
+  // };
 
   return (
     <Flex
       h={{
         base: '64px',
-        sm: 82,
+        sm: '72px',
       }}
       zIndex={100}
       w="100%"
-      bgColor="dark.300"
+      bgColor="dark.950"
       px={{ base: 0, sm: 4 }}
       alignItems="center"
-      borderBottomWidth={1}
       position="sticky"
       top="0"
       justifyContent="space-between"
-      borderBottomColor="dark.100"
+      boxShadow="0px 8px 12px 0px rgba(0, 0, 0, 0.2)"
     >
       <NotificationsDrawer
         isOpen={notificationDrawerState.isOpen}
@@ -378,29 +481,27 @@ const Header = () => {
         isCreatingWorkspace={createWorkspaceDialog.isOpen}
       />
 
-      {createWorkspaceDialog.isOpen && (
+      {/* {createWorkspaceDialog.isOpen && (
         <CreateWorkspaceDialog
           isOpen={createWorkspaceDialog.isOpen}
           handleCancel={handleCancel}
           onClose={handleClose}
         />
-      )}
+      )} */}
 
-      <SpacedBox
+      <Box
         cursor="pointer"
         onClick={() => {
           goHome();
         }}
-        pl={{ base: 1, sm: 6 }}
-        mr={{ base: -8, sm: 0 }}
       >
-        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" />
-      </SpacedBox>
+        <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
+      </Box>
 
-      <HStack spacing={0} height="100%">
-        {/* Commented out code to temporarily disable workspaces. */}
+      {/* <HStack spacing={0} height="100%"> */}
+      {/* Commented out code to temporarily disable workspaces. */}
 
-        {/* <TopBarItem
+      {/* <TopBarItem
           onClick={workspaceDialog.onOpen}
           cursor="pointer"
           w={{
@@ -417,37 +518,11 @@ const Header = () => {
             isLoading={userInfos?.isLoading}
           />
         </TopBarItem> */}
-        <TopBarItem
-          display={{ base: 'none', sm: 'flex' }}
-          cursor="pointer"
-          onClick={notificationDrawerState.onOpen}
-          width={78}
-        >
-          <Icon
-            color="grey.200"
-            as={NotificationIcon}
-            fontSize={30}
-            position="absolute"
-          />
 
-          {unreadCounter > 0 && (
-            <Center
-              px={1}
-              py={0}
-              bg="error.600"
-              borderRadius={10}
-              position="relative"
-              top={-1.5}
-              right={-2.5}
-            >
-              <Text fontSize="xs">+{unreadCounter}</Text>
-            </Center>
-          )}
-        </TopBarItem>
-        <TopBarItem>
-          <UserBox />
-        </TopBarItem>
-      </HStack>
+      <TopBarItem>
+        <UserBox />
+      </TopBarItem>
+      {/* </HStack> */}
     </Flex>
   );
 };

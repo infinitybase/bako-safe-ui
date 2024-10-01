@@ -8,6 +8,7 @@ export type IUseIsWorkspaceReady = {
   isUserInfosLoading: boolean;
   isVaultRequestLoading: boolean;
   isVaultAssetsLoading: boolean;
+  isUserVaultsLoading: boolean;
   isAddressbookInfosLoading: boolean;
   isLatestsPredicatesLoading: boolean;
   isWorkspaceBalanceLoading: boolean;
@@ -15,6 +16,7 @@ export type IUseIsWorkspaceReady = {
 };
 
 export const useIsWorkspaceReady = ({
+  isUserVaultsLoading,
   isAddressbookInfosLoading,
   isGifAnimationLoading,
   isLatestsPredicatesLoading,
@@ -57,6 +59,7 @@ export const useIsWorkspaceReady = ({
   }
 
   const loadingConditions = [
+    isUserVaultsLoading,
     isAddressbookInfosLoading,
     isGifAnimationLoading,
     isLatestsPredicatesLoading,

@@ -10,6 +10,8 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
   addressProps?: TextProps;
+  customAddress?: string;
+  hideCopyButton?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -17,6 +19,8 @@ const AddressWithCopyBtn = ({
   isDeposit,
   isSidebarAddress,
   addressProps,
+  customAddress,
+  hideCopyButton = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -32,24 +36,26 @@ const AddressWithCopyBtn = ({
     },
   } = useWorkspaceContext();
 
+  const b256Address = Address.fromString(address ?? '').toB256();
+
   return (
     <Flex
-      {...rest}
       minW={isExtraSmall ? 'inherit' : '105px'}
       ml="auto"
       w="full"
       textAlign={isExtraSmall ? 'start' : 'end'}
       overflow="hidden"
       alignItems="center"
-      justifyContent="end"
+      justifyContent={isSidebarAddress ? 'start' : 'end'}
       gap={3}
+      {...rest}
     >
       <Text
-        {...addressProps}
         color="grey.75"
         textOverflow="ellipsis"
         isTruncated
         fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        {...addressProps}
         maxW={
           isSidebarAddress
             ? 'full'
@@ -59,29 +65,33 @@ const AddressWithCopyBtn = ({
                 ? 'inherit'
                 : 'inherit'
         }
+        {...addressProps}
       >
-        {isSidebarAddress
-          ? AddressUtils.format(address ?? '', 10)
-          : isDeposit
-            ? AddressUtils.format(
-                address ?? '',
-                isExtraSmall
-                  ? 1
-                  : isLitteSmall
-                    ? 4
-                    : isLowerThanFourHundredAndThirty
-                      ? 7
-                      : !isVaultPage && isExtraLarge
-                        ? 24
-                        : 10,
-              )
-            : AddressUtils.format(
-                address ?? '',
-                isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-              )}
+        {customAddress
+          ? customAddress
+          : isSidebarAddress
+            ? AddressUtils.format(b256Address ?? '', 10)
+            : isDeposit
+              ? AddressUtils.format(
+                  b256Address ?? '',
+                  isExtraSmall
+                    ? 1
+                    : isLitteSmall
+                      ? 4
+                      : isLowerThanFourHundredAndThirty
+                        ? 7
+                        : !isVaultPage && isExtraLarge
+                          ? 24
+                          : 10,
+                )
+              : AddressUtils.format(
+                  b256Address ?? '',
+                  isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+                )}
       </Text>
 
       <CopyAddressButton
+        display={hideCopyButton ? 'none' : 'initial'}
         size="xs"
         minW={2}
         aria-label="Copy"
@@ -91,31 +101,4 @@ const AddressWithCopyBtn = ({
   );
 };
 
-{
-  /* <Text
-{...addressProps}
-textOverflow="ellipsis"
-isTruncated
-fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-maxW={isExtraSmall && isDeposit ? '48px' : 'inherit'}
->
-{isDeposit
-  ? AddressUtils.format(
-      address ?? '',
-      isExtraSmall
-        ? 1
-        : isLitteSmall
-          ? 4
-          : isLowerThanFourHundredAndThirty
-            ? 7
-            : !isVaultPage && isExtraLarge
-              ? 24
-              : 10,
-    )
-  : AddressUtils.format(
-      address ?? '',
-      isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
-    )}
-</Text> */
-}
 export { AddressWithCopyBtn };

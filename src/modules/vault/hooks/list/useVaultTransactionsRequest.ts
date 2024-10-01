@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOptionTx, TransactionType } from 'bakosafe';
+import { TransactionType } from 'bakosafe';
 
+import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 import {
   GetTransactionsWithIncomingsParams,

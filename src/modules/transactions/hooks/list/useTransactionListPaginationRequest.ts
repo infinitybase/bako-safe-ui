@@ -1,7 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOptionTx } from 'bakosafe';
 
 import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
+import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
+import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 import {
   GetTransactionParams,
@@ -10,7 +11,6 @@ import {
 } from '../../services';
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
-import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionParams,

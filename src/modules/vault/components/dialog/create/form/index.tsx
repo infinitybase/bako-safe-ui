@@ -21,6 +21,7 @@ export interface CreateVaultFormProps {
   search: UseCreateVaultDialogReturn['search'];
   setSearch: UseCreateVaultDialogReturn['setSearch'];
   handleInputChange: UseCreateVaultDialogReturn['handleInputChange'];
+  validateAddress: UseCreateVaultDialogReturn['validateAddress'];
 }
 
 const CreateVaultForm = (props: CreateVaultFormProps) => {
@@ -35,6 +36,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     setSearch,
     handleInputChange,
     vaultNameIsAvailable,
+    validateAddress,
   } = props;
 
   const { template } = useFindTemplate();
@@ -63,6 +65,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             templates={template}
             selectedTemplate={selectedTemplate}
             setTemplate={setTemplate}
+            validateAddress={validateAddress}
           />
           <VaultSuccessStep
             stepProgress={<StepProgress length={stepLength} value={tabs.tab} />}
