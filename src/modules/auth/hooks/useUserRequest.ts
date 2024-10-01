@@ -9,6 +9,7 @@ import {
   UserService,
   UseSignInRequestParams,
 } from '../services';
+import { Address } from 'fuels';
 
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,
@@ -34,7 +35,7 @@ const useSignInRequest = (
         encoder: Encoder.FUEL,
         digest: params.code,
         signature: await fuel.signMessage(account!, params.code),
-        userAddress: account!,
+        userAddress: Address.fromString(account!).toB256(),
       };
 
       return UserService.signIn(payload);
