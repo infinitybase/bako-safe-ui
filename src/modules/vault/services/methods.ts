@@ -2,6 +2,7 @@ import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
 import { Asset } from '@/modules/core';
+import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
 import { Predicate, Workspace } from '@/modules/core/models';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
 import { SortOption } from '@/modules/transactions/services';
@@ -26,6 +27,9 @@ export interface HasReservedCoins {
 export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
 export type PredicateAndWorkspace = Predicate & {
   workspace: PredicateWorkspace;
+};
+export type PredicateResponseWithWorkspace = IPredicate & {
+  workspace: Workspace;
 };
 export type GetHasReservedCoins = HasReservedCoins;
 export type CreatePredicateResponse = Predicate;
@@ -58,12 +62,14 @@ export class VaultService {
   }
 
   static async getById(id: string) {
-    const { data } = await api.get<PredicateAndWorkspace>(`/predicate/${id}`);
+    const { data } = await api.get<PredicateResponseWithWorkspace>(
+      `/predicate/${id}`,
+    );
     return data;
   }
 
   static async getByAddress(address: string) {
-    const { data } = await api.get<PredicateAndWorkspace>(
+    const { data } = await api.get<PredicateResponseWithWorkspace>(
       `/predicate/by-address/${address}`,
     );
     return data;

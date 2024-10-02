@@ -1,4 +1,4 @@
-import { PredicateAndWorkspace } from '@/modules/vault';
+import { PredicateResponseWithWorkspace } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { createVault } from './createVault';
@@ -11,7 +11,7 @@ const VAULT_QUERY_KEYS = {
 };
 
 interface UseCreateBakoSafeVaultParams {
-  onSuccess: (data: PredicateAndWorkspace) => void;
+  onSuccess: (data: PredicateResponseWithWorkspace) => void;
   onError: () => void;
 }
 
@@ -51,13 +51,12 @@ const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   const { mutate, ...mutation } = useBakoSafeMutation<
-    PredicateAndWorkspace,
+    PredicateResponseWithWorkspace,
     unknown,
     UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
     async ({ name, minSigners, addresses }) => {
-      console.log('[CREATE_VAULT]', name, minSigners, addresses);
       try {
         const newVault = await createVault({
           name,
