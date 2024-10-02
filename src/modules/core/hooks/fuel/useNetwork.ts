@@ -3,7 +3,7 @@ import { Provider } from 'fuels';
 
 import { FuelChainInfo, FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
-class CachedNetwork {
+export class CachedNetwork {
   static getNetworks = () => {
     return JSON.parse(
       localStorage.getItem(FuelQueryKeys.CACHED_NETWORKS) || '[]',
@@ -28,7 +28,7 @@ class CachedNetwork {
   };
 }
 
-const useNetworkInfo = (url?: string) => {
+export const useNetworkInfo = (url?: string) => {
   const { data, ...rest } = useQuery({
     queryKey: [FuelQueryKeys.CACHED_NETWORKS, url],
     queryFn: async () => {
@@ -49,5 +49,3 @@ const useNetworkInfo = (url?: string) => {
     ...rest,
   };
 };
-
-export { useNetworkInfo };
