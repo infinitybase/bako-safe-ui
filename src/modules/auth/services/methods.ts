@@ -249,13 +249,9 @@ export class UserService {
   }
 
   static async changeNetwork({ url }: ChangeNetworkPayload) {
-    console.log('🚀 ~ UserService ~ changeNetwork ~ url:', url);
-    // TODO: Replace with real service
     const { data } = await api.post<ChangeNetworkResponse>(
       `/user/select-network/`,
-      {
-        network: url,
-      },
+      { network: url },
     );
 
     return data;
@@ -265,6 +261,7 @@ export class UserService {
 export const localStorageKeys = {
   HARDWARE_ID: 'bakosafe/hardwareId',
   WEB_AUTHN_LAST_LOGIN_USERNAME: 'bakosafe/web-authn-last-login-username',
+  NETWORKS: 'bakosafe/networks',
 };
 
 export const UserQueryKey = {

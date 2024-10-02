@@ -15,50 +15,33 @@ import {
   HStack,
   Icon,
   Input,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import { PlusIcon, RemoveIcon } from '@/components';
-import { NetworkType, useCurrentNetwork } from '@/modules';
+import { NetworkDrawerMode, NetworkType, useCurrentNetwork } from '@/modules';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 
-enum NetworkDrawerMode {
-  SELECT = 'select',
-  ADD = 'add',
-  CONFIRM = 'confirm',
-}
-
 const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
-  const [mode, setMode] = useState<NetworkDrawerMode>(NetworkDrawerMode.SELECT);
-  const [validNetwork, setValidNetwork] = useState(false);
-
   const {
     availableNetWorks,
-    addedNetWorks,
-    handleUpdateNetwork,
+    handleSelectNetwork,
     currentNetwork,
-  } = useCurrentNetwork();
-
-  const form = useForm();
-
-  const handleAddNetwork = () => {
-    // TODO: Implement this
-    alert('handleAddNetwork');
-  };
-
-  const handleTestNetwork = () => {
-    // TODO: Implement this
-    alert('handleTestNetwork');
-  };
-
-  const handleClose = () => {
-    setMode(NetworkDrawerMode.SELECT);
-    props.onClose();
-  };
+    handleAddNetwork,
+    networkForm,
+    handleDeleteCustomNetwork,
+    handleTestNetwork,
+    validNetwork,
+    mode,
+    setMode,
+    selectNetworkRequest,
+    networkHealthCheckRequest,
+    handleClose,
+  } = useCurrentNetwork(props.onClose);
 
   return (
     <Drawer
@@ -91,27 +74,30 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
           {mode === NetworkDrawerMode.SELECT && (
             <VStack spacing={4}>
               <VStack spacing={2} w="full">
-                {[...availableNetWorks, ...addedNetWorks].map((net) => {
+                {availableNetWorks.map((net) => {
                   const isSelected = net.url === currentNetwork.url;
 
                   return (
                     <Center
+                      key={net.url}
                       w="full"
                       h={70}
-                      key={net.url}
+                      opacity={selectNetworkRequest.isPending ? 0.5 : 1}
+                      transition={'all 0.5s'}
                       bg={
                         isSelected
-                          ? 'linear-gradient(45deg, #FFC010,#EBA312,#D38015, #B24F18)'
+                          ? 'linear-gradient(45deg, #FFC010,#EBA312,#D38015,#B24F18)'
                           : 'grey.950'
                       }
                       borderRadius={8}
                     >
                       <HStack
                         cursor="pointer"
-                        onClick={() => {
-                          props.onClose();
-                          handleUpdateNetwork(net.url);
-                        }}
+                        onClick={
+                          selectNetworkRequest.isPending
+                            ? undefined
+                            : () => handleSelectNetwork(net.url)
+                        }
                         w="calc(100% - 2px)"
                         h="calc(70px - 2px)"
                         px={4}
@@ -134,8 +120,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                             color={'grey.75'}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert('deletar');
-                              // TODO: Create handler to remove custom network
+                              handleDeleteCustomNetwork(net);
                             }}
                             transition={'all 0.1s'}
                             _hover={{ color: 'grey.250' }}
@@ -185,8 +170,9 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
             <VStack spacing={10}>
               <VStack spacing={2} w="full">
                 <Controller
-                  control={form.control}
-                  name="networkUrl"
+                  control={networkForm.control}
+                  name="name"
+                  rules={{ required: 'Name is required' }}
                   render={({ field, fieldState }) => (
                     <FormControl isInvalid={fieldState.invalid}>
                       <Input
@@ -194,12 +180,34 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                         onChange={field.onChange}
                         placeholder=" "
                         variant="dark"
-                        maxLength={27}
                         bg={'grey.825'}
                         border={'1px solid'}
                         borderColor={'grey.125'}
                       />
-                      <FormLabel>Network URL</FormLabel>
+                      <FormLabel>Name</FormLabel>
+                      <FormHelperText color="error.500">
+                        {fieldState.error?.message}
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                />
+
+                <Controller
+                  control={networkForm.control}
+                  name="url"
+                  rules={{ required: 'URL is required' }}
+                  render={({ field, fieldState }) => (
+                    <FormControl isInvalid={fieldState.invalid}>
+                      <Input
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder=" "
+                        variant="dark"
+                        bg={'grey.825'}
+                        border={'1px solid'}
+                        borderColor={validNetwork ? 'success.750' : 'grey.125'}
+                      />
+                      <FormLabel>URL</FormLabel>
                       <FormHelperText color="error.500">
                         {fieldState.error?.message}
                       </FormHelperText>
@@ -216,8 +224,13 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                   onClick={handleTestNetwork}
                   _hover={{ borderColor: 'inherit', color: 'inherit' }}
                   sx={{ _active: { bg: 'inherit' } }}
+                  disabled={networkHealthCheckRequest.isPending}
                 >
-                  Test connection
+                  {networkHealthCheckRequest.isPending ? (
+                    <Spinner />
+                  ) : (
+                    'Test connection'
+                  )}
                 </Button>
               </VStack>
 

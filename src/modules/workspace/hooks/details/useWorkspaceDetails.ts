@@ -32,6 +32,9 @@ const useWorkspaceDetails = () => {
   const {
     resetAllTransactionsTypeFilters,
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
+    transactionsPageList: {
+      request: { refetch: refetchTransactions },
+    },
   } = useTransactionsContext();
 
   const {
@@ -71,6 +74,18 @@ const useWorkspaceDetails = () => {
     vaultId ?? '',
   );
 
+  const resetHomeRequests = () => {
+    invalidateGifAnimationRequest();
+    refetchPendingSingerTransactions();
+    resetAllTransactionsTypeFilters();
+    refetchTransactions();
+    addressBookInfos.requests.listContactsRequest.refetch();
+    tokensUSD.refetch();
+    latestPredicates.refetch();
+    authDetails.userInfos.refetch();
+    userVaults.request.refetch();
+  };
+
   const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({
     isUserVaultsLoading: userVaults.request.isLoading,
     isAddressbookInfosLoading:
@@ -106,6 +121,7 @@ const useWorkspaceDetails = () => {
     tokensUSD,
     invalidateGifAnimationRequest,
     screenSizes,
+    resetHomeRequests,
   };
 };
 

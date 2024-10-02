@@ -33,7 +33,6 @@ export type WorkspaceAuthentication = {
 
 const useAuth = (): IUseAuthReturn => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
-  console.log('🚀 ~ useAuth ~ infos:', infos?.network);
   const [invalidAccount, setInvalidAccount] = useState(false);
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
@@ -111,10 +110,8 @@ const useAuth = (): IUseAuthReturn => {
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
       type: userType(),
-      // type: infos?.type!,
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
-      // onSingleWorkspace: infos?.onSingleWorkspace ?? false,
       address: account,
       singleWorkspaceId: singleWorkspace,
       first_login: infos?.first_login,

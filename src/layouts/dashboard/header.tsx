@@ -10,6 +10,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Spinner,
   Text,
   useDisclosure,
   VStack,
@@ -69,8 +70,12 @@ const UserBox = () => {
     },
   } = useWorkspaceContext();
 
-  const { availableNetWorks, currentNetwork, handleUpdateNetwork } =
-    useCurrentNetwork();
+  const {
+    availableNetWorks,
+    currentNetwork,
+    handleSelectNetwork,
+    selectNetworkRequest,
+  } = useCurrentNetwork();
   const networkPopoverState = useDisclosure();
   const networkDrawerState = useDisclosure();
 
@@ -143,41 +148,49 @@ const UserBox = () => {
               position="relative"
               border={'1px solid'}
               borderColor="grey.925"
-              justifyContent={'space-between'}
+              justifyContent={
+                selectNetworkRequest.isPending ? 'center' : 'space-between'
+              }
               borderRadius="6px"
               py={2}
               px={4}
               mr={4}
             >
-              <HStack>
-                <Icon
-                  as={
-                    availableNetWorks.find(
-                      ({ url }) => url === currentNetwork.url,
-                    )?.icon
-                  }
-                  fontSize={16}
-                />
+              {selectNetworkRequest.isPending ? (
+                <Spinner w={4} h={4} color="brand.500" />
+              ) : (
+                <>
+                  <HStack>
+                    <Icon
+                      as={
+                        availableNetWorks.find(
+                          ({ url }) => url === currentNetwork.url,
+                        )?.icon
+                      }
+                      fontSize={16}
+                    />
 
-                <Text
-                  fontSize={12}
-                  fontWeight={500}
-                  color="grey.200"
-                  noOfLines={1}
-                >
-                  {
-                    availableNetWorks.find(
-                      ({ url }) => url === currentNetwork.url,
-                    )?.name
-                  }
-                </Text>
-              </HStack>
+                    <Text
+                      fontSize={12}
+                      fontWeight={500}
+                      color="grey.200"
+                      noOfLines={1}
+                    >
+                      {
+                        availableNetWorks.find(
+                          ({ url }) => url === currentNetwork.url,
+                        )?.name
+                      }
+                    </Text>
+                  </HStack>
 
-              <Icon
-                color="grey.200"
-                fontSize={{ base: 'sm', sm: 'sm' }}
-                as={FaChevronDown}
-              />
+                  <Icon
+                    color="grey.200"
+                    fontSize={{ base: 'sm', sm: 'sm' }}
+                    as={FaChevronDown}
+                  />
+                </>
+              )}
             </HStack>
           </PopoverTrigger>
 
@@ -201,8 +214,8 @@ const UserBox = () => {
                     borderColor="grey.925"
                     px={4}
                     onClick={() => {
-                      handleUpdateNetwork(network.url);
                       networkPopoverState.onClose?.();
+                      handleSelectNetwork(network.url);
                     }}
                     py={4}
                   >

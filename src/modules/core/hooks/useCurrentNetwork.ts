@@ -1,16 +1,54 @@
+import { useMutation } from '@tanstack/react-query';
+import { Provider } from 'fuels';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
 import { UnknownIcon } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { useChangeNetworkRequest } from '@/modules/auth/hooks/useChangeNetwork';
+import { localStorageKeys } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export enum NetworkType {
   MAINNET = 'mainnet',
   TESTNET = 'testnet',
-  LOCALHOST = 'localhost',
+  DEV = 'dev',
   LOCALSTORAGE = 'localstorage',
 }
 
-export const useCurrentNetwork = () => {
+export enum NetworkDrawerMode {
+  SELECT = 'select',
+  ADD = 'add',
+  CONFIRM = 'confirm',
+}
+
+export type CustomNetwork = { name: string; url: string };
+
+export const useCurrentNetwork = (onClose?: () => void) => {
+  const [validNetwork, setValidNetwork] = useState(false);
+  const [mode, setMode] = useState<NetworkDrawerMode>(NetworkDrawerMode.SELECT);
+
+  const networkForm = useForm<CustomNetwork>();
+  const networkHealthCheckRequest = useMutation({
+    mutationKey: ['network-health-check'],
+    mutationFn: async (url: string) => {
+      const teste = await Provider.create(url);
+
+      const testando = teste.getChain();
+      console.log('🚀 ~ mutationFn: ~ testando:', testando);
+
+      return {};
+    },
+  });
+
+  const {
+    authDetails: {
+      userInfos: { network: userNetwork },
+    },
+    resetHomeRequests,
+  } = useWorkspaceContext();
+  const selectNetworkRequest = useChangeNetworkRequest();
+
   const availableNetWorks = [
     {
       identifier: NetworkType.MAINNET,
@@ -28,7 +66,7 @@ export const useCurrentNetwork = () => {
     ...(import.meta.env.VITE_DEV === 'development'
       ? [
           {
-            identifier: NetworkType.LOCALHOST,
+            identifier: NetworkType.DEV,
             name: 'Local',
             icon: UnknownIcon,
             url: 'http://localhost:4000/v1/graphql',
@@ -37,72 +75,100 @@ export const useCurrentNetwork = () => {
       : []),
   ];
 
-  const addedNetWorks = [
-    {
-      identifier: NetworkType.LOCALSTORAGE,
-      name: 'Custom Network 1',
-      icon: BakoIcon,
-      url: 'https://localhost.fuel.network', // Como devem ser as urls das redes localstorage
-    },
-    {
-      identifier: NetworkType.LOCALSTORAGE,
-      name: 'Custom Network 2',
-      icon: BakoIcon,
-      url: 'https://localhost.fuel.network', // Como devem ser as urls das redes localstorage
-    },
-  ];
+  const getCustomNetworks = (): CustomNetwork[] =>
+    JSON.parse(localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]');
 
-  const {
-    authDetails: {
-      userInfos: { network: userNetwork },
-    },
-  } = useWorkspaceContext();
+  const handleAddNetwork = networkForm.handleSubmit((data) => {
+    if (!data.url)
+      networkForm.setError('url', {
+        type: 'required',
+        message: 'Url is required.',
+      });
 
-  // const userNetwork = {
-  //   url: import.meta.env.VITE_NETWORK,
-  //   chainId: import.meta.env.CHAIN_ID,
-  // };
+    if (!data.name)
+      networkForm.setError('name', {
+        type: 'required',
+        message: 'Name is required.',
+      });
 
-  const changeNetworkRequest = useChangeNetworkRequest();
+    localStorage.setItem(
+      localStorageKeys.NETWORKS,
+      JSON.stringify([...getCustomNetworks(), { ...data }]),
+    );
 
-  const handleUpdateNetwork = async (url: string) => {
-    console.log('🚀 ~ handleUpdateNetwork ~ url:', url);
+    setMode(NetworkDrawerMode.SELECT);
+    setValidNetwork(false);
+    networkForm.reset();
+  });
 
-    changeNetworkRequest.mutate(
+  const handleDeleteCustomNetwork = ({ name, url }: CustomNetwork) => {
+    const filtered = getCustomNetworks().filter(
+      (net) => net.url !== url && net.name !== name,
+    );
+
+    localStorage.setItem(localStorageKeys.NETWORKS, JSON.stringify(filtered));
+  };
+
+  const handleSelectNetwork = async (url: string) => {
+    selectNetworkRequest.mutate(
       { url },
       {
         onSuccess: () => {
-          console.log(`🚀 onSuccess`);
-          // TODO:  Invalidate all queries
-          // queryClient.invalidateQueries({
-          //   queryKey: [LATEST_INFO_QUERY_KEY],
-          // });
+          onClose?.();
+          resetHomeRequests();
         },
       },
     );
   };
 
-  // Mock to emulate a mainnet network
-  // const fuelsNetwork = {
-  //   url: 'https://app-mainnet.fuel.network',
-  //   chainId: 'chainId',
-  // };
+  const handleTestNetwork = networkForm.handleSubmit(async (data) => {
+    if (!data.url) {
+      networkForm.setError('url', {
+        type: 'required',
+        message: 'Url is required',
+      });
+    }
+
+    networkHealthCheckRequest.mutate(data.url, {
+      onSuccess: () => setValidNetwork(true),
+    });
+  });
 
   const currentNetwork = userNetwork ?? {
     url: import.meta.env.VITE_NETWORK,
     chainId: import.meta.env.CHAIN_ID,
   };
 
-  console.log('🚀 ~ useCurrentNetwork ~ network:', currentNetwork);
-
   const checkNetwork = (type: NetworkType) =>
     currentNetwork?.url.includes(type);
+
+  const handleClose = () => {
+    setMode(NetworkDrawerMode.SELECT);
+    setValidNetwork(false);
+    onClose?.();
+  };
 
   return {
     currentNetwork,
     checkNetwork,
-    handleUpdateNetwork,
-    availableNetWorks,
-    addedNetWorks,
+    handleSelectNetwork,
+    handleAddNetwork,
+    handleDeleteCustomNetwork,
+    handleTestNetwork,
+    handleClose,
+    networkHealthCheckRequest,
+    validNetwork,
+    networkForm,
+    mode,
+    setMode,
+    availableNetWorks: [
+      ...availableNetWorks,
+      ...getCustomNetworks().map((net) => ({
+        ...net,
+        identifier: NetworkType.LOCALSTORAGE,
+        icon: BakoIcon,
+      })),
+    ],
+    selectNetworkRequest,
   };
 };
