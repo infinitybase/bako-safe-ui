@@ -12,6 +12,7 @@ import { useSignMessageWebAuthn } from './useWebauthnRequests';
 interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
+  redirect: (vaultId?: string, workspaceId?: string) => string;
   callback: (vaultId?: string, workspaceId?: string) => void;
 }
 
@@ -24,6 +25,7 @@ const generateSignInCode = async (address: string) => {
 };
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
+  const { form, setMode, redirect } = params;
   const { form, setMode, callback } = params;
 
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -35,6 +37,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
     invalidateGifAnimationRequest,
   } = useWorkspaceContext();
 
+  const navigate = useNavigate();
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();

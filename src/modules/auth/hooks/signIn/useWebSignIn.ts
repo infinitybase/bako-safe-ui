@@ -10,20 +10,15 @@ import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 export type UseWebSignIn = ReturnType<typeof useWebSignIn>;
 
 const useWebSignIn = () => {
-  const navigate = useNavigate();
-
   const redirect = useCallback((vaultId?: string, workspaceId?: string) => {
     if (vaultId && vaultId.length === 36 && workspaceId) {
-      navigate(
-        Pages.detailsVault({
-          vaultId: vaultId ?? '',
-          workspaceId: workspaceId ?? '',
-        }),
-      );
-      return;
+      return Pages.detailsVault({
+        vaultId: vaultId ?? '',
+        workspaceId: workspaceId ?? '',
+      });
     }
 
-    navigate(Pages.home());
+    return Pages.home();
   }, []);
 
   const walletSignIn = useWalletSignIn(redirect);
@@ -32,7 +27,9 @@ const useWebSignIn = () => {
 
   useEffect(() => {
     if (lastLoginUsername) {
-      formData.form.setValue('username', lastLoginUsername ?? '');
+      formData.form.setValue('username', lastLoginUsername ?? '', {
+        shouldValidate: true,
+      });
       setMode(WebAuthnModeState.LOGIN);
     }
   }, []);

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
+import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 import { ActionKeys, handleActionUsingKeys } from '@/utils';
 
 import { TypeUser } from '../../services/methods';
@@ -27,6 +28,7 @@ export enum WebAuthnModeState {
 export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
 const useWebAuthnSignIn = (
+  redirect: (vaultId?: string, workspaceId?: string) => string,
   signInCallback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
@@ -43,6 +45,7 @@ const useWebAuthnSignIn = (
   const { handleLogin, isSigningIn, signInProgress } = useWebAuthnSignInMode({
     form,
     setMode,
+    redirect,
     callback: signInCallback,
   });
   const { isRegistering, registerProgress, handleRegister } =
@@ -52,6 +55,7 @@ const useWebAuthnSignIn = (
       setTab: tabs.set,
       setCreatedAcccountUsername,
     });
+  const { setModalIsOpen } = useTermsStore();
 
   const isRegisterMode = mode === WebAuthnModeState.REGISTER;
 
@@ -111,7 +115,7 @@ const useWebAuthnSignIn = (
     },
     [WebAuthnModeState.REGISTER]: {
       label: 'Create account',
-      handleAction: handleRegister,
+      handleAction: () => setModalIsOpen(true),
       handleActionUsingEnterKey: (pressedKey: string) =>
         handleActionUsingKeys({
           pressedKey,
@@ -148,6 +152,7 @@ const useWebAuthnSignIn = (
     },
     fullFormState: formState,
     formState: formState[mode],
+    handleRegister,
     checkNicknameRequest,
     tabs,
     createdAcccountUsername,

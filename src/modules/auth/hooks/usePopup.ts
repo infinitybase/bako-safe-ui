@@ -18,8 +18,6 @@ const useQueryParams = () => {
     const byConnector = searchParams.get('byConnector') === 'true';
     const byLanding = searchParams.get('_gl');
     const username = searchParams.get('username');
-    // const transactionId = searchParams.get('transaction_id'); [CONNECTOR SIGNATURE]
-    // const transactionHash = searchParams.get('transaction_hash'); [CONNECTOR SIGNATURE]
 
     return {
       expiredSession,
@@ -34,8 +32,6 @@ const useQueryParams = () => {
       byConnector,
       byLanding,
       username,
-      // transactionId, [CONNECTOR SIGNATURE]
-      // transactionHash, [CONNECTOR SIGNATURE]
     };
   }, [location]);
 

@@ -17,7 +17,6 @@ export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
 
 const useDappSignIn = () => {
   const isMounted = useRef(false);
-
   const navigate = useNavigate();
   const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
@@ -26,11 +25,14 @@ const useDappSignIn = () => {
     const isRedirectToPrevious = !!location.state?.from;
 
     if (isRedirectToPrevious) {
+      return location.state.from;
+    }
+
+    return `${Pages.dappAuth()}${location.search}`;
       navigate(location.state.from);
       return;
     }
 
-    navigate(`${Pages.dappAuth()}${location.search}`);
   }, [location]);
 
   const walletSignIn = useWalletSignIn(redirect);
@@ -97,7 +99,9 @@ const useDappSignIn = () => {
         setMode(WebAuthnModeState.LOGIN);
         handleLogin();
       } else if (lastLoginUsername && !username) {
-        formData.form.setValue('username', lastLoginUsername);
+        formData.form.setValue('username', lastLoginUsername, {
+          shouldValidate: true,
+        });
         setMode(WebAuthnModeState.LOGIN);
       }
     }

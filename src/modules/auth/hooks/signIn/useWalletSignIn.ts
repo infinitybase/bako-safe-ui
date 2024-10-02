@@ -10,6 +10,7 @@ import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
 const useWalletSignIn = (
+  redirect: (vaultId?: string, workspaceId?: string) => string,
   callback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
