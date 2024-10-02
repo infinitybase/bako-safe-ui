@@ -11,12 +11,16 @@ export type UseWebSignIn = ReturnType<typeof useWebSignIn>;
 
 const useWebSignIn = () => {
   const navigate = useNavigate();
+
   const redirect = useCallback((vaultId?: string, workspaceId?: string) => {
     if (vaultId && vaultId.length === 36 && workspaceId) {
-      return Pages.detailsVault({
-        vaultId: vaultId ?? '',
-        workspaceId: workspaceId ?? '',
-      });
+      navigate(
+        Pages.detailsVault({
+          vaultId: vaultId ?? '',
+          workspaceId: workspaceId ?? '',
+        }),
+      );
+      return;
     }
 
     return navigate(Pages.home());
