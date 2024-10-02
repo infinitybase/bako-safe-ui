@@ -10,7 +10,6 @@ import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
 const useWalletSignIn = (
-  redirect: (vaultId?: string, workspaceId?: string) => string,
   callback: (vaultId?: string, workspaceId?: string) => void,
 ) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
@@ -42,6 +41,9 @@ const useWalletSignIn = (
         first_login,
       });
       invalidateGifAnimationRequest();
+      console.log('rootWallet', rootWallet);
+      console.log('workspace.id', workspace.id);
+      console.log('callback', callback);
       callback(rootWallet, workspace.id);
     },
   });

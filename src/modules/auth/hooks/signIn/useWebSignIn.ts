@@ -10,6 +10,7 @@ import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 export type UseWebSignIn = ReturnType<typeof useWebSignIn>;
 
 const useWebSignIn = () => {
+  const navigate = useNavigate();
   const redirect = useCallback((vaultId?: string, workspaceId?: string) => {
     if (vaultId && vaultId.length === 36 && workspaceId) {
       return Pages.detailsVault({
@@ -18,7 +19,7 @@ const useWebSignIn = () => {
       });
     }
 
-    return Pages.home();
+    return navigate(Pages.home());
   }, []);
 
   const walletSignIn = useWalletSignIn(redirect);

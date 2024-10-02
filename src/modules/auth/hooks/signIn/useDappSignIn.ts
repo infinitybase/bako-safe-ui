@@ -22,17 +22,14 @@ const useDappSignIn = () => {
   const { connect } = useSocket();
 
   const redirect = useCallback(() => {
+    console.log('location', location);
     const isRedirectToPrevious = !!location.state?.from;
 
     if (isRedirectToPrevious) {
       return location.state.from;
     }
 
-    return `${Pages.dappAuth()}${location.search}`;
-      navigate(location.state.from);
-      return;
-    }
-
+    navigate(location.state.from);
   }, [location]);
 
   const walletSignIn = useWalletSignIn(redirect);
