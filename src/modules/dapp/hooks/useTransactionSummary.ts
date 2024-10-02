@@ -10,7 +10,7 @@ const useTransactionSummary = () => {
   const { data, mutate, ...mutation } = useMutation({
     mutationKey: ['dapp/transaction-summary'],
     mutationFn: async (params: TransactionSimulateParams) => {
-      return simulate(params);
+      return await simulate(params);
     },
     retry: (failureCount, error) => {
       console.log('GET_SUMMARY_ERROR:', error);

@@ -45,7 +45,8 @@ const useFuelTransactionService = () => {
     const provider = await Provider.create(providerUrl);
 
     const vaultInstance = await instantiateVault({
-      configurable,
+      provider,
+      configurable: JSON.parse(configurable),
     });
 
     const transactionRequest = ScriptTransactionRequest.from(transactionLike);
