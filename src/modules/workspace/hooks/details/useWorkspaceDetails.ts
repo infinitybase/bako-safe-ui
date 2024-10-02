@@ -64,6 +64,7 @@ const useWorkspaceDetails = () => {
     ...rest
   } = useWorkspace(
     authDetails.userInfos,
+    assetsMap,
     invalidateGifAnimationRequest,
     resetAllTransactionsTypeFilters,
     refetchPendingSingerTransactions,
