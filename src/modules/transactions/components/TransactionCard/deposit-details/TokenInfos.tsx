@@ -1,18 +1,20 @@
 import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { AssetModel, assetsMap } from '@/modules/core';
+import { AssetModel } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TokenInfosProps {
   asset: AssetModel;
 }
 
 const TokenInfos = ({ asset }: TokenInfosProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const assetInfo = useMemo(
     () =>
-      asset?.assetId && assetsMap[asset?.assetId]
+      asset?.assetId && assetsMap?.[asset?.assetId]
         ? assetsMap[asset?.assetId]
-        : assetsMap['UNKNOWN'],
+        : assetsMap?.['UNKNOWN'],
     [asset?.assetId],
   );
   return (

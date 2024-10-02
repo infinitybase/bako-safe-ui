@@ -65,6 +65,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         data: { predicateAddress, provider, id },
       },
     },
+    assetsMap,
   } = useWorkspaceContext();
 
   const [firstRender, setFirstRender] = useState(true);
@@ -178,6 +179,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const formattedCurrentAssetBalance = useGetTokenInfosArray(
     currentVaultAssets ?? [],
+    assetsMap,
   );
 
   const getBalanceAvailable = useCallback(() => {

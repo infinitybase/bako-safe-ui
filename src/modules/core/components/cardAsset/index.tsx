@@ -8,8 +8,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
 import { useGetTokenInfos } from '../../hooks';
-import { Asset, assetsMap, NativeAssetId } from '../../utils';
+import { Asset, NativeAssetId } from '../../utils';
 
 interface DefaultAsset {
   assetId: string;
@@ -49,13 +51,17 @@ const AssetDetails = ({
 };
 
 const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const defaultAsset = {
-    ...assetsMap[NativeAssetId],
+    ...assetsMap?.[NativeAssetId],
     assetId: NativeAssetId,
     amount: `0`,
   };
 
-  const { assetAmount, assetsInfo } = useGetTokenInfos(asset);
+  const { assetAmount, assetsInfo } = useGetTokenInfos({
+    ...asset,
+    assetsMap,
+  });
 
   return (
     <Card

@@ -3,8 +3,8 @@ import {
   BoxProps,
   Flex,
   HStack,
-  Text,
   Image,
+  Text,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
@@ -12,7 +12,6 @@ import { bn } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
@@ -38,6 +37,7 @@ const Amount = ({
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
+    assetsMap,
   } = useWorkspaceContext();
 
   const totalAmoutSent = transaction.assets
@@ -77,10 +77,10 @@ const Amount = ({
           >
             {hasNoDefaultAssets && (
               <Image
-                key={assetsMap[operationAssets.assetId]?.assetId}
+                key={assetsMap?.[operationAssets.assetId]?.assetId}
                 w={6}
                 h={6}
-                src={assetsMap[operationAssets.assetId]?.icon ?? ''}
+                src={assetsMap?.[operationAssets.assetId]?.icon ?? ''}
                 alt="Asset Icon"
                 objectFit="cover"
               />
@@ -91,7 +91,7 @@ const Amount = ({
                 key={asset.assetId}
                 w={6}
                 h={6}
-                src={assetsMap[asset.assetId]?.icon ?? ''}
+                src={assetsMap?.[asset.assetId]?.icon ?? ''}
                 alt="Asset Icon"
                 objectFit="cover"
               />

@@ -2,10 +2,10 @@ import { Icon } from '@chakra-ui/icons';
 import {
   Center,
   HStack,
+  Image,
   StackProps,
   Text,
   VStack,
-  Image,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
@@ -14,7 +14,7 @@ import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AssetModel, assetsMap } from '@/modules/core';
+import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AssetBoxInfoProps extends StackProps {
@@ -39,15 +39,16 @@ const AssetBoxInfo = ({
         listContactsRequest: { data },
       },
     },
+    assetsMap,
   } = useWorkspaceContext();
 
   const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
 
   const assetInfo = useMemo(
     () =>
-      asset?.assetId && assetsMap[asset?.assetId]
-        ? assetsMap[asset?.assetId]
-        : assetsMap['UNKNOWN'],
+      asset?.assetId && assetsMap?.[asset?.assetId]
+        ? assetsMap?.[asset?.assetId]
+        : assetsMap?.['UNKNOWN'],
     [asset?.assetId],
   );
 

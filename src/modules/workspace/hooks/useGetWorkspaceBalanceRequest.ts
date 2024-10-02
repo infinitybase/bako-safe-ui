@@ -6,8 +6,6 @@ import {
   WorkspaceService,
 } from '@/modules/workspace/services';
 
-import { handleAssetsBalance } from '../utils/assets';
-
 const useGetWorkspaceBalanceRequest = (
   currentWorkspace: string,
   options?: UseQueryOptions<
@@ -35,7 +33,7 @@ const useGetWorkspaceBalanceRequest = (
       ...data,
       balanceUSD: data?.currentBalanceUSD,
       workspaceId: '',
-      assetsBalance: handleAssetsBalance(data?.currentBalance),
+      // assetsBalance: handleAssetsBalance(data?.currentBalance),
     },
     ...request,
   };

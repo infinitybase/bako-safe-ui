@@ -1,5 +1,7 @@
-import { Card, Grid, Text, VStack, Image } from '@chakra-ui/react';
+import { Card, Grid, Image, Text, VStack } from '@chakra-ui/react';
+
 import { Asset } from '@/modules/core/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
 
@@ -12,7 +14,11 @@ interface AssetsBalanceCardProps {
 }
 
 const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
-  const { assetAmount, assetsInfo } = useGetTokenInfos(asset);
+  const { assetsMap } = useWorkspaceContext();
+  const { assetAmount, assetsInfo } = useGetTokenInfos({
+    ...asset,
+    assetsMap,
+  });
 
   return (
     <Card
