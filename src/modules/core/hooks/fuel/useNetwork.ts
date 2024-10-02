@@ -1,23 +1,53 @@
-import { useFuel } from '@fuels/react';
 import { useQuery } from '@tanstack/react-query';
+import { Provider } from 'fuels';
 
-import { FuelQueryKeys } from './types';
+import { FuelChainInfo, FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
-const useNetwork = () => {
-  const { fuel } = useFuel();
+class CachedNetwork {
+  static getNetworks = () => {
+    return JSON.parse(
+      localStorage.getItem(FuelQueryKeys.CACHED_NETWORKS) || '[]',
+    ) as FuelChainInfo[];
+  };
 
-  const { data, ...query } = useQuery({
-    queryKey: [FuelQueryKeys.NETWORK],
+  static getNetwork = (url: string) => {
+    const networks = CachedNetwork.getNetworks();
+    return networks.find((n) => n.url === url);
+  };
+
+  static storeNetwork = (chain: FuelChainInfo) => {
+    const networks = CachedNetwork.getNetworks();
+    const hasNetwork = networks.some((n) => n.url === chain.url);
+    if (!hasNetwork) {
+      networks.push(chain);
+      localStorage.setItem(
+        FuelQueryKeys.CACHED_NETWORKS,
+        JSON.stringify(networks),
+      );
+    }
+  };
+}
+
+const useNetworkInfo = (url?: string) => {
+  const { data, ...rest } = useQuery({
+    queryKey: [FuelQueryKeys.CACHED_NETWORKS, url],
     queryFn: async () => {
-      return fuel.currentNetwork();
+      const network = CachedNetwork.getNetwork(url!);
+      if (network) return network;
+
+      const provider = await Provider.create(url!);
+      const info = provider.getChain();
+      const networkInfo = { ...info, url: provider.url };
+      CachedNetwork.storeNetwork(networkInfo);
+      return networkInfo;
     },
-    enabled: !!fuel,
+    enabled: !!url,
   });
 
   return {
     network: data,
-    ...query,
+    ...rest,
   };
 };
 
-export { useNetwork };
+export { useNetworkInfo };
