@@ -17,19 +17,20 @@ export type UseDappSignIn = ReturnType<typeof useDappSignIn>;
 
 const useDappSignIn = () => {
   const isMounted = useRef(false);
+
   const navigate = useNavigate();
   const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
 
   const redirect = useCallback(() => {
-    console.log('location', location);
     const isRedirectToPrevious = !!location.state?.from;
 
     if (isRedirectToPrevious) {
-      return location.state.from;
+      navigate(location.state.from);
+      return;
     }
 
-    navigate(location.state.from);
+    navigate(`${Pages.dappAuth()}${location.search}`);
   }, [location]);
 
   const walletSignIn = useWalletSignIn(redirect);
@@ -77,6 +78,7 @@ const useDappSignIn = () => {
 
   const getSessionId = useCallback(() => {
     let _sessionId = sessionId;
+
     if (!_sessionId) {
       _sessionId = crypto.randomUUID();
       window.localStorage.setItem('sessionId', _sessionId);
@@ -92,7 +94,9 @@ const useDappSignIn = () => {
   useEffect(() => {
     if (isMounted.current) {
       if (username && !isSigningIn) {
-        formData.form.setValue('username', username);
+        formData.form.setValue('username', username, {
+          shouldValidate: true,
+        });
         setMode(WebAuthnModeState.LOGIN);
         handleLogin();
       } else if (lastLoginUsername && !username) {

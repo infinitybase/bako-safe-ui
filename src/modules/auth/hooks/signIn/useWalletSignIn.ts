@@ -41,9 +41,6 @@ const useWalletSignIn = (
         first_login,
       });
       invalidateGifAnimationRequest();
-      console.log('rootWallet', rootWallet);
-      console.log('workspace.id', workspace.id);
-      console.log('callback', callback);
       callback(rootWallet, workspace.id);
     },
   });
