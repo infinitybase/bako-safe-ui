@@ -16,7 +16,7 @@ import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 
-const { VITE_SENTRY_DNS } = import.meta.env;
+const { VITE_SENTRY_DNS, VITE_UI_ENVIRONMENT } = import.meta.env;
 
 if (VITE_SENTRY_DNS !== '') {
   Sentry.init({
@@ -37,6 +37,7 @@ if (VITE_SENTRY_DNS !== '') {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
   });
+  Sentry.setTag('bako.env', VITE_UI_ENVIRONMENT);
 }
 
 const gtmId = import.meta.env.VITE_GTM_ID;
