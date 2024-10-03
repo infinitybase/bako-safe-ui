@@ -143,6 +143,7 @@ const useNetworks = (onClose?: () => void) => {
   const handleClose = () => {
     setMode(NetworkDrawerMode.SELECT);
     setValidNetwork(false);
+    networkForm.reset();
     onClose?.();
   };
 

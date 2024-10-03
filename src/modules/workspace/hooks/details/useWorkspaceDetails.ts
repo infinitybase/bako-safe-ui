@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { setupAxiosInterceptors } from '@/config';
 import {
+  assetsMapFromFormattedFn,
   useAddressBook,
   useAuthUrlParams,
   useGetParams,
@@ -15,11 +16,20 @@ import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
+import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
+  const { fuelsTokens, isLoading: isFuelTokensLoading } =
+    useGetFuelsTokensListRequest();
+
+  const assetsMap =
+    !isFuelTokensLoading &&
+    fuelsTokens &&
+    assetsMapFromFormattedFn(fuelsTokens);
+
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
@@ -57,6 +67,7 @@ const useWorkspaceDetails = () => {
     ...rest
   } = useWorkspace(
     authDetails.userInfos,
+    assetsMap,
     invalidateGifAnimationRequest,
     resetAllTransactionsTypeFilters,
     refetchPendingSingerTransactions,
@@ -72,6 +83,7 @@ const useWorkspaceDetails = () => {
   const vaultAssets = useVaultAssets(
     authDetails.userInfos.workspace?.id,
     vaultId ?? '',
+    assetsMap,
   );
 
   const resetHomeRequests = () => {
@@ -97,6 +109,7 @@ const useWorkspaceDetails = () => {
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
     isTokenExpired,
+    isFuelTokensLoading,
   });
 
   return {
@@ -119,6 +132,8 @@ const useWorkspaceDetails = () => {
     userVaults,
     addressBookInfos,
     tokensUSD,
+    fuelsTokens,
+    assetsMap,
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,

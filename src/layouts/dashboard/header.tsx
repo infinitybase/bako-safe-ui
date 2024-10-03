@@ -169,7 +169,7 @@ const UserBox = () => {
               borderRadius="6px"
               py={2}
               px={4}
-              mr={4}
+              mr={6}
             >
               {selectNetworkRequest.isPending ? (
                 <Spinner w={4} h={4} color="brand.500" />

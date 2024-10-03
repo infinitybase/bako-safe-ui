@@ -8,28 +8,20 @@ import {
   useGetTokenInfosArray,
   useSortTokenInfosArray,
 } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface Props extends SelectProps {
   assets?: Asset[];
   helperText?: React.ReactNode;
 }
 
-/*
- *
- * Example implement:
- *
- * <AssetSelect
- *     id="asset"
- *     name="asset"
- *     register={register} // Use form method
- * />
- *
- * */
-
 function AssetSelect(props: Props) {
-  //todo: remove coment with fix bug send n diferent amounts
-  const formattedAssets = useGetTokenInfosArray(props.assets ?? assetsList);
-  const sortedAssets = useSortTokenInfosArray(formattedAssets);
+  const { assetsMap } = useWorkspaceContext();
+  const formattedAssets = useGetTokenInfosArray(
+    props.assets ?? assetsList,
+    assetsMap,
+  );
+  const sortedAssets = useSortTokenInfosArray(formattedAssets, assetsMap);
 
   return (
     <FormControl>

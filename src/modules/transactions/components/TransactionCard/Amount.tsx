@@ -12,7 +12,6 @@ import { bn } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
@@ -38,6 +37,7 @@ const Amount = ({
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
+    assetsMap,
   } = useWorkspaceContext();
 
   const totalAmoutSent = transaction.assets
