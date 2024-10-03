@@ -11,7 +11,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from 'bakosafe';
-import { TransactionRequest } from 'fuels';
+import { Network, TransactionRequest } from 'fuels';
 
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
@@ -51,6 +51,7 @@ export interface ICreateTransactionPayload {
   assets: ITransferAsset[];
   sendTime?: Date;
   gasUsed?: string;
+  network: Network;
 }
 
 export interface ITransaction extends ICreateTransactionPayload {
