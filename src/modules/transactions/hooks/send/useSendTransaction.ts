@@ -1,6 +1,7 @@
 import { TransactionStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
+import { useAuth } from '@/modules';
 import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useNotificationsStore } from '@/modules/notifications/store';
@@ -18,6 +19,8 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setHasNewNotification } = useNotificationsStore();
   const { setIsCurrentTxPending } = useTransactionState();
   const toast = useTransactionToast();
+
+  const { userInfos } = useAuth();
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction: ITransaction) => {
@@ -72,7 +75,10 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       toast.loading(transaction);
       setIsCurrentTxPending({ isPending: true, transactionId: transaction.id });
     }
-    sendTransaction({ transaction: transaction! });
+    sendTransaction({
+      transaction: transaction!,
+      providerUrl: userInfos.network.url,
+    });
   };
 
   return {

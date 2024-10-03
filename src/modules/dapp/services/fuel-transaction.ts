@@ -43,7 +43,7 @@ const useFuelTransactionService = () => {
   }: TransactionSimulateParams) => {
     const provider = await Provider.create(providerUrl);
 
-    const vaultInstance = await new Vault(provider, JSON.parse(configurable));
+    const vaultInstance = new Vault(provider, JSON.parse(configurable));
 
     const { tx } = await vaultInstance.BakoTransfer(transactionLike);
 

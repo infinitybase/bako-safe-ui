@@ -4,15 +4,17 @@ import { Provider } from 'fuels';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 
 interface IInstantiateVaultProps {
-  predicateAddress?: string;
   provider?: Provider;
+  providerUrl: string;
   configurable?: string;
+  predicateAddress?: string;
 }
 
 const instantiateVault = async ({
-  predicateAddress,
-  configurable,
   provider,
+  providerUrl,
+  configurable,
+  predicateAddress,
 }: IInstantiateVaultProps) => {
   if (configurable && provider) {
     const vault = new Vault(
@@ -23,7 +25,6 @@ const instantiateVault = async ({
     return vault;
   }
 
-  const providerUrl = import.meta.env.VITE_NETWORK;
   const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
   const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
 

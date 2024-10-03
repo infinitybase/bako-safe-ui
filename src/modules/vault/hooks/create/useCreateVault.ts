@@ -100,6 +100,7 @@ const useCreateVault = () => {
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
+      providerUrl: userInfos.network.url,
       addresses,
     });
   });

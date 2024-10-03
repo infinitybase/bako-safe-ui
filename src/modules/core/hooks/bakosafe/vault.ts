@@ -20,6 +20,7 @@ interface UseCreateBakoSafeVaultPayload {
   description: string;
   addresses: string[];
   minSigners: number;
+  providerUrl: string;
 }
 
 interface IUseBakoSafeVault {
@@ -31,10 +32,15 @@ interface IUseBakoSafeVault {
 const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
   const { authDetails } = useWorkspaceContext();
   const query = useBakoSafeQuery(
-    [...VAULT_QUERY_KEYS.VAULT(id), authDetails.userInfos.workspace?.id],
+    [
+      ...VAULT_QUERY_KEYS.VAULT(id),
+      authDetails.userInfos.workspace?.id,
+      authDetails.userInfos.network,
+    ],
     async () => {
       const vault = await instantiateVault({
         predicateAddress: address,
+        providerUrl: authDetails.userInfos.network.url,
       });
       return vault;
     },
@@ -56,11 +62,12 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
     UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
-    async ({ name, minSigners, addresses }) => {
+    async ({ name, minSigners, addresses, providerUrl }) => {
       try {
         const newVault = await createVault({
           name,
           minSigners,
+          providerUrl,
           signers: addresses,
         });
 
