@@ -16,12 +16,22 @@ export enum NetworkDrawerMode {
   CONFIRM = 'confirm',
 }
 
-export type NetworkFormFields = { name: string; url: string };
+export type NetworkFormFields = {
+  name: string;
+  url: string;
+};
+
+const formDefaultValues = {
+  name: '',
+  url: '',
+};
 
 const useNetworks = (onClose?: () => void) => {
   const [mode, setMode] = useState<NetworkDrawerMode>(NetworkDrawerMode.SELECT);
   const [validNetwork, setValidNetwork] = useState(false);
-  const networkForm = useForm<NetworkFormFields>();
+  const networkForm = useForm<NetworkFormFields>({
+    defaultValues: formDefaultValues,
+  });
 
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
@@ -49,16 +59,17 @@ const useNetworks = (onClose?: () => void) => {
     createNetworkRequest.mutate(
       { ...data, identifier: NetworkType.LOCALSTORAGE, chainId: 0 },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setMode(NetworkDrawerMode.SELECT);
           onClose?.();
           setValidNetwork(false);
           refetchNetworks();
+          handleSelectNetwork(data.url);
         },
       },
     );
 
-    networkForm.reset();
+    networkForm.reset(formDefaultValues);
   });
 
   const handleDeleteCustomNetwork = ({ url }: DeleteNetworkPayload) => {
@@ -68,12 +79,13 @@ const useNetworks = (onClose?: () => void) => {
         onSuccess: () => {
           setMode(NetworkDrawerMode.SELECT);
           refetchNetworks();
+          handleSelectNetwork();
         },
       },
     );
   };
 
-  const handleSelectNetwork = async (url: string) => {
+  const handleSelectNetwork = async (url?: string) => {
     if (url === currentNetwork.url) {
       handleClose();
       return;

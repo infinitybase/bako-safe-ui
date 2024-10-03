@@ -34,7 +34,7 @@ export type DeleteNetworkPayload = {
 };
 
 export type SelectNetworkPayload = {
-  url: string;
+  url?: string;
 };
 
 export type CheckNetworkPayload = {
@@ -47,11 +47,6 @@ export type SelectNetworkResponse = boolean;
 export type CheckNetworkResponse = string | undefined;
 
 export const availableNetWorks = [
-  {
-    identifier: NetworkType.MAINNET,
-    name: 'Mainnet',
-    url: 'https://bako:LR2RU3jQHPlbqog3tnDmZw@mainnet.fuel.network/v1/graphql',
-  },
   {
     identifier: NetworkType.TESTNET,
     name: 'Testnet',
