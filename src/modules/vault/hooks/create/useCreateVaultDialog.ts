@@ -83,7 +83,10 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     [TabState.ADDRESSES]: {
       hide: false,
-      disable: !form.formState.isValid || validateAddress.isLoading,
+      disable:
+        !form.formState.isValid ||
+        !!form.formState.errors.addresses ||
+        validateAddress.isLoading,
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
