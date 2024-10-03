@@ -5,17 +5,13 @@ import {
   useFuelTransactionService,
 } from '../services/fuel-transaction';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 const useTransactionSummary = () => {
   const { simulate } = useFuelTransactionService();
   const { data, mutate, ...mutation } = useMutation({
     mutationKey: ['dapp/transaction-summary'],
     mutationFn: async (params: TransactionSimulateParams) => {
-      await delay(600);
       return simulate(params);
     },
-
     retry: (failureCount, error) => {
       console.log('GET_SUMMARY_ERROR:', error);
       console.log('FAILURE_COUNT:', failureCount);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useScreenSize } from '@/modules/core';
+import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 
 import {
   WebAuthnModeState,
@@ -26,10 +27,13 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
   const { isSmall } = useScreenSize();
   const { warningToast } = useContactToast();
   const createWebAuthnAccount = useCreateWebAuthnAccount();
+  const { setModalIsOpen } = useTermsStore();
 
   const handleRegister = form.handleSubmit(async ({ username }) => {
     setIsRegistering(true);
     setRegisterProgress(50);
+
+    setModalIsOpen(false);
 
     await createWebAuthnAccount.mutateAsync(username, {
       onSuccess: async () => {

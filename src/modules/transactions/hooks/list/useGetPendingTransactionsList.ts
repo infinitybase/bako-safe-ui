@@ -4,10 +4,12 @@ import { IPendingTransactionsRecord } from './useTransactionList';
 const usePendingTransactionsList = (
   homeTransactions: ITransactionsGroupedByMonth[],
   transactionsPageList: ITransactionsGroupedByMonth[],
+  vaultTransactionsList: ITransactionsGroupedByMonth[],
 ): IPendingTransactionsRecord => {
   const mergedTransactionsList = [
     ...(homeTransactions ?? []),
     ...(transactionsPageList ?? []),
+    ...(vaultTransactionsList ?? []),
   ];
 
   const result = {};

@@ -39,7 +39,7 @@ const useAuth = (): IUseAuthReturn => {
     useAuthCookies();
   const signOutRequest = useSignOut();
   const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
-  const { sessionId, origin, name, request_id } = useQueryParams();
+  const { sessionId, origin, name, request_id, byConnector } = useQueryParams();
   const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
@@ -60,6 +60,7 @@ const useAuth = (): IUseAuthReturn => {
         origin,
         name,
         request_id,
+        byConnector: byConnector ? String(byConnector) : undefined,
       });
       navigate(`/${queryParams}`);
     }, 200);

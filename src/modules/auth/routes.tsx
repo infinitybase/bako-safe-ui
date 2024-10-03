@@ -4,7 +4,7 @@ import { Pages } from '@/modules/core/routes';
 
 import { RedirectAuthUser } from './components/redirectAuthUser';
 import { RedirectFromLandingPage } from './components/redirectFromLandingPage';
-import { SigninPage } from './pages';
+import { SignInOriginHandler } from './components/signInOriginHandler';
 
 const signinRoutes = (
   <Route path={Pages.index()}>
@@ -13,7 +13,7 @@ const signinRoutes = (
       element={
         <RedirectFromLandingPage>
           <RedirectAuthUser>
-            <SigninPage />
+            <SignInOriginHandler />
           </RedirectAuthUser>
         </RedirectFromLandingPage>
       }
