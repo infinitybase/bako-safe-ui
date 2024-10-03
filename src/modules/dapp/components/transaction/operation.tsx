@@ -1,12 +1,11 @@
 import { Box, HStack, VStack } from '@chakra-ui/react';
-import { Vault } from 'bakosafe';
 import { bn, Operation } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
-import { assetsMap } from '@/modules/core/utils';
 import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
 import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { IFuelTransactionNames } from '../../services';
 
@@ -39,6 +38,7 @@ export const DappTransactionOperationSekeleton = () => (
 );
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const { to, assetsSent, from, name } = operation ?? {};
 
   const isContract =
@@ -50,10 +50,10 @@ const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
   const assetData = isContract
     ? null
     : assetsSent?.map((sent) => {
-        return assetsMap[sent.assetId] && assetsMap[sent.assetId]
-          ? { ...assetsMap[sent.assetId], amount: sent.amount }
+        return assetsMap?.[sent.assetId] && assetsMap?.[sent.assetId]
+          ? { ...assetsMap?.[sent.assetId], amount: sent.amount }
           : {
-              ...assetsMap['UNKNOWN'],
+              ...assetsMap?.['UNKNOWN'],
               amount: sent.amount,
             };
       });

@@ -1,5 +1,5 @@
 import { TransactionStatus } from 'bakosafe';
-import { BN } from 'fuels';
+import { Assets, BN } from 'fuels';
 
 import { api } from '@/config';
 import {
@@ -142,6 +142,14 @@ export class WorkspaceService {
   static async getBalance() {
     const { data } =
       await api.get<GetWorkspaceBalanceResponse>(`/workspace/balance`);
+
+    return data;
+  }
+
+  static async getFuelTokensList() {
+    const { data } = await api.get<Assets>(
+      `https://verified-assets.fuel.network/assets.json`,
+    );
 
     return data;
   }
