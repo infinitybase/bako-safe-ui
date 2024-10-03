@@ -76,8 +76,8 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={{ base: 8, sm: 10 }} // Largura responsiva
-            h={{ base: 8, sm: 10 }} // Altura responsiva
+            w={6} // Largura responsiva
+            h={6} // Altura responsiva
             src={assetInfo?.icon ?? ''} // URL da imagem com fallback
             alt="Asset Icon" // Texto alternativo para acessibilidade
             objectFit="cover" // Ajuste da imagem

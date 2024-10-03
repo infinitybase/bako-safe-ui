@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { setupAxiosInterceptors } from '@/config';
+import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
   assetsMapFromFormattedFn,
   useAddressBook,
@@ -25,10 +25,7 @@ const useWorkspaceDetails = () => {
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 
-  const assetsMap =
-    !isFuelTokensLoading &&
-    fuelsTokens &&
-    assetsMapFromFormattedFn(fuelsTokens);
+  const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
@@ -87,15 +84,16 @@ const useWorkspaceDetails = () => {
   );
 
   const resetHomeRequests = () => {
-    invalidateGifAnimationRequest();
-    refetchPendingSingerTransactions();
-    resetAllTransactionsTypeFilters();
-    refetchTransactions();
-    addressBookInfos.requests.listContactsRequest.refetch();
-    tokensUSD.refetch();
-    latestPredicates.refetch();
-    authDetails.userInfos.refetch();
-    userVaults.request.refetch();
+    // invalidateGifAnimationRequest();
+    // refetchPendingSingerTransactions();
+    // resetAllTransactionsTypeFilters();
+    // refetchTransactions();
+    // addressBookInfos.requests.listContactsRequest.refetch();
+    // tokensUSD.refetch();
+    // latestPredicates.refetch();
+    // authDetails.userInfos.refetch();
+    // userVaults.request.refetch();
+    queryClient.clear();
   };
 
   const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({

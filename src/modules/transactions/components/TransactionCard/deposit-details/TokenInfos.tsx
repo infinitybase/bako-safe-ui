@@ -20,8 +20,8 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
   return (
     <VStack minW="76px" alignItems="start">
       <Image
-        w={{ base: 8, sm: 10 }}
-        h={{ base: 8, sm: 10 }}
+        w={6}
+        h={6}
         src={assetInfo?.icon ?? ''}
         alt="Asset Icon"
         objectFit="cover"

@@ -1,6 +1,7 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 
+import { useContactToast } from '@/modules/addressBook';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
@@ -17,6 +18,7 @@ const useWalletSignIn = (
 
   const { fuel } = useFuel();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
+  const { errorToast } = useContactToast();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -50,6 +52,12 @@ const useWalletSignIn = (
       signInRequest.mutate({
         code,
         type,
+      });
+    },
+    onError: (message) => {
+      errorToast({
+        title: 'Login error',
+        description: (message as { message: string }).message,
       });
     },
   });

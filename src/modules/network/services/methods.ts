@@ -49,8 +49,9 @@ export type CheckNetworkResponse = string | undefined;
 export const availableNetWorks = [
   {
     identifier: NetworkType.TESTNET,
-    name: 'Testnet',
+    name: 'Fuel Sepolia Testnet',
     url: 'https://testnet.fuel.network/v1/graphql',
+    chainId: 0,
   },
   ...(import.meta.env.VITE_DEV === 'development'
     ? [
@@ -58,6 +59,7 @@ export const availableNetWorks = [
           identifier: NetworkType.DEV,
           name: 'Local',
           url: 'http://localhost:4000/v1/graphql',
+          chainId: 0,
         },
       ]
     : []),
@@ -65,9 +67,11 @@ export const availableNetWorks = [
 
 export class NetworkService {
   static async create(newNetwork: CustomNetwork) {
-    const networks = JSON.parse(
+    const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
     );
+
+    if (networks.find((net) => net.url === newNetwork.url)) return;
 
     localStorage.setItem(
       localStorageKeys.NETWORKS,
