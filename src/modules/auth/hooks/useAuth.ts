@@ -116,6 +116,7 @@ const useAuth = (): IUseAuthReturn => {
       address: account,
       singleWorkspaceId: singleWorkspace,
       first_login: infos?.first_login,
+      network: infos?.network!,
       isLoading,
       isFetching,
       refetch,

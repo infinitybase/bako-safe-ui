@@ -10,6 +10,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Spinner,
   Text,
   useDisclosure,
   VStack,
@@ -22,14 +23,23 @@ import { FaChevronDown } from 'react-icons/fa';
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
   AddressWithCopyBtn,
-  ExitIcon,
   NotificationIcon,
-  SettingsIcon,
+  PlusIcon,
+  UnknownIcon,
 } from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { DisconnectIcon } from '@/components/icons/disconnect';
+import { FeedbackIcon } from '@/components/icons/feedback';
+import { NetworkIcon } from '@/components/icons/network';
+import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
+import { NetworkDialog } from '@/modules/network/components/dialog';
+import { NetworkDrawer } from '@/modules/network/components/drawer';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -68,6 +78,18 @@ const UserBox = () => {
       isLowerThanFourHundredAndThirty,
     },
   } = useWorkspaceContext();
+
+  const {
+    networks,
+    currentNetwork,
+    handleSelectNetwork,
+    selectNetworkRequest,
+    checkNetwork,
+  } = useNetworks();
+  const networkPopoverState = useDisclosure();
+  const networkDrawerState = useDisclosure();
+  const networkDialogState = useDisclosure();
+
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
   const notificationDrawerState = useDisclosure();
@@ -92,6 +114,9 @@ const UserBox = () => {
     }
   };
 
+  const feedbackForm = () =>
+    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
+
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
     setUnreadCounter(0);
@@ -109,16 +134,152 @@ const UserBox = () => {
         onClose={settingsDrawer.onClose}
         onOpen={settingsDrawer.onOpen}
       />
-
       <NotificationsDrawer
         isOpen={notificationDrawerState.isOpen}
         onClose={notificationDrawerState.onClose}
       />
+      <NetworkDrawer
+        isOpen={networkDrawerState.isOpen}
+        onClose={networkDrawerState.onClose}
+      />
+      <NetworkDialog
+        isOpen={networkDialogState.isOpen}
+        onClose={networkDialogState.onClose}
+      />
 
+      {!isMobile && (
+        <Popover
+          isOpen={networkPopoverState.isOpen}
+          onClose={networkPopoverState.onClose}
+        >
+          <PopoverTrigger>
+            <HStack
+              w={165}
+              h={'32px'}
+              alignItems="center"
+              cursor={'pointer'}
+              onClick={networkPopoverState.onOpen}
+              spacing={isMobile ? 2 : 4}
+              position="relative"
+              border={'1px solid'}
+              borderColor="grey.925"
+              justifyContent={
+                selectNetworkRequest.isPending ? 'center' : 'space-between'
+              }
+              borderRadius="6px"
+              py={2}
+              px={4}
+              mr={4}
+            >
+              {selectNetworkRequest.isPending ? (
+                <Spinner w={4} h={4} color="brand.500" />
+              ) : (
+                <>
+                  <HStack>
+                    <Icon
+                      as={
+                        checkNetwork(NetworkType.MAINNET)
+                          ? BakoIcon
+                          : UnknownIcon
+                      }
+                      fontSize={16}
+                    />
+
+                    <Text
+                      fontSize={12}
+                      fontWeight={500}
+                      color="grey.200"
+                      noOfLines={1}
+                    >
+                      {
+                        networks?.find(({ url }) => url === currentNetwork.url)
+                          ?.name
+                      }
+                    </Text>
+                  </HStack>
+
+                  <Icon
+                    color="grey.200"
+                    fontSize={{ base: 'sm', sm: 'sm' }}
+                    as={FaChevronDown}
+                  />
+                </>
+              )}
+            </HStack>
+          </PopoverTrigger>
+
+          <PopoverContent
+            bg={'dark.300'}
+            w={165}
+            borderTop="none"
+            border="1px solid #353230"
+            _focus={{ ring: 'none' }}
+          >
+            <PopoverBody p={0}>
+              <VStack cursor={'pointer'} alignItems="start" spacing={0}>
+                {networks?.map((network) => (
+                  <VStack
+                    w="full"
+                    key={network.url}
+                    cursor={'pointer'}
+                    alignItems="start"
+                    justifyContent="center"
+                    borderBottom={'1px solid'}
+                    borderColor="grey.925"
+                    px={4}
+                    onClick={() => {
+                      networkPopoverState.onClose?.();
+                      if (network.url !== currentNetwork.url) {
+                        handleSelectNetwork(network.url);
+                      }
+                    }}
+                    py={4}
+                  >
+                    <HStack>
+                      <Icon
+                        as={
+                          network.identifier === NetworkType.MAINNET
+                            ? BakoIcon
+                            : UnknownIcon
+                        }
+                        fontSize={16}
+                      />
+                      <Text color="grey.200" fontSize={12} fontWeight={500}>
+                        {network.name}
+                      </Text>
+                    </HStack>
+                  </VStack>
+                ))}
+
+                <VStack
+                  w="full"
+                  cursor={'pointer'}
+                  alignItems="start"
+                  justifyContent="center"
+                  borderBottom={'1px solid'}
+                  borderColor="grey.925"
+                  px={4}
+                  py={4}
+                  onClick={() => networkDialogState.onOpen()}
+                >
+                  <HStack>
+                    <Icon as={PlusIcon} fontSize={16} />
+                    <Text color="grey.200" fontSize={12} fontWeight={500}>
+                      Add new network
+                    </Text>
+                  </HStack>
+                </VStack>
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* TOP MENU */}
       <Popover placement="bottom-end">
         <PopoverTrigger>
           <HStack
-            w="100%"
+            // w="100%"
             alignItems="center"
             cursor={'pointer'}
             spacing={isMobile ? 2 : 4}
@@ -169,6 +330,7 @@ const UserBox = () => {
                 boxSize={isMobile ? '32px' : '40px'}
                 border="1px solid #CFCCC9"
               />
+
               {!isMobile && (
                 <HStack
                   position="relative"
@@ -224,14 +386,15 @@ const UserBox = () => {
 
         <PopoverContent
           bg={'dark.300'}
-          w="100%"
+          // w="100%"
           m={0}
           p={0}
+          pb={0}
           borderTop="none"
           border="1px solid #353230"
           _focus={{ ring: 'none' }}
         >
-          <PopoverBody>
+          <PopoverBody pb={0}>
             <VStack
               cursor={'pointer'}
               alignItems="start"
@@ -263,10 +426,36 @@ const UserBox = () => {
                 justifyContent="center"
                 px={4}
                 h="70px"
+                onClick={networkDrawerState.onOpen}
+              >
+                <HStack spacing={4}>
+                  <Icon color="grey.75" w={5} h={5} as={NetworkIcon} />
+                  <Text color="grey.75" fontWeight={500}>
+                    Network
+                  </Text>
+                </HStack>
+              </VStack>
+            )}
+
+            {isMobile && (
+              <VStack
+                borderTop={'1px solid'}
+                borderTopColor={'dark.100'}
+                cursor={'pointer'}
+                alignItems="start"
+                justifyContent="center"
+                px={4}
+                h="70px"
                 onClick={notificationDrawerState.onOpen}
               >
-                <HStack>
-                  <Icon color="grey.75" as={NotificationIcon} fontSize="xl" />
+                <HStack spacing={4}>
+                  <Icon
+                    color="grey.75"
+                    as={NotificationIcon}
+                    fontSize={20}
+                    w={5}
+                    h={5}
+                  />
                   <Text color="grey.75" fontWeight={500}>
                     Notifications
                   </Text>
@@ -286,6 +475,7 @@ const UserBox = () => {
                 </HStack>
               </VStack>
             )}
+
             <VStack
               borderTop={'1px solid'}
               borderTopColor={'dark.100'}
@@ -296,15 +486,12 @@ const UserBox = () => {
               h="70px"
               onClick={settingsDrawer.onOpen}
             >
-              <HStack>
-                <Icon color="grey.75" w={6} h={6} as={SettingsIcon} />
+              <HStack spacing={4}>
+                <Icon color="grey.75" w={5} h={5} as={SettingsTopMenuIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Settings
                 </Text>
               </HStack>
-              <Text color="grey.500" fontSize="sm">
-                Personalize Your Preferences.
-              </Text>
             </VStack>
 
             <VStack
@@ -316,8 +503,32 @@ const UserBox = () => {
               px={4}
               h="70px"
             >
-              <HStack cursor={'pointer'} onClick={logout}>
-                <Icon color="grey.75" fontSize="xl" as={ExitIcon} />
+              <HStack cursor={'pointer'} onClick={feedbackForm} spacing={4}>
+                <Icon
+                  w={5}
+                  h={5}
+                  color="grey.75"
+                  fontSize={18}
+                  as={FeedbackIcon}
+                />
+                <Text color="grey.75" fontWeight={500}>
+                  Send a feedback
+                </Text>
+              </HStack>
+            </VStack>
+
+            <VStack
+              borderTop={'1px solid'}
+              borderTopColor={'dark.100'}
+              cursor={'pointer'}
+              alignItems="start"
+              justifyContent="center"
+              px={4}
+              h="70px"
+              mb={0}
+            >
+              <HStack cursor={'pointer'} onClick={logout} spacing={4}>
+                <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect
                 </Text>

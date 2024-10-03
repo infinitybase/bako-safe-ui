@@ -18,12 +18,9 @@ import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
-import {
-  NetworkType,
-  Pages,
-  PermissionRoles,
-  useCurrentNetwork,
-} from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -86,7 +83,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     },
     screenSizes: { isMobile },
   } = useWorkspaceContext();
-  const { checkNetwork } = useCurrentNetwork();
+  const { checkNetwork } = useNetworks();
 
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 

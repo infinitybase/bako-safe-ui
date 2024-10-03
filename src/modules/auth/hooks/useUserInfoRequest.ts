@@ -1,5 +1,6 @@
-import { UserService } from '../services';
 import { useQuery } from '@tanstack/react-query';
+
+import { UserService } from '../services';
 export const LATEST_INFO_QUERY_KEY = ['latest-info'];
 
 const useUserInfoRequest = () => {
@@ -8,7 +9,7 @@ const useUserInfoRequest = () => {
     queryFn: UserService.getUserInfos,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,
-    staleTime: 500, // 500ms second to prevent request spam
+    staleTime: 500,
   });
 
   return {
