@@ -6,7 +6,6 @@ import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
-import { NetworkType } from '@/modules/network/services';
 
 export enum Encoder {
   FUEL = 'FUEL',
@@ -153,10 +152,11 @@ export type IGetUserInfosResponse = {
 
 export class UserService {
   static async create(payload: CreateUserPayload) {
-    const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
+    // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
 
-    if (invalidNetwork)
-      throw new Error('You cannot access using mainnet network.');
+    // if (invalidNetwork) {
+    //   throw new Error('You cannot access using mainnet network.');
+    // }
 
     const { data } = await api.post<CreateUserResponse>('/user', payload);
     return data;
