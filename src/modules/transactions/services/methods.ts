@@ -211,9 +211,7 @@ export class TransactionService {
       gasPrice,
     });
 
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff);
-
-    console.log(`UI`, transactionRequest);
+    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(2);
 
     return {
       fee: maxFeeWithDiff,
