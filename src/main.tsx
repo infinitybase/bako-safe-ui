@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { defaultConnectors } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
+import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -14,6 +15,29 @@ import { defaultTheme } from '@/themes';
 import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
+
+const { VITE_SENTRY_DNS } = import.meta.env;
+
+if (VITE_SENTRY_DNS !== '') {
+  Sentry.init({
+    dsn: VITE_SENTRY_DNS,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.browserProfilingIntegration(),
+      Sentry.replayIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: [
+      'localhost',
+      'https://stg-api.bako.global/',
+      'https://hmg-api.bako.global/',
+      'https://api.bako.global/',
+    ],
+    profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 
 const gtmId = import.meta.env.VITE_GTM_ID;
 

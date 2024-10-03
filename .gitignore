@@ -31,3 +31,4 @@ dist-ssr
 *.sw?
 src/dev
 pnpm-lock.yaml
+.env
