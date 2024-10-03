@@ -27,6 +27,7 @@ interface SignInWrapperProps {
   createdAcccountUsername: UseWebAuthnSignIn['createdAcccountUsername'];
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];
   handleSelectWallet: UseWalletSignIn['handleSelectWallet'];
+  handleRegister: UseWebAuthnSignIn['handleRegister'];
 }
 
 const title = 'Welcome to Bako Safe';
@@ -42,6 +43,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     createdAcccountUsername,
     handleInputChange,
     handleSelectWallet,
+    handleRegister,
   } = props;
 
   const { connectors } = useListConnectors();
@@ -84,6 +86,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                     accountsOptions={accountsOptions}
                     inputBadge={inputBadge}
                     handleInputChange={handleInputChange}
+                    handleRegister={handleRegister}
                   />
 
                   <ConnectorsList
@@ -129,6 +132,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                   accountsOptions={accountsOptions}
                   inputBadge={inputBadge}
                   handleInputChange={handleInputChange}
+                  handleRegister={handleRegister}
                 />
 
                 <ConnectorsList

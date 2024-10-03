@@ -101,7 +101,7 @@ export interface IPredicate extends IPredicatePayload {
     id: string;
     avatar: string;
     address: string;
-    nickname: string;
+    nickname?: string;
   }[];
   owner: {
     id: string;

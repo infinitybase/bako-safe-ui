@@ -11,6 +11,7 @@ const WebSignInPage = () => {
     accountsOptions,
     createdAcccountUsername,
     inputBadge,
+    handleRegister,
     handleSelectWallet,
     handleInputChange,
   } = useWebSignIn();
@@ -26,6 +27,7 @@ const WebSignInPage = () => {
       isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
+      handleRegister={handleRegister}
     />
   );
 };

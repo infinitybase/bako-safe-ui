@@ -23,7 +23,7 @@ const useWebSignIn = () => {
       return;
     }
 
-    navigate(Pages.home());
+    return navigate(Pages.home());
   }, []);
 
   const walletSignIn = useWalletSignIn(redirect);
@@ -32,7 +32,9 @@ const useWebSignIn = () => {
 
   useEffect(() => {
     if (lastLoginUsername) {
-      formData.form.setValue('username', lastLoginUsername ?? '');
+      formData.form.setValue('username', lastLoginUsername ?? '', {
+        shouldValidate: true,
+      });
       setMode(WebAuthnModeState.LOGIN);
     }
   }, []);

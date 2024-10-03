@@ -78,6 +78,7 @@ const useDappSignIn = () => {
 
   const getSessionId = useCallback(() => {
     let _sessionId = sessionId;
+
     if (!_sessionId) {
       _sessionId = crypto.randomUUID();
       window.localStorage.setItem('sessionId', _sessionId);
@@ -93,11 +94,15 @@ const useDappSignIn = () => {
   useEffect(() => {
     if (isMounted.current) {
       if (username && !isSigningIn) {
-        formData.form.setValue('username', username);
+        formData.form.setValue('username', username, {
+          shouldValidate: true,
+        });
         setMode(WebAuthnModeState.LOGIN);
         handleLogin();
       } else if (lastLoginUsername && !username) {
-        formData.form.setValue('username', lastLoginUsername);
+        formData.form.setValue('username', lastLoginUsername, {
+          shouldValidate: true,
+        });
         setMode(WebAuthnModeState.LOGIN);
       }
     }

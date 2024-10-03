@@ -53,6 +53,9 @@ const Pages = {
   dappTransaction: pageRoute('/dapp/transaction'),
   // dappTransactionSign: pageRoute('/dapp/transaction/sign/'), [CONNECTOR SIGNATURE]
 
+  //terms
+  termsOfUse: pageRoute('/terms-of-use'),
+
   //workspace
   membersWorkspace: pageRoute<{ workspaceId: string }>(
     '/workspace/:workspaceId/members',

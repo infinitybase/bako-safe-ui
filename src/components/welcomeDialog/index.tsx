@@ -1,6 +1,7 @@
 import { Button, VStack } from '@chakra-ui/react';
 
-import { NetworkType, useCurrentNetwork } from '@/modules';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -33,7 +34,7 @@ const WelcomeDialog = ({
 
   const updateUserMutation = useUpdateSettingsRequest();
 
-  const { checkNetwork } = useCurrentNetwork();
+  const { checkNetwork } = useNetworks();
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const handleUpdateUser = async () => {
