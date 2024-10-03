@@ -23,6 +23,8 @@ import { Controller } from 'react-hook-form';
 
 import { PlusIcon, RemoveIcon, UnknownIcon } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { TypeUser } from '@/modules/auth/services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
 import { NetworkType } from '../../services';
@@ -45,6 +47,14 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
     checkNetworkRequest: { isPending: loadingCheck },
     handleClose,
   } = useNetworks(props.onClose);
+
+  const { authDetails } = useWorkspaceContext();
+
+  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+
+  const networkList = isWebAuthn
+    ? networks
+    : networks?.filter((net) => net.url === currentNetwork.url);
 
   return (
     <Drawer
@@ -74,10 +84,10 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
         </DrawerHeader>
 
         <DrawerBody>
-          {networks && mode === NetworkDrawerMode.SELECT && (
+          {networkList && mode === NetworkDrawerMode.SELECT && (
             <VStack spacing={4}>
               <VStack spacing={2} w="full">
-                {networks.map((net) => {
+                {networkList.map((net) => {
                   const isSelected = net.url === currentNetwork.url;
 
                   return (
@@ -123,42 +133,45 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
                         <Box flex={1} />
 
-                        {net.identifier === NetworkType.LOCALSTORAGE && (
-                          <Icon
-                            as={RemoveIcon}
-                            fontSize={16}
-                            color={'grey.75'}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteCustomNetwork(net);
-                            }}
-                            transition={'all 0.1s'}
-                            _hover={{ color: 'grey.250' }}
-                          />
-                        )}
+                        {net.identifier === NetworkType.LOCALSTORAGE &&
+                          isWebAuthn && (
+                            <Icon
+                              as={RemoveIcon}
+                              fontSize={16}
+                              color={'grey.75'}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteCustomNetwork(net);
+                              }}
+                              transition={'all 0.1s'}
+                              _hover={{ color: 'grey.250' }}
+                            />
+                          )}
                       </HStack>
                     </Center>
                   );
                 })}
 
-                <HStack
-                  cursor="pointer"
-                  onClick={() => setMode(NetworkDrawerMode.ADD)}
-                  w="calc(100% - 2px)"
-                  h="calc(70px - 2px)"
-                  pl={4}
-                  bg={'dark.950'}
-                  border={'1px solid'}
-                  borderColor={'grey.950'}
-                  borderRadius={8}
-                  spacing={4}
-                >
-                  <Icon as={PlusIcon} fontSize={22} />
+                {isWebAuthn && (
+                  <HStack
+                    cursor="pointer"
+                    onClick={() => setMode(NetworkDrawerMode.ADD)}
+                    w="calc(100% - 2px)"
+                    h="calc(70px - 2px)"
+                    pl={4}
+                    bg={'dark.950'}
+                    border={'1px solid'}
+                    borderColor={'grey.950'}
+                    borderRadius={8}
+                    spacing={4}
+                  >
+                    <Icon as={PlusIcon} fontSize={22} />
 
-                  <Text fontSize={14} fontWeight={500} color="grey.75">
-                    Add new network
-                  </Text>
-                </HStack>
+                    <Text fontSize={14} fontWeight={500} color="grey.75">
+                      Add new network
+                    </Text>
+                  </HStack>
+                )}
               </VStack>
 
               <Button

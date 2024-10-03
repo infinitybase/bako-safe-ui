@@ -419,7 +419,7 @@ const UserBox = () => {
               />
             </VStack>
 
-            {isMobile && isWebAuthn && (
+            {isMobile && (
               <VStack
                 borderTop={'1px solid'}
                 borderTopColor={'dark.100'}
