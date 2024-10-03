@@ -76,13 +76,13 @@ const VaultConnector = () => {
       });
     }
   }, [
-    name,
-    origin,
-    sessionId,
-    request_id,
+    // name,
+    // origin,
+    // sessionId,
+    // request_id,
     userInfos.address,
     vaults.length,
-    send,
+    // send,
   ]);
 
   useEffect(() => {

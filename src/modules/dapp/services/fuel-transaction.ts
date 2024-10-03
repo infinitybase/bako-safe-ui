@@ -3,11 +3,10 @@ import {
   OperationTransactionAddress,
   OutputType,
   Provider,
-  ScriptTransactionRequest,
   TransactionRequestLike,
 } from 'fuels';
 
-import { instantiateVault } from '@/modules';
+import { Vault } from 'bakosafe';
 
 export interface TransactionSimulateParams {
   transactionLike: TransactionRequestLike;
@@ -44,21 +43,17 @@ const useFuelTransactionService = () => {
   }: TransactionSimulateParams) => {
     const provider = await Provider.create(providerUrl);
 
-    const vaultInstance = await instantiateVault({
-      configurable,
-    });
+    const vaultInstance = await new Vault(provider, JSON.parse(configurable));
 
-    const transactionRequest = ScriptTransactionRequest.from(transactionLike);
-    const transactionRequestResult =
-      await vaultInstance.prepareTransaction(transactionRequest);
+    const { tx } = await vaultInstance.BakoTransfer(transactionLike);
 
     const { operations } = await getTransactionSummaryFromRequest({
-      transactionRequest: transactionRequestResult,
+      transactionRequest: tx,
       provider,
     });
 
     return {
-      fee: transactionRequest.maxFee.format(),
+      fee: tx.maxFee.format(),
       operations: operations,
     };
   };
