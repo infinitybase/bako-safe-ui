@@ -12,6 +12,7 @@ import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
@@ -42,10 +43,10 @@ const Details = ({
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
-  const handleViewInExplorer = async () => {
-    const { hash } = transaction;
+  const handleViewInExplorer = () => {
+    const { hash, network } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
+      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

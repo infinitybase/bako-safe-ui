@@ -29,6 +29,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { TransactionWithVault } from '../../services/types';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { useNetworks } from '@/modules/network/hooks';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -54,10 +56,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
-  const handleViewInExplorer = async () => {
-    const { hash } = transaction;
+  const handleViewInExplorer = () => {
+    const { hash, network } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
+      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

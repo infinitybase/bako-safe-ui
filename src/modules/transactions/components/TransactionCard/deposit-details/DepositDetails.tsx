@@ -9,6 +9,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { useNetworks } from '@/modules/network/hooks';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
@@ -18,17 +20,18 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const { operationAssets, sentBy, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
 
-  const handleViewInExplorer = async () => {
-    const { hash } = transaction;
-    window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
-      '_BLANK',
-    );
-  };
-
   const {
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
+  const { currentNetwork } = useNetworks();
+
+  const handleViewInExplorer = () => {
+    const { hash, network } = transaction;
+    window.open(
+      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      '_BLANK',
+    );
+  };
 
   return (
     <Box
