@@ -25,10 +25,7 @@ const useWorkspaceDetails = () => {
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 
-  const assetsMap =
-    !isFuelTokensLoading &&
-    fuelsTokens &&
-    assetsMapFromFormattedFn(fuelsTokens);
+  const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();

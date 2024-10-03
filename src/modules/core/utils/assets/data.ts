@@ -36,7 +36,7 @@ export const formatedAssets = (chainId: number): Asset[] =>
 
 const assetsList: Asset[] = formatedAssets(chainId);
 
-export const assetsMapFromFormattedFn = (tokenList: Assets): AssetMap => {
+export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
   const list = tokenList
     ?.reduce<Asset[]>((acc, asset) => {
       const network = asset.networks.find(
