@@ -67,6 +67,7 @@ const APITokenCard = (props: APITokenCardProps) => {
             maxW="full"
             noOfLines={4}
             wordBreak="break-all"
+            hidden={!apiToken.config?.transactionTitle}
           >
             Transaction name: {apiToken.config?.transactionTitle}
           </Text>
