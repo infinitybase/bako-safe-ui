@@ -23,11 +23,18 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     vaultNameIsAvailable,
     vaultId,
     validateAddress,
+    addresses,
     ...rest
   } = useCreateVault();
 
   const { name, origin, sessionId, request_id } = useQueryParams();
   const isSignInFromDapp = sessionId && sessionId.length === 36;
+
+  const disableCreateVaultButton =
+    (!form.formState.isValid ||
+      !!form.formState.errors.addresses ||
+      validateAddress.isLoading) &&
+    addresses.fields.length > 1;
 
   const createConnectionsMutation = useCreateConnections();
   const {
@@ -83,10 +90,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     [TabState.ADDRESSES]: {
       hide: false,
-      disable:
-        !form.formState.isValid ||
-        !!form.formState.errors.addresses ||
-        validateAddress.isLoading,
+      disable: disableCreateVaultButton,
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
@@ -129,6 +133,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     vaultNameIsAvailable,
     validateAddress,
+    addresses,
     ...rest,
   };
 };
