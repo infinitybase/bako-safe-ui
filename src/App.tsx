@@ -2,6 +2,7 @@ import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
 
@@ -12,15 +13,19 @@ import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
 function App() {
   const { fuel } = useFuel();
   const { authDetails: auth } = useWorkspaceContext();
-  const { handleSelectNetwork, currentNetwork } = useNetworks();
+  const { handleSelectNetwork } = useNetworks();
+
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    console.log(`🚀 useEffect`);
-
     async function clearAll() {
       auth.handlers.logout?.();
       invalidateQueries();
     }
+
+    const changeNetwork = async (url: { url: string }) => {
+      if (pathname !== '/') await handleSelectNetwork(url.url);
+    };
 
     function onConnection(isConnected: boolean) {
       if (isConnected) return;
@@ -40,20 +45,14 @@ function App() {
 
     fuel.on(fuel.events.connection, onConnection);
     fuel.on(fuel.events.currentAccount, onCurrentAccount);
+    fuel.on(fuel.events.currentNetwork, changeNetwork);
 
     return () => {
       fuel.off(fuel.events.connection, onConnection);
       fuel.off(fuel.events.currentAccount, onCurrentAccount);
+      fuel.off(fuel.events.currentNetwork, changeNetwork);
     };
   }, [auth]);
-
-  useEffect(() => {
-    fuel.on(fuel.events.currentNetwork, async (url: { url: string }) => {
-      console.log(`🚀 fuel.on`);
-      if (url.url === currentNetwork.url) return;
-      await handleSelectNetwork(url.url);
-    });
-  }, []);
 
   return <AppRoutes />;
 }
