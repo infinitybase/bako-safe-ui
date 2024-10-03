@@ -21,16 +21,24 @@ import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import { AddressWithCopyBtn, NotificationIcon } from '@/components';
+import {
+  AddressWithCopyBtn,
+  NotificationIcon,
+  PlusIcon,
+  UnknownIcon,
+} from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { useCurrentNetwork, useUserWorkspacesRequest } from '@/modules';
+import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -71,11 +79,12 @@ const UserBox = () => {
   } = useWorkspaceContext();
 
   const {
-    availableNetWorks,
+    networks,
     currentNetwork,
     handleSelectNetwork,
     selectNetworkRequest,
-  } = useCurrentNetwork();
+    checkNetwork,
+  } = useNetworks();
   const networkPopoverState = useDisclosure();
   const networkDrawerState = useDisclosure();
 
@@ -163,9 +172,9 @@ const UserBox = () => {
                   <HStack>
                     <Icon
                       as={
-                        availableNetWorks.find(
-                          ({ url }) => url === currentNetwork.url,
-                        )?.icon
+                        checkNetwork(NetworkType.MAINNET)
+                          ? BakoIcon
+                          : UnknownIcon
                       }
                       fontSize={16}
                     />
@@ -177,9 +186,8 @@ const UserBox = () => {
                       noOfLines={1}
                     >
                       {
-                        availableNetWorks.find(
-                          ({ url }) => url === currentNetwork.url,
-                        )?.name
+                        networks?.find(({ url }) => url === currentNetwork.url)
+                          ?.name
                       }
                     </Text>
                   </HStack>
@@ -203,30 +211,64 @@ const UserBox = () => {
           >
             <PopoverBody p={0}>
               <VStack cursor={'pointer'} alignItems="start" spacing={0}>
-                {availableNetWorks.map((network, index) => (
+                {networks?.map((network) => (
                   <VStack
                     w="full"
                     key={network.url}
                     cursor={'pointer'}
                     alignItems="start"
                     justifyContent="center"
-                    borderBottom={!index ? '1px solid' : 'unset'}
+                    borderBottom={'1px solid'}
                     borderColor="grey.925"
                     px={4}
                     onClick={() => {
                       networkPopoverState.onClose?.();
-                      handleSelectNetwork(network.url);
+                      if (network.url !== currentNetwork.url) {
+                        handleSelectNetwork(network.url);
+                      }
                     }}
                     py={4}
                   >
                     <HStack>
-                      <Icon as={network.icon} fontSize={16} />
+                      <Icon
+                        as={
+                          network.identifier === NetworkType.MAINNET
+                            ? BakoIcon
+                            : UnknownIcon
+                        }
+                        fontSize={16}
+                      />
                       <Text color="grey.200" fontSize={12} fontWeight={500}>
                         {network.name}
                       </Text>
                     </HStack>
                   </VStack>
                 ))}
+
+                <VStack
+                  w="full"
+                  cursor={'pointer'}
+                  alignItems="start"
+                  justifyContent="center"
+                  borderBottom={'1px solid'}
+                  // borderBottom={!index ? '1px solid' : 'unset'}
+                  borderColor="grey.925"
+                  px={4}
+                  onClick={() => {
+                    // networkPopoverState.onClose?.();
+                    // if (network.url !== currentNetwork.url) {
+                    //   handleSelectNetwork(network.url);
+                    // }
+                  }}
+                  py={4}
+                >
+                  <HStack>
+                    <Icon as={PlusIcon} fontSize={16} />
+                    <Text color="grey.200" fontSize={12} fontWeight={500}>
+                      Add
+                    </Text>
+                  </HStack>
+                </VStack>
               </VStack>
             </PopoverBody>
           </PopoverContent>

@@ -21,27 +21,30 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { PlusIcon, RemoveIcon } from '@/components';
-import { NetworkDrawerMode, NetworkType, useCurrentNetwork } from '@/modules';
+import { PlusIcon, RemoveIcon, UnknownIcon } from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+
+import { NetworkDrawerMode, useNetworks } from '../../hooks';
+import { NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 
 const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
   const {
-    availableNetWorks,
+    networks,
     handleSelectNetwork,
     currentNetwork,
     handleAddNetwork,
     networkForm,
     handleDeleteCustomNetwork,
-    handleTestNetwork,
+    handleCheckNetwork,
     validNetwork,
     mode,
     setMode,
     selectNetworkRequest,
-    networkHealthCheckRequest,
+    checkNetworkRequest: { isPending: loadingCheck },
     handleClose,
-  } = useCurrentNetwork(props.onClose);
+  } = useNetworks(props.onClose);
 
   return (
     <Drawer
@@ -71,10 +74,10 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
         </DrawerHeader>
 
         <DrawerBody>
-          {mode === NetworkDrawerMode.SELECT && (
+          {networks && mode === NetworkDrawerMode.SELECT && (
             <VStack spacing={4}>
               <VStack spacing={2} w="full">
-                {availableNetWorks.map((net) => {
+                {networks.map((net) => {
                   const isSelected = net.url === currentNetwork.url;
 
                   return (
@@ -105,7 +108,14 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                         borderRadius={8}
                         spacing={4}
                       >
-                        <Icon as={net.icon} fontSize={24} />
+                        <Icon
+                          as={
+                            net.identifier === NetworkType.MAINNET
+                              ? BakoIcon
+                              : UnknownIcon
+                          }
+                          fontSize={24}
+                        />
 
                         <Text fontSize={14} fontWeight={500} color="grey.75">
                           {net?.name}
@@ -172,7 +182,6 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                 <Controller
                   control={networkForm.control}
                   name="name"
-                  rules={{ required: 'Name is required' }}
                   render={({ field, fieldState }) => (
                     <FormControl isInvalid={fieldState.invalid}>
                       <Input
@@ -183,6 +192,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                         bg={'grey.825'}
                         border={'1px solid'}
                         borderColor={'grey.125'}
+                        disabled={true}
                       />
                       <FormLabel>Name</FormLabel>
                       <FormHelperText color="error.500">
@@ -205,7 +215,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                         variant="dark"
                         bg={'grey.825'}
                         border={'1px solid'}
-                        borderColor={validNetwork ? 'success.750' : 'grey.125'}
+                        borderColor={validNetwork ? 'brand.500' : 'grey.125'}
                       />
                       <FormLabel>URL</FormLabel>
                       <FormHelperText color="error.500">
@@ -221,16 +231,12 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                   variant="outline"
                   color={'grey.75'}
                   borderColor={'grey.75'}
-                  onClick={handleTestNetwork}
+                  onClick={handleCheckNetwork}
                   _hover={{ borderColor: 'inherit', color: 'inherit' }}
                   sx={{ _active: { bg: 'inherit' } }}
-                  disabled={networkHealthCheckRequest.isPending}
+                  disabled={loadingCheck}
                 >
-                  {networkHealthCheckRequest.isPending ? (
-                    <Spinner />
-                  ) : (
-                    'Test connection'
-                  )}
+                  {loadingCheck ? <Spinner w={4} h={4} /> : 'Test connection'}
                 </Button>
               </VStack>
 

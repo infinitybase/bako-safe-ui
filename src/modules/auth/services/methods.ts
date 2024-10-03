@@ -103,12 +103,6 @@ export type AuthenticateWorkspaceParams = {
   workspace: string;
 };
 
-export type ChangeNetworkPayload = {
-  url: string;
-};
-
-export type ChangeNetworkResponse = boolean;
-
 export interface IUserInfos extends IGetUserInfosResponse {
   isLoading: boolean;
   isFetching: boolean;
@@ -245,15 +239,6 @@ export class UserService {
     const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
       address,
     });
-    return data;
-  }
-
-  static async changeNetwork({ url }: ChangeNetworkPayload) {
-    const { data } = await api.post<ChangeNetworkResponse>(
-      `/user/select-network/`,
-      { network: url },
-    );
-
     return data;
   }
 }
