@@ -25,7 +25,6 @@ const useGetWorkspaceBalanceRequest = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5, // 5 mins
     enabled: false,
-    // enabled:
     //   window.location.pathname != '/' && window.location.pathname != '/home',
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam

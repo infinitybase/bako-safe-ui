@@ -140,10 +140,12 @@ export class WorkspaceService {
   }
 
   static async getBalance() {
-    const { data } =
-      await api.get<GetWorkspaceBalanceResponse>(`/workspace/balance`);
-
-    return data;
+    return new Promise<IWroskapceBalance>((resolve) => {
+      resolve({
+        currentBalanceUSD: '0',
+        currentBalance: [],
+      });
+    });
   }
 
   static async getFuelTokensList(): Promise<Assets> {
