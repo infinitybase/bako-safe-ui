@@ -21,6 +21,7 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
     networkForm,
     handleCheckNetwork,
     validNetwork,
+    handleClose,
     checkNetworkRequest: { isPending: loadingCheck },
   } = useNetworks(props.onClose);
 
@@ -29,11 +30,11 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
       size={{ base: 'full', sm: 'lg' }}
       isOpen={props.isOpen}
       closeOnOverlayClick={false}
-      onClose={props.onClose}
+      onClose={handleClose}
     >
       <Dialog.Header
         position="relative"
-        onClose={props.onClose}
+        onClose={handleClose}
         maxW={420}
         title={'Add new Network'}
       />
@@ -105,9 +106,15 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
       </Dialog.Body>
 
       <Dialog.Actions mt="auto" maxW={420}>
-        <Dialog.PrimaryAction onClick={handleAddNetwork}>
-          Add Network
-        </Dialog.PrimaryAction>
+        <Button
+          w="100%"
+          variant="primary"
+          fontWeight="bold"
+          onClick={handleAddNetwork}
+          isDisabled={!validNetwork}
+        >
+          Add network
+        </Button>
       </Dialog.Actions>
     </Dialog.Modal>
   );
