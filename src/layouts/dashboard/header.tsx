@@ -149,9 +149,9 @@ const UserBox = () => {
         onClose={networkDialogState.onClose}
       />
 
-      {!isMobile && isWebAuthn && (
+      {!isMobile && (
         <Popover
-          isOpen={networkPopoverState.isOpen}
+          isOpen={isWebAuthn && networkPopoverState.isOpen}
           onClose={networkPopoverState.onClose}
         >
           <PopoverTrigger>
@@ -159,7 +159,7 @@ const UserBox = () => {
               w={165}
               h={'32px'}
               alignItems="center"
-              cursor={'pointer'}
+              cursor={isWebAuthn ? 'pointer' : 'default'}
               onClick={networkPopoverState.onOpen}
               spacing={isMobile ? 2 : 4}
               position="relative"
@@ -198,11 +198,13 @@ const UserBox = () => {
                     </Text>
                   </HStack>
 
-                  <Icon
-                    color="grey.200"
-                    fontSize={{ base: 'sm', sm: 'sm' }}
-                    as={FaChevronDown}
-                  />
+                  {isWebAuthn && (
+                    <Icon
+                      color="grey.200"
+                      fontSize={{ base: 'sm', sm: 'sm' }}
+                      as={FaChevronDown}
+                    />
+                  )}
                 </>
               )}
             </HStack>
