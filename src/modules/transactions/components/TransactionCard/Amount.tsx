@@ -3,8 +3,8 @@ import {
   BoxProps,
   Flex,
   HStack,
-  Text,
   Image,
+  Text,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
@@ -78,9 +78,12 @@ const Amount = ({
             {hasNoDefaultAssets && (
               <Image
                 key={assetsMap[operationAssets.assetId]?.assetId}
-                w={6}
-                h={6}
-                src={assetsMap[operationAssets.assetId]?.icon ?? ''}
+                w={{ base: '34px', sm: 6 }}
+                h={{ base: 'full', sm: 6 }}
+                src={
+                  assetsMap[operationAssets.assetId]?.icon ??
+                  assetsMap['UNKNOWN'].icon
+                }
                 alt="Asset Icon"
                 objectFit="cover"
               />
@@ -89,9 +92,11 @@ const Amount = ({
             {oneAssetOfEach.map((asset) => (
               <Image
                 key={asset.assetId}
-                w={6}
-                h={6}
-                src={assetsMap[asset.assetId]?.icon ?? ''}
+                w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                h={{ base: 'full', sm: 6 }}
+                src={
+                  assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
+                }
                 alt="Asset Icon"
                 objectFit="cover"
               />
