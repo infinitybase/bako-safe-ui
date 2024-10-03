@@ -42,6 +42,8 @@ const useNetworks = (onClose?: () => void) => {
         type: 'required',
         message: 'Url is required.',
       });
+
+      return;
     }
 
     createNetworkRequest.mutate(
@@ -49,11 +51,9 @@ const useNetworks = (onClose?: () => void) => {
       {
         onSuccess: () => {
           setMode(NetworkDrawerMode.SELECT);
+          onClose?.();
           setValidNetwork(false);
           refetchNetworks();
-        },
-        onError: (e) => {
-          console.log(e);
         },
       },
     );
@@ -74,18 +74,20 @@ const useNetworks = (onClose?: () => void) => {
   };
 
   const handleSelectNetwork = async (url: string) => {
-    if (url !== currentNetwork.url) {
-      selectNetworkRequest.mutate(
-        { url },
-        {
-          onSuccess: () => {
-            resetHomeRequests();
-          },
-        },
-      );
+    if (url === currentNetwork.url) {
+      handleClose();
+      return;
     }
 
-    handleClose();
+    selectNetworkRequest.mutate(
+      { url },
+      {
+        onSuccess: () => {
+          resetHomeRequests();
+          handleClose();
+        },
+      },
+    );
   };
 
   const handleCheckNetwork = async () => {
@@ -96,6 +98,15 @@ const useNetworks = (onClose?: () => void) => {
         type: 'required',
         message: 'Url is required',
       });
+    }
+
+    if (networks?.find((net) => net.url === url)) {
+      networkForm.setError('url', {
+        type: 'required',
+        message: 'Network already exists.',
+      });
+
+      return;
     }
 
     checkNetworkRequest.mutate(

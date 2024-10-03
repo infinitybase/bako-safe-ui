@@ -36,6 +36,7 @@ import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
+import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -87,6 +88,7 @@ const UserBox = () => {
   } = useNetworks();
   const networkPopoverState = useDisclosure();
   const networkDrawerState = useDisclosure();
+  const networkDialogState = useDisclosure();
 
   const { fuel } = useFuel();
   const settingsDrawer = useDisclosure();
@@ -139,6 +141,10 @@ const UserBox = () => {
       <NetworkDrawer
         isOpen={networkDrawerState.isOpen}
         onClose={networkDrawerState.onClose}
+      />
+      <NetworkDialog
+        isOpen={networkDialogState.isOpen}
+        onClose={networkDialogState.onClose}
       />
 
       {!isMobile && (
@@ -251,21 +257,15 @@ const UserBox = () => {
                   alignItems="start"
                   justifyContent="center"
                   borderBottom={'1px solid'}
-                  // borderBottom={!index ? '1px solid' : 'unset'}
                   borderColor="grey.925"
                   px={4}
-                  onClick={() => {
-                    // networkPopoverState.onClose?.();
-                    // if (network.url !== currentNetwork.url) {
-                    //   handleSelectNetwork(network.url);
-                    // }
-                  }}
                   py={4}
+                  onClick={() => networkDialogState.onOpen()}
                 >
                   <HStack>
                     <Icon as={PlusIcon} fontSize={16} />
                     <Text color="grey.200" fontSize={12} fontWeight={500}>
-                      Add
+                      Add new network
                     </Text>
                   </HStack>
                 </VStack>
