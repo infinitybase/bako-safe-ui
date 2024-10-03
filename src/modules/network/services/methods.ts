@@ -46,12 +46,15 @@ export type DeleteNetworkResponse = void;
 export type SelectNetworkResponse = boolean;
 export type CheckNetworkResponse = string | undefined;
 
+export const defaultBlockExplorer = 'https://app-mainnet.fuel.network/';
+
 export const availableNetWorks = [
   {
     identifier: NetworkType.TESTNET,
     name: 'Fuel Sepolia Testnet',
     url: 'https://testnet.fuel.network/v1/graphql',
     chainId: 0,
+    exporer: `https://app.fuel.network/`,
   },
   ...(import.meta.env.VITE_DEV === 'development'
     ? [
@@ -64,6 +67,12 @@ export const availableNetWorks = [
       ]
     : []),
 ];
+
+export const findBlockExplorerByNetwork = (url: string) => {
+  const network = availableNetWorks.find((net) => net.url === url);
+
+  return network?.exporer ?? defaultBlockExplorer;
+};
 
 export class NetworkService {
   static async create(newNetwork: CustomNetwork) {
