@@ -101,6 +101,8 @@ const UserBox = () => {
   const name = mySettingsRequest.data?.name ?? '';
   const hasNickName = name && !AddressUtils.isValid(name);
 
+  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+
   const logout = async () => {
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
@@ -149,7 +151,7 @@ const UserBox = () => {
 
       {!isMobile && (
         <Popover
-          isOpen={networkPopoverState.isOpen}
+          isOpen={isWebAuthn && networkPopoverState.isOpen}
           onClose={networkPopoverState.onClose}
         >
           <PopoverTrigger>
@@ -157,7 +159,7 @@ const UserBox = () => {
               w={165}
               h={'32px'}
               alignItems="center"
-              cursor={'pointer'}
+              cursor={isWebAuthn ? 'pointer' : 'default'}
               onClick={networkPopoverState.onOpen}
               spacing={isMobile ? 2 : 4}
               position="relative"
@@ -191,18 +193,18 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {
-                        networks?.find(({ url }) => url === currentNetwork.url)
-                          ?.name
-                      }
+                      {networks?.find(({ url }) => url === currentNetwork.url)
+                        ?.name ?? 'Unknown'}
                     </Text>
                   </HStack>
 
-                  <Icon
-                    color="grey.200"
-                    fontSize={{ base: 'sm', sm: 'sm' }}
-                    as={FaChevronDown}
-                  />
+                  {isWebAuthn && (
+                    <Icon
+                      color="grey.200"
+                      fontSize={{ base: 'sm', sm: 'sm' }}
+                      as={FaChevronDown}
+                    />
+                  )}
                 </>
               )}
             </HStack>
