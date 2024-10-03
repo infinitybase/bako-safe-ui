@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, Provider, sha256 } from 'fuels';
+import { Address, Network, Provider, sha256 } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
@@ -147,6 +147,7 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
+  network: Network;
 };
 
 export class UserService {
@@ -245,6 +246,7 @@ export class UserService {
 export const localStorageKeys = {
   HARDWARE_ID: 'bakosafe/hardwareId',
   WEB_AUTHN_LAST_LOGIN_USERNAME: 'bakosafe/web-authn-last-login-username',
+  NETWORKS: 'bakosafe/networks',
 };
 
 export const UserQueryKey = {

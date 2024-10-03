@@ -23,12 +23,9 @@ import {
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import {
-  NetworkType,
-  Pages,
-  PermissionRoles,
-  useCurrentNetwork,
-} from '@/modules/core';
+import { Pages, PermissionRoles } from '@/modules/core';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 
@@ -47,7 +44,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const navigate = useNavigate();
   const { vault, assets, blockedTransfers, setAddAssetsDialogState } = props;
   const { balanceUSD, isEthBalanceLowerThanReservedAmount } = assets;
-  const { checkNetwork } = useCurrentNetwork();
+  const { checkNetwork } = useNetworks();
 
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 

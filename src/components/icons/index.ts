@@ -34,6 +34,7 @@ export * from './notify-icon';
 export * from './overview';
 export * from './pending';
 export * from './play-icon';
+export * from './plus';
 export * from './question';
 export * from './recovery';
 export * from './refresh';
