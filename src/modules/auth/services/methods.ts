@@ -152,6 +152,12 @@ export type IGetUserInfosResponse = {
 
 export class UserService {
   static async create(payload: CreateUserPayload) {
+    // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
+
+    // if (invalidNetwork) {
+    //   throw new Error('You cannot access using mainnet network.');
+    // }
+
     const { data } = await api.post<CreateUserResponse>('/user', payload);
     return data;
   }

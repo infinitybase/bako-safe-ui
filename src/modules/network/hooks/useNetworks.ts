@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { Provider } from 'fuels';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { localStorageKeys } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { DeleteNetworkPayload, NetworkType } from '../services';
+import {
+  CustomNetwork,
+  DeleteNetworkPayload,
+  NetworkService,
+  NetworkType,
+} from '../services';
 import { useCheckNetworkRequest } from './useCheckNetworkRequest';
 import { useCreateNetworkRequest } from './useCreateNetworkRequest';
 import { useDeleteNetworkRequest } from './useDeleteNetworkRequest';
@@ -45,6 +52,27 @@ const useNetworks = (onClose?: () => void) => {
     },
     resetHomeRequests,
   } = useWorkspaceContext();
+
+  const saveNetwork = async (url: string) => {
+    const exists = JSON.parse(
+      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
+    ).find((net: CustomNetwork) => net.url === url);
+
+    if (!exists) {
+      const provider = await Provider.create(url!);
+      const name = provider.getChain()?.name;
+      const chainId = provider.getChainId();
+
+      NetworkService.create({
+        name,
+        url: url!,
+        chainId,
+        identifier: NetworkType.LOCALSTORAGE,
+      });
+    }
+
+    refetchNetworks();
+  };
 
   const handleAddNetwork = networkForm.handleSubmit((data) => {
     if (!data.url) {
@@ -90,6 +118,8 @@ const useNetworks = (onClose?: () => void) => {
       handleClose();
       return;
     }
+
+    saveNetwork(url!);
 
     selectNetworkRequest.mutate(
       { url },
@@ -146,6 +176,10 @@ const useNetworks = (onClose?: () => void) => {
     networkForm.reset();
     onClose?.();
   };
+
+  useEffect(() => {
+    saveNetwork(currentNetwork.url);
+  }, [currentNetwork]);
 
   return {
     currentNetwork,
