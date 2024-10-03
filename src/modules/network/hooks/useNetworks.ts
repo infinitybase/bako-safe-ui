@@ -103,7 +103,7 @@ const useNetworks = (onClose?: () => void) => {
     if (networks?.find((net) => net.url === url)) {
       networkForm.setError('url', {
         type: 'required',
-        message: 'Network already exists.',
+        message: 'Network already saved.',
       });
 
       return;
