@@ -101,6 +101,8 @@ const UserBox = () => {
   const name = mySettingsRequest.data?.name ?? '';
   const hasNickName = name && !AddressUtils.isValid(name);
 
+  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+
   const logout = async () => {
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
@@ -147,7 +149,7 @@ const UserBox = () => {
         onClose={networkDialogState.onClose}
       />
 
-      {!isMobile && (
+      {!isMobile && isWebAuthn && (
         <Popover
           isOpen={networkPopoverState.isOpen}
           onClose={networkPopoverState.onClose}
@@ -191,10 +193,8 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {
-                        networks?.find(({ url }) => url === currentNetwork.url)
-                          ?.name
-                      }
+                      {networks?.find(({ url }) => url === currentNetwork.url)
+                        ?.name ?? 'Unknown'}
                     </Text>
                   </HStack>
 
@@ -417,7 +417,7 @@ const UserBox = () => {
               />
             </VStack>
 
-            {isMobile && (
+            {isMobile && isWebAuthn && (
               <VStack
                 borderTop={'1px solid'}
                 borderTopColor={'dark.100'}

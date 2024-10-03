@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { setupAxiosInterceptors } from '@/config';
+import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
   useAddressBook,
   useAuthUrlParams,
@@ -75,15 +75,16 @@ const useWorkspaceDetails = () => {
   );
 
   const resetHomeRequests = () => {
-    invalidateGifAnimationRequest();
-    refetchPendingSingerTransactions();
-    resetAllTransactionsTypeFilters();
-    refetchTransactions();
-    addressBookInfos.requests.listContactsRequest.refetch();
-    tokensUSD.refetch();
-    latestPredicates.refetch();
-    authDetails.userInfos.refetch();
-    userVaults.request.refetch();
+    // invalidateGifAnimationRequest();
+    // refetchPendingSingerTransactions();
+    // resetAllTransactionsTypeFilters();
+    // refetchTransactions();
+    // addressBookInfos.requests.listContactsRequest.refetch();
+    // tokensUSD.refetch();
+    // latestPredicates.refetch();
+    // authDetails.userInfos.refetch();
+    // userVaults.request.refetch();
+    queryClient.clear();
   };
 
   const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({
