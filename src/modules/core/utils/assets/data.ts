@@ -12,7 +12,7 @@ export const UNKNOWN_ASSET = {
   slug: 'UNK',
   assetId: 'UNKNOWN',
   icon: '/src/assets/tokens/unknown.svg',
-  units: 18,
+  units: 9,
 };
 
 const getChainId = (): number =>
