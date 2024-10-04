@@ -62,27 +62,31 @@ const useWorkspace = (
 
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
-    selectWorkspace(selectedWorkspace, {
-      onSelect: (workspace) => {
-        console.log('PRE', new Date());
-        setTimeout(() => {
-          console.log('timeout');
-          invalidateRequests();
-          console.log('POST', new Date());
-          navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
-        }, 900);
-      },
-      onError: () => {
-        toast({
-          status: 'error',
-          duration: 4000,
-          isClosable: false,
-          title: 'Error!',
-          description: 'Try again, please...',
-          icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-        });
-      },
-    });
+    invalidateRequests();
+    navigate(
+      redirect ?? Pages.workspace({ workspaceId: selectedWorkspace ?? '' }),
+    );
+    // selectWorkspace(selectedWorkspace, {
+    //   onSelect: (workspace) => {
+    //     console.log('PRE', new Date());
+    //     setTimeout(() => {
+    //       console.log('timeout');
+    //       invalidateRequests();
+    //       console.log('POST', new Date());
+    //       navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
+    //     }, 900);
+    //   },
+    //   onError: () => {
+    //     toast({
+    //       status: 'error',
+    //       duration: 4000,
+    //       isClosable: false,
+    //       title: 'Error!',
+    //       description: 'Try again, please...',
+    //       icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
+    //     });
+    //   },
+    // });
   };
 
   const goHome = () => {
