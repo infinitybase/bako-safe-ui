@@ -16,6 +16,7 @@ function App() {
   const { handleSelectNetwork } = useNetworks();
 
   const { pathname } = useLocation();
+  const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
   useEffect(() => {
     async function clearAll() {
@@ -24,7 +25,7 @@ function App() {
     }
 
     const changeNetwork = async (url: { url: string }) => {
-      if (pathname !== '/') await handleSelectNetwork(url.url);
+      if (pathname !== '/' && !isWebAuthn) await handleSelectNetwork(url.url);
     };
 
     function onConnection(isConnected: boolean) {
