@@ -229,18 +229,18 @@ const UserBox = () => {
                     borderBottom={'1px solid'}
                     borderColor="grey.925"
                     px={4}
+                    py={4}
                     onClick={() => {
                       networkPopoverState.onClose?.();
                       if (network.url !== currentNetwork.url) {
                         handleSelectNetwork(network.url);
                       }
                     }}
-                    py={4}
                   >
                     <HStack>
                       <Icon
                         as={
-                          network.identifier === NetworkType.MAINNET
+                          network.url.includes(NetworkType.MAINNET)
                             ? BakoIcon
                             : UnknownIcon
                         }

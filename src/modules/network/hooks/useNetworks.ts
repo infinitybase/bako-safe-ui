@@ -199,6 +199,7 @@ const useNetworks = (onClose?: () => void) => {
     networks,
     selectNetworkRequest,
     fromConnector,
+    setValidNetwork,
     checkNetwork,
     handleSelectNetwork,
     handleAddNetwork,

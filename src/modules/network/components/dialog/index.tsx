@@ -23,6 +23,7 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
     validNetwork,
     handleClose,
     checkNetworkRequest: { isPending: loadingCheck },
+    setValidNetwork,
   } = useNetworks(props.onClose);
 
   return (
@@ -73,7 +74,11 @@ const NetworkDialog = ({ ...props }: NetworkDialogProps) => {
                 <FormControl isInvalid={fieldState.invalid}>
                   <Input
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setValidNetwork(false);
+                      networkForm.clearErrors();
+                    }}
                     placeholder=" "
                     variant="dark"
                     bg={'grey.825'}

@@ -46,12 +46,11 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
     selectNetworkRequest,
     checkNetworkRequest: { isPending: loadingCheck },
     handleClose,
+    setValidNetwork,
   } = useNetworks(props.onClose);
 
   const { authDetails } = useWorkspaceContext();
-
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
-
   const networkList = isWebAuthn
     ? networks
     : networks?.filter((net) => net.url === currentNetwork.url);
@@ -120,7 +119,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                       >
                         <Icon
                           as={
-                            net.identifier === NetworkType.MAINNET
+                            net.url.includes(NetworkType.MAINNET)
                               ? BakoIcon
                               : UnknownIcon
                           }
@@ -133,8 +132,8 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
                         <Box flex={1} />
 
-                        {net.identifier === NetworkType.LOCALSTORAGE &&
-                          isWebAuthn && (
+                        {isWebAuthn &&
+                          !net.url.includes(NetworkType.TESTNET) && (
                             <Icon
                               as={RemoveIcon}
                               fontSize={16}
@@ -223,7 +222,11 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                     <FormControl isInvalid={fieldState.invalid}>
                       <Input
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          networkForm.clearErrors();
+                          setValidNetwork(false);
+                        }}
                         placeholder=" "
                         variant="dark"
                         bg={'grey.825'}
