@@ -63,6 +63,7 @@ const useWorkspace = (
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
     invalidateRequests();
+
     navigate(
       redirect ?? Pages.workspace({ workspaceId: selectedWorkspace ?? '' }),
     );
