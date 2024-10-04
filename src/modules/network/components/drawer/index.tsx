@@ -51,6 +51,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
   const { authDetails } = useWorkspaceContext();
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isTestnet = (url: string) => url.includes(NetworkType.TESTNET);
   const networkList = isWebAuthn
     ? networks
     : networks?.filter((net) => net.url === currentNetwork.url);
@@ -132,20 +133,19 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
                         <Box flex={1} />
 
-                        {isWebAuthn &&
-                          !net.url.includes(NetworkType.TESTNET) && (
-                            <Icon
-                              as={RemoveIcon}
-                              fontSize={16}
-                              color={'grey.75'}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCustomNetwork(net);
-                              }}
-                              transition={'all 0.1s'}
-                              _hover={{ color: 'grey.250' }}
-                            />
-                          )}
+                        {isWebAuthn && !isTestnet(net.url) && (
+                          <Icon
+                            as={RemoveIcon}
+                            fontSize={16}
+                            color={'grey.75'}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCustomNetwork(net);
+                            }}
+                            transition={'all 0.1s'}
+                            _hover={{ color: 'grey.250' }}
+                          />
+                        )}
                       </HStack>
                     </Center>
                   );
