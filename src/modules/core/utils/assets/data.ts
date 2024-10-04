@@ -1,5 +1,7 @@
 import { Assets, assets } from 'fuels';
 
+import { localStorageKeys } from '@/modules/auth/services';
+
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
@@ -13,7 +15,11 @@ export const UNKNOWN_ASSET = {
   units: 18,
 };
 
-const chainId = Number(import.meta.env.VITE_CHAIN_ID);
+const getChainId = (): number =>
+  Number(
+    localStorage.getItem(localStorageKeys.CHAIN_ID) ??
+      import.meta.env.VITE_CHAIN_ID,
+  );
 
 export const formatedAssets = (chainId: number): Asset[] =>
   assets
@@ -34,13 +40,13 @@ export const formatedAssets = (chainId: number): Asset[] =>
     }, [])
     .concat(UNKNOWN_ASSET);
 
-const assetsList: Asset[] = formatedAssets(chainId);
+const assetsList: Asset[] = formatedAssets(getChainId());
 
 export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
   const list = tokenList
     ?.reduce<Asset[]>((acc, asset) => {
       const network = asset.networks.find(
-        (network) => network && network.chainId === chainId,
+        (network) => network && network.chainId === getChainId(),
       );
       if (network && network.type === 'fuel') {
         acc.push({

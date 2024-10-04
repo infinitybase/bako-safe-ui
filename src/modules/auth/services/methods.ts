@@ -253,6 +253,7 @@ export const localStorageKeys = {
   HARDWARE_ID: 'bakosafe/hardwareId',
   WEB_AUTHN_LAST_LOGIN_USERNAME: 'bakosafe/web-authn-last-login-username',
   NETWORKS: 'bakosafe/networks',
+  CHAIN_ID: 'bakosafe/chain-id',
 };
 
 export const UserQueryKey = {

@@ -164,7 +164,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const currentNetwork = userNetwork ?? {
     url: import.meta.env.VITE_NETWORK,
-    chainId: import.meta.env.CHAIN_ID,
+    chainId: import.meta.env.VITE_CHAIN_ID,
   };
 
   const checkNetwork = (type: NetworkType) =>
@@ -179,6 +179,11 @@ const useNetworks = (onClose?: () => void) => {
 
   useEffect(() => {
     saveNetwork(currentNetwork.url);
+
+    localStorage.setItem(
+      localStorageKeys.CHAIN_ID,
+      JSON.stringify(currentNetwork.chainId),
+    );
   }, [currentNetwork]);
 
   return {
