@@ -17,7 +17,7 @@ export const UNKNOWN_ASSET = {
 
 const getChainId = (): number =>
   Number(
-    localStorage.getItem(localStorageKeys.CHAIN_ID) ??
+    localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
       import.meta.env.VITE_CHAIN_ID,
   );
 

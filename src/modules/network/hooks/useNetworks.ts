@@ -190,7 +190,7 @@ const useNetworks = (onClose?: () => void) => {
     saveNetwork(currentNetwork.url);
 
     localStorage.setItem(
-      localStorageKeys.CHAIN_ID,
+      localStorageKeys.SELECTED_CHAIN_ID,
       JSON.stringify(currentNetwork.chainId),
     );
   }, [currentNetwork]);
