@@ -13,10 +13,12 @@ const DappSignInPage = () => {
     handleSelectWallet,
     handleInputChange,
     handleRegister,
+    mode,
   } = useDappSignIn();
 
   return (
     <SignInWrapper
+      mode={mode}
       tabs={tabs}
       formData={formData}
       formState={formState}

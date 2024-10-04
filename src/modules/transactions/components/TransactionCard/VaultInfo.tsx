@@ -33,10 +33,10 @@ const BasicInfos = ({
         {limitCharacters(transactionName, 28)}
       </Text>
       <Text
-        maxW={106}
         color="grey.425"
         mt={0}
-        isTruncated
+        wordBreak="break-all"
+        noOfLines={1}
         fontSize="xs"
         {...descSxProps}
       >
