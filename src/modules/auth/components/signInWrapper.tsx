@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -18,6 +19,7 @@ import {
   UseWalletSignIn,
   UseWebAuthnSignIn,
   UseWebSignIn,
+  WebAuthnModeState,
 } from '../hooks/signIn';
 import { ConnectorsList } from './connector';
 import { SigninContainer, SigninContainerMobile } from './container';
@@ -26,6 +28,7 @@ import { SignInHeader } from './header';
 import { WebAuthnAccountCreated, WebAuthnSignIn } from './webAuthn';
 
 interface SignInWrapperProps {
+  mode: WebAuthnModeState;
   isAnyWalletConnectorOpen: UseWalletSignIn['isAnyWalletConnectorOpen'];
   tabs: UseWebAuthnSignIn['tabs'];
   formData: UseWebAuthnSignIn['formData'];
@@ -52,8 +55,10 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     handleInputChange,
     handleSelectWallet,
     handleRegister,
+    mode,
   } = props;
 
+  const { isSafariBrowser } = useVerifyBrowserType();
   const { connectors } = useListConnectors();
   const { errorToast } = useContactToast();
   const {
@@ -100,7 +105,10 @@ const SignInWrapper = (props: SignInWrapperProps) => {
                 px={6}
                 spacing={14}
               >
-                <SignInHeader title={title} />
+                <SignInHeader
+                  title={title}
+                  showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
+                />
 
                 <VStack w="full" maxW={390} spacing={6}>
                   <WebAuthnSignIn
@@ -114,6 +122,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                   <ConnectorsList
                     connectors={connectors}
+                    hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
@@ -125,6 +134,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
             <TabPanel h="full">
               <WebAuthnAccountCreated
+                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
                 title={createdAcccountUsername}
                 formState={formState}
               />
@@ -151,7 +161,10 @@ const SignInWrapper = (props: SignInWrapperProps) => {
               alignItems="center"
               justifyContent="center"
             >
-              <SignInHeader title={title} />
+              <SignInHeader
+                title={title}
+                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
+              />
 
               <VStack w="full" spacing={8} maxW={390}>
                 <WebAuthnSignIn
@@ -165,6 +178,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                 <ConnectorsList
                   connectors={connectors}
+                  hidden={isSafariBrowser}
                   onConnectorSelect={handleSelectWallet}
                   isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                 />
@@ -178,6 +192,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
             <WebAuthnAccountCreated
               title={createdAcccountUsername}
               formState={formState}
+              showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
             />
           </TabPanel>
         </TabPanels>

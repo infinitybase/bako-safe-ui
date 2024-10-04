@@ -20,6 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -29,8 +30,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { TransactionWithVault } from '../../services/types';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
-import { useNetworks } from '@/modules/network/hooks';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -137,7 +136,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 </Center>
               </HStack>
 
-              {!isLowerThanFourHundredAndThirty && (
+              {!isLowerThanFourHundredAndThirty && isCompleted && (
                 <Button
                   border="none"
                   bgColor="#F5F5F50D"
@@ -206,7 +205,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 })}
               />
             </HStack>
-            {isLowerThanFourHundredAndThirty && (
+            {isLowerThanFourHundredAndThirty && isCompleted && (
               <Button
                 mt={4}
                 w="full"

@@ -22,6 +22,7 @@ const CopyAddressButton = ({
       {...rest}
       variant="icon"
       bgColor="none"
+      fontSize="xs"
       icon={
         <Icon
           as={clipboard.hasCopied ? CheckIcon : CopyTopMenuIcon}
