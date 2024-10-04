@@ -11,7 +11,7 @@ const useGetTokenInfosArray = (
     return {
       ...assetsInfo,
       assetId: asset.assetId,
-      amount: bn(asset.amount).format(),
+      amount: bn(asset.amount).format({ units: assetsInfo.units }),
     };
   };
 
