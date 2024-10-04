@@ -87,8 +87,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <Dialog.Body maxW={480} maxH={'full'} mt={{ sm: 4 }}>
         <CreateTransactionForm
-          // Continuar a partir desse ponto
-          h={isMobile ? 900 : 'unset'}
           form={form}
           nicks={nicks}
           assets={assets}
@@ -103,7 +101,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         position={isMobile ? 'absolute' : 'unset'}
         w="full"
         zIndex={999}
-        pb={isMobile && !isSmall ? 5 : 'unset'}
         bottom={0}
         left={0}
         right={0}
@@ -111,6 +108,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
         maxW={480}
         justifySelf="center"
         px={isSmall ? 6 : 'unset'}
+        mt={6}
+        pb={4}
       >
         <Flex
           wrap="wrap"
@@ -170,7 +169,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           </Text>
         </Flex>
 
-        <Dialog.Actions hideDivider mt="auto">
+        <Dialog.Actions hideDivider>
           <Dialog.SecondaryAction onClick={handleClose}>
             Cancel
           </Dialog.SecondaryAction>
