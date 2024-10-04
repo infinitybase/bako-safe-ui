@@ -28,6 +28,8 @@ const TransactionBreakdown = ({
 
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
 
+  const showContractAddresses = (isDeploy || isContract) && !isMint;
+
   return (
     <Box
       display="flex"
@@ -80,14 +82,13 @@ const TransactionBreakdown = ({
           />
         ))}
 
-        {(isContract && !isMint) ||
-          (isDeploy && (
-            <ContractAddresses
-              transaction={transaction}
-              borderColor="grey.950"
-              borderBottomWidth={1}
-            />
-          ))}
+        {showContractAddresses && (
+          <ContractAddresses
+            transaction={transaction}
+            borderColor="grey.950"
+            borderBottomWidth={1}
+          />
+        )}
         {isMint && <MintTokenInfos transaction={transaction} />}
       </Box>
 
