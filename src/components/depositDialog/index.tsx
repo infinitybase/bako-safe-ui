@@ -90,7 +90,7 @@ const DepositDialog = ({
           </Box>
           <VStack spacing={6}>
             <Text color="grey.75" fontWeight={700} fontSize="20px">
-              Receive Assets
+              Use this address for receiving tokens on Fuel Network
             </Text>
 
             <Text
@@ -144,7 +144,6 @@ const DepositDialog = ({
                   noOfLines: 1,
                   isTruncated: false,
                   fontSize: 'xs',
-                  pt: 1,
                 }}
                 justifyContent="start"
                 customAddress={AddressUtils.format(
