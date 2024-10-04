@@ -54,7 +54,7 @@ export const availableNetWorks = [
     name: 'Fuel Sepolia Testnet',
     url: 'https://testnet.fuel.network/v1/graphql',
     chainId: 0,
-    exporer: `https://app.fuel.network/`,
+    explorer: `https://app.fuel.network/`,
   },
   ...(import.meta.env.VITE_DEV === 'development'
     ? [
@@ -71,7 +71,7 @@ export const availableNetWorks = [
 export const findBlockExplorerByNetwork = (url: string) => {
   const network = availableNetWorks.find((net) => net.url === url);
 
-  return network?.exporer ?? defaultBlockExplorer;
+  return network?.explorer ?? defaultBlockExplorer;
 };
 
 export class NetworkService {
