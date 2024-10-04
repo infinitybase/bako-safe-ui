@@ -109,7 +109,11 @@ export class WorkspaceService {
       payload,
     );
 
-    return data;
+    return new Promise<SelectWorkspaceResponse>((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 900);
+    });
   }
 
   static async includeMember(payload: IncludeWorkspaceMemberPayload) {
