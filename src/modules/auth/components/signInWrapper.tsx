@@ -134,6 +134,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
             <TabPanel h="full">
               <WebAuthnAccountCreated
+                showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
                 title={createdAcccountUsername}
                 formState={formState}
               />
@@ -191,6 +192,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
             <WebAuthnAccountCreated
               title={createdAcccountUsername}
               formState={formState}
+              showDescription={mode !== WebAuthnModeState.ACCOUNT_CREATED}
             />
           </TabPanel>
         </TabPanels>

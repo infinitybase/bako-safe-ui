@@ -114,6 +114,7 @@ const useDappSignIn = () => {
     ...rest,
     formData,
     formState: customFormState[mode],
+    mode,
   };
 };
 
