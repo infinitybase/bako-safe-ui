@@ -90,7 +90,7 @@ const DepositDialog = ({
           </Box>
           <VStack spacing={6}>
             <Text color="grey.75" fontWeight={700} fontSize="20px">
-              Use this address for receiving tokens on Fuel Network
+              Receive Assets
             </Text>
 
             <Text
@@ -99,9 +99,7 @@ const DepositDialog = ({
               fontSize="xs"
               lineHeight="16.8px"
             >
-              This is the address of your Safe Account. Deposit funds by
-              scanning the QR code or copying the address below. Only send XDAI
-              and tokens (e.g. ERC20, ERC721) to this address.
+              Use this address for receiving tokens on Fuel Network
             </Text>
           </VStack>
 
