@@ -1,8 +1,17 @@
-import { TabPanel, TabPanels, Tabs, VStack } from '@chakra-ui/react';
+import {
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
+import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
+import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
@@ -46,12 +55,17 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     handleRegister,
   } = props;
 
+  const { isSafariBrowser } = useVerifyBrowserType();
   const { connectors } = useListConnectors();
   const { errorToast } = useContactToast();
   const {
     authDetails: auth,
     screenSizes: { isMobile },
   } = useWorkspaceContext();
+
+  const { fromConnector } = useNetworks();
+
+  const loginDrawer = useDisclosure();
 
   useEffect(() => {
     auth.invalidAccount &&
@@ -62,9 +76,20 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     auth.handlers.setInvalidAccount?.(false);
   }, [auth.invalidAccount]);
 
+  useEffect(() => {
+    if (fromConnector) {
+      loginDrawer.onOpen?.();
+    }
+  }, []);
+
   if (isMobile) {
     return (
       <SigninContainerMobile>
+        <NetworkSignInDrawer
+          isOpen={loginDrawer.isOpen}
+          onClose={loginDrawer.onClose}
+        />
+
         <Tabs index={tabs.tab} flex={1} w="full" display="flex">
           <TabPanels flex={1}>
             <TabPanel h="full" p={0}>
@@ -91,6 +116,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                   <ConnectorsList
                     connectors={connectors}
+                    hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
@@ -114,6 +140,11 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
   return (
     <SigninContainer>
+      <NetworkSignInDrawer
+        isOpen={loginDrawer.isOpen}
+        onClose={loginDrawer.onClose}
+      />
+
       <Tabs index={tabs.tab} flex={1} w="full">
         <TabPanels h="full">
           <TabPanel h="full" p={0}>
@@ -137,6 +168,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                 <ConnectorsList
                   connectors={connectors}
+                  hidden={isSafariBrowser}
                   onConnectorSelect={handleSelectWallet}
                   isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                 />

@@ -2,10 +2,11 @@ import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
+import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
-import { TypeUser } from '../../services';
+import { localStorageKeys, TypeUser } from '../../services';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
@@ -19,6 +20,7 @@ const useWalletSignIn = (
   const { fuel } = useFuel();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
   const { errorToast } = useContactToast();
+  const { fromConnector } = useNetworks();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -81,11 +83,22 @@ const useWalletSignIn = (
         throw Error;
       }
 
-      createUserRequest.mutate({
-        address: account!,
-        provider: network!.url,
-        type: TypeUser.FUEL,
-      });
+      createUserRequest.mutate(
+        {
+          address: account!,
+          provider: fromConnector
+            ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
+            : network!.url,
+          type: TypeUser.FUEL,
+        },
+        {
+          onSuccess: () => {
+            if (fromConnector) {
+              localStorage.removeItem(localStorageKeys.SELECTED_NETWORK);
+            }
+          },
+        },
+      );
       setIsAnyWalletConnectorOpen(false);
     } catch (e) {
       setIsAnyWalletConnectorOpen(false);
