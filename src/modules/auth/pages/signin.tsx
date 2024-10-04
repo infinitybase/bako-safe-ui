@@ -14,10 +14,12 @@ const WebSignInPage = () => {
     handleRegister,
     handleSelectWallet,
     handleInputChange,
+    mode,
   } = useWebSignIn();
 
   return (
     <SignInWrapper
+      mode={mode}
       tabs={tabs}
       formData={formData}
       formState={formState}
