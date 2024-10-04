@@ -33,9 +33,12 @@ export interface VaultAddressesStepProps {
   templates: ITemplate[];
   selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
   setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
+  validateAddress: UseCreateVaultReturn['validateAddress'];
 }
 
-const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
+const VaultAddressesStep = (props: VaultAddressesStepProps) => {
+  const { form, addresses, validateAddress } = props;
+
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -76,12 +79,18 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
 
   const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
-  const isDisable = !!form.formState.errors.addresses;
+  const hasOneAddress = addresses.fields.length === 1;
+  const hasTenAddress = addresses.fields.length >= 10;
+
+  const isDisable =
+    (!!form.formState.errors.addresses ||
+      validateAddress.isLoading ||
+      hasTenAddress) &&
+    !hasOneAddress;
+
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
-
-  const hasTenAddress = addresses.fields.length >= 10;
 
   return (
     <>
@@ -151,7 +160,13 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                         first,
                       );
 
-                      const isLoading = !optionsRequests[index].isSuccess;
+                      if (index && !fieldState.invalid && field.value) {
+                        validateAddress.handler(field.value, index);
+                      }
+
+                      const isLoading =
+                        !optionsRequests[index].isSuccess ||
+                        validateAddress.isLoading;
 
                       const showAddToAddressBook =
                         !first &&
@@ -234,7 +249,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                 bgColor="grey.200"
                 variant="secondary"
                 mt="auto"
-                isDisabled={isDisable || hasTenAddress}
+                isDisabled={isDisable}
                 onClick={() => {
                   addresses.append();
                   form.setValue(
@@ -251,7 +266,7 @@ const VaultAddressesStep = ({ form, addresses }: VaultAddressesStepProps) => {
                   opacity: 0.8,
                 }}
               >
-                Add more address
+                Add more addresses
               </Button>
             </VStack>
           </Dialog.Section>

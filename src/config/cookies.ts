@@ -15,6 +15,7 @@ export enum CookieName {
   PERMISSIONS = `bakosafe/permissions`,
   WEB_AUTHN_ID = `bakosafe/web_authn_id`,
   WEB_AUTHN_PK = `bakosafe/web_authn_pk`,
+  PROVIDER_URL = `bakosafe/provider_url`,
 }
 
 interface Cookie {

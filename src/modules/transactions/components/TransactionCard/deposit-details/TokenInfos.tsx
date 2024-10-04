@@ -1,29 +1,35 @@
-import { HStack, Icon, Text } from '@chakra-ui/react';
+import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { UnknownIcon } from '@/components';
-import { AssetModel, assetsMap } from '@/modules/core';
+import { AssetModel } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TokenInfosProps {
   asset: AssetModel;
 }
 
 const TokenInfos = ({ asset }: TokenInfosProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const assetInfo = useMemo(
-    () => (asset?.assetId ? assetsMap[asset?.assetId] : null),
+    () =>
+      asset?.assetId && assetsMap?.[asset?.assetId]
+        ? assetsMap[asset?.assetId]
+        : assetsMap?.['UNKNOWN'],
     [asset?.assetId],
   );
   return (
-    <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-      <Icon
-        w={{ base: 6, sm: 6 }}
-        h={{ base: 6, sm: 6 }}
-        as={assetInfo?.icon ?? UnknownIcon}
+    <VStack minW="76px" alignItems="start">
+      <Image
+        w={6}
+        h={6}
+        src={assetInfo?.icon ?? ''}
+        alt="Asset Icon"
+        objectFit="cover"
       />
       <Text fontSize="sm" color="grey.500">
         {assetInfo?.slug}
       </Text>
-    </HStack>
+    </VStack>
   );
 };
 export default TokenInfos;

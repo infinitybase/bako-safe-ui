@@ -6,18 +6,27 @@ import {
   Text,
   ToastId,
 } from '@chakra-ui/react';
-import { ITransaction } from 'bakosafe';
 import { useRef } from 'react';
 import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { ITransactionResume } from 'bakosafe';
 
 type TransactionToastRef = Record<ITransaction['id'], ToastId>;
 
 const useTransactionToast = () => {
   const toast = useNotification();
   const transactionsToastRef = useRef<TransactionToastRef>({});
+
+  const handleViewInExplorer = (hash: string, networkUrl: string) => {
+    window.open(
+      `${findBlockExplorerByNetwork(networkUrl)}/tx/0x${hash}`,
+      '_BLANK',
+    );
+  };
 
   const warning = (message: string, title: string) => {
     toast({
@@ -67,10 +76,7 @@ const useTransactionToast = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 const resume = transaction.resume;
-                window.open(
-                  `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${resume.hash}`,
-                  '_BLANK',
-                );
+                handleViewInExplorer(resume.hash, transaction.network.url);
               }}
               variant="primary"
               size="xs"

@@ -3,16 +3,15 @@ import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 import {
   CoinsIcon,
   ExchangeIcon,
-  HomeIcon,
+  OverviewIcon,
   PendingIcon,
   SettingsIcon,
 } from '@/components';
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
-import { AddressUtils } from '@/modules/core/utils';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
-import { VaultBox, VaultDrawer } from '@/modules/vault/components';
-import { useVaultDrawer } from '@/modules/vault/components/drawer/hook';
+import { VaultBox, VaultListModal } from '@/modules/vault/components';
+import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -25,6 +24,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const {
@@ -53,17 +53,19 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   return (
     <Box
       w="100%"
-      maxW="350px"
-      bgColor={onDrawer ? 'transparent' : 'dark.500'}
-      borderRightWidth={1}
-      borderRightColor="dark.100"
-      py={6}
-      px={6}
+      maxW={isMobile ? 'full' : '300px'}
+      bgColor={onDrawer ? 'transparent' : 'dark.950'}
+      boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
+      p="24px 16px 16px 16px"
       {...rest}
     >
-      <VStack position="fixed" width="275px">
-        {/* VAULT DRAWER LIST */}
-        <VaultDrawer
+      <VStack
+        position="fixed"
+        width={isMobile ? 'full' : '268px'}
+        pr={isMobile ? 8 : 'unset'}
+      >
+        {/* VAULT Modal LIST */}
+        <VaultListModal
           isOpen={drawer.isOpen}
           onClose={drawer.onClose}
           vaultId={route.params.vaultId!}
@@ -72,9 +74,8 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         {/*/!* VAULT INFOS *!/*/}
         <VaultBox
           isFirstAssetsLoading={isLoading}
-          name={String(`${vault.data?.name?.slice(0, 9)}...`)}
-          fullName={String(vault.data?.name)}
-          address={AddressUtils.format(vault?.data?.predicateAddress ?? '')!}
+          name={vault?.data.name}
+          address={vault?.data?.predicateAddress ?? ''}
           isEthBalanceLowerThanReservedAmount={
             isEthBalanceLowerThanReservedAmount
           }
@@ -105,7 +106,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         {/* MENU */}
         <SidebarMenu.List w="100%">
           <SidebarMenu.Container
-            isActive={menuItems.home}
+            isActive={menuItems.overview}
             onClick={() =>
               handleClick(
                 route.navigate(
@@ -117,8 +118,10 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               )
             }
           >
-            <SidebarMenu.Icon as={HomeIcon} />
-            <SidebarMenu.Title isActive>Home</SidebarMenu.Title>
+            <SidebarMenu.Icon as={OverviewIcon} isActive={menuItems.overview} />
+            <SidebarMenu.Title isActive={menuItems.overview}>
+              Overview
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
@@ -134,8 +137,10 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               )
             }
           >
-            <SidebarMenu.Icon as={CoinsIcon} textColor="#C5C5C5" />
-            <SidebarMenu.Title>Balance</SidebarMenu.Title>
+            <SidebarMenu.Icon as={CoinsIcon} isActive={menuItems.balance} />
+            <SidebarMenu.Title isActive={menuItems.balance}>
+              Balance
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
 
           <SidebarMenu.Container
@@ -152,8 +157,13 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               )
             }
           >
-            <SidebarMenu.Icon as={ExchangeIcon} />
-            <SidebarMenu.Title>Transactions</SidebarMenu.Title>
+            <SidebarMenu.Icon
+              as={ExchangeIcon}
+              isActive={menuItems.transactions}
+            />
+            <SidebarMenu.Title isActive={menuItems.transactions}>
+              Transactions
+            </SidebarMenu.Title>
             <SidebarMenu.Badge hidden={!isPendingSigner}>
               <Icon as={PendingIcon} />{' '}
               {isPendingSigner && pendingSignerTransactionsLength}
@@ -173,8 +183,10 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
               )
             }
           >
-            <SidebarMenu.Icon as={SettingsIcon} />
-            <SidebarMenu.Title>Settings</SidebarMenu.Title>
+            <SidebarMenu.Icon as={SettingsIcon} isActive={menuItems.settings} />
+            <SidebarMenu.Title isActive={menuItems.settings}>
+              Settings
+            </SidebarMenu.Title>
           </SidebarMenu.Container>
         </SidebarMenu.List>
       </VStack>

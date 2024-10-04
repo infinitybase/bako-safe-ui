@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   Divider,
@@ -13,6 +14,7 @@ import { format } from 'date-fns';
 
 import { CustomSkeleton, LineCloseIcon, RemoveIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
+import { useNetworkInfo } from '@/modules';
 import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
@@ -26,8 +28,9 @@ const APITokenCard = (props: APITokenCardProps) => {
   const { apiToken } = props;
   const { confirm, handler, request } = useRemoveAPIToken();
   const {
-    screenSizes: { isExtraSmall, isLitteSmall },
+    screenSizes: { isLitteSmall },
   } = useWorkspaceContext();
+  const { network, isLoading } = useNetworkInfo(apiToken.network.url);
 
   return (
     <Card
@@ -40,44 +43,47 @@ const APITokenCard = (props: APITokenCardProps) => {
       p={4}
       borderRadius={8}
     >
-      <HStack alignItems="center" justifyContent="space-between">
+      <HStack alignItems="center" justifyContent="space-between" spacing={4}>
         <VStack
           spacing={3}
           alignItems="flex-start"
           justifyContent="space-between"
-          flex={2}
           w="full"
-          maxW={{
-            base:
-              confirm.show && isExtraSmall
-                ? 160
-                : confirm.show && isLitteSmall
-                  ? 175
-                  : isLitteSmall
-                    ? 205
-                    : confirm.show
-                      ? 205
-                      : 270,
-            xs: 275,
-          }}
         >
           <Text
             color="grey.50"
             fontSize="xs"
             fontWeight={700}
             maxW="full"
-            isTruncated
+            noOfLines={1}
+            wordBreak="break-all"
           >
             {apiToken.name}
           </Text>
 
-          <Text color="grey.250" fontSize="xs" maxW="full" isTruncated>
+          <Text
+            color="grey.250"
+            fontSize="xs"
+            maxW="full"
+            noOfLines={4}
+            wordBreak="break-all"
+            hidden={!apiToken.config?.transactionTitle}
+          >
             Transaction name: {apiToken.config?.transactionTitle}
           </Text>
 
           <Text color="grey.250" fontSize="xs">
             Creation date: {format(new Date(apiToken.createdAt), 'yyyy/MM/dd')}
           </Text>
+
+          <Badge
+            rounded="xl"
+            fontSize="2xs"
+            variant="success"
+            hidden={!isLoading && !network?.name}
+          >
+            {isLoading ? 'Loading...' : network?.name}
+          </Badge>
         </VStack>
 
         <Stack
@@ -173,7 +179,6 @@ const APITokensList = (props: APITokensListProps) => {
                 '&::-webkit-scrollbar': {
                   display: 'none',
                   width: '5px',
-                  //maxHeight: '330px',
                   backgroundColor: '#2B2927',
                 },
                 '&::-webkit-scrollbar-thumb': {

@@ -1,7 +1,7 @@
-import { Card, Grid, Icon, Text, VStack } from '@chakra-ui/react';
+import { Card, Grid, Image, Text, VStack } from '@chakra-ui/react';
 
-import { UnknownIcon } from '@/components';
 import { Asset } from '@/modules/core/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
 
@@ -14,7 +14,11 @@ interface AssetsBalanceCardProps {
 }
 
 const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
-  const { assetAmount, assetsInfo } = useGetTokenInfos(asset);
+  const { assetsMap } = useWorkspaceContext();
+  const { assetAmount, assetsInfo } = useGetTokenInfos({
+    ...asset,
+    assetsMap,
+  });
 
   return (
     <Card
@@ -27,10 +31,12 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
-        <Icon
+        <Image
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
-          as={assetsInfo?.icon ?? UnknownIcon}
+          src={assetsInfo?.icon ?? ''}
+          alt="Asset Icon"
+          objectFit="cover"
         />
         <VStack alignItems="flex-start" gap={0} maxW="full">
           <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>

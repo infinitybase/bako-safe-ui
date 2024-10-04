@@ -3,7 +3,7 @@ import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
 import {
-  assetsMap,
+  AssetMap,
   ETHDefault,
   NativeAssetId,
   useGetParams,
@@ -15,9 +15,8 @@ const isVisibleBalance = () => localStorage.getItem(IS_VISIBLE_KEY) === 'true';
 const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
   localStorage.setItem(IS_VISIBLE_KEY, isVisible);
 
-import { BakoSafe } from 'bakosafe';
-
 import { queryClient } from '@/config';
+import { gasConfig } from '@/modules/core/hooks/bakosafe/utils/gas-config';
 
 import { HasReservedCoins, VaultService } from '../../services';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
@@ -30,7 +29,11 @@ export const vaultAssetsQueryKey = {
   ],
 };
 
-function useVaultAssets(workspaceId: string, predicateId: string) {
+const useVaultAssets = (
+  workspaceId: string,
+  predicateId: string,
+  assetsMap: false | AssetMap | undefined,
+) => {
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -83,7 +86,7 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
 
   const getAssetInfo = (assetId: string) => {
     return (
-      assetsMap[assetId] ?? {
+      assetsMap?.[assetId] ?? {
         name: 'Unknown',
         slug: 'UKN',
         icon: ETHDefault,
@@ -116,11 +119,9 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
   }, [getCoinAmount]);
 
   const isEthBalanceLowerThanReservedAmount = useMemo(() => {
+    // Needs to be fixed using the correct baseFee format or method
     return (
-      Number(ethBalance) <=
-      Number(
-        bn.parseUnits(BakoSafe.getGasConfig('BASE_FEE').toString()).format(),
-      )
+      Number(ethBalance) <= Number(bn.parseUnits(gasConfig.toString()).format())
     );
   }, [ethBalance]);
 
@@ -143,6 +144,6 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
   };
-}
+};
 
 export { useVaultAssets };

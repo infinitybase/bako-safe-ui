@@ -1,20 +1,12 @@
-import {
-  Box,
-  ComponentWithAs,
-  HStack,
-  Icon,
-  IconProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 
-import { Card, UnknownIcon } from '@/components';
+import { Card } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { AddressUtils } from '@/modules/core/utils';
 
 export interface FeeProps {
   assets: {
-    icon?: ComponentWithAs<'svg', IconProps>;
+    icon?: string;
     amount: string;
     assetId: string;
     name: string;
@@ -38,10 +30,12 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
           gap={4}
         >
           <HStack maxW="190px">
-            <Icon
-              w={{ base: 6, sm: 6 }}
-              h={{ base: 6, sm: 6 }}
-              as={asset?.icon ?? UnknownIcon}
+            <Image
+              w={{ base: 8, sm: 10 }}
+              h={{ base: 8, sm: 10 }}
+              src={asset?.icon ?? ''}
+              alt="Asset Icon"
+              objectFit="cover"
             />
             <VStack spacing={0}>
               <Text

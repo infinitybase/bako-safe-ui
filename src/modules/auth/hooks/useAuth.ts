@@ -1,17 +1,26 @@
 import { useFuel } from '@fuels/react';
-import { BakoSafe } from 'bakosafe';
 import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import {
+  EConnectors,
+  EConnectorsInverse,
+} from '@/modules/core/hooks/fuel/useListConnectors';
 
 import {
   generateRedirectQueryParams,
   useAuthCookies,
   useQueryParams,
+  useSignOut,
 } from '..';
-import { AuthenticateParams, IUseAuthReturn, TypeUser } from '../services';
+import {
+  AuthenticateParams,
+  IUseAuthReturn,
+  TypeUser,
+  UserType,
+} from '../services';
 import { useUserInfoRequest } from './useUserInfoRequest';
 
 export type SingleAuthentication = {
@@ -22,31 +31,41 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
+//coment
+//coment
 const useAuth = (): IUseAuthReturn => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();
-  const { account, singleWorkspace } = userAuthCookiesInfo();
-  const { sessionId, origin, name, request_id } = useQueryParams();
+  const signOutRequest = useSignOut();
+  const { account, singleWorkspace, accessToken } = userAuthCookiesInfo();
+  const { sessionId, origin, name, request_id, byConnector } = useQueryParams();
   const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
     setAuthCookies(params);
   };
 
-  const logout = () => {
-    clearAuthCookies();
-    queryClient.clear();
+  const logout = (removeTokenFromDb = true) => {
+    if (accessToken && removeTokenFromDb) {
+      signOutRequest.mutate();
+    }
 
-    const queryParams = generateRedirectQueryParams({
-      sessionId,
-      origin,
-      name,
-      request_id,
-    });
-    navigate(`/${queryParams}`);
+    setTimeout(() => {
+      clearAuthCookies();
+      queryClient.clear();
+
+      const queryParams = generateRedirectQueryParams({
+        sessionId,
+        origin,
+        name,
+        request_id,
+        byConnector: byConnector ? String(byConnector) : undefined,
+      });
+      navigate(`/${queryParams}`);
+    }, 200);
   };
 
   const logoutWhenExpired = async () => {
@@ -56,14 +75,26 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
+    const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
         _userProvider
           ? (await fuel.currentNetwork()).url
-          : BakoSafe.getProviders('CHAIN_URL'),
+          : 'http://localhost:4000/v1/graphql',
       ),
+    };
+  };
+
+  const userType = (): UserType => {
+    if (infos?.webauthn)
+      return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
+
+    const currentConnector = fuel.currentConnector()?.name as EConnectors;
+
+    return {
+      type: TypeUser[EConnectorsInverse[currentConnector]],
+      name: currentConnector,
     };
   };
 
@@ -81,11 +112,13 @@ const useAuth = (): IUseAuthReturn => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
-      type: infos?.type!,
+      type: userType(),
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
       address: account,
       singleWorkspaceId: singleWorkspace,
+      first_login: infos?.first_login,
+      network: infos?.network!,
       isLoading,
       isFetching,
       refetch,

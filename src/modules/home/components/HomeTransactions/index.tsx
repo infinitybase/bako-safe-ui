@@ -121,7 +121,11 @@ const HomeTransactions = () => {
 
             <Divider w="full" borderColor="grey.950" />
           </HStack>
-          <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
+          <TransactionCard.List
+            spacing={4}
+            mt={isExtraSmall ? 0 : 3}
+            mb={transactions.length >= 1 ? 0 : 12}
+          >
             <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({

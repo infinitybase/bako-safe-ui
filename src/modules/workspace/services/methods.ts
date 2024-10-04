@@ -1,5 +1,5 @@
-import { ITransaction } from 'bakosafe';
-import { BN } from 'fuels';
+import { TransactionStatus } from 'bakosafe';
+import { assets, Assets, BN } from 'fuels';
 
 import { api } from '@/config';
 import {
@@ -7,8 +7,33 @@ import {
   IPermission,
   IPermissions,
   Predicate,
+  WitnessStatus,
   Workspace,
 } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+
+export interface IWitnesses {
+  account: string;
+  signature: string;
+  status: WitnessStatus;
+  updatedAt: string;
+}
+
+export interface ITransactionResume {
+  id: string;
+  hash: string;
+  totalSigners: number;
+  requiredSigners: number;
+  predicate: {
+    id: string;
+    address: string;
+  };
+  status: TransactionStatus;
+  witnesses: IWitnesses[];
+  gasUsed?: string;
+  sendTime?: Date;
+  error?: string;
+}
 
 export interface CreateWorkspacePayload {
   name: string;
@@ -119,9 +144,24 @@ export class WorkspaceService {
   }
 
   static async getBalance() {
-    const { data } =
-      await api.get<GetWorkspaceBalanceResponse>(`/workspace/balance`);
+    return new Promise<IWroskapceBalance>((resolve) => {
+      resolve({
+        currentBalanceUSD: '0',
+        currentBalance: [],
+      });
+    });
+  }
 
+  static async getFuelTokensList(): Promise<Assets> {
+    const response = await fetch(
+      'https://verified-assets.fuel.network/assets.json',
+    );
+
+    if (!response.ok) {
+      return assets;
+    }
+
+    const data: Assets = await response.json();
     return data;
   }
 

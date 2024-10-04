@@ -1,10 +1,10 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { BakoSafe } from 'bakosafe';
-import { Address, Provider } from 'fuels';
+import { Address, Network, Provider, sha256 } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
+import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { createAccount, signChallange } from '@/modules/core/utils/webauthn';
 
 export enum Encoder {
@@ -15,6 +15,7 @@ export enum Encoder {
 
 export enum TypeUser {
   FUEL = 'FUEL',
+  FULLET = 'FULLET',
   WEB_AUTHN = 'WEB_AUTHN',
 }
 
@@ -50,6 +51,7 @@ export type SignInPayload = {
   encoder: Encoder;
   signature: string;
   digest: string;
+  userAddress: string;
 };
 
 export type SignInResponse = {
@@ -60,11 +62,13 @@ export type SignInResponse = {
   workspace: Workspace;
   id: string;
   notify: boolean;
-  firstLogin: boolean;
+  rootWallet: string;
+  first_login: boolean;
   webAuthn?: {
     id: string;
     publicKey: string;
   };
+  provider: string;
 };
 
 export type CheckNicknameResponse = {
@@ -90,6 +94,8 @@ export type AuthenticateParams = {
   permissions: IPermission;
   singleWorkspace: string;
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
+  provider_url: string;
+  first_login?: boolean;
 };
 
 export type AuthenticateWorkspaceParams = {
@@ -112,12 +118,17 @@ export type IUseAuthReturn = {
   }>;
   invalidAccount: boolean;
   handlers: {
-    logout: () => void;
+    logout: (removeTokenFromDb?: boolean) => void;
     logoutWhenExpired: () => void;
     authenticate: (params: AuthenticateParams) => void;
     setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
   };
   userInfos: IUserInfos;
+};
+
+export type UserType = {
+  type: TypeUser;
+  name: EConnectors;
 };
 
 export type IGetUserInfosResponse = {
@@ -126,8 +137,9 @@ export type IGetUserInfosResponse = {
   id: string;
   name: string;
   onSingleWorkspace: boolean;
-  type: TypeUser;
+  type: UserType;
   webauthn: SignWebAuthnPayload;
+  first_login?: boolean;
   workspace: {
     avatar: string;
     id: string;
@@ -135,10 +147,17 @@ export type IGetUserInfosResponse = {
     permission: IPermission;
     description: string;
   };
+  network: Network;
 };
 
 export class UserService {
   static async create(payload: CreateUserPayload) {
+    // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
+
+    // if (invalidNetwork) {
+    //   throw new Error('You cannot access using mainnet network.');
+    // }
+
     const { data } = await api.post<CreateUserResponse>('/user', payload);
     return data;
   }
@@ -154,6 +173,11 @@ export class UserService {
       throw new Error('Invalid signature');
     }
 
+    return data;
+  }
+
+  static async signOut() {
+    const { data } = await api.delete<void>('/auth/sign-out');
     return data;
   }
 
@@ -185,7 +209,7 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      provider: BakoSafe.getProviders('CHAIN_URL'),
+      provider: import.meta.env.VITE_NETWORK,
       type: TypeUser.WEB_AUTHN,
       webauthn: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -213,13 +237,14 @@ export class UserService {
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
+      userAddress: sha256(publicKey),
     });
   }
 
   static async generateSignInCode(address: string) {
-    const { data } = await api.post<CreateUserResponse>(
-      `/auth/code/${address}`,
-    );
+    const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
+      address,
+    });
     return data;
   }
 }
@@ -227,6 +252,7 @@ export class UserService {
 export const localStorageKeys = {
   HARDWARE_ID: 'bakosafe/hardwareId',
   WEB_AUTHN_LAST_LOGIN_USERNAME: 'bakosafe/web-authn-last-login-username',
+  NETWORKS: 'bakosafe/networks',
 };
 
 export const UserQueryKey = {

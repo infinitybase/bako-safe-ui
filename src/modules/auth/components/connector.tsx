@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Box,
   Divider,
   Heading,
@@ -13,8 +12,7 @@ import {
 import React, { useCallback, useMemo } from 'react';
 
 import { Card } from '@/components';
-import { useQueryParams } from '@/modules/auth/hooks';
-import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useScreenSize } from '@/modules/core/hooks';
 type ConnectorType = {
   name: string;
   label: string;
@@ -25,19 +23,18 @@ type ConnectorType = {
 
 interface CardConnectorProps {
   connector: ConnectorType;
-  isWebAuthn?: boolean;
   onClick: (connector: string) => void;
   isAnyWalletConnectorOpen: boolean;
 }
 
 interface ConnectorsListProps {
   connectors: ConnectorType[];
-  onSelect: (connector: string) => void;
+  onConnectorSelect: (connector: string) => Promise<void>;
   isAnyWalletConnectorOpen: boolean;
 }
 
 const CardConnector = (props: CardConnectorProps) => {
-  const { connector, isWebAuthn, onClick, isAnyWalletConnectorOpen } = props;
+  const { connector, isAnyWalletConnectorOpen, onClick } = props;
 
   const ConnectorIcon = useMemo(() => {
     if (connector.imageUrl) {
@@ -74,21 +71,15 @@ const CardConnector = (props: CardConnectorProps) => {
       justifyContent="space-between"
       p={2}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
-      bgColor={isWebAuthn ? 'warning.900' : 'grey.825'}
-      borderColor={isWebAuthn ? 'brand.500' : 'grey.550'}
+      bgColor="grey.825"
+      borderColor="grey.550"
       onClick={selectConnector}
       position="relative"
       transition="0.5s"
       pointerEvents={isAnyWalletConnectorOpen ? 'none' : 'auto'}
-      _hover={
-        isWebAuthn
-          ? {
-              bg: 'warning.700',
-            }
-          : {
-              borderColor: 'grey.75',
-            }
-      }
+      _hover={{
+        borderColor: 'grey.75',
+      }}
     >
       <Box
         w="full"
@@ -106,64 +97,19 @@ const CardConnector = (props: CardConnectorProps) => {
           {connector.label}
         </Heading>
       </Box>
-      {isWebAuthn && (
-        <Badge
-          px={3}
-          py={0.5}
-          variant="gray"
-          borderRadius={10}
-          color="grey.100"
-        >
-          Recommended
-        </Badge>
-      )}
     </Card>
   );
 };
 
 const ConnectorsList = ({
   connectors,
-  onSelect,
+  onConnectorSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
-  const { byConnector, sessionId } = useQueryParams();
-  const webAuthnConnector = connectors.find(
-    (connector) => connector.name === EConnectors.WEB_AUTHN,
-  );
-
-  const allOtherConnectors = connectors.filter(
-    (connector) => connector.name !== EConnectors.WEB_AUTHN,
-  );
+  const { isLitteSmall } = useScreenSize();
 
   return (
-    <VStack spacing={{ base: 4, md: 8 }} w="full">
-      <Text
-        color="grey.50"
-        fontSize={{ base: 'xs', md: 'sm' }}
-        maxW={366}
-        mb={{ base: 4, md: 0 }}
-      >
-        Select your preferred access mode
-      </Text>
-
-      <CardConnector
-        isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
-        connector={webAuthnConnector!}
-        isWebAuthn
-        onClick={() => {
-          const isConnector = byConnector && !!sessionId;
-
-          if (isConnector) {
-            window.open(
-              `${window.origin}/${window.location.search}&openWebAuth=true`,
-              '_blank',
-            );
-          }
-
-          return onSelect(EConnectors.WEB_AUTHN);
-        }}
-      />
-
+    <VStack spacing={{ base: 6, md: 8 }} w="full">
       <HStack w="full" spacing={5}>
         <Divider borderColor="grey.500" />
         <Text color="grey.250" fontSize="xs" fontWeight="light">
@@ -173,16 +119,16 @@ const ConnectorsList = ({
       </HStack>
 
       <Stack
-        flexDirection={{ base: 'column', sm: 'row' }}
+        flexDirection={isLitteSmall ? 'column' : 'row'}
         w="full"
-        spacing={{ base: 4, sm: 2 }}
+        spacing={2}
       >
-        {allOtherConnectors.map((connector) => (
+        {connectors.map((connector) => (
           <CardConnector
             isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
             key={connector.name}
             connector={connector}
-            onClick={onSelect}
+            onClick={onConnectorSelect}
           />
         ))}
       </Stack>

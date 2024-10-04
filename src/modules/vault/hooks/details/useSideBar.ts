@@ -21,7 +21,7 @@ const useSidebar = ({ params }: UseSidebarProps) => {
   const checkPathname = (path: string) => location.pathname === path;
 
   const menuItems = {
-    home: checkPathname(
+    overview: checkPathname(
       Pages.detailsVault({
         workspaceId: params?.workspaceId ?? '',
         vaultId: params?.vaultId ?? '',

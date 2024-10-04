@@ -6,11 +6,11 @@ import {
   MoreLessIcon,
   RecoveryIcon,
 } from '@/components';
-import { PermissionRoles } from '@/modules/core/models';
+import { PredicateAndWorkspace, Workspace } from '@/modules';
+import { defaultPermissions, PermissionRoles } from '@/modules/core/models';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
-import { PredicateAndWorkspace, Workspace } from '@/modules';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
@@ -37,7 +37,10 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission = vault?.workspace?.permissions?.[userId];
+    const memberPermission =
+      vault?.owner?.id === userId
+        ? defaultPermissions[PermissionRoles.OWNER]
+        : defaultPermissions[PermissionRoles.SIGNER];
     const hasRequiredPermission =
       memberPermission &&
       requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))

@@ -1,17 +1,16 @@
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
 import { AddressType, ChainName } from '@fuel-ts/providers';
-import { Vault } from 'bakosafe';
-import React from 'react';
 
-import { Card } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
+import { Card } from '@/components/card';
 import { AddressUtils } from '@/modules/core';
+import { PredicateAndWorkspace } from '@/modules/vault';
 
 interface RecipientProps {
   type: AddressType;
   address: string;
   isSender?: boolean;
-  vault?: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
+  vault?: Pick<PredicateAndWorkspace, 'name' | 'predicateAddress'>;
   /* TODO: Check chain name to show is ETH or Fuel */
   chain?: ChainName;
   fullBorderRadius?: boolean;

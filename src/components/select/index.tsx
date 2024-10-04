@@ -211,7 +211,8 @@ const Select = ({
           borderColor="dark.100"
           borderWidth={1}
           borderRadius={10}
-          padding={2}
+          // adjust this padding
+          // padding={2}
           position="absolute"
           zIndex={999}
           w="full"
@@ -233,7 +234,7 @@ const Select = ({
                 <Box
                   key={value}
                   w="full"
-                  p={2}
+                  p={3}
                   borderRadius={10}
                   cursor="pointer"
                   _hover={{ background: 'dark.150' }}

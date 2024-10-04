@@ -1,23 +1,22 @@
-import { Box, useMediaQuery, VStack } from '@chakra-ui/react';
+import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 
-import logo from '@/assets/bakoLogoDark.svg';
 import bakoSymbol from '@/assets/bakoSymbol.svg';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-interface SigninContainerBackgroundProps {
-  children: React.ReactNode;
-}
 
 interface SigninContainerProps {
   children: React.ReactNode;
 }
 
-const SigninContainerBackground = ({
-  children,
-}: SigninContainerBackgroundProps) => {
+const SigninContainerMobile = (props: SigninContainerProps) => {
   return (
-    <Box
+    <VStack
+      position="relative"
+      backgroundColor="dark.50"
+      backdropFilter="blur(6px)"
+      w="100%"
+      minH="100vh"
+      spacing={0}
       overflow="hidden"
       __css={{
         '&::-webkit-scrollbar': {
@@ -27,123 +26,94 @@ const SigninContainerBackground = ({
           display: 'none',
         },
       }}
-      zIndex="0"
-      minW={320}
-      h="100vh"
-      w="100%"
-      display="flex"
-      alignItems="center"
-      flexDirection="column"
-      justifyContent="center"
-      p={4}
     >
-      {children}
-    </Box>
-  );
-};
-
-const SigninContainerMobile = (props: SigninContainerProps) => {
-  const isLowerThanMobile = useMediaQuery('(max-width: 30em)');
-
-  return (
-    <SigninContainerBackground>
-      <VStack
-        position="relative"
-        borderRadius="10px"
-        backgroundColor="dark.50"
-        backdropFilter="blur(6px)"
-        display="flex"
-        minW={isLowerThanMobile[0] ? '90vw' : '55vw'}
-        spacing={0}
-        border={'1px solid transparent'}
-        borderColor="dark.150"
-        boxShadow="lg"
+      <Box
+        w="full"
+        minH={202}
+        backgroundColor="brand.500"
+        bgGradient="linear(to-br, brand.500 , brand.800)"
       >
         <img
           src={bakoSymbol}
           alt=""
           style={{
             position: 'absolute',
-            top: '117px',
-            left: '77px',
+            top: '131px',
+            left: '50%',
             transform: 'translate(-50%, -50%)',
             height: '100%',
-            maxHeight: '10.75rem',
+            maxHeight: '13.9rem',
           }}
         />
+      </Box>
+
+      <VStack flex={1} w="full">
         {props.children}
       </VStack>
-    </SigninContainerBackground>
+    </VStack>
   );
 };
 
 const SigninContainer = (props: SigninContainerProps) => {
   const {
-    screenSizes: { isXSHeight, isSmallHeight, isMdHeight },
+    screenSizes: { isSmallHeight, isMdHeight },
   } = useWorkspaceContext();
+
   return (
-    <SigninContainerBackground>
+    <Box
+      display="flex"
+      minH="100vh"
+      w="100%"
+      overflow="hidden"
+      __css={{
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          display: 'none',
+        },
+      }}
+    >
       <Box
-        borderRadius="10px"
+        flex={1}
+        display="flex"
         backgroundColor="dark.50"
         backdropFilter="blur(6px)"
-        minH={isMdHeight ? '90vh' : '41.25rem'}
-        minW={{ md: '85vw', lg: '75vw', xl: '65rem' }}
-        display="flex"
-        alignItems="stretch"
-        border={'1px solid transparent'}
-        borderColor="dark.150"
-        boxShadow="lg"
       >
         <Box
-          flex={1}
           backgroundColor="brand.500"
           bgGradient="linear(to-br, brand.500 , brand.800)"
-          borderRadius="10px 0px 0px 10px"
-          p={3}
           display="flex"
-          justifyContent="flex-start"
-          alignItems="center"
-          flexDirection="column"
           position="relative"
+          flex={1}
+          maxW="35rem"
         >
-          <img
-            src={logo}
-            alt=""
-            style={{
-              width: '65%',
-              marginTop: 'auto',
-            }}
-          />
           <img
             src={bakoSymbol}
             alt=""
             style={{
               position: 'absolute',
               top: '50%',
-              left: '96.5%',
+              left: '97.75%',
               transform: 'translate(-50%, -50%)',
-              minWidth: '120%',
+              height: '200%',
+              maxHeight: '45rem',
             }}
           />
         </Box>
 
         <Box
-          flex={isXSHeight ? 4 : isSmallHeight ? 3 : 2}
-          mr={16}
-          ml={isXSHeight ? '15.5%' : isSmallHeight ? '17.5%' : '20.5%'}
-          py={8}
-          position="sticky"
+          pl={{ base: '10%', lg: '8%', xl: '5%' }}
           display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="space-evenly"
-          gap={4}
+          flex={isSmallHeight ? 4 : isMdHeight ? 3 : 2}
+          justifyContent="center"
         >
-          {props.children}
+          <VStack flex={1} p={4}>
+            {props.children}
+          </VStack>
         </Box>
       </Box>
-    </SigninContainerBackground>
+    </Box>
   );
 };
 
