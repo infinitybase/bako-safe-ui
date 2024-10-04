@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, VStack } from '@chakra-ui/react';
+import { FormControl, FormHelperText, Text, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { AutocompleteBadge } from '@/components';
@@ -32,7 +32,15 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
   } = formData;
 
   return (
-    <VStack w="full" alignItems="flex-start" spacing={2}>
+    <VStack w="full" alignItems="flex-start" spacing={4}>
+      <Text
+        color="grey.250"
+        lineHeight="14.52px"
+        fontSize="xs"
+        fontWeight={400}
+      >
+        Login with passkey
+      </Text>
       <Controller
         name="username"
         control={control}

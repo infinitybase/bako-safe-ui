@@ -241,9 +241,10 @@ export class UserService {
     });
   }
 
-  static async generateSignInCode(address: string) {
+  static async generateSignInCode(address: string, networkUrl?: string) {
     const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
       address,
+      networkUrl,
     });
     return data;
   }
@@ -253,6 +254,8 @@ export const localStorageKeys = {
   HARDWARE_ID: 'bakosafe/hardwareId',
   WEB_AUTHN_LAST_LOGIN_USERNAME: 'bakosafe/web-authn-last-login-username',
   NETWORKS: 'bakosafe/networks',
+  SELECTED_CHAIN_ID: 'bakosafe/selected-chain-id',
+  SELECTED_NETWORK: 'bakosafe/selected-network',
 };
 
 export const UserQueryKey = {

@@ -2,9 +2,9 @@ import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CardMember } from './CardMember';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const {
@@ -22,8 +22,8 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           Signers
         </Text>
         <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
-          Required signers {vault?.data?.minSigners}/
-          {vault?.data?.members?.length}
+          Required signers {vault.data?.configurable?.SIGNATURES_COUNT ?? 0}/
+          {vault.data?.members?.length}
         </Badge>
       </HStack>
       <VStack spacing={5}>

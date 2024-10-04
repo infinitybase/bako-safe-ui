@@ -1,6 +1,7 @@
 import { Provider } from 'fuels';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 
 import { localStorageKeys } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -39,6 +40,9 @@ const useNetworks = (onClose?: () => void) => {
   const networkForm = useForm<NetworkFormFields>({
     defaultValues: formDefaultValues,
   });
+
+  const { search } = useLocation();
+  const fromConnector = !!new URLSearchParams(search).get('sessionId');
 
   const checkNetworkRequest = useCheckNetworkRequest();
   const { data: networks, refetch: refetchNetworks } = useListNetworksRequest();
@@ -164,7 +168,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const currentNetwork = userNetwork ?? {
     url: import.meta.env.VITE_NETWORK,
-    chainId: import.meta.env.CHAIN_ID,
+    chainId: import.meta.env.VITE_CHAIN_ID,
   };
 
   const checkNetwork = (type: NetworkType) =>
@@ -177,8 +181,18 @@ const useNetworks = (onClose?: () => void) => {
     onClose?.();
   };
 
+  const handleSelection = (network: CustomNetwork) => {
+    localStorage.setItem(localStorageKeys.SELECTED_NETWORK, network.url);
+    onClose?.();
+  };
+
   useEffect(() => {
     saveNetwork(currentNetwork.url);
+
+    localStorage.setItem(
+      localStorageKeys.SELECTED_CHAIN_ID,
+      JSON.stringify(currentNetwork.chainId),
+    );
   }, [currentNetwork]);
 
   return {
@@ -189,12 +203,14 @@ const useNetworks = (onClose?: () => void) => {
     mode,
     networks,
     selectNetworkRequest,
+    fromConnector,
     checkNetwork,
     handleSelectNetwork,
     handleAddNetwork,
     handleDeleteCustomNetwork,
     handleCheckNetwork,
     handleClose,
+    handleSelection,
     setMode,
   };
 };
