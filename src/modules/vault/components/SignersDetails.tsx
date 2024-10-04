@@ -128,22 +128,34 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
   if (!vault) return null;
 
   return (
-    <Box w={isLarge ? 'full' : 'md'} mb={4} {...rest}>
+    <Box w={isLarge ? 'full' : 'md'} {...rest}>
       <HStack
         alignItems="center"
         justify="flex-start"
-        mb={5}
+        mb={4}
         w="full"
         spacing={3}
+        // h="20px"
       >
         <Text
-          color="grey.400"
-          fontWeight="medium"
-          fontSize={{ base: 'md', sm: 'xl' }}
+          color="grey.50"
+          fontWeight={700}
+          fontSize="sm"
+          lineHeight="16.94px"
         >
           Signers
         </Text>
-        <Badge p={0} rounded="lg" px={3} fontWeight="medium" variant="gray">
+        <Badge
+          rounded="xl"
+          px={'6px'}
+          py={'4px'}
+          fontWeight="medium"
+          lineHeight="12.1px"
+          fontSize="xs"
+          color="grey.75"
+          variant="gray"
+          border="1px solid #F5F5F540"
+        >
           Required signers {vault.data?.configurable?.SIGNATURES_COUNT ?? 0}/
           {vault.data?.members?.length}
         </Badge>
