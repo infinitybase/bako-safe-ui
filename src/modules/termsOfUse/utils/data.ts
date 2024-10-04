@@ -6,7 +6,7 @@ export const termsOfUse = [
 
       `The Bako Safe interacts with a single blockchain network: the “Fuel Network,” an execution layer for modular blockchains.`,
 
-      `Bako Safe and the Fuel Network are in “testnet” form only, meaning they are live testing environments but are not the final version of the products. Testnets are designed to improve the operational experience, security, and design of the Fuel mainnet protocol and to expose potential issues and to improve participant experiences prior to the mainnet launch.`,
+      `Bako Safe and the Fuel Network are in Mainnet and “testnet” forms. The testnet form means a live test environment and not the production version of the products. Testnets are designed to improve the operational experience, security, and design of the Fuel mainnet protocol and to expose potential issues and to improve participant experiences prior to the mainnet launch.`,
     ],
   },
   {
@@ -36,7 +36,7 @@ export const termsOfUse = [
   {
     title: '4. Developer-Use Only: Non-Financial Transactions',
     paragraphs: [
-      `The Fuel Network does not currently support sending or receiving valuable cryptocurrency or any form of blockchain token that can be used to transfer value to another person. You should only use Bako Safe if you understand that it is for testing the Fuel Network, and not for sending or receiving value.`,
+      `The Fuel Network currently supports on Mainnet sending or receiving valuable cryptocurrency or any form of blockchain token that can be used to transfer value to another person. You should only use Bako Safe if you understand that it is for testing the Fuel Network, and not for sending or receiving value.`,
 
       `In your use of the testnet, you may accumulate “testnet tokens,” such as through a faucet, which are not, and shall never convert to or accrue to become mainnet tokens or any other tokens or virtual assets. Testnet tokens are virtual items with no monetary value. Testnet tokens do not constitute any currency or property of any type and are not redeemable, refundable, or eligible for any fiat or virtual currency or anything else of value. Testnet tokens are not transferable between users outside of the testnet, and you may not attempt to sell, trade, or transfer any testnet tokens outside of the testnet, or obtain any manner of credit using any testnet tokens. Any attempt to sell, trade, or transfer any testnet tokens outside of the testnet will be null and void.`,
 
@@ -63,9 +63,9 @@ export const termsOfUse = [
     title: '7. Technical Support',
     paragraphs: [
       `You may obtain technical information or advice from Bako if you are provided with technical support that you have requested. You are not required to make use of Bako's complimentary technical support, and Bako may discontinue offering such support to you (and anyone else) at any time. We do not charge a fee for technical support.
-      If Bako does provide you with technical support then you agree that any information provided shall be without warranty of any kind and you are solely responsible for any negative consequences that may occur as a result of misunderstanding, misapplying, or even accurately following the instructions or information provided by technical support. You agree to hold Bako harmless against any damages that occur, and you agree to indemnify Bako against any third-party claims made in relation to technical support that you obtain from Bako.
-      Technical support from Bako is not a substitute for retaining your own technical expert.
-      Bako will never instruct you to provide passkeys, or any other confidential information that should never leave your personal possession. We urge you to be cautious when obtaining technical support from third parties, or from people impersonating Bako through online scams. Please take care to obtain technical support through official channels only.`,
+If Bako does provide you with technical support then you agree that any information provided shall be without warranty of any kind and you are solely responsible for any negative consequences that may occur as a result of misunderstanding, misapplying, or even accurately following the instructions or information provided by technical support. You agree to hold Bako harmless against any damages that occur, and you agree to indemnify Bako against any third-party claims made in relation to technical support that you obtain from Bako.
+Technical support from Bako is not a substitute for retaining your own technical expert.
+Bako will never instruct you to provide passkeys, or any other confidential information that should never leave your personal possession. We urge you to be cautious when obtaining technical support from third parties, or from people impersonating Bako through online scams. Please take care to obtain technical support through official channels only.`,
     ],
   },
   {
