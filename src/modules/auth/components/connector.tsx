@@ -28,6 +28,7 @@ interface CardConnectorProps {
 }
 
 interface ConnectorsListProps {
+  hidden?: boolean;
   connectors: ConnectorType[];
   onConnectorSelect: (connector: string) => Promise<void>;
   isAnyWalletConnectorOpen: boolean;
@@ -102,6 +103,7 @@ const CardConnector = (props: CardConnectorProps) => {
 };
 
 const ConnectorsList = ({
+  hidden,
   connectors,
   onConnectorSelect,
   isAnyWalletConnectorOpen,
@@ -109,7 +111,7 @@ const ConnectorsList = ({
   const { isLitteSmall } = useScreenSize();
 
   return (
-    <VStack spacing={{ base: 6, md: 8 }} w="full">
+    <VStack hidden={hidden} spacing={{ base: 6, md: 8 }} w="full">
       <HStack w="full" spacing={5}>
         <Divider borderColor="grey.500" />
         <Text color="grey.250" fontSize="xs" fontWeight="light">

@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -54,6 +55,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     handleRegister,
   } = props;
 
+  const { isSafariBrowser } = useVerifyBrowserType();
   const { connectors } = useListConnectors();
   const { errorToast } = useContactToast();
   const {
@@ -114,6 +116,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                   <ConnectorsList
                     connectors={connectors}
+                    hidden={isSafariBrowser}
                     onConnectorSelect={handleSelectWallet}
                     isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                   />
@@ -165,6 +168,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
 
                 <ConnectorsList
                   connectors={connectors}
+                  hidden={isSafariBrowser}
                   onConnectorSelect={handleSelectWallet}
                   isAnyWalletConnectorOpen={isAnyWalletConnectorOpen}
                 />
