@@ -17,11 +17,24 @@ export type UseCreateVaultDialogReturn = ReturnType<
 >;
 
 const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
-  const { form, tabs, vaultNameIsAvailable, vaultId, ...rest } =
-    useCreateVault();
+  const {
+    form,
+    tabs,
+    vaultNameIsAvailable,
+    vaultId,
+    validateAddress,
+    addresses,
+    ...rest
+  } = useCreateVault();
 
   const { name, origin, sessionId, request_id } = useQueryParams();
   const isSignInFromDapp = sessionId && sessionId.length === 36;
+
+  const disableCreateVaultButton =
+    (!form.formState.isValid ||
+      !!form.formState.errors.addresses ||
+      validateAddress.isLoading) &&
+    addresses.fields.length > 1;
 
   const createConnectionsMutation = useCreateConnections();
   const {
@@ -77,11 +90,14 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     [TabState.ADDRESSES]: {
       hide: false,
-      disable: !form.formState.isValid,
+      disable: disableCreateVaultButton,
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
-      onCancel: close(() => tabs.set(TabState.INFO)),
+      onCancel: close(() => {
+        tabs.set(TabState.INFO);
+        close(handleCancel)();
+      }),
       closeText: 'Cancel',
       nextStepText: 'Create Vault',
     },
@@ -116,6 +132,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       actions: stepActions,
     },
     vaultNameIsAvailable,
+    validateAddress,
+    addresses,
     ...rest,
   };
 };

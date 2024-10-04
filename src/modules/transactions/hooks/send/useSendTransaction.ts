@@ -1,7 +1,9 @@
-import { ITransaction, TransactionStatus } from 'bakosafe';
+import { TransactionStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
+import { useAuth } from '@/modules';
 import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { TransactionService } from '@/modules/transactions/services';
 
@@ -17,6 +19,8 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setHasNewNotification } = useNotificationsStore();
   const { setIsCurrentTxPending } = useTransactionState();
   const toast = useTransactionToast();
+
+  const { userInfos } = useAuth();
 
   const { mutate: sendTransaction } = useBakoSafeTransactionSend({
     onSuccess: (transaction: ITransaction) => {
@@ -57,17 +61,24 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   };
 
   const executeTransaction = (
-    transaction: Pick<ITransaction, 'id' | 'predicateId' | 'resume' | 'name'>,
+    transaction: Pick<
+      ITransaction,
+      'id' | 'predicateId' | 'resume' | 'name' | 'predicateAddress' | 'hash'
+    >,
   ) => {
     const wasTheLastSignature =
       transaction!.resume!.witnesses.filter(
         (witness) => witness.status === WitnessStatus.PENDING,
       ).length <= 1;
-    if (wasTheLastSignature) {
+
+    if (wasTheLastSignature || transaction.resume.requiredSigners === 1) {
       toast.loading(transaction);
       setIsCurrentTxPending({ isPending: true, transactionId: transaction.id });
     }
-    sendTransaction({ transaction: transaction! });
+    sendTransaction({
+      transaction: transaction!,
+      providerUrl: userInfos.network.url,
+    });
   };
 
   return {

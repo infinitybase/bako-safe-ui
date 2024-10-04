@@ -9,7 +9,10 @@ import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/
 interface FromToProps {
   to: OperationTransactionAddress;
   from: OperationTransactionAddress;
-  vault: Pick<Vault['BakoSafeVault'], 'name' | 'predicateAddress'>;
+  vault: {
+    name: string;
+    predicateAddress: string;
+  };
   hasAssets?: boolean;
 }
 

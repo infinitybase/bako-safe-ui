@@ -1,6 +1,7 @@
 import { Avatar } from './avatar';
 import { Badge } from './badge';
 import { Button } from './button';
+import { Checkbox } from './checkbox';
 import { Drawer, Modal } from './drawer';
 import { Form } from './form';
 import { Heading } from './heading';
@@ -26,6 +27,7 @@ const components = {
   Text,
   Skeleton,
   Radio,
+  Checkbox,
 };
 
 export { components };

@@ -1,24 +1,24 @@
 import { Icon } from '@chakra-ui/icons';
-import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
-import { Address } from 'fuels';
+import {
+  Center,
+  HStack,
+  Image,
+  StackProps,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { DoubleArrowIcon, UnknownIcon } from '@/components';
+import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import {
-  AddressUtils,
-  AssetModel,
-  assetsMap,
-  useGetParams,
-} from '@/modules/core';
+import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
-  hasToken?: boolean;
   isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
@@ -33,27 +33,22 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isExtraSmall, isExtraLarge, isLitteSmall },
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
     addressBookInfos: {
       requests: {
         listContactsRequest: { data },
       },
     },
+    assetsMap,
   } = useWorkspaceContext();
 
   const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
 
-  const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
-
-  const isVaultPage = !!vaultId;
-
   const assetInfo = useMemo(
     () =>
-      asset?.assetId && assetsMap[asset?.assetId]
-        ? assetsMap[asset?.assetId]
-        : assetsMap['UNKNOWN'],
+      asset?.assetId && assetsMap?.[asset?.assetId]
+        ? assetsMap?.[asset?.assetId]
+        : assetsMap?.['UNKNOWN'],
     [asset?.assetId],
   );
 
@@ -73,26 +68,33 @@ const AssetBoxInfo = ({
   return (
     <HStack
       py={2}
-      spacing={{ base: 1, xs: 10 }}
+      justifyContent={{ base: 'space-between' }}
       w="full"
       borderTopWidth={1}
       {...props}
     >
       {assetInfo && (
-        <HStack spacing={{ base: 2, sm: 3 }} minW="76px">
-          <Icon w={6} h={6} as={assetInfo?.icon ?? UnknownIcon} />
+        <VStack alignItems="start" minW="40px">
+          <Image
+            w={6} // Largura responsiva
+            h={6} // Altura responsiva
+            src={assetInfo?.icon ?? ''} // URL da imagem com fallback
+            alt="Asset Icon" // Texto alternativo para acessibilidade
+            objectFit="cover" // Ajuste da imagem
+          />
+
           <Text fontSize="sm" color="grey.500">
             {assetInfo.slug}
           </Text>
-        </HStack>
+        </VStack>
       )}
 
-      <Box mt={0.5} minW="105px">
+      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
           color="grey.75"
-          fontSize="sm"
+          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
           {asset?.amount}
@@ -105,7 +107,7 @@ const AssetBoxInfo = ({
         >
           ${txUSDAmount}
         </Text>
-      </Box>
+      </VStack>
 
       <Center
         p={{ base: 1.5, sm: 3 }}
@@ -123,36 +125,28 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && (
-        <Text
-          w="full"
-          fontSize="sm"
-          color="grey.75"
-          textOverflow="ellipsis"
-          isTruncated
-          ml="2px"
-          textAlign="end"
-        >
-          {savedContact?.nickname ? (
+        <VStack alignItems="end" h={savedContact?.nickname ? '47px' : 'unset'}>
+          {savedContact?.nickname && (
             <Text
               isTruncated
               textOverflow="ellipsis"
-              maxW={{ base: '150px', xs: '95px', xl: 'full' }}
-              textAlign="end"
+              maxW={{
+                base: isExtraSmall ? '80px' : '100px',
+                xs: '130px',
+                lg: '130px',
+              }}
+              fontSize="sm"
             >
               {savedContact.nickname}
             </Text>
-          ) : isLitteSmall ? (
-            AddressUtils.format(
-              Address.fromString(asset.to ?? '').toB256(),
-              isExtraSmall ? 0 : 7,
-            )
-          ) : (
-            AddressUtils.format(
-              Address.fromString(asset.to ?? '').toB256(),
-              !isVaultPage && isExtraLarge ? 10 : 12,
-            )
           )}
-        </Text>
+          <AddressWithCopyBtn
+            address={asset?.to}
+            addressProps={{
+              color: savedContact?.nickname ? 'grey.500' : 'white',
+            }}
+          />
+        </VStack>
       )}
     </HStack>
   );

@@ -1,4 +1,5 @@
-import { CookiesConfig, CookieName } from '@/config/cookies';
+import { CookieName, CookiesConfig } from '@/config/cookies';
+
 import { AuthenticateParams } from '../services';
 
 const setAuthCookies = (params: AuthenticateParams) => {
@@ -14,6 +15,10 @@ const setAuthCookies = (params: AuthenticateParams) => {
     {
       name: CookieName.SINGLE_WORKSPACE,
       value: params.singleWorkspace,
+    },
+    {
+      name: CookieName.PROVIDER_URL,
+      value: params.provider_url,
     },
   ]);
 };

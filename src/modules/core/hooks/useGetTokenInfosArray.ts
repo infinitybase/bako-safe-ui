@@ -1,10 +1,13 @@
 import { bn } from 'fuels';
 
-import { Asset, assetsMap } from '../utils';
+import { Asset, AssetMap } from '../utils';
 
-const useGetTokenInfosArray = (assets: Asset[]) => {
+const useGetTokenInfosArray = (
+  assets: Asset[],
+  assetsMap: false | AssetMap | undefined,
+) => {
   const processAsset = (asset: Asset) => {
-    const assetsInfo = assetsMap[asset.assetId] ?? assetsMap['UNKNOWN'];
+    const assetsInfo = assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'];
     return {
       ...assetsInfo,
       assetId: asset.assetId,

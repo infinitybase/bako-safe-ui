@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';
 
@@ -9,6 +9,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { useNetworks } from '@/modules/network/hooks';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
@@ -18,17 +20,18 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const { operationAssets, sentBy, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
 
-  const handleViewInExplorer = async () => {
-    const { hash } = transaction;
+  const {
+    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+  } = useWorkspaceContext();
+  const { currentNetwork } = useNetworks();
+
+  const handleViewInExplorer = () => {
+    const { hash, network } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
+      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
-
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
 
   return (
     <Box
@@ -39,9 +42,14 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       flexWrap="wrap"
       minH={{ base: 560, xs: 400, sm: 'unset' }}
     >
-      <VStack w="full">
-        <Box pb={3} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text color="grey.425" fontSize="sm">
+      <VStack w="full" mt={isMobile ? 'unset' : 5}>
+        {isMobile && <Divider my={5} borderColor="grey.425" />}
+
+        <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
+          <Text
+            color="grey.425"
+            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          >
             Transaction breakdown
           </Text>
         </Box>
@@ -61,7 +69,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
       </VStack>
 
-      {transaction.status === TransactionStatus.SUCCESS && (
+      {!isMobile && transaction.status === TransactionStatus.SUCCESS && (
         <Button
           w={isMobile ? 'full' : 'unset'}
           mt={isMobile ? 'auto' : '32px'}

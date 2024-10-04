@@ -1,6 +1,7 @@
+import { Text, VStack } from '@chakra-ui/react';
+
 import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { Box, Text } from '@chakra-ui/react';
 
 interface AmountsInfoProps {
   asset: AssetModel;
@@ -13,7 +14,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
   } = useWorkspaceContext();
 
   return (
-    <Box mt={0.5} w={{ base: '105px' }}>
+    <VStack mt={0.5} w={{ base: '105px' }}>
       <Text
         textAlign={isMobile ? 'end' : 'center'}
         variant={isMobile ? 'title-sm' : 'title-md'}
@@ -30,7 +31,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
       >
         ${txUSDAmount}
       </Text>
-    </Box>
+    </VStack>
   );
 };
 export default AmountsInfo;

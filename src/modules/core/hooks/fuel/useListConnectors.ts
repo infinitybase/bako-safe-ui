@@ -1,26 +1,27 @@
 import { useConnectors } from '@fuels/react';
+import { TypeUser } from 'bakosafe';
+import { useCallback } from 'react';
 
-import { FueletIcon, FuelIcon } from '@/components';
-import { PasskeyIcon } from '@/components/icons/passkey-icon';
+import { FueletIcon, FuelIcon } from '@/components/icons/connectors';
 
 export enum EConnectors {
   FUEL = 'Fuel Wallet',
   FULLET = 'Fuelet Wallet',
-  WEB_AUTHN = 'Login With Passkey',
+  WEB_AUTHN = 'Webauthn',
 }
+
+export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
+  'Fuel Wallet': 'FUEL',
+  'Fuelet Wallet': 'FUEL',
+  Webauthn: 'WEB_AUTHN',
+};
 
 export enum EConnectorsLabels {
   FUEL = 'Fuel Wallet',
   FUELET = 'Fuelet',
-  WEB_AUTHN = 'Login With Passkey',
 }
 
 const DEFAULT_CONNECTORS = [
-  {
-    name: EConnectors.WEB_AUTHN,
-    label: EConnectorsLabels.WEB_AUTHN,
-    icon: PasskeyIcon,
-  },
   {
     name: EConnectors.FUEL,
     label: EConnectorsLabels.FUEL,
@@ -33,23 +34,25 @@ const DEFAULT_CONNECTORS = [
   },
 ];
 
-const useDefaultConnectors = () => {
+const useListConnectors = () => {
   const { connectors, ...query } = useConnectors();
 
+  const getFuelConnector = useCallback(
+    (name: EConnectors) => {
+      return connectors?.find((connector) => connector.name === name);
+    },
+    [connectors],
+  );
+
   const defaultConnectors = DEFAULT_CONNECTORS.map((connector) => {
-    const fuelConnector = connectors?.find((c) => c.name === connector.name);
-    const hasWebAuthn = !!window.navigator.credentials;
-    const isWebAuthn = connector.name === EConnectors.WEB_AUTHN;
-    const isEnabled =
-      (!!fuelConnector && fuelConnector.installed) ||
-      (isWebAuthn && hasWebAuthn);
+    const fuelConnector = getFuelConnector(connector.name);
+    const isEnabled = !!fuelConnector?.installed;
 
     return {
       ...connector,
       imageUrl: undefined,
       isEnabled,
       refetchOnMount: false,
-      staleTime: 500, // 500ms second to prevent request spam
     };
   });
 
@@ -59,4 +62,4 @@ const useDefaultConnectors = () => {
   };
 };
 
-export { DEFAULT_CONNECTORS, useDefaultConnectors };
+export { DEFAULT_CONNECTORS, useListConnectors };

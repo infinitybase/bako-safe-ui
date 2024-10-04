@@ -156,7 +156,7 @@ const ExampleHomePage = () => {
             Transactions
           </Text>
           <Badge variant="warning">
-            <Icon as={PendingIcon} />1 waiting for your signature
+            <Icon as={PendingIcon} />1 pending transaction
           </Badge>
           <Spacer />
           <Link color="brand.500">View all</Link>

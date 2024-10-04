@@ -32,7 +32,6 @@ const useVerifyTransactionInformations = (
     ),
   );
 
-  const hasToken = !!mainOperation?.assetsSent?.length;
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const contractAddress = isContract
@@ -45,7 +44,6 @@ const useVerifyTransactionInformations = (
     isDeploy,
     isDeposit,
     isContract,
-    hasToken,
     isPending,
     contractAddress,
     isMint,

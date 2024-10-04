@@ -4,15 +4,15 @@ import {
   chakra,
   Heading,
   HStack,
-  Icon,
+  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 
-import { Card, CustomSkeleton, NotFoundIcon, UnknownIcon } from '@/components';
+import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -37,6 +37,7 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const { assets, isLoading, vaultAddress } = props;
   const { visibleBalance } = assets;
 
@@ -132,10 +133,12 @@ const AmountDetails = (props: AmountDetailsProps) => {
                 <AssetCard>
                   <HStack w="full" spacing={4}>
                     {/* This code is probably not being used, just to fix a build issue */}
-                    <Icon
-                      w={{ base: 8, sm: 8 }}
-                      h={{ base: 8, sm: 8 }}
-                      as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
+                    <Image
+                      w={{ base: 8, sm: 10 }}
+                      h={{ base: 8, sm: 10 }}
+                      src={assetsMap?.[asset.assetId]?.icon ?? ''}
+                      alt="Asset Icon"
+                      objectFit="cover"
                     />
                     <Box>
                       <Text
@@ -146,7 +149,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                         {visibleBalance ? balance : '*****'}
                       </Text>
                       <Text variant="description" fontSize="md">
-                        {assetsMap[asset.assetId].slug}
+                        {assetsMap?.[asset.assetId].slug}
                       </Text>
                     </Box>
                   </HStack>

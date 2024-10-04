@@ -1,15 +1,18 @@
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { ITransaction, TransactionStatus, TransactionType } from 'bakosafe';
+import { TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
@@ -36,11 +39,14 @@ const Details = ({
   isMobileDetailsOpen,
 }: TransactionDetailsProps) => {
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
-  const handleViewInExplorer = async () => {
-    const { hash } = transaction;
+  const handleViewInExplorer = () => {
+    const { hash, network } = transaction;
     window.open(
-      `${import.meta.env.VITE_BLOCK_EXPLORER}/tx/0x${hash}`,
+      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
@@ -82,38 +88,40 @@ const Details = ({
                   alignSelf="flex-start"
                   w="full"
                   minW={{ base: 200, sm: 'full' }}
+                  mt={isMobile ? 3 : 'unset'}
                 >
                   <TransactionStepper steps={transactionHistory!} />
                 </Box>
               </Stack>
 
-              {transaction.status === TransactionStatus.SUCCESS && (
-                <Button
-                  border="none"
-                  bgColor="#F5F5F50D"
-                  fontSize="xs"
-                  fontWeight="normal"
-                  letterSpacing=".5px"
-                  alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                  variant="secondary"
-                  onClick={handleViewInExplorer}
-                  css={css`
-                    &:hover .btn-icon {
-                      animation: ${shakeAnimationY} 0.5s ease-in-out;
+              {transaction.status === TransactionStatus.SUCCESS &&
+                !isMobile && (
+                  <Button
+                    border="none"
+                    bgColor="#F5F5F50D"
+                    fontSize="xs"
+                    fontWeight="normal"
+                    letterSpacing=".5px"
+                    alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                    variant="secondary"
+                    onClick={handleViewInExplorer}
+                    css={css`
+                      &:hover .btn-icon {
+                        animation: ${shakeAnimationY} 0.5s ease-in-out;
+                      }
+                    `}
+                    rightIcon={
+                      <Icon
+                        as={UpRightArrow}
+                        textColor="grey.75"
+                        fontSize="lg"
+                        className="btn-icon"
+                      />
                     }
-                  `}
-                  rightIcon={
-                    <Icon
-                      as={UpRightArrow}
-                      textColor="grey.75"
-                      fontSize="lg"
-                      className="btn-icon"
-                    />
-                  }
-                >
-                  View on Explorer
-                </Button>
-              )}
+                  >
+                    View on Explorer
+                  </Button>
+                )}
             </VStack>
           )}
         </CustomSkeleton>

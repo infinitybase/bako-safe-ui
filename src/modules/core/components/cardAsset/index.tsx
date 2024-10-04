@@ -2,25 +2,23 @@ import {
   Box,
   Card,
   CardProps,
-  ComponentWithAs,
   Flex,
-  Icon,
-  IconProps,
+  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
 
-import { UnknownIcon } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
-import { Asset, assetsMap, NativeAssetId } from '../../utils';
+import { Asset, NativeAssetId } from '../../utils';
 
 interface DefaultAsset {
   assetId: string;
   amount: string;
   name: string;
   slug: string;
-  icon?: ComponentWithAs<'svg', IconProps>;
+  icon?: string;
 }
 
 interface AssetDetailsProps {
@@ -53,13 +51,17 @@ const AssetDetails = ({
 };
 
 const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const defaultAsset = {
-    ...assetsMap[NativeAssetId],
+    ...assetsMap?.[NativeAssetId],
     assetId: NativeAssetId,
     amount: `0`,
   };
 
-  const { assetAmount, assetsInfo } = useGetTokenInfos(asset);
+  const { assetAmount, assetsInfo } = useGetTokenInfos({
+    ...asset,
+    assetsMap,
+  });
 
   return (
     <Card
@@ -80,12 +82,13 @@ const AssetCard = ({ asset, visibleBalance, ...rest }: AssetCardProps) => {
         gap={2}
         mb={1}
       >
-        <Icon
+        <Image
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
-          as={assetsInfo?.icon ?? UnknownIcon}
+          src={assetsInfo?.icon ?? ''}
+          alt="Asset Icon"
+          objectFit="cover"
         />
-
         <AssetDetails
           assetName={assetsInfo.name}
           assetSlug={assetsInfo.slug}

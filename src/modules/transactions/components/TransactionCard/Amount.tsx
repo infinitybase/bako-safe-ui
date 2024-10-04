@@ -1,31 +1,34 @@
 import {
   AvatarGroup,
+  BoxProps,
   Flex,
   HStack,
-  Icon,
+  Image,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { CustomSkeleton, UnknownIcon } from '@/components';
+import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { assetsMap } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
-interface TransactionCardAmountProps {
+interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
   isContract: boolean;
+  isDeploy: boolean;
 }
 
 const Amount = ({
   transaction,
   isDeposit,
   isContract,
+  isDeploy,
+  ...rest
 }: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
@@ -34,6 +37,7 @@ const Amount = ({
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
+    assetsMap,
   } = useWorkspaceContext();
 
   const totalAmoutSent = transaction.assets
@@ -61,8 +65,9 @@ const Amount = ({
       alignItems="center"
       justifyContent="flex-start"
       w={isExtraSmall ? 150 : 200}
+      {...rest}
     >
-      {isContract ? null : (
+      {isContract || isDeploy ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 3}
@@ -71,20 +76,29 @@ const Amount = ({
             position="relative"
           >
             {hasNoDefaultAssets && (
-              <Icon
+              <Image
                 key={assetsMap[operationAssets.assetId]?.assetId}
-                w={6}
-                h={6}
-                as={assetsMap[operationAssets.assetId]?.icon ?? UnknownIcon}
+                w={{ base: '34px', sm: 6 }}
+                h={{ base: 'full', sm: 6 }}
+                src={
+                  assetsMap[operationAssets.assetId]?.icon ??
+                  assetsMap['UNKNOWN'].icon
+                }
+                alt="Asset Icon"
+                objectFit="cover"
               />
             )}
 
             {oneAssetOfEach.map((asset) => (
-              <Icon
+              <Image
                 key={asset.assetId}
-                w={6}
-                h={6}
-                as={assetsMap[asset.assetId]?.icon ?? UnknownIcon}
+                w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                h={{ base: 'full', sm: 6 }}
+                src={
+                  assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
+                }
+                alt="Asset Icon"
+                objectFit="cover"
               />
             ))}
           </AvatarGroup>
