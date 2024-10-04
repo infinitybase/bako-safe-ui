@@ -27,6 +27,7 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
               onChange={field.onChange}
               placeholder=" "
               variant="dark"
+              maxLength={27}
             />
             <FormLabel>Name or Label</FormLabel>
             <FormHelperText color="error.500">

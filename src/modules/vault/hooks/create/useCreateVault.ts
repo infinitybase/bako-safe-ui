@@ -29,6 +29,9 @@ const useCreateVault = () => {
         latestPredicates: { refetch: refetchLatestPredicates },
       },
     },
+    userVaults: {
+      request: { refetch: refetchUserVaults },
+    },
   } = useWorkspaceContext();
 
   const navigate = useNavigate();
@@ -47,6 +50,7 @@ const useCreateVault = () => {
   const bakoSafeVault = useCreateBakoSafeVault({
     onSuccess: (data) => {
       refetchLatestPredicates();
+      refetchUserVaults();
       setVaultId(data.id);
       setTab(TabState.SUCCESS);
       form.reset();
@@ -96,6 +100,7 @@ const useCreateVault = () => {
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
+      providerUrl: userInfos.network.url,
       addresses,
     });
   });

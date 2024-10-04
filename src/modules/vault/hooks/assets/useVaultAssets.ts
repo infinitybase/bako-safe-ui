@@ -3,7 +3,7 @@ import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
 import {
-  assetsMap,
+  AssetMap,
   ETHDefault,
   NativeAssetId,
   useGetParams,
@@ -29,7 +29,11 @@ export const vaultAssetsQueryKey = {
   ],
 };
 
-function useVaultAssets(workspaceId: string, predicateId: string) {
+const useVaultAssets = (
+  workspaceId: string,
+  predicateId: string,
+  assetsMap: false | AssetMap | undefined,
+) => {
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -82,7 +86,7 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
 
   const getAssetInfo = (assetId: string) => {
     return (
-      assetsMap[assetId] ?? {
+      assetsMap?.[assetId] ?? {
         name: 'Unknown',
         slug: 'UKN',
         icon: ETHDefault,
@@ -140,6 +144,6 @@ function useVaultAssets(workspaceId: string, predicateId: string) {
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
   };
-}
+};
 
 export { useVaultAssets };

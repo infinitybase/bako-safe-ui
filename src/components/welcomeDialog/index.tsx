@@ -1,5 +1,7 @@
 import { Button, VStack } from '@chakra-ui/react';
 
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -32,6 +34,9 @@ const WelcomeDialog = ({
 
   const updateUserMutation = useUpdateSettingsRequest();
 
+  const { checkNetwork } = useNetworks();
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
+
   const handleUpdateUser = async () => {
     updateUserMutation.mutate(
       {
@@ -56,7 +61,7 @@ const WelcomeDialog = ({
   };
 
   const handleRedirectToMainNet = async () => {
-    window.open('https://app-mainnet.fuel.network/bridge', '_BLANK');
+    window.open(import.meta.env.VITE_BRIDGE, '_BLANK');
   };
 
   return (
@@ -103,11 +108,12 @@ const WelcomeDialog = ({
             title="Bridge"
             description="Transfer between different networks."
             icon={BridgeIcon}
-            onClick={() => handleRedirectToMainNet()}
+            commingSoon={isTestnet}
+            onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
           />
           <WelcomeCard
-            title="Buy"
-            description="On-ramp purchase."
+            title="Purchase"
+            description="Buy crypto using card or bank account."
             icon={CoinsIcon}
             commingSoon
             iconSize="22px"

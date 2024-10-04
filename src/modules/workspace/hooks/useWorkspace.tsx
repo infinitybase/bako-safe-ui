@@ -7,7 +7,7 @@ import { IUserInfos } from '@/modules/auth/services';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';
-import { Pages } from '../../core';
+import { AssetMap, Pages } from '../../core';
 import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
 // import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
@@ -18,6 +18,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = (
   userInfos: IUserInfos,
+  assetsMaps: false | AssetMap | undefined,
   invalidateGifAnimationRequest: () => void,
   resetAllTransactionsTypeFilters: () => void,
   refetchPendingSingerTransactions: () => void,
@@ -32,6 +33,7 @@ const useWorkspace = (
 
   const workspaceBalance = useGetWorkspaceBalanceRequest(
     userInfos?.workspace?.id,
+    assetsMaps,
   );
 
   const latestPredicates = useHomeDataRequest(userInfos?.workspace?.id);

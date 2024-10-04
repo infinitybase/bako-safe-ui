@@ -33,4 +33,9 @@ export default defineConfig({
   define: {
     'process.env': process.env,
   },
+  server: {
+    headers: {
+      'Document-Policy': 'js-profiling',
+    },
+  },
 });

@@ -50,12 +50,7 @@ const useBakoSafeCreateTransaction = ({
       const transaction = await TransactionService.getByHash(hashTxId);
       return transaction;
     },
-    {
-      ...options,
-      retry: (failureCount) => {
-        return failureCount < 5;
-      },
-    },
+    options,
   );
 };
 
@@ -97,6 +92,7 @@ interface BakoSafeTransactionSendVariables {
     'id' | 'predicateId' | 'predicateAddress' | 'hash'
   >;
   auth?: IBakoSafeAuth;
+  providerUrl: string;
 }
 
 const useBakoSafeTransactionSend = (
@@ -104,9 +100,10 @@ const useBakoSafeTransactionSend = (
 ) => {
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.SEND(),
-    async ({ transaction }: BakoSafeTransactionSendVariables) => {
+    async ({ transaction, providerUrl }: BakoSafeTransactionSendVariables) => {
       const vaultInstance = await instantiateVault({
         predicateAddress: transaction.predicateAddress,
+        providerUrl,
       });
 
       try {

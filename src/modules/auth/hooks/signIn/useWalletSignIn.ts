@@ -1,26 +1,24 @@
 import { useFuel } from '@fuels/react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
+import { useContactToast } from '@/modules/addressBook';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
 import { TypeUser } from '../../services';
-import { useQueryParams } from '../usePopup';
 import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
-import { SignInOrigin, useSignInOriginFactory } from './origin';
 
-const useWalletSignIn = () => {
+export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
+
+const useWalletSignIn = (
+  callback: (vaultId?: string, workspaceId?: string) => void,
+) => {
   const [isAnyWalletConnectorOpen, setIsAnyWalletConnectorOpen] =
     useState(false);
 
-  const navigate = useNavigate();
   const { fuel } = useFuel();
-  const { sessionId } = useQueryParams();
   const { authDetails, invalidateGifAnimationRequest } = useWorkspaceContext();
-
-  const signInOrigin = sessionId ? SignInOrigin.DAPP : SignInOrigin.WEB;
-  const { redirect } = useSignInOriginFactory(signInOrigin);
+  const { errorToast } = useContactToast();
 
   const signInRequest = useSignInRequest({
     onSuccess: ({
@@ -45,7 +43,7 @@ const useWalletSignIn = () => {
         first_login,
       });
       invalidateGifAnimationRequest();
-      navigate(redirect(rootWallet, workspace.id));
+      callback(rootWallet, workspace.id);
     },
   });
 
@@ -54,6 +52,12 @@ const useWalletSignIn = () => {
       signInRequest.mutate({
         code,
         type,
+      });
+    },
+    onError: (message) => {
+      errorToast({
+        title: 'Login error',
+        description: (message as { message: string }).message,
       });
     },
   });

@@ -8,15 +8,15 @@ interface ICreateVaultPayload {
   name?: string;
   signers: string[];
   minSigners: number;
+  providerUrl: string;
 }
 
 const createVault = async ({
   name,
   signers,
   minSigners,
+  providerUrl,
 }: ICreateVaultPayload) => {
-  console.log('[CREATE_VAULT]', name, minSigners, signers);
-  const providerUrl = import.meta.env.VITE_NETWORK;
   const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
   const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
 

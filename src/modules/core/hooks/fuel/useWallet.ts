@@ -75,7 +75,7 @@ const useWalletSignMessage = (
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (type) {
+      switch (type.type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,

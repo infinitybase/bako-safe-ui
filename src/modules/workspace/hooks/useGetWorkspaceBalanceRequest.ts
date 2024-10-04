@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { WorkspacesQueryKey } from '@/modules/core';
+import { AssetMap, WorkspacesQueryKey } from '@/modules/core';
 import {
   IWroskapceBalance,
   WorkspaceService,
@@ -10,6 +10,7 @@ import { handleAssetsBalance } from '../utils/assets';
 
 const useGetWorkspaceBalanceRequest = (
   currentWorkspace: string,
+  assetsMaps: false | AssetMap | undefined,
   options?: UseQueryOptions<
     IWroskapceBalance,
     unknown,
@@ -24,7 +25,6 @@ const useGetWorkspaceBalanceRequest = (
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 5, // 5 mins
     enabled: false,
-    // enabled:
     //   window.location.pathname != '/' && window.location.pathname != '/home',
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
@@ -35,7 +35,7 @@ const useGetWorkspaceBalanceRequest = (
       ...data,
       balanceUSD: data?.currentBalanceUSD,
       workspaceId: '',
-      assetsBalance: handleAssetsBalance(data?.currentBalance),
+      assetsBalance: handleAssetsBalance(data?.currentBalance, assetsMaps),
     },
     ...request,
   };

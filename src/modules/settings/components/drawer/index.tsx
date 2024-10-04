@@ -22,7 +22,7 @@ import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { LineCloseIcon } from '@/components';
-import { useWebAuthnSignIn } from '@/modules/auth';
+import { useWebAuthnInput } from '@/modules/auth/hooks/webAuthn';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import {
@@ -45,7 +45,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
   const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
-    useWebAuthnSignIn();
+    useWebAuthnInput(!form.formState.errors.name);
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
@@ -128,6 +128,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   <FormControl isInvalid={fieldState.invalid}>
                     <Input
                       variant="dark"
+                      maxLength={19}
                       placeholder=" "
                       value={inputValue}
                       onChange={(e) => {

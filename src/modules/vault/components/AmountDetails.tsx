@@ -11,8 +11,8 @@ import {
 import { bn } from 'fuels';
 
 import { Card, CustomSkeleton, NotFoundIcon } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { assetsMap } from '../../core/utils/assets/data';
 import { Asset } from '../../core/utils/assets/types';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
@@ -37,6 +37,7 @@ const AssetCard = chakra(Card, {
 });
 
 const AmountDetails = (props: AmountDetailsProps) => {
+  const { assetsMap } = useWorkspaceContext();
   const { assets, isLoading, vaultAddress } = props;
   const { visibleBalance } = assets;
 
@@ -135,7 +136,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                     <Image
                       w={{ base: 8, sm: 10 }}
                       h={{ base: 8, sm: 10 }}
-                      src={assetsMap[asset.assetId]?.icon ?? ''}
+                      src={assetsMap?.[asset.assetId]?.icon ?? ''}
                       alt="Asset Icon"
                       objectFit="cover"
                     />
@@ -148,7 +149,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                         {visibleBalance ? balance : '*****'}
                       </Text>
                       <Text variant="description" fontSize="md">
-                        {assetsMap[asset.assetId].slug}
+                        {assetsMap?.[asset.assetId].slug}
                       </Text>
                     </Box>
                   </HStack>

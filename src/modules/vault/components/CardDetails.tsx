@@ -19,6 +19,8 @@ import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useNetworks } from '@/modules/network/hooks';
+import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../hooks/details';
@@ -29,6 +31,7 @@ export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
   assets: UseVaultDetailsReturn['assets'];
   isPendingSigner: boolean;
+  setAddAssetsDialogState: (value: boolean) => void;
 }
 
 const Update = () => {
@@ -63,7 +66,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const { vault, assets } = props;
+  const { vault, assets, setAddAssetsDialogState } = props;
   const {
     balanceUSD,
     visibleBalance,
@@ -80,6 +83,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     },
     screenSizes: { isMobile },
   } = useWorkspaceContext();
+  const { checkNetwork } = useNetworks();
+
+  const isTestnet = checkNetwork(NetworkType.TESTNET);
 
   const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
     precision: 4,
@@ -258,10 +264,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Button
                     hidden={hasBalance}
                     variant="primary"
-                    onClick={() => openFaucet(vault.data?.predicateAddress)}
+                    onClick={() =>
+                      isTestnet
+                        ? openFaucet(vault.data?.predicateAddress)
+                        : setAddAssetsDialogState(true)
+                    }
                     leftIcon={<PlusSquareIcon />}
                   >
-                    Faucet
+                    {isTestnet ? 'Faucet' : 'Add Assets'}
                   </Button>
 
                   <VStack

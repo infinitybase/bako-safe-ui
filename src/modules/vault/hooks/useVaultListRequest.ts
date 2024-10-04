@@ -11,7 +11,7 @@ const useVaultListRequest = (
     queryFn: ({ pageParam }) =>
       VaultService.getAllWithPagination({
         ...filter,
-        perPage: 5,
+        perPage: filter.perPage || 5,
         page: pageParam || 0,
       }),
     initialPageParam: 0,

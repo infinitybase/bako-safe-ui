@@ -8,6 +8,7 @@ export interface APIToken {
   deletedAt: string;
   updatedAt: string;
   name: string;
+  network: { url: string; chainId: number };
   config?: APITokenConfig;
 }
 

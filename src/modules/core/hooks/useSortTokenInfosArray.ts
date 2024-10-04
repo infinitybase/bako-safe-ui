@@ -1,7 +1,10 @@
-import { Asset, assetsMap } from '../utils';
+import { Asset, AssetMap } from '../utils';
 
-const useSortTokenInfosArray = (assets: Asset[]) => {
-  const unknownAssetName = assetsMap['UNKNOWN'].name;
+const useSortTokenInfosArray = (
+  assets: Asset[],
+  assetsMap: false | AssetMap | undefined,
+) => {
+  const unknownAssetName = assetsMap?.['UNKNOWN'].name;
 
   const sortedAssets = assets.sort((a, b) => {
     if (a.name === unknownAssetName && b.name !== unknownAssetName) {

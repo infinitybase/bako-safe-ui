@@ -1,10 +1,12 @@
 import { useRedirectFromLandingPage } from '..';
 
-interface AuthSyncProps {
+interface RedirectFromLandingPageProps {
   children: JSX.Element;
 }
 
-const RedirectFromLandingPage = ({ children }: AuthSyncProps) => {
+const RedirectFromLandingPage = ({
+  children,
+}: RedirectFromLandingPageProps) => {
   const { checkingOrigin } = useRedirectFromLandingPage();
 
   if (checkingOrigin) {

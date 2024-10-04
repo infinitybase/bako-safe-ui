@@ -511,7 +511,7 @@ const WorkspacePage = () => {
             gap={6}
           >
             {recentVaults?.map(
-              ({ id, name, workspace, members, description }, index) => {
+              ({ id, name, workspace, members, description, owner }, index) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -534,7 +534,7 @@ const WorkspacePage = () => {
                         />
                       ) : (
                         <VaultCard
-                          id={id}
+                          ownerId={owner.id}
                           name={name}
                           workspace={workspace}
                           title={description}

@@ -1,12 +1,12 @@
-import { api } from '@/config';
-import { IPagination, Predicate, Workspace } from '@/modules/core';
-import { AssetId } from '@/modules/core/utils/assets/address';
-import { TransactionWithVault } from '@/modules/transactions/services';
-
 import { TransactionType } from 'bakosafe';
 
+import { api } from '@/config';
+import { AssetId } from '@/modules/core/utils/assets/address';
+import { TransactionWithVault } from '@/modules/transactions/services';
+import { GetAllPredicatePaginationResponse } from '@/modules/vault';
+
 export interface HomeDataResponse {
-  predicates: IPagination<Predicate & { workspace: Workspace }>;
+  predicates: GetAllPredicatePaginationResponse;
 }
 
 export interface HomeTransactionsResponse {
