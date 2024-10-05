@@ -1,13 +1,7 @@
-import {
-  Box,
-  Divider,
-  HStack,
-  Text,
-  useMediaQuery,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';
 import { privacyPolicy, termsOfUse } from '../utils/data';
@@ -18,6 +12,16 @@ type TermsOfUseDialogProps = {
 
 const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
   const {
+    screenSizes: {
+      screenHeights: {
+        isLargerThan600,
+        isLargerThan660,
+        isLargerThan768,
+        isLargerThan900,
+      },
+    },
+  } = useWorkspaceContext();
+  const {
     isSafariBrowser,
     isMobile,
     read,
@@ -26,11 +30,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     modalIsOpen,
     onClose,
   } = useTermsDialog();
-
-  const [isLargerThan600] = useMediaQuery('(min-height: 600px)');
-  const [isLargerThan660] = useMediaQuery('(min-height: 660px)');
-  const [isLargerThan768] = useMediaQuery('(min-height: 768px)');
-  const [isLargerThan900] = useMediaQuery('(min-height: 900px)');
 
   const textHeight = () => {
     if (isMobile) {
