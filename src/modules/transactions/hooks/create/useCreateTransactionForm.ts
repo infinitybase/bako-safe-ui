@@ -4,10 +4,11 @@ import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { AddressUtils, NativeAssetId } from '@/modules/core/utils';
+import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
+  assetsMap: AssetMap;
   validateBalance: (asset: string, amount: string) => boolean;
   getCoinAmount: (asset: string) => BN;
 };
@@ -70,7 +71,14 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
               to: string;
             }[];
 
-            const coinBalance = params.getCoinAmount(parent.asset);
+            const units = (
+              params.assetsMap?.[parent.asset] ?? params.assetsMap?.['UNKNOWN']
+            )?.units;
+
+            const coinBalance = bn.parseUnits(
+              params.getCoinAmount(parent.asset).format({ units }),
+            );
+
             let transactionsBalance = transactions
               .filter((transaction) => transaction.asset === parent.asset)
               .reduce(
