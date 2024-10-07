@@ -2,10 +2,7 @@ import { bn } from 'fuels';
 
 import { Asset, AssetMap } from '../utils';
 
-const useGetTokenInfosArray = (
-  assets: Asset[],
-  assetsMap: false | AssetMap | undefined,
-) => {
+const useGetTokenInfosArray = (assets: Asset[], assetsMap: AssetMap) => {
   const processAsset = (asset: Asset) => {
     const assetsInfo = assetsMap?.[asset.assetId] ?? assetsMap?.['UNKNOWN'];
     return {
