@@ -1,1 +1,1 @@
-export const gasConfig = 0.001;
+export const gasConfig = 0.00001;
