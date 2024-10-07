@@ -67,7 +67,7 @@ const useNetworks = (onClose?: () => void) => {
       const name = provider.getChain()?.name;
       const chainId = provider.getChainId();
 
-      NetworkService.create({
+      await NetworkService.create({
         name,
         url: url!,
         chainId,
@@ -93,10 +93,9 @@ const useNetworks = (onClose?: () => void) => {
       {
         onSuccess: async () => {
           setMode(NetworkDrawerMode.SELECT);
-          onClose?.();
+          await handleSelectNetwork(data.url);
           setValidNetwork(false);
           refetchNetworks();
-          handleSelectNetwork(data.url);
         },
       },
     );
