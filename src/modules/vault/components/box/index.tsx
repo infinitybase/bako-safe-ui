@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   SkeletonCircle,
   SkeletonText,
   Text,
@@ -19,7 +20,9 @@ import {
   CustomSkeleton,
   HomeIcon,
   LeftAndRightArrow,
+  UpRightArrow,
 } from '@/components';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
@@ -74,7 +77,16 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   const {
     screenSizes: { isMobile },
+    authDetails: {
+      userInfos: { network },
+    },
   } = useWorkspaceContext();
+
+  const redirectToNetwork = () =>
+    window.open(
+      `${findBlockExplorerByNetwork(network.url)}/account/${address}/assets`,
+      '_BLANK',
+    );
 
   return (
     <Box w="100%">
@@ -101,16 +113,38 @@ const VaultBox = (props: VaultBoxPropx) => {
             boxSize="56px"
           />
         </CustomSkeleton>
-        <VStack alignItems="start" spacing={3} justifyContent="center">
-          <Heading size="xs" isTruncated textOverflow="ellipsis" maxW="170px">
+        <VStack
+          alignItems="start"
+          spacing={3}
+          justifyContent="center"
+          minW="200px"
+          w="full"
+        >
+          <Heading size="xs" isTruncated textOverflow="ellipsis" w="full">
             {name}
           </Heading>
-          <AddressWithCopyBtn
-            address={address}
-            isSidebarAddress
-            h="20px"
-            flexDir="row-reverse"
-          />
+          <HStack
+            alignItems="center"
+            justifyContent="center"
+            w={isMobile ? 'unset' : 'full'}
+          >
+            <AddressWithCopyBtn
+              address={address}
+              isSidebarAddress
+              h="20px"
+              flexDir="row-reverse"
+            />
+            <IconButton
+              icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
+              aria-label="Explorer"
+              size="xs"
+              minW={2}
+              bg="none"
+              h={3}
+              _hover={{ bg: 'none' }}
+              onClick={redirectToNetwork}
+            />
+          </HStack>
         </VStack>
       </HStack>
       {/* Create Tx Btn */}

@@ -56,6 +56,13 @@ export const availableNetWorks = [
     chainId: 0,
     explorer: `https://app.fuel.network/`,
   },
+  {
+    identifier: NetworkType.MAINNET,
+    name: 'Ignition',
+    url: 'https://app-mainnet.fuel.network/v1/graphql',
+    chainId: 9889,
+    exporer: `https://app-mainnet.fuel.network/`,
+  },
   ...(import.meta.env.VITE_DEV === 'development'
     ? [
         {

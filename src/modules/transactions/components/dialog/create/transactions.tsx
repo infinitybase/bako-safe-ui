@@ -210,10 +210,26 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
     getBalanceAvailable,
   } = props;
 
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
+
+  // Logic to fix the button in the footer
+  // const accordionHeight = () => {
+  //   if (isMobile && isLargerThan900) return 500;
+  //   if (isMobile && isLargerThan768) return 400;
+  //   if (isMobile && isLargerThan660) return 220;
+  //   if (isMobile && isLargerThan600) return 200;
+
+  //   return 450;
+  // };
+
   return (
     <Accordion
       index={accordion.index}
       overflowY="auto"
+      pb={isMobile ? 10 : 0}
+      // maxH={accordionHeight()}
       maxH={450}
       pr={{ base: 1, sm: 0 }}
       sx={{
