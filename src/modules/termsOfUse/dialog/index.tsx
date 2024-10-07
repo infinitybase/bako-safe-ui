@@ -121,8 +121,11 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
           </Text>
 
           <VStack w="full" alignItems={'flex-start'}>
-            {privacyPolicy.map(({ title, paragraphs }) => (
-              <Box key={title}>
+            {privacyPolicy.map(({ title, paragraphs }, index) => (
+              <Box
+                key={title}
+                ref={privacyPolicy.length - 1 === index ? inView.ref : null}
+              >
                 <Text
                   fontSize={'sm'}
                   color={'grey.75'}
@@ -145,7 +148,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
                 </VStack>
               </Box>
             ))}
-            <Box ref={inView.ref} color="transparent" />
           </VStack>
         </VStack>
       </Dialog.Body>
