@@ -11,7 +11,7 @@ export const UNKNOWN_ASSET = {
   name: 'Unknown',
   slug: 'UNK',
   assetId: 'UNKNOWN',
-  icon: '/src/assets/tokens/unknown.svg',
+  icon: '/tokens/unknown.svg',
   units: 9,
 };
 
