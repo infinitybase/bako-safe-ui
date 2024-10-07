@@ -77,4 +77,7 @@ export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
   return assetsMap;
 };
 
-export { assetsList, ETHDefault, NativeAssetId };
+const getAssetInfo = (assetsMap: AssetMap, assetId: string) =>
+  assetsMap[assetId] ?? assetsMap['UNKNOWN'];
+
+export { assetsList, ETHDefault, getAssetInfo, NativeAssetId };
