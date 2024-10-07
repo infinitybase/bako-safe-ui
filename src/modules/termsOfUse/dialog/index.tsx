@@ -145,9 +145,8 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
                 </VStack>
               </Box>
             ))}
+            <Box ref={inView.ref} color="transparent" />
           </VStack>
-
-          <Box ref={inView.ref} color="transparent" />
         </VStack>
       </Dialog.Body>
 
