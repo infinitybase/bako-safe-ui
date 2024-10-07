@@ -22,6 +22,7 @@ import {
   LeftAndRightArrow,
   UpRightArrow,
 } from '@/components';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
@@ -83,9 +84,7 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   const redirectToNetwork = () =>
     window.open(
-      network.chainId === 0
-        ? `${import.meta.env.VITE_EXPLORER_REDIRECT_TEST_NET}/${address}/assets`
-        : `${import.meta.env.VITE_EXPLORER_REDIRECT_MAIN_NET}/${address}/assets`,
+      `${findBlockExplorerByNetwork(network.url)}/account/${address}/assets`,
       '_BLANK',
     );
 
