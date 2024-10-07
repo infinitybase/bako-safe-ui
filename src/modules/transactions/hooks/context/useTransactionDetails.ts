@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/modules/auth';
@@ -17,6 +17,7 @@ export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
 
 const useTransactionDetails = () => {
   const location = useLocation();
+  const prevPathRef = useRef(location.pathname);
 
   const {
     userInfos: { workspace },
@@ -56,21 +57,22 @@ const useTransactionDetails = () => {
   };
 
   useEffect(() => {
+    const prevPath = prevPathRef.current;
     const currentPath = location.pathname;
     const hasSelectedTransaction =
       !!vaultTransactions.handlers.selectedTransaction?.id;
 
     return () => {
-      const newPath = location.pathname;
-
-      const isNavigatingAway = newPath !== currentPath;
-      const isLeavingVault = !newPath.includes('vault');
+      const isNavigatingAway = currentPath !== prevPath;
+      const isLeavingVault = !currentPath.includes('vault');
 
       if ((isNavigatingAway || isLeavingVault) && hasSelectedTransaction) {
         vaultTransactions.handlers.setSelectedTransaction({ id: '', name: '' });
       }
+
+      prevPathRef.current = currentPath;
     };
-  }, [location, vaultTransactions.handlers.selectedTransaction?.id]);
+  }, [location.pathname, vaultTransactions.handlers.selectedTransaction?.id]);
 
   return {
     homeTransactions,
