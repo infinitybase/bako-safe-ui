@@ -47,15 +47,16 @@ const useDappSignIn = () => {
 
   const handleLoginOnSafariBrowser = useCallback(() => {
     const username = formData.form.getValues('username');
-
-    window.open(
+    const url = new URL(
       `${window.origin}/${window.location.search}&username=${username}`,
-      '_blank',
     );
+    url.searchParams.delete('byConnector');
+    window.open(url.toString(), '_blank');
   }, [formData.form]);
 
-  const customHandleLogin =
-    byConnector && !username ? handleLoginOnSafariBrowser : handleLogin;
+  const customHandleLogin = byConnector
+    ? handleLoginOnSafariBrowser
+    : handleLogin;
 
   const customFormState = {
     ...fullFormState,
@@ -73,6 +74,12 @@ const useDappSignIn = () => {
     [WebAuthnModeState.ACCOUNT_CREATED]: {
       ...fullFormState[WebAuthnModeState.ACCOUNT_CREATED],
       handleAction: customHandleLogin,
+    },
+    [WebAuthnModeState.REGISTER]: {
+      ...fullFormState[WebAuthnModeState.REGISTER],
+      handleAction: byConnector
+        ? handleLoginOnSafariBrowser
+        : fullFormState[WebAuthnModeState.REGISTER].handleAction,
     },
   };
 
