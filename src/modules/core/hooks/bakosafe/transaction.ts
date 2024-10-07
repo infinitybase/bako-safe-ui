@@ -4,12 +4,15 @@ import {
   TransactionType,
   Vault,
 } from 'bakosafe';
+import { bn } from 'fuels';
 
 import {
   TransactionService,
   TransactionWithVault,
 } from '@/modules/transactions/services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { getAssetInfo } from '../../utils/assets/data';
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
@@ -40,12 +43,21 @@ const useBakoSafeCreateTransaction = ({
   vault,
   ...options
 }: UseBakoSafeCreateTransactionParams) => {
+  const { assetsMap } = useWorkspaceContext();
+
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
       const { hashTxId } = await vault.transaction({
         name: payload.name!,
-        assets: payload.assets,
+        assets: payload.assets.map((asset) => {
+          const { units } = getAssetInfo(assetsMap, asset.assetId);
+
+          return {
+            ...asset,
+            amount: bn.parseUnits(asset.amount, units).format(),
+          };
+        }),
       });
       const transaction = await TransactionService.getByHash(hashTxId);
       return transaction;

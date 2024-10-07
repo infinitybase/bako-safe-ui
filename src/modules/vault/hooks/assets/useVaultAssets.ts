@@ -27,7 +27,7 @@ export const vaultAssetsQueryKey = {
 const useVaultAssets = (
   workspaceId: string,
   predicateId: string,
-  assetsMap: false | AssetMap | undefined,
+  assetsMap: AssetMap,
 ) => {
   const {
     vaultPageParams: { vaultId },
@@ -80,7 +80,7 @@ const useVaultAssets = (
   );
 
   const getAssetInfo = (assetId: string) =>
-    assetsMap?.[assetId] ?? assetsMap?.['UNKNOWN'];
+    assetsMap[assetId] ?? assetsMap['UNKNOWN'];
 
   const hasAssetBalance = useCallback(
     (assetId: string, value: string) => {

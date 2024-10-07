@@ -11,7 +11,7 @@ export const UNKNOWN_ASSET = {
   name: 'Unknown',
   slug: 'UNK',
   assetId: 'UNKNOWN',
-  icon: '/src/assets/tokens/unknown.svg',
+  icon: '/tokens/unknown.svg',
   units: 9,
 };
 
@@ -77,4 +77,7 @@ export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
   return assetsMap;
 };
 
-export { assetsList, ETHDefault, NativeAssetId };
+const getAssetInfo = (assetsMap: AssetMap, assetId: string) =>
+  assetsMap[assetId] ?? assetsMap['UNKNOWN'];
+
+export { assetsList, ETHDefault, getAssetInfo, NativeAssetId };
