@@ -21,6 +21,8 @@ const getChainId = (): number =>
       import.meta.env.VITE_CHAIN_ID,
   );
 
+console.log({ UNKNOWN_ASSET });
+
 export const formatedAssets = (chainId: number): Asset[] =>
   assets
     .reduce<Asset[]>((acc, asset) => {
