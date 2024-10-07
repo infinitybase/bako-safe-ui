@@ -11,7 +11,7 @@ export const UNKNOWN_ASSET = {
   name: 'Unknown',
   slug: 'UNK',
   assetId: 'UNKNOWN',
-  icon: '/src/assets/tokens/unknown.svg',
+  icon: '/tokens/unknown.svg',
   units: 9,
 };
 
@@ -20,8 +20,6 @@ const getChainId = (): number =>
     localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
       import.meta.env.VITE_CHAIN_ID,
   );
-
-console.log({ UNKNOWN_ASSET });
 
 export const formatedAssets = (chainId: number): Asset[] =>
   assets
