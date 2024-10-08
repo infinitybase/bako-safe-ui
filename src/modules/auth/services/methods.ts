@@ -71,7 +71,7 @@ export type SignInResponse = {
   provider: string;
 };
 
-export type CheckNicknameResponse = {
+export type GetByNameResponse = {
   id: string;
   address: string;
   name: string;
@@ -83,6 +83,10 @@ export type CheckNicknameResponse = {
     origin: string;
     hardware: string;
   };
+};
+
+export type CheckNicknameResponse = {
+  type: TypeUser;
 };
 
 export type AuthenticateParams = {
@@ -187,17 +191,28 @@ export class UserService {
     return data;
   }
 
-  static async verifyNickname(nickname: string) {
+  static async getByName(nickname: string) {
+    const { data } = await api.get<GetByNameResponse>(
+      `/user/by-name/${nickname}`,
+    );
+
+    return data;
+  }
+
+  static async verifyNickname(nickname: string, userId?: string) {
     if (!nickname) return;
     const { data } = await api.get<CheckNicknameResponse>(
       `/user/nickname/${nickname}`,
+      {
+        params: { userId },
+      },
     );
 
     return data;
   }
 
   static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<CheckNicknameResponse[]>(
+    const { data } = await api.get<GetByNameResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
     return data;
@@ -276,7 +291,12 @@ export const UserQueryKey = {
     'accounts',
     hardwareId,
   ],
-  NICKNAME: (search: string) => [UserQueryKey.DEFAULT, 'nickname', search],
+  NICKNAME: (search: string, userId?: string) => [
+    UserQueryKey.DEFAULT,
+    'nickname',
+    search,
+    userId,
+  ],
   FULL_DATA: (search: string, hardwareId: string) => [
     UserQueryKey.DEFAULT,
     UserQueryKey.NICKNAME(search),

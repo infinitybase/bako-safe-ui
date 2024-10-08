@@ -24,7 +24,7 @@ const WebauthnInputBadge: Record<string, IWebauthnInputBadge> = {
   ERROR: { status: AutocompleteBadgeStatus.ERROR, label: 'Invalid username' },
 };
 
-const useWebAuthnInput = (validUsername?: boolean) => {
+const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [accountSearch, setAccountSearch] = useState<string>('');
   const [accountFilter, setAccountFilter] = useState<string>('');
@@ -38,6 +38,7 @@ const useWebAuthnInput = (validUsername?: boolean) => {
   const checkNicknameRequest = useCheckNickname(
     accountSearch,
     checkNicknameRequestEnabled,
+    userId,
   );
 
   const accountsOptions = useMemo(() => {

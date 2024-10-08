@@ -16,8 +16,8 @@ interface UseWebAuthnSignInParams {
   callback: (vaultId?: string, workspaceId?: string) => void;
 }
 
-const verifyNickname = async (username: string) => {
-  return await UserService.verifyNickname(username);
+const getByName = async (username: string) => {
+  return await UserService.getByName(username);
 };
 
 const generateSignInCode = async (address: string, networkUrl?: string) => {
@@ -44,7 +44,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   const handleLogin = form.handleSubmit(async ({ username }) => {
     setIsSigningIn(true);
 
-    const acc = await verifyNickname(username);
+    const acc = await getByName(username);
 
     if (!acc?.address || !acc.webauthn) {
       setSignInProgress(0);
