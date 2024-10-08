@@ -33,7 +33,7 @@ const MintTokenInfos = ({ transaction }: MintTokenProps) => {
 
         return (
           <React.Fragment key={index}>
-            {name && name === 'Contract call' && (
+            {name && name === 'Contract call' && !assetsSent && (
               <ContractAddresses
                 transaction={transaction}
                 borderColor="grey.950"
