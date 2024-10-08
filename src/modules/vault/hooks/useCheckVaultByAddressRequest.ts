@@ -4,17 +4,17 @@ import { VaultService } from '../services';
 
 export const VAULT_BY_ADDRESS_QUERY_KEY = 'predicate/by-address';
 
-export type UseVaultByAddressRequest = ReturnType<
-  typeof useVaultByAddressRequest
+export type UseCheckVaultByAddressRequest = ReturnType<
+  typeof useCheckVaultByAddressRequest
 >;
 
-const useVaultByAddressRequest = (address: string, enabled: boolean) => {
+const useCheckVaultByAddressRequest = (address: string, enabled: boolean) => {
   return useQuery({
     queryKey: [VAULT_BY_ADDRESS_QUERY_KEY, address],
-    queryFn: () => VaultService.getByAddress(address),
+    queryFn: () => VaultService.checkByAddress(address),
     refetchOnWindowFocus: false,
     enabled,
   });
 };
 
-export { useVaultByAddressRequest };
+export { useCheckVaultByAddressRequest };
