@@ -2,12 +2,7 @@ import { QueryState, useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
-import {
-  AssetMap,
-  ETHDefault,
-  NativeAssetId,
-  useGetParams,
-} from '@/modules/core';
+import { AssetMap, NativeAssetId, useGetParams } from '@/modules/core';
 
 const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
 
@@ -32,7 +27,7 @@ export const vaultAssetsQueryKey = {
 const useVaultAssets = (
   workspaceId: string,
   predicateId: string,
-  assetsMap: false | AssetMap | undefined,
+  assetsMap: AssetMap,
 ) => {
   const {
     vaultPageParams: { vaultId },
@@ -84,21 +79,15 @@ const useVaultAssets = (
     [data?.currentBalance],
   );
 
-  const getAssetInfo = (assetId: string) => {
-    return (
-      assetsMap?.[assetId] ?? {
-        name: 'Unknown',
-        slug: 'UKN',
-        icon: ETHDefault,
-      }
-    );
-  };
+  const getAssetInfo = (assetId: string) =>
+    assetsMap[assetId] ?? assetsMap['UNKNOWN'];
 
   const hasAssetBalance = useCallback(
     (assetId: string, value: string) => {
-      const coinBalance = getCoinAmount(assetId).format();
+      const units = getAssetInfo(assetId)?.units;
+      const coinBalance = getCoinAmount(assetId).format({ units });
       const hasBalance = bn(bn.parseUnits(value)).lte(
-        bn.parseUnits(String(coinBalance)),
+        bn.parseUnits(coinBalance),
       );
 
       return hasBalance;

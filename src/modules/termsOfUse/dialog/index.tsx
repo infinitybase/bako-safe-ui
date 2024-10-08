@@ -1,13 +1,7 @@
-import {
-  Box,
-  Divider,
-  HStack,
-  Text,
-  useMediaQuery,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { Dialog } from '@/components';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';
 import { privacyPolicy, termsOfUse } from '../utils/data';
@@ -18,6 +12,16 @@ type TermsOfUseDialogProps = {
 
 const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
   const {
+    screenSizes: {
+      screenHeights: {
+        isLargerThan600,
+        isLargerThan660,
+        isLargerThan768,
+        isLargerThan900,
+      },
+    },
+  } = useWorkspaceContext();
+  const {
     isSafariBrowser,
     isMobile,
     read,
@@ -26,11 +30,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
     modalIsOpen,
     onClose,
   } = useTermsDialog();
-
-  const [isLargerThan600] = useMediaQuery('(min-height: 600px)');
-  const [isLargerThan660] = useMediaQuery('(min-height: 660px)');
-  const [isLargerThan768] = useMediaQuery('(min-height: 768px)');
-  const [isLargerThan900] = useMediaQuery('(min-height: 900px)');
 
   const textHeight = () => {
     if (isMobile) {
@@ -122,8 +121,11 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
           </Text>
 
           <VStack w="full" alignItems={'flex-start'}>
-            {privacyPolicy.map(({ title, paragraphs }) => (
-              <Box key={title}>
+            {privacyPolicy.map(({ title, paragraphs }, index) => (
+              <Box
+                key={title}
+                ref={privacyPolicy.length - 1 === index ? inView.ref : null}
+              >
                 <Text
                   fontSize={'sm'}
                   color={'grey.75'}
@@ -147,8 +149,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
               </Box>
             ))}
           </VStack>
-
-          <Box ref={inView.ref} color="transparent" />
         </VStack>
       </Dialog.Body>
 

@@ -94,6 +94,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount!,
       assetId: asset.assetId,
     })),
+    assetsMap,
     getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
     validateBalance: (asset, amount) =>
       props?.hasAssetBalance(asset, amount) ?? false,

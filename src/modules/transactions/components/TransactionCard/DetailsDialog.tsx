@@ -20,6 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -29,8 +30,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { TransactionWithVault } from '../../services/types';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
-import { useNetworks } from '@/modules/network/hooks';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
@@ -53,7 +52,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     isContract,
   } = props;
   const {
-    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const handleViewInExplorer = () => {
@@ -127,17 +126,16 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   <Heading
                     variant={'title-sm'}
                     color="grey.200"
-                    textOverflow="ellipsis"
                     textAlign="left"
+                    wordBreak="break-all"
                     noOfLines={1}
-                    maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
                   >
                     {transaction.name}
                   </Heading>
                 </Center>
               </HStack>
 
-              {!isLowerThanFourHundredAndThirty && (
+              {!isLowerThanFourHundredAndThirty && isCompleted && (
                 <Button
                   border="none"
                   bgColor="#F5F5F50D"
@@ -159,7 +157,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             </HStack>
 
             <HStack w="full" justifyContent="space-between" h="38px">
-              <HStack>
+              <HStack w="75%">
                 <Avatar
                   name={transaction.predicate?.name ?? ''}
                   color="grey.425"
@@ -176,10 +174,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 <Heading
                   variant={'title-sm'}
                   color="grey.200"
-                  textOverflow="ellipsis"
                   textAlign="left"
                   noOfLines={1}
-                  maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                  wordBreak="break-all"
                 >
                   {transaction.predicate?.name}
                 </Heading>
@@ -206,7 +203,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 })}
               />
             </HStack>
-            {isLowerThanFourHundredAndThirty && (
+            {isLowerThanFourHundredAndThirty && isCompleted && (
               <Button
                 mt={4}
                 w="full"

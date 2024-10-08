@@ -12,9 +12,24 @@ const useScreenSize = () => {
     '(max-width: 75.62em)',
   ); //1210px
 
+  // Heights
   const [isMdHeight] = useMediaQuery('(max-height: 48em)'); //768px
   const [isSmallHeight] = useMediaQuery('(max-height: 37.48em)'); //600px
   const [isXSHeight] = useMediaQuery('(max-height: 33.125em)'); //530px
+  const [isLargerThan600] = useMediaQuery('(min-height: 600px)');
+  const [isLargerThan660] = useMediaQuery('(min-height: 660px)');
+  const [isLargerThan768] = useMediaQuery('(min-height: 768px)');
+  const [isLargerThan900] = useMediaQuery('(min-height: 900px)');
+
+  const screenHeights = {
+    isMdHeight,
+    isSmallHeight,
+    isXSHeight,
+    isLargerThan600,
+    isLargerThan660,
+    isLargerThan768,
+    isLargerThan900,
+  };
 
   const isExtraSmallDevice = isMdHeight && isMobile;
 
@@ -31,6 +46,7 @@ const useScreenSize = () => {
     isExtraSmallDevice,
     isExtraLarge,
     isLowerThanFourHundredAndThirty,
+    screenHeights,
   };
 };
 

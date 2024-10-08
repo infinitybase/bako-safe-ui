@@ -4,13 +4,14 @@ import { useScreenSize } from '@/modules/core';
 
 interface SignInHeaderProps {
   title: string;
+  showDescription: boolean;
 }
 
-const SignInHeader = ({ title }: SignInHeaderProps) => {
+const SignInHeader = ({ title, showDescription }: SignInHeaderProps) => {
   const { isMobile } = useScreenSize();
 
   return (
-    <VStack justifyContent="center" textAlign="center" w="full" spacing={0}>
+    <VStack justifyContent="center" textAlign="center" w="full" spacing={2}>
       <Text
         fontSize={isMobile ? '2xl' : '32'}
         fontWeight="bold"
@@ -19,6 +20,16 @@ const SignInHeader = ({ title }: SignInHeaderProps) => {
       >
         {title}
       </Text>
+      {showDescription && (
+        <Text
+          color="grey.50"
+          lineHeight="16.94px"
+          fontWeight={400}
+          fontSize="sm"
+        >
+          Choose your prefered login method
+        </Text>
+      )}
     </VStack>
   );
 };

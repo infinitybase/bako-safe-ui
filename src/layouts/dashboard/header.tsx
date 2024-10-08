@@ -347,11 +347,12 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      w="12px"
+                      minW="12px"
                       textAlign="center"
                       position="absolute"
                       top={-1}
                       right={-1}
+                      px={unreadCounter >= 10 ? 0.5 : 0}
                     >
                       {unreadCounter}
                     </Text>

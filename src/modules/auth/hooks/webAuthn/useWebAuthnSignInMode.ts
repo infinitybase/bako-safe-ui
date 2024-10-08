@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
+import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TypeUser, UserService } from '../../services';
+import { localStorageKeys, TypeUser, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
@@ -19,8 +20,8 @@ const verifyNickname = async (username: string) => {
   return await UserService.verifyNickname(username);
 };
 
-const generateSignInCode = async (address: string) => {
-  return await UserService.generateSignInCode(address);
+const generateSignInCode = async (address: string, networkUrl?: string) => {
+  return await UserService.generateSignInCode(address, networkUrl);
 };
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
@@ -38,6 +39,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
   const { warningToast } = useContactToast();
   const signMesageWebAuthn = useSignMessageWebAuthn();
   const { setLastLoginUsername } = useWebAuthnLastLogin();
+  const { fromConnector } = useNetworks();
 
   const handleLogin = form.handleSubmit(async ({ username }) => {
     setIsSigningIn(true);
@@ -53,7 +55,12 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
     setSignInProgress(33);
 
-    const { code } = await generateSignInCode(acc.address);
+    const { code } = await generateSignInCode(
+      acc.address,
+      fromConnector
+        ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
+        : import.meta.env.VITE_MAINNET_NETWORK,
+    );
 
     setSignInProgress(66);
 
@@ -92,6 +99,10 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
             });
             callback(rootWallet, workspace.id);
           }, 800);
+
+          if (fromConnector) {
+            localStorage.removeItem(localStorageKeys.SELECTED_NETWORK);
+          }
         },
         onError: () => {
           setSignInProgress(0);
