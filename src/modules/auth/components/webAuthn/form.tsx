@@ -51,8 +51,8 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 label="Username"
                 value={field.value}
                 onChange={(e) => {
-                  accountSeachHandler(e);
-                  field.onChange(e);
+                  accountSeachHandler(e.toLowerCase());
+                  field.onChange(e.toLowerCase());
                 }}
                 onKeyDown={(e) => onSubmitUsingEnterKey?.(e.key)}
                 options={accountsOptions}
