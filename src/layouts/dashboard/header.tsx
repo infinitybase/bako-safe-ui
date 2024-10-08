@@ -106,6 +106,7 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isMainnet = (url: string) => url.includes(NetworkType.MAINNET);
 
   const logout = async () => {
     try {
@@ -232,22 +233,17 @@ const UserBox = () => {
                     borderBottom={'1px solid'}
                     borderColor="grey.925"
                     px={4}
+                    py={4}
                     onClick={() => {
                       networkPopoverState.onClose?.();
                       if (network.url !== currentNetwork.url) {
                         handleSelectNetwork(network.url);
                       }
                     }}
-                    py={4}
                   >
                     <HStack>
                       <Icon
-                        as={
-                          network.chainId ===
-                          availableNetWorks[NetworkType.MAINNET].chainId
-                            ? BakoIcon
-                            : UnknownIcon
-                        }
+                        as={isMainnet(network.url) ? BakoIcon : UnknownIcon}
                         fontSize={16}
                       />
                       <Text color="grey.200" fontSize={12} fontWeight={500}>
