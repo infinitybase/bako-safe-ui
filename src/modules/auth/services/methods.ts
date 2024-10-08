@@ -71,7 +71,7 @@ export type SignInResponse = {
   provider: string;
 };
 
-export type GetByNameResponse = {
+export type GetByHardwareResponse = {
   id: string;
   address: string;
   name: string;
@@ -82,6 +82,14 @@ export type GetByNameResponse = {
     publicKey: string;
     origin: string;
     hardware: string;
+  };
+};
+
+export type GetByNameResponse = {
+  address: string;
+  webauthn: {
+    id: string;
+    publicKey: string;
   };
 };
 
@@ -212,7 +220,7 @@ export class UserService {
   }
 
   static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<GetByNameResponse[]>(
+    const { data } = await api.get<GetByHardwareResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
     return data;
