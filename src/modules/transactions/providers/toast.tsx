@@ -10,10 +10,9 @@ import { useRef } from 'react';
 import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
-import { useNotification } from '@/modules/notification';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
-import { ITransactionResume } from 'bakosafe';
+import { findNetworkByUrl } from '@/modules/network/services';
+import { useNotification } from '@/modules/notification';
 
 type TransactionToastRef = Record<ITransaction['id'], ToastId>;
 
@@ -23,7 +22,7 @@ const useTransactionToast = () => {
 
   const handleViewInExplorer = (hash: string, networkUrl: string) => {
     window.open(
-      `${findBlockExplorerByNetwork(networkUrl)}/tx/0x${hash}`,
+      `${findNetworkByUrl(networkUrl).explorer}/tx/0x${hash}`,
       '_BLANK',
     );
   };

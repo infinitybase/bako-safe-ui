@@ -27,7 +27,7 @@ import { TypeUser } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
-import { NetworkType } from '../../services';
+import { availableNetWorks, NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 
@@ -120,7 +120,8 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                       >
                         <Icon
                           as={
-                            net.identifier === NetworkType.MAINNET
+                            net.chainId ===
+                            availableNetWorks[NetworkType.MAINNET].chainId
                               ? BakoIcon
                               : UnknownIcon
                           }
@@ -133,7 +134,10 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
                         <Box flex={1} />
 
-                        {net.identifier === NetworkType.LOCALSTORAGE &&
+                        {net.chainId !==
+                          availableNetWorks[NetworkType.MAINNET].chainId &&
+                          net.chainId !==
+                            availableNetWorks[NetworkType.TESTNET].chainId &&
                           isWebAuthn && (
                             <Icon
                               as={RemoveIcon}
