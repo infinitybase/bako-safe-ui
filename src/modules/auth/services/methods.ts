@@ -72,17 +72,7 @@ export type SignInResponse = {
 };
 
 export type GetByHardwareResponse = {
-  id: string;
-  address: string;
   name: string;
-  provider: string;
-  type: TypeUser;
-  webauthn: {
-    id: string;
-    publicKey: string;
-    origin: string;
-    hardware: string;
-  };
 };
 
 export type GetByNameResponse = {

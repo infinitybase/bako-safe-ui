@@ -48,7 +48,7 @@ const useWebAuthnInput = (validUsername?: boolean, userId?: string) => {
 
     const mappedOptions = filteredAccounts?.map((account) => ({
       label: account.name,
-      value: account.webauthn.id,
+      value: account.name,
     }));
 
     return mappedOptions;
