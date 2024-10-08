@@ -50,11 +50,18 @@ export const defaultBlockExplorer = 'https://app-mainnet.fuel.network/';
 
 export const availableNetWorks = [
   {
+    identifier: NetworkType.MAINNET,
+    name: 'Ignition',
+    url: import.meta.env.VITE_MAINNET_NETWORK,
+    chainId: Number(import.meta.env.VITE_MAINNET_CHAIN_ID),
+    explorer: import.meta.env.VITE_MAINNET_BLOCK_EXPLORER,
+  },
+  {
     identifier: NetworkType.TESTNET,
     name: 'Fuel Sepolia Testnet',
-    url: 'https://testnet.fuel.network/v1/graphql',
-    chainId: 0,
-    explorer: `https://app.fuel.network/`,
+    url: import.meta.env.VITE_NETWORK,
+    chainId: Number(import.meta.env.VITE_CHAIN_ID),
+    explorer: import.meta.env.VITE_BLOCK_EXPLORER,
   },
   ...(import.meta.env.VITE_DEV === 'development'
     ? [
