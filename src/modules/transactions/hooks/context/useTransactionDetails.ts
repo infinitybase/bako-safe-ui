@@ -66,8 +66,14 @@ const useTransactionDetails = () => {
       const isNavigatingAway = currentPath !== prevPath;
       const isLeavingVault = !currentPath.includes('vault');
 
-      if ((isNavigatingAway || isLeavingVault) && hasSelectedTransaction) {
-        vaultTransactions.handlers.setSelectedTransaction({ id: '', name: '' });
+      if (isNavigatingAway || isLeavingVault) {
+        hasSelectedTransaction &&
+          vaultTransactions.handlers.setSelectedTransaction({
+            id: '',
+            name: '',
+          });
+
+        resetAllTransactionsTypeFilters();
       }
 
       prevPathRef.current = currentPath;
