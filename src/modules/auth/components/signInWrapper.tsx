@@ -103,7 +103,9 @@ const SignInWrapper = (props: SignInWrapperProps) => {
           <SignInHeader title={title} showDescription={false} />
 
           <VStack w="full" maxW={390} spacing={6}>
-            <Text>Safari is not yet supported on external connectors.</Text>
+            <Text textAlign="center">
+              Safari is not yet supported on external connectors.
+            </Text>
           </VStack>
 
           <SignInFooter />
