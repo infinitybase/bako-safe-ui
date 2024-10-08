@@ -52,7 +52,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     isContract,
   } = props;
   const {
-    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const handleViewInExplorer = () => {
@@ -126,10 +126,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   <Heading
                     variant={'title-sm'}
                     color="grey.200"
-                    textOverflow="ellipsis"
                     textAlign="left"
+                    wordBreak="break-all"
                     noOfLines={1}
-                    maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
                   >
                     {transaction.name}
                   </Heading>
@@ -158,7 +157,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             </HStack>
 
             <HStack w="full" justifyContent="space-between" h="38px">
-              <HStack>
+              <HStack w="75%">
                 <Avatar
                   name={transaction.predicate?.name ?? ''}
                   color="grey.425"
@@ -175,10 +174,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 <Heading
                   variant={'title-sm'}
                   color="grey.200"
-                  textOverflow="ellipsis"
                   textAlign="left"
                   noOfLines={1}
-                  maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                  wordBreak="break-all"
                 >
                   {transaction.predicate?.name}
                 </Heading>
