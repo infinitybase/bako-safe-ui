@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
 import { Pages, useAuthCookies, useQueryParams } from '@/modules';
+import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 const useRedirectAuthUser = () => {
@@ -10,9 +11,15 @@ const useRedirectAuthUser = () => {
 
   const navigate = useNavigate();
   const { userAuthCookiesInfo } = useAuthCookies();
-  const { sessionId: isFromDapp, location } = useQueryParams();
+  const { isSafariBrowser } = useVerifyBrowserType();
+  const { sessionId: isFromDapp, location, byConnector } = useQueryParams();
 
   const redirectAuthUser = useCallback(() => {
+    if (byConnector && isSafariBrowser) {
+      setSyncingAuth(false);
+      return;
+    }
+
     const { account, accessToken } = userAuthCookiesInfo();
     const isAuthenticated = account && accessToken;
 
@@ -26,7 +33,7 @@ const useRedirectAuthUser = () => {
     }
 
     setSyncingAuth(false);
-  }, [userAuthCookiesInfo, isFromDapp]);
+  }, [userAuthCookiesInfo, isFromDapp, byConnector]);
 
   useEffect(() => {
     redirectAuthUser();
