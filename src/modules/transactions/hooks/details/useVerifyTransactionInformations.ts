@@ -24,13 +24,21 @@ const useVerifyTransactionInformations = (
     (mainOperation?.name as unknown as IFuelTransactionNames) ===
     IFuelTransactionNames.CONTRACT_CALL;
 
-  const isMint = ['CONTRACT_CALL', 'TRANSFER_ASSET'].every((name) =>
-    transaction?.summary?.operations?.some(
-      (operation) =>
-        (operation.name as unknown as IFuelTransactionNames) ===
-        IFuelTransactionNames[name],
-    ),
+  const contractCallWithAssets = transaction?.summary?.operations.some(
+    (operation) =>
+      operation.assetsSent &&
+      (operation.name as unknown as IFuelTransactionNames) ===
+        IFuelTransactionNames.CONTRACT_CALL,
   );
+
+  const isMint =
+    ['CONTRACT_CALL', 'TRANSFER_ASSET'].every((name) =>
+      transaction?.summary?.operations?.some(
+        (operation) =>
+          (operation.name as unknown as IFuelTransactionNames) ===
+          IFuelTransactionNames[name],
+      ),
+    ) || contractCallWithAssets;
 
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
