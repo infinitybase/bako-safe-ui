@@ -13,7 +13,7 @@ const CreationDate = ({ children }: TransactionCardCreationDateProps) => {
   } = useWorkspaceContext();
   return (
     <Center
-      w={{ base: 'full', sm: 100 }}
+      w={{ base: 'fit-content', sm: 100 }}
       justifyContent={{ base: 'flex-end', sm: 'flex-start' }}
     >
       <Text

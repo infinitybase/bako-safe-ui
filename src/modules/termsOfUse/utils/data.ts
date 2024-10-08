@@ -272,11 +272,13 @@ export const privacyPolicy = [
     ],
   },
   {
-    title: '13. Data Access Request',
+    title: '13. Information Commissioner And Your Rights',
     paragraphs: [
-      `You may write to us in order to obtain access to the personal data that we collect and store that relates to you: legal@bako.global.`,
+      `We are based in Brazil, and the laws of Brazil apply to our operations.
+You may write to Autoridade Nacional de Proteção de Dados (ANPD) if you have a complaint regarding our handling or processing of data. We encourage you to write to us first, in order to resolve any issues: legal@bako.global.`,
     ],
   },
+
   {
     title: '14. Right To Correct Records',
     paragraphs: [
@@ -284,10 +286,9 @@ export const privacyPolicy = [
     ],
   },
   {
-    title: '15. Information Commissioner And Your Rights',
+    title: '15. Data Access Request',
     paragraphs: [
-      `We are based in Brazil, and the laws of Brazil apply to our operations.
-You may write to Autoridade Nacional de Proteção de Dados (ANPD) if you have a complaint regarding our handling or processing of data. We encourage you to write to us first, in order to resolve any issues: legal@bako.global.`,
+      `You may write to us in order to obtain access to the personal data that we collect and store that relates to you: legal@bako.global.`,
     ],
   },
 ];

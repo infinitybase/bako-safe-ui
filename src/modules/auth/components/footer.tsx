@@ -1,10 +1,14 @@
-import { Heading, Icon, Link, Text, VStack } from '@chakra-ui/react';
+import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
 import { FiArrowUpRight } from 'react-icons/fi';
 
+import { FeedbackIcon } from '@/components/icons/feedback';
 import { useScreenSize } from '@/modules/core/hooks';
 
 const SignInFooter = () => {
   const { isMobile } = useScreenSize();
+
+  const feedbackForm = () =>
+    window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
 
   return (
     <VStack spacing={1} textAlign="center" mt={isMobile ? 6 : 0}>
@@ -32,6 +36,18 @@ const SignInFooter = () => {
         </Text>
         <Icon as={FiArrowUpRight} fontSize="md" />
       </Link>
+
+      <HStack cursor="pointer" onClick={feedbackForm} spacing={3} mt={6}>
+        <Text
+          color="grey.250"
+          fontWeight={400}
+          lineHeight="13.58px"
+          fontSize="xs"
+        >
+          Send a feedback
+        </Text>
+        <Icon w={3} h={3} color="grey.250" fontSize={12} as={FeedbackIcon} />
+      </HStack>
     </VStack>
   );
 };

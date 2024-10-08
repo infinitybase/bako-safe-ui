@@ -2,11 +2,13 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
+import { useQueryParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
@@ -58,6 +60,7 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     mode,
   } = props;
 
+  const { byConnector } = useQueryParams();
   const { isSafariBrowser } = useVerifyBrowserType();
   const { connectors } = useListConnectors();
   const { errorToast } = useContactToast();
@@ -84,6 +87,32 @@ const SignInWrapper = (props: SignInWrapperProps) => {
       loginDrawer.onOpen?.();
     }
   }, []);
+
+  if (isSafariBrowser && byConnector) {
+    return (
+      <SigninContainerMobile>
+        <VStack
+          justifyContent="center"
+          h="full"
+          w="full"
+          pt={20}
+          pb={6}
+          px={6}
+          spacing={14}
+        >
+          <SignInHeader title={title} showDescription={false} />
+
+          <VStack w="full" maxW={390} spacing={6}>
+            <Text textAlign="center">
+              Safari is not yet supported on external connectors.
+            </Text>
+          </VStack>
+
+          <SignInFooter />
+        </VStack>
+      </SigninContainerMobile>
+    );
+  }
 
   if (isMobile) {
     return (

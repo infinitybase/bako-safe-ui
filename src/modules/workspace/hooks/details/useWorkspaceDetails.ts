@@ -39,9 +39,6 @@ const useWorkspaceDetails = () => {
   const {
     resetAllTransactionsTypeFilters,
     pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
-    transactionsPageList: {
-      request: { refetch: refetchTransactions },
-    },
   } = useTransactionsContext();
 
   const {
