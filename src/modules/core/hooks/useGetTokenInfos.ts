@@ -7,7 +7,7 @@ import { Asset, AssetMap } from '../utils';
 export type IGetTokenInfos = ReturnType<typeof useGetTokenInfos>;
 
 interface IUseGetTokenInfos extends Pick<Asset, 'assetId' | 'amount'> {
-  assetsMap: false | AssetMap | undefined;
+  assetsMap: AssetMap;
 }
 
 const useGetTokenInfos = ({

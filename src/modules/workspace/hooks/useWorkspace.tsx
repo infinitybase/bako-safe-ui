@@ -62,30 +62,6 @@ const useWorkspace = (
 
     invalidateGifAnimationRequest();
     workspaceDialog.onClose();
-    invalidateRequests();
-    navigate(
-      redirect ?? Pages.workspace({ workspaceId: selectedWorkspace ?? '' }),
-    );
-
-    // Commented out this workspace select/auth logic.
-    // Now we only use navigate to redirect the user instead of authenticate him in the workspace
-
-    // selectWorkspace(selectedWorkspace, {
-    //   onSelect: (workspace) => {
-    //     invalidateRequests();
-    //     navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
-    //   },
-    //   onError: () => {
-    //     toast({
-    //       status: 'error',
-    //       duration: 4000,
-    //       isClosable: false,
-    //       title: 'Error!',
-    //       description: 'Try again, please...',
-    //       icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-    //     });
-    //   },
-    // });
   };
 
   const goHome = () => {

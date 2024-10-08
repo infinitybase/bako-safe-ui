@@ -22,9 +22,6 @@ import {
 } from '@/components';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth';
-
-import { AddressUtils } from '@/modules/core';
-
 import { CreateVaultDialog } from '@/modules/vault';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
@@ -58,7 +55,7 @@ const VaultConnector = () => {
   useEffect(() => {
     if (
       vaults.length === 1 &&
-      vaults[0].id &&
+      vaults[0]?.id &&
       !send.isPending &&
       name &&
       origin &&
@@ -143,31 +140,34 @@ const VaultConnector = () => {
                 origin={origin}
               />
 
-              {vaults?.map(
-                ({ id, name, predicateAddress, workspace, members, root }) => {
-                  if (id === currentVault && !selectedVaultId)
-                    setSelectedVaultId(id);
+              {vaults?.map((vault) => {
+                if (!vault) return null;
 
-                  if (id !== currentVault && !selectedVaultId && root)
-                    setSelectedVaultId(id);
+                const { id, name, predicateAddress, workspace, members, root } =
+                  vault;
 
-                  return (
-                    <VaultItemBox
-                      key={id}
-                      name={name}
-                      workspace={workspace}
-                      members={members?.length}
-                      address={predicateAddress}
-                      root={root}
-                      isActive={selectedVaultId === id}
-                      isSingleWorkspace={workspace.single}
-                      onClick={() => setSelectedVaultId(id)}
-                      isInDapp
-                      mt={0}
-                    />
-                  );
-                },
-              )}
+                if (id === currentVault && !selectedVaultId)
+                  setSelectedVaultId(id);
+
+                if (id !== currentVault && !selectedVaultId && root)
+                  setSelectedVaultId(id);
+
+                return (
+                  <VaultItemBox
+                    key={id}
+                    name={name}
+                    workspace={workspace}
+                    members={members?.length}
+                    address={predicateAddress}
+                    root={root}
+                    isActive={selectedVaultId === id}
+                    isSingleWorkspace={workspace.single}
+                    onClick={() => setSelectedVaultId(id)}
+                    isInDapp
+                    mt={0}
+                  />
+                );
+              })}
 
               {isFetching && vaults.length && (
                 <Flex justifyContent="center" alignItems="center">

@@ -196,7 +196,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
-                      {format(parseISO(step.date), 'EEE MMM d yyyy hh:mm:s')}
+                      {format(parseISO(step.date), 'EEE MMM d yyyy HH:mm:s')}
                     </Text>
                   </StepDescription>
                 </Box>

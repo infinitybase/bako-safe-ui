@@ -8,15 +8,16 @@ import { SignInHeader } from '../header';
 interface WebAuthnAccountCreatedProps {
   title: string;
   formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
+  showDescription: boolean;
 }
 
 const WebAuthnAccountCreated = (props: WebAuthnAccountCreatedProps) => {
-  const { title, formState } = props;
+  const { title, formState, showDescription } = props;
 
   return (
     <VStack h="full" spacing={8} justifyContent="center">
       <VStack spacing={0}>
-        <SignInHeader title={title} />
+        <SignInHeader title={title} showDescription={showDescription} />
 
         <Text fontSize="xs" color="grey.250">
           Account created!
