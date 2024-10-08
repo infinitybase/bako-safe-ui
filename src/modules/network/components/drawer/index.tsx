@@ -46,12 +46,13 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
     selectNetworkRequest,
     checkNetworkRequest: { isPending: loadingCheck },
     handleClose,
+    setValidNetwork,
   } = useNetworks(props.onClose);
 
   const { authDetails } = useWorkspaceContext();
-
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
-
+  const isTestnet = (url: string) => url.includes(NetworkType.TESTNET);
+  const isMainnet = (url: string) => url.includes(NetworkType.MAINNET);
   const networkList = isWebAuthn
     ? networks
     : networks?.filter((net) => net.url === currentNetwork.url);
@@ -119,11 +120,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                         spacing={4}
                       >
                         <Icon
-                          as={
-                            net.identifier === NetworkType.MAINNET
-                              ? BakoIcon
-                              : UnknownIcon
-                          }
+                          as={isMainnet(net.url) ? BakoIcon : UnknownIcon}
                           fontSize={24}
                         />
 
@@ -133,20 +130,19 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
                         <Box flex={1} />
 
-                        {net.identifier === NetworkType.LOCALSTORAGE &&
-                          isWebAuthn && (
-                            <Icon
-                              as={RemoveIcon}
-                              fontSize={16}
-                              color={'grey.75'}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCustomNetwork(net);
-                              }}
-                              transition={'all 0.1s'}
-                              _hover={{ color: 'grey.250' }}
-                            />
-                          )}
+                        {isWebAuthn && !isTestnet(net.url) && (
+                          <Icon
+                            as={RemoveIcon}
+                            fontSize={16}
+                            color={'grey.75'}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCustomNetwork(net);
+                            }}
+                            transition={'all 0.1s'}
+                            _hover={{ color: 'grey.250' }}
+                          />
+                        )}
                       </HStack>
                     </Center>
                   );
@@ -223,7 +219,11 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                     <FormControl isInvalid={fieldState.invalid}>
                       <Input
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          networkForm.clearErrors();
+                          setValidNetwork(false);
+                        }}
                         placeholder=" "
                         variant="dark"
                         bg={'grey.825'}
