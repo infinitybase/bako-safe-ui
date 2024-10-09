@@ -7,7 +7,9 @@ import {
   Flex,
   Heading,
   HStack,
+  keyframes,
   Text,
+  TextProps,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
@@ -34,7 +36,12 @@ export interface CardDetailsProps {
   setAddAssetsDialogState: (value: boolean) => void;
 }
 
-const Update = () => {
+const Update = (props: TextProps & { isLoading: boolean }) => {
+  const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
   return (
     <Text
       w={20}
@@ -48,6 +55,7 @@ const Update = () => {
         cursor: 'pointer',
         color: 'grey.200',
       }}
+      {...props}
     >
       Update
       <RefreshIcon
@@ -57,6 +65,7 @@ const Update = () => {
         }}
         w={{ base: 4, sm: 5 }}
         h={{ base: 4, sm: 5 }}
+        animation={props.isLoading ? `${spin} 1s linear infinite` : undefined}
       />
     </Text>
   );
@@ -72,10 +81,13 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     visibleBalance,
     setVisibleBalance,
     isLoading,
+    isManualRefetching,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
+    handleManualRefetch,
   } = assets;
+
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -165,7 +177,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       {vault?.data.name}
                     </Heading>
-                    {isMobile && <Update />}
+                    {isMobile && (
+                      <Update
+                        isLoading={isManualRefetching}
+                        onClick={handleManualRefetch}
+                      />
+                    )}
                   </HStack>
 
                   {/* Commented out code to temporarily disable workspaces. */}
@@ -252,7 +269,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         )}
                       </Box>
                     </HStack>
-                    {!isMobile && <Update />}
+                    {!isMobile && (
+                      <Update
+                        isLoading={isManualRefetching}
+                        onClick={handleManualRefetch}
+                      />
+                    )}
                   </HStack>
                 </Box>
 

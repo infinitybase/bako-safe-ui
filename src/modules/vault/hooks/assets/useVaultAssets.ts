@@ -1,6 +1,6 @@
 import { QueryState, useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AssetMap, NativeAssetId, useGetParams } from '@/modules/core';
 
@@ -14,6 +14,7 @@ import { queryClient } from '@/config';
 import { gasConfig } from '@/modules/core/hooks/bakosafe/utils/gas-config';
 
 import { HasReservedCoins, VaultService } from '../../services';
+import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
 
 export const vaultAssetsQueryKey = {
@@ -35,6 +36,7 @@ const useVaultAssets = (
 
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
+  const [isManualRefetching, setIsManualRefetching] = useState(false);
   const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
     queryClient.getQueryState(
       vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
@@ -45,7 +47,16 @@ const useVaultAssets = (
       vaultId ?? '',
     );
 
-  const { data, ...rest } = useQuery({
+  const {
+    request: { refetch: refetchTransactions },
+  } = useVaultTransactionsList();
+
+  const {
+    data,
+    isFetching,
+    refetch: refetchAssets,
+    ...rest
+  } = useQuery({
     queryKey: vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
       workspaceId,
       predicateId,
@@ -119,6 +130,17 @@ const useVaultAssets = (
     setIsVisibleBalance(visible ? 'true' : 'false');
   };
 
+  const handleManualRefetch = () => {
+    if (isManualRefetching) return;
+    setIsManualRefetching(true);
+    refetchAssets();
+    refetchTransactions();
+  };
+
+  useEffect(() => {
+    if (!isFetching) setIsManualRefetching(false);
+  }, [isFetching]);
+
   return {
     assets: data?.currentBalance,
     ...rest,
@@ -126,6 +148,8 @@ const useVaultAssets = (
     getCoinAmount,
     hasAssetBalance,
     setVisibleBalance: handleSetVisibleBalance,
+    isManualRefetching,
+    handleManualRefetch,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
