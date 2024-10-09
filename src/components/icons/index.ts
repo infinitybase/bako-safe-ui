@@ -20,6 +20,7 @@ export * from './edit';
 export * from './empty-box';
 export * from './empty-box-outline';
 export * from './error';
+export * from './error-tooltip';
 export * from './exchange';
 export * from './exit';
 export * from './forward-icon';

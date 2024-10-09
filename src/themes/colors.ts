@@ -44,6 +44,7 @@ const colors = {
     300: '#EF9B8F',
     500: '#F05D48',
     600: '#F84949',
+    650: '#F2290D',
     700: 'rgba(240, 93, 72, 0.3)',
     800: 'rgba(240, 93, 72, 0.15)',
     900: 'rgba(248,73,73,0.1)',
@@ -80,6 +81,7 @@ const colors = {
     'transaction-card-hover': 'rgba(84, 76, 76, 0.25)',
     'transaction-border': '#35302F',
   },
+  overlay: '#151413A6',
 };
 
 export { colors };
