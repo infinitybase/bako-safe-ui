@@ -81,7 +81,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     visibleBalance,
     setVisibleBalance,
     isLoading,
-    isManualRefetching,
+    isUpdating,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
@@ -179,7 +179,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     </Heading>
                     {isMobile && (
                       <Update
-                        isLoading={isManualRefetching}
+                        isLoading={isUpdating}
                         onClick={handleManualRefetch}
                       />
                     )}
@@ -271,7 +271,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     </HStack>
                     {!isMobile && (
                       <Update
-                        isLoading={isManualRefetching}
+                        isLoading={isUpdating}
                         onClick={handleManualRefetch}
                       />
                     )}

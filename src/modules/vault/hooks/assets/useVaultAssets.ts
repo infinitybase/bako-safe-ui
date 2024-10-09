@@ -1,6 +1,6 @@
 import { QueryState, useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { AssetMap, NativeAssetId, useGetParams } from '@/modules/core';
 
@@ -36,7 +36,7 @@ const useVaultAssets = (
 
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
-  const [isManualRefetching, setIsManualRefetching] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
     queryClient.getQueryState(
       vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
@@ -51,16 +51,19 @@ const useVaultAssets = (
     request: { refetch: refetchTransactions },
   } = useVaultTransactionsList();
 
+  const staleTime = 20 * 1000; // 20s
+  const refetchInterval = 5 * 60 * 1000; // 5m
+  const reservedQueryKey = vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
+    workspaceId,
+    predicateId,
+  );
+
   const {
     data,
-    isFetching,
     refetch: refetchAssets,
     ...rest
   } = useQuery({
-    queryKey: vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
-      workspaceId,
-      predicateId,
-    ),
+    queryKey: reservedQueryKey,
     queryFn: async () => {
       const response = await VaultService.hasReservedCoins(predicateId);
       if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
@@ -68,11 +71,11 @@ const useVaultAssets = (
       }
       return response;
     },
-    refetchInterval: 10000,
+    refetchInterval,
     refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
-    staleTime: 500,
+    staleTime,
   });
 
   const getCoinAmount = useCallback(
@@ -130,16 +133,20 @@ const useVaultAssets = (
     setIsVisibleBalance(visible ? 'true' : 'false');
   };
 
-  const handleManualRefetch = () => {
-    if (isManualRefetching) return;
-    setIsManualRefetching(true);
-    refetchAssets();
-    refetchTransactions();
-  };
+  const handleManualRefetch = async () => {
+    const queryState = queryClient.getQueryState(reservedQueryKey);
+    const freshData =
+      queryState?.dataUpdatedAt &&
+      Date.now() - queryState?.dataUpdatedAt < staleTime;
 
-  useEffect(() => {
-    if (!isFetching) setIsManualRefetching(false);
-  }, [isFetching]);
+    if (freshData || isUpdating) return;
+
+    setIsUpdating(true);
+
+    await Promise.all([refetchAssets(), refetchTransactions()]).finally(() => {
+      setIsUpdating(false);
+    });
+  };
 
   return {
     assets: data?.currentBalance,
@@ -148,7 +155,7 @@ const useVaultAssets = (
     getCoinAmount,
     hasAssetBalance,
     setVisibleBalance: handleSetVisibleBalance,
-    isManualRefetching,
+    isUpdating,
     handleManualRefetch,
     hasBalance,
     ethBalance,
