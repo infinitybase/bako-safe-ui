@@ -30,18 +30,13 @@ const useVaultAssets = (
   predicateId: string,
   assetsMap: AssetMap,
 ) => {
-  const [isManualRefetching, setIsManualRefetching] = useState(false);
-
-  const {
-    request: { refetch: refetchTransactions },
-  } = useVaultTransactionsList();
-
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
+  const [isManualRefetching, setIsManualRefetching] = useState(false);
   const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
     queryClient.getQueryState(
       vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
@@ -51,6 +46,10 @@ const useVaultAssets = (
     vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       vaultId ?? '',
     );
+
+  const {
+    request: { refetch: refetchTransactions },
+  } = useVaultTransactionsList();
 
   const {
     data,
@@ -65,9 +64,7 @@ const useVaultAssets = (
     queryFn: async () => {
       const response = await VaultService.hasReservedCoins(predicateId);
       if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
-        queryClient.invalidateQueries({
-          queryKey: vaultTxListRequestQueryKey,
-        });
+        queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
       }
       return response;
     },
