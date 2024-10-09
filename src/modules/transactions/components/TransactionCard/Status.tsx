@@ -67,11 +67,11 @@ const Status = ({
       >
         <HStack position="relative">
           <Badge
-            minW={isError ? '110px' : '80px'}
+            minW={'80px'}
             display="flex"
             alignItems="center"
             fontSize="xs"
-            justifyContent={isError ? 'flex-start' : 'center'}
+            justifyContent={'center'}
             h={6}
             borderRadius="20px"
             variant={
