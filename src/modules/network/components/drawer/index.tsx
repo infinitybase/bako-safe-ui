@@ -51,8 +51,8 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
 
   const { authDetails } = useWorkspaceContext();
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
-  const isTestnet = (url: string) => url.includes(NetworkType.TESTNET);
-  const isMainnet = (url: string) => url.includes(NetworkType.MAINNET);
+  const isTestnet = (url: string) => url?.includes(NetworkType.TESTNET);
+  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
   const networkList = isWebAuthn
     ? networks
     : networks?.filter((net) => net.url === currentNetwork.url);

@@ -106,7 +106,7 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
-  const isMainnet = (url: string) => url.includes(NetworkType.MAINNET);
+  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
 
   const logout = async () => {
     try {
