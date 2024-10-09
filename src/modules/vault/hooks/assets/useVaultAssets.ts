@@ -72,6 +72,7 @@ const useVaultAssets = (
     refetchOnWindowFocus: false,
     placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
+    staleTime: 500,
   });
 
   const getCoinAmount = useCallback(
