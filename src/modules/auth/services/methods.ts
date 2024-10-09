@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, Network, Provider, sha256 } from 'fuels';
+import { Address, Network, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
@@ -23,6 +23,13 @@ export type SignWebAuthnPayload = {
   id: string;
   challenge: string;
   publicKey: string;
+};
+
+export type SignInSignWebAuthnPayload = Omit<
+  SignWebAuthnPayload,
+  'publicKey'
+> & {
+  name: string;
 };
 
 export type CreateUserResponse = {
@@ -51,7 +58,8 @@ export type SignInPayload = {
   encoder: Encoder;
   signature: string;
   digest: string;
-  userAddress: string;
+  userAddress?: string;
+  name?: string;
 };
 
 export type SignInResponse = {
@@ -77,7 +85,6 @@ export type GetByHardwareResponse = {
 
 export type GetByNameResponse = {
   webAuthnId?: string;
-  webAuthnPublicKey?: string;
 };
 
 export type CheckNicknameResponse = {
@@ -237,15 +244,15 @@ export class UserService {
   static async signMessageWebAuthn({
     id,
     challenge,
-    publicKey,
-  }: SignWebAuthnPayload) {
-    const signature = await signChallange(id, challenge, publicKey);
+    name,
+  }: SignInSignWebAuthnPayload) {
+    const signature = await signChallange(id, challenge);
 
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
-      userAddress: sha256(publicKey),
+      name,
     });
   }
 

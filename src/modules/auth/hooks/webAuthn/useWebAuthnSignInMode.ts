@@ -46,7 +46,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
     const acc = await getByName(username);
 
-    if (!acc.webAuthnId || !acc.webAuthnPublicKey) {
+    if (!acc.webAuthnId) {
       setSignInProgress(0);
       setIsSigningIn(false);
       setMode(WebAuthnModeState.REGISTER);
@@ -68,7 +68,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
       {
         id: acc.webAuthnId,
         challenge: code,
-        publicKey: acc.webAuthnPublicKey,
+        name: username,
       },
       {
         onSuccess: ({
