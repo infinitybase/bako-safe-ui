@@ -61,8 +61,12 @@ const useWorkspace = (
     // }
     // workspaceDialog.onClose();
 
-    redirect && navigate(redirect);
-    invalidateGifAnimationRequest();
+    if (redirect) {
+      if (redirect.includes('vault')) {
+        invalidateGifAnimationRequest();
+      }
+      navigate(redirect);
+    }
   };
 
   const goHome = () => {
