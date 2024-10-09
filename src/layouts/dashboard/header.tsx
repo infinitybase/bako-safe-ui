@@ -156,7 +156,7 @@ const UserBox = () => {
         >
           <PopoverTrigger>
             <HStack
-              w={165}
+              w={220}
               h={'32px'}
               alignItems="center"
               cursor={isWebAuthn ? 'pointer' : 'default'}
@@ -212,7 +212,7 @@ const UserBox = () => {
 
           <PopoverContent
             bg={'dark.300'}
-            w={165}
+            w={220}
             borderTop="none"
             border="1px solid #353230"
             _focus={{ ring: 'none' }}
