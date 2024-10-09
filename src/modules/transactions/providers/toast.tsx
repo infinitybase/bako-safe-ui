@@ -11,7 +11,7 @@ import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-import { findNetworkByUrl } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import { useNotification } from '@/modules/notification';
 
 type TransactionToastRef = Record<ITransaction['id'], ToastId>;
@@ -22,7 +22,7 @@ const useTransactionToast = () => {
 
   const handleViewInExplorer = (hash: string, networkUrl: string) => {
     window.open(
-      `${findNetworkByUrl(networkUrl).explorer}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(networkUrl)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

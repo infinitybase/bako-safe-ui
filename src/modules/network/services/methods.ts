@@ -63,12 +63,6 @@ export const availableNetWorks = {
   },
 };
 
-export const findNetworkByUrl = (url: string) => {
-  const networks = NetworkService.list();
-  const network = networks.find((network) => network.url === url);
-  return network ?? availableNetWorks[NetworkType.MAINNET];
-};
-
 export class NetworkService {
   static async create(newNetwork: CustomNetwork) {
     const networks: CustomNetwork[] = JSON.parse(
@@ -131,5 +125,26 @@ export class NetworkService {
     const networks = NetworkService.list();
 
     return networks.some((net) => net.url === url);
+  }
+
+  static findByUrl(url: string) {
+    const networks = NetworkService.list();
+    return networks.find((net) => net.url === url);
+  }
+
+  static getName(url: string) {
+    const network = NetworkService.findByUrl(url);
+    return network?.name ?? 'Unknown';
+  }
+
+  static getExplorer(url: string) {
+    const network = NetworkService.findByUrl(url);
+
+    if (network && 'explorer' in network && network.explorer) {
+      return network.explorer;
+    }
+
+    const defaultNetwork = availableNetWorks[NetworkType.MAINNET];
+    return defaultNetwork.explorer;
   }
 }

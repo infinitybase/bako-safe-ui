@@ -20,7 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { findNetworkByUrl } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -58,7 +58,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findNetworkByUrl(network.url).explorer}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
