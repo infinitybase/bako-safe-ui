@@ -131,7 +131,6 @@ const useVaultAssets = (
 
   const handleManualRefetch = () => {
     if (isManualRefetching) return;
-
     setIsManualRefetching(true);
     refetchAssets();
     refetchTransactions();
