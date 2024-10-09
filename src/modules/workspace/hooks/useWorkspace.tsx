@@ -20,8 +20,8 @@ const useWorkspace = (
   userInfos: IUserInfos,
   assetsMaps: false | AssetMap | undefined,
   invalidateGifAnimationRequest: () => void,
-  resetAllTransactionsTypeFilters: () => void,
-  refetchPendingSingerTransactions: () => void,
+  // resetAllTransactionsTypeFilters: () => void,
+  // refetchPendingSingerTransactions: () => void,
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
@@ -45,23 +45,24 @@ const useWorkspace = (
   const handleWorkspaceSelection = async (
     selectedWorkspace: string,
     redirect?: string,
-    needUpdateWorkspaceBalance?: boolean,
+    // needUpdateWorkspaceBalance?: boolean,
   ) => {
-    const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+    // All this logic is to handle workspace authentication
+    // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+    // if (!isValid) {
+    //   console.log(!!redirect);
+    //   !!redirect && navigate(redirect);
+    //   if (redirect?.includes('vault')) {
+    //     // That' means he's accessing a vault, then it should show the gif.
+    //     invalidateGifAnimationRequest();
+    //   }
+    //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
+    //   return;
+    // }
+    // workspaceDialog.onClose();
 
-    // if (isSelecting) return;
-    if (!isValid) {
-      !!redirect && navigate(redirect);
-      if (redirect?.includes('vault')) {
-        // That' means he's accessing a vault, then it should show the gif.
-        invalidateGifAnimationRequest();
-      }
-      needUpdateWorkspaceBalance && workspaceBalance.refetch();
-      return;
-    }
-
+    redirect && navigate(redirect);
     invalidateGifAnimationRequest();
-    workspaceDialog.onClose();
   };
 
   const goHome = () => {
@@ -90,13 +91,6 @@ const useWorkspace = (
     },
     [userInfos?.onSingleWorkspace, userInfos.workspace?.permission, vaultId],
   );
-
-  const invalidateRequests = () => {
-    resetAllTransactionsTypeFilters();
-    workspaceBalance.refetch();
-    refetchPendingSingerTransactions();
-    userInfos.refetch();
-  };
 
   return {
     workspaceDialog,

@@ -14,7 +14,6 @@ import {
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
@@ -36,10 +35,10 @@ const useWorkspaceDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
-  const {
-    resetAllTransactionsTypeFilters,
-    pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
-  } = useTransactionsContext();
+  // const {
+  //   resetAllTransactionsTypeFilters,
+  //   pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
+  // } = useTransactionsContext();
 
   const {
     isLoading: isGifAnimationLoading,
@@ -63,8 +62,8 @@ const useWorkspaceDetails = () => {
     authDetails.userInfos,
     assetsMap,
     invalidateGifAnimationRequest,
-    resetAllTransactionsTypeFilters,
-    refetchPendingSingerTransactions,
+    // resetAllTransactionsTypeFilters,
+    // refetchPendingSingerTransactions,
   );
 
   const { workspace: currentWorkspace, ...currentWorkspaceData } =
