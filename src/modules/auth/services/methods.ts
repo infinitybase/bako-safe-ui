@@ -76,11 +76,8 @@ export type GetByHardwareResponse = {
 };
 
 export type GetByNameResponse = {
-  address: string;
-  webauthn: {
-    id: string;
-    publicKey: string;
-  };
+  webAuthnId?: string;
+  webAuthnPublicKey?: string;
 };
 
 export type CheckNicknameResponse = {
@@ -189,10 +186,8 @@ export class UserService {
     return data;
   }
 
-  static async getByName(nickname: string) {
-    const { data } = await api.get<GetByNameResponse>(
-      `/user/by-name/${nickname}`,
-    );
+  static async getByName(name: string) {
+    const { data } = await api.get<GetByNameResponse>(`/user/by-name/${name}`);
 
     return data;
   }
@@ -254,9 +249,9 @@ export class UserService {
     });
   }
 
-  static async generateSignInCode(address: string, networkUrl?: string) {
+  static async generateSignInCode(name: string, networkUrl?: string) {
     const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
-      address,
+      name,
       networkUrl,
     });
     return data;

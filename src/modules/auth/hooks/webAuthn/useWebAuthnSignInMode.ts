@@ -16,12 +16,12 @@ interface UseWebAuthnSignInParams {
   callback: (vaultId?: string, workspaceId?: string) => void;
 }
 
-const getByName = async (username: string) => {
-  return await UserService.getByName(username);
+const getByName = async (name: string) => {
+  return await UserService.getByName(name);
 };
 
-const generateSignInCode = async (address: string, networkUrl?: string) => {
-  return await UserService.generateSignInCode(address, networkUrl);
+const generateSignInCode = async (name: string, networkUrl?: string) => {
+  return await UserService.generateSignInCode(name, networkUrl);
 };
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
@@ -46,7 +46,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
     const acc = await getByName(username);
 
-    if (!acc?.address || !acc.webauthn) {
+    if (!acc.webAuthnId || !acc.webAuthnPublicKey) {
       setSignInProgress(0);
       setIsSigningIn(false);
       setMode(WebAuthnModeState.REGISTER);
@@ -56,7 +56,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
     setSignInProgress(33);
 
     const { code } = await generateSignInCode(
-      acc.address,
+      username,
       fromConnector
         ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
         : undefined,
@@ -66,9 +66,9 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
     await signMesageWebAuthn.mutateAsync(
       {
-        id: acc.webauthn.id,
+        id: acc.webAuthnId,
         challenge: code,
-        publicKey: acc.webauthn.publicKey,
+        publicKey: acc.webAuthnPublicKey,
       },
       {
         onSuccess: ({
