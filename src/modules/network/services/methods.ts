@@ -64,10 +64,8 @@ export const availableNetWorks = {
 };
 
 export const findNetworkByUrl = (url: string) => {
-  const network = Object.values(availableNetWorks).find(
-    (network) => network.url === url,
-  );
-
+  const networks = NetworkService.list();
+  const network = networks.find((network) => network.url === url);
   return network ?? availableNetWorks[NetworkType.MAINNET];
 };
 
@@ -85,7 +83,7 @@ export class NetworkService {
     );
   }
 
-  static async list() {
+  static list() {
     const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
     );
@@ -127,5 +125,11 @@ export class NetworkService {
     const chain = provider.getChain();
 
     return chain?.name;
+  }
+
+  static async hasNetwork(url: string) {
+    const networks = NetworkService.list();
+
+    return networks.some((net) => net.url === url);
   }
 }

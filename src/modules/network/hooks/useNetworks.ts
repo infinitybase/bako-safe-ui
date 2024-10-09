@@ -10,7 +10,6 @@ import {
   availableNetWorks,
   CustomNetwork,
   DeleteNetworkPayload,
-  findNetworkByUrl,
   NetworkService,
   NetworkType,
 } from '../services';
@@ -138,7 +137,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const handleCheckNetwork = async () => {
     const url = networkForm.watch('url');
-    const existingNetwork = findNetworkByUrl(url).explorer;
+    const existingNetwork = await NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {
