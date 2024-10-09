@@ -39,7 +39,11 @@ import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkType } from '@/modules/network/services';
+import {
+  availableNetWorks,
+  findNetworkByUrl,
+  NetworkType,
+} from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -194,8 +198,7 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {networks?.find(({ url }) => url === currentNetwork.url)
-                        ?.name ?? 'Unknown'}
+                      {findNetworkByUrl(currentNetwork.url)?.name ?? 'Unknown'}
                     </Text>
                   </HStack>
 
