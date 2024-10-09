@@ -11,10 +11,18 @@ const subtitle = defineStyle({
   fontWeight: 'semibold',
 });
 
+const dialogTitle = defineStyle({
+  fontSize: '16px',
+  lineHeight: '19.36px',
+  fontWeight: 700,
+  color: 'grey.50',
+});
+
 const Text = defineStyleConfig({
   variants: {
     description,
     subtitle,
+    dialogTitle,
   },
 });
 
