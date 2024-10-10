@@ -24,7 +24,13 @@ function AssetSelect(props: Props) {
   const sortedAssets = useSortTokenInfosArray(formattedAssets, assetsMap);
 
   return (
-    <FormControl>
+    <FormControl
+      sx={{
+        input: {
+          boxShadow: 'none !important',
+        },
+      }}
+    >
       <Select
         variant="dark"
         label="Asset"
@@ -41,6 +47,8 @@ function AssetSelect(props: Props) {
           fontWeight: 600,
           fontSize: '14px',
           height: '50px',
+          border: '1px solid',
+          borderColor: '#868079',
         }}
       />
       {props.helperText}

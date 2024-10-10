@@ -112,7 +112,14 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 .includes(field.value);
 
             return (
-              <FormControl isInvalid={fieldState.invalid}>
+              <FormControl
+                isInvalid={fieldState.invalid}
+                sx={{
+                  input: {
+                    boxShadow: 'none !important',
+                  },
+                }}
+              >
                 <Autocomplete
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
@@ -179,12 +186,20 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           name={`transactions.${index}.amount`}
           control={form.control}
           render={({ field, fieldState }) => (
-            <FormControl>
+            <FormControl
+              sx={{
+                input: {
+                  boxShadow: 'none !important',
+                },
+              }}
+            >
               <AmountInput
                 placeholder=" "
                 value={field.value}
                 onChange={field.onChange}
                 isInvalid={fieldState.invalid}
+                border="1px solid"
+                borderColor="grey.425"
               />
               <FormLabel
                 color="grey.50"
