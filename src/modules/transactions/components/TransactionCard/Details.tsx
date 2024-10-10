@@ -5,7 +5,7 @@ import { TransactionStatus, TransactionType } from 'bakosafe';
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-import { findNetworkByUrl } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
@@ -46,7 +46,7 @@ const Details = ({
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findNetworkByUrl(network.url).explorer}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

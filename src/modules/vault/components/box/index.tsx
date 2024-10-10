@@ -21,7 +21,7 @@ import {
   LeftAndRightArrow,
   UpRightArrow,
 } from '@/components';
-import { findNetworkByUrl } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
@@ -85,7 +85,7 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   const redirectToNetwork = () =>
     window.open(
-      `${findNetworkByUrl(network.url).explorer}/account/${address}/assets`,
+      `${NetworkService.getExplorer(network.url)}/account/${address}/assets`,
       '_BLANK',
     );
 
