@@ -15,6 +15,7 @@ const WebSignInPage = () => {
     handleSelectWallet,
     handleInputChange,
     mode,
+    isRegistering,
   } = useWebSignIn();
 
   return (
@@ -30,6 +31,7 @@ const WebSignInPage = () => {
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      isRegistering={isRegistering}
     />
   );
 };

@@ -41,6 +41,7 @@ const useDappSignIn = () => {
     mode,
     setMode,
     handleLogin,
+    isRegistering,
     ...rest
   } = useWebAuthnSignIn(redirect);
   const { lastLoginUsername } = useWebAuthnLastLogin();
@@ -115,6 +116,7 @@ const useDappSignIn = () => {
     formData,
     formState: customFormState[mode],
     mode,
+    isRegistering,
   };
 };
 

@@ -14,6 +14,7 @@ interface WebAuthnSignInProps {
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];
   handleRegister: UseWebAuthnSignIn['handleRegister'];
+  isRegistering: boolean;
 }
 
 const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
@@ -24,6 +25,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
     inputBadge,
     handleInputChange,
     handleRegister,
+    isRegistering,
   } = props;
 
   const { isMobile } = useScreenSize();
@@ -39,6 +41,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
         accountSeachHandler={handleInputChange}
         onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
         inputBadge={inputBadge}
+        isRegistering={isRegistering}
       />
 
       <ProgressButton

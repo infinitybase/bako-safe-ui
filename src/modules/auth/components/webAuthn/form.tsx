@@ -12,6 +12,7 @@ interface WebAuthnFormProps {
   showAccountsOptions: boolean;
   accountSeachHandler: UseWebAuthnSignIn['handleInputChange'];
   onSubmitUsingEnterKey: UseWebAuthnSignIn['formState']['handleActionUsingEnterKey'];
+  isRegistering: boolean;
 }
 
 const WebAuthnForm = (props: WebAuthnFormProps) => {
@@ -22,6 +23,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
     showAccountsOptions,
     accountSeachHandler,
     onSubmitUsingEnterKey,
+    isRegistering,
   } = props;
 
   const {
@@ -57,7 +59,7 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
                 onKeyDown={(e) => onSubmitUsingEnterKey?.(e.key)}
                 options={accountsOptions}
                 showOptions={showAccountsOptions}
-                isDisabled={!window.navigator.credentials}
+                isDisabled={!window.navigator.credentials || isRegistering}
                 badgeStatus={inputBadge?.status}
                 badgeLabel={inputBadge?.label}
               />

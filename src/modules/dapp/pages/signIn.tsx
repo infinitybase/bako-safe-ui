@@ -14,6 +14,7 @@ const DappSignInPage = () => {
     handleInputChange,
     handleRegister,
     mode,
+    isRegistering,
   } = useDappSignIn();
 
   return (
@@ -29,6 +30,7 @@ const DappSignInPage = () => {
       handleInputChange={handleInputChange}
       handleSelectWallet={handleSelectWallet}
       handleRegister={handleRegister}
+      isRegistering={isRegistering}
     />
   );
 };

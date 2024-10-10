@@ -157,6 +157,7 @@ const useWebAuthnSignIn = (
     createdAcccountUsername,
     inputBadge: badge,
     isSigningIn,
+    isRegistering,
     mode,
     setMode,
     handleLogin,
