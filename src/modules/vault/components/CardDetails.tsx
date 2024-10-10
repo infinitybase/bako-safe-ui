@@ -227,13 +227,14 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       mb={props.isPendingSigner && isMobile ? 5 : 0}
                       justifyContent="space-around"
                       spacing={2}
+                      h="18px"
                     >
                       <CustomSkeleton
                         isLoaded={!isLoading}
                         customStartColor="grey.75"
                         customEndColor="dark.100"
                       >
-                        <Heading variant={{ base: 'title-lg', sm: 'title-xl' }}>
+                        <Heading fontSize="18px" mt={1} lineHeight="21.78px">
                           {visibleBalance ? `${balanceUSD} USD` : '-----'}
                         </Heading>
                       </CustomSkeleton>
@@ -246,9 +247,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         onClick={() => setVisibleBalance(!visibleBalance)}
                       >
                         {visibleBalance ? (
-                          <EyeOpenIcon boxSize={7} />
+                          <EyeOpenIcon boxSize={6} />
                         ) : (
-                          <EyeCloseIcon boxSize={5} />
+                          <EyeCloseIcon boxSize={6} />
                         )}
                       </Box>
                     </HStack>
