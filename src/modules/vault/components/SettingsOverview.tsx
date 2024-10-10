@@ -23,7 +23,7 @@ import {
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -53,7 +53,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge },
+    screenSizes: {
+      isExtraSmall,
+      vaultRequiredSizeToColumnLayout,
+      isLowerThanFourHundredAndThirty,
+      isLarge,
+      isMobile,
+    },
   } = useWorkspaceContext();
 
   const {
@@ -333,12 +339,13 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   right={{ base: 4, sm: 0 }}
                   align={{ base: 'flex-end', sm: 'center' }}
                   justifyContent="flex-start"
+                  h={isLowerThanFourHundredAndThirty ? '220px' : 'unset'}
                 >
                   <Box
                     p={3}
                     backgroundColor={'white'}
-                    w={{ base: 32, sm: 180 }}
-                    h={{ base: 32, sm: 180 }}
+                    w={{ base: isMobile ? 36 : 32, sm: 180 }}
+                    h={{ base: isMobile ? 36 : 32, sm: 180 }}
                     borderRadius={10}
                   >
                     <QRCodeSVG
@@ -363,6 +370,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     backgroundColor="dark.100"
                     isSidebarAddress
                     addressProps={{ color: 'grey.500' }}
+                    maxW={isMobile ? 36 : 'unset'}
+                    customAddress={
+                      isMobile
+                        ? AddressUtils.format(
+                            vault?.data?.predicateAddress ?? '',
+                            4,
+                          )
+                        : undefined
+                    }
                   />
                 </VStack>
               </Stack>

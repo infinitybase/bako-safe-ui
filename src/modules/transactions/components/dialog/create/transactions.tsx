@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
+import { AmountInput, Autocomplete } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -359,7 +359,6 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       <Center mt={6}>
         <Button
           w="full"
-          leftIcon={<UserAddIcon />}
           variant="primary"
           border="none"
           color="dark.950"
