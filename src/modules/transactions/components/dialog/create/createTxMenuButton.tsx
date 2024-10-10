@@ -117,7 +117,7 @@ const CreateTxMenuButton = ({
                   ? 'warning.500'
                   : 'white'
               }
-              fontWeight={400}
+              fontWeight={600}
               lineHeight="14.52px"
             >
               {ECreateTransactionMethods.CREATE_AND_SIGN}
@@ -147,7 +147,7 @@ const CreateTxMenuButton = ({
                   ? 'warning.500'
                   : 'white'
               }
-              fontWeight={400}
+              fontWeight={600}
               lineHeight="14.52px"
             >
               {ECreateTransactionMethods.CREATE}

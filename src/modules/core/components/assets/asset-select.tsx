@@ -36,6 +36,12 @@ function AssetSelect(props: Props) {
           value: asset.assetId,
         }))}
         maxOptionsHeight={120}
+        style={{
+          color: '#CFCCC9',
+          fontWeight: 600,
+          fontSize: '14px',
+          height: '50px',
+        }}
       />
       {props.helperText}
     </FormControl>

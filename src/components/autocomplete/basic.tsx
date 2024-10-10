@@ -3,6 +3,7 @@ import {
   CircularProgress,
   Flex,
   FormLabel,
+  FormLabelProps,
   HStack,
   Input,
   InputGroup,
@@ -48,6 +49,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
+  formLabelProps?: FormLabelProps;
 }
 
 const Autocomplete = ({
@@ -70,6 +72,7 @@ const Autocomplete = ({
   actionOnRemoveInput = () => {},
   actionOnBlur = () => {},
   inputRef,
+  formLabelProps,
   ...rest
 }: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -143,7 +146,9 @@ const Autocomplete = ({
           ref={inputRef}
         />
 
-        <FormLabel color="grey.500">{label}</FormLabel>
+        <FormLabel color="grey.500" {...formLabelProps}>
+          {label}
+        </FormLabel>
 
         {!disabled && (
           <InputRightElement

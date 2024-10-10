@@ -127,6 +127,13 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     border: '1px solid',
                     borderColor: '#868079',
                   }}
+                  formLabelProps={{
+                    color: 'grey.50',
+                    fontSize: 'sm',
+                    fontWeight: 600,
+                    lineHeight: '16.94px',
+                    pt: 1,
+                  }}
                 />
 
                 <FormHelperText
@@ -354,8 +361,10 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           w="full"
           leftIcon={<UserAddIcon />}
           variant="primary"
-          bgColor="grey.200"
           border="none"
+          color="dark.950"
+          fontSize="14px"
+          fontWeight={500}
           _hover={{
             opacity: 0.8,
           }}
@@ -367,6 +376,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             });
             delay(() => accordion.open(transactions.fields.length), 100);
           }}
+          h="40px"
+          background="linear-gradient(180deg, rgba(207, 204, 201, 1)  0%, #151413 160%)"
         >
           Add more recipients
         </Button>
