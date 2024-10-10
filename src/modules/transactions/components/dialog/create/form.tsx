@@ -78,13 +78,9 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       <Dialog.Section
         mb={8}
         mt={7}
-        title={
-          <Heading fontSize="lg" fontWeight="bold" color="white">
-            Who for?
-          </Heading>
-        }
+        title={<Heading variant="dialogSectionTitle">Who for?</Heading>}
         description="Set the recipient(s) for this transfer. You can set up to 10 recipients."
-        descriptionFontSize="sm"
+        spacing={4}
       />
 
       <TransactionAccordions

@@ -31,6 +31,13 @@ const dialogTitle = defineStyle({
   color: 'grey.50',
 });
 
+const dialogSectionTitle = defineStyle({
+  fontWeight: 700,
+  fontSize: '12px',
+  lineHeight: '14.52px',
+  color: 'grey.75',
+});
+
 const Heading = defineStyleConfig({
   variants: {
     'title-xl': titleXl,
@@ -38,6 +45,7 @@ const Heading = defineStyleConfig({
     'title-md': titleMd,
     'title-sm': titleSm,
     dialogTitle,
+    dialogSectionTitle,
   },
 });
 

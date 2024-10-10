@@ -123,10 +123,22 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   clearable={false}
                   optionsRef={optionRef}
                   variant="dark"
+                  inputStyle={{
+                    border: '1px solid',
+                    borderColor: '#868079',
+                  }}
                 />
-                <FormHelperText color="error.500">
-                  {fieldState.error?.message}
+
+                <FormHelperText
+                  color={fieldState.error?.message ? 'error.500' : 'grey.550'}
+                  fontWeight={500}
+                  fontSize="xs"
+                  lineHeight="14.52px"
+                >
+                  {fieldState.error?.message ??
+                    'Paste or select from Address book'}
                 </FormHelperText>
+
                 <AddToAddressBook
                   visible={showAddToAddressBook}
                   onAdd={() => handleOpenDialog?.({ address: field.value })}
@@ -147,7 +159,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               onChange={field.onChange}
               helperText={
                 <FormHelperText
-                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
+                  color={fieldState.invalid ? 'error.500' : 'grey.550'}
                 >
                   {fieldState.error?.message ??
                     'Select the asset you want to send'}
@@ -167,10 +179,23 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 onChange={field.onChange}
                 isInvalid={fieldState.invalid}
               />
-              <FormLabel color="gray">Amount</FormLabel>
+              <FormLabel
+                color="grey.50"
+                fontSize="sm"
+                fontWeight={600}
+                lineHeight="16.94px"
+                pt={1}
+              >
+                Amount
+              </FormLabel>
               <FormHelperText>
                 {asset && (
-                  <Text display="flex" alignItems="center">
+                  <Text
+                    display="flex"
+                    alignItems="center"
+                    color="grey.550"
+                    fontSize="xs"
+                  >
                     Balance (available):{' '}
                     {isFeeCalcLoading ? (
                       <CircularProgress
@@ -270,13 +295,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               borderWidth={1}
               borderColor="grey.925"
               borderRadius={10}
-              backgroundColor="dark.950"
             >
               <TransactionAccordion.Item
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <HStack spacing={4}>
+                    <HStack spacing={4} ml="auto" w="fit-content">
                       <TransactionAccordion.EditAction
                         onClick={() => accordion.open(index)}
                       />
@@ -287,14 +311,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                           accordion.close();
                         }}
                       />
+                      <TransactionAccordion.ConfirmAction
+                        onClick={() => accordion.close()}
+                        isDisabled={isDisabled}
+                        isLoading={
+                          !isCurrentAmountZero ? isFeeCalcLoading : false
+                        }
+                      />
                     </HStack>
-                    <TransactionAccordion.ConfirmAction
-                      onClick={() => accordion.close()}
-                      isDisabled={isDisabled}
-                      isLoading={
-                        !isCurrentAmountZero ? isFeeCalcLoading : false
-                      }
-                    />
                   </TransactionAccordion.Actions>
                 }
                 resume={

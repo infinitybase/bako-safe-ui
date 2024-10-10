@@ -2,12 +2,10 @@ import {
   AccordionPanel,
   Box,
   Heading,
+  HStack,
   useAccordionItemState,
-  VStack,
 } from '@chakra-ui/react';
 import React from 'react';
-
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AccordionItemProps {
   title: string;
@@ -22,32 +20,18 @@ const AccordionItem = ({
   children,
   resume,
 }: AccordionItemProps) => {
-  const {
-    screenSizes: { isExtraSmall },
-  } = useWorkspaceContext();
   const { isOpen } = useAccordionItemState();
 
   return (
     <>
-      <Box p={0} alignItems="center" justifyContent="space-between">
-        <VStack w="full" py={5} px={5} alignItems="flex-start" spacing={0}>
-          <Box
-            w="full"
-            display="flex"
-            flexDir={isExtraSmall ? 'column' : 'row'}
-            alignItems="start"
-            rowGap={6}
-          >
-            <Box w="full" flex={2}>
-              <Heading fontSize="lg" fontWeight="extrabold" color="grey.200">
-                {title}
-              </Heading>
-              {!isOpen && resume}
-            </Box>
-            {actions}
-          </Box>
-        </VStack>
-      </Box>
+      <HStack w="full" h={isOpen ? '32px' : '66px'} px={5} my={isOpen ? 4 : 0}>
+        <Box w="full">
+          <Heading variant="dialogSectionTitle">{title}</Heading>
+          {!isOpen && resume}
+        </Box>
+        {actions}
+      </HStack>
+
       {isOpen && <AccordionPanel px={5}>{children}</AccordionPanel>}
     </>
   );

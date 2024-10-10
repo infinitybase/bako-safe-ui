@@ -25,13 +25,13 @@ const AccordionEditAction = (props: AccordionActionProp) => {
   return (
     <IconButton
       p={0}
-      h="auto"
-      minW="auto"
+      h="32px"
+      minW="32px"
+      bgColor="rgba(245, 245, 245, 0.2)"
       _hover={{}}
       _active={{}}
-      bgColor="transparent"
       aria-label="Edit transaction"
-      icon={<Icon fontSize="xl" color="grey.200" as={EditIcon} />}
+      icon={<Icon fontSize="md" color="grey.200" as={EditIcon} />}
       isDisabled={isOpen}
       onClick={props.onClick}
     >
@@ -60,7 +60,7 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
       isLoading={props.isLoading}
       {...props}
     >
-      <Icon fontSize="sm" color="dark.950" as={CheckIcon} />
+      <Icon fontSize="md" color="dark.950" as={CheckIcon} />
       <AccordionButton hidden />
     </Button>
   );
@@ -69,13 +69,13 @@ const AccordionConfirmAction = (props: AccordionActionProp) => {
 const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
   <IconButton
     p={0}
-    h="auto"
-    minW="auto"
+    h="32px"
+    minW="32px"
     _hover={{}}
     _active={{}}
-    bgColor="transparent"
+    bgColor="rgba(245, 245, 245, 0.2)"
     aria-label="Remove transaction"
-    icon={<Icon fontSize="xl" color="grey.200" as={RemoveIcon} />}
+    icon={<Icon fontSize="md" color="grey.200" as={RemoveIcon} />}
     {...props}
   />
 );
