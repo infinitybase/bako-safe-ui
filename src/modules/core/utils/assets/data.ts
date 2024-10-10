@@ -1,6 +1,7 @@
 import { Assets, assets } from 'fuels';
 
 import { localStorageKeys } from '@/modules/auth/services';
+import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
@@ -18,7 +19,7 @@ export const UNKNOWN_ASSET = {
 const getChainId = (): number =>
   Number(
     localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
-      import.meta.env.VITE_CHAIN_ID,
+      availableNetWorks[NetworkType.TESTNET].chainId,
   );
 
 export const formatedAssets = (chainId: number): Asset[] =>

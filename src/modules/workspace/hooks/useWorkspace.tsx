@@ -20,8 +20,8 @@ const useWorkspace = (
   userInfos: IUserInfos,
   assetsMaps: false | AssetMap | undefined,
   invalidateGifAnimationRequest: () => void,
-  resetAllTransactionsTypeFilters: () => void,
-  refetchPendingSingerTransactions: () => void,
+  // resetAllTransactionsTypeFilters: () => void,
+  // refetchPendingSingerTransactions: () => void,
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
@@ -45,47 +45,28 @@ const useWorkspace = (
   const handleWorkspaceSelection = async (
     selectedWorkspace: string,
     redirect?: string,
-    needUpdateWorkspaceBalance?: boolean,
+    // needUpdateWorkspaceBalance?: boolean,
   ) => {
-    const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+    // All this logic is to handle workspace authentication
+    // const isValid = selectedWorkspace !== userInfos?.workspace?.id;
+    // if (!isValid) {
+    //   console.log(!!redirect);
+    //   !!redirect && navigate(redirect);
+    //   if (redirect?.includes('vault')) {
+    //     // That' means he's accessing a vault, then it should show the gif.
+    //     invalidateGifAnimationRequest();
+    //   }
+    //   needUpdateWorkspaceBalance && workspaceBalance.refetch();
+    //   return;
+    // }
+    // workspaceDialog.onClose();
 
-    // if (isSelecting) return;
-    if (!isValid) {
-      !!redirect && navigate(redirect);
-      if (redirect?.includes('vault')) {
-        // That' means he's accessing a vault, then it should show the gif.
+    if (redirect) {
+      if (redirect.includes('vault')) {
         invalidateGifAnimationRequest();
       }
-      needUpdateWorkspaceBalance && workspaceBalance.refetch();
-      return;
+      navigate(redirect);
     }
-
-    invalidateGifAnimationRequest();
-    workspaceDialog.onClose();
-    invalidateRequests();
-    navigate(
-      redirect ?? Pages.workspace({ workspaceId: selectedWorkspace ?? '' }),
-    );
-
-    // Commented out this workspace select/auth logic.
-    // Now we only use navigate to redirect the user instead of authenticate him in the workspace
-
-    // selectWorkspace(selectedWorkspace, {
-    //   onSelect: (workspace) => {
-    //     invalidateRequests();
-    //     navigate(redirect ?? Pages.workspace({ workspaceId: workspace.id }));
-    //   },
-    //   onError: () => {
-    //     toast({
-    //       status: 'error',
-    //       duration: 4000,
-    //       isClosable: false,
-    //       title: 'Error!',
-    //       description: 'Try again, please...',
-    //       icon: <Icon fontSize="2xl" color="error.600" as={MdOutlineError} />,
-    //     });
-    //   },
-    // });
   };
 
   const goHome = () => {
@@ -114,13 +95,6 @@ const useWorkspace = (
     },
     [userInfos?.onSingleWorkspace, userInfos.workspace?.permission, vaultId],
   );
-
-  const invalidateRequests = () => {
-    resetAllTransactionsTypeFilters();
-    workspaceBalance.refetch();
-    refetchPendingSingerTransactions();
-    userInfos.refetch();
-  };
 
   return {
     workspaceDialog,

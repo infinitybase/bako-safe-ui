@@ -7,14 +7,24 @@ import {
   Flex,
   Heading,
   HStack,
+  Icon,
+  IconButton,
+  keyframes,
   Text,
+  TextProps,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton, SquarePlusIcon } from '@/components';
+import {
+  Card,
+  CustomSkeleton,
+  ErrorTooltip,
+  SquarePlusIcon,
+} from '@/components';
 import { EyeCloseIcon } from '@/components/icons/eye-close';
 import { EyeOpenIcon } from '@/components/icons/eye-open';
 import { RefreshIcon } from '@/components/icons/refresh-icon';
@@ -26,6 +36,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
+import BalanceHelperDrawer from './BalanceHelperDrawer';
+import BalanceHelperDialog from './dialog/BalanceHelper';
 
 export interface CardDetailsProps {
   vault: UseVaultDetailsReturn['vault'];
@@ -34,7 +46,12 @@ export interface CardDetailsProps {
   setAddAssetsDialogState: (value: boolean) => void;
 }
 
-const Update = () => {
+const Update = (props: TextProps & { isLoading: boolean }) => {
+  const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
   return (
     <Text
       w={20}
@@ -48,6 +65,7 @@ const Update = () => {
         cursor: 'pointer',
         color: 'grey.200',
       }}
+      {...props}
     >
       Update
       <RefreshIcon
@@ -57,6 +75,7 @@ const Update = () => {
         }}
         w={{ base: 4, sm: 5 }}
         h={{ base: 4, sm: 5 }}
+        animation={props.isLoading ? `${spin} 1s linear infinite` : undefined}
       />
     </Text>
   );
@@ -65,6 +84,7 @@ const Update = () => {
 const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);
   const navigate = useNavigate();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { vault, assets, setAddAssetsDialogState } = props;
   const {
@@ -72,10 +92,13 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     visibleBalance,
     setVisibleBalance,
     isLoading,
+    isUpdating,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
+    handleManualRefetch,
   } = assets;
+
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -109,6 +132,11 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
   return (
     <Box w="full">
+      {isMobile ? (
+        <BalanceHelperDrawer onClose={onClose} isOpen={isOpen} />
+      ) : (
+        <BalanceHelperDialog onClose={onClose} isOpen={isOpen} />
+      )}
       <Box mb="22px" w="full">
         <Text
           color="grey.50"
@@ -165,7 +193,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       {vault?.data.name}
                     </Heading>
-                    {isMobile && <Update />}
+                    {isMobile && (
+                      <Update
+                        isLoading={isUpdating}
+                        onClick={handleManualRefetch}
+                      />
+                    )}
                   </HStack>
 
                   {/* Commented out code to temporarily disable workspaces. */}
@@ -252,7 +285,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         )}
                       </Box>
                     </HStack>
-                    {!isMobile && <Update />}
+                    {!isMobile && (
+                      <Update
+                        isLoading={isUpdating}
+                        onClick={handleManualRefetch}
+                      />
+                    )}
                   </HStack>
                 </Box>
 
@@ -307,10 +345,22 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         <Text
                           variant="description"
                           textAlign={{ base: 'end', sm: 'left' }}
+                          fontWeight={400}
                           fontSize="xs"
-                          color="error.500"
+                          color="error.650"
+                          onClick={onOpen}
+                          cursor="pointer"
                         >
-                          Not enough balance.
+                          Not enough balance{' '}
+                          <IconButton
+                            bg="none"
+                            _hover={{ bg: 'none' }}
+                            aria-label="Open helper modal"
+                            size="xs"
+                            minW={4}
+                            maxH={4}
+                            icon={<Icon as={ErrorTooltip} fontSize="xs" />}
+                          />
                         </Text>
                       )}
                     {props.isPendingSigner ? (

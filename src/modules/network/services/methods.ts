@@ -3,8 +3,6 @@ import { Provider } from 'fuels';
 import { api } from '@/config';
 import { localStorageKeys } from '@/modules/auth/services';
 
-// import { availableNetWorks } from '../data';
-
 export enum NetworkQueryKey {
   CREATE_NETWORK = 'create-network',
   LIST_NETWORKS = 'list-networks',
@@ -17,14 +15,12 @@ export enum NetworkType {
   MAINNET = 'mainnet',
   TESTNET = 'testnet',
   DEV = 'dev',
-  LOCALSTORAGE = 'localstorage',
 }
 
 export type CustomNetwork = {
   name: string;
   url: string;
   chainId: number;
-  identifier: NetworkType;
 };
 
 export type CreateNetworkPayload = CustomNetwork;
@@ -46,32 +42,25 @@ export type DeleteNetworkResponse = void;
 export type SelectNetworkResponse = boolean;
 export type CheckNetworkResponse = string | undefined;
 
-export const defaultBlockExplorer = 'https://app-mainnet.fuel.network/';
-
-export const availableNetWorks = [
-  {
-    identifier: NetworkType.TESTNET,
+export const availableNetWorks = {
+  [NetworkType.MAINNET]: {
+    name: 'Ignition',
+    url: import.meta.env.VITE_MAINNET_NETWORK,
+    chainId: 9889,
+    explorer: 'https://app-mainnet.fuel.network/',
+  },
+  [NetworkType.TESTNET]: {
     name: 'Fuel Sepolia Testnet',
     url: 'https://testnet.fuel.network/v1/graphql',
     chainId: 0,
-    explorer: `https://app.fuel.network/`,
+    explorer: 'https://app.fuel.network/',
   },
-  ...(import.meta.env.VITE_DEV === 'development'
-    ? [
-        {
-          identifier: NetworkType.DEV,
-          name: 'Local',
-          url: 'http://localhost:4000/v1/graphql',
-          chainId: 0,
-        },
-      ]
-    : []),
-];
-
-export const findBlockExplorerByNetwork = (url: string) => {
-  const network = availableNetWorks.find((net) => net.url === url);
-
-  return network?.explorer ?? defaultBlockExplorer;
+  [NetworkType.DEV]: {
+    name: 'Local',
+    url: 'http://localhost:4000/v1/graphql',
+    chainId: 0,
+    explorer: 'http://localhost:4000/explorer', // Not valid,
+  },
 };
 
 export class NetworkService {
@@ -88,7 +77,7 @@ export class NetworkService {
     );
   }
 
-  static async list() {
+  static list() {
     const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
     );
@@ -96,10 +85,10 @@ export class NetworkService {
     if (!networks.length) {
       localStorage.setItem(
         localStorageKeys.NETWORKS,
-        JSON.stringify(availableNetWorks),
+        JSON.stringify(Object.values(availableNetWorks)),
       );
 
-      return availableNetWorks;
+      return Object.values(availableNetWorks);
     }
 
     return networks;
@@ -130,5 +119,32 @@ export class NetworkService {
     const chain = provider.getChain();
 
     return chain?.name;
+  }
+
+  static async hasNetwork(url: string) {
+    const networks = NetworkService.list();
+
+    return networks.some((net) => net.url === url);
+  }
+
+  static findByUrl(url: string) {
+    const networks = NetworkService.list();
+    return networks.find((net) => net.url === url);
+  }
+
+  static getName(url: string) {
+    const network = NetworkService.findByUrl(url);
+    return network?.name ?? 'Unknown';
+  }
+
+  static getExplorer(url: string) {
+    const network = NetworkService.findByUrl(url);
+
+    if (network && 'explorer' in network && network.explorer) {
+      return network.explorer;
+    }
+
+    const defaultNetwork = availableNetWorks[NetworkType.MAINNET];
+    return defaultNetwork.explorer;
   }
 }

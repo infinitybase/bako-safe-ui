@@ -59,7 +59,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
       acc.address,
       fromConnector
         ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
-        : undefined,
+        : import.meta.env.VITE_MAINNET_NETWORK,
     );
 
     setSignInProgress(66);

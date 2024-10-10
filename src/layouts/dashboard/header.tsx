@@ -39,7 +39,7 @@ import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkType } from '@/modules/network/services';
+import { NetworkService, NetworkType } from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -102,7 +102,8 @@ const UserBox = () => {
   const hasNickName = name && !AddressUtils.isValid(name);
 
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
-  const isMainnet = (url: string) => url.includes(NetworkType.MAINNET);
+
+  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
 
   const logout = async () => {
     try {
@@ -157,7 +158,7 @@ const UserBox = () => {
         >
           <PopoverTrigger>
             <HStack
-              w={165}
+              w={220}
               h={'32px'}
               alignItems="center"
               cursor={isWebAuthn ? 'pointer' : 'default'}
@@ -194,8 +195,7 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {networks?.find(({ url }) => url === currentNetwork.url)
-                        ?.name ?? 'Unknown'}
+                      {NetworkService.getName(currentNetwork.url)}
                     </Text>
                   </HStack>
 
@@ -213,7 +213,7 @@ const UserBox = () => {
 
           <PopoverContent
             bg={'dark.300'}
-            w={165}
+            w={220}
             borderTop="none"
             border="1px solid #353230"
             _focus={{ ring: 'none' }}

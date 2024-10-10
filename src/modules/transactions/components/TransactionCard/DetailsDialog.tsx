@@ -20,7 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -52,13 +52,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     isContract,
   } = props;
   const {
-    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty },
+    screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
@@ -126,10 +126,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                   <Heading
                     variant={'title-sm'}
                     color="grey.200"
-                    textOverflow="ellipsis"
                     textAlign="left"
+                    wordBreak="break-all"
                     noOfLines={1}
-                    maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
                   >
                     {transaction.name}
                   </Heading>
@@ -158,7 +157,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
             </HStack>
 
             <HStack w="full" justifyContent="space-between" h="38px">
-              <HStack>
+              <HStack w="75%">
                 <Avatar
                   name={transaction.predicate?.name ?? ''}
                   color="grey.425"
@@ -175,10 +174,9 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 <Heading
                   variant={'title-sm'}
                   color="grey.200"
-                  textOverflow="ellipsis"
                   textAlign="left"
                   noOfLines={1}
-                  maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                  wordBreak="break-all"
                 >
                   {transaction.predicate?.name}
                 </Heading>
