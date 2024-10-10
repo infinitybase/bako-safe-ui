@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 import { Workspace } from '@/modules/core';
+
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface NotificationCardProps extends CardProps {
@@ -26,7 +27,9 @@ const WorkspaceCard = ({
   const { name, description, avatar } = workspace;
 
   const {
-    screenSizes: { isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan336 },
+    },
   } = useWorkspaceContext();
 
   return (
@@ -48,7 +51,7 @@ const WorkspaceCard = ({
         <Avatar
           variant="roundedSquare"
           src={avatar}
-          boxSize={isExtraSmall ? '40px' : '56px'}
+          boxSize={isSmallerThan336 ? '40px' : '56px'}
         />
 
         <VStack

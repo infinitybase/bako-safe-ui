@@ -28,7 +28,9 @@ const APITokenCard = (props: APITokenCardProps) => {
   const { apiToken } = props;
   const { confirm, handler, request } = useRemoveAPIToken();
   const {
-    screenSizes: { isLitteSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan400 },
+    },
   } = useWorkspaceContext();
   const { network, isLoading } = useNetworkInfo(apiToken.network.url);
 
@@ -88,13 +90,13 @@ const APITokenCard = (props: APITokenCardProps) => {
 
         <Stack
           flexDirection={{
-            base: confirm.show && isLitteSmall ? 'column' : 'row',
+            base: confirm.show && isSmallerThan400 ? 'column' : 'row',
             xs: 'row',
           }}
           spacing={4}
           flex={1}
           maxW={{
-            base: isLitteSmall ? 70 : 'unset',
+            base: isSmallerThan400 ? 70 : 'unset',
             xs: 'unset,',
           }}
           alignItems="center"

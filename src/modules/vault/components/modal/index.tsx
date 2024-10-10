@@ -24,7 +24,10 @@ interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
 
 const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
   const {
-    screenSizes: { isMobile, isSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan600 },
+    },
   } = useWorkspaceContext();
   const {
     drawer,
@@ -140,8 +143,8 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
           <Dialog.Actions
             position={isMobile ? 'absolute' : 'relative'}
             bottom={0}
-            pb={isMobile && !isSmall ? 10 : 'unset'}
-            borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
+            pb={isMobile && !isSmallerThan600 ? 10 : 'unset'}
+            borderRadius={isMobile && !isSmallerThan600 ? '20px' : 'unset'}
             left={0}
             right={0}
             px={isMobile ? 10 : 'unset'}

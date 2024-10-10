@@ -31,10 +31,12 @@ const DepositDialog = ({
   const {
     screenSizes: {
       isMobile,
-      isExtraSmall,
-      isLitteSmall,
-      isSmall,
-      isLowerThanFourHundredAndThirty,
+      screenWidths: {
+        isSmallerThan336,
+        isSmallerThan400,
+        isSmallerThan600,
+        isSmallerThan430,
+      },
     },
   } = useWorkspaceContext();
 
@@ -118,7 +120,7 @@ const DepositDialog = ({
                 textOverflow="ellipsis"
                 textAlign="left"
                 noOfLines={1}
-                maxW={{ base: isExtraSmall ? 82 : 140, xs: 320 }}
+                maxW={{ base: isSmallerThan336 ? 82 : 140, xs: 320 }}
               >
                 {vault?.name}
               </Heading>
@@ -140,11 +142,11 @@ const DepositDialog = ({
                 justifyContent="start"
                 customAddress={AddressUtils.format(
                   vault.predicateAddress ?? '',
-                  isExtraSmall
+                  isSmallerThan336
                     ? 17
-                    : isLitteSmall
+                    : isSmallerThan400
                       ? 24
-                      : isLowerThanFourHundredAndThirty
+                      : isSmallerThan430
                         ? 30
                         : 35,
                 )}
@@ -156,8 +158,8 @@ const DepositDialog = ({
         <Dialog.Actions
           position={isMobile ? 'absolute' : 'relative'}
           bottom={0}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
+          pb={isMobile && !isSmallerThan600 ? 5 : 'unset'}
+          borderRadius={isMobile && !isSmallerThan600 ? '20px' : 'unset'}
           left={0}
           right={0}
           px={isMobile ? 10 : 'unset'}

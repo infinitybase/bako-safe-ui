@@ -3,9 +3,9 @@ import { css } from '@emotion/react';
 import { TransactionType } from 'bakosafe';
 
 import { shakeAnimationY } from '@/modules';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { DownLeftArrow, UpRightArrow } from '../icons';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;
@@ -22,7 +22,9 @@ const TransactionTypeFilters = ({
   ...rest
 }: ITransactionTypeFiltersProps) => {
   const {
-    screenSizes: { isSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan600 },
+    },
   } = useWorkspaceContext();
 
   const isDeposit = currentFilter === TransactionType.DEPOSIT;
@@ -47,7 +49,7 @@ const TransactionTypeFilters = ({
             as={DownLeftArrow}
             textColor={isDeposit ? 'success.700' : 'grey.75'}
             fontSize="lg"
-            ml={isSmall ? -1 : 0}
+            ml={isSmallerThan600 ? -1 : 0}
             className="btn-icon-1"
           />
         }
@@ -70,7 +72,7 @@ const TransactionTypeFilters = ({
             as={UpRightArrow}
             textColor={isTransfer ? 'warning.550' : 'grey.75'}
             fontSize="lg"
-            ml={isSmall ? -1 : 0}
+            ml={isSmallerThan600 ? -1 : 0}
             className="btn-icon-2"
           />
         }

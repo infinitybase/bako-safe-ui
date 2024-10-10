@@ -108,7 +108,9 @@ const ConnectorsList = ({
   onConnectorSelect,
   isAnyWalletConnectorOpen,
 }: ConnectorsListProps) => {
-  const { isLitteSmall } = useScreenSize();
+  const {
+    screenWidths: { isSmallerThan400 },
+  } = useScreenSize();
 
   return (
     <VStack hidden={hidden} spacing={{ base: 6, md: 8 }} w="full">
@@ -121,7 +123,7 @@ const ConnectorsList = ({
       </HStack>
 
       <Stack
-        flexDirection={isLitteSmall ? 'column' : 'row'}
+        flexDirection={isSmallerThan400 ? 'column' : 'row'}
         w="full"
         spacing={2}
       >

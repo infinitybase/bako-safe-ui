@@ -38,7 +38,9 @@ export const VaultCard = ({
 }: VaultCardProps) => {
   const { role } = usePermissions(ownerId);
   const {
-    screenSizes: { isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan336 },
+    },
   } = useWorkspaceContext();
 
   return (
@@ -49,7 +51,7 @@ export const VaultCard = ({
       backdropFilter="blur(16px)"
       dropShadow="0px 8px 6px 0px #00000026"
       w="100%"
-      maxW={isExtraSmall ? 272 : 'full'}
+      maxW={isSmallerThan336 ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}
       cursor="pointer"
       zIndex={100}

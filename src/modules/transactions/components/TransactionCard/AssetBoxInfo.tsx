@@ -33,7 +33,10 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan336, isSmallerThan430 },
+    },
     addressBookInfos: {
       requests: {
         listContactsRequest: { data },
@@ -89,12 +92,12 @@ const AssetBoxInfo = ({
         </VStack>
       )}
 
-      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'}>
+      <VStack mt={0.5} minW={isSmallerThan336 ? '80px' : '105px'}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
           color="grey.75"
-          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+          fontSize={isSmallerThan430 ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
           {asset?.amount}
@@ -131,7 +134,7 @@ const AssetBoxInfo = ({
               isTruncated
               textOverflow="ellipsis"
               maxW={{
-                base: isExtraSmall ? '80px' : '100px',
+                base: isSmallerThan336 ? '80px' : '100px',
                 xs: '130px',
                 lg: '130px',
               }}

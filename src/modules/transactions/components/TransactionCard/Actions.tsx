@@ -35,7 +35,9 @@ interface TransactionActionsProps extends BoxProps {
 
 const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
   const {
-    screenSizes: { isSmall, isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan600, isSmallerThan336 },
+    },
   } = useWorkspaceContext();
   return (
     <HStack w="full" justifyContent="end" spacing={1}>
@@ -49,11 +51,19 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="secondary"
         rightIcon={
-          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
+          <Icon
+            as={IoIosArrowForward}
+            fontSize="md"
+            ml={isSmallerThan600 ? -1 : 0}
+          />
         }
-        px={isExtraSmall ? 3 : 4}
+        px={isSmallerThan336 ? 3 : 4}
       >
-        {awaitingAnswer ? 'Sign' : isSmall ? 'Details' : 'View Details'}
+        {awaitingAnswer
+          ? 'Sign'
+          : isSmallerThan600
+            ? 'Details'
+            : 'View Details'}
       </Button>
     </HStack>
   );

@@ -14,14 +14,16 @@ interface DrawerProps extends Omit<ChakraDrawerProps, 'children'> {}
 
 const Drawer = ({ ...props }: DrawerProps) => {
   const {
-    screenSizes: { isSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan600 },
+    },
   } = useWorkspaceContext();
   const { onClose } = props;
 
   return (
     <ChakraDrawer
       {...props}
-      size={isSmall ? 'full' : 'xs'}
+      size={isSmallerThan600 ? 'full' : 'xs'}
       variant="solid"
       placement="left"
     >

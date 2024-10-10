@@ -56,7 +56,9 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
 
 const SigninContainer = (props: SigninContainerProps) => {
   const {
-    screenSizes: { isSmallHeight, isMdHeight },
+    screenSizes: {
+      screenHeights: { isShorterThan600, isShorterThan768 },
+    },
   } = useWorkspaceContext();
 
   return (
@@ -105,7 +107,7 @@ const SigninContainer = (props: SigninContainerProps) => {
         <Box
           pl={{ base: '10%', lg: '8%', xl: '5%' }}
           display="flex"
-          flex={isSmallHeight ? 4 : isMdHeight ? 3 : 2}
+          flex={isShorterThan600 ? 4 : isShorterThan768 ? 3 : 2}
           justifyContent="center"
         >
           <VStack flex={1} p={4}>

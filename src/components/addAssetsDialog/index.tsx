@@ -21,9 +21,7 @@ const AddAssetsDialog = ({
   const {
     screenSizes: {
       isMobile,
-      isSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
+      screenWidths: { isSmallerThan600, isSmallerThan430, isSmallerThan400 },
     },
     authDetails: {
       userInfos: { id, refetch },
@@ -110,8 +108,8 @@ const AddAssetsDialog = ({
           right={0}
           px={isMobile ? 10 : 'unset'}
           bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
+          borderRadius={isMobile && !isSmallerThan600 ? '20px' : 'unset'}
+          pb={isMobile && !isSmallerThan600 ? 5 : 'unset'}
           sx={{
             '&>hr': {
               marginTop: '0',
@@ -120,10 +118,10 @@ const AddAssetsDialog = ({
           }}
         >
           <Button
-            fontSize={isLitteSmall ? '12px' : '14px'}
+            fontSize={isSmallerThan400 ? '12px' : '14px'}
             lineHeight="15.85px"
             fontWeight="normal"
-            letterSpacing={isLowerThanFourHundredAndThirty ? 0 : '.5px'}
+            letterSpacing={isSmallerThan430 ? 0 : '.5px'}
             variant="outline"
             color="grey.75"
             borderColor="grey.75"

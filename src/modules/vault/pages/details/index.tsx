@@ -74,10 +74,9 @@ const VaultDetailsPage = () => {
       },
     },
     screenSizes: {
-      vaultRequiredSizeToColumnLayout,
-      isSmall,
+      screenWidths: { isSmallerThan1344, isSmallerThan600 },
       isMobile,
-      isLarge,
+      vaultRequiredSizeToColumnLayout,
     },
   } = useWorkspaceContext();
 
@@ -242,21 +241,24 @@ const VaultDetailsPage = () => {
 
         <SignersDetails
           vault={vault}
-          display={{ base: 'none', xs: !isLarge ? 'block' : 'none' }}
+          display={{ base: 'none', xs: !isSmallerThan1344 ? 'block' : 'none' }}
         />
       </HStack>
       <Box
         w="full"
         display="flex"
-        flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
+        flexDir={{ base: 'column', xs: isSmallerThan600 ? 'column' : 'row' }}
         gap={4}
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={{ base: 'column', xs: isSmall ? 'column' : 'row' }}
-          alignItems={{ base: 'start', xs: isSmall ? 'unset' : 'center' }}
-          gap={isSmall ? 2 : 4}
+          flexDir={{ base: 'column', xs: isSmallerThan600 ? 'column' : 'row' }}
+          alignItems={{
+            base: 'start',
+            xs: isSmallerThan600 ? 'unset' : 'center',
+          }}
+          gap={isSmallerThan600 ? 2 : 4}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">
             Transactions
@@ -271,7 +273,7 @@ const VaultDetailsPage = () => {
           currentFilter={txFilterType}
           incomingAction={handleIncomingAction}
           outgoingAction={handleOutgoingAction}
-          buttonsFullWidth={isSmall}
+          buttonsFullWidth={isSmallerThan600}
         />
       </Box>
 
@@ -358,7 +360,7 @@ const VaultDetailsPage = () => {
             )}
       </CustomSkeleton>
 
-      {isLarge && (
+      {isSmallerThan1344 && (
         <Box mt={7}>
           <SignersDetails vault={vault} />
         </Box>

@@ -4,13 +4,12 @@ import { TransactionStatus } from 'bakosafe';
 
 import { UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
+import { findBlockExplorerByNetwork } from '@/modules/network/services';
 import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
-import { useNetworks } from '@/modules/network/hooks';
 
 type DepositDetailsProps = {
   transaction: TransactionWithVault;
@@ -21,9 +20,11 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
     useGetAssetsByOperations(transaction);
 
   const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan430 },
+    },
   } = useWorkspaceContext();
-  const { currentNetwork } = useNetworks();
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
@@ -46,10 +47,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         {isMobile && <Divider my={5} borderColor="grey.425" />}
 
         <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
-          <Text
-            color="grey.425"
-            fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-          >
+          <Text color="grey.425" fontSize={isSmallerThan430 ? 'xs' : 'sm'}>
             Transaction breakdown
           </Text>
         </Box>

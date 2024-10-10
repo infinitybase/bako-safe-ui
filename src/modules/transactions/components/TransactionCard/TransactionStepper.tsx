@@ -60,7 +60,10 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
     addressBookInfos: {
       handlers: { contactByAddress },
     },
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan430 },
+    },
   } = useWorkspaceContext();
 
   const { activeStep, setActiveStep } = useSteps({
@@ -84,7 +87,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
     <Box display="flex" flexDirection="column" gap={8}>
       <Text
         color="grey.425"
-        fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        fontSize={isSmallerThan430 ? 'xs' : 'sm'}
         ml={isMobile ? 0 : 8}
         mb="7px"
       >

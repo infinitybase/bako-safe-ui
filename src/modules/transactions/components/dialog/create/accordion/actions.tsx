@@ -82,13 +82,15 @@ const AccordionDeleteAction = (props: Omit<IconButtonProps, 'aria-label'>) => (
 
 const AccordionActions = ({ children, ...rest }: StackProps) => {
   const {
-    screenSizes: { isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan336 },
+    },
   } = useWorkspaceContext();
   return (
     <HStack
       spacing={4}
-      w={isExtraSmall ? 'full' : 'unset'}
-      justifyContent={isExtraSmall ? 'space-between' : 'unset'}
+      w={isSmallerThan336 ? 'full' : 'unset'}
+      justifyContent={isSmallerThan336 ? 'space-between' : 'unset'}
       {...rest}
     >
       {children}
