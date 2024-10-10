@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
@@ -45,7 +45,7 @@ const useWorkspaceDetails = () => {
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useEffect(() => {
+  useMemo(() => {
     setupAxiosInterceptors({
       isTxFromDapp,
       isTokenExpired,
@@ -131,6 +131,9 @@ const useWorkspaceDetails = () => {
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
+    isTxFromDapp,
+    isTokenExpired,
+    setIsTokenExpired,
   };
 };
 
