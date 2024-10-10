@@ -28,6 +28,8 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
 
   const { isMobile } = useScreenSize();
 
+  console.log('formState', formState);
+
   return (
     <VStack w="full" spacing={isMobile ? 4 : 6}>
       <TermsOfUseDialog actionHandler={handleRegister} />
@@ -39,7 +41,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
         accountSeachHandler={handleInputChange}
         onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
         inputBadge={inputBadge}
-        isDisabled={formState.isDisabled}
+        isDisabled={formState.disableInput}
       />
 
       <ProgressButton
