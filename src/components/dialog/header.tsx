@@ -13,8 +13,6 @@ import { LineCloseIcon } from '../icons';
 interface DialogHeaderProps extends StackProps {
   title: string;
   description?: string;
-  descriptionFontSize?: string;
-  descriptionColor?: string;
   hideCloseButton?: boolean;
   titleSxProps?: HeadingProps;
   onClose?: () => void;
@@ -23,8 +21,6 @@ interface DialogHeaderProps extends StackProps {
 const DialogHeader = ({
   title,
   description,
-  descriptionFontSize,
-  descriptionColor,
   hideCloseButton,
   onClose,
   titleSxProps,
@@ -39,11 +35,7 @@ const DialogHeader = ({
     {...stackProps}
   >
     <HStack w="full" justifyContent="space-between" alignItems="center">
-      <Heading
-        fontSize={{ base: 'lg', sm: '3xl' }}
-        color="white"
-        {...titleSxProps}
-      >
+      <Heading variant="dialogTitle" {...titleSxProps}>
         {title}
       </Heading>
       {!hideCloseButton && (
@@ -56,15 +48,7 @@ const DialogHeader = ({
       )}
     </HStack>
     <Box maxW={500} mb={{ base: 4, sm: 0 }}>
-      {description && (
-        <Text
-          color={descriptionColor}
-          fontSize={{ base: 'sm', sm: descriptionFontSize }}
-          variant="description"
-        >
-          {description}
-        </Text>
-      )}
+      {description && <Text variant="dialogDescription">{description}</Text>}
     </Box>
   </VStack>
 );

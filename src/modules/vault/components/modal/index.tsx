@@ -69,12 +69,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
             maxW={{ base: 480, xs: 'unset' }}
             title="Select vault"
             description="Select the vault or create new one"
-            descriptionFontSize="12px"
-            titleSxProps={{
-              fontSize: '16px',
-              fontWeight: 700,
-              lineHeight: '19.36px',
-            }}
           />
 
           <Box

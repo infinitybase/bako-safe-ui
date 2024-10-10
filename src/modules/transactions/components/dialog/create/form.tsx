@@ -44,13 +44,28 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         control={form.control}
         name="name"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <FormControl
+            isInvalid={fieldState.invalid}
+            sx={{
+              input: {
+                boxShadow: 'none !important',
+              },
+            }}
+          >
             <Input
               maxLength={27}
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
               variant="dark"
+              border="1px solid"
+              borderColor="grey.425"
+              _hover={{
+                borderColor: 'grey.425',
+              }}
+              _focus={{
+                borderColor: 'grey.200',
+              }}
             />
             <FormLabel>Transaction name</FormLabel>
             <FormHelperText color="error.500">

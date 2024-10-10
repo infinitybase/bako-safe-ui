@@ -85,12 +85,6 @@ const WelcomeDialog = ({
           maxW={{ base: 480, xs: 'unset' }}
           title="Welcome to Bako Safe!"
           description={`Let's start by adding some funds to your personal vault.`}
-          descriptionFontSize="12px"
-          titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
-          }}
           borderBottomWidth={1}
           borderColor="grey.425"
           pb={6}

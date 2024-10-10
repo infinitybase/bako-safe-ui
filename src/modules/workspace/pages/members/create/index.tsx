@@ -205,8 +205,6 @@ const CreateMemberPage = () => {
         mt={0}
         onClose={handleClose}
         description={dialog.description}
-        descriptionFontSize="md"
-        descriptionColor="grey.200"
         hidden={!tabs.is(MemberTabState.FORM)}
       />
       {formState.isEditMember && (

@@ -54,7 +54,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const { isOpen, onToggle, onClose } = useDisclosure();
   const {
-    screenSizes: { isSmall, isMobile },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);

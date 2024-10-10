@@ -24,12 +24,20 @@ const titleSm = defineStyle({
   color: 'white',
 });
 
+const dialogTitle = defineStyle({
+  fontSize: '16px',
+  lineHeight: '19.36px',
+  fontWeight: 700,
+  color: 'grey.50',
+});
+
 const Heading = defineStyleConfig({
   variants: {
     'title-xl': titleXl,
     'title-lg': titleLg,
     'title-md': titleMd,
     'title-sm': titleSm,
+    dialogTitle,
   },
 });
 

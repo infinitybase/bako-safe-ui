@@ -61,12 +61,6 @@ const DepositDialog = ({
           maxW={{ base: 480, xs: 'unset' }}
           title={''}
           description={''}
-          descriptionFontSize="12px"
-          titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
-          }}
         />
 
         <VStack w="full" mt={6} mb={4} spacing={isMobile ? 6 : 10}>
