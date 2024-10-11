@@ -1,6 +1,6 @@
 import { Assets, bn, BNInput, NetworkFuel } from 'fuels';
 
-import { Maybe } from '@/modules/core/utils';
+import { Maybe, UNKNOWN_ASSET_UNITS } from '@/modules/core/utils';
 
 interface GetAssetUnitsParams {
   fuelsTokens?: Assets;
@@ -24,7 +24,7 @@ const formatAssetAmount = ({
 
         if (network && network.assetId === assetId) return network.decimals;
       })
-      .find((units) => units !== undefined) ?? 8;
+      .find((units) => units !== undefined) ?? UNKNOWN_ASSET_UNITS;
 
   return bn(amount).format({ units });
 };
