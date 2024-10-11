@@ -7,8 +7,6 @@ import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/fro
 import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { IFuelTransactionNames } from '../../services';
-
 interface OperationProps {
   vault?: {
     name: string;
@@ -39,36 +37,28 @@ export const DappTransactionOperationSekeleton = () => (
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
   const { assetsMap } = useWorkspaceContext();
-  const { to, assetsSent, from, name } = operation ?? {};
-
-  const isContract =
-    (name as unknown as IFuelTransactionNames) ===
-    IFuelTransactionNames.CONTRACT_CALL;
+  const { to, assetsSent, from } = operation ?? {};
 
   if (!to || !from || !vault) return null;
 
-  const assetData = isContract
-    ? null
-    : assetsSent?.map((sent) => {
-        return assetsMap?.[sent.assetId] && assetsMap?.[sent.assetId]
-          ? { ...assetsMap?.[sent.assetId], amount: sent.amount }
-          : {
-              ...assetsMap?.['UNKNOWN'],
-              amount: sent.amount,
-            };
-      });
-
-  const assets = isContract
-    ? null
-    : assetData?.map((data) => {
-        return {
-          icon: data?.icon,
-          amount: bn(data?.amount ?? '').format(),
-          assetId: data?.assetId,
-          name: data?.name,
-          slug: data?.slug,
+  const assetData = assetsSent?.map((sent) => {
+    return assetsMap?.[sent.assetId] && assetsMap?.[sent.assetId]
+      ? { ...assetsMap?.[sent.assetId], amount: sent.amount }
+      : {
+          ...assetsMap?.['UNKNOWN'],
+          amount: sent.amount,
         };
-      });
+  });
+
+  const assets = assetData?.map((data) => {
+    return {
+      icon: data?.icon,
+      amount: bn(data?.amount ?? '').format(),
+      assetId: data?.assetId,
+      name: data?.name,
+      slug: data?.slug,
+    };
+  });
 
   const hasAssets = !!assets?.length;
 

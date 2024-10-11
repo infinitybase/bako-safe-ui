@@ -10,35 +10,31 @@ const useVerifyTransactionInformations = (
   transaction: TransactionUI | TransactionWithVault,
 ) => {
   const mainOperation = transaction?.summary?.operations?.[0];
-  mainOperation?.to?.address;
-  const transferAssetsOperations = transaction.summary?.operations.filter(
-    (operation) =>
-      (operation.name as unknown as IFuelTransactionNames) ===
-      IFuelTransactionNames.TRANSFER_ASSET,
-  );
-
   const isFromConnector = transaction.summary?.type === 'connector';
   const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
+
   const isContract =
-    (mainOperation?.name as unknown as IFuelTransactionNames) ===
-    IFuelTransactionNames.CONTRACT_CALL;
+    transaction?.summary?.operations.some(
+      (op) =>
+        (op.name as unknown as IFuelTransactionNames) ===
+          IFuelTransactionNames.CONTRACT_CALL || !op.assetsSent,
+    ) ?? false;
 
-  const contractCallWithAssets = transaction?.summary?.operations.some(
-    (operation) =>
-      operation.assetsSent &&
+  const isMint = transaction?.summary?.operations?.some((operation) => {
+    const isContractCallWithAssets =
       (operation.name as unknown as IFuelTransactionNames) ===
-        IFuelTransactionNames.CONTRACT_CALL,
-  );
+        IFuelTransactionNames.CONTRACT_CALL && operation.assetsSent;
 
-  const isMint =
-    ['CONTRACT_CALL', 'TRANSFER_ASSET'].every((name) =>
-      transaction?.summary?.operations?.some(
-        (operation) =>
-          (operation.name as unknown as IFuelTransactionNames) ===
-          IFuelTransactionNames[name],
-      ),
-    ) || contractCallWithAssets;
+    const hasContractCallAndTransferAsset = [
+      'CONTRACT_CALL',
+      'TRANSFER_ASSET',
+    ].every((name) =>
+      transaction.summary?.operations.some((op) => op.name === name),
+    );
+
+    return isContractCallWithAssets || hasContractCallAndTransferAsset;
+  });
 
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
@@ -55,7 +51,6 @@ const useVerifyTransactionInformations = (
     isPending,
     contractAddress,
     isMint,
-    transferAssetsOperations,
   };
 };
 
