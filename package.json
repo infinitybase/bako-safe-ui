@@ -15,7 +15,6 @@
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@fuel-ts/providers": "^0.73.0",
     "@fuels/connectors": "^0.2.2",
     "@fuels/react": "0.18.1",
     "@hookform/resolvers": "^3.3.1",
