@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "ignoreDeprecations": "5.0",
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
@@ -26,7 +27,6 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "outDir": "./dist"
   },
   "include": ["src"],
   "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules"],
