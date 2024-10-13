@@ -15,6 +15,7 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
     enabled: window.location.pathname != '/',
+    refetchOnWindowFocus: true,
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
   });
