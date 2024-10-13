@@ -1,9 +1,7 @@
 import { ITransferAsset } from 'bakosafe';
-import { bn } from 'fuels';
-
-import { isHex } from '@/utils';
 
 import { OperationWithAssets, TransactionWithVault } from '../services';
+import { useFormatSummaryAssets } from './useFormatSummaryAssets';
 
 interface UseGetAssetsByOperationsResult {
   operationAssets: ITransferAsset;
@@ -17,88 +15,25 @@ const useGetAssetsByOperations = (
   const hasNoDefaultAssets = !transaction?.assets?.length;
   const defaultSentBy = transaction?.txData?.inputs[0]?.['owner'] ?? '';
 
-  const txDataInput = transaction.txData.inputs.find(
-    (input) => input.type === 0,
-  );
-
-  if (!transaction?.summary?.operations?.length) {
-    return {
-      operationAssets: {
-        amount: '',
-        assetId: '',
-        to: '',
-      },
-      sentBy: defaultSentBy,
-      hasNoDefaultAssets,
-    };
-  }
   const firstOperation = transaction.summary
     ?.operations[0] as OperationWithAssets;
+  const _from = firstOperation?.from?.address ?? '';
+  const sentBy = !transaction?.summary?.operations?.length
+    ? defaultSentBy
+    : _from;
 
-  if (!firstOperation.assetsSent) {
-    const { amount, assetId, to, from } = firstOperation;
-    if (
-      (!amount || !assetId) &&
-      txDataInput?.['assetId'] &&
-      txDataInput?.['amount']
-    ) {
-      const stringfiedAmount = String(txDataInput?.['amount']);
-      const assetAmount = isHex(stringfiedAmount)
-        ? bn(stringfiedAmount).format()
-        : stringfiedAmount;
-
-      const operationAssets = {
-        amount: assetAmount ?? '',
-        assetId: txDataInput?.['assetId'] ?? '',
-        to: to?.address ?? '',
-      };
-
-      const sentBy = from?.address ?? '';
-
-      return {
-        operationAssets,
-        sentBy,
-        hasNoDefaultAssets,
-      };
-    }
-
-    const stringfiedAmount = amount ?? '';
-
-    const assetAmount = isHex(stringfiedAmount)
-      ? bn(stringfiedAmount).format()
-      : stringfiedAmount;
-
-    const operationAssets = {
-      amount: assetAmount ?? '',
-      assetId: assetId ?? '',
-      to: to?.address ?? '',
-    };
-
-    const sentBy = from?.address ?? '';
-
-    return {
-      operationAssets,
-      sentBy,
-      hasNoDefaultAssets,
-    };
-  }
-
-  const { assetsSent = [], to, from } = firstOperation;
-
-  const amount = String(assetsSent[0]?.amount ?? '');
-
-  const assetAmount = isHex(amount) ? bn(amount).format() : amount;
-
-  const operationAssets = {
-    amount: assetAmount ?? '',
-    assetId: assetsSent[0]?.assetId ?? '',
-    to: to?.address ?? '',
-  };
-
-  const sentBy = from?.address ?? '';
+  const { amount, assetId, to } = useFormatSummaryAssets({
+    operations: transaction.summary?.operations,
+    txData: transaction.txData,
+    chainId: transaction.network.chainId,
+  });
 
   return {
-    operationAssets,
+    operationAssets: {
+      amount,
+      assetId,
+      to,
+    },
     sentBy,
     hasNoDefaultAssets,
   };
