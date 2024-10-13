@@ -29,7 +29,7 @@ interface TransactionCardMobileProps extends CardProps {
 const TransactionCardMobile = (props: TransactionCardMobileProps) => {
   const { transaction, account, isSigner, ...rest } = props;
 
-  const { isFromConnector, isDeploy, isDeposit, isContract } =
+  const { isFromConnector, isDeploy, isDeposit, isContract, isMint } =
     useVerifyTransactionInformations(transaction);
 
   const status = transactionStatus({
@@ -118,6 +118,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
                 isDeposit={isDeposit}
                 isContract={isContract}
                 isDeploy={isDeploy}
+                isMint={isMint}
               />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />

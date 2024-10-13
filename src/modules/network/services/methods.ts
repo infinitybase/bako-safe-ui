@@ -55,7 +55,7 @@ export const availableNetWorks = {
     chainId: 0,
     explorer: 'https://app.fuel.network/',
   },
-  ...(!window.location.hostname.includes('localhost') && {
+  ...(window.location.hostname.includes('localhost') && {
     [NetworkType.DEV]: {
       name: 'Local',
       url: 'http://localhost:4000/v1/graphql',
