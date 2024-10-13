@@ -15,9 +15,6 @@
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@fuel-ts/providers": "^0.73.0",
-    "@fuel-wallet/sdk": "0.16.1",
-    "@fuel-wallet/types": "0.15.2",
     "@fuels/connectors": "0.35.0",
     "@fuels/react": "0.35.0",
     "@hookform/resolvers": "^3.3.1",
@@ -26,6 +23,7 @@
     "@tanstack/react-query": "^5.39.0",
     "@tanstack/react-query-devtools": "^5.50.1",
     "@types/crypto-js": "^4.2.2",
+    "@wagmi/connectors": "^5.1.15",
     "axios": "^1.5.0",
     "bakosafe": "0.0.92-beta",
     "crypto-js": "4.2.0",
@@ -95,5 +93,6 @@
   },
   "resolutions": {
     "string-width": "4.1.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
