@@ -1,5 +1,5 @@
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
-import { AddressType, ChainName } from '@fuel-ts/providers';
+import { AddressType, ChainName } from 'fuels';
 
 import { AddressCopy } from '@/components/addressCopy';
 import { Card } from '@/components/card';
