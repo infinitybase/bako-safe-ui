@@ -63,7 +63,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     );
   };
 
-  const { isDeploy, isFromConnector, isDeposit } =
+  const { isDeploy, isFromConnector, isDeposit, isMint } =
     useVerifyTransactionInformations(transaction);
 
   const {
@@ -194,6 +194,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 h="26px"
                 isContract={isContract}
                 isDeploy={isDeploy}
+                isMint={isMint}
               />
               <TransactionCard.Status
                 transaction={transaction}

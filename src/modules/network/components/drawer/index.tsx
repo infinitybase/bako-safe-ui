@@ -53,6 +53,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
   const isTestnet = (url: string) => url?.includes(NetworkType.TESTNET);
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
+
   const networkList = isWebAuthn
     ? networks
     : networks?.filter((net) => net.url === currentNetwork.url);

@@ -55,12 +55,14 @@ export const availableNetWorks = {
     chainId: 0,
     explorer: 'https://app.fuel.network/',
   },
-  [NetworkType.DEV]: {
-    name: 'Local',
-    url: 'http://localhost:4000/v1/graphql',
-    chainId: 0,
-    explorer: 'http://localhost:4000/explorer', // Not valid,
-  },
+  ...(window.location.hostname.includes('localhost') && {
+    [NetworkType.DEV]: {
+      name: 'Local',
+      url: 'http://localhost:4000/v1/graphql',
+      chainId: 0,
+      explorer: 'http://localhost:4000/explorer',
+    },
+  }),
 };
 
 export class NetworkService {

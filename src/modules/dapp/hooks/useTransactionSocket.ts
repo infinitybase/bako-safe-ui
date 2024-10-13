@@ -1,4 +1,4 @@
-import { TransactionRequestLike } from '@fuel-ts/providers';
+import { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
