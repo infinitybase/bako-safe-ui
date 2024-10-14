@@ -121,7 +121,12 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               </Text>
             </HStack>
           )}
-          {tabs.tab === 2 && <CreateVaultWarning mb={4} />}
+          {tabs.tab === 2 && (
+            <CreateVaultWarning
+              mb={4}
+              message="Before initiating high-value deposits, first conduct smaller deposits and transactions to confirm that all signers have access to their wallets and that the vault’s funds can be transferred securely."
+            />
+          )}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
               bgColor="transparent"
