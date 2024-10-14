@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
+import { queryClient } from '@/config';
+import { useAuth } from '@/modules';
 import { localStorageKeys } from '@/modules/auth/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   availableNetWorks,
@@ -52,11 +53,8 @@ const useNetworks = (onClose?: () => void) => {
   const deleteNetworkRequest = useDeleteNetworkRequest();
 
   const {
-    authDetails: {
-      userInfos: { network: userNetwork },
-    },
-    resetHomeRequests,
-  } = useWorkspaceContext();
+    userInfos: { network: userNetwork },
+  } = useAuth();
 
   const saveNetwork = async (url: string) => {
     const exists = NetworkService.hasNetwork(url);
@@ -124,7 +122,7 @@ const useNetworks = (onClose?: () => void) => {
       { url },
       {
         onSuccess: () => {
-          resetHomeRequests();
+          queryClient.clear();
           handleClose();
         },
       },
