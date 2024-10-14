@@ -55,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ChakraProvider theme={defaultTheme}>
       <QueryClientProvider client={fuelConnectorsQueryClient}>
         <FuelProvider
+          uiConfig={{ suggestBridge: false }}
           fuelConfig={{
             connectors: defaultConnectors() as any,
           }}

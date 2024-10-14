@@ -1,8 +1,10 @@
 import { useWalletSignMessage } from '@/modules/core';
-import { useContactToast } from '@/modules';
+import { useAuth, useContactToast } from '@/modules';
 import { useTransactionSocket } from '../hooks';
 import { useParams } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
+import { hashMessage, hexlify } from 'fuels';
+import { TypeUser } from '@/modules/auth';
 
 export const SignMessage = () => {
   const { message } = useParams();
@@ -10,7 +12,9 @@ export const SignMessage = () => {
     signMessage: { emitSignedMessage },
   } = useTransactionSocket();
   const { warningToast } = useContactToast();
-
+  const {
+    userInfos: { type },
+  } = useAuth();
   const signMessageRequest = useWalletSignMessage({
     onSuccess: (signedMessage) => {
       emitSignedMessage(signedMessage);
@@ -40,7 +44,11 @@ export const SignMessage = () => {
         m={10}
         variant="primary"
         fontWeight="bold"
-        onClick={() => signMessageRequest.mutate(message!)}
+        onClick={() =>
+          signMessageRequest.mutate(
+            `${type.type === TypeUser.FUEL ? message : hashMessage(message!)}`,
+          )
+        }
       >
         Sign message
       </Button>
