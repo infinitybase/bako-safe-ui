@@ -1,5 +1,5 @@
 import { TransactionRequestLike } from 'fuels';
-import { useContext } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 
 import { SocketContext } from '@/config/socket';
 import { useQueryParams } from '@/modules/auth';
@@ -76,24 +76,30 @@ export const useSocket = () => {
   const socket = useContext(SocketContext);
   const { request_id, origin } = useQueryParams();
 
-  const connect = (sessionId: string) => {
-    /* 
+  const socketState = useRef(false);
+
+  const connect = useCallback(
+    (sessionId: string) => {
+      /*
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
-    if (socket.connected) return;
-    socket.auth = {
-      username: SocketUsernames.UI,
-      data: new Date(),
-      sessionId,
-      origin,
-      request_id: request_id ?? '',
-    };
+      if (socket.connected || socketState.current) return;
+      socket.auth = {
+        username: SocketUsernames.UI,
+        data: new Date(),
+        sessionId,
+        origin,
+        request_id: request_id ?? '',
+      };
 
-    request_id && socket.connect();
-  };
+      request_id && socket.connect();
+      socketState.current = true;
+    },
+    [socketState],
+  );
 
-  /* 
+  /*
     Existe em duas partes:
       - cliente emite uma mensagem
       - servidor repassa a mensagem para todos os clientes conectados

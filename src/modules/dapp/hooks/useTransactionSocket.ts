@@ -183,15 +183,17 @@ export const useTransactionSocket = () => {
       return;
     }
 
-    socket.emit(SocketEvents.DEFAULT, {
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      request_id,
-      type: SocketEvents.CONNECTED,
-      data: {},
-    });
+    if (socket.connected) {
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
 
-    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+    }
 
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
