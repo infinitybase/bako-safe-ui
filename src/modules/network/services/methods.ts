@@ -65,7 +65,7 @@ export const availableNetWorks = {
   }),
 };
 
-const sanitizeNetwork = (url: string) =>
+const sanitizeNetwork = (url: string = '') =>
   url.replace(/^https?:\/\/[^@]+@/, 'https://');
 
 export class NetworkService {
