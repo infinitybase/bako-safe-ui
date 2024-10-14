@@ -141,11 +141,13 @@ const Autocomplete = ({
           onFocus={handleFocus}
           style={inputStyle}
           ref={inputRef}
+          pr={10}
+          sx={{ pr: !disabled && rightElement ? '55px !important' : 'initial' }}
         />
 
         <FormLabel color="grey.500">{label}</FormLabel>
 
-        {!disabled && (
+        {!disabled && rightElement && (
           <InputRightElement
             pr={1}
             top="1px"
