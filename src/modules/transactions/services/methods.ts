@@ -19,6 +19,7 @@ import {
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
   GetVaultTransactionsResponse,
+  ITransactionStatusFilter,
   ResolveTransactionCostInput,
   SignerTransactionPayload,
   SignerTransactionResponse,
@@ -39,9 +40,14 @@ export class TransactionService {
     );
     return data;
   }
-  static async getByHash(hash: string) {
+  static async getByHash(hash: string, status?: ITransactionStatusFilter) {
     const { data } = await api.get<GetTransactionResponse>(
       `/transaction/by-hash/0x${hash}`,
+      {
+        params: {
+          status,
+        },
+      },
     );
     return data;
   }
