@@ -137,7 +137,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const handleCheckNetwork = async () => {
     const url = networkForm.watch('url');
-    const existingNetwork = await NetworkService.hasNetwork(url);
+    const existingNetwork = NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {

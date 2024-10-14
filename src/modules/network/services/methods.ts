@@ -65,13 +65,16 @@ export const availableNetWorks = {
   }),
 };
 
+const sanitizeNetwork = (url: string) =>
+  url.replace(/^https?:\/\/[^@]+@/, 'https://');
+
 export class NetworkService {
   static async create(newNetwork: CustomNetwork) {
     const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
     );
 
-    if (networks.find((net) => net.url === newNetwork.url)) return;
+    if (NetworkService.hasNetwork(newNetwork.url)) return;
 
     localStorage.setItem(
       localStorageKeys.NETWORKS,
@@ -93,7 +96,14 @@ export class NetworkService {
       return Object.values(availableNetWorks);
     }
 
-    return networks;
+    const uniqueNetworks = networks.filter(
+      (network, index, self) =>
+        index ===
+        self.findIndex(
+          (t) => sanitizeNetwork(t.url) === sanitizeNetwork(network.url),
+        ),
+    );
+    return uniqueNetworks;
   }
 
   static async delete({ url }: DeleteNetworkPayload) {
@@ -123,10 +133,12 @@ export class NetworkService {
     return chain?.name;
   }
 
-  static async hasNetwork(url: string) {
+  static hasNetwork(url: string) {
     const networks = NetworkService.list();
-
-    return networks.some((net) => net.url === url);
+    return networks.some(
+      (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
+    );
+    // return networks.some((net) => net.url === url);
   }
 
   static findByUrl(url: string) {

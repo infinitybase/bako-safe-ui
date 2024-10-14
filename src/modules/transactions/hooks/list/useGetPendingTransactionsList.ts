@@ -15,6 +15,7 @@ const usePendingTransactionsList = (
   const result = {};
   mergedTransactionsList?.forEach((item) => {
     return item.transactions.forEach((transaction) => {
+      if (!transaction) return;
       if (result[transaction.id]) return;
       result[transaction.id] = {
         status: transaction.status,
@@ -23,8 +24,8 @@ const usePendingTransactionsList = (
         predicateId: transaction.predicateId,
         predicateAddress: transaction.predicate?.predicateAddress,
         resume: {
-          witnesses: transaction.resume.witnesses,
-          requiredSigners: transaction.resume.requiredSigners,
+          witnesses: transaction.resume?.witnesses ?? [],
+          requiredSigners: transaction.resume?.requiredSigners ?? 0,
         },
       };
     });
