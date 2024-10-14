@@ -1,3 +1,4 @@
+import { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
@@ -14,7 +15,9 @@ import {
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import { useNetworks } from '@/modules/network/hooks';
 
+import { ProviderInstance } from '../../utils';
 import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
@@ -34,6 +37,14 @@ const useWorkspaceDetails = () => {
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
+
+  const { currentNetwork } = useNetworks();
+
+  const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
+    const provider = await ProviderInstance.create(currentNetwork.url);
+
+    return provider.instance;
+  }, [currentNetwork]);
 
   // const {
   //   resetAllTransactionsTypeFilters,
@@ -123,6 +134,7 @@ const useWorkspaceDetails = () => {
       vaultRequest,
       assets: vaultAssets,
     },
+    providerInstance,
     userVaults,
     addressBookInfos,
     tokensUSD,
