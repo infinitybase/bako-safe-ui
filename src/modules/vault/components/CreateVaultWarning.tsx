@@ -9,9 +9,12 @@ import {
 
 import { TriangleWarning } from '@/components';
 
-interface ICreateVaultWarningProps extends StackProps {}
+interface ICreateVaultWarningProps extends StackProps {
+  message: string;
+}
 
 const CreateVaultWarning = (props: ICreateVaultWarningProps) => {
+  const { message, ...rest } = props;
   return (
     <VStack
       w="full"
@@ -21,7 +24,7 @@ const CreateVaultWarning = (props: ICreateVaultWarningProps) => {
       backdropFilter=" blur(30px)"
       padding="8px 8px 12px 8px"
       alignItems="start"
-      {...props}
+      {...rest}
     >
       <HStack>
         <Icon as={TriangleWarning} fontSize="md" />
@@ -42,9 +45,7 @@ const CreateVaultWarning = (props: ICreateVaultWarningProps) => {
         color="brand.400"
         pl={7}
       >
-        Please ensure that all signer addresses are valid and accessible wallet
-        addresses on the Fuel Network. Addresses from other Bako Safe Vaults and
-        wallets from other networks cannot be used as signers.
+        {message}
       </Text>
     </VStack>
   );

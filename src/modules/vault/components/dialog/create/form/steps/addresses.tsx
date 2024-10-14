@@ -120,7 +120,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           }}
           h={{ base: '60vh', xs: 500 }}
         >
-          <CreateVaultWarning mb={2} />
+          <CreateVaultWarning
+            mb={2}
+            message="Please ensure that all signer addresses are valid and accessible wallet
+        addresses on the Fuel Network. Addresses from other Bako Safe Vaults and
+        wallets from other networks cannot be used as signers."
+          />
 
           <Dialog.Section
             w="full"
