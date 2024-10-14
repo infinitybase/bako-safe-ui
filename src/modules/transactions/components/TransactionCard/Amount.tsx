@@ -20,6 +20,7 @@ interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   isDeposit: boolean;
   isContract: boolean;
+  isMint: boolean;
   isDeploy: boolean;
 }
 
@@ -27,6 +28,7 @@ const Amount = ({
   transaction,
   isDeposit,
   isContract,
+  isMint,
   isDeploy,
   ...rest
 }: TransactionCardAmountProps) => {
@@ -67,7 +69,7 @@ const Amount = ({
       w={isExtraSmall ? 150 : 200}
       {...rest}
     >
-      {isContract || isDeploy ? null : (
+      {(isContract && !isMint) || isDeploy ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 3}

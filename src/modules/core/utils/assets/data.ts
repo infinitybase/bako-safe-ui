@@ -8,12 +8,14 @@ const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
 
+export const UNKNOWN_ASSET_UNITS = 9;
+
 export const UNKNOWN_ASSET = {
   name: 'Unknown',
   slug: 'UNK',
   assetId: 'UNKNOWN',
   icon: '/tokens/unknown.svg',
-  units: 9,
+  units: UNKNOWN_ASSET_UNITS,
 };
 
 const getChainId = (): number =>

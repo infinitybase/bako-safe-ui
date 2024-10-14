@@ -1,7 +1,5 @@
 import { chakra, HStack, Icon } from '@chakra-ui/react';
-import { OperationTransactionAddress } from '@fuel-ts/providers';
-import { Vault } from 'bakosafe';
-import { AddressType } from 'fuels';
+import { AddressType, OperationTransactionAddress } from 'fuels';
 
 import { ForwardIcon, PlayIcon } from '@/components/icons';
 import { DappTransactionRecipient } from '@/modules/dapp/components/transaction/recipient';

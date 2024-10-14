@@ -53,7 +53,7 @@ const Container = ({
   const missingSignature =
     !isSigned && !isCompleted && !isDeclined && !isReproved;
 
-  const { isFromConnector, isDeploy, isDeposit, isContract } =
+  const { isFromConnector, isDeploy, isDeposit, isContract, isMint } =
     useVerifyTransactionInformations(transaction);
 
   const detailsDialog = useDetailsDialog();
@@ -146,6 +146,7 @@ const Container = ({
                 isDeploy={isDeploy}
                 isDeposit={isDeposit}
                 isContract={isContract}
+                isMint={isMint}
               />
               <TransactionCard.Status
                 transaction={transaction}

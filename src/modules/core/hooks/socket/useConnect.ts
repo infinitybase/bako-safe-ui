@@ -15,6 +15,7 @@ export enum SocketEvents {
   TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
   //TX_SIGN = '[TX_EVENT_SIGNED]', [CONNECTOR SIGNATURE]
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
+  SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
 }
 
 export enum SocketUsernames {

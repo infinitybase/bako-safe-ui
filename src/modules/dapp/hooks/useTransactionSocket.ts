@@ -1,4 +1,4 @@
-import { TransactionRequestLike } from '@fuel-ts/providers';
+import { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -129,6 +129,19 @@ export const useTransactionSocket = () => {
     });
   };
 
+  const emitSignedMessage = (message: string) => {
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.SIGN_CONFIRMED,
+      request_id,
+      data: {
+        signedMessage: message,
+      },
+    });
+  };
+
   // [CONNECTOR SIGNATURE]
   // const sendTransactionAndRedirectToSign = async () => {
   //   emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
@@ -182,7 +195,6 @@ export const useTransactionSocket = () => {
       return;
     }
 
-    console.log('SENDING_MESSAGE');
     socket.emit(SocketEvents.DEFAULT, {
       sessionId,
       to: SocketUsernames.CONNECTOR,
@@ -212,6 +224,9 @@ export const useTransactionSocket = () => {
     },
     handleRedirectToBakoSafe,
     isRedirectEnable,
+    signMessage: {
+      emitSignedMessage,
+    },
     // [CONNECTOR SIGNATURE]
     // sign: {
     //   isLoading: signing,
