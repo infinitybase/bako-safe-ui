@@ -2,6 +2,7 @@ import { useWalletSignMessage } from '@/modules/core';
 import { useContactToast } from '@/modules';
 import { useTransactionSocket } from '../hooks';
 import { useParams } from 'react-router-dom';
+import { Button } from '@chakra-ui/react';
 
 export const SignMessage = () => {
   const { message } = useParams();
@@ -24,10 +25,25 @@ export const SignMessage = () => {
   });
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <h1>Signing Message...</h1>
       <p>{message}</p>
-      <button onClick={() => signMessageRequest.mutate(message!)}>Sign</button>
+
+      <Button
+        m={10}
+        variant="primary"
+        fontWeight="bold"
+        onClick={() => signMessageRequest.mutate(message!)}
+      >
+        Sign message
+      </Button>
     </div>
   );
 };
