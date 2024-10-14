@@ -59,15 +59,11 @@ const useNetworks = (onClose?: () => void) => {
   } = useWorkspaceContext();
 
   const saveNetwork = async (url: string) => {
-    const exists = JSON.parse(
-      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
-    ).find((net: CustomNetwork) => net.url === url);
-
+    const exists = NetworkService.hasNetwork(url);
     if (!exists) {
       const provider = await Provider.create(url!);
       const name = provider.getChain()?.name;
       const chainId = provider.getChainId();
-
       await NetworkService.create({
         name,
         url: url!,

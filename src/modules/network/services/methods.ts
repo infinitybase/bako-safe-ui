@@ -138,12 +138,13 @@ export class NetworkService {
     return networks.some(
       (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
     );
-    // return networks.some((net) => net.url === url);
   }
 
   static findByUrl(url: string) {
     const networks = NetworkService.list();
-    return networks.find((net) => net.url === url);
+    return networks.find(
+      (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
+    );
   }
 
   static getName(url: string) {
