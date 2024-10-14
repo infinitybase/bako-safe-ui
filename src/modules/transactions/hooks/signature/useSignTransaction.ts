@@ -123,10 +123,6 @@ const useSignTransaction = ({
     );
   };
 
-  const retryTransaction = async () => {
-    return executeTransaction(selectedTransaction!);
-  };
-
   const declineTransaction = async (transactionHash: string) => {
     await request.mutateAsync(
       {
@@ -149,7 +145,6 @@ const useSignTransaction = ({
 
   return {
     confirmTransaction,
-    retryTransaction,
     declineTransaction,
     isLoading:
       request.isPending ||

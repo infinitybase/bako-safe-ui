@@ -7,6 +7,7 @@ import { localStorageKeys } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
+  availableNetWorks,
   CustomNetwork,
   DeleteNetworkPayload,
   NetworkService,
@@ -71,7 +72,6 @@ const useNetworks = (onClose?: () => void) => {
         name,
         url: url!,
         chainId,
-        identifier: NetworkType.LOCALSTORAGE,
       });
     }
 
@@ -89,7 +89,7 @@ const useNetworks = (onClose?: () => void) => {
     }
 
     createNetworkRequest.mutate(
-      { ...data, identifier: NetworkType.LOCALSTORAGE, chainId: 0 },
+      { ...data, chainId: 0 },
       {
         onSuccess: async () => {
           setMode(NetworkDrawerMode.SELECT);
@@ -137,6 +137,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const handleCheckNetwork = async () => {
     const url = networkForm.watch('url');
+    const existingNetwork = NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {
@@ -145,7 +146,7 @@ const useNetworks = (onClose?: () => void) => {
       });
     }
 
-    if (networks?.find((net) => net.url === url)) {
+    if (existingNetwork) {
       networkForm.setError('url', {
         type: 'required',
         message: 'Network already saved.',
@@ -165,10 +166,7 @@ const useNetworks = (onClose?: () => void) => {
     );
   };
 
-  const currentNetwork = userNetwork ?? {
-    url: import.meta.env.VITE_NETWORK,
-    chainId: import.meta.env.VITE_CHAIN_ID,
-  };
+  const currentNetwork = userNetwork ?? availableNetWorks[NetworkType.MAINNET];
 
   const checkNetwork = (type: NetworkType) =>
     currentNetwork?.url?.includes(type);
@@ -203,6 +201,7 @@ const useNetworks = (onClose?: () => void) => {
     networks,
     selectNetworkRequest,
     fromConnector,
+    setValidNetwork,
     checkNetwork,
     handleSelectNetwork,
     handleAddNetwork,

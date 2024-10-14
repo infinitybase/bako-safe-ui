@@ -4,6 +4,7 @@ import {
   ModalContent,
   ModalContentProps,
   ModalOverlay,
+  ModalOverlayProps,
   ModalProps,
 } from '@chakra-ui/react';
 
@@ -13,6 +14,7 @@ export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
   modalContentProps?: ModalContentProps;
   xsBreakPointPy?: number;
+  overlayProps?: ModalOverlayProps;
 }
 
 const DialogModal = (props: DialogModalProps) => {
@@ -30,7 +32,7 @@ const DialogModal = (props: DialogModalProps) => {
       scrollBehavior={isMobile ? 'inside' : 'outside'}
       {...rest}
     >
-      <ModalOverlay />
+      <ModalOverlay {...props.overlayProps} />
       <ModalContent
         rounded="3xl"
         bg="dark.950"

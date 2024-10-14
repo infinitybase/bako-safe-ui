@@ -39,11 +39,11 @@ const useTransactionListPaginationRequest = (
         sort: SortOptionTx.DESC,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
-
         return data;
       }),
     enabled: window.location.pathname != '/',
     initialPageParam: 0,
+    refetchOnWindowFocus: true,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
         ? lastPage.nextPage

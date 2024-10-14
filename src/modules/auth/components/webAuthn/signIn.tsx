@@ -39,6 +39,7 @@ const WebAuthnSignIn = (props: WebAuthnSignInProps) => {
         accountSeachHandler={handleInputChange}
         onSubmitUsingEnterKey={formState.handleActionUsingEnterKey}
         inputBadge={inputBadge}
+        isDisabled={formState.disableInput}
       />
 
       <ProgressButton

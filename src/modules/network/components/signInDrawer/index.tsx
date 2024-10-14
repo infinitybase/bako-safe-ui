@@ -17,14 +17,12 @@ import { UnknownIcon } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
-import { NetworkType } from '../../services';
+import { availableNetWorks, NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 
 const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
-  const { networks, currentNetwork, mode, handleSelection } = useNetworks(
-    props.onClose,
-  );
+  const { networks, mode, handleSelection } = useNetworks(props.onClose);
 
   return (
     <Drawer
@@ -79,7 +77,8 @@ const NetworkSignInDrawer = ({ ...props }: NetworkDrawerProps) => {
                       >
                         <Icon
                           as={
-                            net.identifier === NetworkType.MAINNET
+                            net.chainId ===
+                            availableNetWorks[NetworkType.MAINNET].chainId
                               ? BakoIcon
                               : UnknownIcon
                           }

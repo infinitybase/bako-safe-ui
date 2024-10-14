@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Address } from 'fuels';
+import { Address, ZeroBytes32 } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -39,7 +39,7 @@ import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkType } from '@/modules/network/services';
+import { NetworkService, NetworkType } from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -103,6 +103,8 @@ const UserBox = () => {
 
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
+  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
+
   const logout = async () => {
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
@@ -126,7 +128,7 @@ const UserBox = () => {
   }, []);
 
   const b256UserAddress = Address.fromString(
-    authDetails.userInfos.address ?? '',
+    authDetails.userInfos?.address ?? ZeroBytes32,
   ).toB256();
 
   return (
@@ -156,7 +158,7 @@ const UserBox = () => {
         >
           <PopoverTrigger>
             <HStack
-              w={165}
+              w={220}
               h={'32px'}
               alignItems="center"
               cursor={isWebAuthn ? 'pointer' : 'default'}
@@ -193,8 +195,7 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {networks?.find(({ url }) => url === currentNetwork.url)
-                        ?.name ?? 'Unknown'}
+                      {NetworkService.getName(currentNetwork.url)}
                     </Text>
                   </HStack>
 
@@ -212,7 +213,7 @@ const UserBox = () => {
 
           <PopoverContent
             bg={'dark.300'}
-            w={165}
+            w={220}
             borderTop="none"
             border="1px solid #353230"
             _focus={{ ring: 'none' }}
@@ -229,21 +230,17 @@ const UserBox = () => {
                     borderBottom={'1px solid'}
                     borderColor="grey.925"
                     px={4}
+                    py={4}
                     onClick={() => {
                       networkPopoverState.onClose?.();
                       if (network.url !== currentNetwork.url) {
                         handleSelectNetwork(network.url);
                       }
                     }}
-                    py={4}
                   >
                     <HStack>
                       <Icon
-                        as={
-                          network.identifier === NetworkType.MAINNET
-                            ? BakoIcon
-                            : UnknownIcon
-                        }
+                        as={isMainnet(network.url) ? BakoIcon : UnknownIcon}
                         fontSize={16}
                       />
                       <Text color="grey.200" fontSize={12} fontWeight={500}>

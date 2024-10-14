@@ -20,7 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -58,12 +58,12 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
 
-  const { isDeploy, isFromConnector, isDeposit } =
+  const { isDeploy, isFromConnector, isDeposit, isMint } =
     useVerifyTransactionInformations(transaction);
 
   const {
@@ -194,6 +194,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 h="26px"
                 isContract={isContract}
                 isDeploy={isDeploy}
+                isMint={isMint}
               />
               <TransactionCard.Status
                 transaction={transaction}

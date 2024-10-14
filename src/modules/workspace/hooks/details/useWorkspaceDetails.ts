@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
@@ -14,7 +14,6 @@ import {
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
@@ -36,17 +35,17 @@ const useWorkspaceDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
-  const {
-    resetAllTransactionsTypeFilters,
-    pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
-  } = useTransactionsContext();
+  // const {
+  //   resetAllTransactionsTypeFilters,
+  //   pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
+  // } = useTransactionsContext();
 
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useEffect(() => {
+  useMemo(() => {
     setupAxiosInterceptors({
       isTxFromDapp,
       isTokenExpired,
@@ -63,8 +62,8 @@ const useWorkspaceDetails = () => {
     authDetails.userInfos,
     assetsMap,
     invalidateGifAnimationRequest,
-    resetAllTransactionsTypeFilters,
-    refetchPendingSingerTransactions,
+    // resetAllTransactionsTypeFilters,
+    // refetchPendingSingerTransactions,
   );
 
   const { workspace: currentWorkspace, ...currentWorkspaceData } =
@@ -132,6 +131,9 @@ const useWorkspaceDetails = () => {
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
+    isTxFromDapp,
+    isTokenExpired,
+    setIsTokenExpired,
   };
 };
 

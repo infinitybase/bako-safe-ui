@@ -240,8 +240,7 @@ const VaultConnector = () => {
                 variant="secondary"
                 borderColor="grey.75"
                 onClick={() => {
-                  handlers.logout?.();
-                  window.close();
+                  handlers.logout?.(true, window.close);
                 }}
                 w={noVaultsAvailable ? 'full' : 'unset'}
               >
