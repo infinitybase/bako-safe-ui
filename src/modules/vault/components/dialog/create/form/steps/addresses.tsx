@@ -52,8 +52,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
     },
   } = useWorkspaceContext();
 
-  const hasThreeOrMoreAddress =
-    form.watch('addresses') && form.watch('addresses')!.length >= 3;
+  const hasTwoOrMoreAddresses =
+    form.watch('addresses') && form.watch('addresses')!.length >= 2;
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState<
@@ -303,7 +303,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
-                    needShowOptionsAbove={hasThreeOrMoreAddress}
+                    needShowOptionsAbove={hasTwoOrMoreAddresses}
                     style={{
                       background: '#201F1D',
                     }}
