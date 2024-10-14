@@ -28,34 +28,42 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             return bn.parseUnits(parent.amount).gt(bn(0));
           },
         )
+        .test(
+          'has-fee-balance',
+          'Insufficient funds for the gas fee (ETH).',
+          (_, context) => {
+            const { parent } = context;
+
+            if (parent.fee) {
+              const hasFeeBalance = params.validateBalance(
+                NativeAssetId,
+                parent.fee,
+              );
+
+              return hasFeeBalance;
+            }
+
+            return true;
+          },
+        )
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
-          if (parent.fee) {
-            if (parent.asset === NativeAssetId) {
-              const transactionTotalAmount = bn
-                .parseUnits(parent.amount)
-                .add(bn.parseUnits(parent.fee))
-                .format();
+          if (parent.fee && parent.asset === NativeAssetId) {
+            const transactionTotalAmount = bn
+              .parseUnits(parent.amount)
+              .add(bn.parseUnits(parent.fee))
+              .format();
 
-              return params.validateBalance(
-                parent.asset,
-                transactionTotalAmount,
-              );
-            }
-
-            const hasAssetBalance = params.validateBalance(
-              parent.asset,
-              parent.amount,
-            );
-            const hasFeeBalance = params.validateBalance(
-              NativeAssetId,
-              parent.fee,
-            );
-
-            return hasAssetBalance && hasFeeBalance;
+            return params.validateBalance(parent.asset, transactionTotalAmount);
           }
-          return params.validateBalance(parent.asset, parent.amount);
+
+          const hasAssetBalance = params.validateBalance(
+            parent.asset,
+            parent.amount,
+          );
+
+          return hasAssetBalance;
         })
         .test(
           'has-total-balance',
