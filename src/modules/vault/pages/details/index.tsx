@@ -8,6 +8,7 @@ import {
   HStack,
   Icon,
   Spacer,
+  Spinner,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -55,8 +56,9 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { limitedTransactions },
-      request: { isLoading },
+      request: { isLoading, isFetching },
       handlers: { handleIncomingAction, handleOutgoingAction },
+      inView,
     },
     pendingSignerTransactions,
     isPendingSigner,
@@ -296,6 +298,7 @@ const VaultDetailsPage = () => {
                 </HStack>
                 <TransactionCard.List
                   mt={5}
+                  pb={!isLarge ? 10 : 0}
                   w="full"
                   maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
                   spacing={0}
@@ -338,6 +341,11 @@ const VaultDetailsPage = () => {
                       </>
                     );
                   })}
+                  <Box ref={inView.ref} />
+
+                  {isFetching && (
+                    <Spinner alignSelf={'center'} mt={4} color="brand.500" />
+                  )}
                 </TransactionCard.List>
               </>
             ))
