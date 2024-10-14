@@ -9,9 +9,9 @@ export function splitCLientData(
 ) {
   const clientDataArray = new Uint8Array(clientData);
   const challangeIndex = findIndex(clientDataArray, challangeBytesInASCII);
-  if (challangeIndex === -1) {
-    throw new Error('Challange not found!');
-  }
+  // if (challangeIndex === -1) {
+  //   throw new Error('Challange not found!');
+  // }
   return {
     prefix: hexlify(clientDataArray.slice(0, challangeIndex)),
     suffix: hexlify(
