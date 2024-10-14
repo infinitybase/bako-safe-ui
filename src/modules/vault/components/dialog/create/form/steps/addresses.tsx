@@ -23,6 +23,7 @@ import {
 } from '@/modules/addressBook/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
+import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
@@ -119,6 +120,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           }}
           h={{ base: '60vh', xs: 500 }}
         >
+          <CreateVaultWarning mb={2} />
+
           <Dialog.Section
             w="full"
             p={4}
