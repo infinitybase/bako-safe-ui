@@ -4,6 +4,7 @@ import { StepProgress } from '@/components';
 import { useFindTemplate } from '@/modules/template/hooks';
 import { UseCreateVaultDialogReturn } from '@/modules/vault';
 
+import CreateVaultWarning from '../../../CreateVaultWarning';
 import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
 
 export interface CreateVaultFormProps {
@@ -45,9 +46,10 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
 
   return (
     <Box w="full">
-      <Box hidden={stepAction.hide} mb={8} mt={{ sm: 8 }}>
+      <Box hidden={stepAction.hide} mb={tabs.tab >= 1 ? 6 : 8} mt={{ sm: 8 }}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
+      {tabs.tab === 1 && <CreateVaultWarning mb={4} />}
       <Tabs index={tabs.tab} colorScheme="green">
         <TabPanels>
           <VaultInfosStep
@@ -67,9 +69,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             setTemplate={setTemplate}
             validateAddress={validateAddress}
           />
-          <VaultSuccessStep
-            stepProgress={<StepProgress length={stepLength} value={tabs.tab} />}
-          />
+          <VaultSuccessStep />
         </TabPanels>
       </Tabs>
     </Box>

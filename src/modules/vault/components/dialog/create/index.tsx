@@ -9,6 +9,7 @@ import {
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
+import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
 const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
@@ -90,6 +91,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           '&>hr': {
             mt: 0,
             mb: isSecondTab ? 0 : 8,
+            display: tabs.tab === 2 ? 'none' : 'block',
           },
         }}
         bgColor="dark.950"
@@ -119,6 +121,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               </Text>
             </HStack>
           )}
+          {tabs.tab === 2 && <CreateVaultWarning mb={4} />}
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
               bgColor="transparent"
