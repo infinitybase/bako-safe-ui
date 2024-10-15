@@ -7,8 +7,12 @@ const useTxAmountToUSD = (
   assets: IAssetsInfoToUSD[],
   isLoading: boolean,
   tokens: ITokens,
+  isUnknownToken: (assetId: string) => boolean,
 ) => {
-  if (!isLoading && tokens) {
+  if (!isLoading && tokens && isUnknownToken) {
+    const hasUnknownToken =
+      assets.filter((asset) => isUnknownToken(asset.assetId)).length === 0;
+
     const totalAmount = assets
       .filter((asset) => !!asset)
       .reduce((acc, asset) => {
@@ -23,7 +27,7 @@ const useTxAmountToUSD = (
         return acc;
       }, 0);
 
-    return totalAmount.toFixed(2);
+    return hasUnknownToken ? '--' : totalAmount.toFixed(2);
   }
 
   return '0.00';
