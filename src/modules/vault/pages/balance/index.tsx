@@ -148,7 +148,7 @@ const VaultBalancePage = () => {
           flex={1}
         >
           {assets.hasAssets ? (
-            <AssetsBalanceList assets={assets.assets!} />
+            <AssetsBalanceList assets={assets.assets!} nfts={assets.nfts!} />
           ) : (
             <EmptyState
               showAction={false}

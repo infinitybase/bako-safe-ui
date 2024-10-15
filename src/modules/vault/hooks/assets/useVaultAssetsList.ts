@@ -1,10 +1,11 @@
 import { MutableRefObject, useEffect, useState } from 'react';
 
-import { Asset } from '@/modules/core/utils';
+import { Asset, NFT } from '@/modules/core/utils';
 
 function useVaultAssetsList(
   containerRef: MutableRefObject<HTMLDivElement | null>,
   assets: Asset[],
+  nfts?: NFT[],
 ) {
   const [visibleItems, setVisibleItems] = useState(1);
   const [showViewAll, setShowViewAll] = useState(false);
@@ -24,9 +25,12 @@ function useVaultAssetsList(
             itemsToShow = 1;
           }
 
+          const assetCounter = assets.length;
+          const nftCounter = nfts?.length ?? 0;
+
           setVisibleItems(itemsToShow);
-          setShowViewAll(assets.length > itemsToShow);
-          setCountViewAll(assets.length - itemsToShow);
+          setShowViewAll(assetCounter + nftCounter > itemsToShow);
+          setCountViewAll(assetCounter + nftCounter - itemsToShow);
         }
       }
     };

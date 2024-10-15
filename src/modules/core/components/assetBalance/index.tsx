@@ -8,30 +8,53 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { css } from '@emotion/react';
 
 import { UpRightArrow } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
-import { AddressUtils, Asset } from '@/modules/core/utils';
+import {
+  AddressUtils,
+  Asset,
+  NFT,
+  shakeAnimationY,
+} from '@/modules/core/utils';
+import { NetworkService } from '@/modules/network/services';
+import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
 
 interface AssetsBalanceProps {
   assets: Asset[];
+  nfts?: NFT[];
 }
 
 interface AssetsBalanceCardProps {
-  asset: Asset;
+  asset: Asset | NFT;
+  isNFT?: boolean;
 }
 
-const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
-  const { assetsMap, isNFTCheck } = useWorkspaceContext();
+const AssetsBalanceCard = ({
+  asset,
+  isNFT = false,
+}: AssetsBalanceCardProps) => {
+  const { vault } = useVaultInfosContext();
+  const {
+    assetsMap,
+    authDetails: {
+      userInfos: { network },
+    },
+  } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({
     ...asset,
     assetsMap,
   });
 
-  const isNFT = isNFTCheck(asset);
+  const redirectToNetwork = () =>
+    window.open(
+      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
+      '_BLANK',
+    );
 
   return (
     <Card
@@ -59,19 +82,31 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
           <HStack>
             <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
               {isNFT
-                ? AddressUtils.format(asset.assetId ?? '', 20)
+                ? AddressUtils.format(asset.assetId ?? '', 10)
                 : assetsInfo.name}
             </Text>
             {isNFT && (
               <IconButton
-                icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
+                icon={
+                  <Icon
+                    className="nft-icon-1"
+                    as={UpRightArrow}
+                    fontSize="md"
+                    color="grey.75"
+                  />
+                }
                 aria-label="Explorer"
                 size="xs"
                 minW={2}
                 bg="none"
                 h={3}
                 _hover={{ bg: 'none' }}
-                // onClick={redirectToNetwork}
+                css={css`
+                  &:hover .nft-icon-1 {
+                    animation: ${shakeAnimationY} 0.5s ease-in-out;
+                  }
+                `}
+                onClick={redirectToNetwork}
               />
             )}
           </HStack>
@@ -87,7 +122,7 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
   );
 };
 
-const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
+const AssetsBalanceList = ({ assets, nfts }: AssetsBalanceProps) => {
   return (
     <Grid
       gap={4}
@@ -100,9 +135,12 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
         '2xl': 'repeat(6, 1fr)',
       }}
     >
-      {assets.map((asset) => {
-        return <AssetsBalanceCard key={asset.assetId} asset={asset} />;
-      })}
+      {assets.map((asset) => (
+        <AssetsBalanceCard key={asset.assetId} asset={asset} />
+      ))}
+      {nfts?.map((nft) => (
+        <AssetsBalanceCard key={nft.assetId} asset={nft} isNFT={true} />
+      ))}
     </Grid>
   );
 };

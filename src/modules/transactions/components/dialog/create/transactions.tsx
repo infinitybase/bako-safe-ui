@@ -142,6 +142,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             <AssetSelect
               isInvalid={fieldState.invalid}
               assets={assets!.assets!}
+              nfts={assets!.nfts!}
               name={`transaction.${index}.asset`}
               value={field.value}
               onChange={field.onChange}

@@ -439,6 +439,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     <AssetsDetails
                       containerRef={assetsContainerRef}
                       assets={assets.assets!}
+                      nfts={assets.nfts!}
                       visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
                         vaultId: vault.data?.id,

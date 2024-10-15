@@ -16,3 +16,8 @@ export type Asset = {
   amount?: string;
   units: number;
 };
+
+export type NFT = {
+  amount: string;
+  assetId: string;
+};
