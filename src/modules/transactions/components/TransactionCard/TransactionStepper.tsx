@@ -166,7 +166,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                         textOverflow="ellipsis"
                         maxW={{ base: '150px', xs: '95px', xl: 'full' }}
                       >
-                        {nickname}
+                        {step.type !== TransactionHistoryType.SEND && nickname}
                       </Text>
                     )}
                     <Text
@@ -181,7 +181,7 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
                     >
                       {TransactionTypeFormatter(step, userInfos.address)}
                     </Text>
-                    {!nickname && (
+                    {!nickname && step.type !== TransactionHistoryType.SEND && (
                       <Text variant="subtitle" color="grey.425">
                         {step.owner.address !== userInfos.address &&
                           AddressUtils.format(`(${step.owner.address})`)}

@@ -12,7 +12,6 @@ import {
   GetTransactionPendingResponse,
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
-  GetTransactionsResponse,
   GetTransactionsWithIncomingsPaginationResponse,
   GetTransactionsWithIncomingsParams,
   GetUserTransactionsParams,
@@ -69,13 +68,6 @@ export class TransactionService {
       `/transaction/close/${id}`,
       payload,
     );
-    return data;
-  }
-
-  static async getTransactions(params: GetTransactionParams) {
-    const { data } = await api.get<GetTransactionsResponse>(`/transaction`, {
-      params: { ...params },
-    });
     return data;
   }
 
