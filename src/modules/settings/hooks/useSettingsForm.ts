@@ -16,7 +16,7 @@ const schema = yup.object({
     ),
   email: yup
     .string()
-    .email()
+    .email('Invalid email')
     .test('subscription-reqires-email', 'Email is required!', function (item) {
       return this.parent.notify === 'true' && !item ? false : true;
     }),
