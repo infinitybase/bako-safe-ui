@@ -163,6 +163,7 @@ const useVaultAssets = (
     hasAssets: !!data?.currentBalance?.length,
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
+    refetchAssets,
   };
 };
 

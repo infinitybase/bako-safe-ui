@@ -64,6 +64,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       vaultRequest: {
         data: { predicateAddress, provider, id },
       },
+      assets: { refetchAssets },
     },
     assetsMap,
   } = useWorkspaceContext();
@@ -131,25 +132,39 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const handleCreateTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
+    transactionRequest.mutate(
+      {
+        name: data.name,
+        assets: data.transactions!.map((transaction) => ({
+          amount: transaction.amount,
+          assetId: transaction.asset,
+          to: transaction.value,
+        })),
+      },
+      {
+        onSuccess: () => {
+          refetchAssets();
+        },
+      },
+    );
   });
 
   const handleCreateAndSignTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
+    transactionRequest.mutate(
+      {
+        name: data.name,
+        assets: data.transactions!.map((transaction) => ({
+          amount: transaction.amount,
+          assetId: transaction.asset,
+          to: transaction.value,
+        })),
+      },
+      {
+        onSuccess: () => {
+          refetchAssets();
+        },
+      },
+    );
   });
 
   // Balance available
