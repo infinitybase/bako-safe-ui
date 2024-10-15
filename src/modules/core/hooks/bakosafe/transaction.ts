@@ -11,8 +11,8 @@ import {
   TransactionService,
   TransactionWithVault,
 } from '@/modules/transactions/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
@@ -36,16 +36,16 @@ export interface IPayloadTransfer {
 
 interface UseBakoSafeCreateTransactionParams {
   vault: Vault;
+  assetsMap: AssetMap;
   onSuccess: (result: TransactionWithVault) => void;
   onError: () => void;
 }
 
 const useBakoSafeCreateTransaction = ({
   vault,
+  assetsMap,
   ...options
 }: UseBakoSafeCreateTransactionParams) => {
-  const { assetsMap } = useWorkspaceContext();
-
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
