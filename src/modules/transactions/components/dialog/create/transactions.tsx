@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -53,6 +54,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
 
   const asset = form.watch(`transactions.${index}.asset`);
+  const isNFT = !!assets?.nfts?.find((nft) => nft.assetId === asset);
 
   const {
     authDetails: { userInfos },
@@ -145,7 +147,10 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               nfts={assets!.nfts!}
               name={`transaction.${index}.asset`}
               value={field.value}
-              onChange={field.onChange}
+              onChange={(e) => {
+                field.onChange(e);
+                form.setValue(`transactions.${index}.amount`, bn(1).format());
+              }}
               helperText={
                 <FormHelperText
                   color={fieldState.invalid ? 'error.500' : 'grey.200'}
@@ -161,16 +166,11 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           name={`transactions.${index}.amount`}
           control={form.control}
           render={({ field, fieldState }) => {
-            const isNFT = assets?.nfts?.find(
-              (nft) =>
-                nft.assetId === form.watch(`transactions.${index}.asset`),
-            );
-
             return (
               <FormControl>
                 <AmountInput
                   placeholder=" "
-                  value={isNFT ? 1 : field.value}
+                  value={isNFT ? '1' : field.value}
                   onChange={field.onChange}
                   isInvalid={fieldState.invalid}
                   isDisabled={!!isNFT}

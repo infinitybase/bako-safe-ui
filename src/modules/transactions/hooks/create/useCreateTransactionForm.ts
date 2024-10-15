@@ -30,7 +30,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           (_, context) => {
             const { parent } = context;
 
-            const isNFT = params.nfts?.find(
+            const isNFT = !!params.nfts?.find(
               (nft) => nft.assetId === parent.asset,
             );
 
@@ -60,6 +60,12 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
+          const isNFT = !!params.nfts?.find(
+            (nft) => nft.assetId === parent.asset,
+          );
+
+          if (isNFT) return true;
+
           if (parent.fee && parent.asset === NativeAssetId) {
             const transactionTotalAmount = bn
               .parseUnits(parent.amount)
@@ -81,7 +87,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'Not enough balance.',
           (_amount, context) => {
             const { from, parent } = context;
-            const isNFT = params.nfts?.find(
+            const isNFT = !!params.nfts?.find(
               (nft) => nft.assetId === parent.asset,
             );
 
