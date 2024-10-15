@@ -6,6 +6,7 @@ interface DetailsTransactionStepperProps {
   predicateId: string;
   isMobileDetailsOpen: boolean;
   isTransactionSuccess: boolean;
+  isDeposit: boolean;
   children: (
     isLoading: boolean,
     transactionHistory: ITransactionHistory[] | undefined,
@@ -17,6 +18,7 @@ const DetailsTransactionStepper = ({
   predicateId,
   isMobileDetailsOpen,
   isTransactionSuccess,
+  isDeposit,
   children,
 }: DetailsTransactionStepperProps) => {
   const { transactionHistory, isLoading } = useTransactionHistory(
@@ -24,6 +26,7 @@ const DetailsTransactionStepper = ({
     predicateId,
     isMobileDetailsOpen,
     isTransactionSuccess,
+    isDeposit,
   );
 
   return <>{children(isLoading, transactionHistory)}</>;
