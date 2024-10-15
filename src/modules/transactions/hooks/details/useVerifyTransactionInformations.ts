@@ -1,11 +1,10 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { Address, OperationName } from 'fuels';
 
-import { TransactionUI } from '../../components/TransactionCard/Details';
 import { TransactionWithVault } from '../../services';
 
 const useVerifyTransactionInformations = (
-  transaction: TransactionUI | TransactionWithVault,
+  transaction: TransactionWithVault,
 ) => {
   const mainOperation = transaction?.summary?.operations?.[0];
   const isFromConnector = transaction.summary?.type === 'connector';
@@ -35,11 +34,21 @@ const useVerifyTransactionInformations = (
       return isContractCallWithAssets || hasContractCallAndTransferAsset;
     }) ?? false;
 
+  const isReceivingAssets =
+    transaction.summary?.operations.some(
+      (op) =>
+        op.assetsSent &&
+        op.to?.address === transaction?.predicate?.predicateAddress,
+    ) && !isDeposit;
+
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const contractAddress = isContract
     ? Address.fromB256(mainOperation?.to?.address ?? '').toString()
     : '';
+
+  const showAmountInformations =
+    ((isContract && !isMint) || isDeploy || isReceivingAssets) ?? false;
 
   return {
     mainOperation,
@@ -50,6 +59,8 @@ const useVerifyTransactionInformations = (
     isPending,
     contractAddress,
     isMint,
+    isReceivingAssets,
+    showAmountInformations,
   };
 };
 
