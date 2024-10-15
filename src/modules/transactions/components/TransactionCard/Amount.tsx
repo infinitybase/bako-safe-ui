@@ -32,8 +32,10 @@ const Amount = ({
   isDeploy,
   ...rest
 }: TransactionCardAmountProps) => {
-  const { operationAssets, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { operationAssets, hasNoDefaultAssets } = useGetAssetsByOperations(
+    transaction,
+    transaction.predicate?.predicateAddress,
+  );
 
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
@@ -57,7 +59,9 @@ const Amount = ({
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    hasNoDefaultAssets && isDeposit ? [operationAssets] : transaction.assets,
+    hasNoDefaultAssets && (isDeposit || isMint)
+      ? [operationAssets]
+      : transaction.assets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );

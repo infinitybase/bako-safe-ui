@@ -10,6 +10,7 @@ const { VITE_CHAIN_ID } = import.meta.env;
 
 interface UseFormatSummaryAssetsParams {
   operations?: Operation[];
+  predicateAddress?: string;
   txData?: TransactionRequest;
   chainId?: number;
 }
@@ -17,7 +18,12 @@ interface UseFormatSummaryAssetsParams {
 const useFormatSummaryAssets = (
   params: UseFormatSummaryAssetsParams,
 ): ITransferAsset => {
-  const { operations, txData, chainId = Number(VITE_CHAIN_ID) } = params;
+  const {
+    operations,
+    predicateAddress,
+    txData,
+    chainId = Number(VITE_CHAIN_ID),
+  } = params;
 
   const { fuelsTokens } = useWorkspaceContext();
 
@@ -31,7 +37,19 @@ const useFormatSummaryAssets = (
     };
   }
 
-  const firstOperation = operations[0] as OperationWithAssets;
+  const _operations = predicateAddress
+    ? operations.filter((op) => op.to?.address === predicateAddress)
+    : operations;
+
+  const firstOperation = _operations[0] as OperationWithAssets;
+
+  if (!firstOperation) {
+    return {
+      amount: '',
+      assetId: '',
+      to: '',
+    };
+  }
 
   if (!firstOperation.assetsSent) {
     const { amount, assetId, to } = firstOperation;
