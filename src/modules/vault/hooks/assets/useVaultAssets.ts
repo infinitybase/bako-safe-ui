@@ -150,6 +150,7 @@ const useVaultAssets = (
 
   return {
     assets: data?.currentBalance,
+    nfts: data?.nfts,
     ...rest,
     getAssetInfo,
     getCoinAmount,

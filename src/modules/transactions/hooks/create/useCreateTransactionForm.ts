@@ -9,6 +9,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
+  nfts?: { assetId: string; amount: string }[];
   assetsMap: AssetMap;
   validateBalance: (asset: string, amount: string) => boolean;
   getCoinAmount: (asset: string) => BN;
@@ -28,6 +29,13 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'Amount must be greater than 0.',
           (_, context) => {
             const { parent } = context;
+
+            const isNFT = params.nfts?.find(
+              (nft) => nft.assetId === parent.asset,
+            );
+
+            if (isNFT) return true;
+
             return bn.parseUnits(parent.amount).gt(bn(0));
           },
         )
@@ -73,6 +81,12 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'Not enough balance.',
           (_amount, context) => {
             const { from, parent } = context;
+            const isNFT = params.nfts?.find(
+              (nft) => nft.assetId === parent.asset,
+            );
+
+            if (isNFT) return true;
+
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const [, schema] = from;

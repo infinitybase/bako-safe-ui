@@ -160,40 +160,48 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
         <Controller
           name={`transactions.${index}.amount`}
           control={form.control}
-          render={({ field, fieldState }) => (
-            <FormControl>
-              <AmountInput
-                placeholder=" "
-                value={field.value}
-                onChange={field.onChange}
-                isInvalid={fieldState.invalid}
-              />
-              <FormLabel color="gray">Amount</FormLabel>
-              <FormHelperText>
-                {asset && (
-                  <Text display="flex" alignItems="center">
-                    Balance (available):{' '}
-                    {isFeeCalcLoading ? (
-                      <CircularProgress
-                        trackColor="dark.100"
-                        size={3}
-                        isIndeterminate
-                        color="brand.500"
-                        ml={1}
-                      />
-                    ) : (
-                      <>
-                        {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
-                      </>
-                    )}
-                  </Text>
-                )}
-              </FormHelperText>
-              <FormHelperText color="error.500">
-                {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
-          )}
+          render={({ field, fieldState }) => {
+            const isNFT = assets?.nfts?.find(
+              (nft) =>
+                nft.assetId === form.watch(`transactions.${index}.asset`),
+            );
+
+            return (
+              <FormControl>
+                <AmountInput
+                  placeholder=" "
+                  value={isNFT ? 1 : field.value}
+                  onChange={field.onChange}
+                  isInvalid={fieldState.invalid}
+                  isDisabled={!!isNFT}
+                />
+                <FormLabel color="gray">Amount</FormLabel>
+                <FormHelperText>
+                  {asset && (
+                    <Text display="flex" alignItems="center">
+                      Balance (available):{' '}
+                      {isFeeCalcLoading ? (
+                        <CircularProgress
+                          trackColor="dark.100"
+                          size={3}
+                          isIndeterminate
+                          color="brand.500"
+                          ml={1}
+                        />
+                      ) : (
+                        <>
+                          {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
+                        </>
+                      )}
+                    </Text>
+                  )}
+                </FormHelperText>
+                <FormHelperText color="error.500">
+                  {fieldState.error?.message}
+                </FormHelperText>
+              </FormControl>
+            );
+          }}
         />
       </VStack>
     </>

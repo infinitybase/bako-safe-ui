@@ -18,7 +18,7 @@ function useVaultAssetsList(
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
 
-        if (assets.length > 0) {
+        if (assets.length > 0 || nfts?.length) {
           let itemsToShow = Math.floor(containerWidth / itemWidth);
 
           if (itemsToShow < 1) {

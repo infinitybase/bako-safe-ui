@@ -44,6 +44,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     handleClose,
   } = useCreateTransaction({
     assets: assets.assets,
+    nfts: assets.nfts,
     hasAssetBalance: assets.hasAssetBalance,
     getCoinAmount: assets.getCoinAmount,
     onClose: props.onClose,
