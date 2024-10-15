@@ -54,7 +54,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const { isOpen, onToggle, onClose } = useDisclosure();
   const {
-    screenSizes: { isSmall, isMobile },
+    screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
@@ -66,7 +66,12 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     Number(transactionFee) === 0;
 
   const isDisabled =
-    !form.formState.isValid || isCurrentAmountZero || isTransactionFeeLoading;
+    !form.formState.isValid ||
+    form.formState.isSubmitting ||
+    isCurrentAmountZero ||
+    isTransactionFeeLoading;
+
+  const isLoading = transactionRequest.isPending || form.formState.isSubmitting;
 
   return (
     <Dialog.Modal
@@ -178,7 +183,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           <CreateTxMenuButton
             createTxMethod={createTxMethod}
             setCreateTxMethod={setCreateTxMethod}
-            isLoading={transactionRequest.isPending}
+            isLoading={isLoading}
             isDisabled={isDisabled}
             handleCreateTransaction={form.handleCreateTransaction}
             handleCreateAndSignTransaction={form.handleCreateAndSignTransaction}
