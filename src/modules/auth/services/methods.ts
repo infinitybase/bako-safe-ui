@@ -1,6 +1,6 @@
 import { bytesToHex } from '@noble/curves/abstract/utils';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
-import { Address, Network, Provider, sha256 } from 'fuels';
+import { Address, Network, Provider } from 'fuels';
 
 import { api } from '@/config';
 import { IPermission, Workspace } from '@/modules/core';
@@ -23,6 +23,13 @@ export type SignWebAuthnPayload = {
   id: string;
   challenge: string;
   publicKey: string;
+};
+
+export type SignInSignWebAuthnPayload = Omit<
+  SignWebAuthnPayload,
+  'publicKey'
+> & {
+  name: string;
 };
 
 export type CreateUserResponse = {
@@ -51,7 +58,8 @@ export type SignInPayload = {
   encoder: Encoder;
   signature: string;
   digest: string;
-  userAddress: string;
+  userAddress?: string;
+  name?: string;
 };
 
 export type SignInResponse = {
@@ -71,18 +79,16 @@ export type SignInResponse = {
   provider: string;
 };
 
-export type CheckNicknameResponse = {
-  id: string;
-  address: string;
+export type GetByHardwareResponse = {
   name: string;
-  provider: string;
+};
+
+export type GetByNameResponse = {
+  webAuthnId?: string;
+};
+
+export type CheckNicknameResponse = {
   type: TypeUser;
-  webauthn: {
-    id: string;
-    publicKey: string;
-    origin: string;
-    hardware: string;
-  };
 };
 
 export type AuthenticateParams = {
@@ -190,17 +196,26 @@ export class UserService {
     return data;
   }
 
-  static async verifyNickname(nickname: string) {
+  static async getByName(name: string) {
+    const { data } = await api.get<GetByNameResponse>(`/user/by-name/${name}`);
+
+    return data;
+  }
+
+  static async verifyNickname(nickname: string, userId?: string) {
     if (!nickname) return;
     const { data } = await api.get<CheckNicknameResponse>(
       `/user/nickname/${nickname}`,
+      {
+        params: { userId },
+      },
     );
 
     return data;
   }
 
   static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<CheckNicknameResponse[]>(
+    const { data } = await api.get<GetByHardwareResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
     return data;
@@ -232,21 +247,21 @@ export class UserService {
   static async signMessageWebAuthn({
     id,
     challenge,
-    publicKey,
-  }: SignWebAuthnPayload) {
-    const signature = await signChallange(id, challenge, publicKey);
+    name,
+  }: SignInSignWebAuthnPayload) {
+    const signature = await signChallange(id, challenge);
 
     return await UserService.signIn({
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
-      userAddress: sha256(publicKey),
+      name,
     });
   }
 
-  static async generateSignInCode(address: string, networkUrl?: string) {
+  static async generateSignInCode(name: string, networkUrl?: string) {
     const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
-      address,
+      name,
       networkUrl,
     });
     return data;
@@ -279,7 +294,12 @@ export const UserQueryKey = {
     'accounts',
     hardwareId,
   ],
-  NICKNAME: (search: string) => [UserQueryKey.DEFAULT, 'nickname', search],
+  NICKNAME: (search: string, userId?: string) => [
+    UserQueryKey.DEFAULT,
+    'nickname',
+    search,
+    userId,
+  ],
   FULL_DATA: (search: string, hardwareId: string) => [
     UserQueryKey.DEFAULT,
     UserQueryKey.NICKNAME(search),

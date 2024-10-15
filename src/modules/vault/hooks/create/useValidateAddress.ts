@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { useVaultByAddressRequest } from '../useVaultByAddressRequest';
+import { useCheckVaultByAddressRequest } from '../useCheckVaultByAddressRequest';
 
 const useValidateAddress = () => {
   const [address, setAddress] = useState('');
   const [enabled, setEnabled] = useState(false);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-  const request = useVaultByAddressRequest(address, enabled);
+  const request = useCheckVaultByAddressRequest(address, enabled);
 
   const validateAddress = (address: string, index: number) => {
     setAddress(address);
@@ -17,7 +17,7 @@ const useValidateAddress = () => {
 
   return {
     currentValidateAddressIndex: currentIndex,
-    isAddressValid: !request.data?.id,
+    isAddressValid: !request.data,
     validatingAddress: request.isLoading,
     validateAddress,
     setCurrentValidateAddressIndex: setCurrentIndex,

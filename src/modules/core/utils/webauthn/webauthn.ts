@@ -81,7 +81,7 @@ export async function formatToWebAuthnCreate({
   const clientHash = await sha256(clientDataJSON);
 
   const digest = await sha256(new Uint8Array([...authData, ...clientHash]));
-  const sig = getSignature(publicKey, signature, digest).sig_compact;
+  const sig = getSignature(signature, digest, publicKey).sig_compact;
 
   return {
     sig,
@@ -92,7 +92,7 @@ export async function formatToWebAuthnCreate({
 export async function signChallange(
   id: string,
   challenge: string,
-  publicKey: string,
+  publicKey?: string,
 ) {
   const challangeBytesInASCII = hexToASCII(challenge);
 
@@ -122,7 +122,7 @@ export async function signChallange(
   const digest = await sha256(new Uint8Array([...authData, ...clientHash]));
 
   return {
-    ...getSignature(publicKey, response.signature, digest),
+    ...getSignature(response.signature, digest, publicKey),
     ...splitCLientData(response.clientDataJSON, challangeBytesInASCII),
     authData: hexlify(authData),
   };

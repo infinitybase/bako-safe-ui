@@ -5,12 +5,14 @@ export const useTransactionHistory = (
   predicateId: string,
   isMobileDetailsOpen: boolean,
   isTransactionSuccess: boolean,
+  isDeposit: boolean,
 ) => {
   const transactionHistoryRequest = useTransactionHistoryRequest({
     transactionId,
     predicateId,
     isMobileDetailsOpen,
     isTransactionSuccess,
+    isDeposit,
   });
 
   return {

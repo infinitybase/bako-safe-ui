@@ -59,26 +59,34 @@ export function convertASN1toRaw(signatureBuffer: ArrayBuffer | Uint8Array) {
   return sig;
 }
 
-export function getSignature(
-  publicKey: string,
-  signature: Uint8Array | ArrayBuffer,
-  digest: Uint8Array,
-): {
-  signature: string;
+export interface IGetSignature {
+  signature?: string;
   digest: string;
   sig_compact: Uint8Array;
   dig_compact: Uint8Array;
-} {
+}
+
+export function getSignature(
+  signature: Uint8Array | ArrayBuffer,
+  digest: Uint8Array,
+  publicKey?: string,
+): IGetSignature {
+  let _signature;
+
   const signatureCompact = secp256r1.Signature.fromCompact(
     convertASN1toRaw(signature),
   )
     .normalizeS()
     .toCompactRawBytes();
-  const recoveryBit = getRecoveryBit(publicKey, signatureCompact, digest);
-  const sigatureCompactCopy = new Uint8Array(signatureCompact.slice());
+
+  if (publicKey) {
+    const recoveryBit = getRecoveryBit(publicKey, signatureCompact, digest);
+    const sigatureCompactCopy = new Uint8Array(signatureCompact.slice());
+    _signature = hexlify(EIP2090_encode(sigatureCompactCopy, recoveryBit));
+  }
 
   return {
-    signature: hexlify(EIP2090_encode(sigatureCompactCopy, recoveryBit)),
+    signature: _signature,
     digest: hexlify(digest),
     sig_compact: signatureCompact,
     dig_compact: digest,

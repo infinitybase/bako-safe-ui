@@ -18,18 +18,12 @@ import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
-  isDeposit: boolean;
-  isContract: boolean;
-  isMint: boolean;
-  isDeploy: boolean;
+  showAmount: boolean;
 }
 
 const Amount = ({
   transaction,
-  isDeposit,
-  isContract,
-  isMint,
-  isDeploy,
+  showAmount,
   ...rest
 }: TransactionCardAmountProps) => {
   const { operationAssets, hasNoDefaultAssets } =
@@ -57,7 +51,7 @@ const Amount = ({
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    hasNoDefaultAssets && isDeposit ? [operationAssets] : transaction.assets,
+    hasNoDefaultAssets ? [operationAssets] : transaction.assets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
   );
@@ -69,7 +63,7 @@ const Amount = ({
       w={isExtraSmall ? 150 : 200}
       {...rest}
     >
-      {(isContract && !isMint) || isDeploy ? null : (
+      {!showAmount ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 3}

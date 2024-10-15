@@ -44,18 +44,16 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
-  const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
-    useWebAuthnInput(!form.formState.errors.name);
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
+  const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
+    useWebAuthnInput(!form.formState.errors.name, userInfos.id);
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 
   const isNicknameInUse =
-    !!checkNicknameRequest.data?.name &&
-    checkNicknameRequest.data?.id !== userInfos.id &&
-    inputValue?.length > 0;
+    !!checkNicknameRequest.data?.type && inputValue?.length > 0;
 
   const name = mySettingsRequest.data?.name ?? '';
 
@@ -149,8 +147,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
 
                     <FormHelperText
                       color={
-                        (checkNicknameRequest.data?.name &&
-                          checkNicknameRequest.data?.id !== userInfos.id) ||
+                        checkNicknameRequest.data?.type ||
                         form.formState.errors.name?.message ||
                         isNameInputInvalid
                           ? 'error.500'
