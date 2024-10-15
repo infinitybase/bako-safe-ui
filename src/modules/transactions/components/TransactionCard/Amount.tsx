@@ -26,8 +26,10 @@ const Amount = ({
   showAmount,
   ...rest
 }: TransactionCardAmountProps) => {
-  const { operationAssets, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { operationAssets, hasNoDefaultAssets } = useGetAssetsByOperations(
+    transaction,
+    transaction.predicate?.predicateAddress,
+  );
 
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
