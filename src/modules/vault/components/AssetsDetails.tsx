@@ -10,7 +10,7 @@ import { useVaultAssetsList } from '../hooks';
 interface AssetsDetailsProps {
   containerRef: MutableRefObject<HTMLDivElement | null>;
   assets: Asset[];
-  nfts: NFT[];
+  nfts?: NFT[];
   visibleBalance?: boolean;
   viewAllRedirect: To;
 }
@@ -41,7 +41,7 @@ const AssetsDetails = ({
         </Fragment>
       ))}
 
-      {nfts.map((nft, index) => (
+      {nfts?.map((nft, index) => (
         <Fragment key={`${nft.assetId}-${index}`}>
           {assets.length + index < visibleItems && (
             <AssetCard
