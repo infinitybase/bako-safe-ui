@@ -1,5 +1,5 @@
 import { TransactionStatus } from 'bakosafe';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -75,12 +75,6 @@ const useVaultTransactionsList = ({
     },
     [fetchNextPage, hasNextPage, isFetching, isLoading],
   );
-
-  useEffect(() => {
-    if (inView.inView && !isLoading && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [inView.inView, isLoading, fetchNextPage, hasNextPage]);
 
   return {
     request: {
