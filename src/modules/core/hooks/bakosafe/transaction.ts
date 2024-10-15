@@ -1,6 +1,7 @@
 import {
   IBakoSafeAuth,
   ITransferAsset,
+  TransactionStatus,
   TransactionType,
   Vault,
 } from 'bakosafe';
@@ -59,7 +60,9 @@ const useBakoSafeCreateTransaction = ({
           };
         }),
       });
-      const transaction = await TransactionService.getByHash(hashTxId);
+      const transaction = await TransactionService.getByHash(hashTxId, [
+        TransactionStatus.AWAIT_REQUIREMENTS,
+      ]);
       return transaction;
     },
     options,

@@ -46,6 +46,7 @@ export * from './rounded-error';
 export * from './settings';
 export * from './square-plus';
 export * from './success';
+export * from './triangle-warning';
 export * from './up-right-arrow';
 export * from './up-right-arrow-yellow';
 export * from './usdc';

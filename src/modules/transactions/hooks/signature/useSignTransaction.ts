@@ -47,6 +47,7 @@ const useSignTransaction = ({
   } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<IPendingTransactionDetails>();
+  const [isSignConfirmed, setIsSignConfirmed] = useState(false);
 
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();
@@ -58,6 +59,7 @@ const useSignTransaction = ({
       queryClient.invalidateQueries({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
       });
+      setIsSignConfirmed(false);
     },
   });
 
@@ -116,6 +118,7 @@ const useSignTransaction = ({
       },
       {
         onSuccess: async () => {
+          setIsSignConfirmed(true);
           executeTransaction(transaction);
           callback && callback();
         },
@@ -147,6 +150,7 @@ const useSignTransaction = ({
     confirmTransaction,
     declineTransaction,
     isLoading:
+      isSignConfirmed ||
       request.isPending ||
       signMessageRequest.isPending ||
       selectedTransaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||

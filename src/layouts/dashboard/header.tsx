@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Address } from 'fuels';
+import { Address, ZeroBytes32 } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -128,7 +128,7 @@ const UserBox = () => {
   }, []);
 
   const b256UserAddress = Address.fromString(
-    authDetails.userInfos.address ?? '',
+    authDetails.userInfos?.address ?? ZeroBytes32,
   ).toB256();
 
   return (

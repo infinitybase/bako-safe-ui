@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
+import { queryClient } from '@/config';
+import { useAuth } from '@/modules';
 import { localStorageKeys } from '@/modules/auth/services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   availableNetWorks,
@@ -52,22 +53,15 @@ const useNetworks = (onClose?: () => void) => {
   const deleteNetworkRequest = useDeleteNetworkRequest();
 
   const {
-    authDetails: {
-      userInfos: { network: userNetwork },
-    },
-    resetHomeRequests,
-  } = useWorkspaceContext();
+    userInfos: { network: userNetwork },
+  } = useAuth();
 
   const saveNetwork = async (url: string) => {
-    const exists = JSON.parse(
-      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
-    ).find((net: CustomNetwork) => net.url === url);
-
+    const exists = NetworkService.hasNetwork(url);
     if (!exists) {
       const provider = await Provider.create(url!);
       const name = provider.getChain()?.name;
       const chainId = provider.getChainId();
-
       await NetworkService.create({
         name,
         url: url!,
@@ -128,7 +122,7 @@ const useNetworks = (onClose?: () => void) => {
       { url },
       {
         onSuccess: () => {
-          resetHomeRequests();
+          queryClient.clear();
           handleClose();
         },
       },
@@ -137,7 +131,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const handleCheckNetwork = async () => {
     const url = networkForm.watch('url');
-    const existingNetwork = await NetworkService.hasNetwork(url);
+    const existingNetwork = NetworkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {
