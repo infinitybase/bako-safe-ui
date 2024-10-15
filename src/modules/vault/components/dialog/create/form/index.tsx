@@ -45,7 +45,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
 
   return (
     <Box w="full">
-      <Box hidden={stepAction.hide} mb={8} mt={{ sm: 8 }}>
+      <Box hidden={stepAction.hide} mb={6} mt={{ sm: 8 }}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
       <Tabs index={tabs.tab} colorScheme="green">
@@ -67,9 +67,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
             setTemplate={setTemplate}
             validateAddress={validateAddress}
           />
-          <VaultSuccessStep
-            stepProgress={<StepProgress length={stepLength} value={tabs.tab} />}
-          />
+          <VaultSuccessStep />
         </TabPanels>
       </Tabs>
     </Box>

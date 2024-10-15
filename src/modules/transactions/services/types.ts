@@ -29,6 +29,8 @@ export enum TransactionHistoryType {
   SEND = 'SEND',
 }
 
+export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
+
 export interface ITransactionHistory {
   type: TransactionHistoryType;
   date: string;
@@ -62,7 +64,7 @@ export interface GetTransactionParams {
   predicateId?: string[];
   to?: string;
   hash?: string;
-  status?: TransactionStatus[] | string[] | string;
+  status?: ITransactionStatusFilter;
   id?: string;
   perPage?: number;
   page?: number;
@@ -73,7 +75,7 @@ export interface GetTransactionParams {
 }
 
 export interface GetTransactionsWithIncomingsParams {
-  status?: TransactionStatus[] | string[] | string;
+  status?: ITransactionStatusFilter;
   predicateId?: string[];
   orderBy?: string;
   sort?: SortOptionTx;

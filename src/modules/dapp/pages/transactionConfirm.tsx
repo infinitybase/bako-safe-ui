@@ -1,3 +1,5 @@
+import { Button } from '@chakra-ui/react';
+
 import { Dialog, SquarePlusIcon } from '@/components';
 
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
@@ -16,6 +18,8 @@ const TransactionConfirm = () => {
     summary,
     validAt,
     send: { isLoading, handler, cancel },
+    isRedirectEnable,
+    handleRedirectToBakoSafe,
   } = useTransactionSocket();
 
   const CreateTransactionButton = () => (
@@ -41,14 +45,33 @@ const TransactionConfirm = () => {
     // />
   );
 
+  const RedirectToBakoSafeButton = () => (
+    <Button
+      variant="outline"
+      onClick={() => handleRedirectToBakoSafe()}
+      w="full"
+      borderColor="grey.75"
+      fontWeight={500}
+      fontSize="sm"
+      letterSpacing=".5px"
+      color="grey.75"
+      _hover={{}}
+      _active={{}}
+    >
+      Go to Bako Safe
+    </Button>
+  );
+
   return (
     <DappTransactionWrapper
+      isRedirectEnable={isRedirectEnable}
       title="Create transaction"
       validAt={validAt}
       vault={vault}
       pendingSignerTransactions={pendingSignerTransactions}
       summary={summary}
       primaryActionButton={<CreateTransactionButton />}
+      redirectButton={<RedirectToBakoSafeButton />}
       primaryActionLoading={isLoading}
       cancel={cancel}
     />
