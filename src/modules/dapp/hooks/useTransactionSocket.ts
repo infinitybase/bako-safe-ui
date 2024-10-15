@@ -121,6 +121,7 @@ export const useTransactionSocket = () => {
       operations: summary.transactionSummary,
       tx,
     });
+    window.close();
   };
 
   const emitSignedMessage = (message: string) => {
