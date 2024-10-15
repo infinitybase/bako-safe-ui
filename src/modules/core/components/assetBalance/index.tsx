@@ -1,6 +1,17 @@
-import { Card, Grid, Image, Text, VStack } from '@chakra-ui/react';
+import {
+  Card,
+  Grid,
+  HStack,
+  Icon,
+  IconButton,
+  Image,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
-import { Asset } from '@/modules/core/utils';
+import { UpRightArrow } from '@/components';
+import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { AddressUtils, Asset } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
@@ -14,11 +25,13 @@ interface AssetsBalanceCardProps {
 }
 
 const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
-  const { assetsMap } = useWorkspaceContext();
+  const { assetsMap, isNFTCheck } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({
     ...asset,
     assetsMap,
   });
+
+  const isNFT = isNFTCheck(asset);
 
   return (
     <Card
@@ -31,23 +44,43 @@ const AssetsBalanceCard = ({ asset }: AssetsBalanceCardProps) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
-        <Image
-          w={{ base: 8, sm: 10 }}
-          h={{ base: 8, sm: 10 }}
-          src={assetsInfo?.icon ?? ''}
-          alt="Asset Icon"
-          objectFit="cover"
-        />
+        {isNFT ? (
+          <Icon as={BakoIcon} w={{ base: 8, sm: 10 }} h={{ base: 8, sm: 10 }} />
+        ) : (
+          <Image
+            w={{ base: 8, sm: 10 }}
+            h={{ base: 8, sm: 10 }}
+            src={assetsInfo?.icon ?? ''}
+            alt="Asset Icon"
+            objectFit="cover"
+          />
+        )}
         <VStack alignItems="flex-start" gap={0} maxW="full">
-          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-            {assetsInfo.name}
-          </Text>
+          <HStack>
+            <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+              {isNFT
+                ? AddressUtils.format(asset.assetId ?? '', 20)
+                : assetsInfo.name}
+            </Text>
+            {isNFT && (
+              <IconButton
+                icon={<Icon as={UpRightArrow} fontSize="md" color="grey.75" />}
+                aria-label="Explorer"
+                size="xs"
+                minW={2}
+                bg="none"
+                h={3}
+                _hover={{ bg: 'none' }}
+                // onClick={redirectToNetwork}
+              />
+            )}
+          </HStack>
           <Text fontSize="xs" color="grey.250">
-            {assetsInfo.slug}
+            {isNFT ? 'NFT' : assetsInfo.slug}
           </Text>
         </VStack>
         <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {assetAmount}
+          {isNFT ? 1 : assetAmount}
         </Text>
       </VStack>
     </Card>
@@ -67,9 +100,9 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
         '2xl': 'repeat(6, 1fr)',
       }}
     >
-      {assets.map((asset) => (
-        <AssetsBalanceCard key={asset.assetId} asset={asset} />
-      ))}
+      {assets.map((asset) => {
+        return <AssetsBalanceCard key={asset.assetId} asset={asset} />;
+      })}
     </Grid>
   );
 };

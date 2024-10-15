@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
+  Asset,
   assetsMapFromFormattedFn,
   useAddressBook,
   useAuthUrlParams,
@@ -92,6 +93,13 @@ const useWorkspaceDetails = () => {
     queryClient.clear();
   };
 
+  const isNFTCheck = (asset: Asset) => {
+    const onlyOne = Number(asset.amount) === 1;
+    const isMapped = Object.keys(assetsMap)?.find((a) => a === asset.assetId);
+
+    return onlyOne && !isMapped;
+  };
+
   const { isWorkspaceReady, isFilteringInProgress } = useIsWorkspaceReady({
     isUserVaultsLoading: userVaults.request.isLoading,
     isAddressbookInfosLoading:
@@ -128,6 +136,7 @@ const useWorkspaceDetails = () => {
     tokensUSD,
     fuelsTokens,
     assetsMap,
+    isNFTCheck,
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
