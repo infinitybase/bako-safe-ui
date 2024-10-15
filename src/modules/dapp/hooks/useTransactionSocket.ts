@@ -121,7 +121,9 @@ export const useTransactionSocket = () => {
       operations: summary.transactionSummary,
       tx,
     });
-    window.close();
+    setTimeout(() => {
+      window.close();
+    }, 1200);
   };
 
   const emitSignedMessage = (message: string) => {
