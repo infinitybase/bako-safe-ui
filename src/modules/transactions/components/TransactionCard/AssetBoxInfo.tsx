@@ -106,7 +106,8 @@ const AssetBoxInfo = ({
           fontSize="xs"
           color="grey.500"
         >
-          {assetInfo.slug === 'UNK' ? '--' : `$${txUSDAmount}`}
+          {!!Number(txUSDAmount) && '$'}
+          {txUSDAmount}
         </Text>
       </VStack>
 
