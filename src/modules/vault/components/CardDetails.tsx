@@ -99,6 +99,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
     handleManualRefetch,
   } = assets;
 
+  const showAssets = hasBalance || assets?.nfts?.length;
+
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -402,7 +404,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                 w="full"
                 h="full"
               >
-                {!hasBalance ? (
+                {!showAssets ? (
                   <Card
                     w="full"
                     h={{ base: 98, sm: 102.5, lg: 150 }}
@@ -439,6 +441,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     <AssetsDetails
                       containerRef={assetsContainerRef}
                       assets={assets.assets!}
+                      nfts={assets.nfts!}
                       visibleBalance={visibleBalance}
                       viewAllRedirect={Pages.vaultBalance({
                         vaultId: vault.data?.id,

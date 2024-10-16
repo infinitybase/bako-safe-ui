@@ -55,10 +55,11 @@ const VaultDetailsPage = () => {
   const {
     vaultTransactions: {
       filter: { txFilterType },
-      lists: { limitedTransactions },
+      lists: { transactions },
       request: { isLoading, isFetching },
       handlers: { handleIncomingAction, handleOutgoingAction },
       inView,
+      transactionsRef,
     },
     pendingSignerTransactions,
     isPendingSigner,
@@ -84,7 +85,7 @@ const VaultDetailsPage = () => {
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';
-  const hasTransactions = !isLoading && limitedTransactions?.length;
+  const hasTransactions = !isLoading && transactions?.length;
 
   const { OWNER, SIGNER } = PermissionRoles;
 
@@ -283,7 +284,7 @@ const VaultDetailsPage = () => {
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
         {hasTransactions
-          ? limitedTransactions?.map((grouped) => (
+          ? transactions?.map((grouped) => (
               <>
                 <HStack w="full">
                   <Text
@@ -313,7 +314,7 @@ const VaultDetailsPage = () => {
                     );
 
                     return (
-                      <>
+                      <Box key={transaction.id} ref={transactionsRef} w="full">
                         {isMobile ? (
                           <TransactionCardMobile
                             isSigner={isSigner}
@@ -338,19 +339,19 @@ const VaultDetailsPage = () => {
                             }
                           />
                         )}
-                      </>
+                      </Box>
                     );
                   })}
                   <Box ref={inView.ref} />
 
-                  {isFetching && (
+                  {grouped.transactions.length >= 5 && isFetching && (
                     <Spinner alignSelf={'center'} mt={4} color="brand.500" />
                   )}
                 </TransactionCard.List>
               </>
             ))
           : !hasTransactions &&
-            !!limitedTransactions && (
+            !!transactions && (
               <EmptyState
                 isDisabled={!assets.hasBalance}
                 buttonAction={() =>

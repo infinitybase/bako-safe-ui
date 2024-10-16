@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Address, ZeroBytes32 } from 'fuels';
+import { Address } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -127,9 +127,9 @@ const UserBox = () => {
     setUnreadCounter(unreadCounter);
   }, []);
 
-  const b256UserAddress = Address.fromString(
-    authDetails.userInfos?.address ?? ZeroBytes32,
-  ).toB256();
+  const b256UserAddress =
+    authDetails.userInfos?.address &&
+    Address.fromString(authDetails.userInfos?.address).toB256();
 
   return (
     <>
@@ -512,7 +512,7 @@ const UserBox = () => {
                   as={FeedbackIcon}
                 />
                 <Text color="grey.75" fontWeight={500}>
-                  Send a feedback
+                  Send feedback
                 </Text>
               </HStack>
             </VStack>

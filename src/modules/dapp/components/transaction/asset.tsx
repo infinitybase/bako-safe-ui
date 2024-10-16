@@ -27,12 +27,13 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
           px={3}
           maxW={356}
           alignItems="center"
+          justifyContent="space-between"
           gap={4}
         >
           <HStack maxW="190px">
             <Image
-              w={{ base: 8, sm: 10 }}
-              h={{ base: 8, sm: 10 }}
+              w={6}
+              h={6}
               src={asset?.icon ?? ''}
               alt="Asset Icon"
               objectFit="cover"
@@ -49,20 +50,17 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
               <AddressCopy
                 flexDir="row-reverse"
                 address={AddressUtils.format(asset.assetId)!}
-                fontSize={asset?.slug === 'UNK' ? '12px' : 'unset'}
+                fontSize="xs"
                 addressToCopy={asset.assetId}
                 w="100%"
                 bg="transparent"
+                spacing={2}
                 p={0}
               />
             </VStack>
           </HStack>
           <Box minW="max-content" mt={4}>
-            <Text
-              variant="subtitle"
-              color="grey.75"
-              fontSize={asset.amount.length >= 8 ? 'xs' : 'sm'}
-            >
+            <Text variant="subtitle" color="grey.75" fontSize="xs">
               {asset.amount} {asset.slug}
             </Text>
           </Box>

@@ -57,9 +57,13 @@ const Details = ({
       predicateId={transaction.predicateId}
       isMobileDetailsOpen={isMobileDetailsOpen ?? false}
       isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
+      isDeposit={isDeposit}
     >
       {(isLoading, transactionHistory) => (
-        <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
+        <CustomSkeleton
+          py={2}
+          isLoaded={isDeposit ? true : !isLoading && !!transactionHistory}
+        >
           {isDeposit ? (
             <DepositDetails transaction={transaction} />
           ) : (

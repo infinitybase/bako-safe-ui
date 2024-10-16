@@ -61,7 +61,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     isLoading ||
     isNicknameInUse ||
     checkNicknameRequest.isLoading ||
-    isNameInputInvalid;
+    isNameInputInvalid ||
+    !form.formState.isValid;
 
   useEffect(() => {
     const _search = AddressUtils.isValid(name) ? '' : name;
@@ -143,7 +144,7 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       }
                       isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Username</FormLabel>
 
                     <FormHelperText
                       color={
@@ -155,13 +156,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       }
                     >
                       {isNicknameInUse
-                        ? 'Name already exists'
+                        ? 'Username already exists'
                         : form.formState.errors.name?.message
                           ? form.formState.errors.name?.message
                           : inputValue.length >= 3
-                            ? 'This name is available'
+                            ? 'This username is available'
                             : isNameInputInvalid
-                              ? 'Name must be at least 3 characters'
+                              ? 'Username must be at least 3 characters'
                               : ''}
                     </FormHelperText>
                   </FormControl>

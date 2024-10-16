@@ -9,7 +9,6 @@ import {
   SocketUsernames,
   useSocket,
 } from '@/modules/core/hooks';
-import { getUIUrl } from '@/utils/enviroment';
 
 // import { useSignTransaction } from './useSignTransaction'; [CONNECTOR SIGNATURE]
 import { useTransactionSummary } from './useTransactionSummary';
@@ -169,7 +168,7 @@ export const useTransactionSocket = () => {
   const handleRedirectToBakoSafe = () => {
     window.close();
     setIsRedirectEnable(false);
-    window.open(getUIUrl(), '_BLANK');
+    window.open(window.location.origin, '_BLANK');
   };
 
   // [CONNECTOR SIGNATURE]
