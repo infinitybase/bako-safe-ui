@@ -111,6 +111,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
+    assetsMap,
     onSuccess: (transaction) => {
       successToast({
         title: 'Transaction created!',
