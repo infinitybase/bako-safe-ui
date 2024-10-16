@@ -3,6 +3,8 @@ import { Text, VStack } from '@chakra-ui/react';
 import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AmountUSD } from '../transfer-details';
+
 interface AmountsInfoProps {
   asset: AssetModel;
   txUSDAmount: string;
@@ -29,7 +31,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         fontSize="xs"
         color="grey.500"
       >
-        ${txUSDAmount}
+        <AmountUSD amount={txUSDAmount} />
       </Text>
     </VStack>
   );
