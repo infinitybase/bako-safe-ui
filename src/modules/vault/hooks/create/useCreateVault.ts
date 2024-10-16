@@ -76,6 +76,8 @@ const useCreateVault = () => {
 
   const checkVaultNameResult = useCheckVaultName(searchRequest);
   vaultNameIsAvailable = checkVaultNameResult.data ?? false;
+  const isVaulltNameCheckLoading =
+    checkVaultNameResult.isLoading || checkVaultNameResult.isFetching;
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
@@ -185,6 +187,7 @@ const useCreateVault = () => {
       ...form,
       handleCreateVault,
     },
+    isVaulltNameCheckLoading,
     handleInputChange,
     vaultNameIsAvailable,
     vaultId,

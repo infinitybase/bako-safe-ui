@@ -97,26 +97,27 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           name={`transactions.${index}.value`}
           control={form.control}
           render={({ field, fieldState }) => {
+            const lowerCaseFieldValue = String(field.value).toLowerCase();
             const appliedOptions = handleFieldOptions(
-              field.value,
+              lowerCaseFieldValue,
               optionsRequests[index].options,
-              !!field.value,
+              !!lowerCaseFieldValue,
             );
 
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
-              AddressUtils.isValid(field.value) &&
+              AddressUtils.isValid(lowerCaseFieldValue) &&
               optionsRequests[index].isSuccess &&
               listContactsRequest.data &&
               !listContactsRequest.data
-                .map((o) => o.user.address)
-                .includes(field.value);
+                .map((o) => o.user.address.toLowerCase())
+                .includes(lowerCaseFieldValue);
 
             return (
               <FormControl isInvalid={fieldState.invalid}>
                 <Autocomplete
-                  value={field.value}
+                  value={lowerCaseFieldValue}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
                   isLoading={!optionsRequests[index].isSuccess}
@@ -131,7 +132,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 </FormHelperText>
                 <AddToAddressBook
                   visible={showAddToAddressBook}
-                  onAdd={() => handleOpenDialog?.({ address: field.value })}
+                  onAdd={() =>
+                    handleOpenDialog?.({ address: lowerCaseFieldValue })
+                  }
                 />
               </FormControl>
             );

@@ -66,17 +66,16 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
     }
   };
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions({
-      workspaceId: workspaceId!,
-      includePersonal: !userInfos.onSingleWorkspace,
-      contacts: listContactsRequest.data!,
-      fields: form.watch('addresses') as AddressesFields,
-      errors: form.formState.errors.addresses,
-      isUsingTemplate: true,
-      isFirstLoading: isFirstLoad,
-      dynamicCurrentIndex: currentInputIndex,
-    });
+  const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
+    workspaceId: workspaceId!,
+    includePersonal: !userInfos.onSingleWorkspace,
+    contacts: listContactsRequest.data!,
+    fields: form.watch('addresses') as AddressesFields,
+    errors: form.formState.errors.addresses,
+    isUsingTemplate: true,
+    isFirstLoading: isFirstLoad,
+    dynamicCurrentIndex: currentInputIndex,
+  });
 
   const optionsScrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -162,11 +161,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     name={`addresses.${index}.value`}
                     control={form.control}
                     render={({ field, fieldState }) => {
-                      const appliedOptions = handleFieldOptions(
-                        field.value,
-                        optionsRequests[index].options,
-                        first,
-                      );
+                      const lowerCaseFieldValue = field.value.toLowerCase();
 
                       if (index && !fieldState.invalid && field.value) {
                         validateAddress.handler(field.value, index);
@@ -179,12 +174,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                       const showAddToAddressBook =
                         !first &&
                         !fieldState.invalid &&
-                        AddressUtils.isValid(field.value) &&
+                        AddressUtils.isValid(lowerCaseFieldValue) &&
                         optionsRequests[index].isSuccess &&
                         listContactsRequest.data &&
                         !listContactsRequest.data
-                          .map((o) => o.user.address)
-                          .includes(field.value);
+                          .map((o) => o.user.address.toLowerCase())
+                          .includes(lowerCaseFieldValue);
 
                       return (
                         <FormControl
@@ -202,9 +197,9 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             }}
                             variant="dark"
                             optionsRef={optionRef}
-                            value={field.value}
+                            value={lowerCaseFieldValue}
                             onChange={field.onChange}
-                            options={appliedOptions}
+                            options={optionsRequests[index].options}
                             isLoading={isLoading}
                             disabled={first}
                             inView={inView}

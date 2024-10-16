@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
 
-import { AutocompleteOption } from '@/components/autocomplete';
 import { WorkspaceContact } from '@/modules/core/models/workspace';
 import { AddressBookUtils } from '@/utils/address-book';
 
@@ -72,21 +71,6 @@ const useAddressBookAutocompleteOptions = ({
     }));
   }, []);
 
-  const handleFieldOptions = useCallback(
-    (
-      fieldValue: string,
-      options: AutocompleteOption[],
-      isMyAddress?: boolean,
-    ) => {
-      if (isMyAddress) {
-        options = [...options, { label: fieldValue, value: fieldValue }];
-      }
-
-      return options;
-    },
-    [],
-  );
-
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;
 
   const currentField = fields[dynamicCurrentIndex ?? currentIndex];
@@ -122,7 +106,6 @@ const useAddressBookAutocompleteOptions = ({
 
   return {
     optionsRequests: formattedQueries,
-    handleFieldOptions,
     optionRef: lastElementRef,
   };
 };
