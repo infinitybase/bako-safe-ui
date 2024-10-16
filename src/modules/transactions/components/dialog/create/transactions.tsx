@@ -71,18 +71,17 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
 
   const balanceAvailable = getBalanceAvailable();
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions({
-      workspaceId: workspaceId!,
-      includePersonal: !userInfos.onSingleWorkspace,
-      contacts: listContactsRequest.data!,
-      fields: form.watch('transactions')!,
-      errors: form.formState.errors.transactions,
-      isUsingTemplate: false,
-      isFirstLoading: false,
-      dynamicCurrentIndex: index,
-      canRepeatAddresses: true,
-    });
+  const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
+    workspaceId: workspaceId!,
+    includePersonal: !userInfos.onSingleWorkspace,
+    contacts: listContactsRequest.data!,
+    fields: form.watch('transactions')!,
+    errors: form.formState.errors.transactions,
+    isUsingTemplate: false,
+    isFirstLoading: false,
+    dynamicCurrentIndex: index,
+    canRepeatAddresses: true,
+  });
 
   return (
     <>
@@ -98,11 +97,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           control={form.control}
           render={({ field, fieldState }) => {
             const lowerCaseFieldValue = String(field.value).toLowerCase();
-            const appliedOptions = handleFieldOptions(
-              lowerCaseFieldValue,
-              optionsRequests[index].options,
-              !!lowerCaseFieldValue,
-            );
 
             const showAddToAddressBook =
               canAddMember &&
@@ -121,7 +115,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
                   isLoading={!optionsRequests[index].isSuccess}
-                  options={appliedOptions}
+                  options={optionsRequests[index].options}
                   inView={inView}
                   clearable={false}
                   optionsRef={optionRef}
