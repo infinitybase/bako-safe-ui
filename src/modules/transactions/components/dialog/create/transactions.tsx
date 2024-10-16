@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -53,6 +54,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
 
   const asset = form.watch(`transactions.${index}.asset`);
+  const isNFT = !!assets?.nfts?.find((nft) => nft.assetId === asset);
 
   const {
     authDetails: { userInfos },
@@ -142,9 +144,13 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             <AssetSelect
               isInvalid={fieldState.invalid}
               assets={assets!.assets!}
+              nfts={assets!.nfts!}
               name={`transaction.${index}.asset`}
               value={field.value}
-              onChange={field.onChange}
+              onChange={(e) => {
+                field.onChange(e);
+                form.setValue(`transactions.${index}.amount`, bn(1).format());
+              }}
               helperText={
                 <FormHelperText
                   color={fieldState.invalid ? 'error.500' : 'grey.200'}
@@ -159,40 +165,43 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
         <Controller
           name={`transactions.${index}.amount`}
           control={form.control}
-          render={({ field, fieldState }) => (
-            <FormControl>
-              <AmountInput
-                placeholder=" "
-                value={field.value}
-                onChange={field.onChange}
-                isInvalid={fieldState.invalid}
-              />
-              <FormLabel color="gray">Amount</FormLabel>
-              <FormHelperText>
-                {asset && (
-                  <Text display="flex" alignItems="center">
-                    Balance (available):{' '}
-                    {isFeeCalcLoading ? (
-                      <CircularProgress
-                        trackColor="dark.100"
-                        size={3}
-                        isIndeterminate
-                        color="brand.500"
-                        ml={1}
-                      />
-                    ) : (
-                      <>
-                        {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
-                      </>
-                    )}
-                  </Text>
-                )}
-              </FormHelperText>
-              <FormHelperText color="error.500">
-                {fieldState.error?.message}
-              </FormHelperText>
-            </FormControl>
-          )}
+          render={({ field, fieldState }) => {
+            return (
+              <FormControl>
+                <AmountInput
+                  placeholder=" "
+                  value={isNFT ? '1' : field.value}
+                  onChange={field.onChange}
+                  isInvalid={fieldState.invalid}
+                  isDisabled={!!isNFT}
+                />
+                <FormLabel color="gray">Amount</FormLabel>
+                <FormHelperText>
+                  {asset && (
+                    <Text display="flex" alignItems="center">
+                      Balance (available):{' '}
+                      {isFeeCalcLoading ? (
+                        <CircularProgress
+                          trackColor="dark.100"
+                          size={3}
+                          isIndeterminate
+                          color="brand.500"
+                          ml={1}
+                        />
+                      ) : (
+                        <>
+                          {assets.getAssetInfo(asset)?.slug} {balanceAvailable}
+                        </>
+                      )}
+                    </Text>
+                  )}
+                </FormHelperText>
+                <FormHelperText color="error.500">
+                  {fieldState.error?.message}
+                </FormHelperText>
+              </FormControl>
+            );
+          }}
         />
       </VStack>
     </>
