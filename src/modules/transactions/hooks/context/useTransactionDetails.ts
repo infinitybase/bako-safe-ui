@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/modules/auth';
 import { useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
+import { useHasReservedCoins } from '@/modules/vault/hooks';
 import {
   StatusFilter,
   useVaultTransactionsList,
@@ -42,11 +43,14 @@ const useTransactionDetails = () => {
     vaultTransactions.lists.transactions,
   );
 
+  const { refetchAssets } = useHasReservedCoins(vaultId ?? '', workspace?.id);
+
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
+    pendingTransactions: pendingTransactions,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
     homeTransactionsRefetch: homeTransactions.request.refetch,
-    pendingTransactions: pendingTransactions,
+    vaultBalanceRefetch: refetchAssets,
   });
 
   const resetAllTransactionsTypeFilters = () => {

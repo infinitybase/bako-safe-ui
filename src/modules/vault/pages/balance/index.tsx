@@ -38,6 +38,8 @@ const VaultBalancePage = () => {
 
   if (!vault) return null;
 
+  const hasAssets = assets.hasAssets || assets.nfts?.length;
+
   return (
     <Flex w="full" direction="column">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
@@ -147,8 +149,8 @@ const VaultBalancePage = () => {
           isLoaded={!userInfos.isLoading && !assets.isLoading}
           flex={1}
         >
-          {assets.hasAssets ? (
-            <AssetsBalanceList assets={assets.assets!} />
+          {hasAssets ? (
+            <AssetsBalanceList assets={assets.assets!} nfts={assets.nfts!} />
           ) : (
             <EmptyState
               showAction={false}

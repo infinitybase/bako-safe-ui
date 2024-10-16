@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { IApiError, queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { SettingsQueryKey } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useUpdateSettingsRequest } from './';
 import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface UseSettingsProps {
   onOpen?: () => void;
@@ -42,9 +42,11 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
       );
     }
 
-    form.setValue('name', user?.name ?? '');
-    form.setValue('email', user?.email ?? '');
-    form.setValue('notify', String(user?.notify ?? '') ?? 'false');
+    form.reset({
+      name: user?.name ?? '',
+      email: user?.email ?? '',
+      notify: String(user?.notify ?? '') ?? 'false',
+    });
   };
 
   const handleSubmitSettings = form.handleSubmit(async (data) => {

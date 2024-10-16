@@ -42,15 +42,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const {
-    onClose,
-    isOpen,
-    transaction,
-    account,
-    status,
-    isSigner,
-    isContract,
-  } = props;
+  const { onClose, isOpen, transaction, account, status, isSigner } = props;
   const {
     screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
@@ -63,7 +55,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     );
   };
 
-  const { isDeploy, isFromConnector, isDeposit, isMint } =
+  const { isDeploy, isFromConnector, isDeposit, showAmountInformations } =
     useVerifyTransactionInformations(transaction);
 
   const {
@@ -188,13 +180,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
             <HStack w="full" justifyContent="space-between" h="38px">
               <TransactionCard.Amount
-                isDeposit={isDeploy}
+                showAmount={!showAmountInformations}
                 transaction={transaction}
                 w="fit-content"
                 h="26px"
-                isContract={isContract}
-                isDeploy={isDeploy}
-                isMint={isMint}
               />
               <TransactionCard.Status
                 transaction={transaction}

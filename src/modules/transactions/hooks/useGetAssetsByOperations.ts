@@ -11,6 +11,7 @@ interface UseGetAssetsByOperationsResult {
 
 const useGetAssetsByOperations = (
   transaction: TransactionWithVault,
+  predicateAddress?: string,
 ): UseGetAssetsByOperationsResult => {
   const hasNoDefaultAssets = !transaction?.assets?.length;
   const defaultSentBy = transaction?.txData?.inputs[0]?.['owner'] ?? '';
@@ -26,6 +27,7 @@ const useGetAssetsByOperations = (
     operations: transaction.summary?.operations,
     txData: transaction.txData,
     chainId: transaction.network.chainId,
+    predicateAddress,
   });
 
   return {

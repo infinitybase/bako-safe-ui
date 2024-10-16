@@ -3,13 +3,14 @@ import { Fragment, MutableRefObject } from 'react';
 import { To, useNavigate } from 'react-router-dom';
 
 import { AssetCard } from '@/modules/core/components';
-import { Asset } from '@/modules/core/utils';
+import { Asset, NFT } from '@/modules/core/utils';
 
 import { useVaultAssetsList } from '../hooks';
 
 interface AssetsDetailsProps {
   containerRef: MutableRefObject<HTMLDivElement | null>;
   assets: Asset[];
+  nfts?: NFT[];
   visibleBalance?: boolean;
   viewAllRedirect: To;
 }
@@ -17,12 +18,13 @@ interface AssetsDetailsProps {
 const AssetsDetails = ({
   containerRef,
   assets,
+  nfts,
   visibleBalance,
   viewAllRedirect,
 }: AssetsDetailsProps) => {
   const navigate = useNavigate();
   const { visibleItems, showViewAll, countViewAll, itemWidth } =
-    useVaultAssetsList(containerRef, assets);
+    useVaultAssetsList(containerRef, assets, nfts);
 
   return (
     <>
@@ -34,6 +36,20 @@ const AssetsDetails = ({
               maxW={itemWidth}
               asset={asset}
               visibleBalance={visibleBalance}
+            />
+          )}
+        </Fragment>
+      ))}
+
+      {nfts?.map((nft, index) => (
+        <Fragment key={`${nft.assetId}-${index}`}>
+          {assets.length + index < visibleItems && (
+            <AssetCard
+              flex={2}
+              maxW={itemWidth}
+              asset={nft as Asset}
+              visibleBalance={visibleBalance}
+              isNFT={true}
             />
           )}
         </Fragment>

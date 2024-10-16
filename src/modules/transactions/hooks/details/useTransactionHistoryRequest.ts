@@ -14,6 +14,7 @@ export interface UseTransactionHistoryRequestProps {
   predicateId: string;
   isMobileDetailsOpen: boolean;
   isTransactionSuccess: boolean;
+  isDeposit: boolean;
 }
 
 const useTransactionHistoryRequest = ({
@@ -21,6 +22,7 @@ const useTransactionHistoryRequest = ({
   predicateId,
   transactionId,
   isTransactionSuccess,
+  isDeposit,
 }: UseTransactionHistoryRequestProps) => {
   const { isOpen } = useAccordionItemState();
 
@@ -39,10 +41,13 @@ const useTransactionHistoryRequest = ({
       TransactionService.getTransactionsHistory(transactionId, predicateId),
 
     enabled:
-      (isOpen && !cachedData?.data) ||
-      (!cachedData?.data && isMobileDetailsOpen) ||
-      (isOpen && isTransactionSuccess && cachedDataLength <= 2) ||
-      (isMobileDetailsOpen && isTransactionSuccess && cachedDataLength <= 2),
+      (isOpen && !cachedData?.data && !isDeposit) ||
+      (!cachedData?.data && isMobileDetailsOpen && !isDeposit) ||
+      (isOpen && isTransactionSuccess && cachedDataLength <= 2 && !isDeposit) ||
+      (isMobileDetailsOpen &&
+        isTransactionSuccess &&
+        cachedDataLength <= 2 &&
+        !isDeposit),
   });
 };
 
