@@ -512,7 +512,7 @@ const UserBox = () => {
                   as={FeedbackIcon}
                 />
                 <Text color="grey.75" fontWeight={500}>
-                  Send a feedback
+                  Send feedback
                 </Text>
               </HStack>
             </VStack>

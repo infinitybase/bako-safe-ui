@@ -23,7 +23,10 @@ const useTxAmountToUSD = (
         return acc;
       }, 0);
 
-    return totalAmount.toFixed(2);
+    return totalAmount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   }
 
   return '0.00';
