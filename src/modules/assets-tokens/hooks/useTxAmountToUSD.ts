@@ -27,7 +27,12 @@ const useTxAmountToUSD = (
         return acc;
       }, 0);
 
-    return hasUnknownToken ? '--' : totalAmount.toFixed(2);
+    return hasUnknownToken
+      ? '--'
+      : totalAmount.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
   }
 
   return '0.00';

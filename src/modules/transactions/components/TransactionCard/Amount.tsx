@@ -107,7 +107,7 @@ const Amount = ({
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
             w="full"
             mt={0.5}
-            textAlign="center"
+            textAlign="start"
           >
             {isMultiToken ? (
               <Text color="grey.425" fontSize="xs">
