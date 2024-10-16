@@ -17,10 +17,10 @@ export const getUIUrl = (): string => {
 
   switch (environment) {
     case 'staging':
-      baseUrl = 'https://bsafe-ui-git-staging-infinity-base.vercel.app/';
+      baseUrl = 'https://stg-safe.bako.global';
       break;
     case 'production':
-      baseUrl = 'https://safe.bako.global/';
+      baseUrl = 'https://safe.bako.global';
       break;
     default:
       baseUrl = 'http://127.0.0.1:5174';
