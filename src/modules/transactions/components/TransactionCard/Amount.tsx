@@ -26,8 +26,10 @@ const Amount = ({
   showAmount,
   ...rest
 }: TransactionCardAmountProps) => {
-  const { operationAssets, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { operationAssets, hasNoDefaultAssets } = useGetAssetsByOperations(
+    transaction,
+    transaction.predicate?.predicateAddress,
+  );
 
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
@@ -54,6 +56,7 @@ const Amount = ({
     hasNoDefaultAssets ? [operationAssets] : transaction.assets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
+    tokensUSD?.isUnknownToken,
   );
 
   return (
@@ -85,18 +88,20 @@ const Amount = ({
               />
             )}
 
-            {oneAssetOfEach.map((asset) => (
-              <Image
-                key={asset.assetId}
-                w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
-                h={{ base: 'full', sm: 6 }}
-                src={
-                  assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
-                }
-                alt="Asset Icon"
-                objectFit="cover"
-              />
-            ))}
+            {oneAssetOfEach.map((asset) => {
+              return (
+                <Image
+                  key={asset.assetId}
+                  w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                  h={{ base: 'full', sm: 6 }}
+                  src={
+                    assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
+                  }
+                  alt="Asset Icon"
+                  objectFit="cover"
+                />
+              );
+            })}
           </AvatarGroup>
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
@@ -119,7 +124,8 @@ const Amount = ({
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
               <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-                ${txUSDAmount ?? 0}
+                {!!Number(txUSDAmount) && '$'}
+                {txUSDAmount}
               </CustomSkeleton>
             </Text>
           </Flex>
