@@ -1,12 +1,53 @@
-import { useQuery } from '@tanstack/react-query';
+import { QueryState, useQuery } from '@tanstack/react-query';
 
-import { VaultService } from '../../services';
+import { queryClient } from '@/config/query-client';
 
-export const useHasReservedCoins = (address: string) => {
-  return useQuery({
-    queryKey: ['predicate/has-reserved-coins', address],
-    queryFn: () => VaultService.hasReservedCoins(address),
+import { HasReservedCoins, VaultService } from '../../services';
+import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
+import { vaultAssetsQueryKey } from './useVaultAssets';
+
+export const useHasReservedCoins = (
+  predicateId: string,
+  workspaceId: string,
+) => {
+  const reservedQueryKey = vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
+    workspaceId,
+    predicateId,
+  );
+
+  const vaultTxListRequestQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      predicateId,
+    );
+
+  const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
+    queryClient.getQueryState(
+      vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
+    );
+
+  const staleTime = 20 * 1000; // 20s
+  const refetchInterval = 5 * 60 * 1000; // 5m
+
+  const { refetch, ...rest } = useQuery({
+    queryKey: reservedQueryKey,
+    queryFn: async () => {
+      const response = await VaultService.hasReservedCoins(predicateId);
+      if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
+        queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
+      }
+      return response;
+    },
+    refetchInterval,
     refetchOnWindowFocus: false,
-    enabled: !!address,
+    placeholderData: (previousData) => previousData,
+    enabled: !!predicateId,
+    staleTime,
   });
+
+  return {
+    ...rest,
+    refetchAssets: refetch,
+    staleTime,
+    reservedQueryKey,
+  };
 };

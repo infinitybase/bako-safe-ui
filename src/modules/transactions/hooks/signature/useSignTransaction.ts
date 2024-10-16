@@ -31,9 +31,10 @@ export interface UseSignTransactionOptions {
 
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
+  pendingTransactions: IPendingTransactionsRecord;
   pendingSignerTransactionsRefetch: () => void;
   homeTransactionsRefetch: () => void;
-  pendingTransactions: IPendingTransactionsRecord;
+  vaultBalanceRefetch: () => void;
 }
 
 const useSignTransaction = ({
@@ -41,6 +42,7 @@ const useSignTransaction = ({
   pendingSignerTransactionsRefetch,
   homeTransactionsRefetch,
   pendingTransactions,
+  vaultBalanceRefetch,
 }: IUseSignTransactionProps) => {
   const {
     request: { refetch: transactionsPageRefetch },
@@ -56,6 +58,7 @@ const useSignTransaction = ({
       transactionsPageRefetch();
       pendingSignerTransactionsRefetch();
       homeTransactionsRefetch();
+      vaultBalanceRefetch();
       queryClient.invalidateQueries({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
       });
@@ -138,6 +141,7 @@ const useSignTransaction = ({
           transactionsPageRefetch();
           pendingSignerTransactionsRefetch();
           homeTransactionsRefetch();
+          vaultBalanceRefetch();
           queryClient.invalidateQueries({
             queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
           });
