@@ -78,7 +78,14 @@ const AutocompleteBadge = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const isOpen =
-    isFocused && options && options.length > 0 && !isLoading && showOptions;
+    (isFocused && options && options.length > 0 && !isLoading && showOptions) ||
+    (isFocused &&
+      value?.length !== undefined &&
+      value.length <= 3 &&
+      options &&
+      options.length > 0 &&
+      !isLoading);
+
   const showClearIcon = !!value;
 
   const CurrentBadge = (() => {
