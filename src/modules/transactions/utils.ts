@@ -1,9 +1,9 @@
 import { ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
+import { ITransaction } from '../core/hooks/bakosafe/utils/types';
 import { AssetModel, WitnessStatus } from '../core/models';
 import { NativeAssetId } from '../core/utils';
-import { ITransaction } from '../core/hooks/bakosafe/utils/types';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;
 
@@ -69,3 +69,12 @@ export const sumEthAsset = (assets: AssetModel[]) =>
     .format();
 
 export const expectedCommonErrorMessage = 'not enough coins to fit the target';
+
+export const generateTransactionName = () => {
+  let transactionName = 'Transaction #';
+  for (let i = 0; i < 5; i++) {
+    const randomInt = Math.floor(Math.random() * 10);
+    transactionName += randomInt.toString();
+  }
+  return transactionName;
+};
