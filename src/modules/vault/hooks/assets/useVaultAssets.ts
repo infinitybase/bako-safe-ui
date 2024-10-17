@@ -109,6 +109,12 @@ const useVaultAssets = (
     });
   };
 
+  const isNFTAsset = useCallback(
+    (assetId: string): boolean =>
+      !!data?.nfts?.some((nft) => nft.assetId === assetId),
+    [data?.nfts],
+  );
+
   return {
     assets: data?.currentBalance,
     nfts: data?.nfts,
@@ -126,6 +132,7 @@ const useVaultAssets = (
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
     refetchAssets,
+    isNFTAsset,
   };
 };
 
