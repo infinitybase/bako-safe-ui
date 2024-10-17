@@ -210,7 +210,9 @@ const HomePage = () => {
           </Grid>
         ) : null}
         {/* TRANSACTION LIST */}
-        <HomeTransactions />
+        <Box minH="650px">
+          <HomeTransactions />
+        </Box>
       </CustomSkeleton>
     </VStack>
   );
