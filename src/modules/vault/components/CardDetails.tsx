@@ -397,7 +397,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
             <VStack w="full" alignItems="flex-start" spacing={4}>
               <Text fontWeight="semibold" color="grey.450">
-                {`Vault's balance breakdown`}
+                Vault balance breakdown
               </Text>
               <CustomSkeleton
                 isLoaded={!userInfos.isLoading && !isLoading}
@@ -408,9 +408,9 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                   <Card
                     w="full"
                     h={{ base: 98, sm: 102.5, lg: 150 }}
-                    p={{ base: 4, sm: 8 }}
-                    borderColor="dark.100"
-                    borderStyle="dashed"
+                    p={{ base: 4, sm: 16 }}
+                    bg={'transparent'}
+                    borderColor="grey.925"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -421,8 +421,8 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      <Text fontWeight="bold" color="grey.200">
-                        First thing first...
+                      <Text fontWeight="bold" color="white">
+                        First things first...
                       </Text>
                       <Text color="grey.200" maxW={340} textAlign="center">
                         {`You don't have any assets yet.`}

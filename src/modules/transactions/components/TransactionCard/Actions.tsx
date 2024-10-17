@@ -38,7 +38,7 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
     screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
   return (
-    <HStack w="full" justifyContent="end" spacing={1}>
+    <HStack justifyContent="end" spacing={1}>
       <Button
         color={awaitingAnswer ? 'black' : 'grey.75'}
         bgColor={awaitingAnswer ? 'brand.500' : '#F5F5F50D'}

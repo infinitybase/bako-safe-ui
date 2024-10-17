@@ -17,11 +17,12 @@ const Container = ({
     <Card
       w="full"
       h="full"
-      bgColor="grey.825"
-      borderColor="grey.550"
+      minH={102}
+      bgColor="grey.700"
+      borderColor="grey.325"
       display="flex"
       px={{ base: 4, sm: 6 }}
-      py={{ base: 3, sm: 6 }}
+      py={{ base: 2, sm: 4 }}
       _hover={{
         borderColor: 'brand.500',
       }}
