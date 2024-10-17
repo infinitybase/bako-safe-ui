@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -25,7 +26,10 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  useAssetSelectOptions,
+  UseCreateTransaction,
+} from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -83,8 +87,17 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       canRepeatAddresses: true,
     });
 
-  const asset = form.watch(`transactions.${index}.asset`);
-  const isNFT = isNFTAsset(asset);
+  const recipients = form.watch('transactions') ?? [];
+  const asset = recipients?.[index].asset;
+
+  const isNFT = useMemo(() => isNFTAsset(asset), [asset, isNFTAsset]);
+
+  const { assetsOptions } = useAssetSelectOptions({
+    currentAsset: asset,
+    assets: assets.assets,
+    nfts: assets.nfts,
+    recipients: form.watch('transactions'),
+  });
 
   return (
     <>
@@ -145,8 +158,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           render={({ field, fieldState }) => (
             <AssetSelect
               isInvalid={fieldState.invalid}
-              assets={assets!.assets!}
-              nfts={assets!.nfts!}
+              options={assetsOptions}
               name={`transaction.${index}.asset`}
               value={field.value}
               onChange={(e) => {
