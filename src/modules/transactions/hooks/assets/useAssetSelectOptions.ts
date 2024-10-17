@@ -29,33 +29,32 @@ const formatNFT = (nft: NFT) => ({
 
 const filterNFTs = (
   currentAsset: string,
-  recipientAssets: Set<string>,
-  nfts?: NFT[],
-) =>
-  nfts?.filter(
+  recipients?: ITransactionField[],
+  nfts: NFT[] = [],
+) => {
+  const recipientAssets = new Set(
+    recipients?.map((recipient) => recipient.asset),
+  );
+  const filteredNFTs = nfts.filter(
     (nft) => nft.assetId === currentAsset || !recipientAssets.has(nft.assetId),
-  ) ?? [];
+  );
+
+  return filteredNFTs;
+};
 
 const useAssetSelectOptions = (props: UseAssetSelectOptionsProps) => {
   const { currentAsset, recipients, assets, nfts } = props;
 
   const { assetsMap } = useWorkspaceContext();
 
-  const recipientAssets = new Set(
-    recipients?.map((recipient) => recipient.asset),
-  );
-  const filteredNFTs = filterNFTs(currentAsset, recipientAssets, nfts);
+  const filteredNFTs = filterNFTs(currentAsset, recipients, nfts);
   const formattedNFTs = filteredNFTs.map(formatNFT);
 
-  const formattedAssets = useGetTokenInfosArray(
-    assets ?? assetsList,
-    assetsMap,
-  );
-  const sortedAssets = useSortTokenInfosArray(formattedAssets, assetsMap).map(
-    formatAsset,
-  );
+  const _assets = useGetTokenInfosArray(assets ?? assetsList, assetsMap);
+  const sortedAssets = useSortTokenInfosArray(_assets, assetsMap);
+  const formattedAssets = sortedAssets.map(formatAsset);
 
-  return { assetsOptions: [...sortedAssets, ...formattedNFTs] };
+  return { assetsOptions: [...formattedAssets, ...formattedNFTs] };
 };
 
 export { useAssetSelectOptions };
