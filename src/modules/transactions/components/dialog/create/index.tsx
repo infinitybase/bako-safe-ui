@@ -66,6 +66,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
     !transactionFee ||
     Number(transactionFee) === 0;
 
+  console.log('form.formState.isValid', form.formState.isValid);
+
   const isDisabled =
     !form.formState.isValid ||
     form.formState.isSubmitting ||
