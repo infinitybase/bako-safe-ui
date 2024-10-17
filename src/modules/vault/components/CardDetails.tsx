@@ -411,7 +411,6 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                     p={{ base: 4, sm: 16 }}
                     bg={'transparent'}
                     borderColor="grey.925"
-                    borderWidth={1}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -422,17 +421,12 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                       spacing={1}
                       justifyContent="center"
                     >
-                      <Text fontWeight="bold" color="grey.200">
+                      <Text fontWeight="bold" color="white">
                         First things first...
                       </Text>
-                      <VStack spacing={0}>
-                        <Text color="grey.200" maxW={340} textAlign="center">
-                          {`You don't have any assets yet.`}
-                        </Text>
-                        <Text color="grey.200" maxW={340} textAlign="center">
-                          Create a vault to start to save your assets.
-                        </Text>
-                      </VStack>
+                      <Text color="grey.200" maxW={340} textAlign="center">
+                        {`You don't have any assets yet.`}
+                      </Text>
                     </VStack>
                   </Card>
                 ) : (

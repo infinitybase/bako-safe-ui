@@ -111,9 +111,7 @@ const HomeTransactions = () => {
 
       {!isLoading && !transactions?.length && (
         <EmptyState
-          // h="calc(100% - 120px)"
           h="full"
-          // bg="blue.200"
           showAction={false}
           title="No Data available"
           subTitle="Currently, there is no available data to display in this section."

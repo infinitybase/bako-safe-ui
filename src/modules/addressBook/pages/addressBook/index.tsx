@@ -248,9 +248,9 @@ const AddressBookPage = () => {
 
         <Box
           w="full"
-          // display="flex"
-          // alignItems={'center'}
-          // flexDir={isExtraSmall ? 'column' : 'row'}
+          display="flex"
+          alignItems={'center'}
+          flexDir={isExtraSmall ? 'column' : 'row'}
           gap={isExtraSmall ? 2 : 4}
           mt={6}
         >

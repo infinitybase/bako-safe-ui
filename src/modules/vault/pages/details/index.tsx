@@ -359,16 +359,7 @@ const VaultDetailsPage = () => {
                 subTitle={
                   'Currently, there is no available data to display in this section.'
                 }
-                isDisabled={!assets.hasBalance}
                 showAction={false}
-                // buttonAction={() =>
-                //   navigate(
-                //     Pages.createTransaction({
-                //       workspaceId: vaultWkId!,
-                //       vaultId: vault?.data?.id,
-                //     }),
-                //   )
-                // }
                 mb={10}
               />
             )}
