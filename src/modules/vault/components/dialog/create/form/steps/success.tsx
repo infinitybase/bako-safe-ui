@@ -6,11 +6,13 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const VaultSuccessStep = () => {
   const {
-    screenSizes: { isMdHeight },
+    screenSizes: {
+      screenHeights: { isShorterThan768 },
+    },
   } = useWorkspaceContext();
   return (
     <TabPanel p={0} minH={450} h="full" placeContent="center">
-      <VStack mt={{ base: isMdHeight ? 50 : 60, xs: 30 }}>
+      <VStack mt={{ base: isShorterThan768 ? 50 : 60, xs: 30 }}>
         <Icon fontSize={100} as={DoneIcon} />
         <Text fontWeight={700} fontSize={16} color="grey.50">
           The vault has been created!

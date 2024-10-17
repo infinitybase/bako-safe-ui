@@ -142,7 +142,6 @@ const Autocomplete = ({
           onChange={handleInputChange}
           onBlur={handleOnBlur}
           onFocus={handleFocus}
-          sx={{ ...inputStyle }}
           ref={inputRef}
           _hover={{
             borderColor: 'grey.425',
@@ -151,7 +150,10 @@ const Autocomplete = ({
             borderColor: 'grey.200',
           }}
           pr={10}
-          sx={{ pr: !disabled && rightElement ? '55px !important' : 'initial' }}
+          sx={{
+            ...inputStyle,
+            pr: !disabled && rightElement ? '55px !important' : 'initial',
+          }}
         />
 
         <FormLabel color="grey.500" {...formLabelProps}>
