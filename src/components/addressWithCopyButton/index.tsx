@@ -38,7 +38,7 @@ const AddressWithCopyBtn = ({
     },
   } = useWorkspaceContext();
 
-  const b256Address = Address.fromString(address ?? '').toB256();
+  const b256Address = address ? Address.fromString(address).toB256() : '';
 
   return (
     <Flex
@@ -97,7 +97,7 @@ const AddressWithCopyBtn = ({
         size="xs"
         minW={2}
         aria-label="Copy"
-        addressToCopy={Address.fromString(address ?? '').toB256()}
+        addressToCopy={address && Address.fromString(address).toB256()}
       />
     </Flex>
   );

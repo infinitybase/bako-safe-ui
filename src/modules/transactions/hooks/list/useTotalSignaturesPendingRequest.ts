@@ -11,12 +11,11 @@ export type IUseTransactionSignaturePendingReturn = ReturnType<
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
   return useQuery({
     queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
-
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
-    refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',
+    refetchOnWindowFocus: true,
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
   });

@@ -44,18 +44,16 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     onCloseDrawer,
     mySettingsRequest,
   } = useSettings({ onOpen: props.onOpen, onClose: props.onClose });
-  const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
-    useWebAuthnInput(!form.formState.errors.name);
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
+  const { checkNicknameRequest, inputValue, setInputValue, handleInputChange } =
+    useWebAuthnInput(!form.formState.errors.name, userInfos.id);
 
   const isNameInputInvalid = (form.watch('name')?.length ?? 0) <= 2;
 
   const isNicknameInUse =
-    !!checkNicknameRequest.data?.name &&
-    checkNicknameRequest.data?.id !== userInfos.id &&
-    inputValue?.length > 0;
+    !!checkNicknameRequest.data?.type && inputValue?.length > 0;
 
   const name = mySettingsRequest.data?.name ?? '';
 
@@ -63,7 +61,8 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
     isLoading ||
     isNicknameInUse ||
     checkNicknameRequest.isLoading ||
-    isNameInputInvalid;
+    isNameInputInvalid ||
+    !form.formState.isValid;
 
   useEffect(() => {
     const _search = AddressUtils.isValid(name) ? '' : name;
@@ -145,12 +144,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       }
                       isInvalid={fieldState.invalid || !!isNicknameInUse}
                     />
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Username</FormLabel>
 
                     <FormHelperText
                       color={
-                        (checkNicknameRequest.data?.name &&
-                          checkNicknameRequest.data?.id !== userInfos.id) ||
+                        checkNicknameRequest.data?.type ||
                         form.formState.errors.name?.message ||
                         isNameInputInvalid
                           ? 'error.500'
@@ -158,13 +156,13 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                       }
                     >
                       {isNicknameInUse
-                        ? 'Name already exists'
+                        ? 'Username already exists'
                         : form.formState.errors.name?.message
                           ? form.formState.errors.name?.message
                           : inputValue.length >= 3
-                            ? 'This name is available'
+                            ? 'This username is available'
                             : isNameInputInvalid
-                              ? 'Name must be at least 3 characters'
+                              ? 'Username must be at least 3 characters'
                               : ''}
                     </FormHelperText>
                   </FormControl>

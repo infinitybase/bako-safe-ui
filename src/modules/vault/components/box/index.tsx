@@ -12,7 +12,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { FiPlusSquare } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
 
 import {
   AddressWithCopyBtn,
@@ -22,7 +21,7 @@ import {
   LeftAndRightArrow,
   UpRightArrow,
 } from '@/components';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
@@ -61,7 +60,6 @@ const VaultBoxSkeleton = () => (
 );
 
 const VaultBox = (props: VaultBoxPropx) => {
-  const navigate = useNavigate();
   const {
     name,
     address,
@@ -80,11 +78,14 @@ const VaultBox = (props: VaultBoxPropx) => {
     authDetails: {
       userInfos: { network },
     },
+    workspaceInfos: {
+      handlers: { goHome },
+    },
   } = useWorkspaceContext();
 
   const redirectToNetwork = () =>
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/account/${address}/assets`,
+      `${NetworkService.getExplorer(network.url)}/account/${address}/assets`,
       '_BLANK',
     );
 
@@ -92,7 +93,7 @@ const VaultBox = (props: VaultBoxPropx) => {
     <Box w="100%">
       {/* Headers BTNS */}
       <HStack>
-        <Button w="full" variant="secondaryV2" onClick={() => navigate('/')}>
+        <Button w="full" variant="secondaryV2" onClick={() => goHome()}>
           <Icon as={HomeIcon} fontSize="lg" mr="auto" />
           <Text mr="auto">Home</Text>
         </Button>

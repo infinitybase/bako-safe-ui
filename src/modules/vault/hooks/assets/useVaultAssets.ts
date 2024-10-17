@@ -1,8 +1,7 @@
-import { QueryState, useQuery } from '@tanstack/react-query';
 import { bn } from 'fuels';
 import { useCallback, useMemo, useState } from 'react';
 
-import { AssetMap, NativeAssetId, useGetParams } from '@/modules/core';
+import { AssetMap, NativeAssetId } from '@/modules/core';
 
 const IS_VISIBLE_KEY = '@bakosafe/balance-is-visible';
 
@@ -13,8 +12,8 @@ const setIsVisibleBalance = (isVisible: 'true' | 'false') =>
 import { queryClient } from '@/config';
 import { gasConfig } from '@/modules/core/hooks/bakosafe/utils/gas-config';
 
-import { HasReservedCoins, VaultService } from '../../services';
-import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
+import { useVaultTransactionsList } from '../list/useVaultTransactionsList';
+import { useHasReservedCoins } from './useHasReservedCoins';
 
 export const vaultAssetsQueryKey = {
   VAULT_ASSETS_QUERY_KEY: (workspaceId: string, predicateId: string) => [
@@ -29,40 +28,16 @@ const useVaultAssets = (
   predicateId: string,
   assetsMap: AssetMap,
 ) => {
-  const {
-    vaultPageParams: { vaultId },
-  } = useGetParams();
-
   const initialVisibility = isVisibleBalance();
   const [visibleBalance, setVisibleBalance] = useState(initialVisibility);
-  const cachedData: QueryState<HasReservedCoins | undefined> | undefined =
-    queryClient.getQueryState(
-      vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(workspaceId, predicateId),
-    );
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const vaultTxListRequestQueryKey =
-    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
-      vaultId ?? '',
-    );
+  const {
+    request: { refetch: refetchTransactions },
+  } = useVaultTransactionsList();
 
-  const { data, ...rest } = useQuery({
-    queryKey: vaultAssetsQueryKey.VAULT_ASSETS_QUERY_KEY(
-      workspaceId,
-      predicateId,
-    ),
-    queryFn: async () => {
-      const response = await VaultService.hasReservedCoins(predicateId);
-      if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
-        queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
-      }
-      return response;
-    },
-    refetchInterval: 10000,
-    refetchOnWindowFocus: false,
-    placeholderData: (previousData) => previousData,
-    enabled: !!predicateId,
-    staleTime: 500,
-  });
+  const { data, refetchAssets, staleTime, reservedQueryKey, ...rest } =
+    useHasReservedCoins(predicateId, workspaceId);
 
   const getCoinAmount = useCallback(
     (assetId: string) => {
@@ -119,19 +94,38 @@ const useVaultAssets = (
     setIsVisibleBalance(visible ? 'true' : 'false');
   };
 
+  const handleManualRefetch = async () => {
+    const queryState = queryClient.getQueryState(reservedQueryKey);
+    const freshData =
+      queryState?.dataUpdatedAt &&
+      Date.now() - queryState?.dataUpdatedAt < staleTime;
+
+    if (freshData || isUpdating) return;
+
+    setIsUpdating(true);
+
+    await Promise.all([refetchAssets(), refetchTransactions()]).finally(() => {
+      setIsUpdating(false);
+    });
+  };
+
   return {
     assets: data?.currentBalance,
+    nfts: data?.nfts,
     ...rest,
     getAssetInfo,
     getCoinAmount,
     hasAssetBalance,
     setVisibleBalance: handleSetVisibleBalance,
+    isUpdating,
+    handleManualRefetch,
     hasBalance,
     ethBalance,
     isEthBalanceLowerThanReservedAmount,
     hasAssets: !!data?.currentBalance?.length,
     visibleBalance,
     balanceUSD: data?.currentBalanceUSD,
+    refetchAssets,
   };
 };
 

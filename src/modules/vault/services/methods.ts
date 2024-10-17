@@ -1,7 +1,7 @@
 import { BN, CoinQuantity } from 'fuels';
 
 import { api } from '@/config';
-import { Asset } from '@/modules/core';
+import { Asset, NFT } from '@/modules/core';
 import { IPredicate } from '@/modules/core/hooks/bakosafe/utils/types';
 import { Predicate, Workspace } from '@/modules/core/models';
 import { IPagination, PaginationParams } from '@/modules/core/utils/pagination';
@@ -22,6 +22,7 @@ export interface HasReservedCoins {
   currentBalanceUSD: string;
   reservedCoins: CoinQuantity[];
   currentBalance: Required<Asset>[];
+  nfts: NFT[];
 }
 
 export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
@@ -74,8 +75,16 @@ export class VaultService {
     );
     return data;
   }
+
   static async getByName(name: string) {
     const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
+    return data;
+  }
+
+  static async checkByAddress(address: string) {
+    const { data } = await api.get<boolean>(
+      `/predicate/check/by-address/${address}`,
+    );
     return data;
   }
 

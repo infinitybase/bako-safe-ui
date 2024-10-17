@@ -1,10 +1,11 @@
 import { Box } from '@chakra-ui/react';
-import { bn } from 'fuels';
+import { OperationName } from 'fuels';
 import React from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
 import { TransactionWithVault } from '@/modules/transactions/services';
-import { isHex } from '@/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { formatAssetAmount, isHex } from '@/utils';
 
 import { AssetBoxInfo } from '../../AssetBoxInfo';
 import { ContractAddresses } from '../contract-call/ContractAddresses';
@@ -14,8 +15,9 @@ interface MintTokenProps {
 }
 
 const MintTokenInfos = ({ transaction }: MintTokenProps) => {
-  const { isContract, isDeploy, isDeposit } =
-    useVerifyTransactionInformations(transaction);
+  const { isDeploy, isDeposit } = useVerifyTransactionInformations(transaction);
+
+  const { fuelsTokens } = useWorkspaceContext();
 
   const operations = transaction.summary?.operations;
   if (!operations) {
@@ -43,14 +45,19 @@ const MintTokenInfos = ({ transaction }: MintTokenProps) => {
 
             {assetsSent?.map((asset, assetIndex) => (
               <AssetBoxInfo
-                isContract={isContract}
+                isContract={operation.name === OperationName.contractCall}
                 isDeploy={isDeploy}
                 isDeposit={isDeposit}
                 key={`${index}-${assetIndex}`}
                 asset={{
                   assetId: asset.assetId,
                   amount: isHex(String(asset.amount))
-                    ? bn(asset.amount).format()
+                    ? formatAssetAmount({
+                        fuelsTokens,
+                        chainId: transaction.network.chainId,
+                        assetId: asset.assetId,
+                        amount: asset.amount,
+                      })
                     : String(asset.amount),
                   to: to?.address ?? '',
                   transactionID: transaction.id,

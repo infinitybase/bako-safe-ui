@@ -4,6 +4,8 @@ import { TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
 import { shakeAnimationY, TransactionState } from '@/modules/core';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
@@ -11,8 +13,6 @@ import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
 
 export type TransactionUI = Omit<ITransaction, 'assets'> & {
   assets: {
@@ -46,7 +46,7 @@ const Details = ({
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
@@ -57,9 +57,13 @@ const Details = ({
       predicateId={transaction.predicateId}
       isMobileDetailsOpen={isMobileDetailsOpen ?? false}
       isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
+      isDeposit={isDeposit}
     >
       {(isLoading, transactionHistory) => (
-        <CustomSkeleton py={2} isLoaded={!isLoading && !!transactionHistory}>
+        <CustomSkeleton
+          py={2}
+          isLoaded={isDeposit ? true : !isLoading && !!transactionHistory}
+        >
           {isDeposit ? (
             <DepositDetails transaction={transaction} />
           ) : (

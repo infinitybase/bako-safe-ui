@@ -20,7 +20,7 @@ import {
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core/models/transaction';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
   transactionStatus,
@@ -42,15 +42,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const {
-    onClose,
-    isOpen,
-    transaction,
-    account,
-    status,
-    isSigner,
-    isContract,
-  } = props;
+  const { onClose, isOpen, transaction, account, status, isSigner } = props;
   const {
     screenSizes: {
       screenWidths: { isSmallerThan430 },
@@ -60,12 +52,12 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
 
-  const { isDeploy, isFromConnector, isDeposit } =
+  const { isDeploy, isFromConnector, isDeposit, showAmountInformations } =
     useVerifyTransactionInformations(transaction);
 
   const {
@@ -190,12 +182,10 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
             <HStack w="full" justifyContent="space-between" h="38px">
               <TransactionCard.Amount
-                isDeposit={isDeploy}
+                showAmount={!showAmountInformations}
                 transaction={transaction}
                 w="fit-content"
                 h="26px"
-                isContract={isContract}
-                isDeploy={isDeploy}
               />
               <TransactionCard.Status
                 transaction={transaction}

@@ -56,7 +56,7 @@ const useVaultTransactionsRequest = (
         return data;
       }),
     refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
     getNextPageParam: (lastPage) => {

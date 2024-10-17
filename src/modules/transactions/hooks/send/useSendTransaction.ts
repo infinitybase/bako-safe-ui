@@ -49,6 +49,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
 
     if (transaction.status == TransactionStatus.FAILED) {
       toast.error(transaction.id, 'Transaction failed');
+      setIsCurrentTxPending({ isPending: false, transactionId: '' });
     }
 
     if (

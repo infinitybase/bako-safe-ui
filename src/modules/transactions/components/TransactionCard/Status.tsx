@@ -1,7 +1,6 @@
 import {
   Badge,
   BoxProps,
-  Button,
   CircularProgress,
   HStack,
   Text,
@@ -17,11 +16,9 @@ interface TransactionCardStatusProps extends BoxProps {
   showDescription?: boolean;
 }
 
-import { RefreshIcon } from '@/components/icons/refresh-icon';
-
-import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { useTransactionState } from '../../states';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+
+import { useTransactionState } from '../../states';
 
 const Status = ({
   transaction,
@@ -30,9 +27,6 @@ const Status = ({
   ...rest
 }: TransactionCardStatusProps) => {
   const { isReproved, isCompleted, isError } = status;
-  const {
-    signTransaction: { isLoading },
-  } = useTransactionsContext();
 
   const signaturesCount =
     transaction!.resume?.witnesses?.filter(
@@ -73,11 +67,11 @@ const Status = ({
       >
         <HStack position="relative">
           <Badge
-            minW={isError ? '110px' : '80px'}
+            minW={'80px'}
             display="flex"
             alignItems="center"
             fontSize="xs"
-            justifyContent={isError ? 'flex-start' : 'center'}
+            justifyContent={'center'}
             h={6}
             borderRadius="20px"
             variant={
@@ -93,30 +87,6 @@ const Status = ({
             {isCompleted && !isError && 'Completed'}
             {!isCompleted && !isReproved && !isError && signatureStatus}
           </Badge>
-          {isError && (
-            <Button
-              position="absolute"
-              top={0}
-              left={10}
-              h={6}
-              variant="secondary"
-              px={2}
-              border="1px solid #868079"
-              bgColor="#F5F5F51A"
-              borderRadius="20px"
-              fontSize="xs"
-              fontWeight="normal"
-              isLoading={isLoading && isCurrentTxLoading}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                // retryTransaction();
-              }}
-              leftIcon={<RefreshIcon fontSize="sm" />}
-            >
-              Retry
-            </Button>
-          )}
         </HStack>
 
         {showDescription && (

@@ -23,6 +23,9 @@ const useTokensUSDAmountRequest = () => {
     staleTime: 500, // 500ms second to prevent request spam
   });
 
+  const isUnknownToken = (assetId: string) =>
+    !!data?.filter((token) => token[assetId]);
+
   const response = data ?? [[Address.fromRandom().toString(), 0.0]];
 
   const result = response?.reduce<Record<string, { usdAmount: number }>>(
@@ -33,7 +36,7 @@ const useTokensUSDAmountRequest = () => {
     {},
   );
 
-  return { data: result, ...query };
+  return { data: result, isUnknownToken, ...query };
 };
 
 export { useTokensUSDAmountRequest };

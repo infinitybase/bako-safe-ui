@@ -31,9 +31,10 @@ export interface UseSignTransactionOptions {
 
 interface IUseSignTransactionProps {
   transactionList: IUseTransactionList;
+  pendingTransactions: IPendingTransactionsRecord;
   pendingSignerTransactionsRefetch: () => void;
   homeTransactionsRefetch: () => void;
-  pendingTransactions: IPendingTransactionsRecord;
+  vaultBalanceRefetch: () => void;
 }
 
 const useSignTransaction = ({
@@ -41,12 +42,14 @@ const useSignTransaction = ({
   pendingSignerTransactionsRefetch,
   homeTransactionsRefetch,
   pendingTransactions,
+  vaultBalanceRefetch,
 }: IUseSignTransactionProps) => {
   const {
     request: { refetch: transactionsPageRefetch },
   } = transactionList;
   const [selectedTransaction, setSelectedTransaction] =
     useState<IPendingTransactionDetails>();
+  const [isSignConfirmed, setIsSignConfirmed] = useState(false);
 
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();
@@ -55,9 +58,11 @@ const useSignTransaction = ({
       transactionsPageRefetch();
       pendingSignerTransactionsRefetch();
       homeTransactionsRefetch();
+      vaultBalanceRefetch();
       queryClient.invalidateQueries({
         queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
       });
+      setIsSignConfirmed(false);
     },
   });
 
@@ -116,15 +121,12 @@ const useSignTransaction = ({
       },
       {
         onSuccess: async () => {
+          setIsSignConfirmed(true);
           executeTransaction(transaction);
           callback && callback();
         },
       },
     );
-  };
-
-  const retryTransaction = async () => {
-    return executeTransaction(selectedTransaction!);
   };
 
   const declineTransaction = async (transactionHash: string) => {
@@ -139,6 +141,7 @@ const useSignTransaction = ({
           transactionsPageRefetch();
           pendingSignerTransactionsRefetch();
           homeTransactionsRefetch();
+          vaultBalanceRefetch();
           queryClient.invalidateQueries({
             queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
           });
@@ -149,9 +152,9 @@ const useSignTransaction = ({
 
   return {
     confirmTransaction,
-    retryTransaction,
     declineTransaction,
     isLoading:
+      isSignConfirmed ||
       request.isPending ||
       signMessageRequest.isPending ||
       selectedTransaction?.status === TransactionStatus.PROCESS_ON_CHAIN ||

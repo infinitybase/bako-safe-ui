@@ -5,15 +5,19 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
+  nfts?: { assetId: string; amount: string }[];
   assetsMap: AssetMap;
   validateBalance: (asset: string, amount: string) => boolean;
   getCoinAmount: (asset: string) => BN;
 };
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
+  const { providerInstance } = useWorkspaceContext();
+
   const validationSchema = useMemo(() => {
     const transactionSchema = yup.object({
       asset: yup.string().required('Asset is required.'),
@@ -25,43 +29,70 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'Amount must be greater than 0.',
           (_, context) => {
             const { parent } = context;
+
+            const isNFT = !!params.nfts?.find(
+              (nft) => nft.assetId === parent.asset,
+            );
+
+            if (isNFT) return true;
+
             return bn.parseUnits(parent.amount).gt(bn(0));
+          },
+        )
+        .test(
+          'has-fee-balance',
+          'Insufficient funds for the gas fee (ETH).',
+          (_, context) => {
+            const { parent } = context;
+
+            if (parent.fee) {
+              const hasFeeBalance = params.validateBalance(
+                NativeAssetId,
+                parent.fee,
+              );
+
+              return hasFeeBalance;
+            }
+
+            return true;
           },
         )
         .test('has-balance', 'Not enough balance.', (amount, context) => {
           const { parent } = context;
 
-          if (parent.fee) {
-            if (parent.asset === NativeAssetId) {
-              const transactionTotalAmount = bn
-                .parseUnits(parent.amount)
-                .add(bn.parseUnits(parent.fee))
-                .format();
+          const isNFT = !!params.nfts?.find(
+            (nft) => nft.assetId === parent.asset,
+          );
 
-              return params.validateBalance(
-                parent.asset,
-                transactionTotalAmount,
-              );
-            }
+          if (isNFT) return true;
 
-            const hasAssetBalance = params.validateBalance(
-              parent.asset,
-              parent.amount,
-            );
-            const hasFeeBalance = params.validateBalance(
-              NativeAssetId,
-              parent.fee,
-            );
+          if (parent.fee && parent.asset === NativeAssetId) {
+            const transactionTotalAmount = bn
+              .parseUnits(parent.amount)
+              .add(bn.parseUnits(parent.fee))
+              .format();
 
-            return hasAssetBalance && hasFeeBalance;
+            return params.validateBalance(parent.asset, transactionTotalAmount);
           }
-          return params.validateBalance(parent.asset, parent.amount);
+
+          const hasAssetBalance = params.validateBalance(
+            parent.asset,
+            parent.amount,
+          );
+
+          return hasAssetBalance;
         })
         .test(
           'has-total-balance',
           'Not enough balance.',
           (_amount, context) => {
             const { from, parent } = context;
+            const isNFT = !!params.nfts?.find(
+              (nft) => nft.assetId === parent.asset,
+            );
+
+            if (isNFT) return true;
+
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const [, schema] = from;
@@ -100,8 +131,23 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
       value: yup
         .string()
         .required('Address is required.')
-        .test('valid-address', 'Address invalid.', (address) =>
+        .test('valid-address', 'Invalid address.', (address) =>
           AddressUtils.isValid(address),
+        )
+        .test(
+          'valid-account',
+          'This address can not receive assets from Bako.',
+          async (address) => {
+            try {
+              const isValid = AddressUtils.isValid(address);
+              if (!isValid) return true;
+
+              const provider = await providerInstance;
+              return await provider.isUserAccount(address);
+            } catch {
+              return false;
+            }
+          },
         ),
     });
 

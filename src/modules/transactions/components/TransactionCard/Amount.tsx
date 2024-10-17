@@ -18,20 +18,18 @@ import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
-  isDeposit: boolean;
-  isContract: boolean;
-  isDeploy: boolean;
+  showAmount: boolean;
 }
 
 const Amount = ({
   transaction,
-  isDeposit,
-  isContract,
-  isDeploy,
+  showAmount,
   ...rest
 }: TransactionCardAmountProps) => {
-  const { operationAssets, hasNoDefaultAssets } =
-    useGetAssetsByOperations(transaction);
+  const { operationAssets, hasNoDefaultAssets } = useGetAssetsByOperations(
+    transaction,
+    transaction.predicate?.predicateAddress,
+  );
 
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
@@ -58,9 +56,10 @@ const Amount = ({
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    hasNoDefaultAssets && isDeposit ? [operationAssets] : transaction.assets,
+    hasNoDefaultAssets ? [operationAssets] : transaction.assets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
+    tokensUSD?.isUnknownToken,
   );
 
   return (
@@ -70,7 +69,7 @@ const Amount = ({
       w={isSmallerThan336 ? 150 : 200}
       {...rest}
     >
-      {isContract || isDeploy ? null : (
+      {!showAmount ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 3}
@@ -92,24 +91,26 @@ const Amount = ({
               />
             )}
 
-            {oneAssetOfEach.map((asset) => (
-              <Image
-                key={asset.assetId}
-                w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
-                h={{ base: 'full', sm: 6 }}
-                src={
-                  assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
-                }
-                alt="Asset Icon"
-                objectFit="cover"
-              />
-            ))}
+            {oneAssetOfEach.map((asset) => {
+              return (
+                <Image
+                  key={asset.assetId}
+                  w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                  h={{ base: 'full', sm: 6 }}
+                  src={
+                    assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
+                  }
+                  alt="Asset Icon"
+                  objectFit="cover"
+                />
+              );
+            })}
           </AvatarGroup>
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
             w="full"
             mt={0.5}
-            textAlign="center"
+            textAlign="start"
           >
             {isMultiToken ? (
               <Text color="grey.425" fontSize="xs">
@@ -126,7 +127,8 @@ const Amount = ({
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
               <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-                ${txUSDAmount ?? 0}
+                {!!Number(txUSDAmount) && '$'}
+                {txUSDAmount}
               </CustomSkeleton>
             </Text>
           </Flex>

@@ -9,6 +9,7 @@ import { useContactToast } from '@/modules/addressBook';
 import {
   Asset,
   NativeAssetId,
+  NFT,
   useBakoSafeCreateTransaction,
   useBakoSafeVault,
   useGetTokenInfosArray,
@@ -26,6 +27,7 @@ interface UseCreateTransactionParams {
   onClose: () => void;
   isOpen: boolean;
   assets: Asset[] | undefined;
+  nfts?: NFT[];
   hasAssetBalance: (assetId: string, value: string) => boolean;
   getCoinAmount: (assetId: string, needsFormat?: boolean | undefined) => BN;
   createTransactionAndSign: boolean;
@@ -64,6 +66,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       vaultRequest: {
         data: { predicateAddress, provider, id },
       },
+      assets: { refetchAssets },
     },
     assetsMap,
   } = useWorkspaceContext();
@@ -94,6 +97,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       amount: asset.amount!,
       assetId: asset.assetId,
     })),
+    nfts: props?.nfts,
     assetsMap,
     getCoinAmount: (asset) => props?.getCoinAmount(asset) ?? bn(''),
     validateBalance: (asset, amount) =>
@@ -108,6 +112,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
+    assetsMap,
     onSuccess: (transaction) => {
       successToast({
         title: 'Transaction created!',
@@ -131,25 +136,39 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const handleCreateTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
+    transactionRequest.mutate(
+      {
+        name: data.name,
+        assets: data.transactions!.map((transaction) => ({
+          amount: transaction.amount,
+          assetId: transaction.asset,
+          to: transaction.value,
+        })),
+      },
+      {
+        onSuccess: () => {
+          refetchAssets();
+        },
+      },
+    );
   });
 
   const handleCreateAndSignTransaction = form.handleSubmit((data) => {
-    transactionRequest.mutate({
-      name: data.name,
-      assets: data.transactions!.map((transaction) => ({
-        amount: transaction.amount,
-        assetId: transaction.asset,
-        to: transaction.value,
-      })),
-    });
+    transactionRequest.mutate(
+      {
+        name: data.name,
+        assets: data.transactions!.map((transaction) => ({
+          amount: transaction.amount,
+          assetId: transaction.asset,
+          to: transaction.value,
+        })),
+      },
+      {
+        onSuccess: () => {
+          refetchAssets();
+        },
+      },
+    );
   });
 
   // Balance available
@@ -204,7 +223,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       : currentAssetBalance.sub(assetFieldsAmount);
 
     const isEthTransaction = currentFieldAsset === NativeAssetId;
-
+    const isNFT = !!props?.nfts?.find(
+      (nft) => nft.assetId === currentFieldAsset,
+    );
     const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
 
     let balanceAvailable = '0.000';
@@ -216,7 +237,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     }
 
     if (!isEthTransaction) {
-      balanceAvailable = balanceAvailableWithoutFee.format();
+      balanceAvailable = isNFT
+        ? bn(1).format({ units: -9, precision: 0 })
+        : balanceAvailableWithoutFee.format();
     }
 
     return balanceAvailable;

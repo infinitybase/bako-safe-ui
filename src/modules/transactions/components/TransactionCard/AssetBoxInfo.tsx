@@ -66,6 +66,7 @@ const AssetBoxInfo = ({
     ],
     tokensUSD?.isLoading,
     tokensUSD?.data,
+    tokensUSD?.isUnknownToken,
   );
 
   return (
@@ -108,7 +109,7 @@ const AssetBoxInfo = ({
           fontSize="xs"
           color="grey.500"
         >
-          ${txUSDAmount}
+          {assetInfo.slug === 'UNK' ? '--' : `$${txUSDAmount}`}
         </Text>
       </VStack>
 

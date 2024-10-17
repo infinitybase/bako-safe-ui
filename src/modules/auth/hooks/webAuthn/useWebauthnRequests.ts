@@ -2,10 +2,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { localStorageKeys, UserQueryKey, UserService } from '../../services';
 
-const useCheckNickname = (nickname: string, enabled: boolean) => {
+const useCheckNickname = (
+  nickname: string,
+  enabled: boolean,
+  userId?: string,
+) => {
   return useQuery({
-    queryKey: UserQueryKey.NICKNAME(nickname),
-    queryFn: () => UserService.verifyNickname(nickname),
+    queryKey: UserQueryKey.NICKNAME(nickname, userId),
+    queryFn: () => UserService.verifyNickname(nickname, userId),
     refetchOnWindowFocus: false,
     enabled,
   });

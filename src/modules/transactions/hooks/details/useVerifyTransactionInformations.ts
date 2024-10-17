@@ -1,50 +1,54 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { Address } from 'fuels';
+import { Address, OperationName } from 'fuels';
 
-import { IFuelTransactionNames } from '@/modules/dapp/services';
-
-import { TransactionUI } from '../../components/TransactionCard/Details';
 import { TransactionWithVault } from '../../services';
 
 const useVerifyTransactionInformations = (
-  transaction: TransactionUI | TransactionWithVault,
+  transaction: TransactionWithVault,
 ) => {
   const mainOperation = transaction?.summary?.operations?.[0];
-  mainOperation?.to?.address;
-  const transferAssetsOperations = transaction.summary?.operations.filter(
-    (operation) =>
-      (operation.name as unknown as IFuelTransactionNames) ===
-      IFuelTransactionNames.TRANSFER_ASSET,
-  );
-
   const isFromConnector = transaction.summary?.type === 'connector';
   const isDeploy = transaction.type === TransactionType.TRANSACTION_CREATE;
   const isDeposit = transaction.type === TransactionType.DEPOSIT;
-  const isContract =
-    (mainOperation?.name as unknown as IFuelTransactionNames) ===
-    IFuelTransactionNames.CONTRACT_CALL;
 
-  const contractCallWithAssets = transaction?.summary?.operations.some(
-    (operation) =>
-      operation.assetsSent &&
-      (operation.name as unknown as IFuelTransactionNames) ===
-        IFuelTransactionNames.CONTRACT_CALL,
-  );
+  const isContract =
+    transaction?.summary?.operations.some(
+      (op) =>
+        (op.name as unknown as OperationName) === OperationName.contractCall ||
+        !op.assetsSent,
+    ) ?? false;
 
   const isMint =
-    ['CONTRACT_CALL', 'TRANSFER_ASSET'].every((name) =>
-      transaction?.summary?.operations?.some(
-        (operation) =>
-          (operation.name as unknown as IFuelTransactionNames) ===
-          IFuelTransactionNames[name],
-      ),
-    ) || contractCallWithAssets;
+    transaction?.summary?.operations?.some((operation) => {
+      const isContractCallWithAssets =
+        (operation.name as unknown as OperationName) ===
+          OperationName.contractCall && operation.assetsSent;
+
+      const hasContractCallAndTransferAsset = [
+        OperationName.contractCall,
+        OperationName.transfer,
+      ].every((name) =>
+        transaction.summary?.operations.some((op) => op.name === name),
+      );
+
+      return isContractCallWithAssets || hasContractCallAndTransferAsset;
+    }) ?? false;
+
+  const isReceivingAssets =
+    transaction.summary?.operations.some(
+      (op) =>
+        op.assetsSent &&
+        op.to?.address === transaction?.predicate?.predicateAddress,
+    ) && !isDeposit;
 
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
   const contractAddress = isContract
     ? Address.fromB256(mainOperation?.to?.address ?? '').toString()
     : '';
+
+  const showAmountInformations =
+    ((isContract && !isMint) || isDeploy || isReceivingAssets) ?? false;
 
   return {
     mainOperation,
@@ -55,7 +59,8 @@ const useVerifyTransactionInformations = (
     isPending,
     contractAddress,
     isMint,
-    transferAssetsOperations,
+    isReceivingAssets,
+    showAmountInformations,
   };
 };
 

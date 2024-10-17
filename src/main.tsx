@@ -1,5 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { defaultConnectors } from '@fuels/connectors';
+import {
+  defaultConnectors,
+  FueletWalletConnector,
+  FuelWalletConnector,
+} from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,7 +19,7 @@ import { defaultTheme } from '@/themes';
 import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
 import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
-import { getEnviroment } from './utils/enviroment';
+import { getEnvironment } from './utils/enviroment';
 
 const { VITE_SENTRY_DNS } = import.meta.env;
 
@@ -38,7 +42,7 @@ if (VITE_SENTRY_DNS !== '') {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
   });
-  Sentry.setTag('bako.env', getEnviroment());
+  Sentry.setTag('bako.env', getEnvironment());
 }
 
 const gtmId = import.meta.env.VITE_GTM_ID;
@@ -55,8 +59,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ChakraProvider theme={defaultTheme}>
       <QueryClientProvider client={fuelConnectorsQueryClient}>
         <FuelProvider
+          uiConfig={{ suggestBridge: false }}
           fuelConfig={{
-            connectors: defaultConnectors() as any,
+            connectors: [
+              new FuelWalletConnector(),
+              new FueletWalletConnector(),
+            ],
           }}
         >
           <SocketProvider>

@@ -23,6 +23,7 @@ import {
 } from '@/modules/addressBook/hooks';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
+import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
@@ -51,8 +52,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
     },
   } = useWorkspaceContext();
 
-  const hasThreeOrMoreAddress =
-    form.watch('addresses') && form.watch('addresses')!.length >= 3;
+  const hasTwoOrMoreAddresses =
+    form.watch('addresses') && form.watch('addresses')!.length >= 2;
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [currentInputIndex, setCurrentInputIndex] = useState<
@@ -119,6 +120,13 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
           }}
           h={{ base: '60vh', xs: 500 }}
         >
+          <CreateVaultWarning
+            mb={2}
+            message="Please ensure that all signer addresses are valid and accessible wallet
+        addresses on the Fuel Network. Addresses from other Bako Safe Vaults and
+        wallets from other networks cannot be used as signers."
+          />
+
           <Dialog.Section
             w="full"
             p={4}
@@ -298,7 +306,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
-                    needShowOptionsAbove={hasThreeOrMoreAddress}
+                    needShowOptionsAbove={hasTwoOrMoreAddresses}
                     style={{
                       background: '#201F1D',
                     }}

@@ -44,7 +44,7 @@ const SignInFooter = () => {
           lineHeight="13.58px"
           fontSize="xs"
         >
-          Send a feedback
+          Send feedback
         </Text>
         <Icon w={3} h={3} color="grey.250" fontSize={12} as={FeedbackIcon} />
       </HStack>

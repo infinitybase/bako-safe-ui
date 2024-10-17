@@ -41,6 +41,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     [asset],
     tokensUSD?.isLoading,
     tokensUSD?.data,
+    tokensUSD?.isUnknownToken,
   );
 
   const isFirstItem = index === 0;

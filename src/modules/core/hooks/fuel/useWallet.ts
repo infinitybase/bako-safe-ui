@@ -50,7 +50,7 @@ const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
 
   const result = bakoCoder.encode({
     type: SignatureType.WebAuthn,
-    ...signature!,
+    ...(signature as Required<typeof signature>),
   });
 
   //todo: validate signature if is valid

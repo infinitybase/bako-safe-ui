@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { BakoProvider } from 'bakosafe';
+import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
@@ -14,8 +15,9 @@ import {
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
-import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
+import { useNetworks } from '@/modules/network/hooks';
 
+import { ProviderInstance } from '../../utils';
 import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
@@ -36,17 +38,25 @@ const useWorkspaceDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
-  const {
-    resetAllTransactionsTypeFilters,
-    pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
-  } = useTransactionsContext();
+  const { currentNetwork } = useNetworks();
+
+  const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
+    const provider = await ProviderInstance.create(currentNetwork.url);
+
+    return provider.instance;
+  }, [currentNetwork]);
+
+  // const {
+  //   resetAllTransactionsTypeFilters,
+  //   pendingSignerTransactions: { refetch: refetchPendingSingerTransactions },
+  // } = useTransactionsContext();
 
   const {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useEffect(() => {
+  useMemo(() => {
     setupAxiosInterceptors({
       isTxFromDapp,
       isTokenExpired,
@@ -63,8 +73,8 @@ const useWorkspaceDetails = () => {
     authDetails.userInfos,
     assetsMap,
     invalidateGifAnimationRequest,
-    resetAllTransactionsTypeFilters,
-    refetchPendingSingerTransactions,
+    // resetAllTransactionsTypeFilters,
+    // refetchPendingSingerTransactions,
   );
 
   const { workspace: currentWorkspace, ...currentWorkspaceData } =
@@ -124,6 +134,7 @@ const useWorkspaceDetails = () => {
       vaultRequest,
       assets: vaultAssets,
     },
+    providerInstance,
     userVaults,
     addressBookInfos,
     tokensUSD,
@@ -132,6 +143,9 @@ const useWorkspaceDetails = () => {
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
+    isTxFromDapp,
+    isTokenExpired,
+    setIsTokenExpired,
   };
 };
 

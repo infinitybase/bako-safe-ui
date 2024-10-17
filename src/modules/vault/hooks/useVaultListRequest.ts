@@ -15,6 +15,7 @@ const useVaultListRequest = (
         page: pageParam || 0,
       }),
     initialPageParam: 0,
+    refetchOnWindowFocus: true,
     getNextPageParam: (lastPage) =>
       lastPage.currentPage !== lastPage.totalPages
         ? lastPage.nextPage

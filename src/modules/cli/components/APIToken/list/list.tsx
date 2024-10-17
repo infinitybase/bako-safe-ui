@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Card,
   Divider,
@@ -14,7 +13,6 @@ import { format } from 'date-fns';
 
 import { CustomSkeleton, LineCloseIcon, RemoveIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
-import { useNetworkInfo } from '@/modules';
 import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
 import { APIToken } from '@/modules/cli/services';
@@ -32,7 +30,6 @@ const APITokenCard = (props: APITokenCardProps) => {
       screenWidths: { isSmallerThan400 },
     },
   } = useWorkspaceContext();
-  const { network, isLoading } = useNetworkInfo(apiToken.network.url);
 
   return (
     <Card
@@ -62,7 +59,6 @@ const APITokenCard = (props: APITokenCardProps) => {
           >
             {apiToken.name}
           </Text>
-
           <Text
             color="grey.250"
             fontSize="xs"
@@ -73,19 +69,10 @@ const APITokenCard = (props: APITokenCardProps) => {
           >
             Transaction name: {apiToken.config?.transactionTitle}
           </Text>
-
           <Text color="grey.250" fontSize="xs">
             Creation date: {format(new Date(apiToken.createdAt), 'yyyy/MM/dd')}
-          </Text>
-
-          <Badge
-            rounded="xl"
-            fontSize="2xs"
-            variant="success"
-            hidden={!isLoading && !network?.name}
-          >
-            {isLoading ? 'Loading...' : network?.name}
-          </Badge>
+          </Text>{' '}
+          d
         </VStack>
 
         <Stack

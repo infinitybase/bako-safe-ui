@@ -1,4 +1,4 @@
-import { TransactionRequestLike } from '@fuel-ts/providers';
+import { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,6 +38,7 @@ export const useTransactionSocket = () => {
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
+  const [isRedirectEnable, setIsRedirectEnable] = useState(false);
   //const [signing, setSigning] = useState(false); [CONNECTOR SIGNATURE]
 
   const navigate = useNavigate(); // do not remove, makes socket connection work
@@ -114,12 +115,29 @@ export const useTransactionSocket = () => {
 
     console.log('[EMITTING CREATE TRANSACTION]');
     socket.emit(event, data);
+
+    setTimeout(() => {
+      setIsRedirectEnable(true);
+    }, 2000);
   };
 
   const sendTransaction = async () => {
     emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
       operations: summary.transactionSummary,
       tx,
+    });
+  };
+
+  const emitSignedMessage = (message: string) => {
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.SIGN_CONFIRMED,
+      request_id,
+      data: {
+        signedMessage: message,
+      },
     });
   };
 
@@ -142,6 +160,12 @@ export const useTransactionSocket = () => {
       request_id,
       data: {},
     });
+  };
+
+  const handleRedirectToBakoSafe = () => {
+    window.close();
+    setIsRedirectEnable(false);
+    window.open(window.location.origin, '_BLANK');
   };
 
   // [CONNECTOR SIGNATURE]
@@ -170,16 +194,17 @@ export const useTransactionSocket = () => {
       return;
     }
 
-    console.log('SENDING_MESSAGE');
-    socket.emit(SocketEvents.DEFAULT, {
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      request_id,
-      type: SocketEvents.CONNECTED,
-      data: {},
-    });
+    if (socket.connected) {
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
 
-    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+    }
 
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
@@ -197,6 +222,11 @@ export const useTransactionSocket = () => {
       handler: sendTransaction,
       //redirectHandler: sendTransactionAndRedirectToSign, [CONNECTOR SIGNATURE]
       cancel: cancelSendTransaction,
+    },
+    handleRedirectToBakoSafe,
+    isRedirectEnable,
+    signMessage: {
+      emitSignedMessage,
     },
     // [CONNECTOR SIGNATURE]
     // sign: {

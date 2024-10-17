@@ -4,7 +4,7 @@ import { TransactionStatus } from 'bakosafe';
 
 import { UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
-import { findBlockExplorerByNetwork } from '@/modules/network/services';
+import { NetworkService } from '@/modules/network/services';
 import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -29,7 +29,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${findBlockExplorerByNetwork(network.url)}/tx/0x${hash}`,
+      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };
