@@ -18,6 +18,7 @@ import { TransactionService } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { generateTransactionName } from '../../utils';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
 
 const recipientMock =
@@ -68,6 +69,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       },
       assets: { refetchAssets },
     },
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
     assetsMap,
   } = useWorkspaceContext();
 
@@ -76,11 +80,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const {
-    addressBookInfos: {
-      requests: { listContactsRequest },
-    },
-  } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();
@@ -138,7 +137,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const handleCreateTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate(
       {
-        name: data.name,
+        name: data.name?.trimStart() ? data.name : generateTransactionName(),
         assets: data.transactions!.map((transaction) => ({
           amount: transaction.amount,
           assetId: transaction.asset,
@@ -156,7 +155,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const handleCreateAndSignTransaction = form.handleSubmit((data) => {
     transactionRequest.mutate(
       {
-        name: data.name,
+        name: data.name?.trimStart() ? data.name : generateTransactionName(),
         assets: data.transactions!.map((transaction) => ({
           amount: transaction.amount,
           assetId: transaction.asset,

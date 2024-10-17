@@ -1,5 +1,4 @@
 import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
-import React from 'react';
 
 import { DoneIcon } from '@/components/icons/done-icon';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
