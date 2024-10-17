@@ -301,7 +301,7 @@ const VaultDetailsPage = () => {
                 </HStack>
                 <TransactionCard.List
                   mt={5}
-                  pb={!isLarge ? 10 : 0}
+                  pb={!isSmallerThan1344 ? 10 : 0}
                   w="full"
                   maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
                   spacing={0}

@@ -2,7 +2,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalContentProps,
   ModalOverlay,
   ModalOverlayProps,
   ModalProps,
@@ -12,7 +11,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
-  modalContentProps?: ModalContentProps;
   xsBreakPointPy?: number;
   overlayProps?: ModalOverlayProps;
 }
@@ -33,12 +31,7 @@ const DialogModal = (props: DialogModalProps) => {
       {...rest}
     >
       <ModalOverlay {...props.overlayProps} />
-      <ModalContent
-        rounded="3xl"
-        bg="dark.950"
-        py={{ base: 2, xs: props.xsBreakPointPy ?? 8 }}
-        {...props.modalContentProps}
-      >
+      <ModalContent rounded="3xl" bg="dark.950" px={10} py={10}>
         <ModalBody
           overflowY="auto"
           zIndex={400}

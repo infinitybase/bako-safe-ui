@@ -24,7 +24,7 @@ const AccordionItem = ({
 
   return (
     <>
-      <HStack w="full" h={isOpen ? '32px' : '66px'} px={5} my={isOpen ? 4 : 0}>
+      <HStack w="full" h={isOpen ? '32px' : '90px'} px={5} my={isOpen ? 4 : 0}>
         <Box w="full">
           <Heading variant="dialogSectionTitle">{title}</Heading>
           {!isOpen && resume}

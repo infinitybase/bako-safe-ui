@@ -69,10 +69,7 @@ const WelcomeDialog = ({
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'lg' }}
-      modalContentProps={{
-        px: 10,
-        py: 10,
-      }}
+      blockScrollOnMount={false}
     >
       <Dialog.Body>
         <Dialog.Header

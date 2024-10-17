@@ -26,14 +26,7 @@ const DialogHeader = ({
   titleSxProps,
   ...stackProps
 }: DialogHeaderProps) => (
-  <VStack
-    w="full"
-    mb={{ base: 6, sm: 12 }}
-    mt={{ base: 0, sm: 6 }}
-    spacing={3}
-    alignItems="flex-start"
-    {...stackProps}
-  >
+  <VStack w="full" spacing={3} alignItems="flex-start" {...stackProps}>
     <HStack w="full" justifyContent="space-between" alignItems="center">
       <Heading variant="dialogTitle" {...titleSxProps}>
         {title}

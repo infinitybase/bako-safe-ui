@@ -58,10 +58,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
       <Dialog.Modal
         onClose={drawer.onClose}
         isOpen={isCreateVaultModalOpen ? false : props.isOpen}
-        modalContentProps={{
-          px: 10,
-          py: 10,
-        }}
       >
         <Dialog.Body>
           <Dialog.Header

@@ -42,7 +42,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   return (
     <Dialog.Modal
-      size={{ base: 'full', md: 'xl' }}
+      size={{ base: 'full', md: 'lg' }}
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}
@@ -60,7 +60,6 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
       <Dialog.Body
         maxW={450}
-        mb={isFirstTab ? 8 : 0}
         maxH={isFirstTab ? '60vh' : 700}
         minH={!isFirstTab ? 500 : 'unset'}
       >

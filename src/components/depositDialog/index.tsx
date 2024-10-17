@@ -49,10 +49,7 @@ const DepositDialog = ({
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'md' }}
-      modalContentProps={{
-        px: 10,
-        py: 10,
-      }}
+      blockScrollOnMount={false}
     >
       <Dialog.Body>
         <Dialog.Header

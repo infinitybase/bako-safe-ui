@@ -54,7 +54,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
       handlers: { hasPermission },
     },
     screenSizes: {
-      screenWidths: { isSmallerThan336, isSmallerThan430, isSmallerThan1344 },
+      screenWidths: { isSmallerThan336, isSmallerThan1344 },
       vaultRequiredSizeToColumnLayout,
       isMobile,
     },
@@ -340,7 +340,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   right={{ base: 4, sm: 0 }}
                   align={{ base: 'flex-end', sm: 'center' }}
                   justifyContent="flex-start"
-                  h={isSmallerThan430 ? '220px' : 'unset'}
                 >
                   <Box
                     p={3}
@@ -376,7 +375,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                       isMobile
                         ? AddressUtils.format(
                             vault?.data?.predicateAddress ?? '',
-                            4,
+                            7,
                           )
                         : undefined
                     }

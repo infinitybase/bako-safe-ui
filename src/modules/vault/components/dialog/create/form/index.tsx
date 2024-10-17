@@ -48,7 +48,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
       <Box hidden={stepAction.hide} mb={6} mt={{ sm: 8 }}>
         <StepProgress length={stepLength} value={tabs.tab} />
       </Box>
-      <Tabs index={tabs.tab} colorScheme="green">
+      <Tabs index={tabs.tab}>
         <TabPanels>
           <VaultInfosStep
             form={form}
