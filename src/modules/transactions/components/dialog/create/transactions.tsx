@@ -11,7 +11,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -53,9 +52,6 @@ interface TransctionFormFieldProps {
 const TransactionFormField = (props: TransctionFormFieldProps) => {
   const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
 
-  const asset = form.watch(`transactions.${index}.asset`);
-  const isNFT = !!assets?.nfts?.find((nft) => nft.assetId === asset);
-
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -66,6 +62,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       form: contactForm,
       inView,
       canAddMember,
+    },
+    vaultDetails: {
+      assets: { isNFTAsset },
     },
   } = useWorkspaceContext();
 
@@ -83,6 +82,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
     });
+
+  const asset = form.watch(`transactions.${index}.asset`);
+  const isNFT = isNFTAsset(asset);
 
   return (
     <>
@@ -149,7 +151,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
-                form.setValue(`transactions.${index}.amount`, bn(1).format());
+                if (isNFTAsset(e)) {
+                  form.setValue(`transactions.${index}.amount`, '1');
+                }
               }}
               helperText={
                 <FormHelperText
@@ -173,7 +177,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={isNFT ? '1' : field.value}
                   onChange={field.onChange}
                   isInvalid={fieldState.invalid}
-                  isDisabled={!!isNFT}
+                  isDisabled={isNFT}
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
