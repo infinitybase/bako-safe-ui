@@ -90,7 +90,7 @@ const Amount = ({
               />
             )}
 
-            {[...oneAssetOfEach, ...oneAssetOfEach].map((asset) => {
+            {oneAssetOfEach.map((asset) => {
               return (
                 <Image
                   key={asset.assetId}
