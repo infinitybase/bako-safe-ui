@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -163,8 +164,14 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
+
                 if (isNFTAsset(e)) {
-                  form.setValue(`transactions.${index}.amount`, '1');
+                  form.setValue(`transactions.${index}.amount`, bn(1).format());
+                  return;
+                }
+
+                if (isNFTAsset(field.value)) {
+                  form.setValue(`transactions.${index}.amount`, '');
                 }
               }}
               helperText={
