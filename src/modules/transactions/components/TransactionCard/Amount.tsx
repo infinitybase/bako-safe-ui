@@ -71,7 +71,7 @@ const Amount = ({
       {!showAmount ? null : (
         <>
           <AvatarGroup
-            max={showOnlyOneAsset ? 1 : 3}
+            max={showOnlyOneAsset ? 1 : 2}
             w={isMobile ? 'unset' : 56}
             justifyContent={isMobile ? 'start' : 'end'}
             position="relative"
@@ -90,11 +90,11 @@ const Amount = ({
               />
             )}
 
-            {oneAssetOfEach.map((asset) => {
+            {[...oneAssetOfEach, ...oneAssetOfEach].map((asset) => {
               return (
                 <Image
                   key={asset.assetId}
-                  w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                  w={{ base: '30.5px', sm: 6 }}
                   h={{ base: 'full', sm: 6 }}
                   src={
                     assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
@@ -107,7 +107,7 @@ const Amount = ({
           </AvatarGroup>
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
-            w="full"
+            w={isMobile ? 'unset' : 'full'}
             mt={0.5}
             textAlign="start"
           >

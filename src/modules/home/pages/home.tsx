@@ -129,6 +129,8 @@ const HomePage = () => {
       </Stack>
       {/* RECENT VAULTS */}
       <CustomSkeleton
+        h="full"
+        bg="yellow.200"
         isLoaded={!latestPredicates.isLoading}
         minH={latestPredicates.isLoading ? '100vh' : 'fit-content'}
         mt={latestPredicates.isLoading ? 6 : 4}
@@ -209,9 +211,7 @@ const HomePage = () => {
           </Grid>
         ) : null}
         {/* TRANSACTION LIST */}
-        <Box minH="650px">
-          <HomeTransactions />
-        </Box>
+        <HomeTransactions />
       </CustomSkeleton>
     </VStack>
   );

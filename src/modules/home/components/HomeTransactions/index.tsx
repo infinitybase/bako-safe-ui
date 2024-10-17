@@ -50,9 +50,11 @@ const HomeTransactions = () => {
   }, [transactions]);
 
   return (
-    <Box w="full" mt={{ base: 16, sm: 8 }}>
+    <Box w="full" bg="grey.200" mt={{ base: 16, sm: 8 }}>
       <Box
         w="full"
+        bg="green.200"
+        h="100%"
         display="flex"
         flexDir={isSmall ? 'column' : 'row'}
         gap={4}
@@ -105,7 +107,17 @@ const HomeTransactions = () => {
           </Button>
         )}
       </Box>
-      {!isLoading && !transactions?.length && <EmptyState showAction={false} />}
+
+      {!isLoading && !transactions?.length && (
+        <EmptyState
+          // h="calc(100% - 120px)"
+          h="full"
+          bg="blue.200"
+          showAction={false}
+          title="No Data available"
+          subTitle="Currently, there is no available data to display in this section."
+        />
+      )}
 
       {transactions?.map((grouped) => (
         <>
