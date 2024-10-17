@@ -16,6 +16,8 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import { TransactionWithVault } from '../../services';
+import { AmountUSD } from './transfer-details';
+
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
   showAmount: boolean;
@@ -124,8 +126,7 @@ const Amount = ({
               color={isMultiToken ? ' grey.75' : 'grey.425'}
             >
               <CustomSkeleton isLoaded={!tokensUSD?.isLoading}>
-                {!!Number(txUSDAmount) && '$'}
-                {txUSDAmount}
+                <AmountUSD amount={txUSDAmount} />
               </CustomSkeleton>
             </Text>
           </Flex>
