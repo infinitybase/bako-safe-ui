@@ -14,7 +14,7 @@ import {
 import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 
-import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
+import { AmountInput, Autocomplete } from '@/components';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -114,7 +114,14 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 .includes(field.value);
 
             return (
-              <FormControl isInvalid={fieldState.invalid}>
+              <FormControl
+                isInvalid={fieldState.invalid}
+                sx={{
+                  input: {
+                    boxShadow: 'none !important',
+                  },
+                }}
+              >
                 <Autocomplete
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
@@ -125,10 +132,29 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   clearable={false}
                   optionsRef={optionRef}
                   variant="dark"
+                  inputStyle={{
+                    border: '1px solid',
+                    borderColor: '#868079',
+                  }}
+                  formLabelProps={{
+                    color: 'grey.50',
+                    fontSize: 'sm',
+                    fontWeight: 600,
+                    lineHeight: '16.94px',
+                    pt: 1,
+                  }}
                 />
-                <FormHelperText color="error.500">
-                  {fieldState.error?.message}
+
+                <FormHelperText
+                  color={fieldState.error?.message ? 'error.500' : 'grey.550'}
+                  fontWeight={500}
+                  fontSize="xs"
+                  lineHeight="14.52px"
+                >
+                  {fieldState.error?.message ??
+                    'Paste or select from Address book'}
                 </FormHelperText>
+
                 <AddToAddressBook
                   visible={showAddToAddressBook}
                   onAdd={() => handleOpenDialog?.({ address: field.value })}
@@ -153,7 +179,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               }}
               helperText={
                 <FormHelperText
-                  color={fieldState.invalid ? 'error.500' : 'grey.200'}
+                  color={fieldState.invalid ? 'error.500' : 'grey.550'}
                 >
                   {fieldState.error?.message ??
                     'Select the asset you want to send'}
@@ -167,18 +193,39 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           control={form.control}
           render={({ field, fieldState }) => {
             return (
-              <FormControl>
+              <FormControl
+                sx={{
+                  input: {
+                    boxShadow: 'none !important',
+                  },
+                }}
+              >
                 <AmountInput
                   placeholder=" "
                   value={isNFT ? '1' : field.value}
                   onChange={field.onChange}
                   isInvalid={fieldState.invalid}
+                  border="1px solid"
+                  borderColor="grey.425"
                   isDisabled={!!isNFT}
                 />
-                <FormLabel color="gray">Amount</FormLabel>
+                <FormLabel
+                  color="grey.50"
+                  fontSize="sm"
+                  fontWeight={600}
+                  lineHeight="16.94px"
+                  pt={1}
+                >
+                  Amount
+                </FormLabel>
                 <FormHelperText>
                   {asset && (
-                    <Text display="flex" alignItems="center">
+                    <Text
+                      display="flex"
+                      alignItems="center"
+                      color="grey.550"
+                      fontSize="xs"
+                    >
                       Balance (available):{' '}
                       {isFeeCalcLoading ? (
                         <CircularProgress
@@ -279,13 +326,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               borderWidth={1}
               borderColor="grey.925"
               borderRadius={10}
-              backgroundColor="dark.950"
             >
               <TransactionAccordion.Item
                 title={`Recipient ${index + 1}`}
                 actions={
                   <TransactionAccordion.Actions>
-                    <HStack spacing={4}>
+                    <HStack spacing={4} ml="auto" w="fit-content">
                       <TransactionAccordion.EditAction
                         onClick={() => accordion.open(index)}
                       />
@@ -296,14 +342,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                           accordion.close();
                         }}
                       />
+                      <TransactionAccordion.ConfirmAction
+                        onClick={() => accordion.close()}
+                        isDisabled={isDisabled}
+                        isLoading={
+                          !isCurrentAmountZero ? isFeeCalcLoading : false
+                        }
+                      />
                     </HStack>
-                    <TransactionAccordion.ConfirmAction
-                      onClick={() => accordion.close()}
-                      isDisabled={isDisabled}
-                      isLoading={
-                        !isCurrentAmountZero ? isFeeCalcLoading : false
-                      }
-                    />
                   </TransactionAccordion.Actions>
                 }
                 resume={
@@ -337,10 +383,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       <Center mt={6}>
         <Button
           w="full"
-          leftIcon={<UserAddIcon />}
           variant="primary"
-          bgColor="grey.200"
           border="none"
+          color="dark.950"
+          fontSize="14px"
+          fontWeight={500}
           _hover={{
             opacity: 0.8,
           }}
@@ -352,6 +399,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             });
             delay(() => accordion.open(transactions.fields.length), 100);
           }}
+          h="40px"
+          background="linear-gradient(180deg, rgba(207, 204, 201, 1)  0%, #151413 160%)"
         >
           Add more recipients
         </Button>

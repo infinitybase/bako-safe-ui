@@ -139,6 +139,7 @@ const AssetCard = ({
       py={4}
       w="full"
       h="full"
+      minH="101px"
       {...rest}
     >
       <Flex

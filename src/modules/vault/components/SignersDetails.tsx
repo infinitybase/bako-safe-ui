@@ -122,13 +122,15 @@ export interface ISignersDetailsExtendedProps extends BoxProps {
 
 const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
   const {
-    screenSizes: { isLarge },
+    screenSizes: {
+      screenWidths: { isSmallerThan1344 },
+    },
   } = useWorkspaceContext();
 
   if (!vault) return null;
 
   return (
-    <Box w={isLarge ? 'full' : 'md'} {...rest}>
+    <Box w={isSmallerThan1344 ? 'full' : 'md'} {...rest}>
       <HStack
         alignItems="center"
         justify="flex-start"
@@ -161,7 +163,7 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
         </Badge>
       </HStack>
 
-      {isLarge ? (
+      {isSmallerThan1344 ? (
         <Grid
           templateColumns={{
             base: 'repeat(1, 1fr)',

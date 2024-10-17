@@ -50,7 +50,11 @@ const TransactionsVaultPage = () => {
         goHome,
       },
     },
-    screenSizes: { vaultRequiredSizeToColumnLayout, isMobile, isSmall },
+    screenSizes: {
+      vaultRequiredSizeToColumnLayout,
+      isMobile,
+      screenWidths: { isSmallerThan600 },
+    },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -190,9 +194,9 @@ const TransactionsVaultPage = () => {
       <HStack
         mb={7}
         justifyContent="space-between"
-        alignItems={isSmall ? 'start' : 'center'}
+        alignItems={isSmallerThan600 ? 'start' : 'center'}
         w="full"
-        flexDir={isSmall ? 'column' : 'row'}
+        flexDir={isSmallerThan600 ? 'column' : 'row'}
       >
         <HStack spacing={5}>
           <Text
@@ -212,7 +216,7 @@ const TransactionsVaultPage = () => {
           />
         </HStack>
 
-        {!isSmall && (
+        {!isSmallerThan600 && (
           <TransactionTypeFilters
             mt={2}
             currentFilter={filter.txFilterType}
@@ -258,7 +262,7 @@ const TransactionsVaultPage = () => {
           </HStack>
         )}
       </TransactionFilter.Control>
-      {isSmall && (
+      {isSmallerThan600 && (
         <TransactionTypeFilters
           mt={3}
           currentFilter={filter.txFilterType}

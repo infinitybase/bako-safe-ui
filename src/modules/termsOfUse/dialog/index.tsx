@@ -61,7 +61,6 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
         description={
           'You must accept the Terms of Use before you finish creating your account.'
         }
-        descriptionFontSize="sm"
       />
 
       <Divider maxW={585} borderColor={'grey.500'} mt={6} mb={6} />

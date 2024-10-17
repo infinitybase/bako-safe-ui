@@ -129,6 +129,8 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
           <Text
             visibility={!transactionFee ? 'hidden' : 'visible'}
             variant="description"
+            color="grey.250"
+            fontSize="xs"
           >
             Max fee:{' '}
             {isMobile ? (
@@ -171,13 +173,19 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
               </Tooltip>
             )}
           </Text>
-          <Text variant="description">
+          <Text variant="description" color="grey.250" fontSize="xs">
             {transactionFee} {transactionFee && 'ETH'}
           </Text>
         </Flex>
 
         <Dialog.Actions hideDivider>
-          <Dialog.SecondaryAction onClick={handleClose}>
+          <Dialog.SecondaryAction
+            onClick={handleClose}
+            borderColor="grey.75"
+            color="grey.75"
+            fontSize="sm"
+            fontWeight={500}
+          >
             Cancel
           </Dialog.SecondaryAction>
 

@@ -54,7 +54,10 @@ const UserTransactionsPage = () => {
     workspaceInfos: {
       handlers: { hasPermission, handleWorkspaceSelection, goHome },
     },
-    screenSizes: { isMobile, isExtraSmall, isSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan336, isSmallerThan600 },
+    },
   } = useWorkspaceContext();
 
   const { OWNER, MANAGER, ADMIN } = PermissionRoles;
@@ -217,16 +220,16 @@ const UserTransactionsPage = () => {
       <VStack w="full" mt={6}>
         <HStack
           justifyContent="space-between"
-          alignItems={isSmall ? 'start' : 'center'}
+          alignItems={isSmallerThan600 ? 'start' : 'center'}
           w="full"
-          flexDir={isSmall ? 'column' : 'row'}
+          flexDir={isSmallerThan600 ? 'column' : 'row'}
         >
           <Box
             w="full"
             display="flex"
             alignItems={'center'}
-            flexDir={isExtraSmall ? 'column' : 'row'}
-            gap={isExtraSmall ? 2 : 4}
+            flexDir={isSmallerThan336 ? 'column' : 'row'}
+            gap={isSmallerThan336 ? 2 : 4}
           >
             <Text variant="subtitle" fontWeight="semibold" color="grey.75">
               Transactions

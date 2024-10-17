@@ -73,9 +73,7 @@ const UserBox = () => {
     authDetails,
     screenSizes: {
       isMobile,
-      isExtraSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
+      screenWidths: { isSmallerThan336, isSmallerThan400, isSmallerThan430 },
     },
   } = useWorkspaceContext();
 
@@ -304,11 +302,11 @@ const UserBox = () => {
                     address={authDetails.userInfos?.address ?? ''}
                     customAddress={AddressUtils.format(
                       b256UserAddress,
-                      isExtraSmall
+                      isSmallerThan336
                         ? 8
-                        : isLitteSmall
+                        : isSmallerThan400
                           ? 10
-                          : isLowerThanFourHundredAndThirty
+                          : isSmallerThan430
                             ? 15
                             : 18,
                     )}

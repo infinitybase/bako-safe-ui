@@ -24,7 +24,9 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerProgress, setRegisterProgress] = useState(0);
 
-  const { isSmall } = useScreenSize();
+  const {
+    screenWidths: { isSmallerThan600 },
+  } = useScreenSize();
   const { warningToast } = useContactToast();
   const createWebAuthnAccount = useCreateWebAuthnAccount();
   const { setModalIsOpen } = useTermsStore();
@@ -52,7 +54,7 @@ const useWebAuthnRegisterMode = (params: UseWebAuthnRegisterModeParams) => {
           title: 'Account creation failed',
           description:
             'Sorry, something went wrong while creating your account. Please try again.',
-          position: isSmall ? 'bottom' : 'top-right',
+          position: isSmallerThan600 ? 'bottom' : 'top-right',
         });
       },
     });

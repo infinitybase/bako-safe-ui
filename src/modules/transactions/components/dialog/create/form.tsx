@@ -44,13 +44,28 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
         control={form.control}
         name="name"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <FormControl
+            isInvalid={fieldState.invalid}
+            sx={{
+              input: {
+                boxShadow: 'none !important',
+              },
+            }}
+          >
             <Input
               maxLength={27}
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
               variant="dark"
+              border="1px solid"
+              borderColor="grey.425"
+              _hover={{
+                borderColor: 'grey.425',
+              }}
+              _focus={{
+                borderColor: 'grey.200',
+              }}
             />
             <FormLabel>Transaction name</FormLabel>
             <FormHelperText color="error.500">
@@ -63,13 +78,9 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
       <Dialog.Section
         mb={8}
         mt={7}
-        title={
-          <Heading fontSize="lg" fontWeight="bold" color="white">
-            Who for?
-          </Heading>
-        }
+        title={<Heading variant="dialogSectionTitle">Who for?</Heading>}
         description="Set the recipient(s) for this transfer. You can set up to 10 recipients."
-        descriptionFontSize="sm"
+        spacing={4}
       />
 
       <TransactionAccordions

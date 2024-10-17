@@ -27,7 +27,10 @@ interface DetailItemProps {
 const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isExtraSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan336 },
+    },
     addressBookInfos: {
       requests: {
         listContactsRequest: { data },
@@ -77,7 +80,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   isTruncated
                   textOverflow="ellipsis"
                   maxW={{ base: '95px', xs: '95px', xl: 'full' }}
-                  fontSize={isExtraSmall ? 'xs' : 'sm'}
+                  fontSize={isSmallerThan336 ? 'xs' : 'sm'}
                   textAlign="start"
                 >
                   {savedContactFrom.nickname}
@@ -112,7 +115,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   isTruncated
                   textOverflow="ellipsis"
                   maxW="288px"
-                  fontSize={isExtraSmall ? 'xs' : 'sm'}
+                  fontSize={isSmallerThan336 ? 'xs' : 'sm'}
                   textAlign="end"
                 >
                   {savedContactTo.nickname}

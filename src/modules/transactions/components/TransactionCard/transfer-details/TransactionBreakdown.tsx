@@ -23,7 +23,10 @@ const TransactionBreakdown = ({
     useVerifyTransactionInformations(transaction);
 
   const {
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan430 },
+    },
   } = useWorkspaceContext();
 
   const isNotSigned = !status?.isDeclined && !status?.isSigned;
@@ -51,10 +54,7 @@ const TransactionBreakdown = ({
       {isMobile && <Divider my={6} borderColor="grey.425" />}
 
       <Box mb={isMobile ? 6 : 4}>
-        <Text
-          color="grey.425"
-          fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
-        >
+        <Text color="grey.425" fontSize={isSmallerThan430 ? 'xs' : 'sm'}>
           Transaction breakdown
         </Text>
       </Box>

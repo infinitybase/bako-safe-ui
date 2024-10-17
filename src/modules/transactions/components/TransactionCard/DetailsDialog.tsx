@@ -44,7 +44,9 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const { onClose, isOpen, transaction, account, status, isSigner } = props;
   const {
-    screenSizes: { isLowerThanFourHundredAndThirty },
+    screenSizes: {
+      screenWidths: { isSmallerThan430 },
+    },
   } = useWorkspaceContext();
 
   const handleViewInExplorer = () => {
@@ -127,7 +129,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 </Center>
               </HStack>
 
-              {!isLowerThanFourHundredAndThirty && isCompleted && (
+              {!isSmallerThan430 && isCompleted && (
                 <Button
                   border="none"
                   bgColor="#F5F5F50D"
@@ -193,7 +195,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 })}
               />
             </HStack>
-            {isLowerThanFourHundredAndThirty && isCompleted && (
+            {isSmallerThan430 && isCompleted && (
               <Button
                 mt={4}
                 w="full"

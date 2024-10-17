@@ -156,7 +156,13 @@ const Select = ({
           _readOnly={{
             boxShadow: isInvalid ? 'error.600' : 'none',
           }}
-          style={
+          _hover={{
+            borderColor: 'grey.425',
+          }}
+          _focus={{
+            borderColor: 'grey.200',
+          }}
+          sx={
             label
               ? { ...style }
               : {
@@ -211,8 +217,6 @@ const Select = ({
           borderColor="dark.100"
           borderWidth={1}
           borderRadius={10}
-          // adjust this padding
-          // padding={2}
           position="absolute"
           zIndex={999}
           w="full"

@@ -11,7 +11,6 @@ const BalanceHelperDialog = (props: BalanceHelperProps) => {
       onClose={onClose}
       isOpen={isOpen}
       size="md"
-      modalContentProps={{ px: '32px', py: '30px' }}
       overlayProps={{
         bg: 'overlay',
         backdropFilter: 'auto',

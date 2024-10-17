@@ -65,7 +65,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member?.address!)?.nickname;
+  const contactNickname = contactByAddress(member?.address ?? '')?.nickname;
 
   return (
     <Card
@@ -100,7 +100,8 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             bg="grey.900"
             variant="roundedSquare"
             name={
-              contactByAddress(member?.address!)?.nickname ?? member?.address
+              contactByAddress(member?.address ?? '')?.nickname ??
+              member?.address
             }
             src={avatar}
           />
@@ -156,7 +157,9 @@ const WorkspaceSettingsDrawer = ({
     workspaceInfos: {
       currentWorkspaceRequest: { currentWorkspace },
     },
-    screenSizes: { isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan336 },
+    },
   } = useWorkspaceContext();
 
   const pathname = window.location.pathname;
@@ -181,11 +184,11 @@ const WorkspaceSettingsDrawer = ({
 
             <DrawerHeader
               position="relative"
-              top={isExtraSmall ? '-42px' : -12}
+              top={isSmallerThan336 ? '-42px' : -12}
             >
               <VStack alignItems="flex-start" spacing={5}>
                 <Heading
-                  fontSize={isExtraSmall ? '18px' : 'xl'}
+                  fontSize={isSmallerThan336 ? '18px' : 'xl'}
                   fontWeight="semibold"
                   color="white"
                 >
@@ -206,7 +209,7 @@ const WorkspaceSettingsDrawer = ({
               }}
             >
               <WorkspaceCard
-                key={currentWorkspace?.id!}
+                key={currentWorkspace?.id}
                 workspace={currentWorkspace!}
                 counter={{
                   members: currentWorkspace?.members?.length ?? 0,

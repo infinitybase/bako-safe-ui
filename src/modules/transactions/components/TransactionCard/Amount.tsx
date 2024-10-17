@@ -36,7 +36,10 @@ const Amount = ({
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
     tokensUSD,
-    screenSizes: { isMobile, isExtraSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan336 },
+    },
     assetsMap,
   } = useWorkspaceContext();
 
@@ -65,7 +68,7 @@ const Amount = ({
     <HStack
       alignItems="center"
       justifyContent="flex-start"
-      w={isExtraSmall ? 150 : 200}
+      w={isSmallerThan336 ? 150 : 200}
       {...rest}
     >
       {!showAmount ? null : (

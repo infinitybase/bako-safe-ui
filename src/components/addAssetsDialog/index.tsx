@@ -21,9 +21,7 @@ const AddAssetsDialog = ({
   const {
     screenSizes: {
       isMobile,
-      isSmall,
-      isLitteSmall,
-      isLowerThanFourHundredAndThirty,
+      screenWidths: { isSmallerThan600, isSmallerThan430, isSmallerThan400 },
     },
     authDetails: {
       userInfos: { id, refetch },
@@ -61,10 +59,7 @@ const AddAssetsDialog = ({
       closeOnEsc={false}
       closeOnOverlayClick={false}
       size={{ base: 'full', xs: 'lg' }}
-      modalContentProps={{
-        px: 10,
-        py: 10,
-      }}
+      blockScrollOnMount={false}
     >
       <Dialog.Body>
         <Dialog.Header
@@ -75,12 +70,6 @@ const AddAssetsDialog = ({
           maxW={{ base: 480, xs: 'unset' }}
           title="Add your assets"
           description={`Select your preferred method for adding funds to your personal vault.`}
-          descriptionFontSize="12px"
-          titleSxProps={{
-            fontSize: '16px',
-            fontWeight: 700,
-            lineHeight: '19.36px',
-          }}
           borderBottomWidth={1}
           borderColor="grey.425"
           pb={6}
@@ -116,8 +105,8 @@ const AddAssetsDialog = ({
           right={0}
           px={isMobile ? 10 : 'unset'}
           bg={isMobile ? 'dark.950' : 'unset'}
-          borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
-          pb={isMobile && !isSmall ? 5 : 'unset'}
+          borderRadius={isMobile && !isSmallerThan600 ? '20px' : 'unset'}
+          pb={isMobile && !isSmallerThan600 ? 5 : 'unset'}
           sx={{
             '&>hr': {
               marginTop: '0',
@@ -126,10 +115,10 @@ const AddAssetsDialog = ({
           }}
         >
           <Button
-            fontSize={isLitteSmall ? '12px' : '14px'}
+            fontSize={isSmallerThan400 ? '12px' : '14px'}
             lineHeight="15.85px"
             fontWeight="normal"
-            letterSpacing={isLowerThanFourHundredAndThirty ? 0 : '.5px'}
+            letterSpacing={isSmallerThan430 ? 0 : '.5px'}
             variant="outline"
             color="grey.75"
             borderColor="grey.75"

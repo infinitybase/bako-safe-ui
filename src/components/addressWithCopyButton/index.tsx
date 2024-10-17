@@ -29,10 +29,12 @@ const AddressWithCopyBtn = ({
   const isVaultPage = !!vaultId;
   const {
     screenSizes: {
-      isExtraSmall,
-      isLowerThanFourHundredAndThirty,
-      isExtraLarge,
-      isLitteSmall,
+      screenWidths: {
+        isLargerThan1360,
+        isSmallerThan336,
+        isSmallerThan430,
+        isSmallerThan400,
+      },
     },
   } = useWorkspaceContext();
 
@@ -40,10 +42,10 @@ const AddressWithCopyBtn = ({
 
   return (
     <Flex
-      minW={isExtraSmall ? 'inherit' : '105px'}
+      minW={isSmallerThan336 ? 'inherit' : '105px'}
       ml="auto"
       w="full"
-      textAlign={isExtraSmall ? 'start' : 'end'}
+      textAlign={isSmallerThan336 ? 'start' : 'end'}
       overflow="hidden"
       alignItems="center"
       justifyContent={isSidebarAddress ? 'start' : 'end'}
@@ -54,14 +56,14 @@ const AddressWithCopyBtn = ({
         color="grey.75"
         textOverflow="ellipsis"
         isTruncated
-        fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        fontSize={isSmallerThan430 ? 'xs' : 'sm'}
         {...addressProps}
         maxW={
           isSidebarAddress
             ? 'full'
-            : isExtraSmall && isDeposit
+            : isSmallerThan336 && isDeposit
               ? '48px'
-              : isExtraSmall && !isDeposit
+              : isSmallerThan336 && !isDeposit
                 ? 'inherit'
                 : 'inherit'
         }
@@ -74,19 +76,19 @@ const AddressWithCopyBtn = ({
             : isDeposit
               ? AddressUtils.format(
                   b256Address ?? '',
-                  isExtraSmall
+                  isSmallerThan336
                     ? 1
-                    : isLitteSmall
+                    : isSmallerThan400
                       ? 4
-                      : isLowerThanFourHundredAndThirty
+                      : isSmallerThan430
                         ? 7
-                        : !isVaultPage && isExtraLarge
+                        : !isVaultPage && isLargerThan1360
                           ? 24
                           : 10,
                 )
               : AddressUtils.format(
                   b256Address ?? '',
-                  isLitteSmall ? 4 : isLowerThanFourHundredAndThirty ? 10 : 7,
+                  isSmallerThan400 ? 4 : isSmallerThan430 ? 10 : 7,
                 )}
       </Text>
 

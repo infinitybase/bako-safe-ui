@@ -23,7 +23,7 @@ import {
 } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { AddressUtils, Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -53,7 +53,11 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge },
+    screenSizes: {
+      screenWidths: { isSmallerThan336, isSmallerThan1344 },
+      vaultRequiredSizeToColumnLayout,
+      isMobile,
+    },
   } = useWorkspaceContext();
 
   const {
@@ -99,7 +103,10 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
               hasCLIPermission && vaultRequiredSizeToColumnLayout
                 ? '2fr 1fr'
                 : 'repeat(1, 1fr)',
-            xl: !hasCLIPermission || isLarge ? 'repeat(1, 1fr)' : '3fr 1fr',
+            xl:
+              !hasCLIPermission || isSmallerThan1344
+                ? 'repeat(1, 1fr)'
+                : '3fr 1fr',
           }}
         >
           <CustomSkeleton isLoaded={!vault.isLoading} w="full">
@@ -143,7 +150,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         isTruncated
                         maxW={{ base: 250, xs: 400, md: 350, lg: 350 }}
                       >
-                        {isExtraSmall
+                        {isSmallerThan336
                           ? limitCharacters(vault.data?.name ?? '', 10)
                           : vault.data?.name}
                       </Heading>
@@ -220,7 +227,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     >
                       <VStack w="full" spacing={2} alignItems="flex-start">
                         <Button
-                          minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
+                          minW={isSmallerThan336 ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           onClick={() =>
                             isTestnet
@@ -248,7 +255,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         alignItems={'flex-end'}
                       >
                         <Button
-                          minW={isExtraSmall ? 110 : { base: 125, sm: 130 }}
+                          minW={isSmallerThan336 ? 110 : { base: 125, sm: 130 }}
                           variant="primary"
                           alignSelf="end"
                           position={'relative'}
@@ -274,7 +281,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                           !blockedTransfers && (
                             <Text
                               variant="description"
-                              textAlign={isExtraSmall ? 'left' : 'right'}
+                              textAlign={isSmallerThan336 ? 'left' : 'right'}
                               fontSize="xs"
                               flex={1}
                               mt={2}
@@ -289,7 +296,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         {blockedTransfers ? (
                           <Text
                             variant="description"
-                            textAlign={isExtraSmall ? 'left' : 'right'}
+                            textAlign={isSmallerThan336 ? 'left' : 'right'}
                             fontSize="xs"
                             flex={1}
                             mt={2}
@@ -302,7 +309,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                         ) : !makeTransactionsPerm ? (
                           <Text
                             variant="description"
-                            textAlign={isExtraSmall ? 'left' : 'right'}
+                            textAlign={isSmallerThan336 ? 'left' : 'right'}
                             fontSize="xs"
                             flex={1}
                             mt={2}
@@ -337,8 +344,8 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   <Box
                     p={3}
                     backgroundColor={'white'}
-                    w={{ base: 32, sm: 180 }}
-                    h={{ base: 32, sm: 180 }}
+                    w={{ base: isMobile ? 36 : 32, sm: 180 }}
+                    h={{ base: isMobile ? 36 : 32, sm: 180 }}
                     borderRadius={10}
                   >
                     <QRCodeSVG
@@ -363,6 +370,15 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     backgroundColor="dark.100"
                     isSidebarAddress
                     addressProps={{ color: 'grey.500' }}
+                    maxW={isMobile ? 36 : 'unset'}
+                    customAddress={
+                      isMobile
+                        ? AddressUtils.format(
+                            vault?.data?.predicateAddress ?? '',
+                            7,
+                          )
+                        : undefined
+                    }
                   />
                 </VStack>
               </Stack>
@@ -380,7 +396,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   lg: vaultRequiredSizeToColumnLayout
                     ? 'repeat(1, 1fr)'
                     : 'repeat(2, 1fr)',
-                  xl: isLarge ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+                  xl: isSmallerThan1344 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
                 }}
               >
                 {CLISettings.map((setting) => (

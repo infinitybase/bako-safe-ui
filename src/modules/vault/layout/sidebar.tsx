@@ -11,7 +11,6 @@ import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
-import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -40,10 +39,6 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     isPendingSigner,
     pendingSignerTransactionsLength,
   } = useTransactionsContext();
-
-  const {
-    request: { refetch },
-  } = useVaultDrawer({ onClose: () => {} });
 
   const handleClick = (navigate: void) => {
     setSelectedTransaction({});
@@ -82,7 +77,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           isLoading={vault.isLoading}
           isFetching={vault.isFetching}
           onChangeVault={() => {
-            refetch(), drawer.onOpen();
+            drawer.onOpen();
           }}
           hasBalance={hasBalance}
           isPending={isPendingSigner}

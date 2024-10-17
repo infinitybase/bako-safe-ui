@@ -73,7 +73,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     }
   }, [
     inView.inView,
-    vaultList.isFetching,
     vaultList.isLoading,
     vaultList.fetchNextPage,
     vaultList.hasNextPage,

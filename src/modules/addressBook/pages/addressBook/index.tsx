@@ -54,7 +54,9 @@ const AddressBookPage = () => {
         setContactToDelete,
       },
     },
-    screenSizes: { isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan336 },
+    },
   } = useWorkspaceContext();
 
   const { data: contacts } = listContactsRequest;
@@ -90,17 +92,17 @@ const AddressBookPage = () => {
       >
         <Box
           w="full"
-          h={isExtraSmall ? 20 : 10}
+          h={isSmallerThan336 ? 20 : 10}
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          flexDir={isExtraSmall ? 'column' : 'row'}
+          flexDir={isSmallerThan336 ? 'column' : 'row'}
           rowGap={4}
-          mb={isExtraSmall ? 4 : 'unset'}
+          mb={isSmallerThan336 ? 4 : 'unset'}
         >
-          <HStack w={isExtraSmall ? 'full' : 'unset'}>
+          <HStack w={isSmallerThan336 ? 'full' : 'unset'}>
             <Button
-              w={isExtraSmall ? 'full' : 'unset'}
+              w={isSmallerThan336 ? 'full' : 'unset'}
               variant="primary"
               fontWeight="semibold"
               fontSize={15}
@@ -180,7 +182,7 @@ const AddressBookPage = () => {
             PermissionRoles?.ADMIN,
             PermissionRoles?.MANAGER,
           ]) && (
-            <Box w={isExtraSmall ? 'full' : 'unset'}>
+            <Box w={isSmallerThan336 ? 'full' : 'unset'}>
               <Button
                 w="full"
                 variant="primary"

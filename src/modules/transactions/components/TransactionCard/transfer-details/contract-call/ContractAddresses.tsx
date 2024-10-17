@@ -18,7 +18,10 @@ const ContractAddresses = ({
 }: ContractAddressesProps) => {
   const mainOperation = transaction.summary?.operations[0];
   const {
-    screenSizes: { isExtraSmall, isLowerThanFourHundredAndThirty, isMobile },
+    screenSizes: {
+      screenWidths: { isSmallerThan336, isSmallerThan430 },
+      isMobile,
+    },
   } = useWorkspaceContext();
 
   if (!mainOperation) {
@@ -45,13 +48,7 @@ const ContractAddresses = ({
         >
           {AddressUtils.format(
             from?.address ?? '',
-            isExtraSmall
-              ? 5
-              : isLowerThanFourHundredAndThirty
-                ? 9
-                : isMobile
-                  ? 10
-                  : 14,
+            isSmallerThan336 ? 5 : isSmallerThan430 ? 9 : isMobile ? 10 : 14,
           )}
         </Text>
       </Box>
@@ -78,13 +75,7 @@ const ContractAddresses = ({
         >
           {AddressUtils.format(
             to?.address ?? '',
-            isExtraSmall
-              ? 5
-              : isLowerThanFourHundredAndThirty
-                ? 9
-                : isMobile
-                  ? 10
-                  : 14,
+            isSmallerThan336 ? 5 : isSmallerThan430 ? 9 : isMobile ? 10 : 14,
           )}
         </Text>
       </Box>

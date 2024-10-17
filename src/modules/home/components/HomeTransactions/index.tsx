@@ -40,7 +40,10 @@ const HomeTransactions = () => {
       requests: { latestPredicates },
       handlers: { navigate },
     },
-    screenSizes: { isSmall, isMobile, isExtraSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan600, isSmallerThan336 },
+      isMobile,
+    },
   } = useWorkspaceContext();
 
   useEffect(() => {
@@ -54,15 +57,15 @@ const HomeTransactions = () => {
       <Box
         w="full"
         display="flex"
-        flexDir={isSmall ? 'column' : 'row'}
+        flexDir={isSmallerThan600 ? 'column' : 'row'}
         gap={4}
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={isSmall ? 'column' : 'row'}
-          alignItems={isSmall ? 'unset' : 'center'}
-          gap={isSmall ? 2 : 4}
+          flexDir={isSmallerThan600 ? 'column' : 'row'}
+          alignItems={isSmallerThan600 ? 'unset' : 'center'}
+          gap={isSmallerThan600 ? 2 : 4}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">
             Transactions
@@ -83,7 +86,7 @@ const HomeTransactions = () => {
               <Icon
                 as={MdKeyboardArrowRight}
                 fontSize="lg"
-                ml={isSmall ? -1 : 0}
+                ml={isSmallerThan600 ? -1 : 0}
                 className="btn-icon"
               />
             }
@@ -99,7 +102,7 @@ const HomeTransactions = () => {
                 animation: ${shakeAnimationX} 0.5s ease-in-out;
               }
             `}
-            px={isExtraSmall ? 3 : 4}
+            px={isSmallerThan336 ? 3 : 4}
           >
             View all
           </Button>
@@ -123,7 +126,7 @@ const HomeTransactions = () => {
           </HStack>
           <TransactionCard.List
             spacing={4}
-            mt={isExtraSmall ? 0 : 3}
+            mt={isSmallerThan336 ? 0 : 3}
             mb={transactions.length >= 1 ? 0 : 12}
           >
             <CustomSkeleton isLoaded={!latestPredicates.isLoading}>

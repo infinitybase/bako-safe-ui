@@ -21,13 +21,28 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
         control={form.control}
         name="nickname"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <FormControl
+            isInvalid={fieldState.invalid}
+            sx={{
+              input: {
+                boxShadow: 'none !important',
+              },
+            }}
+          >
             <Input
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
               variant="dark"
               maxLength={27}
+              _hover={{
+                borderColor: 'grey.425',
+              }}
+              _focus={{
+                borderColor: 'grey.200',
+              }}
+              border="1px solid"
+              borderColor="grey.425"
             />
             <FormLabel>Name or Label</FormLabel>
             <FormHelperText color="error.500">
@@ -41,12 +56,27 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
         control={form.control}
         name="address"
         render={({ field, fieldState }) => (
-          <FormControl isInvalid={fieldState.invalid}>
+          <FormControl
+            isInvalid={fieldState.invalid}
+            sx={{
+              input: {
+                boxShadow: 'none !important',
+              },
+            }}
+          >
             <Input
               variant="dark"
               value={field.value}
               onChange={field.onChange}
               placeholder=" "
+              _hover={{
+                borderColor: 'grey.425',
+              }}
+              _focus={{
+                borderColor: 'grey.200',
+              }}
+              border="1px solid"
+              borderColor="grey.425"
             />
             <FormLabel>Address</FormLabel>
             <FormHelperText color="error.500">

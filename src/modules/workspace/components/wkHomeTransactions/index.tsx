@@ -33,7 +33,10 @@ const WkHomeTransactions = () => {
       handlers: { navigate },
       requests: { latestPredicates },
     },
-    screenSizes: { isSmall, isMobile, isExtraSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan600, isSmallerThan336 },
+    },
   } = useWorkspaceContext();
 
   const workspaceId = userInfos.workspace?.id ?? '';
@@ -57,15 +60,15 @@ const WkHomeTransactions = () => {
       <Box
         w="full"
         display="flex"
-        flexDir={isSmall ? 'column' : 'row'}
+        flexDir={isSmallerThan600 ? 'column' : 'row'}
         gap={4}
         mb={4}
       >
         <Box
           display="flex"
-          flexDir={isSmall ? 'column' : 'row'}
-          alignItems={isSmall ? 'unset' : 'center'}
-          gap={isSmall ? 2 : 4}
+          flexDir={isSmallerThan600 ? 'column' : 'row'}
+          alignItems={isSmallerThan600 ? 'unset' : 'center'}
+          gap={isSmallerThan600 ? 2 : 4}
         >
           <Text fontWeight={700} fontSize="md" color="grey.50">
             Transactions
@@ -86,7 +89,7 @@ const WkHomeTransactions = () => {
               <Icon
                 as={MdKeyboardArrowRight}
                 fontSize="lg"
-                ml={isSmall ? -1 : 0}
+                ml={isSmallerThan600 ? -1 : 0}
                 className="btn-icon"
               />
             }
@@ -102,7 +105,7 @@ const WkHomeTransactions = () => {
                 animation: ${shakeAnimationX} 0.5s ease-in-out;
               }
             `}
-            px={isExtraSmall ? 3 : 4}
+            px={isSmallerThan336 ? 3 : 4}
           >
             View all
           </Button>
@@ -125,7 +128,11 @@ const WkHomeTransactions = () => {
 
             <Divider w="full" borderColor="grey.950" />
           </HStack>
-          <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
+          <TransactionCard.List
+            spacing={4}
+            mt={isSmallerThan336 ? 0 : 7}
+            mb={12}
+          >
             <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
               {grouped?.transactions.map((transaction) => {
                 const status = transactionStatus({

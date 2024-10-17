@@ -24,7 +24,10 @@ interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
 
 const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
   const {
-    screenSizes: { isMobile, isSmall },
+    screenSizes: {
+      isMobile,
+      screenWidths: { isSmallerThan600 },
+    },
   } = useWorkspaceContext();
   const {
     drawer,
@@ -55,10 +58,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
       <Dialog.Modal
         onClose={drawer.onClose}
         isOpen={isCreateVaultModalOpen ? false : props.isOpen}
-        modalContentProps={{
-          px: 10,
-          py: 10,
-        }}
       >
         <Dialog.Body>
           <Dialog.Header
@@ -69,12 +68,6 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
             maxW={{ base: 480, xs: 'unset' }}
             title="Select vault"
             description="Select the vault or create new one"
-            descriptionFontSize="12px"
-            titleSxProps={{
-              fontSize: '16px',
-              fontWeight: 700,
-              lineHeight: '19.36px',
-            }}
           />
 
           <Box
@@ -146,8 +139,8 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
           <Dialog.Actions
             position={isMobile ? 'absolute' : 'relative'}
             bottom={0}
-            pb={isMobile && !isSmall ? 10 : 'unset'}
-            borderRadius={isMobile && !isSmall ? '20px' : 'unset'}
+            pb={isMobile && !isSmallerThan600 ? 10 : 'unset'}
+            borderRadius={isMobile && !isSmallerThan600 ? '20px' : 'unset'}
             left={0}
             right={0}
             px={isMobile ? 10 : 'unset'}

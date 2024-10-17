@@ -40,7 +40,13 @@ function AssetSelect(props: Props) {
   );
 
   return (
-    <FormControl>
+    <FormControl
+      sx={{
+        input: {
+          boxShadow: 'none !important',
+        },
+      }}
+    >
       <Select
         variant="dark"
         label="Asset"
@@ -49,6 +55,14 @@ function AssetSelect(props: Props) {
         onChange={props.onChange}
         options={[...sortedAssets, ...formattedNfts]}
         maxOptionsHeight={120}
+        style={{
+          color: '#CFCCC9',
+          fontWeight: 600,
+          fontSize: '14px',
+          height: '50px',
+          border: '1px solid',
+          borderColor: '#868079',
+        }}
       />
       {props.helperText}
     </FormControl>

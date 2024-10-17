@@ -32,7 +32,9 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
 
   const {
     authDetails,
-    screenSizes: { isSmall },
+    screenSizes: {
+      screenWidths: { isSmallerThan600 },
+    },
     invalidateGifAnimationRequest,
   } = useWorkspaceContext();
 
@@ -111,7 +113,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
             title: 'Problem to sign',
             description:
               'We can not validate your signature. Please, try again.',
-            position: isSmall ? 'bottom' : 'top-right',
+            position: isSmallerThan600 ? 'bottom' : 'top-right',
           });
         },
       },

@@ -103,7 +103,6 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           maxW={{ base: 450, xs: 550, sm: 450 }}
           title="Create Workspace"
           description="Define the details of your workspace. Set up this rules carefully because it cannot be changed later."
-          descriptionFontSize="md"
         />
       ) : (
         <Dialog.Header

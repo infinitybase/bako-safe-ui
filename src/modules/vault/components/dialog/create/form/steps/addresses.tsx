@@ -140,7 +140,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               </Heading>
             }
             description="Who is going to sign this vault?"
-            descriptionFontSize="sm"
           >
             <VStack
               mt={4}
@@ -299,7 +298,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                 </Heading>
               }
               description="Set the minimum number of signatures to approve a transfer."
-              descriptionFontSize="sm"
             />
 
             <Controller
