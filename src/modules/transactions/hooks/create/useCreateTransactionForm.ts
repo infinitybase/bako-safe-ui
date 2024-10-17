@@ -7,6 +7,13 @@ import * as yup from 'yup';
 import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+export interface ITransactionField {
+  asset: string;
+  value: string;
+  amount: string;
+  fee?: string;
+}
+
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
   nfts?: { assetId: string; amount: string }[];

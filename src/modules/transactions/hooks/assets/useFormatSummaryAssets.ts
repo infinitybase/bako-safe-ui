@@ -4,7 +4,7 @@ import { Operation, TransactionRequest } from 'fuels';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { formatAssetAmount, isHex } from '@/utils';
 
-import { OperationWithAssets } from '../services/types';
+import { OperationWithAssets } from '../../services/types';
 
 const { VITE_CHAIN_ID } = import.meta.env;
 

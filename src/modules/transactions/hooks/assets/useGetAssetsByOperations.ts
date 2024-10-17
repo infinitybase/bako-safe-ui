@@ -1,6 +1,6 @@
 import { ITransferAsset } from 'bakosafe';
 
-import { OperationWithAssets, TransactionWithVault } from '../services';
+import { OperationWithAssets, TransactionWithVault } from '../../services';
 import { useFormatSummaryAssets } from './useFormatSummaryAssets';
 
 interface UseGetAssetsByOperationsResult {
