@@ -25,16 +25,15 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
     },
   } = useWorkspaceContext();
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions({
-      workspaceId: workspaceId!,
-      includePersonal: !userInfos.onSingleWorkspace,
-      contacts: listContactsRequest.data!,
-      fields: [form.watch('address')],
-      errors: form.formState.errors.address,
-      isUsingTemplate: false,
-      isFirstLoading: false,
-    });
+  const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
+    workspaceId: workspaceId!,
+    includePersonal: !userInfos.onSingleWorkspace,
+    contacts: listContactsRequest.data!,
+    fields: [form.watch('address')],
+    errors: form.formState.errors.address,
+    isUsingTemplate: false,
+    isFirstLoading: false,
+  });
 
   return (
     <Box w="full" maxW={480} mb="12px">
@@ -42,11 +41,6 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
         name="address.value"
         control={form.control}
         render={({ field, fieldState }) => {
-          const appliedOptions = handleFieldOptions(
-            field.value,
-            optionsRequests[0].options,
-          );
-
           const showAddToAddressBook =
             !fieldState.invalid &&
             AddressUtils.isValid(field.value) &&
@@ -64,7 +58,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   value={field.value}
                   optionsRef={optionRef}
                   onChange={field.onChange}
-                  options={appliedOptions}
+                  options={optionsRequests[0].options}
                   isLoading={!optionsRequests[0].isSuccess}
                   inView={addressBook.inView}
                   clearable={false}

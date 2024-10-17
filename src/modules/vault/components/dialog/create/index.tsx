@@ -29,6 +29,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     search,
     setSearch,
     validateAddress,
+    isVaulltNameCheckLoading,
   } = useCreateVaultDialog({
     onClose: props.onClose,
   });
@@ -149,7 +150,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
               leftIcon={
                 tabs.tab === TabState.ADDRESSES ? <SquarePlusIcon /> : undefined
               }
-              isDisabled={steps.step?.disable}
+              isDisabled={steps.step?.disable || isVaulltNameCheckLoading}
               isLoading={bakoSafeVault.isPending}
               _hover={{
                 opacity: !steps.step?.disable && 0.8,

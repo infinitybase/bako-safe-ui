@@ -28,7 +28,13 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
 
   useEffect(() => {
     form.setValue('name', search);
-  }, [formName]);
+
+    if (vaultNameIsAvailable && search.length > 0) {
+      form.setError('name', {
+        message: 'Vault name already exists in this workspace',
+      });
+    }
+  }, [formName, vaultNameIsAvailable]);
 
   return (
     <TabPanel p={0}>

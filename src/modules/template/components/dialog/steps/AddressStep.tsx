@@ -31,9 +31,9 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -61,16 +61,15 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     }
   };
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions({
-      workspaceId: workspaceId!,
-      includePersonal: !userInfos.onSingleWorkspace,
-      contacts: listContactsRequest.data!,
-      fields: form.watch('addresses') as AddressesFields,
-      errors: form.formState.errors.addresses,
-      isUsingTemplate: true,
-      isFirstLoading: isFirstLoad,
-    });
+  const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
+    workspaceId: workspaceId!,
+    includePersonal: !userInfos.onSingleWorkspace,
+    contacts: listContactsRequest.data!,
+    fields: form.watch('addresses') as AddressesFields,
+    errors: form.formState.errors.addresses,
+    isUsingTemplate: true,
+    isFirstLoading: isFirstLoad,
+  });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsContainerRef = useRef<HTMLDivElement>(null);
@@ -151,12 +150,6 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                 const first = index === 0;
                 const anotherAddress = field.value !== userInfos.address;
 
-                const appliedOptions = handleFieldOptions(
-                  field.value,
-                  optionsRequests[index].options,
-                  first,
-                );
-
                 const showAddToAddressBook =
                   anotherAddress &&
                   canAddMember &&
@@ -177,7 +170,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       disabled={first}
                       label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
-                      options={appliedOptions}
+                      options={optionsRequests[index].options}
                       isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}
                       clearable={false}
