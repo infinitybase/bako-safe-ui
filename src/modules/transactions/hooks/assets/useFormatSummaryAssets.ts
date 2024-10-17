@@ -37,9 +37,15 @@ const useFormatSummaryAssets = (
     };
   }
 
-  const _operations = predicateAddress
-    ? operations.filter((op) => op.to?.address === predicateAddress)
-    : operations;
+  const filterOperationsToVault = () => {
+    const operationsToVault = operations.filter(
+      (op) => op.assetsSent && op.to?.address === predicateAddress,
+    );
+
+    return operationsToVault.length ? operationsToVault : operations;
+  };
+
+  const _operations = predicateAddress ? filterOperationsToVault() : operations;
 
   const firstOperation = _operations[0] as OperationWithAssets;
 

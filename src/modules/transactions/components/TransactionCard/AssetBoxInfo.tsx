@@ -17,6 +17,8 @@ import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD
 import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AmountUSD } from './transfer-details';
+
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
   isDeposit?: boolean;
@@ -106,7 +108,7 @@ const AssetBoxInfo = ({
           fontSize="xs"
           color="grey.500"
         >
-          {assetInfo.slug === 'UNK' ? '--' : `$${txUSDAmount}`}
+          <AmountUSD amount={txUSDAmount} />
         </Text>
       </VStack>
 

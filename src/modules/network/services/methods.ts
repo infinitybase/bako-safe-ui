@@ -42,6 +42,8 @@ export type DeleteNetworkResponse = void;
 export type SelectNetworkResponse = boolean;
 export type CheckNetworkResponse = string | undefined;
 
+const appVersion = import.meta.env.VITE_APP_VERSION;
+
 export const availableNetWorks = {
   [NetworkType.MAINNET]: {
     name: 'Ignition',
@@ -53,7 +55,7 @@ export const availableNetWorks = {
     name: 'Fuel Sepolia Testnet',
     url: 'https://testnet.fuel.network/v1/graphql',
     chainId: 0,
-    explorer: 'https://app.fuel.network/',
+    explorer: 'https://app-testnet.fuel.network/',
   },
   ...(window.location.hostname.includes('localhost') && {
     [NetworkType.DEV]: {
@@ -69,6 +71,17 @@ const sanitizeNetwork = (url: string = '') =>
   url.replace(/^https?:\/\/[^@]+@/, 'https://');
 
 export class NetworkService {
+  static syncAvailableNetworks() {
+    const storedVersion = localStorage.getItem('appVersion');
+    if (storedVersion !== appVersion) {
+      localStorage.setItem('appVersion', appVersion);
+      localStorage.setItem(
+        localStorageKeys.NETWORKS,
+        JSON.stringify(Object.values(availableNetWorks)),
+      );
+    }
+  }
+
   static async create(newNetwork: CustomNetwork) {
     const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
@@ -83,6 +96,7 @@ export class NetworkService {
   }
 
   static list() {
+    NetworkService.syncAvailableNetworks();
     const networks: CustomNetwork[] = JSON.parse(
       localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
     );
@@ -141,6 +155,7 @@ export class NetworkService {
   }
 
   static findByUrl(url: string) {
+    NetworkService.syncAvailableNetworks();
     const networks = NetworkService.list();
     return networks.find(
       (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
