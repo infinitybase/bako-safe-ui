@@ -33,6 +33,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const disableCreateVaultButton =
     (!form.formState.isValid ||
       !!form.formState.errors.addresses ||
+      form.formState.isSubmitting ||
       validateAddress.isLoading) &&
     addresses.fields.length > 1;
 
