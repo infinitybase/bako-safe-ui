@@ -44,10 +44,15 @@ export const useHasReservedCoins = (
     staleTime,
   });
 
+  const refetchAssets = () => {
+    if (!predicateId) return;
+    refetch();
+  };
+
   return {
     ...rest,
-    refetchAssets: refetch,
     staleTime,
+    refetchAssets,
     reservedQueryKey,
   };
 };

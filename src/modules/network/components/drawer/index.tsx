@@ -27,7 +27,7 @@ import { TypeUser } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
-import { availableNetWorks, NetworkType } from '../../services';
+import { NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 
