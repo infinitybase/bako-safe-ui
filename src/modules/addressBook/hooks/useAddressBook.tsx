@@ -1,20 +1,24 @@
 import { useDisclosure } from '@chakra-ui/react';
+import { BakoProvider } from 'bakosafe';
+import { Assets } from 'fuels';
 import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { IUseAuthReturn } from '@/modules/auth/services';
 import { PermissionRoles } from '@/modules/core';
 
-import { useListContactsRequest } from './useListContactsRequest';
-import { IUseAuthReturn } from '@/modules/auth/services';
-import { useAddressBookMutations } from './useAddressBookMutations';
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
+import { useAddressBookMutations } from './useAddressBookMutations';
+import { useListContactsRequest } from './useListContactsRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
 const useAddressBook = (
   authDetails: IUseAuthReturn,
   hasPermission: (requiredRoles: PermissionRoles[]) => boolean,
+  providerInstance: Promise<BakoProvider>,
+  fuelsTokens?: Assets,
 ) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });
   const [search, setSearch] = useState('');
@@ -40,6 +44,8 @@ const useAddressBook = (
       listContactsRequest,
       setContactToEdit,
       setSearch,
+      providerInstance,
+      fuelsTokens,
     });
 
   const {
