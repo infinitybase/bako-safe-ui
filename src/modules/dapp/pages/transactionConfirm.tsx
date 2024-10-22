@@ -6,12 +6,6 @@ import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
-  // [CONNECTOR SIGNATURE]
-  // const [createTxMethod, setCreateTxMethod] =
-  //   useState<ECreateTransactionMethods>(
-  //     ECreateTransactionMethods.CREATE_AND_SIGN,
-  //   );
-
   const {
     vault,
     pendingSignerTransactions,
