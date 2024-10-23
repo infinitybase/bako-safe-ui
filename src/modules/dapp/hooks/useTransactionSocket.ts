@@ -1,5 +1,5 @@
 import { TransactionRequestLike } from 'fuels';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
@@ -38,7 +38,7 @@ enum IEventTX_STATUS {
 export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
-  const [vault, setVault] = useState<IVaultEvent | undefined>({
+  const vaultRef = useRef<IVaultEvent>({
     name: '',
     address: '',
     description: '',
@@ -79,20 +79,23 @@ export const useTransactionSocket = () => {
     },
   });
 
-  const handleGetSummary = (data: any) => {
-    console.log('GETTING_SUMMARY');
-    const { data: content } = data;
-    const { vault, tx, validAt } = content;
+  const handleGetSummary = useCallback(
+    (data: any) => {
+      console.log('GETTING_SUMMARY');
+      const { data: content } = data;
+      const { vault, tx, validAt } = content;
 
-    setVault(vault);
-    setTx(tx);
-    setValidAt(validAt);
-    summary.getTransactionSummary({
-      transactionLike: tx,
-      providerUrl: vault.provider,
-      configurable: vault.configurable,
-    });
-  };
+      vaultRef.current = vault;
+      setTx(tx);
+      setValidAt(validAt);
+      summary.getTransactionSummary({
+        transactionLike: tx,
+        providerUrl: vault.provider,
+        configurable: vault.configurable,
+      });
+    },
+    [summary],
+  );
 
   const handlePendingSign = useCallback(() => {
     setTransactionSuccess({
@@ -121,46 +124,55 @@ export const useTransactionSocket = () => {
     });
   }, []);
 
-  const handleCreatedTransaction = (data: any) => {
-    const { data: content } = data;
-    const { hash, sign } = content;
+  const handleCreatedTransaction = useCallback(
+    (data: any) => {
+      const { data: content } = data;
+      const { hash, sign } = content;
 
-    hash && sign ? signMessageRequest.mutateAsync(hash) : handlePendingSign();
-  };
+      hash && sign ? signMessageRequest.mutateAsync(hash) : handlePendingSign();
+    },
+    [handlePendingSign, signMessageRequest],
+  );
 
-  const handleSignedTransaction = (data: any) => {
-    const { data: content } = data;
-    const { status } = content;
+  const handleSignedTransaction = useCallback(
+    (data: any) => {
+      const { data: content } = data;
+      const { status } = content;
 
-    if (status === IEventTX_STATUS.ERROR) {
-      showSignErrorToast();
-      return;
-    }
+      if (status === IEventTX_STATUS.ERROR) {
+        showSignErrorToast();
+        return;
+      }
 
-    const configurable = JSON.parse(vault?.configurable || '{}');
-    const minSigners = configurable.min_signers || 1;
+      const configurable = JSON.parse(vaultRef.current?.configurable || '{}');
+      const minSigners = configurable.SIGNATURES_COUNT || 1;
 
-    minSigners > 1 ? handleMultipleSigners() : handleSingleSigner();
-  };
+      minSigners > 1 ? handleMultipleSigners() : handleSingleSigner();
+    },
+    [handleMultipleSigners, handleSingleSigner, showSignErrorToast, vaultRef],
+  );
 
-  const handleSocketEvent = useCallback((data: any) => {
-    console.log('SOCKET EVENT DATA:', data);
-    if (data.to !== SocketUsernames.UI) return;
+  const handleSocketEvent = useCallback(
+    (data: any) => {
+      console.log('SOCKET EVENT DATA:', data);
+      if (data.to !== SocketUsernames.UI) return;
 
-    switch (data.type) {
-      case SocketEvents.TX_REQUEST:
-        handleGetSummary(data);
-        break;
-      case SocketEvents.TX_CREATE:
-        handleCreatedTransaction(data);
-        break;
-      case SocketEvents.TX_SIGN:
-        handleSignedTransaction(data);
-        break;
-      default:
-        break;
-    }
-  }, []);
+      switch (data.type) {
+        case SocketEvents.TX_REQUEST:
+          handleGetSummary(data);
+          break;
+        case SocketEvents.TX_CREATE:
+          handleCreatedTransaction(data);
+          break;
+        case SocketEvents.TX_SIGN:
+          handleSignedTransaction(data);
+          break;
+        default:
+          break;
+      }
+    },
+    [handleCreatedTransaction, handleGetSummary, handleSignedTransaction],
+  );
 
   const emitCreateTransactionEvent = (
     event: SocketEvents,
@@ -245,10 +257,10 @@ export const useTransactionSocket = () => {
   }, [socket.connected]);
 
   return {
-    vault,
+    vault: vaultRef.current,
     summary,
     validAt,
-    pendingSignerTransactions: vault?.pending_tx ?? true,
+    pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,
     socket,
     send: {
       isLoading: sending,
