@@ -12,7 +12,8 @@ export enum SocketEvents {
   CONNECTED = '[CONNECTED]',
   DISCONNECTED = '[CLIENT_DISCONNECTED]',
 
-  TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
+  TX_CREATE = '[TX_EVENT_CREATED]',
+  TX_SIGN = '[TX_EVENT_SIGNED]',
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
   SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
 }
@@ -23,7 +24,7 @@ export enum SocketUsernames {
   API = '[API]',
 }
 
-export interface IEventTX_CONFIRM {
+export interface IEventTX_CREATE {
   tx?: TransactionRequestLike;
   operations: any;
   sign?: boolean;

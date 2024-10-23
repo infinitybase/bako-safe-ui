@@ -2,12 +2,14 @@ import { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useContactToast } from '@/modules/addressBook/hooks';
 import { useQueryParams } from '@/modules/auth/hooks';
 import {
-  IEventTX_CONFIRM,
+  IEventTX_CREATE,
   SocketEvents,
   SocketUsernames,
   useSocket,
+  useWalletSignMessage,
 } from '@/modules/core/hooks';
 
 import { useTransactionSummary } from './useTransactionSummary';
@@ -20,6 +22,17 @@ interface IVaultEvent {
   pending_tx: boolean;
   configurable: string;
   version: string;
+}
+
+export interface ITransactionSuccess {
+  show: boolean;
+  title: string;
+  description: string;
+}
+
+enum IEventTX_STATUS {
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
 }
 
 export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
@@ -37,13 +50,34 @@ export const useTransactionSocket = () => {
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [sending, setSending] = useState(false);
-  const [isRedirectEnable, setIsRedirectEnable] = useState(false);
+  const [transactionSuccess, setTransactionSuccess] =
+    useState<ITransactionSuccess>({
+      show: false,
+      title: '',
+      description: '',
+    });
 
   const navigate = useNavigate(); // do not remove, makes socket connection work
   const { connect, socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
+  const { warningToast } = useContactToast();
 
   const summary = useTransactionSummary();
+
+  const showSignErrorToast = () =>
+    warningToast({
+      title: 'Transaction sign failed',
+      description: 'Please try again!',
+    });
+
+  const signMessageRequest = useWalletSignMessage({
+    onSuccess: (signedMessage, hash) => {
+      emitSignedMessage(hash, signedMessage);
+    },
+    onError: () => {
+      showSignErrorToast();
+    },
+  });
 
   const handleGetSummary = (data: any) => {
     console.log('GETTING_SUMMARY');
@@ -60,6 +94,55 @@ export const useTransactionSocket = () => {
     });
   };
 
+  const handlePendingSign = useCallback(() => {
+    setTransactionSuccess({
+      show: true,
+      title: 'Transaction created!',
+      description:
+        'Your transaction is pending to be signed. Sign at Bako Safe.',
+    });
+  }, []);
+
+  const handleSingleSigner = useCallback(() => {
+    setTransactionSuccess({
+      show: false,
+      title: '',
+      description: '',
+    });
+    window.close();
+  }, []);
+
+  const handleMultipleSigners = useCallback(() => {
+    setTransactionSuccess({
+      show: true,
+      title: 'Transaction created and signed!',
+      description:
+        'Your transaction is pending to be signed by others. You can check the transaction status at Bako Safe.',
+    });
+  }, []);
+
+  const handleCreatedTransaction = (data: any) => {
+    const { data: content } = data;
+    const { hash, sign } = content;
+
+    hash && sign ? signMessageRequest.mutateAsync(hash) : handlePendingSign();
+  };
+
+  const handleSignedTransaction = (data: any) => {
+    const { data: content } = data;
+    const { status } = content;
+
+    if (status === IEventTX_STATUS.ERROR) {
+      showSignErrorToast();
+      return;
+    }
+
+    const configurable = JSON.parse(vault?.configurable || '{}');
+    const minSigners = configurable.min_signers || 1;
+
+    minSigners > 1 ? handleMultipleSigners() : handleSingleSigner();
+  };
+
   const handleSocketEvent = useCallback((data: any) => {
     console.log('SOCKET EVENT DATA:', data);
     if (data.to !== SocketUsernames.UI) return;
@@ -68,6 +151,12 @@ export const useTransactionSocket = () => {
       case SocketEvents.TX_REQUEST:
         handleGetSummary(data);
         break;
+      case SocketEvents.TX_CREATE:
+        handleCreatedTransaction(data);
+        break;
+      case SocketEvents.TX_SIGN:
+        handleSignedTransaction(data);
+        break;
       default:
         break;
     }
@@ -75,36 +164,27 @@ export const useTransactionSocket = () => {
 
   const emitCreateTransactionEvent = (
     event: SocketEvents,
-    data: IEventTX_CONFIRM,
+    data: IEventTX_CREATE,
   ) => {
     if (!data.tx) return;
     setSending(true);
 
     console.log('[EMITTING CREATE TRANSACTION]');
     socket.emit(event, data);
-
-    setTimeout(() => {
-      setIsRedirectEnable(true);
-    }, 2000);
   };
 
   const sendTransaction = async () => {
-    emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
+    emitCreateTransactionEvent(SocketEvents.TX_CREATE, {
       operations: summary.transactionSummary,
       tx,
     });
   };
 
-  const emitSignedMessage = (message: string) => {
-    socket.emit(SocketEvents.DEFAULT, {
-      username: SocketUsernames.UI,
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      type: SocketEvents.SIGN_CONFIRMED,
-      request_id,
-      data: {
-        signedMessage: message,
-      },
+  const sendTransactionAndSign = async () => {
+    emitCreateTransactionEvent(SocketEvents.TX_CREATE, {
+      operations: summary.transactionSummary,
+      tx,
+      sign: true,
     });
   };
 
@@ -120,9 +200,21 @@ export const useTransactionSocket = () => {
     });
   };
 
+  const emitSignedMessage = (hash: string, signedMessage: string) => {
+    console.log('[EMITTING SIGN TRANSACTION]');
+    socket.emit(SocketEvents.TX_SIGN, {
+      hash,
+      signedMessage,
+    });
+  };
+
   const handleRedirectToBakoSafe = () => {
     window.close();
-    setIsRedirectEnable(false);
+    setTransactionSuccess({
+      show: false,
+      title: '',
+      description: '',
+    });
     window.open(window.location.origin, '_BLANK');
   };
 
@@ -135,6 +227,7 @@ export const useTransactionSocket = () => {
     }
 
     if (socket.connected) {
+      console.log('[EMITTING SOCKET CONNECTED]');
       socket.emit(SocketEvents.DEFAULT, {
         sessionId,
         to: SocketUsernames.CONNECTOR,
@@ -159,11 +252,14 @@ export const useTransactionSocket = () => {
     socket,
     send: {
       isLoading: sending,
-      handler: sendTransaction,
+      handlers: {
+        sendTransaction,
+        sendTransactionAndSign,
+      },
       cancel: cancelSendTransaction,
     },
     handleRedirectToBakoSafe,
-    isRedirectEnable,
+    transactionSuccess,
     signMessage: {
       emitSignedMessage,
     },

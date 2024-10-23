@@ -1,42 +1,42 @@
 import { Button } from '@chakra-ui/react';
+import { useState } from 'react';
 
-import { Dialog, SquarePlusIcon } from '@/components';
+import CreateTxMenuButton, {
+  ECreateTransactionMethods,
+} from '@/modules/transactions/components/dialog/create/createTxMenuButton';
 
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
+  const [createTxMethod, setCreateTxMethod] =
+    useState<ECreateTransactionMethods>(
+      ECreateTransactionMethods.CREATE_AND_SIGN,
+    );
+
   const {
     vault,
     pendingSignerTransactions,
     summary,
     validAt,
-    send: { isLoading, handler, cancel },
-    isRedirectEnable,
+    transactionSuccess,
+    send: {
+      isLoading,
+      cancel,
+      handlers: { sendTransaction, sendTransactionAndSign },
+    },
     handleRedirectToBakoSafe,
   } = useTransactionSocket();
 
   const CreateTransactionButton = () => (
-    <Dialog.PrimaryAction
-      size="md"
+    <CreateTxMenuButton
+      createTxMethod={createTxMethod}
+      setCreateTxMethod={setCreateTxMethod}
       isLoading={isLoading}
-      leftIcon={<SquarePlusIcon fontSize="lg" />}
-      onClick={handler}
-      fontWeight={700}
-      fontSize={14}
-    >
-      Create transaction
-    </Dialog.PrimaryAction>
-
-    // [CONNECTOR SIGNATURE]
-    // <CreateTxMenuButton
-    //   createTxMethod={createTxMethod}
-    //   setCreateTxMethod={setCreateTxMethod}
-    //   isLoading={isLoading}
-    //   isDisabled={isLoading}
-    //   handleCreateTransaction={handler}
-    //   handleCreateAndSignTransaction={redirectHandler}
-    // />
+      isDisabled={isLoading}
+      handleCreateTransaction={sendTransaction}
+      handleCreateAndSignTransaction={sendTransactionAndSign}
+    />
   );
 
   const RedirectToBakoSafeButton = () => (
@@ -58,7 +58,6 @@ const TransactionConfirm = () => {
 
   return (
     <DappTransactionWrapper
-      isRedirectEnable={isRedirectEnable}
       title="Create transaction"
       validAt={validAt}
       vault={vault}
@@ -68,6 +67,7 @@ const TransactionConfirm = () => {
       redirectButton={<RedirectToBakoSafeButton />}
       primaryActionLoading={isLoading}
       cancel={cancel}
+      transactionSuccess={transactionSuccess}
     />
   );
 };

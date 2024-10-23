@@ -16,7 +16,11 @@ import { useQueryParams } from '@/modules/auth/hooks';
 import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { UseTransactionSocket, useVerifyBrowserType } from '../../hooks';
+import {
+  ITransactionSuccess,
+  UseTransactionSocket,
+  useVerifyBrowserType,
+} from '../../hooks';
 import { DappError } from '../connection';
 import { DappTransaction } from '.';
 
@@ -28,7 +32,7 @@ interface DappTransactionWrapperProps {
   validAt: UseTransactionSocket['validAt'];
   vault?: UseTransactionSocket['vault'];
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
-  isRedirectEnable: boolean;
+  transactionSuccess: ITransactionSuccess;
   summary: UseTransactionSocket['summary'];
   cancel: UseTransactionSocket['send']['cancel'];
 }
@@ -44,7 +48,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     cancel,
     redirectButton,
-    isRedirectEnable,
+    transactionSuccess,
   } = props;
 
   const [closePopover, setClosePopover] = useState(false);
@@ -74,12 +78,12 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
 
   return (
     <Container>
-      {isRedirectEnable ? (
+      {transactionSuccess.show ? (
         <VStack h="full" justifyContent="center" w="full">
           <VStack mt="auto">
             <Icon fontSize={120} as={DoneIcon} />
             <Text fontWeight={700} fontSize="20px" color="grey.75">
-              Transaction created!
+              {transactionSuccess.title}
             </Text>
             <Text
               color="grey.250"
@@ -87,7 +91,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
               fontWeight={400}
               lineHeight="16.8px"
             >
-              Your transaction is pending to be signed. Sign at Bako Safe.
+              {transactionSuccess.description}
             </Text>
           </VStack>
           <Box w="full" mt="auto">
