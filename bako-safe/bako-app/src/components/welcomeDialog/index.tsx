@@ -157,4 +157,4 @@ const WelcomeDialog = ({
   );
 };
 
-export default WelcomeDialog;
+export { WelcomeDialog };

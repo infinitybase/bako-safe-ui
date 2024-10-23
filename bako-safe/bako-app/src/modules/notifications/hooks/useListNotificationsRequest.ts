@@ -1,13 +1,11 @@
+import { NotificationService } from '@services/modules/notifications';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { NotificationsQueryKey } from '@/modules/core';
-import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
 import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
-
-import { NotificationService } from '../services';
 
 const useListNotificationsRequest = (account: string) => {
   const { data, ...query } = useInfiniteQuery({

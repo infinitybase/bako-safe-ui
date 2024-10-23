@@ -1,7 +1,7 @@
 import { FormControl } from '@chakra-ui/react';
+import { Select, SelectProps } from '@ui/components';
 import React from 'react';
 
-import { Select, SelectProps } from '@ui/components';
 import {
   AddressUtils,
   Asset,

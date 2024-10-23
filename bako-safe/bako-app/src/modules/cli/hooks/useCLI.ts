@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
-
 import {
   BitCoinIcon,
   CoinsIcon,
   MoreLessIcon,
   RecoveryIcon,
 } from '@ui/components';
+import { useMemo, useState } from 'react';
+
 import { PredicateAndWorkspace, Workspace } from '@/modules';
 import { defaultPermissions, PermissionRoles } from '@/modules/core/models';
 

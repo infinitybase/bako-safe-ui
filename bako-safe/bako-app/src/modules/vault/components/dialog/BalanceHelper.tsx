@@ -1,5 +1,4 @@
 import { Heading, Text } from '@chakra-ui/react';
-
 import { Dialog, DialogModalProps } from '@ui/components';
 
 interface BalanceHelperProps extends Omit<DialogModalProps, 'children'> {}

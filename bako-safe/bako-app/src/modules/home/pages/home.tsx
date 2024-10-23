@@ -10,11 +10,15 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import {
+  AddressBookIcon,
+  CustomSkeleton,
+  HomeIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@ui/components';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@ui/components';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages } from '@/modules/core/routes';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

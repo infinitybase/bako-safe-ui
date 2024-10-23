@@ -1,7 +1,6 @@
 import { CardProps, HStack } from '@chakra-ui/react';
-import { ReactNode } from 'react';
-
 import { Card } from '@ui/components';
+import { ReactNode } from 'react';
 
 interface ActionCardContainerProps extends CardProps {
   children: ReactNode;

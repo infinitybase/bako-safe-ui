@@ -12,18 +12,18 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
-
 import {
   Dialog,
   FeedbackDelete,
   FeedbackSuccess,
   FeedbackUpdate,
+  RefreshIcon,
   RemoveIcon,
   StepProgress,
+  UserPlusIcon,
 } from '@ui/components';
-import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { UserPlusIcon } from '@/components/icons/user-add-icon';
+import { useParams } from 'react-router-dom';
+
 import { CreateContactDialog } from '@/modules/addressBook';
 import { AddressUtils } from '@/modules/core';
 import { MemberAddressForm } from '@/modules/workspace/components';

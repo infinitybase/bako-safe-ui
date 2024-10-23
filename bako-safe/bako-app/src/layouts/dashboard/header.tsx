@@ -17,21 +17,21 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import {
-  AddressWithCopyBtn,
+  BakoIcon,
+  DisconnectIcon,
+  FeedbackIcon,
+  NetworkIcon,
   NotificationIcon,
   PlusIcon,
+  SettingsTopMenuIcon,
   UnknownIcon,
-} from '@ui/icons';
+} from '@ui/components';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
-import { DisconnectIcon } from '@/components/icons/disconnect';
-import { FeedbackIcon } from '@/components/icons/feedback';
-import { NetworkIcon } from '@/components/icons/network';
-import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
+import { AddressWithCopyBtn } from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';

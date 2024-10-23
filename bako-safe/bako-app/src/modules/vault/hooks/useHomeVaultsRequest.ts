@@ -1,11 +1,7 @@
+import { SortOption, TransactionOrderBy } from '@services/modules/transaction';
+import { VaultService } from '@services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
 
-import {
-  SortOption,
-  TransactionOrderBy,
-} from '@/modules/transactions/services';
-
-import { VaultService } from '../services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {

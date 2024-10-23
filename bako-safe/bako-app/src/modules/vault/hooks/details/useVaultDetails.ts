@@ -1,7 +1,8 @@
-import { useSidebar } from '../details';
+import { useCLI } from '@/modules/cli/hooks';
 import { useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useCLI } from '@/modules/cli/hooks';
+
+import { useSidebar } from '../details';
 
 const useVaultDetails = () => {
   const {

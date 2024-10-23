@@ -1,8 +1,7 @@
+import { HomeService } from '@services/modules/home';
 import { useQuery } from '@tanstack/react-query';
 
 import { HomeQueryKey } from '@/modules/core/models';
-
-import { HomeService } from '../services';
 
 const useHomeTransactionsRequest = (workspaceId: string) => {
   return useQuery({

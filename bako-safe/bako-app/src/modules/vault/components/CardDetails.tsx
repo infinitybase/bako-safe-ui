@@ -9,25 +9,22 @@ import {
   HStack,
   Icon,
   IconButton,
-  keyframes,
   Text,
-  TextProps,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
-import { useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import {
   Card,
   CustomSkeleton,
   ErrorTooltip,
+  EyeCloseIcon,
+  EyeOpenIcon,
   SquarePlusIcon,
 } from '@ui/components';
-import { EyeCloseIcon } from '@/components/icons/eye-close';
-import { EyeOpenIcon } from '@/components/icons/eye-open';
-import { RefreshIcon } from '@/components/icons/refresh-icon';
+import { bn } from 'fuels';
+import { useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
@@ -37,6 +34,7 @@ import { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 import BalanceHelperDrawer from './BalanceHelperDrawer';
+import { Update } from './BalanceUpdate';
 import BalanceHelperDialog from './dialog/BalanceHelper';
 
 export interface CardDetailsProps {
@@ -45,41 +43,6 @@ export interface CardDetailsProps {
   isPendingSigner: boolean;
   setAddAssetsDialogState: (value: boolean) => void;
 }
-
-const Update = (props: TextProps & { isLoading: boolean }) => {
-  const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-  return (
-    <Text
-      w={20}
-      display="flex"
-      alignItems="center"
-      justifyContent="space-around"
-      variant="description"
-      fontSize={{ base: 'small', sm: 'md' }}
-      fontWeight="semibold"
-      _hover={{
-        cursor: 'pointer',
-        color: 'grey.200',
-      }}
-      {...props}
-    >
-      Update
-      <RefreshIcon
-        _hover={{
-          cursor: 'pointer',
-          color: 'grey.200',
-        }}
-        w={{ base: 4, sm: 5 }}
-        h={{ base: 4, sm: 5 }}
-        animation={props.isLoading ? `${spin} 1s linear infinite` : undefined}
-      />
-    </Text>
-  );
-};
 
 const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
   const assetsContainerRef = useRef(null);

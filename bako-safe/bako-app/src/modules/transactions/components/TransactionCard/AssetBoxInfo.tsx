@@ -7,11 +7,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { DeployIcon, DoubleArrowIcon } from '@ui/components';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@ui/components';
-import { DeployIcon } from '@/components/icons/tx-deploy';
+import { AddressWithCopyBtn } from '@/components';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel } from '@/modules/core';

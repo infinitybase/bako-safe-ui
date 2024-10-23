@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { TransactionType } from 'bakosafe';
+import { useState } from 'react';
 
 const useFilterTxType = () => {
   const [txFilterType, setTxFilterType] = useState<TransactionType | undefined>(

@@ -2,9 +2,9 @@ import { Pages } from '@/modules/core';
 import { useTab } from '@/modules/core/hooks';
 import { EnumUtils } from '@/modules/core/utils';
 
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { useCreateWorkspaceForm } from './useCreateWorkspaceForm';
 import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export type UseCreateWorkspace = ReturnType<typeof useCreateWorkspace>;
 
@@ -14,12 +14,12 @@ export enum CreateWorkspaceTabState {
   SUCCESS,
 }
 
-type UserCreateWorkspaceParams = {
-  handleCancel: () => void;
-  onClose: () => void;
-};
+// type UserCreateWorkspaceParams = {
+//   handleCancel: () => void;
+//   onClose: () => void;
+// };
 
-const useCreateWorkspace = (props: UserCreateWorkspaceParams) => {
+const useCreateWorkspace = () => {
   const {
     workspaceInfos: {
       handlers: { handleWorkspaceSelection },

@@ -7,10 +7,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { PredicateAndWorkspace } from '@services/modules/vault';
 import { Dialog } from '@ui/components';
 import { QRCodeSVG } from 'qrcode.react';
 
-import { AddressUtils, PredicateAndWorkspace } from '@/modules';
+import { AddressUtils } from '@/modules';
 import { openFaucet } from '@/modules/vault/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
@@ -197,4 +198,4 @@ const DepositDialog = ({
   );
 };
 
-export default DepositDialog;
+export { DepositDialog };

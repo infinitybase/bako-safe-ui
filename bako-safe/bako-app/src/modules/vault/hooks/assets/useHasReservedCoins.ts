@@ -1,8 +1,8 @@
+import { HasReservedCoins, VaultService } from '@services/modules/vault';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
 
-import { HasReservedCoins, VaultService } from '../../services';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
 import { vaultAssetsQueryKey } from './useVaultAssets';
 

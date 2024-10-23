@@ -9,9 +9,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-
 import { UpRightArrow } from '@ui/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { BakoIcon } from '@ui/components/icons';
+
 import {
   AddressUtils,
   Asset,

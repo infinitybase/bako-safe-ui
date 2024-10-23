@@ -1,10 +1,9 @@
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
 import {
   SignerTransactionPayload,
   SignerTransactionResponse,
   TransactionService,
-} from '@/modules/transactions/services';
+} from '@services/modules/transaction';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 const useSignTransactionRequest = (
   options?: UseMutationOptions<

@@ -12,10 +12,9 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { Dialog, DialogModalProps, TooltipIcon } from '@ui/components';
 import { useState } from 'react';
 
-import { Dialog, DialogModalProps } from '@ui/components';
-import { TooltipIcon } from '@/components/icons/tooltip';
 import { useCreateTransaction } from '@/modules/transactions/hooks';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

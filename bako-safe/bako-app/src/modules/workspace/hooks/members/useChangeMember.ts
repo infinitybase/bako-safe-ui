@@ -13,13 +13,13 @@ import {
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
 import { WorkspacePermissionUtils } from '../../utils';
+import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {
   useChangePermissionsRequest,
   useDeleteMemberRequest,
   useIncludeMemberRequest,
 } from './useChangeMemberRequest';
-import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export enum MemberTabState {
   FORM = 0,

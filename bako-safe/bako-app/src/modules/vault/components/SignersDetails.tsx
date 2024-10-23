@@ -8,9 +8,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Card, CustomSkeleton } from '@ui/components';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, CustomSkeleton } from '@ui/components';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

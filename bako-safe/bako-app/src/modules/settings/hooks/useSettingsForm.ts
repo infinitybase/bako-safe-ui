@@ -39,6 +39,4 @@ const useSettingsForm = () => {
   };
 };
 
-// export type UseCreateTransactionForm = ReturnType<typeof useSettingsForm>;
-
 export { useSettingsForm };

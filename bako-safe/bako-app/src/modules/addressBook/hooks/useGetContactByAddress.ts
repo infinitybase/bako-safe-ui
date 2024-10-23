@@ -1,4 +1,4 @@
-import { ListContactsResponse } from '../services';
+import { ListContactsResponse } from '@services/modules/address-book';
 
 const useGetContactByAddress = (
   address: string,

@@ -85,7 +85,7 @@ const useVaultAssets = (
   const isEthBalanceLowerThanReservedAmount = useMemo(() => {
     // Needs to be fixed using the correct baseFee format or method
     return (
-      Number(ethBalance) <= Number(bn.parseUnits(gasConfig.toString()).format())
+      Number(ethBalance) <= Number(bn.parseUnits(gasConfig.toString()).format()) // verify if it's possible to use vault.provider.getGasConfig() and remove this gasConfig const
     );
   }, [ethBalance]);
 

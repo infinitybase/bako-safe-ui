@@ -9,9 +9,8 @@ import {
   StackProps,
   useAccordionItemState,
 } from '@chakra-ui/react';
+import { CheckIcon, EditIcon, RemoveIcon } from '@ui/components';
 
-import { CheckIcon, RemoveIcon } from '@ui/components';
-import { EditIcon } from '@/components/icons/edit-icon';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 type AccordionActionProp = Pick<

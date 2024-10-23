@@ -7,9 +7,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
+import { TransactionWithVault } from '@services/modules/transaction';
 import { MinimalAlertIcon } from '@ui/components';
-import { TransactionWithVault } from '@/modules/transactions/services';
 
 export interface IConnectorInfos {
   transaction: TransactionWithVault;

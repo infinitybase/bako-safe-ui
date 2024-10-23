@@ -1,6 +1,6 @@
-import { Actions, ActionsMobile } from './Actions';
+import { Actions } from './Actions';
+import { ActionsMobile } from './ActionsMobile';
 import { Amount } from './Amount';
-import { Assets } from './Assets';
 import { Container } from './Container';
 import { CreationDate } from './CreationDate';
 import { DepositDetails } from './deposit-details/DepositDetails';
@@ -15,7 +15,6 @@ const TransactionCard = {
   Actions,
   ActionsMobile,
   Amount,
-  Assets,
   Container,
   CreationDate,
   Details,

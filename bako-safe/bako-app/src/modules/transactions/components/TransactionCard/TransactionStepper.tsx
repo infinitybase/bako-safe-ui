@@ -10,13 +10,15 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
+import {
+  ITransactionHistory,
+  TransactionHistoryType,
+} from '@services/modules/transaction';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { ITransactionHistory, TransactionHistoryType } from '../../services';
 
 interface TransactionStepperProps {
   steps: ITransactionHistory[];

@@ -1,4 +1,5 @@
-import { ITransactionsGroupedByMonth } from '../../services';
+import { ITransactionsGroupedByMonth } from '@services/modules/transaction';
+
 import { IPendingTransactionsRecord } from './useTransactionList';
 
 const usePendingTransactionsList = (

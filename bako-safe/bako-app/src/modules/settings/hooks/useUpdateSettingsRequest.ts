@@ -1,10 +1,9 @@
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
 import {
   SettingsService,
   UpdateSettingsPayload,
   UpdateSettingsResponse,
-} from '../services';
+} from '@services/modules/settings';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 const useUpdateSettingsRequest = (
   options?: UseMutationOptions<

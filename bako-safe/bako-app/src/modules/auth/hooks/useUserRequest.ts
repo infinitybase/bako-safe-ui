@@ -1,5 +1,6 @@
 import { useFuel } from '@fuels/react';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import { Address } from 'fuels';
 
 import {
   CreateUserPayload,
@@ -9,7 +10,6 @@ import {
   UserService,
   UseSignInRequestParams,
 } from '../services';
-import { Address } from 'fuels';
 
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,

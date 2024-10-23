@@ -1,10 +1,11 @@
-import { ChangeEvent, useCallback } from 'react';
-import debounce from 'lodash.debounce';
-import { useCreateContactForm } from './useCreateContactForm';
 import { UseDisclosureProps } from '@chakra-ui/react';
-import { ListContactsResponse } from '../services';
+import { ListContactsResponse } from '@services/modules/address-book';
 import { UseQueryResult } from '@tanstack/react-query';
 import { Address } from 'fuels';
+import debounce from 'lodash.debounce';
+import { ChangeEvent, useCallback } from 'react';
+
+import { useCreateContactForm } from './useCreateContactForm';
 
 interface DialogProps {
   address?: string;

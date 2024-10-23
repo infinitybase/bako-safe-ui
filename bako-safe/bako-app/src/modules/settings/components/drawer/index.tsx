@@ -18,10 +18,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { LineCloseIcon } from '@ui/components';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { LineCloseIcon } from '@ui/components';
 import { useWebAuthnInput } from '@/modules/auth/hooks/webAuthn';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

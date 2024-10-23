@@ -1,7 +1,5 @@
+import { TransactionService } from '@services/modules/transaction';
 import { useQuery } from '@tanstack/react-query';
-
-import { TransactionService } from '../../services';
-
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 
 export type IUseTransactionSignaturePendingReturn = ReturnType<

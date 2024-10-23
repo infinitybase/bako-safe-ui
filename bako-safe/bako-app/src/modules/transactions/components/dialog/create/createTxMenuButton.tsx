@@ -8,10 +8,8 @@ import {
   MenuList,
   Text,
 } from '@chakra-ui/react';
+import { ChevronDownIcon, Dialog } from '@ui/components';
 import { useEffect, useRef, useState } from 'react';
-
-import { Dialog } from '@ui/components';
-import { ChevronDownIcon } from '@/components/icons/chevron-down';
 
 export enum ECreateTransactionMethods {
   CREATE = 'Create',

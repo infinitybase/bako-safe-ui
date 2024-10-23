@@ -1,8 +1,8 @@
+import { TransactionOrderBy } from '@services/modules/transaction';
 import { TransactionType } from 'bakosafe';
 
 import { useBakoSafeTransactionList } from '@/modules/core';
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
-import { TransactionOrderBy } from '@/modules/transactions/services';
 
 const VAULT_TRANSACTIONS_QUERY_KEY = 'transactions/byVault';
 

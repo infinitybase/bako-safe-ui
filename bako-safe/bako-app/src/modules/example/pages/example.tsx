@@ -19,13 +19,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
-import { BsBoxArrowUpRight } from 'react-icons/bs';
-import { FaRegClone } from 'react-icons/fa';
-import { HiQrCode } from 'react-icons/hi2';
-import { MdEmail } from 'react-icons/md';
-import { SiBitcoinsv } from 'react-icons/si';
-
 import {
   Card,
   Dialog,
@@ -33,6 +26,11 @@ import {
   PendingIcon,
   SuccessIcon,
 } from '@ui/components';
+import { BsBoxArrowUpRight } from 'react-icons/bs';
+import { FaRegClone } from 'react-icons/fa';
+import { HiQrCode } from 'react-icons/hi2';
+import { MdEmail } from 'react-icons/md';
+import { SiBitcoinsv } from 'react-icons/si';
 
 const AccordionTEste = () => {
   const { isOpen, onClose, onOpen } = useAccordionItemState();

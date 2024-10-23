@@ -1,5 +1,4 @@
 import { Avatar, Badge, HStack, Text, VStack } from '@chakra-ui/react';
-
 import { Card, CardProps } from '@ui/components';
 
 import { PredicateWorkspace } from '../../services';

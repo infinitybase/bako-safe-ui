@@ -10,9 +10,8 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
-
 import { Dialog } from '@ui/components';
+import { Controller } from 'react-hook-form';
 
 import { UseChangeMember } from '../../hooks';
 import { WorkspacePermissionUtils } from '../../utils';

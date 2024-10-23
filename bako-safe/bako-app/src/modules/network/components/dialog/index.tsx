@@ -7,9 +7,8 @@ import {
   Spinner,
   VStack,
 } from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
-
 import { Dialog, DialogModalProps } from '@ui/components';
+import { Controller } from 'react-hook-form';
 
 import { useNetworks } from '../../hooks';
 

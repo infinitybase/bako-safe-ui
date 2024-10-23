@@ -11,8 +11,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
+import { PredicateWorkspace } from '@services/modules/vault';
 import { Card } from '@ui/components';
+
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';
 import {
@@ -20,8 +21,6 @@ import {
   WorkspacePermissionUtils,
 } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { PredicateWorkspace } from '../services';
 
 interface VaultCardProps extends CardProps {
   ownerId: string;

@@ -12,19 +12,17 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import {
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  MenuIcon,
+  TransactionTypeFilters,
+} from '@ui/components';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  CustomSkeleton,
-  HomeIcon,
-  TransactionTypeFilters,
-} from '@ui/components';
-import AddAssetsDialog from '@/components/addAssetsDialog';
-import DepositDialog from '@/components/depositDialog';
-import { EmptyState } from '@/components/emptyState';
-import { MenuIcon } from '@/components/icons/menu';
-import WelcomeDialog from '@/components/welcomeDialog';
+import { AddAssetsDialog, DepositDialog, WelcomeDialog } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
@@ -279,6 +277,7 @@ const VaultDetailsPage = () => {
           incomingAction={handleIncomingAction}
           outgoingAction={handleOutgoingAction}
           buttonsFullWidth={isSmall}
+          isSmallScreen={isSmall}
         />
       </Box>
 

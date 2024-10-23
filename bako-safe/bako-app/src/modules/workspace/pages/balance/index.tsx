@@ -9,10 +9,9 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
+import { CustomSkeleton, EmptyState, HomeIcon } from '@ui/components';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon } from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
 import { AssetsBalanceList } from '@/modules/core';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';

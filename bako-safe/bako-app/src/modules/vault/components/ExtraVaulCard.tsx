@@ -6,7 +6,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
 import { Card } from '@ui/components';
 
 interface ExtraVaultCardProps extends CardProps {

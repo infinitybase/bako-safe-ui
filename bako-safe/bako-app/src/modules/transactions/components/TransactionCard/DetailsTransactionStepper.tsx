@@ -1,5 +1,6 @@
+import { ITransactionHistory } from '@services/modules/transaction';
+
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
-import { ITransactionHistory } from '../../services';
 
 interface DetailsTransactionStepperProps {
   transactionId: string;

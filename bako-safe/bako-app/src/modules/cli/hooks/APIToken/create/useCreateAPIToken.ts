@@ -1,12 +1,12 @@
+import {
+  CreateAPITokenPayload,
+  CreateAPITokenResponse,
+} from '@services/modules/cli';
 import { Dispatch, useState } from 'react';
 
 import { queryClient } from '@/config';
 import { useGetParams } from '@/modules';
 import { useContactToast } from '@/modules/addressBook';
-import {
-  CreateAPITokenPayload,
-  CreateAPITokenResponse,
-} from '@/modules/cli/services';
 
 import { GET_API_TOKENS_QUERY_KEY } from '../list';
 import { TabState } from '../useAPIToken';

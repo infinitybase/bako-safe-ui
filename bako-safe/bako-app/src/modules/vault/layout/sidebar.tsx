@@ -1,5 +1,4 @@
 import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
-
 import {
   CoinsIcon,
   ExchangeIcon,
@@ -7,6 +6,7 @@ import {
   PendingIcon,
   SettingsIcon,
 } from '@ui/components';
+
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';

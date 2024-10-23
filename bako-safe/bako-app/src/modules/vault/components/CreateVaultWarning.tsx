@@ -6,7 +6,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
 import { TriangleWarning } from '@ui/components';
 
 interface ICreateVaultWarningProps extends StackProps {

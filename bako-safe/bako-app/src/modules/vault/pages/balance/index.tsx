@@ -9,11 +9,10 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { CustomSkeleton, EmptyState, HomeIcon } from '@ui/components';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-import { CustomSkeleton, HomeIcon } from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { AssetsBalanceList, Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

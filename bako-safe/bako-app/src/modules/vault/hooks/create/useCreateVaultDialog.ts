@@ -1,9 +1,9 @@
+import { useCreateConnections } from '@dapp/hooks/useCreateConnection';
 import { useCallback } from 'react';
 
 import { queryClient } from '@/config';
 import { useQueryParams } from '@/modules/auth';
 import { Pages } from '@/modules/core';
-import { useCreateConnections } from '@/modules/dapp/hooks/useCreateConnection';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TabState, useCreateVault } from './useCreateVault';

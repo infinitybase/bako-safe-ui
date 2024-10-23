@@ -12,14 +12,18 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import {
+  AddressBookIcon,
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@ui/components';
 import { useEffect } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
-import { CustomSkeleton, HomeIcon, VaultIcon } from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';

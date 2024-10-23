@@ -1,3 +1,4 @@
+import { PredicateAndWorkspace } from '@services/modules/vault';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -6,8 +7,6 @@ import { Pages } from '@/modules/core/routes';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultListRequest } from '@/modules/vault/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { PredicateAndWorkspace } from '../../services/methods';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;

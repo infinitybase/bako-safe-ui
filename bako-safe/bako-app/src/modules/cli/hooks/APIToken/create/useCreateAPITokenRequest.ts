@@ -1,6 +1,5 @@
+import { APITokenService, CreateAPITokenPayload } from '@services/modules/cli';
 import { useMutation } from '@tanstack/react-query';
-
-import { APITokenService, CreateAPITokenPayload } from '@/modules/cli/services';
 
 const useCreateAPITokenRequest = (predicateId: string) => {
   const { mutateAsync, isPending, isError } = useMutation({

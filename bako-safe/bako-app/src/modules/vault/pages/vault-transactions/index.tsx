@@ -11,17 +11,17 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionStatus } from 'bakosafe';
-import { useEffect } from 'react';
-import { RiMenuUnfoldLine } from 'react-icons/ri';
-
 import {
   CustomSkeleton,
+  EmptyState,
   HomeIcon,
   LineCloseIcon,
   TransactionTypeFilters,
 } from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
+import { TransactionStatus } from 'bakosafe';
+import { useEffect } from 'react';
+import { RiMenuUnfoldLine } from 'react-icons/ri';
+
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useGetParams } from '@/modules/core';
 import {
@@ -214,6 +214,7 @@ const TransactionsVaultPage = () => {
 
         {!isSmall && (
           <TransactionTypeFilters
+            isSmallScreen={isSmall}
             mt={2}
             currentFilter={filter.txFilterType}
             incomingAction={handleIncomingAction}
@@ -260,6 +261,7 @@ const TransactionsVaultPage = () => {
       </TransactionFilter.Control>
       {isSmall && (
         <TransactionTypeFilters
+          isSmallScreen={isSmall}
           mt={3}
           currentFilter={filter.txFilterType}
           incomingAction={handleIncomingAction}

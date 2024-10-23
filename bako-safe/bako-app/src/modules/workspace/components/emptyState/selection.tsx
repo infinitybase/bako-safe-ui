@@ -1,6 +1,6 @@
 import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
+import { UserWorkspaceIcon } from '@ui/components';
 
-import { UserWorkspaceIcon } from '@/components/icons/user-workspace-icon';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 export const SelectionEmptyState = () => {

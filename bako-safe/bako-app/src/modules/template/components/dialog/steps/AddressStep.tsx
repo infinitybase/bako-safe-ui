@@ -10,13 +10,6 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
-import {
-  Controller,
-  UseFieldArrayReturn,
-  UseFormReturn,
-} from 'react-hook-form';
-
 import {
   Autocomplete,
   Dialog,
@@ -24,6 +17,13 @@ import {
   Select,
   UserAddIcon,
 } from '@ui/components';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Controller,
+  UseFieldArrayReturn,
+  UseFormReturn,
+} from 'react-hook-form';
+
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
@@ -31,9 +31,9 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;

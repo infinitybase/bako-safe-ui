@@ -7,15 +7,15 @@ import {
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
+import { TransactionWithVault } from '@services/modules/transaction';
+import { CustomSkeleton } from '@ui/components';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { CustomSkeleton } from '@ui/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
-import { TransactionWithVault } from '../../services';
 import { AmountUSD } from './transfer-details';
 
 interface TransactionCardAmountProps extends BoxProps {

@@ -1,11 +1,11 @@
 import { useAccordionItemState } from '@chakra-ui/react';
-import { QueryState, useQuery } from '@tanstack/react-query';
-
-import { queryClient } from '@/config';
 import {
   ITransactionHistory,
   TransactionService,
-} from '@/modules/transactions/services';
+} from '@services/modules/transaction';
+import { QueryState, useQuery } from '@tanstack/react-query';
+
+import { queryClient } from '@/config';
 
 export const TRANSACTION_HISTORY_QUERY_KEY = 'transaction/history';
 

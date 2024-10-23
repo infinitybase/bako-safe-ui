@@ -14,6 +14,7 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
+import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@ui/components';
 import { FaRegClone } from 'react-icons/fa';
 import { SiBitcoinsv } from 'react-icons/si';
 
@@ -24,7 +25,6 @@ import avatar4 from '@/assets/avatars/user-4.png';
 import avatar5 from '@/assets/avatars/user-5.png';
 import vault1 from '@/assets/avatars/vault-1.png';
 import vault2 from '@/assets/avatars/vault-2.png';
-import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@ui/components';
 
 /* TODO: Move to vault module */
 const VaultCard = ({ avatarSrc }: { avatarSrc: string }) => (

@@ -1,7 +1,7 @@
 import { BoxProps, Flex, Text, TextProps } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
-import { CopyAddressButton } from '@ui/components';
+import { CopyAddressButton } from '@/components';
 import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

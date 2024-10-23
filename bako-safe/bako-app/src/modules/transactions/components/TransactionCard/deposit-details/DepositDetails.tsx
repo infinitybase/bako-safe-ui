@@ -1,14 +1,14 @@
 import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { TransactionWithVault } from '@services/modules/transaction';
+import { UpRightArrow } from '@ui/components';
 import { TransactionStatus } from 'bakosafe';
 
-import { UpRightArrow } from '@ui/components';
 import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {

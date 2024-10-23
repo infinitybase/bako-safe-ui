@@ -1,9 +1,9 @@
 import { Box } from '@chakra-ui/react';
+import { TransactionWithVault } from '@services/modules/transaction';
 import { OperationName } from 'fuels';
 import React from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
-import { TransactionWithVault } from '@/modules/transactions/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { formatAssetAmount, isHex } from '@/utils';
 

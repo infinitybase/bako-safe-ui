@@ -4,8 +4,9 @@ import { Outlet } from 'react-router-dom';
 import { Container } from '@/layouts/dashboard/container';
 import { Content } from '@/layouts/dashboard/content';
 import { Header } from '@/layouts/dashboard/header';
-import { Sidebar } from './sidebar';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { Sidebar } from './sidebar';
 
 interface VaultDashboardLayoutProps {
   children?: React.ReactNode;

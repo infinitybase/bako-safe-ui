@@ -9,8 +9,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-
 import { CustomSkeleton, Dialog } from '@ui/components';
+
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog } from '../dialog';

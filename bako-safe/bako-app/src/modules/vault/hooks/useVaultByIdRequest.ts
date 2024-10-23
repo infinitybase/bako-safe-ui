@@ -1,8 +1,8 @@
+import { PredicateAndWorkspace, VaultService } from '@services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
 
 import { IVaultConfigurable } from '@/modules/core';
 
-import { PredicateAndWorkspace, VaultService } from '../services';
 import { ordinateMembers } from '../utils';
 
 const VAULT_BY_ID_QUERY_KEY = 'vault/by-id';

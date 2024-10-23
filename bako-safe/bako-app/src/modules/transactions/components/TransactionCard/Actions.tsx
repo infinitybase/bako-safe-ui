@@ -7,23 +7,16 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { TransactionType } from 'bakosafe';
-import {
-  IoIosArrowDown,
-  IoIosArrowForward,
-  IoIosArrowUp,
-} from 'react-icons/io';
-
+import { ITransactionWithType } from '@services/modules/transaction';
 import { ErrorIcon, SuccessIcon } from '@ui/components';
+import { TransactionType } from 'bakosafe';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+
 import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { ITransactionWithType } from '../../services';
-
-interface ActionsMobileProps {
-  awaitingAnswer?: boolean | ITransactionWithType;
-}
+import { ActionsMobile } from './ActionsMobile';
 
 interface TransactionActionsProps extends BoxProps {
   status: TransactionState;
@@ -32,32 +25,6 @@ interface TransactionActionsProps extends BoxProps {
   isSigner: boolean;
   callBack?: () => void;
 }
-
-const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
-  const {
-    screenSizes: { isSmall, isExtraSmall },
-  } = useWorkspaceContext();
-  return (
-    <HStack w="full" justifyContent="end" spacing={1}>
-      <Button
-        color={awaitingAnswer ? 'black' : 'grey.75'}
-        bgColor={awaitingAnswer ? 'brand.500' : '#F5F5F50D'}
-        fontWeight={awaitingAnswer ? 'bold' : 'normal'}
-        border="none"
-        fontSize="xs"
-        letterSpacing=".5px"
-        alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-        variant="secondary"
-        rightIcon={
-          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
-        }
-        px={isExtraSmall ? 3 : 4}
-      >
-        {awaitingAnswer ? 'Sign' : isSmall ? 'Details' : 'View Details'}
-      </Button>
-    </HStack>
-  );
-};
 
 const Actions = ({
   transaction,
@@ -173,4 +140,4 @@ const Actions = ({
   );
 };
 
-export { Actions, ActionsMobile };
+export { Actions };

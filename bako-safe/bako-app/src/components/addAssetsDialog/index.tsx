@@ -145,4 +145,4 @@ const AddAssetsDialog = ({
   );
 };
 
-export default AddAssetsDialog;
+export { AddAssetsDialog };

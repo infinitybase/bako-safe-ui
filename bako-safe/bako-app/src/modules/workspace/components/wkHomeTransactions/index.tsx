@@ -8,11 +8,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { CustomSkeleton, EmptyState } from '@ui/components';
 import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
-import { CustomSkeleton } from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
 import { Pages, shakeAnimationX } from '@/modules/core';
 import {
   TransactionCard,

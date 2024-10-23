@@ -1,5 +1,4 @@
 import { Box, Card, Heading, Text } from '@chakra-ui/react';
-
 import { EmptyBoxOutline } from '@ui/components';
 
 const NotificationsEmptyState = () => {

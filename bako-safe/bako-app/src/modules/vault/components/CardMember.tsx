@@ -7,8 +7,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
 import { Card } from '@ui/components';
+
 import { AddressUtils } from '@/modules/core';
 
 interface CardMemberProps {

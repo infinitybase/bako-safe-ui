@@ -11,14 +11,13 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
-
 import {
   Dialog,
   FeedbackSuccess,
   SquarePlusIcon,
   StepProgress,
 } from '@ui/components';
+import { Controller } from 'react-hook-form';
 
 import {
   CreateWorkspaceTabState,

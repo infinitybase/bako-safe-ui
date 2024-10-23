@@ -1,3 +1,4 @@
+import { TransactionWithVault } from '@services/modules/transaction';
 import { TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useState } from 'react';
@@ -10,7 +11,6 @@ import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import { TransactionWithVault } from '../../services';
 import {
   IPendingTransactionDetails,
   IPendingTransactionsRecord,

@@ -8,17 +8,18 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
-
+import { TransactionWithVault } from '@services/modules/transaction';
 import {
+  ContractIcon,
+  DeployIcon,
   Dialog,
   DialogModalProps,
   DownLeftArrowGreen,
   UpRightArrow,
   UpRightArrowYellow,
 } from '@ui/components';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { DeployIcon } from '@/components/icons/tx-deploy';
+import { format } from 'date-fns';
+
 import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
@@ -29,7 +30,6 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;

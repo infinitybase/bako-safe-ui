@@ -1,5 +1,4 @@
 import { Badge, CircularProgress, Icon } from '@chakra-ui/react';
-
 import { PendingIcon } from '@ui/components';
 
 interface WaitingSignatureBadgeProps {

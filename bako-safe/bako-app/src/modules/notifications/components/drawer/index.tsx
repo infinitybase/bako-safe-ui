@@ -12,7 +12,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
 import { CustomSkeleton, LineCloseIcon } from '@ui/components';
 
 import { useAppNotifications } from '../../hooks';

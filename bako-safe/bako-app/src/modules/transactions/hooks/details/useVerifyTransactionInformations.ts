@@ -1,7 +1,6 @@
+import { TransactionWithVault } from '@services/modules/transaction';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { Address, OperationName } from 'fuels';
-
-import { TransactionWithVault } from '../../services';
 
 const useVerifyTransactionInformations = (
   transaction: TransactionWithVault,

@@ -8,9 +8,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { DoubleArrowIcon } from '@ui/components';
 import { ITransferAsset } from 'bakosafe';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@ui/components';
+import { AddressWithCopyBtn } from '@/components';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

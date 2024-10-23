@@ -12,9 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
-import { UnknownIcon } from '@ui/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
+import { BakoIcon, UnknownIcon } from '@ui/components';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
 import { availableNetWorks, NetworkType } from '../../services';

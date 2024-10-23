@@ -1,6 +1,5 @@
+import { APITokenService, DeleteAPITokenParams } from '@services/modules/cli';
 import { useMutation } from '@tanstack/react-query';
-
-import { APITokenService, DeleteAPITokenParams } from '@/modules/cli/services';
 
 const useRemoveAPITokenRequest = () => {
   const { mutate, isError, isPending } = useMutation({

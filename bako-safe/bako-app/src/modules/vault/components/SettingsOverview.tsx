@@ -11,16 +11,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Card, CustomSkeleton } from '@ui/components';
 import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  AddressWithCopyBtn,
-  Card,
-  CommingSoonDialog,
-  CustomSkeleton,
-} from '@ui/components';
+import { AddressWithCopyBtn, CommingSoonDialog } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
 import { Pages, PermissionRoles } from '@/modules/core';

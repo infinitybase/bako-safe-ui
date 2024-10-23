@@ -4,7 +4,7 @@ import {
   DrawerOverlay,
   DrawerProps as ChakraDrawerProps,
 } from '@chakra-ui/react';
-import { LineCloseIcon } from '@ui/icons';
+import { LineCloseIcon } from '@ui/components';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

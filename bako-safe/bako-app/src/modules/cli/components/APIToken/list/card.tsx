@@ -11,7 +11,7 @@ import { LineCloseIcon, RemoveIcon } from '@ui/components';
 import { format } from 'date-fns';
 
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
-import { APIToken } from '@/modules/cli/services';
+import { APIToken } from '@services/modules/cli';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface APITokenCardProps {

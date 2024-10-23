@@ -1,8 +1,7 @@
+import { AddressBookService } from '@services/modules/address-book';
 import { useQuery } from '@tanstack/react-query';
 
 import { AddressBookQueryKey } from '@/modules/core';
-
-import { AddressBookService } from '../services';
 
 type UseListContactsRequestParams = {
   workspaceId: string;

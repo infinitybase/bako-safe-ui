@@ -7,14 +7,16 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-
-import { DownLeftArrowGreen, UpRightArrowYellow } from '@ui/components';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { DeployIcon } from '@/components/icons/tx-deploy';
+import { TransactionWithVault } from '@services/modules/transaction';
+import {
+  ContractIcon,
+  DeployIcon,
+  DownLeftArrowGreen,
+  UpRightArrowYellow,
+} from '@ui/components';
 
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
-import { TransactionWithVault } from '../../services/types';
 import { transactionStatus } from '../../utils';
 import { TransactionCard } from '../TransactionCard';
 import { DetailsDialog } from '../TransactionCard/DetailsDialog';

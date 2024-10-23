@@ -1,8 +1,8 @@
 import { Route } from 'react-router-dom';
 
 import { DashboardLayoutRouter } from '@/layouts';
-import { Pages } from '@/modules/core/routes';
 import { AuthRoute } from '@/modules/core/components/route/auth';
+import { Pages } from '@/modules/core/routes';
 
 import { AddressBookPage } from './pages';
 

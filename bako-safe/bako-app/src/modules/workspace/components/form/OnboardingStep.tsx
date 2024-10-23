@@ -11,9 +11,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
-import { SquarePlusIcon, StepProgress } from '@ui/components';
-import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
+import {
+  SquarePlusIcon,
+  StepProgress,
+  TransactionsBoxIcon,
+} from '@ui/components';
 
 interface OnboardingStepProps {
   tabs: {

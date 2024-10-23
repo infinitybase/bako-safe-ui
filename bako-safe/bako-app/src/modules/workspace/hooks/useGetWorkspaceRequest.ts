@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { WorkspacesQueryKey } from '@/modules/core';
 import { WorkspaceService } from '@/modules/workspace/services';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const useGetWorkspaceRequest = (workspaceId: string) => {
   const { data, ...request } = useQuery({

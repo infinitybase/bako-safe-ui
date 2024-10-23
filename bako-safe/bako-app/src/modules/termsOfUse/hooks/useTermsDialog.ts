@@ -2,7 +2,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { useVerifyBrowserType } from '@/modules/dapp/hooks';
+import { useVerifyBrowserType } from '@/modules/core';
 
 import { useTermsStore } from '../store/useTermsStore';
 

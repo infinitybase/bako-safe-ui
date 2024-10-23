@@ -1,6 +1,5 @@
+import { GetAllPredicatesPayload, VaultService } from '@services/modules/vault';
 import { useInfiniteQuery } from '@tanstack/react-query';
-
-import { GetAllPredicatesPayload, VaultService } from '../services';
 
 const USER_VAULTS_QUERY_KEY = 'predicate/by-user-address';
 

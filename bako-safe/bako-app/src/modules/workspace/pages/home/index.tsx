@@ -18,24 +18,24 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import {
+  AddressBookIcon,
+  Card,
+  CustomSkeleton,
+  EmptyState,
+  EyeCloseIcon,
+  EyeOpenIcon,
+  HomeIcon,
+  RefreshIcon,
+  SettingsIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@ui/components';
 import { useRef } from 'react';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
 
-import {
-  Card,
-  CustomSkeleton,
-  HomeIcon,
-  SettingsIcon,
-  VaultIcon,
-} from '@ui/components';
-import { EmptyState } from '@/components/emptyState';
-import { AddressBookIcon } from '@/components/icons/address-book';
-import { EyeCloseIcon } from '@/components/icons/eye-close';
-import { EyeOpenIcon } from '@/components/icons/eye-open';
-import { RefreshIcon } from '@/components/icons/refresh-icon';
-import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import {

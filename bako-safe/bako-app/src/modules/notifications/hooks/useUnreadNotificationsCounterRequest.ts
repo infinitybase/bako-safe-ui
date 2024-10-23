@@ -1,8 +1,7 @@
+import { NotificationService } from '@services/modules/notifications';
 import { useQuery } from '@tanstack/react-query';
 
 import { NotificationsQueryKey } from '@/modules/core';
-
-import { NotificationService } from '../services';
 
 const { VITE_NOTIFICATIONS_REFRESH } = import.meta.env;
 

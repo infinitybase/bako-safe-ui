@@ -1,6 +1,8 @@
+import {
+  AddressBookService,
+  DeleteContactResponse,
+} from '@services/modules/address-book';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
-import { AddressBookService, DeleteContactResponse } from '../services';
 
 const useDeleteContactRequest = (
   options?: UseMutationOptions<DeleteContactResponse, unknown, string>,

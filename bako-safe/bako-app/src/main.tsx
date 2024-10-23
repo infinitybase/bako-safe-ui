@@ -1,12 +1,9 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import {
-  defaultConnectors,
-  FueletWalletConnector,
-  FuelWalletConnector,
-} from '@fuels/connectors';
+import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { defaultTheme } from '@ui/themes';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import TagManager from 'react-gtm-module';
@@ -14,7 +11,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
-import { defaultTheme } from '@/themes';
 
 import { SocketProvider } from './config/socket';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';

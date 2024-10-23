@@ -1,12 +1,12 @@
 import { HStack, Text, VStack } from '@chakra-ui/react';
-
 import {
   Dialog,
   DialogModalProps,
   SquarePlusIcon,
   Tooltip,
 } from '@ui/components';
-import { useVerifyBrowserType } from '@/modules/dapp/hooks';
+
+import { useVerifyBrowserType } from '@/modules/core/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 
 import CreateVaultWarning from '../../CreateVaultWarning';
@@ -114,6 +114,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
               >
                 Vault creation is free on Fuel Network
                 <Tooltip
+                  isMobile={isMobile}
                   placment="top-start"
                   text="Vault creation is free on Bako Safe
 Bako Safe leverages Fuel predicates to manage vault permissions off-chain. Therefore, the creation of vaults is entirely free of charge and not sponsored by the network."

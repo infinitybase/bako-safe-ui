@@ -1,7 +1,7 @@
 import { Center, Heading, HStack, Text } from '@chakra-ui/react';
 
-import { limitCharacters } from '@/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { limitCharacters } from '@/utils';
 
 interface TransactionCardNameProps {
   showTransaction?: boolean;

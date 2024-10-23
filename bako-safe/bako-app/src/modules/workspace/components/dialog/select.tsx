@@ -1,7 +1,7 @@
 import { Divider, HStack, VStack } from '@chakra-ui/react';
-
 import { Dialog, SquarePlusIcon } from '@ui/components';
-import { DialogActions } from '@/components/dialog/actions';
+import { DialogActions } from '@ui/components/dialog/actions';
+
 import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';

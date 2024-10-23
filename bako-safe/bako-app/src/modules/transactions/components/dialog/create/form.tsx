@@ -8,9 +8,9 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import { Dialog } from '@ui/components';
 import { Controller } from 'react-hook-form';
 
-import { Dialog } from '@ui/components';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';

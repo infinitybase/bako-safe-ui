@@ -1,13 +1,13 @@
+import {
+  GetTransactionsWithIncomingsParams,
+  TransactionOrderBy,
+  TransactionService,
+} from '@services/modules/transaction';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
 import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
-import {
-  GetTransactionsWithIncomingsParams,
-  TransactionOrderBy,
-  TransactionService,
-} from '@/modules/transactions/services';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,

@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-
 import {
   SortOption,
   TransactionOrderBy,
   TransactionService,
-} from '../../services';
+} from '@services/modules/transaction';
+import { useQuery } from '@tanstack/react-query';
+
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';

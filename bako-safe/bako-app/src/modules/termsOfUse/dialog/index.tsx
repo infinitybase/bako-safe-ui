@@ -1,6 +1,6 @@
 import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
-
 import { Dialog } from '@ui/components';
+
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTermsDialog } from '../hooks/useTermsDialog';

@@ -1,6 +1,6 @@
 import { BoxProps, Text, VStack } from '@chakra-ui/react';
+import { PredicateAndWorkspace } from '@services/modules/vault';
 
-import { PredicateAndWorkspace } from '@/modules/vault/services/methods';
 import { limitCharacters } from '@/utils';
 
 interface TransactionBasicInfosProps extends BoxProps {

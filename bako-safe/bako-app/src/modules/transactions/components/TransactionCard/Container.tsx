@@ -10,18 +10,22 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
+import { TransactionWithVault } from '@services/modules/transaction';
+import {
+  Card,
+  ContractIcon,
+  DeployIcon,
+  DownLeftArrowGreen,
+  UpRightArrowYellow,
+} from '@ui/components';
 import { ReactNode } from 'react';
 
-import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@ui/components';
-import { ContractIcon } from '@/components/icons/tx-contract';
-import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
-import { TransactionWithVault } from '../../services/types';
 import { DetailsDialog } from './DetailsDialog';
 
 interface TransactionCardContainerProps extends CardProps {

@@ -1,8 +1,7 @@
+import { SettingsService } from '@services/modules/settings';
 import { useQuery } from '@tanstack/react-query';
 
 import { SettingsQueryKey } from '@/modules/core';
-
-import { SettingsService } from '../services';
 
 const useMySettingsRequest = (account: string) => {
   return useQuery({

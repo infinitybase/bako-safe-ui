@@ -1,7 +1,7 @@
 import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
+import { Autocomplete } from '@ui/components';
 import { Controller } from 'react-hook-form';
 
-import { Autocomplete } from '@ui/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
