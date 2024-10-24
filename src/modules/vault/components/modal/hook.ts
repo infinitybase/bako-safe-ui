@@ -31,7 +31,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
     vaultDetails: {
       vaultRequest: { refetch: refetchVaultRequest },
     },
-    invalidateGifAnimationRequest,
   } = useWorkspaceContext();
 
   const {
@@ -48,7 +47,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
   );
 
   const invalidateRequests = () => {
-    invalidateGifAnimationRequest();
     refetchVaultTransactions();
     refetchVaultRequest();
     refetchWorkspaceBalance();

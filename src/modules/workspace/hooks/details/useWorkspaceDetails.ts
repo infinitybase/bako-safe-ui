@@ -72,7 +72,7 @@ const useWorkspaceDetails = () => {
   } = useWorkspace(
     authDetails.userInfos,
     assetsMap,
-    invalidateGifAnimationRequest,
+    // invalidateGifAnimationRequest,
     // resetAllTransactionsTypeFilters,
     // refetchPendingSingerTransactions,
   );
