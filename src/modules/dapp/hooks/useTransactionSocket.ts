@@ -65,7 +65,7 @@ export const useTransactionSocket = () => {
   const navigate = useNavigate(); // do not remove, makes socket connection work
   const { connect, socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
-  const { warningToast } = useContactToast();
+  const { warningToast, errorToast } = useContactToast();
 
   const summary = useTransactionSummary();
 
@@ -124,7 +124,16 @@ export const useTransactionSocket = () => {
       setIsSending(false);
 
       const { data: content } = data;
-      const { hash: _hash, sign } = content;
+      const { hash: _hash, sign, status } = content;
+
+      if (status === IEventTX_STATUS.ERROR) {
+        errorToast({
+          title: 'Transaction creation failed',
+          description: 'Please try again!',
+        });
+        return;
+      }
+
       setHash(_hash);
 
       if (_hash && sign) {
