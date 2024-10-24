@@ -9,8 +9,10 @@ import {
   SocketEvents,
   SocketUsernames,
   useSocket,
+  useTab,
   useWalletSignMessage,
 } from '@/modules/core/hooks';
+import { EnumUtils } from '@/modules/core/utils';
 
 import { useTransactionSummary } from './useTransactionSummary';
 
@@ -35,6 +37,13 @@ enum IEventTX_STATUS {
   ERROR = 'ERROR',
 }
 
+enum TabState {
+  CREATE = 0,
+  SIGN = 1,
+  PENDING_SIGN = 2,
+  PENDING_OTHERS_SIGN = 3,
+}
+
 export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
@@ -49,13 +58,9 @@ export const useTransactionSocket = () => {
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
-  const [sending, setSending] = useState(false);
-  const [transactionSuccess, setTransactionSuccess] =
-    useState<ITransactionSuccess>({
-      show: false,
-      title: '',
-      description: '',
-    });
+  const [hash, setHash] = useState<string>('');
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [isSigning, setIsSigning] = useState<boolean>(false);
 
   const navigate = useNavigate(); // do not remove, makes socket connection work
   const { connect, socket } = useSocket();
@@ -64,11 +69,19 @@ export const useTransactionSocket = () => {
 
   const summary = useTransactionSummary();
 
-  const showSignErrorToast = () =>
-    warningToast({
-      title: 'Transaction sign failed',
-      description: 'Please try again!',
-    });
+  const tabs = useTab({
+    tabs: EnumUtils.toNumberArray(TabState),
+    defaultTab: TabState.CREATE,
+  });
+
+  const showSignErrorToast = useCallback(
+    () =>
+      warningToast({
+        title: 'Transaction sign failed',
+        description: 'Please try again!',
+      }),
+    [warningToast],
+  );
 
   const signMessageRequest = useWalletSignMessage({
     onSuccess: (signedMessage, hash) => {
@@ -76,8 +89,17 @@ export const useTransactionSocket = () => {
     },
     onError: () => {
       showSignErrorToast();
+      setIsSigning(false);
     },
   });
+
+  const signTransaction = useCallback(
+    (_hash?: string) => {
+      setIsSigning(true);
+      signMessageRequest.mutateAsync(_hash || hash);
+    },
+    [hash, signMessageRequest],
+  );
 
   const handleGetSummary = useCallback(
     (data: any) => {
@@ -97,41 +119,23 @@ export const useTransactionSocket = () => {
     [summary],
   );
 
-  const handlePendingSign = useCallback(() => {
-    setTransactionSuccess({
-      show: true,
-      title: 'Transaction created!',
-      description:
-        'Your transaction is pending to be signed. Sign at Bako Safe.',
-    });
-  }, []);
-
-  const handleSingleSigner = useCallback(() => {
-    setTransactionSuccess({
-      show: false,
-      title: '',
-      description: '',
-    });
-    window.close();
-  }, []);
-
-  const handleMultipleSigners = useCallback(() => {
-    setTransactionSuccess({
-      show: true,
-      title: 'Transaction created and signed!',
-      description:
-        'Your transaction is pending to be signed by others. You can check the transaction status at Bako Safe.',
-    });
-  }, []);
-
   const handleCreatedTransaction = useCallback(
     (data: any) => {
-      const { data: content } = data;
-      const { hash, sign } = content;
+      setIsSending(false);
 
-      hash && sign ? signMessageRequest.mutateAsync(hash) : handlePendingSign();
+      const { data: content } = data;
+      const { hash: _hash, sign } = content;
+      setHash(_hash);
+
+      if (_hash && sign) {
+        tabs.set(TabState.SIGN);
+        signTransaction(_hash);
+        return;
+      }
+
+      tabs.set(TabState.PENDING_SIGN);
     },
-    [handlePendingSign, signMessageRequest],
+    [signTransaction, tabs],
   );
 
   const handleSignedTransaction = useCallback(
@@ -141,15 +145,16 @@ export const useTransactionSocket = () => {
 
       if (status === IEventTX_STATUS.ERROR) {
         showSignErrorToast();
+        setIsSigning(false);
         return;
       }
 
       const configurable = JSON.parse(vaultRef.current?.configurable || '{}');
       const minSigners = configurable.SIGNATURES_COUNT || 1;
 
-      minSigners > 1 ? handleMultipleSigners() : handleSingleSigner();
+      minSigners > 1 ? tabs.set(TabState.PENDING_OTHERS_SIGN) : window.close();
     },
-    [handleMultipleSigners, handleSingleSigner, showSignErrorToast, vaultRef],
+    [showSignErrorToast, tabs],
   );
 
   const handleSocketEvent = useCallback(
@@ -179,7 +184,7 @@ export const useTransactionSocket = () => {
     data: IEventTX_CREATE,
   ) => {
     if (!data.tx) return;
-    setSending(true);
+    setIsSending(true);
 
     console.log('[EMITTING CREATE TRANSACTION]');
     socket.emit(event, data);
@@ -220,6 +225,10 @@ export const useTransactionSocket = () => {
     });
   };
 
+  const cancelSignTransaction = () => {
+    tabs.set(TabState.PENDING_SIGN);
+  };
+
   const emitSignedMessage = (message: string) => {
     socket.emit(SocketEvents.DEFAULT, {
       username: SocketUsernames.UI,
@@ -231,16 +240,6 @@ export const useTransactionSocket = () => {
         signedMessage: message,
       },
     });
-  };
-
-  const handleRedirectToBakoSafe = () => {
-    window.close();
-    setTransactionSuccess({
-      show: false,
-      title: '',
-      description: '',
-    });
-    window.open(window.location.origin, '_BLANK');
   };
 
   useEffect(() => {
@@ -275,16 +274,18 @@ export const useTransactionSocket = () => {
     validAt,
     pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,
     socket,
+    tabs,
     send: {
-      isLoading: sending,
-      handlers: {
-        sendTransaction,
-        sendTransactionAndSign,
-      },
-      cancel: cancelSendTransaction,
+      isSending,
+      sendTransaction,
+      sendTransactionAndSign,
+      cancelSendTransaction,
     },
-    handleRedirectToBakoSafe,
-    transactionSuccess,
+    sign: {
+      isSigning,
+      signTransaction,
+      cancelSignTransaction,
+    },
     signMessage: {
       emitSignedMessage,
     },
