@@ -79,9 +79,9 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   return (
     <Container>
       {transactionSuccess.show ? (
-        <VStack h="full" justifyContent="center" w="full">
-          <VStack mt="auto">
-            <Icon fontSize={120} as={DoneIcon} />
+        <VStack h="full" justifyContent="center" w="full" px={6} py={8}>
+          <VStack mt="auto" textAlign="center" spacing={4}>
+            <Icon fontSize={98} as={DoneIcon} />
             <Text fontWeight={700} fontSize="20px" color="grey.75">
               {transactionSuccess.title}
             </Text>
@@ -90,6 +90,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
               fontSize="xs"
               fontWeight={400}
               lineHeight="16.8px"
+              px={4}
             >
               {transactionSuccess.description}
             </Text>
