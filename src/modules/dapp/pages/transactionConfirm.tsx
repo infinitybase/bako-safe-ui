@@ -2,9 +2,11 @@ import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
+import { useMyWallet } from '@/modules/core/hooks/fuel';
 import CreateTxMenuButton, {
   ECreateTransactionMethods,
 } from '@/modules/transactions/components/dialog/create/createTxMenuButton';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
@@ -31,6 +33,13 @@ const TransactionConfirm = () => {
     sign: { isSigning, signTransaction, cancelSignTransaction },
   } = useTransactionSocket();
 
+  const {
+    authDetails: {
+      userInfos: { type, webauthn },
+    },
+  } = useWorkspaceContext();
+  const { data: wallet } = useMyWallet();
+
   return (
     <Tabs isLazy index={tabs.tab}>
       <TabPanels>
@@ -44,14 +53,26 @@ const TransactionConfirm = () => {
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
             primaryActionButton={
-              <CreateTxMenuButton
-                createTxMethod={createTxMethod}
-                setCreateTxMethod={setCreateTxMethod}
-                isLoading={isSending}
-                isDisabled={isSending}
-                handleCreateTransaction={sendTransaction}
-                handleCreateAndSignTransaction={sendTransactionAndSign}
-              />
+              type && (wallet || webauthn) ? (
+                <CreateTxMenuButton
+                  createTxMethod={createTxMethod}
+                  setCreateTxMethod={setCreateTxMethod}
+                  isLoading={isSending}
+                  isDisabled={isSending}
+                  handleCreateTransaction={sendTransaction}
+                  handleCreateAndSignTransaction={sendTransactionAndSign}
+                />
+              ) : (
+                <Dialog.PrimaryAction
+                  size="md"
+                  isLoading={isSending}
+                  onClick={sendTransaction}
+                  fontWeight={700}
+                  fontSize={14}
+                >
+                  Create
+                </Dialog.PrimaryAction>
+              )
             }
           />
         </TabPanel>
