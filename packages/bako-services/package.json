@@ -1,0 +1,22 @@
+{
+  "name": "@bako-safe/services",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./modules": "./dist/modules/index.js",
+    "./errors": "./dist/errors/index.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "bakosafe": "0.0.93-beta",
+    "fuels": "0.96.1"
+  }
+}
