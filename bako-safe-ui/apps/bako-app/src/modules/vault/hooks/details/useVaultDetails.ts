@@ -2,7 +2,7 @@ import { useCLI } from '@/modules/cli/hooks';
 import { useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useSidebar } from '../details';
+import { useSidebar } from '.';
 
 const useVaultDetails = () => {
   const {

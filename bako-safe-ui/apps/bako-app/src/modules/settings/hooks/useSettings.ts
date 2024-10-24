@@ -6,7 +6,7 @@ import { useContactToast } from '@/modules/addressBook';
 import { SettingsQueryKey } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useUpdateSettingsRequest } from './';
+import { useUpdateSettingsRequest } from '.';
 import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';
 

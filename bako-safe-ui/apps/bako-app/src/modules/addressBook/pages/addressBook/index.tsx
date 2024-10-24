@@ -1,4 +1,12 @@
 import {
+  AddressBookIcon,
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@bako-safe/ui';
+import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
@@ -12,14 +20,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  AddressBookIcon,
-  CustomSkeleton,
-  EmptyState,
-  HomeIcon,
-  TransactionsIcon,
-  VaultIcon,
-} from '@ui/components';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 

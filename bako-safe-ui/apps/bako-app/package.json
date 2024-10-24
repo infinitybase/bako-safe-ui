@@ -46,7 +46,9 @@
     "socket.io-client": "^4.7.2",
     "text-mask-addons": "^3.8.0",
     "yup": "^1.2.0",
-    "zustand": "^4.4.1"
+    "zustand": "^4.4.1",
+    "@bako-safe/ui": "workspace:*",
+    "@bako-safe/services": "workspace:*"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",

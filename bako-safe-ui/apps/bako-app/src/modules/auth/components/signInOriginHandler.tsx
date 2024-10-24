@@ -1,4 +1,4 @@
-import { DappSignInPage } from '@/modules/dapp/pages/signIn';
+import { DappSignInPage } from '@app/modules/dapp/pages/signIn';
 
 import { useQueryParams, WebSignInPage } from '..';
 

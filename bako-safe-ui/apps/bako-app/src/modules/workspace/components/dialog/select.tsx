@@ -6,7 +6,7 @@ import { Workspace } from '@/modules/core';
 
 import { UseWorkspaceReturn } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
-import { SelectionEmptyState } from '../';
+import { SelectionEmptyState } from '..';
 import { WorkspaceCard } from '../card';
 
 interface SelectWorkspaceDialogProps {

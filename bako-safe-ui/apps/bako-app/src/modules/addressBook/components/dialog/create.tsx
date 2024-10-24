@@ -1,6 +1,6 @@
 import { Dialog, SquarePlusIcon } from '@ui/components';
 
-import { CreateContactForm } from '../../components';
+import { CreateContactForm } from '..';
 import { UseAddressBookReturn } from '../../hooks';
 
 interface CreateContactDialogProps {
