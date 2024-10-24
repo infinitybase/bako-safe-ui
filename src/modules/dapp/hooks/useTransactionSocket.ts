@@ -138,6 +138,12 @@ export const useTransactionSocket = () => {
     [signTransaction, tabs],
   );
 
+  const checkIfMultisig = useCallback((configurable?: string) => {
+    const config = JSON.parse(configurable || '{}');
+    const minSigners = config.SIGNATURES_COUNT || 1;
+    return minSigners > 1;
+  }, []);
+
   const handleSignedTransaction = useCallback(
     (data: any) => {
       const { data: content } = data;
@@ -149,13 +155,11 @@ export const useTransactionSocket = () => {
         return;
       }
 
-      const configurable = JSON.parse(vaultRef.current?.configurable || '{}');
-      const minSigners = configurable.SIGNATURES_COUNT || 1;
-      const isMultiSig = minSigners > 1;
+      const isMultiSig = checkIfMultisig(vaultRef.current?.configurable);
 
       isMultiSig ? tabs.set(TabState.PENDING_OTHERS_SIGN) : window.close();
     },
-    [showSignErrorToast, tabs],
+    [checkIfMultisig, showSignErrorToast, tabs],
   );
 
   const handleSocketEvent = useCallback(
