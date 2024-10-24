@@ -72,7 +72,7 @@ export const useTransactionSocket = () => {
 
   const signMessageRequest = useWalletSignMessage({
     onSuccess: (signedMessage, hash) => {
-      emitSignedMessage(hash, signedMessage);
+      emitSignTransactionEvent(hash, signedMessage);
     },
     onError: () => {
       showSignErrorToast();
@@ -212,11 +212,24 @@ export const useTransactionSocket = () => {
     });
   };
 
-  const emitSignedMessage = (hash: string, signedMessage: string) => {
+  const emitSignTransactionEvent = (hash: string, signedMessage: string) => {
     console.log('[EMITTING SIGN TRANSACTION]');
     socket.emit(SocketEvents.TX_SIGN, {
       hash,
       signedMessage,
+    });
+  };
+
+  const emitSignedMessage = (message: string) => {
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.SIGN_CONFIRMED,
+      request_id,
+      data: {
+        signedMessage: message,
+      },
     });
   };
 
