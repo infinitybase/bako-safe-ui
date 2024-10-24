@@ -1,5 +1,5 @@
+import { BridgeIcon, CoinsIcon, Dialog, DownLeftArrow } from '@bako-safe/ui';
 import { Button, VStack } from '@chakra-ui/react';
-import { BridgeIcon, CoinsIcon, Dialog, DownLeftArrow } from '@ui/components';
 
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
