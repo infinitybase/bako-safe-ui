@@ -1,8 +1,8 @@
 import {
-  SortOption,
   TransactionOrderBy,
   TransactionService,
 } from '@services/modules/transaction';
+import { SortOption } from '@services/modules/types';
 import { useQuery } from '@tanstack/react-query';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

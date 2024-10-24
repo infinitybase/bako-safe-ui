@@ -2,8 +2,8 @@ import { TransactionType } from "bakosafe";
 
 import { api } from "@app/config";
 import { AssetId } from "@app/modules/core/utils/assets/address";
-import { TransactionWithVault } from "@app/modules/transactions/services";
-import { GetAllPredicatePaginationResponse } from "@app/modules/vault";
+import { TransactionWithVault } from "../transaction";
+import { GetAllPredicatePaginationResponse } from "../vault";
 
 export interface HomeDataResponse {
   predicates: GetAllPredicatePaginationResponse;

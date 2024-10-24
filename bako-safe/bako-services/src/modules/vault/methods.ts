@@ -8,7 +8,7 @@ import {
   IPagination,
   PaginationParams,
 } from "@app/modules/core/utils/pagination";
-import { SortOption } from "@app/modules/transactions/services";
+import { SortOption } from "../types";
 
 export interface GetAllPredicatesPayload extends PaginationParams {
   q?: string;

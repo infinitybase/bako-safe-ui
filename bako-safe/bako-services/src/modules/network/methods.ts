@@ -1,6 +1,6 @@
 import { Provider } from "fuels";
 
-import { api } from "@/config";
+import { api } from "@app/config";
 import { localStorageKeys } from "@/modules/auth/services";
 
 export enum NetworkQueryKey {

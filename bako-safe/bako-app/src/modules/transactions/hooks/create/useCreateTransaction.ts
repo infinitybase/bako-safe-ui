@@ -68,6 +68,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       },
       assets: { refetchAssets },
     },
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
     assetsMap,
   } = useWorkspaceContext();
 
@@ -76,11 +79,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     string | undefined
   >(undefined);
 
-  const {
-    addressBookInfos: {
-      requests: { listContactsRequest },
-    },
-  } = useWorkspaceContext();
   const navigate = useNavigate();
 
   const { successToast, errorToast } = useContactToast();

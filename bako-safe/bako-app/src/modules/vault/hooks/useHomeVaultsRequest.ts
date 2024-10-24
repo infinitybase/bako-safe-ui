@@ -1,4 +1,5 @@
-import { SortOption, TransactionOrderBy } from '@services/modules/transaction';
+import { TransactionOrderBy } from '@services/modules/transaction';
+import { SortOption } from '@services/modules/types';
 import { VaultService } from '@services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
 

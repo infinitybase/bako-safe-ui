@@ -1,4 +1,8 @@
 import {
+  TransactionService,
+  TransactionWithVault,
+} from '@services/modules/transaction';
+import {
   IBakoSafeAuth,
   ITransferAsset,
   TransactionStatus,
@@ -6,11 +10,6 @@ import {
   Vault,
 } from 'bakosafe';
 import { bn } from 'fuels';
-
-import {
-  TransactionService,
-  TransactionWithVault,
-} from '@/modules/transactions/services';
 
 import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';

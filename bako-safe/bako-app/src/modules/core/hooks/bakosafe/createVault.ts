@@ -1,8 +1,8 @@
+import { VaultService } from '@services/modules/vault';
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { VaultService } from '@/modules/vault';
 
 interface ICreateVaultPayload {
   name?: string;

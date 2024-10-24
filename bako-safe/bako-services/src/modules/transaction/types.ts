@@ -1,23 +1,16 @@
 import { ITransactionResume, TransactionType, Vault } from "bakosafe";
 import { Operation } from "fuels";
 
-import { AssetModel, IPagination, TransactionStatus } from "@/modules/core";
-import {
-  ITransaction,
-  SortOptionTx,
-} from "@/modules/core/hooks/bakosafe/utils/types";
+import { AssetModel, IPagination, TransactionStatus } from "@app/modules/core";
+import { ITransaction } from "@app/modules/core/hooks/bakosafe/utils/types";
 import { PredicateAndWorkspace } from "@/modules/vault";
+import { SortOption } from "../types";
 
 export interface ITransactionPagination<T> {
   perPage: number;
   offsetDb: number;
   offsetFuel: number;
   data: T[];
-}
-
-export enum SortOption {
-  ASC = "ASC",
-  DESC = "DESC",
 }
 
 export enum TransactionHistoryType {
@@ -69,7 +62,7 @@ export interface GetTransactionParams {
   perPage?: number;
   page?: number;
   orderBy?: string;
-  sort?: SortOptionTx;
+  sort?: SortOption;
   allOfUser?: boolean;
   type?: TransactionType;
 }
@@ -78,7 +71,7 @@ export interface GetTransactionsWithIncomingsParams {
   status?: ITransactionStatusFilter;
   predicateId?: string[];
   orderBy?: string;
-  sort?: SortOptionTx;
+  sort?: SortOption;
   perPage?: number;
   type?: TransactionType;
   offsetDb?: number;

@@ -1,7 +1,6 @@
 import { api } from "@app/config";
 import { IPagination, Notification, PaginationParams } from "@app/modules/core";
-import { SortOption } from "@app/modules/transactions/services";
-
+import { SortOption } from "../types";
 export interface GetAllNotificationsPayload extends PaginationParams {
   unread?: boolean;
   orderBy?: string;

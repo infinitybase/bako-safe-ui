@@ -1,8 +1,6 @@
-import { IPagination } from "@/modules/core";
-import { AddressBook } from "@/modules/core/models/";
-
-import { WorkspaceContact } from "../../core/models/workspace";
-import { SortOption } from "@/modules/transactions/services";
+import { IPagination } from "@app/modules/core";
+import { AddressBook, WorkspaceContact } from "@app/modules/core/models/";
+import { SortOption } from "../types";
 
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;
