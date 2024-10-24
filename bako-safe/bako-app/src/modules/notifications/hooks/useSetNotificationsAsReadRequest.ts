@@ -1,0 +1,19 @@
+import {
+  NotificationService,
+  SetAllAsReadResponse,
+} from '@services/modules/notifications';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { NotificationsQueryKey } from '@/modules/core';
+
+const useSetNotificationsAsReadRequest = (
+  options?: UseMutationOptions<SetAllAsReadResponse, unknown, unknown>,
+) => {
+  return useMutation({
+    mutationKey: [NotificationsQueryKey.READ_ALL],
+    mutationFn: NotificationService.setAllAsRead,
+    ...options,
+  });
+};
+
+export { useSetNotificationsAsReadRequest };

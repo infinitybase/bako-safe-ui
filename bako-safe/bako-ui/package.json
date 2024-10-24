@@ -1,0 +1,28 @@
+{
+  "name": "bako-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@chakra-ui/anatomy": "^2.2.2",
+    "@chakra-ui/icons": "2.1.1",
+    "@chakra-ui/react": "2.8.0",
+    "react": "^18.2.0",
+    "react-intersection-observer": "^9.5.2",
+    "react-text-mask": "^5.5.0",
+    "text-mask-addons": "^3.8.0",
+    "date-fns": "^4.1.0",
+    "@emotion/react": "11.11.1",
+    "bakosafe": "0.0.93-beta"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.11",
+    "@types/react-text-mask": "^5.4.14"
+  }
+}
