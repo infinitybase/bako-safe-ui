@@ -151,8 +151,9 @@ export const useTransactionSocket = () => {
 
       const configurable = JSON.parse(vaultRef.current?.configurable || '{}');
       const minSigners = configurable.SIGNATURES_COUNT || 1;
+      const isMultiSig = minSigners > 1;
 
-      minSigners > 1 ? tabs.set(TabState.PENDING_OTHERS_SIGN) : window.close();
+      isMultiSig ? tabs.set(TabState.PENDING_OTHERS_SIGN) : window.close();
     },
     [showSignErrorToast, tabs],
   );
