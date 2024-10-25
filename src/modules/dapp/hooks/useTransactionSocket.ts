@@ -57,6 +57,7 @@ export const useTransactionSocket = () => {
     version: '',
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
+  const [startTime] = useState(Date.now());
   const [tx, setTx] = useState<TransactionRequestLike>();
   const [hash, setHash] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
@@ -285,6 +286,7 @@ export const useTransactionSocket = () => {
   return {
     vault: vaultRef.current,
     summary,
+    startTime,
     validAt,
     pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,
     socket,

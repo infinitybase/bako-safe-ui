@@ -22,6 +22,7 @@ const TransactionConfirm = () => {
     vault,
     pendingSignerTransactions,
     summary,
+    startTime,
     validAt,
     tabs,
     send: {
@@ -46,6 +47,7 @@ const TransactionConfirm = () => {
         <TabPanel p={0}>
           <DappTransactionWrapper
             title="Create transaction"
+            startTime={startTime}
             validAt={validAt}
             vault={vault}
             pendingSignerTransactions={pendingSignerTransactions}
@@ -80,6 +82,7 @@ const TransactionConfirm = () => {
         <TabPanel p={0}>
           <DappTransactionWrapper
             title="Sign transaction"
+            startTime={startTime}
             validAt={validAt}
             vault={vault}
             pendingSignerTransactions={pendingSignerTransactions}

@@ -27,12 +27,14 @@ interface DappTransactionWrapperProps {
   vault?: UseTransactionSocket['vault'];
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
   summary: UseTransactionSocket['summary'];
+  startTime: number;
   cancel: () => void;
 }
 
 const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   const {
     title,
+    startTime,
     validAt,
     primaryActionButton,
     primaryActionLoading,
@@ -70,7 +72,11 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   return (
     <Container>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
-        <TransactionExpire validAt={validAt} callBack={cancel} />
+        <TransactionExpire
+          validAt={validAt}
+          startTime={startTime}
+          callBack={cancel}
+        />
       </Box>
       <Dapp.Content maxW={404} bg="dark.950">
         <Dapp.Section mb={-7}>
