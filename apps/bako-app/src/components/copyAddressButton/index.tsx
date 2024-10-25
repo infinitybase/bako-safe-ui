@@ -1,3 +1,4 @@
+import { CopyTopMenuIcon } from '@bako-safe/ui/components';
 import { CheckIcon } from '@chakra-ui/icons';
 import {
   Icon,
@@ -5,7 +6,6 @@ import {
   IconButtonProps,
   useClipboard,
 } from '@chakra-ui/react';
-import { CopyTopMenuIcon } from '@ui/components/icons';
 
 export interface CopyAddressButtonProps extends IconButtonProps {
   addressToCopy: string;

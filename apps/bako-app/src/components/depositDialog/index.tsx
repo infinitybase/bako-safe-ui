@@ -1,3 +1,5 @@
+import { PredicateAndWorkspace } from '@bako-safe/services/modules/vault';
+import { Dialog } from '@bako-safe/ui/components';
 import {
   Avatar,
   Box,
@@ -7,8 +9,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PredicateAndWorkspace } from '@services/modules/vault';
-import { Dialog } from '@ui/components';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { AddressUtils } from '@/modules';

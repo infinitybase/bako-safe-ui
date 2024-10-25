@@ -1,5 +1,5 @@
+import { Dialog, NotifyIcon } from '@bako-safe/ui/components';
 import { Heading, Text, VStack } from '@chakra-ui/react';
-import { Dialog, NotifyIcon } from '@ui/components';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

@@ -7,7 +7,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./modules": "./dist/modules/index.js",
-    "./modules/*": "./dist/modules/*",
+    "./modules/*": "./dist/modules/*/index.js",
     "./errors": "./dist/errors/index.js"
   },
   "scripts": {
