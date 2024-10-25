@@ -25,8 +25,7 @@
     /* Paths */
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@app/*": ["../bako-app/src/*"]
+      "@/*": ["src/*"]
     },
     "outDir": "./dist"
   },
