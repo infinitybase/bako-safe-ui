@@ -1,6 +1,6 @@
-import { IPagination } from "@app/modules/core";
-import { AddressBook, WorkspaceContact } from "@app/modules/core/models/";
-import { SortOption } from "../types";
+import { SortOption } from "@/types/common";
+import { IPagination } from "@/types/pagination";
+import { WorkspaceContact } from "../workspace/types";
 
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;
@@ -30,6 +30,23 @@ export interface GetPaginatedContactsParams {
   page?: number;
   orderBy?: string;
   sort?: SortOption;
+}
+
+interface CreatedBy {
+  id: string;
+  address: string;
+}
+
+interface Contact {
+  id: string;
+  address: string;
+  avatar: string;
+}
+export interface AddressBook {
+  id: string;
+  nickname: string;
+  owner: CreatedBy;
+  user: Contact;
 }
 
 export type GetPaginatedContactsResponse = IPagination<WorkspaceContact>;

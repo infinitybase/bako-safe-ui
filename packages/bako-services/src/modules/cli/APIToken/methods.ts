@@ -1,5 +1,3 @@
-import { api } from "@app/config";
-
 import {
   CreateAPITokenParams,
   CreateAPITokenPayload,
@@ -8,28 +6,32 @@ import {
   GetAPITokensParams,
   GetAPITokensResponse,
 } from "./types";
+import { AxiosInstance } from "axios";
 
 export class APITokenService {
-  static async create(
-    params: CreateAPITokenParams,
-    payload: CreateAPITokenPayload,
-  ) {
-    const { data } = await api.post<CreateAPITokenResponse>(
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
+  async create(params: CreateAPITokenParams, payload: CreateAPITokenPayload) {
+    const { data } = await this.api.post<CreateAPITokenResponse>(
       `/api-token/${params.predicateId}`,
       payload,
     );
     return data;
   }
 
-  static async getAll(params: GetAPITokensParams) {
-    const { data } = await api.get<GetAPITokensResponse>(
+  async getAll(params: GetAPITokensParams) {
+    const { data } = await this.api.get<GetAPITokensResponse>(
       `/api-token/${params.predicateId}`,
     );
     return data;
   }
 
-  static async delete(params: DeleteAPITokenParams) {
-    const { data } = await api.delete<void>(
+  async delete(params: DeleteAPITokenParams) {
+    const { data } = await this.api.delete<void>(
       `/api-token/${params.predicateId}/${params.apiTokenId}`,
     );
     return data;

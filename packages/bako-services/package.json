@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "bakosafe": "0.0.93-beta",
-    "fuels": "0.96.1"
+    "fuels": "0.96.1",
+    "axios": "^1.5.0"
   }
 }

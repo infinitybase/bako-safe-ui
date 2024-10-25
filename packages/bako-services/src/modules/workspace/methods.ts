@@ -1,23 +1,19 @@
-import { TransactionStatus } from "bakosafe";
+import { IWitnesses, TransactionStatus } from "bakosafe";
 import { assets, Assets, BN } from "fuels";
+import { Predicate } from "../vault/types";
+import { IPagination } from "@/types";
+import { ITransaction } from "../transaction";
+import { IPermission, IPermissions, Workspace } from "./types";
+import { AxiosInstance } from "axios";
 
-import { api } from "@app/config";
-import {
-  IPagination,
-  IPermission,
-  IPermissions,
-  Predicate,
-  WitnessStatus,
-  Workspace,
-} from "@app/modules/core";
-import { ITransaction } from "@app/modules/core/hooks/bakosafe/utils/types";
-
-export interface IWitnesses {
-  account: string;
-  signature: string;
-  status: WitnessStatus;
-  updatedAt: string;
-}
+// import {
+//   IPagination,
+//   IPermission,
+//   IPermissions,
+//   Predicate,
+//   WitnessStatus,
+//   Workspace,
+// } from "@app/modules/core";
 
 export interface ITransactionResume {
   id: string;
@@ -87,15 +83,21 @@ export type IWroskapceBalance = {
 export type GetWorkspaceBalanceResponse = IWroskapceBalance;
 
 export class WorkspaceService {
-  static async list() {
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
+  async list() {
     const { data } =
-      await api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
+      await this.api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
 
     return data;
   }
 
-  static async create(payload: CreateWorkspacePayload) {
-    const { data } = await api.post<CreateWorkspaceResponse>(
+  async create(payload: CreateWorkspacePayload) {
+    const { data } = await this.api.post<CreateWorkspaceResponse>(
       `/workspace`,
       payload,
     );
@@ -103,8 +105,8 @@ export class WorkspaceService {
     return data;
   }
 
-  static async select(payload: SelectWorkspacePayload) {
-    const { data } = await api.put<SelectWorkspaceResponse>(
+  async select(payload: SelectWorkspacePayload) {
+    const { data } = await this.api.put<SelectWorkspaceResponse>(
       `/auth/workspace`,
       payload,
     );
@@ -116,18 +118,18 @@ export class WorkspaceService {
     });
   }
 
-  static async includeMember(payload: IncludeWorkspaceMemberPayload) {
+  async includeMember(payload: IncludeWorkspaceMemberPayload) {
     const { address } = payload;
-    const { data } = await api.post<IncludeWorkspaceMemberResponse>(
+    const { data } = await this.api.post<IncludeWorkspaceMemberResponse>(
       `/workspace/members/${address}/include`,
     );
 
     return data;
   }
 
-  static async updatePermissions(payload: UpdateWorkspacePermissionsPayload) {
+  async updatePermissions(payload: UpdateWorkspacePermissionsPayload) {
     const { permissions, member } = payload;
-    const { data } = await api.put<UpdateWorkspacePermissionsResponse>(
+    const { data } = await this.api.put<UpdateWorkspacePermissionsResponse>(
       `/workspace/permissions/${member}`,
       { permissions },
     );
@@ -135,15 +137,15 @@ export class WorkspaceService {
     return data;
   }
 
-  static async getById(workspaceId: string) {
-    const { data } = await api.get<GetWorkspaceByIdResponse>(
+  async getById(workspaceId: string) {
+    const { data } = await this.api.get<GetWorkspaceByIdResponse>(
       `/workspace/${workspaceId}`,
     );
 
     return data;
   }
 
-  static async getBalance() {
+  async getBalance() {
     return new Promise<IWroskapceBalance>((resolve) => {
       resolve({
         currentBalanceUSD: "0",
@@ -152,7 +154,7 @@ export class WorkspaceService {
     });
   }
 
-  static async getFuelTokensList(): Promise<Assets> {
+  async getFuelTokensList(): Promise<Assets> {
     const response = await fetch(
       "https://verified-assets.fuel.network/assets.json",
     );
@@ -165,9 +167,9 @@ export class WorkspaceService {
     return data;
   }
 
-  static async deleteMember(payload: DeleteWorkspaceMemberPayload) {
+  async deleteMember(payload: DeleteWorkspaceMemberPayload) {
     const { member } = payload;
-    const { data } = await api.post<UpdateWorkspaceMembersResponse>(
+    const { data } = await this.api.post<UpdateWorkspaceMembersResponse>(
       `/workspace/members/${member}/remove`,
     );
 

@@ -1,12 +1,7 @@
 import { Asset, FAKE_WITNESSES, ITransactionResume } from "bakosafe";
 import { bn, calculateGasFee, ScriptTransactionRequest } from "fuels";
 
-import { api } from "@app/config";
-
 import {
-  CloseTransactionPayload,
-  CreateTransactionPayload,
-  CreateTransactionResponse,
   GetTransactionHistoryResponse,
   GetTransactionParams,
   GetTransactionPendingResponse,
@@ -23,24 +18,31 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from "./types";
+import { AxiosInstance } from "axios";
 
 export class TransactionService {
-  static async create(payload: CreateTransactionPayload) {
-    const { data } = await api.post<CreateTransactionResponse>(
-      "/transaction",
-      payload,
-    );
-    return data;
+  api: AxiosInstance;
+  constructor(api: AxiosInstance) {
+    this.api = api;
   }
 
-  static async getById(id: string) {
-    const { data } = await api.get<GetTransactionResponse>(
+  // Can remove this? we don't use this method to create tx. Instead we use the SDK
+  // async create(payload: CreateTransactionPayload) {
+  //   const { data } = await this.api.post<CreateTransactionResponse>(
+  //     "/transaction",
+  //     payload
+  //   );
+  //   return data;
+  // }
+
+  async getById(id: string) {
+    const { data } = await this.api.get<GetTransactionResponse>(
       `/transaction/${id}`,
     );
     return data;
   }
-  static async getByHash(hash: string, status?: ITransactionStatusFilter) {
-    const { data } = await api.get<GetTransactionResponse>(
+  async getByHash(hash: string, status?: ITransactionStatusFilter) {
+    const { data } = await this.api.get<GetTransactionResponse>(
       `/transaction/by-hash/0x${hash}`,
       {
         params: {
@@ -51,9 +53,9 @@ export class TransactionService {
     return data;
   }
 
-  static async signer(payload: SignerTransactionPayload) {
+  async signer(payload: SignerTransactionPayload) {
     const { hash, ...body } = payload;
-    const { data } = await api.put<SignerTransactionResponse>(
+    const { data } = await this.api.put<SignerTransactionResponse>(
       `/transaction/sign/${hash}`,
       {
         signature: body.signer,
@@ -63,16 +65,17 @@ export class TransactionService {
     return data;
   }
 
-  static async close(id: string, payload: CloseTransactionPayload) {
-    const { data } = await api.put<GetTransactionResponse>(
-      `/transaction/close/${id}`,
-      payload,
-    );
-    return data;
-  }
+  // We not use this
+  // async close(id: string, payload: CloseTransactionPayload) {
+  //   const { data } = await this.api.put<GetTransactionResponse>(
+  //     `/transaction/close/${id}`,
+  //     payload
+  //   );
+  //   return data;
+  // }
 
-  static async getTransactionsPagination(params: GetTransactionParams) {
-    const { data } = await api.get<GetTransactionsPaginationResponse>(
+  async getTransactionsPagination(params: GetTransactionParams) {
+    const { data } = await this.api.get<GetTransactionsPaginationResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -82,8 +85,8 @@ export class TransactionService {
     return data;
   }
 
-  static async getUserTransactions(params: GetUserTransactionsParams) {
-    const { data } = await api.get<GetUserTransactionsResponse>(
+  async getUserTransactions(params: GetUserTransactionsParams) {
+    const { data } = await this.api.get<GetUserTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -92,11 +95,11 @@ export class TransactionService {
     return data;
   }
 
-  static async getTransactionsWithIncomingsPagination(
+  async getTransactionsWithIncomingsPagination(
     params: GetTransactionsWithIncomingsParams,
   ) {
     const { data } =
-      await api.get<GetTransactionsWithIncomingsPaginationResponse>(
+      await this.api.get<GetTransactionsWithIncomingsPaginationResponse>(
         `/transaction/with-incomings`,
         {
           params: { ...params },
@@ -105,16 +108,16 @@ export class TransactionService {
     return data;
   }
 
-  static async send(BakoSafeTransactionId: string) {
-    const { data } = await api.post(
+  async send(BakoSafeTransactionId: string) {
+    const { data } = await this.api.post(
       `/transaction/send/${BakoSafeTransactionId}`,
     );
 
     return data;
   }
 
-  static async getVaultTransactions(params: GetVaultTransactionsParams) {
-    const { data } = await api.get<GetVaultTransactionsResponse>(
+  async getVaultTransactions(params: GetVaultTransactionsParams) {
+    const { data } = await this.api.get<GetVaultTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -123,8 +126,8 @@ export class TransactionService {
     return data;
   }
 
-  static async getTransactionsSignaturePending(predicateId?: string[]) {
-    const { data } = await api.get<GetTransactionPendingResponse>(
+  async getTransactionsSignaturePending(predicateId?: string[]) {
+    const { data } = await this.api.get<GetTransactionPendingResponse>(
       `/transaction/pending`,
       {
         params: { predicateId },
@@ -133,7 +136,7 @@ export class TransactionService {
     return data;
   }
 
-  static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
+  async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets } = input;
 
     const predicateGasUsed = await vault.maxGasUsed();
@@ -216,15 +219,15 @@ export class TransactionService {
     };
   }
 
-  static async getTransactionsHistory(id: string, predicateId: string) {
-    const { data } = await api.get<GetTransactionHistoryResponse>(
+  async getTransactionsHistory(id: string, predicateId: string) {
+    const { data } = await this.api.get<GetTransactionHistoryResponse>(
       `/transaction/history/${id}/${predicateId}`,
     );
     return data;
   }
 
-  static async verifyOnChain(id: string) {
-    const { data } = await api.get<ITransactionResume>(
+  async verifyOnChain(id: string) {
+    const { data } = await this.api.get<ITransactionResume>(
       `/transaction/verify/${id}`,
     );
     return data;

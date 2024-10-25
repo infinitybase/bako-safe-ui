@@ -1,20 +1,3 @@
-interface CreatedBy {
-  id: string;
-  address: string;
-}
-
-interface Contact {
-  id: string;
-  address: string;
-  avatar: string;
-}
-
-export interface AddressBook {
-  id: string;
-  nickname: string;
-  owner: CreatedBy;
-  user: Contact;
-}
 export const AddressBookQueryKey = {
   DEFAULT: 'contacts',
   LIST_BY_USER: (workspaceId: string) => [

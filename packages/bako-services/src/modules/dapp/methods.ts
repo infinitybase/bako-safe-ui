@@ -1,6 +1,5 @@
+import { AxiosInstance } from "axios";
 import { TransactionRequestLike } from "fuels";
-
-import { api } from "@app/config";
 
 interface GetCurrentVaultResponse {}
 export interface IDAppCreatePayload {
@@ -20,20 +19,32 @@ export interface IDAPPConfirmTx {
 }
 
 export class DAppService {
-  static async findCurrentBySessionId(sessionId: string) {
-    const { data } = await api.get<GetCurrentVaultResponse>(
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
+  async findCurrentBySessionId(sessionId: string) {
+    const { data } = await this.api.get<GetCurrentVaultResponse>(
       `/connections/${sessionId}`,
     );
     return data;
   }
 
-  static async create(params: IDAppCreatePayload) {
-    const { data } = await api.post<IDAppCreatePayload>(`/connections`, params);
+  async create(params: IDAppCreatePayload) {
+    const { data } = await this.api.post<IDAppCreatePayload>(
+      `/connections`,
+      params,
+    );
     return data;
   }
 
-  static async confirmTx(params: IDAPPConfirmTx) {
-    const { data } = await api.post<void>(`/connections/tx/confirm`, params);
+  async confirmTx(params: IDAPPConfirmTx) {
+    const { data } = await this.api.post<void>(
+      `/connections/tx/confirm`,
+      params,
+    );
     return data;
   }
 }

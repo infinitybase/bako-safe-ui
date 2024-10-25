@@ -3,15 +3,7 @@ import {
   QueryKey,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import {
-  IBakoSafeAuth,
-  ITransactionResume,
-  ITransactionSummary,
-  ITransferAsset,
-  TransactionStatus,
-  TransactionType,
-} from 'bakosafe';
-import { Network, TransactionRequest } from 'fuels';
+import { IBakoSafeAuth } from 'bakosafe';
 
 export interface BakoSafeAuthParams {
   auth: IBakoSafeAuth;
@@ -40,87 +32,4 @@ export interface BakoSafeQueryOptions<
     'queryFn'
   > {
   queryFn?: BakoSafeQueryFunction<TQueryFnData, TQueryKey>;
-}
-
-export interface ICreateTransactionPayload {
-  predicateAddress: string; // ADDRESS OF PREDICATE
-  name?: string;
-  hash: string; // HASH OF TRANSACTION
-  txData: TransactionRequest;
-  status: TransactionStatus;
-  assets: ITransferAsset[];
-  sendTime?: Date;
-  gasUsed?: string;
-  network: Network;
-}
-
-export interface ITransaction extends ICreateTransactionPayload {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  predicateId: string;
-  type: TransactionType;
-  resume: ITransactionResume; // RESULT
-  assets: ITransferAsset[];
-  summary?: ITransactionSummary;
-}
-
-export enum SortOptionTx {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export interface GetTransactionParams {
-  predicateId?: string[];
-  to?: string;
-  hash?: string;
-  status?: TransactionStatus[];
-  perPage?: number;
-  page?: number;
-  orderBy?: string;
-  sort?: SortOptionTx;
-}
-
-export interface IListTransactions
-  extends GetTransactionParams,
-    Omit<GetTransactionParams, 'predicateId'> {}
-
-export interface IPredicateVersion {
-  id: string;
-  name: string;
-  description?: string;
-  code: string;
-  bytes: string;
-  abi: string;
-  active: boolean;
-}
-
-export interface IPredicate extends IPredicatePayload {
-  id: string;
-  members: {
-    id: string;
-    avatar: string;
-    address: string;
-    nickname?: string;
-  }[];
-  owner: {
-    id: string;
-    address: string;
-  };
-  version: Partial<IPredicateVersion>;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface IPredicatePayload {
-  name: string;
-  description?: string;
-  predicateAddress: string;
-  minSigners: number;
-  addresses: string[];
-  configurable: string;
-  provider: string;
-  chainId?: number;
-  versionCode?: string;
 }

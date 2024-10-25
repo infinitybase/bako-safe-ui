@@ -1,10 +1,16 @@
-import { ITransactionResume, TransactionType, Vault } from "bakosafe";
-import { Operation } from "fuels";
+import {
+  TransactionStatus as BakoSafeTransactionStatus,
+  ITransactionResume,
+  IAsset,
+  TransactionType,
+  Vault,
+  ITransferAsset,
+  ITransactionSummary,
+} from "bakosafe";
+import { Network, Operation, Predicate, TransactionRequest } from "fuels";
 
-import { AssetModel, IPagination, TransactionStatus } from "@app/modules/core";
-import { ITransaction } from "@app/modules/core/hooks/bakosafe/utils/types";
 import { PredicateAndWorkspace } from "@/modules/vault";
-import { SortOption } from "../types";
+import { AssetModel, IPagination, SortOption } from "@/types";
 
 export interface ITransactionPagination<T> {
   perPage: number;
@@ -102,21 +108,23 @@ export interface SignerTransactionPayload {
   confirm: boolean;
 }
 
-export interface CreateTransactionPayload {
-  predicateAdress: string;
-  predicateID?: string;
-  name: string;
-  txData: string;
-  hash: string;
-  status: TransactionStatus;
-  assets: AssetModel[];
-}
+// We not use this
+// export interface CreateTransactionPayload {
+//   predicateAdress: string;
+//   predicateID?: string;
+//   name: string;
+//   txData: string;
+//   hash: string;
+//   status: TransactionStatus;
+//   assets: AssetModel[];
+// }
 
-export interface CloseTransactionPayload {
-  gasUsed: string;
-  hasError?: boolean;
-  transactionResult: string;
-}
+// We not use this
+// export interface CloseTransactionPayload {
+//   gasUsed: string;
+//   hasError?: boolean;
+//   transactionResult: string;
+// }
 
 export type OperationWithAssets = Operation & {
   assetId?: string;
@@ -152,6 +160,68 @@ export enum TransactionOrderBy {
   CREATED_AT = "createdAt",
   UPDATED_AT = "updatedAt",
 }
+
+export enum TransactionStatus {
+  AWAIT = "AWAIT",
+  DONE = "DONE",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
+  ERROR = "ERROR",
+}
+export interface Transaction {
+  id: string;
+  predicateAdress: string;
+  predicateId: string;
+  name: string;
+  txData: string;
+  hash: string;
+  status: BakoSafeTransactionStatus;
+  sendTime: string;
+  gasUsed: string;
+  resume: ITransactionResume;
+  assets: IAsset[];
+  predicate: Predicate;
+  createdAt: Date;
+}
+
+export interface ICreateTransactionPayload {
+  predicateAddress: string; // ADDRESS OF PREDICATE
+  name?: string;
+  hash: string; // HASH OF TRANSACTION
+  txData: TransactionRequest;
+  status: TransactionStatus;
+  assets: ITransferAsset[];
+  sendTime?: Date;
+  gasUsed?: string;
+  network: Network;
+}
+
+export interface ITransaction extends ICreateTransactionPayload {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  predicateId: string;
+  type: TransactionType;
+  resume: ITransactionResume; // RESULT
+  assets: ITransferAsset[];
+  summary?: ITransactionSummary;
+}
+
+export interface GetTransactionParams {
+  predicateId?: string[];
+  to?: string;
+  hash?: string;
+  status?: ITransactionStatusFilter;
+  perPage?: number;
+  page?: number;
+  orderBy?: string;
+  sort?: SortOption;
+}
+
+export interface IListTransactions
+  extends GetTransactionParams,
+    Omit<GetTransactionParams, "predicateId"> {}
 
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
