@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { PredicateWorkspace } from '@services/modules/vault';
-import { Card } from '@ui/components';
+import { Card } from '@bako-safe/ui/components';
 
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import { PredicateMember } from '@/modules/core/models/predicate';

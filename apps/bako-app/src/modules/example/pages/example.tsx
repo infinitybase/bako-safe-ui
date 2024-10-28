@@ -25,7 +25,7 @@ import {
   ErrorIcon,
   PendingIcon,
   SuccessIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { FaRegClone } from 'react-icons/fa';
 import { HiQrCode } from 'react-icons/hi2';

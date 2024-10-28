@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { TransactionWithVault } from '@services/modules/transaction';
-import { MinimalAlertIcon } from '@ui/components';
+import { MinimalAlertIcon } from '@bako-safe/ui/components';
 
 export interface IConnectorInfos {
   transaction: TransactionWithVault;

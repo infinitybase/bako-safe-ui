@@ -8,7 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { DoubleArrowIcon } from '@ui/components';
+import { DoubleArrowIcon } from '@bako-safe/ui/components';
 import { ITransferAsset } from 'bakosafe';
 
 import { AddressWithCopyBtn } from '@/components';

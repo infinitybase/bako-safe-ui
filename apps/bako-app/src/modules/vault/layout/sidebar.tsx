@@ -5,7 +5,7 @@ import {
   OverviewIcon,
   PendingIcon,
   SettingsIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages, PermissionRoles } from '@/modules/core';

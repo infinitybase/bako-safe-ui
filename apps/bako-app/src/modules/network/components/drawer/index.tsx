@@ -19,7 +19,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { BakoIcon, PlusIcon, RemoveIcon, UnknownIcon } from '@ui/components';
+import {
+  BakoIcon,
+  PlusIcon,
+  RemoveIcon,
+  UnknownIcon,
+} from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import { TypeUser } from '@/modules/auth/services';

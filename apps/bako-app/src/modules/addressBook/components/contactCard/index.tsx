@@ -1,3 +1,4 @@
+import { Card, CopyIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
 import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -12,7 +13,6 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CopyIcon, EditIcon, RemoveIcon } from '@ui/components';
 
 import { useNotification } from '@/modules/notification';
 

@@ -1,5 +1,5 @@
 import { CardProps, HStack } from '@chakra-ui/react';
-import { Card } from '@ui/components';
+import { Card } from '@bako-safe/ui/components';
 import { ReactNode } from 'react';
 
 interface ActionCardContainerProps extends CardProps {

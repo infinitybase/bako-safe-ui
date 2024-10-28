@@ -8,7 +8,7 @@ import {
   TabPanel,
 } from '@chakra-ui/react';
 
-import { VaultSuccessIcon } from '@ui/components';
+import { VaultSuccessIcon } from '@bako-safe/ui/components';
 import { ITemplatePayload } from '@/modules/core';
 import { useModal, useSteps } from '@/modules/template/hooks';
 

@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card } from '@ui/components';
+import { Card } from '@bako-safe/ui/components';
 import React, { useCallback, useMemo } from 'react';
 
 import { useScreenSize } from '@/modules/core/hooks';

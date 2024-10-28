@@ -1,5 +1,10 @@
+import {
+  BridgeIcon,
+  CoinsIcon,
+  Dialog,
+  DownLeftArrow,
+} from '@bako-safe/ui/components';
 import { Button, VStack } from '@chakra-ui/react';
-import { BridgeIcon, CoinsIcon, Dialog, DownLeftArrow } from '@ui/components';
 
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';

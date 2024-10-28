@@ -1,6 +1,6 @@
+import { AssetModel } from '@bako-safe/services/types';
 import { Text, VStack } from '@chakra-ui/react';
 
-import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from '../transfer-details';

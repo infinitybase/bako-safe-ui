@@ -1,3 +1,4 @@
+import { useBakoAuthContext } from '@bako-safe/services/context';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
@@ -8,12 +9,15 @@ import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
-import { useWorkspaceContext } from './modules/workspace/WorkspaceProvider';
+import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
+import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 
 function App() {
   const { fuel } = useFuel();
-  const { authDetails: auth } = useWorkspaceContext();
+  // const { authDetails: auth } = useWorkspaceContext();
   const { handleSelectNetwork } = useNetworks();
+
+  const { authDetails: auth } = useBakoAuthContext();
 
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
@@ -55,7 +59,13 @@ function App() {
     };
   }, [auth]);
 
-  return <AppRoutes />;
+  return (
+    <TransactionsProvider>
+      <WorkspaceProvider>
+        <AppRoutes />
+      </WorkspaceProvider>
+    </TransactionsProvider>
+  );
 }
 
 export default App;

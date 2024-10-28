@@ -8,7 +8,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 
-import { SquarePlusIcon } from '@ui/components';
+import { SquarePlusIcon } from '@bako-safe/ui/components';
 import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
 
 interface SuccessStepProps {

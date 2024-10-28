@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-
-import { localStorageKeys, UserQueryKey, UserService } from '../../services';
+import { UserService } from "@/services/auth/methods";
+import { UserQueryKey, localStorageKeys } from "@/types";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const useCheckNickname = (
   nickname: string,
@@ -17,7 +17,7 @@ const useCheckNickname = (
 
 const useGetAccountsByHardwareId = () => {
   let hardwareId: string | null = null;
-  const validPath = window.location.pathname === '/';
+  const validPath = window.location.pathname === "/";
   hardwareId = localStorage.getItem(localStorageKeys.HARDWARE_ID);
   if (!hardwareId || hardwareId == null) {
     hardwareId = crypto.randomUUID();

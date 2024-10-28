@@ -1,3 +1,5 @@
+import { AssetModel } from '@bako-safe/services/types';
+import { DeployIcon, DoubleArrowIcon } from '@bako-safe/ui/components';
 import { Icon } from '@chakra-ui/icons';
 import {
   Center,
@@ -7,14 +9,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { DeployIcon, DoubleArrowIcon } from '@ui/components';
 import { useMemo } from 'react';
-import { FaPlay } from 'react-icons/fa';
 
 import { AddressWithCopyBtn } from '@/components';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';

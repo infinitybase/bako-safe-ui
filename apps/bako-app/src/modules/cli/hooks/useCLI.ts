@@ -3,7 +3,7 @@ import {
   CoinsIcon,
   MoreLessIcon,
   RecoveryIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { useMemo, useState } from 'react';
 
 import { PredicateAndWorkspace, Workspace } from '@/modules';

@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LineCloseIcon, RemoveIcon } from '@ui/components';
+import { LineCloseIcon, RemoveIcon } from '@bako-safe/ui/components';
 import { format } from 'date-fns';
 
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';

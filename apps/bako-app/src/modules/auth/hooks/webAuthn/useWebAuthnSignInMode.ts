@@ -8,7 +8,6 @@ import { localStorageKeys, TypeUser, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';
-import { useSignMessageWebAuthn } from './useWebauthnRequests';
 
 interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];

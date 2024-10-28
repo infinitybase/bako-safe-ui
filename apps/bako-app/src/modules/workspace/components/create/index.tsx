@@ -16,7 +16,7 @@ import {
   FeedbackSuccess,
   SquarePlusIcon,
   StepProgress,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import {

@@ -9,7 +9,12 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { Autocomplete, Dialog, RemoveIcon, Select } from '@ui/components';
+import {
+  Autocomplete,
+  Dialog,
+  RemoveIcon,
+  Select,
+} from '@bako-safe/ui/components';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 

@@ -4,7 +4,7 @@ import {
   DialogModalProps,
   SquarePlusIcon,
   Tooltip,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 
 import { useVerifyBrowserType } from '@/modules/core/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';

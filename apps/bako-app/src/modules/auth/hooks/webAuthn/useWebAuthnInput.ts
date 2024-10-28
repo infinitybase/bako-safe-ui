@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AutocompleteBadgeStatus } from '@/components/autocomplete';
 
-import { TypeUser } from '../../services/methods';
 import {
   useCheckNickname,
   useGetAccountsByHardwareId,

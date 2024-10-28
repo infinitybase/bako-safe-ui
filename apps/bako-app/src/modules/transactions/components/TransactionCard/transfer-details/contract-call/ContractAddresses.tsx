@@ -1,9 +1,9 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import { AssetModel } from '@bako-safe/services/types';
 import { Icon } from '@chakra-ui/icons';
 import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
-import { FaPlay } from 'react-icons/fa';
 
-import { AddressUtils, AssetModel } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface ContractAddressesProps extends StackProps {

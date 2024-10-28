@@ -20,7 +20,7 @@ import {
   EyeCloseIcon,
   EyeOpenIcon,
   SquarePlusIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';

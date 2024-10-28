@@ -5,7 +5,7 @@ import {
   SkeletonCircle,
   SkeletonText,
 } from '@chakra-ui/react';
-import { ChartBulletIcon } from '@ui/components';
+import { ChartBulletIcon } from '@bako-safe/ui/components';
 
 const VaultBoxSkeleton = () => (
   <Box w="100%">

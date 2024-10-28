@@ -16,7 +16,7 @@ import {
   RemoveIcon,
   Select,
   UserAddIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { useEffect, useRef, useState } from 'react';
 import {
   Controller,

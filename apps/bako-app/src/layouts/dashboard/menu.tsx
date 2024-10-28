@@ -13,17 +13,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-const MenuItem = chakra(Flex, {
-  baseStyle: {
-    w: '100%',
-    justifyContent: 'flex-start',
-    gap: 4,
-    alignItems: 'center',
-    pb: 5,
-    pt: 5,
-  },
-});
-
 const Container = ({
   children,
   isActive,
@@ -36,7 +25,16 @@ const Container = ({
     borderBottomWidth={1}
     borderColor={isActive ? 'brand.500' : 'transparent'}
   >
-    <MenuItem {...props}>{children}</MenuItem>
+    <Flex
+      w="100%"
+      justifyContent="flex-start"
+      gap={4}
+      alignItems="center"
+      py={5}
+      {...props}
+    >
+      {children}
+    </Flex>
   </Box>
 );
 

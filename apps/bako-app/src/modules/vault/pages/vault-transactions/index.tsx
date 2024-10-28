@@ -17,7 +17,7 @@ import {
   HomeIcon,
   LineCloseIcon,
   TransactionTypeFilters,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { TransactionStatus } from 'bakosafe';
 import { useEffect } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';

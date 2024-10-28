@@ -1,3 +1,4 @@
+import { AlertIcon, Dialog } from '@bako-safe/ui/components';
 import {
   Box,
   Center,
@@ -7,7 +8,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { AlertIcon, Dialog } from '@ui/components';
 
 import { UseAddressBookReturn } from '../../hooks';
 

@@ -1,4 +1,5 @@
-import { AssetModel } from '@/modules/core';
+import { AssetModel } from '@bako-safe/services/types';
+
 import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
 export type IAssetsInfoToUSD = Pick<AssetModel, 'assetId' | 'amount'>;

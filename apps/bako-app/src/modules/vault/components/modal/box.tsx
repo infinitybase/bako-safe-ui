@@ -1,5 +1,5 @@
 import { Avatar, Badge, HStack, Text, VStack } from '@chakra-ui/react';
-import { Card, CardProps } from '@ui/components';
+import { Card, CardProps } from '@bako-safe/ui/components';
 
 import { PredicateWorkspace } from '../../services';
 

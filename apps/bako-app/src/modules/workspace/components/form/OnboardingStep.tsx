@@ -15,7 +15,7 @@ import {
   SquarePlusIcon,
   StepProgress,
   TransactionsBoxIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 
 interface OnboardingStepProps {
   tabs: {

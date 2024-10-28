@@ -1,5 +1,5 @@
 import { FormControl } from '@chakra-ui/react';
-import { Select, SelectProps } from '@ui/components';
+import { Select, SelectProps } from '@bako-safe/ui/components';
 import React from 'react';
 
 import {

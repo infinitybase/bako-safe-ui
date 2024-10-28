@@ -11,7 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CustomSkeleton } from '@ui/components';
+import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';

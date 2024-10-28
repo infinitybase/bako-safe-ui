@@ -17,7 +17,7 @@ import {
   DownLeftArrowGreen,
   UpRightArrow,
   UpRightArrowYellow,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { format } from 'date-fns';
 
 import { TransactionState } from '@/modules/core/models/transaction';

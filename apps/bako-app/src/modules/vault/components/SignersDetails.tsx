@@ -8,7 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CustomSkeleton } from '@ui/components';
+import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import { useNavigate } from 'react-router-dom';
 
 import { SignersDetailsProps } from '@/modules/core/models/predicate';

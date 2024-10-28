@@ -8,7 +8,7 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { ITransactionWithType } from '@services/modules/transaction';
-import { ErrorIcon, SuccessIcon } from '@ui/components';
+import { ErrorIcon, SuccessIcon } from '@bako-safe/ui/components';
 import { TransactionType } from 'bakosafe';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 

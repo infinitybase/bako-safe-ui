@@ -6,7 +6,7 @@ import {
   HStack,
   Text,
 } from '@chakra-ui/react';
-import { UserAddIcon } from '@ui/components';
+import { UserAddIcon } from '@bako-safe/ui/components';
 
 import { AddressUtils, delay, NativeAssetId } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';

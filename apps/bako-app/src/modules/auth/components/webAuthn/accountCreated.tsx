@@ -1,5 +1,5 @@
+import { ProgressButton } from '@bako-safe/ui/components';
 import { Text, VStack } from '@chakra-ui/react';
-import { ProgressButton } from '@ui/components';
 
 import { UseDappSignIn, UseWebSignIn } from '../../hooks';
 import { SignInHeader } from '../header';

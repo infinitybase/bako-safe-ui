@@ -17,7 +17,7 @@ import {
   DeployIcon,
   DownLeftArrowGreen,
   UpRightArrowYellow,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { ReactNode } from 'react';
 
 import { TransactionState } from '@/modules/core';

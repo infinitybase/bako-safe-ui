@@ -1,4 +1,4 @@
-import { Dialog, DialogModalProps } from '@ui/components';
+import { Dialog, DialogModalProps } from '@bako-safe/ui/components';
 
 import { CreateTemplateForm } from '../components/dialog';
 import { IStep } from '../hooks';

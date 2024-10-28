@@ -1,5 +1,5 @@
 import { Box, TabPanels, Tabs } from '@chakra-ui/react';
-import { StepProgress } from '@ui/components';
+import { StepProgress } from '@bako-safe/ui/components';
 
 import { useFindTemplate } from '@/modules/template/hooks';
 import { UseCreateVaultDialogReturn } from '@/modules/vault';

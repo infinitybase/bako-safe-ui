@@ -1,9 +1,10 @@
+import { BakoAuthProvider } from '@bako-safe/services/context';
+import { defaultTheme } from '@bako-safe/ui/themes';
 import { ChakraProvider } from '@chakra-ui/react';
 import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { defaultTheme } from '@ui/themes';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import TagManager from 'react-gtm-module';
@@ -13,8 +14,6 @@ import App from '@/App';
 import { BakoSafeQueryClientProvider } from '@/config';
 
 import { SocketProvider } from './config/socket';
-import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
-import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
 import { getEnvironment } from './utils/enviroment';
 
 const { VITE_SENTRY_DNS } = import.meta.env;
@@ -66,11 +65,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <SocketProvider>
             <BakoSafeQueryClientProvider>
               <BrowserRouter>
-                <TransactionsProvider>
-                  <WorkspaceProvider>
-                    <App />
-                  </WorkspaceProvider>
-                </TransactionsProvider>
+                <BakoAuthProvider>
+                  <App />
+                </BakoAuthProvider>
               </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>

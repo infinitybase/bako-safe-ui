@@ -1,7 +1,7 @@
+import { AssetModel } from '@bako-safe/services/types';
 import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TokenInfosProps {

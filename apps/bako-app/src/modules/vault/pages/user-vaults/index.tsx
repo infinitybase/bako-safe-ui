@@ -20,7 +20,7 @@ import {
   HomeIcon,
   TransactionsIcon,
   VaultIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 

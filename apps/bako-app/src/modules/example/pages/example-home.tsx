@@ -14,7 +14,12 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import { Card, ErrorIcon, PendingIcon, SuccessIcon } from '@ui/components';
+import {
+  Card,
+  ErrorIcon,
+  PendingIcon,
+  SuccessIcon,
+} from '@bako-safe/ui/components';
 import { FaRegClone } from 'react-icons/fa';
 import { SiBitcoinsv } from 'react-icons/si';
 

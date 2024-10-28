@@ -18,31 +18,26 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
 } from "./types";
-import { AxiosInstance } from "axios";
+import { api } from "@/config";
 
 export class TransactionService {
-  api: AxiosInstance;
-  constructor(api: AxiosInstance) {
-    this.api = api;
-  }
-
   // Can remove this? we don't use this method to create tx. Instead we use the SDK
-  // async create(payload: CreateTransactionPayload) {
-  //   const { data } = await this.api.post<CreateTransactionResponse>(
+  // static async create(payload: CreateTransactionPayload) {
+  //   const { data } = await api.post<CreateTransactionResponse>(
   //     "/transaction",
   //     payload
   //   );
   //   return data;
   // }
 
-  async getById(id: string) {
-    const { data } = await this.api.get<GetTransactionResponse>(
+  static async getById(id: string) {
+    const { data } = await api.get<GetTransactionResponse>(
       `/transaction/${id}`,
     );
     return data;
   }
-  async getByHash(hash: string, status?: ITransactionStatusFilter) {
-    const { data } = await this.api.get<GetTransactionResponse>(
+  static async getByHash(hash: string, status?: ITransactionStatusFilter) {
+    const { data } = await api.get<GetTransactionResponse>(
       `/transaction/by-hash/0x${hash}`,
       {
         params: {
@@ -53,9 +48,9 @@ export class TransactionService {
     return data;
   }
 
-  async signer(payload: SignerTransactionPayload) {
+  static async signer(payload: SignerTransactionPayload) {
     const { hash, ...body } = payload;
-    const { data } = await this.api.put<SignerTransactionResponse>(
+    const { data } = await api.put<SignerTransactionResponse>(
       `/transaction/sign/${hash}`,
       {
         signature: body.signer,
@@ -66,16 +61,16 @@ export class TransactionService {
   }
 
   // We not use this
-  // async close(id: string, payload: CloseTransactionPayload) {
-  //   const { data } = await this.api.put<GetTransactionResponse>(
+  // static async close(id: string, payload: CloseTransactionPayload) {
+  //   const { data } = await api.put<GetTransactionResponse>(
   //     `/transaction/close/${id}`,
   //     payload
   //   );
   //   return data;
   // }
 
-  async getTransactionsPagination(params: GetTransactionParams) {
-    const { data } = await this.api.get<GetTransactionsPaginationResponse>(
+  static async getTransactionsPagination(params: GetTransactionParams) {
+    const { data } = await api.get<GetTransactionsPaginationResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -85,8 +80,8 @@ export class TransactionService {
     return data;
   }
 
-  async getUserTransactions(params: GetUserTransactionsParams) {
-    const { data } = await this.api.get<GetUserTransactionsResponse>(
+  static async getUserTransactions(params: GetUserTransactionsParams) {
+    const { data } = await api.get<GetUserTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -95,11 +90,11 @@ export class TransactionService {
     return data;
   }
 
-  async getTransactionsWithIncomingsPagination(
+  static async getTransactionsWithIncomingsPagination(
     params: GetTransactionsWithIncomingsParams,
   ) {
     const { data } =
-      await this.api.get<GetTransactionsWithIncomingsPaginationResponse>(
+      await api.get<GetTransactionsWithIncomingsPaginationResponse>(
         `/transaction/with-incomings`,
         {
           params: { ...params },
@@ -108,16 +103,16 @@ export class TransactionService {
     return data;
   }
 
-  async send(BakoSafeTransactionId: string) {
-    const { data } = await this.api.post(
+  static async send(BakoSafeTransactionId: string) {
+    const { data } = await api.post(
       `/transaction/send/${BakoSafeTransactionId}`,
     );
 
     return data;
   }
 
-  async getVaultTransactions(params: GetVaultTransactionsParams) {
-    const { data } = await this.api.get<GetVaultTransactionsResponse>(
+  static async getVaultTransactions(params: GetVaultTransactionsParams) {
+    const { data } = await api.get<GetVaultTransactionsResponse>(
       `/transaction`,
       {
         params: { ...params },
@@ -126,8 +121,8 @@ export class TransactionService {
     return data;
   }
 
-  async getTransactionsSignaturePending(predicateId?: string[]) {
-    const { data } = await this.api.get<GetTransactionPendingResponse>(
+  static async getTransactionsSignaturePending(predicateId?: string[]) {
+    const { data } = await api.get<GetTransactionPendingResponse>(
       `/transaction/pending`,
       {
         params: { predicateId },
@@ -136,7 +131,7 @@ export class TransactionService {
     return data;
   }
 
-  async resolveTransactionCosts(input: ResolveTransactionCostInput) {
+  static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets } = input;
 
     const predicateGasUsed = await vault.maxGasUsed();
@@ -219,15 +214,15 @@ export class TransactionService {
     };
   }
 
-  async getTransactionsHistory(id: string, predicateId: string) {
-    const { data } = await this.api.get<GetTransactionHistoryResponse>(
+  static async getTransactionsHistory(id: string, predicateId: string) {
+    const { data } = await api.get<GetTransactionHistoryResponse>(
       `/transaction/history/${id}/${predicateId}`,
     );
     return data;
   }
 
-  async verifyOnChain(id: string) {
-    const { data } = await this.api.get<ITransactionResume>(
+  static async verifyOnChain(id: string) {
+    const { data } = await api.get<ITransactionResume>(
       `/transaction/verify/${id}`,
     );
     return data;

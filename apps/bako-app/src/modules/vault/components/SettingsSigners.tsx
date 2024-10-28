@@ -1,5 +1,5 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { CustomSkeleton } from '@ui/components';
+import { CustomSkeleton } from '@bako-safe/ui/components';
 
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

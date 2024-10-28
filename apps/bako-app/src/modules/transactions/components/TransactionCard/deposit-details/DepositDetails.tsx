@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionWithVault } from '@services/modules/transaction';
-import { UpRightArrow } from '@ui/components';
+import { UpRightArrow } from '@bako-safe/ui/components';
 import { TransactionStatus } from 'bakosafe';
 
 import { shakeAnimationY } from '@/modules/core';

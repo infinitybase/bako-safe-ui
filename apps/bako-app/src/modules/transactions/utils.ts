@@ -1,8 +1,8 @@
+import { ITransaction } from '@bako-safe/services/modules/transaction';
+import { AssetModel, WitnessStatus } from '@bako-safe/services/types';
 import { ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { ITransaction } from '../core/hooks/bakosafe/utils/types';
-import { AssetModel, WitnessStatus } from '../core/models';
 import { NativeAssetId } from '../core/utils';
 
 const { REJECTED, DONE, PENDING } = WitnessStatus;

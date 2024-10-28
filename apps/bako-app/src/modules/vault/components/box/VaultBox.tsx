@@ -14,7 +14,7 @@ import {
   HomeIcon,
   LeftAndRightArrow,
   UpRightArrow,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { FiPlusSquare } from 'react-icons/fi';
 
 import { AddressWithCopyBtn } from '@/components';

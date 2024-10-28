@@ -9,7 +9,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { UpRightArrow } from '@ui/components';
+import { UpRightArrow } from '@bako-safe/ui/components';
 import { BakoIcon } from '@ui/components/icons';
 
 import {

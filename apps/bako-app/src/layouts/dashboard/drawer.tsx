@@ -1,10 +1,10 @@
+import { LineCloseIcon } from '@bako-safe/ui/components';
 import {
   Drawer as ChakraDrawer,
   DrawerContent,
   DrawerOverlay,
   DrawerProps as ChakraDrawerProps,
 } from '@chakra-ui/react';
-import { LineCloseIcon } from '@ui/components';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

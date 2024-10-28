@@ -1,4 +1,14 @@
 import {
+  BakoIcon,
+  DisconnectIcon,
+  FeedbackIcon,
+  NetworkIcon,
+  NotificationIcon,
+  PlusIcon,
+  SettingsTopMenuIcon,
+  UnknownIcon,
+} from '@bako-safe/ui/components';
+import {
   Avatar,
   Box,
   chakra,
@@ -16,19 +26,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import {
-  BakoIcon,
-  DisconnectIcon,
-  FeedbackIcon,
-  NetworkIcon,
-  NotificationIcon,
-  PlusIcon,
-  SettingsTopMenuIcon,
-  UnknownIcon,
-} from '@ui/components';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn } from '@/components';

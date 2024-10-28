@@ -1,5 +1,5 @@
 import { keyframes, Text, TextProps } from '@chakra-ui/react';
-import { RefreshIcon } from '@ui/components';
+import { RefreshIcon } from '@bako-safe/ui/components';
 
 const Update = (props: TextProps & { isLoading: boolean }) => {
   const spin = keyframes`

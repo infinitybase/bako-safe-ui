@@ -1,7 +1,9 @@
+import { useBakoAuthContext } from '@bako-safe/services/context';
+import { IUseAuthDetails } from '@bako-safe/services/types';
 import { BakoProvider } from 'bakosafe';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { queryClient, setupAxiosInterceptors } from '@/config';
+import { queryClient } from '@/config';
 import {
   assetsMapFromFormattedFn,
   useAddressBook,
@@ -13,7 +15,7 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
-import { useAuth } from '@/modules/auth';
+// import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
 
@@ -29,11 +31,16 @@ const useWorkspaceDetails = () => {
 
   const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
-  const [isTokenExpired, setIsTokenExpired] = useState(false);
+  // const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
-  const authDetails = useAuth();
+  // const authDetails = useAuth();
+  const { authDetails } = useBakoAuthContext() as {
+    authDetails: IUseAuthDetails;
+  };
+
   const { isTxFromDapp } = useAuthUrlParams();
+
   const {
     vaultPageParams: { vaultId },
   } = useGetParams();
@@ -56,14 +63,14 @@ const useWorkspaceDetails = () => {
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useMemo(() => {
-    setupAxiosInterceptors({
-      isTxFromDapp,
-      isTokenExpired,
-      setIsTokenExpired,
-      logout: authDetails.handlers.logout,
-    });
-  }, []);
+  // useMemo(() => {
+  //   setupAxiosInterceptors({
+  //     isTxFromDapp,
+  //     isTokenExpired,
+  //     setIsTokenExpired,
+  //     logout: authDetails.handlers.logout,
+  //   });
+  // }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },
@@ -76,7 +83,6 @@ const useWorkspaceDetails = () => {
     // resetAllTransactionsTypeFilters,
     // refetchPendingSingerTransactions,
   );
-
   const { workspace: currentWorkspace, ...currentWorkspaceData } =
     useGetWorkspaceRequest(authDetails.userInfos.workspace?.id);
 
@@ -104,7 +110,7 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
-    isTokenExpired,
+    isTokenExpired: authDetails.handlers.isTokenExpired,
     isFuelTokensLoading,
   });
 
@@ -135,8 +141,8 @@ const useWorkspaceDetails = () => {
     screenSizes,
     resetHomeRequests,
     isTxFromDapp,
-    isTokenExpired,
-    setIsTokenExpired,
+    // isTokenExpired,
+    // setIsTokenExpired,
   };
 };
 

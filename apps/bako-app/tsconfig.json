@@ -31,7 +31,7 @@
     },
     "outDir": "./dist"
   },
-  "include": ["src"],
+  "include": ["src", "src/utils/handle-action-using-keys.ts"],
   "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules"],
   "references": [
     {

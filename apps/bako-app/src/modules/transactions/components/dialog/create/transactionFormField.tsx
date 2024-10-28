@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { AmountInput, Autocomplete } from '@ui/components';
+import { AmountInput, Autocomplete } from '@bako-safe/ui/components';
 import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 

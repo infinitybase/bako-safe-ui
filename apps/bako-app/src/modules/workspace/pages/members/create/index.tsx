@@ -21,7 +21,7 @@ import {
   RemoveIcon,
   StepProgress,
   UserPlusIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { useParams } from 'react-router-dom';
 
 import { CreateContactDialog } from '@/modules/addressBook';

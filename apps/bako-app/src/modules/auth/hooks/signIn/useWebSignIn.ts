@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Pages } from '@/modules/core/routes';
 
-import { useWebAuthnLastLogin } from '../webAuthn/useWebAuthnLastLogin';
+import { useWebAuthnLastLogin } from '../../../../../../../packages/bako-services/src/modules/auth/webAuthn/useWebAuthnLastLogin';
 import { useWalletSignIn } from './useWalletSignIn';
 import { useWebAuthnSignIn, WebAuthnModeState } from './useWebAuthnSignIn';
 

@@ -8,7 +8,7 @@ import {
   useMediaQuery,
 } from '@chakra-ui/react';
 import { TransactionWithVault } from '@services/modules/transaction';
-import { CustomSkeleton } from '@ui/components';
+import { CustomSkeleton } from '@bako-safe/ui/components';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 

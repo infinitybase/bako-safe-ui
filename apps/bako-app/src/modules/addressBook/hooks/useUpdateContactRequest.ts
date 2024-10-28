@@ -1,9 +1,10 @@
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
 import {
   AddressBookService,
   UpdateContactPayload,
   UpdateContactResponse,
-} from '@services/modules/address-book';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+} from '../services';
 
 const useUpdateContactRequest = (
   options?: UseMutationOptions<

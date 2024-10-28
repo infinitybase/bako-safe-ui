@@ -1,5 +1,5 @@
+import { ProgressButton } from '@bako-safe/ui/components';
 import { VStack } from '@chakra-ui/react';
-import { ProgressButton } from '@ui/components';
 
 import { useScreenSize } from '@/modules/core/hooks';
 import { TermsOfUseDialog } from '@/modules/termsOfUse/dialog';

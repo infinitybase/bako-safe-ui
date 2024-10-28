@@ -1,4 +1,5 @@
 import { useFuel } from '@fuels/react';
+import { TypeUser } from 'bakosafe';
 import { useEffect, useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -6,8 +7,7 @@ import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
-import { localStorageKeys, TypeUser } from '../../services';
-import { useCreateUserRequest, useSignInRequest } from '../useUserRequest';
+import { localStorageKeys } from '../../utils';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 

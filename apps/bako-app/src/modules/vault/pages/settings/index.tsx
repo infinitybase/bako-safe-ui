@@ -9,7 +9,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { HomeIcon } from '@ui/components';
+import { HomeIcon } from '@bako-safe/ui/components';
 import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';

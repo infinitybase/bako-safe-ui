@@ -16,7 +16,7 @@ import {
   HomeIcon,
   TransactionsIcon,
   VaultIcon,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { FaRegPlusSquare } from 'react-icons/fa';
 
 import { Pages } from '@/modules/core/routes';

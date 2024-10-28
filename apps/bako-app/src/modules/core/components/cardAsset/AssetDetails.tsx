@@ -1,6 +1,6 @@
 import { Box, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { UpRightArrow } from '@ui/components';
+import { UpRightArrow } from '@bako-safe/ui/components';
 
 import { AddressUtils, shakeAnimationY } from '../../utils';
 

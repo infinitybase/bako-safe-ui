@@ -1,5 +1,5 @@
 import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
-import { FeedbackIcon } from '@ui/components';
+import { FeedbackIcon } from '@bako-safe/ui/components';
 import { FiArrowUpRight } from 'react-icons/fi';
 
 import { useScreenSize } from '@/modules/core/hooks';

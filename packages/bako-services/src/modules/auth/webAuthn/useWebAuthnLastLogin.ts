@@ -1,4 +1,4 @@
-import { localStorageKeys } from '../../services';
+import { localStorageKeys } from "@/types";
 
 const useWebAuthnLastLogin = () => {
   const setLastLoginUsername = (id: string) => {

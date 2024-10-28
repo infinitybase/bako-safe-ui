@@ -1,6 +1,6 @@
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { CustomSkeleton, UpRightArrow } from '@ui/components';
+import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui/components';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 
 import { shakeAnimationY, TransactionState } from '@/modules/core';

@@ -9,7 +9,7 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
-import { CustomSkeleton, EmptyState, HomeIcon } from '@ui/components';
+import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { AssetsBalanceList } from '@/modules/core';

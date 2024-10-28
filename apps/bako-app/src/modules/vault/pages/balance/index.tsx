@@ -9,7 +9,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { CustomSkeleton, EmptyState, HomeIcon } from '@ui/components';
+import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 

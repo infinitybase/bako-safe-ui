@@ -18,7 +18,7 @@ import {
   HomeIcon,
   MenuIcon,
   TransactionTypeFilters,
-} from '@ui/components';
+} from '@bako-safe/ui/components';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

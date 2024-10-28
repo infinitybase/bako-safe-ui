@@ -1,6 +1,6 @@
 import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 
-import { Dialog, SquarePlusIcon, StepProgress } from '@ui/components';
+import { Dialog, SquarePlusIcon, StepProgress } from '@bako-safe/ui/components';
 
 import { IStep, useSteps } from '../../hooks';
 import { useTemplateStore } from '../../store';

@@ -7,7 +7,7 @@ import {
   useClipboard,
   VStack,
 } from '@chakra-ui/react';
-import { CopyIcon, DoneIcon } from '@ui/components';
+import { CopyIcon, DoneIcon } from '@bako-safe/ui/components';
 
 import { UseAPITokenReturn } from '@/modules/cli/hooks';
 import { AddressUtils } from '@/modules/core/utils';

@@ -8,7 +8,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CustomSkeleton, NotFoundIcon } from '@ui/components';
+import { Card, CustomSkeleton, NotFoundIcon } from '@bako-safe/ui/components';
 import { bn } from 'fuels';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

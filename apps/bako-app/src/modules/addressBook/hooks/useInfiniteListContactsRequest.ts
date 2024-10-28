@@ -1,8 +1,9 @@
-import { AddressBookService } from '@services/modules/address-book';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
+
+import { AddressBookService } from '../services';
 
 const useInfiniteListcontactsRequest = (
   workspaceId: string,
