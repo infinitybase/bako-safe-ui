@@ -1,8 +1,7 @@
+import { AddressBookService } from '@bako-safe/services/services/address-book';
 import { useQuery } from '@tanstack/react-query';
 
-import { AddressBookQueryKey } from '@/modules/core';
-
-import { AddressBookService } from '../services';
+import { AddressBookQueryKey } from '../utils';
 
 type UseListContactsRequestParams = {
   workspaceId: string;

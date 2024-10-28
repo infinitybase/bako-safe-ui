@@ -1,9 +1,10 @@
+import { AddressBookService } from '@bako-safe/services/services/address-book';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
+import { WorkspaceContact } from '@/modules/core';
 
-import { AddressBookService } from '../services';
+import { AddressBookQueryKey } from '../utils';
 
 const useInfiniteListcontactsRequest = (
   workspaceId: string,

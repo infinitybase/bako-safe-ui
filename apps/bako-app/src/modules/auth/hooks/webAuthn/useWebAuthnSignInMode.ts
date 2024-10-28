@@ -1,10 +1,10 @@
+import { UserService } from '@bako-safe/services/services';
 import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { localStorageKeys, TypeUser, UserService } from '../../services';
 import { WebAuthnModeState } from '../signIn/useWebAuthnSignIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
 import { useWebAuthnLastLogin } from './useWebAuthnLastLogin';

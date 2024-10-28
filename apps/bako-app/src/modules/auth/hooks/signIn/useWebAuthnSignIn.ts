@@ -1,3 +1,4 @@
+import { TypeUser } from 'bakosafe';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTab } from '@/modules/core/hooks';

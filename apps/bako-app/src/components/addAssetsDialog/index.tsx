@@ -1,4 +1,4 @@
-import { useBakoAuthContext } from '../../../../../packages/bako-services/dist/context/AuthContext';
+import { useBakoAuthContext } from '@bako-safe/services/context';
 import {
   BridgeIcon,
   CoinsIcon,

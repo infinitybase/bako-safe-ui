@@ -1,3 +1,4 @@
+import { IUseAuthDetails } from '@bako-safe/services/types';
 import { useDisclosure } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -5,15 +6,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { PermissionRoles } from '@/modules/core';
 
-import { useListContactsRequest } from './useListContactsRequest';
-import { IUseAuthReturn } from '@/modules/auth/services';
-import { useAddressBookMutations } from './useAddressBookMutations';
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
+import { useAddressBookMutations } from './useAddressBookMutations';
+import { useListContactsRequest } from './useListContactsRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 
 const useAddressBook = (
-  authDetails: IUseAuthReturn,
+  authDetails: IUseAuthDetails,
   hasPermission: (requiredRoles: PermissionRoles[]) => boolean,
 ) => {
   const [contactToEdit, setContactToEdit] = useState({ id: '' });

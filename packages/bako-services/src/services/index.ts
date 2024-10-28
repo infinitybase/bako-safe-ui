@@ -7,3 +7,4 @@ export * from "./settings";
 export * from "./transaction";
 export * from "./vault";
 export * from "./workspace";
+export * from "./auth";

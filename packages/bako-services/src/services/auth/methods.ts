@@ -11,11 +11,11 @@ import {
   SignInPayload,
   SignInResponse,
   SignInSignWebAuthnPayload,
-  localStorageKeys,
 } from "@/types/auth";
 import { TypeUser, createAccount } from "bakosafe";
 import { Address } from "fuels";
 import { signChallange } from "@/utils/webauthn";
+import { localStorageKeys } from "./utils";
 
 export class UserService {
   static async create(payload: CreateUserPayload) {

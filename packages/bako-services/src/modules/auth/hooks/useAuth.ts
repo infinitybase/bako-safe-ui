@@ -16,14 +16,10 @@ export const EConnectorsInverse: Record<EConnectors, keyof typeof TypeUser> = {
 };
 
 import { useAuthCookies, useQueryParams } from "./";
-import {
-  AuthenticateParams,
-  IUseAuthDetails,
-  TypeUser,
-  UserType,
-} from "@/types/auth";
+import { AuthenticateParams, IUseAuthDetails, UserType } from "@/types/auth";
 import { generateRedirectQueryParams } from "@/services/auth/utils";
 import { useUserInfoRequest, useSignOut } from "../";
+import { TypeUser } from "bakosafe";
 
 export type SingleAuthentication = {
   workspace: string;

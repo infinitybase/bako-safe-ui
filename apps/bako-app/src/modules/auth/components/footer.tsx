@@ -1,11 +1,12 @@
-import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
 import { FeedbackIcon } from '@bako-safe/ui/components';
-import { FiArrowUpRight } from 'react-icons/fi';
+import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
 
-import { useScreenSize } from '@/modules/core/hooks';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const SignInFooter = () => {
-  const { isMobile } = useScreenSize();
+  const {
+    screenSizes: { isMobile },
+  } = useWorkspaceContext();
 
   const feedbackForm = () =>
     window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');

@@ -1,7 +1,5 @@
 import { Icon } from '@chakra-ui/icons';
 import { ToastPosition } from '@chakra-ui/react';
-import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
-import { RiCloseCircleFill } from 'react-icons/ri';
 
 import { useNotification } from '@/modules/notification';
 

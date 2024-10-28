@@ -1,6 +1,7 @@
 import { TransactionType } from 'bakosafe';
 
-import { AddressBookQueryKey } from './addressBook';
+import { AddressBookQueryKey } from '@/modules/addressBook/utils';
+
 import { HomeQueryKey } from './home';
 
 export enum PermissionRoles {

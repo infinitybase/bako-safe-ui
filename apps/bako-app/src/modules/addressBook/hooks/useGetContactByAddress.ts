@@ -1,4 +1,4 @@
-import { ListContactsResponse } from '../services';
+import { ListContactsResponse } from '@bako-safe/services/services/address-book';
 
 const useGetContactByAddress = (
   address: string,
