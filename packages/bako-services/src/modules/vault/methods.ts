@@ -3,7 +3,7 @@ import { BN, CoinQuantity } from "fuels";
 import { Asset, IPagination, NFT, PaginationParams, SortOption } from "@/types";
 import { Workspace } from "../workspace/types";
 import { IPredicate, Predicate } from "./types";
-import { AxiosInstance } from "axios";
+import { api } from "@/config";
 
 export interface GetAllPredicatesPayload extends PaginationParams {
   q?: string;
@@ -41,22 +41,16 @@ export type CreatePredicatePayload = Omit<
 >;
 
 export class VaultService {
-  api: AxiosInstance;
-
-  constructor(api: AxiosInstance) {
-    this.api = api;
-  }
-
-  async create(payload: CreatePredicatePayload) {
-    const { data } = await this.api.post<CreatePredicateResponse>(
+  static async create(payload: CreatePredicatePayload) {
+    const { data } = await api.post<CreatePredicateResponse>(
       "/predicate",
       payload,
     );
     return data;
   }
 
-  async getAllWithPagination(params: GetAllPredicatesPayload) {
-    const { data } = await this.api.get<GetAllPredicatePaginationResponse>(
+  static async getAllWithPagination(params: GetAllPredicatesPayload) {
+    const { data } = await api.get<GetAllPredicatePaginationResponse>(
       "/predicate",
       {
         params,
@@ -66,34 +60,34 @@ export class VaultService {
     return data;
   }
 
-  async getById(id: string) {
-    const { data } = await this.api.get<PredicateResponseWithWorkspace>(
+  static async getById(id: string) {
+    const { data } = await api.get<PredicateResponseWithWorkspace>(
       `/predicate/${id}`,
     );
     return data;
   }
 
-  async getByAddress(address: string) {
-    const { data } = await this.api.get<PredicateResponseWithWorkspace>(
+  static async getByAddress(address: string) {
+    const { data } = await api.get<PredicateResponseWithWorkspace>(
       `/predicate/by-address/${address}`,
     );
     return data;
   }
 
-  async getByName(name: string) {
-    const { data } = await this.api.get<boolean>(`/predicate/by-name/${name}`);
+  static async getByName(name: string) {
+    const { data } = await api.get<boolean>(`/predicate/by-name/${name}`);
     return data;
   }
 
-  async checkByAddress(address: string) {
-    const { data } = await this.api.get<boolean>(
+  static async checkByAddress(address: string) {
+    const { data } = await api.get<boolean>(
       `/predicate/check/by-address/${address}`,
     );
     return data;
   }
 
-  async findPredicates(address: string) {
-    const { data } = await this.api.get<GetAllPredicateResponse>(`/predicate`, {
+  static async findPredicates(address: string) {
+    const { data } = await api.get<GetAllPredicateResponse>(`/predicate`, {
       data: {
         signer: address,
       },
@@ -101,8 +95,10 @@ export class VaultService {
     return data;
   }
 
-  async hasReservedCoins(predicateId: string): Promise<HasReservedCoins> {
-    const { data } = await this.api.get<HasReservedCoins>(
+  static async hasReservedCoins(
+    predicateId: string,
+  ): Promise<HasReservedCoins> {
+    const { data } = await api.get<HasReservedCoins>(
       `/predicate/reserved-coins/${predicateId}`,
     );
     return {

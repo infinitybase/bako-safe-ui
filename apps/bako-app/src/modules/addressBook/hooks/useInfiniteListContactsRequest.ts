@@ -1,4 +1,4 @@
-import { AddressBookService } from '@bako-safe/services/services/address-book';
+import { AddressBookService } from '@bako-safe/services/modules/address-book';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 

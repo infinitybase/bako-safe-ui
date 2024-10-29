@@ -16,12 +16,17 @@ import {
   BakoSafeQueryOptions,
 } from './types';
 
-const removeCredentialsWhenUnathorized = (error: any) => {
+const removeCredentialsWhenUnathorized = (
+  error: any,
+  logout: (
+    removeTokenFromDb?: boolean | undefined,
+    callback?: (() => void) | undefined,
+  ) => Promise<void>,
+) => {
   const unauthorizedError = error.response?.status === 401;
-  const { authDetails } = useWorkspaceContext();
 
   if (unauthorizedError) {
-    authDetails.handlers?.logout?.();
+    logout();
     CookiesConfig.removeCookies([CookieName.ACCESS_TOKEN, CookieName.ADDRESS]);
   }
 };
@@ -39,6 +44,11 @@ const useBakoSafeQuery = <
     'queryKey' | 'queryFn'
   >,
 ) => {
+  const {
+    authDetails: {
+      handlers: { logout },
+    },
+  } = useWorkspaceContext();
   return useQuery({
     queryKey,
     queryFn: async (context) => {
@@ -53,7 +63,7 @@ const useBakoSafeQuery = <
           },
         });
       } catch (error) {
-        removeCredentialsWhenUnathorized(error);
+        removeCredentialsWhenUnathorized(error, logout);
         throw error;
       }
     },

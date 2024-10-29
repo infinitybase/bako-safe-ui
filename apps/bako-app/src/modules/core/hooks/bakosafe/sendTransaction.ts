@@ -1,4 +1,4 @@
-import { TransactionService } from '@services/modules/transaction';
+import { TransactionService } from '@bako-safe/services/modules/transaction';
 import { TransactionStatus, Vault } from 'bakosafe';
 
 const sendTransaction = async (vault: Vault, transactionHash: string) => {

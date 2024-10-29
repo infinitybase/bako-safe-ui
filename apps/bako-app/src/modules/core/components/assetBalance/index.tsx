@@ -1,3 +1,4 @@
+import { BakoIcon, UpRightArrow } from '@bako-safe/ui/components';
 import {
   Card,
   Grid,
@@ -9,8 +10,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { UpRightArrow } from '@bako-safe/ui/components';
-import { BakoIcon } from '@ui/components/icons';
 
 import {
   AddressUtils,

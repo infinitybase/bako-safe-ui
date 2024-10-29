@@ -1,5 +1,5 @@
 import { IApiError } from '@bako-safe/services/errors';
-import { ListContactsResponse } from '@bako-safe/services/services/address-book';
+import { ListContactsResponse } from '@bako-safe/services/modules/address-book';
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';

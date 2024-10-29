@@ -1,7 +1,6 @@
 import axios from "axios";
 
 import { CookieName, CookiesConfig } from "./cookies";
-import { useBakoAuthContext } from "@/context/AuthContext";
 import { ApiUnauthorizedErrorsTitles } from "..";
 
 // const { VITE_API_URL } = import.meta.env;
@@ -20,12 +19,6 @@ const api = axios.create({
 });
 
 const useSetupAxiosInterceptors = () => {
-  const {
-    authDetails: {
-      handlers: { logout, setIsTokenExpired, isTokenExpired },
-    },
-  } = useBakoAuthContext();
-
   api.interceptors.request.use(
     (value) => {
       const accessToken = CookiesConfig.getCookie(ACCESS_TOKEN);
@@ -45,15 +38,15 @@ const useSetupAxiosInterceptors = () => {
       const unauthorizedError = error.response?.status === 401;
 
       if (
-        unauthorizedError &&
-        !isTokenExpired
+        unauthorizedError
+        // !isTokenExpired
         // && !isTxFromDapp
       ) {
         const tokenExpiredError =
           error.response?.title === ApiUnauthorizedErrorsTitles.EXPIRED_TOKEN;
 
-        setIsTokenExpired(true);
-        logout(tokenExpiredError);
+        // setIsTokenExpired(true);
+        // logout(tokenExpiredError);
       }
 
       return Promise.reject(error);

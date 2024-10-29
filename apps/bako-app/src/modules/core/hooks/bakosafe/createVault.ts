@@ -1,4 +1,4 @@
-import { VaultService } from '@services/modules/vault';
+import { VaultService } from '@bako-safe/services/modules/vault';
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
 import { Address } from 'fuels';
 

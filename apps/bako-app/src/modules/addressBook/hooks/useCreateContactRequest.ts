@@ -2,7 +2,7 @@ import {
   AddressBookService,
   CreateContactPayload,
   CreateContactResponse,
-} from '@bako-safe/services/services/address-book';
+} from '@bako-safe/services/modules/address-book';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 const useCreateContactRequest = (
   options?: UseMutationOptions<

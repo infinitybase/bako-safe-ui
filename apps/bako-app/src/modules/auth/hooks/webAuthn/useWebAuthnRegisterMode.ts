@@ -6,6 +6,7 @@ import { useTermsStore } from '@/modules/termsOfUse/store/useTermsStore';
 
 import { WebAuthnModeState, WebAuthnTabState } from '../signIn';
 import { UseWebAuthnForm } from './useWebAuthnForm';
+import { useCreateWebAuthnAccount } from './useWebauthnRequests';
 
 interface UseWebAuthnRegisterModeParams {
   form: UseWebAuthnForm['form'];

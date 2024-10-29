@@ -1,4 +1,4 @@
-import { ITransaction } from "@/services/transaction";
+import { ITransaction } from "@/modules/transaction";
 
 export enum WitnessStatus {
   REJECTED = "REJECTED",

@@ -1,7 +1,9 @@
 import {
+  IListTransactions,
+  ITransaction,
   TransactionService,
   TransactionWithVault,
-} from '@services/modules/transaction';
+} from '@bako-safe/services/modules/transaction';
 import {
   IBakoSafeAuth,
   ITransferAsset,
@@ -16,7 +18,6 @@ import { getAssetInfo } from '../../utils/assets/data';
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
 import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
-import { IListTransactions, ITransaction } from './utils/types';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],

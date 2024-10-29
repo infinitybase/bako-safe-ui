@@ -1,4 +1,4 @@
-import { ListContactsResponse } from '@bako-safe/services/services/address-book';
+import { ListContactsResponse } from '@bako-safe/services/modules/address-book';
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { Address } from 'fuels';

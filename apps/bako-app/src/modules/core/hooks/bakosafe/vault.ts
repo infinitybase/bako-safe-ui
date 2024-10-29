@@ -1,4 +1,5 @@
-import { PredicateResponseWithWorkspace } from '@/modules/vault';
+import { PredicateResponseWithWorkspace } from '@bako-safe/services/modules/vault';
+
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { createVault } from './createVault';

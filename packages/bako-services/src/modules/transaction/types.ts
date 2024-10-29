@@ -9,7 +9,7 @@ import {
 } from "bakosafe";
 import { Network, Operation, Predicate, TransactionRequest } from "fuels";
 
-import { PredicateAndWorkspace } from "@/services/vault";
+import { PredicateAndWorkspace } from "@/modules/vault";
 import { AssetModel, IPagination, SortOption } from "@/types";
 
 export interface ITransactionPagination<T> {

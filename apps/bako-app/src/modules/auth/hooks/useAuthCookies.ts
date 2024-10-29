@@ -1,6 +1,6 @@
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { AuthenticateParams } from '@bako-safe/services/types';
 
-import { AuthenticateParams } from '../services';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 
 const setAuthCookies = (params: AuthenticateParams) => {
   CookiesConfig.setCookies([
