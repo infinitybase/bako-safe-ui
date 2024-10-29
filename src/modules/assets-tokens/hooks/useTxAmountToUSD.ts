@@ -19,7 +19,7 @@ const useTxAmountToUSD = (
         const token = tokens[asset.assetId];
         if (token && asset.amount) {
           const usdAmount = token.usdAmount;
-          const assetAmount = Number(asset.amount);
+          const assetAmount = Number(asset.amount.replace(/,/g, ''));
           const transactionAmount = assetAmount * usdAmount;
           return acc + transactionAmount;
         }
