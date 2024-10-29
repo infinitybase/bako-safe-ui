@@ -1,3 +1,4 @@
+import { Dialog } from '@bako-safe/ui/components';
 import {
   Badge,
   Box,
@@ -10,7 +11,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Dialog } from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import { UseChangeMember } from '../../hooks';

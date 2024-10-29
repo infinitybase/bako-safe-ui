@@ -1,5 +1,5 @@
-import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
 import { UserWorkspaceIcon } from '@bako-safe/ui/components';
+import { Box, Divider, Heading, Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 

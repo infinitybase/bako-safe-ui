@@ -1,5 +1,5 @@
-import { Avatar, Badge, Box, HStack, Text } from '@chakra-ui/react';
 import { Card, EditIcon } from '@bako-safe/ui/components';
+import { Avatar, Badge, Box, HStack, Text } from '@chakra-ui/react';
 
 import {
   AddressUtils,

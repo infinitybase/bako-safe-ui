@@ -1,6 +1,5 @@
+import { WorkspaceService } from '@bako-safe/services/modules/workspace';
 import { useMutation } from '@tanstack/react-query';
-
-import { WorkspaceService } from '../../services';
 
 const useCreateWorkspaceRequest = () => {
   return useMutation({

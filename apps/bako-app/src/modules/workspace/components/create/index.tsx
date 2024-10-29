@@ -1,4 +1,10 @@
 import {
+  Dialog,
+  FeedbackSuccess,
+  SquarePlusIcon,
+  StepProgress,
+} from '@bako-safe/ui/components';
+import {
   Box,
   FormControl,
   FormHelperText,
@@ -11,12 +17,6 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import {
-  Dialog,
-  FeedbackSuccess,
-  SquarePlusIcon,
-  StepProgress,
-} from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import {

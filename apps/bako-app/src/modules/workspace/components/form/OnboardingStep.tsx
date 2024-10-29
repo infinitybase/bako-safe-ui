@@ -1,4 +1,9 @@
 import {
+  SquarePlusIcon,
+  StepProgress,
+  TransactionsBoxIcon,
+} from '@bako-safe/ui/components';
+import {
   Alert,
   Badge,
   Box,
@@ -11,11 +16,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  SquarePlusIcon,
-  StepProgress,
-  TransactionsBoxIcon,
-} from '@bako-safe/ui/components';
 
 interface OnboardingStepProps {
   tabs: {

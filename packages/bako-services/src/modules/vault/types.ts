@@ -47,3 +47,11 @@ export interface Predicate extends Omit<IPredicate, "configurable"> {
   configurable: IVaultConfigurable;
   root?: boolean;
 }
+
+export interface PredicateMember {
+  id: string;
+  avatar: string;
+  address: string;
+  isOwner?: boolean;
+  nickname?: string;
+}

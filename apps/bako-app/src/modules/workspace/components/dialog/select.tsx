@@ -1,6 +1,9 @@
+import {
+  Dialog,
+  DialogActions,
+  SquarePlusIcon,
+} from '@bako-safe/ui/components';
 import { Divider, HStack, VStack } from '@chakra-ui/react';
-import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
-import { DialogActions } from '@ui/components/dialog/actions';
 
 import { Workspace } from '@/modules/core';
 

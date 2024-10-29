@@ -1,3 +1,4 @@
+import { SquarePlusIcon, TransactionsBoxIcon } from '@bako-safe/ui/components';
 import {
   Box,
   Button,
@@ -7,9 +8,6 @@ import {
   HStack,
   Icon,
 } from '@chakra-ui/react';
-
-import { SquarePlusIcon } from '@bako-safe/ui/components';
-import { TransactionsBoxIcon } from '@/components/icons/transactions-box-icon';
 
 interface SuccessStepProps {
   onConfigureMembers: () => void;

@@ -1,5 +1,4 @@
-import { PredicateMember } from '..';
-import { IPredicate } from '../core/hooks/bakosafe/utils/types';
+import { IPredicate, PredicateMember } from '@bako-safe/services/modules/vault';
 
 export const openFaucet = (vaultAddress: string) => {
   window.open(

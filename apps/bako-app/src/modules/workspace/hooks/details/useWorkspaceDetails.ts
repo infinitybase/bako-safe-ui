@@ -1,7 +1,5 @@
-import { useBakoAuthContext } from '@bako-safe/services/context';
-import { IUseAuthDetails } from '@bako-safe/services/types';
 import { BakoProvider } from 'bakosafe';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { queryClient } from '@/config';
 import {
@@ -15,6 +13,7 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAuth } from '@/modules/auth/hooks/useAuth';
 // import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
@@ -31,13 +30,10 @@ const useWorkspaceDetails = () => {
 
   const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
-  // const [isTokenExpired, setIsTokenExpired] = useState(false);
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
-  // const authDetails = useAuth();
-  const { authDetails } = useBakoAuthContext() as {
-    authDetails: IUseAuthDetails;
-  };
+  const authDetails = useAuth();
 
   const { isTxFromDapp } = useAuthUrlParams();
 
@@ -110,7 +106,7 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
-    isTokenExpired: authDetails.handlers.isTokenExpired,
+    isTokenExpired,
     isFuelTokensLoading,
   });
 
@@ -141,8 +137,8 @@ const useWorkspaceDetails = () => {
     screenSizes,
     resetHomeRequests,
     isTxFromDapp,
-    // isTokenExpired,
-    // setIsTokenExpired,
+    isTokenExpired,
+    setIsTokenExpired,
   };
 };
 

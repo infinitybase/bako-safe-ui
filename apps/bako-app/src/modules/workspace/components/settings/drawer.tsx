@@ -1,3 +1,4 @@
+import { LineCloseIcon, UserAddIcon } from '@bako-safe/ui/components';
 import {
   Button,
   Divider,
@@ -13,7 +14,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LineCloseIcon, UserAddIcon } from '@bako-safe/ui/components';
 import { useNavigate } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
