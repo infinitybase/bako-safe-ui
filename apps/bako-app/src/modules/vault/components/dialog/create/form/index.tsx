@@ -1,7 +1,7 @@
-import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 import { StepProgress } from '@bako-safe/ui/components';
+import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 
-import { useFindTemplate } from '@/modules/template/hooks';
+// import { useFindTemplate } from '@/modules/template/hooks';
 import { UseCreateVaultDialogReturn } from '@/modules/vault';
 
 import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
@@ -39,7 +39,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
     validateAddress,
   } = props;
 
-  const { template } = useFindTemplate();
+  // const { template } = useFindTemplate();
   const stepAction = steps.step;
   const stepLength = Object.keys(steps.actions).length;
 
@@ -62,7 +62,7 @@ const CreateVaultForm = (props: CreateVaultFormProps) => {
           <VaultAddressesStep
             form={form}
             addresses={addresses}
-            templates={template}
+            // templates={template}
             selectedTemplate={selectedTemplate}
             setTemplate={setTemplate}
             validateAddress={validateAddress}

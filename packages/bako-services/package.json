@@ -10,7 +10,8 @@
     "./modules/*": "./dist/modules/*/index.js",
     "./errors": "./dist/errors/index.js",
     "./types": "./dist/types/index.js",
-    "./config": "./dist/config/index.js"
+    "./config": "./dist/config/index.js",
+    "./config/*": "./dist/config/*/index.js"
   },
   "scripts": {
     "dev": "vite",

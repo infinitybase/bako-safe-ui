@@ -1,4 +1,4 @@
-import { UserService } from '@bako-safe/modules/services';
+import { UserService } from '@bako-safe/services/modules/auth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { localStorageKeys, UserQueryKey } from '../../utils';

@@ -1,8 +1,6 @@
 import { Badge, Flex, Text } from '@chakra-ui/react';
-import { ReactNode } from 'react';
-
 interface ActionCardTitleProps {
-  children: ReactNode;
+  children: React.ReactNode;
   isUpcoming?: boolean;
 }
 

@@ -18,7 +18,7 @@ import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
 
-import { ProviderInstance } from '../../utils';
+import { ProviderInstance } from '../../utils/provider';
 import { useGetFuelsTokensListRequest } from '../useGetFuelsTokensListRequest';
 import { useGifLoadingRequest } from '../useGifLoadingRequest';
 import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
@@ -59,14 +59,14 @@ const useWorkspaceDetails = () => {
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  // useMemo(() => {
-  //   setupAxiosInterceptors({
-  //     isTxFromDapp,
-  //     isTokenExpired,
-  //     setIsTokenExpired,
-  //     logout: authDetails.handlers.logout,
-  //   });
-  // }, []);
+  useMemo(() => {
+    useSetupAxiosInterceptors({
+      isTxFromDapp,
+      isTokenExpired,
+      setIsTokenExpired,
+      logout: authDetails.handlers.logout,
+    });
+  }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },

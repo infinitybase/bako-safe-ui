@@ -1,4 +1,3 @@
-import { api } from "@/config/api";
 import { bytesToHex } from "@noble/curves/abstract/utils";
 import {
   CheckNicknameResponse,
@@ -11,26 +10,32 @@ import {
   SignInPayload,
   SignInResponse,
   SignInSignWebAuthnPayload,
-} from "@/types/auth";
+} from "../../types";
 import { TypeUser, createAccount } from "bakosafe";
 import { Address } from "fuels";
-import { signChallange } from "@/utils/webauthn";
+import { signChallange } from "@/utils";
 import { localStorageKeys } from "./utils";
+import { AxiosInstance } from "axios";
 
 export class UserService {
-  static async create(payload: CreateUserPayload) {
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+  async create(payload: CreateUserPayload) {
     // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
 
     // if (invalidNetwork) {
     //   throw new Error('You cannot access using mainnet network.');
     // }
 
-    const { data } = await api.post<CreateUserResponse>("/user", payload);
+    const { data } = await this.api.post<CreateUserResponse>("/user", payload);
     return data;
   }
 
-  static async signIn(payload: SignInPayload) {
-    const { data, status } = await api.post<SignInResponse>(
+  async signIn(payload: SignInPayload) {
+    const { data, status } = await this.api.post<SignInResponse>(
       "/auth/sign-in",
       payload,
     );
@@ -43,26 +48,29 @@ export class UserService {
     return data;
   }
 
-  static async signOut() {
-    const { data } = await api.delete<void>("/auth/sign-out");
+  async signOut() {
+    const { data } = await this.api.delete<void>("/auth/sign-out");
     return data;
   }
 
-  static async getUserInfos() {
-    const { data } = await api.get<IGetUserInfosResponse>("/user/latest/info");
-
-    return data;
-  }
-
-  static async getByName(name: string) {
-    const { data } = await api.get<GetByNameResponse>(`/user/by-name/${name}`);
+  async getUserInfos() {
+    const { data } =
+      await this.api.get<IGetUserInfosResponse>("/user/latest/info");
 
     return data;
   }
 
-  static async verifyNickname(nickname: string, userId?: string) {
+  async getByName(name: string) {
+    const { data } = await this.api.get<GetByNameResponse>(
+      `/user/by-name/${name}`,
+    );
+
+    return data;
+  }
+
+  async verifyNickname(nickname: string, userId?: string) {
     if (!nickname) return;
-    const { data } = await api.get<CheckNicknameResponse>(
+    const { data } = await this.api.get<CheckNicknameResponse>(
       `/user/nickname/${nickname}`,
       {
         params: { userId },
@@ -72,14 +80,14 @@ export class UserService {
     return data;
   }
 
-  static async getByHardwareId(hardwareId: string) {
-    const { data } = await api.get<GetByHardwareResponse[]>(
+  async getByHardwareId(hardwareId: string) {
+    const { data } = await this.api.get<GetByHardwareResponse[]>(
       `/user/by-hardware/${hardwareId}`,
     );
     return data;
   }
 
-  static async createWebAuthnAccount(name: string) {
+  async createWebAuthnAccount(name: string) {
     const account = await createAccount(name, Address.fromRandom().toB256());
 
     const payload = {
@@ -97,20 +105,20 @@ export class UserService {
       },
     };
     return {
-      ...(await UserService.create(payload)),
+      ...(await this.create(payload)),
       id: payload.webauthn.id,
       publicKey: payload.webauthn.publicKey,
     };
   }
 
-  static async signMessageWebAuthn({
+  async signMessageWebAuthn({
     id,
     challenge,
     name,
   }: SignInSignWebAuthnPayload) {
     const signature = await signChallange(id, challenge);
 
-    return await UserService.signIn({
+    return await this.signIn({
       encoder: Encoder.WEB_AUTHN,
       signature: bytesToHex(signature!.sig_compact),
       digest: bytesToHex(signature!.dig_compact),
@@ -118,8 +126,8 @@ export class UserService {
     });
   }
 
-  static async generateSignInCode(name: string, networkUrl?: string) {
-    const { data } = await api.post<CreateUserResponse>(`/auth/code`, {
+  async generateSignInCode(name: string, networkUrl?: string) {
+    const { data } = await this.api.post<CreateUserResponse>(`/auth/code`, {
       name,
       networkUrl,
     });

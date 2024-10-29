@@ -1,4 +1,7 @@
-import { GetAllPredicatesPayload, VaultService } from '@services/modules/vault';
+import {
+  GetAllPredicatesPayload,
+  VaultService,
+} from '@bako-safe/services/modules/vault';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 const useVaultListRequest = (

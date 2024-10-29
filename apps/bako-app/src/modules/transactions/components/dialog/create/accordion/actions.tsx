@@ -1,3 +1,4 @@
+import { CheckIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
 import {
   AccordionButton,
   Button,
@@ -9,7 +10,6 @@ import {
   StackProps,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { CheckIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

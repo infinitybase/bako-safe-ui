@@ -1,3 +1,4 @@
+import { PredicateAndWorkspace } from '@bako-safe/services';
 import {
   BitCoinIcon,
   CoinsIcon,
@@ -6,8 +7,11 @@ import {
 } from '@bako-safe/ui/components';
 import { useMemo, useState } from 'react';
 
-import { PredicateAndWorkspace, Workspace } from '@/modules';
-import { defaultPermissions, PermissionRoles } from '@/modules/core/models';
+import {
+  defaultPermissions,
+  PermissionRoles,
+  Workspace,
+} from '@/modules/workspace/types';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';

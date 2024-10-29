@@ -1,10 +1,10 @@
-import { HStack, Text, VStack } from '@chakra-ui/react';
 import {
   Dialog,
   DialogModalProps,
   SquarePlusIcon,
   Tooltip,
 } from '@bako-safe/ui/components';
+import { HStack, Text, VStack } from '@chakra-ui/react';
 
 import { useVerifyBrowserType } from '@/modules/core/hooks';
 import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';

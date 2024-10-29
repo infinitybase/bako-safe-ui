@@ -1,4 +1,4 @@
-import { VaultService } from '@services/modules/vault';
+import { VaultService } from '@bako-safe/services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
 
 const VAULT_LIST_QUERY_KEY = 'predicate/by-name';

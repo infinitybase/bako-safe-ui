@@ -1,6 +1,6 @@
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { PermissionRoles } from '@bako-safe/services';
 
-import { PermissionRoles } from '../models/workspace';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const usePermissions = (vaultOwnerId: string) => {
   const {

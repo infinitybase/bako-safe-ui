@@ -1,10 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-
 import {
   TransactionSimulateParams,
   useFuelTransactionService,
-} from "../services/fuel-transaction";
-
+} from "@bako-safe/services";
+import { useMutation } from "@tanstack/react-query";
 const useTransactionSummary = () => {
   const { simulate } = useFuelTransactionService();
   const { data, mutate, ...mutation } = useMutation({

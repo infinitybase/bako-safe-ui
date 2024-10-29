@@ -1,3 +1,9 @@
+import {
+  Autocomplete,
+  Dialog,
+  RemoveIcon,
+  Select,
+} from '@bako-safe/ui/components';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -9,12 +15,6 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import {
-  Autocomplete,
-  Dialog,
-  RemoveIcon,
-  Select,
-} from '@bako-safe/ui/components';
 import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -26,7 +26,6 @@ import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
@@ -36,7 +35,6 @@ import { scrollToBottom } from '@/utils/scroll-to-bottom';
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
-  templates: ITemplate[];
   selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
   setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
   validateAddress: UseCreateVaultReturn['validateAddress'];

@@ -1,8 +1,8 @@
 import { chakra, HStack, Icon } from "@chakra-ui/react";
 import { AddressType, OperationTransactionAddress } from "fuels";
 
-import { ForwardIcon, PlayIcon } from "@/components/icons";
-import { DappTransactionRecipient } from "@/modules/dapp/components/transaction/recipient";
+import { ForwardIcon, PlayIcon } from "@bako-safe/ui/components";
+import { DappTransactionRecipient } from "./recipient";
 
 interface FromToProps {
   to: OperationTransactionAddress;

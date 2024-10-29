@@ -2,12 +2,13 @@ import {
   GetTransactionParams,
   TransactionOrderBy,
   TransactionService,
-} from '@services/modules/transaction';
+} from '@bako-safe/services/modules/transaction';
+import { SortOption } from '@bako-safe/services/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { invalidateQueries, WorkspacesQueryKey } from '@/modules/core';
-import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
+import { invalidateQueries } from '@/modules/core';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { WorkspacesQueryKey } from '@/modules/workspace';
 
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
@@ -36,7 +37,7 @@ const useTransactionListPaginationRequest = (
         perPage: 5,
         page: pageParam || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOptionTx.DESC,
+        sort: SortOption.DESC,
       }).then((data) => {
         invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
         return data;

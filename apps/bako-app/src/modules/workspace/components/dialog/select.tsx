@@ -1,13 +1,8 @@
-import {
-  Dialog,
-  DialogActions,
-  SquarePlusIcon,
-} from '@bako-safe/ui/components';
+import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
 import { Divider, HStack, VStack } from '@chakra-ui/react';
 
-import { Workspace } from '@/modules/core';
-
 import { UseWorkspaceReturn } from '../../hooks';
+import { Workspace } from '../../types';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { SelectionEmptyState } from '..';
 import { WorkspaceCard } from '../card';
@@ -149,7 +144,7 @@ const SelectWorkspaceDialog = ({
           )}
         </VStack>
       </Dialog.Body>
-      <DialogActions
+      <Dialog.Actions
         position={{ base: 'absolute', xs: 'unset' }}
         bg="dark.950"
         bottom={{ base: 2, xs: 'unset' }}
@@ -193,7 +188,7 @@ const SelectWorkspaceDialog = ({
             Create workspace
           </Dialog.PrimaryAction>
         </HStack>
-      </DialogActions>
+      </Dialog.Actions>
     </Dialog.Modal>
   );
 };

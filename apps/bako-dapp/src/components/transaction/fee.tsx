@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 
-import { TooltipIcon } from "@/components/icons/tooltip";
+import { TooltipIcon } from "@bako-safe/ui/components";
 
 import { useVerifyBrowserType } from "../../hooks";
 

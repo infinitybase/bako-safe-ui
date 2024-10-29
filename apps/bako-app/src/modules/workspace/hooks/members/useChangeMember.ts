@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  defaultPermissions,
-  EnumUtils,
-  Member,
-  Pages,
-  PermissionRoles,
-  useTab,
-  Workspace,
-} from '@/modules/core';
+import { EnumUtils, Pages, useTab } from '@/modules/core';
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
-import { WorkspacePermissionUtils } from '../../utils';
+import {
+  defaultPermissions,
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '../../types';
+import { WorkspacePermissionUtils } from '../../utils/permission';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { useChangeMemberForm } from './useChangeMemberForm';
 import {

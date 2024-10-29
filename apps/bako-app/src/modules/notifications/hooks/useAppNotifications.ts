@@ -2,16 +2,13 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  invalidateQueries,
-  NotificationsQueryKey,
-  NotificationSummary,
-  Pages,
-} from '@/modules/core';
+import { invalidateQueries, Pages } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useNotificationsStore } from '../store/useNotificationsStore';
+import { NotificationSummary } from '../types';
+import { NotificationsQueryKey } from '../utils';
 import { useListNotificationsRequest } from './useListNotificationsRequest';
 import { useSetNotificationsAsReadRequest } from './useSetNotificationsAsReadRequest';
 import { useUnreadNotificationsCounterRequest } from './useUnreadNotificationsCounterRequest';

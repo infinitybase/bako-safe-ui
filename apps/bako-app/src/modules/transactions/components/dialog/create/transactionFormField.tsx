@@ -1,3 +1,4 @@
+import { AmountInput, Autocomplete } from '@bako-safe/ui/components';
 import {
   CircularProgress,
   FormControl,
@@ -6,7 +7,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { AmountInput, Autocomplete } from '@bako-safe/ui/components';
 import { bn } from 'fuels';
 import { Controller } from 'react-hook-form';
 

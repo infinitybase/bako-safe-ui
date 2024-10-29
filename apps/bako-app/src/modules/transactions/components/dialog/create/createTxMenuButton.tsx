@@ -1,3 +1,4 @@
+import { ChevronDownIcon, Dialog } from '@bako-safe/ui/components';
 import {
   Button,
   Heading,
@@ -8,7 +9,6 @@ import {
   MenuList,
   Text,
 } from '@chakra-ui/react';
-import { ChevronDownIcon, Dialog } from '@bako-safe/ui/components';
 import { useEffect, useRef, useState } from 'react';
 
 export enum ECreateTransactionMethods {

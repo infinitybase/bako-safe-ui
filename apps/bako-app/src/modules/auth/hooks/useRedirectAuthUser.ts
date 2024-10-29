@@ -2,8 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { Pages, useAuthCookies, useQueryParams } from '@/modules';
-import { useVerifyBrowserType } from '@/modules/dapp/hooks';
+import {
+  Pages,
+  useAuthCookies,
+  useQueryParams,
+  useVerifyBrowserType,
+} from '@/modules';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 const useRedirectAuthUser = () => {

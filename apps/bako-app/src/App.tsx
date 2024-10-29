@@ -1,4 +1,3 @@
-import { useBakoAuthContext } from '@bako-safe/services/context';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
@@ -9,20 +8,27 @@ import { AppRoutes } from '@/routes';
 
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
+import ServicesProvider from './modules/services/ServicesProvider';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
-import WorkspaceProvider from './modules/workspace/WorkspaceProvider';
+import WorkspaceProvider, {
+  useWorkspaceContext,
+} from './modules/workspace/WorkspaceProvider';
 
 function App() {
   const { fuel } = useFuel();
-  // const { authDetails: auth } = useWorkspaceContext();
+  const { authDetails: auth } = useWorkspaceContext();
   const { handleSelectNetwork } = useNetworks();
-
-  const { authDetails: auth } = useBakoAuthContext();
 
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
   useEffect(() => {
+    // useSetupAxiosInterceptors({
+    //   isTxFromDapp,
+    //   isTokenExpired,
+    //   setIsTokenExpired,
+    //   logout: auth.handlers.logout,
+    // });
     async function clearAll() {
       auth.handlers.logout?.();
       invalidateQueries();
@@ -60,11 +66,13 @@ function App() {
   }, [auth]);
 
   return (
-    <TransactionsProvider>
-      <WorkspaceProvider>
-        <AppRoutes />
-      </WorkspaceProvider>
-    </TransactionsProvider>
+    <ServicesProvider>
+      <TransactionsProvider>
+        <WorkspaceProvider>
+          <AppRoutes />
+        </WorkspaceProvider>
+      </TransactionsProvider>
+    </ServicesProvider>
   );
 }
 

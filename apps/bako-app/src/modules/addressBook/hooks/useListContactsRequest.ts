@@ -1,5 +1,6 @@
-import { AddressBookService } from '@bako-safe/services/modules/address-book';
 import { useQuery } from '@tanstack/react-query';
+
+import { useServicesContext } from '@/modules/services/ServicesProvider';
 
 import { AddressBookQueryKey } from '../utils';
 
@@ -12,12 +13,13 @@ const useListContactsRequest = ({
   workspaceId,
   includePersonal,
 }: UseListContactsRequestParams) => {
+  const { addressBookService } = useServicesContext();
   return useQuery({
     queryKey: [
       ...AddressBookQueryKey.LIST_BY_USER(workspaceId),
       includePersonal,
     ],
-    queryFn: () => AddressBookService.list(includePersonal),
+    queryFn: () => addressBookService.list(includePersonal),
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,

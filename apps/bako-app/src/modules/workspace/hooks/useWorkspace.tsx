@@ -1,14 +1,14 @@
+import { IUserInfos, PermissionRoles } from '@bako-safe/services';
 import { useDisclosure } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { IUserInfos } from '@/modules/auth/services';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';
 import { AssetMap, Pages } from '../../core';
-import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
+import { WorkspacesQueryKey } from '../utils';
 // import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
 

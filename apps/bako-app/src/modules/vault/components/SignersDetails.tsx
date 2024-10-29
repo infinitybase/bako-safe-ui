@@ -1,3 +1,4 @@
+import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import {
   Badge,
   Box,
@@ -8,14 +9,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import { useNavigate } from 'react-router-dom';
 
-import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../hooks';
+import { SignersDetailsProps } from '../types';
 import { CardMember } from './CardMember';
 
 const SignerCard = chakra(Card, {

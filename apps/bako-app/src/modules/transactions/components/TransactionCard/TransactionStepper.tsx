@@ -1,4 +1,8 @@
 import {
+  ITransactionHistory,
+  TransactionHistoryType,
+} from '@bako-safe/services/modules/transaction';
+import {
   Box,
   Step,
   StepDescription,
@@ -10,10 +14,6 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
-import {
-  ITransactionHistory,
-  TransactionHistoryType,
-} from '@services/modules/transaction';
 import { format, parseISO } from 'date-fns';
 import { useEffect } from 'react';
 

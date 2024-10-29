@@ -1,9 +1,9 @@
-import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 import { CustomSkeleton } from '@bako-safe/ui/components';
+import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
-import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { SignersDetailsProps } from '../types';
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {

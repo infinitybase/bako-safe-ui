@@ -1,8 +1,7 @@
+import { WorkspaceService } from '@bako-safe/services/modules/workspace';
 import { useQuery } from '@tanstack/react-query';
 
-import { WorkspacesQueryKey } from '@/modules/core/models/workspace';
-
-import { WorkspaceService } from '../services';
+import { WorkspacesQueryKey } from '../utils';
 
 const useUserWorkspacesRequest = () => {
   return useQuery({

@@ -8,17 +8,16 @@ import {
 } from '@chakra-ui/react';
 import { WitnessStatus } from 'bakosafe';
 
-import { TransactionState } from '@/modules/core';
-
 interface TransactionCardStatusProps extends BoxProps {
   status: TransactionState;
   transaction: ITransaction;
   showDescription?: boolean;
 }
 
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { ITransaction } from '@bako-safe/services/modules/transaction';
 
 import { useTransactionState } from '../../states';
+import { TransactionState } from '../../types';
 
 const Status = ({
   transaction,

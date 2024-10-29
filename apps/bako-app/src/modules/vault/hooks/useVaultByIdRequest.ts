@@ -1,7 +1,9 @@
-import { PredicateAndWorkspace, VaultService } from '@services/modules/vault';
+import {
+  IVaultConfigurable,
+  PredicateAndWorkspace,
+  VaultService,
+} from '@bako-safe/services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
-
-import { IVaultConfigurable } from '@/modules/core';
 
 import { ordinateMembers } from '../utils';
 

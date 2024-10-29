@@ -1,4 +1,4 @@
-import { APITokenService } from '@services/modules/cli';
+import { APITokenService } from '@bako-safe/services/modules/cli';
 import { useQuery } from '@tanstack/react-query';
 
 export const GET_API_TOKENS_QUERY_KEY = 'api-token/get-all';

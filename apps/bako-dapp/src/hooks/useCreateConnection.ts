@@ -1,7 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { DAppService } from "../services";
-import { IDAppCreatePayload } from "../services/methods";
+import {
+  DAppService,
+  IDAppCreatePayload,
+} from "@bako-safe/services/modules/dapp";
 
 const useCreateConnections = () => {
   return useMutation({

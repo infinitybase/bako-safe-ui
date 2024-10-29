@@ -1,3 +1,5 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import { CustomSkeleton } from '@bako-safe/ui/components';
 import {
   AvatarGroup,
   BoxProps,
@@ -7,8 +9,6 @@ import {
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
-import { CustomSkeleton } from '@bako-safe/ui/components';
 import { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 

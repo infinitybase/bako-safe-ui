@@ -1,8 +1,8 @@
-import { useAccordionItemState } from '@chakra-ui/react';
 import {
   ITransactionHistory,
   TransactionService,
-} from '@services/modules/transaction';
+} from '@bako-safe/services/modules/transaction';
+import { useAccordionItemState } from '@chakra-ui/react';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config';

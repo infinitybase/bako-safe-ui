@@ -1,13 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
-import { Address } from 'fuels';
-
-import { WorkspacesQueryKey } from '@/modules/core';
 import {
   DeleteWorkspaceMemberPayload,
   IncludeWorkspaceMemberPayload,
   UpdateWorkspacePermissionsPayload,
   WorkspaceService,
-} from '@/modules/workspace/services';
+} from '@bako-safe/services/modules/workspace';
+import { useMutation } from '@tanstack/react-query';
+import { Address } from 'fuels';
+
+import { WorkspacesQueryKey } from '../../utils';
 
 const useIncludeMemberRequest = () =>
   useMutation({

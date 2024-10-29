@@ -3,7 +3,7 @@ import { useAuth, useContactToast } from "@/modules";
 import { useTransactionSocket } from "../hooks";
 import { useParams } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
-import { hashMessage, hexlify } from "fuels";
+import { hashMessage } from "fuels";
 import { TypeUser } from "@/modules/auth";
 
 export const SignMessage = () => {

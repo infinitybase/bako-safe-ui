@@ -7,8 +7,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Workspace } from '@/modules/core';
-
+import { Workspace } from '../../types';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface NotificationCardProps extends CardProps {

@@ -3,6 +3,7 @@
     "ignoreDeprecations": "5.0",
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "declarationMap": true,
     "downlevelIteration": true,
     "preserveSymlinks": false,
     "esModuleInterop": true,
@@ -29,6 +30,11 @@
     },
     "outDir": "./dist"
   },
-  "include": ["src"],
-  "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules", "dist"]
+  "include": ["src", "src/**/*.d.ts"],
+  "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules", "dist"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

@@ -1,9 +1,4 @@
-import {
-  IPermission,
-  Member,
-  PermissionRoles,
-  Workspace,
-} from '@/modules/core/models';
+import { IPermission, Member, PermissionRoles, Workspace } from '../types';
 
 interface PermissionDTO {
   title: string;
@@ -14,7 +9,7 @@ interface PermissionDTO {
 
 type PermissionKey = keyof typeof PermissionRoles;
 
-type PermissionDetail = {
+export type PermissionDetail = {
   role?: PermissionRoles;
   title: string;
   variant: string;

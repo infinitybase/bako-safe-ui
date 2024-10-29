@@ -1,7 +1,6 @@
 import { Alert, Box, Icon, Text } from "@chakra-ui/react";
-import React from "react";
 
-import { DappWarning } from "@/components/icons/dapp-warning";
+import { DappWarning } from "@bako-safe/ui/components";
 
 const DappConnectionAlert = () => (
   <Alert

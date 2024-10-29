@@ -1,4 +1,11 @@
 import {
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  LineCloseIcon,
+  TransactionTypeFilters,
+} from '@bako-safe/ui/components';
+import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
@@ -11,16 +18,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  CustomSkeleton,
-  EmptyState,
-  HomeIcon,
-  LineCloseIcon,
-  TransactionTypeFilters,
-} from '@bako-safe/ui/components';
 import { TransactionStatus } from 'bakosafe';
 import { useEffect } from 'react';
-import { RiMenuUnfoldLine } from 'react-icons/ri';
 
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useGetParams } from '@/modules/core';
@@ -93,7 +92,7 @@ const TransactionsVaultPage = () => {
       <Box mb={10}>
         {vaultRequiredSizeToColumnLayout ? (
           <HStack mt={2} gap={1.5} w="fit-content" onClick={menuDrawer.onOpen}>
-            <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" />
+            {/* <Icon as={RiMenuUnfoldLine} fontSize="xl" color="grey.200" /> */}
             <Text fontSize="sm" fontWeight="normal" color="grey.100">
               Menu
             </Text>

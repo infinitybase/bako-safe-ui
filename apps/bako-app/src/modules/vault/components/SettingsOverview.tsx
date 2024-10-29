@@ -1,3 +1,4 @@
+import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -11,7 +12,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card, CustomSkeleton } from '@bako-safe/ui/components';
 import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,9 +19,10 @@ import { useNavigate } from 'react-router-dom';
 import { AddressWithCopyBtn, CommingSoonDialog } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
+import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 

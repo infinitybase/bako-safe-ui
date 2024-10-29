@@ -1,6 +1,3 @@
-import { useFuel } from '@fuels/react';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
 import {
   CreateUserPayload,
   CreateUserResponse,
@@ -8,7 +5,9 @@ import {
   SignInResponse,
   UserService,
   UseSignInRequestParams,
-} from '../services';
+} from '@bako-safe/services';
+import { useFuel } from '@fuels/react';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { Address } from 'fuels';
 
 const useCreateUserRequest = (

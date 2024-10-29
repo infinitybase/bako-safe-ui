@@ -1,4 +1,3 @@
-import { useBakoAuthContext } from '@bako-safe/services/context';
 import {
   BridgeIcon,
   CoinsIcon,
@@ -30,13 +29,11 @@ const AddAssetsDialog = ({
       isLitteSmall,
       isLowerThanFourHundredAndThirty,
     },
-  } = useWorkspaceContext();
-
-  const {
     authDetails: {
       userInfos: { id, refetch },
     },
-  } = useBakoAuthContext();
+  } = useWorkspaceContext();
+
   const updateUserMutation = useUpdateSettingsRequest();
 
   const handleUpdateUser = async () => {

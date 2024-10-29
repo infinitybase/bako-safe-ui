@@ -1,3 +1,4 @@
+import { TriangleWarning } from '@bako-safe/ui/components';
 import {
   Heading,
   HStack,
@@ -6,7 +7,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { TriangleWarning } from '@bako-safe/ui/components';
 
 interface ICreateVaultWarningProps extends StackProps {
   message: string;

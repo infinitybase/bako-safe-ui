@@ -2,9 +2,9 @@ import { BoxProps, Button, HStack, Icon } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { TransactionType } from "bakosafe";
 
-import { shakeAnimationY } from "@/utils";
+import { shakeAnimationY } from "../../utils";
 
-import { DownLeftArrow, UpRightArrow } from "@/components/icons";
+import { DownLeftArrow, UpRightArrow } from "@/components";
 
 interface ITransactionTypeFiltersProps extends BoxProps {
   incomingAction: () => void;

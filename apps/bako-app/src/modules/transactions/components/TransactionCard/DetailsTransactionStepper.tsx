@@ -1,4 +1,4 @@
-import { ITransactionHistory } from '@services/modules/transaction';
+import { ITransactionHistory } from '@bako-safe/services/modules/transaction';
 
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
 

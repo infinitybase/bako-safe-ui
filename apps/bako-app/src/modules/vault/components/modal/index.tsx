@@ -1,3 +1,4 @@
+import { CustomSkeleton, Dialog } from '@bako-safe/ui/components';
 import {
   Box,
   Button,
@@ -9,7 +10,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { CustomSkeleton, Dialog } from '@bako-safe/ui/components';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

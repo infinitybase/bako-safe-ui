@@ -1,3 +1,11 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import {
+  Card,
+  ContractIcon,
+  DeployIcon,
+  DownLeftArrowGreen,
+  UpRightArrowYellow,
+} from '@bako-safe/ui/components';
 import {
   AccordionButton,
   AccordionItem,
@@ -10,22 +18,14 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
-import {
-  Card,
-  ContractIcon,
-  DeployIcon,
-  DownLeftArrowGreen,
-  UpRightArrowYellow,
-} from '@bako-safe/ui/components';
 import { ReactNode } from 'react';
 
-import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
+import { TransactionState } from '../../types';
 import { DetailsDialog } from './DetailsDialog';
 
 interface TransactionCardContainerProps extends CardProps {

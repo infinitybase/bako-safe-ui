@@ -1,6 +1,5 @@
+import { UserService } from '@bako-safe/services/modules/auth';
 import { useMutation } from '@tanstack/react-query';
-
-import { UserService } from '../services';
 
 const useSignOut = () => {
   return useMutation({

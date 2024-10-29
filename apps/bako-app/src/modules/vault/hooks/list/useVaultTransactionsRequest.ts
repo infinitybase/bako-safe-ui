@@ -2,11 +2,11 @@ import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
   TransactionService,
-} from '@services/modules/transaction';
+} from '@bako-safe/services/modules/transaction';
+import { SortOption } from '@bako-safe/services/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
-import { SortOptionTx } from '@/modules/core/hooks/bakosafe/utils/types';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
 
 type UseTransactionListPaginationParams = Omit<
@@ -51,7 +51,7 @@ const useVaultTransactionsRequest = (
         offsetDb: offsetDb || 0,
         offsetFuel: offsetFuel || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOptionTx.DESC,
+        sort: SortOption.DESC,
       }).then((data) => {
         return data;
       }),

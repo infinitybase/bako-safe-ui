@@ -1,4 +1,10 @@
 import {
+  CustomSkeleton,
+  HomeIcon,
+  LeftAndRightArrow,
+  UpRightArrow,
+} from '@bako-safe/ui/components';
+import {
   Avatar,
   Box,
   Button,
@@ -9,13 +15,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  CustomSkeleton,
-  HomeIcon,
-  LeftAndRightArrow,
-  UpRightArrow,
-} from '@bako-safe/ui/components';
-import { FiPlusSquare } from 'react-icons/fi';
 
 import { AddressWithCopyBtn } from '@/components';
 import { NetworkService } from '@/modules/network/services';
@@ -138,7 +137,7 @@ const VaultBox = (props: VaultBoxPropx) => {
               isEthBalanceLowerThanReservedAmount ||
               isFirstAssetsLoading
             }
-            leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
+            // leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction
           </Button>

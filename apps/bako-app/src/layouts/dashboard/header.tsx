@@ -26,13 +26,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
+import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
 import { useEffect } from 'react';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn } from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
-import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
@@ -202,7 +202,7 @@ const UserBox = () => {
                     <Icon
                       color="grey.200"
                       fontSize={{ base: 'sm', sm: 'sm' }}
-                      as={FaChevronDown}
+                      // as={FaChevronDown}
                     />
                   )}
                 </>
@@ -360,7 +360,7 @@ const UserBox = () => {
               <Icon
                 color="grey.200"
                 fontSize={{ base: 'sm', sm: 'lg' }}
-                as={FaChevronDown}
+                // as={FaChevronDown}
               />
             )}
 

@@ -1,4 +1,9 @@
 import {
+  Dialog,
+  DialogModalProps,
+  TooltipIcon,
+} from '@bako-safe/ui/components';
+import {
   Divider,
   Flex,
   Icon,
@@ -12,11 +17,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  Dialog,
-  DialogModalProps,
-  TooltipIcon,
-} from '@bako-safe/ui/components';
 import { useState } from 'react';
 
 import { useCreateTransaction } from '@/modules/transactions/hooks';

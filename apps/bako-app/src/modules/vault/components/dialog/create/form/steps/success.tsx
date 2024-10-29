@@ -1,5 +1,5 @@
-import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
 import { DoneIcon } from '@bako-safe/ui/components';
+import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

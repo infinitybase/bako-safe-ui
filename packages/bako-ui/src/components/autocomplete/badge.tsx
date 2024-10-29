@@ -16,7 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { LineCloseIcon, AutocompleteOption } from "@/components";
+import { AutocompleteOption } from "@/components";
+import { LineCloseIcon } from "../../components/icons/line-close-icon";
 
 const slideToPosition = keyframes`
   from {

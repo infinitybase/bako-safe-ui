@@ -8,7 +8,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import { Nullable } from "@/modules/core";
+// import { Nullable } from "@/modules/core";
+export type Nullable<T> = T | null;
 
 interface DappRequestingFromProps extends CardProps {
   name: Nullable<string>;

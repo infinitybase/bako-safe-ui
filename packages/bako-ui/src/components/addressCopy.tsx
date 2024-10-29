@@ -7,7 +7,7 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 
-import { CopyIcon } from "@/components/icons";
+import { CopyIcon } from "../components/icons/copy";
 // import { useNotification } from '@/modules/notification';
 
 interface Props extends StackProps {

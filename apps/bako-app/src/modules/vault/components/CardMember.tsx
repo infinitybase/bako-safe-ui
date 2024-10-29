@@ -1,3 +1,4 @@
+import { Card } from '@bako-safe/ui/components';
 import {
   Avatar,
   Badge,
@@ -7,7 +8,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card } from '@bako-safe/ui/components';
 
 import { AddressUtils } from '@/modules/core';
 

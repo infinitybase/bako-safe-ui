@@ -1,8 +1,6 @@
 import { Box, HStack, Image, Text, VStack } from "@chakra-ui/react";
 
-import { Card } from "@/ui/components";
-import { AddressCopy } from "@/components/addressCopy";
-import { AddressUtils } from "@/modules/core/utils";
+import { Card } from "@bako-safe/ui/components";
 
 export interface FeeProps {
   assets: {
@@ -47,7 +45,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
               >
                 {asset.name}
               </Text>
-              <AddressCopy
+              {/* <AddressCopy
                 flexDir="row-reverse"
                 address={AddressUtils.format(asset.assetId)!}
                 fontSize="xs"
@@ -56,7 +54,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
                 bg="transparent"
                 spacing={2}
                 p={0}
-              />
+              /> */}
             </VStack>
           </HStack>
           <Box minW="max-content" mt={4}>

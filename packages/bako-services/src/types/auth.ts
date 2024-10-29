@@ -1,8 +1,8 @@
+import { TypeUser } from "bakosafe";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { Network, Provider } from "fuels";
 
-import { IPermission, Workspace } from "@/modules/workspace/types";
-import { TypeUser } from "bakosafe";
+import { IPermission, Workspace } from "@/modules/workspace";
 
 export enum Encoder {
   FUEL = "FUEL",

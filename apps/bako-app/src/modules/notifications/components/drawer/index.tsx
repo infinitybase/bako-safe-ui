@@ -1,3 +1,4 @@
+import { CustomSkeleton, LineCloseIcon } from '@bako-safe/ui/components';
 import {
   Box,
   Center,
@@ -12,7 +13,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { CustomSkeleton, LineCloseIcon } from '@bako-safe/ui/components';
 
 import { useAppNotifications } from '../../hooks';
 import { NotificationsEmptyState } from '../emptyState';

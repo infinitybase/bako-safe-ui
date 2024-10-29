@@ -1,4 +1,4 @@
-import { UserService } from '@bako-safe/modules/services';
+import { UserService } from '@bako-safe/services/modules/auth';
 import { useQuery } from '@tanstack/react-query';
 export const LATEST_INFO_QUERY_KEY = ['latest-info'];
 

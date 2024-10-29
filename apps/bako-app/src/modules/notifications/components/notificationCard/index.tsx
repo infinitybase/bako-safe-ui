@@ -1,8 +1,7 @@
 import { Box, Card, CardProps, HStack, Text } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
 
-import { Notification, NotificationSummary } from '@/modules/core';
-
+import { Notification, NotificationSummary } from '../../types';
 import { notificationDescription } from '../../utils';
 
 interface NotificationCardProps extends CardProps {

@@ -1,9 +1,9 @@
 import { extendTheme } from "@chakra-ui/react";
 
 // import NewHomeBackgroundHd from "@assets/new-home-bg.jpg";
-import { colors } from "@/themes/colors";
-import { components } from "@/themes/components";
-import { fonts } from "@/themes/fonts";
+import { colors } from "./colors";
+import { components } from "./components";
+import { fonts } from "./fonts";
 
 const breakpoints = {
   mxs: "30", //480px

@@ -1,7 +1,7 @@
-import { NotificationService } from '@services/modules/notifications';
+import { NotificationService } from '@bako-safe/services/modules/notifications';
 import { useQuery } from '@tanstack/react-query';
 
-import { NotificationsQueryKey } from '@/modules/core';
+import { NotificationsQueryKey } from '../utils';
 
 const { VITE_NOTIFICATIONS_REFRESH } = import.meta.env;
 

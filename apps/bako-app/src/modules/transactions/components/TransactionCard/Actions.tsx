@@ -1,3 +1,5 @@
+import { ITransactionWithType } from '@bako-safe/services/modules/transaction';
+import { ErrorIcon, SuccessIcon } from '@bako-safe/ui/components';
 import {
   Badge,
   BoxProps,
@@ -7,15 +9,12 @@ import {
   Spacer,
   useAccordionItemState,
 } from '@chakra-ui/react';
-import { ITransactionWithType } from '@services/modules/transaction';
-import { ErrorIcon, SuccessIcon } from '@bako-safe/ui/components';
 import { TransactionType } from 'bakosafe';
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 
-import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { TransactionState } from '../../types';
 import { ActionsMobile } from './ActionsMobile';
 
 interface TransactionActionsProps extends BoxProps {

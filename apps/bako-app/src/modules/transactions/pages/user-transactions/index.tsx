@@ -1,4 +1,12 @@
 import {
+  AddressBookIcon,
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@bako-safe/ui/components';
+import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
@@ -12,21 +20,12 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  AddressBookIcon,
-  CustomSkeleton,
-  EmptyState,
-  HomeIcon,
-  TransactionsIcon,
-  VaultIcon,
-} from '@bako-safe/ui/components';
 import { useEffect } from 'react';
-import { FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
 
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
+import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
@@ -82,11 +81,7 @@ const UserTransactionsPage = () => {
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
+            leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
             px={3}
             bg="dark.100"
             color="grey.200"
@@ -159,7 +154,7 @@ const UserTransactionsPage = () => {
             isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             variant="primary"
             fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
+            // leftIcon={<FaRegPlusSquare />}
             onClick={onOpen}
           >
             Create vault

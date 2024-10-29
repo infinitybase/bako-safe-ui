@@ -31,8 +31,6 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-//coment
-//coment
 const useAuth = (): IUseAuthDetails => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);

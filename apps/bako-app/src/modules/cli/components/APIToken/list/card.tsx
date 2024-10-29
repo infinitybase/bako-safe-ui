@@ -1,3 +1,5 @@
+import { APIToken } from '@bako-safe/services/modules/cli';
+import { LineCloseIcon, RemoveIcon } from '@bako-safe/ui/components';
 import {
   Button,
   Card,
@@ -7,11 +9,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LineCloseIcon, RemoveIcon } from '@bako-safe/ui/components';
 import { format } from 'date-fns';
 
 import { useRemoveAPIToken } from '@/modules/cli/hooks/APIToken/remove';
-import { APIToken } from '@services/modules/cli';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface APITokenCardProps {

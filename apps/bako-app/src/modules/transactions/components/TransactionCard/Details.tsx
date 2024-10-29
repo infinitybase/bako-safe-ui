@@ -1,13 +1,14 @@
+import { ITransaction } from '@bako-safe/services/modules/transaction';
+import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui/components';
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui/components';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 
-import { shakeAnimationY, TransactionState } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { TransactionState } from '../../types';
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';

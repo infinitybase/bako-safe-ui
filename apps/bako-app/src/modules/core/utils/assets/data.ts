@@ -1,6 +1,6 @@
 import { Assets, assets } from 'fuels';
 
-import { localStorageKeys } from '@/modules/auth/services';
+import { localStorageKeys } from '@/modules/auth';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { Asset, AssetMap } from './types';

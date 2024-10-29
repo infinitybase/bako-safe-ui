@@ -1,3 +1,4 @@
+import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
 import {
   Box,
   Breadcrumb,
@@ -9,8 +10,6 @@ import {
   Icon,
   Text,
 } from '@chakra-ui/react';
-import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
-import { IoChevronBack } from 'react-icons/io5';
 
 import { AssetsBalanceList } from '@/modules/core';
 
@@ -18,9 +17,6 @@ import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 const WorkspaceBalancePage = () => {
   const {
-    // authDetails: {
-    //   userInfos
-    // },
     workspaceInfos: {
       handlers: {
         // handleWorkspaceSelection,
@@ -40,11 +36,7 @@ const WorkspaceBalancePage = () => {
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
+            leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
             px={3}
             bg="dark.100"
             color="grey.200"

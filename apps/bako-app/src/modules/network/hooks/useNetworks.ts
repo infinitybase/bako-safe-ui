@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { useAuth } from '@/modules';
-import { localStorageKeys } from '@/modules/auth/services';
+import { localStorageKeys, useAuth } from '@/modules/auth';
 
 import {
   availableNetWorks,

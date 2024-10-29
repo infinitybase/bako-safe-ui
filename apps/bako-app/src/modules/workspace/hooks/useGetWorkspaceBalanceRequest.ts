@@ -1,20 +1,21 @@
+import {
+  IWorkspaceBalance,
+  WorkspaceService,
+} from '@bako-safe/services/modules';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { AssetMap, WorkspacesQueryKey } from '@/modules/core';
-import {
-  IWroskapceBalance,
-  WorkspaceService,
-} from '@/modules/workspace/services';
+import { AssetMap } from '@/modules/core';
 
+import { WorkspacesQueryKey } from '../utils';
 import { handleAssetsBalance } from '../utils/assets';
 
 const useGetWorkspaceBalanceRequest = (
   currentWorkspace: string,
   assetsMaps: false | AssetMap | undefined,
   options?: UseQueryOptions<
-    IWroskapceBalance,
+    IWorkspaceBalance,
     unknown,
-    IWroskapceBalance,
+    IWorkspaceBalance,
     string[]
   >,
 ) => {

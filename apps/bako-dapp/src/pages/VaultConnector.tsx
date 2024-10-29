@@ -12,7 +12,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { RiLink } from "react-icons/ri";
 
 import {
   BakoLoading,

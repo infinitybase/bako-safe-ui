@@ -1,3 +1,4 @@
+import { ITransaction } from '@bako-safe/services/modules';
 import {
   Box,
   Button,
@@ -7,10 +8,7 @@ import {
   ToastId,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-import { IoIosCheckmarkCircle, IoIosWarning } from 'react-icons/io';
-import { RiCloseCircleFill } from 'react-icons/ri';
 
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
 import { useNotification } from '@/modules/notification';
 
@@ -34,7 +32,13 @@ const useTransactionToast = () => {
       duration: 5000,
       isClosable: true,
       title: title,
-      icon: <Icon fontSize="xl" color="brand.500" as={IoIosWarning} />,
+      icon: (
+        <Icon
+          fontSize="xl"
+          color="brand.500"
+          // as={IoIosWarning}
+        />
+      ),
       description: message,
     });
   };
@@ -67,7 +71,11 @@ const useTransactionToast = () => {
         title: 'Transaction success',
         duration: 5000,
         icon: (
-          <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
+          <Icon
+            fontSize="xl"
+            color="success.700"
+            //  as={IoIosCheckmarkCircle}
+          />
         ),
         description: (
           <Box mt={2}>
@@ -95,7 +103,13 @@ const useTransactionToast = () => {
         status: 'error',
         duration: 5000,
         title: 'Error on send your transaction',
-        icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
+        icon: (
+          <Icon
+            fontSize="xl"
+            color="error.500"
+            // as={RiCloseCircleFill}
+          />
+        ),
         description: message,
       });
     }
@@ -109,7 +123,13 @@ const useTransactionToast = () => {
       duration: 5000,
       isClosable: true,
       title: title,
-      icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
+      icon: (
+        <Icon
+          fontSize="xl"
+          color="error.500"
+          // as={RiCloseCircleFill}
+        />
+      ),
       description: message,
     });
   };

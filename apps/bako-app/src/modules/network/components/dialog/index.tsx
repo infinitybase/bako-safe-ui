@@ -1,3 +1,4 @@
+import { Dialog, DialogModalProps } from '@bako-safe/ui/components';
 import {
   Button,
   FormControl,
@@ -7,7 +8,6 @@ import {
   Spinner,
   VStack,
 } from '@chakra-ui/react';
-import { Dialog, DialogModalProps } from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import { useNetworks } from '../../hooks';

@@ -1,4 +1,11 @@
 import {
+  AddressBookIcon,
+  CustomSkeleton,
+  HomeIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@bako-safe/ui/components';
+import {
   Box,
   Button,
   Grid,
@@ -10,14 +17,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  AddressBookIcon,
-  CustomSkeleton,
-  HomeIcon,
-  TransactionsIcon,
-  VaultIcon,
-} from '@bako-safe/ui/components';
-import { FaRegPlusSquare } from 'react-icons/fa';
 
 import { Pages } from '@/modules/core/routes';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';

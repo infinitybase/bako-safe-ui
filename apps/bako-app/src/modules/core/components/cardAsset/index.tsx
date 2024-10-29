@@ -1,3 +1,4 @@
+import { BakoIcon } from '@bako-safe/ui/components';
 import {
   Card,
   CardProps,
@@ -7,7 +8,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { BakoIcon } from '@ui/components/icons';
 
 import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';

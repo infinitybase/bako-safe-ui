@@ -1,5 +1,5 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
 import { Box } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
 import { OperationName } from 'fuels';
 import React from 'react';
 

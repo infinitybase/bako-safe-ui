@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
-import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
+// import { CreateTemplatePage } from '@/modules/template/hooks/useTemplatePage';
 import { CreateTransactionPage } from '@/modules/transactions/pages';
 
 import { VaultDashboardLayoutRouter } from './layout/VaultDashBoard';
@@ -27,14 +27,14 @@ const VaultRoutes = () => {
               </AuthRoute>
             }
           />
-          <Route
+          {/* <Route
             path={Pages.createTemplate()}
             element={
               <AuthRoute>
                 <CreateTemplatePage />
               </AuthRoute>
             }
-          />
+          /> */}
           <Route
             path={Pages.createTransaction()}
             element={

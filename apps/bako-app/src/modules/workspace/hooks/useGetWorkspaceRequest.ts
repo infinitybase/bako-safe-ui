@@ -1,8 +1,9 @@
+import { WorkspaceService } from '@bako-safe/services/modules/workspace';
 import { useQuery } from '@tanstack/react-query';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { WorkspacesQueryKey } from '@/modules/core';
-import { WorkspaceService } from '@/modules/workspace/services';
+
+import { WorkspacesQueryKey } from '../utils';
 
 const useGetWorkspaceRequest = (workspaceId: string) => {
   const { data, ...request } = useQuery({

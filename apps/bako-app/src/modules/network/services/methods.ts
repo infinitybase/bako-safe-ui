@@ -1,7 +1,7 @@
 import { Provider } from 'fuels';
 
 import { api } from '@/config';
-import { localStorageKeys } from '@/modules/auth/services';
+import { localStorageKeys } from '@/modules/auth';
 
 export enum NetworkQueryKey {
   CREATE_NETWORK = 'create-network',

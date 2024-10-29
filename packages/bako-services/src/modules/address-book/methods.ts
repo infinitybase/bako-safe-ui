@@ -1,4 +1,3 @@
-import { api } from "@/config";
 import { WorkspaceContact } from "../workspace/types";
 import {
   CreateContactPayload,
@@ -12,47 +11,54 @@ import {
   UpdateContactPayload,
   UpdateContactResponse,
 } from "./types";
+import { AxiosInstance } from "axios";
 
 export class AddressBookService {
-  static async create(payload: CreateContactPayload) {
-    const { data } = await api.post<CreateContactResponse>(
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
+  async create(payload: CreateContactPayload) {
+    const { data } = await this.api.post<CreateContactResponse>(
       "/address-book",
       payload,
     );
     return data;
   }
 
-  static async update(payload: UpdateContactPayload) {
-    const { data } = await api.put<UpdateContactResponse>(
+  async update(payload: UpdateContactPayload) {
+    const { data } = await this.api.put<UpdateContactResponse>(
       `/address-book/${payload.id}`,
       payload,
     );
     return data;
   }
 
-  static async delete(id: string) {
-    const { data } = await api.delete<DeleteContactResponse>(
+  async delete(id: string) {
+    const { data } = await this.api.delete<DeleteContactResponse>(
       `/address-book/${id}`,
     );
     return data;
   }
 
-  static async find(params: FindContactsParams) {
-    const { data } = await api.get<FindContactsResponse>("/address-book", {
+  async find(params: FindContactsParams) {
+    const { data } = await this.api.get<FindContactsResponse>("/address-book", {
       params,
     });
     return data;
   }
 
-  static async list(includePersonal: boolean = false) {
-    const { data } = await api.get<ListContactsResponse>(
+  async list(includePersonal: boolean = false) {
+    const { data } = await this.api.get<ListContactsResponse>(
       `/address-book?includePersonal=${includePersonal}`,
     );
 
     return data;
   }
 
-  static search(
+  search(
     params: GetPaginatedContactsParams,
     contacts: WorkspaceContact[],
   ): WorkspaceContact[] {
@@ -77,8 +83,8 @@ export class AddressBookService {
     return result;
   }
 
-  static async listWithPagination(params: GetPaginatedContactsParams) {
-    const { data } = await api.get<GetPaginatedContactsResponse>(
+  async listWithPagination(params: GetPaginatedContactsParams) {
+    const { data } = await this.api.get<GetPaginatedContactsResponse>(
       `/address-book`,
       { params },
     );

@@ -1,6 +1,6 @@
-import { TransactionOrderBy } from '@services/modules/transaction';
-import { SortOption } from '@services/modules/types';
-import { VaultService } from '@services/modules/vault';
+import { TransactionOrderBy } from '@bako-safe/services/modules/transaction';
+import { VaultService } from '@bako-safe/services/modules/vault';
+import { SortOption } from '@bako-safe/services/types';
 import { useQuery } from '@tanstack/react-query';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

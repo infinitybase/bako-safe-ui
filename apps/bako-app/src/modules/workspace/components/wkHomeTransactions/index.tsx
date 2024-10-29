@@ -82,7 +82,7 @@ const WkHomeTransactions = () => {
             alignSelf={{ base: 'stretch', sm: 'flex-end' }}
             rightIcon={
               <Icon
-                as={MdKeyboardArrowRight}
+                // as={MdKeyboardArrowRight}
                 fontSize="lg"
                 ml={isSmall ? -1 : 0}
                 className="btn-icon"

@@ -1,3 +1,4 @@
+import { LineCloseIcon } from '@bako-safe/ui/components';
 import {
   Button,
   Divider,
@@ -18,7 +19,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LineCloseIcon } from '@bako-safe/ui/components';
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 

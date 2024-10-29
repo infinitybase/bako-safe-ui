@@ -1,8 +1,8 @@
 import {
   TransactionOrderBy,
   TransactionService,
-} from '@services/modules/transaction';
-import { SortOption } from '@services/modules/types';
+} from '@bako-safe/services/modules/transaction';
+import { SortOption } from '@bako-safe/services/types';
 import { useQuery } from '@tanstack/react-query';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

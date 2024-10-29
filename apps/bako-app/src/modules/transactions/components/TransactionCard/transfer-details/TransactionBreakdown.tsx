@@ -1,8 +1,9 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
-import { AddressUtils, TransactionState } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
+import { TransactionState } from '@/modules/transactions/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo, TransactionUI } from '../Details';

@@ -1,3 +1,11 @@
+import {
+  Card,
+  CustomSkeleton,
+  ErrorTooltip,
+  EyeCloseIcon,
+  EyeOpenIcon,
+  SquarePlusIcon,
+} from '@bako-safe/ui/components';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -13,21 +21,14 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  Card,
-  CustomSkeleton,
-  ErrorTooltip,
-  EyeCloseIcon,
-  EyeOpenIcon,
-  SquarePlusIcon,
-} from '@bako-safe/ui/components';
 import { bn } from 'fuels';
 import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
+import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../hooks/details';

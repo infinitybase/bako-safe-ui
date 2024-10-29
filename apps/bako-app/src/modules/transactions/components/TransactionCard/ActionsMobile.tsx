@@ -1,6 +1,5 @@
+import { ITransactionWithType } from '@bako-safe/services/modules/transaction';
 import { Button, HStack, Icon } from '@chakra-ui/react';
-import { ITransactionWithType } from '@services/modules/transaction';
-import { IoIosArrowForward } from 'react-icons/io';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

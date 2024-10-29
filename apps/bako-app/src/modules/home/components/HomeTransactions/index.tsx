@@ -1,3 +1,4 @@
+import { CustomSkeleton, EmptyState } from '@bako-safe/ui/components';
 import {
   Box,
   Button,
@@ -8,9 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { CustomSkeleton, EmptyState } from '@bako-safe/ui/components';
 import { useEffect, useState } from 'react';
-import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import { Pages, shakeAnimationX } from '@/modules/core';
 import {
@@ -80,7 +79,7 @@ const HomeTransactions = () => {
             alignSelf={{ base: 'stretch', sm: 'flex-end' }}
             rightIcon={
               <Icon
-                as={MdKeyboardArrowRight}
+                // as={MdKeyboardArrowRight}
                 fontSize="lg"
                 ml={isSmall ? -1 : 0}
                 className="btn-icon"

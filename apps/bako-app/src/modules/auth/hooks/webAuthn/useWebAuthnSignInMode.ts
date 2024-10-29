@@ -1,4 +1,4 @@
-import { UserService } from '@bako-safe/modules/services';
+import { UserService } from '@bako-safe/services/modules';
 import { TypeUser } from 'bakosafe';
 import { useState } from 'react';
 

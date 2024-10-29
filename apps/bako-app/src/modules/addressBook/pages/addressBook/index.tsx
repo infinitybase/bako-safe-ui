@@ -21,8 +21,9 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
+import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
@@ -106,11 +107,7 @@ const AddressBookPage = () => {
               variant="primary"
               fontWeight="semibold"
               fontSize={15}
-              leftIcon={
-                <Box mr={-1}>
-                  <IoChevronBack size={22} />
-                </Box>
-              }
+              leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
               px={3}
               bg="dark.100"
               color="grey.200"
@@ -187,7 +184,7 @@ const AddressBookPage = () => {
                 w="full"
                 variant="primary"
                 fontWeight="bold"
-                leftIcon={<FaRegPlusSquare />}
+                // leftIcon={<FaRegPlusSquare />}
                 onClick={() => handleOpenDialog({})}
               >
                 Add new favorite

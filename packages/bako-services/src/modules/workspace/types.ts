@@ -103,7 +103,7 @@ export type SelectWorkspaceResponse = {
   workspace: Workspace;
 };
 
-export type IWroskapceBalance = {
+export type IWorkspaceBalance = {
   currentBalanceUSD: string;
   currentBalance: {
     assetId: string;
@@ -111,4 +111,4 @@ export type IWroskapceBalance = {
   }[];
 };
 
-export type GetWorkspaceBalanceResponse = IWroskapceBalance;
+export type GetWorkspaceBalanceResponse = IWorkspaceBalance;

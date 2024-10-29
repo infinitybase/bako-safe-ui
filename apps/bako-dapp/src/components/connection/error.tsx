@@ -1,6 +1,6 @@
 import { Alert, Box, Icon, Text } from "@chakra-ui/react";
 
-import { RoundedErrorIcon } from "@/components/icons/rounded-error";
+import { RoundedErrorIcon } from "@bako-safe/ui/components";
 
 const DappError = () => (
   <Alert

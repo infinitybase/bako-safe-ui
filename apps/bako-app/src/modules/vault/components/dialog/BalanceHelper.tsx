@@ -1,5 +1,5 @@
-import { Heading, Text } from '@chakra-ui/react';
 import { Dialog, DialogModalProps } from '@bako-safe/ui/components';
+import { Heading, Text } from '@chakra-ui/react';
 
 interface BalanceHelperProps extends Omit<DialogModalProps, 'children'> {}
 

@@ -1,3 +1,10 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import {
+  ContractIcon,
+  DeployIcon,
+  DownLeftArrowGreen,
+  UpRightArrowYellow,
+} from '@bako-safe/ui/components';
 import {
   Card,
   CardProps,
@@ -7,13 +14,6 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
-import {
-  ContractIcon,
-  DeployIcon,
-  DownLeftArrowGreen,
-  UpRightArrowYellow,
-} from '@bako-safe/ui/components';
 
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';

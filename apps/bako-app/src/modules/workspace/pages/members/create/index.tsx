@@ -1,3 +1,13 @@
+import {
+  Dialog,
+  FeedbackDelete,
+  FeedbackSuccess,
+  FeedbackUpdate,
+  RefreshIcon,
+  RemoveIcon,
+  StepProgress,
+  UserPlusIcon,
+} from '@bako-safe/ui/components';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
@@ -12,16 +22,6 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import {
-  Dialog,
-  FeedbackDelete,
-  FeedbackSuccess,
-  FeedbackUpdate,
-  RefreshIcon,
-  RemoveIcon,
-  StepProgress,
-  UserPlusIcon,
-} from '@bako-safe/ui/components';
 import { useParams } from 'react-router-dom';
 
 import { CreateContactDialog } from '@/modules/addressBook';
@@ -32,7 +32,7 @@ import {
   MemberTabState,
   useChangeMember,
 } from '@/modules/workspace/hooks/members';
-import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { WorkspacePermissionUtils } from '@/modules/workspace/utils/permission';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const MemberTab = () => {

@@ -1,3 +1,4 @@
+import { Dialog } from '@bako-safe/ui/components';
 import {
   Box,
   BoxProps,
@@ -8,7 +9,6 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
-import { Dialog } from '@bako-safe/ui/components';
 import { Controller } from 'react-hook-form';
 
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';

@@ -1,10 +1,12 @@
-import { TransactionService } from '@services/modules/transaction';
-import { TransactionStatus } from 'bakosafe';
+import {
+  ITransaction,
+  TransactionService,
+} from '@bako-safe/services/modules/transaction';
+import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
-import { useBakoSafeTransactionSend, WitnessStatus } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
 
 import { useTransactionToast } from '../../providers/toast';

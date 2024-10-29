@@ -1,4 +1,4 @@
-import { TransactionService } from '@services/modules/transaction';
+import { TransactionService } from '@bako-safe/services/modules/transaction';
 import { useQuery } from '@tanstack/react-query';
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 

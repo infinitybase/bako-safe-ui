@@ -1,4 +1,4 @@
-import { TransactionService } from '@services/modules/transaction';
+import { TransactionService } from '@bako-safe/services/modules/transaction';
 import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';

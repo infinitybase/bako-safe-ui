@@ -2,7 +2,7 @@ import {
   SignerTransactionPayload,
   SignerTransactionResponse,
   TransactionService,
-} from '@services/modules/transaction';
+} from '@bako-safe/services/modules/transaction';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 const useSignTransactionRequest = (

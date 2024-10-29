@@ -1,4 +1,11 @@
 import {
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+  MenuIcon,
+  TransactionTypeFilters,
+} from '@bako-safe/ui/components';
+import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
@@ -12,22 +19,14 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  CustomSkeleton,
-  EmptyState,
-  HomeIcon,
-  MenuIcon,
-  TransactionTypeFilters,
-} from '@bako-safe/ui/components';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AddAssetsDialog, DepositDialog, WelcomeDialog } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
-import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
+// import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -67,14 +66,14 @@ const VaultDetailsPage = () => {
     isPendingSigner,
   } = useTransactionsContext();
 
-  const { setTemplateFormInitial } = useTemplateStore();
+  // const { setTemplateFormInitial } = useTemplateStore();
 
   const {
     authDetails: { userInfos },
     workspaceInfos: {
       handlers: {
         // handleWorkspaceSelection,
-        hasPermission,
+        // hasPermission,
         goHome,
       },
     },
@@ -89,9 +88,9 @@ const VaultDetailsPage = () => {
   const workspaceId = userInfos.workspace?.id ?? '';
   const hasTransactions = !isLoading && transactions?.length;
 
-  const { OWNER, SIGNER } = PermissionRoles;
+  // const { OWNER, SIGNER } = PermissionRoles;
 
-  const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
+  // const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   const hideSetTemplateButton = true;
 
@@ -204,7 +203,7 @@ const VaultDetailsPage = () => {
             fontWeight="medium"
             fontSize={{ base: 'sm', sm: 'md' }}
             border="none"
-            isDisabled={!canSetTemplate || true} // todo: fix this
+            // isDisabled={!canSetTemplate || true} // todo: fix this
             onClick={() => {
               if (
                 !vault.data?.id ||
@@ -213,12 +212,12 @@ const VaultDetailsPage = () => {
                 !vaultPageParams.workspaceId
               )
                 return;
-              setTemplateFormInitial({
-                minSigners: vault.data?.minSigners,
-                addresses:
-                  vault.data.members! &&
-                  vault.data?.members.map((signer) => signer.address),
-              });
+              // setTemplateFormInitial({
+              //   minSigners: vault.data?.minSigners,
+              //   addresses:
+              //     vault.data.members! &&
+              //     vault.data?.members.map((signer) => signer.address),
+              // });
               navigate(
                 Pages.createTemplate({
                   vaultId: vault.data.id!,

@@ -1,4 +1,4 @@
-import { HomeService } from '@services/modules/home';
+import { HomeService } from '@bako-safe/services/modules/home';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'fuels';
 export type IuseTokensUSDAmountRequestReturn = ReturnType<

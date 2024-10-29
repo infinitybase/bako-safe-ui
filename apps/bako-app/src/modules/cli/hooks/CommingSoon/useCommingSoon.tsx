@@ -1,5 +1,4 @@
 import { Icon, useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 import { useNotification } from '@/modules/notification/hooks/useNotification';
 import { createGTMCustomEvent } from '@/utils';
@@ -56,7 +55,11 @@ const useCommingSoon = () => {
       title: 'Email notification activated!',
       description: 'We will notify you when this feature becomes available.',
       icon: (
-        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
+        <Icon
+          fontSize="xl"
+          color="success.700"
+          // as={IoIosCheckmarkCircle}
+        />
       ),
     });
 

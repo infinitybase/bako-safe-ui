@@ -1,4 +1,10 @@
 import {
+  BakoIcon,
+  PlusIcon,
+  RemoveIcon,
+  UnknownIcon,
+} from '@bako-safe/ui/components';
+import {
   Box,
   Button,
   Center,
@@ -19,15 +25,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import {
-  BakoIcon,
-  PlusIcon,
-  RemoveIcon,
-  UnknownIcon,
-} from '@bako-safe/ui/components';
+import { TypeUser } from 'bakosafe';
 import { Controller } from 'react-hook-form';
 
-import { TypeUser } from '@/modules/auth/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';

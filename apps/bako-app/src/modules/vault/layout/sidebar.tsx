@@ -1,4 +1,3 @@
-import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 import {
   CoinsIcon,
   ExchangeIcon,
@@ -6,13 +5,15 @@ import {
   PendingIcon,
   SettingsIcon,
 } from '@bako-safe/ui/components';
+import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import { SidebarMenu } from '@/layouts/dashboard/menu';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
+import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SidebarProps extends BoxProps {

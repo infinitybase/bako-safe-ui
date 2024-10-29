@@ -1,14 +1,10 @@
 import { Card, EditIcon } from '@bako-safe/ui/components';
 import { Avatar, Badge, Box, HStack, Text } from '@chakra-ui/react';
 
-import {
-  AddressUtils,
-  Member,
-  PermissionRoles,
-  Workspace,
-} from '@/modules/core';
-import { WorkspacePermissionUtils } from '@/modules/workspace/utils';
+import { AddressUtils } from '@/modules/core';
 
+import { Member, PermissionRoles, Workspace } from '../../types';
+import { WorkspacePermissionUtils } from '../../utils/permission';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface MemberCardProps {

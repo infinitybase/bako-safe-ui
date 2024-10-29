@@ -1,5 +1,5 @@
-import { Box, Card, Heading, Text } from '@chakra-ui/react';
 import { EmptyBoxOutline } from '@bako-safe/ui/components';
+import { Box, Card, Heading, Text } from '@chakra-ui/react';
 
 const NotificationsEmptyState = () => {
   return (

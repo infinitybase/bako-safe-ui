@@ -1,11 +1,12 @@
+import { IApiError } from '@bako-safe/services/errors';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
-import { IApiError, queryClient } from '@/config';
+import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
-import { SettingsQueryKey } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { SettingsQueryKey } from '../utils';
 import { useUpdateSettingsRequest } from '.';
 import { useMySettingsRequest } from './useMySettingsRequest';
 import { useSettingsForm } from './useSettingsForm';

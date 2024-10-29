@@ -1,6 +1,5 @@
+import { WorkspaceService } from '@bako-safe/services/modules/workspace';
 import { useQuery } from '@tanstack/react-query';
-
-import { WorkspaceService } from '../services';
 
 const useGetFuelsTokensListRequest = () => {
   const { data: fuelsTokens, ...query } = useQuery({

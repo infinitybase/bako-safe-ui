@@ -1,12 +1,6 @@
 import { CookieName, CookiesConfig } from '@/config/cookies';
 
-interface IGenerateRedirectQueryParams {
-  sessionId: string | null;
-  origin?: string | null;
-  name?: string | null;
-  request_id?: string | null;
-  byConnector?: string | null;
-}
+import { IGenerateRedirectQueryParams } from './types';
 
 const authCredentials = () => ({
   token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),

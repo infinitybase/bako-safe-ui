@@ -1,4 +1,5 @@
 export * from './signIn';
+export * from './useAuth';
 export * from './useAuthCookies';
 export * from './useAuthUrlParams';
 export * from './usePopup';

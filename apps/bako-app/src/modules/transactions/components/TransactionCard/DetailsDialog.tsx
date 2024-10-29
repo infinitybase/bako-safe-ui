@@ -1,3 +1,13 @@
+import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import {
+  ContractIcon,
+  DeployIcon,
+  Dialog,
+  DialogModalProps,
+  DownLeftArrowGreen,
+  UpRightArrow,
+  UpRightArrowYellow,
+} from '@bako-safe/ui/components';
 import {
   AccordionItem,
   Avatar,
@@ -8,19 +18,8 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { TransactionWithVault } from '@services/modules/transaction';
-import {
-  ContractIcon,
-  DeployIcon,
-  Dialog,
-  DialogModalProps,
-  DownLeftArrowGreen,
-  UpRightArrow,
-  UpRightArrowYellow,
-} from '@bako-safe/ui/components';
 import { format } from 'date-fns';
 
-import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
@@ -30,6 +29,7 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { TransactionState } from '../../types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;

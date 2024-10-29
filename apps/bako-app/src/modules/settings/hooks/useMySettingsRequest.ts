@@ -1,7 +1,7 @@
-import { SettingsService } from '@services/modules/settings';
+import { SettingsService } from '@bako-safe/services/modules/settings';
 import { useQuery } from '@tanstack/react-query';
 
-import { SettingsQueryKey } from '@/modules/core';
+import { SettingsQueryKey } from '../utils';
 
 const useMySettingsRequest = (account: string) => {
   return useQuery({

@@ -1,4 +1,7 @@
-import { APITokenService, CreateAPITokenPayload } from '@services/modules/cli';
+import {
+  APITokenService,
+  CreateAPITokenPayload,
+} from '@bako-safe/services/modules/cli';
 import { useMutation } from '@tanstack/react-query';
 
 const useCreateAPITokenRequest = (predicateId: string) => {

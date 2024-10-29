@@ -1,3 +1,4 @@
+import { Card } from '@bako-safe/ui/components';
 import {
   Box,
   CardProps,
@@ -6,7 +7,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Card } from '@bako-safe/ui/components';
 
 interface ExtraVaultCardProps extends CardProps {
   extra: number;

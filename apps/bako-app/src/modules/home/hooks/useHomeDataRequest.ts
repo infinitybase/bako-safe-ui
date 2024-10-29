@@ -1,7 +1,7 @@
-import { HomeService } from '@services/modules/home';
+import { HomeService } from '@bako-safe/services/modules/home';
 import { useQuery } from '@tanstack/react-query';
 
-import { HomeQueryKey } from '@/modules/core/models';
+import { HomeQueryKey } from '../utils';
 
 const useHomeDataRequest = (currentWorkspace: string) => {
   return useQuery({

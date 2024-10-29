@@ -14,7 +14,7 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { UseChangeMember } from '../../hooks';
-import { WorkspacePermissionUtils } from '../../utils';
+import { WorkspacePermissionUtils } from '../../utils/permission';
 import { RadioCard } from '../card';
 
 interface MemberPermissionForm {

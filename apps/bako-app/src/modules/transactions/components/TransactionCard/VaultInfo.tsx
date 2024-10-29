@@ -1,5 +1,5 @@
+import { PredicateAndWorkspace } from '@bako-safe/services/modules/vault';
 import { BoxProps, Text, VStack } from '@chakra-ui/react';
-import { PredicateAndWorkspace } from '@services/modules/vault';
 
 import { limitCharacters } from '@/utils';
 

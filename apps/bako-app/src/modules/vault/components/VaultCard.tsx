@@ -1,4 +1,9 @@
 import {
+  PredicateMember,
+  PredicateWorkspace,
+} from '@bako-safe/services/modules/vault';
+import { Card } from '@bako-safe/ui/components';
+import {
   Avatar,
   AvatarGroup,
   Badge,
@@ -11,15 +16,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PredicateWorkspace } from '@services/modules/vault';
-import { Card } from '@bako-safe/ui/components';
 
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
-import { PredicateMember } from '@/modules/core/models/predicate';
 import {
   PermissionDetails,
   WorkspacePermissionUtils,
-} from '@/modules/workspace/utils';
+} from '@/modules/workspace/utils/permission';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultCardProps extends CardProps {

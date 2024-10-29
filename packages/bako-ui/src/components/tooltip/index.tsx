@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import { TooltipIcon } from "@/components/icons/tooltip";
+import { TooltipIcon } from "../";
 
 export interface TooltipProps {
   text: string;

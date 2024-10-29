@@ -1,4 +1,3 @@
-import { BakoAuthProvider } from '@bako-safe/services/context';
 import { defaultTheme } from '@bako-safe/ui/themes';
 import { ChakraProvider } from '@chakra-ui/react';
 import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
@@ -65,9 +64,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <SocketProvider>
             <BakoSafeQueryClientProvider>
               <BrowserRouter>
-                <BakoAuthProvider>
-                  <App />
-                </BakoAuthProvider>
+                <App />
               </BrowserRouter>
             </BakoSafeQueryClientProvider>
           </SocketProvider>

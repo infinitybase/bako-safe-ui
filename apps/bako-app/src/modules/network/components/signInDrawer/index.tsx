@@ -1,3 +1,4 @@
+import { BakoIcon, UnknownIcon } from '@bako-safe/ui/components';
 import {
   Center,
   Drawer,
@@ -12,7 +13,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { BakoIcon, UnknownIcon } from '@bako-safe/ui/components';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
 import { availableNetWorks, NetworkType } from '../../services';

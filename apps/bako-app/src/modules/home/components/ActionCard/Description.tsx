@@ -1,8 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
-import { ReactNode } from 'react';
 
 interface ActionCardDescriptionProps {
-  children: ReactNode;
+  children: React.ReactNode;
   maxWidth?: {
     [key: string]: number;
   };

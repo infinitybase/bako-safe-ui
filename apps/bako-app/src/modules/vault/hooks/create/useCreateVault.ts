@@ -6,8 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
-import { TemplateService } from '@/modules/template/services/methods';
-import { useTemplateStore } from '@/modules/template/store';
+// import { TemplateService } from '@/modules/template/services/methods';
+// import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
@@ -40,8 +40,8 @@ const useCreateVault = () => {
 
   const [tab, setTab] = useState<TabState>(TabState.INFO);
   const [vaultId, setVaultId] = useState<string>('');
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
-  const { setTemplateFormInitial } = useTemplateStore();
+  // const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+  // const { setTemplateFormInitial } = useTemplateStore();
   const { form, addressesFieldArray } = useCreateVaultForm(userInfos.address);
 
   const [searchRequest, setSearchRequest] = useState('');
@@ -105,22 +105,22 @@ const useCreateVault = () => {
     });
   });
 
-  const setFormWithTemplate = async (id: string) => {
-    const template = await TemplateService.getById(id);
-    const address: string[] = template.addresses as string[];
+  // const setFormWithTemplate = async (id: string) => {
+  //   const template = await TemplateService.getById(id);
+  //   const address: string[] = template.addresses as string[];
 
-    setSelectedTemplate(id);
-    form.setValue('minSigners', template.minSigners.toString());
+  //   setSelectedTemplate(id);
+  //   form.setValue('minSigners', template.minSigners.toString());
 
-    if (template.addresses) {
-      form.setValue(
-        'addresses',
-        address.map((item: string) => {
-          return { value: item };
-        }),
-      );
-    }
-  };
+  //   if (template.addresses) {
+  //     form.setValue(
+  //       'addresses',
+  //       address.map((item: string) => {
+  //         return { value: item };
+  //       }),
+  //     );
+  //   }
+  // };
 
   const onDeposit = async () => {
     if (bakoSafeVault.data) {
@@ -137,23 +137,23 @@ const useCreateVault = () => {
     }
   };
 
-  const onSaveTemplate = async () => {
-    const data = form.getValues();
-    const addresses = data.addresses?.map((address) => address.value) ?? [];
-    const minSigners = Number(data.minSigners) ?? 1;
+  // const onSaveTemplate = async () => {
+  //   const data = form.getValues();
+  //   const addresses = data.addresses?.map((address) => address.value) ?? [];
+  //   const minSigners = Number(data.minSigners) ?? 1;
 
-    setTemplateFormInitial({
-      minSigners,
-      addresses,
-    });
+  //   setTemplateFormInitial({
+  //     minSigners,
+  //     addresses,
+  //   });
 
-    navigate(
-      Pages.createTemplate({
-        vaultId,
-        workspaceId: params.workspaceId!,
-      }),
-    );
-  };
+  //   navigate(
+  //     Pages.createTemplate({
+  //       vaultId,
+  //       workspaceId: params.workspaceId!,
+  //     }),
+  //   );
+  // };
 
   const removeAddress = (index: number) => {
     addressesFieldArray.remove(index);
@@ -204,9 +204,9 @@ const useCreateVault = () => {
     bakoSafeVault,
     navigate,
     onDeposit,
-    selectedTemplate,
-    setFormWithTemplate,
-    onSaveTemplate,
+    // selectedTemplate,
+    // setFormWithTemplate,
+    // onSaveTemplate,
     validateAddress: {
       handler: validateAddress,
       isLoading: validatingAddress,

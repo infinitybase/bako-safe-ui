@@ -6,7 +6,7 @@ import {
   GetWorkspaceByIdResponse,
   IncludeWorkspaceMemberPayload,
   IncludeWorkspaceMemberResponse,
-  IWroskapceBalance,
+  IWorkspaceBalance,
   ListUserWorkspacesResponse,
   SelectWorkspacePayload,
   SelectWorkspaceResponse,
@@ -14,18 +14,24 @@ import {
   UpdateWorkspacePermissionsPayload,
   UpdateWorkspacePermissionsResponse,
 } from "./types";
-import { api } from "@/config";
+import { AxiosInstance } from "axios";
 
 export class WorkspaceService {
+  api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
   async list() {
     const { data } =
-      await api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
+      await this.api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
 
     return data;
   }
 
   async create(payload: CreateWorkspacePayload) {
-    const { data } = await api.post<CreateWorkspaceResponse>(
+    const { data } = await this.api.post<CreateWorkspaceResponse>(
       `/workspace`,
       payload,
     );
@@ -34,7 +40,7 @@ export class WorkspaceService {
   }
 
   async select(payload: SelectWorkspacePayload) {
-    const { data } = await api.put<SelectWorkspaceResponse>(
+    const { data } = await this.api.put<SelectWorkspaceResponse>(
       `/auth/workspace`,
       payload,
     );
@@ -48,7 +54,7 @@ export class WorkspaceService {
 
   async includeMember(payload: IncludeWorkspaceMemberPayload) {
     const { address } = payload;
-    const { data } = await api.post<IncludeWorkspaceMemberResponse>(
+    const { data } = await this.api.post<IncludeWorkspaceMemberResponse>(
       `/workspace/members/${address}/include`,
     );
 
@@ -57,7 +63,7 @@ export class WorkspaceService {
 
   async updatePermissions(payload: UpdateWorkspacePermissionsPayload) {
     const { permissions, member } = payload;
-    const { data } = await api.put<UpdateWorkspacePermissionsResponse>(
+    const { data } = await this.api.put<UpdateWorkspacePermissionsResponse>(
       `/workspace/permissions/${member}`,
       { permissions },
     );
@@ -66,7 +72,7 @@ export class WorkspaceService {
   }
 
   async getById(workspaceId: string) {
-    const { data } = await api.get<GetWorkspaceByIdResponse>(
+    const { data } = await this.api.get<GetWorkspaceByIdResponse>(
       `/workspace/${workspaceId}`,
     );
 
@@ -74,7 +80,7 @@ export class WorkspaceService {
   }
 
   async getBalance() {
-    return new Promise<IWroskapceBalance>((resolve) => {
+    return new Promise<IWorkspaceBalance>((resolve) => {
       resolve({
         currentBalanceUSD: "0",
         currentBalance: [],
@@ -97,7 +103,7 @@ export class WorkspaceService {
 
   async deleteMember(payload: DeleteWorkspaceMemberPayload) {
     const { member } = payload;
-    const { data } = await api.post<UpdateWorkspaceMembersResponse>(
+    const { data } = await this.api.post<UpdateWorkspaceMembersResponse>(
       `/workspace/members/${member}/remove`,
     );
 
