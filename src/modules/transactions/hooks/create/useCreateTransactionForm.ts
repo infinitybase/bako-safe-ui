@@ -152,7 +152,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
     });
 
     const schema = yup.object({
-      name: yup.string().required(''),
+      name: yup.string().optional(),
       transactions: yup.array(transactionSchema),
     });
 
