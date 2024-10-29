@@ -69,7 +69,6 @@ const TransactionConfirm = () => {
                   size="md"
                   isLoading={isSending}
                   onClick={sendTransaction}
-                  fontWeight={700}
                   fontSize={14}
                 >
                   Create
@@ -94,7 +93,6 @@ const TransactionConfirm = () => {
                 size="md"
                 isLoading={isSigning}
                 onClick={() => signTransaction()}
-                fontWeight={700}
                 fontSize={14}
               >
                 Sign
