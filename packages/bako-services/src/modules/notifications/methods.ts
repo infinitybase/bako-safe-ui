@@ -1,6 +1,5 @@
+import { api } from "@/config";
 import { SortOption, IPagination, PaginationParams } from "@/types";
-import { AxiosInstance } from "axios";
-import { Notification } from "./types";
 export interface GetAllNotificationsPayload extends PaginationParams {
   unread?: boolean;
   orderBy?: string;
@@ -11,14 +10,8 @@ export type SetAllAsReadResponse = boolean;
 export type GetAllNotificationsPaginationResponse = IPagination<Notification>;
 
 export class NotificationService {
-  api: AxiosInstance;
-
-  constructor(api: AxiosInstance) {
-    this.api = api;
-  }
-
-  async getAllWithPagination(params: GetAllNotificationsPayload) {
-    const { data } = await this.api.get<GetAllNotificationsPaginationResponse>(
+  static async getAllWithPagination(params: GetAllNotificationsPayload) {
+    const { data } = await api.get<GetAllNotificationsPaginationResponse>(
       "/notifications",
       { params },
     );
@@ -26,8 +19,8 @@ export class NotificationService {
     return data;
   }
 
-  async setAllAsRead() {
-    const { data } = await this.api.put<SetAllAsReadResponse>(
+  static async setAllAsRead() {
+    const { data } = await api.put<SetAllAsReadResponse>(
       "/notifications/read-all",
     );
 

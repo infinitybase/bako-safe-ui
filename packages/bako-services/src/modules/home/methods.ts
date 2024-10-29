@@ -3,7 +3,7 @@ import { TransactionType } from "bakosafe";
 import { AssetId } from "@/types";
 import { TransactionWithVault } from "../transaction";
 import { GetAllPredicatePaginationResponse } from "../vault";
-import { AxiosInstance } from "axios";
+import { api } from "@/config";
 
 export interface HomeDataResponse {
   predicates: GetAllPredicatePaginationResponse;
@@ -15,20 +15,14 @@ export interface HomeTransactionsResponse {
 
 type TokensUSDResponse = [AssetId, number][];
 export class HomeService {
-  api: AxiosInstance;
-
-  constructor(api: AxiosInstance) {
-    this.api = api;
-  }
-
-  async home() {
-    const { data } = await this.api.get<HomeDataResponse>(`/user/predicates`);
+  static async home() {
+    const { data } = await api.get<HomeDataResponse>(`/user/predicates`);
 
     return data;
   }
 
-  async homeTransactions(type?: TransactionType) {
-    const { data } = await this.api.get<HomeTransactionsResponse>(
+  static async homeTransactions(type?: TransactionType) {
+    const { data } = await api.get<HomeTransactionsResponse>(
       `/user/latest/transactions`,
       {
         params: {
@@ -40,9 +34,8 @@ export class HomeService {
     return data;
   }
 
-  async getTokensUSDAmount() {
-    const { data } =
-      await this.api.get<TokensUSDResponse>(`/user/latest/tokens`);
+  static async getTokensUSDAmount() {
+    const { data } = await api.get<TokensUSDResponse>(`/user/latest/tokens`);
 
     return data;
   }

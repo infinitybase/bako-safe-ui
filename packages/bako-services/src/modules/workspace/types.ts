@@ -1,3 +1,9 @@
+import { IPagination } from "@/types";
+import { Predicate } from "../vault";
+import { ITransaction } from "../transaction";
+import { IWitnesses, TransactionStatus } from "bakosafe";
+import { BN } from "fuels";
+
 export interface WorkspaceContact {
   id: string;
   nickname: string;
@@ -39,3 +45,70 @@ export interface Workspace {
   members: Member[];
   predicates: number;
 }
+
+export interface ITransactionResume {
+  id: string;
+  hash: string;
+  totalSigners: number;
+  requiredSigners: number;
+  predicate: {
+    id: string;
+    address: string;
+  };
+  status: TransactionStatus;
+  witnesses: IWitnesses[];
+  gasUsed?: string;
+  sendTime?: Date;
+  error?: string;
+}
+
+export interface CreateWorkspacePayload {
+  name: string;
+  members?: string[];
+  description?: string;
+  avatar?: string;
+  single?: boolean;
+  permissions?: IPermissions;
+}
+
+export interface WorkspaceHomeResponse {
+  predicates: IPagination<Predicate>;
+  transactions: IPagination<ITransaction & { predicate: Predicate }>;
+}
+
+export interface IncludeWorkspaceMemberPayload {
+  address: string;
+}
+
+export interface UpdateWorkspacePermissionsPayload {
+  member: string;
+  permissions: IPermission;
+}
+export interface DeleteWorkspaceMemberPayload {
+  member: string;
+}
+
+export interface SelectWorkspacePayload {
+  workspace: string;
+  user: string;
+}
+
+export type ListUserWorkspacesResponse = Workspace[];
+export type CreateWorkspaceResponse = Workspace;
+export type UpdateWorkspaceMembersResponse = Workspace;
+export type IncludeWorkspaceMemberResponse = Workspace;
+export type UpdateWorkspacePermissionsResponse = Workspace;
+export type GetWorkspaceByIdResponse = Workspace;
+export type SelectWorkspaceResponse = {
+  workspace: Workspace;
+};
+
+export type IWroskapceBalance = {
+  currentBalanceUSD: string;
+  currentBalance: {
+    assetId: string;
+    amount: BN;
+  }[];
+};
+
+export type GetWorkspaceBalanceResponse = IWroskapceBalance;

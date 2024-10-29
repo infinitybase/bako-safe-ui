@@ -1,3 +1,4 @@
+import { api } from "@/config";
 import { AxiosInstance } from "axios";
 
 export interface GetSettingsResponse {
@@ -18,21 +19,13 @@ export type UpdateSettingsPayload = {
 export type UpdateSettingsResponse = boolean;
 
 export class SettingsService {
-  api: AxiosInstance;
-  constructor(api: AxiosInstance) {
-    this.api = api;
-  }
-
-  async updateSettings({ id, ...rest }: UpdateSettingsPayload) {
-    const { data } = await this.api.put<UpdateSettingsResponse>(
-      `/user/${id}`,
-      rest,
-    );
+  static async updateSettings({ id, ...rest }: UpdateSettingsPayload) {
+    const { data } = await api.put<UpdateSettingsResponse>(`/user/${id}`, rest);
     return data;
   }
 
-  async getSettings() {
-    const { data } = await this.api.get<GetSettingsResponse>(`/user/info`);
+  static async getSettings() {
+    const { data } = await api.get<GetSettingsResponse>(`/user/info`);
     return data;
   }
 }
