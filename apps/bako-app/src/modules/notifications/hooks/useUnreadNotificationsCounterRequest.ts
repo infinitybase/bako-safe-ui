@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { notificationService } from '@/modules/services/services-initializer';
+import { notificationService } from '@/config/services-initializer';
 
 import { NotificationsQueryKey } from '../utils';
 

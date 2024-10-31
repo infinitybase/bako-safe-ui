@@ -4,7 +4,7 @@ import {
 } from '@bako-safe/services/modules/settings';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { settingsService } from '@/modules/services/services-initializer';
+import { settingsService } from '@/config/services-initializer';
 
 const useUpdateSettingsRequest = (
   options?: UseMutationOptions<

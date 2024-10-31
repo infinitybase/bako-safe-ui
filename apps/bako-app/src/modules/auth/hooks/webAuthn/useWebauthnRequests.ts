@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { userService } from '@/modules/services/services-initializer';
+import { userService } from '@/config/services-initializer';
 
 import { localStorageKeys, UserQueryKey } from '../../utils';
 

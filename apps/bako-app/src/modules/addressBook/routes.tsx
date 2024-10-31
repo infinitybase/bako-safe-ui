@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 
-import { DashboardLayoutRouter } from '@/layouts';
+import { DashboardLayoutRouter } from '@/layouts/dashboard';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 const useGetFuelsTokensListRequest = () => {
   const { data: fuelsTokens, ...query } = useQuery({

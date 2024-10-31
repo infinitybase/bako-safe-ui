@@ -1,3 +1,4 @@
+import { bindMethods } from "@/utils/bindMethods";
 import { WorkspaceContact } from "../workspace/types";
 import {
   CreateContactPayload,
@@ -18,6 +19,7 @@ export class AddressBookService {
 
   constructor(api: AxiosInstance) {
     this.api = api;
+    bindMethods(this);
   }
 
   async create(payload: CreateContactPayload) {

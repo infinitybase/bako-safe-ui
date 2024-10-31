@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { vaultService } from '@/modules/services/services-initializer';
+import { vaultService } from '@/config/services-initializer';
 
 const VAULT_LIST_QUERY_KEY = 'predicate/by-name';
 

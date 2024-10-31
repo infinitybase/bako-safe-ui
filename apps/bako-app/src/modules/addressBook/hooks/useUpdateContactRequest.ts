@@ -4,7 +4,7 @@ import {
 } from '@bako-safe/services/modules/address-book';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { addressBookService } from '@/modules/services/services-initializer';
+import { addressBookService } from '@/config/services-initializer';
 
 const useUpdateContactRequest = (
   options?: UseMutationOptions<

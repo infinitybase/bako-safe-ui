@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'fuels';
 
-import { homeService } from '@/modules/services/services-initializer';
+import { homeService } from '@/config/services-initializer';
 export type IuseTokensUSDAmountRequestReturn = ReturnType<
   typeof useTokensUSDAmountRequest
 >;

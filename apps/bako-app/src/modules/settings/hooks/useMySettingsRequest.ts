@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { settingsService } from '@/modules/services/services-initializer';
+import { settingsService } from '@/config/services-initializer';
 
 import { SettingsQueryKey } from '../utils';
 

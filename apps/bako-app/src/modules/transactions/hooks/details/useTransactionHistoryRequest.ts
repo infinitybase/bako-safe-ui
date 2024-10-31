@@ -3,7 +3,7 @@ import { useAccordionItemState } from '@chakra-ui/react';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config';
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 export const TRANSACTION_HISTORY_QUERY_KEY = 'transaction/history';
 

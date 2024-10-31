@@ -14,7 +14,7 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';

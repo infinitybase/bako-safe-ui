@@ -9,7 +9,7 @@ import { useFuel } from '@fuels/react';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { Address } from 'fuels';
 
-import { userService } from '@/modules/services/services-initializer';
+import { userService } from '@/config/services-initializer';
 
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,

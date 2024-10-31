@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { apiTokenService } from '@/modules/services/services-initializer';
+import { apiTokenService } from '@/config/services-initializer';
 
 export const GET_API_TOKENS_QUERY_KEY = 'api-token/get-all';
 

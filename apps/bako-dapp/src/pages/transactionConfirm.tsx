@@ -1,8 +1,7 @@
 import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
 import { Button } from '@chakra-ui/react';
 
-import { DappTransactionWrapper } from '@/components/transaction/wrapper';
-
+import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {

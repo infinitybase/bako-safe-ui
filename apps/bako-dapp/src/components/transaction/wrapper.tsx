@@ -15,9 +15,9 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { UseTransactionSocket } from '@/hooks';
-import { Dapp } from '@/layout';
-import { Container } from '@/layout/container';
 
+import { Dapp } from '../../layout';
+import { Container } from '../../layout/container';
 import { DappError } from '../connection';
 import { DappTransaction } from '.';
 

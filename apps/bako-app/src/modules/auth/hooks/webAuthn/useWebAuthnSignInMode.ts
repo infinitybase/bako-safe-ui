@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
-import { userService } from '@/modules/services/services-initializer';
+import { userService } from '@/config/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { localStorageKeys } from '../../utils';

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { vaultService } from '@/modules/services/services-initializer';
+import { vaultService } from '@/config/services-initializer';
 
 export const VAULT_BY_ADDRESS_QUERY_KEY = 'predicate/check/by-address';
 

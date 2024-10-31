@@ -1,6 +1,5 @@
+import { dappService } from '@app/config/services-initializer';
 import { useQuery } from '@tanstack/react-query';
-
-import { dappService } from '@/service/service-initializer';
 
 const useGetCurrentVaultRequest = (sessionId: string) => {
   const isValid = !window.location.pathname.includes(`/dapp/transaction`);

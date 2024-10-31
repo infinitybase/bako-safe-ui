@@ -1,4 +1,4 @@
-import { dappService } from '@app/modules/services/services-initializer';
+import { dappService } from '@app/config/services-initializer';
 import { IDAppCreatePayload } from '@bako-safe/services/modules/dapp';
 import { useMutation } from '@tanstack/react-query';
 

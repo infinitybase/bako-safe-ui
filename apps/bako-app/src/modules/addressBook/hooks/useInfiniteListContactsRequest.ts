@@ -2,7 +2,7 @@ import { WorkspaceContact } from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { addressBookService } from '@/modules/services/services-initializer';
+import { addressBookService } from '@/config/services-initializer';
 
 import { AddressBookQueryKey } from '../utils';
 

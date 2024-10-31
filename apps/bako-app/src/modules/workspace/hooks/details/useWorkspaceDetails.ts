@@ -1,7 +1,7 @@
 import { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
-import { queryClient, useSetupAxiosInterceptors } from '@/config';
+import { initAxiosInterceptorsSetup, queryClient } from '@/config';
 import {
   assetsMapFromFormattedFn,
   useAddressBook,
@@ -61,22 +61,14 @@ const useWorkspaceDetails = () => {
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useSetupAxiosInterceptors({
-    isTxFromDapp,
-    isTokenExpired,
-    setIsTokenExpired,
-    logout: authDetails.handlers.logout,
-  });
-
-  // useMemo(() => {
-  //   useSetupAxiosInterceptors({
-  //     isTxFromDapp,
-  //     isTokenExpired,
-  //     setIsTokenExpired,
-  //     logout: authDetails.handlers.logout,
-  //   });
-
-  // }, []);
+  useMemo(() => {
+    initAxiosInterceptorsSetup({
+      isTxFromDapp,
+      isTokenExpired,
+      setIsTokenExpired,
+      logout: authDetails.handlers.logout,
+    });
+  }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },

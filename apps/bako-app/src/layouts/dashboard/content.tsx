@@ -1,8 +1,6 @@
 import { Flex, FlexProps } from '@chakra-ui/react';
 
-export interface ContentProps extends FlexProps {}
-
-const Content = (props: ContentProps) => {
+const Content = (props: FlexProps) => {
   return (
     <Flex
       overflowY="scroll"

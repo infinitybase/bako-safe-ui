@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { addressBookService } from '@/modules/services/services-initializer';
+import { addressBookService } from '@/config/services-initializer';
 
 import { AddressBookQueryKey } from '../utils';
 

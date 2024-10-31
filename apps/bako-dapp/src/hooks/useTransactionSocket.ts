@@ -45,6 +45,7 @@ export const useTransactionSocket = () => {
   const { sessionId, request_id } = useQueryParams();
 
   const summary = useTransactionSummary();
+
   // const { confirmSignTransaction } = useSignTransaction(); [CONNECTOR SIGNATURE]
 
   //const { isSafariBrowser } = useVerifyBrowserType(); [CONNECTOR SIGNATURE]

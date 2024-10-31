@@ -5,7 +5,7 @@ import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
 import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 const useTransactionDetailRequest = (transactionId: string) => {
   return useQuery({

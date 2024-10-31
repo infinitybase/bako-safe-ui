@@ -2,7 +2,7 @@ import { IWorkspaceBalance } from '@bako-safe/services/modules';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { AssetMap } from '@/modules/core';
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 import { WorkspacesQueryKey } from '../utils';
 import { handleAssetsBalance } from '../utils/assets';

@@ -7,7 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { invalidateQueries } from '@/modules/core';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 import { WorkspacesQueryKey } from '@/modules/workspace';
 
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';

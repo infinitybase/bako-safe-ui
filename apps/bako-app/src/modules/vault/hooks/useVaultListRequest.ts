@@ -1,7 +1,7 @@
 import { GetAllPredicatesPayload } from '@bako-safe/services/modules/vault';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { vaultService } from '@/modules/services/services-initializer';
+import { vaultService } from '@/config/services-initializer';
 
 const useVaultListRequest = (
   filter: GetAllPredicatesPayload,

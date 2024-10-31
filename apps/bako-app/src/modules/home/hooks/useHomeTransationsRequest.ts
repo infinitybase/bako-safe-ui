@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { homeService } from '@/modules/services/services-initializer';
+import { homeService } from '@/config/services-initializer';
 
 import { HomeQueryKey } from '../utils';
 

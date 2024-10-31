@@ -4,7 +4,7 @@ import {
 } from '@bako-safe/services/modules/transaction';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 const useSignTransactionRequest = (
   options?: UseMutationOptions<

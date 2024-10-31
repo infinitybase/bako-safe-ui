@@ -4,7 +4,7 @@ import {
 } from '@bako-safe/services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
 
-import { vaultService } from '@/modules/services/services-initializer';
+import { vaultService } from '@/config/services-initializer';
 
 import { ordinateMembers } from '../utils';
 

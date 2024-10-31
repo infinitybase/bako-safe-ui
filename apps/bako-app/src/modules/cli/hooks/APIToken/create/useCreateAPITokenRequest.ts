@@ -1,7 +1,7 @@
 import { CreateAPITokenPayload } from '@bako-safe/services/modules/cli';
 import { useMutation } from '@tanstack/react-query';
 
-import { apiTokenService } from '@/modules/services/services-initializer';
+import { apiTokenService } from '@/config/services-initializer';
 
 const useCreateAPITokenRequest = (predicateId: string) => {
   const { mutateAsync, isPending, isError } = useMutation({

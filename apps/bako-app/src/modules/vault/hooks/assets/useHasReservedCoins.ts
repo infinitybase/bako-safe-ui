@@ -2,7 +2,7 @@ import { HasReservedCoins } from '@bako-safe/services/modules/vault';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
-import { vaultService } from '@/modules/services/services-initializer';
+import { vaultService } from '@/config/services-initializer';
 
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
 import { vaultAssetsQueryKey } from './useVaultAssets';

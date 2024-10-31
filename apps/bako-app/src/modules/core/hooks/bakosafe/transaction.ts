@@ -12,7 +12,7 @@ import {
 } from 'bakosafe';
 import { bn } from 'fuels';
 
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';

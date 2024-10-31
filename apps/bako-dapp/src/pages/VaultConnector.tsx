@@ -25,10 +25,9 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
-import { Container } from '@/layout/container';
-
 import { DappTransaction } from '../components';
 import { useAuthSocket } from '../hooks';
+import { Container } from '../layout/container';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();

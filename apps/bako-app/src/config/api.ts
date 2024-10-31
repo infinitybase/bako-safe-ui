@@ -41,7 +41,7 @@ const api = axios.create({
   timeout: 10 * 1000, // limit to try other requests
 });
 
-const useSetupAxiosInterceptors = ({
+const initAxiosInterceptorsSetup = ({
   isTxFromDapp,
   isTokenExpired,
   setIsTokenExpired,
@@ -81,4 +81,4 @@ const useSetupAxiosInterceptors = ({
   );
 };
 
-export { api, useSetupAxiosInterceptors };
+export { api, initAxiosInterceptorsSetup };

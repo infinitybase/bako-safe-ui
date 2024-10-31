@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 const useCreateWorkspaceRequest = () => {
   return useMutation({

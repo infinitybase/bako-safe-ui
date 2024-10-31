@@ -6,9 +6,8 @@ import {
   DrawerProps as ChakraDrawerProps,
 } from '@chakra-ui/react';
 
+import { Sidebar } from '@/modules/vault/layout/sidebar';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { Sidebar } from '../../modules/vault/layout/sidebar';
 
 interface DrawerProps extends Omit<ChakraDrawerProps, 'children'> {}
 

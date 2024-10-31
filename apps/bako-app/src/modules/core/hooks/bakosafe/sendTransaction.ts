@@ -1,6 +1,6 @@
 import { TransactionStatus, Vault } from 'bakosafe';
 
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 const sendTransaction = async (vault: Vault, transactionHash: string) => {
   const { tx } = await vault.transactionFromHash(transactionHash);

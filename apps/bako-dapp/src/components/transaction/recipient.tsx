@@ -3,7 +3,7 @@ import { AddressCopy, Card } from '@bako-safe/ui/components';
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
 import { AddressType, ChainName } from 'fuels';
 
-import { AddressUtils } from '@/utils';
+import { AddressUtils } from '../../utils';
 
 interface RecipientProps {
   type: AddressType;

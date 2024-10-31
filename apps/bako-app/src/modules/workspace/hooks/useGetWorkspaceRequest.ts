@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 import { WorkspacesQueryKey } from '../utils';
 

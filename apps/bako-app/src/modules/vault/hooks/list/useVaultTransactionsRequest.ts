@@ -7,7 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
-import { transactionService } from '@/modules/services/services-initializer';
+import { transactionService } from '@/config/services-initializer';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,

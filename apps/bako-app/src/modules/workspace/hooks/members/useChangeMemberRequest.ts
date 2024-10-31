@@ -6,7 +6,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { Address } from 'fuels';
 
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 import { WorkspacesQueryKey } from '../../utils';
 

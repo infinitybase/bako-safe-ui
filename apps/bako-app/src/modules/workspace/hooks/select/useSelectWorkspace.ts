@@ -1,7 +1,7 @@
 import { SelectWorkspaceResponse, Workspace } from '@bako-safe/services';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
-import { workspaceService } from '@/modules/services/services-initializer';
+import { workspaceService } from '@/config/services-initializer';
 
 import { WorkspacesQueryKey } from '../../utils';
 

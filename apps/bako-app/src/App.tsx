@@ -21,6 +21,15 @@ function App() {
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
+  // useMemo(() => {
+  //   initAxiosInterceptorsSetup({
+  //     isTxFromDapp,
+  //     isTokenExpired,
+  //     setIsTokenExpired,
+  //     logout: auth.handlers.logout,
+  //   });
+  // }, []);
+
   useEffect(() => {
     async function clearAll() {
       auth.handlers.logout?.();

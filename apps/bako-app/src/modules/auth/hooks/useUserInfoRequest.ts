@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { userService } from '@/modules/services/services-initializer';
+import { userService } from '@/config/services-initializer';
 
 export const LATEST_INFO_QUERY_KEY = ['latest-info'];
 
