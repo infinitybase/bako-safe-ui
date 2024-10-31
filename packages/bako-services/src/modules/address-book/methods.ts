@@ -1,4 +1,4 @@
-import { bindMethods } from "@/utils/bindMethods";
+import { bindMethods } from "../../utils/bindMethods";
 import { WorkspaceContact } from "../workspace/types";
 import {
   CreateContactPayload,

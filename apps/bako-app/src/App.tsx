@@ -1,12 +1,14 @@
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
 
-import { useAuth } from './modules';
+import { initAxiosInterceptorsSetup } from './config';
+import { useAuth, useAuthUrlParams } from './modules';
+import AuthProvider from './modules/auth/AuthProvider';
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
@@ -21,14 +23,15 @@ function App() {
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
-  // useMemo(() => {
-  //   initAxiosInterceptorsSetup({
-  //     isTxFromDapp,
-  //     isTokenExpired,
-  //     setIsTokenExpired,
-  //     logout: auth.handlers.logout,
-  //   });
-  // }, []);
+  const { isTxFromDapp } = useAuthUrlParams();
+  useMemo(() => {
+    initAxiosInterceptorsSetup({
+      isTxFromDapp,
+      logout: auth.handlers.logout,
+      isTokenExpired: auth.handlers.isTokenExpired,
+      setIsTokenExpired: auth.handlers.setIsTokenExpired,
+    });
+  }, []);
 
   useEffect(() => {
     async function clearAll() {
@@ -68,11 +71,13 @@ function App() {
   }, [auth]);
 
   return (
-    <TransactionsProvider>
-      <WorkspaceProvider>
-        <AppRoutes />
-      </WorkspaceProvider>
-    </TransactionsProvider>
+    <AuthProvider>
+      <TransactionsProvider>
+        <WorkspaceProvider>
+          <AppRoutes />
+        </WorkspaceProvider>
+      </TransactionsProvider>
+    </AuthProvider>
   );
 }
 

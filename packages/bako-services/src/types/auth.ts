@@ -133,7 +133,9 @@ export type IUseAuthDetails = {
     ) => Promise<void>;
     logoutWhenExpired: () => void;
     authenticate: (params: AuthenticateParams) => void;
-    setInvalidAccount: React.Dispatch<React.SetStateAction<boolean>>;
+    setInvalidAccount: (value: boolean) => void;
+    isTokenExpired: boolean;
+    setIsTokenExpired: (value: boolean) => void;
   };
   userInfos: IUserInfos;
 };

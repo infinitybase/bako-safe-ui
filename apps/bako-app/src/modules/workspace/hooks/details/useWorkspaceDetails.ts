@@ -1,11 +1,10 @@
 import { BakoProvider } from 'bakosafe';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { initAxiosInterceptorsSetup, queryClient } from '@/config';
+import { queryClient } from '@/config';
 import {
   assetsMapFromFormattedFn,
   useAddressBook,
-  useAuthUrlParams,
   useGetParams,
   useGetWorkspaceRequest,
   useScreenSize,
@@ -13,6 +12,7 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAuthContext } from '@/modules/auth/AuthProvider';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
@@ -27,14 +27,15 @@ const useWorkspaceDetails = () => {
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 
+  const {
+    handlers: { isTokenExpired, setIsTokenExpired },
+  } = useAuthContext();
+
   const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
-  const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
-
-  const { isTxFromDapp } = useAuthUrlParams();
 
   const {
     vaultPageParams: { vaultId },
@@ -60,15 +61,6 @@ const useWorkspaceDetails = () => {
     isLoading: isGifAnimationLoading,
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
-
-  useMemo(() => {
-    initAxiosInterceptorsSetup({
-      isTxFromDapp,
-      isTokenExpired,
-      setIsTokenExpired,
-      logout: authDetails.handlers.logout,
-    });
-  }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },
@@ -138,7 +130,6 @@ const useWorkspaceDetails = () => {
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
-    isTxFromDapp,
     isTokenExpired,
     setIsTokenExpired,
   };
