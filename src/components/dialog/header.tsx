@@ -59,7 +59,10 @@ const DialogHeader = ({
       {description && (
         <Text
           color={descriptionColor}
-          fontSize={{ base: 'sm', sm: descriptionFontSize }}
+          fontSize={{
+            base: descriptionFontSize ?? 'sm',
+            sm: descriptionFontSize,
+          }}
           variant="description"
         >
           {description}
