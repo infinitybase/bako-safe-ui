@@ -78,7 +78,7 @@ export const useTransactionSocket = () => {
   const showSignErrorToast = useCallback(
     () =>
       warningToast({
-        title: 'Transaction sign failed',
+        title: 'Signature failed',
         description: 'Please try again!',
       }),
     [warningToast],
