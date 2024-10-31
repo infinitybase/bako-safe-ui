@@ -4,6 +4,7 @@ import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
 import { TransactionConfirm, VaultConnector } from './pages';
+import { AddAsset } from './pages/AddAsset';
 import { SignMessage } from './pages/signMessage';
 
 const dappRoutes = (
@@ -25,6 +26,17 @@ const dappRoutes = (
         element={
           <AuthRoute>
             <SignMessage />
+          </AuthRoute>
+        }
+      />
+    </Route>
+
+    <Route path={Pages.dappWelcome()}>
+      <Route
+        index
+        element={
+          <AuthRoute>
+            <AddAsset />
           </AuthRoute>
         }
       />
