@@ -1,5 +1,4 @@
-import { CopyTopMenuIcon } from '@bako-safe/ui/components';
-import { CheckIcon } from '@chakra-ui/icons';
+import { CheckMarkCircleIcon, CopyTopMenuIcon } from '@bako-safe/ui/components';
 import {
   Icon,
   IconButton,
@@ -24,7 +23,7 @@ const CopyAddressButton = ({
       fontSize="xs"
       icon={
         <Icon
-          as={clipboard.hasCopied ? CheckIcon : CopyTopMenuIcon}
+          as={clipboard.hasCopied ? CheckMarkCircleIcon : CopyTopMenuIcon}
           color={clipboard.hasCopied ? 'success.700' : 'grey.200'}
           fontSize={20}
         />

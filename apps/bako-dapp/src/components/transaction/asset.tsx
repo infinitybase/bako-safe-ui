@@ -1,6 +1,5 @@
-import { Box, HStack, Image, Text, VStack } from "@chakra-ui/react";
-
-import { Card } from "@bako-safe/ui/components";
+import { Card } from '@bako-safe/ui/components';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 
 export interface FeeProps {
   assets: {
@@ -32,7 +31,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
             <Image
               w={6}
               h={6}
-              src={asset?.icon ?? ""}
+              src={asset?.icon ?? ''}
               alt="Asset Icon"
               objectFit="cover"
             />

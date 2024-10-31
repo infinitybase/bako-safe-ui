@@ -1,4 +1,4 @@
-import { PredicateAndWorkspace } from '@services/modules/vault';
+import { PredicateAndWorkspace } from '@bako-safe/services';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';

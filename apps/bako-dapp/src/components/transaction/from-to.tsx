@@ -1,8 +1,8 @@
-import { chakra, HStack, Icon } from "@chakra-ui/react";
-import { AddressType, OperationTransactionAddress } from "fuels";
+import { ForwardIcon, PlayIcon } from '@bako-safe/ui/components';
+import { chakra, HStack, Icon } from '@chakra-ui/react';
+import { AddressType, OperationTransactionAddress } from 'fuels';
 
-import { ForwardIcon, PlayIcon } from "@bako-safe/ui/components";
-import { DappTransactionRecipient } from "./recipient";
+import { DappTransactionRecipient } from './recipient';
 
 interface FromToProps {
   to: OperationTransactionAddress;
@@ -17,8 +17,8 @@ interface FromToProps {
 const FromToContainer = chakra(HStack, {
   baseStyle: {
     gap: 0,
-    w: "full",
-    position: "relative",
+    w: 'full',
+    position: 'relative',
   },
 });
 

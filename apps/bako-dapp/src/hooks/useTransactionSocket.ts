@@ -1,17 +1,16 @@
-import { TransactionRequestLike } from "fuels";
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { useQueryParams } from "@/modules/auth/hooks";
+import { useQueryParams } from '@app/modules/auth';
 import {
   IEventTX_CONFIRM,
   SocketEvents,
   SocketUsernames,
   useSocket,
-} from "@/modules/core/hooks";
+} from '@app/modules/core';
+import { TransactionRequestLike } from 'fuels';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // import { useSignTransaction } from './useSignTransaction'; [CONNECTOR SIGNATURE]
-import { useTransactionSummary } from "./useTransactionSummary";
+import { useTransactionSummary } from './useTransactionSummary';
 
 interface IVaultEvent {
   name: string;
@@ -27,13 +26,13 @@ export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
   const [vault, setVault] = useState<IVaultEvent | undefined>({
-    name: "",
-    address: "",
-    description: "",
-    provider: "",
+    name: '',
+    address: '',
+    description: '',
+    provider: '',
     pending_tx: true,
-    configurable: "",
-    version: "",
+    configurable: '',
+    version: '',
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
   const [tx, setTx] = useState<TransactionRequestLike>();
@@ -75,7 +74,7 @@ export const useTransactionSocket = () => {
   // };
 
   const handleGetSummary = (data: any) => {
-    console.log("GETTING_SUMMARY");
+    console.log('GETTING_SUMMARY');
     const { data: content } = data;
     const { vault, tx, validAt } = content;
 
@@ -90,7 +89,7 @@ export const useTransactionSocket = () => {
   };
 
   const handleSocketEvent = useCallback((data: any) => {
-    console.log("SOCKET EVENT DATA:", data);
+    console.log('SOCKET EVENT DATA:', data);
     if (data.to !== SocketUsernames.UI) return;
 
     switch (data.type) {
@@ -113,7 +112,7 @@ export const useTransactionSocket = () => {
     if (!data.tx) return;
     setSending(true);
 
-    console.log("[EMITTING CREATE TRANSACTION]");
+    console.log('[EMITTING CREATE TRANSACTION]');
     socket.emit(event, data);
 
     setTimeout(() => {
@@ -165,7 +164,7 @@ export const useTransactionSocket = () => {
   const handleRedirectToBakoSafe = () => {
     window.close();
     setIsRedirectEnable(false);
-    window.open(window.location.origin, "_BLANK");
+    window.open(window.location.origin, '_BLANK');
   };
 
   // [CONNECTOR SIGNATURE]
@@ -187,9 +186,9 @@ export const useTransactionSocket = () => {
   // };
 
   useEffect(() => {
-    console.log("SOCKET_CONNECTED:", socket.connected);
+    console.log('SOCKET_CONNECTED:', socket.connected);
     if (!socket.connected) {
-      console.log("CONNECTING_SOCKET");
+      console.log('CONNECTING_SOCKET');
       connect(sessionId!);
       return;
     }

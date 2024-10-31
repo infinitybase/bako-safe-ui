@@ -1,3 +1,5 @@
+import { useVerifyBrowserType } from '@app/modules/core';
+import { TooltipIcon } from '@bako-safe/ui/components';
 import {
   HStack,
   Icon,
@@ -9,12 +11,8 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-} from "@chakra-ui/react";
-import { useEffect } from "react";
-
-import { TooltipIcon } from "@bako-safe/ui/components";
-
-import { useVerifyBrowserType } from "../../hooks";
+} from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 export interface FeeProps {
   fee?: string;
@@ -60,8 +58,8 @@ const DappTransactionFee = ({ fee, isLoading, closePopover }: FeeProps) => {
               p={4}
               borderColor="dark.100"
               maxW={270}
-              display={!isOpen ? "none" : "block"}
-              _focus={{ ring: "none" }}
+              display={!isOpen ? 'none' : 'block'}
+              _focus={{ ring: 'none' }}
             >
               <PopoverCloseButton />
               <PopoverBody>

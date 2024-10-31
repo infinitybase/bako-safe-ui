@@ -1,3 +1,4 @@
+import { Nullable } from '@app/modules/core';
 import {
   Avatar,
   Card,
@@ -6,10 +7,7 @@ import {
   HStack,
   Text,
   VStack,
-} from "@chakra-ui/react";
-
-// import { Nullable } from "@/modules/core";
-export type Nullable<T> = T | null;
+} from '@chakra-ui/react';
 
 interface DappRequestingFromProps extends CardProps {
   name: Nullable<string>;
@@ -49,7 +47,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
             {name}
           </Text>
           <Text color="brand.500" fontSize="xs" lineHeight={4}>
-            {origin?.split("//")[1]}
+            {origin?.split('//')[1]}
             {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
           </Text>
         </VStack>

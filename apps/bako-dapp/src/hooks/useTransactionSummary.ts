@@ -1,20 +1,20 @@
 import {
   TransactionSimulateParams,
   useFuelTransactionService,
-} from "@bako-safe/services";
-import { useMutation } from "@tanstack/react-query";
+} from '@bako-safe/services';
+import { useMutation } from '@tanstack/react-query';
 const useTransactionSummary = () => {
   const { simulate } = useFuelTransactionService();
   const { data, mutate, ...mutation } = useMutation({
-    mutationKey: ["dapp/transaction-summary"],
+    mutationKey: ['dapp/transaction-summary'],
     mutationFn: async (params: TransactionSimulateParams) => {
       return simulate(params);
     },
     retry: (failureCount, error) => {
-      console.log("GET_SUMMARY_ERROR:", error);
-      console.log("FAILURE_COUNT:", failureCount);
+      console.log('GET_SUMMARY_ERROR:', error);
+      console.log('FAILURE_COUNT:', failureCount);
       if (failureCount >= 1 && failureCount < 3) {
-        console.log("ACTVATING_RETRY_MUTATION");
+        console.log('ACTVATING_RETRY_MUTATION');
         return true; // Do the retry
       }
       return false; // Do not retry

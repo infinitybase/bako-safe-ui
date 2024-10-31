@@ -77,3 +77,5 @@ export * from "./check-mark-circle";
 export * from "./check-mark-circle-error";
 export * from "./chevron-left";
 export * from "./chevron-right";
+export * from "./visibility-off";
+export * from "./visibility-on";

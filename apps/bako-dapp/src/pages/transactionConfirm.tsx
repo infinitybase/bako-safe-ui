@@ -1,8 +1,9 @@
-import { Button } from "@chakra-ui/react";
+import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
+import { Button } from '@chakra-ui/react';
 
-import { Dialog, SquarePlusIcon } from "@bako-safe/ui/components";
+import { DappTransactionWrapper } from '@/components/transaction/wrapper';
 
-import { useTransactionSocket } from "../hooks";
+import { useTransactionSocket } from '../hooks';
 
 const TransactionConfirm = () => {
   // [CONNECTOR SIGNATURE]

@@ -6,10 +6,9 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useVerifyBrowserType } from '@dapp/hooks';
 import { useEffect } from 'react';
 
-import { useQueryParams } from '@/modules';
+import { useQueryParams, useVerifyBrowserType } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';

@@ -1,5 +1,5 @@
-import { useContactToast } from "@/modules/addressBook/hooks";
-import { useWalletSignMessage } from "@/modules/core/hooks";
+import { useContactToast } from '@app/modules/addressBook/hooks';
+import { useWalletSignMessage } from '@app/modules/core';
 
 const useSignTransaction = () => {
   const { warningToast } = useContactToast();
@@ -7,8 +7,8 @@ const useSignTransaction = () => {
   const signMessageRequest = useWalletSignMessage({
     onError: () => {
       warningToast({
-        title: "Signature failed",
-        description: "Please try again!",
+        title: 'Signature failed',
+        description: 'Please try again!',
       });
     },
   });

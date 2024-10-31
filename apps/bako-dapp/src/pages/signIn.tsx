@@ -1,5 +1,5 @@
-import { SignInWrapper } from "@/modules/auth/components";
-import { useDappSignIn } from "@/modules/auth/hooks/signIn/useDappSignIn";
+import { useDappSignIn } from '@app/modules/auth';
+import { SignInWrapper } from '@app/modules/auth/components';
 
 const DappSignInPage = () => {
   const {

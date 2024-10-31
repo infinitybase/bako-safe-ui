@@ -1,4 +1,3 @@
-import { Icon } from "@chakra-ui/icons";
 import {
   As,
   Box,
@@ -10,6 +9,7 @@ import {
   Image,
   Text,
   VStack,
+  Icon,
 } from "@chakra-ui/react";
 
 // import TransactionsBoxIcon from "@/assets/transactions-icon.png";

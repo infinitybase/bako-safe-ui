@@ -20,7 +20,6 @@
   "license": "ISC",
   "dependencies": {
     "@chakra-ui/anatomy": "^2.2.2",
-    "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "bakosafe": "0.0.93-beta",

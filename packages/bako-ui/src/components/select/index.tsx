@@ -1,4 +1,3 @@
-import { Icon } from "@chakra-ui/icons";
 import {
   Box,
   CircularProgress,
@@ -10,6 +9,7 @@ import {
   InputRightElement,
   Text,
   VStack,
+  Icon,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 

@@ -1,3 +1,15 @@
+import { BakoLoading } from '@app/components/bakoLoading';
+import { useQueryParams } from '@app/modules/auth';
+import { useVerifyBrowserType } from '@app/modules/core';
+import { CreateVaultDialog } from '@app/modules/vault/components';
+import { VaultItemBox } from '@app/modules/vault/components/modal/box';
+import { useVaultDrawer } from '@app/modules/vault/components/modal/hook';
+import { useWorkspaceContext } from '@app/modules/workspace/WorkspaceProvider';
+import {
+  CustomSkeleton,
+  EmptyBox,
+  LineCloseIcon,
+} from '@bako-safe/ui/components';
 import {
   Box,
   Button,
@@ -10,24 +22,13 @@ import {
   Text,
   useDisclosure,
   VStack,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
-import {
-  BakoLoading,
-  CustomSkeleton,
-  EmptyBox,
-  LineCloseIcon,
-} from "@/ui/components";
-import { Container } from "@/layouts/dapp/container";
-import { useQueryParams } from "@/modules/auth";
-import { CreateVaultDialog } from "@/modules/vault";
-import { VaultItemBox } from "@/modules/vault/components/modal/box";
-import { useVaultDrawer } from "@/modules/vault/components/modal/hook";
-import { useWorkspaceContext } from "@/modules/workspace/WorkspaceProvider";
+import { Container } from '@/layout/container';
 
-import { DappTransaction } from "../components";
-import { useAuthSocket, useVerifyBrowserType } from "../hooks";
+import { DappTransaction } from '../components';
+import { useAuthSocket } from '../hooks';
 
 const VaultConnector = () => {
   const { name, origin, sessionId, request_id } = useQueryParams();
@@ -129,8 +130,8 @@ const VaultConnector = () => {
               spacing={2}
               overflowY="scroll"
               css={{
-                "&::-webkit-scrollbar": { width: "0" },
-                scrollbarWidth: "none",
+                '&::-webkit-scrollbar': { width: '0' },
+                scrollbarWidth: 'none',
               }}
             >
               <DappTransaction.RequestingFrom
@@ -241,7 +242,7 @@ const VaultConnector = () => {
                 onClick={() => {
                   handlers.logout?.(true, window.close);
                 }}
-                w={noVaultsAvailable ? "full" : "unset"}
+                w={noVaultsAvailable ? 'full' : 'unset'}
               >
                 Cancel
               </Button>

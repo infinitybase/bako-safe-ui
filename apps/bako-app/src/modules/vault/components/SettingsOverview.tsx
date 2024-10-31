@@ -1,5 +1,9 @@
-import { Card, CustomSkeleton } from '@bako-safe/ui/components';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import {
+  Card,
+  CustomSkeleton,
+  VisibilityOffIcon,
+  VisibilityOnIcon,
+} from '@bako-safe/ui/components';
 import {
   Avatar,
   Box,
@@ -197,9 +201,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                             }
                           >
                             {assets.visibleBalance ? (
-                              <ViewIcon boxSize={{ base: 5, sm: 6 }} />
+                              <VisibilityOnIcon boxSize={{ base: 5, sm: 6 }} />
                             ) : (
-                              <ViewOffIcon boxSize={{ base: 5, sm: 6 }} />
+                              <VisibilityOffIcon boxSize={{ base: 5, sm: 6 }} />
                             )}
                           </Box>
                         </HStack>

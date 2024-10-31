@@ -13,10 +13,12 @@
     "@bako-safe/services": "workspace:*",
     "@bako-safe/ui": "workspace:*",
     "@chakra-ui/react": "2.8.0",
+    "@tanstack/react-query": "^5.39.0",
+    "bakosafe": "0.0.93-beta",
     "fuels": "0.96.1",
+    "react": "^18.2.0",
     "react-intersection-observer": "^9.5.2",
     "react-router-dom": "^6.15.0",
-    "@tanstack/react-query": "^5.39.0",
-    "react": "^18.2.0"
+    "socket.io-client": "^4.7.2"
   }
 }

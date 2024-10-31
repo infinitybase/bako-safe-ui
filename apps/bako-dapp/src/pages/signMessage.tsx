@@ -1,10 +1,12 @@
-import { useWalletSignMessage } from "@/modules/core";
-import { useAuth, useContactToast } from "@/modules";
-import { useTransactionSocket } from "../hooks";
-import { useParams } from "react-router-dom";
-import { Button } from "@chakra-ui/react";
-import { hashMessage } from "fuels";
-import { TypeUser } from "@/modules/auth";
+import { useContactToast } from '@app/modules/addressBook/hooks';
+import { useAuth } from '@app/modules/auth';
+import { useWalletSignMessage } from '@app/modules/core';
+import { Button } from '@chakra-ui/react';
+import { TypeUser } from 'bakosafe';
+import { hashMessage } from 'fuels';
+import { useParams } from 'react-router-dom';
+
+import { useTransactionSocket } from '../hooks';
 
 export const SignMessage = () => {
   const { message } = useParams();
@@ -22,8 +24,8 @@ export const SignMessage = () => {
     onError: (e) => {
       console.log(e);
       warningToast({
-        title: "Signature failed",
-        description: "Please try again!",
+        title: 'Signature failed',
+        description: 'Please try again!',
       });
     },
   });
@@ -31,10 +33,10 @@ export const SignMessage = () => {
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <h1>Signing Message...</h1>

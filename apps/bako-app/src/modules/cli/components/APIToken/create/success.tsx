@@ -1,5 +1,8 @@
-import { CopyIcon, DoneIcon } from '@bako-safe/ui/components';
-import { CheckIcon } from '@chakra-ui/icons';
+import {
+  CheckMarkCircleIcon,
+  CopyIcon,
+  DoneIcon,
+} from '@bako-safe/ui/components';
 import {
   HStack,
   Icon,
@@ -81,7 +84,11 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
                   isClosable: false,
                   title: 'Copied to clipboard',
                   icon: (
-                    <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />
+                    <Icon
+                      fontSize="2xl"
+                      color="brand.500"
+                      as={CheckMarkCircleIcon}
+                    />
                   ),
                 });
               }}

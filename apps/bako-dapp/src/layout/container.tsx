@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex } from "@chakra-ui/react";
+import { Box, BoxProps, Flex } from '@chakra-ui/react';
 
 export const DAPP_CONTAINER_SIZES = {
   width: 500,
@@ -15,8 +15,8 @@ const Container = (props: ContainerProps) => {
       h="100vh"
       overflowX="hidden"
       css={{
-        "&::-webkit-scrollbar": { width: "0" },
-        scrollbarWidth: "none",
+        '&::-webkit-scrollbar': { width: '0' },
+        scrollbarWidth: 'none',
       }}
       bgColor="dark.950"
     >
