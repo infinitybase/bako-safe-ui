@@ -3,8 +3,8 @@ import {
   Dialog,
   RemoveIcon,
   Select,
+  SquarePlusIcon,
 } from '@bako-safe/ui/components';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Button,
   FormControl,
@@ -35,8 +35,8 @@ import { scrollToBottom } from '@/utils/scroll-to-bottom';
 export interface VaultAddressesStepProps {
   form: UseCreateVaultReturn['form'];
   addresses: UseCreateVaultReturn['addresses'];
-  selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
-  setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
+  // selectedTemplate: UseCreateVaultReturn['selectedTemplate'];
+  // setTemplate: UseCreateVaultReturn['setFormWithTemplate'];
   validateAddress: UseCreateVaultReturn['validateAddress'];
 }
 
@@ -272,7 +272,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     0,
                   );
                 }}
-                leftIcon={<PlusSquareIcon w={5} h={5} />}
+                leftIcon={<SquarePlusIcon w={5} h={5} />}
                 _hover={{
                   opacity: 0.8,
                 }}

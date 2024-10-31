@@ -34,6 +34,8 @@ export type WorkspaceAuthentication = {
 const useAuth = (): IUseAuthDetails => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
+
   const { fuel } = useFuel();
   const { setAuthCookies, clearAuthCookies, userAuthCookiesInfo } =
     useAuthCookies();

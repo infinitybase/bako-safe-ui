@@ -1,7 +1,6 @@
 import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
 import { AssetModel } from '@bako-safe/services/types';
-import { Icon } from '@chakra-ui/icons';
-import { Box, Center, HStack, StackProps, Text } from '@chakra-ui/react';
+import { Box, HStack, StackProps, Text } from '@chakra-ui/react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -56,7 +55,7 @@ const ContractAddresses = ({
         </Text>
       </Box>
       <Box display="flex" justifyContent="center" w="full">
-        <Center
+        {/* <Center
           borderRadius={5}
           bgColor="grey.825"
           borderWidth={1}
@@ -64,7 +63,7 @@ const ContractAddresses = ({
           boxSize="30px"
         >
           <Icon color="grey.250" fontSize="12px" as={FaPlay} />
-        </Center>
+        </Center> */}
       </Box>
 
       <Box w="full">

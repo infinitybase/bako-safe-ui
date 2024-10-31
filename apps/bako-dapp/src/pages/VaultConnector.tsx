@@ -258,7 +258,6 @@ const VaultConnector = () => {
                     isLoading ||
                     send.isPending
                   }
-                  leftIcon={<RiLink size={22} />}
                   onClick={() => {
                     setConnectingManually(true);
                     send.mutate(

@@ -8,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 
 import { CopyIcon } from "../components/icons/copy";
-// import { useNotification } from '@/modules/notification';
 
 interface Props extends StackProps {
   address: string;

@@ -16,6 +16,12 @@ export enum EConnectors {
   WEB_AUTHN = "Webauthn",
 }
 
+export enum NetworkType {
+  MAINNET = "mainnet",
+  TESTNET = "testnet",
+  DEV = "dev",
+}
+
 export type SignWebAuthnPayload = {
   id: string;
   challenge: string;

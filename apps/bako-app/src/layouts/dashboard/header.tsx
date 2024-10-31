@@ -1,5 +1,6 @@
 import {
   BakoIcon,
+  ChevronDownIcon,
   DisconnectIcon,
   FeedbackIcon,
   NetworkIcon,
@@ -202,7 +203,7 @@ const UserBox = () => {
                     <Icon
                       color="grey.200"
                       fontSize={{ base: 'sm', sm: 'sm' }}
-                      // as={FaChevronDown}
+                      as={ChevronDownIcon}
                     />
                   )}
                 </>
@@ -277,7 +278,6 @@ const UserBox = () => {
       <Popover placement="bottom-end">
         <PopoverTrigger>
           <HStack
-            // w="100%"
             alignItems="center"
             cursor={'pointer'}
             spacing={isMobile ? 2 : 4}
@@ -360,7 +360,7 @@ const UserBox = () => {
               <Icon
                 color="grey.200"
                 fontSize={{ base: 'sm', sm: 'lg' }}
-                // as={FaChevronDown}
+                as={ChevronDownIcon}
               />
             )}
 
@@ -385,7 +385,6 @@ const UserBox = () => {
 
         <PopoverContent
           bg={'dark.300'}
-          // w="100%"
           m={0}
           p={0}
           pb={0}

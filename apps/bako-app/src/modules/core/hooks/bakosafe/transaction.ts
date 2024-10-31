@@ -1,7 +1,6 @@
 import {
   IListTransactions,
   ITransaction,
-  TransactionService,
   TransactionWithVault,
 } from '@bako-safe/services/modules/transaction';
 import {
@@ -12,6 +11,8 @@ import {
   Vault,
 } from 'bakosafe';
 import { bn } from 'fuels';
+
+import { transactionService } from '@/modules/services/services-initializer';
 
 import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';
@@ -60,7 +61,7 @@ const useBakoSafeCreateTransaction = ({
           };
         }),
       });
-      const transaction = await TransactionService.getByHash(hashTxId, [
+      const transaction = await transactionService.getByHash(hashTxId, [
         TransactionStatus.AWAIT_REQUIREMENTS,
       ]);
       return transaction;
@@ -84,7 +85,7 @@ const useBakoSafeTransactionList = ({
   return useBakoSafeQuery(
     TRANSACTION_QUERY_KEYS.VAULT(vaultId, filter),
     async () => {
-      return await TransactionService.getTransactionsPagination({
+      return await transactionService.getTransactionsPagination({
         predicateId: [vaultId],
         ...filter,
       });

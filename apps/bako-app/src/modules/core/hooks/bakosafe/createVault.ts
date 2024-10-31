@@ -1,8 +1,8 @@
-import { VaultService } from '@bako-safe/services/modules/vault';
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
 import { Address } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
+import { vaultService } from '@/modules/services/services-initializer';
 
 interface ICreateVaultPayload {
   name?: string;
@@ -37,7 +37,7 @@ const createVault = async ({
   });
 
   const savedPredicate = await predicate.save({ name });
-  const vault = await VaultService.getByAddress(
+  const vault = await vaultService.getByAddress(
     savedPredicate.predicateAddress,
   );
 

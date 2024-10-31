@@ -1,4 +1,5 @@
 import { ITransactionWithType } from '@bako-safe/services/modules/transaction';
+import { ChevronRightIcon } from '@bako-safe/ui';
 import { Button, HStack, Icon } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -23,7 +24,7 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
         alignSelf={{ base: 'stretch', sm: 'flex-end' }}
         variant="secondary"
         rightIcon={
-          <Icon as={IoIosArrowForward} fontSize="md" ml={isSmall ? -1 : 0} />
+          <Icon as={ChevronRightIcon} fontSize="md" ml={isSmall ? -1 : 0} />
         }
         px={isExtraSmall ? 3 : 4}
       >

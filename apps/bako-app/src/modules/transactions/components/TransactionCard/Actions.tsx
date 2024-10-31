@@ -129,12 +129,12 @@ const Actions = ({
         <Spacer />
       )}
 
-      <Icon
+      {/* <Icon
         as={isOpen ? IoIosArrowUp : IoIosArrowDown}
         fontSize="md"
         color="grey.200"
         cursor="pointer"
-      />
+      /> */}
     </HStack>
   );
 };

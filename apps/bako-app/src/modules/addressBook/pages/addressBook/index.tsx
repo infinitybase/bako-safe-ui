@@ -1,8 +1,10 @@
 import {
   AddressBookIcon,
+  ChevronLeftIcon,
   CustomSkeleton,
   EmptyState,
   HomeIcon,
+  SquarePlusIcon,
   TransactionsIcon,
   VaultIcon,
 } from '@bako-safe/ui';
@@ -107,7 +109,7 @@ const AddressBookPage = () => {
               variant="primary"
               fontWeight="semibold"
               fontSize={15}
-              leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
+              leftIcon={<Icon as={ChevronLeftIcon} />}
               px={3}
               bg="dark.100"
               color="grey.200"
@@ -184,7 +186,7 @@ const AddressBookPage = () => {
                 w="full"
                 variant="primary"
                 fontWeight="bold"
-                // leftIcon={<FaRegPlusSquare />}
+                leftIcon={<SquarePlusIcon />}
                 onClick={() => handleOpenDialog({})}
               >
                 Add new favorite

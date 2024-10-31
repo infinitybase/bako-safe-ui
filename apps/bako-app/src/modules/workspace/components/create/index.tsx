@@ -81,10 +81,11 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
     onCancel,
     handleGoToWorkspace,
     handleConfigureMembers,
-  } = useCreateWorkspace({
-    onClose: props.onClose,
-    handleCancel: props.handleCancel,
-  });
+  } = useCreateWorkspace();
+  //   {
+  //   onClose: props.onClose,
+  //   handleCancel: props.handleCancel,
+  // }
 
   return (
     <Dialog.Modal

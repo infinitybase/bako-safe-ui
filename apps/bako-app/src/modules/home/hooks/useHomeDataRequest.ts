@@ -1,12 +1,13 @@
-import { HomeService } from '@bako-safe/services/modules/home';
 import { useQuery } from '@tanstack/react-query';
+
+import { homeService } from '@/modules/services/services-initializer';
 
 import { HomeQueryKey } from '../utils';
 
 const useHomeDataRequest = (currentWorkspace: string) => {
   return useQuery({
     queryKey: HomeQueryKey.HOME_WORKSPACE(currentWorkspace),
-    queryFn: () => HomeService.home(),
+    queryFn: () => homeService.home(),
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',
     refetchOnMount: false,

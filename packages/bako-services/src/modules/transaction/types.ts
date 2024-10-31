@@ -6,6 +6,7 @@ import {
   Vault,
   ITransferAsset,
   ITransactionSummary,
+  TransactionStatus,
 } from "bakosafe";
 import { Network, Operation, Predicate, TransactionRequest } from "fuels";
 
@@ -59,18 +60,37 @@ export interface ITransactionPending {
   transactionsBlocked: boolean;
 }
 
+export interface GetUserTransactionsParams {
+  allOfUser?: boolean;
+  orderBy?: string;
+  sort?: SortOption;
+  page?: number;
+  perPage?: number;
+  limit?: number;
+}
+// export interface GetTransactionParams {
+//   predicateId?: string[];
+//   to?: string;
+//   hash?: string;
+//   status?: ITransactionStatusFilter;
+//   id?: string;
+//   perPage?: number;
+//   page?: number;
+//   orderBy?: string;
+//   sort?: SortOption;
+//   allOfUser?: boolean;
+//   type?: TransactionType;
+// }
+
 export interface GetTransactionParams {
   predicateId?: string[];
   to?: string;
   hash?: string;
-  status?: ITransactionStatusFilter;
-  id?: string;
+  status?: TransactionStatus[];
   perPage?: number;
   page?: number;
   orderBy?: string;
   sort?: SortOption;
-  allOfUser?: boolean;
-  type?: TransactionType;
 }
 
 export interface GetTransactionsWithIncomingsParams {
@@ -83,15 +103,6 @@ export interface GetTransactionsWithIncomingsParams {
   offsetDb?: number;
   offsetFuel?: number;
   id?: string;
-}
-
-export interface GetUserTransactionsParams {
-  allOfUser?: boolean;
-  orderBy?: string;
-  sort?: SortOption;
-  page?: number;
-  perPage?: number;
-  limit?: number;
 }
 
 export interface GetVaultTransactionsParams {
@@ -161,13 +172,13 @@ export enum TransactionOrderBy {
   UPDATED_AT = "updatedAt",
 }
 
-export enum TransactionStatus {
-  AWAIT = "AWAIT",
-  DONE = "DONE",
-  PENDING = "PENDING",
-  REJECTED = "REJECTED",
-  ERROR = "ERROR",
-}
+// export enum TransactionStatus {
+//   AWAIT = "AWAIT",
+//   DONE = "DONE",
+//   PENDING = "PENDING",
+//   REJECTED = "REJECTED",
+//   ERROR = "ERROR",
+// }
 export interface Transaction {
   id: string;
   predicateAdress: string;
@@ -206,17 +217,6 @@ export interface ITransaction extends ICreateTransactionPayload {
   resume: ITransactionResume; // RESULT
   assets: ITransferAsset[];
   summary?: ITransactionSummary;
-}
-
-export interface GetTransactionParams {
-  predicateId?: string[];
-  to?: string;
-  hash?: string;
-  status?: ITransactionStatusFilter;
-  perPage?: number;
-  page?: number;
-  orderBy?: string;
-  sort?: SortOption;
 }
 
 export interface IListTransactions

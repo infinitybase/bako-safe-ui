@@ -1,4 +1,8 @@
-import { CustomSkeleton, EmptyState } from '@bako-safe/ui/components';
+import {
+  ChevronRightIcon,
+  CustomSkeleton,
+  EmptyState,
+} from '@bako-safe/ui/components';
 import {
   Box,
   Button,
@@ -79,7 +83,7 @@ const HomeTransactions = () => {
             alignSelf={{ base: 'stretch', sm: 'flex-end' }}
             rightIcon={
               <Icon
-                // as={MdKeyboardArrowRight}
+                as={ChevronRightIcon}
                 fontSize="lg"
                 ml={isSmall ? -1 : 0}
                 className="btn-icon"

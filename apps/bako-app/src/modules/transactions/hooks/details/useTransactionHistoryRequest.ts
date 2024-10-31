@@ -1,11 +1,9 @@
-import {
-  ITransactionHistory,
-  TransactionService,
-} from '@bako-safe/services/modules/transaction';
+import { ITransactionHistory } from '@bako-safe/services/modules/transaction';
 import { useAccordionItemState } from '@chakra-ui/react';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config';
+import { transactionService } from '@/modules/services/services-initializer';
 
 export const TRANSACTION_HISTORY_QUERY_KEY = 'transaction/history';
 
@@ -38,7 +36,7 @@ const useTransactionHistoryRequest = ({
   return useQuery({
     queryKey: [TRANSACTION_HISTORY_QUERY_KEY, transactionId, predicateId],
     queryFn: () =>
-      TransactionService.getTransactionsHistory(transactionId, predicateId),
+      transactionService.getTransactionsHistory(transactionId, predicateId),
 
     enabled:
       (isOpen && !cachedData?.data && !isDeposit) ||

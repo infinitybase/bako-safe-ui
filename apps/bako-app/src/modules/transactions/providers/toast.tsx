@@ -1,4 +1,5 @@
 import { ITransaction } from '@bako-safe/services/modules';
+import { CheckMarkCircleIconError, TriangleWarning } from '@bako-safe/ui';
 import {
   Box,
   Button,
@@ -32,13 +33,7 @@ const useTransactionToast = () => {
       duration: 5000,
       isClosable: true,
       title: title,
-      icon: (
-        <Icon
-          fontSize="xl"
-          color="brand.500"
-          // as={IoIosWarning}
-        />
-      ),
+      icon: <Icon fontSize="xl" color="brand.500" as={TriangleWarning} />,
       description: message,
     });
   };
@@ -104,11 +99,7 @@ const useTransactionToast = () => {
         duration: 5000,
         title: 'Error on send your transaction',
         icon: (
-          <Icon
-            fontSize="xl"
-            color="error.500"
-            // as={RiCloseCircleFill}
-          />
+          <Icon fontSize="xl" color="error.500" as={CheckMarkCircleIconError} />
         ),
         description: message,
       });
@@ -124,11 +115,7 @@ const useTransactionToast = () => {
       isClosable: true,
       title: title,
       icon: (
-        <Icon
-          fontSize="xl"
-          color="error.500"
-          // as={RiCloseCircleFill}
-        />
+        <Icon fontSize="xl" color="error.500" as={CheckMarkCircleIconError} />
       ),
       description: message,
     });

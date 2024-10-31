@@ -19,20 +19,15 @@ import {
   SignerTransactionResponse,
 } from "./types";
 import { AxiosInstance } from "axios";
+import { bindMethods } from "@/utils/bindMethods";
 
 export class TransactionService {
-  // Can remove this? we don't use this method to create tx. Instead we use the SDK
-  //  async create(payload: CreateTransactionPayload) {
-  //   const { data } = await api.post<CreateTransactionResponse>(
-  //     "/transaction",
-  //     payload
-  //   );
-  //   return data;
-  // }
   api: AxiosInstance;
 
   constructor(api: AxiosInstance) {
     this.api = api;
+
+    bindMethods(this);
   }
 
   async getById(id: string) {
@@ -64,15 +59,6 @@ export class TransactionService {
     );
     return data;
   }
-
-  // We not use this
-  //  async close(id: string, payload: CloseTransactionPayload) {
-  //   const { data } = await this.api.put<GetTransactionResponse>(
-  //     `/transaction/close/${id}`,
-  //     payload
-  //   );
-  //   return data;
-  // }
 
   async getTransactionsPagination(params: GetTransactionParams) {
     const { data } = await this.api.get<GetTransactionsPaginationResponse>(

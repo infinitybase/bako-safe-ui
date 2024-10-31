@@ -1,10 +1,8 @@
-import {
-  TransactionOrderBy,
-  TransactionService,
-} from '@bako-safe/services/modules/transaction';
+import { TransactionOrderBy } from '@bako-safe/services/modules/transaction';
 import { SortOption } from '@bako-safe/services/types';
 import { useQuery } from '@tanstack/react-query';
 
+import { transactionService } from '@/modules/services/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const USER_TRANSACTIONS_QUERY_KEY = 'transactions/byUser';
@@ -17,7 +15,7 @@ const useUserTransactionsRequest = (options?: { limit?: number }) => {
       authDetails.userInfos.workspace?.id,
     ],
     queryFn: () =>
-      TransactionService.getUserTransactions({
+      transactionService.getUserTransactions({
         limit: options?.limit ?? undefined,
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOption.DESC,

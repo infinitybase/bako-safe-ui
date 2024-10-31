@@ -1,4 +1,3 @@
-import { TransactionService } from '@bako-safe/services/modules/transaction';
 import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
@@ -15,6 +14,7 @@ import {
   useBakoSafeVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
+import { transactionService } from '@/modules/services/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
@@ -85,7 +85,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const accordion = useTransactionAccordion();
 
   const resolveTransactionCosts = useMutation({
-    mutationFn: TransactionService.resolveTransactionCosts,
+    mutationFn: transactionService.resolveTransactionCosts,
   });
 
   const transactionFee = resolveTransactionCosts.data?.fee.format();

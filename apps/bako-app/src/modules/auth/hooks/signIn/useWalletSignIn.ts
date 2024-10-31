@@ -58,6 +58,7 @@ const useWalletSignIn = (
       });
     },
     onError: (message) => {
+      console.log('message', message);
       errorToast({
         title: 'Login error',
         description: (message as { message: string }).message,

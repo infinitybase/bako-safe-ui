@@ -2,10 +2,11 @@ import {
   DeleteWorkspaceMemberPayload,
   IncludeWorkspaceMemberPayload,
   UpdateWorkspacePermissionsPayload,
-  WorkspaceService,
 } from '@bako-safe/services/modules/workspace';
 import { useMutation } from '@tanstack/react-query';
 import { Address } from 'fuels';
+
+import { workspaceService } from '@/modules/services/services-initializer';
 
 import { WorkspacesQueryKey } from '../../utils';
 
@@ -13,7 +14,7 @@ const useIncludeMemberRequest = () =>
   useMutation({
     mutationKey: WorkspacesQueryKey.ADD_MEMBER(),
     mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
-      WorkspaceService.includeMember({
+      workspaceService.includeMember({
         address: Address.fromString(userAddress).bech32Address,
       }),
   });
@@ -24,14 +25,14 @@ const useChangePermissionsRequest = () =>
   useMutation({
     mutationKey: WorkspacesQueryKey.UPDATE_PERMISSION(),
     mutationFn: (payload: ChangePermissionPayload) =>
-      WorkspaceService.updatePermissions({ ...payload }),
+      workspaceService.updatePermissions({ ...payload }),
   });
 
 const useDeleteMemberRequest = () =>
   useMutation({
     mutationKey: WorkspacesQueryKey.DELETE_MEMBER(),
     mutationFn: (payload: DeleteWorkspaceMemberPayload) =>
-      WorkspaceService.deleteMember({ member: payload.member }),
+      workspaceService.deleteMember({ member: payload.member }),
   });
 
 export {

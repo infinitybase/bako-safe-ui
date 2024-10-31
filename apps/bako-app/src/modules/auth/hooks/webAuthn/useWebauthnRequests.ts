@@ -1,5 +1,6 @@
-import { UserService } from '@bako-safe/services/modules/auth';
 import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { userService } from '@/modules/services/services-initializer';
 
 import { localStorageKeys, UserQueryKey } from '../../utils';
 
@@ -10,7 +11,7 @@ const useCheckNickname = (
 ) => {
   return useQuery({
     queryKey: UserQueryKey.NICKNAME(nickname, userId),
-    queryFn: () => UserService.verifyNickname(nickname, userId),
+    queryFn: () => userService.verifyNickname(nickname, userId),
     refetchOnWindowFocus: false,
     enabled,
   });
@@ -24,9 +25,10 @@ const useGetAccountsByHardwareId = () => {
     hardwareId = crypto.randomUUID();
     localStorage.setItem(localStorageKeys.HARDWARE_ID, hardwareId);
   }
+
   return useQuery({
     queryKey: UserQueryKey.ACCOUNTS(hardwareId),
-    queryFn: () => UserService.getByHardwareId(hardwareId!),
+    queryFn: () => userService.getByHardwareId(hardwareId!),
     refetchOnWindowFocus: false,
     enabled: !!hardwareId && validPath,
   });
@@ -35,14 +37,14 @@ const useGetAccountsByHardwareId = () => {
 const useSignMessageWebAuthn = () => {
   return useMutation({
     mutationKey: UserQueryKey.SIGN_MESSAGE_WEB_AUTHN(),
-    mutationFn: UserService.signMessageWebAuthn,
+    mutationFn: userService.signMessageWebAuthn,
   });
 };
 
 const useCreateWebAuthnAccount = () => {
   return useMutation({
     mutationKey: UserQueryKey.CREATE_WEB_AUTHN_ACCOUNT(),
-    mutationFn: UserService.createWebAuthnAccount,
+    mutationFn: userService.createWebAuthnAccount,
   });
 };
 

@@ -5,10 +5,10 @@ import {
   FeedbackUpdate,
   RefreshIcon,
   RemoveIcon,
+  SquarePlusIcon,
   StepProgress,
   UserPlusIcon,
 } from '@bako-safe/ui/components';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Badge,
@@ -273,7 +273,7 @@ const CreateMemberPage = () => {
                 opacity: 0.8,
               }}
               onClick={formState?.handlePrimaryAction}
-              leftIcon={!isEditMember ? <PlusSquareIcon /> : <RefreshIcon />}
+              leftIcon={!isEditMember ? <SquarePlusIcon /> : <RefreshIcon />}
               isDisabled={!formState?.isValid}
               isLoading={formState?.isLoading}
             >

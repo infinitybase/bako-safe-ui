@@ -1,9 +1,9 @@
-import { UserService } from '@bako-safe/services/modules';
 import { TypeUser } from 'bakosafe';
 import { useState } from 'react';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useNetworks } from '@/modules/network/hooks';
+import { userService } from '@/modules/services/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { localStorageKeys } from '../../utils';
@@ -19,11 +19,11 @@ interface UseWebAuthnSignInParams {
 }
 
 const getByName = async (name: string) => {
-  return await UserService.getByName(name);
+  return await userService.getByName(name);
 };
 
 const generateSignInCode = async (name: string, networkUrl?: string) => {
-  return await UserService.generateSignInCode(name, networkUrl);
+  return await userService.generateSignInCode(name, networkUrl);
 };
 
 const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {

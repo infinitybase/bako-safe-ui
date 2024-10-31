@@ -7,6 +7,7 @@ import {
   GetByHardwareResponse,
   GetByNameResponse,
   IGetUserInfosResponse,
+  NetworkType,
   SignInPayload,
   SignInResponse,
   SignInSignWebAuthnPayload,
@@ -16,19 +17,22 @@ import { Address } from "fuels";
 import { signChallange } from "@/utils";
 import { localStorageKeys } from "./utils";
 import { AxiosInstance } from "axios";
+import { bindMethods } from "@/utils/bindMethods";
 
 export class UserService {
   api: AxiosInstance;
 
   constructor(api: AxiosInstance) {
     this.api = api;
+
+    bindMethods(this);
   }
   async create(payload: CreateUserPayload) {
-    // const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
+    const invalidNetwork = payload?.provider?.includes(NetworkType.MAINNET);
 
-    // if (invalidNetwork) {
-    //   throw new Error('You cannot access using mainnet network.');
-    // }
+    if (invalidNetwork) {
+      throw new Error("You cannot access using mainnet network.");
+    }
 
     const { data } = await this.api.post<CreateUserResponse>("/user", payload);
     return data;

@@ -1,5 +1,6 @@
-import { NotificationService } from '@bako-safe/services/modules/notifications';
 import { useQuery } from '@tanstack/react-query';
+
+import { notificationService } from '@/modules/services/services-initializer';
 
 import { NotificationsQueryKey } from '../utils';
 
@@ -9,7 +10,7 @@ const useUnreadNotificationsCounterRequest = () => {
   return useQuery({
     queryKey: [NotificationsQueryKey.UNREAD_COUNTER],
     queryFn: async () =>
-      NotificationService.getAllWithPagination({
+      notificationService.getAllWithPagination({
         unread: true,
         perPage: 5,
         page: 0,

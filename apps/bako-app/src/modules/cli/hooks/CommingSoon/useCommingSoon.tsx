@@ -1,3 +1,4 @@
+import { CheckMarkCircleIcon } from '@bako-safe/ui';
 import { Icon, useDisclosure, UseDisclosureReturn } from '@chakra-ui/react';
 
 import { useNotification } from '@/modules/notification/hooks/useNotification';
@@ -54,13 +55,7 @@ const useCommingSoon = () => {
       isClosable: false,
       title: 'Email notification activated!',
       description: 'We will notify you when this feature becomes available.',
-      icon: (
-        <Icon
-          fontSize="xl"
-          color="success.700"
-          // as={IoIosCheckmarkCircle}
-        />
-      ),
+      icon: <Icon fontSize="xl" color="success.700" as={CheckMarkCircleIcon} />,
     });
 
     commingSoonDialog.onClose();

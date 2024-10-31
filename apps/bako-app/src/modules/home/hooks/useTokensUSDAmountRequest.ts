@@ -1,6 +1,7 @@
-import { HomeService } from '@bako-safe/services/modules/home';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'fuels';
+
+import { homeService } from '@/modules/services/services-initializer';
 export type IuseTokensUSDAmountRequestReturn = ReturnType<
   typeof useTokensUSDAmountRequest
 >;
@@ -14,7 +15,7 @@ export type ITokens = {
 const useTokensUSDAmountRequest = () => {
   const { data, ...query } = useQuery({
     queryKey: ['tokens'],
-    queryFn: () => HomeService.getTokensUSDAmount(),
+    queryFn: () => homeService.getTokensUSDAmount(),
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 10,
     enabled: window.location.pathname != '/',

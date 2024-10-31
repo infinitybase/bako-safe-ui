@@ -1,31 +1,38 @@
-import { createContext, useContext } from 'react';
+// import { createContext, useContext } from 'react';
 
-import { useBakoServices } from './services-initializer';
+// import { useSetupAxiosInterceptors } from '@/config';
 
-export type IServicesProvider = ReturnType<typeof useBakoServices>;
+//  import { useBakoServices } from './services-initializer';
 
-const ServicesProviderContext = createContext<IServicesProvider | null>(null);
+// export type IServicesProvider = ReturnType<typeof useBakoServices>;
 
-const ServicesProvider = ({ children }: { children: React.ReactNode }) => {
-  const bakoServices = useBakoServices();
+// const ServicesProviderContext = createContext<IServicesProvider | null>(null);
 
-  console.log({ bakoServices });
+// const ServicesProvider = ({ children }: { children: React.ReactNode }) => {
+//   const bakoServices = useBakoServices();
 
-  return (
-    <ServicesProviderContext.Provider value={bakoServices}>
-      {children}
-    </ServicesProviderContext.Provider>
-  );
-};
-export default ServicesProvider;
+//   useSetupAxiosInterceptors({
+//     isTxFromDapp: false,
+//     isTokenExpired: false,
+//     setIsTokenExpired: () => false,
+//     logout: () => {},
+//   });
 
-const useServicesContext = () => {
-  const context = useContext(ServicesProviderContext);
-  if (!context) {
-    throw new Error('useServicesContext must be used within ServicesProvider');
-  }
+//   return (
+//     <ServicesProviderContext.Provider value={bakoServices}>
+//       {children}
+//     </ServicesProviderContext.Provider>
+//   );
+// };
+// export default ServicesProvider;
 
-  return context;
-};
+// const useServicesContext = () => {
+//   const context = useContext(ServicesProviderContext);
+//   if (!context) {
+//     throw new Error('useServicesContext must be used within ServicesProvider');
+//   }
 
-export { ServicesProvider, useServicesContext };
+//   return context;
+// };
+
+// export { ServicesProvider, useServicesContext };

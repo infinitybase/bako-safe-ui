@@ -1,9 +1,10 @@
 import {
   IVaultConfigurable,
   PredicateAndWorkspace,
-  VaultService,
 } from '@bako-safe/services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
+
+import { vaultService } from '@/modules/services/services-initializer';
 
 import { ordinateMembers } from '../utils';
 
@@ -19,7 +20,7 @@ const useVaultByIdRequest = (vaultId: string) => {
   const { data, ...query } = useQuery<PredicateAndWorkspace>({
     queryKey: [VAULT_BY_ID_QUERY_KEY, vaultId],
     queryFn: async (): Promise<PredicateAndWorkspace> => {
-      const response = await VaultService.getById(vaultId);
+      const response = await vaultService.getById(vaultId);
 
       return {
         ...response,

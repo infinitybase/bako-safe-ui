@@ -1,4 +1,19 @@
-import { Icon } from '@chakra-ui/icons';
+import { PermissionRoles } from '@bako-safe/services';
+import {
+  AddressBookIcon,
+  Card,
+  ChevronLeftIcon,
+  CustomSkeleton,
+  EmptyState,
+  EyeCloseIcon,
+  EyeOpenIcon,
+  HomeIcon,
+  RefreshIcon,
+  SettingsIcon,
+  SquarePlusIcon,
+  TransactionsIcon,
+  VaultIcon,
+} from '@bako-safe/ui/components';
 import {
   Avatar,
   Box,
@@ -12,31 +27,17 @@ import {
   GridItem,
   Heading,
   HStack,
+  Icon,
   Spinner,
   Stack,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import {
-  AddressBookIcon,
-  Card,
-  CustomSkeleton,
-  EmptyState,
-  EyeCloseIcon,
-  EyeOpenIcon,
-  HomeIcon,
-  RefreshIcon,
-  SettingsIcon,
-  TransactionsIcon,
-  VaultIcon,
-} from '@bako-safe/ui/components';
 import { useRef } from 'react';
-import { FaRegPlusSquare } from 'react-icons/fa';
-import { IoChevronBack } from 'react-icons/io5';
 import { Outlet } from 'react-router-dom';
 
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import {
   AssetsDetails,
@@ -160,11 +161,7 @@ const WorkspacePage = () => {
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={
-              <Box mr={-1}>
-                <IoChevronBack size={22} />
-              </Box>
-            }
+            leftIcon={<Icon as={ChevronLeftIcon} />}
             px={3}
             bg="dark.100"
             color="grey.200"
@@ -233,7 +230,7 @@ const WorkspacePage = () => {
               <Button
                 variant="primary"
                 fontWeight="bold"
-                leftIcon={<FaRegPlusSquare />}
+                leftIcon={<SquarePlusIcon />}
                 _hover={{
                   opacity: 0.8,
                 }}

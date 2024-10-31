@@ -1,8 +1,8 @@
-import { AddressBookService } from '@bako-safe/services/modules/address-book';
+import { WorkspaceContact } from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 
-import { WorkspaceContact } from '@/modules/core';
+import { addressBookService } from '@/modules/services/services-initializer';
 
 import { AddressBookQueryKey } from '../utils';
 
@@ -31,7 +31,7 @@ const useInfiniteListcontactsRequest = (
         excludeContactsQueryKey,
       ),
       queryFn: ({ pageParam }) =>
-        AddressBookService.listWithPagination({
+        addressBookService.listWithPagination({
           q: value,
           excludeContacts,
           includePersonal,

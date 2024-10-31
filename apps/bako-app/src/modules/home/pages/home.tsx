@@ -2,6 +2,7 @@ import {
   AddressBookIcon,
   CustomSkeleton,
   HomeIcon,
+  SquarePlusIcon,
   TransactionsIcon,
   VaultIcon,
 } from '@bako-safe/ui/components';
@@ -60,7 +61,7 @@ const HomePage = () => {
           <Button
             variant="primary"
             fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
+            leftIcon={<SquarePlusIcon />}
             onClick={onOpen}
           >
             Create vault

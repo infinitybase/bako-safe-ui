@@ -1,8 +1,7 @@
-import {
-  NotificationService,
-  SetAllAsReadResponse,
-} from '@bako-safe/services/modules/notifications';
+import { SetAllAsReadResponse } from '@bako-safe/services/modules/notifications';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { notificationService } from '@/modules/services/services-initializer';
 
 import { NotificationsQueryKey } from '../utils';
 
@@ -11,7 +10,7 @@ const useSetNotificationsAsReadRequest = (
 ) => {
   return useMutation({
     mutationKey: [NotificationsQueryKey.READ_ALL],
-    mutationFn: NotificationService.setAllAsRead,
+    mutationFn: notificationService.setAllAsRead,
     ...options,
   });
 };

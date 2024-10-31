@@ -6,7 +6,6 @@ import {
   EyeOpenIcon,
   SquarePlusIcon,
 } from '@bako-safe/ui/components';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -274,7 +273,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
                         ? openFaucet(vault.data?.predicateAddress)
                         : setAddAssetsDialogState(true)
                     }
-                    leftIcon={<PlusSquareIcon />}
+                    leftIcon={<SquarePlusIcon />}
                   >
                     {isTestnet ? 'Faucet' : 'Add Assets'}
                   </Button>

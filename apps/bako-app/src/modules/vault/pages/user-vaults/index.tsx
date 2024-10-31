@@ -1,8 +1,10 @@
 import {
   AddressBookIcon,
+  ChevronLeftIcon,
   CustomSkeleton,
   EmptyState,
   HomeIcon,
+  SquarePlusIcon,
   TransactionsIcon,
   VaultIcon,
 } from '@bako-safe/ui/components';
@@ -67,7 +69,7 @@ const UserVaultsPage = () => {
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
+            leftIcon={<Icon as={ChevronLeftIcon} />}
             px={3}
             bg="dark.100"
             color="grey.200"
@@ -137,7 +139,7 @@ const UserVaultsPage = () => {
           <Button
             variant="primary"
             fontWeight="bold"
-            // leftIcon={<FaRegPlusSquare />}
+            leftIcon={<SquarePlusIcon />}
             isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
             onClick={onOpen}
           >

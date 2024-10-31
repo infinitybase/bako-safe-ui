@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useServicesContext } from '@/modules/services/ServicesProvider';
+import { addressBookService } from '@/modules/services/services-initializer';
 
 import { AddressBookQueryKey } from '../utils';
 
@@ -13,7 +13,6 @@ const useListContactsRequest = ({
   workspaceId,
   includePersonal,
 }: UseListContactsRequestParams) => {
-  const { addressBookService } = useServicesContext();
   return useQuery({
     queryKey: [
       ...AddressBookQueryKey.LIST_BY_USER(workspaceId),

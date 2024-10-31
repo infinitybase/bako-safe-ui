@@ -1,5 +1,6 @@
-import { VaultService } from '@bako-safe/services/modules/vault';
 import { useQuery } from '@tanstack/react-query';
+
+import { vaultService } from '@/modules/services/services-initializer';
 
 export const VAULT_BY_ADDRESS_QUERY_KEY = 'predicate/check/by-address';
 
@@ -10,7 +11,7 @@ export type UseCheckVaultByAddressRequest = ReturnType<
 const useCheckVaultByAddressRequest = (address: string, enabled: boolean) => {
   return useQuery({
     queryKey: [VAULT_BY_ADDRESS_QUERY_KEY, address],
-    queryFn: () => VaultService.checkByAddress(address),
+    queryFn: () => vaultService.checkByAddress(address),
     refetchOnWindowFocus: false,
     enabled,
   });

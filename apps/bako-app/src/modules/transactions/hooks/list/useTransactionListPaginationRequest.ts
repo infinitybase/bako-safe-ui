@@ -1,13 +1,13 @@
 import {
   GetTransactionParams,
   TransactionOrderBy,
-  TransactionService,
 } from '@bako-safe/services/modules/transaction';
 import { SortOption } from '@bako-safe/services/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { invalidateQueries } from '@/modules/core';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { transactionService } from '@/modules/services/services-initializer';
 import { WorkspacesQueryKey } from '@/modules/workspace';
 
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
@@ -32,16 +32,18 @@ const useTransactionListPaginationRequest = (
       params.type,
     ),
     queryFn: ({ pageParam }) =>
-      TransactionService.getTransactionsPagination({
-        ...params,
-        perPage: 5,
-        page: pageParam || 0,
-        orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOption.DESC,
-      }).then((data) => {
-        invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
-        return data;
-      }),
+      transactionService
+        .getTransactionsPagination({
+          ...params,
+          perPage: 5,
+          page: pageParam || 0,
+          orderBy: TransactionOrderBy.CREATED_AT,
+          sort: SortOption.DESC,
+        })
+        .then((data) => {
+          invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
+          return data;
+        }),
     enabled: window.location.pathname != '/',
     initialPageParam: 0,
     refetchOnWindowFocus: true,

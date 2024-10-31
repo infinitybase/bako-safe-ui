@@ -1,7 +1,7 @@
 import { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
-import { queryClient } from '@/config';
+import { queryClient, useSetupAxiosInterceptors } from '@/config';
 import {
   assetsMapFromFormattedFn,
   useAddressBook,
@@ -14,7 +14,6 @@ import {
   useVaultByIdRequest,
 } from '@/modules';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
-// import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
 
@@ -44,7 +43,10 @@ const useWorkspaceDetails = () => {
   const { currentNetwork } = useNetworks();
 
   const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
-    const provider = await ProviderInstance.create(currentNetwork.url);
+    const provider = await ProviderInstance.create(
+      'https://testnet.fuel.network/v1/graphql',
+    );
+    // const provider = await ProviderInstance.create(currentNetwork.url);
 
     return provider.instance;
   }, [currentNetwork]);
@@ -59,14 +61,22 @@ const useWorkspaceDetails = () => {
     refetch: invalidateGifAnimationRequest,
   } = useGifLoadingRequest();
 
-  useMemo(() => {
-    useSetupAxiosInterceptors({
-      isTxFromDapp,
-      isTokenExpired,
-      setIsTokenExpired,
-      logout: authDetails.handlers.logout,
-    });
-  }, []);
+  useSetupAxiosInterceptors({
+    isTxFromDapp,
+    isTokenExpired,
+    setIsTokenExpired,
+    logout: authDetails.handlers.logout,
+  });
+
+  // useMemo(() => {
+  //   useSetupAxiosInterceptors({
+  //     isTxFromDapp,
+  //     isTokenExpired,
+  //     setIsTokenExpired,
+  //     logout: authDetails.handlers.logout,
+  //   });
+
+  // }, []);
 
   const {
     handlers: { hasPermission, ...handlersData },

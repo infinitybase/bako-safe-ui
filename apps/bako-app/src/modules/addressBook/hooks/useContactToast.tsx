@@ -1,5 +1,9 @@
-import { Icon } from '@chakra-ui/icons';
-import { ToastPosition } from '@chakra-ui/react';
+import {
+  CheckMarkCircleIcon,
+  CheckMarkCircleIconError,
+  TriangleWarning,
+} from '@bako-safe/ui';
+import { Icon, ToastPosition } from '@chakra-ui/react';
 
 import { useNotification } from '@/modules/notification';
 
@@ -26,9 +30,7 @@ const useContactToast = ({
       position: position ?? 'top-right',
       title: title ?? 'Success!',
       description: description ?? '',
-      icon: (
-        <Icon fontSize="xl" color="success.700" as={IoIosCheckmarkCircle} />
-      ),
+      icon: <Icon fontSize="xl" color="success.700" as={CheckMarkCircleIcon} />,
     });
 
   const warningToast = ({ description, title, position }: ToastParams) => {
@@ -39,7 +41,7 @@ const useContactToast = ({
       position: position ?? 'top-right',
       title: title ?? 'Warning!',
       description: description ?? '',
-      icon: <Icon fontSize="xl" color="brand.500" as={IoIosWarning} />,
+      icon: <Icon fontSize="xl" color="brand.500" as={TriangleWarning} />,
     });
   };
 
@@ -52,7 +54,9 @@ const useContactToast = ({
       title: title ?? 'Error!',
       description:
         description ?? 'Check the provided data and try again, please...',
-      icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
+      icon: (
+        <Icon fontSize="xl" color="error.500" as={CheckMarkCircleIconError} />
+      ),
     });
   };
 

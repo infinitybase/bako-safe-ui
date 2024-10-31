@@ -1,12 +1,13 @@
-import { SettingsService } from '@bako-safe/services/modules/settings';
 import { useQuery } from '@tanstack/react-query';
+
+import { settingsService } from '@/modules/services/services-initializer';
 
 import { SettingsQueryKey } from '../utils';
 
 const useMySettingsRequest = (account: string) => {
   return useQuery({
     queryKey: [SettingsQueryKey.MY_SETTINGS, account],
-    queryFn: async () => SettingsService.getSettings(),
+    queryFn: async () => settingsService.getSettings(),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });

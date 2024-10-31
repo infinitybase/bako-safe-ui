@@ -1,5 +1,4 @@
 import { Card, CopyIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
-import { CheckIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
@@ -89,7 +88,7 @@ const ContactCard = ({
                 duration: 2000,
                 isClosable: false,
                 title: 'Copied to clipboard',
-                icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
+                // icon: <Icon fontSize="2xl" color="brand.500" as={CheckIcon} />,
               });
             }}
           />

@@ -1,9 +1,7 @@
-import {
-  SelectWorkspaceResponse,
-  Workspace,
-  WorkspaceService,
-} from '@bako-safe/services';
+import { SelectWorkspaceResponse, Workspace } from '@bako-safe/services';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { workspaceService } from '@/modules/services/services-initializer';
 
 import { WorkspacesQueryKey } from '../../utils';
 
@@ -12,7 +10,7 @@ const useSelectWorkspaceRequest = (
 ) => {
   return useMutation({
     mutationKey: WorkspacesQueryKey.SELECT(),
-    mutationFn: WorkspaceService.select,
+    mutationFn: workspaceService.select,
     ...options,
   });
 };

@@ -1,4 +1,9 @@
-import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
+import {
+  ChevronLeftIcon,
+  CustomSkeleton,
+  EmptyState,
+  HomeIcon,
+} from '@bako-safe/ui/components';
 import {
   Box,
   Breadcrumb,
@@ -36,7 +41,7 @@ const WorkspaceBalancePage = () => {
             variant="primary"
             fontWeight="semibold"
             fontSize={15}
-            leftIcon={<Box mr={-1}>{/* <IoChevronBack size={22} /> */}</Box>}
+            leftIcon={<Icon as={ChevronLeftIcon} />}
             px={3}
             bg="dark.100"
             color="grey.200"

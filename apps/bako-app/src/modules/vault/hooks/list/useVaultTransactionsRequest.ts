@@ -1,13 +1,13 @@
 import {
   GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
-  TransactionService,
 } from '@bako-safe/services/modules/transaction';
 import { SortOption } from '@bako-safe/services/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { TransactionType } from 'bakosafe';
 
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
+import { transactionService } from '@/modules/services/services-initializer';
 
 type UseTransactionListPaginationParams = Omit<
   GetTransactionsWithIncomingsParams,
@@ -44,17 +44,19 @@ const useVaultTransactionsRequest = (
   const { data, ...query } = useInfiniteQuery({
     queryKey,
     queryFn: ({ pageParam: { offsetDb, offsetFuel } }) =>
-      TransactionService.getTransactionsWithIncomingsPagination({
-        ...params,
-        perPage: 5,
+      transactionService
+        .getTransactionsWithIncomingsPagination({
+          ...params,
+          perPage: 5,
 
-        offsetDb: offsetDb || 0,
-        offsetFuel: offsetFuel || 0,
-        orderBy: TransactionOrderBy.CREATED_AT,
-        sort: SortOption.DESC,
-      }).then((data) => {
-        return data;
-      }),
+          offsetDb: offsetDb || 0,
+          offsetFuel: offsetFuel || 0,
+          orderBy: TransactionOrderBy.CREATED_AT,
+          sort: SortOption.DESC,
+        })
+        .then((data) => {
+          return data;
+        }),
     refetchOnReconnect: false,
     refetchOnWindowFocus: true,
     enabled: !!params.predicateId && !!params.predicateId[0],

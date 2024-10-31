@@ -1,8 +1,7 @@
-import {
-  GetAllPredicatesPayload,
-  VaultService,
-} from '@bako-safe/services/modules/vault';
+import { GetAllPredicatesPayload } from '@bako-safe/services/modules/vault';
 import { useInfiniteQuery } from '@tanstack/react-query';
+
+import { vaultService } from '@/modules/services/services-initializer';
 
 const useVaultListRequest = (
   filter: GetAllPredicatesPayload,
@@ -11,7 +10,7 @@ const useVaultListRequest = (
   const { data, ...query } = useInfiniteQuery({
     queryKey: ['vault/pagination', filter],
     queryFn: ({ pageParam }) =>
-      VaultService.getAllWithPagination({
+      vaultService.getAllWithPagination({
         ...filter,
         perPage: filter.perPage || 5,
         page: pageParam || 0,

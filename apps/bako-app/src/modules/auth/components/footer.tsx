@@ -35,7 +35,7 @@ const SignInFooter = () => {
         <Text fontSize="xs" fontWeight="normal">
           Learn more
         </Text>
-        <Icon as={FiArrowUpRight} fontSize="md" />
+        {/* <Icon as={FiArrowUpRight} fontSize="md" /> */}
       </Link>
 
       <HStack cursor="pointer" onClick={feedbackForm} spacing={3} mt={6}>

@@ -1,5 +1,6 @@
-import { TransactionService } from '@bako-safe/services/modules/transaction';
 import { useQuery } from '@tanstack/react-query';
+
+import { transactionService } from '@/modules/services/services-initializer';
 const PENDING_TRANSACTIONS_QUERY_KEY = 'pending-transactions';
 
 export type IUseTransactionSignaturePendingReturn = ReturnType<
@@ -10,7 +11,7 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
   return useQuery({
     queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
     queryFn: () => {
-      return TransactionService.getTransactionsSignaturePending(predicateId);
+      return transactionService.getTransactionsSignaturePending(predicateId);
     },
     enabled: window.location.pathname != '/',
     refetchOnWindowFocus: true,

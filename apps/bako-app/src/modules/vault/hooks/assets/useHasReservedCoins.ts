@@ -1,10 +1,8 @@
-import {
-  HasReservedCoins,
-  VaultService,
-} from '@bako-safe/services/modules/vault';
+import { HasReservedCoins } from '@bako-safe/services/modules/vault';
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
+import { vaultService } from '@/modules/services/services-initializer';
 
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
 import { vaultAssetsQueryKey } from './useVaultAssets';
@@ -34,7 +32,7 @@ export const useHasReservedCoins = (
   const { refetch, ...rest } = useQuery({
     queryKey: reservedQueryKey,
     queryFn: async () => {
-      const response = await VaultService.hasReservedCoins(predicateId);
+      const response = await vaultService.hasReservedCoins(predicateId);
       if (response?.currentBalanceUSD !== cachedData?.data?.currentBalanceUSD) {
         queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
       }

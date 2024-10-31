@@ -3,19 +3,20 @@ import {
   CreateUserResponse,
   Encoder,
   SignInResponse,
-  UserService,
   UseSignInRequestParams,
 } from '@bako-safe/services';
 import { useFuel } from '@fuels/react';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { Address } from 'fuels';
 
+import { userService } from '@/modules/services/services-initializer';
+
 const useCreateUserRequest = (
   options?: UseMutationOptions<CreateUserResponse, unknown, CreateUserPayload>,
 ) => {
   return useMutation({
     mutationKey: ['user/create'],
-    mutationFn: UserService.create,
+    mutationFn: userService.create,
     ...options,
   });
 };
@@ -37,7 +38,7 @@ const useSignInRequest = (
         userAddress: Address.fromString(account!).toB256(),
       };
 
-      return UserService.signIn(payload);
+      return userService.signIn(payload);
     },
     ...options,
   });

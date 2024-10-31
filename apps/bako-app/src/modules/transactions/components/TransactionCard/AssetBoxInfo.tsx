@@ -1,14 +1,5 @@
 import { AssetModel } from '@bako-safe/services/types';
-import { DeployIcon, DoubleArrowIcon } from '@bako-safe/ui/components';
-import { Icon } from '@chakra-ui/icons';
-import {
-  Center,
-  HStack,
-  Image,
-  StackProps,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/components';
@@ -111,7 +102,7 @@ const AssetBoxInfo = ({
         </Text>
       </VStack>
 
-      <Center
+      {/* <Center
         p={{ base: 1.5, sm: 3 }}
         borderRadius={5}
         bgColor="grey.825"
@@ -124,7 +115,7 @@ const AssetBoxInfo = ({
           fontSize={isDeploy ? '12.8px' : !isContract ? '18px' : '12.8px'}
           as={isDeploy ? DeployIcon : !isContract ? DoubleArrowIcon : FaPlay}
         />
-      </Center>
+      </Center> */}
 
       {!!asset && (
         <VStack alignItems="end" h={savedContact?.nickname ? '47px' : 'unset'}>

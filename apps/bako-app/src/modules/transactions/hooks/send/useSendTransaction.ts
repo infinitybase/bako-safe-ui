@@ -1,13 +1,11 @@
-import {
-  ITransaction,
-  TransactionService,
-} from '@bako-safe/services/modules/transaction';
+import { ITransaction } from '@bako-safe/services/modules/transaction';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
 import { useAuth } from '@/modules';
 import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
+import { transactionService } from '@/modules/services/services-initializer';
 
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';
@@ -30,7 +28,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
       validateResult(transaction);
     },
     onError: async (transaction) => {
-      const tx = await TransactionService.getById(transaction.id);
+      const tx = await transactionService.getById(transaction.id);
       validateResult(tx);
       onTransactionSuccess();
     },

@@ -2,6 +2,7 @@ import {
   CustomSkeleton,
   HomeIcon,
   LeftAndRightArrow,
+  SquarePlusIcon,
   UpRightArrow,
 } from '@bako-safe/ui/components';
 import {
@@ -137,7 +138,7 @@ const VaultBox = (props: VaultBoxPropx) => {
               isEthBalanceLowerThanReservedAmount ||
               isFirstAssetsLoading
             }
-            // leftIcon={<FiPlusSquare fontSize={isMobile ? 20 : 22} />}
+            leftIcon={<SquarePlusIcon fontSize={isMobile ? 20 : 22} />}
           >
             Create transaction
           </Button>

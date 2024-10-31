@@ -1,8 +1,7 @@
-import {
-  GetAllPredicatesPayload,
-  VaultService,
-} from '@bako-safe/services/modules/vault';
+import { GetAllPredicatesPayload } from '@bako-safe/services/modules/vault';
 import { useInfiniteQuery } from '@tanstack/react-query';
+
+import { vaultService } from '@/modules/services/services-initializer';
 
 const USER_VAULTS_QUERY_KEY = 'predicate/by-user-address';
 
@@ -13,7 +12,7 @@ const useUserVaultRequest = (
   const { data, ...query } = useInfiniteQuery({
     queryKey: [USER_VAULTS_QUERY_KEY, userAddress, filter],
     queryFn: ({ pageParam }) =>
-      VaultService.getAllWithPagination({
+      vaultService.getAllWithPagination({
         ...filter,
         perPage: filter.perPage || 8,
         page: pageParam || 0,

@@ -1,9 +1,10 @@
 import {
   SignerTransactionPayload,
   SignerTransactionResponse,
-  TransactionService,
 } from '@bako-safe/services/modules/transaction';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { transactionService } from '@/modules/services/services-initializer';
 
 const useSignTransactionRequest = (
   options?: UseMutationOptions<
@@ -14,7 +15,7 @@ const useSignTransactionRequest = (
 ) => {
   return useMutation({
     mutationKey: ['transaction/sign'],
-    mutationFn: TransactionService.signer,
+    mutationFn: transactionService.signer,
     ...options,
   });
 };

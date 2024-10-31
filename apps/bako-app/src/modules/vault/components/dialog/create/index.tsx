@@ -21,9 +21,9 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     steps,
     bakoSafeVault,
     handleCancel,
-    selectedTemplate,
-    setFormWithTemplate,
-    onSaveTemplate,
+    // selectedTemplate,
+    // setFormWithTemplate,
+    // onSaveTemplate,
     handleInputChange,
     vaultNameIsAvailable,
     search,
@@ -72,9 +72,9 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
           onCancel={handleCancel}
           onDeposit={onDeposit}
           addresses={addresses}
-          selectedTemplate={selectedTemplate}
-          setTemplate={setFormWithTemplate}
-          onSaveTemplate={onSaveTemplate}
+          // selectedTemplate={selectedTemplate}
+          // setTemplate={setFormWithTemplate}
+          // onSaveTemplate={onSaveTemplate}
           vaultNameIsAvailable={vaultNameIsAvailable}
           search={search}
           setSearch={setSearch}

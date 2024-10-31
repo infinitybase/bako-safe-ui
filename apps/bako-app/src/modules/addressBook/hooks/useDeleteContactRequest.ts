@@ -1,15 +1,14 @@
-import {
-  AddressBookService,
-  DeleteContactResponse,
-} from '@bako-safe/services/modules/address-book';
+import { DeleteContactResponse } from '@bako-safe/services/modules/address-book';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { addressBookService } from '@/modules/services/services-initializer';
 
 const useDeleteContactRequest = (
   options?: UseMutationOptions<DeleteContactResponse, unknown, string>,
 ) => {
   return useMutation({
     mutationKey: ['address-book/delete'],
-    mutationFn: AddressBookService.delete,
+    mutationFn: addressBookService.delete,
     ...options,
   });
 };

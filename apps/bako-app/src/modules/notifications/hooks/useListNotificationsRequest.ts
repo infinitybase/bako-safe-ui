@@ -1,7 +1,8 @@
-import { NotificationService } from '@bako-safe/services/modules/notifications';
 import { TransactionOrderBy } from '@bako-safe/services/modules/transaction';
 import { SortOption } from '@bako-safe/services/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
+
+import { notificationService } from '@/modules/services/services-initializer';
 
 import { NotificationsQueryKey } from '../utils';
 
@@ -9,7 +10,7 @@ const useListNotificationsRequest = (account: string) => {
   const { data, ...query } = useInfiniteQuery({
     queryKey: [NotificationsQueryKey.PAGINATED_LIST, account],
     queryFn: ({ pageParam }) =>
-      NotificationService.getAllWithPagination({
+      notificationService.getAllWithPagination({
         perPage: 5,
         page: pageParam || 0,
         orderBy: TransactionOrderBy.CREATED_AT,
