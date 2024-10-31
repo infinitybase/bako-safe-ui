@@ -13,6 +13,7 @@
   "dependencies": {
     "@bako-safe/services": "workspace:*",
     "@bako-safe/ui": "workspace:*",
+    "@bakosafe/app": "workspace:*",
     "@chakra-ui/react": "2.8.0",
     "@tanstack/react-query": "^5.39.0",
     "bakosafe": "0.0.93-beta",

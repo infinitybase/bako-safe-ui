@@ -1,7 +1,7 @@
 import {
   CreateAPITokenPayload,
   CreateAPITokenResponse,
-} from '@services/modules/cli';
+} from '@bako-safe/services';
 import { Dispatch, useState } from 'react';
 
 import { queryClient } from '@/config';

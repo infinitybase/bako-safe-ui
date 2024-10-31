@@ -1,4 +1,9 @@
-import { IPermission, Member, PermissionRoles, Workspace } from '../types';
+import {
+  IPermission,
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '@bako-safe/services';
 
 interface PermissionDTO {
   title: string;

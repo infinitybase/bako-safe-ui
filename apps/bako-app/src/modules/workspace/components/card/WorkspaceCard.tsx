@@ -1,3 +1,4 @@
+import { Workspace } from '@bako-safe/services';
 import {
   Avatar,
   Card,
@@ -7,7 +8,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Workspace } from '../../types';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface NotificationCardProps extends CardProps {

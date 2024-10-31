@@ -1,20 +1,20 @@
 import {
-  GetTransactionParams,
+  GetTransactionParamsForPaginationQuery,
+  SortOption,
   TransactionOrderBy,
-} from '@bako-safe/services/modules/transaction';
-import { SortOption } from '@bako-safe/services/types';
+} from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
+import { transactionService } from '@/config/services-initializer';
 import { invalidateQueries } from '@/modules/core';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
-import { transactionService } from '@/config/services-initializer';
 import { WorkspacesQueryKey } from '@/modules/workspace';
 
 import { PENDING_TRANSACTIONS_QUERY_KEY } from './useTotalSignaturesPendingRequest';
 import { StatusFilter } from './useTransactionList';
 
 type UseTransactionListPaginationParams = Omit<
-  GetTransactionParams,
+  GetTransactionParamsForPaginationQuery,
   'perPage' | 'page'
 > & {
   workspaceId: string;

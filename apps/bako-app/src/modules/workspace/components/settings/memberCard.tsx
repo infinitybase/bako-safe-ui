@@ -1,9 +1,9 @@
+import { Member, PermissionRoles, Workspace } from '@bako-safe/services';
 import { Card, EditIcon } from '@bako-safe/ui/components';
 import { Avatar, Badge, Box, HStack, Text } from '@chakra-ui/react';
 
 import { AddressUtils } from '@/modules/core';
 
-import { Member, PermissionRoles, Workspace } from '../../types';
 import { WorkspacePermissionUtils } from '../../utils/permission';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
@@ -37,7 +37,7 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
       PermissionRoles.OWNER,
     ]) && permission?.title?.toUpperCase() !== PermissionRoles.OWNER;
 
-  const contactNickname = contactByAddress(member?.address!)?.nickname;
+  const contactNickname = contactByAddress(member?.address ?? '')?.nickname;
 
   return (
     <Card
@@ -72,7 +72,8 @@ const MemberCard = ({ member, workspace, onEdit }: MemberCardProps) => {
             bg="grey.900"
             variant="roundedSquare"
             name={
-              contactByAddress(member?.address!)?.nickname ?? member?.address
+              contactByAddress(member?.address ?? '')?.nickname ??
+              member?.address
             }
             src={avatar}
           />

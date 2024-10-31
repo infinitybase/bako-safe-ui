@@ -1,8 +1,9 @@
+import { Workspace } from '@bako-safe/services';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { AddressUtils, Workspace } from '@/modules/core';
+import { AddressUtils } from '@/modules/core';
 
 const memberSchema = (members: string[]) => {
   return yup.object({

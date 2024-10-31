@@ -1,5 +1,5 @@
 import {
-  TransactionStatus as BakoSafeTransactionStatus,
+  // TransactionStatus as BakoSafeTransactionStatus,
   ITransactionResume,
   IAsset,
   TransactionType,
@@ -68,19 +68,20 @@ export interface GetUserTransactionsParams {
   perPage?: number;
   limit?: number;
 }
-// export interface GetTransactionParams {
-//   predicateId?: string[];
-//   to?: string;
-//   hash?: string;
-//   status?: ITransactionStatusFilter;
-//   id?: string;
-//   perPage?: number;
-//   page?: number;
-//   orderBy?: string;
-//   sort?: SortOption;
-//   allOfUser?: boolean;
-//   type?: TransactionType;
-// }
+
+export interface GetTransactionParamsForPaginationQuery {
+  predicateId?: string[];
+  to?: string;
+  hash?: string;
+  status?: ITransactionStatusFilter;
+  id?: string;
+  perPage?: number;
+  page?: number;
+  orderBy?: string;
+  sort?: SortOption;
+  allOfUser?: boolean;
+  type?: TransactionType;
+}
 
 export interface GetTransactionParams {
   predicateId?: string[];
@@ -186,7 +187,7 @@ export interface Transaction {
   name: string;
   txData: string;
   hash: string;
-  status: BakoSafeTransactionStatus;
+  status: TransactionStatus;
   sendTime: string;
   gasUsed: string;
   resume: ITransactionResume;

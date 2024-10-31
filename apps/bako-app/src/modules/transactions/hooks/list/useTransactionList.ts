@@ -1,10 +1,10 @@
+import { ITransaction } from '@bako-safe/services';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { useGetParams } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 import { useTransactionState } from '../../states';
 import { useFilterTxType } from '../filter';

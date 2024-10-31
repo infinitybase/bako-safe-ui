@@ -1,4 +1,4 @@
-import { OperationWithAssets } from '@services/modules/transaction';
+import { OperationWithAssets } from '@bako-safe/services';
 import { ITransferAsset } from 'bakosafe';
 import { Operation, TransactionRequest } from 'fuels';
 

@@ -4,6 +4,7 @@ import { bn, calculateGasFee, ScriptTransactionRequest } from "fuels";
 import {
   GetTransactionHistoryResponse,
   GetTransactionParams,
+  GetTransactionParamsForPaginationQuery,
   GetTransactionPendingResponse,
   GetTransactionResponse,
   GetTransactionsPaginationResponse,
@@ -60,7 +61,9 @@ export class TransactionService {
     return data;
   }
 
-  async getTransactionsPagination(params: GetTransactionParams) {
+  async getTransactionsPagination(
+    params: GetTransactionParamsForPaginationQuery,
+  ) {
     const { data } = await this.api.get<GetTransactionsPaginationResponse>(
       `/transaction`,
       {

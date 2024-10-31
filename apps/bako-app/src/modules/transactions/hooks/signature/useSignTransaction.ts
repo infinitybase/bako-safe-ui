@@ -1,4 +1,7 @@
-import { TransactionWithVault } from '@services/modules/transaction';
+import {
+  ITransaction,
+  TransactionWithVault,
+} from '@bako-safe/services/modules/transaction';
 import { TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useState } from 'react';
@@ -7,7 +10,6 @@ import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useWalletSignMessage } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';

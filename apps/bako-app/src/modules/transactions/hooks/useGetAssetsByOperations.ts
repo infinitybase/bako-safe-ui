@@ -1,7 +1,4 @@
-import {
-  OperationWithAssets,
-  TransactionWithVault,
-} from '@services/modules/transaction';
+import { OperationWithAssets, TransactionWithVault } from '@bako-safe/services';
 import { ITransferAsset } from 'bakosafe';
 
 import { useFormatSummaryAssets } from './useFormatSummaryAssets';

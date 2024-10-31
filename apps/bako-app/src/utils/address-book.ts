@@ -1,5 +1,5 @@
-import { AddressBook } from '@/modules/core/models/addressBook';
-import { WorkspaceContact } from '@/modules/core/models/workspace';
+import { AddressBook, WorkspaceContact } from '@bako-safe/services';
+
 import { AddressUtils } from '@/modules/core/utils/address';
 
 export class AddressBookUtils {

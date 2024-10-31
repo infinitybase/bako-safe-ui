@@ -1,15 +1,15 @@
+import {
+  defaultPermissions,
+  Member,
+  PermissionRoles,
+  Workspace,
+} from '@bako-safe/services/modules';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { EnumUtils, Pages, useTab } from '@/modules/core';
 import { useSettingsToast } from '@/modules/settings/hooks/useSettingsToast';
 
-import {
-  defaultPermissions,
-  Member,
-  PermissionRoles,
-  Workspace,
-} from '../../types';
 import { WorkspacePermissionUtils } from '../../utils/permission';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { useChangeMemberForm } from './useChangeMemberForm';

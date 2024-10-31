@@ -30,11 +30,7 @@
     },
     "outDir": "./dist"
   },
-  "include": ["src"],
+  "include": ["src", "../bako-app/src"],
   "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "../bako-app" }]
 }
