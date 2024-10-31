@@ -1,3 +1,4 @@
+import { PermissionRoles } from '@bako-safe/services';
 import {
   AddressBookIcon,
   ChevronLeftIcon,
@@ -27,7 +28,6 @@ import { useEffect } from 'react';
 import { Pages } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
-import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {

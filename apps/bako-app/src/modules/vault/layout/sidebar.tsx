@@ -1,3 +1,4 @@
+import { PermissionRoles } from '@bako-safe/services';
 import {
   CoinsIcon,
   ExchangeIcon,
@@ -13,7 +14,6 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
-import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface SidebarProps extends BoxProps {

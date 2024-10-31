@@ -1,3 +1,4 @@
+import { PermissionRoles } from '@bako-safe/services';
 import {
   Card,
   CustomSkeleton,
@@ -26,7 +27,6 @@ import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
 import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { NetworkType } from '@/modules/network/services';
-import { PermissionRoles } from '@/modules/workspace/types';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
 

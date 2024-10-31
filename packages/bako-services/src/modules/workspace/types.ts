@@ -17,6 +17,44 @@ export enum PermissionRoles {
   VIEWER = "VIEWER",
 }
 
+export const defaultPermissions = {
+  [PermissionRoles.OWNER]: {
+    OWNER: ["*"],
+    ADMIN: [""],
+    MANAGER: [""],
+    SIGNER: [""],
+    VIEWER: [""],
+  },
+  [PermissionRoles.SIGNER]: {
+    OWNER: [""],
+    ADMIN: [""],
+    MANAGER: [""],
+    SIGNER: ["*"],
+    VIEWER: [""],
+  },
+  [PermissionRoles.ADMIN]: {
+    OWNER: [""],
+    ADMIN: ["*"],
+    MANAGER: [""],
+    SIGNER: [""],
+    VIEWER: [""],
+  },
+  [PermissionRoles.MANAGER]: {
+    OWNER: [""],
+    ADMIN: [""],
+    MANAGER: ["*"],
+    SIGNER: [""],
+    VIEWER: [""],
+  },
+  [PermissionRoles.VIEWER]: {
+    OWNER: [""],
+    ADMIN: [""],
+    MANAGER: [""],
+    SIGNER: [""],
+    VIEWER: ["*"],
+  },
+};
+
 export interface IPermissions {
   [key: string]: {
     [key in PermissionRoles]: string[];
