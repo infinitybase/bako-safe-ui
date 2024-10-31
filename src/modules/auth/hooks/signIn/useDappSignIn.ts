@@ -30,7 +30,8 @@ const useDappSignIn = () => {
       return;
     }
 
-    navigate(`${Pages.dappAuth()}${location.search}`);
+    navigate(`${Pages.dappWelcome()}${location.search}`);
+    // navigate(`${Pages.dappAuth()}${location.search}`);
   }, [location]);
 
   const walletSignIn = useWalletSignIn(redirect);

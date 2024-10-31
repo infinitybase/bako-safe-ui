@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { queryClient } from '@/config';
-import { Pages, useAuthCookies, useQueryParams } from '@/modules';
+import { useAuthCookies, useQueryParams } from '@/modules';
+import { Pages } from '@/modules/core/routes';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
-import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 
 const useRedirectAuthUser = () => {
   const [syncingAuth, setSyncingAuth] = useState(true);
@@ -24,12 +23,15 @@ const useRedirectAuthUser = () => {
     const isAuthenticated = account && accessToken;
 
     if (isAuthenticated && isFromDapp) {
+      console.log(`🚀 ~ isAuthenticated && isFromDapp)`);
+
       navigate(`${Pages.dappAuth()}${location.search}`);
     } else if (isAuthenticated) {
-      queryClient.invalidateQueries({
-        queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
-      });
-      navigate(Pages.home());
+      // queryClient.invalidateQueries({
+      //   queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
+      // });
+      console.log(`🚀 ~ navigate(Pages.home());`);
+      // navigate(Pages.home());
     }
 
     setSyncingAuth(false);

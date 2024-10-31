@@ -38,7 +38,7 @@ const useWorkspaceDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
-  const { currentNetwork } = useNetworks();
+  const { currentNetwork, checkNetwork } = useNetworks();
 
   const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
     const provider = await ProviderInstance.create(currentNetwork.url);
@@ -146,6 +146,7 @@ const useWorkspaceDetails = () => {
     isTxFromDapp,
     isTokenExpired,
     setIsTokenExpired,
+    checkNetwork,
   };
 };
 
