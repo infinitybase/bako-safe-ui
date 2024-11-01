@@ -14,7 +14,7 @@ import {
 } from "../../types";
 import { TypeUser, createAccount } from "bakosafe";
 import { Address } from "fuels";
-import { signChallange } from "@/utils";
+import { signChallange } from "@/utils/webauthn";
 import { localStorageKeys } from "./utils";
 import { AxiosInstance } from "axios";
 import { bindMethods } from "@/utils/bindMethods";

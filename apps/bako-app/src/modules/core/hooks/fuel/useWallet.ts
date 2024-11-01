@@ -1,18 +1,17 @@
 import { SignWebAuthnPayload } from '@bako-safe/services/types';
+import { signChallange } from '@bako-safe/services/utils';
 import { useFuel } from '@fuels/react';
 import {
   useMutation,
   UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
-import { bakoCoder, SignatureType, TypeUser } from 'bakosafe';
+import { bakoCoder, recoverPublicKey, SignatureType, TypeUser } from 'bakosafe';
 import { Account } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useAuth } from '@/modules/auth/hooks/useAuth';
-import { signChallange } from '@/modules/core/utils/webauthn';
 
-import { recoverPublicKey } from '../../utils/webauthn/crypto';
 import { FuelQueryKeys } from './types';
 
 const useWallet = (account?: string) => {
