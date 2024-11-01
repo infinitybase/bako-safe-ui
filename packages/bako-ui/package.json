@@ -10,10 +10,7 @@
     "./themes": "./dist/themes/index.js"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && tsc-alias",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",

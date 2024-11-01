@@ -1,0 +1,24 @@
+{
+  "name": "@bako-safe/wallet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./vault": "./dist/vault/index.js",
+    "./transaction": "./dist/transaction/index.js"
+  },
+  "scripts": {
+    "build": "tsc && tsc-alias"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bakosafe": "0.0.93-beta",
+    "react": "^18.2.0",
+    "fuels": "0.96.1"
+  }
+}

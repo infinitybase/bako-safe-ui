@@ -14,10 +14,7 @@
     "./utils": "./dist/utils/index.js"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && tsc-alias",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "build": "tsc && tsc-alias"
   },
   "dependencies": {
     "@fuels/connectors": "0.35.1",
