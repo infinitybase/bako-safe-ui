@@ -5,16 +5,17 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { transactionService } from '@/config/services-initializer';
 import { useContactToast } from '@/modules/addressBook';
+import { useAuthContext } from '@/modules/auth/AuthProvider';
 import {
   Asset,
   NativeAssetId,
   NFT,
   useBakoSafeCreateTransaction,
-  useBakoSafeVault,
+  useBakoSafeGetVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
-import { transactionService } from '@/config/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
@@ -64,7 +65,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const {
     vaultDetails: {
       vaultRequest: {
-        data: { predicateAddress, provider, id },
+        data: { predicateAddress, id },
       },
       assets: { refetchAssets },
     },
@@ -73,6 +74,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     assetsMap,
   } = useWorkspaceContext();
+
+  const {
+    userInfos: { network, workspace },
+  } = useAuthContext();
 
   const [firstRender, setFirstRender] = useState(true);
   const [validTransactionFee, setValidTransactionFee] = useState<
@@ -102,10 +107,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       props?.hasAssetBalance(asset, amount) ?? false,
   });
 
-  const { vault, isLoading: isLoadingVault } = useBakoSafeVault({
-    address: predicateAddress,
-    provider,
+  const { vault, isLoading: isLoadingVault } = useBakoSafeGetVault({
+    predicateAddress,
     id,
+    workspaceId: workspace.id ?? '',
+    network,
   });
 
   const transactionRequest = useBakoSafeCreateTransaction({

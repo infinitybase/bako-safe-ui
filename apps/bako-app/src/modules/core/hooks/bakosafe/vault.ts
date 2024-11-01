@@ -1,10 +1,9 @@
 import { PredicateResponseWithWorkspace } from '@bako-safe/services/modules/vault';
-
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Network } from 'fuels';
 
 import { createVault } from './createVault';
 import { instantiateVault } from './instantiateVault';
-import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
@@ -24,31 +23,30 @@ interface UseCreateBakoSafeVaultPayload {
   providerUrl: string;
 }
 
-interface IUseBakoSafeVault {
-  provider: string;
-  address: string;
+interface IUseBakoSafeGetVault {
+  predicateAddress: string;
   id: string;
+  workspaceId: string;
+  network: Network;
 }
 
-const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
-  const { authDetails } = useWorkspaceContext();
-  const query = useBakoSafeQuery(
-    [
-      ...VAULT_QUERY_KEYS.VAULT(id),
-      authDetails.userInfos.workspace?.id,
-      authDetails.userInfos.network,
-    ],
-    async () => {
-      const vault = await instantiateVault({
-        predicateAddress: address,
-        providerUrl: authDetails.userInfos.network.url,
+const useBakoSafeGetVault = ({
+  predicateAddress,
+  id,
+  workspaceId,
+  network,
+}: IUseBakoSafeGetVault) => {
+  const query = useQuery({
+    queryKey: [...VAULT_QUERY_KEYS.VAULT(id), workspaceId, network],
+    queryFn: () => {
+      const vault = instantiateVault({
+        predicateAddress,
+        providerUrl: network.url,
       });
       return vault;
     },
-    {
-      enabled: !!id,
-    },
-  );
+    enabled: !!id,
+  });
 
   return {
     vault: query.data,
@@ -57,13 +55,14 @@ const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
 };
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const { mutate, ...mutation } = useBakoSafeMutation<
-    PredicateResponseWithWorkspace,
-    unknown,
-    UseCreateBakoSafeVaultPayload
-  >(
-    VAULT_QUERY_KEYS.DEFAULT,
-    async ({ name, minSigners, addresses, providerUrl }) => {
+  const { mutate, ...mutation } = useMutation({
+    mutationKey: VAULT_QUERY_KEYS.DEFAULT,
+    mutationFn: async ({
+      name,
+      minSigners,
+      addresses,
+      providerUrl,
+    }: UseCreateBakoSafeVaultPayload) => {
       try {
         const newVault = await createVault({
           name,
@@ -78,11 +77,9 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
         throw e;
       }
     },
-    {
-      onError: params?.onError,
-      onSuccess: params?.onSuccess,
-    },
-  );
+    onError: params?.onError,
+    onSuccess: params?.onSuccess,
+  });
 
   return {
     create: mutate,
@@ -90,4 +87,4 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   };
 };
 
-export { useBakoSafeVault, useCreateBakoSafeVault };
+export { useBakoSafeGetVault, useCreateBakoSafeVault };

@@ -3,11 +3,11 @@ import {
   ITransaction,
   TransactionWithVault,
 } from '@bako-safe/services/modules/transaction';
+import { useMutation } from '@tanstack/react-query';
 import {
   IBakoSafeAuth,
   ITransferAsset,
   TransactionStatus,
-  TransactionType,
   Vault,
 } from 'bakosafe';
 import { bn } from 'fuels';
@@ -18,7 +18,6 @@ import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';
 import { instantiateVault } from './instantiateVault';
 import { sendTransaction } from './sendTransaction';
-import { useBakoSafeMutation, useBakoSafeQuery } from './utils';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
@@ -47,9 +46,9 @@ const useBakoSafeCreateTransaction = ({
   assetsMap,
   ...options
 }: UseBakoSafeCreateTransactionParams) => {
-  return useBakoSafeMutation(
-    TRANSACTION_QUERY_KEYS.DEFAULT,
-    async (payload: IPayloadTransfer) => {
+  return useMutation({
+    mutationKey: TRANSACTION_QUERY_KEYS.DEFAULT,
+    mutationFn: async (payload: IPayloadTransfer) => {
       const { hashTxId } = await vault.transaction({
         name: payload.name!,
         assets: payload.assets.map((asset) => {
@@ -66,32 +65,8 @@ const useBakoSafeCreateTransaction = ({
       ]);
       return transaction;
     },
-    options,
-  );
-};
-
-interface UseBakoSafeListTransactionParams {
-  vaultId: string;
-  filter?: IListTransactions & {
-    limit: number;
-    type?: TransactionType;
-  };
-}
-
-const useBakoSafeTransactionList = ({
-  vaultId,
-  filter,
-}: UseBakoSafeListTransactionParams) => {
-  return useBakoSafeQuery(
-    TRANSACTION_QUERY_KEYS.VAULT(vaultId, filter),
-    async () => {
-      return await transactionService.getTransactionsPagination({
-        predicateId: [vaultId],
-        ...filter,
-      });
-    },
-    { enabled: !!vaultId, refetchOnWindowFocus: false },
-  );
+    ...options,
+  });
 };
 
 interface UseBakoSafeSendTransactionParams {
@@ -114,9 +89,12 @@ interface BakoSafeTransactionSendVariables {
 const useBakoSafeTransactionSend = (
   options: UseBakoSafeSendTransactionParams,
 ) => {
-  return useBakoSafeMutation(
-    TRANSACTION_QUERY_KEYS.SEND(),
-    async ({ transaction, providerUrl }: BakoSafeTransactionSendVariables) => {
+  return useMutation({
+    mutationKey: TRANSACTION_QUERY_KEYS.SEND(),
+    mutationFn: async ({
+      transaction,
+      providerUrl,
+    }: BakoSafeTransactionSendVariables) => {
       const vaultInstance = await instantiateVault({
         predicateAddress: transaction.predicateAddress,
         providerUrl,
@@ -131,14 +109,9 @@ const useBakoSafeTransactionSend = (
         throw e;
       }
     },
-    {
-      onSuccess: options.onSuccess,
-    },
-  );
+
+    onSuccess: options.onSuccess,
+  });
 };
 
-export {
-  useBakoSafeCreateTransaction,
-  useBakoSafeTransactionList,
-  useBakoSafeTransactionSend,
-};
+export { useBakoSafeCreateTransaction, useBakoSafeTransactionSend };
