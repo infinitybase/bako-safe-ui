@@ -28,7 +28,11 @@ export enum WebAuthnModeState {
 export type UseWebAuthnSignIn = ReturnType<typeof useWebAuthnSignIn>;
 
 const useWebAuthnSignIn = (
-  signInCallback: (vaultId?: string, workspaceId?: string) => void,
+  signInCallback: (
+    vaultId?: string,
+    workspaceId?: string,
+    firstLogin?: boolean,
+  ) => void,
 ) => {
   const [mode, setMode] = useState(WebAuthnModeState.SEARCH);
   const [createdAcccountUsername, setCreatedAcccountUsername] = useState('');

@@ -22,17 +22,21 @@ const useDappSignIn = () => {
   const { location, sessionId, byConnector, username } = useQueryParams();
   const { connect } = useSocket();
 
-  const redirect = useCallback(() => {
-    const isRedirectToPrevious = !!location.state?.from;
+  const redirect = useCallback(
+    (vaultId?: string, workspaceId?: string, firstLogin?: boolean) => {
+      const isRedirectToPrevious = !!location.state?.from;
 
-    if (isRedirectToPrevious) {
-      navigate(location.state.from);
-      return;
-    }
+      if (isRedirectToPrevious) {
+        navigate(location.state.from);
+        return;
+      }
 
-    navigate(`${Pages.dappWelcome()}${location.search}`);
-    // navigate(`${Pages.dappAuth()}${location.search}`);
-  }, [location]);
+      navigate(
+        `${firstLogin ? Pages.dappWelcome() : Pages.dappAuth()}${location.search}`,
+      );
+    },
+    [location],
+  );
 
   const walletSignIn = useWalletSignIn(redirect);
   const {
