@@ -10,9 +10,9 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 
 import { AddressUtils, PredicateAndWorkspace } from '@/modules';
-import { NetworkType } from '@/modules/network/services';
 import { openFaucet } from '@/modules/vault/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { ENetworks } from '@/utils/constants';
 
 import { AddressWithCopyBtn } from '../addressWithCopyButton';
 import { Dialog } from '../dialog';
@@ -20,17 +20,13 @@ import { Dialog } from '../dialog';
 interface IDepositDialogProps {
   vault: PredicateAndWorkspace;
   isOpen: boolean;
-  description?: string;
   setIsDepositDialogOpen: (value: boolean) => void;
-  setIsWelcomeDialogOpen?: (value: boolean) => void;
 }
 
 const DepositDialog = ({
   vault,
   isOpen,
   setIsDepositDialogOpen,
-  setIsWelcomeDialogOpen,
-  description,
 }: IDepositDialogProps) => {
   const {
     screenSizes: {
@@ -40,10 +36,9 @@ const DepositDialog = ({
       isSmall,
       isLowerThanFourHundredAndThirty,
     },
-    checkNetwork,
   } = useWorkspaceContext();
 
-  const isTestnet = checkNetwork(NetworkType.TESTNET);
+  const isPredicateFromTestNet = vault.provider === ENetworks.TEST_NET;
 
   return (
     <Dialog.Modal
@@ -61,10 +56,7 @@ const DepositDialog = ({
         <Dialog.Header
           mt={0}
           mb={0}
-          onClose={() => {
-            setIsDepositDialogOpen(false);
-            setIsWelcomeDialogOpen?.(true);
-          }}
+          onClose={() => setIsDepositDialogOpen(false)}
           w="full"
           maxW={{ base: 480, xs: 'unset' }}
           title={''}
@@ -107,8 +99,7 @@ const DepositDialog = ({
               fontSize="xs"
               lineHeight="16.8px"
             >
-              {description ??
-                'Use this address for receiving tokens on Fuel Network'}
+              Use this address for receiving tokens on Fuel Network
             </Text>
           </VStack>
 
@@ -183,7 +174,7 @@ const DepositDialog = ({
             },
           }}
         >
-          {isTestnet && (
+          {isPredicateFromTestNet && (
             <Button
               fontSize="14px"
               lineHeight="15.85px"
