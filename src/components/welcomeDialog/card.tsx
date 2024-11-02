@@ -14,6 +14,7 @@ interface IWelcomeCardProps {
   onClick?: () => void;
   iconSize?: string;
   commingSoon?: boolean;
+  hideBadge?: boolean;
 }
 
 const WelcomeCard = ({
@@ -23,6 +24,7 @@ const WelcomeCard = ({
   onClick,
   iconSize,
   commingSoon,
+  hideBadge = false,
 }: IWelcomeCardProps) => {
   return (
     <HStack
@@ -47,7 +49,7 @@ const WelcomeCard = ({
           {description}
         </Text>
       </VStack>
-      {commingSoon && (
+      {commingSoon && !hideBadge && (
         <Text
           fontSize="xs"
           color="grey.250"

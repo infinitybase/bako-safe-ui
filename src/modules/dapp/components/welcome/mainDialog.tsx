@@ -67,6 +67,7 @@ const WelcomeDialogDapp = ({
             icon={BridgeIcon}
             onClick={isTestnet ? undefined : () => handleRedirectToMainNet()}
             commingSoon={isTestnet}
+            hideBadge={true}
           />
           {/* <WelcomeCard
           title="Bridge on Orbiter Finance"
