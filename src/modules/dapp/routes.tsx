@@ -3,8 +3,7 @@ import { Route } from 'react-router-dom';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
-import { TransactionConfirm, VaultConnector } from './pages';
-import { DappWelcomeDialog } from './pages/DappWelcomeDialog';
+import { DappWelcomeDialog, TransactionConfirm, VaultConnector } from './pages';
 import { SignMessage } from './pages/signMessage';
 
 const dappRoutes = (
