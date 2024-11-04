@@ -1,10 +1,12 @@
 import { ITransaction } from '@bako-safe/services/modules/transaction';
+import { useBakoSafeSendTransaction } from '@bako-safe/wallet/transaction';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
-import { useAuth } from '@/modules';
-import { useBakoSafeTransactionSend } from '@/modules/core';
+import { useAuthContext } from '@/modules/auth/AuthProvider';
+// import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
 
 import { useTransactionToast } from '../../providers/toast';
@@ -20,17 +22,23 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { setIsCurrentTxPending } = useTransactionState();
   const toast = useTransactionToast();
 
-  const { userInfos } = useAuth();
+  const { userInfos } = useAuthContext();
 
-  const { mutate: sendTransaction } = useBakoSafeTransactionSend({
-    onSuccess: (transaction: ITransaction) => {
-      onTransactionSuccess();
-      validateResult(transaction);
-    },
-    onError: async (transaction) => {
-      const tx = await transactionService.getById(transaction.id);
-      validateResult(tx);
-      onTransactionSuccess();
+  const { mutate: sendTransaction } = useBakoSafeSendTransaction({
+    serverApi: import.meta.env.VITE_API_URL,
+    token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    userAddress: userInfos.address,
+    options: {
+      onSuccess: async (transactionId: string) => {
+        onTransactionSuccess();
+        const tx = await transactionService.getById(transactionId);
+        validateResult(tx);
+      },
+      onError: async (transactionId: string) => {
+        const tx = await transactionService.getById(transactionId);
+        validateResult(tx);
+        onTransactionSuccess();
+      },
     },
   });
 

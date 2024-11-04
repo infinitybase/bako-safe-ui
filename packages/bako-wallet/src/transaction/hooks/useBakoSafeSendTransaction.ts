@@ -5,37 +5,38 @@ import { instantiateVault } from '../../vault';
 import { sendTransaction } from '../sendTransaction';
 import { TRANSACTION_QUERY_KEYS } from './useBakoSafeCreateTransaction';
 
-interface UseBakoSafeSendTransactionParams {
-  onSuccess: () => boolean;
-  onError?: (
-    transaction: BakoSafeTransactionSendVariables['transaction'],
-    error: any,
-  ) => void | Promise<void>;
+interface UseBakoSafeSendTransactionOptions {
+  onSuccess: (transactionId: string) => void;
+  onError?: (transactionId: string, error: any) => void | Promise<void>;
 }
 
-interface BakoSafeTransactionSendVariables {
+interface BakoSafeSendTransactionVariables {
   transaction: Pick<
     ITransaction,
     'id' | 'predicateId' | 'predicateAddress' | 'hash'
   >;
   providerUrl: string;
+}
+
+interface UseBakoSafeSendTransactionProps {
   token: string;
   userAddress: string;
   serverApi: string;
+  options: UseBakoSafeSendTransactionOptions;
 }
 
-const useBakoSafeTransactionSend = (
-  options: UseBakoSafeSendTransactionParams,
-) => {
+const useBakoSafeSendTransaction = ({
+  options,
+  serverApi,
+  token,
+  userAddress,
+}: UseBakoSafeSendTransactionProps) => {
   return useMutation({
     mutationKey: TRANSACTION_QUERY_KEYS.SEND(),
     mutationFn: async ({
       transaction,
       providerUrl,
-      token,
-      userAddress,
-      serverApi,
-    }: BakoSafeTransactionSendVariables) => {
+    }: BakoSafeSendTransactionVariables) => {
       const vaultInstance = await instantiateVault({
         predicateAddress: transaction.predicateAddress,
         providerUrl,
@@ -45,13 +46,11 @@ const useBakoSafeTransactionSend = (
       });
 
       try {
-        const tx = await sendTransaction(vaultInstance, transaction.hash);
+        await sendTransaction(vaultInstance, transaction.hash);
 
-        const { isStatusSuccess } = await tx.waitForResult();
-
-        return isStatusSuccess;
+        return transaction.id;
       } catch (e) {
-        options?.onError?.(transaction, e);
+        options?.onError?.(transaction.id, e);
         throw e;
       }
     },
@@ -60,4 +59,4 @@ const useBakoSafeTransactionSend = (
   });
 };
 
-export { useBakoSafeTransactionSend };
+export { useBakoSafeSendTransaction };
