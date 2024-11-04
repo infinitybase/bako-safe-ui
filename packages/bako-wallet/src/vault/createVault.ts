@@ -1,14 +1,14 @@
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
 import { Address } from 'fuels';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { vaultService } from '@/config/services-initializer';
-
 interface ICreateVaultPayload {
   name?: string;
   signers: string[];
   minSigners: number;
   providerUrl: string;
+  serverApi: string;
+  userAddress: string;
+  token: string;
 }
 
 const createVault = async ({
@@ -16,10 +16,10 @@ const createVault = async ({
   signers,
   minSigners,
   providerUrl,
+  serverApi,
+  userAddress,
+  token,
 }: ICreateVaultPayload) => {
-  const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
-  const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
-
   const configurable: VaultConfigurable = {
     SIGNATURES_COUNT: minSigners,
     SIGNERS: signers,
@@ -28,7 +28,7 @@ const createVault = async ({
   const vaultProvider = await BakoProvider.create(providerUrl, {
     token,
     address: userAddress,
-    serverApi: import.meta.env.VITE_API_URL,
+    serverApi,
   });
 
   const predicate = new Vault(vaultProvider, {
@@ -36,12 +36,7 @@ const createVault = async ({
     HASH_PREDICATE: Address.fromRandom().toB256(),
   });
 
-  const savedPredicate = await predicate.save({ name });
-  const vault = await vaultService.getByAddress(
-    savedPredicate.predicateAddress,
-  );
-
-  return vault;
+  return await predicate.save({ name });
 };
 
 export { createVault };

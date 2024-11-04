@@ -25,13 +25,11 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@ui/*": ["../bako-ui/src/*"],
-      "@services/*": ["../bako-services/src/*"],
       "@dapp/*": ["../bako-dapp/src/*"]
     },
     "outDir": "./dist"
   },
-  "include": ["src", "src/utils/handle-action-using-keys.ts"],
+  "include": ["src"],
   "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules"],
   "references": [
     {

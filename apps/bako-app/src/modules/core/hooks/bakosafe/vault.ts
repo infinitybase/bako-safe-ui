@@ -2,8 +2,7 @@ import { PredicateResponseWithWorkspace } from '@bako-safe/services/modules/vaul
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Network } from 'fuels';
 
-import { createVault } from './createVault';
-import { instantiateVault } from './instantiateVault';
+import { vaultService } from '@/config/services-initializer';
 
 const VAULT_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'vault'],
@@ -71,7 +70,11 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
           signers: addresses,
         });
 
-        return newVault;
+        const vault = await vaultService.getByAddress(
+          newVault.predicateAddress,
+        );
+
+        return vault;
       } catch (e) {
         console.log('[ERROR_ON_VAULT_CREATE]', e);
         throw e;

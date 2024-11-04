@@ -9,9 +9,6 @@ import {
 import { bakoCoder, recoverPublicKey, SignatureType, TypeUser } from 'bakosafe';
 import { Account } from 'fuels';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-import { useAuth } from '@/modules/auth/hooks/useAuth';
-
 import { FuelQueryKeys } from './types';
 
 const useWallet = (account?: string) => {
@@ -24,8 +21,8 @@ const useWallet = (account?: string) => {
   });
 };
 
-const useMyWallet = () => {
-  return useWallet(CookiesConfig.getCookie(CookieName.ADDRESS));
+const useMyWallet = (userAddress: string) => {
+  return useWallet(userAddress);
 };
 
 //sign by webauthn
@@ -65,21 +62,22 @@ const signAccountFuel = async (account: Account, message: string) => {
 };
 
 const useWalletSignMessage = (
+  userAddress: string,
+  type: TypeUser,
+  webauthnId: string,
+  webauthnPublicKey: string,
   options?: UseMutationOptions<string, unknown, string>,
 ) => {
-  const { data: wallet } = useMyWallet();
-  const {
-    userInfos: { type, webauthn },
-  } = useAuth();
+  const { data: wallet } = useMyWallet(userAddress);
 
   return useMutation({
     mutationFn: async (message: string) => {
-      switch (type.type) {
+      switch (type) {
         case TypeUser.WEB_AUTHN:
           return signAccountWebAuthn({
             challenge: message,
-            id: webauthn!.id,
-            publicKey: webauthn!.publicKey,
+            id: webauthnId,
+            publicKey: webauthnPublicKey,
           });
         default:
           return signAccountFuel(wallet!, message);

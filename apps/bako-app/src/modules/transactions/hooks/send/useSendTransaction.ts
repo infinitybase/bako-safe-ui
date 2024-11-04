@@ -2,10 +2,10 @@ import { ITransaction } from '@bako-safe/services/modules/transaction';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
+import { transactionService } from '@/config/services-initializer';
 import { useAuth } from '@/modules';
 import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
-import { transactionService } from '@/config/services-initializer';
 
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';

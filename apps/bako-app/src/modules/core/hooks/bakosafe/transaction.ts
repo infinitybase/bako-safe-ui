@@ -3,6 +3,8 @@ import {
   ITransaction,
   TransactionWithVault,
 } from '@bako-safe/services/modules/transaction';
+import { sendTransaction } from '@bako-safe/wallet/transaction';
+import { instantiateVault } from '@bako-safe/wallet/vault';
 import { useMutation } from '@tanstack/react-query';
 import {
   IBakoSafeAuth,
@@ -12,12 +14,11 @@ import {
 } from 'bakosafe';
 import { bn } from 'fuels';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
 
 import { AssetMap } from '../..';
 import { getAssetInfo } from '../../utils/assets/data';
-import { instantiateVault } from './instantiateVault';
-import { sendTransaction } from './sendTransaction';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
@@ -95,13 +96,25 @@ const useBakoSafeTransactionSend = (
       transaction,
       providerUrl,
     }: BakoSafeTransactionSendVariables) => {
+      const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+      const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
       const vaultInstance = await instantiateVault({
         predicateAddress: transaction.predicateAddress,
         providerUrl,
+        token,
+        userAddress,
+        serverApi: import.meta.env.VITE_API_URL,
       });
 
       try {
-        const txResult = await sendTransaction(vaultInstance, transaction.hash);
+        await sendTransaction(vaultInstance, transaction.hash);
+
+        const txResult = await transactionService.getByHash(transaction.hash, [
+          TransactionStatus.PENDING_SENDER,
+          TransactionStatus.PROCESS_ON_CHAIN,
+          TransactionStatus.FAILED,
+          TransactionStatus.SUCCESS,
+        ]);
 
         return txResult;
       } catch (e) {

@@ -1,13 +1,14 @@
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
 import { Provider } from 'fuels';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
-
 interface IInstantiateVaultProps {
   provider?: Provider;
   providerUrl: string;
   configurable?: string;
   predicateAddress?: string;
+  serverApi: string;
+  userAddress: string;
+  token: string;
 }
 
 const instantiateVault = async ({
@@ -15,6 +16,9 @@ const instantiateVault = async ({
   providerUrl,
   configurable,
   predicateAddress,
+  serverApi,
+  token,
+  userAddress,
 }: IInstantiateVaultProps) => {
   if (configurable && provider) {
     const vault = new Vault(
@@ -25,13 +29,10 @@ const instantiateVault = async ({
     return vault;
   }
 
-  const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
-  const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
-
   const vaultProvider = await BakoProvider.create(providerUrl, {
     address: userAddress,
     token,
-    serverApi: import.meta.env.VITE_API_URL,
+    serverApi,
   });
 
   return await Vault.fromAddress(predicateAddress ?? '', vaultProvider);

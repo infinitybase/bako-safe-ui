@@ -4,6 +4,7 @@ import {
   IUseAuthDetails,
   UserType,
 } from '@bako-safe/services/types';
+import { EConnectors, EConnectorsInverse } from '@bako-safe/wallet/fuel';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
@@ -11,10 +12,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import {
-  EConnectors,
-  EConnectorsInverse,
-} from '@/modules/core/hooks/fuel/useListConnectors';
 
 import {
   generateRedirectQueryParams,
