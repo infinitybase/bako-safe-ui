@@ -13,7 +13,6 @@ import {
   useVaultByIdRequest,
 } from '@/modules';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
-import { useAuth } from '@/modules/auth/hooks/useAuth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
 
@@ -27,15 +26,11 @@ const useWorkspaceDetails = () => {
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 
-  const {
-    handlers: { isTokenExpired, setIsTokenExpired },
-  } = useAuthContext();
+  const authDetails = useAuthContext();
 
   const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
 
   const screenSizes = useScreenSize();
-
-  const authDetails = useAuth();
 
   const {
     vaultPageParams: { vaultId },
@@ -100,7 +95,7 @@ const useWorkspaceDetails = () => {
     isVaultAssetsLoading: vaultAssets.isLoading,
     isVaultRequestLoading: vaultRequest.isLoading,
     isWorkspaceBalanceLoading: workspaceBalance.isLoading,
-    isTokenExpired,
+    isTokenExpired: authDetails.handlers.isTokenExpired,
     isFuelTokensLoading,
   });
 
@@ -130,8 +125,6 @@ const useWorkspaceDetails = () => {
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,
-    isTokenExpired,
-    setIsTokenExpired,
   };
 };
 

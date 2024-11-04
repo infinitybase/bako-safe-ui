@@ -1,14 +1,18 @@
+import { useCreateBakoSafeVault } from '@bako-safe/wallet/vault';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
+import { vaultService } from '@/config/services-initializer';
 import { useContactToast } from '@/modules/addressBook/hooks';
-import { useCreateBakoSafeVault } from '@/modules/core/hooks';
+import { useAuthContext } from '@/modules/auth/AuthProvider';
 import { Pages } from '@/modules/core/routes';
 // import { TemplateService } from '@/modules/template/services/methods';
 // import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { serverApi } from '@/utils/constants';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
@@ -23,7 +27,6 @@ export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;
 
 const useCreateVault = () => {
   const {
-    authDetails: { userInfos },
     workspaceInfos: {
       requests: {
         latestPredicates: { refetch: refetchLatestPredicates },
@@ -34,6 +37,10 @@ const useCreateVault = () => {
     },
   } = useWorkspaceContext();
 
+  const {
+    userInfos: { address: userAddress, network },
+  } = useAuthContext();
+
   const navigate = useNavigate();
   const params = useParams<{ workspaceId: string }>();
   const { errorToast } = useContactToast();
@@ -42,25 +49,32 @@ const useCreateVault = () => {
   const [vaultId, setVaultId] = useState<string>('');
   // const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   // const { setTemplateFormInitial } = useTemplateStore();
-  const { form, addressesFieldArray } = useCreateVaultForm(userInfos.address);
+  const { form, addressesFieldArray } = useCreateVaultForm(userAddress);
 
   const [searchRequest, setSearchRequest] = useState('');
   const [search, setSearch] = useState('');
 
   const bakoSafeVault = useCreateBakoSafeVault({
-    onSuccess: (data) => {
-      refetchLatestPredicates();
-      refetchUserVaults();
-      setVaultId(data.id);
-      setTab(TabState.SUCCESS);
-      form.reset();
-      setSearch('');
-    },
-    onError: () => {
-      errorToast({
-        title: 'Error on vault creation!',
-        description: 'An error occurred while creating the vault',
-      });
+    serverApi: serverApi,
+    token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    userAddress,
+    options: {
+      onSuccess: async (predicateAddress) => {
+        const newVault = await vaultService.getByAddress(predicateAddress);
+
+        refetchLatestPredicates();
+        refetchUserVaults();
+        setVaultId(newVault.id);
+        setTab(TabState.SUCCESS);
+        form.reset();
+        setSearch('');
+      },
+      onError: () => {
+        errorToast({
+          title: 'Error on vault creation!',
+          description: 'An error occurred while creating the vault',
+        });
+      },
     },
   });
 
@@ -100,7 +114,7 @@ const useCreateVault = () => {
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
-      providerUrl: userInfos.network.url,
+      providerUrl: network.url,
       addresses,
     });
   });
@@ -125,12 +139,12 @@ const useCreateVault = () => {
   const onDeposit = async () => {
     if (bakoSafeVault.data) {
       window.open(
-        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data.predicateAddress}`,
+        `${import.meta.env.VITE_FAUCET}?address=${bakoSafeVault.data}`,
         '_BLANK',
       );
       navigate(
         Pages.detailsVault({
-          vaultId: bakoSafeVault.data.id,
+          vaultId,
           workspaceId: params.workspaceId!,
         }),
       );

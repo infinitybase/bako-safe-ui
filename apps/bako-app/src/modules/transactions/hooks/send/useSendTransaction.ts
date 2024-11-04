@@ -8,6 +8,7 @@ import { transactionService } from '@/config/services-initializer';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
 // import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
+import { serverApi } from '@/utils/constants';
 
 import { useTransactionToast } from '../../providers/toast';
 import { useTransactionState } from '../../states';
@@ -25,7 +26,7 @@ const useSendTransaction = ({ onTransactionSuccess }: IUseSendTransaction) => {
   const { userInfos } = useAuthContext();
 
   const { mutate: sendTransaction } = useBakoSafeSendTransaction({
-    serverApi: import.meta.env.VITE_API_URL,
+    serverApi: serverApi,
     token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
     userAddress: userInfos.address,
     options: {

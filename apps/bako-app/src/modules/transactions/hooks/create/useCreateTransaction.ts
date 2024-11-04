@@ -1,4 +1,5 @@
 import { useBakoSafeCreateTransaction } from '@bako-safe/wallet/transaction';
+import { useBakoSafeGetVault } from '@bako-safe/wallet/vault';
 import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById, TransactionStatus } from 'bakosafe';
 import { BN, bn } from 'fuels';
@@ -6,6 +7,7 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
 import { useContactToast } from '@/modules/addressBook';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
@@ -14,10 +16,10 @@ import {
   getAssetInfo,
   NativeAssetId,
   NFT,
-  useBakoSafeGetVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { serverApi } from '@/utils/constants';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
 import { useCreateTransactionForm } from './useCreateTransactionForm';
@@ -77,7 +79,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   } = useWorkspaceContext();
 
   const {
-    userInfos: { network, workspace },
+    userInfos: { network, workspace, address },
   } = useAuthContext();
 
   const [firstRender, setFirstRender] = useState(true);
@@ -109,6 +111,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const { vault, isLoading: isLoadingVault } = useBakoSafeGetVault({
+    serverApi: serverApi,
+    token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
+    userAddress: address,
     predicateAddress,
     id,
     workspaceId: workspace.id ?? '',

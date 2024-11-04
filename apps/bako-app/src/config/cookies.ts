@@ -5,17 +5,8 @@ const { VITE_ENCRYPTION_KEY } = import.meta.env;
 
 export enum CookieName {
   ACCESS_TOKEN = `bakosafe/token`,
-  ACCOUNT_TYPE = `bakosafe/account_type`,
   ADDRESS = `bakosafe/address`,
-  AVATAR = `bakosafe/avatar`,
-  USER_ID = `bakosafe/user_id`,
   SINGLE_WORKSPACE = `bakosafe/single_workspace`,
-  SINGLE_CONTACTS = `bakosafe/single_contacts`,
-  WORKSPACE = `bakosafe/workspace`,
-  PERMISSIONS = `bakosafe/permissions`,
-  WEB_AUTHN_ID = `bakosafe/web_authn_id`,
-  WEB_AUTHN_PK = `bakosafe/web_authn_pk`,
-  PROVIDER_URL = `bakosafe/provider_url`,
 }
 
 interface Cookie {

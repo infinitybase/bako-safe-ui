@@ -2,7 +2,6 @@ import { AuthRoute, Pages } from '@app/modules/core';
 import { Route } from 'react-router-dom';
 
 import { TransactionConfirm, VaultConnector } from './pages';
-import { SignMessage } from './pages/signMessage';
 
 const dappRoutes = (
   <>
@@ -12,17 +11,6 @@ const dappRoutes = (
         element={
           <AuthRoute>
             <VaultConnector />
-          </AuthRoute>
-        }
-      />
-    </Route>
-
-    <Route path={Pages.dappSign()}>
-      <Route
-        index
-        element={
-          <AuthRoute>
-            <SignMessage />
           </AuthRoute>
         }
       />

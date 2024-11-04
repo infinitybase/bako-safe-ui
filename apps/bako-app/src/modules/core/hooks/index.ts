@@ -1,5 +1,3 @@
-export * from './bakosafe';
-export * from '../../../../../../packages/bako-wallet/src/fuel';
 export * from './socket';
 export * from './useGetParams';
 export * from './useGetTokenInfos';
