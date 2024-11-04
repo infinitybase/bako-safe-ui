@@ -15,6 +15,7 @@
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
+    "@bako-safe/wallet": "workspace:*",
     "@fuels/connectors": "0.35.1",
     "@fuels/react": "0.35.0",
     "@noble/curves": "1.3.0",

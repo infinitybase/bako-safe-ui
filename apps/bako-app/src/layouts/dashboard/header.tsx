@@ -9,6 +9,7 @@ import {
   SettingsTopMenuIcon,
   UnknownIcon,
 } from '@bako-safe/ui/components';
+import { EConnectors } from '@bako-safe/wallet/fuel';
 import {
   Avatar,
   Box,
@@ -34,7 +35,6 @@ import { useEffect } from 'react';
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn } from '@/components';
 import { useUserWorkspacesRequest } from '@/modules';
-import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';

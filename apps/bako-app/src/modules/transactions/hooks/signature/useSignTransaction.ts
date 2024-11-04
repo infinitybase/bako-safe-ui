@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { queryClient } from '@/config';
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
+import { useAuthContext } from '@/modules/auth/AuthProvider';
 import { useWalletSignMessage } from '@/modules/core';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
@@ -52,6 +53,9 @@ const useSignTransaction = ({
   const [selectedTransaction, setSelectedTransaction] =
     useState<IPendingTransactionDetails>();
   const [isSignConfirmed, setIsSignConfirmed] = useState(false);
+  const {
+    userInfos: { type, webauthn, address },
+  } = useAuthContext();
 
   const toast = useTransactionToast();
   const { warningToast } = useContactToast();
@@ -68,14 +72,20 @@ const useSignTransaction = ({
     },
   });
 
-  const signMessageRequest = useWalletSignMessage({
-    onError: () => {
-      warningToast({
-        title: 'Signature failed',
-        description: 'Please try again!',
-      });
+  const signMessageRequest = useWalletSignMessage(
+    address,
+    type.type,
+    webauthn?.id,
+    webauthn?.publicKey,
+    {
+      onError: () => {
+        warningToast({
+          title: 'Signature failed',
+          description: 'Please try again!',
+        });
+      },
     },
-  });
+  );
 
   const request = useSignTransactionRequest({
     onSuccess: async () => {

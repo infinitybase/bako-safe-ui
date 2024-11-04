@@ -12,7 +12,7 @@
     "./fuel": "./dist/fuel/index.js"
   },
   "scripts": {
-    "build": "tsc && tsc-alias"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

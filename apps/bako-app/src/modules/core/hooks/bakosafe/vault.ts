@@ -1,7 +1,9 @@
 import { PredicateResponseWithWorkspace } from '@bako-safe/services/modules/vault';
+import { createVault, instantiateVault } from '@bako-safe/wallet/vault';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Network } from 'fuels';
 
+import { CookieName, CookiesConfig } from '@/config/cookies';
 import { vaultService } from '@/config/services-initializer';
 
 const VAULT_QUERY_KEYS = {
@@ -38,9 +40,14 @@ const useBakoSafeGetVault = ({
   const query = useQuery({
     queryKey: [...VAULT_QUERY_KEYS.VAULT(id), workspaceId, network],
     queryFn: () => {
+      const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+      const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
       const vault = instantiateVault({
         predicateAddress,
         providerUrl: network.url,
+        token,
+        userAddress,
+        serverApi: import.meta.env.VITE_API_URL,
       });
       return vault;
     },
@@ -62,12 +69,18 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
       addresses,
       providerUrl,
     }: UseCreateBakoSafeVaultPayload) => {
+      const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+      const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
+
       try {
         const newVault = await createVault({
           name,
           minSigners,
           providerUrl,
           signers: addresses,
+          token,
+          userAddress,
+          serverApi: import.meta.env.VITE_API_URL,
         });
 
         const vault = await vaultService.getByAddress(

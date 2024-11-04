@@ -63,6 +63,7 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
 
   const currentAmount = form.watch(`transactions.${accordion.index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
+
   const isTransactionFeeLoading =
     isLoadingVault ||
     resolveTransactionCosts.isPending ||

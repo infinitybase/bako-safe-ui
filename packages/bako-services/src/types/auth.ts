@@ -1,6 +1,7 @@
 import { TypeUser } from "bakosafe";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { Network, Provider } from "fuels";
+import { EConnectors } from "@bako-safe/wallet/dist/fuel";
 
 import { IPermission, Workspace } from "@/modules/workspace";
 
@@ -8,12 +9,6 @@ export enum Encoder {
   FUEL = "FUEL",
   METAMASK = "METAMASK",
   WEB_AUTHN = "WEB_AUTHN",
-}
-
-export enum EConnectors {
-  FUEL = "Fuel Wallet",
-  FULLET = "Fuelet Wallet",
-  WEB_AUTHN = "Webauthn",
 }
 
 export enum NetworkType {

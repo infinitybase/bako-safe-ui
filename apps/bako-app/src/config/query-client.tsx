@@ -1,9 +1,8 @@
+import { FuelQueryKeys } from '@bako-safe/wallet/fuel';
 import { useFuel } from '@fuels/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useEffect } from 'react';
-
-import { FuelQueryKeys } from '@/modules/core/hooks/fuel/types';
 
 interface BakoSafeQueryClientProviderProps {
   children: React.ReactNode;

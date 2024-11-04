@@ -1,24 +1,14 @@
 import {
   IListTransactions,
   ITransaction,
-  TransactionWithVault,
 } from '@bako-safe/services/modules/transaction';
 import { sendTransaction } from '@bako-safe/wallet/transaction';
 import { instantiateVault } from '@bako-safe/wallet/vault';
 import { useMutation } from '@tanstack/react-query';
-import {
-  IBakoSafeAuth,
-  ITransferAsset,
-  TransactionStatus,
-  Vault,
-} from 'bakosafe';
-import { bn } from 'fuels';
+import { IBakoSafeAuth, TransactionStatus } from 'bakosafe';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
-
-import { AssetMap } from '../..';
-import { getAssetInfo } from '../../utils/assets/data';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
@@ -29,45 +19,6 @@ export const TRANSACTION_QUERY_KEYS = {
     id,
     filter,
   ],
-};
-export interface IPayloadTransfer {
-  assets: ITransferAsset[];
-  name?: string;
-}
-
-interface UseBakoSafeCreateTransactionParams {
-  vault: Vault;
-  assetsMap: AssetMap;
-  onSuccess: (result: TransactionWithVault) => void;
-  onError: () => void;
-}
-
-const useBakoSafeCreateTransaction = ({
-  vault,
-  assetsMap,
-  ...options
-}: UseBakoSafeCreateTransactionParams) => {
-  return useMutation({
-    mutationKey: TRANSACTION_QUERY_KEYS.DEFAULT,
-    mutationFn: async (payload: IPayloadTransfer) => {
-      const { hashTxId } = await vault.transaction({
-        name: payload.name!,
-        assets: payload.assets.map((asset) => {
-          const { units } = getAssetInfo(assetsMap, asset.assetId);
-
-          return {
-            ...asset,
-            amount: bn.parseUnits(asset.amount, units).format(),
-          };
-        }),
-      });
-      const transaction = await transactionService.getByHash(hashTxId, [
-        TransactionStatus.AWAIT_REQUIREMENTS,
-      ]);
-      return transaction;
-    },
-    ...options,
-  });
 };
 
 interface UseBakoSafeSendTransactionParams {
@@ -127,4 +78,4 @@ const useBakoSafeTransactionSend = (
   });
 };
 
-export { useBakoSafeCreateTransaction, useBakoSafeTransactionSend };
+export { useBakoSafeTransactionSend };

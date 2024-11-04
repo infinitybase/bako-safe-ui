@@ -1,5 +1,6 @@
+import { useBakoSafeCreateTransaction } from '@bako-safe/wallet/transaction';
 import { useMutation } from '@tanstack/react-query';
-import { IAssetGroupById } from 'bakosafe';
+import { IAssetGroupById, TransactionStatus } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -10,9 +11,9 @@ import { useContactToast } from '@/modules/addressBook';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
 import {
   Asset,
+  getAssetInfo,
   NativeAssetId,
   NFT,
-  useBakoSafeCreateTransaction,
   useBakoSafeGetVault,
   useGetTokenInfosArray,
 } from '@/modules/core';
@@ -116,8 +117,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const transactionRequest = useBakoSafeCreateTransaction({
     vault: vault!,
-    assetsMap,
-    onSuccess: (transaction) => {
+    onSuccess: async (hashTxId: string) => {
       successToast({
         title: 'Transaction created!',
         description: 'Your transaction was successfully created...',
@@ -127,6 +127,9 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       refetchHomeTransactionsList();
       refetchVaultTransactionsList();
       if (props?.createTransactionAndSign) {
+        const transaction = await transactionService.getByHash(hashTxId, [
+          TransactionStatus.AWAIT_REQUIREMENTS,
+        ]);
         confirmTransaction(transaction.id, undefined, transaction);
       }
       handleClose();
@@ -140,14 +143,19 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const handleCreateTransaction = form.handleSubmit((data) => {
+    const assetsWithUnits = data.transactions!.map((transaction) => {
+      const { units } = getAssetInfo(assetsMap, transaction.asset);
+      return {
+        amount: bn.parseUnits(transaction.amount, units).format(),
+        assetId: transaction.asset,
+        to: transaction.value,
+      };
+    });
+
     transactionRequest.mutate(
       {
         name: data.name,
-        assets: data.transactions!.map((transaction) => ({
-          amount: transaction.amount,
-          assetId: transaction.asset,
-          to: transaction.value,
-        })),
+        assets: assetsWithUnits,
       },
       {
         onSuccess: () => {
@@ -158,14 +166,19 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const handleCreateAndSignTransaction = form.handleSubmit((data) => {
+    const assetsWithUnits = data.transactions!.map((transaction) => {
+      const { units } = getAssetInfo(assetsMap, transaction.asset);
+      return {
+        amount: bn.parseUnits(transaction.amount, units).format(),
+        assetId: transaction.asset,
+        to: transaction.value,
+      };
+    });
+
     transactionRequest.mutate(
       {
         name: data.name,
-        assets: data.transactions!.map((transaction) => ({
-          amount: transaction.amount,
-          assetId: transaction.asset,
-          to: transaction.value,
-        })),
+        assets: assetsWithUnits,
       },
       {
         onSuccess: () => {

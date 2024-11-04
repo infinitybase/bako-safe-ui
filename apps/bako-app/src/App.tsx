@@ -44,7 +44,6 @@ function App() {
     };
 
     function onConnection(isConnected: boolean) {
-      console.log('isOnnce', isConnected);
       if (isConnected) return;
       clearAll();
     }

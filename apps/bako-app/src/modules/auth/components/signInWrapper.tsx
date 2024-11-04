@@ -1,3 +1,4 @@
+import { useListConnectors } from '@bako-safe/wallet/fuel';
 import {
   TabPanel,
   TabPanels,
@@ -10,7 +11,6 @@ import { useEffect } from 'react';
 
 import { useQueryParams, useVerifyBrowserType } from '@/modules';
 import { useContactToast } from '@/modules/addressBook/hooks';
-import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
