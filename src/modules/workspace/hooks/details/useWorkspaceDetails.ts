@@ -14,6 +14,7 @@ import {
   useVaultByIdRequest,
 } from '@/modules';
 import { useAuth } from '@/modules/auth';
+import { useOffChainSync } from '@/modules/core/hooks/bako-id/useOffChainSync';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
 
@@ -45,6 +46,8 @@ const useWorkspaceDetails = () => {
 
     return provider.instance;
   }, [currentNetwork]);
+
+  const offChainSync = useOffChainSync(currentNetwork.url);
 
   // const {
   //   resetAllTransactionsTypeFilters,
@@ -135,6 +138,7 @@ const useWorkspaceDetails = () => {
       assets: vaultAssets,
     },
     providerInstance,
+    offChainSync,
     userVaults,
     addressBookInfos,
     tokensUSD,
