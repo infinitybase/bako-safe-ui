@@ -1,11 +1,12 @@
+import { NetworkQueryKey } from '@bako-safe/services';
 import { useQuery } from '@tanstack/react-query';
 
-import { NetworkQueryKey, NetworkService } from '../services';
+import { networkService } from '@/config/services-initializer';
 
 const useListNetworksRequest = () => {
   return useQuery({
     queryKey: [NetworkQueryKey.LIST_NETWORKS],
-    queryFn: async () => NetworkService.list(),
+    queryFn: async () => networkService.list(),
   });
 };
 

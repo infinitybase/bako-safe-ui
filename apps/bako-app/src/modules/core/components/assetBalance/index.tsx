@@ -11,13 +11,13 @@ import {
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
+import { networkService } from '@/config/services-initializer';
 import {
   AddressUtils,
   Asset,
   NFT,
   shakeAnimationY,
 } from '@/modules/core/utils';
-import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -51,7 +51,7 @@ const AssetsBalanceCard = ({
 
   const redirectToNetwork = () =>
     window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
+      `${networkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
       '_BLANK',
     );
 

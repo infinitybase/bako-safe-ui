@@ -4,8 +4,8 @@ import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 
+import { networkService } from '@/config/services-initializer';
 import { shakeAnimationY } from '@/modules/core';
-import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionState } from '../../types';
@@ -47,7 +47,7 @@ const Details = ({
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
+      `${networkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

@@ -1,20 +1,16 @@
-import { Provider } from 'fuels';
+import { Provider } from "fuels";
 
-import { api } from '@/config';
-import { localStorageKeys } from '@/modules/auth';
+import { localStorageKeys } from "@/modules/auth";
+import { AxiosInstance } from "axios";
+import { bindMethods } from "@/utils/bindMethods";
+import { NetworkType } from "@/types";
 
 export enum NetworkQueryKey {
-  CREATE_NETWORK = 'create-network',
-  LIST_NETWORKS = 'list-networks',
-  SELECT_NETWORK = 'select-network',
-  DELETE_NETWORK = 'delete-network',
-  CHECK_NETWORK = 'check-network',
-}
-
-export enum NetworkType {
-  MAINNET = 'mainnet',
-  TESTNET = 'testnet',
-  DEV = 'dev',
+  CREATE_NETWORK = "create-network",
+  LIST_NETWORKS = "list-networks",
+  SELECT_NETWORK = "select-network",
+  DELETE_NETWORK = "delete-network",
+  CHECK_NETWORK = "check-network",
 }
 
 export type CustomNetwork = {
@@ -42,39 +38,46 @@ export type DeleteNetworkResponse = void;
 export type SelectNetworkResponse = boolean;
 export type CheckNetworkResponse = string | undefined;
 
-const appVersion = import.meta.env.VITE_APP_VERSION;
-
 export const availableNetWorks = {
   [NetworkType.MAINNET]: {
-    name: 'Ignition',
-    url: import.meta.env.VITE_MAINNET_NETWORK,
+    name: "Ignition",
+    url: process.env.MAINNET_NETWORK,
     chainId: 9889,
-    explorer: 'https://app-mainnet.fuel.network/',
+    explorer: "https://app-mainnet.fuel.network/",
   },
   [NetworkType.TESTNET]: {
-    name: 'Fuel Sepolia Testnet',
-    url: 'https://testnet.fuel.network/v1/graphql',
+    name: "Fuel Sepolia Testnet",
+    url: "https://testnet.fuel.network/v1/graphql",
     chainId: 0,
-    explorer: 'https://app-testnet.fuel.network/',
+    explorer: "https://app-testnet.fuel.network/",
   },
-  ...(window.location.hostname.includes('localhost') && {
+  ...(window.location.hostname.includes("localhost") && {
     [NetworkType.DEV]: {
-      name: 'Local',
-      url: 'http://localhost:4000/v1/graphql',
+      name: "Local",
+      url: "http://localhost:4000/v1/graphql",
       chainId: 0,
-      explorer: 'http://localhost:4000/explorer',
+      explorer: "http://localhost:4000/explorer",
     },
   }),
 };
 
-const sanitizeNetwork = (url: string = '') =>
-  url.replace(/^https?:\/\/[^@]+@/, 'https://');
+const sanitizeNetwork = (url: string = "") =>
+  url.replace(/^https?:\/\/[^@]+@/, "https://");
 
 export class NetworkService {
-  static syncAvailableNetworks() {
-    const storedVersion = localStorage.getItem('appVersion');
-    if (storedVersion !== appVersion) {
-      localStorage.setItem('appVersion', appVersion);
+  api: AxiosInstance;
+  appVersion: string;
+
+  constructor(api: AxiosInstance, appVersion: string) {
+    this.api = api;
+    this.appVersion = appVersion;
+    bindMethods(this);
+  }
+
+  syncAvailableNetworks() {
+    const storedVersion = localStorage.getItem("appVersion");
+    if (storedVersion !== this.appVersion) {
+      localStorage.setItem("appVersion", this.appVersion);
       localStorage.setItem(
         localStorageKeys.NETWORKS,
         JSON.stringify(Object.values(availableNetWorks)),
@@ -82,12 +85,12 @@ export class NetworkService {
     }
   }
 
-  static async create(newNetwork: CustomNetwork) {
+  async create(newNetwork: CustomNetwork) {
     const networks: CustomNetwork[] = JSON.parse(
-      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
+      localStorage.getItem(localStorageKeys.NETWORKS) ?? "[]",
     );
 
-    if (NetworkService.hasNetwork(newNetwork.url)) return;
+    if (this.hasNetwork(newNetwork.url)) return;
 
     localStorage.setItem(
       localStorageKeys.NETWORKS,
@@ -95,10 +98,10 @@ export class NetworkService {
     );
   }
 
-  static list() {
-    NetworkService.syncAvailableNetworks();
+  list() {
+    this.syncAvailableNetworks();
     const networks: CustomNetwork[] = JSON.parse(
-      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
+      localStorage.getItem(localStorageKeys.NETWORKS) ?? "[]",
     );
 
     if (!networks.length) {
@@ -120,9 +123,9 @@ export class NetworkService {
     return uniqueNetworks;
   }
 
-  static async delete({ url }: DeleteNetworkPayload) {
+  async delete({ url }: DeleteNetworkPayload) {
     const existingNetworks: CustomNetwork[] = JSON.parse(
-      localStorage.getItem(localStorageKeys.NETWORKS) ?? '[]',
+      localStorage.getItem(localStorageKeys.NETWORKS) ?? "[]",
     );
 
     const filtered = existingNetworks?.filter((net) => net.url !== url);
@@ -130,8 +133,8 @@ export class NetworkService {
     localStorage.setItem(localStorageKeys.NETWORKS, JSON.stringify(filtered));
   }
 
-  static async selectNetwork({ url }: SelectNetworkPayload) {
-    const { data } = await api.post<SelectNetworkResponse>(
+  async selectNetwork({ url }: SelectNetworkPayload) {
+    const { data } = await this.api.post<SelectNetworkResponse>(
       `/user/select-network/`,
       { network: url },
     );
@@ -139,7 +142,7 @@ export class NetworkService {
     return data;
   }
 
-  static async check({ url }: CheckNetworkPayload) {
+  async check({ url }: CheckNetworkPayload) {
     const provider = await Provider.create(url);
 
     const chain = provider.getChain();
@@ -147,30 +150,30 @@ export class NetworkService {
     return chain?.name;
   }
 
-  static hasNetwork(url: string) {
-    const networks = NetworkService.list();
+  hasNetwork(url: string) {
+    const networks = this.list();
     return networks.some(
       (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
     );
   }
 
-  static findByUrl(url: string) {
-    NetworkService.syncAvailableNetworks();
-    const networks = NetworkService.list();
+  findByUrl(url: string) {
+    this.syncAvailableNetworks();
+    const networks = this.list();
     return networks.find(
       (net) => sanitizeNetwork(net.url) === sanitizeNetwork(url),
     );
   }
 
-  static getName(url: string) {
-    const network = NetworkService.findByUrl(url);
-    return network?.name ?? 'Unknown';
+  getName(url: string) {
+    const network = this.findByUrl(url);
+    return network?.name ?? "Unknown";
   }
 
-  static getExplorer(url: string) {
-    const network = NetworkService.findByUrl(url);
+  getExplorer(url: string) {
+    const network = this.findByUrl(url);
 
-    if (network && 'explorer' in network && network.explorer) {
+    if (network && "explorer" in network && network.explorer) {
       return network.explorer;
     }
 

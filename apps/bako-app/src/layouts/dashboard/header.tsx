@@ -1,3 +1,4 @@
+import { NetworkType } from '@bako-safe/services';
 import {
   BakoIcon,
   ChevronDownIcon,
@@ -34,12 +35,12 @@ import { useEffect } from 'react';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import { AddressWithCopyBtn } from '@/components';
+import { networkService } from '@/config/services-initializer';
 import { useUserWorkspacesRequest } from '@/modules';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkService, NetworkType } from '@/modules/network/services';
 import { NotificationsDrawer } from '@/modules/notifications/components';
 import { useAppNotifications } from '@/modules/notifications/hooks';
 import { SettingsDrawer } from '@/modules/settings/components/drawer';
@@ -195,7 +196,7 @@ const UserBox = () => {
                       color="grey.200"
                       noOfLines={1}
                     >
-                      {NetworkService.getName(currentNetwork.url)}
+                      {networkService.getName(currentNetwork.url)}
                     </Text>
                   </HStack>
 
@@ -240,7 +241,9 @@ const UserBox = () => {
                   >
                     <HStack>
                       <Icon
-                        as={isMainnet(network.url) ? BakoIcon : UnknownIcon}
+                        as={
+                          isMainnet(network.url ?? '') ? BakoIcon : UnknownIcon
+                        }
                         fontSize={16}
                       />
                       <Text color="grey.200" fontSize={12} fontWeight={500}>

@@ -1,11 +1,11 @@
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
 import {
   NetworkQueryKey,
-  NetworkService,
   SelectNetworkPayload,
   SelectNetworkResponse,
-} from '../services';
+} from '@bako-safe/services';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { networkService } from '@/config/services-initializer';
 
 const useSelectNetworkRequest = (
   options?: UseMutationOptions<
@@ -16,7 +16,7 @@ const useSelectNetworkRequest = (
 ) => {
   return useMutation({
     mutationKey: [NetworkQueryKey.SELECT_NETWORK],
-    mutationFn: NetworkService.selectNetwork,
+    mutationFn: networkService.selectNetwork,
     ...options,
   });
 };

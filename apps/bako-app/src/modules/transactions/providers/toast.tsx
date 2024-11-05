@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useRef } from 'react';
 
-import { NetworkService } from '@/modules/network/services';
+import { networkService } from '@/config/services-initializer';
 import { useNotification } from '@/modules/notification';
 
 type TransactionToastRef = Record<ITransaction['id'], ToastId>;
@@ -21,7 +21,7 @@ const useTransactionToast = () => {
 
   const handleViewInExplorer = (hash: string, networkUrl: string) => {
     window.open(
-      `${NetworkService.getExplorer(networkUrl)}/tx/0x${hash}`,
+      `${networkService.getExplorer(networkUrl)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

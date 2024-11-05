@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 
 import { AddressWithCopyBtn } from '@/components';
-import { NetworkService } from '@/modules/network/services';
+import { networkService } from '@/config/services-initializer';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {
@@ -61,7 +61,7 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   const redirectToNetwork = () =>
     window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${address}/assets`,
+      `${networkService.getExplorer(network.url)}/account/${address}/assets`,
       '_BLANK',
     );
 

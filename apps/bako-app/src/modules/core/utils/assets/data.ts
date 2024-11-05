@@ -1,7 +1,7 @@
+import { availableNetWorks, NetworkType } from '@bako-safe/services';
 import { Assets, assets } from 'fuels';
 
 import { localStorageKeys } from '@/modules/auth';
-import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { Asset, AssetMap } from './types';
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';

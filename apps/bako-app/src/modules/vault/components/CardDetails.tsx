@@ -1,4 +1,4 @@
-import { PermissionRoles } from '@bako-safe/services';
+import { NetworkType, PermissionRoles } from '@bako-safe/services';
 import {
   Card,
   CustomSkeleton,
@@ -27,7 +27,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkType } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseVaultDetailsReturn } from '../hooks/details';

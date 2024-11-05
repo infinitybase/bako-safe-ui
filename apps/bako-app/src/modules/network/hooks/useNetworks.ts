@@ -1,18 +1,25 @@
+import {
+  availableNetWorks,
+  CustomNetwork,
+  DeleteNetworkPayload,
+  NetworkType,
+} from '@bako-safe/services';
 import { Provider } from 'fuels';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 
 import { queryClient } from '@/config';
+import { networkService } from '@/config/services-initializer';
 import { localStorageKeys, useAuth } from '@/modules/auth';
 
-import {
-  availableNetWorks,
-  CustomNetwork,
-  DeleteNetworkPayload,
-  NetworkService,
-  NetworkType,
-} from '../services';
+// import {
+//   availableNetWorks,
+//   CustomNetwork,
+//   DeleteNetworkPayload,
+//   NetworkService,
+//   NetworkType,
+// } from '../services';
 import { useCheckNetworkRequest } from './useCheckNetworkRequest';
 import { useCreateNetworkRequest } from './useCreateNetworkRequest';
 import { useDeleteNetworkRequest } from './useDeleteNetworkRequest';
@@ -56,12 +63,12 @@ const useNetworks = (onClose?: () => void) => {
   } = useAuth();
 
   const saveNetwork = async (url: string) => {
-    const exists = NetworkService.hasNetwork(url);
+    const exists = networkService.hasNetwork(url);
     if (!exists) {
       const provider = await Provider.create(url!);
       const name = provider.getChain()?.name;
       const chainId = provider.getChainId();
-      await NetworkService.create({
+      await networkService.create({
         name,
         url: url!,
         chainId,
@@ -130,7 +137,7 @@ const useNetworks = (onClose?: () => void) => {
 
   const handleCheckNetwork = async () => {
     const url = networkForm.watch('url');
-    const existingNetwork = NetworkService.hasNetwork(url);
+    const existingNetwork = networkService.hasNetwork(url);
 
     if (!url) {
       networkForm.setError('url', {

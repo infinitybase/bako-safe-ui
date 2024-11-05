@@ -1,3 +1,4 @@
+import { NetworkType } from '@bako-safe/services';
 import {
   BakoIcon,
   PlusIcon,
@@ -31,7 +32,6 @@ import { Controller } from 'react-hook-form';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
-import { NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 

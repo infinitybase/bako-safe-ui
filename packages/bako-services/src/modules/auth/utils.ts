@@ -1,5 +1,3 @@
-// import { CookieName, CookiesConfig } from "@/config/cookies";
-
 interface IGenerateRedirectQueryParams {
   sessionId: string | null;
   origin?: string | null;
@@ -7,22 +5,6 @@ interface IGenerateRedirectQueryParams {
   request_id?: string | null;
   byConnector?: string | null;
 }
-
-// const authCredentials = () => ({
-//   token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),
-//   address: CookiesConfig.getCookie(CookieName.ADDRESS),
-// });
-
-// const authCredentialsByKey = (key: "token" | "address") => {
-//   const credentials = authCredentials();
-//   const hasCredential = key in credentials;
-
-//   if (!hasCredential) {
-//     throw new Error("Key not found in credentials");
-//   }
-
-//   return credentials[key];
-// };
 
 const generateRedirectQueryParams = ({
   sessionId,
@@ -52,8 +34,4 @@ export const localStorageKeys = {
   SELECTED_NETWORK: "bakosafe/selected-network",
 };
 
-export {
-  //  authCredentials,
-  // authCredentialsByKey,
-  generateRedirectQueryParams,
-};
+export { generateRedirectQueryParams };

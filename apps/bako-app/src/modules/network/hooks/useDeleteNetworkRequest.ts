@@ -1,11 +1,11 @@
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
-
 import {
   DeleteNetworkPayload,
   DeleteNetworkResponse,
   NetworkQueryKey,
-  NetworkService,
-} from '../services';
+} from '@bako-safe/services';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+
+import { networkService } from '@/config/services-initializer';
 
 const useDeleteNetworkRequest = (
   options?: UseMutationOptions<
@@ -16,7 +16,7 @@ const useDeleteNetworkRequest = (
 ) => {
   return useMutation({
     mutationKey: [NetworkQueryKey.DELETE_NETWORK],
-    mutationFn: NetworkService.delete,
+    mutationFn: networkService.delete,
     ...options,
   });
 };

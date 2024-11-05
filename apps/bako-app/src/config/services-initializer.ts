@@ -3,6 +3,7 @@ import {
   APITokenService,
   DAppService,
   HomeService,
+  NetworkService,
   NotificationService,
   SettingsService,
   TransactionService,
@@ -23,3 +24,7 @@ export const settingsService = new SettingsService(api);
 export const vaultService = new VaultService(api);
 export const workspaceService = new WorkspaceService(api);
 export const dappService = new DAppService(api);
+export const networkService = new NetworkService(
+  api,
+  import.meta.env.VITE_APP_VERSION,
+);

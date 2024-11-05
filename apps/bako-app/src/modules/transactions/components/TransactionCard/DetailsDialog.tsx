@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
-import { NetworkService } from '@/modules/network/services';
+import { networkService } from '@/config/services-initializer';
 import {
   TransactionCard,
   transactionStatus,
@@ -50,7 +50,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
     window.open(
-      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
+      `${networkService.getExplorer(network.url)}/tx/0x${hash}`,
       '_BLANK',
     );
   };

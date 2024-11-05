@@ -1,3 +1,4 @@
+import { availableNetWorks, NetworkType } from '@bako-safe/services';
 import { BakoIcon, UnknownIcon } from '@bako-safe/ui/components';
 import {
   Center,
@@ -15,7 +16,6 @@ import {
 } from '@chakra-ui/react';
 
 import { NetworkDrawerMode, useNetworks } from '../../hooks';
-import { availableNetWorks, NetworkType } from '../../services';
 
 interface NetworkDrawerProps extends Omit<DrawerProps, 'children'> {}
 

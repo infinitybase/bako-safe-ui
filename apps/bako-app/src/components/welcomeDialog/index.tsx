@@ -1,3 +1,4 @@
+import { NetworkType } from '@bako-safe/services';
 import {
   BridgeIcon,
   CoinsIcon,
@@ -7,7 +8,6 @@ import {
 import { Button, VStack } from '@chakra-ui/react';
 
 import { useNetworks } from '@/modules/network/hooks';
-import { NetworkType } from '@/modules/network/services';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

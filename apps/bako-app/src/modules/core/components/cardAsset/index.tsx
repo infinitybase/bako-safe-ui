@@ -9,7 +9,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { NetworkService } from '@/modules/network/services';
+import { networkService } from '@/config/services-initializer';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -51,7 +51,7 @@ const AssetCard = ({
   // TODO: Abstract to avoid duplicated code
   const redirectToNetwork = () =>
     window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
+      `${networkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
       '_BLANK',
     );
 

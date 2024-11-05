@@ -8,3 +8,4 @@ export * from "./transaction";
 export * from "./vault";
 export * from "./workspace";
 export * from "./auth";
+export * from "./network";
