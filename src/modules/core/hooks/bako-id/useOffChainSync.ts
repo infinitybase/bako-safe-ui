@@ -2,7 +2,7 @@ import { OffChainSync } from '@bako-id/sdk';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
-import { OffChainSyncInstance } from '../../utils/offChainSync';
+import { OffChainSyncInstance } from '../../utils';
 
 const OFF_CHAIN_SYNC_DATA_QUERY_KEY = 'off-chain-sync-data';
 
