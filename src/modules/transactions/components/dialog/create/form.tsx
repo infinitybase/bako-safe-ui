@@ -8,9 +8,12 @@ import {
   Heading,
   Input,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Dialog } from '@/components';
+import { queryClient } from '@/config/query-client';
+import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
@@ -35,6 +38,12 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
     isFeeCalcLoading,
     getBalanceAvailable,
   } = props;
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
+    });
+  }, []);
 
   return (
     <Box w="full" {...props}>

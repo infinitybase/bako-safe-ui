@@ -9,10 +9,11 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
+import { queryClient } from '@/config/query-client';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -22,6 +23,7 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
+import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
@@ -94,6 +96,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
+    });
+  }, []);
 
   return (
     <>
