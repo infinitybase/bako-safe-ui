@@ -4,6 +4,7 @@ import { Controller } from 'react-hook-form';
 import { Autocomplete } from '@/components';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
+import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { UseChangeMember } from '../../hooks';
@@ -23,6 +24,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
       handlers: { handleOpenDialog },
       workspaceId,
     },
+    offChainSync,
   } = useWorkspaceContext();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
@@ -64,6 +66,9 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   value={field.value}
                   optionsRef={optionRef}
                   onChange={field.onChange}
+                  onInputChange={(value: string) =>
+                    syncAddressBookAutocompleteOption(value, offChainSync)
+                  }
                   options={appliedOptions}
                   isLoading={!optionsRequests[0].isSuccess}
                   inView={addressBook.inView}

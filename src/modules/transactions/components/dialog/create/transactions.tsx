@@ -20,6 +20,7 @@ import {
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
+import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
 import {
   AddressUtils,
   AssetSelect,
@@ -67,6 +68,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       inView,
       canAddMember,
     },
+    offChainSync,
   } = useWorkspaceContext();
 
   const balanceAvailable = getBalanceAvailable();
@@ -82,6 +84,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       isFirstLoading: false,
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
+      offChainSync,
     });
 
   return (
@@ -119,6 +122,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
+                  onInputChange={(value: string) =>
+                    syncAddressBookAutocompleteOption(value, offChainSync)
+                  }
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}
                   inView={inView}

@@ -42,7 +42,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   optionsRef?: LegacyRef<HTMLDivElement>;
   optionsContainerRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
-  onInputChange?: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
+  onInputChange?: (value: string) => AutocompleteOption | null;
   actionOnFocus?: () => void;
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
@@ -86,21 +86,28 @@ const Autocomplete = ({
   const showClearIcon = clearable && inputValue;
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    onChange(e.target.value);
-    onInputChange?.(e);
+    const value = e.target.value;
+
+    const result = onInputChange?.(value);
+
+    if (result) {
+      setInputValue(result.label);
+      onChange(result.value);
+      return;
+    }
+
+    setInputValue(value);
+    onChange(value);
   };
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
     actionOnSelect();
     setInputValue(selectedOption.label);
     onChange(selectedOption.value);
-    onInputChange?.(selectedOption.value);
   };
 
   const handleFocus = () => {
     actionOnFocus();
-    if (!inputValue) onInputChange?.('');
     setIsFocused(true);
   };
 
@@ -111,7 +118,6 @@ const Autocomplete = ({
   const handleClear = () => {
     setInputValue('');
     onChange('');
-    onInputChange?.('');
   };
 
   const handleOnBlur = () => {

@@ -21,6 +21,7 @@ import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
+import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
@@ -50,6 +51,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       inView,
       workspaceId,
     },
+    offChainSync,
   } = useWorkspaceContext();
 
   const hasTwoOrMoreAddresses =
@@ -204,6 +206,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             optionsRef={optionRef}
                             value={field.value}
                             onChange={field.onChange}
+                            onInputChange={(value: string) =>
+                              syncAddressBookAutocompleteOption(
+                                value,
+                                offChainSync,
+                              )
+                            }
                             options={appliedOptions}
                             isLoading={isLoading}
                             disabled={first}

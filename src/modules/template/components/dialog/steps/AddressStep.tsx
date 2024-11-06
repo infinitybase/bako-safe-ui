@@ -30,10 +30,11 @@ import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
+import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -52,6 +53,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
       dialog: { contactDialog },
       handlers: { handleOpenDialog },
     },
+    offChainSync,
   } = useWorkspaceContext();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
@@ -177,6 +179,9 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       disabled={first}
                       label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
+                      onInputChange={(value: string) =>
+                        syncAddressBookAutocompleteOption(value, offChainSync)
+                      }
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}
