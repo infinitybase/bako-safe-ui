@@ -2,14 +2,13 @@ import { OffChainSync } from '@bako-id/sdk';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
-import { OffChainSyncInstance } from '../../utils';
+import { OffChainSyncInstance, Optional } from '../../utils';
 
 const OFF_CHAIN_SYNC_DATA_QUERY_KEY = 'off-chain-sync-data';
 
 const useOffChainSync = (networkUrl: string) => {
-  const [offChainSync, setOffChainSync] = useState<OffChainSync | undefined>(
-    undefined,
-  );
+  const [offChainSync, setOffChainSync] =
+    useState<Optional<OffChainSync>>(undefined);
 
   useQuery({
     queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
