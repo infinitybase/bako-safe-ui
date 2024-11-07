@@ -1,4 +1,3 @@
-import { OffChainSync } from '@bako-id/sdk';
 import { useCallback, useMemo } from 'react';
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
 
@@ -6,7 +5,6 @@ import { AutocompleteOption } from '@/components/autocomplete';
 import { WorkspaceContact } from '@/modules/core/models/workspace';
 import { AddressBookUtils } from '@/utils/address-book';
 
-import { syncAddressBookInputValue } from '../utils';
 import { useInfiniteListcontactsRequest } from './useInfiniteListContactsRequest';
 
 type AddressesErrors = Merge<
@@ -32,7 +30,7 @@ type AddressBookAutocompleteOptionsProps = {
   isFirstLoading?: boolean;
   dynamicCurrentIndex?: number;
   canRepeatAddresses?: boolean;
-  offChainSync?: OffChainSync;
+  handleCustomOption?: (value: string) => AutocompleteOption;
 };
 
 export type AddressesFields = { [key: string]: string }[];
@@ -47,7 +45,7 @@ const useAddressBookAutocompleteOptions = ({
   isFirstLoading,
   dynamicCurrentIndex,
   canRepeatAddresses,
-  offChainSync,
+  handleCustomOption,
 }: AddressBookAutocompleteOptionsProps) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
@@ -84,11 +82,12 @@ const useAddressBookAutocompleteOptions = ({
     ) => {
       if (!isMyAddress) return options;
 
-      const option = syncAddressBookInputValue(fieldValue, offChainSync);
-
-      return [...options, option];
+      const option = handleCustomOption?.(fieldValue);
+      return option
+        ? [...options, option]
+        : [...options, { value: fieldValue, label: fieldValue }];
     },
-    [offChainSync],
+    [handleCustomOption],
   );
 
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;

@@ -30,8 +30,8 @@ import { CreateContactDialog } from '@/modules/addressBook/components/dialog/cre
 import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
-import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -44,6 +44,8 @@ interface AddressStepProps {
 }
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -55,9 +57,8 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
       dialog: { contactDialog },
       handlers: { handleOpenDialog },
     },
-    offChainSync,
   } = useWorkspaceContext();
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const { setInputValue } = useAddressBookInputValue();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -187,9 +188,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       disabled={first}
                       label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
-                      onInputChange={(value: string) =>
-                        syncAddressBookInputValue(value, offChainSync)
-                      }
+                      onInputChange={(value: string) => setInputValue(value)}
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}

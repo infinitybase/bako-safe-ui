@@ -1,7 +1,12 @@
-import { OffChainSync } from '@bako-id/sdk';
-import { useEffect, useState } from 'react';
+import { isValidDomain, OffChainSync } from '@bako-id/sdk';
+import { useCallback, useEffect, useState } from 'react';
 
-import { OffChainSyncInstance, Optional } from '../../utils';
+import {
+  AddressUtils,
+  Maybe,
+  OffChainSyncInstance,
+  Optional,
+} from '../../utils';
 import { useSyncData } from './useSyncData';
 
 const useOffChainSync = (networkUrl: string) => {
@@ -9,6 +14,29 @@ const useOffChainSync = (networkUrl: string) => {
     useState<Optional<OffChainSync>>(undefined);
 
   useSyncData(offChainSync);
+
+  const getHandleFromResolver = useCallback(
+    (resolver: string): Maybe<string> => {
+      if (AddressUtils.isValid(resolver)) {
+        const domain = offChainSync?.getDomain(resolver);
+        return domain ? `@${domain}` : null;
+      }
+
+      return null;
+    },
+    [offChainSync],
+  );
+
+  const getResolverFromHandle = useCallback(
+    (handle: string): Maybe<string> => {
+      if (handle.startsWith('@') && isValidDomain(handle)) {
+        return offChainSync?.getResolver(handle.slice(1));
+      }
+
+      return null;
+    },
+    [offChainSync],
+  );
 
   useEffect(() => {
     const initOffChainSync = async () => {
@@ -19,7 +47,13 @@ const useOffChainSync = (networkUrl: string) => {
     initOffChainSync();
   }, [networkUrl]);
 
-  return offChainSync;
+  return {
+    instance: offChainSync,
+    handlers: {
+      getHandleFromResolver,
+      getResolverFromHandle,
+    },
+  };
 };
 
 export { useOffChainSync };

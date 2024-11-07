@@ -9,11 +9,11 @@ import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { queryClient } from '@/config/query-client';
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import {
+  useAddressBookInputValue,
+  UseAddressBookReturn,
+} from '@/modules/addressBook/hooks';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-import { syncAddressBookInputValue } from '../../utils';
 
 export interface CreateContactFormProps {
   form: UseAddressBookReturn['form'];
@@ -21,7 +21,7 @@ export interface CreateContactFormProps {
 }
 
 const CreateContactForm = ({ form }: CreateContactFormProps) => {
-  const { offChainSync } = useWorkspaceContext();
+  const { setInputValue } = useAddressBookInputValue();
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -58,12 +58,9 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
           <FormControl isInvalid={fieldState.invalid}>
             <Input
               variant="dark"
-              value={syncAddressBookInputValue(field.value, offChainSync).label}
+              value={setInputValue(field.value).label}
               onChange={(e) => {
-                e.target.value = syncAddressBookInputValue(
-                  e.target.value,
-                  offChainSync,
-                ).value;
+                e.target.value = setInputValue(e.target.value).value;
                 field.onChange(e);
               }}
               placeholder=" "

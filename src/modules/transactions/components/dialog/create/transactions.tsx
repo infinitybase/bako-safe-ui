@@ -19,14 +19,12 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook';
-import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import {
   AddressUtils,
   AssetSelect,
   delay,
-  getHandleFromResolver,
-  getResolverFromHandle,
   NativeAssetId,
 } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
@@ -70,10 +68,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       inView,
       canAddMember,
     },
-    offChainSync,
   } = useWorkspaceContext();
-
   const balanceAvailable = getBalanceAvailable();
+  const { setInputValue } = useAddressBookInputValue();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
@@ -86,7 +83,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       isFirstLoading: false,
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
-      offChainSync,
+      handleCustomOption: setInputValue,
     });
 
   return (
@@ -124,9 +121,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
-                  onInputChange={(value: string) =>
-                    syncAddressBookInputValue(value, offChainSync)
-                  }
+                  onInputChange={(value: string) => setInputValue(value)}
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}
                   inView={inView}
@@ -229,7 +224,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   const {
     screenSizes: { isMobile },
-    offChainSync,
+    offChainSync: {
+      handlers: { getHandleFromResolver, getResolverFromHandle },
+    },
   } = useWorkspaceContext();
 
   // Logic to fix the button in the footer
@@ -279,8 +276,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         );
-        const resolver = getResolverFromHandle(transaction.value, offChainSync);
-        const handle = getHandleFromResolver(transaction.value, offChainSync);
+        const resolver = getResolverFromHandle(transaction.value);
+        const handle = getHandleFromResolver(transaction.value);
         const recipientLabel =
           contact?.nickname ??
           resolver ??

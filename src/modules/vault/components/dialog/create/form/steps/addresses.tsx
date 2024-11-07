@@ -21,8 +21,8 @@ import {
 import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
-import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -53,8 +53,8 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       inView,
       workspaceId,
     },
-    offChainSync,
   } = useWorkspaceContext();
+  const { setInputValue } = useAddressBookInputValue();
 
   const hasTwoOrMoreAddresses =
     form.watch('addresses') && form.watch('addresses')!.length >= 2;
@@ -215,7 +215,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             value={field.value}
                             onChange={field.onChange}
                             onInputChange={(value: string) =>
-                              syncAddressBookInputValue(value, offChainSync)
+                              setInputValue(value)
                             }
                             options={appliedOptions}
                             isLoading={isLoading}
