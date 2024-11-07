@@ -29,7 +29,7 @@ export const syncAddressBookInputValue = (
   if (handle) {
     return {
       value,
-      label: AddressBookUtils.formatForAutocomplete(`@${handle}`, value),
+      label: AddressBookUtils.formatForAutocomplete(handle, value),
     };
   }
 

@@ -8,7 +8,8 @@ export const getHandleFromResolver = (
   sync?: OffChainSync,
 ): Maybe<string> => {
   if (AddressUtils.isValid(resolver)) {
-    return sync?.getDomain(resolver);
+    const domain = sync?.getDomain(resolver);
+    return domain ? `@${domain}` : null;
   }
 
   return null;
