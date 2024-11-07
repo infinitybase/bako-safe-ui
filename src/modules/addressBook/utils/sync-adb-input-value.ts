@@ -15,7 +15,7 @@ export const syncAddressBookInputValue = (
 
   if (!sync) return result;
 
-  const resolver = getResolverFromHandle(sync, value);
+  const resolver = getResolverFromHandle(value, sync);
 
   if (resolver) {
     return {
@@ -24,7 +24,7 @@ export const syncAddressBookInputValue = (
     };
   }
 
-  const handle = getHandleFromResolver(sync, value);
+  const handle = getHandleFromResolver(value, sync);
 
   if (handle) {
     return {
