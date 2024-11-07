@@ -21,6 +21,8 @@ import {
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
+import { Maybe } from '@/modules/core/utils/types';
+
 import { LineCloseIcon } from '../icons';
 
 export interface AutocompleteOption {
@@ -42,7 +44,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   optionsRef?: LegacyRef<HTMLDivElement>;
   optionsContainerRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
-  onInputChange?: (value: string) => AutocompleteOption | null;
+  onInputChange?: (value: string) => Maybe<AutocompleteOption>;
   actionOnFocus?: () => void;
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
