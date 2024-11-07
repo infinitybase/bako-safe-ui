@@ -25,6 +25,8 @@ import {
   AddressUtils,
   AssetSelect,
   delay,
+  getHandleFromResolver,
+  getResolverFromHandle,
   NativeAssetId,
 } from '@/modules/core';
 import { UseCreateTransaction } from '@/modules/transactions/hooks';
@@ -227,6 +229,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   const {
     screenSizes: { isMobile },
+    offChainSync,
   } = useWorkspaceContext();
 
   // Logic to fix the button in the footer
@@ -276,6 +279,13 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         );
+        const resolver = getResolverFromHandle(transaction.value, offChainSync);
+        const handle = getHandleFromResolver(transaction.value, offChainSync);
+        const recipientLabel =
+          contact?.nickname ??
+          resolver ??
+          handle ??
+          AddressUtils.format(transaction.value);
 
         return (
           <>
@@ -318,12 +328,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {transaction.amount} {assetSlug}
                       </b>{' '}
-                      to{' '}
-                      <b>
-                        {' '}
-                        {contact?.nickname ??
-                          AddressUtils.format(transaction.value)}
-                      </b>
+                      to <b> {recipientLabel}</b>
                     </Text>
                   )
                 }
