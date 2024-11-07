@@ -1,1 +1,1 @@
-export * from './sync-adb-autocomplete-option';
+export * from './sync-adb-input-value';

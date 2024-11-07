@@ -20,7 +20,7 @@ import {
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
-import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
+import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import {
   AddressUtils,
   AssetSelect,
@@ -123,7 +123,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
                   onInputChange={(value: string) =>
-                    syncAddressBookAutocompleteOption(value, offChainSync)
+                    syncAddressBookInputValue(value, offChainSync)
                   }
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}

@@ -31,7 +31,7 @@ import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
+import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -188,7 +188,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
                       onInputChange={(value: string) =>
-                        syncAddressBookAutocompleteOption(value, offChainSync)
+                        syncAddressBookInputValue(value, offChainSync)
                       }
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}

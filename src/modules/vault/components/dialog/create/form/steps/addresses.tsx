@@ -22,7 +22,7 @@ import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
-import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
+import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
@@ -215,10 +215,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             value={field.value}
                             onChange={field.onChange}
                             onInputChange={(value: string) =>
-                              syncAddressBookAutocompleteOption(
-                                value,
-                                offChainSync,
-                              )
+                              syncAddressBookInputValue(value, offChainSync)
                             }
                             options={appliedOptions}
                             isLoading={isLoading}

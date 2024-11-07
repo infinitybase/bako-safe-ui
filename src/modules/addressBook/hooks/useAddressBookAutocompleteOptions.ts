@@ -6,7 +6,7 @@ import { AutocompleteOption } from '@/components/autocomplete';
 import { WorkspaceContact } from '@/modules/core/models/workspace';
 import { AddressBookUtils } from '@/utils/address-book';
 
-import { syncAddressBookAutocompleteOption } from '../utils';
+import { syncAddressBookInputValue } from '../utils';
 import { useInfiniteListcontactsRequest } from './useInfiniteListContactsRequest';
 
 type AddressesErrors = Merge<
@@ -84,10 +84,7 @@ const useAddressBookAutocompleteOptions = ({
     ) => {
       if (!isMyAddress) return options;
 
-      const option = syncAddressBookAutocompleteOption(
-        fieldValue,
-        offChainSync,
-      ) ?? { label: fieldValue, value: fieldValue };
+      const option = syncAddressBookInputValue(fieldValue, offChainSync);
 
       return [...options, option];
     },

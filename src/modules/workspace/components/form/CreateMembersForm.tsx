@@ -6,7 +6,7 @@ import { Autocomplete } from '@/components';
 import { queryClient } from '@/config/query-client';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
-import { syncAddressBookAutocompleteOption } from '@/modules/addressBook/utils';
+import { syncAddressBookInputValue } from '@/modules/addressBook/utils';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { AddressUtils } from '@/modules/core/utils/address';
 
@@ -76,7 +76,7 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
                   optionsRef={optionRef}
                   onChange={field.onChange}
                   onInputChange={(value: string) =>
-                    syncAddressBookAutocompleteOption(value, offChainSync)
+                    syncAddressBookInputValue(value, offChainSync)
                   }
                   options={appliedOptions}
                   isLoading={!optionsRequests[0].isSuccess}
