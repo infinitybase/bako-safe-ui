@@ -5,7 +5,6 @@ import { HandleUtils } from '@/utils';
 
 import {
   AddressUtils,
-  Maybe,
   OffChainSyncCache,
   OffChainSyncInstance,
   Optional,
@@ -19,7 +18,7 @@ const useOffChainSync = (networkUrl: string) => {
   useSyncData(offChainSync);
 
   const getHandleFromResolver = useCallback(
-    (resolver: string): Maybe<string> => {
+    (resolver: string): Optional<string> => {
       if (AddressUtils.isValid(resolver)) {
         const cachedHandle =
           OffChainSyncCache.getCachedHandleFromResolver(resolver);
@@ -31,16 +30,16 @@ const useOffChainSync = (networkUrl: string) => {
           return HandleUtils.toHandle(handle);
         }
 
-        return null;
+        return undefined;
       }
 
-      return null;
+      return undefined;
     },
     [offChainSync],
   );
 
   const getResolverFromHandle = useCallback(
-    (handle: string): Maybe<string> => {
+    (handle: string): Optional<string> => {
       if (HandleUtils.isValidHandle(handle)) {
         const _handle = HandleUtils.fromHandle(handle);
 
@@ -54,10 +53,10 @@ const useOffChainSync = (networkUrl: string) => {
           return resolver;
         }
 
-        return null;
+        return undefined;
       }
 
-      return null;
+      return undefined;
     },
     [offChainSync],
   );
