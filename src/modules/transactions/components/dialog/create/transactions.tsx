@@ -225,7 +225,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     screenSizes: { isMobile },
     offChainSync: {
-      handlers: { getHandleFromResolver, getResolverFromHandle },
+      handlers: { getHandleFromResolver },
     },
   } = useWorkspaceContext();
 
@@ -276,13 +276,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         );
-        const resolver = getResolverFromHandle(transaction.value);
         const handle = getHandleFromResolver(transaction.value);
         const recipientLabel =
-          contact?.nickname ??
-          resolver ??
-          handle ??
-          AddressUtils.format(transaction.value);
+          contact?.nickname ?? handle ?? AddressUtils.format(transaction.value);
 
         return (
           <>
