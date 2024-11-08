@@ -1,17 +1,14 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
+import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
-  const {
-    addressBookInfos: {
-      handlers: { contactByAddress },
-    },
-  } = useWorkspaceContext();
+  const { resolveNickname } = useResolveNickname();
+
   if (!vault) return null;
   const members = vault?.data?.members;
 
@@ -37,14 +34,15 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           mb={16}
         >
           {members?.map((member, index: number) => {
+            const nickname = resolveNickname(member.address);
+
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
                 <CardMember
                   isOwner={vault?.data?.owner?.id === member.id}
                   member={{
                     ...member,
-                    nickname:
-                      contactByAddress(member.address)?.nickname ?? undefined,
+                    nickname,
                   }}
                 />
               </CustomSkeleton>
