@@ -275,10 +275,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
-        );
-        const handle = getHandleFromResolver(transaction.value);
+        )?.nickname;
         const recipientLabel =
-          contact?.nickname ?? handle ?? AddressUtils.format(transaction.value);
+          contact ??
+          getHandleFromResolver(transaction.value) ??
+          AddressUtils.format(transaction.value);
 
         return (
           <>
