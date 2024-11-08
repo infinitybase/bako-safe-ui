@@ -15,9 +15,10 @@ const useResolveNickname = () => {
   const resolveNickname = useCallback(
     (address: string) => {
       const contact = contactByAddress(address)?.nickname;
-      const handle = getHandleFromResolver(address);
+      if (contact) return contact;
 
-      return contact ?? handle ?? undefined;
+      const handle = getHandleFromResolver(address);
+      return handle;
     },
     [contactByAddress, getHandleFromResolver],
   );
