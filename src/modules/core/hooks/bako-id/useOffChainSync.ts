@@ -1,9 +1,12 @@
-import { isValidDomain, OffChainSync } from '@bako-id/sdk';
+import { OffChainSync } from '@bako-id/sdk';
 import { useCallback, useEffect, useState } from 'react';
+
+import { HandleUtils } from '@/utils';
 
 import {
   AddressUtils,
   Maybe,
+  OffChainSyncCache,
   OffChainSyncInstance,
   Optional,
 } from '../../utils';
@@ -18,8 +21,17 @@ const useOffChainSync = (networkUrl: string) => {
   const getHandleFromResolver = useCallback(
     (resolver: string): Maybe<string> => {
       if (AddressUtils.isValid(resolver)) {
-        const domain = offChainSync?.getDomain(resolver);
-        return domain ? `@${domain}` : null;
+        const cachedHandle =
+          OffChainSyncCache.getCachedHandleFromResolver(resolver);
+        if (cachedHandle) return HandleUtils.toHandle(cachedHandle);
+
+        const handle = offChainSync?.getDomain(resolver);
+        if (handle) {
+          OffChainSyncCache.updateCache(handle, resolver);
+          return HandleUtils.toHandle(handle);
+        }
+
+        return null;
       }
 
       return null;
@@ -29,8 +41,20 @@ const useOffChainSync = (networkUrl: string) => {
 
   const getResolverFromHandle = useCallback(
     (handle: string): Maybe<string> => {
-      if (handle.startsWith('@') && isValidDomain(handle)) {
-        return offChainSync?.getResolver(handle.slice(1));
+      if (HandleUtils.isValidHandle(handle)) {
+        const _handle = HandleUtils.fromHandle(handle);
+
+        const cachedResolver =
+          OffChainSyncCache.getCachedResolverFromHandle(_handle);
+        if (cachedResolver) return cachedResolver;
+
+        const resolver = offChainSync?.getResolver(_handle);
+        if (resolver) {
+          OffChainSyncCache.updateCache(_handle, resolver);
+          return resolver;
+        }
+
+        return null;
       }
 
       return null;
