@@ -12,9 +12,9 @@ import { FaPlay } from 'react-icons/fa';
 
 import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
-import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel } from '@/modules/core';
+import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
@@ -36,15 +36,11 @@ const AssetBoxInfo = ({
   const {
     tokensUSD,
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
-    addressBookInfos: {
-      requests: {
-        listContactsRequest: { data },
-      },
-    },
     assetsMap,
   } = useWorkspaceContext();
 
-  const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
+  const { resolveNickname } = useResolveNickname();
+  const nickname = asset?.to ? resolveNickname(asset.to) : undefined;
 
   const assetInfo = useMemo(
     () =>
@@ -128,8 +124,8 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && (
-        <VStack alignItems="end" h={savedContact?.nickname ? '47px' : 'unset'}>
-          {savedContact?.nickname && (
+        <VStack alignItems="end" h={nickname ? '47px' : 'unset'}>
+          {nickname && (
             <Text
               isTruncated
               textOverflow="ellipsis"
@@ -139,14 +135,15 @@ const AssetBoxInfo = ({
                 lg: '130px',
               }}
               fontSize="sm"
+              pb={0.5}
             >
-              {savedContact.nickname}
+              {nickname}
             </Text>
           )}
           <AddressWithCopyBtn
             address={asset?.to}
             addressProps={{
-              color: savedContact?.nickname ? 'grey.500' : 'white',
+              color: nickname ? 'grey.500' : 'white',
             }}
           />
         </VStack>

@@ -11,8 +11,8 @@ import {
 import { ITransferAsset } from 'bakosafe';
 
 import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
-import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
+import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import AmountsInfo from './AmountsInfo';
@@ -28,11 +28,6 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall },
-    addressBookInfos: {
-      requests: {
-        listContactsRequest: { data },
-      },
-    },
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
     [asset],
@@ -40,19 +35,14 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
   );
+  const { resolveNickname } = useResolveNickname();
 
   const isFirstItem = index === 0;
 
   const gridColumnsNumber = isMobile ? 1 : 5;
 
-  const { savedContact: savedContactFrom } = useGetContactByAddress(
-    sentBy ?? '',
-    data,
-  );
-  const { savedContact: savedContactTo } = useGetContactByAddress(
-    asset?.to ?? '',
-    data,
-  );
+  const nicknameFrom = sentBy ? resolveNickname(sentBy) : undefined;
+  const nicknameTo = asset?.to ? resolveNickname(asset.to) : undefined;
 
   return (
     <Grid
@@ -72,7 +62,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           </HStack>
           <Flex justifyContent="space-between" w="full" alignItems="center">
             <VStack alignItems="start" spacing={2}>
-              {savedContactFrom?.nickname && (
+              {nicknameFrom && (
                 <Text
                   isTruncated
                   textOverflow="ellipsis"
@@ -80,7 +70,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   fontSize={isExtraSmall ? 'xs' : 'sm'}
                   textAlign="start"
                 >
-                  {savedContactFrom.nickname}
+                  {nicknameFrom}
                 </Text>
               )}
               <AddressWithCopyBtn
@@ -89,7 +79,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 justifyContent="start"
                 textAlign="start"
                 addressProps={{
-                  color: savedContactFrom?.nickname ? 'grey.500' : 'white',
+                  color: nicknameFrom ? 'grey.500' : 'white',
                 }}
               />
             </VStack>
@@ -107,7 +97,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Box>
 
             <VStack alignItems="end" spacing={2}>
-              {savedContactTo?.nickname && (
+              {nicknameTo && (
                 <Text
                   isTruncated
                   textOverflow="ellipsis"
@@ -115,14 +105,14 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   fontSize={isExtraSmall ? 'xs' : 'sm'}
                   textAlign="end"
                 >
-                  {savedContactTo.nickname}
+                  {nicknameTo}
                 </Text>
               )}
               <AddressWithCopyBtn
                 address={asset?.to ?? ''}
                 isDeposit={true}
                 addressProps={{
-                  color: savedContactTo?.nickname ? 'grey.500' : 'white',
+                  color: nicknameTo ? 'grey.500' : 'white',
                 }}
               />
             </VStack>
@@ -133,25 +123,23 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           <TokenInfos asset={asset} />
           <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
 
-          <VStack
-            alignItems="end"
-            h={savedContactFrom?.nickname ? '47px' : 'unset'}
-          >
-            {savedContactFrom?.nickname && (
+          <VStack alignItems="end" h={nicknameFrom ? '47px' : 'unset'}>
+            {nicknameFrom && (
               <Text
                 isTruncated
                 textOverflow="ellipsis"
                 maxW="288px"
                 fontSize="sm"
+                pb={0.5}
               >
-                {savedContactFrom.nickname}
+                {nicknameFrom}
               </Text>
             )}
             <AddressWithCopyBtn
               address={sentBy}
               isDeposit={true}
               addressProps={{
-                color: savedContactFrom?.nickname ? 'grey.500' : 'white',
+                color: nicknameFrom ? 'grey.500' : 'white',
               }}
             />
           </VStack>
@@ -168,25 +156,23 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Center>
           </Box>
 
-          <VStack
-            alignItems="end"
-            h={savedContactTo?.nickname ? '47px' : 'unset'}
-          >
-            {savedContactTo?.nickname && (
+          <VStack alignItems="end" h={nicknameTo ? '47px' : 'unset'}>
+            {nicknameTo && (
               <Text
                 isTruncated
                 textOverflow="ellipsis"
                 maxW="288px"
                 fontSize="sm"
+                pb={0.5}
               >
-                {savedContactTo.nickname}
+                {nicknameTo}
               </Text>
             )}
             <AddressWithCopyBtn
               address={asset?.to ?? ''}
               isDeposit={true}
               addressProps={{
-                color: savedContactTo?.nickname ? 'grey.500' : 'white',
+                color: nicknameTo ? 'grey.500' : 'white',
               }}
             />
           </VStack>
