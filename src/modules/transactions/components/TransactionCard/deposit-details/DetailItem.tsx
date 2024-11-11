@@ -12,7 +12,7 @@ import { ITransferAsset } from 'bakosafe';
 
 import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import AmountsInfo from './AmountsInfo';
@@ -35,14 +35,14 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
   );
-  const { resolveNickname } = useResolveNickname();
+  const { resolveContactOrHandle } = useAddressNicknameResolver();
 
   const isFirstItem = index === 0;
 
   const gridColumnsNumber = isMobile ? 1 : 5;
 
-  const nicknameFrom = sentBy ? resolveNickname(sentBy) : undefined;
-  const nicknameTo = asset?.to ? resolveNickname(asset.to) : undefined;
+  const nicknameFrom = sentBy ? resolveContactOrHandle(sentBy) : undefined;
+  const nicknameTo = asset?.to ? resolveContactOrHandle(asset.to) : undefined;
 
   return (
     <Grid

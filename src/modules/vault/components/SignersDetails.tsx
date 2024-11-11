@@ -11,7 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
-import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -36,7 +36,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
-  const { resolveNickname } = useResolveNickname();
+  const { resolveContactOrHandle } = useAddressNicknameResolver();
 
   const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 
@@ -96,7 +96,7 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
         }
 
         const nickname = member?.address
-          ? resolveNickname(member.address)
+          ? resolveContactOrHandle(member.address)
           : undefined;
 
         return (

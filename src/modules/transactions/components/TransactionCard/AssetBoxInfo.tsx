@@ -14,7 +14,7 @@ import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel } from '@/modules/core';
-import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
@@ -39,8 +39,8 @@ const AssetBoxInfo = ({
     assetsMap,
   } = useWorkspaceContext();
 
-  const { resolveNickname } = useResolveNickname();
-  const nickname = asset?.to ? resolveNickname(asset.to) : undefined;
+  const { resolveContactOrHandle } = useAddressNicknameResolver();
+  const nickname = asset?.to ? resolveContactOrHandle(asset.to) : undefined;
 
   const assetInfo = useMemo(
     () =>

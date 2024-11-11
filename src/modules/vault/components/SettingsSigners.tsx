@@ -1,13 +1,13 @@
 import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
-import { useResolveNickname } from '@/modules/core/hooks/useResolveNickname';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
-  const { resolveNickname } = useResolveNickname();
+  const { resolveContactOrHandle } = useAddressNicknameResolver();
 
   if (!vault) return null;
   const members = vault?.data?.members;
@@ -34,7 +34,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           mb={16}
         >
           {members?.map((member, index: number) => {
-            const nickname = resolveNickname(member.address);
+            const nickname = resolveContactOrHandle(member.address);
 
             return (
               <CustomSkeleton isLoaded={!vault.isLoading} key={index}>

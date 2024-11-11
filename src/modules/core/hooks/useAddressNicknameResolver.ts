@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const useResolveNickname = () => {
+const useAddressNicknameResolver = () => {
   const {
     addressBookInfos: {
       handlers: { contactByAddress },
@@ -12,7 +12,7 @@ const useResolveNickname = () => {
     },
   } = useWorkspaceContext();
 
-  const resolveNickname = useCallback(
+  const resolveContactOrHandle = useCallback(
     (address: string) => {
       const contact = contactByAddress(address)?.nickname;
       if (contact) return contact;
@@ -24,8 +24,8 @@ const useResolveNickname = () => {
   );
 
   return {
-    resolveNickname,
+    resolveContactOrHandle,
   };
 };
 
-export { useResolveNickname };
+export { useAddressNicknameResolver };
