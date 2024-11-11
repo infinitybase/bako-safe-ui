@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
+import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -35,14 +35,14 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
   );
-  const { resolveContactOrHandle } = useAddressNicknameResolver();
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
   const isFirstItem = index === 0;
 
   const gridColumnsNumber = isMobile ? 1 : 5;
 
-  const nicknameFrom = sentBy ? resolveContactOrHandle(sentBy) : undefined;
-  const nicknameTo = asset?.to ? resolveContactOrHandle(asset.to) : undefined;
+  const from = sentBy ? resolveAddressContactHandle(sentBy) : undefined;
+  const to = asset?.to ? resolveAddressContactHandle(asset.to) : undefined;
 
   return (
     <Grid
@@ -62,26 +62,41 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           </HStack>
           <Flex justifyContent="space-between" w="full" alignItems="center">
             <VStack alignItems="start" spacing={2}>
-              {nicknameFrom && (
+              {from?.contact && (
                 <Text
                   isTruncated
                   textOverflow="ellipsis"
-                  maxW={{ base: '95px', xs: '95px', xl: 'full' }}
+                  maxW={{ base: '32vw', xs: '202px', xl: 'full' }}
                   fontSize={isExtraSmall ? 'xs' : 'sm'}
                   textAlign="start"
+                  textColor="grey.75"
                 >
-                  {nicknameFrom}
+                  {from.contact}
                 </Text>
               )}
-              <AddressWithCopyBtn
-                address={sentBy}
-                isDeposit={true}
-                justifyContent="start"
-                textAlign="start"
-                addressProps={{
-                  color: nicknameFrom ? 'grey.500' : 'white',
-                }}
-              />
+
+              {(!from?.contact || !from.handle) && (
+                <Address
+                  value={sentBy}
+                  isDeposit={true}
+                  justifyContent="start"
+                  textAlign="start"
+                  color={from?.contact ? 'grey.500' : 'grey.75'}
+                />
+              )}
+
+              {from?.handle && (
+                <Handle
+                  value={from.handle}
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW={{
+                    base: '27vw',
+                    xs: '175px',
+                    lg: 'full',
+                  }}
+                />
+              )}
             </VStack>
 
             <Box display="flex" justifyContent="center" w="full">
@@ -97,24 +112,39 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Box>
 
             <VStack alignItems="end" spacing={2}>
-              {nicknameTo && (
+              {to?.contact && (
                 <Text
                   isTruncated
                   textOverflow="ellipsis"
-                  maxW="288px"
+                  maxW={{ base: '32vw', xs: '202px', xl: 'full' }}
                   fontSize={isExtraSmall ? 'xs' : 'sm'}
                   textAlign="end"
+                  textColor="grey.75"
                 >
-                  {nicknameTo}
+                  {to.contact}
                 </Text>
               )}
-              <AddressWithCopyBtn
-                address={asset?.to ?? ''}
-                isDeposit={true}
-                addressProps={{
-                  color: nicknameTo ? 'grey.500' : 'white',
-                }}
-              />
+
+              {(!to?.contact || !to.handle) && (
+                <Address
+                  value={asset?.to ?? ''}
+                  isDeposit={true}
+                  color={to?.contact ? 'grey.500' : 'grey.75'}
+                />
+              )}
+
+              {to?.handle && (
+                <Handle
+                  value={to.handle}
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW={{
+                    base: '27vw',
+                    xs: '175px',
+                    xl: 'full',
+                  }}
+                />
+              )}
             </VStack>
           </Flex>
         </VStack>
@@ -123,25 +153,35 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
           <TokenInfos asset={asset} />
           <AmountsInfo txUSDAmount={txUSDAmount} asset={asset} />
 
-          <VStack alignItems="end" h={nicknameFrom ? '47px' : 'unset'}>
-            {nicknameFrom && (
+          <VStack alignItems="end" spacing={1}>
+            {from?.contact && (
               <Text
                 isTruncated
                 textOverflow="ellipsis"
-                maxW="288px"
+                maxW="255px"
                 fontSize="sm"
-                pb={0.5}
+                textColor="grey.75"
               >
-                {nicknameFrom}
+                {from.contact}
               </Text>
             )}
-            <AddressWithCopyBtn
-              address={sentBy}
-              isDeposit={true}
-              addressProps={{
-                color: nicknameFrom ? 'grey.500' : 'white',
-              }}
-            />
+
+            {(!from?.contact || !from.handle) && (
+              <Address
+                value={sentBy}
+                isDeposit={true}
+                color={from?.contact ? 'grey.500' : 'grey.75'}
+              />
+            )}
+
+            {from?.handle && (
+              <Handle
+                value={from.handle}
+                isTruncated
+                textOverflow="ellipsis"
+                maxW="230px"
+              />
+            )}
           </VStack>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -156,25 +196,35 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
             </Center>
           </Box>
 
-          <VStack alignItems="end" h={nicknameTo ? '47px' : 'unset'}>
-            {nicknameTo && (
+          <VStack alignItems="end" spacing={1}>
+            {to?.contact && (
               <Text
                 isTruncated
                 textOverflow="ellipsis"
-                maxW="288px"
+                maxW="255px"
                 fontSize="sm"
-                pb={0.5}
+                textColor="grey.75"
               >
-                {nicknameTo}
+                {to.contact}
               </Text>
             )}
-            <AddressWithCopyBtn
-              address={asset?.to ?? ''}
-              isDeposit={true}
-              addressProps={{
-                color: nicknameTo ? 'grey.500' : 'white',
-              }}
-            />
+
+            {(!to?.contact || !to.handle) && (
+              <Address
+                value={asset?.to ?? ''}
+                isDeposit={true}
+                color={to?.contact ? 'grey.500' : 'grey.75'}
+              />
+            )}
+
+            {to?.handle && (
+              <Handle
+                value={to.handle}
+                isTruncated
+                textOverflow="ellipsis"
+                maxW="230px"
+              />
+            )}
           </VStack>
         </>
       )}

@@ -10,7 +10,7 @@ import {
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
+import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel } from '@/modules/core';
@@ -39,8 +39,10 @@ const AssetBoxInfo = ({
     assetsMap,
   } = useWorkspaceContext();
 
-  const { resolveContactOrHandle } = useAddressNicknameResolver();
-  const nickname = asset?.to ? resolveContactOrHandle(asset.to) : undefined;
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
+  const assetAddressInfo = asset?.to
+    ? resolveAddressContactHandle(asset.to)
+    : undefined;
 
   const assetInfo = useMemo(
     () =>
@@ -124,8 +126,8 @@ const AssetBoxInfo = ({
       </Center>
 
       {!!asset && (
-        <VStack alignItems="end" h={nickname ? '47px' : 'unset'}>
-          {nickname && (
+        <VStack alignItems="end" spacing={1}>
+          {assetAddressInfo?.contact && (
             <Text
               isTruncated
               textOverflow="ellipsis"
@@ -134,18 +136,32 @@ const AssetBoxInfo = ({
                 xs: '130px',
                 lg: '130px',
               }}
+              color="grey.75"
               fontSize="sm"
-              pb={0.5}
             >
-              {nickname}
+              {assetAddressInfo?.contact}
             </Text>
           )}
-          <AddressWithCopyBtn
-            address={asset?.to}
-            addressProps={{
-              color: nickname ? 'grey.500' : 'white',
-            }}
-          />
+
+          {(!assetAddressInfo?.contact || !assetAddressInfo?.handle) && (
+            <Address
+              value={asset?.to}
+              color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
+            />
+          )}
+
+          {assetAddressInfo?.handle && (
+            <Handle
+              value={assetAddressInfo.handle}
+              isTruncated
+              textOverflow="ellipsis"
+              maxW={{
+                base: isExtraSmall ? '55px' : '75px',
+                xs: '105px',
+                lg: '105px',
+              }}
+            />
+          )}
         </VStack>
       )}
     </HStack>
