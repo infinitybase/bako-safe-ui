@@ -15,7 +15,8 @@ const useOffChainSync = (networkUrl: string) => {
   const getHandleFromResolver = useCallback(
     (resolver: string): Optional<string> => {
       if (AddressUtils.isValid(resolver)) {
-        const handle = offChainSync?.getDomain(resolver);
+        const _resolver = resolver.toLowerCase();
+        const handle = offChainSync?.getDomain(_resolver);
         return handle ? HandleUtils.toHandle(handle) : undefined;
       }
 
