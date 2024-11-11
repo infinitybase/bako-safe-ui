@@ -1,4 +1,4 @@
-export * from './addressWithCopyButton';
+export * from './address';
 export * from './autocomplete';
 export * from './bakoLoading';
 export * from './card';
