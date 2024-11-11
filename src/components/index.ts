@@ -7,6 +7,7 @@ export * from './copyAddressButton';
 export * from './depositDialog';
 export * from './dialog';
 export * from './feedback';
+export * from './handle';
 export * from './icons';
 export * from './input';
 export * from './loader';
