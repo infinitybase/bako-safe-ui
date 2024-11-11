@@ -3,12 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { HandleUtils } from '@/utils';
 
-import {
-  AddressUtils,
-  OffChainSyncCache,
-  OffChainSyncInstance,
-  Optional,
-} from '../../utils';
+import { AddressUtils, OffChainSyncInstance, Optional } from '../../utils';
 import { useSyncData } from './useSyncData';
 
 const useOffChainSync = (networkUrl: string) => {
@@ -20,17 +15,8 @@ const useOffChainSync = (networkUrl: string) => {
   const getHandleFromResolver = useCallback(
     (resolver: string): Optional<string> => {
       if (AddressUtils.isValid(resolver)) {
-        const cachedHandle =
-          OffChainSyncCache.getCachedHandleFromResolver(resolver);
-        if (cachedHandle) return HandleUtils.toHandle(cachedHandle);
-
         const handle = offChainSync?.getDomain(resolver);
-        if (handle) {
-          OffChainSyncCache.updateCache(handle, resolver);
-          return HandleUtils.toHandle(handle);
-        }
-
-        return undefined;
+        return handle ? HandleUtils.toHandle(handle) : undefined;
       }
 
       return undefined;
@@ -42,18 +28,7 @@ const useOffChainSync = (networkUrl: string) => {
     (handle: string): Optional<string> => {
       if (HandleUtils.isValidHandle(handle)) {
         const _handle = HandleUtils.fromHandle(handle);
-
-        const cachedResolver =
-          OffChainSyncCache.getCachedResolverFromHandle(_handle);
-        if (cachedResolver) return cachedResolver;
-
-        const resolver = offChainSync?.getResolver(_handle);
-        if (resolver) {
-          OffChainSyncCache.updateCache(_handle, resolver);
-          return resolver;
-        }
-
-        return undefined;
+        return offChainSync?.getResolver(_handle);
       }
 
       return undefined;
