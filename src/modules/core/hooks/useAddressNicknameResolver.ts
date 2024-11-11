@@ -23,8 +23,23 @@ const useAddressNicknameResolver = () => {
     [contactByAddress, getHandleFromResolver],
   );
 
+  const resolveAddressContactHandle = useCallback(
+    (address: string) => {
+      const contact = contactByAddress(address)?.nickname;
+      const handle = getHandleFromResolver(address);
+
+      return {
+        address,
+        contact,
+        handle,
+      };
+    },
+    [contactByAddress, getHandleFromResolver],
+  );
+
   return {
     resolveContactOrHandle,
+    resolveAddressContactHandle,
   };
 };
 
