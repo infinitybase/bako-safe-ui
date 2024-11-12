@@ -17,8 +17,8 @@ import { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { AddressActions } from './address-actions';
 import { AmountUSD } from './transfer-details';
+import { AddressActions } from './transfer-details/address-actions';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
