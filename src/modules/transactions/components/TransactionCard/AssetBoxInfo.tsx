@@ -17,6 +17,7 @@ import { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AddressActions } from './address-actions';
 import { AmountUSD } from './transfer-details';
 
 interface AssetBoxInfoProps extends StackProps {
@@ -125,44 +126,51 @@ const AssetBoxInfo = ({
         />
       </Center>
 
-      {!!asset && (
-        <VStack alignItems="end" spacing={1}>
-          {assetAddressInfo?.contact && (
-            <Text
-              isTruncated
-              textOverflow="ellipsis"
-              maxW={{
-                base: isExtraSmall ? '80px' : '100px',
-                xs: '130px',
-                lg: '130px',
-              }}
-              color="grey.75"
-              fontSize="sm"
-            >
-              {assetAddressInfo?.contact}
-            </Text>
-          )}
+      {asset?.to && (
+        <HStack alignItems="center">
+          <VStack alignItems="end" spacing={1}>
+            {assetAddressInfo?.contact && (
+              <Text
+                isTruncated
+                textOverflow="ellipsis"
+                maxW={{
+                  base: isExtraSmall ? '80px' : '100px',
+                  xs: '130px',
+                  lg: '130px',
+                }}
+                color="grey.75"
+                fontSize="sm"
+              >
+                {assetAddressInfo?.contact}
+              </Text>
+            )}
 
-          {(!assetAddressInfo?.contact || !assetAddressInfo?.handle) && (
-            <Address
-              value={asset?.to}
-              color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
-            />
-          )}
+            {(!assetAddressInfo?.contact || !assetAddressInfo?.handle) && (
+              <Address
+                value={asset?.to}
+                color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
+              />
+            )}
 
-          {assetAddressInfo?.handle && (
-            <Handle
-              value={assetAddressInfo.handle}
-              isTruncated
-              textOverflow="ellipsis"
-              maxW={{
-                base: isExtraSmall ? '55px' : '75px',
-                xs: '105px',
-                lg: '105px',
-              }}
-            />
-          )}
-        </VStack>
+            {assetAddressInfo?.handle && (
+              <Handle
+                value={assetAddressInfo.handle}
+                isTruncated
+                textOverflow="ellipsis"
+                maxW={{
+                  base: isExtraSmall ? '55px' : '75px',
+                  xs: '105px',
+                  lg: '105px',
+                }}
+              />
+            )}
+          </VStack>
+
+          <AddressActions
+            address={asset.to}
+            handle={assetAddressInfo?.handle}
+          />
+        </HStack>
       )}
     </HStack>
   );
