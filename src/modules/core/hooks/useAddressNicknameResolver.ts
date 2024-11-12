@@ -29,7 +29,6 @@ const useAddressNicknameResolver = () => {
       const handle = getHandleFromResolver(address);
 
       return {
-        address,
         contact,
         handle,
       };
