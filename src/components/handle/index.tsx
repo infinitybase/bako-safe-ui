@@ -17,7 +17,7 @@ const Handle = ({ value, ...rest }: HandleProps) => {
       bgColor="grey.925"
       spacing={1}
       alignItems="center"
-      justifyContent={'center'}
+      justifyContent="center"
     >
       <Text fontSize="xs" color="grey.50">
         @
