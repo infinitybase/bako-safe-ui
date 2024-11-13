@@ -1,13 +1,16 @@
 import { HStack, Text, TextProps } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { HandleUtils } from '@/utils';
+import { useScreenSize } from '@/modules/core/hooks';
+import { HandleUtils } from '@/utils/handle';
 
 interface HandleProps extends TextProps {
   value: string;
 }
 
 const Handle = ({ value, ...rest }: HandleProps) => {
+  const { isLowerThanFourHundredAndThirty } = useScreenSize();
+
   const _value = useMemo(() => HandleUtils.fromHandle(value), [value]);
 
   return (
@@ -22,7 +25,11 @@ const Handle = ({ value, ...rest }: HandleProps) => {
       <Text fontSize="xs" color="grey.50">
         @
       </Text>
-      <Text fontSize="sm" color="grey.250" {...rest}>
+      <Text
+        fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+        color="grey.250"
+        {...rest}
+      >
         {_value}
       </Text>
     </HStack>
