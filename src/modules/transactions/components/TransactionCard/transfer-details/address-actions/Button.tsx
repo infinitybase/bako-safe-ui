@@ -2,6 +2,7 @@ import { IconButton, IconButtonProps } from '@chakra-ui/react';
 import { forwardRef } from 'react';
 
 import { OptionsIcon } from '@/components/icons';
+import { useScreenSize } from '@/modules/core/hooks';
 
 type AddressActionsButtonProps = Omit<
   IconButtonProps,
@@ -12,19 +13,21 @@ const AddressActionsButton = forwardRef<
   HTMLButtonElement,
   AddressActionsButtonProps
 >((props, ref) => {
+  const { isMobile } = useScreenSize();
+
   return (
     <IconButton
       ref={ref}
-      aria-label="More info"
+      aria-label="Address actions"
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgColor="grey.825"
+      bgColor={isMobile ? 'transparent' : 'grey.825'}
       borderRadius={6}
-      borderWidth={1}
+      borderWidth={isMobile ? 0 : 1}
       borderColor="grey.950"
-      p={1}
-      size="sm"
+      p={isMobile ? 0 : 1}
+      size={isMobile ? '2xs' : 'sm'}
       _hover={{ bgColor: 'dark.950' }}
       icon={<OptionsIcon color="grey.75" fontSize="xl" />}
       {...props}
