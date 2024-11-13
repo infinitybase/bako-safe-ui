@@ -36,7 +36,12 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
+    screenSizes: {
+      isMobile,
+      isLowerThanFourHundredAndThirty,
+      isExtraSmall,
+      isLitteSmall,
+    },
     assetsMap,
   } = useWorkspaceContext();
 
@@ -91,7 +96,7 @@ const AssetBoxInfo = ({
         </VStack>
       )}
 
-      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'}>
+      <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
@@ -127,19 +132,32 @@ const AssetBoxInfo = ({
       </Center>
 
       {asset?.to && (
-        <HStack alignItems="center">
+        <HStack
+          alignItems="center"
+          justifyContent="flex-end"
+          spacing={{ base: isLitteSmall ? 0.5 : 1, xs: 2 }}
+          minW={{
+            base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
+            xs: '160px',
+            md: '170px',
+          }}
+        >
           <VStack alignItems="end" spacing={1}>
             {assetAddressInfo?.contact && (
               <Text
                 isTruncated
                 textOverflow="ellipsis"
                 maxW={{
-                  base: isExtraSmall ? '80px' : '100px',
+                  base: isExtraSmall
+                    ? '75px'
+                    : isLitteSmall
+                      ? '100px'
+                      : '110px',
                   xs: '130px',
                   lg: '130px',
                 }}
                 color="grey.75"
-                fontSize="sm"
+                fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
               >
                 {assetAddressInfo?.contact}
               </Text>
@@ -158,7 +176,7 @@ const AssetBoxInfo = ({
                 isTruncated
                 textOverflow="ellipsis"
                 maxW={{
-                  base: isExtraSmall ? '55px' : '75px',
+                  base: isExtraSmall ? '50px' : isLitteSmall ? '75px' : '85px',
                   xs: '105px',
                   lg: '105px',
                 }}
