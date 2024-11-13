@@ -190,7 +190,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
 
           <HStack
             alignItems="center"
-            justifyContent="flex-start"
+            justifyContent="flex-end"
             spacing={{ base: 1, xs: 2 }}
             minW={220}
           >
