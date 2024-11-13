@@ -16,6 +16,9 @@ const AddressActionsButton = forwardRef<
     <IconButton
       ref={ref}
       aria-label="More info"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
       bgColor="grey.825"
       borderRadius={6}
       borderWidth={1}
