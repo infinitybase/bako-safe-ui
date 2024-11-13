@@ -30,11 +30,7 @@ const AddressActionsDrawer = ({
         variant="solid-dark"
         placement="bottom"
       >
-        <DrawerOverlay
-          backdropFilter={'blur(4px)'}
-          bgColor="grey.25"
-          zIndex={1400}
-        />
+        <DrawerOverlay zIndex={1400} />
         <DrawerContent bg={'dark.950'} p={0} borderTopRadius={8}>
           <CopyAddress address={address} onClose={onClose} />
           {handle && <GoToBakoId handle={handle} onClose={onClose} />}
