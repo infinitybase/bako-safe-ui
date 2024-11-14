@@ -14,7 +14,7 @@ const AddressActionsPopover = ({ address, handle }: AddressActionsProps) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
 
   return (
-    <Popover isOpen={isOpen} onClose={onClose} placement="bottom-end">
+    <Popover isOpen={isOpen} onClose={onClose} placement="top-start">
       <PopoverTrigger>
         <AddressActionsButton
           onClick={onToggle}
