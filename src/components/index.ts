@@ -1,6 +1,7 @@
 export * from './address';
 export * from './autocomplete';
 export * from './bakoLoading';
+export * from './banner';
 export * from './card';
 export * from './commingSoonDialog';
 export * from './copyAddressButton';

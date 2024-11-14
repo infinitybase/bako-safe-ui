@@ -4,6 +4,7 @@ export * from './assets/bitcoin';
 export * from './assets/ethereum';
 export * from './assets/uniswap';
 export * from './assets/unknown';
+export * from './bako-id';
 export * from './bit-coin';
 export * from './bridge';
 export * from './chart-bullet';

@@ -21,14 +21,14 @@ const Drawer = ({ ...props }: DrawerProps) => {
   return (
     <ChakraDrawer
       {...props}
-      size={isSmall ? 'full' : 'xs'}
+      size={isSmall ? 'xl' : 'xs'}
       variant="solid"
       placement="left"
     >
-      <DrawerOverlay mt={{ base: '64px', sm: '82px' }} />
+      <DrawerOverlay mt={{ base: '64px', sm: '72px' }} />
       <DrawerContent
         p={0}
-        mt={{ base: '64px', sm: '82px' }}
+        mt={{ base: '64px', sm: '72px' }}
         bgColor="dark.950"
         boxShadow="8px 0px 6px 0px rgba(0, 0, 0, 0.15)"
       >

@@ -3,6 +3,7 @@ import { useMediaQuery } from '@chakra-ui/react';
 const useScreenSize = () => {
   const [isExtraLarge] = useMediaQuery('(min-width: 85em)'); //1360px
   const [isLarge] = useMediaQuery('(max-width: 84em)'); //1344px
+  const [isLargerThan1210] = useMediaQuery('(min-width: 75.625em)'); //1210px
   const [isMobile] = useMediaQuery('(max-width: 62em)'); //992px
   const [isSmall] = useMediaQuery('(max-width: 37.48em)'); //600px
   const [isLitteSmall] = useMediaQuery('(max-width: 25em)'); //400px
@@ -35,6 +36,7 @@ const useScreenSize = () => {
 
   return {
     isLarge,
+    isLargerThan1210,
     isMobile,
     isSmall,
     isLitteSmall,
