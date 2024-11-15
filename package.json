@@ -10,7 +10,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@bako-id/sdk": "0.0.12",
+    "@bako-id/sdk": "0.0.13",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.0",
