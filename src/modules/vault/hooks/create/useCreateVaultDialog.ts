@@ -46,6 +46,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
 
   const handleClose = () => {
     queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
+    // props.onClose();
+    handleCancel();
     props.onClose();
   };
 
