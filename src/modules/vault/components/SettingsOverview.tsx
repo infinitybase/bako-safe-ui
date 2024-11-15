@@ -354,7 +354,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   </Box>
                   <AddressWithCopyBtn
                     mt="auto"
-                    address={vault?.data?.predicateAddress ?? ''}
+                    value={vault?.data?.predicateAddress ?? ''}
                     p={2}
                     px={3}
                     flexDir="row-reverse"
@@ -362,7 +362,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                     borderRadius={10}
                     backgroundColor="dark.100"
                     isSidebarAddress
-                    addressProps={{ color: 'grey.500' }}
+                    textProps={{ color: 'grey.500' }}
                   />
                 </VStack>
               </Stack>

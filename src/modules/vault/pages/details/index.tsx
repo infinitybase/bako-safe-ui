@@ -301,7 +301,7 @@ const VaultDetailsPage = () => {
                   mt={5}
                   pb={!isLarge ? 10 : 0}
                   w="full"
-                  maxH={{ base: undefined, sm: 'calc(100% - 82px)' }}
+                  maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
                   spacing={0}
                 >
                   {grouped?.transactions?.map((transaction) => {

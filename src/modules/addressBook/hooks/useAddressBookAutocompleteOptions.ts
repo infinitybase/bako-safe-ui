@@ -30,6 +30,7 @@ type AddressBookAutocompleteOptionsProps = {
   isFirstLoading?: boolean;
   dynamicCurrentIndex?: number;
   canRepeatAddresses?: boolean;
+  handleCustomOption?: (value: string) => AutocompleteOption;
 };
 
 export type AddressesFields = { [key: string]: string }[];
@@ -44,6 +45,7 @@ const useAddressBookAutocompleteOptions = ({
   isFirstLoading,
   dynamicCurrentIndex,
   canRepeatAddresses,
+  handleCustomOption,
 }: AddressBookAutocompleteOptionsProps) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
@@ -78,13 +80,14 @@ const useAddressBookAutocompleteOptions = ({
       options: AutocompleteOption[],
       isMyAddress?: boolean,
     ) => {
-      if (isMyAddress) {
-        options = [...options, { label: fieldValue, value: fieldValue }];
-      }
+      if (!isMyAddress) return options;
 
-      return options;
+      const option = handleCustomOption?.(fieldValue);
+      return option
+        ? [...options, option]
+        : [...options, { value: fieldValue, label: fieldValue }];
     },
-    [],
+    [handleCustomOption],
   );
 
   const currentIndex = fields?.length <= 1 ? 0 : fields.length - 1;

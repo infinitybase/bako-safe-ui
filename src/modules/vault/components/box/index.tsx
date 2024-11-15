@@ -130,7 +130,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             w={isMobile ? 'unset' : 'full'}
           >
             <AddressWithCopyBtn
-              address={address}
+              value={address}
               isSidebarAddress
               h="20px"
               flexDir="row-reverse"

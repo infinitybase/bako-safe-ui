@@ -5,9 +5,15 @@ import {
   Input,
   VStack,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
+import { queryClient } from '@/config/query-client';
+import {
+  useAddressBookInputValue,
+  UseAddressBookReturn,
+} from '@/modules/addressBook/hooks';
+import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 
 export interface CreateContactFormProps {
   form: UseAddressBookReturn['form'];
@@ -15,6 +21,14 @@ export interface CreateContactFormProps {
 }
 
 const CreateContactForm = ({ form }: CreateContactFormProps) => {
+  const { setInputValue } = useAddressBookInputValue();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
+    });
+  }, []);
+
   return (
     <VStack spacing={6}>
       <Controller
@@ -44,8 +58,11 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
           <FormControl isInvalid={fieldState.invalid}>
             <Input
               variant="dark"
-              value={field.value}
-              onChange={field.onChange}
+              value={setInputValue(field.value).label}
+              onChange={(e) => {
+                e.target.value = setInputValue(e.target.value).value;
+                field.onChange(e);
+              }}
               placeholder=" "
             />
             <FormLabel>Address</FormLabel>

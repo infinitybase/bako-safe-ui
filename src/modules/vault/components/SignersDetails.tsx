@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { Card, CustomSkeleton } from '@/components';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -34,10 +35,8 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
 
   const {
     authDetails: { userInfos },
-    addressBookInfos: {
-      handlers: { contactByAddress },
-    },
   } = useWorkspaceContext();
+  const { resolveContactOrHandle } = useAddressNicknameResolver();
 
   const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
 
@@ -96,15 +95,17 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
           );
         }
 
+        const nickname = member?.address
+          ? resolveContactOrHandle(member.address)
+          : undefined;
+
         return (
           <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
             <CardMember
               isOwner={member?.id === owner?.id}
               member={{
                 ...member,
-                nickname: member?.address
-                  ? (contactByAddress(member?.address)?.nickname ?? undefined)
-                  : undefined,
+                nickname,
                 avatar: member?.avatar ?? '',
                 address: member?.address ?? '',
               }}

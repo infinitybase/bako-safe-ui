@@ -1,6 +1,7 @@
 export * from './useAddressBook';
 export * from './useAddressBookAutocompleteOptions';
 export * from './useAddressBookFormHandlers';
+export * from './useAddressBookInputValue';
 export * from './useAddressBookMutations';
 export * from './useAddToAddressBook';
 export * from './useContactToast';

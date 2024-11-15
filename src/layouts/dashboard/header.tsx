@@ -301,8 +301,8 @@ const UserBox = () => {
                   limitCharacters(name, 20)
                 ) : (
                   <AddressWithCopyBtn
-                    address={authDetails.userInfos?.address ?? ''}
-                    customAddress={AddressUtils.format(
+                    value={authDetails.userInfos?.address ?? ''}
+                    customValue={AddressUtils.format(
                       b256UserAddress,
                       isExtraSmall
                         ? 8
@@ -316,7 +316,7 @@ const UserBox = () => {
                     aria-label="Copy address"
                     flexDir="row-reverse"
                     hideCopyButton
-                    addressProps={{
+                    textProps={{
                       fontSize: isMobile ? 'xs' : 'md',
                     }}
                   />
@@ -408,12 +408,12 @@ const UserBox = () => {
                 </Text>
               )}
               <AddressWithCopyBtn
-                address={authDetails.userInfos?.address ?? ''}
+                value={authDetails.userInfos?.address ?? ''}
                 justifyContent="start"
                 aria-label="Copy address"
                 isSidebarAddress
                 flexDir="row-reverse"
-                addressProps={{ color: '#AAA6A1' }}
+                textProps={{ color: '#AAA6A1' }}
               />
             </VStack>
 
