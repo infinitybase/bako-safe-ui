@@ -16,7 +16,9 @@ import {
   CSSProperties,
   LegacyRef,
   ReactNode,
+  useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
@@ -49,6 +51,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
 }
+// import { useCallback, useEffect, useRef, useState } from 'react';
 
 const Autocomplete = ({
   label,
@@ -75,6 +78,8 @@ const Autocomplete = ({
   const [inputValue, setInputValue] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const displayedOptions =
     filterSelectedOption && options
       ? options.filter((o) => o.value !== value)
@@ -85,19 +90,31 @@ const Autocomplete = ({
 
   const showClearIcon = clearable && inputValue;
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    if (!onInputChange) {
+  const handleInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
       setInputValue(value);
-      onChange(value);
-      return;
-    }
 
-    const result = onInputChange(value);
-    setInputValue(result.label);
-    onChange(result.value);
-  };
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      debounceTimeout.current = setTimeout(() => {
+        const replacedValue = value;
+
+        if (!onInputChange) {
+          setInputValue(replacedValue);
+          onChange(replacedValue);
+          return;
+        }
+
+        const result = onInputChange(replacedValue);
+        setInputValue(result.label);
+        onChange(result.value);
+      }, 1500); // 1.5s debounce delay
+    },
+    [inputValue],
+  );
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
     actionOnSelect();
@@ -132,6 +149,14 @@ const Autocomplete = ({
       }
     }
   }, [value, options]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, []);
 
   return (
     <>
