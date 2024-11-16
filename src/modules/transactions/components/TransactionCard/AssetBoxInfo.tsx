@@ -10,14 +10,15 @@ import {
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
-import { AddressWithCopyBtn, DoubleArrowIcon } from '@/components';
+import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
-import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { AssetModel } from '@/modules/core';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
+import { AddressActions } from './transfer-details/address-actions';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -35,16 +36,19 @@ const AssetBoxInfo = ({
 }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
-    screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },
-    addressBookInfos: {
-      requests: {
-        listContactsRequest: { data },
-      },
+    screenSizes: {
+      isMobile,
+      isLowerThanFourHundredAndThirty,
+      isExtraSmall,
+      isLitteSmall,
     },
     assetsMap,
   } = useWorkspaceContext();
 
-  const { savedContact } = useGetContactByAddress(asset?.to ?? '', data);
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
+  const assetAddressInfo = asset?.to
+    ? resolveAddressContactHandle(asset.to)
+    : undefined;
 
   const assetInfo = useMemo(
     () =>
@@ -92,7 +96,7 @@ const AssetBoxInfo = ({
         </VStack>
       )}
 
-      <VStack mt={0.5} minW={isExtraSmall ? '80px' : '105px'}>
+      <VStack mt={0.5} minW={isLitteSmall ? '75px' : '105px'}>
         <Text
           textAlign="center"
           variant={isMobile ? 'title-sm' : 'title-md'}
@@ -127,29 +131,64 @@ const AssetBoxInfo = ({
         />
       </Center>
 
-      {!!asset && (
-        <VStack alignItems="end" h={savedContact?.nickname ? '47px' : 'unset'}>
-          {savedContact?.nickname && (
-            <Text
-              isTruncated
-              textOverflow="ellipsis"
-              maxW={{
-                base: isExtraSmall ? '80px' : '100px',
-                xs: '130px',
-                lg: '130px',
-              }}
-              fontSize="sm"
-            >
-              {savedContact.nickname}
-            </Text>
-          )}
-          <AddressWithCopyBtn
-            address={asset?.to}
-            addressProps={{
-              color: savedContact?.nickname ? 'grey.500' : 'white',
-            }}
+      {asset?.to && (
+        <HStack
+          alignItems="center"
+          justifyContent="flex-end"
+          spacing={{ base: isLitteSmall ? 0.5 : 1, xs: 2 }}
+          minW={{
+            base: isExtraSmall ? '100px' : isLitteSmall ? '125px' : '135px',
+            xs: '160px',
+            md: '170px',
+          }}
+        >
+          <VStack alignItems="end" spacing={1}>
+            {assetAddressInfo?.contact && (
+              <Text
+                isTruncated
+                textOverflow="ellipsis"
+                maxW={{
+                  base: isExtraSmall
+                    ? '75px'
+                    : isLitteSmall
+                      ? '100px'
+                      : '110px',
+                  xs: '130px',
+                  lg: '130px',
+                }}
+                color="grey.75"
+                fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
+              >
+                {assetAddressInfo?.contact}
+              </Text>
+            )}
+
+            {(!assetAddressInfo?.contact || !assetAddressInfo?.handle) && (
+              <Address
+                value={asset?.to}
+                color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}
+              />
+            )}
+
+            {assetAddressInfo?.handle && (
+              <Handle
+                value={assetAddressInfo.handle}
+                isTruncated
+                textOverflow="ellipsis"
+                maxW={{
+                  base: isExtraSmall ? '50px' : isLitteSmall ? '75px' : '85px',
+                  xs: '105px',
+                  lg: '105px',
+                }}
+              />
+            )}
+          </VStack>
+
+          <AddressActions
+            address={asset.to}
+            handle={assetAddressInfo?.handle}
           />
-        </VStack>
+        </HStack>
       )}
     </HStack>
   );

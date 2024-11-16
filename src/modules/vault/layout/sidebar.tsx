@@ -1,6 +1,8 @@
 import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import {
+  BakoIdIcon,
+  Banner,
   CoinsIcon,
   ExchangeIcon,
   OverviewIcon,
@@ -15,6 +17,8 @@ import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+const { VITE_BAKO_ID_URL } = import.meta.env;
+
 interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
 }
@@ -24,7 +28,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isMobile },
+    screenSizes: { isLargerThan1210 },
   } = useWorkspaceContext();
 
   const {
@@ -53,7 +57,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
   return (
     <Box
       w="100%"
-      maxW={isMobile ? 'full' : '300px'}
+      maxW={isLargerThan1210 ? '300px' : 'full'}
       bgColor={onDrawer ? 'transparent' : 'dark.950'}
       boxShadow={onDrawer ? 'none' : '8px 0px 6px 0px rgba(0, 0, 0, 0.15)'}
       p="24px 16px 16px 16px"
@@ -61,8 +65,21 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
     >
       <VStack
         position="fixed"
-        width={isMobile ? 'full' : '268px'}
-        pr={isMobile ? 8 : 'unset'}
+        width={isLargerThan1210 ? '269px' : 'full'}
+        pr={isLargerThan1210 ? 'unset' : 8}
+        pb={4}
+        pt={isLargerThan1210 ? 6 : 0}
+        top={isLargerThan1210 ? '72px' : 14}
+        bottom={0}
+        overflowY="scroll"
+        __css={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            display: 'none',
+          },
+        }}
       >
         {/* VAULT Modal LIST */}
         <VaultListModal
@@ -104,7 +121,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         <Divider borderColor="dark.100" mt={8} mb={4} />
 
         {/* MENU */}
-        <SidebarMenu.List w="100%">
+        <SidebarMenu.List w="100%" mb={4}>
           <SidebarMenu.Container
             isActive={menuItems.overview}
             onClick={() =>
@@ -189,6 +206,13 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
             </SidebarMenu.Title>
           </SidebarMenu.Container>
         </SidebarMenu.List>
+
+        <Banner
+          mt="auto"
+          icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
+          title="Register your Handles"
+          onClick={() => window.open(VITE_BAKO_ID_URL, '_BLANK')}
+        />
       </VStack>
     </Box>
   );

@@ -24,16 +24,19 @@ import {
   Select,
   UserAddIcon,
 } from '@/components';
+import { queryClient } from '@/config/query-client';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
+import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface AddressStepProps {
   form: UseFormReturn<ITemplatePayload>;
@@ -41,6 +44,8 @@ interface AddressStepProps {
 }
 
 const AddressStep = ({ form, addresses }: AddressStepProps) => {
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -53,7 +58,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
       handlers: { handleOpenDialog },
     },
   } = useWorkspaceContext();
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const { setInputValue } = useAddressBookInputValue();
 
   const handleFirstIsFirstLoad = () => {
     if (isFirstLoad) {
@@ -101,6 +106,12 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     optionsContainerRef.current,
     addresses.fields.length,
   ]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
+    });
+  }, []);
 
   return (
     <>
@@ -177,6 +188,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                       disabled={first}
                       label={first ? 'Your address' : `Address ${index + 1}`}
                       onChange={field.onChange}
+                      onInputChange={(value: string) => setInputValue(value)}
                       options={appliedOptions}
                       isLoading={!optionsRequests[index].isSuccess}
                       inView={inView}

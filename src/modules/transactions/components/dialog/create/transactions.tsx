@@ -19,6 +19,7 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook';
 import {
   AddressUtils,
@@ -68,8 +69,8 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       canAddMember,
     },
   } = useWorkspaceContext();
-
   const balanceAvailable = getBalanceAvailable();
+  const { setInputValue } = useAddressBookInputValue();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
@@ -82,6 +83,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       isFirstLoading: false,
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
+      handleCustomOption: setInputValue,
     });
 
   return (
@@ -119,6 +121,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
+                  onInputChange={(value: string) => setInputValue(value)}
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}
                   inView={inView}
@@ -221,6 +224,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   const {
     screenSizes: { isMobile },
+    offChainSync: {
+      handlers: { getHandleFromResolver },
+    },
   } = useWorkspaceContext();
 
   // Logic to fix the button in the footer
@@ -269,7 +275,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
-        );
+        )?.nickname;
+        const recipientLabel =
+          contact ??
+          getHandleFromResolver(transaction.value) ??
+          AddressUtils.format(transaction.value);
 
         return (
           <>
@@ -312,12 +322,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {transaction.amount} {assetSlug}
                       </b>{' '}
-                      to{' '}
-                      <b>
-                        {' '}
-                        {contact?.nickname ??
-                          AddressUtils.format(transaction.value)}
-                      </b>
+                      to <b> {recipientLabel}</b>
                     </Text>
                   )
                 }
