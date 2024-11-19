@@ -1,5 +1,4 @@
-import {
-  // TransactionStatus as BakoSafeTransactionStatus,
+import type {
   ITransactionResume,
   IAsset,
   TransactionType,
@@ -8,10 +7,10 @@ import {
   ITransactionSummary,
   TransactionStatus,
 } from "bakosafe";
-import { Network, Operation, Predicate, TransactionRequest } from "fuels";
+import type { Network, Operation, Predicate, TransactionRequest } from "fuels";
 
-import { PredicateAndWorkspace } from "@/modules/vault";
-import { AssetModel, IPagination, SortOption } from "@/types";
+import type { PredicateAndWorkspace } from "@/modules/vault";
+import type { AssetModel, IPagination, SortOption } from "@/types";
 
 export interface ITransactionPagination<T> {
   perPage: number;
@@ -217,7 +216,9 @@ export interface ITransaction extends ICreateTransactionPayload {
   type: TransactionType;
   resume: ITransactionResume; // RESULT
   assets: ITransferAsset[];
-  summary?: ITransactionSummary;
+  summary?: ITransactionSummary & {
+    name: string;
+  };
 }
 
 export interface IListTransactions

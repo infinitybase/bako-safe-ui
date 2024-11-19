@@ -62,9 +62,11 @@ const useChangeMember = () => {
     (member) => member.address,
   );
   const { memberForm, permissionForm, editForm, setMemberValuesByWorkspace } =
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     useChangeMemberForm(membersToForm!);
 
   const memberPermission = WorkspacePermissionUtils.getPermissionInWorkspace(
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     currentWorkspace!,
     {
       id: params.memberId,
@@ -75,6 +77,7 @@ const useChangeMember = () => {
     memberPermission?.role &&
     WorkspacePermissionUtils.permissions[memberPermission.role];
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useMemo(() => {
     setMemberPermissions({
       oldPermission: permissions?.title?.toUpperCase() ?? '',

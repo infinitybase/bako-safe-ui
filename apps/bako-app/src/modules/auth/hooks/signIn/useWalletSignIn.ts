@@ -9,6 +9,7 @@ import { ENetworks } from '@/utils/constants';
 
 import { useCreateUserRequest, useSignInRequest } from '../..';
 import { localStorageKeys } from '../../utils';
+import { defaultPermissions } from '@bako-safe/services';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
@@ -36,12 +37,13 @@ const useWalletSignIn = (
     }) => {
       authDetails.handlers.authenticate({
         userId: user_id,
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         avatar: avatar!,
         account: address,
         accountType: TypeUser.FUEL,
         accessToken: accessToken,
         singleWorkspace: workspace.id,
-        permissions: workspace.permissions,
+        permissions: workspace.permissions ?? defaultPermissions,
         provider_url: provider,
         first_login,
       });
@@ -87,10 +89,12 @@ const useWalletSignIn = (
 
       createUserRequest.mutate(
         {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           address: account!,
           provider: fromConnector
-            ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
-            : network!.url,
+            ? // biome-ignore lint/style/noNonNullAssertion: <explanation>
+              localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
+            : network?.url,
           type: TypeUser.FUEL,
         },
         {

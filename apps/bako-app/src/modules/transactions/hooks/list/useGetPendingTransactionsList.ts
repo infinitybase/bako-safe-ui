@@ -1,6 +1,6 @@
-import { ITransactionsGroupedByMonth } from '@bako-safe/services/modules';
+import type { ITransactionsGroupedByMonth } from '@bako-safe/services/modules';
 
-import { IPendingTransactionsRecord } from './useTransactionList';
+import type { IPendingTransactionsRecord } from './useTransactionList';
 
 const usePendingTransactionsList = (
   homeTransactions: ITransactionsGroupedByMonth[],
@@ -13,8 +13,11 @@ const usePendingTransactionsList = (
     ...(vaultTransactionsList ?? []),
   ];
 
-  const result = {};
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const result: { [key: string]: any } = {};
+  // biome-ignore lint/complexity/noForEach: <explanation>
   mergedTransactionsList?.forEach((item) => {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     return item.transactions.forEach((transaction) => {
       if (!transaction) return;
       if (result[transaction.id]) return;

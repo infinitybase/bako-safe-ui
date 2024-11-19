@@ -18,7 +18,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 
 const useWorkspace = (
   userInfos: IUserInfos,
-  assetsMaps: false | AssetMap | undefined,
+  assetsMaps: AssetMap | undefined,
   invalidateGifAnimationRequest: () => void,
   // resetAllTransactionsTypeFilters: () => void,
   // refetchPendingSingerTransactions: () => void,

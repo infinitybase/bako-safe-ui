@@ -1,10 +1,10 @@
-import { bn, CoinQuantity } from 'fuels';
+import { bn, type CoinQuantity } from 'fuels';
 
-import { AssetMap } from '@/modules/core';
+import type { AssetMap } from '@/modules/core';
 
 export const handleAssetsBalance = (
-  balances: CoinQuantity[] = [],
-  assetsMap: false | AssetMap | undefined,
+  balances: CoinQuantity[],
+  assetsMap: AssetMap | undefined,
 ) => {
   const result = balances.map((balance) => {
     const assetInfos = assetsMap?.[balance.assetId];

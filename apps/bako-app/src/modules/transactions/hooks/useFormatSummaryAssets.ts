@@ -1,6 +1,6 @@
-import { OperationWithAssets } from '@bako-safe/services';
-import { ITransferAsset } from 'bakosafe';
-import { Operation, TransactionRequest } from 'fuels';
+import type { OperationWithAssets } from '@bako-safe/services';
+import type { ITransferAsset } from 'bakosafe';
+import { InputType, type Operation, type TransactionRequest } from 'fuels';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { formatAssetAmount, isHex } from '@/utils';
@@ -26,7 +26,9 @@ const useFormatSummaryAssets = (
 
   const { fuelsTokens } = useWorkspaceContext();
 
-  const txDataInput = txData?.inputs.find((input) => input.type === 0);
+  const txDataInput = txData?.inputs.find(
+    (input) => input.type === InputType.Coin,
+  );
 
   if (!operations?.length) {
     return {
@@ -58,31 +60,32 @@ const useFormatSummaryAssets = (
 
   if (!firstOperation.assetsSent) {
     const { amount, assetId, to } = firstOperation;
-    if (
-      (!amount || !assetId) &&
-      txDataInput?.['assetId'] &&
-      txDataInput?.['amount']
-    ) {
-      const assetId = (txDataInput?.['assetId'] ?? '') as string;
-      const stringfiedAmount = String(txDataInput?.['amount']);
+    if (txDataInput?.type === InputType.Coin)
+      if (
+        (!amount || !assetId) &&
+        txDataInput?.assetId &&
+        txDataInput?.amount
+      ) {
+        const assetId = (txDataInput?.assetId ?? '') as string;
+        const stringfiedAmount = String(txDataInput?.amount);
 
-      let assetAmount = stringfiedAmount;
+        let assetAmount = stringfiedAmount;
 
-      if (isHex(stringfiedAmount)) {
-        assetAmount = formatAssetAmount({
-          fuelsTokens,
-          chainId,
+        if (isHex(stringfiedAmount)) {
+          assetAmount = formatAssetAmount({
+            fuelsTokens,
+            chainId,
+            assetId,
+            amount: stringfiedAmount,
+          });
+        }
+
+        return {
+          amount: assetAmount ?? '',
           assetId,
-          amount: stringfiedAmount,
-        });
+          to: to?.address ?? '',
+        };
       }
-
-      return {
-        amount: assetAmount ?? '',
-        assetId,
-        to: to?.address ?? '',
-      };
-    }
 
     const _assetId = assetId ?? '';
     const stringfiedAmount = amount ?? '';
