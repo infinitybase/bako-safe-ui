@@ -21,24 +21,28 @@ const colors = {
     error: "error.700",
     warning: "warning.660",
     info: "info.650",
+    loading: "grey.500",
   },
   bg: {
     success: "success.800",
     error: "error.800",
     warning: "warning.675",
     info: "info.700",
+    loading: "grey.500",
   },
   title: {
     success: "success.700",
     error: "error.500",
     warning: "brand.500",
     info: "info.500",
+    loading: "grey.500",
   },
   description: {
     success: "success.300",
     error: "error.300",
     warning: "brand.400",
     info: "info.300",
+    loading: "grey.500",
   },
 };
 
