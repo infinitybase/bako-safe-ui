@@ -1,40 +1,19 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "preserveSymlinks": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "lib": ["dom", "esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "es2020",
-    /* Paths */
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
     },
-    "outDir": "./dist"
+    "lib": ["dom", "esnext"],
+    "types": ["react", "node"]
   },
-  "include": ["src", "src/**/*.d.ts"],
-  "exclude": ["**/dist", "**/build", "node_modules", "**/node_modules", "dist"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
