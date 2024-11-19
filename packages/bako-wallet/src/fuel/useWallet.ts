@@ -1,5 +1,5 @@
-import { SignWebAuthnPayload } from '@bako-safe/services/types';
-import { signChallange } from '@bako-safe/services/utils';
+import { SignWebAuthnPayload } from '@bako-safe/services';
+import { signChallange } from '@bako-safe/services';
 import { useFuel } from '@fuels/react';
 import {
   useMutation,

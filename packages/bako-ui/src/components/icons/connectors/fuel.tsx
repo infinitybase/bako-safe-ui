@@ -1,6 +1,6 @@
-import { createIcon } from "@chakra-ui/react";
+import { ComponentWithAs, IconProps, createIcon } from "@chakra-ui/react";
 
-const FuelIcon = createIcon({
+const FuelIcon: ComponentWithAs<"svg", IconProps> = createIcon({
   displayName: "FuelIcon",
   viewBox: "0 0 491 496",
   path: (
@@ -19,4 +19,5 @@ const FuelIcon = createIcon({
     </>
   ),
 });
+
 export { FuelIcon };

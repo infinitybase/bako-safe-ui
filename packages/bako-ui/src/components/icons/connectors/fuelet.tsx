@@ -1,6 +1,6 @@
-import { createIcon } from "@chakra-ui/react";
+import { ComponentWithAs, IconProps, createIcon } from "@chakra-ui/react";
 
-const FueletIcon = createIcon({
+const FueletIcon: ComponentWithAs<"svg", IconProps> = createIcon({
   displayName: "FueletIcon",
   viewBox: "0 0 40 40",
   path: (

@@ -1,4 +1,4 @@
-import { FueletIcon, FuelIcon } from '@bako-safe/ui/components';
+import { FueletIcon, FuelIcon } from '@bako-safe/ui';
 import { useConnectors } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
@@ -20,7 +20,31 @@ enum EConnectorsLabels {
   FUELET = 'Fuelet',
 }
 
-const DEFAULT_CONNECTORS = [
+export type IConnector = {
+  name: EConnectors;
+  label: EConnectorsLabels;
+  icon: any;
+};
+
+export type ConnectorItem = IConnector & {
+  imageUrl?: string;
+  isEnabled: boolean;
+  refetchOnMount: boolean;
+};
+
+export type UseListConnectorsResult = {
+  connectors: ConnectorItem[];
+  error: Error | null;
+  isError: boolean;
+  isPending: boolean;
+  isLoading: boolean;
+  isLoadingError: boolean;
+  isRefetchError: boolean;
+  isSuccess: boolean;
+  status: 'error' | 'success';
+};
+
+const DEFAULT_CONNECTORS: IConnector[] = [
   {
     name: EConnectors.FUEL,
     label: EConnectorsLabels.FUEL,
@@ -33,7 +57,7 @@ const DEFAULT_CONNECTORS = [
   },
 ];
 
-const useListConnectors = () => {
+const useListConnectors = (): UseListConnectorsResult => {
   const { connectors, ...query } = useConnectors();
 
   const getFuelConnector = useCallback(
@@ -57,7 +81,14 @@ const useListConnectors = () => {
 
   return {
     connectors: defaultConnectors,
-    ...query,
+    error: query.error ?? null,
+    isError: query.isError,
+    isPending: false,
+    isLoading: query.isLoading,
+    isLoadingError: query.isLoadingError,
+    isRefetchError: query.isRefetchError,
+    isSuccess: query.isSuccess,
+    status: query.status,
   };
 };
 

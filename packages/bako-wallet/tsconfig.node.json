@@ -1,7 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
   },
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["*.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,4 +1,4 @@
-import { IListTransactions } from '@bako-safe/services/modules/transaction';
+import { IListTransactions } from '@bako-safe/services';
 import { useMutation } from '@tanstack/react-query';
 import { ITransferAsset, Vault } from 'bakosafe';
 
