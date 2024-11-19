@@ -1,11 +1,12 @@
 import {
-  AlertStatus,
+  type AlertStatus,
   Box,
   HStack,
   Text,
-  UseToastOptions,
+  type UseToastOptions,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -21,24 +22,28 @@ const colors = {
     error: 'error.700',
     warning: 'warning.660',
     info: 'info.650',
+    loading: 'brand.500',
   },
   bg: {
     success: 'success.800',
     error: 'error.800',
     warning: 'warning.675',
     info: 'info.700',
+    loading: 'brand.500',
   },
   title: {
     success: 'success.700',
     error: 'error.500',
     warning: 'brand.500',
     info: 'info.500',
+    loading: 'brand.500',
   },
   description: {
     success: 'success.300',
     error: 'error.300',
     warning: 'brand.400',
     info: 'info.300',
+    loading: 'brand.500',
   },
 };
 
@@ -94,11 +99,13 @@ const Notification = (props: NotificationProps) => {
     <Container
       onClose={props.onClose}
       leftIcon={props.icon}
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       status={props.status!}
       alignItems={containerAlignItems}
     >
       {props.title && (
         <Text
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           color={colors.title[props.status!]}
           fontSize="sm"
           fontWeight="semibold"
@@ -113,6 +120,7 @@ const Notification = (props: NotificationProps) => {
           noOfLines={2}
           whiteSpace="pre-wrap"
           lineHeight={1.2}
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           color={colors.description[props.status!] ?? 'grey.200'}
         >
           {props.description}

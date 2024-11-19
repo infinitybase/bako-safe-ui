@@ -1,10 +1,10 @@
-import { BakoLoading } from '@app/components/bakoLoading';
-import { useQueryParams } from '@app/modules/auth';
-import { useVerifyBrowserType } from '@app/modules/core';
-import { CreateVaultDialog } from '@app/modules/vault/components';
-import { VaultItemBox } from '@app/modules/vault/components/modal/box';
-import { useVaultDrawer } from '@app/modules/vault/components/modal/hook';
-import { useWorkspaceContext } from '@app/modules/workspace/WorkspaceProvider';
+import { BakoLoading } from '@/components/bakoLoading';
+import { useQueryParams } from '@/modules/auth';
+import { useVerifyBrowserType } from '@/modules/core';
+import { CreateVaultDialog } from '@/modules/vault/components';
+import { VaultItemBox } from '@/modules/vault/components/modal/box';
+import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import {
   CustomSkeleton,
   EmptyBox,

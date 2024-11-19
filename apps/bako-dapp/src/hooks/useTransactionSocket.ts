@@ -1,11 +1,11 @@
 import { useQueryParams } from '@app/modules/auth';
 import {
-  IEventTX_CONFIRM,
+  type IEventTX_CONFIRM,
   SocketEvents,
   SocketUsernames,
   useSocket,
 } from '@app/modules/core';
-import { TransactionRequestLike } from 'fuels';
+import type { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

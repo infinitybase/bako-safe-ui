@@ -1,9 +1,7 @@
-import { Asset, AssetMap } from '../utils';
+import type { Asset, AssetMap } from '../utils';
 
-const useSortTokenInfosArray = (
-  assets: Asset[],
-  assetsMap: false | AssetMap | undefined,
-) => {
+const useSortTokenInfosArray = (assets: Asset[], assetsMap: AssetMap) => {
+  // biome-ignore lint/complexity/useLiteralKeys: <explanation>
   const unknownAssetName = assetsMap?.['UNKNOWN'].name;
 
   const sortedAssets = assets.sort((a, b) => {

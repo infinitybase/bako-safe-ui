@@ -1,4 +1,4 @@
-import { TransactionRequestLike } from 'fuels';
+import type { TransactionRequestLike } from 'fuels';
 import { useCallback, useContext, useRef } from 'react';
 
 import { SocketContext } from '@/config/socket';
@@ -26,6 +26,7 @@ export enum SocketUsernames {
 
 export interface IEventTX_CONFIRM {
   tx?: TransactionRequestLike;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   operations: any;
   sign?: boolean;
 }
@@ -36,6 +37,7 @@ export interface IDefaultMessage {
   to: SocketUsernames;
   type: SocketEvents;
   request_id: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   data: any;
 }
 
@@ -48,6 +50,7 @@ export interface ISocketConnectParams {
     event: string;
     content: { [key: string]: string };
   };
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   callbacks?: { [key: string]: (data: any) => void };
 }
 export enum BakoSafeConnectors {
@@ -78,6 +81,7 @@ export const useSocket = () => {
 
   const socketState = useRef(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const connect = useCallback(
     (sessionId: string) => {
       /*
@@ -117,6 +121,7 @@ export const useSocket = () => {
         content,
         to,
       },
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       setTimeout(callback!, 3000),
     );
   };

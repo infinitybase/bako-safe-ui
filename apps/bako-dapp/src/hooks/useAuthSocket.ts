@@ -21,6 +21,7 @@ export const useAuthSocket = () => {
 
   const [selectedVaultId, setSelectedVaultId] = useState('');
 
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   const getCurrentVaultRequest = useGetCurrentVaultRequest(sessionId!);
 
   const createConnectionsMutation = useCreateConnections();

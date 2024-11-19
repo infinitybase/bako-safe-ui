@@ -1,4 +1,4 @@
-import { useCreateConnections } from '@dapp/hooks/useCreateConnection';
+// import { useCreateConnections } from '@dapp/hooks/useCreateConnection';
 import { useCallback } from 'react';
 
 import { queryClient } from '@/config';
@@ -8,6 +8,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TabState, useCreateVault } from './useCreateVault';
 
+// todo: dapp verify and remove
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
 }
@@ -36,7 +37,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
       validateAddress.isLoading) &&
     addresses.fields.length > 1;
 
-  const createConnectionsMutation = useCreateConnections();
+  // const createConnectionsMutation = useCreateConnections();
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -49,6 +50,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     props.onClose();
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const handleCancel = useCallback(() => {
     tabs.set(TabState.INFO);
     rest.setSearch('');
@@ -63,16 +65,16 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const close = (close_call: () => void, step?: TabState) => () => {
     const isValid = sessionId && name && origin && request_id;
 
-    if (step && step == TabState.SUCCESS && isValid) {
-      createConnectionsMutation.mutate({
-        sessionId: sessionId!,
-        name: name!,
-        origin: origin!,
-        request_id: request_id!,
-        userAddress: userInfos?.address,
-        vaultId: vaultId,
-      });
-    }
+    // if (step && step == TabState.SUCCESS && isValid) {
+    //   createConnectionsMutation.mutate({
+    //     sessionId: sessionId!,
+    //     name: name!,
+    //     origin: origin!,
+    //     request_id: request_id!,
+    //     userAddress: userInfos?.address,
+    //     vaultId: vaultId,
+    //   });
+    // }
     tabs.set(TabState.INFO);
     return close_call();
   };
@@ -118,7 +120,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
         handleClose();
       },
       onCancel: close(handleCancel, TabState.SUCCESS), // window close to connector
-      closeText: `Done`,
+      closeText: 'Done',
       nextStepText: '',
     },
   };

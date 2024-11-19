@@ -18,13 +18,14 @@ const useTokensUSDAmountRequest = () => {
     queryFn: () => homeService.getTokensUSDAmount(),
     refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 10,
+    // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
     enabled: window.location.pathname != '/',
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
   });
 
   const isUnknownToken = (assetId: string) =>
-    !!data?.filter((token) => token[assetId]);
+    !!data?.filter((token) => token[0] === assetId);
 
   const response = data ?? [[Address.fromRandom().toString(), 0.0]];
 
