@@ -9,6 +9,8 @@ export enum SocketEvents {
 
   DEFAULT = 'message',
 
+  NOTIFICATION = 'notification',
+
   CONNECTED = '[CONNECTED]',
   DISCONNECTED = '[CLIENT_DISCONNECTED]',
 
@@ -93,7 +95,7 @@ export const useSocket = () => {
         request_id: request_id ?? '',
       };
 
-      request_id && socket.connect();
+      socket.connect();
       socketState.current = true;
     },
     [socketState],

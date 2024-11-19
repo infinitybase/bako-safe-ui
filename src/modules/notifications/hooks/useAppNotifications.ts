@@ -7,6 +7,9 @@ import {
   NotificationsQueryKey,
   NotificationSummary,
   Pages,
+  SocketEvents,
+  SocketUsernames,
+  useSocket,
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
@@ -27,6 +30,12 @@ export interface TransactionRedirect {
   name?: string;
 }
 
+type HandleWithSocketEventProps = {
+  sessionId: string;
+  to: string;
+  type: string;
+};
+
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const {
     authDetails: { userInfos },
@@ -39,6 +48,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const notificationsListRequest = useListNotificationsRequest(
     userInfos.address,
   );
+  const { connect, socket } = useSocket();
 
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
@@ -49,6 +59,20 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     hasNewNotification,
     setHasNewNotification,
   } = useNotificationsStore();
+
+  const handleWithSocketEvent = ({
+    sessionId,
+    to,
+    type,
+  }: HandleWithSocketEventProps) => {
+    if (
+      to === SocketUsernames.UI &&
+      type === SocketEvents.NOTIFICATION &&
+      sessionId == userInfos.id
+    ) {
+      unreadNotificationsRequest.refetch();
+    }
+  };
 
   const onCloseDrawer = () => {
     const hasUnread = !!unreadCounter;
@@ -109,6 +133,21 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   useEffect(() => {
     setUnreadCounter(unreadNotificationsRequest?.data?.total ?? 0);
   }, [unreadNotificationsRequest?.data, hasNewNotification]);
+
+  useEffect(() => {
+    if (!socket.connected) {
+      connect(userInfos.id);
+      return;
+    }
+
+    if (socket.connected) {
+      socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    }
+
+    return () => {
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    };
+  }, [socket.connected]);
 
   return {
     drawer: {
