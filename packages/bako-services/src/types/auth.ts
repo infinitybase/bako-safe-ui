@@ -1,7 +1,6 @@
 import { TypeUser } from "bakosafe";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { Network, Provider } from "fuels";
-import { EConnectors } from "@bako-safe/wallet/dist/fuel";
 
 import { IPermission, Workspace } from "@/modules/workspace";
 
@@ -135,18 +134,13 @@ export type IUseAuthDetails = {
   userInfos: IUserInfos;
 };
 
-export type UserType = {
-  type: TypeUser;
-  name: EConnectors;
-};
-
 export type IGetUserInfosResponse = {
   address: string;
   avatar: string;
   id: string;
   name: string;
   onSingleWorkspace: boolean;
-  type: UserType;
+  type: TypeUser;
   webauthn: SignWebAuthnPayload;
   first_login?: boolean;
   workspace: {
