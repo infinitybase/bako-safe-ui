@@ -1,15 +1,15 @@
-import { IWorkspaceBalance } from '@bako-safe/services/modules';
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import type { IWorkspaceBalance } from '@bako-safe/services/modules';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 import { workspaceService } from '@/config/services-initializer';
-import { AssetMap } from '@/modules/core';
+import type { AssetMap } from '@/modules/core';
 
 import { WorkspacesQueryKey } from '../utils';
 import { handleAssetsBalance } from '../utils/assets';
 
 const useGetWorkspaceBalanceRequest = (
   currentWorkspace: string,
-  assetsMaps: false | AssetMap | undefined,
+  assetsMaps: AssetMap | undefined,
   options?: UseQueryOptions<
     IWorkspaceBalance,
     unknown,
@@ -34,7 +34,10 @@ const useGetWorkspaceBalanceRequest = (
       ...data,
       balanceUSD: data?.currentBalanceUSD,
       workspaceId: '',
-      assetsBalance: handleAssetsBalance(data?.currentBalance, assetsMaps),
+      assetsBalance: handleAssetsBalance(
+        data?.currentBalance ?? [],
+        assetsMaps ?? undefined,
+      ),
     },
     ...request,
   };

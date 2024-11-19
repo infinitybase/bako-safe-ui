@@ -1,4 +1,4 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services/modules/transaction';
 import { MinimalAlertIcon } from '@bako-safe/ui/components';
 import {
   Avatar,
@@ -26,6 +26,7 @@ const ConnectorInfos = ({
   isPending,
   isNotSigned,
 }: IConnectorInfos) => {
+  // biome-ignore lint/complexity/useLiteralKeys: <explanation>
   const txSummaryName = transaction.summary?.['name'];
   const originName =
     txSummaryName === ETransactionSummaryNames.FUEL

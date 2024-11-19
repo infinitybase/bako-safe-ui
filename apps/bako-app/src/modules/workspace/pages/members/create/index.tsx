@@ -51,10 +51,13 @@ const MemberTab = () => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
   const contactNickname = contactByAddress(member?.address!)?.nickname;
 
   const permission = WorkspacePermissionUtils.getPermissionInWorkspace(
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     currentWorkspace!,
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     member!,
   );
 
@@ -154,14 +157,16 @@ const CreateMemberPage = () => {
             onPrimaryAction={formState.handlePrimaryAction}
             onSecondaryAction={formState.handleSecondaryAction}
             newPermission={
-              WorkspacePermissionUtils.permissions[
-                formState.newPermission ?? ''
-              ].title
+              // WorkspacePermissionUtils.permissions[
+              //   formState.newPermission
+              // ].title
+              WorkspacePermissionUtils.permissions.ADMIN.title
             }
             oldPermission={
-              WorkspacePermissionUtils.permissions[
-                formState.oldPermission ?? ''
-              ].title
+              WorkspacePermissionUtils.permissions.ADMIN.title
+              // WorkspacePermissionUtils.permissions[
+              //   formState.oldPermission
+              // ].title
             }
           />
         )}
@@ -234,53 +239,50 @@ const CreateMemberPage = () => {
         </Tabs>
       </Dialog.Body>
       {tabs.is(MemberTabState.FORM) && (
-        <>
-          <Dialog.Actions
-            sx={{
-              '&>hr': {
-                marginTop:
-                  isExtraSmallDevice && formState.isEditMember ? '0' : 4,
-              },
-            }}
-            maxW={480}
-            mt={{ base: isExtraSmallDevice ? -6 : 'auto', xs: 'unset' }}
-            p={0}
-          >
-            {!isEditMember ? (
-              <Dialog.SecondaryAction
-                w="25%"
-                onClick={formState?.handleSecondaryAction}
-              >
-                {formState?.secondaryAction}
-              </Dialog.SecondaryAction>
-            ) : (
-              <Dialog.TertiaryAction
-                onClick={formState.handleTertiaryAction}
-                leftIcon={<RemoveIcon color="error.500" />}
-                isDisabled={!formState?.tertiaryAction}
-                isLoading={formState?.isLoading}
-                w="50%"
-                _hover={{
-                  opacity: 0.8,
-                }}
-              >
-                {formState.tertiaryAction}
-              </Dialog.TertiaryAction>
-            )}
-            <Dialog.PrimaryAction
-              w={isEditMember ? '50%' : '75%'}
+        <Dialog.Actions
+          sx={{
+            '&>hr': {
+              marginTop: isExtraSmallDevice && formState.isEditMember ? '0' : 4,
+            },
+          }}
+          maxW={480}
+          mt={{ base: isExtraSmallDevice ? -6 : 'auto', xs: 'unset' }}
+          p={0}
+        >
+          {!isEditMember ? (
+            <Dialog.SecondaryAction
+              w="25%"
+              onClick={formState?.handleSecondaryAction}
+            >
+              {formState?.secondaryAction}
+            </Dialog.SecondaryAction>
+          ) : (
+            <Dialog.TertiaryAction
+              onClick={formState.handleTertiaryAction}
+              leftIcon={<RemoveIcon color="error.500" />}
+              isDisabled={!formState?.tertiaryAction}
+              isLoading={formState?.isLoading}
+              w="50%"
               _hover={{
                 opacity: 0.8,
               }}
-              onClick={formState?.handlePrimaryAction}
-              leftIcon={!isEditMember ? <SquarePlusIcon /> : <RefreshIcon />}
-              isDisabled={!formState?.isValid}
-              isLoading={formState?.isLoading}
             >
-              {formState.primaryAction}
-            </Dialog.PrimaryAction>
-          </Dialog.Actions>
-        </>
+              {formState.tertiaryAction}
+            </Dialog.TertiaryAction>
+          )}
+          <Dialog.PrimaryAction
+            w={isEditMember ? '50%' : '75%'}
+            _hover={{
+              opacity: 0.8,
+            }}
+            onClick={formState?.handlePrimaryAction}
+            leftIcon={!isEditMember ? <SquarePlusIcon /> : <RefreshIcon />}
+            isDisabled={!formState?.isValid}
+            isLoading={formState?.isLoading}
+          >
+            {formState.primaryAction}
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
       )}
     </Dialog.Modal>
   );

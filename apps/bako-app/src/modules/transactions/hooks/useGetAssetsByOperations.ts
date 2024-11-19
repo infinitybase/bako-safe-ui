@@ -1,7 +1,11 @@
-import { OperationWithAssets, TransactionWithVault } from '@bako-safe/services';
-import { ITransferAsset } from 'bakosafe';
+import type {
+  OperationWithAssets,
+  TransactionWithVault,
+} from '@bako-safe/services';
+import type { ITransferAsset } from 'bakosafe';
 
 import { useFormatSummaryAssets } from './useFormatSummaryAssets';
+import { InputType } from 'fuels';
 
 interface UseGetAssetsByOperationsResult {
   operationAssets: ITransferAsset;
@@ -14,7 +18,10 @@ const useGetAssetsByOperations = (
   predicateAddress?: string,
 ): UseGetAssetsByOperationsResult => {
   const hasNoDefaultAssets = !transaction?.assets?.length;
-  const defaultSentBy = transaction?.txData?.inputs[0]?.['owner'] ?? '';
+  const defaultSentBy =
+    transaction?.txData?.inputs[0]?.type === InputType.Coin
+      ? transaction?.txData?.inputs[0]?.owner.toString()
+      : '';
 
   const firstOperation = transaction.summary
     ?.operations[0] as OperationWithAssets;

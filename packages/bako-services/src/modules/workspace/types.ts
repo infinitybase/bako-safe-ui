@@ -1,8 +1,8 @@
-import { IPagination } from "@/types";
-import { Predicate } from "../vault";
-import { ITransaction } from "../transaction";
-import { IWitnesses, TransactionStatus } from "bakosafe";
-import { BN } from "fuels";
+import type { IPagination } from "@/types";
+import type { Predicate } from "../vault";
+import type { ITransaction } from "../transaction";
+import type { IWitnesses, TransactionStatus } from "bakosafe";
+import type { BN } from "fuels";
 
 export interface WorkspaceContact {
   id: string;
@@ -17,7 +17,9 @@ export enum PermissionRoles {
   VIEWER = "VIEWER",
 }
 
-export const defaultPermissions = {
+type RolePermissions = Record<PermissionRoles, string[]>;
+
+export const defaultPermissions: Record<PermissionRoles, RolePermissions> = {
   [PermissionRoles.OWNER]: {
     OWNER: ["*"],
     ADMIN: [""],

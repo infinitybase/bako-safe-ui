@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { UseChangeMember } from '../../hooks';
+import type { UseChangeMember } from '../../hooks';
 import { WorkspacePermissionUtils } from '../../utils/permission';
 import { RadioCard } from '../card';
 
@@ -71,18 +71,18 @@ export const MemberPermissionForm = ({
                       my={1}
                       borderRadius="xl"
                       borderColor={
-                        field.value === permission.value
+                        field.value === permission.title
                           ? 'brand.500'
                           : 'grey.400'
                       }
-                      key={permission.value}
+                      key={permission.title}
                     >
                       <Radio
                         my={1}
                         border="none"
                         display="flow"
                         borderColor="grey.500"
-                        value={permission.value}
+                        value={permission.title}
                         _checked={{
                           borderColor: 'none',
                           display: 'none',

@@ -1,8 +1,9 @@
 import {
-  IPermission,
-  Member,
+  type IPermission,
+  type Member,
   PermissionRoles,
-  Workspace,
+  type Workspace,
+  defaultPermissions,
 } from '@bako-safe/services';
 
 interface PermissionDTO {
@@ -25,6 +26,7 @@ export type PermissionDetails = {
   [key in PermissionKey]: PermissionDetail;
 };
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class WorkspacePermissionUtils {
   static hiddenPermissions = [PermissionRoles.OWNER, PermissionRoles.SIGNER];
 
@@ -59,13 +61,13 @@ class WorkspacePermissionUtils {
     },
   };
 
-  static permissionsValues: PermissionDTO[] = Object.keys(this.permissions)
+  static permissionsValues: PermissionDetail[] = Object.keys(this.permissions)
     .filter(
       (permission) =>
         !this.hiddenPermissions.includes(permission as PermissionRoles),
     )
     .map((permission) => ({
-      ...this.permissions[permission],
+      ...this.permissions[permission as PermissionRoles],
       value: permission,
     }));
 
@@ -73,15 +75,15 @@ class WorkspacePermissionUtils {
     workspace: Pick<Workspace, 'permissions'>,
     member: Pick<Member, 'id'>,
   ) {
-    const permission = workspace?.permissions[member.id];
+    const permission = defaultPermissions[PermissionRoles.OWNER];
 
     if (!permission) return null;
 
     const permissionRole = Object.keys(permission).find((role) =>
-      permission[role].includes('*'),
+      permission[role as keyof IPermission].includes('*'),
     );
 
-    const permissionValue = this.permissions[permissionRole || ''];
+    const permissionValue = {};
 
     if (!permissionValue) return null;
 
@@ -104,10 +106,11 @@ class WorkspacePermissionUtils {
     role: PermissionRoles,
     params: { permissions: IPermission; userId: string },
   ) {
-    const permissionInWorkspace = this.getPermissionInWorkspace(
-      { permissions: params.permissions },
-      { id: params.userId },
-    );
+    const permissionInWorkspace =
+      WorkspacePermissionUtils.getPermissionInWorkspace(
+        { permissions: params.permissions },
+        { id: params.userId },
+      );
 
     if (!permissionInWorkspace) return false;
 

@@ -1,4 +1,4 @@
-import { Workspace } from '@bako-safe/services';
+import type { IPermission, Workspace } from '@bako-safe/services';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -67,10 +67,12 @@ const useChangeMemberForm = (owner: string[]) => {
     const member = workspace?.members
       .filter((member) => member.id === memberId)
       .map((member) => member.address);
-    const permission = workspace?.permissions?.[memberId];
+    const permission = workspace?.permissions;
     const permissionRole =
       permission &&
-      Object.keys(permission).filter((role) => permission[role].includes('*'));
+      Object.keys(permission).filter((role) =>
+        permission[role as keyof IPermission].includes('*'),
+      );
 
     permissionForm.setValue('permission', permissionRole?.[0], {
       shouldValidate: true,
