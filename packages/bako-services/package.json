@@ -15,7 +15,6 @@
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
-    "@bako-safe/wallet": "workspace:*",
     "@fuels/connectors": "0.35.1",
     "@fuels/react": "0.35.0",
     "@noble/curves": "1.3.0",
@@ -35,6 +34,7 @@
     "@types/js-cookie": "^3.0.4",
     "@types/lodash": "^4.17.12",
     "@types/lodash.debounce": "^4.0.7",
+    "@types/node": "^22.9.0",
     "tsc-alias": "^1.8.10"
   }
 }

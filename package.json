@@ -2,11 +2,17 @@
   "name": "bako-safe-ui",
   "private": true,
   "version": "0.0.1",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "turbo run test",
     "preview": "vite preview",
+    "clean": "turbo clean && pnpm clean",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -21,6 +27,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
+    "turbo": "^1.10.0",
     "typescript": "~5.4.5"
   },
   "husky": {
@@ -36,5 +43,9 @@
   "resolutions": {
     "string-width": "4.1.0"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@9.4.0",
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
+  }
 }
