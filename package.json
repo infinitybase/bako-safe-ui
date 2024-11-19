@@ -21,7 +21,7 @@
     "@types/react": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
-    "eslint": "8.44.0",
+    "eslint": "9.15.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "5.0.0",
     "husky": "^8.0.3",
@@ -41,7 +41,8 @@
     "*.tsx": "prettier --write"
   },
   "resolutions": {
-    "string-width": "4.1.0"
+    "string-width": "4.1.0",
+    "some-package": "version"
   },
   "packageManager": "pnpm@9.4.0",
   "engines": {
