@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import {
-  AuthenticateParams,
-  IUseAuthDetails,
-  UserType,
-} from '@bako-safe/services/types';
-import { EConnectors, EConnectorsInverse } from '@bako-safe/wallet/fuel';
+import { AuthenticateParams, IUseAuthDetails } from '@bako-safe/services/types';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
@@ -74,7 +69,7 @@ const useAuth = (): IUseAuthDetails => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
+    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(
@@ -82,18 +77,6 @@ const useAuth = (): IUseAuthDetails => {
           ? (await fuel.currentNetwork()).url
           : 'http://localhost:4000/v1/graphql',
       ),
-    };
-  };
-
-  const userType = (): UserType => {
-    if (infos?.webauthn)
-      return { type: TypeUser.WEB_AUTHN, name: EConnectors.WEB_AUTHN };
-
-    const currentConnector = fuel.currentConnector()?.name as EConnectors;
-
-    return {
-      type: TypeUser[EConnectorsInverse[currentConnector]],
-      name: currentConnector,
     };
   };
 
@@ -113,7 +96,7 @@ const useAuth = (): IUseAuthDetails => {
       id: infos?.id!,
       name: infos?.name!,
       onSingleWorkspace: infos?.onSingleWorkspace ?? false,
-      type: userType(),
+      type: infos?.type!,
       webauthn: infos?.webauthn!,
       workspace: infos?.workspace!,
       address: account,

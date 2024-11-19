@@ -54,7 +54,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
   } = useNetworks(props.onClose);
 
   const { authDetails } = useWorkspaceContext();
-  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isWebAuthn = authDetails.userInfos?.type === TypeUser.WEB_AUTHN;
   const isTestnet = (url: string) => url?.includes(NetworkType.TESTNET);
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
 

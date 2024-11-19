@@ -21,7 +21,7 @@ function App() {
   const auth = useAuth();
 
   const { pathname } = useLocation();
-  const isWebAuthn = auth.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
 
   const { isTxFromDapp } = useAuthUrlParams();
   useMemo(() => {
@@ -53,7 +53,7 @@ function App() {
       if (
         parsedCurrentAccount ===
           Address.fromString(auth.userInfos?.address).toB256() ||
-        auth.userInfos?.type?.type !== TypeUser.FUEL
+        auth.userInfos?.type !== TypeUser.FUEL
       )
         return;
       clearAll();

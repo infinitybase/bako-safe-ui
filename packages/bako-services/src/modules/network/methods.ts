@@ -41,7 +41,7 @@ export type CheckNetworkResponse = string | undefined;
 export const availableNetWorks = {
   [NetworkType.MAINNET]: {
     name: "Ignition",
-    url: process.env.MAINNET_NETWORK,
+    url: process.env.MAINNET_NETWORK! ?? "",
     chainId: 9889,
     explorer: "https://app-mainnet.fuel.network/",
   },

@@ -74,7 +74,7 @@ const useSignTransaction = ({
 
   const signMessageRequest = useWalletSignMessage(
     address,
-    type.type,
+    type,
     webauthn?.id,
     webauthn?.publicKey,
     {

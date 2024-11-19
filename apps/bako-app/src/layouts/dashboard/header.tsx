@@ -10,7 +10,6 @@ import {
   SettingsTopMenuIcon,
   UnknownIcon,
 } from '@bako-safe/ui/components';
-import { EConnectors } from '@bako-safe/wallet/fuel';
 import {
   Avatar,
   Box,
@@ -102,14 +101,13 @@ const UserBox = () => {
   const name = mySettingsRequest.data?.name ?? '';
   const hasNickName = name && !AddressUtils.isValid(name);
 
-  const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
+  const isWebAuthn = authDetails.userInfos?.type === TypeUser.WEB_AUTHN;
 
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
 
   const logout = async () => {
     try {
-      authDetails.userInfos?.type.type === TypeUser.FUEL &&
-        authDetails.userInfos?.type.name !== EConnectors.FULLET &&
+      authDetails.userInfos?.type === TypeUser.FUEL &&
         (await fuel.disconnect());
       // TODO: Disconnect Fuelet, `fuel.disconnect()` should do that but it doesn't work for fuelet
     } catch (error) {
