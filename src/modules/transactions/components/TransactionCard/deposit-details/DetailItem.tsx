@@ -90,7 +90,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   </Text>
                 )}
 
-                {(!from?.contact || !from.handle) && (
+                {!from?.contact && !from?.handle && (
                   <Address
                     value={sentBy}
                     isDeposit={true}
@@ -157,7 +157,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   </Text>
                 )}
 
-                {(!to?.contact || !to.handle) && (
+                {!to?.contact && !to?.handle && (
                   <Address
                     value={asset?.to ?? ''}
                     isDeposit={true}
@@ -207,7 +207,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 </Text>
               )}
 
-              {(!from?.contact || !from.handle) && (
+              {!from?.contact && !from?.handle && (
                 <Address
                   value={sentBy}
                   isDeposit={true}
@@ -259,7 +259,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 </Text>
               )}
 
-              {(!to?.contact || !to.handle) && (
+              {!to?.contact && !to?.handle && (
                 <Address
                   value={asset?.to ?? ''}
                   isDeposit={true}

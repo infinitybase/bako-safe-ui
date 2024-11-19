@@ -163,7 +163,7 @@ const AssetBoxInfo = ({
               </Text>
             )}
 
-            {(!assetAddressInfo?.contact || !assetAddressInfo?.handle) && (
+            {!assetAddressInfo?.contact && !assetAddressInfo?.handle && (
               <Address
                 value={asset?.to}
                 color={assetAddressInfo?.contact ? 'grey.500' : 'grey.75'}

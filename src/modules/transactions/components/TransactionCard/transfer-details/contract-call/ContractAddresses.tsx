@@ -78,7 +78,7 @@ const ContractAddresses = ({
               </Text>
             )}
 
-            {(!_from?.contact || !_from.handle) && (
+            {!_from?.contact && !_from?.handle && (
               <Address
                 value={from.address}
                 justifyContent="start"
@@ -137,7 +137,7 @@ const ContractAddresses = ({
               </Text>
             )}
 
-            {(!_to?.contact || !_to.handle) && (
+            {!_to?.contact && !_to?.handle && (
               <Address
                 value={to.address}
                 justifyContent="end"
