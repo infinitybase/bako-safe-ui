@@ -30,10 +30,6 @@ export async function signChallange(
   const response = (authentication as any).response;
   const authData = new Uint8Array(response.authenticatorData);
   const clientHash = await sha256(response.clientDataJSON);
-
-  //console.log("[PARSE]", response.authenticatorData, response.clientDataJSON, response.signature);
-
-  //console.log(parsers.parseClient(response.clientDataJSON), parsers.parseAuthenticator(response.authenticatorData));
   const digest = await sha256(new Uint8Array([...authData, ...clientHash]));
 
   return {
