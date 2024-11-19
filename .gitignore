@@ -27,3 +27,5 @@ dist-ssr
 *.sw?
 src/dev
 .env
+.husky
+.turbo
