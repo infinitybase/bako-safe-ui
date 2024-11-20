@@ -1,6 +1,6 @@
 import {
-  type ITransaction,
   type AssetModel,
+  type ITransaction,
   WitnessStatus,
 } from '@bako-safe/services';
 import { type ITransactionResume, TransactionStatus } from 'bakosafe';

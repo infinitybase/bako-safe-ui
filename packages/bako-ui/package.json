@@ -5,10 +5,15 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./components": "./dist/components/index.js",
-    "./themes": "./dist/themes/index.js"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && tsc-alias"
   },
@@ -25,7 +30,8 @@
     "react-intersection-observer": "^9.5.2",
     "react-router-dom": "^6.15.0",
     "react-text-mask": "^5.5.0",
-    "text-mask-addons": "^3.8.0"
+    "text-mask-addons": "^3.8.0",
+    "lottie-react": "^2.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.11",

@@ -1,6 +1,6 @@
+import { BakoLoading } from '@bako-safe/ui';
 import { createContext, useContext } from 'react';
 
-import { BakoLoading } from '@/components';
 import { currentPath } from '@/utils';
 
 import { useWorkspaceDetails } from './hooks/details/useWorkspaceDetails';

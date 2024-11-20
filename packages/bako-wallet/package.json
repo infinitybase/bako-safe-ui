@@ -6,8 +6,19 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
+<<<<<<< HEAD
     ".": "./dist/index.js"
+=======
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+>>>>>>> 14f0f3d081b2c3b948c1af626fe85829f23d6fe7
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },

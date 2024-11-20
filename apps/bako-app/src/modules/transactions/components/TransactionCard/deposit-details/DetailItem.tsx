@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { ITransferAsset } from 'bakosafe';
 
-import { AddressWithCopyBtn } from '@/components';
+import { AddressWithCopyBtn } from '@/modules';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

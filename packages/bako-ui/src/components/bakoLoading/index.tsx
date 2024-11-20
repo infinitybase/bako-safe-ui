@@ -1,14 +1,14 @@
-import { Flex } from '@chakra-ui/react';
-import Lottie from 'lottie-react';
+import { Flex } from "@chakra-ui/react";
+import Lottie from "lottie-react";
 
-import bakoLoading from '@/assets/bako-loading/bako-loading.json';
+import bakoLoading from "../../assets/bako-loading.json";
 
 const defaultOptions = {
   loop: true,
   autoplay: true,
   animationData: bakoLoading,
   rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice',
+    preserveAspectRatio: "xMidYMid slice",
   },
 };
 
@@ -18,7 +18,7 @@ const BakoLoading = () => {
       <Lottie
         {...defaultOptions}
         size={20}
-        style={{ height: '120px', width: '120px' }}
+        style={{ height: "120px", width: "120px" }}
       />
     </Flex>
   );

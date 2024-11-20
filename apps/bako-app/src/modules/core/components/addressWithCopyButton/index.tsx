@@ -1,7 +1,7 @@
+import { CopyAddressButton } from '@bako-safe/ui';
 import { type BoxProps, Flex, Text, type TextProps } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
-import { CopyAddressButton } from '@/components';
 import { AddressUtils, useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

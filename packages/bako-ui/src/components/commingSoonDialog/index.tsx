@@ -1,7 +1,6 @@
-import { Dialog, NotifyIcon } from '@bako-safe/ui/components';
-import { Heading, Text, VStack } from '@chakra-ui/react';
-
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { NotifyIcon } from "../icons";
+import { Dialog } from "../";
+import { Heading, Text, VStack } from "@chakra-ui/react";
 
 interface CommingSoonDialogProps {
   isOpen: boolean;
@@ -9,6 +8,7 @@ interface CommingSoonDialogProps {
   title: string;
   description: string;
   notifyHandler: () => void;
+  isMobile: boolean;
 }
 
 const CommingSoonDialog = ({
@@ -17,10 +17,8 @@ const CommingSoonDialog = ({
   notifyHandler,
   onClose,
   title,
+  isMobile,
 }: CommingSoonDialogProps) => {
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
   return (
     <Dialog.Modal
       isMobile={isMobile}
@@ -28,8 +26,8 @@ const CommingSoonDialog = ({
       onClose={onClose}
       closeOnOverlayClick={false}
       size={{
-        base: 'full',
-        sm: 'sm',
+        base: "full",
+        sm: "sm",
       }}
       xsBreakPointPy={6}
     >
@@ -52,7 +50,7 @@ const CommingSoonDialog = ({
         alignItems="center"
         px={4}
         mb="18px"
-        mt={{ base: 40, sm: '2px' }}
+        mt={{ base: 40, sm: "2px" }}
       >
         <VStack w="full" spacing={8}>
           <NotifyIcon w={24} h={24} />

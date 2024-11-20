@@ -1,10 +1,10 @@
-import { CheckMarkCircleIcon, CopyTopMenuIcon } from '@bako-safe/ui/components';
+import { CheckMarkCircleIcon, CopyTopMenuIcon } from "../icons";
 import {
   Icon,
   IconButton,
   type IconButtonProps,
   useClipboard,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 export interface CopyAddressButtonProps extends IconButtonProps {
   addressToCopy: string;
@@ -24,7 +24,7 @@ const CopyAddressButton = ({
       icon={
         <Icon
           as={clipboard.hasCopied ? CheckMarkCircleIcon : CopyTopMenuIcon}
-          color={clipboard.hasCopied ? 'success.700' : 'grey.200'}
+          color={clipboard.hasCopied ? "success.700" : "grey.200"}
           fontSize={20}
         />
       }
