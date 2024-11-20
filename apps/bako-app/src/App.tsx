@@ -7,7 +7,12 @@ import { useLocation } from 'react-router-dom';
 import { AppRoutes } from '@/routes';
 
 import { initiAxiosSetup } from './config';
-import { useAuth, useAuthUrlParams } from './modules';
+import {
+  CookieName,
+  CookiesConfig,
+  useAuth,
+  useAuthUrlParams,
+} from './modules';
 import AuthProvider from './modules/auth/AuthProvider';
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
@@ -22,17 +27,23 @@ function App() {
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
   const { isTxFromDapp } = useAuthUrlParams();
+  const accessToken = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+  const signerAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
 
   useEffect(() => {
-    if (auth.userInfos.address) {
-      initiAxiosSetup({
+    // TODO - FIX Improve this logic to avoid many 401 and do not setCredentials more than once.
+    if (accessToken && signerAddress) {
+      const instance = initiAxiosSetup({
         isTxFromDapp,
         logout: auth.handlers.logout,
         isTokenExpired: auth.handlers.isTokenExpired,
         setIsTokenExpired: auth.handlers.setIsTokenExpired,
       });
+
+      // instance.setLogout(auth.handlers.logout);
+      instance.setCredentials({ accessToken, signerAddress });
     }
-  }, [auth.userInfos.address, isTxFromDapp, auth.handlers]);
+  }, [accessToken, signerAddress]);
 
   useEffect(() => {
     async function clearAll() {

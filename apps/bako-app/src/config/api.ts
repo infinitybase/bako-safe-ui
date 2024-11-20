@@ -1,4 +1,4 @@
-import { AxiosSetup, LogoutParams } from '@bako-safe/services';
+import { AxiosSetup } from '@bako-safe/services';
 import axios from 'axios';
 
 import { CookieName, CookiesConfig } from '@/modules';
@@ -20,6 +20,7 @@ interface IinitiAxiosSetup {
   logout: (removeTokenFromDb?: boolean, callback?: () => void) => Promise<void>;
 }
 
+// TODO: Need do adjust in th App.tsx first and then adjust logout fn here
 const initiAxiosSetup = ({
   isTokenExpired,
   isTxFromDapp,
@@ -29,24 +30,30 @@ const initiAxiosSetup = ({
   const accessToken = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
   const signerAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
 
-  const handleLogout = (params?: LogoutParams) => {
-    console.log('calling handle logout');
-    if (!isTokenExpired && !isTxFromDapp) {
-      setIsTokenExpired(true);
+  const handleLogout = () =>
+    // params?: LogoutParams
+    {
+      if (!isTokenExpired && !isTxFromDapp) {
+        setIsTokenExpired(true);
 
-      logout(params?.isExpiredTokenError);
-      queryClient.invalidateQueries({
-        queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
-      });
-    }
-  };
+        logout(true);
+        // logout(params?.isExpiredTokenError);
+        queryClient.invalidateQueries({
+          queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
+        });
+      }
+    };
 
-  return AxiosSetup.getInstance({
-    ...apiConfig,
-    accessToken,
-    signerAddress,
-    logout: handleLogout,
-  });
+  const instance = AxiosSetup.getInstance(
+    {
+      accessToken,
+      signerAddress,
+      logout: handleLogout,
+    },
+    apiConfig,
+  );
+
+  return instance;
 };
 
 export { initiAxiosSetup };
