@@ -140,9 +140,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
       return;
     }
 
-    if (socket.connected) {
-      socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
-    }
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
 
     return () => {
       socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
