@@ -37,7 +37,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       socket.close();
     };
-  }, [userInfos]);
+  }, [userInfos, request_id]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
