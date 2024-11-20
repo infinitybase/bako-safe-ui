@@ -19,26 +19,34 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { UseVaultDetailsReturn } from '../hooks';
 import { CardMember } from './CardMember';
 
+interface SignersListProps extends SignersDetailsProps {
+  isGrid?: boolean;
+}
+
 const SignerCard = chakra(Card, {
   baseStyle: {
     w: 'full',
     h: 'full',
-    py: { base: 3, sm: 5 },
-    px: { base: 3, sm: 6 },
+    p: 3,
     bgColor: 'dark.300',
     flex: 1,
   },
 });
 
-const SignersList = ({ vault }: SignersDetailsProps) => {
+const SignersList = ({ vault, isGrid }: SignersListProps) => {
   const navigate = useNavigate();
 
   const {
     authDetails: { userInfos },
+    screenSizes: { isLarge },
   } = useWorkspaceContext();
-  const { resolveContactOrHandle } = useAddressNicknameResolver();
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
-  const isBig = !vault?.data?.members ? 0 : vault?.data?.members.length - 4;
+  const maxItems = 4;
+
+  const isBig = !vault?.data?.members
+    ? 0
+    : vault?.data?.members.length - (maxItems + 1);
 
   const owner = vault.data?.members?.find(
     (member) => member.id === vault.data?.owner?.id,
@@ -54,19 +62,17 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
   return (
     <>
       {members?.map((member, index: number) => {
-        const max = 3;
+        if (isBig > 0 && index > maxItems) return;
 
-        if (isBig > 0 && index > max) return;
-
-        if (isBig > 0 && index == max) {
+        if (isBig > 0 && index == maxItems) {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <SignerCard
                 borderStyle="dashed"
-                bg="grey.825"
-                borderColor="grey.550"
-                backdropFilter="blur(8px)"
-                h={{ base: '4.5em', lg: '8em' }}
+                bg="gradients.transaction-card"
+                borderColor="gradients.transaction-border"
+                backdropFilter="blur(6px)"
+                h={isLarge ? 68 : 86}
               >
                 <VStack
                   w="100%"
@@ -95,17 +101,19 @@ const SignersList = ({ vault }: SignersDetailsProps) => {
           );
         }
 
-        const nickname = member?.address
-          ? resolveContactOrHandle(member.address)
+        const _member = member?.address
+          ? resolveAddressContactHandle(member.address)
           : undefined;
 
         return (
           <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
             <CardMember
               isOwner={member?.id === owner?.id}
+              isGrid={isGrid}
               member={{
                 ...member,
-                nickname,
+                nickname: _member?.contact,
+                handle: _member?.handle,
                 avatar: member?.avatar ?? '',
                 address: member?.address ?? '',
               }}
@@ -123,7 +131,7 @@ export interface ISignersDetailsExtendedProps extends BoxProps {
 
 const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
   const {
-    screenSizes: { isLarge },
+    screenSizes: { isLarge, isLargerThan680, isExtraLarge },
   } = useWorkspaceContext();
 
   if (!vault) return null;
@@ -166,8 +174,8 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
         <Grid
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
-            sm: 'repeat(3, 1fr)',
+            xs: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+            md: isExtraLarge ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
           }}
           gap={3}
           w="full"
@@ -175,8 +183,8 @@ const SignersDetails = ({ vault, ...rest }: ISignersDetailsExtendedProps) => {
           <SignersList vault={vault} />
         </Grid>
       ) : (
-        <VStack spacing={5}>
-          <SignersList vault={vault} />
+        <VStack spacing={3}>
+          <SignersList vault={vault} isGrid={false} />
         </VStack>
       )}
     </Box>

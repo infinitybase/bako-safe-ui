@@ -8,23 +8,26 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { Card } from '@/components';
-import { AddressUtils } from '@/modules/core';
+import { AddAddressBook, AddressWithCopyBtn, Card, Handle } from '@/components';
+import { useScreenSize } from '@/modules/core/hooks';
+
+const { VITE_BAKO_ID_URL } = import.meta.env;
 
 interface CardMemberProps {
   member: {
     nickname?: string;
+    handle?: string;
     avatar: string;
     address: string;
   };
   isOwner: boolean;
+  isGrid?: boolean;
 }
 
 const SignerCard = chakra(Card, {
   baseStyle: {
     w: 'full',
-    py: { base: 3, sm: 5 },
-    px: { base: 3, sm: 6 },
+    p: 3,
     bg: 'dark.600',
     flex: 1,
   },
@@ -32,70 +35,119 @@ const SignerCard = chakra(Card, {
 
 const CardMemberBagde = () => {
   return (
-    <Badge py={0} ml={{ base: 0, sm: 8 }} variant="success">
+    <Badge
+      py={0}
+      ml={{ base: 0, sm: 8 }}
+      variant="success"
+      alignSelf="flex-start"
+      fontSize="2xs"
+    >
       Owner
     </Badge>
   );
 };
 
-const CardMember = ({ member, isOwner }: CardMemberProps) => {
+const CardMember = ({ member, isOwner, isGrid = true }: CardMemberProps) => {
+  const { isLitteSmall, isLargerThan680, isLargerThan1700, isExtraLarge } =
+    useScreenSize();
+
   const hasNickname = member?.nickname;
 
   return (
     <SignerCard
       w="full"
-      h="4.49em"
-      bg="grey.825"
-      borderColor="grey.550"
+      minW={{ base: 'unset', xs: 320 }}
+      bg="gradients.transaction-card"
+      borderColor="gradients.transaction-border"
+      backdropFilter="blur(6px)"
       alignItems="center"
       display="flex"
+      boxShadow="lg"
     >
-      <Flex flexDir="row" gap={{ base: 2, xs: 4 }} w="full">
-        <HStack justifyContent="space-between" gap={2}>
-          <Avatar
-            borderRadius={8}
-            src={member?.avatar}
-            boxSize={{ base: '32px', xs: '40px' }}
-            border="1px solid"
-            borderColor="grey.75"
-          />
-        </HStack>
+      <Flex flexDir="row" gap={2} w="full" alignItems="center">
+        <Avatar
+          borderRadius={8}
+          src={member?.avatar}
+          boxSize={{ base: '32px', xs: '40px' }}
+          border="1px solid"
+          borderColor="grey.75"
+        />
 
         <HStack
-          h="full"
-          minH={55}
-          maxW={600}
           w="full"
-          spacing={0}
+          spacing={2}
           justifyContent="space-between"
           alignItems="center"
+          flex={1}
         >
-          <VStack align="flex-start" spacing={0} justifyContent="center">
-            {hasNickname && (
-              <Text
-                fontSize="md"
-                color="grey.200"
-                fontWeight="semibold"
-                maxW={isOwner ? 100 : 150}
-                isTruncated
-              >
-                {member?.nickname}
-              </Text>
-            )}
+          <VStack
+            align="flex-start"
+            spacing={0}
+            justifyContent="center"
+            flex={1}
+          >
+            <HStack w="full" justifyContent="space-between" spacing={2}>
+              {hasNickname ? (
+                <Text
+                  fontSize="xs"
+                  color="grey.200"
+                  fontWeight="medium"
+                  maxW={isOwner ? 180 : 180}
+                  isTruncated
+                >
+                  {member?.nickname}
+                </Text>
+              ) : (
+                <AddAddressBook address={member.address} />
+              )}
 
-            <Text
-              maxW={{ md: 200, lg: 250, '2xl': '100%' }}
-              color={hasNickname ? 'grey.500' : 'grey.200'}
-              fontWeight={hasNickname ? 'regular' : 'bold'}
-              textOverflow="ellipsis"
-              isTruncated
-            >
-              {/* todo: add nickname on bakosafe sdk */}
-              {AddressUtils.format(member?.address ?? '')}
-            </Text>
+              {isOwner && <CardMemberBagde />}
+            </HStack>
+
+            <HStack w="full" justifyContent="flex-start" spacing={2}>
+              {member.handle && (
+                <Handle
+                  value={member.handle}
+                  fontSize="xs"
+                  isTruncated
+                  textOverflow="ellipsis"
+                  maxW={
+                    isGrid
+                      ? {
+                          base: isLitteSmall ? '70px' : '140px',
+                          xs: isLargerThan680 ? '85px' : '140px',
+                          md: isExtraLarge ? '85px' : '140px',
+                          '2xl': isLargerThan1700 ? '90px' : '140px',
+                        }
+                      : '95px'
+                  }
+                  onClick={() =>
+                    window.open(
+                      `${VITE_BAKO_ID_URL}/profile/${member.handle}`,
+                      '_BLANK',
+                    )
+                  }
+                />
+              )}
+
+              <AddressWithCopyBtn
+                value={member?.address ?? ''}
+                isSidebarAddress
+                flexDir="row-reverse"
+                gap={0.5}
+                textProps={{
+                  fontSize: 'xs',
+                  color: 'grey.250',
+                }}
+                copyBtnProps={{
+                  iconProps: {
+                    'aria-label': 'Copy',
+                    fontSize: 'xs',
+                  },
+                }}
+              />
+            </HStack>
           </VStack>
-
-          {isOwner && <CardMemberBagde />}
         </HStack>
       </Flex>
     </SignerCard>
