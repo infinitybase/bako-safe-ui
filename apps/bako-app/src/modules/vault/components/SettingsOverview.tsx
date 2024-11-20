@@ -1,6 +1,7 @@
 import { NetworkType, PermissionRoles } from '@bako-safe/services';
 import {
   Card,
+  CommingSoonDialog,
   CustomSkeleton,
   VisibilityOffIcon,
   VisibilityOnIcon,
@@ -21,10 +22,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AddressWithCopyBtn, CommingSoonDialog } from '@/components';
 import { CLISettingsCard } from '@/modules/cli/components';
 import { CreateAPITokenDialog } from '@/modules/cli/components/APIToken/create';
-import { Pages } from '@/modules/core';
+import { AddressWithCopyBtn, Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
@@ -53,7 +53,12 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     workspaceInfos: {
       handlers: { hasPermission },
     },
-    screenSizes: { isExtraSmall, vaultRequiredSizeToColumnLayout, isLarge },
+    screenSizes: {
+      isExtraSmall,
+      vaultRequiredSizeToColumnLayout,
+      isLarge,
+      isMobile,
+    },
   } = useWorkspaceContext();
 
   const {
@@ -413,6 +418,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           onClose={commingSoonDialog.onClose}
           notifyHandler={selectedFeature.notifyHandler}
           title="Coming Soon"
+          isMobile={isMobile}
         />
       )}
     </>

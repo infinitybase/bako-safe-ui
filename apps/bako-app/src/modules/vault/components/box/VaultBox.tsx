@@ -17,8 +17,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { AddressWithCopyBtn } from '@/components';
 import { networkService } from '@/config/services-initializer';
+import { AddressWithCopyBtn } from '@/modules';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface VaultBoxPropx {

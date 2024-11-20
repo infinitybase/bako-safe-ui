@@ -1,6 +1,5 @@
 import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
 import { Box } from '@chakra-ui/react';
-import { OperationName } from 'fuels';
 import React from 'react';
 
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks';
@@ -15,7 +14,7 @@ interface MintTokenProps {
 }
 
 const MintTokenInfos = ({ transaction }: MintTokenProps) => {
-  const { isDeploy, isDeposit } = useVerifyTransactionInformations(transaction);
+  const { isDeposit } = useVerifyTransactionInformations(transaction);
 
   const { fuelsTokens } = useWorkspaceContext();
 
@@ -45,8 +44,6 @@ const MintTokenInfos = ({ transaction }: MintTokenProps) => {
 
             {assetsSent?.map((asset, assetIndex) => (
               <AssetBoxInfo
-                isContract={operation.name === OperationName.contractCall}
-                isDeploy={isDeploy}
                 isDeposit={isDeposit}
                 key={`${index}-${assetIndex}`}
                 asset={{

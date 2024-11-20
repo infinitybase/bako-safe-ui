@@ -13,12 +13,13 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AddAssetsDialog, DepositDialog } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages } from '@/modules/core';
+import { DepositDialog } from '@/modules/core/components/welcomeDialog/depositDialog';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { AddAssetsDialog } from '../../components/addAssetsDialog';
 import { SettingsOverview } from '../../components/SettingsOverview';
 import { SettingsSigners } from '../../components/SettingsSigners';
 import { useVaultInfosContext } from '../../VaultInfosProvider';

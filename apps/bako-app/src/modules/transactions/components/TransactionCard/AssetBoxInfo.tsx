@@ -2,7 +2,7 @@ import { AssetModel } from '@bako-safe/services/types';
 import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { AddressWithCopyBtn } from '@/components';
+import { AddressWithCopyBtn } from '@/modules';
 import { useGetContactByAddress } from '@/modules/addressBook';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -12,17 +12,9 @@ import { AmountUSD } from './transfer-details';
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
   isDeposit?: boolean;
-  isDeploy?: boolean;
-  isContract?: boolean;
 }
 
-const AssetBoxInfo = ({
-  asset,
-  isDeposit,
-  isDeploy,
-  isContract,
-  ...props
-}: AssetBoxInfoProps) => {
+const AssetBoxInfo = ({ asset, isDeposit, ...props }: AssetBoxInfoProps) => {
   const {
     tokensUSD,
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty, isExtraSmall },

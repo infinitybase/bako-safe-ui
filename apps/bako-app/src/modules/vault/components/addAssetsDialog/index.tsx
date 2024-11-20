@@ -9,7 +9,7 @@ import { Button, VStack } from '@chakra-ui/react';
 import { useUpdateSettingsRequest } from '@/modules/settings/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import WelcomeCard from '../welcomeDialog/card';
+import WelcomeCard from '../../../core/components/welcomeDialog/card';
 
 interface IWelcomeDialogProps {
   isOpen: boolean;

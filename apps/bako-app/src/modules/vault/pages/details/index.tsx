@@ -22,8 +22,9 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AddAssetsDialog, DepositDialog, WelcomeDialog } from '@/components';
 import { Drawer } from '@/layouts/dashboard/drawer';
+import { WelcomeDialog } from '@/modules';
+import { DepositDialog } from '@/modules/core/components/welcomeDialog/depositDialog';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 // import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -37,6 +38,7 @@ import { useTransactionsContext } from '@/modules/transactions/providers/Transac
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
 
+import { AddAssetsDialog } from '../../components/addAssetsDialog';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
