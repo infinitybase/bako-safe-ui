@@ -162,7 +162,7 @@ const NetworkDrawer = ({ ...props }: NetworkDrawerProps) => {
                     borderRadius={8}
                     spacing={4}
                   >
-                    <Icon as={PlusIcon} fontSize={22} />
+                    <Icon as={PlusIcon} fontSize={22} color="grey.75" />
 
                     <Text fontSize={14} fontWeight={500} color="grey.75">
                       Add new network

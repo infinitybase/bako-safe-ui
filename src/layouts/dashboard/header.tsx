@@ -262,7 +262,7 @@ const UserBox = () => {
                   onClick={() => networkDialogState.onOpen()}
                 >
                   <HStack>
-                    <Icon as={PlusIcon} fontSize={16} />
+                    <Icon as={PlusIcon} fontSize={16} color="grey.75" />
                     <Text color="grey.200" fontSize={12} fontWeight={500}>
                       Add new network
                     </Text>
