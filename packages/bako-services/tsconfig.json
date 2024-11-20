@@ -5,7 +5,6 @@
     "declarationMap": true,
     "module": "ESNext",
     "moduleResolution": "node",
-    "jsx": "react-jsx",
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
@@ -14,7 +13,7 @@
       "@/types": ["src/types"],
       "@/modules/*": ["src/modules/*"]
     },
-    "lib": ["dom", "esnext"],
+    "lib": ["esnext"],
     "esModuleInterop": true,
     "strict": true
   },

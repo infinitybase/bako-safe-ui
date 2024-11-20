@@ -1,5 +1,5 @@
-import { assets, Assets } from "fuels";
-import {
+import { assets, type Assets } from "fuels";
+import type {
   CreateWorkspacePayload,
   CreateWorkspaceResponse,
   DeleteWorkspaceMemberPayload,
@@ -14,7 +14,7 @@ import {
   UpdateWorkspacePermissionsPayload,
   UpdateWorkspacePermissionsResponse,
 } from "./types";
-import { AxiosInstance } from "axios";
+import type { AxiosInstance } from "axios";
 
 export class WorkspaceService {
   api: AxiosInstance;
@@ -25,14 +25,14 @@ export class WorkspaceService {
 
   async list() {
     const { data } =
-      await this.api.get<ListUserWorkspacesResponse>(`/workspace/by-user`);
+      await this.api.get<ListUserWorkspacesResponse>("/workspace/by-user");
 
     return data;
   }
 
   async create(payload: CreateWorkspacePayload) {
     const { data } = await this.api.post<CreateWorkspaceResponse>(
-      `/workspace`,
+      "/workspace",
       payload,
     );
 
@@ -41,7 +41,7 @@ export class WorkspaceService {
 
   async select(payload: SelectWorkspacePayload) {
     const { data } = await this.api.put<SelectWorkspaceResponse>(
-      `/auth/workspace`,
+      "/auth/workspace",
       payload,
     );
 
@@ -97,8 +97,8 @@ export class WorkspaceService {
       return assets;
     }
 
-    const data: Assets = await response.json();
-    return data;
+    const data = await response.json();
+    return data as Assets;
   }
 
   async deleteMember(payload: DeleteWorkspaceMemberPayload) {
