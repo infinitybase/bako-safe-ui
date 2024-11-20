@@ -10,6 +10,7 @@ import {
 
 import { AddAddressBook, AddressWithCopyBtn, Card, Handle } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
+import { HandleUtils } from '@/utils/handle';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
@@ -121,12 +122,13 @@ const CardMember = ({ member, isOwner, isGrid = true }: CardMemberProps) => {
                         }
                       : '95px'
                   }
-                  onClick={() =>
+                  onClick={() => {
+                    const handle = HandleUtils.fromHandle(member.handle ?? '');
                     window.open(
-                      `${VITE_BAKO_ID_URL}/profile/${member.handle}`,
+                      `${VITE_BAKO_ID_URL}/profile/${handle}`,
                       '_BLANK',
-                    )
-                  }
+                    );
+                  }}
                 />
               )}
 
