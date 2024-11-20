@@ -29,8 +29,13 @@ export type LogoutParams = {
   headers: any;
 };
 
-export interface ClientSetup extends AxiosRequestConfig {
-  logout?: (params?: LogoutParams) => void;
+export type Credentials = {
   signerAddress: string;
   accessToken: string;
+};
+
+export interface ClientSetup extends AxiosRequestConfig {
+  logout?: (params?: LogoutParams) => void;
+  signerAddress?: string;
+  accessToken?: string;
 }
