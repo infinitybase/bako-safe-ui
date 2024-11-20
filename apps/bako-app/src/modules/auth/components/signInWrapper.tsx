@@ -16,7 +16,6 @@ import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
-  UseDappSignIn,
   UseWalletSignIn,
   UseWebAuthnSignIn,
   UseWebSignIn,
@@ -33,7 +32,7 @@ interface SignInWrapperProps {
   isAnyWalletConnectorOpen: UseWalletSignIn['isAnyWalletConnectorOpen'];
   tabs: UseWebAuthnSignIn['tabs'];
   formData: UseWebAuthnSignIn['formData'];
-  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
+  formState: UseWebSignIn['formState'];
   accountsOptions: UseWebAuthnSignIn['accountsOptions'];
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   createdAcccountUsername: UseWebAuthnSignIn['createdAcccountUsername'];

@@ -1,12 +1,12 @@
 import { ProgressButton } from '@bako-safe/ui/components';
 import { Text, VStack } from '@chakra-ui/react';
 
-import { UseDappSignIn, UseWebSignIn } from '../../hooks';
+import { UseWebSignIn } from '../../hooks';
 import { SignInHeader } from '../header';
 
 interface WebAuthnAccountCreatedProps {
   title: string;
-  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
+  formState: UseWebSignIn['formState'];
   showDescription: boolean;
 }
 

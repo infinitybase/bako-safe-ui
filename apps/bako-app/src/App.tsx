@@ -25,6 +25,7 @@ function App() {
     // Navigate user to sign-in page
   };
 
+  const auth = useAuth();
   const { logout } = useLogout(handleLogoutSuccess);
   const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
   AxiosInterceptors.init();

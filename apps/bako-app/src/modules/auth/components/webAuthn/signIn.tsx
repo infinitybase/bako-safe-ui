@@ -4,12 +4,12 @@ import { VStack } from '@chakra-ui/react';
 import { useScreenSize } from '@/modules/core/hooks';
 import { TermsOfUseDialog } from '@/modules/termsOfUse/dialog';
 
-import { UseDappSignIn, UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
+import { UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
 import { WebAuthnForm } from './form';
 
 interface WebAuthnSignInProps {
   formData: UseWebAuthnSignIn['formData'];
-  formState: UseWebSignIn['formState'] | UseDappSignIn['formState'];
+  formState: UseWebSignIn['formState'];
   accountsOptions: UseWebAuthnSignIn['accountsOptions'];
   inputBadge: UseWebAuthnSignIn['inputBadge'];
   handleInputChange: UseWebAuthnSignIn['handleInputChange'];

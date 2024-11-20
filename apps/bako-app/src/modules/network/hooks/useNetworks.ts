@@ -13,13 +13,6 @@ import { queryClient } from '@/config';
 import { networkService } from '@/config/services-initializer';
 import { localStorageKeys, useAuth } from '@/modules/auth';
 
-// import {
-//   availableNetWorks,
-//   CustomNetwork,
-//   DeleteNetworkPayload,
-//   NetworkService,
-//   NetworkType,
-// } from '../services';
 import { useCheckNetworkRequest } from './useCheckNetworkRequest';
 import { useCreateNetworkRequest } from './useCreateNetworkRequest';
 import { useDeleteNetworkRequest } from './useDeleteNetworkRequest';

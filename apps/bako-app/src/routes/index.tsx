@@ -7,14 +7,11 @@ import { homeRoutes } from '@/modules/home';
 import { VaultRoutes } from '@/modules/vault';
 import { workspaceRoutes } from '@/modules/workspace';
 
-// import { dappRoutes } from '../../../bako-dapp/src/routes';
-
 const routes = (
   <>
     {signinRoutes}
     {workspaceRoutes}
     {homeRoutes}
-    {/* {dappRoutes} */}
     {addressBookRoutes}
   </>
 );
