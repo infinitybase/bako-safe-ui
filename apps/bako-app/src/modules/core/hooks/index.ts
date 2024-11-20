@@ -2,7 +2,6 @@ export * from './socket';
 export * from './useGetParams';
 export * from './useGetTokenInfos';
 export * from './useGetTokenInfosArray';
-export * from './usePermissions';
 export * from './useScreenSize';
 export * from './useSortTokenInfosArray';
 export * from './useTab';

@@ -1,17 +1,10 @@
 import {
+  defaultPermissions,
   type IPermission,
   type Member,
   PermissionRoles,
   type Workspace,
-  defaultPermissions,
 } from '@bako-safe/services';
-
-interface PermissionDTO {
-  title: string;
-  variant: string;
-  description: string;
-  value: PermissionRoles;
-}
 
 type PermissionKey = keyof typeof PermissionRoles;
 
