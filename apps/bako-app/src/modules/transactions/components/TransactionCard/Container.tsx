@@ -1,4 +1,4 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import {
   Card,
   ContractIcon,
@@ -11,21 +11,21 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  CardProps,
+  type CardProps,
   Flex,
   Grid,
   HStack,
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { TransactionCard, transactionStatus } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
-import { TransactionState } from '../../types';
+import type { TransactionState } from '../../types';
 import { DetailsDialog } from './DetailsDialog';
 
 interface TransactionCardContainerProps extends CardProps {

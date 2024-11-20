@@ -1,7 +1,7 @@
-import {
+import type {
   ITransactionsGroupedByMonth,
   TransactionWithVault,
-} from '@bako-safe/services/modules/transaction';
+} from '@bako-safe/services';
 
 const convertToArray = (groupedData: {
   [key: string]: TransactionWithVault[];

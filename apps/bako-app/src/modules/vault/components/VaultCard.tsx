@@ -1,14 +1,11 @@
-import {
-  PredicateMember,
-  PredicateWorkspace,
-} from '@bako-safe/services/modules/vault';
+import type { PredicateMember, PredicateWorkspace } from '@bako-safe/services';
 import { Card } from '@bako-safe/ui/components';
 import {
   Avatar,
   AvatarGroup,
   Badge,
   Box,
-  CardProps,
+  type CardProps,
   Divider,
   Heading,
   HStack,
@@ -19,7 +16,7 @@ import {
 
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
 import {
-  PermissionDetails,
+  type PermissionDetails,
   WorkspacePermissionUtils,
 } from '@/modules/workspace/utils/permission';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

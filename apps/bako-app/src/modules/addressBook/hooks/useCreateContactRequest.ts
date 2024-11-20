@@ -1,8 +1,8 @@
-import {
+import type {
   CreateContactPayload,
   CreateContactResponse,
-} from '@bako-safe/services/modules/address-book';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+} from '@bako-safe/services';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
 import { addressBookService } from '@/config/services-initializer';
 

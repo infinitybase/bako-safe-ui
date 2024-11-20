@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { AuthenticateParams, IUseAuthDetails } from '@bako-safe/services/types';
+import type { AuthenticateParams, IUseAuthDetails } from '@bako-safe/services';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Provider } from 'fuels';
@@ -69,7 +69,7 @@ const useAuth = (): IUseAuthDetails => {
   };
 
   const userProvider = async () => {
-    const _userProvider = infos?.type != TypeUser.WEB_AUTHN;
+    const _userProvider = infos?.type !== TypeUser.WEB_AUTHN;
 
     return {
       provider: await Provider.create(

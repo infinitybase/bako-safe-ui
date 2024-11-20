@@ -1,6 +1,6 @@
 import {
   Badge,
-  BoxProps,
+  type BoxProps,
   CircularProgress,
   HStack,
   Text,
@@ -14,10 +14,10 @@ interface TransactionCardStatusProps extends BoxProps {
   showDescription?: boolean;
 }
 
-import { ITransaction } from '@bako-safe/services/modules/transaction';
+import type { ITransaction } from '@bako-safe/services';
 
 import { useTransactionState } from '../../states';
-import { TransactionState } from '../../types';
+import type { TransactionState } from '../../types';
 
 const Status = ({
   transaction,
@@ -28,7 +28,7 @@ const Status = ({
   const { isReproved, isCompleted, isError } = status;
 
   const signaturesCount =
-    transaction!.resume?.witnesses?.filter(
+    transaction?.resume?.witnesses?.filter(
       (w) => w.status === WitnessStatus.DONE,
     ).length ?? 0;
 

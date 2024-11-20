@@ -1,4 +1,4 @@
-import { ITransactionWithType } from '@bako-safe/services/modules/transaction';
+import type { ITransactionWithType } from '@bako-safe/services';
 import { ChevronRightIcon } from '@bako-safe/ui';
 import { Button, HStack, Icon } from '@chakra-ui/react';
 

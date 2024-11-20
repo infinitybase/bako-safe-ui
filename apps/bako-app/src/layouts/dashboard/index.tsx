@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import React from 'react';
+import type React from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '../../modules/vault/layout/sidebar';

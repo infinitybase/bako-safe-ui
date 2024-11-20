@@ -1,4 +1,4 @@
-import type { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import { MinimalAlertIcon } from '@bako-safe/ui/components';
 import {
   Avatar,

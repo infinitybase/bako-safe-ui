@@ -1,4 +1,4 @@
-import { ITransaction } from '@bako-safe/services/modules/transaction';
+import type { ITransaction } from '@bako-safe/services';
 import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui/components';
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
@@ -8,7 +8,7 @@ import { networkService } from '@/config/services-initializer';
 import { shakeAnimationY } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionState } from '../../types';
+import type { TransactionState } from '../../types';
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
@@ -95,7 +95,7 @@ const Details = ({
                   minW={{ base: 200, sm: 'full' }}
                   mt={isMobile ? 3 : 'unset'}
                 >
-                  <TransactionStepper steps={transactionHistory!} />
+                  <TransactionStepper steps={transactionHistory ?? []} />
                 </Box>
               </Stack>
 

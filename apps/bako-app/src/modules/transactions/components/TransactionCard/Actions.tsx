@@ -1,8 +1,8 @@
-import { ITransactionWithType } from '@bako-safe/services/modules/transaction';
+import type { ITransactionWithType } from '@bako-safe/services';
 import { ErrorIcon, SuccessIcon } from '@bako-safe/ui/components';
 import {
   Badge,
-  BoxProps,
+  type BoxProps,
   Button,
   HStack,
   Icon,
@@ -14,7 +14,7 @@ import { TransactionType } from 'bakosafe';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { TransactionState } from '../../types';
+import type { TransactionState } from '../../types';
 import { ActionsMobile } from './ActionsMobile';
 
 interface TransactionActionsProps extends BoxProps {

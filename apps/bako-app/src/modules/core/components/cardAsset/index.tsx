@@ -1,7 +1,7 @@
 import { BakoIcon } from '@bako-safe/ui/components';
 import {
   Card,
-  CardProps,
+  type CardProps,
   Flex,
   Icon,
   Image,
@@ -14,7 +14,7 @@ import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetTokenInfos } from '../../hooks';
-import { Asset, NativeAssetId } from '../../utils';
+import { type Asset, NativeAssetId } from '../../utils';
 import { AssetDetails } from './AssetDetails';
 
 interface AssetCardProps extends CardProps {
@@ -40,7 +40,7 @@ const AssetCard = ({
   const defaultAsset = {
     ...assetsMap?.[NativeAssetId],
     assetId: NativeAssetId,
-    amount: `0`,
+    amount: '0',
   };
 
   const { assetAmount, assetsInfo } = useGetTokenInfos({

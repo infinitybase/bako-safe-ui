@@ -1,7 +1,4 @@
-import {
-  ITransaction,
-  TransactionWithVault,
-} from '@bako-safe/services/modules/transaction';
+import type { ITransaction, TransactionWithVault } from '@bako-safe/services';
 import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useWalletSignMessage } from '@bako-safe/wallet/fuel';
 import { TransactionStatus } from 'bakosafe';
@@ -14,7 +11,7 @@ import { useAuthContext } from '@/modules/auth/AuthProvider';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionToast } from '../../providers/toast';
-import {
+import type {
   IPendingTransactionDetails,
   IPendingTransactionsRecord,
   IUseTransactionList,

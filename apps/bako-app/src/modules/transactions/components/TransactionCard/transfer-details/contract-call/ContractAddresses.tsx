@@ -1,6 +1,5 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
-import { AssetModel } from '@bako-safe/services/types';
-import { Box, HStack, StackProps, Text } from '@chakra-ui/react';
+import type { TransactionWithVault, AssetModel } from '@bako-safe/services';
+import { Box, HStack, type StackProps, Text } from '@chakra-ui/react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

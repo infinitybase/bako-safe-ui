@@ -1,4 +1,4 @@
-import { AuthenticateParams } from '@bako-safe/services/types';
+import type { AuthenticateParams } from '@bako-safe/services';
 import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 
 const setAuthCookies = (params: AuthenticateParams) => {

@@ -1,7 +1,7 @@
 import {
   Box,
   Container as ContainerChakra,
-  ContainerProps as ContainerChakraProps,
+  type ContainerProps as ContainerChakraProps,
 } from '@chakra-ui/react';
 
 export interface ContainerProps extends ContainerChakraProps {}

@@ -79,7 +79,9 @@ const AddAssetsDialog = ({
           w="full"
           maxW={{ base: 480, xs: 'unset' }}
           title="Add your assets"
-          description={`Select your preferred method for adding funds to your personal vault.`}
+          description={
+            'Select your preferred method for adding funds to your personal vault.'
+          }
           descriptionFontSize="12px"
           titleSxProps={{
             fontSize: '16px',

@@ -1,4 +1,4 @@
-import { BoxProps, Flex, Text, TextProps } from '@chakra-ui/react';
+import { type BoxProps, Flex, Text, type TextProps } from '@chakra-ui/react';
 import { Address } from 'fuels';
 
 import { CopyAddressButton } from '@/components';

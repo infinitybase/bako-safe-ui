@@ -2,7 +2,7 @@ import { CheckMarkCircleIcon, CopyTopMenuIcon } from '@bako-safe/ui/components';
 import {
   Icon,
   IconButton,
-  IconButtonProps,
+  type IconButtonProps,
   useClipboard,
 } from '@chakra-ui/react';
 

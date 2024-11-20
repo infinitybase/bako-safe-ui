@@ -1,9 +1,9 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import {
   ContractIcon,
   DeployIcon,
   Dialog,
-  DialogModalProps,
+  type DialogModalProps,
   DownLeftArrowGreen,
   UpRightArrow,
   UpRightArrowYellow,
@@ -29,7 +29,7 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { TransactionState } from '../../types';
+import type { TransactionState } from '../../types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;

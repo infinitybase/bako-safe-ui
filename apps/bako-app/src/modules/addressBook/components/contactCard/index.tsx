@@ -2,7 +2,7 @@ import { Card, CopyIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
 import {
   Avatar,
   Box,
-  CardProps,
+  type CardProps,
   Divider,
   Heading,
   HStack,
@@ -15,7 +15,7 @@ import {
 
 import { useNotification } from '@/modules/notification';
 
-import { UseAddressBookReturn } from '../../hooks';
+import type { UseAddressBookReturn } from '../../hooks';
 
 interface ContactCardProps extends CardProps {
   nickname: string;

@@ -1,8 +1,8 @@
-import {
+import type {
   UpdateSettingsPayload,
   UpdateSettingsResponse,
-} from '@bako-safe/services/modules/settings';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+} from '@bako-safe/services';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
 import { settingsService } from '@/config/services-initializer';
 

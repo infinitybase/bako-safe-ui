@@ -1,5 +1,5 @@
 import { dappService } from '@app/config/services-initializer';
-import { IDAppCreatePayload } from '@bako-safe/services/modules/dapp';
+import type { IDAppCreatePayload } from '@bako-safe/services';
 import { useMutation } from '@tanstack/react-query';
 
 const useCreateConnections = () => {

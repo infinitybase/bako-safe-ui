@@ -1,4 +1,4 @@
-import { PredicateAndWorkspace } from '@bako-safe/services/modules/vault';
+import type { PredicateAndWorkspace } from '@bako-safe/services';
 import { Dialog } from '@bako-safe/ui/components';
 import {
   Avatar,

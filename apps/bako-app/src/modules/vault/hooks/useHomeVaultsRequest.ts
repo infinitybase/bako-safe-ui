@@ -1,5 +1,4 @@
-import { TransactionOrderBy } from '@bako-safe/services/modules/transaction';
-import { SortOption } from '@bako-safe/services/types';
+import { TransactionOrderBy, SortOption } from '@bako-safe/services';
 import { useQuery } from '@tanstack/react-query';
 
 import { vaultService } from '@/config/services-initializer';

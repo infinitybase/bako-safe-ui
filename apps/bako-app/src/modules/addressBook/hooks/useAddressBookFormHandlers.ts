@@ -1,9 +1,9 @@
-import { ListContactsResponse } from '@bako-safe/services/modules/address-book';
-import { UseDisclosureProps } from '@chakra-ui/react';
-import { UseQueryResult } from '@tanstack/react-query';
+import type { ListContactsResponse } from '@bako-safe/services';
+import type { UseDisclosureProps } from '@chakra-ui/react';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback } from 'react';
+import { type ChangeEvent, useCallback } from 'react';
 
 import { useCreateContactForm } from './useCreateContactForm';
 

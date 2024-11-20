@@ -1,15 +1,15 @@
 import {
   Badge as ChakraBadge,
-  BadgeProps,
+  type BadgeProps,
   Box,
   chakra,
   Flex,
-  FlexProps,
+  type FlexProps,
   Icon as ChakraIcon,
-  IconProps,
-  MergeWithAs,
+  type IconProps,
+  type MergeWithAs,
   Text,
-  TextProps,
+  type TextProps,
   VStack,
 } from '@chakra-ui/react';
 

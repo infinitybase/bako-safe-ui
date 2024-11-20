@@ -1,6 +1,9 @@
-import { ITransaction } from '@bako-safe/services/modules/transaction';
-import { AssetModel, WitnessStatus } from '@bako-safe/services/types';
-import { ITransactionResume, TransactionStatus } from 'bakosafe';
+import {
+  type ITransaction,
+  type AssetModel,
+  WitnessStatus,
+} from '@bako-safe/services';
+import { type ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { NativeAssetId } from '../core/utils';

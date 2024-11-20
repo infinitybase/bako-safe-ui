@@ -1,4 +1,4 @@
-import type { ITransactionsGroupedByMonth } from '@bako-safe/services/modules';
+import type { ITransactionsGroupedByMonth } from '@bako-safe/services';
 
 import type { IPendingTransactionsRecord } from './useTransactionList';
 

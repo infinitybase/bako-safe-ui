@@ -27,21 +27,10 @@ function App() {
 
   const { logout } = useLogout(handleLogoutSuccess);
   const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
-
+  AxiosInterceptors.init();
   const auth = useAuth();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
-
-  // const { isTxFromDapp } = useAuthUrlParams();
-  useMemo(() => {
-    AxiosInterceptors.init();
-    // initAxiosInterceptorsSetup({
-    //   isTxFromDapp,
-    //   logout: auth.handlers.logout,
-    //   isTokenExpired: auth.handlers.isTokenExpired,
-    //   setIsTokenExpired: auth.handlers.setIsTokenExpired,
-    // });
-  }, []);
 
   useEffect(() => {
     async function clearAll() {

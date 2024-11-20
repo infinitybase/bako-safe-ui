@@ -1,4 +1,4 @@
-import { AssetModel } from '@bako-safe/services/types';
+import type { AssetModel } from '@bako-safe/services';
 import { Image, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
@@ -14,7 +14,7 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
     () =>
       asset?.assetId && assetsMap?.[asset?.assetId]
         ? assetsMap[asset?.assetId]
-        : assetsMap?.['UNKNOWN'],
+        : assetsMap?.UNKNOWN,
     [asset?.assetId],
   );
   return (

@@ -1,5 +1,4 @@
-import { TransactionOrderBy } from '@bako-safe/services/modules/transaction';
-import { SortOption } from '@bako-safe/services/types';
+import { TransactionOrderBy, SortOption } from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { notificationService } from '@/config/services-initializer';
@@ -25,7 +24,7 @@ const useListNotificationsRequest = (account: string) => {
   });
 
   return {
-    notifications: data?.pages.map((page) => page.data).flat() ?? [],
+    notifications: data?.pages.flatMap((page) => page.data) ?? [],
     ...query,
   };
 };

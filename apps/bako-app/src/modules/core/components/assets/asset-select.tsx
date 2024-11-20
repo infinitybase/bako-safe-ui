@@ -1,12 +1,12 @@
-import { Select, SelectProps } from '@bako-safe/ui/components';
+import { Select, type SelectProps } from '@bako-safe/ui/components';
 import { FormControl } from '@chakra-ui/react';
-import React from 'react';
+import type React from 'react';
 
 import {
   AddressUtils,
-  Asset,
+  type Asset,
   assetsList,
-  NFT,
+  type NFT,
   useGetTokenInfosArray,
   useSortTokenInfosArray,
 } from '@/modules/core';

@@ -1,4 +1,4 @@
-import { GetAllPredicatesPayload } from '@bako-safe/services/modules/vault';
+import type { GetAllPredicatesPayload } from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { vaultService } from '@/config/services-initializer';

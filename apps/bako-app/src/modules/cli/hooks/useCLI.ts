@@ -1,8 +1,8 @@
 import {
   defaultPermissions,
   PermissionRoles,
-  PredicateAndWorkspace,
-  Workspace,
+  type PredicateAndWorkspace,
+  type Workspace,
 } from '@bako-safe/services';
 import {
   BitCoinIcon,
@@ -13,7 +13,7 @@ import {
 import { useMemo, useState } from 'react';
 
 import { TabState, useAPIToken } from './APIToken';
-import { FeatureConfig, useCommingSoon } from './CommingSoon';
+import { type FeatureConfig, useCommingSoon } from './CommingSoon';
 
 export const requiredCLIRoles = [
   PermissionRoles.ADMIN,

@@ -1,8 +1,8 @@
 import {
-  ComponentWithAs,
+  type ComponentWithAs,
   HStack,
   Icon,
-  IconProps,
+  type IconProps,
   Text,
   VStack,
 } from '@chakra-ui/react';

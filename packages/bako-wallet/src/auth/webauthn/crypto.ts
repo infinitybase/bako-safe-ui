@@ -71,7 +71,7 @@ export function getSignature(
   digest: Uint8Array,
   publicKey?: string,
 ): IGetSignature {
-  let _signature;
+  let _signature = undefined;
 
   const signatureCompact = secp256r1.Signature.fromCompact(
     convertASN1toRaw(signature),
