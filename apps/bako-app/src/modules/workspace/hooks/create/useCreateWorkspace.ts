@@ -9,9 +9,9 @@ import { useCreateWorkspaceRequest } from './useCreateWorkspaceRequest';
 export type UseCreateWorkspace = ReturnType<typeof useCreateWorkspace>;
 
 export enum CreateWorkspaceTabState {
-  ON_BOARDING,
-  FORM,
-  SUCCESS,
+  ON_BOARDING = 0,
+  FORM = 1,
+  SUCCESS = 2,
 }
 
 // type UserCreateWorkspaceParams = {

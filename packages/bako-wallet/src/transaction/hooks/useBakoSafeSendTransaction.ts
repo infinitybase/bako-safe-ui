@@ -1,4 +1,4 @@
-import { ITransaction } from '@bako-safe/services';
+// import type { ITransaction } from '@bako-safe';
 import { useMutation } from '@tanstack/react-query';
 
 import { instantiateVault } from '../../vault';
@@ -11,10 +11,7 @@ interface UseBakoSafeSendTransactionOptions {
 }
 
 interface BakoSafeSendTransactionVariables {
-  transaction: Pick<
-    ITransaction,
-    'id' | 'predicateId' | 'predicateAddress' | 'hash'
-  >;
+  transaction: Pick<any, 'id' | 'predicateId' | 'predicateAddress' | 'hash'>;
   providerUrl: string;
 }
 

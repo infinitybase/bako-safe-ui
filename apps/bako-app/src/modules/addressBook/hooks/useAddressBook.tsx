@@ -1,4 +1,4 @@
-import { IUseAuthDetails, PermissionRoles } from '@bako-safe/services';
+import { PermissionRoles, type IUseAuthDetails } from '@bako-safe/services';
 import { useDisclosure } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -28,7 +28,7 @@ const useAddressBook = (
   const navigate = useNavigate();
 
   const listContactsRequest = useListContactsRequest({
-    workspaceId: workspaceId!,
+    workspaceId: workspaceId ?? '',
     includePersonal: authDetails.userInfos.onSingleWorkspace,
   });
 

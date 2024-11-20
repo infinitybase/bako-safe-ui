@@ -1,23 +1,21 @@
-import { bytesToHex } from "@noble/curves/abstract/utils";
 import {
-  CheckNicknameResponse,
-  CreateUserPayload,
-  CreateUserResponse,
+  type CheckNicknameResponse,
+  type CreateUserPayload,
+  type CreateUserResponse,
   Encoder,
-  GetByHardwareResponse,
-  GetByNameResponse,
-  IGetUserInfosResponse,
+  type GetByHardwareResponse,
+  type GetByNameResponse,
+  type IGetUserInfosResponse,
   NetworkType,
-  SignInPayload,
-  SignInResponse,
-  SignInSignWebAuthnPayload,
+  type SignInPayload,
+  type SignInResponse,
+  type SignInSignWebAuthnPayload,
 } from "../../types";
 import { TypeUser, createAccount } from "bakosafe";
 import { Address } from "fuels";
-import { signChallange } from "@wallet/auth/webauthn";
-import { localStorageKeys } from "./utils";
-import { AxiosInstance } from "axios";
-import { bindMethods } from "@/utils/bindMethods";
+
+import type { AxiosInstance } from "axios";
+import { bindMethods } from "@/utils";
 
 export class UserService {
   api: AxiosInstance;
@@ -97,15 +95,15 @@ export class UserService {
     const payload = {
       name,
       address: Address.fromB256(account.address).toString(),
-      // provider: import.meta.env.VITE_NETWORK,
+      // todo: make this param dynamic
       provider: "https://testnet.fuel.network/v1/graphql",
       type: TypeUser.WEB_AUTHN,
       webauthn: {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        id: account.credential?.id!,
+        id: account.credential?.id ?? "",
         publicKey: account.publicKeyHex,
-        origin: window.location.origin,
-        hardware: localStorage.getItem(localStorageKeys.HARDWARE_ID)!,
+        origin: "random_origin", //window.location.origin,
+        // todo: we need recive this param, this repo can used on node, and this param is not available because is a browser param
+        hardware: "random_hardware_id", //localStorage.getItem(localStorageKeys.HARDWARE_ID)!,
       },
     };
     return {
@@ -120,18 +118,18 @@ export class UserService {
     challenge,
     name,
   }: SignInSignWebAuthnPayload) {
-    const signature = await signChallange(id, challenge);
+    // const signature = await signChallange(id, challenge);
 
     return await this.signIn({
       encoder: Encoder.WEB_AUTHN,
-      signature: bytesToHex(signature!.sig_compact),
-      digest: bytesToHex(signature!.dig_compact),
+      signature: "bytesToHex(signature.sig_compact)",
+      digest: "bytesToHex(signature.dig_compact)",
       name,
     });
   }
 
   async generateSignInCode(name: string, networkUrl?: string) {
-    const { data } = await this.api.post<CreateUserResponse>(`/auth/code`, {
+    const { data } = await this.api.post<CreateUserResponse>("/auth/code", {
       name,
       networkUrl,
     });

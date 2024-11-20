@@ -1,4 +1,4 @@
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
 import { BakoProvider } from 'bakosafe';
 
 export class ProviderInstance {

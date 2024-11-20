@@ -1,5 +1,4 @@
-import { IApiError } from '@bako-safe/wallet/config';
-import { AxiosError } from 'axios';
+import type { IApiError } from '@bako-safe/services';
 import { useEffect } from 'react';
 
 import { queryClient } from '@/config';
@@ -69,9 +68,7 @@ const useSettings = ({ onClose }: UseSettingsProps) => {
             });
           },
           onError: (error) => {
-            const errorDescription = (
-              (error as AxiosError)?.response?.data as IApiError
-            )?.detail;
+            const errorDescription = (error as IApiError)?.detail;
             const description =
               errorDescription?.includes('name') &&
               errorDescription?.includes('already exists')

@@ -3,6 +3,7 @@ function bindMethods(instance: any) {
     Object.getPrototypeOf(instance),
   );
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   methodNames
     .filter(
       (methodName) =>

@@ -1,26 +1,26 @@
-import { Asset, FAKE_WITNESSES, ITransactionResume } from "bakosafe";
+import { Asset, FAKE_WITNESSES, type ITransactionResume } from "bakosafe";
 import { bn, calculateGasFee, ScriptTransactionRequest } from "fuels";
 
 import {
-  GetTransactionHistoryResponse,
+  type GetTransactionHistoryResponse,
   GetTransactionParams,
-  GetTransactionParamsForPaginationQuery,
-  GetTransactionPendingResponse,
-  GetTransactionResponse,
-  GetTransactionsPaginationResponse,
-  GetTransactionsWithIncomingsPaginationResponse,
-  GetTransactionsWithIncomingsParams,
-  GetUserTransactionsParams,
-  GetUserTransactionsResponse,
-  GetVaultTransactionsParams,
-  GetVaultTransactionsResponse,
-  ITransactionStatusFilter,
-  ResolveTransactionCostInput,
-  SignerTransactionPayload,
-  SignerTransactionResponse,
+  type GetTransactionParamsForPaginationQuery,
+  type GetTransactionPendingResponse,
+  type GetTransactionResponse,
+  type GetTransactionsPaginationResponse,
+  type GetTransactionsWithIncomingsPaginationResponse,
+  type GetTransactionsWithIncomingsParams,
+  type GetUserTransactionsParams,
+  type GetUserTransactionsResponse,
+  type GetVaultTransactionsParams,
+  type GetVaultTransactionsResponse,
+  type ITransactionStatusFilter,
+  type ResolveTransactionCostInput,
+  type SignerTransactionPayload,
+  type SignerTransactionResponse,
 } from "./types";
-import { AxiosInstance } from "axios";
-import { bindMethods } from "@/utils/bindMethods";
+import type { AxiosInstance } from "axios";
+import { bindMethods } from "@/utils";
 
 export class TransactionService {
   api: AxiosInstance;
@@ -65,7 +65,7 @@ export class TransactionService {
     params: GetTransactionParamsForPaginationQuery,
   ) {
     const { data } = await this.api.get<GetTransactionsPaginationResponse>(
-      `/transaction`,
+      "/transaction",
       {
         params: { ...params },
       },
@@ -76,7 +76,7 @@ export class TransactionService {
 
   async getUserTransactions(params: GetUserTransactionsParams) {
     const { data } = await this.api.get<GetUserTransactionsResponse>(
-      `/transaction`,
+      "/transaction",
       {
         params: { ...params },
       },
@@ -89,7 +89,7 @@ export class TransactionService {
   ) {
     const { data } =
       await this.api.get<GetTransactionsWithIncomingsPaginationResponse>(
-        `/transaction/with-incomings`,
+        "/transaction/with-incomings",
         {
           params: { ...params },
         },
@@ -107,7 +107,7 @@ export class TransactionService {
 
   async getVaultTransactions(params: GetVaultTransactionsParams) {
     const { data } = await this.api.get<GetVaultTransactionsResponse>(
-      `/transaction`,
+      "/transaction",
       {
         params: { ...params },
       },
@@ -117,7 +117,7 @@ export class TransactionService {
 
   async getTransactionsSignaturePending(predicateId?: string[]) {
     const { data } = await this.api.get<GetTransactionPendingResponse>(
-      `/transaction/pending`,
+      "/transaction/pending",
       {
         params: { predicateId },
       },

@@ -13,7 +13,7 @@ interface Cookie {
   value: string;
 }
 
-const CookiesConfig = {
+export const CookiesConfig = {
   encryptionKey: process.env.ENCRYPTION_KEY || 'fixed_value_not_random',
 
   setCookies(cookies: Cookie[]) {
@@ -54,5 +54,3 @@ const CookiesConfig = {
     }
   },
 };
-
-export default CookiesConfig;
