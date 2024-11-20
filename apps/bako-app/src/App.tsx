@@ -1,8 +1,7 @@
-import { AxiosSetup } from '@bako-safe/wallet';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
@@ -25,10 +24,7 @@ function App() {
     // Navigate user to sign-in page
   };
 
-  const auth = useAuth();
   const { logout } = useLogout(handleLogoutSuccess);
-  const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
-  AxiosInterceptors.init();
   const auth = useAuth();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;

@@ -1,11 +1,11 @@
-import { IListTransactions } from '@bako-safe/services';
+// import type { IListTransactions } from '@bako-safe/se';
 import { useMutation } from '@tanstack/react-query';
-import { ITransferAsset, Vault } from 'bakosafe';
+import type { ITransferAsset, Vault } from 'bakosafe';
 
 export const TRANSACTION_QUERY_KEYS = {
   DEFAULT: ['bakosafe', 'transaction'],
   SEND: () => [...TRANSACTION_QUERY_KEYS.DEFAULT, 'send'],
-  VAULT: (id: string, filter?: IListTransactions) => [
+  VAULT: (id: string, filter?: any) => [
     ...TRANSACTION_QUERY_KEYS.DEFAULT,
     'vault',
     id,

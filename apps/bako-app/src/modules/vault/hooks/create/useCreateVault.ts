@@ -1,8 +1,8 @@
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
-import { useCreateBakoSafeVault } from '@bako-safe/wallet/vault';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
+import { useCreateBakoSafeVault } from '@bako-safe/wallet';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { vaultService } from '@/config/services-initializer';
@@ -18,9 +18,9 @@ import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
 
 export enum TabState {
-  INFO,
-  ADDRESSES,
-  SUCCESS,
+  INFO = 0,
+  ADDRESSES = 1,
+  SUCCESS = 2,
 }
 
 export type UseCreateVaultReturn = ReturnType<typeof useCreateVault>;

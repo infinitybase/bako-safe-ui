@@ -2,7 +2,7 @@ import { Provider } from "fuels";
 
 import { localStorageKeys } from "@/modules/auth";
 import { AxiosInstance } from "axios";
-import { bindMethods } from "@/utils/bindMethods";
+import { bindMethods } from "@/utils";
 import { NetworkType } from "@/types";
 
 export enum NetworkQueryKey {
@@ -41,7 +41,7 @@ export type CheckNetworkResponse = string | undefined;
 export const availableNetWorks = {
   [NetworkType.MAINNET]: {
     name: "Ignition",
-    url: process.env.MAINNET_NETWORK! ?? "",
+    url: "",
     chainId: 9889,
     explorer: "https://app-mainnet.fuel.network/",
   },
@@ -51,14 +51,6 @@ export const availableNetWorks = {
     chainId: 0,
     explorer: "https://app-testnet.fuel.network/",
   },
-  ...(window.location.hostname.includes("localhost") && {
-    [NetworkType.DEV]: {
-      name: "Local",
-      url: "http://localhost:4000/v1/graphql",
-      chainId: 0,
-      explorer: "http://localhost:4000/explorer",
-    },
-  }),
 };
 
 const sanitizeNetwork = (url: string = "") =>
@@ -135,7 +127,7 @@ export class NetworkService {
 
   async selectNetwork({ url }: SelectNetworkPayload) {
     const { data } = await this.api.post<SelectNetworkResponse>(
-      `/user/select-network/`,
+      "/user/select-network/",
       { network: url },
     );
 

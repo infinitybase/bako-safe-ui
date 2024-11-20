@@ -10,11 +10,14 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@wallet/*": ["../bako-wallet/src/*"]
+      "@/utils": ["src/utils"],
+      "@/types": ["src/types"],
+      "@/modules/*": ["src/modules/*"]
     },
     "lib": ["dom", "esnext"],
-    "types": ["react", "node"]
+    "esModuleInterop": true,
+    "strict": true
   },
-  "include": ["src/**/*", "../bako-wallet/src/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

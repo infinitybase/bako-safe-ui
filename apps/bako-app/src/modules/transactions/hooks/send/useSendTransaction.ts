@@ -1,12 +1,11 @@
 import type { ITransaction } from '@bako-safe/services';
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
-import { useBakoSafeSendTransaction } from '@bako-safe/wallet/transaction';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
+import { useBakoSafeSendTransaction } from '@bako-safe/wallet';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
 import { transactionService } from '@/config/services-initializer';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
-// import { useBakoSafeTransactionSend } from '@/modules/core';
 import { useNotificationsStore } from '@/modules/notifications/store';
 import { serverApi } from '@/utils/constants';
 

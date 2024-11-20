@@ -1,5 +1,5 @@
 import type { ListContactsResponse } from '@bako-safe/services';
-import type { IApiError } from '@bako-safe/wallet';
+import type { IApiError } from '@bako-safe/services';
 import type { UseDisclosureProps } from '@chakra-ui/react';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';

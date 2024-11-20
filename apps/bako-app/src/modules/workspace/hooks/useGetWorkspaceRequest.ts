@@ -1,4 +1,4 @@
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
 import { useQuery } from '@tanstack/react-query';
 
 import { workspaceService } from '@/config/services-initializer';

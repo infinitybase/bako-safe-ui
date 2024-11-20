@@ -1,13 +1,13 @@
-import { SignWebAuthnPayload } from '@bako-safe/services';
-import { signChallange } from '@bako-safe/services';
+// import type { SignWebAuthnPayload } from '@bako-safe/services';
+import { signChallange } from '../auth/webauthn';
 import { useFuel } from '@fuels/react';
 import {
   useMutation,
-  UseMutationOptions,
+  type UseMutationOptions,
   useQuery,
 } from '@tanstack/react-query';
 import { bakoCoder, recoverPublicKey, SignatureType, TypeUser } from 'bakosafe';
-import { Account } from 'fuels';
+import type { Account } from 'fuels';
 
 import { FuelQueryKeys } from './types';
 
@@ -16,7 +16,7 @@ const useWallet = (account?: string) => {
 
   return useQuery({
     queryKey: [FuelQueryKeys.WALLET, account],
-    queryFn: () => fuel?.getWallet(account!),
+    queryFn: () => fuel?.getWallet(account ?? ''),
     enabled: !!fuel && !!account,
   });
 };
@@ -26,7 +26,7 @@ const useMyWallet = (userAddress: string) => {
 };
 
 //sign by webauthn
-const signAccountWebAuthn = async (sign: SignWebAuthnPayload) => {
+const signAccountWebAuthn = async (sign: any) => {
   const signature = await signChallange(
     sign.id,
     `0x${sign.challenge}`,

@@ -1,6 +1,6 @@
 import type { ITransaction, TransactionWithVault } from '@bako-safe/services';
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
-import { useWalletSignMessage } from '@bako-safe/wallet/fuel';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
+import { useWalletSignMessage } from '@bako-safe/wallet';
 import { TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useState } from 'react';

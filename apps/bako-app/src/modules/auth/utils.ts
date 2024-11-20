@@ -1,6 +1,6 @@
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
 
-import { IGenerateRedirectQueryParams } from './types';
+import type { IGenerateRedirectQueryParams } from './types';
 
 const authCredentials = () => ({
   token: CookiesConfig.getCookie(CookieName.ACCESS_TOKEN),

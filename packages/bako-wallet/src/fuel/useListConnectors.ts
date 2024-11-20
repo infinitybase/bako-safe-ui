@@ -1,6 +1,6 @@
 import { FueletIcon, FuelIcon } from '@bako-safe/ui';
 import { useConnectors } from '@fuels/react';
-import { TypeUser } from 'bakosafe';
+import type { TypeUser } from 'bakosafe';
 import { useCallback } from 'react';
 
 enum EConnectors {

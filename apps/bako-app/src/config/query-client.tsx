@@ -1,4 +1,4 @@
-import { FuelQueryKeys } from '@bako-safe/wallet/fuel';
+import { FuelQueryKeys } from '@bako-safe/wallet';
 import { useFuel } from '@fuels/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';

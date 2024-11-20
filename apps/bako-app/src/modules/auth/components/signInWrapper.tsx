@@ -1,4 +1,4 @@
-import { useListConnectors } from '@bako-safe/wallet/fuel';
+import { useListConnectors } from '@bako-safe/wallet';
 import {
   TabPanel,
   TabPanels,

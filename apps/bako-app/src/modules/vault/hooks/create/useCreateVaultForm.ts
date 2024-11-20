@@ -1,6 +1,6 @@
-import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
+import { CookieName, CookiesConfig } from '@/modules/core/utils';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BakoProvider } from 'bakosafe';
+import type { BakoProvider } from 'bakosafe';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 

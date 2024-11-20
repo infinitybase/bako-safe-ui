@@ -1,6 +1,5 @@
-import { SortOption } from "@/types/common";
-import { IPagination } from "@/types/pagination";
-import { WorkspaceContact } from "../workspace/types";
+import type { SortOption, IPagination } from "@/types";
+import type { WorkspaceContact } from "../workspace/types";
 
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;
