@@ -6,13 +6,15 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./vault": "./dist/vault/index.js",
-    "./transaction": "./dist/transaction/index.js",
-    "./fuel": "./dist/fuel/index.js",
-    "./config": "./dist/config/index.js",
-    "./auth": "./dist/auth/index.js"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },
