@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 const { VITE_SOCKET_URL } = import.meta.env;
 
 const URL = VITE_SOCKET_URL;
-const socket = io(URL, { autoConnect: true });
+const socket = io(URL, { autoConnect: false });
 
 socket.on('connect_error', (err) => {
   if (err.message === 'invalid username') {
@@ -20,14 +20,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     authDetails: { userInfos },
   } = useWorkspaceContext();
-  const { request_id } = useQueryParams();
+  const { request_id, sessionId } = useQueryParams();
 
   useEffect(() => {
     if (!socket.connected) {
       socket.auth = {
         username: SocketUsernames.UI,
         data: new Date(),
-        sessionId: userInfos.id,
+        sessionId: sessionId || userInfos.id,
         origin,
         request_id: request_id ?? '',
       };
@@ -37,7 +37,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       socket.close();
     };
-  }, [userInfos, request_id]);
+  }, [userInfos, sessionId, request_id]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
