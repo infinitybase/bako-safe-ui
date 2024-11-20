@@ -14,12 +14,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { usePermissions } from '@/modules/core/hooks/usePermissions';
-import {
-  type PermissionDetails,
-  WorkspacePermissionUtils,
-} from '@/modules/workspace/utils/permission';
+import { useGetVaultRole } from '@/modules/vault/hooks/useGetVaultRole';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+import { vaultRoles } from '../utils/roles';
 
 interface VaultCardProps extends CardProps {
   ownerId: string;
@@ -34,7 +32,7 @@ export const VaultCard = ({
   members,
   ...rest
 }: VaultCardProps) => {
-  const { role } = usePermissions(ownerId);
+  const { role } = useGetVaultRole(ownerId);
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
@@ -146,15 +144,9 @@ export const VaultCard = ({
             <Badge
               h={6}
               rounded="full"
-              variant={
-                WorkspacePermissionUtils.permissions[
-                  role as keyof PermissionDetails
-                ].variant ?? 'warning'
-              }
+              variant={vaultRoles[role].variant ?? 'warning'}
             >
-              {WorkspacePermissionUtils.permissions[
-                role as keyof PermissionDetails
-              ]?.title ?? ''}
+              {vaultRoles[role]?.title ?? ''}
             </Badge>
           </VStack>
         </HStack>
