@@ -1,4 +1,4 @@
-import { AssetModel } from '@bako-safe/services/types';
+import type { AssetModel } from '@bako-safe/services';
 import { Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

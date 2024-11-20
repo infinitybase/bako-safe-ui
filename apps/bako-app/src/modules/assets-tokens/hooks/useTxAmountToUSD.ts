@@ -1,6 +1,6 @@
-import { AssetModel } from '@bako-safe/services/types';
+import type { AssetModel } from '@bako-safe/services';
 
-import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import type { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
 export type IAssetsInfoToUSD = Pick<AssetModel, 'assetId' | 'amount'>;
 

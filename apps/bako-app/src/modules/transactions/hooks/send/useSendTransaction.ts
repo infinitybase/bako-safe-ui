@@ -1,4 +1,4 @@
-import { ITransaction } from '@bako-safe/services/modules/transaction';
+import type { ITransaction } from '@bako-safe/services';
 import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useBakoSafeSendTransaction } from '@bako-safe/wallet/transaction';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';

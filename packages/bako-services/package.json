@@ -5,12 +5,15 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./modules": "./dist/modules/index.js",
-    "./modules/*": "./dist/modules/*/index.js",
-    "./types": "./dist/types/index.js",
-    "./utils": "./dist/utils/index.js"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && tsc-alias"
   },

@@ -1,5 +1,5 @@
-import { HasReservedCoins } from '@bako-safe/services/modules/vault';
-import { QueryState, useQuery } from '@tanstack/react-query';
+import type { HasReservedCoins } from '@bako-safe/services';
+import { type QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
 import { vaultService } from '@/config/services-initializer';

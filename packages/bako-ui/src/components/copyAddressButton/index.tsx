@@ -2,7 +2,7 @@ import { CheckMarkCircleIcon, CopyTopMenuIcon } from "../icons";
 import {
   Icon,
   IconButton,
-  IconButtonProps,
+  type IconButtonProps,
   useClipboard,
 } from "@chakra-ui/react";
 

@@ -1,8 +1,8 @@
-import { AxiosSetup } from '@bako-safe/wallet';
+import { AxiosSetup } from '@bako-safe/wallet/config';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
@@ -28,19 +28,9 @@ function App() {
   const auth = useAuth();
   const { logout } = useLogout(handleLogoutSuccess);
   const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
-
+  AxiosInterceptors.init();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
-
-  useMemo(() => {
-    AxiosInterceptors.init();
-    // initAxiosInterceptorsSetup({
-    //   isTxFromDapp,
-    //   logout: auth.handlers.logout,
-    //   isTokenExpired: auth.handlers.isTokenExpired,
-    //   setIsTokenExpired: auth.handlers.setIsTokenExpired,
-    // });
-  }, []);
 
   useEffect(() => {
     async function clearAll() {

@@ -1,5 +1,4 @@
-import { PermissionRoles } from '@bako-safe/services';
-import { IUseAuthDetails } from '@bako-safe/services/types';
+import { IUseAuthDetails, PermissionRoles } from '@bako-safe/services';
 import { useDisclosure } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';

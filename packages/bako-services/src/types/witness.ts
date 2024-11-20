@@ -1,4 +1,4 @@
-import { ITransaction } from "@/modules/transaction";
+import type { ITransaction } from "@/modules/transaction";
 
 export enum WitnessStatus {
   REJECTED = "REJECTED",

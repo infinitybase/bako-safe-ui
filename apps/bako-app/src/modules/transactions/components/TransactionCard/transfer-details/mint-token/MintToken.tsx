@@ -1,4 +1,4 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import { Box } from '@chakra-ui/react';
 import React from 'react';
 

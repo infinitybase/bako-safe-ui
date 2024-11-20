@@ -1,10 +1,10 @@
 import {
-  GetTransactionsWithIncomingsParams,
+  type GetTransactionsWithIncomingsParams,
   TransactionOrderBy,
-} from '@bako-safe/services/modules/transaction';
-import { SortOption } from '@bako-safe/services/types';
+  SortOption,
+} from '@bako-safe/services';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { TransactionType } from 'bakosafe';
+import type { TransactionType } from 'bakosafe';
 
 import { transactionService } from '@/config/services-initializer';
 import { useGroupTransactionsByMonth } from '@/modules/core/hooks/useGroupTransactionsByMonth';
@@ -71,7 +71,7 @@ const useVaultTransactionsRequest = (
   });
 
   const transactionsList =
-    data?.pages.map((page) => page.data ?? page).flat() ?? [];
+    data?.pages.flatMap((page) => page.data ?? page) ?? [];
 
   return {
     ...query,

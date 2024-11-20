@@ -1,6 +1,6 @@
-import { ITransactionHistory } from '@bako-safe/services/modules/transaction';
+import type { ITransactionHistory } from '@bako-safe/services';
 import { useAccordionItemState } from '@chakra-ui/react';
-import { QueryState, useQuery } from '@tanstack/react-query';
+import { type QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config';
 import { transactionService } from '@/config/services-initializer';

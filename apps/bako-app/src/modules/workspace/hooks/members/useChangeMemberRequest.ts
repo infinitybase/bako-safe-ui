@@ -1,8 +1,8 @@
-import {
+import type {
   DeleteWorkspaceMemberPayload,
   IncludeWorkspaceMemberPayload,
   UpdateWorkspacePermissionsPayload,
-} from '@bako-safe/services/modules/workspace';
+} from '@bako-safe/services';
 import { useMutation } from '@tanstack/react-query';
 import { Address } from 'fuels';
 

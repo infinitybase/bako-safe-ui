@@ -3,7 +3,7 @@ import {
   Drawer as ChakraDrawer,
   DrawerContent,
   DrawerOverlay,
-  DrawerProps as ChakraDrawerProps,
+  type DrawerProps as ChakraDrawerProps,
 } from '@chakra-ui/react';
 
 import { Sidebar } from '@/modules/vault/layout/sidebar';

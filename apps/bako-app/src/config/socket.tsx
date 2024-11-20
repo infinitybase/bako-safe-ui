@@ -1,4 +1,5 @@
-import React, { createContext } from 'react';
+import type React from 'react';
+import { createContext } from 'react';
 import { io } from 'socket.io-client';
 const { VITE_SOCKET_URL } = import.meta.env;
 

@@ -1,4 +1,4 @@
-import type { IWorkspaceBalance } from '@bako-safe/services/modules';
+import type { IWorkspaceBalance } from '@bako-safe/services';
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 import { workspaceService } from '@/config/services-initializer';

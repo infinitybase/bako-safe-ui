@@ -1,5 +1,5 @@
-import { SetAllAsReadResponse } from '@bako-safe/services/modules/notifications';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import type { SetAllAsReadResponse } from '@bako-safe/services';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
 import { notificationService } from '@/config/services-initializer';
 

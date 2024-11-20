@@ -1,4 +1,4 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import {
   ContractIcon,
   DeployIcon,
@@ -7,7 +7,7 @@ import {
 } from '@bako-safe/ui/components';
 import {
   Card,
-  CardProps,
+  type CardProps,
   Divider,
   Flex,
   HStack,

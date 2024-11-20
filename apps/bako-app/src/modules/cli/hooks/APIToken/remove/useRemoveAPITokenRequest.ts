@@ -1,4 +1,4 @@
-import { DeleteAPITokenParams } from '@bako-safe/services/modules/cli';
+import type { DeleteAPITokenParams } from '@bako-safe/services';
 import { useMutation } from '@tanstack/react-query';
 
 import { apiTokenService } from '@/config/services-initializer';

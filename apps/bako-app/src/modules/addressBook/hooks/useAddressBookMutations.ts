@@ -1,10 +1,10 @@
-import { ListContactsResponse } from '@bako-safe/services/modules/address-book';
-import { IApiError } from '@bako-safe/wallet';
-import { UseDisclosureProps } from '@chakra-ui/react';
-import { UseQueryResult } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import type { ListContactsResponse } from '@bako-safe/services';
+import type { IApiError } from '@bako-safe/wallet/config';
+import type { UseDisclosureProps } from '@chakra-ui/react';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 import { Address } from 'fuels';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 import { useContactToast } from './useContactToast';
 import { useCreateContactRequest } from './useCreateContactRequest';

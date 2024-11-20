@@ -1,8 +1,8 @@
-import {
+import type {
   SignerTransactionPayload,
   SignerTransactionResponse,
-} from '@bako-safe/services/modules/transaction';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+} from '@bako-safe/services';
+import { useMutation, type UseMutationOptions } from '@tanstack/react-query';
 
 import { transactionService } from '@/config/services-initializer';
 

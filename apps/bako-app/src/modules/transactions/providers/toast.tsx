@@ -1,4 +1,4 @@
-import { ITransaction } from '@bako-safe/services/modules';
+import type { ITransaction } from '@bako-safe/services';
 import { CheckMarkCircleIconError, TriangleWarning } from '@bako-safe/ui';
 import {
   Box,
@@ -6,7 +6,7 @@ import {
   CircularProgress,
   Icon,
   Text,
-  ToastId,
+  type ToastId,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
 
@@ -39,8 +39,8 @@ const useTransactionToast = () => {
   };
 
   const loading = (transaction: Pick<ITransaction, 'id' | 'name'>) => {
-    if (toast.isActive(transaction.id!)) return;
-    transactionsToastRef.current[transaction.id!] = toast({
+    if (toast.isActive(transaction.id)) return;
+    transactionsToastRef.current[transaction.id] = toast({
       position: 'top-right',
       duration: 100000,
       isClosable: true,

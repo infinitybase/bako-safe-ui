@@ -1,7 +1,7 @@
 import {
-  ITransactionHistory,
+  type ITransactionHistory,
   TransactionHistoryType,
-} from '@bako-safe/services/modules/transaction';
+} from '@bako-safe/services';
 import {
   Box,
   Step,
@@ -48,7 +48,7 @@ const TransactionTypeFormatter = (
       return 'You declined';
     case history.owner.address !== account &&
       history.type === TransactionHistoryType.DECLINE:
-      return `Declined`;
+      return 'Declined';
     case history.type === TransactionHistoryType.CANCEL:
       return 'Canceled';
     case history.type === TransactionHistoryType.FAILED:

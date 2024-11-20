@@ -1,5 +1,5 @@
-import { AssetModel } from '@bako-safe/services/types';
-import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
+import type { AssetModel } from '@bako-safe/services';
+import { HStack, Image, type StackProps, Text, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { AddressWithCopyBtn } from '@/modules';

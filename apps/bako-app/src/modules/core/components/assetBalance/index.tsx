@@ -14,8 +14,8 @@ import { css } from '@emotion/react';
 import { networkService } from '@/config/services-initializer';
 import {
   AddressUtils,
-  Asset,
-  NFT,
+  type Asset,
+  type NFT,
   shakeAnimationY,
 } from '@/modules/core/utils';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';

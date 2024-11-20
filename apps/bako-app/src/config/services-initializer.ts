@@ -9,7 +9,7 @@ import {
   UserService,
   VaultService,
   WorkspaceService,
-} from '@bako-safe/services/modules';
+} from '@bako-safe/services';
 
 import { apiConfig } from '@/config/api';
 

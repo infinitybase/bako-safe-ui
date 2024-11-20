@@ -1,15 +1,15 @@
-import { TransactionWithVault } from '@bako-safe/services/modules/transaction';
+import type { TransactionWithVault } from '@bako-safe/services';
 import { CustomSkeleton } from '@bako-safe/ui/components';
 import {
   AvatarGroup,
-  BoxProps,
+  type BoxProps,
   Flex,
   HStack,
   Image,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
+import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -83,7 +83,7 @@ const Amount = ({
                 h={{ base: 'full', sm: 6 }}
                 src={
                   assetsMap[operationAssets.assetId]?.icon ??
-                  assetsMap['UNKNOWN'].icon
+                  assetsMap.UNKNOWN.icon
                 }
                 alt="Asset Icon"
                 objectFit="cover"
@@ -96,9 +96,7 @@ const Amount = ({
                   key={asset.assetId}
                   w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
                   h={{ base: 'full', sm: 6 }}
-                  src={
-                    assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
-                  }
+                  src={assetsMap[asset.assetId]?.icon ?? assetsMap.UNKNOWN.icon}
                   alt="Asset Icon"
                   objectFit="cover"
                 />

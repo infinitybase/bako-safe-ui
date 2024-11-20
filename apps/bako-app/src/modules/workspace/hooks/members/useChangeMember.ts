@@ -1,9 +1,9 @@
 import {
   defaultPermissions,
-  Member,
-  PermissionRoles,
-  Workspace,
-} from '@bako-safe/services/modules';
+  type Member,
+  type PermissionRoles,
+  type Workspace,
+} from '@bako-safe/services';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
