@@ -78,7 +78,7 @@ export const useSocket = () => {
   const socket = useContext(SocketContext);
   const { request_id, origin } = useQueryParams();
 
-  const socketState = useRef(false);
+  const socketState = useRef(socket.connected);
 
   const connect = useCallback(
     (sessionId: string) => {

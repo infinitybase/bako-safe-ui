@@ -48,7 +48,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const notificationsListRequest = useListNotificationsRequest(
     userInfos.address,
   );
-  const { connect, socket } = useSocket();
+  const { socket } = useSocket();
 
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
@@ -135,17 +135,12 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   }, [unreadNotificationsRequest?.data, hasNewNotification]);
 
   useEffect(() => {
-    if (!socket.connected) {
-      connect(userInfos.id);
-      return;
-    }
-
     socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
 
     return () => {
       socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
     };
-  }, [socket.connected]);
+  }, []);
 
   return {
     drawer: {
