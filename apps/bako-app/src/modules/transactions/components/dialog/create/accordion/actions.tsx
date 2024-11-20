@@ -1,13 +1,13 @@
-import { CheckIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
+import { CheckIcon, EditIcon, RemoveIcon } from '@bako-safe/ui';
 import {
   AccordionButton,
   Button,
-  ButtonProps,
+  type ButtonProps,
   HStack,
   Icon,
   IconButton,
-  IconButtonProps,
-  StackProps,
+  type IconButtonProps,
+  type StackProps,
   useAccordionItemState,
 } from '@chakra-ui/react';
 

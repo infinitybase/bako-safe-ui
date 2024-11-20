@@ -1,4 +1,4 @@
-import { UserAddIcon } from '@bako-safe/ui/components';
+import { UserAddIcon } from '@bako-safe/ui';
 import {
   Accordion,
   AccordionItem,

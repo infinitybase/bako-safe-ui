@@ -1,5 +1,5 @@
 import type { TransactionWithVault } from '@bako-safe/services';
-import { MinimalAlertIcon } from '@bako-safe/ui/components';
+import { MinimalAlertIcon } from '@bako-safe/ui';
 import {
   Avatar,
   Card,

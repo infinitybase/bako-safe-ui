@@ -1,10 +1,10 @@
-import { ProgressButton } from '@bako-safe/ui/components';
+import { ProgressButton } from '@bako-safe/ui';
 import { VStack } from '@chakra-ui/react';
 
 import { useScreenSize } from '@/modules/core/hooks';
 import { TermsOfUseDialog } from '@/modules/termsOfUse/dialog';
 
-import { UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
+import type { UseWebAuthnSignIn, UseWebSignIn } from '../../hooks';
 import { WebAuthnForm } from './form';
 
 interface WebAuthnSignInProps {

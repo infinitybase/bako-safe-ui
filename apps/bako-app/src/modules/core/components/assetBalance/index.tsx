@@ -1,4 +1,4 @@
-import { BakoIcon, UpRightArrow } from '@bako-safe/ui/components';
+import { BakoIcon, UpRightArrow } from '@bako-safe/ui';
 import {
   Card,
   Grid,

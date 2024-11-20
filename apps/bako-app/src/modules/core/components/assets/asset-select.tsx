@@ -1,4 +1,4 @@
-import { Select, type SelectProps } from '@bako-safe/ui/components';
+import { Select, type SelectProps } from '@bako-safe/ui';
 import { FormControl } from '@chakra-ui/react';
 import type React from 'react';
 

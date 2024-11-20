@@ -1,4 +1,4 @@
-import { AutocompleteBadge } from '@bako-safe/ui/components';
+import { AutocompleteBadge } from '@bako-safe/ui';
 import { FormControl, FormHelperText, Text, VStack } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 

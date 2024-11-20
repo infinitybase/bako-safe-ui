@@ -1,4 +1,4 @@
-import { PendingIcon } from '@bako-safe/ui/components';
+import { PendingIcon } from '@bako-safe/ui';
 import { Badge, CircularProgress, Icon } from '@chakra-ui/react';
 
 interface WaitingSignatureBadgeProps {

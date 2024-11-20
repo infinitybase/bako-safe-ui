@@ -1,4 +1,4 @@
-import { DoubleArrowIcon } from '@bako-safe/ui/components';
+import { DoubleArrowIcon } from '@bako-safe/ui';
 import {
   Box,
   Center,
@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
+import type { ITransferAsset } from 'bakosafe';
 
 import { AddressWithCopyBtn } from '@/modules';
 import { useGetContactByAddress } from '@/modules/addressBook';

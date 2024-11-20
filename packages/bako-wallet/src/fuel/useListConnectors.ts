@@ -23,6 +23,7 @@ enum EConnectorsLabels {
 export type IConnector = {
   name: EConnectors;
   label: EConnectorsLabels;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   icon: any;
 };
 

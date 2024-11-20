@@ -1,4 +1,4 @@
-import { CustomSkeleton, LineCloseIcon } from '@bako-safe/ui/components';
+import { CustomSkeleton, LineCloseIcon } from '@bako-safe/ui';
 import {
   Box,
   Center,
@@ -7,7 +7,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerProps,
+  type DrawerProps,
   Heading,
   HStack,
   Text,

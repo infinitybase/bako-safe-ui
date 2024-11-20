@@ -3,7 +3,7 @@ import {
   CustomSkeleton,
   EmptyState,
   HomeIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Box,
   Breadcrumb,

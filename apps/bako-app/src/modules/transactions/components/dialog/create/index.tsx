@@ -1,8 +1,4 @@
-import {
-  Dialog,
-  DialogModalProps,
-  TooltipIcon,
-} from '@bako-safe/ui/components';
+import { Dialog, type DialogModalProps, TooltipIcon } from '@bako-safe/ui';
 import {
   Divider,
   Flex,

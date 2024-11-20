@@ -4,7 +4,7 @@ import {
   HomeIcon,
   LineCloseIcon,
   TransactionTypeFilters,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Box,
   Breadcrumb,

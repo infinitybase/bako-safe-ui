@@ -9,7 +9,7 @@ import {
   CoinsIcon,
   MoreLessIcon,
   RecoveryIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import { useMemo, useState } from 'react';
 
 import { TabState, useAPIToken } from './APIToken';

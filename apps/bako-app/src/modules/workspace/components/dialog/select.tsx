@@ -1,8 +1,8 @@
-import { Workspace } from '@bako-safe/services';
-import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
+import type { Workspace } from '@bako-safe/services';
+import { Dialog, SquarePlusIcon } from '@bako-safe/ui';
 import { Divider, HStack, VStack } from '@chakra-ui/react';
 
-import { UseWorkspaceReturn } from '../../hooks';
+import type { UseWorkspaceReturn } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 import { SelectionEmptyState } from '..';
 import { WorkspaceCard } from '../card';

@@ -1,4 +1,4 @@
-import { Card, CopyIcon, EditIcon, RemoveIcon } from '@bako-safe/ui/components';
+import { Card, CopyIcon, EditIcon, RemoveIcon } from '@bako-safe/ui';
 import {
   Avatar,
   Box,

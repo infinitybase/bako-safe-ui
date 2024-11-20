@@ -1,4 +1,4 @@
-import { AlertIcon, Dialog } from '@bako-safe/ui/components';
+import { AlertIcon, Dialog } from '@bako-safe/ui';
 import {
   Box,
   Center,
@@ -9,7 +9,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { UseAddressBookReturn } from '../../hooks';
+import type { UseAddressBookReturn } from '../../hooks';
 
 interface ContactToDelete {
   id: string;

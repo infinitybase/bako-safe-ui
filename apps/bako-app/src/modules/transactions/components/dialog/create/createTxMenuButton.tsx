@@ -1,4 +1,4 @@
-import { ChevronDownIcon, Dialog } from '@bako-safe/ui/components';
+import { ChevronDownIcon, Dialog } from '@bako-safe/ui';
 import {
   Button,
   Heading,

@@ -1,4 +1,4 @@
-import { UpRightArrow } from '@bako-safe/ui/components';
+import { UpRightArrow } from '@bako-safe/ui';
 import { Box, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 

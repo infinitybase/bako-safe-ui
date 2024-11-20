@@ -1,7 +1,7 @@
-import { PredicateAndWorkspace } from '@bako-safe/services';
-import { AddressCopy, Card } from '@bako-safe/ui/components';
+import type { PredicateAndWorkspace } from '@bako-safe/services';
+import { AddressCopy, Card } from '@bako-safe/ui';
 import { Avatar, Center, chakra, Divider, Text } from '@chakra-ui/react';
-import { AddressType, ChainName } from 'fuels';
+import { AddressType, type ChainName } from 'fuels';
 
 import { AddressUtils } from '../../utils';
 

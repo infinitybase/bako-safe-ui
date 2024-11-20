@@ -1,4 +1,4 @@
-import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui/components';
+import { CustomSkeleton, EmptyState, HomeIcon } from '@bako-safe/ui';
 import {
   Box,
   Breadcrumb,

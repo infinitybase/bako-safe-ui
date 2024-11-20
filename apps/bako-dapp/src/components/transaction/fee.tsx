@@ -1,5 +1,5 @@
 import { useVerifyBrowserType } from '@app/modules/core';
-import { TooltipIcon } from '@bako-safe/ui/components';
+import { TooltipIcon } from '@bako-safe/ui';
 import {
   HStack,
   Icon,

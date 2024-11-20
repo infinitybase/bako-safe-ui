@@ -1,9 +1,9 @@
 import { useNetworks } from '@app/modules/network/hooks';
 import { useWorkspaceContext } from '@app/modules/workspace/WorkspaceProvider';
 import { formatAssetAmount } from '@app/utils';
-import { CustomSkeleton } from '@bako-safe/ui/components';
+import { CustomSkeleton } from '@bako-safe/ui';
 import { Box, HStack, VStack } from '@chakra-ui/react';
-import { Operation } from 'fuels';
+import type { Operation } from 'fuels';
 
 import { DappTransactionAsset } from './asset';
 import { DappTransactionFromTo } from './from-to';

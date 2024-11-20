@@ -1,4 +1,4 @@
-import { Card, CustomSkeleton, NotFoundIcon } from '@bako-safe/ui/components';
+import { Card, CustomSkeleton, NotFoundIcon } from '@bako-safe/ui';
 import {
   Box,
   Button,

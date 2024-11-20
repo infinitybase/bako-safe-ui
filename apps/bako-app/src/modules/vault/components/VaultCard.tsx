@@ -1,5 +1,5 @@
 import type { PredicateMember, PredicateWorkspace } from '@bako-safe/services';
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import {
   Avatar,
   AvatarGroup,

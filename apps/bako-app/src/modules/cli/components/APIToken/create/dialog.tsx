@@ -1,7 +1,7 @@
-import { Dialog } from '@bako-safe/ui/components';
+import { Dialog } from '@bako-safe/ui';
 import { HStack, TabPanels, Tabs } from '@chakra-ui/react';
 
-import { UseAPITokenReturn } from '@/modules/cli/hooks';
+import type { UseAPITokenReturn } from '@/modules/cli/hooks';
 
 import { APITokensList } from '../list';
 import { CreateAPITokenForm } from './form';

@@ -1,6 +1,6 @@
-import { ForwardIcon, PlayIcon } from '@bako-safe/ui/components';
+import { ForwardIcon, PlayIcon } from '@bako-safe/ui';
 import { chakra, HStack, Icon } from '@chakra-ui/react';
-import { AddressType, OperationTransactionAddress } from 'fuels';
+import { AddressType, type OperationTransactionAddress } from 'fuels';
 
 import { DappTransactionRecipient } from './recipient';
 

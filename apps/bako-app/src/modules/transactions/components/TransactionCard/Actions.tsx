@@ -1,5 +1,5 @@
 import type { ITransactionWithType } from '@bako-safe/services';
-import { ErrorIcon, SuccessIcon } from '@bako-safe/ui/components';
+import { ErrorIcon, SuccessIcon } from '@bako-safe/ui';
 import {
   Badge,
   type BoxProps,

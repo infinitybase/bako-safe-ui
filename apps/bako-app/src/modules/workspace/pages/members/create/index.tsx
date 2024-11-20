@@ -8,7 +8,7 @@ import {
   SquarePlusIcon,
   StepProgress,
   UserPlusIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Avatar,
   Badge,

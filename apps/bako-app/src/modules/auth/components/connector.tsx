@@ -1,4 +1,4 @@
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import {
   Avatar,
   Box,
@@ -10,7 +10,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useCallback, useMemo } from 'react';
+import type React from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useScreenSize } from '@/modules/core/hooks';
 type ConnectorType = {

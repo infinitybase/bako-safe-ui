@@ -1,4 +1,4 @@
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import {
   Avatar,
   Badge,

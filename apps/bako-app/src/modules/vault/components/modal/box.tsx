@@ -1,5 +1,5 @@
 import type { PredicateWorkspace } from '@bako-safe/services';
-import { Card, type CardProps } from '@bako-safe/ui/components';
+import { Card, type CardProps } from '@bako-safe/ui';
 import { Avatar, Badge, HStack, Text, VStack } from '@chakra-ui/react';
 
 interface VaultDrawerBoxProps extends CardProps {

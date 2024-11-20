@@ -1,4 +1,4 @@
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 
 export interface FeeProps {

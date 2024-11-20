@@ -1,8 +1,8 @@
-import { StepProgress } from '@bako-safe/ui/components';
+import { StepProgress } from '@bako-safe/ui';
 import { Box, TabPanels, Tabs } from '@chakra-ui/react';
 
 // import { useFindTemplate } from '@/modules/template/hooks';
-import { UseCreateVaultDialogReturn } from '@/modules/vault';
+import type { UseCreateVaultDialogReturn } from '@/modules/vault';
 
 import { VaultAddressesStep, VaultInfosStep, VaultSuccessStep } from './steps';
 

@@ -1,5 +1,9 @@
-import { Member, PermissionRoles, Workspace } from '@bako-safe/services';
-import { Card, EditIcon } from '@bako-safe/ui/components';
+import {
+  type Member,
+  PermissionRoles,
+  type Workspace,
+} from '@bako-safe/services';
+import { Card, EditIcon } from '@bako-safe/ui';
 import { Avatar, Badge, Box, HStack, Text } from '@chakra-ui/react';
 
 import { AddressUtils } from '@/modules/core';

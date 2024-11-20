@@ -1,4 +1,4 @@
-import { BakoLoading } from '@app/components/bakoLoading';
+import { BakoLoading } from '@bako-safe/ui';
 import { useQueryParams } from '@app/modules/auth/hooks';
 import { useVerifyBrowserType } from '@app/modules/core';
 import { VaultItemBox } from '@app/modules/vault/components/modal/box';
@@ -9,12 +9,12 @@ import {
   DoneIcon,
   LineCloseIcon,
   TransactionExpire,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import { Box, Divider, Icon, Text, VStack } from '@chakra-ui/react';
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { UseTransactionSocket } from '@/hooks';
+import type { UseTransactionSocket } from '@/hooks';
 
 import { Dapp } from '../../layout';
 import { Container } from '../../layout/container';

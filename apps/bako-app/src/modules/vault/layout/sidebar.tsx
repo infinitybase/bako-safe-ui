@@ -5,8 +5,8 @@ import {
   OverviewIcon,
   PendingIcon,
   SettingsIcon,
-} from '@bako-safe/ui/components';
-import { Box, BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
+} from '@bako-safe/ui';
+import { Box, type BoxProps, Divider, Icon, VStack } from '@chakra-ui/react';
 
 import { SidebarMenu } from '@/layouts/dashboard/menu';
 import { Pages } from '@/modules/core';

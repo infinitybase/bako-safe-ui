@@ -1,7 +1,7 @@
-import { Dialog } from '@bako-safe/ui/components';
+import { Dialog } from '@bako-safe/ui';
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   Divider,
   FormControl,
   FormHelperText,
@@ -12,8 +12,8 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { TransactionAccordions } from '@/modules/transactions/components/dialog/create/transactions';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
-import { UseVaultDetailsReturn } from '@/modules/vault';
+import type { UseCreateTransaction } from '@/modules/transactions/hooks';
+import type { UseVaultDetailsReturn } from '@/modules/vault';
 
 export interface CreateTransactionFormProps extends BoxProps {
   form: UseCreateTransaction['form'];

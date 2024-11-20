@@ -1,10 +1,5 @@
 import { NetworkType } from '@bako-safe/services';
-import {
-  BridgeIcon,
-  CoinsIcon,
-  Dialog,
-  DownLeftArrow,
-} from '@bako-safe/ui/components';
+import { BridgeIcon, CoinsIcon, Dialog, DownLeftArrow } from '@bako-safe/ui';
 import { Button, VStack } from '@chakra-ui/react';
 
 import { useNetworks } from '@/modules/network/hooks';

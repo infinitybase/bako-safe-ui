@@ -1,7 +1,7 @@
 import { Button, Divider, TabPanel, VStack } from '@chakra-ui/react';
-import { CustomSkeleton, EmptyState } from '@bako-safe/ui/components';
+import { CustomSkeleton, EmptyState } from '@bako-safe/ui';
 
-import { TabState, UseAPITokenReturn } from '@/modules/cli/hooks';
+import { TabState, type UseAPITokenReturn } from '@/modules/cli/hooks';
 
 import { APITokenCard } from './card';
 

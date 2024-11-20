@@ -1,4 +1,4 @@
-import { Autocomplete } from '@bako-safe/ui/components';
+import { Autocomplete } from '@bako-safe/ui';
 import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
@@ -6,7 +6,7 @@ import { AddToAddressBook } from '@/modules/addressBook/components';
 import { useAddressBookAutocompleteOptions } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 
-import { UseChangeMember } from '../../hooks';
+import type { UseChangeMember } from '../../hooks';
 import { useWorkspaceContext } from '../../WorkspaceProvider';
 
 interface MemberAddressForm {

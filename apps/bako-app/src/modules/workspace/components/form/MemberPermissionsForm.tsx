@@ -1,4 +1,4 @@
-import { Dialog } from '@bako-safe/ui/components';
+import { Dialog } from '@bako-safe/ui';
 import {
   Badge,
   Box,

@@ -1,4 +1,4 @@
-import { LineCloseIcon, UserAddIcon } from '@bako-safe/ui/components';
+import { LineCloseIcon, UserAddIcon } from '@bako-safe/ui';
 import {
   Button,
   Divider,
@@ -7,7 +7,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerProps,
+  type DrawerProps,
   Flex,
   Heading,
   HStack,

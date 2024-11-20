@@ -1,4 +1,4 @@
-import { Dialog } from '@bako-safe/ui/components';
+import { Dialog } from '@bako-safe/ui';
 import { Box, Divider, HStack, Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

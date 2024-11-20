@@ -4,7 +4,7 @@ import {
   DeployIcon,
   DownLeftArrowGreen,
   UpRightArrowYellow,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Card,
   type CardProps,

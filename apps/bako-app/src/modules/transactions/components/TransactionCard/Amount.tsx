@@ -1,5 +1,5 @@
 import type { TransactionWithVault } from '@bako-safe/services';
-import { CustomSkeleton } from '@bako-safe/ui/components';
+import { CustomSkeleton } from '@bako-safe/ui';
 import {
   AvatarGroup,
   type BoxProps,

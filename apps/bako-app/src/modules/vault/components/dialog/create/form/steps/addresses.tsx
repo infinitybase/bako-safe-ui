@@ -4,7 +4,7 @@ import {
   RemoveIcon,
   Select,
   SquarePlusIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Button,
   FormControl,
@@ -23,12 +23,12 @@ import {
   CreateContactDialog,
 } from '@/modules/addressBook/components';
 import {
-  AddressesFields,
+  type AddressesFields,
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils } from '@/modules/core/utils/address';
 import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
-import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
+import type { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 

@@ -2,7 +2,7 @@ import {
   SquarePlusIcon,
   StepProgress,
   TransactionsBoxIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Alert,
   Badge,

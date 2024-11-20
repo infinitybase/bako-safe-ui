@@ -1,8 +1,4 @@
-import {
-  CheckMarkCircleIcon,
-  CopyIcon,
-  DoneIcon,
-} from '@bako-safe/ui/components';
+import { CheckMarkCircleIcon, CopyIcon, DoneIcon } from '@bako-safe/ui';
 import {
   HStack,
   Icon,
@@ -12,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { UseAPITokenReturn } from '@/modules/cli/hooks';
+import type { UseAPITokenReturn } from '@/modules/cli/hooks';
 import { AddressUtils } from '@/modules/core/utils';
 import { useNotification } from '@/modules/notification/hooks';
 

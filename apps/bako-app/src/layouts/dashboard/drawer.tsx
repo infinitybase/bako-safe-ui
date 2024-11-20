@@ -1,4 +1,4 @@
-import { LineCloseIcon } from '@bako-safe/ui/components';
+import { LineCloseIcon } from '@bako-safe/ui';
 import {
   Drawer as ChakraDrawer,
   DrawerContent,

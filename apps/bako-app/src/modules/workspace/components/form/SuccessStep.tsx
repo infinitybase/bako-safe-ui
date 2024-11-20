@@ -1,4 +1,4 @@
-import { SquarePlusIcon, TransactionsBoxIcon } from '@bako-safe/ui/components';
+import { SquarePlusIcon, TransactionsBoxIcon } from '@bako-safe/ui';
 import {
   Box,
   Button,

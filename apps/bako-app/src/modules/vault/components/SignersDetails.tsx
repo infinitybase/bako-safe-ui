@@ -1,8 +1,8 @@
-import { Card, CustomSkeleton } from '@bako-safe/ui/components';
+import { Card, CustomSkeleton } from '@bako-safe/ui';
 import {
   Badge,
   Box,
-  BoxProps,
+  type BoxProps,
   chakra,
   Grid,
   HStack,
@@ -14,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { Pages } from '@/modules/core/routes';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { UseVaultDetailsReturn } from '../hooks';
-import { SignersDetailsProps } from '../types';
+import type { UseVaultDetailsReturn } from '../hooks';
+import type { SignersDetailsProps } from '../types';
 import { CardMember } from './CardMember';
 
 const SignerCard = chakra(Card, {

@@ -1,4 +1,4 @@
-import { DoneIcon } from '@bako-safe/ui/components';
+import { DoneIcon } from '@bako-safe/ui';
 import { Icon, TabPanel, Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

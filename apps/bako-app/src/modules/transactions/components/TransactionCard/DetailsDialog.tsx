@@ -7,7 +7,7 @@ import {
   DownLeftArrowGreen,
   UpRightArrow,
   UpRightArrowYellow,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   AccordionItem,
   Avatar,

@@ -1,5 +1,5 @@
 import type { TransactionWithVault } from '@bako-safe/services';
-import { UpRightArrow } from '@bako-safe/ui/components';
+import { UpRightArrow } from '@bako-safe/ui';
 import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus } from 'bakosafe';

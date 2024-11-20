@@ -1,4 +1,4 @@
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import { Avatar, Box, Divider, HStack, Text } from '@chakra-ui/react';
 
 export interface DappConnectionDetailProps {

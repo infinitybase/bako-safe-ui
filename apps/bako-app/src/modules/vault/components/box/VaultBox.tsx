@@ -4,7 +4,7 @@ import {
   LeftAndRightArrow,
   SquarePlusIcon,
   UpRightArrow,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Avatar,
   Box,

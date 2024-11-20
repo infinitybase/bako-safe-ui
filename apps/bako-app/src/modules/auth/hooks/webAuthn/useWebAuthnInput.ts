@@ -1,4 +1,4 @@
-import { AutocompleteBadgeStatus } from '@bako-safe/ui/components';
+import { AutocompleteBadgeStatus } from '@bako-safe/ui';
 import { TypeUser } from 'bakosafe';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';

@@ -1,4 +1,4 @@
-import { FeedbackIcon } from '@bako-safe/ui/components';
+import { FeedbackIcon } from '@bako-safe/ui';
 import { Heading, HStack, Icon, Link, Text, VStack } from '@chakra-ui/react';
 
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';

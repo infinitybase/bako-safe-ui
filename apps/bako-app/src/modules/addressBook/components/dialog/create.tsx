@@ -1,6 +1,6 @@
-import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
+import { Dialog, SquarePlusIcon } from '@bako-safe/ui';
 
-import { UseAddressBookReturn } from '../../hooks';
+import type { UseAddressBookReturn } from '../../hooks';
 import { CreateContactForm } from '..';
 
 interface CreateContactDialogProps {

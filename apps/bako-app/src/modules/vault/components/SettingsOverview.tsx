@@ -5,7 +5,7 @@ import {
   CustomSkeleton,
   VisibilityOffIcon,
   VisibilityOnIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Avatar,
   Box,

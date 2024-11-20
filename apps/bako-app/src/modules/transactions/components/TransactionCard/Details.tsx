@@ -1,5 +1,5 @@
 import type { ITransaction } from '@bako-safe/services';
-import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui/components';
+import { CustomSkeleton, UpRightArrow } from '@bako-safe/ui';
 import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';

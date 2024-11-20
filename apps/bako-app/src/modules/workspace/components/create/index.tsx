@@ -3,14 +3,14 @@ import {
   FeedbackSuccess,
   SquarePlusIcon,
   StepProgress,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Box,
   FormControl,
   FormHelperText,
   FormLabel,
   Input,
-  ModalProps,
+  type ModalProps,
   TabPanel,
   TabPanels,
   Tabs,
@@ -21,7 +21,7 @@ import { Controller } from 'react-hook-form';
 
 import {
   CreateWorkspaceTabState,
-  UseCreateWorkspace,
+  type UseCreateWorkspace,
   useCreateWorkspace,
 } from '../../hooks/create';
 import { OnboardingStep } from '../form';

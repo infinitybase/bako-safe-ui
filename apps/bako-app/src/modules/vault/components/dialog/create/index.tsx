@@ -1,9 +1,9 @@
 import {
   Dialog,
-  DialogModalProps,
+  type DialogModalProps,
   SquarePlusIcon,
   Tooltip,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import { HStack, Text, VStack } from '@chakra-ui/react';
 
 import { useVerifyBrowserType } from '@/modules/core/hooks';

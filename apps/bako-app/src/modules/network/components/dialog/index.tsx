@@ -1,4 +1,4 @@
-import { Dialog, DialogModalProps } from '@bako-safe/ui/components';
+import { Dialog, DialogModalProps } from '@bako-safe/ui';
 import {
   Button,
   FormControl,

@@ -1,4 +1,4 @@
-import { ChartBulletIcon } from '@bako-safe/ui/components';
+import { ChartBulletIcon } from '@bako-safe/ui';
 import {
   Box,
   Button,

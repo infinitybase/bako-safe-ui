@@ -1,4 +1,4 @@
-import { HomeIcon } from '@bako-safe/ui/components';
+import { HomeIcon } from '@bako-safe/ui';
 import {
   Box,
   Breadcrumb,

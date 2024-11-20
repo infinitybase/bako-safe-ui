@@ -1,4 +1,4 @@
-import { AmountInput, Autocomplete } from '@bako-safe/ui/components';
+import { AmountInput, Autocomplete } from '@bako-safe/ui';
 import {
   CircularProgress,
   FormControl,
@@ -16,8 +16,8 @@ import {
   useAddressBookAutocompleteOptions,
 } from '@/modules/addressBook';
 import { AddressUtils, AssetSelect } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
-import { UseVaultDetailsReturn } from '@/modules/vault';
+import type { UseCreateTransaction } from '@/modules/transactions/hooks';
+import type { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 interface TransctionFormFieldProps {

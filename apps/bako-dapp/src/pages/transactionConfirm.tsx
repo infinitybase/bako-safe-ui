@@ -1,4 +1,4 @@
-import { Dialog, SquarePlusIcon } from '@bako-safe/ui/components';
+import { Dialog, SquarePlusIcon } from '@bako-safe/ui';
 import { Button } from '@chakra-ui/react';
 
 import { DappTransactionWrapper } from '../components/transaction/wrapper';

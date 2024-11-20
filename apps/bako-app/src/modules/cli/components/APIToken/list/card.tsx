@@ -1,5 +1,5 @@
 import type { APIToken } from '@bako-safe/services';
-import { LineCloseIcon, RemoveIcon } from '@bako-safe/ui/components';
+import { LineCloseIcon, RemoveIcon } from '@bako-safe/ui';
 import {
   Button,
   Card,

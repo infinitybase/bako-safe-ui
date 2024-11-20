@@ -1,8 +1,8 @@
-import { CustomSkeleton, Dialog } from '@bako-safe/ui/components';
+import { CustomSkeleton, Dialog } from '@bako-safe/ui';
 import {
   Box,
   Button,
-  DrawerProps,
+  type DrawerProps,
   FormControl,
   FormLabel,
   Input,

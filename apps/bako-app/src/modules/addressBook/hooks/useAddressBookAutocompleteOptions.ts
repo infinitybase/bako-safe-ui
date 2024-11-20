@@ -1,7 +1,7 @@
-import { WorkspaceContact } from '@bako-safe/services';
-import { AutocompleteOption } from '@bako-safe/ui/components';
+import type { WorkspaceContact } from '@bako-safe/services';
+import type { AutocompleteOption } from '@bako-safe/ui';
 import { useCallback, useMemo } from 'react';
-import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
+import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
 
 import { AddressBookUtils } from '@/utils/address-book';
 

@@ -1,7 +1,7 @@
-import { Card } from '@bako-safe/ui/components';
+import { Card } from '@bako-safe/ui';
 import {
   Box,
-  CardProps,
+  type CardProps,
   Divider,
   Heading,
   Text,

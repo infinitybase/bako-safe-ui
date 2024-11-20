@@ -1,5 +1,5 @@
 import { availableNetWorks, NetworkType } from '@bako-safe/services';
-import { BakoIcon, UnknownIcon } from '@bako-safe/ui/components';
+import { BakoIcon, UnknownIcon } from '@bako-safe/ui';
 import {
   Center,
   Drawer,
@@ -7,7 +7,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerProps,
+  type DrawerProps,
   Heading,
   HStack,
   Icon,

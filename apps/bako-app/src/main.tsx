@@ -1,4 +1,4 @@
-import { defaultTheme } from '@bako-safe/ui/themes';
+import { defaultTheme } from '@bako-safe/ui';
 import { ChakraProvider } from '@chakra-ui/react';
 import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';

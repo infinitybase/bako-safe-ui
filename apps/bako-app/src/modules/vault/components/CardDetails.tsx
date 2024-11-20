@@ -6,7 +6,7 @@ import {
   EyeCloseIcon,
   EyeOpenIcon,
   SquarePlusIcon,
-} from '@bako-safe/ui/components';
+} from '@bako-safe/ui';
 import {
   Avatar,
   Box,
@@ -29,7 +29,7 @@ import { Pages } from '@/modules/core';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { UseVaultDetailsReturn } from '../hooks/details';
+import type { UseVaultDetailsReturn } from '../hooks/details';
 import { openFaucet } from '../utils';
 import { AssetsDetails } from './AssetsDetails';
 import BalanceHelperDrawer from './BalanceHelperDrawer';

@@ -1,4 +1,4 @@
-import { BakoIcon } from '@bako-safe/ui/components';
+import { BakoIcon } from '@bako-safe/ui';
 import {
   Card,
   type CardProps,

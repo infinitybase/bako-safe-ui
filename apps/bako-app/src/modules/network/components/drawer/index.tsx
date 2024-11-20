@@ -1,10 +1,5 @@
 import { NetworkType } from '@bako-safe/services';
-import {
-  BakoIcon,
-  PlusIcon,
-  RemoveIcon,
-  UnknownIcon,
-} from '@bako-safe/ui/components';
+import { BakoIcon, PlusIcon, RemoveIcon, UnknownIcon } from '@bako-safe/ui';
 import {
   Box,
   Button,
@@ -14,7 +9,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerProps,
+  type DrawerProps,
   FormControl,
   FormHelperText,
   FormLabel,

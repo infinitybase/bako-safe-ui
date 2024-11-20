@@ -1,8 +1,4 @@
-import {
-  ChevronRightIcon,
-  CustomSkeleton,
-  EmptyState,
-} from '@bako-safe/ui/components';
+import { ChevronRightIcon, CustomSkeleton, EmptyState } from '@bako-safe/ui';
 import {
   Box,
   Button,

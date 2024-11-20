@@ -1,4 +1,3 @@
-import { BakoLoading } from '@/components/bakoLoading';
 import { useQueryParams } from '@/modules/auth';
 import { useVerifyBrowserType } from '@/modules/core';
 import { CreateVaultDialog } from '@/modules/vault/components';
@@ -9,7 +8,8 @@ import {
   CustomSkeleton,
   EmptyBox,
   LineCloseIcon,
-} from '@bako-safe/ui/components';
+  BakoLoading,
+} from '@bako-safe/ui';
 import {
   Box,
   Button,

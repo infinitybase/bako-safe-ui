@@ -1,9 +1,9 @@
-import { TriangleWarning } from '@bako-safe/ui/components';
+import { TriangleWarning } from '@bako-safe/ui';
 import {
   Heading,
   HStack,
   Icon,
-  StackProps,
+  type StackProps,
   Text,
   VStack,
 } from '@chakra-ui/react';
