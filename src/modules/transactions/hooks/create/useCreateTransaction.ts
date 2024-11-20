@@ -128,7 +128,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     },
     onError: () => {
       errorToast({
-        title: 'There was an error creating the transaction',
+        title: 'Transaction creation failed',
         description: 'Please try again later',
       });
     },
