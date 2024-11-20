@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react';
-import * as path from 'path';
+import * as path from 'node:path';
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -36,6 +36,15 @@ export default defineConfig({
   server: {
     headers: {
       'Document-Policy': 'js-profiling',
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+        },
+      },
     },
   },
 });
