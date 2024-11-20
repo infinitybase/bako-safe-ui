@@ -1,7 +1,6 @@
 import {
   AddressBookService,
   APITokenService,
-  DAppService,
   HomeService,
   NetworkService,
   NotificationService,
@@ -23,7 +22,6 @@ export const notificationService = new NotificationService(apiConfig);
 export const settingsService = new SettingsService(apiConfig);
 export const vaultService = new VaultService(apiConfig);
 export const workspaceService = new WorkspaceService(apiConfig);
-export const dappService = new DAppService(apiConfig);
 export const networkService = new NetworkService(
   apiConfig,
   import.meta.env.VITE_APP_VERSION,

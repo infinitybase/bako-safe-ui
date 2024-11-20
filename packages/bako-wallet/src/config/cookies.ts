@@ -7,13 +7,15 @@ export enum CookieName {
   SINGLE_WORKSPACE = `bakosafe/single_workspace`,
 }
 
+const { VITE_ENCRYPTION_KEY } = import.meta.env;
+
 interface Cookie {
   name: CookieName;
   value: string;
 }
 
 export class CookiesConfig {
-  private static encryptionKey = process.env.ENCRYPTION_KEY!;
+  private static encryptionKey = VITE_ENCRYPTION_KEY;
 
   static setCookies(cookies: Cookie[]) {
     cookies.forEach((cookie) => {

@@ -25,14 +25,13 @@ function App() {
     // Navigate user to sign-in page
   };
 
+  const auth = useAuth();
   const { logout } = useLogout(handleLogoutSuccess);
   const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
 
-  const auth = useAuth();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
 
-  // const { isTxFromDapp } = useAuthUrlParams();
   useMemo(() => {
     AxiosInterceptors.init();
     // initAxiosInterceptorsSetup({

@@ -1,3 +1,4 @@
+import { defaultPermissions } from '@bako-safe/services';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { useEffect, useState } from 'react';
@@ -9,7 +10,6 @@ import { ENetworks } from '@/utils/constants';
 
 import { useCreateUserRequest, useSignInRequest } from '../..';
 import { localStorageKeys } from '../../utils';
-import { defaultPermissions } from '@bako-safe/services';
 
 export type UseWalletSignIn = ReturnType<typeof useWalletSignIn>;
 
