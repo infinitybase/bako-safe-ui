@@ -9,10 +9,9 @@ const { VITE_BAKO_ID_URL } = import.meta.env;
 
 interface GoToBakoIdProps {
   handle: string;
-  onClose: () => void;
 }
 
-const GoToBakoId = ({ handle, onClose }: GoToBakoIdProps) => {
+const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
   const _handle = useMemo(() => HandleUtils.fromHandle(handle ?? ''), [handle]);
 
   const { isMobile } = useScreenSize();
@@ -22,13 +21,10 @@ const GoToBakoId = ({ handle, onClose }: GoToBakoIdProps) => {
       spacing={4}
       px={4}
       py={3}
-      borderTopWidth={1}
-      borderTopColor="grey.825"
       cursor="pointer"
-      onClick={() => {
-        window.open(`${VITE_BAKO_ID_URL}/profile/${_handle}`, '_BLANK');
-        onClose();
-      }}
+      onClick={() =>
+        window.open(`${VITE_BAKO_ID_URL}/profile/${_handle}`, '_BLANK')
+      }
     >
       <UpRightArrow color="grey.50" fontSize="lg" />
       <VStack alignItems="flex-start" spacing={0} fontSize="xs">

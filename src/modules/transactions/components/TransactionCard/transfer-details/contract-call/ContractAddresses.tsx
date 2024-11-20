@@ -101,7 +101,11 @@ const ContractAddresses = ({
             )}
           </VStack>
 
-          <AddressActions address={from?.address} handle={_from?.handle} />
+          <AddressActions
+            address={from?.address}
+            handle={_from?.handle}
+            hasContact={!!_from?.contact}
+          />
         </HStack>
       )}
 
@@ -160,7 +164,11 @@ const ContractAddresses = ({
             )}
           </VStack>
 
-          <AddressActions address={to?.address} handle={_to?.handle} />
+          <AddressActions
+            address={to?.address}
+            handle={_to?.handle}
+            hasContact={!!_to?.contact}
+          />
         </HStack>
       )}
     </HStack>

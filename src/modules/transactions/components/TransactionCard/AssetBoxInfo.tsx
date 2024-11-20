@@ -187,6 +187,7 @@ const AssetBoxInfo = ({
           <AddressActions
             address={asset.to}
             handle={assetAddressInfo?.handle}
+            hasContact={!!assetAddressInfo?.contact}
           />
         </HStack>
       )}
