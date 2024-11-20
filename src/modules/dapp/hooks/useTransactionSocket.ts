@@ -63,8 +63,8 @@ export const useTransactionSocket = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isSigning, setIsSigning] = useState<boolean>(false);
 
-  const navigate = useNavigate(); // do not remove, makes socket connection work
-  const { connect, socket } = useSocket();
+  // const navigate = useNavigate(); // do not remove, makes socket connection work
+  const { socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
   const { warningToast, errorToast } = useContactToast();
 
@@ -259,26 +259,16 @@ export const useTransactionSocket = () => {
   };
 
   useEffect(() => {
-    console.log('SOCKET_CONNECTED:', socket.connected);
-    if (!socket.connected) {
-      console.log('CONNECTING_SOCKET');
-      connect(sessionId!);
-      return;
-    }
+    console.log('[EMITTING SOCKET CONNECTED]');
+    socket.emit(SocketEvents.DEFAULT, {
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      request_id,
+      type: SocketEvents.CONNECTED,
+      data: {},
+    });
 
-    if (socket.connected) {
-      console.log('[EMITTING SOCKET CONNECTED]');
-      socket.emit(SocketEvents.DEFAULT, {
-        sessionId,
-        to: SocketUsernames.CONNECTOR,
-        request_id,
-        type: SocketEvents.CONNECTED,
-        data: {},
-      });
-
-      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-    }
-
+    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
     };
