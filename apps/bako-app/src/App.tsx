@@ -1,3 +1,4 @@
+import { AxiosSetup } from '@bako-safe/wallet';
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
@@ -6,9 +7,10 @@ import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
 
-import { initAxiosInterceptorsSetup } from './config';
-import { useAuth, useAuthUrlParams } from './modules';
+import { apiConfig } from './config';
+import { useAuth } from './modules';
 import AuthProvider from './modules/auth/AuthProvider';
+import { useLogout } from './modules/auth/hooks/useLogout';
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
 import TransactionsProvider from './modules/transactions/providers/TransactionsProvider';
@@ -18,19 +20,27 @@ function App() {
   const { fuel } = useFuel();
   const { handleSelectNetwork } = useNetworks();
 
-  const auth = useAuth();
+  const handleLogoutSuccess = () => {
+    // Clear cookies
+    // Navigate user to sign-in page
+  };
 
+  const { logout } = useLogout(handleLogoutSuccess);
+  const AxiosInterceptors = AxiosSetup.getInstance(apiConfig, logout);
+
+  const auth = useAuth();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
 
-  const { isTxFromDapp } = useAuthUrlParams();
+  // const { isTxFromDapp } = useAuthUrlParams();
   useMemo(() => {
-    initAxiosInterceptorsSetup({
-      isTxFromDapp,
-      logout: auth.handlers.logout,
-      isTokenExpired: auth.handlers.isTokenExpired,
-      setIsTokenExpired: auth.handlers.setIsTokenExpired,
-    });
+    AxiosInterceptors.init();
+    // initAxiosInterceptorsSetup({
+    //   isTxFromDapp,
+    //   logout: auth.handlers.logout,
+    //   isTokenExpired: auth.handlers.isTokenExpired,
+    //   setIsTokenExpired: auth.handlers.setIsTokenExpired,
+    // });
   }, []);
 
   useEffect(() => {

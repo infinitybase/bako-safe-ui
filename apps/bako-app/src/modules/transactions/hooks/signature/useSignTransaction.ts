@@ -2,13 +2,13 @@ import {
   ITransaction,
   TransactionWithVault,
 } from '@bako-safe/services/modules/transaction';
+import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useWalletSignMessage } from '@bako-safe/wallet/fuel';
 import { TransactionStatus } from 'bakosafe';
 import { randomBytes } from 'ethers';
 import { useState } from 'react';
 
 import { queryClient } from '@/config';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { useContactToast } from '@/modules/addressBook/hooks/useContactToast';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
 import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';

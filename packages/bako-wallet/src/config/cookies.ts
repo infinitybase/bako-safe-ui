@@ -1,8 +1,6 @@
 import * as CryptoJS from 'crypto-js';
 import Cookies from 'js-cookie';
 
-const { VITE_ENCRYPTION_KEY } = import.meta.env;
-
 export enum CookieName {
   ACCESS_TOKEN = `bakosafe/token`,
   ADDRESS = `bakosafe/address`,
@@ -15,7 +13,7 @@ interface Cookie {
 }
 
 export class CookiesConfig {
-  private static encryptionKey = VITE_ENCRYPTION_KEY;
+  private static encryptionKey = process.env.ENCRYPTION_KEY!;
 
   static setCookies(cookies: Cookie[]) {
     cookies.forEach((cookie) => {

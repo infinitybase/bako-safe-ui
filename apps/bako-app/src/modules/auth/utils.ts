@@ -1,4 +1,4 @@
-import { CookieName, CookiesConfig } from '@/config/cookies';
+import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 
 import { IGenerateRedirectQueryParams } from './types';
 

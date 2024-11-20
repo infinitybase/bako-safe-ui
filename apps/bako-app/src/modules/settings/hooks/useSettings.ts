@@ -1,7 +1,8 @@
+import { IApiError } from '@bako-safe/wallet/config';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
-import { IApiError, queryClient } from '@/config';
+import { queryClient } from '@/config';
 import { useContactToast } from '@/modules/addressBook';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

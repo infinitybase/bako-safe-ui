@@ -1,9 +1,9 @@
 import { ITransaction } from '@bako-safe/services/modules/transaction';
+import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useBakoSafeSendTransaction } from '@bako-safe/wallet/transaction';
 import { TransactionStatus, WitnessStatus } from 'bakosafe';
 
 import { queryClient } from '@/config';
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
 // import { useBakoSafeTransactionSend } from '@/modules/core';

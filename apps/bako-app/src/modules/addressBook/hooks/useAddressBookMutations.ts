@@ -1,11 +1,10 @@
 import { ListContactsResponse } from '@bako-safe/services/modules/address-book';
+import { IApiError } from '@bako-safe/wallet';
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Address } from 'fuels';
 import { UseFormReturn } from 'react-hook-form';
-
-import { IApiError } from '@/config';
 
 import { useContactToast } from './useContactToast';
 import { useCreateContactRequest } from './useCreateContactRequest';

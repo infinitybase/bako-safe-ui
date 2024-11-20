@@ -1,3 +1,4 @@
+import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useBakoSafeCreateTransaction } from '@bako-safe/wallet/transaction';
 import { useBakoSafeGetVault } from '@bako-safe/wallet/vault';
 import { useMutation } from '@tanstack/react-query';
@@ -7,7 +8,6 @@ import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { transactionService } from '@/config/services-initializer';
 import { useContactToast } from '@/modules/addressBook';
 import { useAuthContext } from '@/modules/auth/AuthProvider';

@@ -1,10 +1,10 @@
+import { CookieName, CookiesConfig } from '@bako-safe/wallet/config';
 import { useCreateBakoSafeVault } from '@bako-safe/wallet/vault';
 import { Address } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { CookieName, CookiesConfig } from '@/config/cookies';
 import { vaultService } from '@/config/services-initializer';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useAuthContext } from '@/modules/auth/AuthProvider';
