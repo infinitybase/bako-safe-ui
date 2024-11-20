@@ -1,8 +1,8 @@
-import { hexlify } from "fuels";
+import { hexlify } from 'fuels';
 
-import { fromBase64, hexToASCII } from "./bytes";
-import { getSignature, sha256 } from "./crypto";
-import { splitCLientData } from "bakosafe";
+import { fromBase64, hexToASCII } from './bytes';
+import { getSignature, sha256 } from './crypto';
+import { splitCLientData } from 'bakosafe';
 
 export async function signChallange(
   id: string,
@@ -18,11 +18,11 @@ export async function signChallange(
       allowCredentials: [
         {
           id: fromBase64(id),
-          type: "public-key",
-          transports: ["hybrid", "internal"],
+          type: 'public-key',
+          transports: ['hybrid', 'internal'],
         },
       ],
-      userVerification: "required",
+      userVerification: 'required',
       timeout: 60000,
     },
   });

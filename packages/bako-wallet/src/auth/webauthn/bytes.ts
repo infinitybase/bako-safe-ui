@@ -1,10 +1,10 @@
 export function toBase64(buffer: ArrayBuffer | Uint8Array): string {
   const base64 = String.fromCharCode(...new Uint8Array(buffer));
-  return base64.replaceAll("+", "-").replaceAll("/", "_");
+  return base64.replaceAll('+', '-').replaceAll('/', '_');
 }
 
 export function fromBase64(base64: string): ArrayBuffer {
-  const t = base64.replaceAll("-", "+").replaceAll("_", "/");
+  const t = base64.replaceAll('-', '+').replaceAll('_', '/');
   return Uint8Array.from(window.atob(t), (c) => c.charCodeAt(0)).buffer;
 }
 
@@ -12,7 +12,7 @@ export function hexToASCII(hex: string): Uint8Array {
   return Uint8Array.from(
     hex
       .slice(2)
-      .split("")
+      .split('')
       .map((c: string) => c.charCodeAt(0)),
   );
 }

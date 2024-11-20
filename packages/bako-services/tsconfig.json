@@ -9,11 +9,12 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@wallet/*": ["../bako-wallet/src/*"]
     },
     "lib": ["dom", "esnext"],
     "types": ["react", "node"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../bako-wallet/src/*"],
   "exclude": ["node_modules", "dist"]
 }

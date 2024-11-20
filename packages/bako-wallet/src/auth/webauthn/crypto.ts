@@ -1,27 +1,27 @@
-import { secp256r1 } from "@noble/curves/p256";
-import { hexlify } from "fuels";
+import { secp256r1 } from '@noble/curves/p256';
+import { hexlify } from 'fuels';
 
-import { EIP2090_encode } from "./EIP2090";
+import { EIP2090_encode } from './EIP2090';
 
 export async function sha256(
   buffer: ArrayBuffer | Uint8Array,
 ): Promise<Uint8Array> {
-  return new Uint8Array(await crypto.subtle.digest("SHA-256", buffer));
+  return new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
 }
 
 export async function parsePublicKey(publicKey: Uint8Array) {
   const cryptoKey = await crypto.subtle.importKey(
-    "spki",
+    'spki',
     publicKey,
     {
-      name: "ECDSA",
-      namedCurve: "P-256",
-      hash: "SHA-256",
+      name: 'ECDSA',
+      namedCurve: 'P-256',
+      hash: 'SHA-256',
     },
     true,
-    ["verify"],
+    ['verify'],
   );
-  return await crypto.subtle.exportKey("raw", cryptoKey);
+  return await crypto.subtle.exportKey('raw', cryptoKey);
 }
 
 export function recoverPublicKey(
@@ -32,9 +32,9 @@ export function recoverPublicKey(
   const publicKey = secp256r1.Signature.fromCompact(signatureCompact)
     .addRecoveryBit(recoveryBit)
     .recoverPublicKey(digest);
-  return `0x${publicKey.x.toString(16).padStart(64, "0")}${publicKey.y
+  return `0x${publicKey.x.toString(16).padStart(64, '0')}${publicKey.y
     .toString(16)
-    .padStart(64, "0")}`;
+    .padStart(64, '0')}`;
 }
 
 export function getRecoveryBit(
