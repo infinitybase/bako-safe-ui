@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { queryClient } from '@/config';
-import { Pages, useAuthCookies, useQueryParams } from '@/modules';
+import { useAuthCookies, useQueryParams } from '@/modules';
+import { Pages } from '@/modules/core/routes';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { GifLoadingRequestQueryKey } from '@/modules/workspace/hooks/useGifLoadingRequest';
 

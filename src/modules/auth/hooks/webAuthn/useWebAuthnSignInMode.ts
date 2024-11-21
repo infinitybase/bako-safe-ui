@@ -13,7 +13,11 @@ import { useSignMessageWebAuthn } from './useWebauthnRequests';
 interface UseWebAuthnSignInParams {
   form: UseWebAuthnForm['form'];
   setMode: (mode: WebAuthnModeState) => void;
-  callback: (vaultId?: string, workspaceId?: string) => void;
+  callback: (
+    vaultId?: string,
+    workspaceId?: string,
+    firstLogin?: boolean,
+  ) => void;
 }
 
 const getByName = async (name: string) => {
@@ -79,6 +83,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
           address,
           rootWallet,
           webAuthn,
+          first_login,
         }) => {
           setSignInProgress(100);
           setTimeout(() => {
@@ -97,7 +102,7 @@ const useWebAuthnSignInMode = (params: UseWebAuthnSignInParams) => {
               webAuthn,
               provider_url: import.meta.env.VITE_PROVIDER_URL,
             });
-            callback(rootWallet, workspace.id);
+            callback(rootWallet, workspace.id, first_login);
           }, 800);
 
           if (fromConnector) {

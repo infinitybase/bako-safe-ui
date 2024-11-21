@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
-import { TransactionConfirm, VaultConnector } from './pages';
+import { DappWelcomeDialog, TransactionConfirm, VaultConnector } from './pages';
 import { SignMessage } from './pages/signMessage';
 
 const dappRoutes = (
@@ -25,6 +25,17 @@ const dappRoutes = (
         element={
           <AuthRoute>
             <SignMessage />
+          </AuthRoute>
+        }
+      />
+    </Route>
+
+    <Route path={Pages.dappWelcome()}>
+      <Route
+        index
+        element={
+          <AuthRoute>
+            <DappWelcomeDialog />
           </AuthRoute>
         }
       />

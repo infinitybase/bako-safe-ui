@@ -52,6 +52,7 @@ const Pages = {
   dappAuth: pageRoute('/dapp'),
   dappTransaction: pageRoute('/dapp/transaction'),
   dappSign: pageRoute('/dapp/sign/:message'),
+  dappWelcome: pageRoute('/welcome'),
 
   //terms
   termsOfUse: pageRoute('/terms-of-use'),
