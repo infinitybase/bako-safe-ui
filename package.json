@@ -10,6 +10,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@bako-id/sdk": "0.0.15",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.0",
@@ -25,7 +26,7 @@
     "@types/crypto-js": "^4.2.2",
     "@wagmi/connectors": "^5.1.15",
     "axios": "^1.5.0",
-    "bakosafe": "0.0.93-beta",
+    "bakosafe": "0.0.94-beta",
     "crypto-js": "4.2.0",
     "date-fns": "^4.1.0",
     "ethers": "^6.8.1",

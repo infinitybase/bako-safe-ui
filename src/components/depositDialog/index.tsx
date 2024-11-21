@@ -14,7 +14,7 @@ import { openFaucet } from '@/modules/vault/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ENetworks } from '@/utils/constants';
 
-import { AddressWithCopyBtn } from '../addressWithCopyButton';
+import { AddressWithCopyBtn } from '../address/copy';
 import { Dialog } from '../dialog';
 
 interface IDepositDialogProps {
@@ -131,11 +131,11 @@ const DepositDialog = ({
 
               <AddressWithCopyBtn
                 h="18px"
-                address={vault.predicateAddress}
+                value={vault.predicateAddress}
                 flexDir="row-reverse"
                 gap="4px"
                 alignItems="center"
-                addressProps={{
+                textProps={{
                   textAlign: 'start',
                   maxW: 'full',
                   wordBreak: 'break-all',
@@ -144,7 +144,7 @@ const DepositDialog = ({
                   fontSize: 'xs',
                 }}
                 justifyContent="start"
-                customAddress={AddressUtils.format(
+                customValue={AddressUtils.format(
                   vault.predicateAddress ?? '',
                   isExtraSmall
                     ? 17

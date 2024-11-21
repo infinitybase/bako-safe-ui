@@ -86,16 +86,6 @@ export interface IListTransactions
   extends GetTransactionParams,
     Omit<GetTransactionParams, 'predicateId'> {}
 
-export interface IPredicateVersion {
-  id: string;
-  name: string;
-  description?: string;
-  code: string;
-  bytes: string;
-  abi: string;
-  active: boolean;
-}
-
 export interface IPredicate extends IPredicatePayload {
   id: string;
   members: {
@@ -108,7 +98,7 @@ export interface IPredicate extends IPredicatePayload {
     id: string;
     address: string;
   };
-  version: Partial<IPredicateVersion>;
+  version: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -122,5 +112,4 @@ export interface IPredicatePayload {
   configurable: string;
   provider: string;
   chainId?: number;
-  versionCode?: string;
 }

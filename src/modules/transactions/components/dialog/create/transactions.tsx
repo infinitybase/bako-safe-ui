@@ -12,6 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -19,6 +20,7 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
+  useAddressBookInputValue,
 } from '@/modules/addressBook';
 import {
   AddressUtils,
@@ -26,7 +28,10 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
-import { UseCreateTransaction } from '@/modules/transactions/hooks';
+import {
+  useAssetSelectOptions,
+  UseCreateTransaction,
+} from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -53,9 +58,6 @@ interface TransctionFormFieldProps {
 const TransactionFormField = (props: TransctionFormFieldProps) => {
   const { form, assets, index, isFeeCalcLoading, getBalanceAvailable } = props;
 
-  const asset = form.watch(`transactions.${index}.asset`);
-  const isNFT = !!assets?.nfts?.find((nft) => nft.assetId === asset);
-
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -67,9 +69,12 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       inView,
       canAddMember,
     },
+    vaultDetails: {
+      assets: { isNFTAsset },
+    },
   } = useWorkspaceContext();
-
   const balanceAvailable = getBalanceAvailable();
+  const { setInputValue } = useAddressBookInputValue();
 
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
@@ -82,7 +87,20 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       isFirstLoading: false,
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
+      handleCustomOption: setInputValue,
     });
+
+  const recipients = form.watch('transactions') ?? [];
+  const asset = recipients?.[index].asset;
+
+  const isNFT = useMemo(() => isNFTAsset(asset), [asset, isNFTAsset]);
+
+  const { assetsOptions } = useAssetSelectOptions({
+    currentAsset: asset,
+    assets: assets.assets,
+    nfts: assets.nfts,
+    recipients: form.watch('transactions'),
+  });
 
   return (
     <>
@@ -119,6 +137,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
+                  onInputChange={(value: string) => setInputValue(value)}
                   isLoading={!optionsRequests[index].isSuccess}
                   options={appliedOptions}
                   inView={inView}
@@ -143,13 +162,20 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           render={({ field, fieldState }) => (
             <AssetSelect
               isInvalid={fieldState.invalid}
-              assets={assets!.assets!}
-              nfts={assets!.nfts!}
+              options={assetsOptions}
               name={`transaction.${index}.asset`}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
-                form.setValue(`transactions.${index}.amount`, bn(1).format());
+
+                if (isNFTAsset(e)) {
+                  form.setValue(`transactions.${index}.amount`, bn(1).format());
+                  return;
+                }
+
+                if (isNFTAsset(field.value)) {
+                  form.setValue(`transactions.${index}.amount`, '');
+                }
               }}
               helperText={
                 <FormHelperText
@@ -173,7 +199,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={isNFT ? '1' : field.value}
                   onChange={field.onChange}
                   isInvalid={fieldState.invalid}
-                  isDisabled={!!isNFT}
+                  isDisabled={isNFT}
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
@@ -221,6 +247,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   const {
     screenSizes: { isMobile },
+    offChainSync: {
+      handlers: { getHandleFromResolver },
+    },
   } = useWorkspaceContext();
 
   // Logic to fix the button in the footer
@@ -269,7 +298,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
-        );
+        )?.nickname;
+        const recipientLabel =
+          contact ??
+          getHandleFromResolver(transaction.value) ??
+          AddressUtils.format(transaction.value);
 
         return (
           <>
@@ -312,12 +345,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
                       <b>
                         {transaction.amount} {assetSlug}
                       </b>{' '}
-                      to{' '}
-                      <b>
-                        {' '}
-                        {contact?.nickname ??
-                          AddressUtils.format(transaction.value)}
-                      </b>
+                      to <b> {recipientLabel}</b>
                     </Text>
                   )
                 }

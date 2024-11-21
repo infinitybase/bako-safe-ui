@@ -19,7 +19,7 @@ export type UseWorkspaceReturn = ReturnType<typeof useWorkspace>;
 const useWorkspace = (
   userInfos: IUserInfos,
   assetsMaps: false | AssetMap | undefined,
-  invalidateGifAnimationRequest: () => void,
+  // invalidateGifAnimationRequest: () => void,
   // resetAllTransactionsTypeFilters: () => void,
   // refetchPendingSingerTransactions: () => void,
 ) => {
@@ -61,12 +61,15 @@ const useWorkspace = (
     // }
     // workspaceDialog.onClose();
 
-    if (redirect) {
-      if (redirect.includes('vault')) {
-        invalidateGifAnimationRequest();
-      }
-      navigate(redirect);
-    }
+    redirect && navigate(redirect);
+
+    // This logic below is to show the gif animation when the user enters in some vault
+    // if (redirect) {
+    //   if (redirect.includes('vault')) {
+    //     invalidateGifAnimationRequest();
+    //   }
+    //   navigate(redirect);
+    // }
   };
 
   const goHome = () => {

@@ -1,11 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BN, bn } from 'fuels';
+import { BN, bn, NetworkFuel } from 'fuels';
 import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+export interface ITransactionField {
+  asset: string;
+  value: string;
+  amount: string;
+  fee?: string;
+}
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
@@ -42,6 +49,23 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             if (isNFT) return true;
 
             return bn.parseUnits(parent.amount).gt(bn(0));
+          },
+        )
+        .test(
+          'amount-decimals',
+          'Exceeded the allowed number of decimal places.',
+          (amount, { parent }) => {
+            const decimalsCounter = amount.split('.')[1]?.length;
+
+            const selectedToken =
+              fuelsTokens
+                ?.flatMap(({ networks }) => networks)
+                .find((n) => (n as NetworkFuel)?.assetId === parent.asset) ||
+              null;
+
+            const maxDecimals = selectedToken?.decimals;
+
+            return !(maxDecimals && decimalsCounter > maxDecimals);
           },
         )
         .test(
@@ -162,7 +186,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
     });
 
     const schema = yup.object({
-      name: yup.string().required(''),
+      name: yup.string().optional(),
       transactions: yup.array(transactionSchema),
     });
 

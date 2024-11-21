@@ -40,7 +40,10 @@ const schema = (
                 const addressIndex = context.path.replace(/\D/g, '');
                 const hasAddress = addresses.some(
                   (value: string, _index: number) => {
-                    return Number(addressIndex) !== _index && value === address;
+                    return (
+                      Number(addressIndex) !== _index &&
+                      value.toLowerCase() === address.toLowerCase()
+                    );
                   },
                 );
 

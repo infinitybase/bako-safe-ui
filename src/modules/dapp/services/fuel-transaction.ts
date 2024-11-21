@@ -1,3 +1,4 @@
+import { Vault } from 'bakosafe';
 import {
   getTransactionSummaryFromRequest,
   OperationTransactionAddress,
@@ -6,12 +7,11 @@ import {
   TransactionRequestLike,
 } from 'fuels';
 
-import { Vault } from 'bakosafe';
-
 export interface TransactionSimulateParams {
   transactionLike: TransactionRequestLike;
   providerUrl: string;
   configurable: string;
+  version: string;
 }
 
 export interface ISent {
@@ -40,10 +40,15 @@ const useFuelTransactionService = () => {
     transactionLike,
     providerUrl,
     configurable,
+    version,
   }: TransactionSimulateParams) => {
     const provider = await Provider.create(providerUrl);
 
-    const vaultInstance = new Vault(provider, JSON.parse(configurable));
+    const vaultInstance = new Vault(
+      provider,
+      JSON.parse(configurable),
+      version,
+    );
 
     const { tx } = await vaultInstance.BakoTransfer(transactionLike);
 

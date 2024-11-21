@@ -33,6 +33,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const disableCreateVaultButton =
     (!form.formState.isValid ||
       !!form.formState.errors.addresses ||
+      form.formState.isSubmitting ||
       validateAddress.isLoading) &&
     addresses.fields.length > 1;
 
@@ -46,7 +47,8 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
 
   const handleClose = () => {
     queryClient.invalidateQueries({ queryKey: ['vault/pagination'] });
-    props.onClose();
+
+    handleCancel();
   };
 
   const handleCancel = useCallback(() => {
