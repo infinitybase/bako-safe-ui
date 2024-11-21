@@ -9,6 +9,8 @@ export enum SocketEvents {
 
   DEFAULT = 'message',
 
+  NOTIFICATION = 'notification',
+
   CONNECTED = '[CONNECTED]',
   DISCONNECTED = '[CLIENT_DISCONNECTED]',
 
@@ -76,7 +78,7 @@ export const useSocket = () => {
   const socket = useContext(SocketContext);
   const { request_id, origin } = useQueryParams();
 
-  const socketState = useRef(false);
+  const socketState = useRef(socket.connected);
 
   const connect = useCallback(
     (sessionId: string) => {
@@ -93,7 +95,7 @@ export const useSocket = () => {
         request_id: request_id ?? '',
       };
 
-      request_id && socket.connect();
+      socket.connect();
       socketState.current = true;
     },
     [socketState],
