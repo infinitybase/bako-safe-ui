@@ -1,14 +1,16 @@
+import { UseDisclosureProps } from '@chakra-ui/react';
+import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Address } from 'fuels';
+import { UseFormReturn } from 'react-hook-form';
+
 import { IApiError } from '@/config';
+
+import { ListContactsResponse } from '../services';
+import { useContactToast } from './useContactToast';
+import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { useCreateContactRequest } from './useCreateContactRequest';
-import { useContactToast } from './useContactToast';
-import { UseFormReturn } from 'react-hook-form';
-import { UseDisclosureProps } from '@chakra-ui/react';
-import { Address } from 'fuels';
-import { ListContactsResponse } from '../services';
-import { UseQueryResult } from '@tanstack/react-query';
 
 export type IUseAddressBookMutationsProps = {
   form: UseFormReturn<{
@@ -50,7 +52,27 @@ const useAddressBookMutations = ({
       contactDialog.onClose?.();
       createAndUpdateSuccessToast();
     },
-    onError: () => errorToast({}),
+    onError: (error) => {
+      const errorDescription = (
+        (error as AxiosError)?.response?.data as IApiError
+      )?.detail;
+
+      if (errorDescription?.includes('nickname')) {
+        errorToast({
+          title: 'Duplicated name',
+          description: 'You already have this name in your address book',
+        });
+        form.setError('nickname', { message: 'Duplicated label' });
+      }
+
+      if (errorDescription?.includes('address')) {
+        errorToast({
+          title: 'Duplicated address',
+          description: 'You already have this address in your address book',
+        });
+        form.setError('address', { message: 'Duplicated address' });
+      }
+    },
   });
 
   const createContactRequest = useCreateContactRequest({

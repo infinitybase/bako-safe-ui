@@ -24,6 +24,11 @@ export type UseCreateTransactionFormParams = {
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
   const { providerInstance, fuelsTokens } = useWorkspaceContext();
+  const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
+    item.networks
+      .map((network) => network['assetId'] ?? network['address'])
+      .filter(Boolean),
+  );
 
   const validationSchema = useMemo(() => {
     const transactionSchema = yup.object({
@@ -162,9 +167,14 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'valid-account',
           'This address can not receive assets from Bako.',
           async (address) => {
+            const isAssetIdOrAssetAddress = !!assetIdsAndAddresses?.find(
+              (item) => item === address,
+            );
+
             try {
-              const isValid = AddressUtils.isValid(address);
-              if (!isValid) return true;
+              const isValid =
+                AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
+              if (!isValid) return false;
 
               const provider = await providerInstance;
               return await provider.isUserAccount(address);
