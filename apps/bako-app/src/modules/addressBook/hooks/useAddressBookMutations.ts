@@ -1,10 +1,11 @@
 import type { ListContactsResponse } from '@bako-safe/services';
-import type { IApiError } from '@bako-safe/services';
 import type { UseDisclosureProps } from '@chakra-ui/react';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { Address } from 'fuels';
 import type { UseFormReturn } from 'react-hook-form';
+
+import type { IApiError } from '@/config';
 
 import { useContactToast } from './useContactToast';
 import { useCreateContactRequest } from './useCreateContactRequest';

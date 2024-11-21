@@ -1,18 +1,13 @@
 import { useFuel } from '@fuels/react';
 import { TypeUser } from 'bakosafe';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { AppRoutes } from '@/routes';
 
-import { initiAxiosSetup } from './config';
-import {
-  CookieName,
-  CookiesConfig,
-  useAuth,
-  useAuthUrlParams,
-} from './modules';
+import { setupAxiosInterceptors } from './config';
+import { useAuth, useAuthUrlParams } from './modules';
 import AuthProvider from './modules/auth/AuthProvider';
 import { invalidateQueries } from './modules/core/utils';
 import { useNetworks } from './modules/network/hooks';
@@ -26,24 +21,18 @@ function App() {
   const auth = useAuth();
   const { pathname } = useLocation();
   const isWebAuthn = auth.userInfos?.type === TypeUser.WEB_AUTHN;
+
+  const [isTokenExpired, setIsTokenExpired] = useState(false);
+
   const { isTxFromDapp } = useAuthUrlParams();
-  const accessToken = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
-  const signerAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
-
-  useEffect(() => {
-    // TODO - FIX Improve this logic to avoid many 401 and do not setCredentials more than once.
-    if (accessToken && signerAddress) {
-      const instance = initiAxiosSetup({
-        isTxFromDapp,
-        logout: auth.handlers.logout,
-        isTokenExpired: auth.handlers.isTokenExpired,
-        setIsTokenExpired: auth.handlers.setIsTokenExpired,
-      });
-
-      // instance.setLogout(auth.handlers.logout);
-      instance.setCredentials({ accessToken, signerAddress });
-    }
-  }, [accessToken, signerAddress]);
+  useMemo(() => {
+    setupAxiosInterceptors({
+      isTxFromDapp,
+      isTokenExpired,
+      setIsTokenExpired,
+      logout: auth.handlers.logout,
+    });
+  }, []);
 
   useEffect(() => {
     async function clearAll() {

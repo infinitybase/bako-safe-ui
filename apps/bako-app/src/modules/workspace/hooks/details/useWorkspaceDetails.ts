@@ -39,10 +39,7 @@ const useWorkspaceDetails = () => {
   const { currentNetwork } = useNetworks();
 
   const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
-    const provider = await ProviderInstance.create(
-      'https://testnet.fuel.network/v1/graphql',
-    );
-    // const provider = await ProviderInstance.create(currentNetwork.url);
+    const provider = await ProviderInstance.create(currentNetwork.url);
 
     return provider.instance;
   }, [currentNetwork]);

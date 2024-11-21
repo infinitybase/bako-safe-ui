@@ -1,7 +1,7 @@
-import type { IApiError } from '@bako-safe/services';
 import { useEffect } from 'react';
 
 import { queryClient } from '@/config';
+import type { IApiError } from '@/config/api';
 import { useContactToast } from '@/modules/addressBook';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 

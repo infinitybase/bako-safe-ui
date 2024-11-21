@@ -1,4 +1,3 @@
-import { AxiosSetup } from '@bako-safe/services';
 import axios from 'axios';
 
 import { CookieName, CookiesConfig } from '@/modules';
@@ -8,52 +7,77 @@ import { queryClient } from './query-client';
 
 const { VITE_API_URL } = import.meta.env;
 
-export const apiConfig = axios.create({
+export enum ApiUnauthorizedErrorsTitles {
+  MISSING_CREDENTIALS = 'Missing credentials',
+  SESSION_NOT_FOUND = 'Session not found',
+  INVALID_ADDRESS = 'Invalid address',
+  EXPIRED_TOKEN = 'Expired token',
+}
+
+export type IApiErrorTypes =
+  | 'CreateException'
+  | 'UpdateException'
+  | 'DeleteException'
+  | 'NotFound'
+  | 'Unauthorized'
+  | 'Internal';
+
+export interface IApiError {
+  type: IApiErrorTypes;
+  title: string | ApiUnauthorizedErrorsTitles;
+  detail: string;
+}
+
+export interface ISetupAxiosInterceptors {
+  isTxFromDapp: boolean;
+  isTokenExpired: boolean;
+  setIsTokenExpired: (value: boolean) => void;
+  logout: (removeTokenFromDb?: boolean) => void;
+}
+
+const api = axios.create({
   baseURL: VITE_API_URL,
   timeout: 10 * 1000, // limit to try other requests
 });
 
-interface IinitiAxiosSetup {
-  isTxFromDapp: boolean;
-  isTokenExpired: boolean;
-  setIsTokenExpired: (value: boolean) => void;
-  logout: (removeTokenFromDb?: boolean, callback?: () => void) => Promise<void>;
-}
-
-// TODO: Need do adjust in th App.tsx first and then adjust logout fn here
-const initiAxiosSetup = ({
-  isTokenExpired,
+const setupAxiosInterceptors = ({
   isTxFromDapp,
+  isTokenExpired,
   setIsTokenExpired,
   logout,
-}: IinitiAxiosSetup) => {
-  const accessToken = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
-  const signerAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
+}: ISetupAxiosInterceptors) => {
+  api.interceptors.request.use(
+    (value) => {
+      const accessToken = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
+      const address = CookiesConfig.getCookie(CookieName.ADDRESS);
 
-  const handleLogout = () =>
-    // params?: LogoutParams
-    {
-      if (!isTokenExpired && !isTxFromDapp) {
+      if (accessToken) value.headers['authorization'] = accessToken;
+      if (address) value.headers['signerAddress'] = address;
+
+      return value;
+    },
+    (error) => error,
+  );
+
+  api.interceptors.response.use(
+    async (config) => config,
+    async (error) => {
+      const unauthorizedError = error.response?.status === 401;
+
+      if (unauthorizedError && !isTokenExpired && !isTxFromDapp) {
+        const tokenExpiredError =
+          error.response?.title === ApiUnauthorizedErrorsTitles.EXPIRED_TOKEN;
+
         setIsTokenExpired(true);
-
-        logout(true);
-        // logout(params?.isExpiredTokenError);
+        logout(tokenExpiredError);
         queryClient.invalidateQueries({
           queryKey: [GifLoadingRequestQueryKey.ANIMATION_LOADING],
         });
       }
-    };
 
-  const instance = AxiosSetup.getInstance(
-    {
-      accessToken,
-      signerAddress,
-      logout: handleLogout,
+      return Promise.reject(error);
     },
-    apiConfig,
   );
-
-  return instance;
 };
 
-export { initiAxiosSetup };
+export { api, setupAxiosInterceptors };
