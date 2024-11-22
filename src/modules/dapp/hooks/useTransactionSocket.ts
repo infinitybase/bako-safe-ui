@@ -1,16 +1,19 @@
 import { TransactionRequestLike } from 'fuels';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useContactToast } from '@/modules/addressBook/hooks';
 import { useQueryParams } from '@/modules/auth/hooks';
 import {
-  IEventTX_CONFIRM,
+  IEventTX_CREATE,
   SocketEvents,
   SocketUsernames,
   useSocket,
+  useTab,
+  useWalletSignMessage,
 } from '@/modules/core/hooks';
+import { EnumUtils } from '@/modules/core/utils';
 
-// import { useSignTransaction } from './useSignTransaction'; [CONNECTOR SIGNATURE]
 import { useTransactionSummary } from './useTransactionSummary';
 
 interface IVaultEvent {
@@ -23,10 +26,28 @@ interface IVaultEvent {
   version: string;
 }
 
+export interface ITransactionSuccess {
+  show: boolean;
+  title: string;
+  description: string;
+}
+
+enum IEventTX_STATUS {
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
+enum TabState {
+  CREATE = 0,
+  SIGN = 1,
+  PENDING_SIGN = 2,
+  PENDING_OTHERS_SIGN = 3,
+}
+
 export type UseTransactionSocket = ReturnType<typeof useTransactionSocket>;
 
 export const useTransactionSocket = () => {
-  const [vault, setVault] = useState<IVaultEvent | undefined>({
+  const vaultRef = useRef<IVaultEvent>({
     name: '',
     address: '',
     description: '',
@@ -36,96 +57,192 @@ export const useTransactionSocket = () => {
     version: '',
   });
   const [validAt, setValidAt] = useState<string | undefined>(undefined);
+  const [startTime] = useState(Date.now());
   const [tx, setTx] = useState<TransactionRequestLike>();
-  const [sending, setSending] = useState(false);
-  const [isRedirectEnable, setIsRedirectEnable] = useState(false);
-  //const [signing, setSigning] = useState(false); [CONNECTOR SIGNATURE]
+  const [hash, setHash] = useState<string>('');
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [isSigning, setIsSigning] = useState<boolean>(false);
 
-  const navigate = useNavigate(); // do not remove, makes socket connection work
-  const { connect, socket } = useSocket();
+  // const navigate = useNavigate(); // do not remove, makes socket connection work
+  const { socket } = useSocket();
   const { sessionId, request_id } = useQueryParams();
+  const { warningToast, errorToast } = useContactToast();
 
   const summary = useTransactionSummary();
-  // const { confirmSignTransaction } = useSignTransaction(); [CONNECTOR SIGNATURE]
 
-  //const { isSafariBrowser } = useVerifyBrowserType(); [CONNECTOR SIGNATURE]
+  const tabs = useTab({
+    tabs: EnumUtils.toNumberArray(TabState),
+    defaultTab: TabState.CREATE,
+  });
 
-  //[CONNECTOR SIGNATURE]
-  // const openSignTab = (url: string) => {
-  //   const newTab = window.open(`${window.origin}${url}`, '_blank');
+  const showSignErrorToast = useCallback(
+    () =>
+      warningToast({
+        title: 'Signature failed',
+        description: 'Please try again!',
+      }),
+    [warningToast],
+  );
 
-  //   if (newTab) {
-  //     setTimeout(() => {
-  //       window.close();
-  //     }, 600);
-  //   }
-  // };
+  const signMessageRequest = useWalletSignMessage({
+    onSuccess: (signedMessage, hash) => {
+      emitSignTransactionEvent(hash, signedMessage);
+    },
+    onError: () => {
+      showSignErrorToast();
+      setIsSigning(false);
+    },
+  });
 
-  //[CONNECTOR SIGNATURE]
-  // const handleRedirectToSign = (data: any) => {
-  //   console.log('HANDLE_REDIRECT_TO_SIGN');
-  //   const queryParams = `${window.location.search}&transaction_id=${data.id}&transaction_hash=${data.hash}`;
-  //   const url = `${Pages.dappTransactionSign()}${queryParams}`;
+  const signTransaction = useCallback(
+    (_hash?: string) => {
+      setIsSigning(true);
+      signMessageRequest.mutateAsync(_hash || hash);
+    },
+    [hash, signMessageRequest],
+  );
 
-  //   if (isSafariBrowser) {
-  //     openSignTab(url);
-  //   } else {
-  //     navigate(url);
-  //   }
-  // };
+  const handleGetSummary = useCallback(
+    (data: any) => {
+      console.log('GETTING_SUMMARY');
+      const { data: content } = data;
+      const { vault, tx, validAt } = content;
 
-  const handleGetSummary = (data: any) => {
-    console.log('GETTING_SUMMARY');
-    const { data: content } = data;
-    const { vault, tx, validAt } = content;
+      vaultRef.current = vault;
+      setTx(tx);
+      setValidAt(validAt);
+      summary.getTransactionSummary({
+        transactionLike: tx,
+        providerUrl: vault.provider,
+        configurable: vault.configurable,
+        version: vault.version,
+      });
+    },
+    [summary],
+  );
 
-    setVault(vault);
-    setTx(tx);
-    setValidAt(validAt);
-    summary.getTransactionSummary({
-      transactionLike: tx,
-      providerUrl: vault.provider,
-      configurable: vault.configurable,
-    });
-  };
+  const handleCreatedTransaction = useCallback(
+    (data: any) => {
+      setIsSending(false);
 
-  const handleSocketEvent = useCallback((data: any) => {
-    console.log('SOCKET EVENT DATA:', data);
-    if (data.to !== SocketUsernames.UI) return;
+      const { data: content } = data;
+      const { hash: _hash, sign, status } = content;
 
-    switch (data.type) {
-      // [CONNECTOR SIGNATURE]
-      // case SocketEvents.TX_CONFIRM:
-      //   handleRedirectToSign(data);
-      //   break;
-      case SocketEvents.TX_REQUEST:
-        handleGetSummary(data);
-        break;
-      default:
-        break;
-    }
+      if (status === IEventTX_STATUS.ERROR) {
+        errorToast({
+          title: 'Transaction creation failed',
+          description: 'Please try again!',
+        });
+        return;
+      }
+
+      setHash(_hash);
+
+      if (_hash && sign) {
+        tabs.set(TabState.SIGN);
+        signTransaction(_hash);
+        return;
+      }
+
+      tabs.set(TabState.PENDING_SIGN);
+    },
+    [signTransaction, tabs],
+  );
+
+  const checkIfMultisig = useCallback((configurable?: string) => {
+    const config = JSON.parse(configurable || '{}');
+    const minSigners = config.SIGNATURES_COUNT || 1;
+    return minSigners > 1;
   }, []);
+
+  const handleSignedTransaction = useCallback(
+    (data: any) => {
+      const { data: content } = data;
+      const { status } = content;
+
+      if (status === IEventTX_STATUS.ERROR) {
+        showSignErrorToast();
+        setIsSigning(false);
+        return;
+      }
+
+      const isMultiSig = checkIfMultisig(vaultRef.current?.configurable);
+
+      isMultiSig ? tabs.set(TabState.PENDING_OTHERS_SIGN) : window.close();
+    },
+    [checkIfMultisig, showSignErrorToast, tabs],
+  );
+
+  const handleSocketEvent = useCallback(
+    (data: any) => {
+      console.log('SOCKET EVENT DATA:', data);
+      if (data.to !== SocketUsernames.UI) return;
+
+      switch (data.type) {
+        case SocketEvents.TX_REQUEST:
+          handleGetSummary(data);
+          break;
+        case SocketEvents.TX_CREATE:
+          handleCreatedTransaction(data);
+          break;
+        case SocketEvents.TX_SIGN:
+          handleSignedTransaction(data);
+          break;
+        default:
+          break;
+      }
+    },
+    [handleCreatedTransaction, handleGetSummary, handleSignedTransaction],
+  );
 
   const emitCreateTransactionEvent = (
     event: SocketEvents,
-    data: IEventTX_CONFIRM,
+    data: IEventTX_CREATE,
   ) => {
     if (!data.tx) return;
-    setSending(true);
+    setIsSending(true);
 
     console.log('[EMITTING CREATE TRANSACTION]');
     socket.emit(event, data);
-
-    setTimeout(() => {
-      setIsRedirectEnable(true);
-    }, 2000);
   };
 
   const sendTransaction = async () => {
-    emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
+    emitCreateTransactionEvent(SocketEvents.TX_CREATE, {
       operations: summary.transactionSummary,
       tx,
     });
+  };
+
+  const sendTransactionAndSign = async () => {
+    emitCreateTransactionEvent(SocketEvents.TX_CREATE, {
+      operations: summary.transactionSummary,
+      tx,
+      sign: true,
+    });
+  };
+
+  // emmit message to the server and close window
+  const cancelSendTransaction = () => {
+    socket.emit(SocketEvents.DEFAULT, {
+      username: SocketUsernames.UI,
+      sessionId,
+      to: SocketUsernames.CONNECTOR,
+      type: SocketEvents.DISCONNECTED,
+      request_id,
+      data: {},
+    });
+  };
+
+  const emitSignTransactionEvent = (hash: string, signedMessage: string) => {
+    console.log('[EMITTING SIGN TRANSACTION]');
+    socket.emit(SocketEvents.TX_SIGN, {
+      hash,
+      signedMessage,
+    });
+  };
+
+  const cancelSignTransaction = () => {
+    tabs.set(TabState.PENDING_SIGN);
   };
 
   const emitSignedMessage = (message: string) => {
@@ -141,98 +258,43 @@ export const useTransactionSocket = () => {
     });
   };
 
-  // [CONNECTOR SIGNATURE]
-  // const sendTransactionAndRedirectToSign = async () => {
-  //   emitCreateTransactionEvent(SocketEvents.TX_CONFIRM, {
-  //     operations: summary.transactionSummary,
-  //     tx,
-  //     sign: true,
-  //   });
-  // };
-
-  // emmit message to the server and close window
-  const cancelSendTransaction = () => {
+  useEffect(() => {
+    console.log('[EMITTING SOCKET CONNECTED]');
     socket.emit(SocketEvents.DEFAULT, {
-      username: SocketUsernames.UI,
       sessionId,
       to: SocketUsernames.CONNECTOR,
-      type: SocketEvents.DISCONNECTED,
       request_id,
+      type: SocketEvents.CONNECTED,
       data: {},
     });
-  };
 
-  const handleRedirectToBakoSafe = () => {
-    window.close();
-    setIsRedirectEnable(false);
-    window.open(window.location.origin, '_BLANK');
-  };
-
-  // [CONNECTOR SIGNATURE]
-  // const signTransaction = (transacionId: string, transactionHash: string) => {
-  //   confirmSignTransaction(transactionHash, (signedMessage: string) => {
-  //     setSigning(true);
-  //     socket.emit(SocketEvents.TX_SIGN, {
-  //       id: transacionId,
-  //       hash: transactionHash,
-  //       signedMessage,
-  //     });
-  //   });
-  // };
-
-  // [CONNECTOR SIGNATURE]
-  // const cancelSignTransaction = () => {
-  //   cancelSendTransaction();
-  //   isSafariBrowser && window.close();
-  // };
-
-  useEffect(() => {
-    console.log('SOCKET_CONNECTED:', socket.connected);
-    if (!socket.connected) {
-      console.log('CONNECTING_SOCKET');
-      connect(sessionId!);
-      return;
-    }
-
-    if (socket.connected) {
-      socket.emit(SocketEvents.DEFAULT, {
-        sessionId,
-        to: SocketUsernames.CONNECTOR,
-        request_id,
-        type: SocketEvents.CONNECTED,
-        data: {},
-      });
-
-      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-    }
-
+    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
     };
   }, [socket.connected]);
 
   return {
-    vault,
+    vault: vaultRef.current,
     summary,
+    startTime,
     validAt,
-    pendingSignerTransactions: vault?.pending_tx ?? true,
+    pendingSignerTransactions: vaultRef.current?.pending_tx ?? true,
     socket,
+    tabs,
     send: {
-      isLoading: sending,
-      handler: sendTransaction,
-      //redirectHandler: sendTransactionAndRedirectToSign, [CONNECTOR SIGNATURE]
-      cancel: cancelSendTransaction,
+      isSending,
+      sendTransaction,
+      sendTransactionAndSign,
+      cancelSendTransaction,
     },
-    handleRedirectToBakoSafe,
-    isRedirectEnable,
+    sign: {
+      isSigning,
+      signTransaction,
+      cancelSignTransaction,
+    },
     signMessage: {
       emitSignedMessage,
     },
-    // [CONNECTOR SIGNATURE]
-    // sign: {
-    //   isLoading: signing,
-    //   handler: signTransaction,
-    //   cancel: cancelSignTransaction,
-    // },
   };
 };

@@ -1,5 +1,4 @@
 import { BakoProvider, Vault, VaultConfigurable } from 'bakosafe';
-import { Address } from 'fuels';
 
 import { CookieName, CookiesConfig } from '@/config/cookies';
 import { VaultService } from '@/modules/vault';
@@ -33,7 +32,6 @@ const createVault = async ({
 
   const predicate = new Vault(vaultProvider, {
     ...configurable,
-    HASH_PREDICATE: Address.fromRandom().toB256(),
   });
 
   const savedPredicate = await predicate.save({ name });

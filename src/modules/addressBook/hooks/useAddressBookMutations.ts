@@ -54,7 +54,27 @@ const useAddressBookMutations = ({
       contactDialog.onClose?.();
       createAndUpdateSuccessToast();
     },
-    onError: () => errorToast({}),
+    onError: (error) => {
+      const errorDescription = (
+        (error as AxiosError)?.response?.data as IApiError
+      )?.detail;
+
+      if (errorDescription?.includes('nickname')) {
+        errorToast({
+          title: 'Duplicated name',
+          description: 'You already have this name in your address book',
+        });
+        form.setError('nickname', { message: 'Duplicated label' });
+      }
+
+      if (errorDescription?.includes('address')) {
+        errorToast({
+          title: 'Duplicated address',
+          description: 'You already have this address in your address book',
+        });
+        form.setError('address', { message: 'Duplicated address' });
+      }
+    },
   });
 
   const createContactRequest = useCreateContactRequest({

@@ -8,6 +8,7 @@ interface TransactionExpireProps {
   children?: string;
   callBack?: () => void;
   validAt?: string;
+  startTime: number;
 }
 
 const TransactionExpire = ({
@@ -16,9 +17,9 @@ const TransactionExpire = ({
   children,
   callBack,
   validAt,
+  startTime,
 }: TransactionExpireProps) => {
   const [timerEnded, setTimerEnded] = useState(false);
-  const [startTime] = useState(Date.now());
 
   const diff = differenceInHours(new Date(), new Date(validAt!));
   const endTimePlusThreeHours = addHours(new Date(validAt!), diff).getTime();

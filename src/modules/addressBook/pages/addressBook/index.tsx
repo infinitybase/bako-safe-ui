@@ -249,82 +249,87 @@ const AddressBookPage = () => {
           </ActionCard.Container>
         </Stack>
 
-        <Box mt={4} mb={-4} alignSelf="flex-start">
+        <Box
+          w="full"
+          display="flex"
+          alignItems={'center'}
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+          mt={6}
+        >
           <Text variant="subtitle" fontWeight="semibold" color="grey.75">
             Address book
           </Text>
         </Box>
         {/* USER CONTACTS */}
-        <Grid
-          w="full"
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            xs: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            xl: 'repeat(3, 1fr)',
-            '2xl': 'repeat(4, 1fr)',
-          }}
-          gap={6}
-          pb={0}
-        >
-          {!hasContacts && listContactsRequest.isLoading && (
-            <>
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-            </>
-          )}
-          {contacts?.map(({ id, nickname, user }) => {
-            const handleInfo = listContactsRequest.data?.find(
-              (contact) => contact.handle_info.resolver === user?.address,
-            )?.handle_info;
+        {hasContacts && (
+          <Grid
+            w="full"
+            templateColumns={{
+              base: 'repeat(1, 1fr)',
+              xs: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+              xl: 'repeat(3, 1fr)',
+              '2xl': 'repeat(4, 1fr)',
+            }}
+            gap={6}
+            pb={0}
+          >
+            {!hasContacts && listContactsRequest.isLoading && (
+              <>
+                <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+                <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+              </>
+            )}
+            {contacts?.map(({ id, nickname, user }) => {
+              const handleInfo = listContactsRequest.data?.find(
+                (contact) => contact.handle_info.resolver === user?.address,
+              )?.handle_info;
 
-            const _contact = user?.address
-              ? resolveAddressContactHandle(
-                  user.address,
-                  handleInfo?.handle,
-                  handleInfo?.resolver,
-                )
-              : undefined;
-            return (
-              <GridItem key={id} display="flex">
-                <ContactCard
-                  nickname={nickname}
-                  address={user.address}
-                  avatar={user.avatar}
-                  dialog={deleteContactDialog}
-                  showActionButtons={hasPermission([
-                    PermissionRoles?.OWNER,
-                    PermissionRoles?.ADMIN,
-                    PermissionRoles?.MANAGER,
-                  ])}
-                  handleEdit={() =>
-                    handleOpenDialog({
-                      address: user.address,
-                      nickname,
-                      contactToEdit: id,
-                      handle: _contact?.handle,
-                    })
-                  }
-                  handleDelete={() => {
-                    setContactToDelete({ id, nickname });
-                    deleteContactDialog.onOpen();
-                  }}
-                />
-              </GridItem>
-            );
-          })}
-        </Grid>
+              const _contact = user?.address
+                ? resolveAddressContactHandle(
+                    user.address,
+                    handleInfo?.handle,
+                    handleInfo?.resolver,
+                  )
+                : undefined;
+              return (
+                <GridItem key={id} display="flex">
+                  <ContactCard
+                    nickname={nickname}
+                    address={user.address}
+                    avatar={user.avatar}
+                    dialog={deleteContactDialog}
+                    showActionButtons={hasPermission([
+                      PermissionRoles?.OWNER,
+                      PermissionRoles?.ADMIN,
+                      PermissionRoles?.MANAGER,
+                    ])}
+                    handleEdit={() =>
+                      handleOpenDialog({
+                        address: user.address,
+                        nickname,
+                        contactToEdit: id,
+                        handle: _contact?.handle,
+                      })
+                    }
+                    handleDelete={() => {
+                      setContactToDelete({ id, nickname });
+                      deleteContactDialog.onOpen();
+                    }}
+                  />
+                </GridItem>
+              );
+            })}
+          </Grid>
+        )}
 
         {!hasContacts && !listContactsRequest.isLoading && (
           <EmptyState
-            showAction={hasPermission([
-              PermissionRoles?.OWNER,
-              PermissionRoles?.ADMIN,
-              PermissionRoles?.MANAGER,
-            ])}
-            buttonAction={() => handleOpenDialog({})}
-            subTitle={`It seems you haven't added any favorites yet. Would you like to add one now?`}
-            buttonActionTitle="Add a new favorite"
+            h="full"
+            showAction={false}
+            title="No Data available"
+            subTitle={`Currently, there is no available data to display in this section.`}
           />
         )}
       </VStack>

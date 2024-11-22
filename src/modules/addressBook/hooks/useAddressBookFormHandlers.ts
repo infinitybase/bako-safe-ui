@@ -1,6 +1,7 @@
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
-import { Address } from 'fuels';
+import { BakoProvider } from 'bakosafe';
+import { Address, Assets } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback } from 'react';
 
@@ -23,6 +24,8 @@ export type IUseAddressBookFormHandlersProps = {
   contactDialog: UseDisclosureProps;
   listContactsRequest: UseQueryResult<ListContactsResponse, Error>;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  providerInstance: Promise<BakoProvider>;
+  fuelsTokens?: Assets;
 };
 
 const useAddressBookFormHandlers = ({
@@ -30,8 +33,10 @@ const useAddressBookFormHandlers = ({
   contactDialog,
   listContactsRequest,
   setSearch,
+  providerInstance,
+  fuelsTokens,
 }: IUseAddressBookFormHandlersProps) => {
-  const { form } = useCreateContactForm();
+  const { form } = useCreateContactForm(providerInstance, fuelsTokens);
 
   const handleOpenDialog = ({
     address,

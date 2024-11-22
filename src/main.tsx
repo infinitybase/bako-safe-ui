@@ -67,17 +67,17 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             ],
           }}
         >
-          <SocketProvider>
-            <BakoSafeQueryClientProvider>
-              <BrowserRouter>
-                <TransactionsProvider>
-                  <WorkspaceProvider>
+          <BakoSafeQueryClientProvider>
+            <BrowserRouter>
+              <TransactionsProvider>
+                <WorkspaceProvider>
+                  <SocketProvider>
                     <App />
-                  </WorkspaceProvider>
-                </TransactionsProvider>
-              </BrowserRouter>
-            </BakoSafeQueryClientProvider>
-          </SocketProvider>
+                  </SocketProvider>
+                </WorkspaceProvider>
+              </TransactionsProvider>
+            </BrowserRouter>
+          </BakoSafeQueryClientProvider>
         </FuelProvider>
       </QueryClientProvider>
     </ChakraProvider>
