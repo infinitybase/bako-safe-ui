@@ -4,12 +4,19 @@ import { CustomSkeleton } from '@/components';
 import { useScreenSize } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
   const { isLargerThan1700, isExtraLarge, isLargerThan680 } = useScreenSize();
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
+
+  const {
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
 
   if (!vault) return null;
   const members = vault?.data?.members;
@@ -37,8 +44,14 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
         mb={16}
       >
         {members?.map((member, index: number) => {
+          const handleInfo = listContactsRequest.data?.find(
+            (contact) => contact.handle_info.resolver === member.address,
+          )?.handle_info;
+
           const { contact, handle } = resolveAddressContactHandle(
             member.address,
+            handleInfo?.handle,
+            handleInfo?.resolver,
           );
 
           return (

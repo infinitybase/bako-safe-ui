@@ -1,16 +1,20 @@
 import { Input, InputProps } from '@chakra-ui/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useAddressBookInputValue } from '@/modules/addressBook/hooks';
+import {
+  useAddressBookInputValue,
+  UseAddressBookReturn,
+} from '@/modules/addressBook/hooks';
 
 interface AddressInputProps
   extends Omit<InputProps, 'value' | 'onChange' | 'placeholder'> {
   value: string;
   onChange: (value: string) => void;
+  adbForm: UseAddressBookReturn['form'];
 }
 
 const AddressInput = (props: AddressInputProps) => {
-  const { onChange, value, ...rest } = props;
+  const { onChange, value, adbForm, ...rest } = props;
 
   const [inputValue, setInputValue] = useState<string>('');
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -30,6 +34,13 @@ const AddressInput = (props: AddressInputProps) => {
 
       debounceTimeout.current = setTimeout(() => {
         const result = setAddressBookInputValue(_value);
+        const handle = result?.label.split(' - ')[0];
+
+        if (handle && handle.startsWith('@')) {
+          adbForm.setValue('handle', handle);
+          adbForm.setValue('resolver', result.value);
+        }
+
         setInputValue(result.label);
         onChange(result.value);
       }, 1500); // 1.5s debounce delay

@@ -39,6 +39,9 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
   const {
     authDetails: { userInfos },
     screenSizes: { isLarge },
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
   } = useWorkspaceContext();
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
@@ -100,9 +103,16 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
             </CustomSkeleton>
           );
         }
+        const handleInfo = listContactsRequest.data?.find(
+          (contact) => contact.handle_info.resolver === member?.address,
+        )?.handle_info;
 
         const _member = member?.address
-          ? resolveAddressContactHandle(member.address)
+          ? resolveAddressContactHandle(
+              member.address,
+              handleInfo?.handle,
+              handleInfo?.resolver,
+            )
           : undefined;
 
         return (

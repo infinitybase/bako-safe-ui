@@ -1,8 +1,8 @@
 import { IPagination } from '@/modules/core';
 import { AddressBook } from '@/modules/core/models/';
+import { SortOption } from '@/modules/transactions/services';
 
 import { WorkspaceContact } from '../../core/models/workspace';
-import { SortOption } from '@/modules/transactions/services';
 
 export type CreateContactResponse = AddressBook;
 export type UpdateContactResponse = AddressBook;
@@ -12,6 +12,8 @@ export type DeleteContactResponse = boolean;
 export interface CreateContactPayload {
   nickname: string;
   address: string;
+  handle?: string;
+  resolver?: string;
 }
 
 export interface UpdateContactPayload {
