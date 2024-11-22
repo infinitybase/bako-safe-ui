@@ -29,4 +29,23 @@ export const getUIUrl = (): string => {
   return baseUrl;
 };
 
+export const getBakoIDURL = (): string => {
+  const environment = getEnvironment();
+  let baseUrl = '';
+
+  switch (environment) {
+    case 'staging':
+      baseUrl =
+        'https://bako-id-ui-git-gr-featoffchain-sync-infinity-base.vercel.app/';
+      break;
+    case 'production':
+      baseUrl = 'https://app.bako.id/';
+      break;
+    default:
+      baseUrl = 'http://127.0.0.1:5174';
+  }
+
+  return baseUrl;
+};
+
 export { getEnvironment };
