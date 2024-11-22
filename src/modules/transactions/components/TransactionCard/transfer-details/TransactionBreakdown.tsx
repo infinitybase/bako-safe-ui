@@ -68,6 +68,8 @@ const TransactionBreakdown = ({
         {transaction.assets.map((asset, index) => (
           <AssetBoxInfo
             key={index}
+            handle={transaction.resume.handle ?? ''}
+            resolver={transaction.resume.resolver ?? ''}
             asset={{
               assetId: asset.assetId,
               amount: asset.amount,

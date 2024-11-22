@@ -32,6 +32,8 @@ export const TRANSACTION_QUERY_KEYS = {
 export interface IPayloadTransfer {
   assets: ITransferAsset[];
   name?: string;
+  handle?: string;
+  resolver?: string;
 }
 
 interface UseBakoSafeCreateTransactionParams {
@@ -51,6 +53,8 @@ const useBakoSafeCreateTransaction = ({
     async (payload: IPayloadTransfer) => {
       const { hashTxId } = await vault.transaction({
         name: payload.name!,
+        handle: payload.handle,
+        resolver: payload.resolver,
         assets: payload.assets.map((asset) => {
           const { units } = getAssetInfo(assetsMap, asset.assetId);
 

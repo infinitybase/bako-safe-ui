@@ -25,6 +25,8 @@ interface AssetBoxInfoProps extends StackProps {
   isDeposit?: boolean;
   isDeploy?: boolean;
   isContract?: boolean;
+  handle?: string;
+  resolver?: string;
 }
 
 const AssetBoxInfo = ({
@@ -32,6 +34,8 @@ const AssetBoxInfo = ({
   isDeposit,
   isDeploy,
   isContract,
+  handle,
+  resolver,
   ...props
 }: AssetBoxInfoProps) => {
   const {
@@ -42,12 +46,13 @@ const AssetBoxInfo = ({
       isExtraSmall,
       isLitteSmall,
     },
+
     assetsMap,
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
   const assetAddressInfo = asset?.to
-    ? resolveAddressContactHandle(asset.to)
+    ? resolveAddressContactHandle(asset.to, handle, resolver)
     : undefined;
 
   const assetInfo = useMemo(
