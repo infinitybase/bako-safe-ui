@@ -17,11 +17,15 @@ const useAddressBookInputValue = () => {
   } = useWorkspaceContext();
 
   const setInputValue = (value: string): AutocompleteOption => {
-    const resolver = getResolverFromHandle(value);
+    const formattedValue = value.startsWith('@') ? value.toLowerCase() : value;
+    const resolver = getResolverFromHandle(formattedValue);
 
     if (resolver) {
       const initialValue = resolver;
-      const label = AddressBookUtils.formatForAutocomplete(value, resolver);
+      const label = AddressBookUtils.formatForAutocomplete(
+        formattedValue,
+        resolver,
+      );
       setFormField({
         value: initialValue,
         label,
@@ -32,12 +36,12 @@ const useAddressBookInputValue = () => {
       };
     }
 
-    const handle = getHandleFromResolver(value);
+    const handle = getHandleFromResolver(formattedValue);
 
     if (handle && !formField.label.length) {
       return {
-        value,
-        label: AddressBookUtils.formatForAutocomplete(handle, value),
+        value: formattedValue,
+        label: AddressBookUtils.formatForAutocomplete(handle, formattedValue),
       };
     }
 
@@ -45,7 +49,7 @@ const useAddressBookInputValue = () => {
       return { ...formField };
     }
 
-    return { value, label: value };
+    return { value: formattedValue, label: formattedValue };
   };
 
   return {
