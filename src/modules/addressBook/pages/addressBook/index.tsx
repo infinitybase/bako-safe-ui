@@ -20,6 +20,7 @@ import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -61,6 +62,8 @@ const AddressBookPage = () => {
 
   const hasContacts = !!contacts?.length;
   const workspaceId = workspace?.id ?? '';
+
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
   return (
     <>
@@ -271,6 +274,17 @@ const AddressBookPage = () => {
             </>
           )}
           {contacts?.map(({ id, nickname, user }) => {
+            const handleInfo = listContactsRequest.data?.find(
+              (contact) => contact.handle_info.resolver === user?.address,
+            )?.handle_info;
+
+            const _contact = user?.address
+              ? resolveAddressContactHandle(
+                  user.address,
+                  handleInfo?.handle,
+                  handleInfo?.resolver,
+                )
+              : undefined;
             return (
               <GridItem key={id} display="flex">
                 <ContactCard
@@ -288,6 +302,7 @@ const AddressBookPage = () => {
                       address: user.address,
                       nickname,
                       contactToEdit: id,
+                      handle: _contact?.handle,
                     })
                   }
                   handleDelete={() => {

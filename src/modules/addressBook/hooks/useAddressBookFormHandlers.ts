@@ -1,15 +1,17 @@
-import { ChangeEvent, useCallback } from 'react';
-import debounce from 'lodash.debounce';
-import { useCreateContactForm } from './useCreateContactForm';
 import { UseDisclosureProps } from '@chakra-ui/react';
-import { ListContactsResponse } from '../services';
 import { UseQueryResult } from '@tanstack/react-query';
 import { Address } from 'fuels';
+import debounce from 'lodash.debounce';
+import { ChangeEvent, useCallback } from 'react';
+
+import { ListContactsResponse } from '../services';
+import { useCreateContactForm } from './useCreateContactForm';
 
 interface DialogProps {
   address?: string;
   nickname?: string;
   contactToEdit?: string;
+  handle?: string;
 }
 
 export type IUseAddressBookFormHandlersProps = {
@@ -35,6 +37,7 @@ const useAddressBookFormHandlers = ({
     address,
     nickname,
     contactToEdit,
+    handle,
   }: DialogProps) => {
     form.clearErrors('address');
     form.clearErrors('nickname');
@@ -44,6 +47,10 @@ const useAddressBookFormHandlers = ({
     setContactToEdit({ id: contactToEdit ?? '' });
     if (address) form.setValue('address', address);
     if (nickname) form.setValue('nickname', nickname);
+    if (handle) {
+      form.setValue('handle', handle);
+      form.setValue('resolver', address);
+    }
 
     contactDialog.onOpen?.();
   };

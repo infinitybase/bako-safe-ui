@@ -49,7 +49,12 @@ const AddressInput = (props: AddressInputProps) => {
   );
 
   useEffect(() => {
-    if (value) {
+    const handleFromContact = adbForm.watch('handle');
+    if (handleFromContact) {
+      const result = setAddressBookInputValue(handleFromContact);
+      setInputValue(result.label);
+      onChange(result.value);
+    } else if (!handleFromContact && value) {
       const result = setAddressBookInputValue(value);
       setInputValue(result.label);
       onChange(result.value);
