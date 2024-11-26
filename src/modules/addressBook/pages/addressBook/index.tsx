@@ -254,7 +254,6 @@ const AddressBookPage = () => {
             Address book
           </Text>
         </Box>
-        {/* USER CONTACTS */}
         <Grid
           w="full"
           templateColumns={{
@@ -275,7 +274,7 @@ const AddressBookPage = () => {
           )}
           {contacts?.map(({ id, nickname, user }) => {
             const handleInfo = listContactsRequest.data?.find(
-              (contact) => contact.handle_info.resolver === user?.address,
+              (contact) => contact.handle_info?.resolver === user?.address,
             )?.handle_info;
 
             const _contact = user?.address
