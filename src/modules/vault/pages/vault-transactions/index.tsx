@@ -88,7 +88,7 @@ const TransactionsVaultPage = () => {
   const hasTransactions = !isLoading && transactions?.length;
 
   return (
-    <Box w="full" height="100%" maxH="100%">
+    <Box w="full" h="100%" maxH="100%">
       <Drawer isOpen={menuDrawer.isOpen} onClose={menuDrawer.onClose} />
       <Box mb={10}>
         {vaultRequiredSizeToColumnLayout ? (
@@ -212,7 +212,7 @@ const TransactionsVaultPage = () => {
           />
         </HStack>
 
-        {!isSmall && (
+        {!isSmall && !!hasTransactions && (
           <TransactionTypeFilters
             mt={2}
             currentFilter={filter.txFilterType}
@@ -222,43 +222,45 @@ const TransactionsVaultPage = () => {
         )}
       </HStack>
       {/* FILTER */}
-      <TransactionFilter.Control
-        value={filter.value!}
-        onChange={(value) => {
-          setSelectedTransaction({});
-          filter.set(value as StatusFilter);
-        }}
-      >
-        <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
-        <TransactionFilter.Field
-          value={StatusFilter.COMPLETED}
-          label="Completed"
-        />
-        <TransactionFilter.Field
-          value={StatusFilter.DECLINED}
-          label="Declined"
-        />
-        <TransactionFilter.Field
-          value={TransactionStatus.AWAIT_REQUIREMENTS}
-          label="Pending"
-        />
+      {!!hasTransactions && (
+        <TransactionFilter.Control
+          value={filter.value!}
+          onChange={(value) => {
+            setSelectedTransaction({});
+            filter.set(value as StatusFilter);
+          }}
+        >
+          <TransactionFilter.Field value={StatusFilter.ALL} label="All" />
+          <TransactionFilter.Field
+            value={StatusFilter.COMPLETED}
+            label="Completed"
+          />
+          <TransactionFilter.Field
+            value={StatusFilter.DECLINED}
+            label="Declined"
+          />
+          <TransactionFilter.Field
+            value={TransactionStatus.AWAIT_REQUIREMENTS}
+            label="Pending"
+          />
 
-        {selectedTransaction.id && (
-          <HStack spacing={2}>
-            <Text color="brand.500">{selectedTransaction.name}</Text>
-            <Box
-              onClick={() => {
-                setSelectedTransaction({});
-                filter.set(StatusFilter.ALL);
-              }}
-              cursor="pointer"
-            >
-              <Icon as={LineCloseIcon} fontSize="18px" color="brand.500" />
-            </Box>
-          </HStack>
-        )}
-      </TransactionFilter.Control>
-      {isSmall && (
+          {selectedTransaction.id && (
+            <HStack spacing={2}>
+              <Text color="brand.500">{selectedTransaction.name}</Text>
+              <Box
+                onClick={() => {
+                  setSelectedTransaction({});
+                  filter.set(StatusFilter.ALL);
+                }}
+                cursor="pointer"
+              >
+                <Icon as={LineCloseIcon} fontSize="18px" color="brand.500" />
+              </Box>
+            </HStack>
+          )}
+        </TransactionFilter.Control>
+      )}
+      {isSmall && !!hasTransactions && (
         <TransactionTypeFilters
           mt={3}
           currentFilter={filter.txFilterType}
@@ -268,7 +270,7 @@ const TransactionsVaultPage = () => {
         />
       )}
       {/* TRANSACTION LIST */}
-      <CustomSkeleton isLoaded={!isLoading}>
+      <CustomSkeleton h="100%" isLoaded={!isLoading}>
         {hasTransactions ? (
           <VStack
             maxH="77.5vh"
@@ -358,17 +360,11 @@ const TransactionsVaultPage = () => {
           </VStack>
         ) : (
           <EmptyState
-            h="calc(100% - 170px)"
+            h="calc(100% - 120px)"
             mt={7}
-            isDisabled={hasBalance}
-            buttonAction={() =>
-              navigate(
-                Pages.createTransaction({
-                  workspaceId: vaultWkId!,
-                  vaultId: vault.data?.id,
-                }),
-              )
-            }
+            showAction={false}
+            title="No Data available"
+            subTitle="Currently, there is no available data to display in this section."
           />
         )}
       </CustomSkeleton>

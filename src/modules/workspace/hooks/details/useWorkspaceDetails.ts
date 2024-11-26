@@ -85,7 +85,12 @@ const useWorkspaceDetails = () => {
 
   const tokensUSD = useTokensUSDAmountRequest();
   const userVaults = useUserVaults(authDetails.userInfos.address);
-  const addressBookInfos = useAddressBook(authDetails, hasPermission);
+  const addressBookInfos = useAddressBook(
+    authDetails,
+    hasPermission,
+    providerInstance,
+    fuelsTokens,
+  );
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
   const vaultAssets = useVaultAssets(
     authDetails.userInfos.workspace?.id,

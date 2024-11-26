@@ -249,11 +249,19 @@ const AddressBookPage = () => {
           </ActionCard.Container>
         </Stack>
 
-        <Box mt={4} mb={-4} alignSelf="flex-start">
+        <Box
+          w="full"
+          display="flex"
+          alignItems={'center'}
+          flexDir={isExtraSmall ? 'column' : 'row'}
+          gap={isExtraSmall ? 2 : 4}
+          mt={6}
+        >
           <Text variant="subtitle" fontWeight="semibold" color="grey.75">
             Address book
           </Text>
         </Box>
+        
         <Grid
           w="full"
           templateColumns={{
@@ -318,14 +326,10 @@ const AddressBookPage = () => {
 
         {!hasContacts && !listContactsRequest.isLoading && (
           <EmptyState
-            showAction={hasPermission([
-              PermissionRoles?.OWNER,
-              PermissionRoles?.ADMIN,
-              PermissionRoles?.MANAGER,
-            ])}
-            buttonAction={() => handleOpenDialog({})}
-            subTitle={`It seems you haven't added any favorites yet. Would you like to add one now?`}
-            buttonActionTitle="Add a new favorite"
+            h="full"
+            showAction={false}
+            title="No Data available"
+            subTitle={`Currently, there is no available data to display in this section.`}
           />
         )}
       </VStack>
