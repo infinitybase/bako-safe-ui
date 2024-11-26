@@ -39,13 +39,11 @@ const TransactionBreakdown = ({
       flexWrap="wrap"
     >
       {isFromConnector && !isDeploy && isMobile && (
-        <>
-          <ConnectorInfos
-            transaction={transaction}
-            isNotSigned={isNotSigned}
-            isPending={isPending}
-          />
-        </>
+        <ConnectorInfos
+          transaction={transaction}
+          isNotSigned={isNotSigned}
+          isPending={isPending}
+        />
       )}
 
       {isMobile && <Divider my={6} borderColor="grey.425" />}
@@ -68,8 +66,6 @@ const TransactionBreakdown = ({
         {transaction.assets.map((asset, index) => (
           <AssetBoxInfo
             key={index}
-            handle={transaction.resume.handle ?? ''}
-            resolver={transaction.resume.resolver ?? ''}
             asset={{
               assetId: asset.assetId,
               amount: asset.amount,
