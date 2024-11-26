@@ -277,6 +277,8 @@ const AddressBookPage = () => {
               (contact) => contact.handle_info?.resolver === user?.address,
             )?.handle_info;
 
+            // commit
+
             const _contact = user?.address
               ? resolveAddressContactHandle(
                   user.address,
