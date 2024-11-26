@@ -104,7 +104,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
           );
         }
         const handleInfo = listContactsRequest.data?.find(
-          (contact) => contact.handle_info.resolver === member?.address,
+          (contact) => contact.handle_info?.resolver === member?.address,
         )?.handle_info;
 
         const _member = member?.address

@@ -53,8 +53,6 @@ const useBakoSafeCreateTransaction = ({
     async (payload: IPayloadTransfer) => {
       const { hashTxId } = await vault.transaction({
         name: payload.name!,
-        handle: payload.handle,
-        resolver: payload.resolver,
         assets: payload.assets.map((asset) => {
           const { units } = getAssetInfo(assetsMap, asset.assetId);
 
