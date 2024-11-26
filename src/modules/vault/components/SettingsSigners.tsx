@@ -45,7 +45,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
       >
         {members?.map((member, index: number) => {
           const handleInfo = listContactsRequest.data?.find(
-            (contact) => contact.handle_info.resolver === member.address,
+            (contact) => contact.handle_info?.resolver === member.address,
           )?.handle_info;
 
           const { contact, handle } = resolveAddressContactHandle(
