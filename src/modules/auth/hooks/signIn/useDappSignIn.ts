@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useSocket } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import {
   ActionKeys,
@@ -20,7 +19,6 @@ const useDappSignIn = () => {
 
   const navigate = useNavigate();
   const { location, sessionId, byConnector, username } = useQueryParams();
-  const { connect } = useSocket();
 
   const redirect = useCallback(() => {
     const isRedirectToPrevious = !!location.state?.from;
@@ -87,10 +85,6 @@ const useDappSignIn = () => {
 
     return _sessionId;
   }, [sessionId]);
-
-  useEffect(() => {
-    connect(getSessionId());
-  });
 
   useEffect(() => {
     if (isMounted.current) {

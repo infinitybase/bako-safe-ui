@@ -8,6 +8,7 @@ interface IInstantiateVaultProps {
   providerUrl: string;
   configurable?: string;
   predicateAddress?: string;
+  version?: string;
 }
 
 const instantiateVault = async ({
@@ -15,11 +16,13 @@ const instantiateVault = async ({
   providerUrl,
   configurable,
   predicateAddress,
+  version,
 }: IInstantiateVaultProps) => {
   if (configurable && provider) {
     const vault = new Vault(
       provider,
       configurable as unknown as VaultConfigurable,
+      version,
     );
 
     return vault;

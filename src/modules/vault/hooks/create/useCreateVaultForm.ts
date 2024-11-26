@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { BakoProvider } from 'bakosafe';
+import { Assets } from 'fuels';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -7,8 +8,16 @@ import { CookieName, CookiesConfig } from '@/config/cookies';
 import { AddressUtils } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-const schema = (providerInstance: Promise<BakoProvider>) =>
-  yup
+const schema = (
+  providerInstance: Promise<BakoProvider>,
+  fuelsTokens?: Assets,
+) => {
+  const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
+    item.networks
+      .map((network) => network['assetId'] ?? network['address'])
+      .filter(Boolean),
+  );
+  return yup
     .object({
       name: yup.string().required('Name is required').trim(),
       description: yup.string().optional(),
@@ -49,9 +58,13 @@ const schema = (providerInstance: Promise<BakoProvider>) =>
                   if (address === CookiesConfig.getCookie(CookieName.ADDRESS)) {
                     return true;
                   }
+                  const isAssetIdOrAssetAddress = !!assetIdsAndAddresses?.find(
+                    (item) => item === address,
+                  );
 
-                  const isValid = AddressUtils.isValid(address);
-                  if (!isValid) return true;
+                  const isValid =
+                    AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
+                  if (!isValid) return false;
 
                   const provider = await providerInstance;
                   return await provider.isUserAccount(address);
@@ -80,10 +93,11 @@ const schema = (providerInstance: Promise<BakoProvider>) =>
         return true;
       },
     );
+};
 
 const useCreateVaultForm = (account?: string) => {
-  const { providerInstance } = useWorkspaceContext();
-  const vaultSchema = schema(providerInstance);
+  const { providerInstance, fuelsTokens } = useWorkspaceContext();
+  const vaultSchema = schema(providerInstance, fuelsTokens);
 
   const form = useForm({
     mode: 'onChange',
