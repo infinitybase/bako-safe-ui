@@ -143,6 +143,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           assetId: transaction.asset,
           to: transaction.value,
         })),
+        handle: data.handle,
+        resolver: data.resolver,
       },
       {
         onSuccess: () => {
@@ -161,6 +163,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           assetId: transaction.asset,
           to: transaction.value,
         })),
+        handle: data.handle,
+        resolver: data.resolver,
       },
       {
         onSuccess: () => {

@@ -12,6 +12,7 @@ interface DialogProps {
   address?: string;
   nickname?: string;
   contactToEdit?: string;
+  handle?: string;
 }
 
 export type IUseAddressBookFormHandlersProps = {
@@ -41,6 +42,7 @@ const useAddressBookFormHandlers = ({
     address,
     nickname,
     contactToEdit,
+    handle,
   }: DialogProps) => {
     form.clearErrors('address');
     form.clearErrors('nickname');
@@ -50,6 +52,10 @@ const useAddressBookFormHandlers = ({
     setContactToEdit({ id: contactToEdit ?? '' });
     if (address) form.setValue('address', address);
     if (nickname) form.setValue('nickname', nickname);
+    if (handle) {
+      form.setValue('handle', handle);
+      form.setValue('resolver', address);
+    }
 
     contactDialog.onOpen?.();
   };

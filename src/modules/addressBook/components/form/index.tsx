@@ -8,11 +8,9 @@ import {
 import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
+import { AddressInput } from '@/components/input';
 import { queryClient } from '@/config/query-client';
-import {
-  useAddressBookInputValue,
-  UseAddressBookReturn,
-} from '@/modules/addressBook/hooks';
+import { UseAddressBookReturn } from '@/modules/addressBook/hooks';
 import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 
 export interface CreateContactFormProps {
@@ -21,8 +19,6 @@ export interface CreateContactFormProps {
 }
 
 const CreateContactForm = ({ form }: CreateContactFormProps) => {
-  const { setInputValue } = useAddressBookInputValue();
-
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
@@ -56,14 +52,11 @@ const CreateContactForm = ({ form }: CreateContactFormProps) => {
         name="address"
         render={({ field, fieldState }) => (
           <FormControl isInvalid={fieldState.invalid}>
-            <Input
+            <AddressInput
               variant="dark"
-              value={setInputValue(field.value).label}
-              onChange={(e) => {
-                e.target.value = setInputValue(e.target.value).value;
-                field.onChange(e);
-              }}
-              placeholder=" "
+              value={field.value}
+              onChange={field.onChange}
+              adbForm={form}
             />
             <FormLabel>Address</FormLabel>
             <FormHelperText color="error.500">

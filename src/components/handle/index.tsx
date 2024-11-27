@@ -6,9 +6,12 @@ import { HandleUtils } from '@/utils/handle';
 
 interface HandleProps extends TextProps {
   value: string;
+  onClick?: () => void;
 }
 
-const Handle = ({ value, ...rest }: HandleProps) => {
+const Handle = (props: HandleProps) => {
+  const { value, onClick, ...rest } = props;
+
   const { isLowerThanFourHundredAndThirty } = useScreenSize();
 
   const _value = useMemo(() => HandleUtils.fromHandle(value), [value]);
@@ -21,6 +24,8 @@ const Handle = ({ value, ...rest }: HandleProps) => {
       spacing={1}
       alignItems="center"
       justifyContent="center"
+      cursor={onClick ? 'pointer' : 'default'}
+      onClick={onClick}
     >
       <Text fontSize="xs" color="grey.50">
         @

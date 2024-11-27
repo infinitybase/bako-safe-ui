@@ -39,13 +39,11 @@ const TransactionBreakdown = ({
       flexWrap="wrap"
     >
       {isFromConnector && !isDeploy && isMobile && (
-        <>
-          <ConnectorInfos
-            transaction={transaction}
-            isNotSigned={isNotSigned}
-            isPending={isPending}
-          />
-        </>
+        <ConnectorInfos
+          transaction={transaction}
+          isNotSigned={isNotSigned}
+          isPending={isPending}
+        />
       )}
 
       {isMobile && <Divider my={6} borderColor="grey.425" />}

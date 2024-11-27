@@ -16,6 +16,8 @@ export type IUseAddressBookMutationsProps = {
   form: UseFormReturn<{
     nickname: string;
     address: string;
+    handle?: string;
+    resolver?: string;
   }>;
   deleteContactDialog: UseDisclosureProps;
   contactDialog: UseDisclosureProps;
@@ -105,10 +107,12 @@ const useAddressBookMutations = ({
   });
 
   const handleCreateContact = form.handleSubmit(
-    async ({ nickname, address }) => {
+    async ({ nickname, address, resolver, handle }) => {
       createContactRequest.mutate({
         nickname,
         address: Address.fromString(address).bech32Address,
+        resolver,
+        handle,
       });
     },
   );

@@ -8,7 +8,7 @@ const useAddressNicknameResolver = () => {
       handlers: { contactByAddress },
     },
     offChainSync: {
-      handlers: { getHandleFromResolver },
+      handlers: { getHandleFromResolver, getResolverFromHandle },
     },
   } = useWorkspaceContext();
 
@@ -24,13 +24,17 @@ const useAddressNicknameResolver = () => {
   );
 
   const resolveAddressContactHandle = useCallback(
-    (address: string) => {
+    (address: string, handle?: string, resolver?: string) => {
       const contact = contactByAddress(address)?.nickname;
-      const handle = getHandleFromResolver(address);
+      const resolverFromHandle = handle ? getResolverFromHandle(handle) : null;
+
+      const isValidHandle =
+        !!resolverFromHandle && resolverFromHandle === resolver;
+      const primaryHandle = getHandleFromResolver(address);
 
       return {
         contact,
-        handle,
+        handle: isValidHandle ? handle : primaryHandle,
       };
     },
     [contactByAddress, getHandleFromResolver],

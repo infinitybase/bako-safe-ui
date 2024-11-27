@@ -1,9 +1,9 @@
 import { useMediaQuery } from '@chakra-ui/react';
 
 const useScreenSize = () => {
+  // Widths
   const [isExtraLarge] = useMediaQuery('(min-width: 85em)'); //1360px
   const [isLarge] = useMediaQuery('(max-width: 84em)'); //1344px
-  const [isLargerThan1210] = useMediaQuery('(min-width: 75.625em)'); //1210px
   const [isMobile] = useMediaQuery('(max-width: 62em)'); //992px
   const [isSmall] = useMediaQuery('(max-width: 37.48em)'); //600px
   const [isLitteSmall] = useMediaQuery('(max-width: 25em)'); //400px
@@ -12,6 +12,10 @@ const useScreenSize = () => {
   const [vaultRequiredSizeToColumnLayout] = useMediaQuery(
     '(max-width: 75.62em)',
   ); //1210px
+
+  const [isLargerThan1700] = useMediaQuery('(min-width: 106.25em)'); //1700px
+  const [isLargerThan1210] = useMediaQuery('(min-width: 75.625em)'); //1210px
+  const [isLargerThan680] = useMediaQuery('(min-width: 42.5em)'); //680px
 
   // Heights
   const [isMdHeight] = useMediaQuery('(max-height: 48em)'); //768px
@@ -36,7 +40,6 @@ const useScreenSize = () => {
 
   return {
     isLarge,
-    isLargerThan1210,
     isMobile,
     isSmall,
     isLitteSmall,
@@ -48,6 +51,9 @@ const useScreenSize = () => {
     isExtraSmallDevice,
     isExtraLarge,
     isLowerThanFourHundredAndThirty,
+    isLargerThan1700,
+    isLargerThan1210,
+    isLargerThan680,
     screenHeights,
   };
 };

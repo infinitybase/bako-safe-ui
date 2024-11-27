@@ -32,6 +32,8 @@ export const TRANSACTION_QUERY_KEYS = {
 export interface IPayloadTransfer {
   assets: ITransferAsset[];
   name?: string;
+  handle?: string;
+  resolver?: string;
 }
 
 interface UseBakoSafeCreateTransactionParams {

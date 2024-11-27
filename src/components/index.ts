@@ -1,3 +1,4 @@
+export * from './addAddressBook';
 export * from './address';
 export * from './autocomplete';
 export * from './bakoLoading';

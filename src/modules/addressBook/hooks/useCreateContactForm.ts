@@ -10,14 +10,16 @@ const useCreateContactForm = (
   providerInstance: Promise<BakoProvider>,
   fuelsTokens?: Assets,
 ) => {
-  const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
-    item.networks
+  const assetIdsAndAddresses = fuelsTokens?.flatMap((item) => {
+    return item.networks
       .map((network) => network['assetId'] ?? network['address'])
-      .filter(Boolean),
-  );
+      .filter(Boolean);
+  });
 
   const schema = yup.object({
     nickname: yup.string().required('Name is required.'),
+    handle: yup.string().optional(),
+    resolver: yup.string().optional(),
     address: yup
       .string()
       .required('Address is required.')

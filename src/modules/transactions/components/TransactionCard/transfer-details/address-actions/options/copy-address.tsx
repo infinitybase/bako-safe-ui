@@ -5,7 +5,7 @@ import { AddressUtils } from '@/modules/core/utils/address';
 
 interface CopyAddressProps {
   address: string;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const CopyAddress = ({ address, onClose }: CopyAddressProps) => {
@@ -19,7 +19,7 @@ const CopyAddress = ({ address, onClose }: CopyAddressProps) => {
       cursor="pointer"
       onClick={() => {
         clipboard.onCopy();
-        setTimeout(() => onClose(), 600);
+        setTimeout(() => onClose?.(), 600);
       }}
     >
       <Icon

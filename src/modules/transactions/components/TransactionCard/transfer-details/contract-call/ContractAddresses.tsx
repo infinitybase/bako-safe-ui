@@ -78,7 +78,7 @@ const ContractAddresses = ({
               </Text>
             )}
 
-            {(!_from?.contact || !_from.handle) && (
+            {!_from?.contact && !_from?.handle && (
               <Address
                 value={from.address}
                 justifyContent="start"
@@ -101,7 +101,11 @@ const ContractAddresses = ({
             )}
           </VStack>
 
-          <AddressActions address={from?.address} handle={_from?.handle} />
+          <AddressActions
+            address={from?.address}
+            handle={_from?.handle}
+            hasContact={!!_from?.contact}
+          />
         </HStack>
       )}
 
@@ -137,7 +141,7 @@ const ContractAddresses = ({
               </Text>
             )}
 
-            {(!_to?.contact || !_to.handle) && (
+            {!_to?.contact && !_to?.handle && (
               <Address
                 value={to.address}
                 justifyContent="end"
@@ -160,7 +164,11 @@ const ContractAddresses = ({
             )}
           </VStack>
 
-          <AddressActions address={to?.address} handle={_to?.handle} />
+          <AddressActions
+            address={to?.address}
+            handle={_to?.handle}
+            hasContact={!!_to?.contact}
+          />
         </HStack>
       )}
     </HStack>

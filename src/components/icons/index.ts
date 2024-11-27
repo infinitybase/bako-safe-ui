@@ -55,3 +55,4 @@ export * from './usdc';
 export * from './user-add';
 export * from './vault';
 export * from './vault-success';
+export * from './warning';

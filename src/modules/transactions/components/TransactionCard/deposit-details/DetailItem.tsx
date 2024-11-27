@@ -90,7 +90,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   </Text>
                 )}
 
-                {(!from?.contact || !from.handle) && (
+                {!from?.contact && !from?.handle && (
                   <Address
                     value={sentBy}
                     isDeposit={true}
@@ -114,7 +114,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 )}
               </VStack>
 
-              <AddressActions address={sentBy} handle={from?.handle} />
+              <AddressActions
+                address={sentBy}
+                handle={from?.handle}
+                hasContact={!!from?.contact}
+              />
             </HStack>
 
             <Box display="flex" justifyContent="center" flex={1}>
@@ -157,7 +161,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                   </Text>
                 )}
 
-                {(!to?.contact || !to.handle) && (
+                {!to?.contact && !to?.handle && (
                   <Address
                     value={asset?.to ?? ''}
                     isDeposit={true}
@@ -179,7 +183,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 )}
               </VStack>
 
-              <AddressActions address={asset?.to} handle={to?.handle} />
+              <AddressActions
+                address={asset?.to}
+                handle={to?.handle}
+                hasContact={!!to?.contact}
+              />
             </HStack>
           </Flex>
         </VStack>
@@ -207,7 +215,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 </Text>
               )}
 
-              {(!from?.contact || !from.handle) && (
+              {!from?.contact && !from?.handle && (
                 <Address
                   value={sentBy}
                   isDeposit={true}
@@ -225,7 +233,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               )}
             </VStack>
 
-            <AddressActions address={sentBy} handle={from?.handle} />
+            <AddressActions
+              address={sentBy}
+              handle={from?.handle}
+              hasContact={!!from?.contact}
+            />
           </HStack>
 
           <Box display="flex" justifyContent="center" w="full">
@@ -259,7 +271,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
                 </Text>
               )}
 
-              {(!to?.contact || !to.handle) && (
+              {!to?.contact && !to?.handle && (
                 <Address
                   value={asset?.to ?? ''}
                   isDeposit={true}
@@ -277,7 +289,11 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
               )}
             </VStack>
 
-            <AddressActions address={asset?.to} handle={to?.handle} />
+            <AddressActions
+              address={asset?.to}
+              handle={to?.handle}
+              hasContact={!!to?.contact}
+            />
           </HStack>
         </>
       )}

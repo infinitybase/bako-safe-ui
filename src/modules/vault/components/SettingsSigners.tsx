@@ -1,21 +1,30 @@
-import { Badge, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { Badge, Box, Grid, HStack, Text } from '@chakra-ui/react';
 
 import { CustomSkeleton } from '@/components';
+import { useScreenSize } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { SignersDetailsProps } from '@/modules/core/models/predicate';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CardMember } from './CardMember';
 
 const SettingsSigners = ({ vault }: SignersDetailsProps) => {
-  const { resolveContactOrHandle } = useAddressNicknameResolver();
+  const { isLargerThan1700, isExtraLarge, isLargerThan680 } = useScreenSize();
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
+
+  const {
+    addressBookInfos: {
+      requests: { listContactsRequest },
+    },
+  } = useWorkspaceContext();
 
   if (!vault) return null;
   const members = vault?.data?.members;
 
   return (
-    <Box w={{ base: 'full', sm: 'auto' }}>
+    <Box w="full">
       <HStack alignItems="center" mb={5} w="full" spacing={4}>
-        <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+        <Text color="grey.50" fontWeight="bold" fontSize="sm">
           Signers
         </Text>
         <Badge p={0.1} rounded="lg" px={3} fontWeight="medium" variant="gray">
@@ -23,33 +32,42 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           {vault.data?.members?.length}
         </Badge>
       </HStack>
-      <VStack spacing={5}>
-        <Grid
-          w="100%"
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            xs: 'repeat(3, 1fr)',
-          }}
-          gap={6}
-          mb={16}
-        >
-          {members?.map((member, index: number) => {
-            const nickname = resolveContactOrHandle(member.address);
+      <Grid
+        w="full"
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          xs: isLargerThan680 ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+          md: isExtraLarge ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
+          '2xl': isLargerThan1700 ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+        }}
+        gap={3}
+        mb={16}
+      >
+        {members?.map((member, index: number) => {
+          const handleInfo = listContactsRequest.data?.find(
+            (contact) => contact.handle_info?.resolver === member.address,
+          )?.handle_info;
 
-            return (
-              <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
-                <CardMember
-                  isOwner={vault?.data?.owner?.id === member.id}
-                  member={{
-                    ...member,
-                    nickname,
-                  }}
-                />
-              </CustomSkeleton>
-            );
-          })}
-        </Grid>
-      </VStack>
+          const { contact, handle } = resolveAddressContactHandle(
+            member.address,
+            handleInfo?.handle,
+            handleInfo?.resolver,
+          );
+
+          return (
+            <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
+              <CardMember
+                isOwner={vault?.data?.owner?.id === member.id}
+                member={{
+                  ...member,
+                  nickname: contact,
+                  handle,
+                }}
+              />
+            </CustomSkeleton>
+          );
+        })}
+      </Grid>
     </Box>
   );
 };

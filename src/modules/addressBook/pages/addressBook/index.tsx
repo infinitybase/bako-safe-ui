@@ -20,6 +20,7 @@ import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
 import { Pages, PermissionRoles } from '@/modules/core';
+import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -61,6 +62,8 @@ const AddressBookPage = () => {
 
   const hasContacts = !!contacts?.length;
   const workspaceId = workspace?.id ?? '';
+
+  const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
   return (
     <>
@@ -258,56 +261,68 @@ const AddressBookPage = () => {
             Address book
           </Text>
         </Box>
-        {/* USER CONTACTS */}
-        {hasContacts && (
-          <Grid
-            w="full"
-            templateColumns={{
-              base: 'repeat(1, 1fr)',
-              xs: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-              xl: 'repeat(3, 1fr)',
-              '2xl': 'repeat(4, 1fr)',
-            }}
-            gap={6}
-            pb={0}
-          >
-            {!hasContacts && listContactsRequest.isLoading && (
-              <>
-                <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-                <CustomSkeleton flex={1} h="200px" borderRadius={2} />
-              </>
-            )}
-            {contacts?.map(({ id, nickname, user }) => {
-              return (
-                <GridItem key={id} display="flex">
-                  <ContactCard
-                    nickname={nickname}
-                    address={user.address}
-                    avatar={user.avatar}
-                    dialog={deleteContactDialog}
-                    showActionButtons={hasPermission([
-                      PermissionRoles?.OWNER,
-                      PermissionRoles?.ADMIN,
-                      PermissionRoles?.MANAGER,
-                    ])}
-                    handleEdit={() =>
-                      handleOpenDialog({
-                        address: user.address,
-                        nickname,
-                        contactToEdit: id,
-                      })
-                    }
-                    handleDelete={() => {
-                      setContactToDelete({ id, nickname });
-                      deleteContactDialog.onOpen();
-                    }}
-                  />
-                </GridItem>
-              );
-            })}
-          </Grid>
-        )}
+        
+        <Grid
+          w="full"
+          templateColumns={{
+            base: 'repeat(1, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            xl: 'repeat(3, 1fr)',
+            '2xl': 'repeat(4, 1fr)',
+          }}
+          gap={6}
+          pb={0}
+        >
+          {!hasContacts && listContactsRequest.isLoading && (
+            <>
+              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+              <CustomSkeleton flex={1} h="200px" borderRadius={2} />
+            </>
+          )}
+          {contacts?.map(({ id, nickname, user }) => {
+            const handleInfo = listContactsRequest.data?.find(
+              (contact) => contact.handle_info?.resolver === user?.address,
+            )?.handle_info;
+
+            // commit
+
+            const _contact = user?.address
+              ? resolveAddressContactHandle(
+                  user.address,
+                  handleInfo?.handle,
+                  handleInfo?.resolver,
+                )
+              : undefined;
+            return (
+              <GridItem key={id} display="flex">
+                <ContactCard
+                  nickname={nickname}
+                  address={user.address}
+                  avatar={user.avatar}
+                  dialog={deleteContactDialog}
+                  showActionButtons={hasPermission([
+                    PermissionRoles?.OWNER,
+                    PermissionRoles?.ADMIN,
+                    PermissionRoles?.MANAGER,
+                  ])}
+                  handleEdit={() =>
+                    handleOpenDialog({
+                      address: user.address,
+                      nickname,
+                      contactToEdit: id,
+                      handle: _contact?.handle,
+                    })
+                  }
+                  handleDelete={() => {
+                    setContactToDelete({ id, nickname });
+                    deleteContactDialog.onOpen();
+                  }}
+                />
+              </GridItem>
+            );
+          })}
+        </Grid>
 
         {!hasContacts && !listContactsRequest.isLoading && (
           <EmptyState
