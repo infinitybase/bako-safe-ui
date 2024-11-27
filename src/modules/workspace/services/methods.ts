@@ -166,7 +166,7 @@ export class WorkspaceService {
     const atual = window.localStorage.getItem('fuelsTokens');
     const atualObj: Assets = JSON.parse(atual || '{}');
 
-    return [...data, ...Object.values(atualObj).map((item) => item)];
+    return [...Object.values(atualObj).map((item) => item), ...data];
   }
 
   static async getTokenFuelApi(assetId: string, chainId: number, key: string) {
