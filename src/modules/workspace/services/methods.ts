@@ -11,6 +11,7 @@ import {
   Workspace,
 } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { localStorageKeys } from '@/modules/auth';
 
 export interface IWitnesses {
   account: string;
@@ -163,7 +164,9 @@ export class WorkspaceService {
     }
 
     const data: Assets = await response.json();
-    const atual = window.localStorage.getItem('fuelsTokens');
+    const atual = window.localStorage.getItem(
+      localStorageKeys.FUEL_MAPPED_TOKENS,
+    );
     const atualObj: Assets = JSON.parse(atual || '{}');
 
     return [...Object.values(atualObj).map((item) => item), ...data];

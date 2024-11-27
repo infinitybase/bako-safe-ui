@@ -14,7 +14,7 @@ const schema = (
 ) => {
   const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
     item.networks
-      .map((network) => network['assetId'] ?? network['address'])
+      ?.map((network) => network['assetId'] ?? network['address'])
       .filter(Boolean),
   );
   return yup

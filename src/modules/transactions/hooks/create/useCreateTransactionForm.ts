@@ -26,7 +26,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
   const { providerInstance, fuelsTokens } = useWorkspaceContext();
   const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
     item.networks
-      .map((network) => network['assetId'] ?? network['address'])
+      ?.map((network) => network['assetId'] ?? network['address'])
       .filter(Boolean),
   );
 

@@ -18,7 +18,7 @@ const formatAssetAmount = ({
   const units =
     fuelsTokens
       ?.map((asset) => {
-        const network = asset.networks.find(
+        const network = asset?.networks?.find(
           (network) => network && network.chainId === chainId,
         ) as NetworkFuel;
 
