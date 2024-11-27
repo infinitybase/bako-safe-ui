@@ -274,6 +274,8 @@ export const localStorageKeys = {
   NETWORKS: 'bakosafe/networks/list',
   SELECTED_CHAIN_ID: 'bakosafe/selected-chain-id',
   SELECTED_NETWORK: 'bakosafe/selected-network',
+  FUEL_MAPPED_TOKENS: 'bakosafe/fuel-mapped-tokens',
+  FUEL_MAPPED_NFTS: 'bakosafe/fuel-mapped-nfts',
 };
 
 export const UserQueryKey = {

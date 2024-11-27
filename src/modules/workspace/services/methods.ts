@@ -86,6 +86,7 @@ export type IWroskapceBalance = {
 
 export type GetWorkspaceBalanceResponse = IWroskapceBalance;
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class WorkspaceService {
   static async list() {
     const { data } =
@@ -162,7 +163,48 @@ export class WorkspaceService {
     }
 
     const data: Assets = await response.json();
-    return data;
+    const atual = window.localStorage.getItem('fuelsTokens');
+    const atualObj: Assets = JSON.parse(atual || '{}');
+
+    return [...data, ...Object.values(atualObj).map((item) => item)];
+  }
+
+  static async getTokenFuelApi(assetId: string, chainId: number, key: string) {
+    const _chainId: { [key: number]: string } = {
+      [9889]: 'https://mainnet-explorer.fuel.network',
+      [0]: 'https://explorer-indexer-testnet.fuel.network',
+    };
+
+    const url = `${_chainId[chainId]}/assets/${assetId}`;
+
+    const response = await fetch(url).then(async (res) => {
+      return await res.json();
+    });
+
+    const atual = window.localStorage.getItem(key);
+    const atualObj = JSON.parse(atual || '{}');
+
+    atualObj[assetId] = response;
+    window.localStorage.setItem(key, JSON.stringify(atualObj));
+
+    return atualObj;
+  }
+
+  static async getMyMappedTokens(
+    assetId: string,
+    chainId: number,
+    key: string,
+  ) {
+    const atual = window.localStorage.getItem(key);
+    const atualObj = JSON.parse(atual || '{}');
+
+    if (atualObj[assetId]) {
+      return atualObj[assetId];
+    }
+
+    const call = await WorkspaceService.getTokenFuelApi(assetId, chainId, key);
+
+    return call[assetId];
   }
 
   static async deleteMember(payload: DeleteWorkspaceMemberPayload) {
