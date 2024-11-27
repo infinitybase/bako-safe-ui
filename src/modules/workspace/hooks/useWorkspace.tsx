@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { queryClient } from '@/config';
@@ -7,10 +7,22 @@ import { IUserInfos } from '@/modules/auth/services';
 import { useHomeDataRequest } from '@/modules/home/hooks/useHomeDataRequest';
 
 // import { useNotification } from '@/modules/notification';
-import { AssetMap, Pages } from '../../core';
+import {
+  AssetMap,
+  Pages,
+  SocketEvents,
+  SocketUsernames,
+  useSocket,
+} from '../../core';
 import { PermissionRoles, WorkspacesQueryKey } from '../../core/models';
 // import { useSelectWorkspace } from './select';
 import { useGetWorkspaceBalanceRequest } from './useGetWorkspaceBalanceRequest';
+
+type HandleWithSocketEventProps = {
+  sessionId: string;
+  to: string;
+  type: string;
+};
 
 const VAULTS_PER_PAGE = 8;
 
@@ -25,6 +37,7 @@ const useWorkspace = (
 ) => {
   const navigate = useNavigate();
   const { workspaceId, vaultId } = useParams();
+  const { socket } = useSocket();
 
   const [visibleBalance, setVisibleBalance] = useState(false);
 
@@ -98,6 +111,24 @@ const useWorkspace = (
     },
     [userInfos?.onSingleWorkspace, userInfos.workspace?.permission, vaultId],
   );
+
+  const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
+    const isValid =
+      to === SocketUsernames.UI && type === SocketEvents.VAULT_UPDATE;
+    if (isValid) {
+      workspaceBalance.refetch();
+      latestPredicates.refetch();
+    }
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+
+    return () => {
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    };
+  }, []);
 
   return {
     workspaceDialog,

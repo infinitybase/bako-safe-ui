@@ -97,20 +97,21 @@ const useTransactionDetails = () => {
 
   const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
     const isValid =
-      to === SocketUsernames.UI && type === SocketEvents.NOTIFICATION;
+      to === SocketUsernames.UI && type === SocketEvents.TRANSACTION_UPDATE;
     if (isValid) {
       pendingSignerTransactions.refetch();
       homeTransactions.request.refetch();
       vaultTransactions.request.refetch();
+      transactionsPageList.request.refetch();
     }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    socket.on(SocketEvents.TRANSACTION_UPDATE, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+      socket.off(SocketEvents.TRANSACTION_UPDATE, handleWithSocketEvent);
     };
   }, []);
 
