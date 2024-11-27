@@ -41,7 +41,7 @@ export const formatedAssets = (chainId: number): Asset[] =>
         asset?.networks?.find(
           (network) => network && network.chainId === chainId,
         ) ?? null;
-      if (!network && asset?.name && asset?.symbol) {
+      if (!network && asset?.name && asset?.symbol && asset) {
         acc.push({
           name: asset.name,
           slug: asset.symbol,
@@ -49,7 +49,8 @@ export const formatedAssets = (chainId: number): Asset[] =>
           assetId: asset.assetId,
           //@ts-ignore
           icon: asset?.metadata?.URI,
-          units: UNKNOWN_ASSET_UNITS,
+          //@ts-ignore
+          units: asset.decimals,
         });
       } else if (network && network.type === 'fuel') {
         acc.push({
