@@ -85,6 +85,7 @@ const Amount = ({
                   assetsMap[operationAssets.assetId]?.icon ??
                   assetsMap['UNKNOWN'].icon
                 }
+                borderRadius={100}
                 alt="Asset Icon"
                 objectFit="cover"
               />
@@ -99,6 +100,7 @@ const Amount = ({
                   src={
                     assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
                   }
+                  borderRadius={100}
                   alt="Asset Icon"
                   objectFit="cover"
                 />

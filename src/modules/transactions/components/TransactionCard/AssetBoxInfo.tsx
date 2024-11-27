@@ -88,11 +88,12 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={6} // Largura responsiva
-            h={6} // Altura responsiva
-            src={assetInfo?.icon ?? ''} // URL da imagem com fallback
-            alt="Asset Icon" // Texto alternativo para acessibilidade
-            objectFit="cover" // Ajuste da imagem
+            w={6}
+            h={6}
+            src={assetInfo?.icon ?? ''}
+            borderRadius={100}
+            alt="Asset Icon"
+            objectFit="cover"
           />
 
           <Text fontSize="sm" color="grey.500">

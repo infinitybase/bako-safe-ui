@@ -35,6 +35,7 @@ const DappTransactionAsset = ({ assets }: FeeProps) => {
               w={6}
               h={6}
               src={asset?.icon ?? ''}
+              borderRadius={100}
               alt="Asset Icon"
               objectFit="cover"
             />

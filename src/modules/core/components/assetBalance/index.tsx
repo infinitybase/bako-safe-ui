@@ -74,6 +74,7 @@ const AssetsBalanceCard = ({
             w={{ base: 8, sm: 10 }}
             h={{ base: 8, sm: 10 }}
             src={assetsInfo?.icon ?? ''}
+            borderRadius={100}
             alt="Asset Icon"
             objectFit="cover"
           />
