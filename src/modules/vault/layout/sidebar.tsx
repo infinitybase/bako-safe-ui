@@ -16,8 +16,7 @@ import { VaultBox, VaultListModal } from '@/modules/vault/components';
 import { useVaultDrawer } from '@/modules/vault/components/modal/hook';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-
-const { VITE_BAKO_ID_URL } = import.meta.env;
+import { getBakoIDURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
@@ -211,7 +210,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
           mt="auto"
           icon={<Icon as={BakoIdIcon} h={10} w={102.5} />}
           title="Register your Handles"
-          onClick={() => window.open(VITE_BAKO_ID_URL, '_BLANK')}
+          onClick={() => window.open(getBakoIDURL(), '_blank')}
         />
       </VStack>
     </Box>

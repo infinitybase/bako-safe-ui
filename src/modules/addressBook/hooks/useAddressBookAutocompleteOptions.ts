@@ -31,6 +31,7 @@ type AddressBookAutocompleteOptionsProps = {
   dynamicCurrentIndex?: number;
   canRepeatAddresses?: boolean;
   handleCustomOption?: (value: string) => AutocompleteOption;
+  setResolverAndHandle?: (resolver?: string, handle?: string) => void;
 };
 
 export type AddressesFields = { [key: string]: string }[];
@@ -46,6 +47,7 @@ const useAddressBookAutocompleteOptions = ({
   dynamicCurrentIndex,
   canRepeatAddresses,
   handleCustomOption,
+  setResolverAndHandle,
 }: AddressBookAutocompleteOptionsProps) => {
   const contactIds = contacts.map((contact) => contact.id).join('-');
 
@@ -83,6 +85,11 @@ const useAddressBookAutocompleteOptions = ({
       if (!isMyAddress) return options;
 
       const option = handleCustomOption?.(fieldValue);
+      const handle = option?.label.split(' - ')[0];
+
+      if (handle && handle.startsWith('@')) {
+        setResolverAndHandle?.(option?.value, handle);
+      }
       return option
         ? [...options, option]
         : [...options, { value: fieldValue, label: fieldValue }];

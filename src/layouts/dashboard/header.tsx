@@ -3,6 +3,7 @@ import {
   Box,
   chakra,
   Flex,
+  Heading,
   HStack,
   Icon,
   Image,
@@ -23,7 +24,9 @@ import { FaChevronDown } from 'react-icons/fa';
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
   AddressWithCopyBtn,
+  Dialog,
   NotificationIcon,
+  WarningIcon,
   PlusIcon,
   UnknownIcon,
 } from '@/components';
@@ -47,6 +50,7 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
+import React from 'react';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -98,6 +102,8 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
 
+  const [openAlert, setOpenAlert] = React.useState(false);
+
   const name = mySettingsRequest.data?.name ?? '';
   const hasNickName = name && !AddressUtils.isValid(name);
 
@@ -120,6 +126,85 @@ const UserBox = () => {
 
   const feedbackForm = () =>
     window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
+
+  const alertComponent = () => {
+    return (
+      <Dialog.Modal
+        isOpen={openAlert}
+        onClose={() => setOpenAlert(false)}
+        closeOnOverlayClick={false}
+        size={{
+          base: 'full',
+          sm: 'sm',
+        }}
+        xsBreakPointPy={6}
+      >
+        <Dialog.Header
+          title=""
+          description=""
+          hidden={true}
+          mb={0}
+          mt={{ base: 4, xs: 0 }}
+          maxW={385}
+          h={6}
+        />
+
+        <Dialog.Body
+          w="full"
+          maxW={385}
+          h="248px"
+          display="flex"
+          alignItems="center"
+          px={4}
+          mb="18px"
+          mt={{ base: 40, sm: '2px' }}
+        >
+          <VStack w="full" spacing={8}>
+            <WarningIcon w={24} h={24} />
+
+            <VStack spacing={6}>
+              <Heading fontSize="xl" color="grey.75">
+                {'Signer address copied!'}
+              </Heading>
+              <Text
+                variant="description"
+                color="grey.250"
+                fontSize="xs"
+                textAlign="center"
+              >
+                {
+                  'For signing purposes only! DO NOT send any assets to this address.'
+                }
+              </Text>
+            </VStack>
+          </VStack>
+        </Dialog.Body>
+
+        <Dialog.Actions
+          w="full"
+          maxW={385}
+          dividerBorderColor="grey.425"
+          position="relative"
+          hideDivider
+          px={4}
+          mb={4}
+        >
+          <Dialog.PrimaryAction
+            flex={3}
+            hidden={false}
+            variant="outline"
+            onClick={() => setOpenAlert(false)}
+            _hover={{
+              opacity: 0.8,
+            }}
+            color="white"
+          >
+            Close
+          </Dialog.PrimaryAction>
+        </Dialog.Actions>
+      </Dialog.Modal>
+    );
+  };
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -262,7 +347,7 @@ const UserBox = () => {
                   onClick={() => networkDialogState.onOpen()}
                 >
                   <HStack>
-                    <Icon as={PlusIcon} fontSize={16} />
+                    <Icon as={PlusIcon} fontSize={16} color="grey.75" />
                     <Text color="grey.200" fontSize={12} fontWeight={500}>
                       Add new network
                     </Text>
@@ -414,6 +499,10 @@ const UserBox = () => {
                 isSidebarAddress
                 flexDir="row-reverse"
                 textProps={{ color: '#AAA6A1' }}
+                onClick={() => {
+                  authDetails.userInfos.type.type === TypeUser.WEB_AUTHN &&
+                    setOpenAlert(true);
+                }}
               />
             </VStack>
 
@@ -537,107 +626,17 @@ const UserBox = () => {
           </PopoverBody>
         </PopoverContent>
       </Popover>
+
+      {alertComponent()}
     </>
   );
 };
-
-// Commented out code to temporarily disable workspaces.
-
-// const WorkspaceBox = ({
-//   isLoading,
-//   currentWorkspace,
-// }: {
-//   currentWorkspace?: Partial<Workspace>;
-//   isLoading?: boolean;
-// }) => {
-//   const {
-//     screenSizes: { isMobile },
-//   } = useWorkspaceContext();
-
-//   if (isLoading)
-//     return (
-//       <CircularProgress
-//         trackColor="dark.100"
-//         size={18}
-//         isIndeterminate
-//         color="brand.500"
-//       />
-//     );
-
-//   if (!currentWorkspace) return null;
-
-//   const { avatar, name, single: isMyWorkspace } = currentWorkspace;
-
-//   return (
-//     <Flex
-//       w="full"
-//       alignItems="center"
-//       justifyContent={{ base: 'flex-end', sm: 'space-between' }}
-//     >
-//       <Flex>
-//         {isMyWorkspace && (
-//           <Text
-//             fontSize={{ base: 'xs', sm: 'md' }}
-//             fontWeight="semibold"
-//             color="grey.200"
-//             border="2px"
-//             padding={2}
-//             borderRadius="lg"
-//             borderColor="grey.500"
-//             _hover={{ opacity: 0.8 }}
-//           >
-//             Choose a workspace
-//           </Text>
-//         )}
-//         {!isMyWorkspace && (
-//           <HStack
-//             spacing={{ base: 2, sm: 4 }}
-//             flexDirection={{ base: 'row-reverse', sm: 'row' }}
-//           >
-//             <Avatar
-//               variant="roundedSquare"
-//               src={avatar}
-//               size={{ base: 'sm', sm: 'md' }}
-//             />
-//             <Box w={{ base: 100, sm: 150 }}>
-//               <Text
-//                 fontSize={{ base: 'xs', sm: 'md' }}
-//                 fontWeight="semibold"
-//                 color="grey.200"
-//                 isTruncated
-//                 maxW={150}
-//                 textAlign={{
-//                   base: 'right',
-//                   sm: 'left',
-//                 }}
-//               >
-//                 {name}
-//               </Text>
-//               <Text
-//                 fontSize={{ base: 'xs', sm: 'sm' }}
-//                 color="grey.500"
-//                 textAlign={{
-//                   base: 'right',
-//                   sm: 'left',
-//                 }}
-//               >
-//                 {isMobile ? 'Workspace' : 'Current workspace'}
-//               </Text>
-//             </Box>
-//             {!isMobile && <ReplaceIcon color="grey.200" fontSize={20} />}
-//           </HStack>
-//         )}
-//       </Flex>
-//     </Flex>
-//   );
-// };
 
 const Header = () => {
   const notificationDrawerState = useDisclosure();
   const createWorkspaceDialog = useDisclosure();
   const { data: userWorkspaces } = useUserWorkspacesRequest();
   const {
-    // authDetails: { userInfos },
     workspaceInfos: {
       workspaceDialog,
       handlers: { handleWorkspaceSelection, goHome },
@@ -653,16 +652,6 @@ const Header = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
-
-  // WorkspaceLogic
-  // const handleCancel = async () => {
-  //   createWorkspaceDialog.onClose();
-  // };
-
-  // const handleClose = async () => {
-  //   createWorkspaceDialog.onClose();
-  //   workspaceDialog.onClose();
-  // };
 
   return (
     <Flex
@@ -691,15 +680,6 @@ const Header = () => {
         onCreate={handleGoToCreateWorkspace}
         isCreatingWorkspace={createWorkspaceDialog.isOpen}
       />
-
-      {/* {createWorkspaceDialog.isOpen && (
-        <CreateWorkspaceDialog
-          isOpen={createWorkspaceDialog.isOpen}
-          handleCancel={handleCancel}
-          onClose={handleClose}
-        />
-      )} */}
-
       <Box
         cursor="pointer"
         onClick={() => {
@@ -708,28 +688,6 @@ const Header = () => {
       >
         <Image width={{ base: 90, sm: 140 }} src={logo} alt="" p={0} />
       </Box>
-
-      {/* <HStack spacing={0} height="100%"> */}
-      {/* Commented out code to temporarily disable workspaces. */}
-
-      {/* <TopBarItem
-          onClick={workspaceDialog.onOpen}
-          cursor="pointer"
-          w={{
-            base: 190,
-            sm: userInfos.onSingleWorkspace ? 235 : 300,
-          }}
-          borderLeftWidth={{ base: 0, sm: 1 }}
-        >
-          <WorkspaceBox
-            currentWorkspace={{
-              single: userInfos?.onSingleWorkspace,
-              ...userInfos?.workspace,
-            }}
-            isLoading={userInfos?.isLoading}
-          />
-        </TopBarItem> */}
-
       <TopBarItem>
         <UserBox />
       </TopBarItem>

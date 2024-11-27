@@ -14,6 +14,10 @@ export interface AddressBook {
   nickname: string;
   owner: CreatedBy;
   user: Contact;
+  handle_info: {
+    handle?: string;
+    resolver?: string;
+  };
 }
 export const AddressBookQueryKey = {
   DEFAULT: 'contacts',

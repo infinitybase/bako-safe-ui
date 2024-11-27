@@ -72,6 +72,13 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   const balanceAvailable = getBalanceAvailable();
   const { setInputValue } = useAddressBookInputValue();
 
+  const setResolverAndHandle = (resolver?: string, handle?: string) => {
+    form.setValue('resolver', resolver);
+    form.setValue('handle', handle);
+
+    return;
+  };
+
   const { optionsRequests, handleFieldOptions, optionRef } =
     useAddressBookAutocompleteOptions({
       workspaceId: workspaceId!,
@@ -84,6 +91,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       dynamicCurrentIndex: index,
       canRepeatAddresses: true,
       handleCustomOption: setInputValue,
+      setResolverAndHandle,
     });
 
   return (

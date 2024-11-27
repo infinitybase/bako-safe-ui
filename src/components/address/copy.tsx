@@ -1,7 +1,10 @@
 import { BoxProps, Flex, TextProps } from '@chakra-ui/react';
 import { Address as FuelsAddress } from 'fuels';
 
-import { CopyAddressButton } from '@/components/copyAddressButton';
+import {
+  CopyAddressButton,
+  CopyAddressButtonProps,
+} from '@/components/copyAddressButton';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { Address } from '.';
@@ -11,6 +14,7 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   isDeposit?: boolean;
   isSidebarAddress?: boolean;
   textProps?: TextProps;
+  copyBtnProps?: Omit<CopyAddressButtonProps, 'aria-label' | 'addressToCopy'>;
   customValue?: string;
   hideCopyButton?: boolean;
 }
@@ -20,6 +24,7 @@ const AddressWithCopyBtn = ({
   isDeposit,
   isSidebarAddress,
   textProps,
+  copyBtnProps,
   customValue,
   hideCopyButton = false,
   ...rest
@@ -54,6 +59,7 @@ const AddressWithCopyBtn = ({
         minW={2}
         aria-label="Copy"
         addressToCopy={value && FuelsAddress.fromString(value).toB256()}
+        {...copyBtnProps}
       />
     </Flex>
   );

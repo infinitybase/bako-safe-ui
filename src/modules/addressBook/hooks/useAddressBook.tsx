@@ -3,12 +3,12 @@ import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { IUseAuthReturn } from '@/modules/auth/services';
 import { PermissionRoles } from '@/modules/core';
 
-import { useListContactsRequest } from './useListContactsRequest';
-import { IUseAuthReturn } from '@/modules/auth/services';
-import { useAddressBookMutations } from './useAddressBookMutations';
 import { useAddressBookFormHandlers } from './useAddressBookFormHandlers';
+import { useAddressBookMutations } from './useAddressBookMutations';
+import { useListContactsRequest } from './useListContactsRequest';
 
 export type UseAddressBookReturn = ReturnType<typeof useAddressBook>;
 

@@ -6,15 +6,26 @@ import { AddressActionsPopover } from './Popover';
 export interface AddressActionsProps {
   address: string;
   handle?: string;
+  hasContact?: boolean;
 }
 
-const AddressActions = ({ address, handle }: AddressActionsProps) => {
+const AddressActions = (props: AddressActionsProps) => {
+  const { address, handle, hasContact } = props;
+
   const { isMobile } = useScreenSize();
 
   return isMobile ? (
-    <AddressActionsDrawer address={address} handle={handle} />
+    <AddressActionsDrawer
+      address={address}
+      handle={handle}
+      hasContact={hasContact}
+    />
   ) : (
-    <AddressActionsPopover address={address} handle={handle} />
+    <AddressActionsPopover
+      address={address}
+      handle={handle}
+      hasContact={hasContact}
+    />
   );
 };
 

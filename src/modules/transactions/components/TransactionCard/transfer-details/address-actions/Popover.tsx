@@ -1,4 +1,5 @@
 import {
+  Divider,
   Popover,
   PopoverBody,
   PopoverContent,
@@ -8,9 +9,11 @@ import {
 
 import { AddressActionsProps } from '.';
 import { AddressActionsButton } from './Button';
-import { CopyAddress, GoToBakoId } from './options';
+import { AddToAddressBook, CopyAddress, GoToBakoId } from './options';
 
-const AddressActionsPopover = ({ address, handle }: AddressActionsProps) => {
+const AddressActionsPopover = (props: AddressActionsProps) => {
+  const { address, handle, hasContact } = props;
+
   const { isOpen, onToggle, onClose } = useDisclosure();
 
   return (
@@ -30,8 +33,22 @@ const AddressActionsPopover = ({ address, handle }: AddressActionsProps) => {
         _focus={{ ring: 'none' }}
       >
         <PopoverBody p={0}>
-          <CopyAddress address={address} onClose={onClose} />
-          {handle && <GoToBakoId handle={handle} onClose={onClose} />}
+          {!hasContact && (
+            <>
+              <AddToAddressBook address={address} />
+              <Divider borderColor="grey.825" />
+            </>
+          )}
+          <CopyAddress
+            address={address}
+            onClose={hasContact && !handle ? onClose : undefined}
+          />
+          {handle && (
+            <>
+              <Divider borderColor="grey.825" />
+              <GoToBakoId handle={handle} />
+            </>
+          )}
         </PopoverBody>
       </PopoverContent>
     </Popover>

@@ -1,19 +1,23 @@
+import { UseDisclosureProps } from '@chakra-ui/react';
+import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { Address } from 'fuels';
+import { UseFormReturn } from 'react-hook-form';
+
 import { IApiError } from '@/config';
+
+import { ListContactsResponse } from '../services';
+import { useContactToast } from './useContactToast';
+import { useCreateContactRequest } from './useCreateContactRequest';
 import { useDeleteContactRequest } from './useDeleteContactRequest';
 import { useUpdateContactRequest } from './useUpdateContactRequest';
-import { useCreateContactRequest } from './useCreateContactRequest';
-import { useContactToast } from './useContactToast';
-import { UseFormReturn } from 'react-hook-form';
-import { UseDisclosureProps } from '@chakra-ui/react';
-import { Address } from 'fuels';
-import { ListContactsResponse } from '../services';
-import { UseQueryResult } from '@tanstack/react-query';
 
 export type IUseAddressBookMutationsProps = {
   form: UseFormReturn<{
     nickname: string;
     address: string;
+    handle?: string;
+    resolver?: string;
   }>;
   deleteContactDialog: UseDisclosureProps;
   contactDialog: UseDisclosureProps;
@@ -83,10 +87,12 @@ const useAddressBookMutations = ({
   });
 
   const handleCreateContact = form.handleSubmit(
-    async ({ nickname, address }) => {
+    async ({ nickname, address, resolver, handle }) => {
       createContactRequest.mutate({
         nickname,
         address: Address.fromString(address).bech32Address,
+        resolver,
+        handle,
       });
     },
   );

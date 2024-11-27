@@ -6,6 +6,8 @@ import { AddressUtils } from '@/modules/core';
 
 const schema = yup.object({
   nickname: yup.string().required('Name is required.'),
+  handle: yup.string().optional(),
+  resolver: yup.string().optional(),
   address: yup
     .string()
     .required('Address is required.')

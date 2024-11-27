@@ -85,7 +85,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
     <>
       <Box w="full">
         <Box mb={5} w="full">
-          <Text color="grey.200" fontWeight="semibold" fontSize="20px">
+          <Text color="grey.50" fontWeight="bold" fontSize="sm">
             Settings
           </Text>
         </Box>
