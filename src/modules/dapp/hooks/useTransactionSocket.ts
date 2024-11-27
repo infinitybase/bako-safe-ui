@@ -259,7 +259,6 @@ export const useTransactionSocket = () => {
   };
 
   useEffect(() => {
-    console.log('[EMITTING SOCKET CONNECTED]');
     socket.emit(SocketEvents.DEFAULT, {
       sessionId,
       to: SocketUsernames.CONNECTOR,
