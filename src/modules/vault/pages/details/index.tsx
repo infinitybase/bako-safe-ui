@@ -270,14 +270,14 @@ const VaultDetailsPage = () => {
           />
         </Box>
         <Spacer />
-        {!!hasTransactions && (
+        {
           <TransactionTypeFilters
             currentFilter={txFilterType}
             incomingAction={handleIncomingAction}
             outgoingAction={handleOutgoingAction}
             buttonsFullWidth={isSmall}
           />
-        )}
+        }
       </Box>
 
       <CustomSkeleton
