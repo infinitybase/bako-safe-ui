@@ -11,6 +11,7 @@ import {
   AssetMap,
   Pages,
   SocketEvents,
+  SocketRealTimeNotifications,
   SocketUsernames,
   useSocket,
 } from '../../core';
@@ -114,7 +115,7 @@ const useWorkspace = (
 
   const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
     const isValid =
-      to === SocketUsernames.UI && type === SocketEvents.VAULT_UPDATE;
+      to === SocketUsernames.UI && type === SocketRealTimeNotifications.VAULT;
     if (isValid) {
       workspaceBalance.refetch();
       latestPredicates.refetch();
@@ -123,10 +124,10 @@ const useWorkspace = (
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
     };
   }, []);
 

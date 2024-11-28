@@ -6,9 +6,7 @@ import { useQueryParams } from '@/modules/auth';
 
 export enum SocketEvents {
   CONNECT = 'connection',
-
   DEFAULT = 'message',
-
   NOTIFICATION = 'notification',
 
   CONNECTED = '[CONNECTED]',
@@ -18,8 +16,12 @@ export enum SocketEvents {
   TX_SIGN = '[TX_EVENT_SIGNED]',
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
   SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
-  TRANSACTION_UPDATE = '[TRANSACTION_UPDATE]',
-  VAULT_UPDATE = '[VAULT_UPDATE]',
+}
+
+export enum SocketRealTimeNotifications {
+  VAULT = '[VAULT]',
+  TRANSACTION = '[TRANSACTION]',
+  NEW_NOTIFICATION = '[NEW_NOTIFICATION]',
 }
 
 export enum SocketUsernames {

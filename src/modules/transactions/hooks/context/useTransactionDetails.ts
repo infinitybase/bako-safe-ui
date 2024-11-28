@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/modules/auth';
 import {
   SocketEvents,
+  SocketRealTimeNotifications,
   SocketUsernames,
   useGetParams,
   useSocket,
@@ -97,7 +98,8 @@ const useTransactionDetails = () => {
 
   const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
     const isValid =
-      to === SocketUsernames.UI && type === SocketEvents.TRANSACTION_UPDATE;
+      to === SocketUsernames.UI &&
+      type === SocketRealTimeNotifications.TRANSACTION;
     if (isValid) {
       pendingSignerTransactions.refetch();
       homeTransactions.request.refetch();
@@ -108,10 +110,10 @@ const useTransactionDetails = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
     };
   }, []);
 

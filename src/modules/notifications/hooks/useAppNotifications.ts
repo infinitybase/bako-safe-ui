@@ -8,6 +8,7 @@ import {
   NotificationSummary,
   Pages,
   SocketEvents,
+  SocketRealTimeNotifications,
   SocketUsernames,
   useSocket,
 } from '@/modules/core';
@@ -67,8 +68,8 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   }: HandleWithSocketEventProps) => {
     if (
       to === SocketUsernames.UI &&
-      type === SocketEvents.NOTIFICATION &&
-      sessionId == userInfos.id
+      type === SocketRealTimeNotifications.NEW_NOTIFICATION &&
+      sessionId === userInfos.id
     ) {
       unreadNotificationsRequest.refetch();
     }
@@ -135,10 +136,10 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   }, [unreadNotificationsRequest?.data, hasNewNotification]);
 
   useEffect(() => {
-    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
     };
   }, []);
 
