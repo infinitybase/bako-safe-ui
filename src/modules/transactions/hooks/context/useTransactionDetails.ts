@@ -108,10 +108,10 @@ const useTransactionDetails = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    socket.on(SocketEvents.TRANSACTION_UPDATE, handleWithSocketEvent);
+    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.TRANSACTION_UPDATE, handleWithSocketEvent);
+      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
     };
   }, []);
 

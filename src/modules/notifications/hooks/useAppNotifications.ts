@@ -135,10 +135,10 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   }, [unreadNotificationsRequest?.data, hasNewNotification]);
 
   useEffect(() => {
-    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
     };
   }, []);
 

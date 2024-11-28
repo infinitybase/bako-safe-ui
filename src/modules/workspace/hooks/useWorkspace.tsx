@@ -123,10 +123,10 @@ const useWorkspace = (
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    socket.on(SocketEvents.VAULT_UPDATE, handleWithSocketEvent);
+    socket.on(SocketEvents.DEFAULT, handleWithSocketEvent);
 
     return () => {
-      socket.off(SocketEvents.VAULT_UPDATE, handleWithSocketEvent);
+      socket.off(SocketEvents.DEFAULT, handleWithSocketEvent);
     };
   }, []);
 
