@@ -242,7 +242,7 @@ const UserTransactionsPage = () => {
         </HStack>
 
         {/* FILTER */}
-        {!emptyTransactions && (
+        {
           <VStack w="full" alignItems="start">
             <Box>
               <TransactionFilter.Control
@@ -267,7 +267,7 @@ const UserTransactionsPage = () => {
               </TransactionFilter.Control>
             </Box>
           </VStack>
-        )}
+        }
       </VStack>
 
       <CustomSkeleton
