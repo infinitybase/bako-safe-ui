@@ -11,7 +11,7 @@ interface ActionCardDescriptionProps {
 const Description = ({ children, maxWidth }: ActionCardDescriptionProps) => {
   return (
     <Box maxW={maxWidth ?? { md: 180, lg: 300 }}>
-      <Text variant="description" fontSize="xs" color={'grey.425'}>
+      <Text variant="description" fontSize="sm">
         {children}
       </Text>
     </Box>
