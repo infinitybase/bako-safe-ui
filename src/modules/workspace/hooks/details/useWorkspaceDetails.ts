@@ -1,4 +1,4 @@
-import { BakoProvider } from 'bakosafe';
+import type { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
@@ -99,15 +99,6 @@ const useWorkspaceDetails = () => {
   );
 
   const resetHomeRequests = () => {
-    // invalidateGifAnimationRequest();
-    // refetchPendingSingerTransactions();
-    // resetAllTransactionsTypeFilters();
-    // refetchTransactions();
-    // addressBookInfos.requests.listContactsRequest.refetch();
-    // tokensUSD.refetch();
-    // latestPredicates.refetch();
-    // authDetails.userInfos.refetch();
-    // userVaults.request.refetch();
     queryClient.clear();
   };
 

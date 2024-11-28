@@ -1,9 +1,10 @@
 import { Text, VStack } from '@chakra-ui/react';
 
-import { AssetModel } from '@/modules/core';
+import type { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from '../transfer-details';
+import { bn } from 'fuels';
 
 interface AmountsInfoProps {
   asset: AssetModel;
@@ -13,6 +14,7 @@ interface AmountsInfoProps {
 const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
   const {
     screenSizes: { isMobile },
+    assetsMap,
   } = useWorkspaceContext();
 
   return (
@@ -23,7 +25,10 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         color="grey.75"
         fontSize="sm"
       >
-        {asset?.amount}
+        {bn(asset?.amount).format({
+          units:
+            assetsMap[asset?.assetId ?? ''].units ?? assetsMap.UNKNOWN.units,
+        })}
       </Text>
       <Text
         textAlign={isMobile ? 'end' : 'center'}

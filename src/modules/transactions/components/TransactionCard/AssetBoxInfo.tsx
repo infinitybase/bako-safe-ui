@@ -3,7 +3,7 @@ import {
   Center,
   HStack,
   Image,
-  StackProps,
+  type StackProps,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -13,12 +13,13 @@ import { FaPlay } from 'react-icons/fa';
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AssetModel } from '@/modules/core';
+import type { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
+import { bn } from 'fuels';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -46,7 +47,6 @@ const AssetBoxInfo = ({
       isExtraSmall,
       isLitteSmall,
     },
-
     assetsMap,
   } = useWorkspaceContext();
 
@@ -110,7 +110,9 @@ const AssetBoxInfo = ({
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
-          {asset?.amount}
+          {bn(asset?.amount).format({
+            units: assetsMap?.[asset?.assetId ?? '']?.units ?? 9,
+          })}
         </Text>
         <Text
           textAlign="center"
