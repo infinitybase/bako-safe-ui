@@ -212,7 +212,7 @@ const TransactionsVaultPage = () => {
           />
         </HStack>
 
-        {!isSmall && !!hasTransactions && (
+        {!isSmall && (
           <TransactionTypeFilters
             mt={2}
             currentFilter={filter.txFilterType}
@@ -222,7 +222,7 @@ const TransactionsVaultPage = () => {
         )}
       </HStack>
       {/* FILTER */}
-      {!!hasTransactions && (
+      {
         <TransactionFilter.Control
           value={filter.value!}
           onChange={(value) => {
@@ -259,8 +259,8 @@ const TransactionsVaultPage = () => {
             </HStack>
           )}
         </TransactionFilter.Control>
-      )}
-      {isSmall && !!hasTransactions && (
+      }
+      {isSmall && (
         <TransactionTypeFilters
           mt={3}
           currentFilter={filter.txFilterType}
