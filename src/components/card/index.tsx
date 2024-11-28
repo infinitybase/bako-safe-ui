@@ -1,7 +1,7 @@
 import { Box, BoxProps } from '@chakra-ui/react';
 
-export interface CardProps extends Omit<BoxProps, 'variant'> {
-  variant?: keyof typeof variants;
+export interface CardProps extends BoxProps {
+  type?: string;
 }
 
 const variants = {
@@ -23,9 +23,9 @@ const variants = {
 } as const;
 
 const Card = (props: CardProps) => {
-  const { children, variant, ...rest } = props;
+  const { children, type, ...rest } = props;
 
-  const variantStyle = variants[variant || 'default'];
+  const variantStyle = variants[type || 'default'];
 
   return (
     <Box

@@ -94,7 +94,7 @@ const Container = ({
         boxShadow="0px 8px 6px 0px #00000026"
         maxW="full"
         {...rest}
-        variant={isFuelFriday ? 'green-gradient' : 'default'}
+        type={isFuelFriday ? 'green-gradient' : 'default'}
         display="flex"
       >
         <Flex
