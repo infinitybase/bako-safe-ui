@@ -66,7 +66,12 @@ const AssetBoxInfo = ({
   const txUSDAmount = useTxAmountToUSD(
     [
       asset
-        ? asset
+        ? {
+            ...asset,
+            amount: bn(asset?.amount).format({
+              units: assetsMap[asset?.assetId].units ?? assetsMap.UNKNOWN.units,
+            }),
+          }
         : {
             amount: '',
             assetId: '',
