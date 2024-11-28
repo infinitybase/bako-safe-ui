@@ -8,6 +8,10 @@ const { VITE_SOCKET_URL } = import.meta.env;
 const URL = VITE_SOCKET_URL;
 const socket = io(URL, { autoConnect: false });
 
+socket.onAny((event, ...args) => {
+  console.log(`Evento recebido: ${event}`, ...args);
+});
+
 socket.on('connect_error', (err) => {
   if (err.message === 'invalid username') {
     console.log('Usuário inválido');
