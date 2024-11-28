@@ -144,7 +144,9 @@ const Container = ({
                   h={'59px'}
                   justifyContent={'center'}
                   vault={transaction.predicate}
-                  transactionName={transaction.name}
+                  transactionName={
+                    isFuelFriday ? 'Fuel Friday' : transaction.name
+                  }
                 />
               )}
 

@@ -106,7 +106,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
               {transaction.predicate && (
                 <TransactionCard.BasicInfos
                   vault={transaction.predicate}
-                  transactionName={transaction.name}
+                  transactionName={
+                    isFuelFriday ? 'Fuel Friday' : transaction.name
+                  }
                 />
               )}
 
