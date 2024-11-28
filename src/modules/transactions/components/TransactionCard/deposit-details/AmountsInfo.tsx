@@ -1,10 +1,10 @@
 import { Text, VStack } from '@chakra-ui/react';
+import { bn } from 'fuels';
 
 import type { AssetModel } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from '../transfer-details';
-import { bn } from 'fuels';
 
 interface AmountsInfoProps {
   asset: AssetModel;
@@ -27,7 +27,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
       >
         {bn(asset?.amount).format({
           units:
-            assetsMap[asset?.assetId ?? ''].units ?? assetsMap.UNKNOWN.units,
+            assetsMap[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
         })}
       </Text>
       <Text
