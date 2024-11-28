@@ -73,11 +73,11 @@ export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
       return {
         ...previousValue,
         [currentValue.assetId]: {
-          name: currentValue.name,
-          slug: currentValue.slug,
-          icon: currentValue.icon,
-          assetId: currentValue.assetId,
-          units: currentValue.units,
+          name: currentValue?.name,
+          slug: currentValue?.slug,
+          icon: currentValue?.icon,
+          assetId: currentValue?.assetId,
+          units: currentValue?.units,
         },
       };
     },

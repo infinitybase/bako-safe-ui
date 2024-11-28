@@ -8,7 +8,9 @@ const useGetTokenInfosArray = (assets: Asset[], assetsMap: AssetMap) => {
     return {
       ...assetsInfo,
       assetId: asset.assetId,
-      amount: bn(asset.amount).format({ units: assetsInfo.units }),
+      amount: bn(asset.amount).format({
+        units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
+      }),
     };
   };
 

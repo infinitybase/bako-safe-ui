@@ -38,7 +38,7 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
         ...asset,
         amount: bn(asset.amount).format({
           units:
-            assetsMap[asset?.assetId ?? ''].units ?? assetsMap.UNKNOWN.units,
+            assetsMap[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
         }),
       },
     ],

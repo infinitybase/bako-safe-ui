@@ -18,7 +18,7 @@ const useGetTokenInfos = ({
   const assetsInfo = assetsMap?.[assetId!] ?? assetsMap?.['UNKNOWN'];
   const assetAmount = isHex(amount)
     ? bn(amount).format({
-        units: assetsInfo.units,
+        units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
       })
     : amount;
 
