@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 const { VITE_SOCKET_URL } = import.meta.env;
 
 const URL = VITE_SOCKET_URL;
-const socket = io(URL, { autoConnect: true });
+const socket = io(URL, { autoConnect: true, reconnection: true });
 
 // socket debbug events
 socket.onAny((event, ...args) => {
@@ -28,8 +28,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { request_id, sessionId } = useQueryParams();
 
   useEffect(() => {
-    console.log('[SOCKET_PROVIDER] call to connect', socket.connected);
     if (!socket.connected) {
+      console.log('[SOCKET_PROVIDER] Attempting to connect');
       socket.auth = {
         username: SocketUsernames.UI,
         data: new Date(),
@@ -40,9 +40,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.connect();
     }
 
-    // return () => {
-    //   socket.close();
-    // };
+    // Cleanup to avoid memory leaks
+    return () => {
+      socket.off(); // Remove event listeners
+      socket.disconnect(); // Gracefully close connection
+    };
   }, [userInfos, sessionId, request_id]);
 
   return (
