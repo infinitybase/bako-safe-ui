@@ -9,7 +9,6 @@ const URL = VITE_SOCKET_URL;
 const socket = io(URL, {
   autoConnect: true,
   reconnection: true,
-  withCredentials: true,
 });
 
 // socket debbug events
