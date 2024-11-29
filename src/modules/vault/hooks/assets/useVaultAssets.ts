@@ -60,7 +60,7 @@ const useVaultAssets = (
   const hasAssetBalance = useCallback(
     (assetId: string, value: string) => {
       const units = getAssetInfo(assetId)?.units;
-      const coinBalance = getCoinAmount(assetId).format({ units });
+      const coinBalance = getCoinAmount(assetId)?.format({ units });
       const hasBalance = bn(bn.parseUnits(value)).lte(
         bn.parseUnits(coinBalance),
       );

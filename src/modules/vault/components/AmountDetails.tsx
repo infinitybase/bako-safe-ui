@@ -124,7 +124,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
               );
             }
 
-            const balance = bn(bn.parseUnits(asset.amount ?? '0.000')).format({
+            const balance = bn(bn.parseUnits(asset.amount ?? '0.000'))?.format({
               precision: 4,
             });
 

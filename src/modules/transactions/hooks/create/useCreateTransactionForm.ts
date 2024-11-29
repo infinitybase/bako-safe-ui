@@ -136,7 +136,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             )?.units;
 
             const coinBalance = bn.parseUnits(
-              params.getCoinAmount(parent.asset).format({ units }),
+              params.getCoinAmount(parent.asset)?.format({ units }),
             );
 
             let transactionsBalance = transactions

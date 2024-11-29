@@ -61,7 +61,7 @@ const Amount = ({
       : transaction.assets.map((a) => {
           return {
             ...a,
-            amount: bn(a?.amount).format({
+            amount: bn(a?.amount)?.format({
               units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
             }),
           };
@@ -128,7 +128,7 @@ const Amount = ({
             ) : (
               <Text color="grey.75" fontSize="sm">
                 {hasNoDefaultAssets
-                  ? bn(operationAssets?.amount).format({
+                  ? bn(operationAssets?.amount)?.format({
                       units:
                         assetsMap[operationAssets?.assetId]?.units ??
                         assetsMap.UNKNOWN.units,

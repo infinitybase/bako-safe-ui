@@ -112,7 +112,7 @@ const CardDetails = (props: CardDetailsProps): JSX.Element | null => {
 
   const isTestnet = checkNetwork(NetworkType.TESTNET);
 
-  const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000')).format({
+  const balanceFormatted = bn(bn.parseUnits(ethBalance ?? '0.000'))?.format({
     precision: 4,
   });
 

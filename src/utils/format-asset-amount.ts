@@ -26,7 +26,7 @@ const formatAssetAmount = ({
       })
       .find((units) => units !== undefined) ?? UNKNOWN_ASSET_UNITS;
 
-  return bn(amount).format({ units });
+  return bn(amount)?.format({ units });
 };
 
 export { formatAssetAmount };

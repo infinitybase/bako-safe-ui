@@ -241,7 +241,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     if (!isEthTransaction) {
       balanceAvailable = isNFT
-        ? bn(1).format({ units: -9, precision: 0 })
+        ? bn(1)?.format({ units: -9, precision: 0 })
         : balanceAvailableWithoutFee.format();
     }
 

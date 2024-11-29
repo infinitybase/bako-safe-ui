@@ -52,7 +52,7 @@ const AssetBoxInfo = ({
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
   const assetAddressInfo = asset?.to
-    ? resolveAddressContactHandle(asset.to, handle, resolver)
+    ? resolveAddressContactHandle(asset?.to, handle, resolver)
     : undefined;
 
   const assetInfo = useMemo(
@@ -116,7 +116,7 @@ const AssetBoxInfo = ({
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
-          {bn(asset?.amount).format({
+          {bn(asset?.amount)?.format({
             units:
               assetsMap?.[asset?.assetId ?? '']?.units ??
               assetsMap.UNKNOWN.units,
