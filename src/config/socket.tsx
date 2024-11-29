@@ -9,9 +9,9 @@ const URL = VITE_SOCKET_URL;
 const socket = io(URL, { autoConnect: false });
 
 // socket debbug events
-// socket.onAny((event, ...args) => {
-//   console.log(`Evento recebido: ${event}`, ...args);
-// });
+socket.onAny((event, ...args) => {
+  console.log(`Evento recebido: ${event}`, ...args);
+});
 
 socket.on('connect_error', (err) => {
   if (err.message === 'invalid username') {
