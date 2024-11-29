@@ -25,6 +25,7 @@ const formatAssetAmount = ({
         if (network && network.assetId === assetId) return network.decimals;
       })
       .find((units) => units !== undefined) ?? UNKNOWN_ASSET_UNITS;
+  debugger;
 
   return bn(amount)?.format({ units });
 };
