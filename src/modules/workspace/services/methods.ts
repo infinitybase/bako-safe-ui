@@ -180,12 +180,20 @@ export class WorkspaceService {
 
     const url = `${_chainId[chainId]}/assets/${assetId}`;
 
-    const response = await fetch(url).then(async (res) => {
-      return await res.json();
-    });
+    const response = await fetch(url)
+      .then(async (res) => {
+        return await res.json();
+      })
+      .catch(() => {
+        return undefined;
+      });
 
     const atual = window.localStorage.getItem(key);
     const atualObj = JSON.parse(atual || '{}');
+
+    if (!response) {
+      return atualObj;
+    }
 
     atualObj[assetId] = response;
     window.localStorage.setItem(key, JSON.stringify(atualObj));
