@@ -27,9 +27,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   } = useWorkspaceContext();
   const { request_id, sessionId } = useQueryParams();
 
-  console.log('[SOCKET_PROVIDER]');
-
   useEffect(() => {
+    console.log('[SOCKET_PROVIDER] call to connect');
     if (!socket.connected) {
       socket.auth = {
         username: SocketUsernames.UI,
@@ -41,9 +40,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.connect();
     }
 
-    return () => {
-      socket.close();
-    };
+    // return () => {
+    //   socket.close();
+    // };
   }, [userInfos, sessionId, request_id]);
 
   return (
