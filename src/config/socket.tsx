@@ -6,7 +6,11 @@ import { io } from 'socket.io-client';
 const { VITE_SOCKET_URL } = import.meta.env;
 
 const URL = VITE_SOCKET_URL;
-const socket = io(URL, { autoConnect: true, reconnection: true });
+const socket = io(URL, {
+  autoConnect: true,
+  reconnection: true,
+  withCredentials: true,
+});
 
 // socket debbug events
 socket.onAny((event, ...args) => {
@@ -45,7 +49,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off(); // Remove event listeners
       socket.disconnect(); // Gracefully close connection
     };
-  }, [userInfos, sessionId, request_id]);
+  }, []);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
