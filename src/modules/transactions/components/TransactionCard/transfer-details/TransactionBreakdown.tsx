@@ -1,11 +1,11 @@
 import { Box, Divider, HStack, Text } from '@chakra-ui/react';
 import { TransactionStatus } from 'bakosafe';
 
-import { AddressUtils, TransactionState } from '@/modules/core';
+import { AddressUtils, type TransactionState } from '@/modules/core';
 import { useVerifyTransactionInformations } from '@/modules/transactions/hooks/details/useVerifyTransactionInformations';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { AssetBoxInfo, TransactionUI } from '../Details';
+import { AssetBoxInfo, type TransactionUI } from '../Details';
 import { ConnectorInfos } from './ConnectorInfos';
 import { ContractAddresses } from './contract-call/ContractAddresses';
 import MintTokenInfos from './mint-token/MintToken';
@@ -65,7 +65,7 @@ const TransactionBreakdown = ({
       >
         {transaction.assets.map((asset, index) => (
           <AssetBoxInfo
-            key={index}
+            key={`${index} - ${asset.assetId}`}
             asset={{
               assetId: asset.assetId,
               amount: asset.amount,

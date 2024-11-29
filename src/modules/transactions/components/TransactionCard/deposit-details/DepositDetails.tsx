@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { TransactionStatus } from 'bakosafe';
+import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
 import { SuccessIcon, UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
@@ -19,7 +19,7 @@ import {
 } from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionWithVault } from '../../../services';
+import type { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
@@ -29,6 +29,21 @@ type DepositDetailsProps = {
 const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const { operationAssets, sentBy, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
+
+  const predicate = transaction.predicate?.predicateAddress;
+
+  if (!transaction.summary || !predicate) {
+    return null;
+  }
+
+  const assets: ITransferAsset[] =
+    transaction.summary.operations
+      ?.find((o) => o.to?.address === predicate)
+      ?.assetsSent?.map((asset) => ({
+        assetId: asset.assetId,
+        amount: asset.amount.toString(),
+        to: predicate,
+      })) ?? [];
 
   const {
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
@@ -96,12 +111,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
-          {hasNoDefaultAssets && operationAssets && (
-            <DetailItem asset={operationAssets} sentBy={sentBy} />
-          )}
-          {transaction.assets.map((asset, index) => (
+          {assets.map((asset, index) => (
             <DetailItem
-              key={`${new Date().getTime()}-key`}
+              key={`${asset?.assetId}${index}-key`}
               asset={asset}
               index={index}
               sentBy={sentBy}
