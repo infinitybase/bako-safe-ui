@@ -269,9 +269,9 @@ export const useTransactionSocket = () => {
     });
 
     socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-    return () => {
-      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
-    };
+    // return () => {
+    //   socket.off(SocketEvents.DEFAULT, handleSocketEvent);
+    // };
   }, [socket.connected]);
 
   return {
