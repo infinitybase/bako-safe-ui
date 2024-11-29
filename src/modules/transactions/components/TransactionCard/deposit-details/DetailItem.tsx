@@ -9,6 +9,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
+import { bn } from 'fuels';
 
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -18,7 +19,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AddressActions } from '../transfer-details/address-actions';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
-import { bn } from 'fuels';
 
 interface DetailItemProps {
   asset: ITransferAsset;

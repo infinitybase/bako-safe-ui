@@ -34,6 +34,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isDeploy,
     isDeposit,
     isContract,
+    isFuelFriday,
     showAmountInformations,
   } = useVerifyTransactionInformations(transaction);
 
@@ -76,6 +77,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         bg="gradients.transaction-card"
         boxShadow="0px 8px 6px 0px #00000026"
         {...rest}
+        variant={isFuelFriday ? 'green-gradient' : 'default'}
       >
         <HStack>
           <Flex
@@ -104,7 +106,9 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
               {transaction.predicate && (
                 <TransactionCard.BasicInfos
                   vault={transaction.predicate}
-                  transactionName={transaction.name}
+                  transactionName={
+                    isFuelFriday ? 'Fuel Friday' : transaction.name
+                  }
                 />
               )}
 

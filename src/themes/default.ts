@@ -1,4 +1,5 @@
-import { extendTheme } from '@chakra-ui/react';
+import { cardAnatomy } from '@chakra-ui/anatomy';
+import { createMultiStyleConfigHelpers, extendTheme } from '@chakra-ui/react';
 
 import NewHomeBackgroundHd from '@/assets/new-home-bg.jpg';
 import { colors } from '@/themes/colors';
@@ -13,12 +14,36 @@ const breakpoints = {
   lg: '72em',
 };
 
+const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(
+  cardAnatomy.keys,
+);
+
 const defaultTheme = extendTheme({
   breakpoints,
   fonts,
   colors,
   components: {
     ...components,
+    Card: defineMultiStyleConfig({
+      variants: {
+        'green-gradient': {
+          container: {
+            _before: {
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              border: '1px solid transparent',
+              background:
+                'linear-gradient(180deg, rgba(0, 244, 139, 1), rgba(0, 244, 139, 0.5)) border-box',
+              mask: 'linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0)',
+              maskComposite: 'exclude',
+              borderRadius: '10px',
+              pointerEvents: 'none',
+            },
+          },
+        },
+      },
+    }),
   },
   styles: {
     global: () => ({
