@@ -221,6 +221,7 @@ export const useTransactionSocket = () => {
     });
   };
 
+  // force commit
   // emmit message to the server and close window
   const cancelSendTransaction = () => {
     socket.emit(SocketEvents.DEFAULT, {
