@@ -39,7 +39,8 @@ const useOffChainSync = (networkUrl: string) => {
 
   useEffect(() => {
     const initOffChainSync = async () => {
-      const { instance } = await OffChainSyncInstance.create(networkUrl);
+      const url = networkUrl ?? import.meta.env.VITE_NETWORK;
+      const { instance } = await OffChainSyncInstance.create(url);
       setOffChainSync(instance);
     };
 

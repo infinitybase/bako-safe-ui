@@ -11,7 +11,9 @@ export class OffChainSyncInstance {
   public static async create(
     networkUrl: string,
   ): Promise<OffChainSyncInstance> {
-    const provider = await Provider.create(networkUrl);
+    const url = networkUrl ?? import.meta.env.VITE_NETWORK;
+
+    const provider = await Provider.create(url);
     const sync = await OffChainSync.create(provider);
 
     return new OffChainSyncInstance(sync);
