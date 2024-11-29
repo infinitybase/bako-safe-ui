@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 const { VITE_SOCKET_URL } = import.meta.env;
 
 const URL = VITE_SOCKET_URL;
-const socket = io(URL, { autoConnect: false });
+const socket = io(URL, { autoConnect: true });
 
 // socket debbug events
 socket.onAny((event, ...args) => {
