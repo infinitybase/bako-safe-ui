@@ -117,7 +117,9 @@ const AssetBoxInfo = ({
         >
           {isDeposit ? null : '-'}
           {bn(asset?.amount).format({
-            units: assetsMap?.[asset?.assetId ?? '']?.units ?? 9,
+            units:
+              assetsMap?.[asset?.assetId ?? '']?.units ??
+              assetsMap.UNKNOWN.units,
           })}
         </Text>
         <Text
