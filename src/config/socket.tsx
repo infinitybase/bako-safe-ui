@@ -28,7 +28,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { request_id, sessionId } = useQueryParams();
 
   useEffect(() => {
-    console.log('[SOCKET_PROVIDER] call to connect');
+    console.log('[SOCKET_PROVIDER] call to connect', socket.connected);
     if (!socket.connected) {
       socket.auth = {
         username: SocketUsernames.UI,
