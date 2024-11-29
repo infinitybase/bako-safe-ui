@@ -18,6 +18,7 @@ import { useGetAssetsByOperations } from '../../hooks';
 import type { TransactionWithVault } from '../../services';
 import { AmountUSD } from './transfer-details';
 import type { Asset } from '@/modules/core/utils';
+import { isHex } from '@/utils';
 
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
@@ -127,14 +128,16 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {/* {hasNoDefaultAssets
-                  ? bn(operationAssets?.amount)?.format({
-                      units:
-                        assetsMap[operationAssets?.assetId]?.units ??
-                        assetsMap.UNKNOWN.units,
-                    })
-                  : totalAmoutSent} */}
-                {totalAmoutSent}
+                {hasNoDefaultAssets
+                  ? isHex(operationAssets.amount)
+                    ? bn(operationAssets?.amount)?.format({
+                        units:
+                          assetsMap[operationAssets?.assetId]?.units ??
+                          assetsMap.UNKNOWN.units,
+                      })
+                    : operationAssets.amount
+                  : totalAmoutSent}
+                {/* {totalAmoutSent} */}
               </Text>
             )}
             <Text
