@@ -127,13 +127,14 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {hasNoDefaultAssets
+                {/* {hasNoDefaultAssets
                   ? bn(operationAssets?.amount)?.format({
                       units:
                         assetsMap[operationAssets?.assetId]?.units ??
                         assetsMap.UNKNOWN.units,
                     })
-                  : totalAmoutSent}
+                  : totalAmoutSent} */}
+                {totalAmoutSent}
               </Text>
             )}
             <Text
