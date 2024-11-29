@@ -101,7 +101,7 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
           )}
           {transaction.assets.map((asset, index) => (
             <DetailItem
-              key={index}
+              key={`${new Date().getTime()}-key`}
               asset={asset}
               index={index}
               sentBy={sentBy}

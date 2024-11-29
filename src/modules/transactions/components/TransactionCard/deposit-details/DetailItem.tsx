@@ -19,6 +19,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AddressActions } from '../transfer-details/address-actions';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
+import { isHex } from '@/utils';
 
 interface DetailItemProps {
   asset: ITransferAsset;
@@ -36,10 +37,13 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
     [
       {
         ...asset,
-        amount: bn(asset?.amount)?.format({
-          units:
-            assetsMap[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
-        }),
+        amount: isHex(asset.amount)
+          ? bn(asset?.amount)?.format({
+              units:
+                assetsMap[asset?.assetId ?? '']?.units ??
+                assetsMap.UNKNOWN.units,
+            })
+          : asset.amount,
       },
     ],
     tokensUSD?.isLoading,
