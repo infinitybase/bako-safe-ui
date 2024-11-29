@@ -80,31 +80,31 @@ export interface ISocketEmitMessageParams {
 
 export const useSocket = () => {
   const socket = useContext(SocketContext);
-  const { request_id, origin } = useQueryParams();
+  // const { request_id, origin } = useQueryParams();
 
-  const socketState = useRef(socket.connected);
+  // const socketState = useRef(socket.connected);
 
-  const connect = useCallback(
-    (sessionId: string) => {
-      /*
-    qualquer info que mandar daqui pelo auth vai ser validadno no middleware
-    do servidor io.use
-    */
-      console.log('socket.connected', socket.connected);
-      if (socket.connected || socketState.current) return;
-      socket.auth = {
-        username: SocketUsernames.UI,
-        data: new Date(),
-        sessionId,
-        origin,
-        request_id: request_id ?? '',
-      };
+  // const connect = useCallback(
+  //   (sessionId: string) => {
+  //     /*
+  //   qualquer info que mandar daqui pelo auth vai ser validadno no middleware
+  //   do servidor io.use
+  //   */
+  //     console.log('socket.connected', socket.connected);
+  //     if (socket.connected || socketState.current) return;
+  //     socket.auth = {
+  //       username: SocketUsernames.UI,
+  //       data: new Date(),
+  //       sessionId,
+  //       origin,
+  //       request_id: request_id ?? '',
+  //     };
 
-      socket.connect();
-      socketState.current = true;
-    },
-    [socketState],
-  );
+  //     socket.connect();
+  //     socketState.current = true;
+  //   },
+  //   [socketState],
+  // );
 
   /*
     Existe em duas partes:
@@ -128,5 +128,5 @@ export const useSocket = () => {
     );
   };
 
-  return { connect, emitMessage, socket };
+  return { emitMessage, socket };
 };
