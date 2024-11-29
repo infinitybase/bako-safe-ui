@@ -31,10 +31,6 @@ const dappRoutes = (
     </Route>
 
     <Route path={Pages.dappTransaction()} element={<TransactionConfirm />} />
-
-    {/* [CONNECTOR SIGNATURE]
-    <Route path={Pages.dappTransactionSign()} element={<TransactionSign />} /> 
-    */}
   </>
 );
 

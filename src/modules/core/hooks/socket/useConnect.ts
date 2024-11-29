@@ -6,16 +6,22 @@ import { useQueryParams } from '@/modules/auth';
 
 export enum SocketEvents {
   CONNECT = 'connection',
-
   DEFAULT = 'message',
+  NOTIFICATION = 'notification',
 
   CONNECTED = '[CONNECTED]',
   DISCONNECTED = '[CLIENT_DISCONNECTED]',
 
-  TX_CONFIRM = '[TX_EVENT_CONFIRMED]',
-  //TX_SIGN = '[TX_EVENT_SIGNED]', [CONNECTOR SIGNATURE]
+  TX_CREATE = '[TX_EVENT_CREATED]',
+  TX_SIGN = '[TX_EVENT_SIGNED]',
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
   SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
+}
+
+export enum SocketRealTimeNotifications {
+  VAULT = '[VAULT]',
+  TRANSACTION = '[TRANSACTION]',
+  NEW_NOTIFICATION = '[NEW_NOTIFICATION]',
 }
 
 export enum SocketUsernames {
@@ -24,7 +30,7 @@ export enum SocketUsernames {
   API = '[API]',
 }
 
-export interface IEventTX_CONFIRM {
+export interface IEventTX_CREATE {
   tx?: TransactionRequestLike;
   operations: any;
   sign?: boolean;
@@ -76,7 +82,7 @@ export const useSocket = () => {
   const socket = useContext(SocketContext);
   const { request_id, origin } = useQueryParams();
 
-  const socketState = useRef(false);
+  const socketState = useRef(socket.connected);
 
   const connect = useCallback(
     (sessionId: string) => {
@@ -84,6 +90,7 @@ export const useSocket = () => {
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
+      console.log('socket.connected', socket.connected);
       if (socket.connected || socketState.current) return;
       socket.auth = {
         username: SocketUsernames.UI,
@@ -93,7 +100,7 @@ export const useSocket = () => {
         request_id: request_id ?? '',
       };
 
-      request_id && socket.connect();
+      socket.connect();
       socketState.current = true;
     },
     [socketState],

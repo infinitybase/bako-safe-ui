@@ -1,14 +1,25 @@
-import { Box, Button, Divider, Icon, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  HStack,
+  Icon,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { TransactionStatus } from 'bakosafe';
+import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
-import { UpRightArrow } from '@/components';
+import { SuccessIcon, UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
-import { useGetAssetsByOperations } from '@/modules/transactions/hooks';
+import {
+  useGetAssetsByOperations,
+  useVerifyTransactionInformations,
+} from '@/modules/transactions/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionWithVault } from '../../../services';
+import type { TransactionWithVault } from '../../../services';
 import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
@@ -19,9 +30,26 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
   const { operationAssets, sentBy, hasNoDefaultAssets } =
     useGetAssetsByOperations(transaction);
 
+  const predicate = transaction.predicate?.predicateAddress;
+
+  if (!transaction.summary || !predicate) {
+    return null;
+  }
+
+  const assets: ITransferAsset[] =
+    transaction.summary.operations
+      ?.find((o) => o.to?.address === predicate)
+      ?.assetsSent?.map((asset) => ({
+        assetId: asset.assetId,
+        amount: asset.amount.toString(),
+        to: predicate,
+      })) ?? [];
+
   const {
     screenSizes: { isMobile, isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
+
+  const { isFuelFriday } = useVerifyTransactionInformations(transaction);
 
   const handleViewInExplorer = () => {
     const { hash, network } = transaction;
@@ -43,6 +71,36 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
       <VStack w="full" mt={isMobile ? 'unset' : 5}>
         {isMobile && <Divider my={5} borderColor="grey.425" />}
 
+        {isFuelFriday && (
+          <Box w="full">
+            <HStack
+              maxW="500px"
+              bg="linear-gradient(0deg, rgba(73, 248, 174, 0.15), rgba(73, 248, 174, 0.15)), rgba(21, 20, 19, 0.75)"
+              borderColor="rgba(73, 248, 174, 0.3)"
+              borderWidth="1px"
+              borderRadius={10}
+              justify={'center'}
+              alignItems="flex-start"
+              mb={4}
+              py={4}
+              px={4}
+            >
+              <Icon as={SuccessIcon} color="#00E65C" mt={1} fontSize={27} />
+
+              <VStack spacing={0} alignItems="flex-start">
+                <Text fontWeight="bold" color="#00E65C" fontSize="sm">
+                  Fuel the Future of Scalable Payments
+                </Text>
+                <Text color="#80F9C5" fontSize="xs">
+                  This transaction demonstrates the efficiency of $USDF
+                  micropayments on the Fuel Network, highlighting everyday
+                  utility and how Bako Safe and Bako ID simplify fund transfers.
+                </Text>
+              </VStack>
+            </HStack>
+          </Box>
+        )}
+
         <Box pb={6} borderColor="grey.950" borderBottomWidth={1} w="full">
           <Text
             color="grey.425"
@@ -53,12 +111,9 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
 
         <Box alignItems="flex-start" flexWrap="wrap" w="full">
-          {hasNoDefaultAssets && operationAssets && (
-            <DetailItem asset={operationAssets} sentBy={sentBy} />
-          )}
-          {transaction.assets.map((asset, index) => (
+          {assets.map((asset, index) => (
             <DetailItem
-              key={index}
+              key={`${asset?.assetId}${index}-key`}
               asset={asset}
               index={index}
               sentBy={sentBy}

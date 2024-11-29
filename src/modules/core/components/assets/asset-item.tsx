@@ -11,7 +11,7 @@ interface Props {
 
 function AssetItem({ assetId, name, amount, slug }: Props) {
   const assetAmount = useMemo(() => {
-    return bn(bn.parseUnits(amount.toString())).format({ precision: 3 });
+    return bn(bn.parseUnits(amount.toString()))?.format({ precision: 3 });
   }, [amount]);
 
   return (

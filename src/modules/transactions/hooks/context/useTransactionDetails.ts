@@ -2,7 +2,13 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/modules/auth';
-import { useGetParams } from '@/modules/core';
+import {
+  SocketEvents,
+  SocketRealTimeNotifications,
+  SocketUsernames,
+  useGetParams,
+  useSocket,
+} from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import { useHasReservedCoins } from '@/modules/vault/hooks';
 import {
@@ -15,10 +21,16 @@ import { usePendingTransactionsList } from '../list/useGetPendingTransactionsLis
 import { useSignTransaction } from '../signature';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
+type HandleWithSocketEventProps = {
+  sessionId: string;
+  to: string;
+  type: string;
+};
 
 const useTransactionDetails = () => {
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
+  const { socket } = useSocket();
 
   const {
     userInfos: { workspace },
@@ -83,6 +95,27 @@ const useTransactionDetails = () => {
       prevPathRef.current = currentPath;
     };
   }, [location.pathname, vaultTransactions.handlers.selectedTransaction?.id]);
+
+  const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
+    const isValid =
+      to === SocketUsernames.UI &&
+      type === SocketRealTimeNotifications.TRANSACTION;
+    if (isValid) {
+      pendingSignerTransactions.refetch();
+      homeTransactions.request.refetch();
+      vaultTransactions.request.refetch();
+      transactionsPageList.request.refetch();
+    }
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+
+    return () => {
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    };
+  }, []);
 
   return {
     homeTransactions,

@@ -3,8 +3,8 @@ import { css } from '@emotion/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
-import { shakeAnimationY, TransactionState } from '@/modules/core';
-import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
+import { shakeAnimationY, type TransactionState } from '@/modules/core';
+import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
@@ -94,7 +94,7 @@ const Details = ({
                   minW={{ base: 200, sm: 'full' }}
                   mt={isMobile ? 3 : 'unset'}
                 >
-                  <TransactionStepper steps={transactionHistory!} />
+                  <TransactionStepper steps={transactionHistory ?? []} />
                 </Box>
               </Stack>
 

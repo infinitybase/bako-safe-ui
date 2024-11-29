@@ -8,7 +8,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
+import type { ITransferAsset } from 'bakosafe';
+import { bn } from 'fuels';
 
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -18,6 +19,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AddressActions } from '../transfer-details/address-actions';
 import AmountsInfo from './AmountsInfo';
 import TokenInfos from './TokenInfos';
+import { isHex } from '@/utils';
 
 interface DetailItemProps {
   asset: ITransferAsset;
@@ -29,9 +31,21 @@ const DetailItem = ({ asset, index, sentBy }: DetailItemProps) => {
   const {
     tokensUSD,
     screenSizes: { isMobile, isExtraSmall, isLitteSmall },
+    assetsMap,
   } = useWorkspaceContext();
   const txUSDAmount = useTxAmountToUSD(
-    [asset],
+    [
+      {
+        ...asset,
+        amount: isHex(asset.amount)
+          ? bn(asset?.amount)?.format({
+              units:
+                assetsMap[asset?.assetId ?? '']?.units ??
+                assetsMap.UNKNOWN.units,
+            })
+          : asset.amount,
+      },
+    ],
     tokensUSD?.isLoading,
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,

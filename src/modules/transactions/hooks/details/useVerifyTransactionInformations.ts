@@ -43,6 +43,25 @@ const useVerifyTransactionInformations = (
 
   const isPending = transaction.status === TransactionStatus.AWAIT_REQUIREMENTS;
 
+  // TODO: Remove this
+  const isFuelFriday =
+    isDeposit &&
+    transaction.summary?.operations.some((op) => {
+      const [usdf] = op?.assetsSent ?? [];
+
+      if (
+        op?.from?.address !==
+          '0xc3903ce151a45aa44229af6df9223b1ab033cb7d567e92f43631db024e7a8146' ||
+        !usdf
+      )
+        return false;
+
+      return (
+        usdf.assetId ===
+        '0x33a6d90877f12c7954cca6d65587c25e9214c7bed2231c188981c7114c1bdb78'
+      );
+    });
+
   const contractAddress = isContract
     ? Address.fromB256(mainOperation?.to?.address ?? '').toString()
     : '';
@@ -59,6 +78,7 @@ const useVerifyTransactionInformations = (
     isPending,
     contractAddress,
     isMint,
+    isFuelFriday,
     isReceivingAssets,
     showAmountInformations,
   };

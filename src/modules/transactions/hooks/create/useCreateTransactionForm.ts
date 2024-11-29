@@ -1,11 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BN, bn } from 'fuels';
+import { BN, bn, NetworkFuel } from 'fuels';
 import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+
+export interface ITransactionField {
+  asset: string;
+  value: string;
+  amount: string;
+  fee?: string;
+}
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
@@ -16,7 +23,12 @@ export type UseCreateTransactionFormParams = {
 };
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
-  const { providerInstance } = useWorkspaceContext();
+  const { providerInstance, fuelsTokens } = useWorkspaceContext();
+  const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
+    item.networks
+      ?.map((network) => network['assetId'] ?? network['address'])
+      .filter(Boolean),
+  );
 
   const validationSchema = useMemo(() => {
     const transactionSchema = yup.object({
@@ -37,6 +49,23 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             if (isNFT) return true;
 
             return bn.parseUnits(parent.amount).gt(bn(0));
+          },
+        )
+        .test(
+          'amount-decimals',
+          'Exceeded the allowed number of decimal places.',
+          (amount, { parent }) => {
+            const decimalsCounter = amount.split('.')[1]?.length;
+
+            const selectedToken =
+              fuelsTokens
+                ?.flatMap(({ networks }) => networks)
+                .find((n) => (n as NetworkFuel)?.assetId === parent.asset) ||
+              null;
+
+            const maxDecimals = selectedToken?.decimals;
+
+            return !(maxDecimals && decimalsCounter > maxDecimals);
           },
         )
         .test(
@@ -107,7 +136,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             )?.units;
 
             const coinBalance = bn.parseUnits(
-              params.getCoinAmount(parent.asset).format({ units }),
+              params.getCoinAmount(parent.asset)?.format({ units }),
             );
 
             let transactionsBalance = transactions
@@ -138,9 +167,14 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           'valid-account',
           'This address can not receive assets from Bako.',
           async (address) => {
+            const isAssetIdOrAssetAddress = !!assetIdsAndAddresses?.find(
+              (item) => item === address,
+            );
+
             try {
-              const isValid = AddressUtils.isValid(address);
-              if (!isValid) return true;
+              const isValid =
+                AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
+              if (!isValid) return false;
 
               const provider = await providerInstance;
               return await provider.isUserAccount(address);

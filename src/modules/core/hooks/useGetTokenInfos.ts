@@ -12,13 +12,13 @@ interface IUseGetTokenInfos extends Pick<Asset, 'assetId' | 'amount'> {
 
 const useGetTokenInfos = ({
   assetId,
-  amount = '0.000',
+  amount = bn.parseUnits('0').toString(),
   assetsMap,
 }: IUseGetTokenInfos) => {
-  const assetsInfo = assetsMap?.[assetId!] ?? assetsMap?.['UNKNOWN'];
+  const assetsInfo = assetsMap?.[assetId] ?? assetsMap?.['UNKNOWN'];
   const assetAmount = isHex(amount)
-    ? bn(amount).format({
-        units: assetsInfo.units,
+    ? bn(amount)?.format({
+        units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
       })
     : amount;
 

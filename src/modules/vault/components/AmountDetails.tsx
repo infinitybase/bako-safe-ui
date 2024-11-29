@@ -124,7 +124,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
               );
             }
 
-            const balance = bn(bn.parseUnits(asset.amount ?? '0.000')).format({
+            const balance = bn(bn.parseUnits(asset.amount ?? '0.000'))?.format({
               precision: 4,
             });
 
@@ -137,6 +137,7 @@ const AmountDetails = (props: AmountDetailsProps) => {
                       w={{ base: 8, sm: 10 }}
                       h={{ base: 8, sm: 10 }}
                       src={assetsMap?.[asset.assetId]?.icon ?? ''}
+                      borderRadius={100}
                       alt="Asset Icon"
                       objectFit="cover"
                     />

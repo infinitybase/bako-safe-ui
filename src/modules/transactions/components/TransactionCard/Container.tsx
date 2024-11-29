@@ -58,6 +58,7 @@ const Container = ({
     isDeploy,
     isDeposit,
     isContract,
+    isFuelFriday,
     showAmountInformations,
   } = useVerifyTransactionInformations(transaction);
 
@@ -93,6 +94,7 @@ const Container = ({
         boxShadow="0px 8px 6px 0px #00000026"
         maxW="full"
         {...rest}
+        type={isFuelFriday ? 'green-gradient' : 'default'}
         display="flex"
       >
         <Flex
@@ -142,7 +144,9 @@ const Container = ({
                   h={'59px'}
                   justifyContent={'center'}
                   vault={transaction.predicate}
-                  transactionName={transaction.name}
+                  transactionName={
+                    isFuelFriday ? 'Fuel Friday' : transaction.name
+                  }
                 />
               )}
 

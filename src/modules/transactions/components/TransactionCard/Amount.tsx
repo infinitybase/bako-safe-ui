@@ -1,13 +1,13 @@
 import {
   AvatarGroup,
-  BoxProps,
+  type BoxProps,
   Flex,
   HStack,
   Image,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
-import { ITransferAsset } from 'bakosafe';
+import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
 
 import { CustomSkeleton } from '@/components';
@@ -15,8 +15,9 @@ import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
-import { TransactionWithVault } from '../../services';
+import type { TransactionWithVault } from '../../services';
 import { AmountUSD } from './transfer-details';
+import { isHex } from '@/utils';
 
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
@@ -41,7 +42,7 @@ const Amount = ({
   } = useWorkspaceContext();
 
   const totalAmoutSent = transaction.assets
-    .reduce((total, asset) => total.add(bn.parseUnits(asset.amount)), bn(0))
+    .reduce((total, asset) => total.add(asset.amount), bn(0))
     .format();
 
   const oneAssetOfEach = transaction.assets.reduce((uniqueAssets, current) => {
@@ -55,7 +56,16 @@ const Amount = ({
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    hasNoDefaultAssets ? [operationAssets] : transaction.assets,
+    hasNoDefaultAssets
+      ? [operationAssets]
+      : transaction.assets.map((a) => {
+          return {
+            ...a,
+            amount: bn(a?.amount)?.format({
+              units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
+            }),
+          };
+        }),
     tokensUSD?.isLoading,
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
@@ -71,7 +81,7 @@ const Amount = ({
       {!showAmount ? null : (
         <>
           <AvatarGroup
-            max={showOnlyOneAsset ? 1 : 3}
+            max={showOnlyOneAsset ? 1 : 2}
             w={isMobile ? 'unset' : 56}
             justifyContent={isMobile ? 'start' : 'end'}
             position="relative"
@@ -83,8 +93,9 @@ const Amount = ({
                 h={{ base: 'full', sm: 6 }}
                 src={
                   assetsMap[operationAssets.assetId]?.icon ??
-                  assetsMap['UNKNOWN'].icon
+                  assetsMap.UNKNOWN.icon
                 }
+                borderRadius={100}
                 alt="Asset Icon"
                 objectFit="cover"
               />
@@ -94,11 +105,10 @@ const Amount = ({
               return (
                 <Image
                   key={asset.assetId}
-                  w={{ base: isMultiToken ? '24px' : '30.5px', sm: 6 }}
+                  w={{ base: '30.5px', sm: 6 }}
                   h={{ base: 'full', sm: 6 }}
-                  src={
-                    assetsMap[asset.assetId]?.icon ?? assetsMap['UNKNOWN'].icon
-                  }
+                  src={assetsMap[asset.assetId]?.icon ?? assetsMap.UNKNOWN.icon}
+                  borderRadius={100}
                   alt="Asset Icon"
                   objectFit="cover"
                 />
@@ -107,7 +117,7 @@ const Amount = ({
           </AvatarGroup>
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
-            w="full"
+            w={isMobile ? 'unset' : 'full'}
             mt={0.5}
             textAlign="start"
           >
@@ -117,7 +127,16 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {hasNoDefaultAssets ? operationAssets.amount : totalAmoutSent}
+                {hasNoDefaultAssets
+                  ? isHex(operationAssets.amount)
+                    ? bn(operationAssets?.amount)?.format({
+                        units:
+                          assetsMap[operationAssets?.assetId]?.units ??
+                          assetsMap.UNKNOWN.units,
+                      })
+                    : operationAssets.amount
+                  : totalAmoutSent}
+                {/* {totalAmoutSent} */}
               </Text>
             )}
             <Text

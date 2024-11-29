@@ -18,6 +18,16 @@ export const UNKNOWN_ASSET = {
   units: UNKNOWN_ASSET_UNITS,
 };
 
+const getFuelTokensList = () => {
+  const atual = window.localStorage.getItem(
+    localStorageKeys.FUEL_MAPPED_TOKENS,
+  );
+  const atualObj: Assets = JSON.parse(atual || '{}');
+
+  const result = [...Object.values(atualObj).map((item) => item), ...assets];
+  return result;
+};
+
 const getChainId = (): number =>
   Number(
     localStorage.getItem(localStorageKeys.SELECTED_CHAIN_ID) ??
@@ -25,12 +35,24 @@ const getChainId = (): number =>
   );
 
 export const formatedAssets = (chainId: number): Asset[] =>
-  assets
+  getFuelTokensList()
     .reduce<Asset[]>((acc, asset) => {
-      const network = asset.networks.find(
-        (network) => network && network.chainId === chainId,
-      );
-      if (network && network.type === 'fuel') {
+      const network =
+        asset?.networks?.find(
+          (network) => network && network.chainId === chainId,
+        ) ?? null;
+      if (!network && asset?.name && asset?.symbol && asset) {
+        acc.push({
+          name: asset.name,
+          slug: asset.symbol,
+          //@ts-ignore
+          assetId: asset.assetId,
+          //@ts-ignore
+          icon: asset?.metadata?.URI,
+          //@ts-ignore
+          units: asset.decimals,
+        });
+      } else if (network && network.type === 'fuel') {
         acc.push({
           name: asset.name,
           slug: asset.symbol,
@@ -46,36 +68,21 @@ export const formatedAssets = (chainId: number): Asset[] =>
 const assetsList: Asset[] = formatedAssets(getChainId());
 
 export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
-  const list = tokenList
-    ?.reduce<Asset[]>((acc, asset) => {
-      const network = asset.networks.find(
-        (network) => network && network.chainId === getChainId(),
-      );
-      if (network && network.type === 'fuel') {
-        acc.push({
-          name: asset.name,
-          slug: asset.symbol,
-          assetId: network.assetId,
-          icon: asset.icon,
-          units: network.decimals,
-        });
-      }
-      return acc;
-    }, [])
-    .concat(UNKNOWN_ASSET);
-
-  const assetsMap: AssetMap = list.reduce((previousValue, currentValue) => {
-    return {
-      ...previousValue,
-      [currentValue.assetId]: {
-        name: currentValue.name,
-        slug: currentValue.slug,
-        icon: currentValue.icon,
-        assetId: currentValue.assetId,
-        units: currentValue.units,
-      },
-    };
-  }, {});
+  const assetsMap: AssetMap = assetsList.reduce(
+    (previousValue, currentValue) => {
+      return {
+        ...previousValue,
+        [currentValue.assetId]: {
+          name: currentValue?.name,
+          slug: currentValue?.slug,
+          icon: currentValue?.icon,
+          assetId: currentValue?.assetId,
+          units: currentValue?.units,
+        },
+      };
+    },
+    {},
+  );
 
   return assetsMap;
 };

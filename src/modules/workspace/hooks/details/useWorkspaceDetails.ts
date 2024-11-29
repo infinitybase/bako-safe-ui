@@ -1,4 +1,4 @@
-import { BakoProvider } from 'bakosafe';
+import type { BakoProvider } from 'bakosafe';
 import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
@@ -85,7 +85,12 @@ const useWorkspaceDetails = () => {
 
   const tokensUSD = useTokensUSDAmountRequest();
   const userVaults = useUserVaults(authDetails.userInfos.address);
-  const addressBookInfos = useAddressBook(authDetails, hasPermission);
+  const addressBookInfos = useAddressBook(
+    authDetails,
+    hasPermission,
+    providerInstance,
+    fuelsTokens,
+  );
   const vaultRequest = useVaultByIdRequest(vaultId ?? '');
   const vaultAssets = useVaultAssets(
     authDetails.userInfos.workspace?.id,
@@ -94,15 +99,6 @@ const useWorkspaceDetails = () => {
   );
 
   const resetHomeRequests = () => {
-    // invalidateGifAnimationRequest();
-    // refetchPendingSingerTransactions();
-    // resetAllTransactionsTypeFilters();
-    // refetchTransactions();
-    // addressBookInfos.requests.listContactsRequest.refetch();
-    // tokensUSD.refetch();
-    // latestPredicates.refetch();
-    // authDetails.userInfos.refetch();
-    // userVaults.request.refetch();
     queryClient.clear();
   };
 

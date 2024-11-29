@@ -23,6 +23,7 @@ const TokenInfos = ({ asset }: TokenInfosProps) => {
         w={6}
         h={6}
         src={assetInfo?.icon ?? ''}
+        borderRadius={100}
         alt="Asset Icon"
         objectFit="cover"
       />

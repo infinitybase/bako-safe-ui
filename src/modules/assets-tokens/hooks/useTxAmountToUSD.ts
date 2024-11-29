@@ -1,5 +1,5 @@
-import { AssetModel } from '@/modules/core';
-import { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
+import type { AssetModel } from '@/modules/core';
+import type { ITokens } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 
 export type IAssetsInfoToUSD = Pick<AssetModel, 'assetId' | 'amount'>;
 

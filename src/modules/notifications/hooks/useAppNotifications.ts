@@ -7,6 +7,10 @@ import {
   NotificationsQueryKey,
   NotificationSummary,
   Pages,
+  SocketEvents,
+  SocketRealTimeNotifications,
+  SocketUsernames,
+  useSocket,
 } from '@/modules/core';
 import { useTransactionState } from '@/modules/transactions/states';
 
@@ -27,6 +31,12 @@ export interface TransactionRedirect {
   name?: string;
 }
 
+type HandleWithSocketEventProps = {
+  sessionId: string;
+  to: string;
+  type: string;
+};
+
 const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const {
     authDetails: { userInfos },
@@ -39,6 +49,7 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   const notificationsListRequest = useListNotificationsRequest(
     userInfos.address,
   );
+  const { socket } = useSocket();
 
   const unreadNotificationsRequest = useUnreadNotificationsCounterRequest();
   const setNotificationAsReadRequest = useSetNotificationsAsReadRequest();
@@ -49,6 +60,20 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
     hasNewNotification,
     setHasNewNotification,
   } = useNotificationsStore();
+
+  const handleWithSocketEvent = ({
+    sessionId,
+    to,
+    type,
+  }: HandleWithSocketEventProps) => {
+    if (
+      to === SocketUsernames.UI &&
+      type === SocketRealTimeNotifications.NEW_NOTIFICATION &&
+      sessionId === userInfos.id
+    ) {
+      unreadNotificationsRequest.refetch();
+    }
+  };
 
   const onCloseDrawer = () => {
     const hasUnread = !!unreadCounter;
@@ -109,6 +134,14 @@ const useAppNotifications = (props?: UseAppNotificationsParams) => {
   useEffect(() => {
     setUnreadCounter(unreadNotificationsRequest?.data?.total ?? 0);
   }, [unreadNotificationsRequest?.data, hasNewNotification]);
+
+  useEffect(() => {
+    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+
+    return () => {
+      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
+    };
+  }, []);
 
   return {
     drawer: {

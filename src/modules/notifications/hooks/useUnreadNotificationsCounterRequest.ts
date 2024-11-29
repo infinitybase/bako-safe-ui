@@ -4,8 +4,6 @@ import { NotificationsQueryKey } from '@/modules/core';
 
 import { NotificationService } from '../services';
 
-const { VITE_NOTIFICATIONS_REFRESH } = import.meta.env;
-
 const useUnreadNotificationsCounterRequest = () => {
   return useQuery({
     queryKey: [NotificationsQueryKey.UNREAD_COUNTER],
@@ -15,7 +13,7 @@ const useUnreadNotificationsCounterRequest = () => {
         perPage: 5,
         page: 0,
       }),
-    refetchInterval: Number(VITE_NOTIFICATIONS_REFRESH),
+    refetchInterval: false,
     refetchOnWindowFocus: true,
   });
 };

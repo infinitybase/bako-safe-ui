@@ -51,14 +51,7 @@ const MintTokenInfos = ({ transaction }: MintTokenProps) => {
                 key={`${index}-${assetIndex}`}
                 asset={{
                   assetId: asset.assetId,
-                  amount: isHex(String(asset.amount))
-                    ? formatAssetAmount({
-                        fuelsTokens,
-                        chainId: transaction.network.chainId,
-                        assetId: asset.assetId,
-                        amount: asset.amount,
-                      })
-                    : String(asset.amount),
+                  amount: asset.amount.toString(),
                   to: to?.address ?? '',
                   transactionID: transaction.id,
                 }}

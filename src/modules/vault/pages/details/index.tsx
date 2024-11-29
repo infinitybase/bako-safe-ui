@@ -270,12 +270,14 @@ const VaultDetailsPage = () => {
           />
         </Box>
         <Spacer />
-        <TransactionTypeFilters
-          currentFilter={txFilterType}
-          incomingAction={handleIncomingAction}
-          outgoingAction={handleOutgoingAction}
-          buttonsFullWidth={isSmall}
-        />
+        {
+          <TransactionTypeFilters
+            currentFilter={txFilterType}
+            incomingAction={handleIncomingAction}
+            outgoingAction={handleOutgoingAction}
+            buttonsFullWidth={isSmall}
+          />
+        }
       </Box>
 
       <CustomSkeleton
@@ -353,15 +355,11 @@ const VaultDetailsPage = () => {
           : !hasTransactions &&
             !!transactions && (
               <EmptyState
-                isDisabled={!assets.hasBalance}
-                buttonAction={() =>
-                  navigate(
-                    Pages.createTransaction({
-                      workspaceId: vaultWkId!,
-                      vaultId: vault?.data?.id,
-                    }),
-                  )
+                title={'No Data available'}
+                subTitle={
+                  'Currently, there is no available data to display in this section.'
                 }
+                showAction={false}
                 mb={10}
               />
             )}

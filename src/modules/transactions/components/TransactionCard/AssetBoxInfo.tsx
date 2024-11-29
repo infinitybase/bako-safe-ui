@@ -3,7 +3,7 @@ import {
   Center,
   HStack,
   Image,
-  StackProps,
+  type StackProps,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -13,12 +13,13 @@ import { FaPlay } from 'react-icons/fa';
 import { Address, DoubleArrowIcon, Handle } from '@/components';
 import { DeployIcon } from '@/components/icons/tx-deploy';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
-import { AssetModel } from '@/modules/core';
+import type { AssetModel } from '@/modules/core';
 import { useAddressNicknameResolver } from '@/modules/core/hooks/useAddressNicknameResolver';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
+import { bn } from 'fuels';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -46,13 +47,12 @@ const AssetBoxInfo = ({
       isExtraSmall,
       isLitteSmall,
     },
-
     assetsMap,
   } = useWorkspaceContext();
 
   const { resolveAddressContactHandle } = useAddressNicknameResolver();
   const assetAddressInfo = asset?.to
-    ? resolveAddressContactHandle(asset.to, handle, resolver)
+    ? resolveAddressContactHandle(asset?.to, handle, resolver)
     : undefined;
 
   const assetInfo = useMemo(
@@ -66,7 +66,13 @@ const AssetBoxInfo = ({
   const txUSDAmount = useTxAmountToUSD(
     [
       asset
-        ? asset
+        ? {
+            ...asset,
+            amount: bn(asset?.amount)?.format({
+              units:
+                assetsMap[asset?.assetId]?.units ?? assetsMap.UNKNOWN.units,
+            }),
+          }
         : {
             amount: '',
             assetId: '',
@@ -88,11 +94,12 @@ const AssetBoxInfo = ({
       {assetInfo && (
         <VStack alignItems="start" minW="40px">
           <Image
-            w={6} // Largura responsiva
-            h={6} // Altura responsiva
-            src={assetInfo?.icon ?? ''} // URL da imagem com fallback
-            alt="Asset Icon" // Texto alternativo para acessibilidade
-            objectFit="cover" // Ajuste da imagem
+            w={6}
+            h={6}
+            src={assetInfo?.icon ?? ''}
+            borderRadius={100}
+            alt="Asset Icon"
+            objectFit="cover"
           />
 
           <Text fontSize="sm" color="grey.500">
@@ -109,7 +116,11 @@ const AssetBoxInfo = ({
           fontSize={isLowerThanFourHundredAndThirty ? 'xs' : 'sm'}
         >
           {isDeposit ? null : '-'}
-          {asset?.amount}
+          {bn(asset?.amount)?.format({
+            units:
+              assetsMap?.[asset?.assetId ?? '']?.units ??
+              assetsMap.UNKNOWN.units,
+          })}
         </Text>
         <Text
           textAlign="center"

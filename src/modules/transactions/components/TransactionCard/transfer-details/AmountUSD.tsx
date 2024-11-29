@@ -7,7 +7,7 @@ interface AmountUSDProps {
 const AmountUSD = ({ amount }: AmountUSDProps) => {
   return (
     <>
-      {isNumericString(amount.replace(/,/g, '')) && '$'}
+      {isNumericString(amount?.replace(/,/g, '')) && '$'}
       {amount}
     </>
   );
