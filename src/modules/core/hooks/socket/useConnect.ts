@@ -90,6 +90,7 @@ export const useSocket = () => {
     qualquer info que mandar daqui pelo auth vai ser validadno no middleware
     do servidor io.use
     */
+      console.log('socket.connected', socket.connected);
       if (socket.connected || socketState.current) return;
       socket.auth = {
         username: SocketUsernames.UI,
