@@ -27,6 +27,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   } = useWorkspaceContext();
   const { request_id, sessionId } = useQueryParams();
 
+  console.log('[SOCKET_PROVIDER]');
+
   useEffect(() => {
     if (!socket.connected) {
       socket.auth = {
