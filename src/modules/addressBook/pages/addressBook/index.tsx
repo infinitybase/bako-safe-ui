@@ -261,7 +261,7 @@ const AddressBookPage = () => {
             Address book
           </Text>
         </Box>
-        
+
         <Grid
           w="full"
           templateColumns={{
@@ -329,7 +329,9 @@ const AddressBookPage = () => {
             h="full"
             showAction={false}
             title="No Data available"
-            subTitle={`Currently, there is no available data to display in this section.`}
+            subTitle={
+              "It seems you haven't added any favorites yet. Would you like to add one now?"
+            }
           />
         )}
       </VStack>

@@ -283,7 +283,7 @@ const UserTransactionsPage = () => {
             h="full"
             showAction={false}
             title="No Data available"
-            subTitle="Currently, there is no available data to display in this section."
+            subTitle="It seems like you haven't made any transactions yet."
           />
         )}
         {/* LIST */}
