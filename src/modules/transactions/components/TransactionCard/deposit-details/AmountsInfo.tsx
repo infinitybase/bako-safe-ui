@@ -25,7 +25,7 @@ const AmountsInfo = ({ asset, txUSDAmount }: AmountsInfoProps) => {
         color="grey.75"
         fontSize="sm"
       >
-        {bn(asset?.amount).format({
+        {bn(asset?.amount)?.format({
           units:
             assetsMap[asset?.assetId ?? '']?.units ?? assetsMap.UNKNOWN.units,
         })}

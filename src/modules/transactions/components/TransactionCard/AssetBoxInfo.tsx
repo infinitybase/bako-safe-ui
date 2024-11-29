@@ -68,7 +68,7 @@ const AssetBoxInfo = ({
       asset
         ? {
             ...asset,
-            amount: bn(asset?.amount).format({
+            amount: bn(asset?.amount)?.format({
               units:
                 assetsMap[asset?.assetId]?.units ?? assetsMap.UNKNOWN.units,
             }),
