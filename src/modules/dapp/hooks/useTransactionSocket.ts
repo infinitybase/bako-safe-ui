@@ -228,6 +228,8 @@ export const useTransactionSocket = () => {
     signMessage: {
       emitSignedMessage,
     },
+
+    // force commit
     // [CONNECTOR SIGNATURE]
     // sign: {
     //   isLoading: signing,
