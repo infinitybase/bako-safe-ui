@@ -23,7 +23,7 @@ const useAddressBookInputValue = () => {
     if (!resolver && value.startsWith('@')) {
       return {
         value,
-        label,
+        label: '',
       };
     }
 
