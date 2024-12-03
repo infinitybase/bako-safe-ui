@@ -108,11 +108,9 @@ const Autocomplete = ({
           return;
         }
 
-        if (value && value.length > 0) {
-          const result = onInputChange(replacedValue);
-          setInputValue(result.label);
-          onChange(result.value);
-        }
+        const result = onInputChange(replacedValue);
+        setInputValue(result.label);
+        onChange(result.value);
       }, 1500); // 1.5s debounce delay
     },
     [inputValue],

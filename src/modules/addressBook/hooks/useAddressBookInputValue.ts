@@ -20,13 +20,6 @@ const useAddressBookInputValue = () => {
     const formattedValue = value.startsWith('@') ? value.toLowerCase() : value;
     const resolver = getResolverFromHandle(formattedValue);
 
-    if (!resolver && value.startsWith('@')) {
-      return {
-        value,
-        label: '',
-      };
-    }
-
     if (resolver) {
       const initialValue = resolver;
       const label = AddressBookUtils.formatForAutocomplete(

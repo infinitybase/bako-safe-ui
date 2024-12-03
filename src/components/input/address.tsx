@@ -40,11 +40,8 @@ const AddressInput = (props: AddressInputProps) => {
           adbForm.setValue('handle', handle);
           adbForm.setValue('resolver', result.value);
         }
-
-        if (_value && _value.length > 0) {
-          setInputValue(result.label);
-          onChange(result.value);
-        }
+        setInputValue(result.label);
+        onChange(result.value);
       }, 1500); // 1.5s debounce delay
     },
     [setInputValue],
