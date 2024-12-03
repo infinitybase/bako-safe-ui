@@ -123,7 +123,7 @@ const Amount = ({
                 Multi-token
               </Text>
             ) : (
-              <Text color="grey.75" fontSize="sm" border={'1px solid blue'}>
+              <Text color="grey.75" fontSize="sm">
                 {transaction?.assets.length === 1
                   ? bn(transaction.assets[0].amount).format({
                       units:
