@@ -48,7 +48,7 @@ export const formatedAssets = (chainId: number): Asset[] =>
           //@ts-ignore
           assetId: asset.assetId,
           //@ts-ignore
-          icon: asset?.metadata?.URI,
+          icon: asset?.metadata?.URI ?? UNKNOWN_ASSET.icon,
           //@ts-ignore
           units: asset.decimals,
         });

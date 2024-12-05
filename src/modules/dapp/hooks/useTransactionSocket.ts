@@ -146,7 +146,7 @@ export const useTransactionSocket = () => {
 
       tabs.set(TabState.PENDING_SIGN);
     },
-    [signTransaction, tabs],
+    [tabs],
   );
 
   const checkIfMultisig = useCallback((configurable?: string) => {
@@ -269,9 +269,9 @@ export const useTransactionSocket = () => {
     });
 
     socket.on(SocketEvents.DEFAULT, handleSocketEvent);
-    // return () => {
-    //   socket.off(SocketEvents.DEFAULT, handleSocketEvent);
-    // };
+    return () => {
+      socket.off(SocketEvents.DEFAULT, handleSocketEvent);
+    };
   }, [socket.connected]);
 
   return {

@@ -33,7 +33,6 @@ const Amount = ({
     transaction,
     transaction.predicate?.predicateAddress,
   );
-
   const [showOnlyOneAsset] = useMediaQuery('(max-width: 400px)');
   const {
     tokensUSD,
@@ -56,16 +55,14 @@ const Amount = ({
   const isMultiToken = oneAssetOfEach.length >= 2;
 
   const txUSDAmount = useTxAmountToUSD(
-    hasNoDefaultAssets
-      ? [operationAssets]
-      : transaction.assets.map((a) => {
-          return {
-            ...a,
-            amount: bn(a?.amount)?.format({
-              units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
-            }),
-          };
+    transaction?.assets.map((a) => {
+      return {
+        ...a,
+        amount: bn(a?.amount)?.format({
+          units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
         }),
+      };
+    }),
     tokensUSD?.isLoading,
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
@@ -127,14 +124,11 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {hasNoDefaultAssets
-                  ? isHex(operationAssets.amount)
-                    ? bn(operationAssets?.amount)?.format({
-                        units:
-                          assetsMap[operationAssets?.assetId]?.units ??
-                          assetsMap.UNKNOWN.units,
-                      })
-                    : operationAssets.amount
+                {transaction?.assets.length === 1
+                  ? bn(transaction.assets[0].amount).format({
+                      units:
+                        assetsMap[transaction.assets[0].assetId]?.units ?? 15,
+                    })
                   : totalAmoutSent}
                 {/* {totalAmoutSent} */}
               </Text>
