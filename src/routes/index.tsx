@@ -7,6 +7,7 @@ import { addressBookRoutes } from '@/modules/addressBook';
 import { ScrollTop } from '@/modules/core';
 import { dappRoutes } from '@/modules/dapp';
 import { VaultRoutes } from '@/modules/vault';
+import FloatingCard from '@/components/floatingCard';
 
 const routes = (
   <>
@@ -21,6 +22,7 @@ const routes = (
 const AppRoutes = () => {
   return (
     <>
+      <FloatingCard />
       <ScrollTop />
       <VaultRoutes />
       <Routes>{routes}</Routes>
