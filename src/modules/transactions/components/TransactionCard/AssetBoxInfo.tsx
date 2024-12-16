@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { bn } from 'fuels';
 import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 
@@ -19,7 +20,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AmountUSD } from './transfer-details';
 import { AddressActions } from './transfer-details/address-actions';
-import { bn } from 'fuels';
 
 interface AssetBoxInfoProps extends StackProps {
   asset?: AssetModel;
@@ -50,7 +50,9 @@ const AssetBoxInfo = ({
     assetsMap,
   } = useWorkspaceContext();
 
-  const { resolveAddressContactHandle } = useAddressNicknameResolver();
+  const { resolveAddressContactHandle } = useAddressNicknameResolver([
+    asset?.to ?? '',
+  ]);
   const assetAddressInfo = asset?.to
     ? resolveAddressContactHandle(asset?.to, handle, resolver)
     : undefined;

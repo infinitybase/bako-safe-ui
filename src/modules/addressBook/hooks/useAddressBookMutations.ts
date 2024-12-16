@@ -107,12 +107,10 @@ const useAddressBookMutations = ({
   });
 
   const handleCreateContact = form.handleSubmit(
-    async ({ nickname, address, resolver, handle }) => {
+    async ({ nickname, address }) => {
       createContactRequest.mutate({
         nickname,
         address: Address.fromString(address).bech32Address,
-        resolver,
-        handle,
       });
     },
   );

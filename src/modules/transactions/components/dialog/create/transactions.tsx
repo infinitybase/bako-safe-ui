@@ -11,7 +11,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { bn } from 'fuels';
+import { Address, bn, isB256 } from 'fuels';
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -20,7 +20,6 @@ import {
   AddToAddressBook,
   CreateContactDialog,
   useAddressBookAutocompleteOptions,
-  useAddressBookInputValue,
 } from '@/modules/addressBook';
 import {
   AddressUtils,
@@ -28,12 +27,14 @@ import {
   delay,
   NativeAssetId,
 } from '@/modules/core';
+import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import {
   useAssetSelectOptions,
   UseCreateTransaction,
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { AddressBookUtils } from '@/utils';
 
 import { TransactionAccordion } from './accordion';
 
@@ -69,12 +70,15 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
       inView,
       canAddMember,
     },
+    providerInstance,
     vaultDetails: {
       assets: { isNFTAsset },
     },
   } = useWorkspaceContext();
   const balanceAvailable = getBalanceAvailable();
-  const { setInputValue } = useAddressBookInputValue();
+  const {
+    handlers: { fetchResolverName, fetchResolveAddress },
+  } = useBakoIDClient(providerInstance);
 
   const setResolverAndHandle = (resolver?: string, handle?: string) => {
     form.setValue('resolver', resolver);
@@ -83,20 +87,18 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     return;
   };
 
-  const { optionsRequests, handleFieldOptions, optionRef } =
-    useAddressBookAutocompleteOptions({
-      workspaceId: workspaceId!,
-      includePersonal: !userInfos.onSingleWorkspace,
-      contacts: listContactsRequest.data!,
-      fields: form.watch('transactions')!,
-      errors: form.formState.errors.transactions,
-      isUsingTemplate: false,
-      isFirstLoading: false,
-      dynamicCurrentIndex: index,
-      canRepeatAddresses: true,
-      handleCustomOption: setInputValue,
-      setResolverAndHandle,
-    });
+  const { optionsRequests, optionRef } = useAddressBookAutocompleteOptions({
+    workspaceId: workspaceId!,
+    includePersonal: !userInfos.onSingleWorkspace,
+    contacts: listContactsRequest.data!,
+    fields: form.watch('transactions')!,
+    errors: form.formState.errors.transactions,
+    isUsingTemplate: false,
+    isFirstLoading: false,
+    dynamicCurrentIndex: index,
+    canRepeatAddresses: true,
+    setResolverAndHandle,
+  });
 
   const recipients = form.watch('transactions') ?? [];
   const asset = recipients?.[index].asset;
@@ -123,12 +125,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           name={`transactions.${index}.value`}
           control={form.control}
           render={({ field, fieldState }) => {
-            const appliedOptions = handleFieldOptions(
-              field.value,
-              optionsRequests[index].options,
-              !!field.value,
+            const appliedOptions = optionsRequests[index].options.filter(
+              (a) => Address.fromString(a.value).toString() !== field.value,
             );
-
             const showAddToAddressBook =
               canAddMember &&
               !fieldState.invalid &&
@@ -145,8 +144,40 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
-                  onInputChange={(value: string) => setInputValue(value)}
-                  isLoading={!optionsRequests[index].isSuccess}
+                  onInputChange={async (value: string) => {
+                    const result = { value: value, label: value };
+
+                    if (value.startsWith('@')) {
+                      const address = await fetchResolveAddress.handler(
+                        value.split(' - ').at(0)!,
+                      );
+                      if (address) {
+                        result.value = address;
+                        result.label = AddressBookUtils.formatForAutocomplete(
+                          value,
+                          address,
+                        );
+                      }
+                    }
+
+                    if (isB256(value)) {
+                      const name = await fetchResolverName.handler(value);
+                      if (name) {
+                        result.label = AddressBookUtils.formatForAutocomplete(
+                          name,
+                          value,
+                        );
+                        result.value = value;
+                      }
+                    }
+
+                    return result;
+                  }}
+                  isLoading={
+                    !optionsRequests[index].isSuccess ||
+                    fetchResolveAddress.isLoading ||
+                    fetchResolveAddress.isLoading
+                  }
                   options={appliedOptions}
                   inView={inView}
                   clearable={false}
@@ -255,10 +286,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
   const {
     screenSizes: { isMobile },
-    offChainSync: {
-      handlers: { getHandleFromResolver },
-    },
+    providerInstance,
   } = useWorkspaceContext();
+  const {
+    handlers: { getResolverName },
+  } = useBakoIDClient(providerInstance);
 
   // Logic to fix the button in the footer
   // const accordionHeight = () => {
@@ -307,10 +339,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         )?.nickname;
+        const resolverName = getResolverName(transaction.value);
         const recipientLabel =
-          contact ??
-          getHandleFromResolver(transaction.value) ??
-          AddressUtils.format(transaction.value);
+          contact ?? resolverName ?? AddressUtils.format(transaction.value);
 
         return (
           <>

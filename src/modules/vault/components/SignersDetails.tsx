@@ -43,7 +43,6 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
       requests: { listContactsRequest },
     },
   } = useWorkspaceContext();
-  const { resolveAddressContactHandle } = useAddressNicknameResolver();
 
   const maxItems = 4;
 
@@ -62,6 +61,10 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
   // Order members with owner in first position
   const members = [owner, ...notOwners];
 
+  const { resolveAddressContactHandle, isLoading } = useAddressNicknameResolver(
+    members.filter((m) => !!m).map((m) => m!.address),
+  );
+
   return (
     <>
       {members?.map((member, index: number) => {
@@ -69,7 +72,10 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
 
         if (isBig > 0 && index == maxItems) {
           return (
-            <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
+            <CustomSkeleton
+              isLoaded={!vault.isLoading && !isLoading}
+              key={index}
+            >
               <SignerCard
                 borderStyle="dashed"
                 bg="gradients.transaction-card"
@@ -116,7 +122,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
           : undefined;
 
         return (
-          <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
+          <CustomSkeleton isLoaded={!vault.isLoading && !isLoading} key={index}>
             <CardMember
               isOwner={member?.id === owner?.id}
               isGrid={isGrid}

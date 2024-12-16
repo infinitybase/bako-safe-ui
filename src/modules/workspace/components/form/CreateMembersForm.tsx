@@ -1,15 +1,12 @@
 import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete } from '@/components';
-import { queryClient } from '@/config/query-client';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import {
   useAddressBookAutocompleteOptions,
   useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
-import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { AddressUtils } from '@/modules/core/utils/address';
 
 import { UseChangeMember } from '../../hooks';
@@ -42,12 +39,6 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
       isUsingTemplate: false,
       isFirstLoading: false,
     });
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
-    });
-  }, []);
 
   return (
     <Box w="full" maxW={480} mb="12px">

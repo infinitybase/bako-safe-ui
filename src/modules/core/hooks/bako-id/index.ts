@@ -1,2 +1,1 @@
-export * from './useOffChainSync';
-export * from './useSyncData';
+export * from './useBakoIDClient';
