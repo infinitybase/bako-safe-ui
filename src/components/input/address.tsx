@@ -120,7 +120,6 @@ const AddressInput = (props: AddressInputProps) => {
       return;
     }
 
-    console.log(value, adbForm.getValues('resolver'));
     if (value.startsWith('@') && !adbForm.getValues('resolver')) {
       adbForm.setError('address', {
         type: 'manual',
