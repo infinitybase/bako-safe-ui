@@ -2,7 +2,6 @@ export * from './address';
 export * from './assets';
 export * from './enum';
 export * from './functions';
-export * from './off-chain-sync';
 export * from './pagination';
 export * from './react-query';
 export * from './routes';

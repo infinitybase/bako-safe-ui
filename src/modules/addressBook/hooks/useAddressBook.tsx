@@ -81,7 +81,14 @@ const useAddressBook = (
       contactToDelete,
     },
     dialog: {
-      contactDialog,
+      contactDialog: {
+        ...contactDialog,
+        onClose: () => {
+          contactDialog.onClose();
+          form.setValue('address', '');
+          form.setValue('nickname', '');
+        },
+      },
       deleteContactDialog,
     },
     requests: {

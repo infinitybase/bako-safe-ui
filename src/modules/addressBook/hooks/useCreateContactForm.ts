@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { AddressUtils } from '@/modules/core';
+import { HandleUtils } from '@/utils';
 
 const useCreateContactForm = (
   providerInstance: Promise<BakoProvider>,
@@ -27,6 +28,10 @@ const useCreateContactForm = (
         'is-valid-address',
         'This address can not receive assets from Bako.',
         async (address) => {
+          if (address?.startsWith('@')) {
+            return HandleUtils.isValidHandle(address);
+          }
+
           const isAssetIdOrAssetAddress = !!assetIdsAndAddresses?.find(
             (item) => item === address,
           );

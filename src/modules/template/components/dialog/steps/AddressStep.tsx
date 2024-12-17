@@ -24,7 +24,6 @@ import {
   Select,
   UserAddIcon,
 } from '@/components';
-import { queryClient } from '@/config/query-client';
 import { AddToAddressBook } from '@/modules/addressBook/components';
 import { CreateContactDialog } from '@/modules/addressBook/components/dialog/create';
 import {
@@ -33,7 +32,6 @@ import {
   useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
 import { AddressUtils, ITemplatePayload } from '@/modules/core';
-import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { keepOptionsNearToInput } from '@/utils/keep-options-near-to-container';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
@@ -106,12 +104,6 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
     optionsContainerRef.current,
     addresses.fields.length,
   ]);
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
-    });
-  }, []);
 
   return (
     <>
