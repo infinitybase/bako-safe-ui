@@ -44,7 +44,9 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   optionsRef?: LegacyRef<HTMLDivElement>;
   optionsContainerRef?: LegacyRef<HTMLDivElement>;
   onChange: (value: string) => void;
-  onInputChange?: (value: string) => AutocompleteOption;
+  onInputChange?: (
+    value: string,
+  ) => AutocompleteOption | Promise<AutocompleteOption>;
   actionOnFocus?: () => void;
   actionOnSelect?: () => void;
   actionOnRemoveInput?: () => void;
@@ -109,8 +111,16 @@ const Autocomplete = ({
         }
 
         const result = onInputChange(replacedValue);
-        setInputValue(result.label);
-        onChange(result.value);
+
+        if (result instanceof Promise) {
+          result.then((resolvedResult) => {
+            setInputValue(resolvedResult.label);
+            onChange(resolvedResult.value);
+          });
+        } else {
+          setInputValue(result.label);
+          onChange(result.value);
+        }
       }, 1500); // 1.5s debounce delay
     },
     [inputValue],

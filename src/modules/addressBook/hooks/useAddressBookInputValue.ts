@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { AutocompleteOption } from '@/components/autocomplete';
+import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AddressBookUtils } from '@/utils/address-book';
 
@@ -10,15 +11,26 @@ const useAddressBookInputValue = () => {
     label: '',
   });
 
+  const { providerInstance } = useWorkspaceContext();
   const {
-    offChainSync: {
-      handlers: { getHandleFromResolver, getResolverFromHandle },
-    },
-  } = useWorkspaceContext();
+    handlers: { getResolverName, getResolverAddress },
+  } = useBakoIDClient(providerInstance);
 
   const setInputValue = (value: string): AutocompleteOption => {
-    const formattedValue = value.startsWith('@') ? value.toLowerCase() : value;
-    const resolver = getResolverFromHandle(formattedValue);
+    const formattedValue = value?.startsWith('@') ? value.toLowerCase() : value;
+
+    if (!formattedValue) {
+      const formField = {
+        value: '',
+        label: '',
+      };
+      setFormField(formField);
+      return formField;
+    }
+
+    if (formField.value === formattedValue) return formField;
+
+    const resolver = getResolverAddress(formattedValue);
 
     if (resolver) {
       const initialValue = resolver;
@@ -36,7 +48,7 @@ const useAddressBookInputValue = () => {
       };
     }
 
-    const handle = getHandleFromResolver(formattedValue);
+    const handle = getResolverName(formattedValue);
 
     if (handle && !formField.label.length) {
       return {

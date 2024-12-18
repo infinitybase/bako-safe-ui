@@ -22,9 +22,7 @@ const GoToBakoId = ({ handle }: GoToBakoIdProps) => {
       px={4}
       py={3}
       cursor="pointer"
-      onClick={() =>
-        window.open(`${VITE_BAKO_ID_URL}/profile/${_handle}`, '_BLANK')
-      }
+      onClick={() => window.open(`${VITE_BAKO_ID_URL}/${_handle}`, '_BLANK')}
     >
       <UpRightArrow color="grey.50" fontSize="lg" />
       <VStack alignItems="flex-start" spacing={0} fontSize="xs">

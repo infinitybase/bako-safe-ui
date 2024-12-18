@@ -9,11 +9,11 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { Address, isB256 } from 'fuels';
+import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete, Dialog, RemoveIcon, Select } from '@/components';
-import { queryClient } from '@/config/query-client';
 import {
   AddToAddressBook,
   CreateContactDialog,
@@ -21,14 +21,14 @@ import {
 import {
   AddressesFields,
   useAddressBookAutocompleteOptions,
-  useAddressBookInputValue,
 } from '@/modules/addressBook/hooks';
-import { OFF_CHAIN_SYNC_DATA_QUERY_KEY } from '@/modules/core/hooks/bako-id';
+import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { ITemplate } from '@/modules/core/models';
 import { AddressUtils } from '@/modules/core/utils/address';
 import CreateVaultWarning from '@/modules/vault/components/CreateVaultWarning';
 import { UseCreateVaultReturn } from '@/modules/vault/hooks/create/useCreateVault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
+import { AddressBookUtils } from '@/utils';
 import { scrollToBottom } from '@/utils/scroll-to-bottom';
 
 export interface VaultAddressesStepProps {
@@ -53,8 +53,12 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       inView,
       workspaceId,
     },
+    providerInstance,
   } = useWorkspaceContext();
-  const { setInputValue } = useAddressBookInputValue();
+
+  const {
+    handlers: { fetchResolverName, fetchResolveAddress },
+  } = useBakoIDClient(providerInstance);
 
   const hasTwoOrMoreAddresses =
     form.watch('addresses') && form.watch('addresses')!.length >= 2;
@@ -96,12 +100,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
   const lastAddressIndex = addresses.fields.length;
 
   const minSigners = form.formState.errors.minSigners?.message;
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: [OFF_CHAIN_SYNC_DATA_QUERY_KEY],
-    });
-  }, []);
 
   return (
     <>
@@ -174,7 +172,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                     render={({ field, fieldState }) => {
                       const appliedOptions = handleFieldOptions(
                         field.value,
-                        optionsRequests[index].options,
+                        optionsRequests[index]?.options ?? [],
                         first,
                       );
 
@@ -193,8 +191,14 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                         optionsRequests[index].isSuccess &&
                         listContactsRequest.data &&
                         !listContactsRequest.data
-                          .map((o) => o.user.address)
-                          .includes(field.value);
+                          .map((o) =>
+                            Address.fromString(o.user.address).toString(),
+                          )
+                          .includes(
+                            isB256(field.value)
+                              ? Address.fromString(field.value).toString()
+                              : field.value,
+                          );
 
                       return (
                         <FormControl
@@ -214,9 +218,39 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                             optionsRef={optionRef}
                             value={field.value}
                             onChange={field.onChange}
-                            onInputChange={(value: string) =>
-                              setInputValue(value)
-                            }
+                            onInputChange={async (value: string) => {
+                              const result = { value: value, label: value };
+
+                              if (value.startsWith('@')) {
+                                const address =
+                                  await fetchResolveAddress.handler(
+                                    value.split(' - ').at(0)!,
+                                  );
+                                if (address) {
+                                  result.value = address;
+                                  result.label =
+                                    AddressBookUtils.formatForAutocomplete(
+                                      value,
+                                      address,
+                                    );
+                                }
+                              }
+
+                              if (isB256(value)) {
+                                const name =
+                                  await fetchResolverName.handler(value);
+                                if (name) {
+                                  result.label =
+                                    AddressBookUtils.formatForAutocomplete(
+                                      name,
+                                      value,
+                                    );
+                                  result.value = value;
+                                }
+                              }
+
+                              return result;
+                            }}
                             options={appliedOptions}
                             isLoading={isLoading}
                             disabled={first}
