@@ -135,7 +135,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               optionsRequests[index].isSuccess &&
               listContactsRequest.data &&
               !listContactsRequest.data
-                .map((o) => o.user.address)
+                .map((o) => Address.fromString(o.user.address).toString())
                 .includes(field.value);
 
             return (

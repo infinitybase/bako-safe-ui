@@ -10,6 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
+import { Address } from 'fuels';
 import { useEffect, useRef, useState } from 'react';
 import {
   Controller,
@@ -168,7 +169,7 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                   optionsRequests[index].isSuccess &&
                   listContactsRequest.data &&
                   !listContactsRequest.data
-                    .map((o) => o.user.address)
+                    .map((o) => Address.fromString(o.user.address).toString())
                     .includes(field.value);
 
                 return (
