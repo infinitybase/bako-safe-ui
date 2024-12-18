@@ -118,6 +118,7 @@ const SignersList = ({ vault, isGrid }: SignersListProps) => {
         return (
           <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
             <CardMember
+              hasAdd={false}
               isOwner={member?.id === owner?.id}
               isGrid={isGrid}
               member={{

@@ -19,11 +19,18 @@ interface AddAddressBookProps extends StackProps {
   iconButtonProps?: Omit<IconButtonProps, 'aria-label' | 'onClick'>;
   iconProps?: Omit<IconProps, 'as'>;
   textProps?: TextProps;
+  hasAdd: boolean;
 }
 
-const AddAddressBook = (props: AddAddressBookProps) => {
-  const { address, iconButtonProps, iconProps, textProps, ...rest } = props;
-
+const AddAddressBook = ({
+  address,
+  iconButtonProps,
+  iconProps,
+  textProps,
+  hasAdd,
+  ...rest
+}: AddAddressBookProps) => {
+  console.log(hasAdd);
   const {
     addressBookInfos: {
       dialog: { contactDialog },
@@ -42,25 +49,27 @@ const AddAddressBook = (props: AddAddressBookProps) => {
         isEdit={false}
       />
 
-      <HStack spacing={1} {...rest}>
-        <IconButton
-          aria-label="Add to Address Book"
-          variant="icon"
-          bgColor="none"
-          fontSize="2xs"
-          size="2xs"
-          icon={<Icon as={PlusIcon} color="grey.75" {...iconProps} />}
-          onClick={() => {
-            handleOpenDialog?.({
-              address,
-            });
-          }}
-          {...iconButtonProps}
-        />
-        <Text color="grey.75" fontSize="xs" {...textProps}>
-          Add to Address Book
-        </Text>
-      </HStack>
+      {hasAdd && (
+        <HStack spacing={1} {...rest}>
+          <IconButton
+            aria-label="Add to Address Book"
+            variant="icon"
+            bgColor="none"
+            fontSize="2xs"
+            size="2xs"
+            icon={<Icon as={PlusIcon} color="grey.75" {...iconProps} />}
+            onClick={() => {
+              handleOpenDialog?.({
+                address,
+              });
+            }}
+            {...iconButtonProps}
+          />
+          <Text color="grey.75" fontSize="xs" {...textProps}>
+            Add to Address Book
+          </Text>
+        </HStack>
+      )}
     </>
   );
 };

@@ -23,6 +23,7 @@ interface CardMemberProps {
   };
   isOwner: boolean;
   isGrid?: boolean;
+  hasAdd?: boolean;
 }
 
 const SignerCard = chakra(Card, {
@@ -48,7 +49,12 @@ const CardMemberBagde = () => {
   );
 };
 
-const CardMember = ({ member, isOwner, isGrid = true }: CardMemberProps) => {
+const CardMember = ({
+  member,
+  isOwner,
+  isGrid = true,
+  hasAdd = true,
+}: CardMemberProps) => {
   const { isLitteSmall, isLargerThan680, isLargerThan1700, isExtraLarge } =
     useScreenSize();
 
@@ -99,7 +105,7 @@ const CardMember = ({ member, isOwner, isGrid = true }: CardMemberProps) => {
                   {member?.nickname}
                 </Text>
               ) : (
-                <AddAddressBook address={member.address} />
+                <AddAddressBook address={member.address} hasAdd={hasAdd} />
               )}
 
               {isOwner && <CardMemberBagde />}
