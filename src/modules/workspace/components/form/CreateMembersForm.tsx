@@ -1,5 +1,5 @@
 import { Box, FormControl, FormHelperText } from '@chakra-ui/react';
-import { Address } from 'fuels';
+import { Address, isB256 } from 'fuels';
 import { Controller } from 'react-hook-form';
 
 import { Autocomplete } from '@/components';
@@ -59,7 +59,11 @@ export const MemberAddressForm = ({ form, addressBook }: MemberAddressForm) => {
             listContactsRequest.data &&
             !listContactsRequest.data
               .map((o) => Address.fromString(o.user.address).toString())
-              .includes(field.value);
+              .includes(
+                isB256(field.value)
+                  ? Address.fromString(field.value).toString()
+                  : field.value,
+              );
 
           return (
             <>

@@ -136,7 +136,11 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
               listContactsRequest.data &&
               !listContactsRequest.data
                 .map((o) => Address.fromString(o.user.address).toString())
-                .includes(field.value);
+                .includes(
+                  isB256(field.value)
+                    ? Address.fromString(field.value).toString()
+                    : field.value,
+                );
 
             return (
               <FormControl isInvalid={fieldState.invalid}>

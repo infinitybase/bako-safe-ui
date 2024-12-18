@@ -10,7 +10,7 @@ import {
   TabPanel,
   VStack,
 } from '@chakra-ui/react';
-import { Address } from 'fuels';
+import { Address, isB256 } from 'fuels';
 import { useEffect, useRef, useState } from 'react';
 import {
   Controller,
@@ -170,7 +170,11 @@ const AddressStep = ({ form, addresses }: AddressStepProps) => {
                   listContactsRequest.data &&
                   !listContactsRequest.data
                     .map((o) => Address.fromString(o.user.address).toString())
-                    .includes(field.value);
+                    .includes(
+                      isB256(field.value)
+                        ? Address.fromString(field.value).toString()
+                        : field.value,
+                    );
 
                 return (
                   <FormControl isInvalid={fieldState.invalid}>
