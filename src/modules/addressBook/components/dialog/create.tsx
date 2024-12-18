@@ -48,7 +48,7 @@ const CreateContactDialog = ({
           type="submit"
           leftIcon={<SquarePlusIcon />}
           onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
-          isDisabled={isLoading}
+          isDisabled={isLoading || !form.formState.isValid}
           isLoading={isLoading}
         >
           {isEdit ? 'Edit' : 'Add it'}
