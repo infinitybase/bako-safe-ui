@@ -30,7 +30,6 @@ const AddAddressBook = ({
   hasAdd,
   ...rest
 }: AddAddressBookProps) => {
-  console.log(hasAdd);
   const {
     addressBookInfos: {
       dialog: { contactDialog },
