@@ -58,7 +58,7 @@ const AddressWithCopyBtn = ({
         size="xs"
         minW={2}
         aria-label="Copy"
-        addressToCopy={value && FuelsAddress.fromString(value).toB256()}
+        addressToCopy={value && FuelsAddress.fromString(value).toString()}
         {...copyBtnProps}
       />
     </Flex>

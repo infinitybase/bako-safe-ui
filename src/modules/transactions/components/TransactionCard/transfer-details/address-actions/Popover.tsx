@@ -10,6 +10,7 @@ import {
 import { AddressActionsProps } from '.';
 import { AddressActionsButton } from './Button';
 import { AddToAddressBook, CopyAddress, GoToBakoId } from './options';
+import { Address } from 'fuels';
 
 const AddressActionsPopover = (props: AddressActionsProps) => {
   const { address, handle, hasContact } = props;
@@ -40,7 +41,7 @@ const AddressActionsPopover = (props: AddressActionsProps) => {
             </>
           )}
           <CopyAddress
-            address={address}
+            address={Address.fromString(address).toString()}
             onClose={hasContact && !handle ? onClose : undefined}
           />
           {handle && (
