@@ -3,7 +3,6 @@ import {
   Box,
   chakra,
   Flex,
-  Heading,
   HStack,
   Icon,
   Image,
@@ -24,11 +23,10 @@ import { FaChevronDown } from 'react-icons/fa';
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
   AddressWithCopyBtn,
-  Dialog,
   NotificationIcon,
-  WarningIcon,
   PlusIcon,
   UnknownIcon,
+  AddressCopyAlert,
 } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { DisconnectIcon } from '@/components/icons/disconnect';
@@ -126,85 +124,6 @@ const UserBox = () => {
 
   const feedbackForm = () =>
     window.open(import.meta.env.VITE_FEEDBACK_FORM, '_BLANK');
-
-  const alertComponent = () => {
-    return (
-      <Dialog.Modal
-        isOpen={openAlert}
-        onClose={() => setOpenAlert(false)}
-        closeOnOverlayClick={false}
-        size={{
-          base: 'full',
-          sm: 'sm',
-        }}
-        xsBreakPointPy={6}
-      >
-        <Dialog.Header
-          title=""
-          description=""
-          hidden={true}
-          mb={0}
-          mt={{ base: 4, xs: 0 }}
-          maxW={385}
-          h={6}
-        />
-
-        <Dialog.Body
-          w="full"
-          maxW={385}
-          h="248px"
-          display="flex"
-          alignItems="center"
-          px={4}
-          mb="18px"
-          mt={{ base: 40, sm: '2px' }}
-        >
-          <VStack w="full" spacing={8}>
-            <WarningIcon w={24} h={24} />
-
-            <VStack spacing={6}>
-              <Heading fontSize="xl" color="grey.75">
-                {'Signer address copied!'}
-              </Heading>
-              <Text
-                variant="description"
-                color="grey.250"
-                fontSize="xs"
-                textAlign="center"
-              >
-                {
-                  'For signing purposes only! DO NOT send any assets to this address.'
-                }
-              </Text>
-            </VStack>
-          </VStack>
-        </Dialog.Body>
-
-        <Dialog.Actions
-          w="full"
-          maxW={385}
-          dividerBorderColor="grey.425"
-          position="relative"
-          hideDivider
-          px={4}
-          mb={4}
-        >
-          <Dialog.PrimaryAction
-            flex={3}
-            hidden={false}
-            variant="outline"
-            onClick={() => setOpenAlert(false)}
-            _hover={{
-              opacity: 0.8,
-            }}
-            color="white"
-          >
-            Close
-          </Dialog.PrimaryAction>
-        </Dialog.Actions>
-      </Dialog.Modal>
-    );
-  };
 
   // Bug fix to unread counter that keeps previous state after redirect
   useEffect(() => {
@@ -499,6 +418,7 @@ const UserBox = () => {
                 isSidebarAddress
                 flexDir="row-reverse"
                 textProps={{ color: '#AAA6A1' }}
+                nonCopy={authDetails.userInfos.type.type === TypeUser.WEB_AUTHN}
                 onClick={() => {
                   authDetails.userInfos.type.type === TypeUser.WEB_AUTHN &&
                     setOpenAlert(true);
@@ -627,7 +547,11 @@ const UserBox = () => {
         </PopoverContent>
       </Popover>
 
-      {alertComponent()}
+      <AddressCopyAlert
+        isOpen={openAlert}
+        setIsOpen={setOpenAlert}
+        address={authDetails.userInfos?.address ?? ''}
+      />
     </>
   );
 };
@@ -691,7 +615,6 @@ const Header = () => {
       <TopBarItem>
         <UserBox />
       </TopBarItem>
-      {/* </HStack> */}
     </Flex>
   );
 };
