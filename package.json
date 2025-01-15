@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "test:e2e": "playwright test",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install"
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@playwright/test": "^1.49.1",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": "^18.2.15",
