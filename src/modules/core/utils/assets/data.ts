@@ -68,21 +68,20 @@ export const formatedAssets = (chainId: number): Asset[] =>
 const assetsList: Asset[] = formatedAssets(getChainId());
 
 export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
-  const assetsMap: AssetMap = assetsList.reduce(
-    (previousValue, currentValue) => {
-      return {
-        ...previousValue,
-        [currentValue.assetId]: {
-          name: currentValue?.name,
-          slug: currentValue?.slug,
-          icon: currentValue?.icon,
-          assetId: currentValue?.assetId,
-          units: currentValue?.units,
-        },
-      };
-    },
-    {},
-  );
+  const assets = formatedAssets(getChainId());
+
+  const assetsMap: AssetMap = assets.reduce((previousValue, currentValue) => {
+    return {
+      ...previousValue,
+      [currentValue.assetId]: {
+        name: currentValue?.name,
+        slug: currentValue?.slug,
+        icon: currentValue?.icon,
+        assetId: currentValue?.assetId,
+        units: currentValue?.units,
+      },
+    };
+  }, {});
 
   return assetsMap;
 };
