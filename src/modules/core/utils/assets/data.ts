@@ -34,8 +34,8 @@ const getChainId = (): number =>
       availableNetWorks[NetworkType.TESTNET].chainId,
   );
 
-export const formatedAssets = (chainId: number): Asset[] =>
-  getFuelTokensList()
+export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
+  assetsList
     .reduce<Asset[]>((acc, asset) => {
       const network =
         asset?.networks?.find(
@@ -65,11 +65,14 @@ export const formatedAssets = (chainId: number): Asset[] =>
     }, [])
     .concat(UNKNOWN_ASSET);
 
-const assetsList: Asset[] = formatedAssets(getChainId());
+// @todo: remove this
+const assetsList: Asset[] = formatedAssets([], getChainId());
 
-export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
-  const assets = formatedAssets(getChainId());
-
+export const assetsMapFromFormattedFn = (
+  tokenList: Assets = [],
+  chainId: number,
+): AssetMap => {
+  const assets = formatedAssets(tokenList, chainId);
   const assetsMap: AssetMap = assets.reduce((previousValue, currentValue) => {
     return {
       ...previousValue,
