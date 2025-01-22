@@ -7,7 +7,7 @@ import { localStorageKeys } from '@/modules/auth/services/methods';
 import {
   AssetMap,
   assetsMapFromFormattedFn,
-} from '@/modules/core/utils/assets/data';
+} from '@/modules/core/utils/assets';
 import { WorkspaceService } from '@/modules/workspace/services';
 
 type Store = {
