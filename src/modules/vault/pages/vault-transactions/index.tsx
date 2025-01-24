@@ -138,6 +138,7 @@ const TransactionsVaultPage = () => {
 
             <BreadcrumbItem>
               <BreadcrumbLink
+                data-testid="vaultbreadCrumb"
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"

@@ -34,7 +34,7 @@ const AddressCopyAlert = ({
       <>
         <Dialog.Body
           w="full"
-          maxW={385}
+          maxW={500}
           h="400px"
           display="flex"
           alignItems="center"
@@ -47,7 +47,7 @@ const AddressCopyAlert = ({
 
             <VStack spacing={6}>
               <Heading fontSize="xl" color="grey.75">
-                {'Signer address copied!'}
+                {'address copied!'}
               </Heading>
               <Text
                 variant="description"
@@ -59,7 +59,6 @@ const AddressCopyAlert = ({
                   'For signing purposes only! DO NOT send any assets to this address.'
                 }
               </Text>
-
               <Checkbox
                 isChecked={alertChecked}
                 onChange={(e) => setAlertChecked(e.target.checked)}
@@ -81,7 +80,7 @@ const AddressCopyAlert = ({
           dividerBorderColor="grey.425"
           position="relative"
           hideDivider
-          px={4}
+          px={2}
           mb={4}
         >
           <Dialog.PrimaryAction
@@ -98,7 +97,7 @@ const AddressCopyAlert = ({
               opacity: 0.8,
             }}
           >
-            Show signer address
+            Show address
           </Dialog.PrimaryAction>
         </Dialog.Actions>
       </>
@@ -123,7 +122,7 @@ const AddressCopyAlert = ({
 
             <VStack spacing={6}>
               <Heading fontSize="xl" color="grey.75">
-                {'Signer address'}
+                {'address'}
               </Heading>
 
               <Text
@@ -143,6 +142,7 @@ const AddressCopyAlert = ({
                 borderRadius={8}
                 borderColor="#FDD8351A"
                 my={2}
+                top="30px"
               >
                 <Box w="full" ml={4}>
                   <Text variant="subtitle" color="#FDD835">
@@ -179,7 +179,7 @@ const AddressCopyAlert = ({
               opacity: 0.8,
             }}
           >
-            Copy signer address
+            Copy address
           </Dialog.PrimaryAction>
         </Dialog.Actions>
       </>
