@@ -1,8 +1,9 @@
-import React from 'react';
 import { Alert, Box, Checkbox, Heading, Text, VStack } from '@chakra-ui/react';
-import { Dialog } from '@/components/dialog';
-import { WarningIcon } from '@/components/icons';
 import { Address } from 'fuels';
+import React from 'react';
+
+import { Dialog } from '@/components/dialog';
+import { LineCloseIcon, WarningIcon } from '@/components/icons';
 
 export interface AddressCopyAlertProps {
   isOpen: boolean;
@@ -35,19 +36,19 @@ const AddressCopyAlert = ({
         <Dialog.Body
           w="full"
           maxW={385}
-          h="400px"
+          px={4}
+          py={8}
           display="flex"
           alignItems="center"
-          px={4}
           mb="18px"
           mt={{ base: 40, sm: '2px' }}
         >
-          <VStack w="full" spacing={8}>
+          <VStack w="full" spacing={4}>
             <WarningIcon w={24} h={24} />
 
-            <VStack spacing={6}>
+            <VStack spacing={4}>
               <Heading fontSize="xl" color="grey.75">
-                {'Signer address copied!'}
+                Signer address
               </Heading>
               <Text
                 variant="description"
@@ -55,43 +56,44 @@ const AddressCopyAlert = ({
                 fontSize="xs"
                 textAlign="center"
               >
-                {
-                  'For signing purposes only! DO NOT send any assets to this address.'
-                }
+                For signing purposes only!
+                <br />
+                DO NOT send any assets to this address.
               </Text>
-
-              <Checkbox
-                isChecked={alertChecked}
-                onChange={(e) => setAlertChecked(e.target.checked)}
-                size="lg"
-                colorScheme="orange"
-                spacing={3}
-              >
-                <Text fontSize="sm" color="grey.200">
-                  I understand that I should not use this address to receive
-                  assets.
-                </Text>
-              </Checkbox>
             </VStack>
           </VStack>
         </Dialog.Body>
         <Dialog.Actions
           w="full"
           maxW={385}
+          flexDirection="column"
+          flexWrap="nowrap"
           dividerBorderColor="grey.425"
           position="relative"
           hideDivider
           px={4}
           mb={4}
         >
+          <Box w="full">
+            <Checkbox
+              isChecked={alertChecked}
+              onChange={(e) => setAlertChecked(e.target.checked)}
+              size="md"
+              colorScheme="orange"
+              spacing={3}
+            >
+              <Text fontSize="xs" color="grey.200">
+                I understand that I should not use this address to receive
+                assets.
+              </Text>
+            </Checkbox>
+          </Box>
           <Dialog.PrimaryAction
-            flex={3}
-            // variant="outline"
-            variant={alertChecked ? 'primary' : 'outline'}
+            variant={alertChecked ? 'primary' : 'secondary'}
             color={alertChecked ? '#121212' : 'grey.75'}
             cursor={alertChecked ? 'pointer' : 'default'}
+            isDisabled={!alertChecked}
             onClick={() => {
-              if (!alertChecked) return;
               setAlertStep(ALERT_STEPS.CONFIRM);
             }}
             _hover={{
@@ -111,17 +113,17 @@ const AddressCopyAlert = ({
         <Dialog.Body
           w="full"
           maxW={385}
-          h="400px"
           display="flex"
           alignItems="center"
           px={4}
+          py={8}
           mb="18px"
           mt={{ base: 40, sm: '2px' }}
         >
-          <VStack w="full" spacing={8}>
+          <VStack w="full" spacing={4}>
             <WarningIcon w={24} h={24} />
 
-            <VStack spacing={6}>
+            <VStack spacing={4}>
               <Heading fontSize="xl" color="grey.75">
                 {'Signer address'}
               </Heading>
@@ -135,39 +137,40 @@ const AddressCopyAlert = ({
               >
                 {address}
               </Text>
-              <Alert
-                px={6}
-                py={4}
-                bgColor="#FDD8351A"
-                borderWidth={1}
-                borderRadius={8}
-                borderColor="#FDD8351A"
-                my={2}
-              >
-                <Box w="full" ml={4}>
-                  <Text variant="subtitle" color="#FDD835">
-                    Attention!
-                  </Text>
-                  <Text fontSize="xs" fontWeight="normal" color="grey.200">
-                    For signing purposes only. DO NOT send any assets to this
-                    address!
-                  </Text>
-                </Box>
-              </Alert>
             </VStack>
           </VStack>
         </Dialog.Body>
         <Dialog.Actions
           w="full"
           maxW={385}
+          flexDirection="column"
+          flexWrap="nowrap"
           dividerBorderColor="grey.425"
           position="relative"
           hideDivider
           px={4}
           mb={4}
         >
+          <Alert
+            px={6}
+            py={4}
+            bgColor="#FDD8351A"
+            borderWidth={1}
+            borderRadius={8}
+            borderColor="#FDD8351A"
+            my={2}
+          >
+            <Box w="full" ml={4}>
+              <Text variant="subtitle" color="#FDD835">
+                Attention!
+              </Text>
+              <Text fontSize="xs" fontWeight="normal" color="grey.200">
+                For signing purposes only. DO NOT send any assets to this
+                address!
+              </Text>
+            </Box>
+          </Alert>
           <Dialog.PrimaryAction
-            flex={3}
             variant="primary"
             onClick={() => {
               navigator.clipboard.writeText(
@@ -211,6 +214,14 @@ const AddressCopyAlert = ({
           mt={{ base: 4, xs: 0 }}
           maxW={385}
           h={5}
+        />
+        <LineCloseIcon
+          fontSize="24px"
+          aria-label="Close window"
+          cursor="pointer"
+          position="absolute"
+          right={8}
+          onClick={onClose}
         />
         {AlertSteps[alertStep]}
       </Dialog.Modal>
