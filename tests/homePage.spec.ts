@@ -100,4 +100,23 @@ test('webauthn', async ({ page }) => {
     .getByLabel('Address', { exact: true })
     .fill('0x03aAb6b3c770E134908ba0CDE7BFAD7F22b80138e90f2C0d3948aB3Ebd0659C8');
   await page.getByRole('button', { name: 'Add it' }).click();
+  await page.waitForLoadState('networkidle',{timeout: 2000})
+  await page.waitForTimeout(2000)
+
+  await expect(page.getByText('Novo Endereço')).toBeVisible()
+
+  //Copiar, editar e apagar adb  
+  await page.getByRole('button', {name: 'Copy'}).click()
+
+{/*) await page.getByRole('button', {name: 'Edit'}).click()
+  await expect(page.locator('text=Edit address')).toBeVisible()
+  await page.getByLabel('Name or Label').clear()
+  await page.getByLabel('Name or Label').fill('endereço editado');
+  await page.getByRole('button', {name: 'Edit'}).click(); */}
+
+  await page.getByRole('button',{name: 'Delete'}).click()
+  await page.getByRole('button', {name: 'Yes, delete it!'}).click()
+
+
+
 });

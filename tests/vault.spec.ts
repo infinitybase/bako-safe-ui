@@ -7,7 +7,7 @@ import { settingsButtons } from './utils/helpers';
 
 const vaultName = 'Teste123';
 
-test.only('webauthn', async ({ page }) => {
+test('webauthn', async ({ page }) => {
   await E2ETestUtils.enablePasskey({ page });
 
   // Navegue até a página inicial
@@ -156,3 +156,6 @@ test.only('webauthn', async ({ page }) => {
   await page.locator('#coming-soon-toast').isHidden()*/
   }
 });
+
+
+
