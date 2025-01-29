@@ -12,6 +12,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
+import { AddressUtils } from '@/modules/core/utils/address';
 
 export enum TabState {
   INFO,
@@ -90,11 +91,15 @@ const useCreateVault = () => {
     debouncedSearchHandler(value);
   };
 
-  const handleCreateVault = form.handleSubmit(async (data) => {
+  const handleCreateVault = form.handleSubmit(async (data: any) => {
     const addresses =
-      data.addresses?.map(
-        (address) => Address.fromString(address.value).bech32Address,
-      ) ?? [];
+      data.addresses?.map((address: { value: string }) => {
+        const _a = AddressUtils.isPasskey(address.value)
+          ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
+          : address.value;
+
+        return Address.fromString(_a).bech32Address;
+      }) ?? [];
 
     bakoSafeVault.create({
       name: data.name,
@@ -139,7 +144,8 @@ const useCreateVault = () => {
 
   const onSaveTemplate = async () => {
     const data = form.getValues();
-    const addresses = data.addresses?.map((address) => address.value) ?? [];
+    const addresses =
+      data.addresses?.map((address: { value: string }) => address.value) ?? [];
     const minSigners = Number(data.minSigners) ?? 1;
 
     setTemplateFormInitial({

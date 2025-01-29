@@ -26,7 +26,6 @@ import {
   NotificationIcon,
   PlusIcon,
   UnknownIcon,
-  AddressCopyAlert,
 } from '@/components';
 import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import { DisconnectIcon } from '@/components/icons/disconnect';
@@ -412,13 +411,16 @@ const UserBox = () => {
                 </Text>
               )}
               <AddressWithCopyBtn
-                value={authDetails.userInfos?.address ?? ''}
+                value={
+                  authDetails.userInfos?.type.type === TypeUser.WEB_AUTHN
+                    ? AddressUtils.toBech32(authDetails.userInfos?.address)
+                    : (authDetails.userInfos?.address ?? '')
+                }
                 justifyContent="start"
                 aria-label="Copy address"
                 isSidebarAddress
                 flexDir="row-reverse"
                 textProps={{ color: '#AAA6A1' }}
-                nonCopy={authDetails.userInfos.type.type === TypeUser.WEB_AUTHN}
                 onClick={() => {
                   authDetails.userInfos.type.type === TypeUser.WEB_AUTHN &&
                     setOpenAlert(true);
@@ -546,12 +548,6 @@ const UserBox = () => {
           </PopoverBody>
         </PopoverContent>
       </Popover>
-
-      <AddressCopyAlert
-        isOpen={openAlert}
-        setIsOpen={setOpenAlert}
-        address={authDetails.userInfos?.address ?? ''}
-      />
     </>
   );
 };
