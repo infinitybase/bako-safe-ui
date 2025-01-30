@@ -22,7 +22,24 @@ type Store = {
 export const useMappedAssetStore = create(
   persist<Store>(
     (set, get) => ({
-      mappedTokens: {} as AssetMap,
+      mappedTokens: {
+        '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82': {
+          assetId:
+            '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
+          name: 'Fuel',
+          slug: 'FUEL',
+          icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+          units: 18,
+        },
+        '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b': {
+          assetId:
+            '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b',
+          name: 'Fuel',
+          slug: 'FUEL',
+          icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+          units: 18,
+        },
+      } as AssetMap,
       mappedNfts: {} as AssetMap,
       setAssetMap: (mappedTokens) => set({ mappedTokens }),
       getAssetByAssetId: (assetId) => get().mappedTokens[assetId],
@@ -53,6 +70,7 @@ export const useMappedAssetStore = create(
     }),
     {
       name: localStorageKeys.FUEL_MAPPED_ASSETS,
+      version: 2,
     },
   ),
 );
