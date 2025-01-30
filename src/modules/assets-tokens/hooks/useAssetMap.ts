@@ -76,10 +76,12 @@ export const useMappedAssetStore = create(
 export const useAssetMap = (chainId: number) => {
   const { mappedTokens } = useMappedAssetStore();
 
+  console.log('mappedTokens', mappedTokens);
+
   const assetList = useMemo(() => {
     const tokenList = [
-      ...Object.values(mappedTokens).map((item) => item),
       ...assets,
+      ...Object.values(mappedTokens).map((item) => item),
     ];
     return tokenList;
   }, [mappedTokens, chainId]);
