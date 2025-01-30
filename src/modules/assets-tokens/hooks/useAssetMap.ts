@@ -47,7 +47,6 @@ export const useMappedAssetStore = create(
         const assets: AssetMap = {};
         for (const assetId of assetIds) {
           let asset = get().mappedTokens[assetId];
-          console.log('has asset?', !!asset, assetId);
           if (!asset) {
             asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
           }
@@ -59,7 +58,6 @@ export const useMappedAssetStore = create(
         const assets: AssetMap = {};
         for (const assetId of assetIds) {
           let asset = get().mappedNfts[assetId];
-          console.log('has asset?', !!asset, assetId);
           if (!asset) {
             asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
           }
@@ -86,11 +84,11 @@ export const useAssetMap = (chainId: number) => {
     return tokenList;
   }, [mappedTokens, chainId]);
 
-  console.log(assetList);
-
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
+
+  console.log('assetsMap', assetsMap);
 
   return { assetList, assetsMap };
 };
