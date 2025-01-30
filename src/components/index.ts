@@ -21,3 +21,4 @@ export * from './tooltip';
 export * from './transactionExpire';
 export * from './transactionTypeFilters';
 export * from './welcomeDialog';
+export * from './addressCopyAlert';

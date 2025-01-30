@@ -40,6 +40,8 @@ const useTransactionDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
+  const { refetchAssets } = useHasReservedCoins(vaultId ?? '', workspace?.id);
+
   const homeTransactions = useHomeTransactions(workspace?.id);
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
   const vaultTransactions = useVaultTransactionsList({
@@ -54,8 +56,6 @@ const useTransactionDetails = () => {
     transactionsPageList.lists.transactions!,
     vaultTransactions.lists.transactions,
   );
-
-  const { refetchAssets } = useHasReservedCoins(vaultId ?? '', workspace?.id);
 
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
@@ -105,6 +105,7 @@ const useTransactionDetails = () => {
       homeTransactions.request.refetch();
       vaultTransactions.request.refetch();
       transactionsPageList.request.refetch();
+      refetchAssets();
     }
   };
 

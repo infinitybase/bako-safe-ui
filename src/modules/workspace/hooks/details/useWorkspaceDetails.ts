@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 
 import { queryClient, setupAxiosInterceptors } from '@/config';
 import {
-  assetsMapFromFormattedFn,
   useAddressBook,
   useAuthUrlParams,
   useGetParams,
@@ -13,6 +12,7 @@ import {
   useVaultAssets,
   useVaultByIdRequest,
 } from '@/modules';
+import { useAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { useAuth } from '@/modules/auth';
 import { useTokensUSDAmountRequest } from '@/modules/home/hooks/useTokensUSDAmountRequest';
 import { useNetworks } from '@/modules/network/hooks';
@@ -27,8 +27,6 @@ const useWorkspaceDetails = () => {
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 
-  const assetsMap = assetsMapFromFormattedFn(fuelsTokens);
-
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
 
@@ -39,6 +37,7 @@ const useWorkspaceDetails = () => {
   } = useGetParams();
 
   const { currentNetwork } = useNetworks();
+  const { assetsMap } = useAssetMap(currentNetwork.chainId);
 
   const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
     const provider = await ProviderInstance.create(currentNetwork.url);
