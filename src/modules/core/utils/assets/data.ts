@@ -41,6 +41,8 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
         asset?.networks?.find(
           (network) => network && network.chainId === chainId,
         ) ?? null;
+      console.log('network', network);
+      console.log('asset', asset);
       if (!network && asset?.name && asset?.symbol && asset) {
         acc.push({
           name: asset.name,
