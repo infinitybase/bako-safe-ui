@@ -29,7 +29,7 @@ export const useMappedAssetStore = create(
           name: 'Fuel',
           slug: 'FUEL',
           icon: 'https://verified-assets.fuel.network/images/fuel.svg',
-          units: 18,
+          units: 9,
         },
         '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b': {
           assetId:
@@ -37,7 +37,7 @@ export const useMappedAssetStore = create(
           name: 'Fuel',
           slug: 'FUEL',
           icon: 'https://verified-assets.fuel.network/images/fuel.svg',
-          units: 18,
+          units: 9,
         },
       } as AssetMap,
       mappedNfts: {} as AssetMap,
@@ -85,6 +85,8 @@ export const useAssetMap = (chainId: number) => {
     ];
     return tokenList;
   }, [mappedTokens, chainId]);
+
+  console.log(assetList);
 
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
