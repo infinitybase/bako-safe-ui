@@ -16,6 +16,8 @@ interface TransactionCardStatusProps extends BoxProps {
   showDescription?: boolean;
 }
 
+import { useMemo } from 'react';
+
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 import { useTransactionState } from '../../states';
@@ -26,11 +28,11 @@ const Status = ({
   showDescription = true,
   ...rest
 }: TransactionCardStatusProps) => {
-  const { isReproved, isCompleted, isError } = status;
+  const { isReproved, isCompleted, isError, isCanceled } = status;
 
   const signaturesCount =
-    transaction!.resume?.witnesses?.filter(
-      (w) => w.status === WitnessStatus.DONE,
+    transaction!.resume?.witnesses?.filter((w) =>
+      [WitnessStatus.DONE, WitnessStatus.CANCELED].includes(w.status),
     ).length ?? 0;
 
   const signatureStatus = `${signaturesCount}/${transaction.resume.requiredSigners} Sgd`;
@@ -40,6 +42,13 @@ const Status = ({
   const isCurrentTxLoading =
     isCurrentTxPending.isPending &&
     transaction.id === isCurrentTxPending.transactionId;
+
+  const badgeColor = useMemo(() => {
+    if (isReproved || isError) return 'error';
+    if (isCompleted) return 'success';
+    if (isCanceled) return 'grey';
+    return 'warning';
+  }, [isReproved, isCompleted, isError, isCanceled]);
 
   return (
     <HStack
@@ -74,18 +83,17 @@ const Status = ({
             justifyContent={'center'}
             h={6}
             borderRadius="20px"
-            variant={
-              isReproved || isError
-                ? 'error'
-                : isCompleted
-                  ? 'success'
-                  : 'warning'
-            }
+            variant={badgeColor}
           >
             {isError && 'Error'}
             {isReproved && 'Declined'}
+            {isCanceled && 'Canceled'}
             {isCompleted && !isError && 'Completed'}
-            {!isCompleted && !isReproved && !isError && signatureStatus}
+            {!isCompleted &&
+              !isReproved &&
+              !isError &&
+              !isCanceled &&
+              signatureStatus}
           </Badge>
         </HStack>
 

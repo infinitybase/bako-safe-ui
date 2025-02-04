@@ -92,6 +92,16 @@ const icon = defineStyle({
   fontSize: 'xl',
 });
 
+const error = defineStyle({
+  bgColor: 'error.500',
+  color: 'grey.825',
+  _hover: {
+    _disabled: {
+      bgColor: 'error.500',
+    },
+  },
+});
+
 const baseStyle = defineStyle({
   borderRadius: 8,
   fontWeight: 'semibold',
@@ -102,6 +112,7 @@ const Button = defineStyleConfig({
   baseStyle,
   variants: {
     icon,
+    error,
     primary,
     secondary,
     tertiary,

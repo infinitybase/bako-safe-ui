@@ -4,6 +4,7 @@ import { bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
 import { api } from '@/config/api';
 
 import {
+  CancelTransactionResponse,
   CloseTransactionPayload,
   CreateTransactionPayload,
   CreateTransactionResponse,
@@ -59,6 +60,13 @@ export class TransactionService {
         signature: body.signer,
         approve: !!body.confirm,
       },
+    );
+    return data;
+  }
+
+  static async cancel(hash: string) {
+    const { data } = await api.put<CancelTransactionResponse>(
+      `/transaction/cancel/${hash}`,
     );
     return data;
   }

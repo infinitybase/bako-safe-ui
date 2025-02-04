@@ -80,11 +80,12 @@ const Actions = ({
     },
   } = useTransactionsContext();
 
-  const { isSigned, isDeclined, isCompleted, isReproved } = status;
+  const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } = status;
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
-  const notAnswered = !isSigned && !isDeclined && (isCompleted || isReproved);
+  const notAnswered =
+    !isSigned && !isDeclined && (isCompleted || isCanceled || isReproved);
 
   const isTxActionsInLoading =
     isLoading && selectedTransaction?.id === transaction?.id;
@@ -105,9 +106,14 @@ const Actions = ({
   return (
     <HStack minW={140} justifySelf="end" {...rest}>
       {isSigned && (
-        <Badge h={6} rounded="full" px={2} variant="success">
-          You signed
-          <Icon as={SuccessIcon} color="success.700" />
+        <Badge
+          h={6}
+          rounded="full"
+          px={2}
+          variant={isCanceled ? 'grey' : 'success'}
+        >
+          You {isCanceled ? 'canceled' : 'signed'}
+          {!isCanceled && <Icon as={SuccessIcon} color="success.700" />}
         </Badge>
       )}
 
@@ -124,7 +130,7 @@ const Actions = ({
         </Badge>
       )}
 
-      {awaitingAnswer && isSigner ? (
+      {!isCanceled && awaitingAnswer && isSigner ? (
         <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
           <Button
             h={9}
