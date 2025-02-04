@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests',
   timeout: 60000,
   expect: {
-    timeout: 1000,
+    timeout: 6000,
   },
   reporter: [['html', { printSteps: true }]],
   use: {

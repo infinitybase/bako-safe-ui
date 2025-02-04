@@ -4,6 +4,7 @@ import {
   getByAriaLabel,
   hasText,
   test,
+  addAssetThroughSettings
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
@@ -53,6 +54,8 @@ test.describe('Fuel Wallet', () => {
     await hasText(page, /Welcome to Bako Safe!/);
     const closeWindow = page.locator('[aria-label="Close window"]');
     await closeWindow.click();
+
+    await page.pause()
     
 
   });

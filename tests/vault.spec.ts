@@ -1,9 +1,9 @@
-import { expect, getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
-
+import { expect, getByAriaLabel, hasText, test} from '@fuels/playwright-utils';
 import { E2ETestUtils } from './utils/setup';
 import { modalCloseTest } from './utils/helpers';
 import { txFilters } from './utils/helpers';
 import { settingsButtons } from './utils/helpers';
+import { newTabVerification } from './utils/helpers';
 
 const vaultName = 'Teste123';
 
@@ -44,11 +44,11 @@ test('webauthn', async ({ page }) => {
     .click();
 
   //Meu teste
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000)
   await hasText(page, /Welcome to Bako Safe!/);
   const closeWindow = page.locator('[aria-label="Close window"]');
   await closeWindow.click();
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000);
 
   await page.getByRole('button', { name: 'Home' }).click();
   await expect(page).toHaveURL(/home/);
@@ -101,12 +101,9 @@ test('webauthn', async ({ page }) => {
   await page.getByText('search').fill('personal');
   await page.getByText('Personal Vault', { exact: false }).click();
 
-  {
-    /* 
-  await page.getByRole('button',{name: 'Explorer'}).click()
-  await expect(page).toHaveURL(/app-mainnet.fuel.network/)
-  nao sei como checar a URL de outra tela */
-  }
+  
+  const explorer = page.getByRole('button',{name: 'Explorer'})
+  await newTabVerification(page, explorer , 'app-mainnet.fuel.network' )
 
   await page.getByText('Balance', { exact: true }).click();
   await expect(page).toHaveURL(/balance/);
@@ -120,15 +117,13 @@ test('webauthn', async ({ page }) => {
   const addAssets = page.getByRole('button', { name: 'Add Assets' });
   await addAssets.click();
   await modalCloseTest(page, addAssets);
+
+  const bridge = page.getByText('Bridge')
+  await newTabVerification(page, bridge, "https://app-mainnet.fuel.network/bridge")
   await page.getByText('Deposit', { exact: true }).click();
-
-  {
-    /*await page.getByText('Bridge').click()
-  Ainda nao sei checar nova URL */
-  }
-
   await closeWindow.nth(0).click();
   await page.waitForTimeout(1000);
+
 
   await page.getByRole('button', { name: 'Copy' }).nth(1).click();
 
@@ -139,6 +134,7 @@ test('webauthn', async ({ page }) => {
   await addtoAdressBook.click();
   await modalCloseTest(page, addtoAdressBook);
   await page.getByText('Name or Label').fill('Signatario1');
+  await page.waitForLoadState('load')
   await page.getByRole('button', { name: 'Add it' }).click();
   await page.waitForTimeout(2000);
   await expect(page.getByText('Signatario1')).toBeVisible();

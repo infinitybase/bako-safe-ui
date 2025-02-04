@@ -1,6 +1,7 @@
 // helpers.js
 
 import { expect } from '@fuels/playwright-utils';
+import { Page } from '@playwright/test';
 
 export async function modalCloseTest(page, element) {
   await page.locator('[aria-label="Close window"]').click();
@@ -45,3 +46,18 @@ export async function createVaults(page, baseVaultName) {
     await page.waitForTimeout(500);
   }
 }
+
+export async function newTabVerification(page: Page, buttonSelector, urlEsperada: string) {
+  const [novaAba] = await Promise.all([
+      page.context().waitForEvent('page'), // Captura a nova aba
+      await buttonSelector.click()// Clica no botão que abre a nova aba
+  ]);
+
+  await novaAba.waitForLoadState(); 
+
+  const novaURL = novaAba.url(); 
+  console.log('Nova aba URL:', novaURL);
+
+  expect(novaURL).toContain(urlEsperada);
+}
+
