@@ -17,7 +17,6 @@ export interface AddressWithCopyBtnProps extends BoxProps {
   copyBtnProps?: Omit<CopyAddressButtonProps, 'aria-label' | 'addressToCopy'>;
   customValue?: string;
   hideCopyButton?: boolean;
-  nonCopy?: boolean;
 }
 
 const AddressWithCopyBtn = ({
@@ -28,7 +27,6 @@ const AddressWithCopyBtn = ({
   copyBtnProps,
   customValue,
   hideCopyButton = false,
-  nonCopy = false,
   ...rest
 }: AddressWithCopyBtnProps) => {
   const {
@@ -60,9 +58,7 @@ const AddressWithCopyBtn = ({
         size="xs"
         minW={2}
         aria-label="Copy"
-        addressToCopy={
-          !nonCopy ? value && FuelsAddress.fromString(value).toString() : ''
-        }
+        addressToCopy={value}
         {...copyBtnProps}
       />
     </Flex>

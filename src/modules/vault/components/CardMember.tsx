@@ -11,6 +11,8 @@ import {
 import { AddAddressBook, AddressWithCopyBtn, Card, Handle } from '@/components';
 import { useScreenSize } from '@/modules/core/hooks';
 import { HandleUtils } from '@/utils/handle';
+import { TypeUser } from '@/modules/auth';
+import { AddressUtils } from '@/modules/core';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
@@ -20,6 +22,7 @@ interface CardMemberProps {
     handle?: string;
     avatar: string;
     address: string;
+    type?: TypeUser;
   };
   isOwner: boolean;
   isGrid?: boolean;
@@ -59,6 +62,10 @@ const CardMember = ({
     useScreenSize();
 
   const hasNickname = member?.nickname;
+  const address =
+    member?.type === TypeUser.WEB_AUTHN
+      ? AddressUtils.toBech32(member.address)
+      : member.address;
 
   return (
     <SignerCard
@@ -139,7 +146,7 @@ const CardMember = ({
               )}
 
               <AddressWithCopyBtn
-                value={member?.address ?? ''}
+                value={address}
                 isSidebarAddress
                 flexDir="row-reverse"
                 gap={0.5}

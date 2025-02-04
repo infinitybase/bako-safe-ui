@@ -30,7 +30,6 @@ export const useMappedAssetStore = create(
         const assets: AssetMap = {};
         for (const assetId of assetIds) {
           let asset = get().mappedTokens[assetId];
-          console.log('has asset?', !!asset, assetId);
           if (!asset) {
             asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
           }
@@ -42,7 +41,6 @@ export const useMappedAssetStore = create(
         const assets: AssetMap = {};
         for (const assetId of assetIds) {
           let asset = get().mappedNfts[assetId];
-          console.log('has asset?', !!asset, assetId);
           if (!asset) {
             asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
           }
@@ -53,6 +51,7 @@ export const useMappedAssetStore = create(
     }),
     {
       name: localStorageKeys.FUEL_MAPPED_ASSETS,
+      version: 0,
     },
   ),
 );

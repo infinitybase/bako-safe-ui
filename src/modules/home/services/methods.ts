@@ -37,6 +37,8 @@ export class HomeService {
   static async getTokensUSDAmount() {
     const { data } = await api.get<TokensUSDResponse>(`/user/latest/tokens`);
 
-    return data;
+    const result = !Array.isArray(data) ? [] : data;
+
+    return result;
   }
 }
