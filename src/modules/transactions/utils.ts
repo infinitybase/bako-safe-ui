@@ -5,7 +5,7 @@ import { ITransaction } from '../core/hooks/bakosafe/utils/types';
 import { AssetModel, WitnessStatus } from '../core/models';
 import { NativeAssetId } from '../core/utils';
 
-const { REJECTED, DONE, PENDING } = WitnessStatus;
+const { REJECTED, DONE, PENDING, CANCELED } = WitnessStatus;
 
 export interface TransactionStatusParams {
   account: string;
@@ -33,10 +33,13 @@ export const transactionStatus = ({
       signatureCount >= minSigners ||
       transaction.status === TransactionStatus.SUCCESS,
     isDeclined: witness?.status === REJECTED,
-    isSigned: witness?.status === DONE,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    isSigned: [DONE, CANCELED].includes(witness?.status),
     isPending: witness?.status !== PENDING,
     isReproved: vaultMembersCount - howManyDeclined < minSigners,
     isError: transaction.status === TransactionStatus.FAILED,
+    isCanceled: transaction.status === TransactionStatus.CANCELED,
   };
 };
 

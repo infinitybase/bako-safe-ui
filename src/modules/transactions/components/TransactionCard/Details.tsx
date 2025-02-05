@@ -1,11 +1,14 @@
-import { Box, Button, Icon, Stack, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Stack, VStack } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
+import { useMemo } from 'react';
 
 import { CustomSkeleton, UpRightArrow } from '@/components';
+import { TrashIcon } from '@/components/icons/trash';
 import { shakeAnimationY, type TransactionState } from '@/modules/core';
 import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
+import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { AssetBoxInfo } from './AssetBoxInfo';
@@ -22,6 +25,50 @@ export type TransactionUI = Omit<ITransaction, 'assets'> & {
     recipientNickname?: string;
   }[];
   type: TransactionType;
+};
+
+interface CancelTransactionButtonProps {
+  transaction: TransactionUI;
+}
+
+const CancelTransactionButton = ({
+  transaction,
+}: CancelTransactionButtonProps) => {
+  const {
+    signTransaction: { isLoading: isSigningTransaction },
+    cancelTransaction: {
+      isPending: isCancelingTransaction,
+      isSuccess: isCanceledTransaction,
+      mutate: cancelTransaction,
+    },
+  } = useTransactionsContext();
+
+  const isCancelable = useMemo(
+    () => transaction.status === TransactionStatus.AWAIT_REQUIREMENTS,
+    [transaction.status],
+  );
+
+  if (!isCancelable) return null;
+
+  return (
+    <Button
+      h={9}
+      px={3}
+      variant="error"
+      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+      fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
+      rightIcon={<Icon as={TrashIcon} />}
+      isLoading={isCancelingTransaction || isCanceledTransaction}
+      isDisabled={isSigningTransaction}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        cancelTransaction(transaction.hash);
+      }}
+    >
+      Cancel transaction
+    </Button>
+  );
 };
 
 interface TransactionDetailsProps {
@@ -126,6 +173,9 @@ const Details = ({
                     View on Explorer
                   </Button>
                 )}
+              <HStack justifyContent="end" w="full">
+                <CancelTransactionButton transaction={transaction} />
+              </HStack>
             </VStack>
           )}
         </CustomSkeleton>

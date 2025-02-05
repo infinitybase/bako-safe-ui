@@ -173,5 +173,6 @@ export type GetTransactionPendingResponse = ITransactionPending;
 export type GetTransactionHistoryResponse = ITransactionHistory[];
 export type CreateTransactionResponse = ITransaction;
 export type SignerTransactionResponse = ITransactionResume;
+export type CancelTransactionResponse = ITransactionResume;
 export type TransferAsset = AssetModel;
 export type TransactionDetailUI = TransactionDetails;

@@ -47,6 +47,9 @@ const TransactionTypeFormatter = (
     case history.owner.address !== account &&
       history.type === TransactionHistoryType.DECLINE:
       return `Declined`;
+    case history.owner.address === account &&
+      history.type === TransactionHistoryType.CANCEL:
+      return 'You Canceled';
     case history.type === TransactionHistoryType.CANCEL:
       return 'Canceled';
     case history.type === TransactionHistoryType.FAILED:
