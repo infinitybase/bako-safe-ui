@@ -57,6 +57,7 @@ const SettingsSigners = ({ vault }: SignersDetailsProps) => {
           return (
             <CustomSkeleton isLoaded={!vault.isLoading} key={index}>
               <CardMember
+                hasAdd={false}
                 isOwner={vault?.data?.owner?.id === member.id}
                 member={{
                   ...member,
