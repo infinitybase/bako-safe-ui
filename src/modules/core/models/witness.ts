@@ -4,6 +4,7 @@ export enum WitnessStatus {
   REJECTED = 'REJECTED',
   DONE = 'DONE',
   PENDING = 'PENDING',
+  CANCELED = 'CANCELED',
 }
 
 export interface Witness {
