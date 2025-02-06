@@ -131,7 +131,7 @@ const HomePage = () => {
       <CustomSkeleton
         h="full"
         isLoaded={!latestPredicates.isLoading}
-        minH={latestPredicates.isLoading ? '100vh' : 'fit-content'}
+        minH={latestPredicates.isLoading ? '$100vh' : 'fit-content'}
         mt={latestPredicates.isLoading ? 6 : 4}
       >
         {recentVaults?.length ? (

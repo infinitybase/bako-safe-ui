@@ -153,8 +153,8 @@ const APITokensList = (props: APITokensListProps) => {
               spacing={{ base: 4, xs: 6 }}
               w="full"
               maxH={{
-                base: 'calc(100vh - 301px)',
-                xs: 'calc(100vh - 320px)',
+                base: 'calc($100vh - 301px)',
+                xs: 'calc($100vh - 320px)',
                 sm: 360,
                 md: 380,
               }}
