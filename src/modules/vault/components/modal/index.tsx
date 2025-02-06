@@ -53,6 +53,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
       />
 
       <Dialog.Modal
+        autoFocus={false}
         onClose={drawer.onClose}
         isOpen={isCreateVaultModalOpen ? false : props.isOpen}
         modalContentProps={{
