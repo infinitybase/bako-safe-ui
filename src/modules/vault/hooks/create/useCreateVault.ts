@@ -6,13 +6,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useCheckVaultName } from '../useGetByNameVaultRequest';
 import { useCreateVaultForm, useValidateAddress } from '.';
-import { AddressUtils } from '@/modules/core/utils/address';
 
 export enum TabState {
   INFO,
@@ -91,7 +91,7 @@ const useCreateVault = () => {
     debouncedSearchHandler(value);
   };
 
-  const handleCreateVault = form.handleSubmit(async (data: any) => {
+  const handleCreateVault = form.handleSubmit((data: any) => {
     const addresses =
       data.addresses?.map((address: { value: string }) => {
         const _a = AddressUtils.isPasskey(address.value)
