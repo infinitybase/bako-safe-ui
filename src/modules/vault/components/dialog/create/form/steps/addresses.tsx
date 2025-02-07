@@ -308,10 +308,6 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                 isDisabled={isDisable}
                 onClick={() => {
                   addresses.append();
-                  form.setValue(
-                    'minSigners',
-                    String(addresses.fields.length + 1),
-                  );
                   setTimeout(
                     () => scrollToBottom(optionsScrollableContainerRef),
                     0,
