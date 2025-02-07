@@ -113,6 +113,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
       <TabPanel p={0} maxH={500}>
         <VStack
           w="full"
+          flex={1}
           overflowY="scroll"
           sx={{
             '&::-webkit-scrollbar': {
@@ -126,7 +127,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               height: '10px',
             },
           }}
-          h={{ base: '60vh', xs: 500 }}
+          h={{ base: '100%', xs: 500 }}
         >
           <CreateVaultWarning
             mb={2}

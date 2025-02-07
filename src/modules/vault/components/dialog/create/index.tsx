@@ -46,6 +46,12 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}
+      modalContentProps={{
+        maxH: '$100vh',
+      }}
+      modalBodyProps={{
+        maxH: '$100vh',
+      }}
     >
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
