@@ -109,6 +109,9 @@ const useCreateVault = () => {
       addresses,
     });
   });
+  const handleCreate = useCallback(debounce(handleCreateVault, 150), [
+    handleCreateVault,
+  ]);
 
   const setFormWithTemplate = async (id: string) => {
     const template = await TemplateService.getById(id);
@@ -189,7 +192,7 @@ const useCreateVault = () => {
   return {
     form: {
       ...form,
-      handleCreateVault,
+      handleCreateVault: handleCreate,
     },
     handleInputChange,
     vaultNameIsAvailable,
