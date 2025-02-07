@@ -8,6 +8,7 @@ interface ICreateVaultPayload {
   signers: string[];
   minSigners: number;
   providerUrl: string;
+  description?: string;
 }
 
 const createVault = async ({
@@ -15,6 +16,7 @@ const createVault = async ({
   signers,
   minSigners,
   providerUrl,
+  description,
 }: ICreateVaultPayload) => {
   const userAddress = CookiesConfig.getCookie(CookieName.ADDRESS);
   const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
@@ -34,7 +36,7 @@ const createVault = async ({
     ...configurable,
   });
 
-  const savedPredicate = await predicate.save({ name });
+  const savedPredicate = await predicate.save({ name, description });
   const vault = await VaultService.getByAddress(
     savedPredicate.predicateAddress,
   );
