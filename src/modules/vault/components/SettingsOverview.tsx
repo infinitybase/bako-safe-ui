@@ -59,7 +59,6 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
   const {
     CLIInfos: {
       CLISettings,
-      hasCLIPermission,
       APIToken,
       commingSoonFeatures: { commingSoonDialog, selectedFeature },
     },
@@ -94,12 +93,9 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
           gap={10}
           templateColumns={{
             base: 'repeat(1, 1fr)',
-            md: hasCLIPermission ? '2fr 1fr' : 'repeat(1, 1fr)',
-            lg:
-              hasCLIPermission && vaultRequiredSizeToColumnLayout
-                ? '2fr 1fr'
-                : 'repeat(1, 1fr)',
-            xl: !hasCLIPermission || isLarge ? 'repeat(1, 1fr)' : '3fr 1fr',
+            md: 'repeat(1, 1fr)',
+            lg: vaultRequiredSizeToColumnLayout ? '2fr 1fr' : 'repeat(1, 1fr)',
+            xl: isLarge ? 'repeat(1, 1fr)' : '3fr 1fr',
           }}
         >
           <CustomSkeleton isLoaded={!vault.isLoading} w="full">
@@ -369,32 +365,30 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
             </Card>
           </CustomSkeleton>
 
-          {hasCLIPermission && (
-            <CustomSkeleton isLoaded={!vault.isLoading}>
-              <Grid
-                gap={2}
-                templateColumns={{
-                  base: '1fr',
-                  xs: 'repeat(2, 1fr)',
-                  md: '1fr',
-                  lg: vaultRequiredSizeToColumnLayout
-                    ? 'repeat(1, 1fr)'
-                    : 'repeat(2, 1fr)',
-                  xl: isLarge ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
-                }}
-              >
-                {CLISettings.map((setting) => (
-                  <CLISettingsCard
-                    key={setting.label}
-                    onClick={setting.onClick}
-                    icon={setting.icon}
-                    label={setting.label}
-                    disabled={setting.disabled}
-                  />
-                ))}
-              </Grid>
-            </CustomSkeleton>
-          )}
+          <CustomSkeleton isLoaded={!vault.isLoading}>
+            <Grid
+              gap={2}
+              templateColumns={{
+                base: '1fr',
+                xs: 'repeat(2, 1fr)',
+                md: '1fr',
+                lg: vaultRequiredSizeToColumnLayout
+                  ? 'repeat(1, 1fr)'
+                  : 'repeat(2, 1fr)',
+                xl: isLarge ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)',
+              }}
+            >
+              {CLISettings.map((setting) => (
+                <CLISettingsCard
+                  key={setting.label}
+                  onClick={setting.onClick}
+                  icon={setting.icon}
+                  label={setting.label}
+                  disabled={setting.disabled}
+                />
+              ))}
+            </Grid>
+          </CustomSkeleton>
         </Grid>
       </Box>
 
