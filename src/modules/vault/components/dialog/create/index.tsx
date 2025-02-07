@@ -12,7 +12,11 @@ import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
-const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
+interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
+  onCreate?: () => void;
+}
+
+const CreateVaultDialog = (props: CreateVaultDialogProps) => {
   const {
     tabs,
     form,
@@ -31,6 +35,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     validateAddress,
   } = useCreateVaultDialog({
     onClose: props.onClose,
+    onCreate: props.onCreate,
   });
 
   const { isSafariBrowser, isMobile } = useVerifyBrowserType();

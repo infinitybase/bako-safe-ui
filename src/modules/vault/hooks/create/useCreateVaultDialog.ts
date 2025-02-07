@@ -10,6 +10,7 @@ import { TabState, useCreateVault } from './useCreateVault';
 
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
+  onCreate?: () => void;
 }
 
 export type UseCreateVaultDialogReturn = ReturnType<
@@ -115,7 +116,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
               vaultId,
               workspaceId: userInfos?.workspace?.id,
             }),
-          );
+          ).then(props.onCreate);
         }
         handleClose();
       },

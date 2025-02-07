@@ -20,9 +20,14 @@ import { useVaultDrawer } from './hook';
 interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
   onSelect?: (vaultId: string) => void;
+  onCloseAll?: () => void;
 }
 
-const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
+const VaultListModal = ({
+  vaultId,
+  onCloseAll,
+  ...props
+}: VaultListModalProps) => {
   const {
     screenSizes: { isMobile, isSmall },
   } = useWorkspaceContext();
@@ -34,6 +39,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
   } = useVaultDrawer({
     onClose: props.onClose,
     isOpen: props.isOpen,
+    onCloseAll,
   });
 
   const {
@@ -50,6 +56,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
       <CreateVaultDialog
         isOpen={isCreateVaultModalOpen}
         onClose={createVaultModalOnClose}
+        onCreate={onCloseAll}
       />
 
       <Dialog.Modal
