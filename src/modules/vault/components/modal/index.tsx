@@ -69,10 +69,7 @@ const VaultListModal = ({
           maxHeight: '$100vh',
         }}
         modalBodyProps={{
-          overflow: {
-            base: 'initial',
-            xs: 'auto',
-          },
+          overflow: 'visible',
         }}
       >
         <Dialog.Body>
