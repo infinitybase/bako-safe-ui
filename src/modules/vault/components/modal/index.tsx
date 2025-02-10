@@ -108,7 +108,7 @@ const VaultListModal = ({
           <VStack
             w="full"
             minH={300}
-            maxH={{ base: 605, xs: 555, sm: 380, md: 500 }}
+            maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
             overflowY="scroll"
             sx={{
               '&::-webkit-scrollbar': {
