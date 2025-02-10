@@ -12,7 +12,11 @@ import { TabState, useCreateVaultDialog } from '@/modules/vault/hooks';
 import CreateVaultWarning from '../../CreateVaultWarning';
 import { CreateVaultForm } from './form';
 
-const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
+interface CreateVaultDialogProps extends Omit<DialogModalProps, 'children'> {
+  onCreate?: () => void;
+}
+
+const CreateVaultDialog = (props: CreateVaultDialogProps) => {
   const {
     tabs,
     form,
@@ -31,6 +35,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
     validateAddress,
   } = useCreateVaultDialog({
     onClose: props.onClose,
+    onCreate: props.onCreate,
   });
 
   const { isSafariBrowser, isMobile } = useVerifyBrowserType();
@@ -46,6 +51,12 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
       {...props}
       onClose={handleCancel}
       closeOnOverlayClick={false}
+      modalContentProps={{
+        maxH: '$100vh',
+      }}
+      modalBodyProps={{
+        maxH: '$100vh',
+      }}
     >
       <Dialog.Header
         hideCloseButton={isSafariBrowser && isMobile}
@@ -63,7 +74,7 @@ const CreateVaultDialog = (props: Omit<DialogModalProps, 'children'>) => {
         maxW={450}
         mb={isFirstTab ? 8 : 0}
         maxH={isFirstTab ? '60vh' : 700}
-        minH={!isFirstTab ? 500 : 'unset'}
+        minH={!isFirstTab ? 'fit-content' : 'unset'}
       >
         <CreateVaultForm
           tabs={tabs}

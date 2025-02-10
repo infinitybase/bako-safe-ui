@@ -15,7 +15,7 @@ const SigninContainerMobile = (props: SigninContainerProps) => {
       backgroundColor="dark.50"
       backdropFilter="blur(6px)"
       w="100%"
-      minH="100vh"
+      minH="$100vh"
       spacing={0}
       overflow="hidden"
       __css={{
@@ -62,7 +62,7 @@ const SigninContainer = (props: SigninContainerProps) => {
   return (
     <Box
       display="flex"
-      minH="100vh"
+      minH="$100vh"
       w="100%"
       overflow="hidden"
       __css={{

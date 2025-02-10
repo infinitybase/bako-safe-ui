@@ -42,7 +42,7 @@ const Drawer = ({ ...props }: DrawerProps) => {
           alignSelf="end"
         />
 
-        <Sidebar onDrawer />
+        <Sidebar onClose={onClose} onDrawer />
       </DrawerContent>
     </ChakraDrawer>
   );

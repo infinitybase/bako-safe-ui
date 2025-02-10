@@ -12,7 +12,7 @@ const Container = (props: ContainerProps) => {
     <Flex
       justifyContent="center"
       w="100vw"
-      h="100vh"
+      h="$100vh"
       overflowX="hidden"
       css={{
         '&::-webkit-scrollbar': { width: '0' },

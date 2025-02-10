@@ -10,6 +10,7 @@ import { TabState, useCreateVault } from './useCreateVault';
 
 export interface UseCreateVaultDialogProps {
   onClose: () => void;
+  onCreate?: () => void;
 }
 
 export type UseCreateVaultDialogReturn = ReturnType<
@@ -24,6 +25,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     vaultId,
     validateAddress,
     addresses,
+    bakoSafeVault,
     ...rest
   } = useCreateVault();
 
@@ -31,11 +33,13 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
   const isSignInFromDapp = sessionId && sessionId.length === 36;
 
   const disableCreateVaultButton =
-    (!form.formState.isValid ||
-      !!form.formState.errors.addresses ||
-      form.formState.isSubmitting ||
-      validateAddress.isLoading) &&
-    addresses.fields.length > 1;
+    !form.formState.isValid ||
+    !!form.formState.errors.addresses ||
+    bakoSafeVault.isPending ||
+    validateAddress.isLoading;
+
+  const isCreateVaultButtonDisabled =
+    disableCreateVaultButton && addresses.fields.length > 1;
 
   const createConnectionsMutation = useCreateConnections();
   const {
@@ -92,7 +96,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     },
     [TabState.ADDRESSES]: {
       hide: false,
-      disable: disableCreateVaultButton,
+      disable: isCreateVaultButtonDisabled,
       onContinue: form.handleCreateVault,
       description:
         'Define the details of your vault. Set up this rules carefully because it cannot be changed later.',
@@ -115,7 +119,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
               vaultId,
               workspaceId: userInfos?.workspace?.id,
             }),
-          );
+          ).then(props.onCreate);
         }
         handleClose();
       },
@@ -136,6 +140,7 @@ const useCreateVaultDialog = (props: UseCreateVaultDialogProps) => {
     vaultNameIsAvailable,
     validateAddress,
     addresses,
+    bakoSafeVault,
     ...rest,
   };
 };
