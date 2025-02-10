@@ -74,7 +74,7 @@ const CreateVaultDialog = (props: CreateVaultDialogProps) => {
         maxW={450}
         mb={isFirstTab ? 8 : 0}
         maxH={isFirstTab ? '60vh' : 700}
-        minH={!isFirstTab ? 500 : 'unset'}
+        minH={!isFirstTab ? 'fit-content' : 'unset'}
       >
         <CreateVaultForm
           tabs={tabs}
