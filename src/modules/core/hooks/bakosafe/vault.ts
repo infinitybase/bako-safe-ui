@@ -56,7 +56,7 @@ const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
 };
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const { mutate, ...mutation } = useBakoSafeMutation<
+  const { mutateAsync, ...mutation } = useBakoSafeMutation<
     PredicateResponseWithWorkspace,
     unknown,
     UseCreateBakoSafeVaultPayload
@@ -85,7 +85,7 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   );
 
   return {
-    create: mutate,
+    create: mutateAsync,
     ...mutation,
   };
 };

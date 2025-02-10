@@ -91,7 +91,9 @@ const useCreateVault = () => {
     debouncedSearchHandler(value);
   };
 
-  const handleCreateVault = form.handleSubmit((data: any) => {
+  const handleCreateVault = form.handleSubmit(async (data: any) => {
+    if (form.formState.isSubmitting) return;
+
     const addresses =
       data.addresses?.map((address: { value: string }) => {
         const _a = AddressUtils.isPasskey(address.value)
@@ -101,7 +103,7 @@ const useCreateVault = () => {
         return Address.fromString(_a).bech32Address;
       }) ?? [];
 
-    bakoSafeVault.create({
+    await bakoSafeVault.create({
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
@@ -109,9 +111,6 @@ const useCreateVault = () => {
       addresses,
     });
   });
-  const handleCreate = useCallback(debounce(handleCreateVault, 150), [
-    handleCreateVault,
-  ]);
 
   const setFormWithTemplate = async (id: string) => {
     const template = await TemplateService.getById(id);
@@ -192,7 +191,7 @@ const useCreateVault = () => {
   return {
     form: {
       ...form,
-      handleCreateVault: handleCreate,
+      handleCreateVault,
     },
     handleInputChange,
     vaultNameIsAvailable,
