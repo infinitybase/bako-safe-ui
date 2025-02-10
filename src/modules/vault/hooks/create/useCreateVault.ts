@@ -54,7 +54,15 @@ const useCreateVault = () => {
       refetchUserVaults();
       setVaultId(data.id);
       setTab(TabState.SUCCESS);
-      form.reset();
+      form.reset(
+        {
+          name: '',
+          description: '',
+          minSigners: '1',
+          addresses: [{ value: '' }],
+        },
+        { keepSubmitCount: false },
+      );
       setSearch('');
     },
     onError: () => {
