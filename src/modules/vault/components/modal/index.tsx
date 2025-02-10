@@ -53,11 +53,13 @@ const VaultListModal = ({
     : !isLoading && !isFetching;
   return (
     <>
-      <CreateVaultDialog
-        isOpen={isCreateVaultModalOpen}
-        onClose={createVaultModalOnClose}
-        onCreate={onCloseAll}
-      />
+      {isCreateVaultModalOpen && (
+        <CreateVaultDialog
+          isOpen={isCreateVaultModalOpen}
+          onClose={createVaultModalOnClose}
+          onCreate={onCloseAll}
+        />
+      )}
 
       <Dialog.Modal
         autoFocus={false}
