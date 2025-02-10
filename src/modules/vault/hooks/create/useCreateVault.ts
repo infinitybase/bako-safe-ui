@@ -92,7 +92,7 @@ const useCreateVault = () => {
   };
 
   const handleCreateVault = form.handleSubmit(async (data: any) => {
-    if (form.formState.isSubmitting) return;
+    if (form.formState.submitCount > 0) return;
 
     const addresses =
       data.addresses?.map((address: { value: string }) => {
