@@ -66,6 +66,7 @@ const VaultListModal = ({
         modalContentProps={{
           px: 10,
           py: 10,
+          maxHeight: '$100vh',
         }}
       >
         <Dialog.Body>
