@@ -20,6 +20,7 @@ import { getBakoIDURL } from '@/utils/enviroment';
 
 interface SidebarProps extends BoxProps {
   onDrawer?: boolean;
+  onClose?: () => void;
 }
 
 const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
@@ -84,6 +85,10 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
         <VaultListModal
           isOpen={drawer.isOpen}
           onClose={drawer.onClose}
+          onCloseAll={() => {
+            drawer.onClose();
+            rest.onClose?.();
+          }}
           vaultId={route.params.vaultId!}
         />
 

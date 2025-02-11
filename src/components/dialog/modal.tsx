@@ -1,6 +1,7 @@
 import {
   Modal,
   ModalBody,
+  ModalBodyProps,
   ModalContent,
   ModalContentProps,
   ModalOverlay,
@@ -13,6 +14,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 export interface DialogModalProps extends ModalProps {
   contentPadding?: number;
   modalContentProps?: ModalContentProps;
+  modalBodyProps?: ModalBodyProps;
   xsBreakPointPy?: number;
   overlayProps?: ModalOverlayProps;
 }
@@ -60,6 +62,7 @@ const DialogModal = (props: DialogModalProps) => {
           display="flex"
           alignItems="center"
           flexDirection="column"
+          {...rest.modalBodyProps}
         >
           {children}
         </ModalBody>

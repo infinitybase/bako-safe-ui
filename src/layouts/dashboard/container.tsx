@@ -10,7 +10,7 @@ const Container = ({ children, ...props }: ContainerProps) => {
   return (
     <ContainerChakra
       maxWidth="full"
-      h="100vh"
+      h="$100vh"
       display="flex"
       flexDirection="column"
       p={0}

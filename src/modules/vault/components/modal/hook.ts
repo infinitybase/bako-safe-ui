@@ -11,6 +11,7 @@ import { PredicateAndWorkspace } from '../../services/methods';
 
 interface UseVaultDrawerParams {
   onClose?: () => void;
+  onCloseAll?: () => void;
   isOpen?: boolean;
   orderByRoot?: boolean;
   perPage?: number;
@@ -82,7 +83,9 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       setSelectedTransaction({ id: '', name: '' });
     }
 
-    props.onClose?.();
+    if (props.onCloseAll) props.onCloseAll();
+    else props.onClose?.();
+
     resetAllTransactionsTypeFilters();
     invalidateRequests();
     setSearch('');
