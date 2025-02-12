@@ -1,5 +1,6 @@
 import { BoxProps, Flex, TextProps } from '@chakra-ui/react';
-import { Address as FuelsAddress } from 'fuels';
+import { Address as FuelsAddress, isB256 } from 'fuels';
+import { useMemo } from 'react';
 
 import {
   CopyAddressButton,
@@ -33,6 +34,14 @@ const AddressWithCopyBtn = ({
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
 
+  const address = useMemo(() => {
+    if (isB256(value)) {
+      return FuelsAddress.fromB256(value).toString();
+    }
+
+    return value;
+  }, [value]);
+
   return (
     <Flex
       minW={isExtraSmall ? 'inherit' : '105px'}
@@ -46,7 +55,7 @@ const AddressWithCopyBtn = ({
       {...rest}
     >
       <Address
-        value={value}
+        value={address}
         customValue={customValue}
         isDeposit={isDeposit}
         isSidebarAddress={isSidebarAddress}
@@ -58,7 +67,7 @@ const AddressWithCopyBtn = ({
         size="xs"
         minW={2}
         aria-label="Copy"
-        addressToCopy={value}
+        addressToCopy={address}
         {...copyBtnProps}
       />
     </Flex>
