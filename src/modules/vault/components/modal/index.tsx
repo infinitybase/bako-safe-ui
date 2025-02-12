@@ -20,9 +20,14 @@ import { useVaultDrawer } from './hook';
 interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
   onSelect?: (vaultId: string) => void;
+  onCloseAll?: () => void;
 }
 
-const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
+const VaultListModal = ({
+  vaultId,
+  onCloseAll,
+  ...props
+}: VaultListModalProps) => {
   const {
     screenSizes: { isMobile, isSmall },
   } = useWorkspaceContext();
@@ -34,6 +39,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
   } = useVaultDrawer({
     onClose: props.onClose,
     isOpen: props.isOpen,
+    onCloseAll,
   });
 
   const {
@@ -47,17 +53,25 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
     : !isLoading && !isFetching;
   return (
     <>
-      <CreateVaultDialog
-        isOpen={isCreateVaultModalOpen}
-        onClose={createVaultModalOnClose}
-      />
+      {isCreateVaultModalOpen && (
+        <CreateVaultDialog
+          isOpen={isCreateVaultModalOpen}
+          onClose={createVaultModalOnClose}
+          onCreate={onCloseAll}
+        />
+      )}
 
       <Dialog.Modal
+        autoFocus={false}
         onClose={drawer.onClose}
         isOpen={isCreateVaultModalOpen ? false : props.isOpen}
         modalContentProps={{
           px: 10,
           py: 10,
+          maxHeight: '$100vh',
+        }}
+        modalBodyProps={{
+          overflow: 'visible',
         }}
       >
         <Dialog.Body>
@@ -99,7 +113,7 @@ const VaultListModal = ({ vaultId, ...props }: VaultListModalProps) => {
           <VStack
             w="full"
             minH={300}
-            maxH={{ base: 605, xs: 555, sm: 380, md: 500 }}
+            maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
             overflowY="scroll"
             sx={{
               '&::-webkit-scrollbar': {
