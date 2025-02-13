@@ -82,21 +82,6 @@ const Amount = ({
             justifyContent={isMobile ? 'start' : 'end'}
             position="relative"
           >
-            {hasNoDefaultAssets && (
-              <Image
-                key={assetsMap[operationAssets.assetId]?.assetId}
-                w={{ base: '34px', sm: 6 }}
-                h={{ base: 'full', sm: 6 }}
-                src={
-                  assetsMap[operationAssets.assetId]?.icon ??
-                  assetsMap.UNKNOWN.icon
-                }
-                borderRadius={100}
-                alt="Asset Icon"
-                objectFit="cover"
-              />
-            )}
-
             {oneAssetOfEach.map((asset) => {
               return (
                 <Image
