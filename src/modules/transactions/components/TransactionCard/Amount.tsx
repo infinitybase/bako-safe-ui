@@ -28,7 +28,7 @@ const Amount = ({
   showAmount,
   ...rest
 }: TransactionCardAmountProps) => {
-  const { operationAssets, hasNoDefaultAssets } = useGetAssetsByOperations(
+  const { hasNoDefaultAssets } = useGetAssetsByOperations(
     transaction,
     transaction.predicate?.predicateAddress,
   );
@@ -74,7 +74,7 @@ const Amount = ({
       w={isExtraSmall ? 150 : 200}
       {...rest}
     >
-      {!showAmount ? null : (
+      {!showAmount || hasNoDefaultAssets ? null : (
         <>
           <AvatarGroup
             max={showOnlyOneAsset ? 1 : 2}
