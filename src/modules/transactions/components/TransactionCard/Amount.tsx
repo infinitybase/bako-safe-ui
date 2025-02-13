@@ -17,7 +17,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { useGetAssetsByOperations } from '../../hooks';
 import type { TransactionWithVault } from '../../services';
 import { AmountUSD } from './transfer-details';
-import { isHex } from '@/utils';
 
 interface TransactionCardAmountProps extends BoxProps {
   transaction: TransactionWithVault;
