@@ -55,8 +55,13 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     );
   };
 
-  const { isDeploy, isFromConnector, isDeposit, showAmountInformations } =
-    useVerifyTransactionInformations(transaction);
+  const {
+    isDeploy,
+    isFromConnector,
+    isDeposit,
+    isMint,
+    showAmountInformations,
+  } = useVerifyTransactionInformations(transaction);
 
   const {
     signTransaction: {
@@ -180,7 +185,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
 
             <HStack w="full" justifyContent="space-between" h="38px">
               <TransactionCard.Amount
-                showAmount={!showAmountInformations}
+                showAmount={!showAmountInformations || isDeposit || isMint}
                 transaction={transaction}
                 w="fit-content"
                 h="26px"
