@@ -1,7 +1,6 @@
+import { CloseIcon, StarIcon } from '@chakra-ui/icons';
+import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
-import { Box, Text, IconButton, HStack, Flex } from '@chakra-ui/react';
-import { CloseIcon } from '@chakra-ui/icons';
-import { StarIcon } from '@chakra-ui/icons';
 
 const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
 const BAKO_SUPPORT_SEARCH_URL =

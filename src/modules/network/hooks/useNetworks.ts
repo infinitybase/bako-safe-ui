@@ -59,9 +59,9 @@ const useNetworks = (onClose?: () => void) => {
   const saveNetwork = async (url: string) => {
     const exists = NetworkService.hasNetwork(url);
     if (!exists) {
-      const provider = await Provider.create(url!);
-      const name = provider.getChain()?.name;
-      const chainId = provider.getChainId();
+      const provider = new Provider(url!);
+      const { name } = await provider.getChain();
+      const chainId = await provider.getChainId();
       await NetworkService.create({
         name,
         url: url!,

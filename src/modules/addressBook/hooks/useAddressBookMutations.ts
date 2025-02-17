@@ -110,7 +110,7 @@ const useAddressBookMutations = ({
     async ({ nickname, address }) => {
       createContactRequest.mutate({
         nickname,
-        address: Address.fromString(address).bech32Address,
+        address: new Address(address).toString(),
       });
     },
   );
