@@ -63,22 +63,25 @@ const TransactionBreakdown = ({
         mb={isFromConnector ? 4 : 0}
         w={{ base: 'full', xs: 'unset' }}
       >
-        {transaction.assets.map((asset, index) => (
-          <AssetBoxInfo
-            key={`${index} - ${asset.assetId}`}
-            asset={{
-              assetId: asset.assetId,
-              amount: asset.amount,
-              to: asset.to,
-              transactionID: transaction.id,
-              recipientNickname: AddressUtils.format(
-                asset?.recipientNickname ?? '',
-              ),
-            }}
-            borderColor="grey.950"
-            borderBottomWidth={index === transaction.assets.length - 1 ? 1 : 0}
-          />
-        ))}
+        {!isContract &&
+          transaction.assets.map((asset, index) => (
+            <AssetBoxInfo
+              key={`${index} - ${asset.assetId}`}
+              asset={{
+                assetId: asset.assetId,
+                amount: asset.amount,
+                to: asset.to,
+                transactionID: transaction.id,
+                recipientNickname: AddressUtils.format(
+                  asset?.recipientNickname ?? '',
+                ),
+              }}
+              borderColor="grey.950"
+              borderBottomWidth={
+                index === transaction.assets.length - 1 ? 1 : 0
+              }
+            />
+          ))}
 
         {showContractAddresses && (
           <ContractAddresses
