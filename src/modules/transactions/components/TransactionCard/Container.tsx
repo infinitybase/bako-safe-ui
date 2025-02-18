@@ -44,21 +44,23 @@ const Container = ({
   callBack,
   ...rest
 }: TransactionCardContainerProps) => {
-  const { isSigned, isCompleted, isDeclined, isReproved } = status;
+  const { isSigned, isCompleted, isDeclined, isReproved, isCanceled } = status;
 
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
   const missingSignature =
-    !isSigned && !isCompleted && !isDeclined && !isReproved;
+    !isSigned && !isCanceled && !isCompleted && !isDeclined && !isReproved;
 
   const {
     isFromConnector,
+    isFromCLI,
     isDeploy,
     isDeposit,
     isContract,
     isFuelFriday,
+    isMint,
     showAmountInformations,
   } = useVerifyTransactionInformations(transaction);
 
@@ -110,7 +112,7 @@ const Container = ({
             as={
               isDeploy
                 ? DeployIcon
-                : isFromConnector
+                : isFromConnector || isFromCLI
                   ? ContractIcon
                   : isDeposit
                     ? DownLeftArrowGreen
@@ -152,7 +154,7 @@ const Container = ({
 
               <TransactionCard.Amount
                 transaction={transaction}
-                showAmount={!showAmountInformations}
+                showAmount={!showAmountInformations || isDeposit || isMint}
               />
               <TransactionCard.Status
                 transaction={transaction}

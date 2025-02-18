@@ -7,7 +7,7 @@ import {
   RecoveryIcon,
 } from '@/components';
 import { PredicateAndWorkspace, Workspace } from '@/modules';
-import { defaultPermissions, PermissionRoles } from '@/modules/core/models';
+import { PermissionRoles } from '@/modules/core/models';
 
 import { TabState, useAPIToken } from './APIToken';
 import { FeatureConfig, useCommingSoon } from './CommingSoon';
@@ -16,6 +16,7 @@ export const requiredCLIRoles = [
   PermissionRoles.ADMIN,
   PermissionRoles.OWNER,
   PermissionRoles.MANAGER,
+  PermissionRoles.SIGNER,
 ];
 
 export enum CLIFeaturesLabels {
@@ -37,17 +38,18 @@ const useCLI = ({ currentWorkspace, userId, vault }: IUseCLIProps) => {
   );
 
   const hasPermission = useMemo(() => {
-    const memberPermission =
-      vault?.owner?.id === userId
-        ? defaultPermissions[PermissionRoles.OWNER]
-        : defaultPermissions[PermissionRoles.SIGNER];
-    const hasRequiredPermission =
-      memberPermission &&
-      requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
-        .length > 0;
-
-    const hasPerm = hasRequiredPermission;
-    return hasPerm;
+    // const memberPermission =
+    //   vault?.owner?.id === userId
+    //     ? defaultPermissions[PermissionRoles.OWNER]
+    //     : defaultPermissions[PermissionRoles.SIGNER];
+    // const hasRequiredPermission =
+    //   memberPermission &&
+    //   requiredCLIRoles.filter((p) => (memberPermission[p] ?? []).includes('*'))
+    //     .length > 0;
+    //
+    // const hasPerm = hasRequiredPermission;
+    // return hasPerm;
+    return true;
   }, [userId, vault?.id, currentWorkspace]);
 
   const { dialog, steps, tabs, create, remove, list, hasToken } =

@@ -21,6 +21,7 @@ export interface TransactionState {
   isPending: boolean;
   isReproved: boolean;
   isError: boolean;
+  isCanceled: boolean;
 }
 
 export interface Transaction {

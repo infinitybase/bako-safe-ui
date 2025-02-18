@@ -14,7 +14,7 @@ const useIncludeMemberRequest = () =>
     mutationKey: WorkspacesQueryKey.ADD_MEMBER(),
     mutationFn: (userAddress: IncludeWorkspaceMemberPayload['address']) =>
       WorkspaceService.includeMember({
-        address: Address.fromString(userAddress).bech32Address,
+        address: new Address(userAddress).toString(),
       }),
   });
 

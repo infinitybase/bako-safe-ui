@@ -36,6 +36,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isContract,
     isFuelFriday,
     showAmountInformations,
+    isMint,
   } = useVerifyTransactionInformations(transaction);
 
   const status = transactionStatus({
@@ -124,7 +125,7 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
             <HStack justifyContent="space-between" w="full">
               <TransactionCard.Amount
                 transaction={transaction}
-                showAmount={!showAmountInformations}
+                showAmount={!showAmountInformations || isDeposit || isMint}
               />
 
               <TransactionCard.ActionsMobile awaitingAnswer={awaitingAnswer} />

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useCreateBakoSafeVault } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
+import { AddressUtils } from '@/modules/core/utils/address';
 import { TemplateService } from '@/modules/template/services/methods';
 import { useTemplateStore } from '@/modules/template/store';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -90,13 +91,19 @@ const useCreateVault = () => {
     debouncedSearchHandler(value);
   };
 
-  const handleCreateVault = form.handleSubmit(async (data) => {
-    const addresses =
-      data.addresses?.map(
-        (address) => Address.fromString(address.value).bech32Address,
-      ) ?? [];
+  const handleCreateVault = form.handleSubmit(async (data: any) => {
+    if (form.formState.submitCount > 0) return;
 
-    bakoSafeVault.create({
+    const addresses =
+      data.addresses?.map((address: { value: string }) => {
+        const _a = AddressUtils.isPasskey(address.value)
+          ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
+          : address.value;
+
+        return new Address(_a).toString();
+      }) ?? [];
+
+    await bakoSafeVault.create({
       name: data.name,
       description: data.description!,
       minSigners: Number(data.minSigners),
@@ -139,7 +146,8 @@ const useCreateVault = () => {
 
   const onSaveTemplate = async () => {
     const data = form.getValues();
-    const addresses = data.addresses?.map((address) => address.value) ?? [];
+    const addresses =
+      data.addresses?.map((address: { value: string }) => address.value) ?? [];
     const minSigners = Number(data.minSigners) ?? 1;
 
     setTemplateFormInitial({

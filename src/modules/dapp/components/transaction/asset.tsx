@@ -1,71 +1,102 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { Card } from '@/components';
 import { AddressCopy } from '@/components/addressCopy';
 import { AddressUtils } from '@/modules/core/utils';
 
+interface AssetInfo {
+  icon?: string;
+  amount: string;
+  assetId: string;
+  name: string;
+  slug: string;
+}
+
+export interface AssetInfoProps {
+  asset: AssetInfo;
+}
+
+// TODO: Remove this mock data and get the real data from the API
+const FUEL_ASSET = {
+  name: 'Fuel',
+  slug: 'FUEL',
+  icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+  assetId: '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
+};
+
+const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
+  const assetInfo = useMemo(() => {
+    if (asset && asset.assetId === FUEL_ASSET.assetId) {
+      return {
+        ...FUEL_ASSET,
+        amount: asset.amount,
+      };
+    }
+    return asset;
+  }, [asset]);
+
+  return (
+    <Card
+      key={assetInfo.assetId}
+      as={HStack}
+      w="full"
+      borderTopRadius={0}
+      bg="grey.825"
+      px={3}
+      maxW={356}
+      alignItems="center"
+      justifyContent="space-between"
+      gap={4}
+    >
+      <HStack maxW="190px">
+        <Image
+          w={6}
+          h={6}
+          src={assetInfo?.icon ?? ''}
+          borderRadius={100}
+          alt="Asset Icon"
+          objectFit="cover"
+        />
+        <VStack spacing={0}>
+          <Text
+            variant="subtitle"
+            fontSize={12}
+            color="grey.75"
+            alignSelf="start"
+          >
+            {assetInfo.name}
+          </Text>
+          <AddressCopy
+            flexDir="row-reverse"
+            address={AddressUtils.format(assetInfo.assetId)!}
+            fontSize="xs"
+            addressToCopy={assetInfo.assetId}
+            w="100%"
+            bg="transparent"
+            spacing={2}
+            p={0}
+          />
+        </VStack>
+      </HStack>
+      <Box minW="max-content" mt={4}>
+        <Text variant="subtitle" color="grey.75" fontSize="xs">
+          {assetInfo.amount} {assetInfo.slug}
+        </Text>
+      </Box>
+    </Card>
+  );
+};
+
 export interface FeeProps {
-  assets: {
-    icon?: string;
-    amount: string;
-    assetId: string;
-    name: string;
-    slug: string;
-  }[];
+  assets: AssetInfo[];
 }
 
 const DappTransactionAsset = ({ assets }: FeeProps) => {
   return (
     <Box w="full">
       {assets.map((asset) => (
-        <Card
-          key={asset.assetId}
-          as={HStack}
-          w="full"
-          borderTopRadius={0}
-          bg="grey.825"
-          px={3}
-          maxW={356}
-          alignItems="center"
-          justifyContent="space-between"
-          gap={4}
-        >
-          <HStack maxW="190px">
-            <Image
-              w={6}
-              h={6}
-              src={asset?.icon ?? ''}
-              borderRadius={100}
-              alt="Asset Icon"
-              objectFit="cover"
-            />
-            <VStack spacing={0}>
-              <Text
-                variant="subtitle"
-                fontSize={12}
-                color="grey.75"
-                alignSelf="start"
-              >
-                {asset.name}
-              </Text>
-              <AddressCopy
-                flexDir="row-reverse"
-                address={AddressUtils.format(asset.assetId)!}
-                fontSize="xs"
-                addressToCopy={asset.assetId}
-                w="100%"
-                bg="transparent"
-                spacing={2}
-                p={0}
-              />
-            </VStack>
-          </HStack>
-          <Box minW="max-content" mt={4}>
-            <Text variant="subtitle" color="grey.75" fontSize="xs">
-              {asset.amount} {asset.slug}
-            </Text>
-          </Box>
-        </Card>
+        <DappTransactionAssetInfo key={asset.assetId} asset={asset} />
       ))}
     </Box>
   );

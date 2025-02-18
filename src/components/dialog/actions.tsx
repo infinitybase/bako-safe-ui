@@ -17,6 +17,9 @@ const DialogActions = ({
   children,
   hideDivider,
   dividerBorderColor,
+  flexWrap,
+  flexDir,
+  flexDirection,
   ...rest
 }: DialogActionsProps) => (
   <Box w="full" {...rest}>
@@ -25,7 +28,13 @@ const DialogActions = ({
       my={{ base: 3, sm: 6 }}
       borderColor={dividerBorderColor ?? 'unset'}
     />
-    <HStack spacing={4} justifyContent="center">
+    <HStack
+      flexDir={flexDir}
+      flexDirection={flexDirection}
+      flexWrap={flexWrap}
+      spacing={4}
+      justifyContent="center"
+    >
       {children}
     </HStack>
   </Box>

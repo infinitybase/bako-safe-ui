@@ -56,19 +56,20 @@ const useBakoSafeVault = ({ address, id }: IUseBakoSafeVault) => {
 };
 
 const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
-  const { mutate, ...mutation } = useBakoSafeMutation<
+  const { mutateAsync, ...mutation } = useBakoSafeMutation<
     PredicateResponseWithWorkspace,
     unknown,
     UseCreateBakoSafeVaultPayload
   >(
     VAULT_QUERY_KEYS.DEFAULT,
-    async ({ name, minSigners, addresses, providerUrl }) => {
+    async ({ name, minSigners, addresses, providerUrl, description }) => {
       try {
         const newVault = await createVault({
           name,
           minSigners,
           providerUrl,
           signers: addresses,
+          description,
         });
 
         return newVault;
@@ -84,7 +85,7 @@ const useCreateBakoSafeVault = (params?: UseCreateBakoSafeVaultParams) => {
   );
 
   return {
-    create: mutate,
+    create: mutateAsync,
     ...mutation,
   };
 };

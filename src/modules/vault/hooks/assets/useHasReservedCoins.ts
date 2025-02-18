@@ -1,12 +1,12 @@
 import { QueryState, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/config/query-client';
+import { useMappedAssetStore } from '@/modules/assets-tokens/hooks/useAssetMap';
+import { localStorageKeys } from '@/modules/auth/services';
 
 import { HasReservedCoins, VaultService } from '../../services';
 import { vaultInfinityQueryKey } from '../list/useVaultTransactionsRequest';
 import { vaultAssetsQueryKey } from './useVaultAssets';
-import { WorkspaceService } from '@/modules/workspace/services';
-import { localStorageKeys } from '@/modules/auth/services';
 
 export const useHasReservedCoins = (
   predicateId: string,
@@ -43,30 +43,21 @@ export const useHasReservedCoins = (
         queryClient.invalidateQueries({ queryKey: vaultTxListRequestQueryKey });
       }
 
-      const currentBalancePromises = response.currentBalance.map((item) => {
-        return WorkspaceService.getMyMappedTokens(
-          item.assetId,
-          chainId,
-          localStorageKeys.FUEL_MAPPED_TOKENS,
-        );
-      });
-      const nftsPromises = response.nfts.map((item) => {
-        return WorkspaceService.getMyMappedTokens(
-          item.assetId,
-          chainId,
-          localStorageKeys.FUEL_MAPPED_NFTS,
-        );
-      });
+      const assetStore = useMappedAssetStore.getState();
 
-      await Promise.all([
-        Promise.all(currentBalancePromises),
-        Promise.all(nftsPromises),
-      ]);
+      await assetStore.fetchAssets(
+        response.currentBalance.map((item) => item.assetId),
+        chainId,
+      );
+      await assetStore.fetchNfts(
+        response.nfts.map((item) => item.assetId),
+        chainId,
+      );
 
       return response;
     },
     refetchInterval,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     placeholderData: (previousData) => previousData,
     enabled: !!predicateId,
     staleTime,

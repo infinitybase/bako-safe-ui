@@ -34,8 +34,8 @@ const getChainId = (): number =>
       availableNetWorks[NetworkType.TESTNET].chainId,
   );
 
-export const formatedAssets = (chainId: number): Asset[] =>
-  getFuelTokensList()
+export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
+  assetsList
     .reduce<Asset[]>((acc, asset) => {
       const network =
         asset?.networks?.find(
@@ -65,24 +65,47 @@ export const formatedAssets = (chainId: number): Asset[] =>
     }, [])
     .concat(UNKNOWN_ASSET);
 
-const assetsList: Asset[] = formatedAssets(getChainId());
+// @todo: remove this
+const assetsList: Asset[] = formatedAssets([], getChainId());
 
-export const assetsMapFromFormattedFn = (tokenList: Assets = []): AssetMap => {
-  const assetsMap: AssetMap = assetsList.reduce(
-    (previousValue, currentValue) => {
-      return {
-        ...previousValue,
-        [currentValue.assetId]: {
-          name: currentValue?.name,
-          slug: currentValue?.slug,
-          icon: currentValue?.icon,
-          assetId: currentValue?.assetId,
-          units: currentValue?.units,
-        },
-      };
+export const assetsMapFromFormattedFn = (
+  tokenList: Assets = [],
+  chainId: number,
+): AssetMap => {
+  const assets = formatedAssets(tokenList, chainId);
+  let assetsMap: AssetMap = assets.reduce((previousValue, currentValue) => {
+    return {
+      ...previousValue,
+      [currentValue.assetId]: {
+        name: currentValue?.name,
+        slug: currentValue?.slug,
+        icon: currentValue?.icon,
+        assetId: currentValue?.assetId,
+        units: currentValue?.units,
+      },
+    };
+  }, {});
+
+  // TODO: remove this
+  assetsMap = {
+    ...assetsMap,
+    '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82': {
+      assetId:
+        '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
+      name: 'Fuel',
+      slug: 'FUEL',
+      icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+      units: 9,
     },
-    {},
-  );
+    '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b': {
+      assetId:
+        '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b',
+      name: 'Fuel',
+      slug: 'FUEL',
+      icon: 'https://verified-assets.fuel.network/images/fuel.svg',
+      units: 9,
+    },
+  };
 
   return assetsMap;
 };

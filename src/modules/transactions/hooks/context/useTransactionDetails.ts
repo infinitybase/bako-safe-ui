@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -10,6 +11,7 @@ import {
   useSocket,
 } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
+import { TransactionService } from '@/modules/transactions/services';
 import { useHasReservedCoins } from '@/modules/vault/hooks';
 import {
   StatusFilter,
@@ -40,6 +42,8 @@ const useTransactionDetails = () => {
     vaultPageParams: { vaultId },
   } = useGetParams();
 
+  const { refetchAssets } = useHasReservedCoins(vaultId ?? '', workspace?.id);
+
   const homeTransactions = useHomeTransactions(workspace?.id);
   const pendingSignerTransactions = useTransactionsSignaturePending([vaultId!]);
   const vaultTransactions = useVaultTransactionsList({
@@ -55,14 +59,26 @@ const useTransactionDetails = () => {
     vaultTransactions.lists.transactions,
   );
 
-  const { refetchAssets } = useHasReservedCoins(vaultId ?? '', workspace?.id);
-
   const signTransaction = useSignTransaction({
     transactionList: transactionsPageList,
     pendingTransactions: pendingTransactions,
     pendingSignerTransactionsRefetch: pendingSignerTransactions.refetch,
     homeTransactionsRefetch: homeTransactions.request.refetch,
     vaultBalanceRefetch: refetchAssets,
+  });
+
+  const cancelTransaction = useMutation({
+    mutationFn: async (hash: string) => {
+      const response = await TransactionService.cancel(hash);
+      await Promise.all([
+        transactionsPageList.request.refetch(),
+        pendingSignerTransactions.refetch(),
+        homeTransactions.request.refetch(),
+        vaultTransactions.request.refetch(),
+      ]);
+      cancelTransaction.reset();
+      return response;
+    },
   });
 
   const resetAllTransactionsTypeFilters = () => {
@@ -105,6 +121,7 @@ const useTransactionDetails = () => {
       homeTransactions.request.refetch();
       vaultTransactions.request.refetch();
       transactionsPageList.request.refetch();
+      refetchAssets();
     }
   };
 
@@ -123,6 +140,7 @@ const useTransactionDetails = () => {
     transactionsPageList,
     signTransaction,
     pendingSignerTransactions,
+    cancelTransaction,
     isPendingSigner:
       pendingSignerTransactions.data?.transactionsBlocked ?? false,
     pendingSignerTransactionsLength:

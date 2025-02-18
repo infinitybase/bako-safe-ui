@@ -4,6 +4,7 @@ import { bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
 import { api } from '@/config/api';
 
 import {
+  CancelTransactionResponse,
   CloseTransactionPayload,
   CreateTransactionPayload,
   CreateTransactionResponse,
@@ -59,6 +60,13 @@ export class TransactionService {
         signature: body.signer,
         approve: !!body.confirm,
       },
+    );
+    return data;
+  }
+
+  static async cancel(hash: string) {
+    const { data } = await api.put<CancelTransactionResponse>(
+      `/transaction/cancel/${hash}`,
     );
     return data;
   }
@@ -143,7 +151,7 @@ export class TransactionService {
     if (assets.length) {
       const outputs = Asset.assetsGroupByTo(assets);
       const coins = Asset.assetsGroupById(assets);
-      const baseAssetId = vault.provider.getBaseAssetId();
+      const baseAssetId = await vault.provider.getBaseAssetId();
       const containETH = !!coins[baseAssetId];
 
       if (containETH) {
@@ -173,7 +181,7 @@ export class TransactionService {
       transactionRequest.addResources(_coins);
     } else {
       const resources = vault.generateFakeResources([
-        { amount: bn(0), assetId: vault.provider.getBaseAssetId() },
+        { amount: bn(0), assetId: await vault.provider.getBaseAssetId() },
       ]);
       transactionRequest.addResources(resources);
     }
@@ -198,7 +206,7 @@ export class TransactionService {
     });
 
     // Estimate the max fee for the transaction and calculate fee difference
-    const { gasPriceFactor } = vault.provider.getGasConfig();
+    const { gasPriceFactor } = await vault.provider.getGasConfig();
     const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
       transactionRequest,
     });
@@ -209,7 +217,7 @@ export class TransactionService {
       gasPrice,
     });
 
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(1.2);
+    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(12).div(10);
 
     return {
       fee: maxFeeWithDiff,

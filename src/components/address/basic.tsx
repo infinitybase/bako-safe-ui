@@ -28,7 +28,11 @@ const Address = (props: AddressProps) => {
     },
   } = useWorkspaceContext();
 
-  const b256Address = value ? FuelsAddress.fromString(value).toB256() : '';
+  const isPasskey = AddressUtils.isPasskey(value);
+  const b256Address =
+    value && !isPasskey
+      ? FuelsAddress.fromString(value).toString()
+      : (value ?? '');
 
   return (
     <Text

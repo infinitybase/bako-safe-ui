@@ -18,6 +18,8 @@ const useVerifyTransactionInformations = (
         !op.assetsSent,
     ) ?? false;
 
+  const isFromCLI = transaction.summary?.type === 'cli' && isContract;
+
   const isMint =
     transaction?.summary?.operations?.some((operation) => {
       const isContractCallWithAssets =
@@ -80,6 +82,7 @@ const useVerifyTransactionInformations = (
     isMint,
     isFuelFriday,
     isReceivingAssets,
+    isFromCLI,
     showAmountInformations,
   };
 };

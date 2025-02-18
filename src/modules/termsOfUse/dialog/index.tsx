@@ -66,9 +66,10 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
 
       <Divider maxW={585} borderColor={'grey.500'} mt={6} mb={6} />
 
-      <Dialog.Body maxW={585} pb={6}>
+      <Dialog.Body flex={1} maxH="100vh" maxW={585} pb={6}>
         <VStack
           h={textHeight()}
+          flex={1}
           aria-label="Terms of Use"
           spacing={0}
           overflowY={'scroll'}
