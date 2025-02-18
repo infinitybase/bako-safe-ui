@@ -140,9 +140,9 @@ export class NetworkService {
   }
 
   static async check({ url }: CheckNetworkPayload) {
-    const provider = await Provider.create(url);
+    const provider = new Provider(url);
 
-    const chain = provider.getChain();
+    const chain = await provider.getChain();
 
     return chain?.name;
   }

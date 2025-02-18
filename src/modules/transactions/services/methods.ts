@@ -151,7 +151,7 @@ export class TransactionService {
     if (assets.length) {
       const outputs = Asset.assetsGroupByTo(assets);
       const coins = Asset.assetsGroupById(assets);
-      const baseAssetId = vault.provider.getBaseAssetId();
+      const baseAssetId = await vault.provider.getBaseAssetId();
       const containETH = !!coins[baseAssetId];
 
       if (containETH) {
@@ -181,7 +181,7 @@ export class TransactionService {
       transactionRequest.addResources(_coins);
     } else {
       const resources = vault.generateFakeResources([
-        { amount: bn(0), assetId: vault.provider.getBaseAssetId() },
+        { amount: bn(0), assetId: await vault.provider.getBaseAssetId() },
       ]);
       transactionRequest.addResources(resources);
     }
@@ -206,7 +206,7 @@ export class TransactionService {
     });
 
     // Estimate the max fee for the transaction and calculate fee difference
-    const { gasPriceFactor } = vault.provider.getGasConfig();
+    const { gasPriceFactor } = await vault.provider.getGasConfig();
     const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
       transactionRequest,
     });
@@ -217,7 +217,7 @@ export class TransactionService {
       gasPrice,
     });
 
-    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(2);
+    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(12).div(10);
 
     return {
       fee: maxFeeWithDiff,

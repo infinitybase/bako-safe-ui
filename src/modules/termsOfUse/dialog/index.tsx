@@ -70,6 +70,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
         <VStack
           h={textHeight()}
           flex={1}
+          aria-label="Terms of Use"
           spacing={0}
           overflowY={'scroll'}
           pr={4}
@@ -176,6 +177,7 @@ const TermsOfUseDialog = (props: TermsOfUseDialogProps) => {
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
               w="50%"
+              aria-label="Accept Terms of Use"
               onClick={props.actionHandler}
               isDisabled={!read}
               _hover={{ opacity: 0.8 }}

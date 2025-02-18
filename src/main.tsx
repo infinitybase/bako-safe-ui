@@ -1,9 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import {
-  defaultConnectors,
-  FueletWalletConnector,
-  FuelWalletConnector,
-} from '@fuels/connectors';
+import { FueletWalletConnector, FuelWalletConnector } from '@fuels/connectors';
 import { FuelProvider } from '@fuels/react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -60,6 +56,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={fuelConnectorsQueryClient}>
         <FuelProvider
           uiConfig={{ suggestBridge: false }}
+          networks={[]}
           fuelConfig={{
             connectors: [
               new FuelWalletConnector(),

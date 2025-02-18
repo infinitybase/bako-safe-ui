@@ -36,7 +36,7 @@ export const useBakoIDResolveNames = (options: {
     queryKey: BAKOID_QUERY_KEYS.names(addresses),
     queryFn: async () => {
       const provider = await providerInstance;
-      return client.names(addresses, provider.getChainId());
+      return client.names(addresses, await provider.getChainId());
     },
     enabled: addresses.length > 0,
   });
@@ -75,7 +75,7 @@ export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
       }
 
       const provider = await providerInstance;
-      const name = await client.name(address, provider.getChainId());
+      const name = await client.name(address, await provider.getChainId());
       return name ? `@${name}` : name;
     },
     onSuccess: (data, address) => {
@@ -93,7 +93,7 @@ export const useBakoIDClient = (providerInstance: Promise<BakoProvider>) => {
         }
 
         const provider = await providerInstance;
-        return client.resolver(name, provider.getChainId());
+        return client.resolver(name, await provider.getChainId());
       },
       onSuccess: (data, name) => {
         queryClient.setQueryData(BAKOID_QUERY_KEYS.name(name), data);

@@ -35,8 +35,8 @@ export const useNetworkInfo = (url?: string) => {
       const network = CachedNetwork.getNetwork(url!);
       if (network) return network;
 
-      const provider = await Provider.create(url!);
-      const info = provider.getChain();
+      const provider = new Provider(url!);
+      const info = await provider.getChain();
       const networkInfo = { ...info, url: provider.url };
       CachedNetwork.storeNetwork(networkInfo);
       return networkInfo;

@@ -1,9 +1,11 @@
 import { UseDisclosureProps } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { BakoProvider } from 'bakosafe';
-import { Address, Assets } from 'fuels';
+import { Assets } from 'fuels';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback } from 'react';
+
+import { AddressUtils } from '@/modules/core/utils/address';
 
 import { ListContactsResponse } from '../services';
 import { useCreateContactForm } from './useCreateContactForm';
@@ -62,10 +64,8 @@ const useAddressBookFormHandlers = ({
 
   const contactByAddress = (address: string) => {
     const contacts = listContactsRequest?.data ?? [];
-    return contacts.find(
-      ({ user }) =>
-        Address.fromString(user.address).bech32Address ===
-        Address.fromString(address).bech32Address,
+    return contacts.find(({ user }) =>
+      AddressUtils.equal(user.address, address),
     );
   };
 

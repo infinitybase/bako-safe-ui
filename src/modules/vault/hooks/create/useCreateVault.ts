@@ -100,7 +100,7 @@ const useCreateVault = () => {
           ? AddressUtils.fromBech32(address.value as `passkey.${string}`)
           : address.value;
 
-        return Address.fromString(_a).bech32Address;
+        return new Address(_a).toString();
       }) ?? [];
 
     await bakoSafeVault.create({
