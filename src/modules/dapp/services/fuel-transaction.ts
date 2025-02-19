@@ -42,7 +42,7 @@ const useFuelTransactionService = () => {
     configurable,
     version,
   }: TransactionSimulateParams) => {
-    const provider = await Provider.create(providerUrl);
+    const provider = new Provider(providerUrl);
 
     const vaultInstance = new Vault(
       provider,
