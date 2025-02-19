@@ -34,7 +34,7 @@ const useVaultAssets = (
 
   const {
     request: { refetch: refetchTransactions },
-  } = useVaultTransactionsList();
+  } = useVaultTransactionsList({ vaultId: predicateId });
 
   const { data, refetchAssets, staleTime, reservedQueryKey, ...rest } =
     useHasReservedCoins(predicateId, workspaceId);
