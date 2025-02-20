@@ -79,7 +79,7 @@ const useAuth = (): IUseAuthReturn => {
     const _userProvider = infos?.type?.type != TypeUser.WEB_AUTHN;
 
     return {
-      provider: await Provider.create(
+      provider: new Provider(
         _userProvider
           ? (await fuel.currentNetwork()).url
           : 'http://localhost:4000/v1/graphql',

@@ -9,10 +9,10 @@ import {
 } from '@chakra-ui/react';
 
 import { AddAddressBook, AddressWithCopyBtn, Card, Handle } from '@/components';
-import { useScreenSize } from '@/modules/core/hooks';
-import { HandleUtils } from '@/utils/handle';
 import { TypeUser } from '@/modules/auth';
 import { AddressUtils } from '@/modules/core';
+import { useScreenSize } from '@/modules/core/hooks';
+import { HandleUtils } from '@/utils/handle';
 
 const { VITE_BAKO_ID_URL } = import.meta.env;
 
