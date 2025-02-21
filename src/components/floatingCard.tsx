@@ -3,8 +3,7 @@ import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 
 const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
-const BAKO_SUPPORT_SEARCH_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSfwfnpxWsXVLP2UhS2CWHgDX7Tx7sdnp1umgzzEZToYKy0UBw/viewform';
+const BAKO_SUPPORT_SEARCH_URL = 'https://forms.gle/xqh4sADPoULPupnG8';
 
 const FloatingCard = () => {
   const handleClose = () => {
