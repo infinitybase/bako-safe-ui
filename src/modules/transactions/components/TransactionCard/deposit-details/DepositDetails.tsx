@@ -4,13 +4,15 @@ import {
   Divider,
   HStack,
   Icon,
+  Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
-import { SuccessIcon, UpRightArrow } from '@/components';
+import { FileCodeIcon, SuccessIcon, UpRightArrow } from '@/components';
+import env from '@/config/env';
 import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import {
@@ -20,6 +22,7 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import type { TransactionWithVault } from '../../../services';
+import { StyledButton } from '../styles';
 import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
@@ -122,29 +125,42 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
       </VStack>
 
-      {!isMobile && transaction.status === TransactionStatus.SUCCESS && (
-        <Button
-          w={isMobile ? 'full' : 'unset'}
-          mt={isMobile ? 'auto' : '32px'}
-          border="none"
-          bgColor="#F5F5F50D"
-          fontSize="xs"
-          fontWeight="normal"
-          letterSpacing=".5px"
-          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-          variant="secondary"
-          onClick={handleViewInExplorer}
-          css={css`
-            &:hover .btn-icon {
-              animation: ${shakeAnimationY} 0.5s ease-in-out;
-            }
-          `}
-          rightIcon={
-            <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
-          }
-        >
-          View on Explorer
-        </Button>
+      {!isMobile && (
+        <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
+          <Link
+            href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+            isExternal
+          >
+            <StyledButton
+              variant="secondaryV2"
+              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+              alignSelf="flex-end"
+              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+            >
+              Advanced details
+            </StyledButton>
+          </Link>
+
+          {transaction.status === TransactionStatus.SUCCESS && (
+            <Button
+              w={isMobile ? 'full' : 'unset'}
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+              variant="secondaryV2"
+              onClick={handleViewInExplorer}
+              css={css`
+                &:hover .btn-icon {
+                  animation: ${shakeAnimationY} 0.5s ease-in-out;
+                }
+              `}
+              rightIcon={
+                <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
+              }
+            >
+              View on Explorer
+            </Button>
+          )}
+        </HStack>
       )}
     </Box>
   );
