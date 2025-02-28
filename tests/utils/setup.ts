@@ -5,8 +5,7 @@ import {
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
-import { bn, Mnemonic, Wallet } from 'fuels';
-import { launchTestNode } from 'fuels/test-utils';
+import { Account, bn, Mnemonic, Provider, Wallet } from 'fuels';
 
 export class E2ETestUtils {
   static FUEL_WALLET_VERSION = '0.46.1';
@@ -23,32 +22,27 @@ export class E2ETestUtils {
   }) {
     const { context, extensionId } = config;
 
-    // Launch node and create a random wallet
-    const node = await launchTestNode();
-    const randomMnemonic = Mnemonic.generate();
-    const fuelWallet = Wallet.fromMnemonic(randomMnemonic);
-    fuelWallet.connect(node.provider);
-
-    // Get master wallet and fund the fuel wallet
-    const [masterWallet] = node.wallets;
-    const txResponse = await masterWallet.transfer(
-      fuelWallet.address,
-      bn.parseUnits('2'),
+    const provider = new Provider('http://localhost:4000/v1/graphql');
+    const genesisWallet = Wallet.fromPrivateKey(
+      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+      provider,
     );
-    await txResponse.waitForResult();
 
-    const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
+    const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup({
       context,
-      extensionId,
-      node.provider.url.replace('0.0.0.0', 'localhost'),
-      'test',
-      randomMnemonic,
-    );
+      fuelExtensionId: extensionId,
+      fuelProvider: {
+        url: provider.url,
+        chainId: await provider.getChainId(),
+      },
+      chainName: (await provider.getChain()).name,
+      mnemonic: Mnemonic.generate(),
+    });
     await config.page.goto('/');
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
 
-    return { fuelWalletTestHelper, node, fuelWallet, masterWallet };
+    return { fuelWalletTestHelper, genesisWallet };
   }
 
   static async signMessage(config: {
@@ -74,5 +68,18 @@ export class E2ETestUtils {
         automaticPresenceSimulation: true,
       },
     });
+  }
+
+  static async fundVault(config: {
+    genesisWallet: Account;
+    vaultAddress: string;
+    amount: string;
+  }) {
+    const { genesisWallet, vaultAddress, amount } = config;
+    const transactionResponse = await genesisWallet.transfer(
+      vaultAddress,
+      bn.parseUnits(amount),
+    );
+    await transactionResponse.waitForResult();
   }
 }

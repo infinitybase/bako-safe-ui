@@ -1,24 +1,18 @@
 import {
-  expect,
   FuelWalletTestHelper,
   getByAriaLabel,
   hasText,
   test,
-  addAssetThroughSettings
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
-import { launchTestNode } from 'fuels/test-utils';
 
 import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('Fuel Wallet', () => {
-  let node: Awaited<ReturnType<typeof launchTestNode>>;
-
   let fuelWalletTestHelper: FuelWalletTestHelper;
-  let fuelWallet: WalletUnlocked;
-  let masterWallet: WalletUnlocked;
+  let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
     const E2EUtils = await E2ETestUtils.setup({
@@ -27,14 +21,8 @@ test.describe('Fuel Wallet', () => {
       extensionId,
     });
 
-    node = E2EUtils.node;
-    fuelWallet = E2EUtils.fuelWallet;
-    masterWallet = E2EUtils.masterWallet;
+    genesisWallet = E2EUtils.genesisWallet;
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
-  });
-
-  test.afterEach(() => {
-    node.cleanup();
   });
 
   test('example fuel wallet', async ({ page }) => {
@@ -55,8 +43,6 @@ test.describe('Fuel Wallet', () => {
     const closeWindow = page.locator('[aria-label="Close window"]');
     await closeWindow.click();
 
-    await page.pause()
-    
-
+    await page.pause();
   });
 });

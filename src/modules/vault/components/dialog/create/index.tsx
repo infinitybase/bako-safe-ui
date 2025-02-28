@@ -155,6 +155,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
               w="65%"
+              aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
               leftIcon={
