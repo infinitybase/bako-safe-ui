@@ -132,6 +132,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             <AddressWithCopyBtn
               value={address}
               isSidebarAddress
+              aria-label="Sidebar Vault Address"
               h="20px"
               flexDir="row-reverse"
             />
