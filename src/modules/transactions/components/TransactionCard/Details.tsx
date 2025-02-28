@@ -1,11 +1,19 @@
-import { Box, Button, HStack, Icon, Stack, VStack } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  VStack,
+} from '@chakra-ui/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useMemo } from 'react';
 
-import { CustomSkeleton, UpRightArrow } from '@/components';
+import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
 import { TrashIcon } from '@/components/icons/trash';
-import { shakeAnimationY, type TransactionState } from '@/modules/core';
+import env from '@/config/env';
+import { type TransactionState } from '@/modules/core';
 import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -14,6 +22,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
+import { StyledButton } from './styles';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
 
@@ -145,35 +154,41 @@ const Details = ({
                 </Box>
               </Stack>
 
-              {transaction.status === TransactionStatus.SUCCESS &&
-                !isMobile && (
-                  <Button
-                    border="none"
-                    bgColor="#F5F5F50D"
-                    fontSize="xs"
-                    fontWeight="normal"
-                    letterSpacing=".5px"
-                    alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                    variant="secondary"
-                    onClick={handleViewInExplorer}
-                    css={css`
-                      &:hover .btn-icon {
-                        animation: ${shakeAnimationY} 0.5s ease-in-out;
-                      }
-                    `}
-                    rightIcon={
-                      <Icon
-                        as={UpRightArrow}
-                        textColor="grey.75"
-                        fontSize="lg"
-                        className="btn-icon"
-                      />
-                    }
+              <HStack justifyContent="end" width="100%">
+                {!isMobile && (
+                  <Link
+                    href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                    isExternal
                   >
-                    View on Explorer
-                  </Button>
+                    <StyledButton
+                      variant="secondaryV2"
+                      alignSelf="flex-end"
+                      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                      rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+                    >
+                      Advanced details
+                    </StyledButton>
+                  </Link>
                 )}
-              <HStack justifyContent="end" w="full">
+
+                {!isMobile &&
+                  transaction.status === TransactionStatus.SUCCESS && (
+                    <StyledButton
+                      variant="secondaryV2"
+                      onClick={handleViewInExplorer}
+                      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                      rightIcon={
+                        <Icon
+                          as={UpRightArrow}
+                          textColor="grey.75"
+                          fontSize="lg"
+                          className="btn-icon"
+                        />
+                      }
+                    >
+                      View on Explorer
+                    </StyledButton>
+                  )}
                 <CancelTransactionButton transaction={transaction} />
               </HStack>
             </VStack>
