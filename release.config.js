@@ -12,6 +12,12 @@ module.exports = {
     ],
     '@semantic-release/changelog',
     '@semantic-release/github',
-    '@semantic-release/git',
+    [
+      '@semantic-release/git',
+      {
+        message:
+          'chore(release): <%= nextRelease.version %> [skip ci]\n\n <% if (nextRelease.notes.length < 20) { %><%= nextRelease.notes %><% } %>\n',
+      },
+    ],
   ],
 };
