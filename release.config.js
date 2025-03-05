@@ -17,7 +17,7 @@ module.exports = {
         releaseBodyTemplate: `<% if (nextRelease.notes.length < 125000) { %>
 <%= nextRelease.notes %>
 <% } else { %>
-<%= nextRelease.notes.slice(0, 124997).join('\n') %>...
+<%= nextRelease.notes.slice(0, 124997) %>...
 <% } %>`,
       },
     ],
