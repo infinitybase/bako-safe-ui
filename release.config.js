@@ -11,12 +11,20 @@ module.exports = {
       },
     ],
     '@semantic-release/changelog',
-    '@semantic-release/github',
+    [
+      '@semantic-release/github',
+      {
+        releaseBodyTemplate: `<% if (nextRelease.notes.length < 125000) { %>
+<%= nextRelease.notes %>
+<% } else { %>
+<%= nextRelease.notes.slice(0, 124997).join('\n') %>...
+<% } %>`,
+      },
+    ],
     [
       '@semantic-release/git',
       {
-        message:
-          'chore(release): <%= nextRelease.version %> [skip ci]\n\n <% if (nextRelease.notes.length < 20) { %><%= nextRelease.notes %><% } %>\n',
+        message: `chore(release): <%= nextRelease.version %> [skip ci]`,
       },
     ],
   ],
