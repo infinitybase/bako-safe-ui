@@ -14,10 +14,10 @@ module.exports = {
     [
       '@semantic-release/github',
       {
-        releaseBodyTemplate: `<% if (nextRelease.notes.length < 125000) { %>
+        releaseBodyTemplate: `<% if (nextRelease.notes.length < 100000) { %>
 <%= nextRelease.notes %>
 <% } else { %>
-<%= nextRelease.notes.slice(0, 124997) %>...
+<%= nextRelease.notes.slice(0, 100000) %>...
 <% } %>`,
       },
     ],
