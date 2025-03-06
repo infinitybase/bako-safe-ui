@@ -2,10 +2,11 @@ import {
   downloadFuel,
   FuelWalletTestHelper,
   getByAriaLabel,
+  getInputByName,
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
-import { bn, Mnemonic, Wallet } from 'fuels';
+import { bn, Mnemonic, Provider, Wallet } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
 
 export class E2ETestUtils {
@@ -23,32 +24,24 @@ export class E2ETestUtils {
   }) {
     const { context, extensionId } = config;
 
-    // Launch node and create a random wallet
-    const node = await launchTestNode();
-    const randomMnemonic = Mnemonic.generate();
-    const fuelWallet = Wallet.fromMnemonic(randomMnemonic);
-    fuelWallet.connect(node.provider);
-
-    // Get master wallet and fund the fuel wallet
-    const [masterWallet] = node.wallets;
-    const txResponse = await masterWallet.transfer(
-      fuelWallet.address,
-      bn.parseUnits('2'),
-    );
-    await txResponse.waitForResult();
+    const provider = new Provider("http://localhost:4000/v1/graphql")
+    const genesisWallet = Wallet.fromPrivateKey("0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298", provider)
 
     const fuelWalletTestHelper = await FuelWalletTestHelper.walletSetup(
       context,
       extensionId,
-      node.provider.url.replace('0.0.0.0', 'localhost'),
+      provider.url,
       'test',
-      randomMnemonic,
     );
+    const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
+    await getInputByName(popupPage,"url").fill(provider.url)
+    await getInputByName(popupPage,"chainId").fill((await provider.getChainId()).toString())
+    await fuelWalletTestHelper.switchNetwork("Local Ignition")
     await config.page.goto('/');
     await config.page.bringToFront();
     await config.page.waitForTimeout(2000);
 
-    return { fuelWalletTestHelper, node, fuelWallet, masterWallet };
+    return { fuelWalletTestHelper, genesisWallet };
   }
 
   static async signMessage(config: {

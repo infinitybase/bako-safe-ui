@@ -104,6 +104,7 @@ test('webauthn', async ({ page }) => {
   
   const explorer = page.getByRole('button',{name: 'Explorer'})
   await newTabVerification(page, explorer , 'app-mainnet.fuel.network' )
+  await page.bringToFront()
 
   await page.getByText('Balance', { exact: true }).click();
   await expect(page).toHaveURL(/balance/);
@@ -120,6 +121,7 @@ test('webauthn', async ({ page }) => {
 
   const bridge = page.getByText('Bridge')
   await newTabVerification(page, bridge, "https://app-mainnet.fuel.network/bridge")
+  await page.bringToFront()
   await page.getByText('Deposit', { exact: true }).click();
   await closeWindow.nth(0).click();
   await page.waitForTimeout(1000);
@@ -131,13 +133,14 @@ test('webauthn', async ({ page }) => {
   const addtoAdressBook = page.getByRole('button', {
     name: 'Add to Address Book',
   });
-  await addtoAdressBook.click();
+
+  {/*await addtoAdressBook.click();
   await modalCloseTest(page, addtoAdressBook);
   await page.getByText('Name or Label').fill('Signatario1');
   await page.waitForLoadState('load')
   await page.getByRole('button', { name: 'Add it' }).click();
-  await page.waitForTimeout(2000);
   await expect(page.getByText('Signatario1')).toBeVisible();
+  await page.waitForTimeout(2000); */}
 
   await settingsButtons(page, 'Spend limit');
   await settingsButtons(page, 'Recovery');

@@ -117,6 +117,6 @@ test('webauthn', async ({ page }) => {
   await page.getByRole('button',{name: 'Delete'}).click()
   await page.getByRole('button', {name: 'Yes, delete it!'}).click()
 
-
-
+  await page.getByText(name).nth(0).click()
+  await page.getByText('Settings').click()
 });

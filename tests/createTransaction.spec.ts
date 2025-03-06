@@ -4,7 +4,6 @@ import {
   getByAriaLabel,
   hasText,
   test,
-  addAssetThroughSettings
 } from '@fuels/playwright-utils';
 import { WalletUnlocked } from 'fuels';
 import { launchTestNode } from 'fuels/test-utils';
@@ -27,15 +26,10 @@ test.describe('Fuel Wallet', () => {
       extensionId,
     });
 
-    node = E2EUtils.node;
-    fuelWallet = E2EUtils.fuelWallet;
-    masterWallet = E2EUtils.masterWallet;
+    masterWallet = E2EUtils.genesisWallet;
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
-  test.afterEach(() => {
-    node.cleanup();
-  });
 
   test('example fuel wallet', async ({ page }) => {
     // Get the Fuel Wallet button and click it
