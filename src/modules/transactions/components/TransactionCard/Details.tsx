@@ -22,7 +22,6 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { AssetBoxInfo } from './AssetBoxInfo';
 import { DepositDetails } from './deposit-details/DepositDetails';
 import DetailsTransactionStepper from './DetailsTransactionStepper';
-import { StyledButton } from './styles';
 import { TransactionStepper } from './TransactionStepper';
 import { TransactionBreakdown } from './transfer-details';
 
@@ -156,24 +155,22 @@ const Details = ({
 
               <HStack justifyContent="end" width="100%">
                 {!isMobile && (
-                  <Link
+                  <Button
+                    variant="secondaryV2"
+                    alignSelf="flex-end"
                     href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
                     isExternal
+                    as={Link}
+                    size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                    rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
                   >
-                    <StyledButton
-                      variant="secondaryV2"
-                      alignSelf="flex-end"
-                      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-                      rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-                    >
-                      Advanced details
-                    </StyledButton>
-                  </Link>
+                    Advanced details
+                  </Button>
                 )}
 
                 {!isMobile &&
                   transaction.status === TransactionStatus.SUCCESS && (
-                    <StyledButton
+                    <Button
                       variant="secondaryV2"
                       onClick={handleViewInExplorer}
                       size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
@@ -187,7 +184,7 @@ const Details = ({
                       }
                     >
                       View on Explorer
-                    </StyledButton>
+                    </Button>
                   )}
                 <CancelTransactionButton transaction={transaction} />
               </HStack>

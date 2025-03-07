@@ -227,22 +227,18 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                     View on Explorer mobiel
                   </Button>
                 )}
-                <Link
-                  w="100%"
-                  display="block"
+                <Button
+                  variant="secondaryV2"
+                  as={Link}
                   href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
                   isExternal
+                  w="100%"
+                  size="sm"
+                  h={7}
+                  rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
                 >
-                  <Button
-                    variant="secondaryV2"
-                    w="100%"
-                    size="sm"
-                    h={7}
-                    rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-                  >
-                    Advanced details
-                  </Button>
-                </Link>
+                  Advanced details
+                </Button>
               </>
             )}
           </VStack>

@@ -22,7 +22,6 @@ import {
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import type { TransactionWithVault } from '../../../services';
-import { StyledButton } from '../styles';
 import DetailItem from './DetailItem';
 
 type DepositDetailsProps = {
@@ -127,19 +126,17 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
 
       {!isMobile && (
         <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
-          <Link
-            href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+          <Button
+            variant="secondaryV2"
+            as={Link}
             isExternal
+            href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+            alignSelf="flex-end"
+            rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
           >
-            <StyledButton
-              variant="secondaryV2"
-              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-              alignSelf="flex-end"
-              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-            >
-              Advanced details
-            </StyledButton>
-          </Link>
+            Advanced details
+          </Button>
 
           {transaction.status === TransactionStatus.SUCCESS && (
             <Button
