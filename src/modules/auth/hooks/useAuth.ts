@@ -31,6 +31,8 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
+const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
+
 //coment
 //coment
 const useAuth = (): IUseAuthReturn => {
@@ -45,10 +47,12 @@ const useAuth = (): IUseAuthReturn => {
   const navigate = useNavigate();
 
   const authenticate = (params: AuthenticateParams) => {
+    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'true');
     setAuthCookies(params);
   };
 
   const logout = async (removeTokenFromDb = true, callback?: () => void) => {
+    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     if (accessToken && removeTokenFromDb) {
       await signOutRequest.mutateAsync();
       callback?.();
@@ -70,6 +74,7 @@ const useAuth = (): IUseAuthReturn => {
   };
 
   const logoutWhenExpired = async () => {
+    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     clearAuthCookies();
     queryClient.clear();
     navigate('/?expired=true');

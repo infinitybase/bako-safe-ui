@@ -26,7 +26,7 @@
     "@types/crypto-js": "^4.2.2",
     "@wagmi/connectors": "^5.1.15",
     "axios": "^1.5.0",
-    "bakosafe": "0.1.9",
+    "bakosafe": "0.1.9-beta.3",
     "bech32": "^2.0.0",
     "crypto-js": "4.2.0",
     "date-fns": "^4.1.0",
@@ -81,14 +81,7 @@
     "typescript": "~5.4.5",
     "vite": "^4.4.5",
     "vite-plugin-html": "^3.2.2",
-    "vite-tsconfig-paths": "^4.2.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.1",
-    "@semantic-release/release-notes-generator": "^14.0.3",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "semantic-release": "^24.2.3"
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "husky": {
     "hooks": {
