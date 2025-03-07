@@ -39,11 +39,12 @@ const UserTransactionsPage = () => {
   const {
     transactionsPageList: {
       transactionsRef,
+      virtualizeRef,
       request: { isLoading, isFetching },
       filter,
       inView,
       handlers: { navigate },
-      lists: { transactions },
+      lists: { transactions, rowVirtualizer, flatList },
     },
     pendingSignerTransactions,
     resetAllTransactionsTypeFilters,
@@ -61,6 +62,7 @@ const UserTransactionsPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const emptyTransactions = !isLoading && !transactions.length && !isFetching;
+  const virtualItems = rowVirtualizer.getVirtualItems();
 
   useEffect(() => {
     return () => resetAllTransactionsTypeFilters();
@@ -289,10 +291,12 @@ const UserTransactionsPage = () => {
         {/* LIST */}
         {!emptyTransactions && (
           <VStack
+            ref={virtualizeRef}
             minH="55vh"
+            position="relative"
             maxH="74vh"
             mt={-3}
-            overflowY="scroll"
+            overflowY="auto"
             overflowX="hidden"
             scrollBehavior="smooth"
             w="full"
@@ -311,69 +315,123 @@ const UserTransactionsPage = () => {
               },
             }}
           >
-            {transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
+            <div
+              style={{
+                height: rowVirtualizer.getTotalSize(),
+                width: '100%',
+                position: 'relative',
+                overflowY: 'scroll',
+              }}
+            >
+              {virtualItems?.map((virtualRow) => {
+                const flatItem = flatList[virtualRow.index];
+                if (!flatItem) {
+                  return (
+                    <div
+                      key={virtualRow.key}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: virtualRow.size,
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    />
+                  );
+                }
+
+                if (flatItem.type === 'group') {
+                  return (
+                    <HStack
+                      w="full"
+                      key={virtualRow.key}
+                      ref={
+                        virtualRow.index === flatList.length - 1
+                          ? transactionsRef
+                          : null
+                      }
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      <Text
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        color="grey.425"
+                        whiteSpace="nowrap"
+                      >
+                        {flatItem.monthYear}
+                      </Text>
+
+                      <Divider w="full" borderColor="grey.950" />
+                    </HStack>
+                  );
+                }
+
+                const status = transactionStatus({
+                  ...flatItem.transaction,
+                  account: userInfos.address,
+                });
+                const isSigner =
+                  !!flatItem.transaction.predicate?.members?.find(
+                    (member) => member.address === userInfos.address,
+                  );
+                const transaction = flatItem.transaction;
+
+                return (
+                  <div
+                    key={virtualRow.key}
+                    ref={
+                      virtualRow.index === flatList.length - 1
+                        ? transactionsRef
+                        : null
+                    }
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
                   >
-                    {grouped.monthYear}
-                  </Text>
+                    <TransactionCard.List mt={1} w="full" spacing={0}>
+                      <Box key={transaction.id} ref={transactionsRef} w="full">
+                        {isMobile ? (
+                          <TransactionCardMobile
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={userInfos.address}
+                            mt="15px"
+                          />
+                        ) : (
+                          <TransactionCard.Container
+                            mb="11px"
+                            key={transaction.id}
+                            status={status}
+                            isSigner={isSigner}
+                            transaction={transaction}
+                            account={userInfos.address}
+                            details={
+                              <TransactionCard.Details
+                                transaction={transaction}
+                                status={status}
+                              />
+                            }
+                          />
+                        )}
+                      </Box>
 
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
-                <TransactionCard.List mt={1} w="full" spacing={0}>
-                  {grouped?.transactions.map((transaction) => {
-                    const status = transactionStatus({
-                      ...transaction,
-                      account: userInfos.address,
-                    });
-                    const isSigner = !!transaction.predicate?.members?.find(
-                      (member) => member.address === userInfos.address,
-                    );
-
-                    return (
-                      <>
-                        <Box
-                          key={transaction.id}
-                          ref={transactionsRef}
-                          w="full"
-                        >
-                          {isMobile ? (
-                            <TransactionCardMobile
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos.address}
-                              mt="15px"
-                            />
-                          ) : (
-                            <TransactionCard.Container
-                              mb="11px"
-                              key={transaction.id}
-                              status={status}
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos.address}
-                              details={
-                                <TransactionCard.Details
-                                  transaction={transaction}
-                                  status={status}
-                                />
-                              }
-                            />
-                          )}
-                        </Box>
-
-                        <Box ref={inView.ref} />
-                      </>
-                    );
-                  })}
-                </TransactionCard.List>
-              </>
-            ))}
+                      <Box ref={inView.ref} />
+                    </TransactionCard.List>
+                  </div>
+                );
+              })}
+            </div>
           </VStack>
         )}
       </CustomSkeleton>

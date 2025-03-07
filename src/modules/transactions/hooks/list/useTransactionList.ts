@@ -1,3 +1,4 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { TransactionStatus, TransactionType } from 'bakosafe';
 import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -6,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetParams } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
+import { TransactionWithVault } from '../../services';
 import { useTransactionState } from '../../states';
 import { useFilterTxType } from '../filter';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -39,6 +41,10 @@ export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
+type ListItem =
+  | { type: 'group'; monthYear: string }
+  | { type: 'transaction'; transaction: TransactionWithVault };
+
 const useTransactionList = ({
   workspaceId = '',
 }: IUseTransactionListProps = {}) => {
@@ -58,6 +64,7 @@ const useTransactionList = ({
 
   const navigate = useNavigate();
   const inView = useInView();
+  const virtualizeRef = useRef<HTMLDivElement>(null);
 
   const {
     transactions,
@@ -72,6 +79,18 @@ const useTransactionList = ({
     id: selectedTransaction.id,
     status: filter ? [filter] : undefined,
     type: txFilterType,
+  });
+  const flatList = transactions.reduce<ListItem[]>((acc, group) => {
+    acc.push({ type: 'group', monthYear: group.monthYear });
+    group.transactions.forEach((transaction) => {
+      acc.push({ type: 'transaction', transaction });
+    });
+    return acc;
+  }, []);
+  const rowVirtualizer = useVirtualizer({
+    count: hasNextPage ? flatList.length + 1 : flatList.length,
+    getScrollElement: () => virtualizeRef.current,
+    estimateSize: () => 100,
   });
 
   const observer = useRef<IntersectionObserver>();
@@ -116,8 +135,11 @@ const useTransactionList = ({
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     transactionsRef: lastElementRef,
+    virtualizeRef,
     lists: {
       transactions,
+      rowVirtualizer,
+      flatList,
     },
   };
 };
