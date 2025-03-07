@@ -56,7 +56,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
-    "@fuels/playwright-utils": "^0.20.0",
+    "@fuels/playwright-utils": "0.50.0",
     "@playwright/test": "^1.49.1",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",

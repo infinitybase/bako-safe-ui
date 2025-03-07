@@ -1,23 +1,21 @@
 import {
   expect,
   FuelWalletTestHelper,
+  getButtonByText,
   getByAriaLabel,
+  hasAriaLabel,
   hasText,
   test,
 } from '@fuels/playwright-utils';
-import { WalletUnlocked } from 'fuels';
-import { launchTestNode } from 'fuels/test-utils';
+import { randomUUID, WalletUnlocked } from 'fuels';
 
 import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test.describe('Fuel Wallet', () => {
-  let node: Awaited<ReturnType<typeof launchTestNode>>;
-
   let fuelWalletTestHelper: FuelWalletTestHelper;
-  let fuelWallet: WalletUnlocked;
-  let masterWallet: WalletUnlocked;
+  let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
     const E2EUtils = await E2ETestUtils.setup({
@@ -47,6 +45,38 @@ test.describe('Fuel Wallet', () => {
 
     // Check if the user is logged in
     await hasText(page, /Welcome to Bako Safe!/);
+
+    // Close modal
+    await getByAriaLabel(page, 'Close window').click();
+
+    await page.goto('/home');
+    await page.waitForTimeout(2000);
+
+    await getButtonByText(page, 'Create vault').click();
+    await page.locator('#vault_name').fill(randomUUID());
+
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await getButtonByText(page, 'Done').click();
+    await page.waitForTimeout(2000);
+
+    await getByAriaLabel(page, 'Sidebar Vault Address').click();
+
+    // Get clipboard content after the link/button has been clicked
+    const handle = await page.evaluateHandle(() =>
+      navigator.clipboard.readText(),
+    );
+    const vaultAddress = await handle.jsonValue();
+    await E2ETestUtils.fundVault({
+      genesisWallet,
+      vaultAddress,
+      amount: '1.001',
+    });
+
+    await page.reload();
+    await page.waitForTimeout(2000);
+
+    await hasAriaLabel(page, 'ETH Asset Card');
   });
 });
 
