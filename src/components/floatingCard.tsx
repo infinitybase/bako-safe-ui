@@ -2,7 +2,7 @@ import { CloseIcon, StarIcon } from '@chakra-ui/icons';
 import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 
-const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
+export const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
 const BAKO_SUPPORT_SEARCH_URL = 'https://forms.gle/xqh4sADPoULPupnG8';
 const BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE =
   'BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE';

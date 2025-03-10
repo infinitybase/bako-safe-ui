@@ -3,6 +3,7 @@ import { Provider } from 'fuels';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { BAKO_SUPPORT_SEARCH } from '@/components/floatingCard';
 import { queryClient } from '@/config';
 import {
   EConnectors,
@@ -30,8 +31,6 @@ export type SingleAuthentication = {
 export type WorkspaceAuthentication = {
   workspace: string;
 };
-
-const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
 
 //coment
 //coment
