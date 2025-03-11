@@ -20,37 +20,44 @@ interface AmountInputProps extends InputProps {
   isInvalid?: boolean;
 }
 
-const AmountInput = (props: AmountInputProps) => (
-  <MaskedInput
-    mask={currencyMask}
-    value={props.value}
-    onChange={(event) => {
-      const inputValue = event.target.value;
+const AmountInput = (props: AmountInputProps) => {
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    let inputValue = event.target.value;
 
-      // Remove qualquer caractere não numérico, exceto ponto
-      event.target.value = inputValue.replace(/[^0-9.,]/g, '');
+    if (!inputValue.includes('.')) {
+      inputValue = `${inputValue}.00`;
+    }
 
-      // Lógica para atualizar o valor no estado do componente
-      props.onChange?.(event);
-    }}
-    render={(maskedInputRef, maskedInputProps) => (
-      <Input
-        {...props}
-        {...maskedInputProps}
-        autoComplete="off"
-        variant="dark"
-        color="gray"
-        step="any"
-        ref={(input) => maskedInputRef(input as HTMLInputElement)}
-        inputMode="decimal"
-        borderColor={props.isInvalid ? 'error' : undefined}
-        _focusVisible={{
-          borderColor: props.isInvalid ? 'error' : undefined,
-        }}
-        _hover={{}}
-      />
-    )}
-  />
-);
+    event.target.value = inputValue;
+
+    props.onChange?.(event);
+  };
+
+  return (
+    <MaskedInput
+      mask={currencyMask}
+      value={props.value}
+      onChange={props.onChange}
+      render={(maskedInputRef, maskedInputProps) => (
+        <Input
+          {...props}
+          {...maskedInputProps}
+          autoComplete="off"
+          variant="dark"
+          color="gray"
+          step="any"
+          ref={(input) => maskedInputRef(input as HTMLInputElement)}
+          inputMode="decimal"
+          borderColor={props.isInvalid ? 'error' : undefined}
+          _focusVisible={{
+            borderColor: props.isInvalid ? 'error' : undefined,
+          }}
+          _hover={{}}
+          onBlur={handleBlur}
+        />
+      )}
+    />
+  );
+};
 
 export { AmountInput };
