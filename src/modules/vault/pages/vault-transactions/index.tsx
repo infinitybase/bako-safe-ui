@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   CircularProgress,
-  Divider,
   HStack,
   Icon,
   Text,
@@ -24,17 +23,13 @@ import {
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
 import { Pages, useGetParams } from '@/modules/core';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  TransactionFilter,
-} from '@/modules/transactions/components';
+import { TransactionFilter } from '@/modules/transactions/components';
+import { VirtualizedGroupedList } from '@/modules/transactions/components/VirtualizeGroupedList';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
-import { transactionStatus } from '../../../transactions/utils';
 
 const TransactionsVaultPage = () => {
   const {
@@ -55,18 +50,14 @@ const TransactionsVaultPage = () => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const {
-    vault,
-    assets: { hasBalance },
-  } = useVaultInfosContext();
+  const { vault } = useVaultInfosContext();
 
   const {
     vaultTransactions: {
       defaultIndex,
       filter,
-      inView,
       transactionsRef,
-      lists: { transactions },
+      lists: { transactions, flatList },
       handlers: {
         selectedTransaction,
         handleIncomingAction,
@@ -74,7 +65,7 @@ const TransactionsVaultPage = () => {
         setSelectedTransaction,
         navigate,
       },
-      request: { isLoading, isFetching },
+      request: { isLoading, isFetching, hasNextPage },
     },
     resetAllTransactionsTypeFilters,
   } = useTransactionsContext();
@@ -272,91 +263,15 @@ const TransactionsVaultPage = () => {
       {/* TRANSACTION LIST */}
       <CustomSkeleton h="100%" isLoaded={!isLoading}>
         {hasTransactions ? (
-          <VStack
-            maxH="77.5vh"
-            overflowY="scroll"
-            scrollBehavior="smooth"
-            sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-                width: '5px',
-                maxHeight: '330px',
-                backgroundColor: 'grey.200',
-                borderRadius: '30px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: 'transparent',
-                borderRadius: '30px',
-                height: '10px',
-              },
-            }}
-            pb={10}
-            mt={3}
-          >
-            {transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
-                  >
-                    {grouped.monthYear}
-                  </Text>
-
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
-                {grouped?.transactions?.map((transaction) => {
-                  const status = transactionStatus({
-                    ...transaction,
-                    account: userInfos?.address,
-                  });
-                  const isSigner = !!transaction.predicate?.members?.find(
-                    (member) => member.address === userInfos?.address,
-                  );
-
-                  return (
-                    <TransactionCard.List
-                      w="full"
-                      spacing={0}
-                      openIndex={defaultIndex}
-                      key={defaultIndex.join(',')}
-                    >
-                      <Box key={transaction.id} ref={transactionsRef} w="full">
-                        <CustomSkeleton isLoaded={!isLoading}>
-                          {isMobile ? (
-                            <TransactionCardMobile
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos?.address}
-                              mt={1.5}
-                            />
-                          ) : (
-                            <TransactionCard.Container
-                              mb={0.5}
-                              key={transaction.id}
-                              status={status}
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos?.address}
-                              details={
-                                <TransactionCard.Details
-                                  transaction={transaction}
-                                  status={status}
-                                />
-                              }
-                            />
-                          )}
-                        </CustomSkeleton>
-                      </Box>
-
-                      <Box ref={inView.ref} />
-                    </TransactionCard.List>
-                  );
-                })}
-              </>
-            ))}
+          <VStack mt={3}>
+            <VirtualizedGroupedList
+              transactions={flatList}
+              hasNextPage={hasNextPage}
+              isMobile={isMobile}
+              transactionsRef={transactionsRef}
+              userInfos={userInfos}
+              defaultIndex={defaultIndex}
+            />
           </VStack>
         ) : (
           <EmptyState

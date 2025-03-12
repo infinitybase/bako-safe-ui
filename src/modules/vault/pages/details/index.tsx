@@ -4,11 +4,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Divider,
   HStack,
   Icon,
   Spacer,
-  Spinner,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -26,12 +24,8 @@ import { PermissionRoles } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
+import { WaitingSignatureBadge } from '@/modules/transactions';
+import { VirtualizedGroupedList } from '@/modules/transactions/components/VirtualizeGroupedList';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
@@ -55,8 +49,8 @@ const VaultDetailsPage = () => {
   const {
     vaultTransactions: {
       filter: { txFilterType },
-      lists: { transactions },
-      request: { isLoading, isFetching },
+      lists: { transactions, flatList },
+      request: { isLoading, isFetching, hasNextPage },
       handlers: { handleIncomingAction, handleOutgoingAction },
       inView,
       transactionsRef,
@@ -285,84 +279,29 @@ const VaultDetailsPage = () => {
         isLoaded={!vault.isLoading && !isLoading}
         h={!vault.isLoading && !isLoading ? 'unset' : '100px'}
       >
-        {hasTransactions
-          ? transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
-                  >
-                    {grouped.monthYear}
-                  </Text>
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
-                <TransactionCard.List
-                  mt={5}
-                  pb={!isLarge ? 10 : 0}
-                  w="full"
-                  maxH={{ base: undefined, sm: 'calc(100% - 72px)' }}
-                  spacing={0}
-                >
-                  {grouped?.transactions?.map((transaction) => {
-                    const status = transactionStatus({
-                      ...transaction,
-                      account,
-                    });
-                    const isSigner = !!transaction.predicate?.members?.find(
-                      (member) => member.address === account,
-                    );
-
-                    return (
-                      <Box key={transaction.id} ref={transactionsRef} w="full">
-                        {isMobile ? (
-                          <TransactionCardMobile
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            mt={2.5}
-                            w="full"
-                          />
-                        ) : (
-                          <TransactionCard.Container
-                            mb={2.5}
-                            key={transaction.id}
-                            status={status}
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            details={
-                              <TransactionCard.Details
-                                transaction={transaction}
-                                status={status}
-                              />
-                            }
-                          />
-                        )}
-                      </Box>
-                    );
-                  })}
-                  <Box ref={inView.ref} />
-
-                  {grouped.transactions.length >= 5 && isFetching && (
-                    <Spinner alignSelf={'center'} mt={4} color="brand.500" />
-                  )}
-                </TransactionCard.List>
-              </>
-            ))
-          : !hasTransactions &&
-            !!transactions && (
-              <EmptyState
-                title={'No Data available'}
-                subTitle={
-                  'Currently, there is no available data to display in this section.'
-                }
-                showAction={false}
-                mb={10}
-              />
-            )}
+        {hasTransactions ? (
+          <VirtualizedGroupedList
+            transactions={flatList}
+            hasNextPage={hasNextPage}
+            isMobile={isMobile}
+            transactionsRef={transactionsRef}
+            userInfos={userInfos}
+            loading={flatList.length >= 6 && isFetching}
+            sx={{ maxHeight: 'calc(100% - 72px)' }}
+          />
+        ) : (
+          !hasTransactions &&
+          !!transactions && (
+            <EmptyState
+              title={'No Data available'}
+              subTitle={
+                'Currently, there is no available data to display in this section.'
+              }
+              showAction={false}
+              mb={10}
+            />
+          )
+        )}
       </CustomSkeleton>
 
       {isLarge && (

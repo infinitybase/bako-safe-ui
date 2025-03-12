@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Divider,
   HStack,
   Icon,
   Stack,
@@ -25,26 +24,19 @@ import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  TransactionFilter,
-  WaitingSignatureBadge,
-} from '../../components';
+import { TransactionFilter, WaitingSignatureBadge } from '../../components';
+import { VirtualizedGroupedList } from '../../components/VirtualizeGroupedList';
 import { StatusFilter } from '../../hooks';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
   const {
     transactionsPageList: {
       transactionsRef,
-      virtualizeRef,
-      request: { isLoading, isFetching },
+      request: { isLoading, isFetching, hasNextPage },
       filter,
-      inView,
       handlers: { navigate },
-      lists: { transactions, rowVirtualizer, flatList },
+      lists: { transactions, flatList },
     },
     pendingSignerTransactions,
     resetAllTransactionsTypeFilters,
@@ -62,11 +54,10 @@ const UserTransactionsPage = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const emptyTransactions = !isLoading && !transactions.length && !isFetching;
-  const virtualItems = rowVirtualizer.getVirtualItems();
 
   useEffect(() => {
     return () => resetAllTransactionsTypeFilters();
-  }, []);
+  }, [resetAllTransactionsTypeFilters]);
 
   return (
     <VStack
@@ -291,7 +282,6 @@ const UserTransactionsPage = () => {
         {/* LIST */}
         {!emptyTransactions && (
           <VStack
-            ref={virtualizeRef}
             minH="55vh"
             position="relative"
             maxH="74vh"
@@ -303,135 +293,16 @@ const UserTransactionsPage = () => {
             sx={{
               '&::-webkit-scrollbar': {
                 display: 'none',
-                width: '5px',
-                maxHeight: '330px',
-                backgroundColor: 'grey.200',
-                borderRadius: '30px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#2C2C2C',
-                borderRadius: '30px',
-                height: '10px',
               },
             }}
           >
-            <div
-              style={{
-                height: rowVirtualizer.getTotalSize(),
-                width: '100%',
-                position: 'relative',
-                overflowY: 'scroll',
-              }}
-            >
-              {virtualItems?.map((virtualRow) => {
-                const flatItem = flatList[virtualRow.index];
-                if (!flatItem) {
-                  return (
-                    <div
-                      key={virtualRow.key}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: virtualRow.size,
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
-                    />
-                  );
-                }
-
-                if (flatItem.type === 'group') {
-                  return (
-                    <HStack
-                      w="full"
-                      key={virtualRow.key}
-                      ref={
-                        virtualRow.index === flatList.length - 1
-                          ? transactionsRef
-                          : null
-                      }
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
-                    >
-                      <Text
-                        fontSize="sm"
-                        fontWeight="semibold"
-                        color="grey.425"
-                        whiteSpace="nowrap"
-                      >
-                        {flatItem.monthYear}
-                      </Text>
-
-                      <Divider w="full" borderColor="grey.950" />
-                    </HStack>
-                  );
-                }
-
-                const status = transactionStatus({
-                  ...flatItem.transaction,
-                  account: userInfos.address,
-                });
-                const isSigner =
-                  !!flatItem.transaction.predicate?.members?.find(
-                    (member) => member.address === userInfos.address,
-                  );
-                const transaction = flatItem.transaction;
-
-                return (
-                  <div
-                    key={virtualRow.key}
-                    ref={
-                      virtualRow.index === flatList.length - 1
-                        ? transactionsRef
-                        : null
-                    }
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  >
-                    <TransactionCard.List mt={1} w="full" spacing={0}>
-                      <Box key={transaction.id} ref={transactionsRef} w="full">
-                        {isMobile ? (
-                          <TransactionCardMobile
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={userInfos.address}
-                            mt="15px"
-                          />
-                        ) : (
-                          <TransactionCard.Container
-                            mb="11px"
-                            key={transaction.id}
-                            status={status}
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={userInfos.address}
-                            details={
-                              <TransactionCard.Details
-                                transaction={transaction}
-                                status={status}
-                              />
-                            }
-                          />
-                        )}
-                      </Box>
-
-                      <Box ref={inView.ref} />
-                    </TransactionCard.List>
-                  </div>
-                );
-              })}
-            </div>
+            <VirtualizedGroupedList
+              transactions={flatList}
+              hasNextPage={hasNextPage}
+              isMobile={isMobile}
+              transactionsRef={transactionsRef}
+              userInfos={userInfos}
+            />
           </VStack>
         )}
       </CustomSkeleton>
