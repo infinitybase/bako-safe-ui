@@ -1,6 +1,5 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +40,7 @@ export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
-type ListItem =
+export type ListItem =
   | { type: 'group'; monthYear: string }
   | { type: 'transaction'; transaction: TransactionWithVault };
 
@@ -80,18 +79,17 @@ const useTransactionList = ({
     status: filter ? [filter] : undefined,
     type: txFilterType,
   });
-  const flatList = transactions.reduce<ListItem[]>((acc, group) => {
-    acc.push({ type: 'group', monthYear: group.monthYear });
-    group.transactions.forEach((transaction) => {
-      acc.push({ type: 'transaction', transaction });
-    });
-    return acc;
-  }, []);
-  const rowVirtualizer = useVirtualizer({
-    count: hasNextPage ? flatList.length + 1 : flatList.length,
-    getScrollElement: () => virtualizeRef.current,
-    estimateSize: () => 100,
-  });
+  const flatList = useMemo(
+    () =>
+      transactions.reduce<ListItem[]>((acc, group) => {
+        acc.push({ type: 'group', monthYear: group.monthYear });
+        group.transactions.forEach((transaction) => {
+          acc.push({ type: 'transaction', transaction });
+        });
+        return acc;
+      }, []),
+    [transactions],
+  );
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
@@ -138,7 +136,6 @@ const useTransactionList = ({
     virtualizeRef,
     lists: {
       transactions,
-      rowVirtualizer,
       flatList,
     },
   };
