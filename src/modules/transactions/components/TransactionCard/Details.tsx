@@ -85,7 +85,10 @@ const Details = ({
   isInTheVaultPage,
   isMobileDetailsOpen,
 }: TransactionDetailsProps) => {
-  const isDeposit = transaction.type === TransactionType.DEPOSIT;
+  const isDeposit = useMemo(
+    () => transaction.type === TransactionType.DEPOSIT,
+    [transaction.type],
+  );
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
