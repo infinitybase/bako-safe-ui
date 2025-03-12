@@ -224,23 +224,23 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                       />
                     }
                   >
-                    View on Explorer mobiel
+                    View on Explorer
                   </Button>
                 )}
-                <Button
-                  variant="secondaryV2"
-                  as={Link}
-                  href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-                  isExternal
-                  w="100%"
-                  size="sm"
-                  h={7}
-                  rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-                >
-                  Advanced details
-                </Button>
               </>
             )}
+            <Button
+              variant="secondaryV2"
+              as={Link}
+              href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+              isExternal
+              w="100%"
+              size="sm"
+              h={7}
+              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+            >
+              Advanced details
+            </Button>
           </VStack>
 
           <TransactionCard.Details
