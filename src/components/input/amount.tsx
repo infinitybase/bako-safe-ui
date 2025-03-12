@@ -2,16 +2,14 @@ import { Input, InputProps } from '@chakra-ui/react';
 import MaskedInput from 'react-text-mask';
 import { createNumberMask } from 'text-mask-addons';
 
-// A máscara de número com separação de milhar e ponto decimal
 const currencyMask = createNumberMask({
   prefix: '',
   suffix: '',
   includeThousandsSeparator: true,
-  thousandsSeparatorSymbol: ',', // Usando vírgula como separador de milhar
+  thousandsSeparatorSymbol: ',',
   allowDecimal: true,
   decimalSymbol: '.',
-  decimalLimit: 9, // Limita a 9 casas decimais
-  integerLimit: 9, // Limita o número de dígitos inteiros
+  decimalLimit: 9,
   allowNegative: false,
   allowLeadingZeroes: false,
 });
@@ -20,44 +18,91 @@ interface AmountInputProps extends InputProps {
   isInvalid?: boolean;
 }
 
-const AmountInput = (props: AmountInputProps) => {
-  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    let inputValue = event.target.value;
+const AmountInput = (props: AmountInputProps) => (
+  <MaskedInput
+    mask={currencyMask}
+    value={props.value}
+    onChange={(event) => {
+      const inputValue = event.target.value;
+      const nativeEvent = event.nativeEvent as InputEvent;
+      const isComma = nativeEvent.data === ',';
 
-    if (!inputValue.includes('.')) {
-      inputValue = `${inputValue}.00`;
-    }
+      // This if case just handle the comma (',') to replace it to a dot ('.')
+      if (isComma && !inputValue.endsWith('.')) {
+        const caretPosition = event.target.selectionStart ?? 0;
 
-    event.target.value = inputValue;
+        // Determine if the comma is the first character
+        const isFirstChar = inputValue.length === 0;
+        const complement = isFirstChar ? '0.' : '.';
 
-    props.onChange?.(event);
-  };
+        // Build the new value by appending or replacing the comma with a dot
+        const newValue = isFirstChar
+          ? complement
+          : inputValue.slice(0, caretPosition) +
+            complement +
+            inputValue.slice(caretPosition);
 
-  return (
-    <MaskedInput
-      mask={currencyMask}
-      value={props.value}
-      onChange={props.onChange}
-      render={(maskedInputRef, maskedInputProps) => (
-        <Input
-          {...props}
-          {...maskedInputProps}
-          autoComplete="off"
-          variant="dark"
-          color="gray"
-          step="any"
-          ref={(input) => maskedInputRef(input as HTMLInputElement)}
-          inputMode="decimal"
-          borderColor={props.isInvalid ? 'error' : undefined}
-          _focusVisible={{
-            borderColor: props.isInvalid ? 'error' : undefined,
-          }}
-          _hover={{}}
-          onBlur={handleBlur}
-        />
-      )}
-    />
-  );
-};
+        event.target.value = newValue;
+
+        const newCaretPosition = caretPosition + (isFirstChar ? 2 : 1);
+        setTimeout(() => {
+          event.target.setSelectionRange(newCaretPosition, newCaretPosition);
+        }, 0);
+
+        props.onChange?.(event);
+        return;
+      }
+
+      const isBackspace = inputValue.length < (props.value as string).length;
+
+      if (
+        inputValue.startsWith('0') &&
+        inputValue.length === 1 &&
+        isBackspace
+      ) {
+        event.target.value = ``;
+      } else if (inputValue.startsWith('0') && inputValue.length === 1) {
+        event.target.value = `0.`;
+      }
+
+      event.target.value = event.target.value.replace(/[^0-9.,]/g, '');
+
+      props.onChange?.(event);
+    }}
+    onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+      let inputValue = event.target.value;
+
+      if (!inputValue.includes('.')) {
+        inputValue = `${inputValue}.00`;
+      } else {
+        const [integerPart, decimalPart] = inputValue.split('.');
+
+        if (decimalPart.length === 1) {
+          inputValue = `${integerPart}.${decimalPart}0`;
+        }
+      }
+
+      event.target.value = inputValue;
+      props.onChange?.(event);
+    }}
+    render={(maskedInputRef, maskedInputProps) => (
+      <Input
+        {...props}
+        {...maskedInputProps}
+        autoComplete="off"
+        variant="dark"
+        color="gray"
+        step="any"
+        ref={(input) => maskedInputRef(input as HTMLInputElement)}
+        inputMode="decimal"
+        borderColor={props.isInvalid ? 'error' : undefined}
+        _focusVisible={{
+          borderColor: props.isInvalid ? 'error' : undefined,
+        }}
+        _hover={{}}
+      />
+    )}
+  />
+);
 
 export { AmountInput };
