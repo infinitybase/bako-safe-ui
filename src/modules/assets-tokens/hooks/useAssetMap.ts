@@ -57,15 +57,19 @@ export const useMappedAssetStore = create(
 );
 
 export const useAssetMap = (chainId: number) => {
-  const { mappedTokens } = useMappedAssetStore();
+  const { mappedTokens, mappedNfts } = useMappedAssetStore();
 
   const assetList = useMemo(() => {
     const tokenList = [
-      ...Object.values(mappedTokens).map((item) => item),
+      ...Object.values(mappedTokens),
+      ...Object.values(mappedNfts).map((nft) => ({
+        ...nft,
+        metadata: nft.metadata,
+      })),
       ...assets,
     ];
     return tokenList;
-  }, [mappedTokens, chainId]);
+  }, [mappedTokens, mappedNfts]);
 
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);

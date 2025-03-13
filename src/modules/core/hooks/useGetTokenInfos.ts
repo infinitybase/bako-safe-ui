@@ -16,13 +16,16 @@ const useGetTokenInfos = ({
   assetsMap,
 }: IUseGetTokenInfos) => {
   const assetsInfo = assetsMap?.[assetId] ?? assetsMap?.['UNKNOWN'];
+  const nftImageUrl = assetsInfo?.metadata
+    ? assetsInfo.metadata['image:png']
+    : null;
   const assetAmount = isHex(amount)
     ? bn(amount)?.format({
         units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
       })
     : amount;
 
-  return { assetsInfo, assetAmount };
+  return { assetsInfo, assetAmount, nftImageUrl };
 };
 
 export { useGetTokenInfos };

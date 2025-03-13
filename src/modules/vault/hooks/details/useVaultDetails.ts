@@ -1,9 +1,14 @@
-import { useSidebar } from '../details';
+import { useState } from 'react';
+
+import { useCLI } from '@/modules/cli/hooks';
 import { useGetParams } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { useCLI } from '@/modules/cli/hooks';
+
+import { useSidebar } from '../details';
 
 const useVaultDetails = () => {
+  const [activeTab, setActiveTab] = useState<'assets' | 'nfts'>('assets');
+
   const {
     vaultPageParams: { vaultId, workspaceId },
   } = useGetParams();
@@ -46,6 +51,8 @@ const useVaultDetails = () => {
     sideBarDetails,
     assets,
     account,
+    activeTab,
+    setActiveTab,
   };
 };
 

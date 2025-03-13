@@ -11,7 +11,6 @@ import {
 import { css } from '@emotion/react';
 
 import { UpRightArrow } from '@/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import {
   AddressUtils,
   Asset,
@@ -26,6 +25,8 @@ import { useGetTokenInfos } from '../../hooks';
 
 interface AssetsBalanceProps {
   assets: Asset[];
+}
+interface NftsBalanceProps {
   nfts?: NFT[];
 }
 
@@ -45,7 +46,7 @@ const AssetsBalanceCard = ({
       userInfos: { network },
     },
   } = useWorkspaceContext();
-  const { assetAmount, assetsInfo } = useGetTokenInfos({
+  const { assetAmount, assetsInfo, nftImageUrl } = useGetTokenInfos({
     ...asset,
     assetsMap,
   });
@@ -68,17 +69,25 @@ const AssetsBalanceCard = ({
     >
       <VStack alignItems="flex-start" gap={2}>
         {isNFT ? (
-          <Icon as={BakoIcon} w={{ base: 8, sm: 10 }} h={{ base: 8, sm: 10 }} />
+          <Image
+            w="full"
+            h="auto"
+            src={nftImageUrl}
+            borderRadius={5}
+            alt="NFT Image"
+            objectFit="cover"
+          />
         ) : (
           <Image
             w={{ base: 8, sm: 10 }}
             h={{ base: 8, sm: 10 }}
-            src={assetsInfo?.icon ?? ''}
+            src={assetsInfo?.icon}
             borderRadius={100}
             alt="Asset Icon"
             objectFit="cover"
           />
         )}
+
         <VStack alignItems="flex-start" gap={0} maxW="full">
           <HStack>
             <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
@@ -112,18 +121,18 @@ const AssetsBalanceCard = ({
             )}
           </HStack>
           <Text fontSize="xs" color="grey.250">
-            {isNFT ? 'NFT' : assetsInfo.slug}
+            {isNFT ? '' : assetsInfo.slug}
           </Text>
         </VStack>
         <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {isNFT ? 1 : assetAmount}
+          {isNFT ? `${assetsInfo.name}` : assetAmount}
         </Text>
       </VStack>
     </Card>
   );
 };
 
-const AssetsBalanceList = ({ assets, nfts }: AssetsBalanceProps) => {
+const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
   return (
     <Grid
       gap={4}
@@ -139,6 +148,23 @@ const AssetsBalanceList = ({ assets, nfts }: AssetsBalanceProps) => {
       {assets.map((asset) => (
         <AssetsBalanceCard key={asset.assetId} asset={asset} />
       ))}
+    </Grid>
+  );
+};
+
+const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
+  return (
+    <Grid
+      gap={4}
+      templateColumns={{
+        base: 'repeat(1, 1fr)',
+        xs: 'repeat(2, 1fr)',
+        sm: 'repeat(3, 1fr)',
+        md: 'repeat(4, 1fr)',
+        xl: 'repeat(5, 1fr)',
+        '2xl': 'repeat(6, 1fr)',
+      }}
+    >
       {nfts?.map((nft) => (
         <AssetsBalanceCard key={nft.assetId} asset={nft} isNFT={true} />
       ))}
@@ -146,4 +172,4 @@ const AssetsBalanceList = ({ assets, nfts }: AssetsBalanceProps) => {
   );
 };
 
-export { AssetsBalanceList };
+export { AssetsBalanceList, NftsBalanceList };

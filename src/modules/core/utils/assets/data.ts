@@ -51,6 +51,8 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
           icon: asset?.metadata?.URI ?? UNKNOWN_ASSET.icon,
           //@ts-ignore
           units: asset.decimals,
+          //@ts-ignore
+          metadata: asset.metadata,
         });
       } else if (network && network.type === 'fuel') {
         acc.push({
@@ -59,6 +61,8 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
           assetId: network.assetId,
           icon: asset.icon,
           units: network.decimals,
+          //@ts-ignore
+          metadata: asset.metadata,
         });
       }
       return acc;
@@ -82,6 +86,7 @@ export const assetsMapFromFormattedFn = (
         icon: currentValue?.icon,
         assetId: currentValue?.assetId,
         units: currentValue?.units,
+        metadata: currentValue?.metadata,
       },
     };
   }, {});
