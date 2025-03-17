@@ -1,6 +1,9 @@
+export type defaultMetadata = {
+  [key: string]: string;
+};
 export type AssetMap = {
   [assetId: string]: {
-    metadata: any;
+    metadata: defaultMetadata;
     name: string;
     slug: string;
     units: number;
@@ -16,11 +19,11 @@ export type Asset = {
   icon?: string;
   amount?: string;
   units: number;
-  metadata?: any;
+  metadata?: defaultMetadata;
 };
 
 export type NFT = {
   amount: string;
   assetId: string;
-  metadata?: any;
+  metadata?: defaultMetadata;
 };

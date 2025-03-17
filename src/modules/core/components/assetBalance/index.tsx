@@ -72,7 +72,7 @@ const AssetsBalanceCard = ({
           <Image
             w="full"
             h="auto"
-            src={nftImageUrl}
+            src={nftImageUrl ?? undefined}
             borderRadius={5}
             alt="NFT Image"
             objectFit="cover"

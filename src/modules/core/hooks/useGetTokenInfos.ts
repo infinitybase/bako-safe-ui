@@ -3,6 +3,7 @@ import { bn } from 'fuels';
 import { isHex } from '@/utils';
 
 import { Asset, AssetMap } from '../utils';
+import { parseURI } from '../utils/formatter';
 
 export type IGetTokenInfos = ReturnType<typeof useGetTokenInfos>;
 
@@ -16,9 +17,18 @@ const useGetTokenInfos = ({
   assetsMap,
 }: IUseGetTokenInfos) => {
   const assetsInfo = assetsMap?.[assetId] ?? assetsMap?.['UNKNOWN'];
-  const nftImageUrl = assetsInfo?.metadata
-    ? assetsInfo.metadata['image:png']
-    : null;
+
+  let nftImageUrl = null;
+
+  if (assetsInfo.metadata) {
+    const imageKeys = ['image'];
+    const imageKey = Object.keys(assetsInfo.metadata).find((key) =>
+      imageKeys.includes(key.split(':').at(0)!),
+    );
+    const nftnftImageUrl = parseURI(assetsInfo.metadata[imageKey!]);
+    nftImageUrl = nftnftImageUrl || nftImageUrl;
+  }
+
   const assetAmount = isHex(amount)
     ? bn(amount)?.format({
         units: assetsInfo?.units ?? assetsMap.UNKNOWN.units,
