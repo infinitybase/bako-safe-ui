@@ -171,8 +171,8 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                           name,
                           value,
                         );
-                        result.value = value;
                       }
+                      result.value = new Address(value).toB256();
                     }
 
                     return result;
