@@ -89,7 +89,7 @@ const Autocomplete = ({
     handlers: { fetchResolverName, fetchResolveAddress },
   } = useBakoIDClient(providerInstance);
 
-  const [inputValue, setInputValue] = useState<string>(value || '');
+  const [inputValue, setInputValue] = useState<string>(value ?? '');
   const [formattedLabel, setFormattedLabel] = useState<string | null>(null);
 
   useEffect(() => {

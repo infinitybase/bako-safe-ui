@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Link,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -14,11 +15,13 @@ import {
   Dialog,
   DialogModalProps,
   DownLeftArrowGreen,
+  FileCodeIcon,
   UpRightArrow,
   UpRightArrowYellow,
 } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import env from '@/config/env';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
@@ -198,26 +201,46 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 })}
               />
             </HStack>
-            {isLowerThanFourHundredAndThirty && isCompleted && (
-              <Button
-                mt={4}
-                w="full"
-                border="none"
-                bgColor="#F5F5F50D"
-                fontSize="xs"
-                fontWeight="normal"
-                letterSpacing=".5px"
-                variant="secondary"
-                h="28px"
-                p="6px 8px"
-                onClick={handleViewInExplorer}
-                rightIcon={
-                  <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
-                }
-              >
-                View on Explorer
-              </Button>
+            {isLowerThanFourHundredAndThirty && (
+              <>
+                {isCompleted && (
+                  <Button
+                    mt={4}
+                    w="full"
+                    border="none"
+                    bgColor="#F5F5F50D"
+                    fontSize="xs"
+                    fontWeight="normal"
+                    letterSpacing=".5px"
+                    variant="secondary"
+                    h="28px"
+                    p="6px 8px"
+                    onClick={handleViewInExplorer}
+                    rightIcon={
+                      <Icon
+                        as={UpRightArrow}
+                        textColor="grey.75"
+                        fontSize="md"
+                      />
+                    }
+                  >
+                    View on Explorer
+                  </Button>
+                )}
+              </>
             )}
+            <Button
+              variant="secondaryV2"
+              as={Link}
+              href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+              isExternal
+              w="100%"
+              size="sm"
+              h={7}
+              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+            >
+              Advanced details
+            </Button>
           </VStack>
 
           <TransactionCard.Details

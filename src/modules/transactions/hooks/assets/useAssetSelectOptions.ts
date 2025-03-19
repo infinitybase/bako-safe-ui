@@ -15,6 +15,7 @@ interface UseAssetSelectOptionsProps {
   assets?: Asset[];
   nfts?: NFT[];
   recipients?: ITransactionField[];
+  getBalanceAvailable: (assetValue: string) => string;
 }
 
 const formatAsset = (asset: Asset) => ({
@@ -42,8 +43,10 @@ const filterNFTs = (
   return filteredNFTs;
 };
 
-const useAssetSelectOptions = (props: UseAssetSelectOptionsProps) => {
-  const { currentAsset, recipients, assets, nfts } = props;
+const useAssetSelectOptions = (
+  props: UseAssetSelectOptionsProps,
+): { assetsOptions: { label: string; value: string }[] } => {
+  const { currentAsset, recipients, assets, nfts, getBalanceAvailable } = props;
 
   const { assetsMap } = useWorkspaceContext();
 
@@ -54,7 +57,14 @@ const useAssetSelectOptions = (props: UseAssetSelectOptionsProps) => {
   const sortedAssets = useSortTokenInfosArray(_assets, assetsMap);
   const formattedAssets = sortedAssets.map(formatAsset);
 
-  return { assetsOptions: [...formattedAssets, ...formattedNFTs] };
+  const filteredAssets = formattedAssets.filter((asset) => {
+    const balanceAvailableForAsset = parseFloat(
+      getBalanceAvailable(asset.value),
+    );
+    return balanceAvailableForAsset > 0;
+  });
+
+  return { assetsOptions: [...filteredAssets, ...formattedNFTs] };
 };
 
 export { useAssetSelectOptions };

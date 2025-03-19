@@ -109,6 +109,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     assets: assets.assets,
     nfts: assets.nfts,
     recipients: form.watch('transactions'),
+    getBalanceAvailable,
   });
 
   return (
@@ -217,7 +218,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
-                  {asset && (
+                  {parseFloat(balanceAvailable) > 0 && asset && (
                     <Text display="flex" alignItems="center">
                       Balance (available):{' '}
                       {isFeeCalcLoading ? (
