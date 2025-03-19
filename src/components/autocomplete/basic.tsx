@@ -11,17 +11,20 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { isB256 } from 'fuels';
 import {
   ChangeEvent,
   CSSProperties,
   LegacyRef,
   ReactNode,
-  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
+
+import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
+import { AddressBookUtils } from '@/utils';
 
 import { LineCloseIcon } from '../icons';
 
@@ -52,6 +55,7 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
+  providerInstance?: any;
 }
 // import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -67,7 +71,6 @@ const Autocomplete = ({
   inView,
   clearable = true,
   onChange,
-  onInputChange,
   optionsRef,
   optionsContainerRef,
   actionOnFocus = () => {},
@@ -75,12 +78,73 @@ const Autocomplete = ({
   actionOnRemoveInput = () => {},
   actionOnBlur = () => {},
   inputRef,
+  providerInstance,
   ...rest
 }: AutocompleteProps) => {
-  const [inputValue, setInputValue] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const {
+    handlers: { fetchResolverName, fetchResolveAddress },
+  } = useBakoIDClient(providerInstance);
+
+  const [inputValue, setInputValue] = useState<string>(value || '');
+  const [formattedLabel, setFormattedLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAutocompleteData = async () => {
+      if (!value) return;
+
+      const result = { value, label: value };
+
+      if (value.startsWith('@')) {
+        const address = await fetchResolveAddress.handler(
+          value.split(' - ').at(0)!,
+        );
+        if (address) {
+          result.value = address;
+          result.label = AddressBookUtils.formatForAutocomplete(value, address);
+        }
+      } else if (isB256(value)) {
+        const name = await fetchResolverName.handler(value);
+        if (name) {
+          result.label = AddressBookUtils.formatForAutocomplete(name, value);
+          result.value = value;
+        }
+      }
+
+      if (result.label !== result.value) {
+        setFormattedLabel(result.label);
+      } else {
+        setFormattedLabel(null);
+      }
+
+      onChange(result.value);
+    };
+
+    fetchAutocompleteData();
+  }, [value]);
+
+  useEffect(() => {
+    if (formattedLabel) {
+      setInputValue(formattedLabel);
+    }
+  }, [formattedLabel]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    setFormattedLabel(null);
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      onChange(newValue);
+    }, 1500);
+  };
 
   const displayedOptions =
     filterSelectedOption && options
@@ -91,40 +155,6 @@ const Autocomplete = ({
     isFocused && displayedOptions && displayedOptions.length > 0 && !isLoading;
 
   const showClearIcon = clearable && inputValue;
-
-  const handleInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setInputValue(value);
-
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-
-      debounceTimeout.current = setTimeout(() => {
-        const replacedValue = value;
-
-        if (!onInputChange) {
-          setInputValue(replacedValue);
-          onChange(replacedValue);
-          return;
-        }
-
-        const result = onInputChange(replacedValue);
-
-        if (result instanceof Promise) {
-          result.then((resolvedResult) => {
-            setInputValue(resolvedResult.label);
-            onChange(resolvedResult.value);
-          });
-        } else {
-          setInputValue(result.label);
-          onChange(result.value);
-        }
-      }, 1500); // 1.5s debounce delay
-    },
-    [inputValue],
-  );
 
   const handleSelect = (selectedOption: AutocompleteOption) => {
     actionOnSelect();

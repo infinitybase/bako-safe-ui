@@ -1,6 +1,20 @@
-export type defaultMetadata = {
-  [key: string]: string;
+export type Attribute = {
+  trait_type: string;
+  value: string;
 };
+
+export type defaultMetadata = {
+  dna?: string;
+  date?: number;
+  name?: string;
+  image?: string;
+  edition?: number;
+  compiler?: string;
+  attributes?: Attribute[];
+  description?: string;
+  [key: string]: any;
+};
+
 export type AssetMap = {
   [assetId: string]: {
     metadata: defaultMetadata;
@@ -9,6 +23,8 @@ export type AssetMap = {
     units: number;
     icon?: string;
     assetId: string;
+    isNFT?: boolean;
+    totalSupply?: string;
   };
 };
 
@@ -23,7 +39,7 @@ export type Asset = {
 };
 
 export type NFT = {
-  amount: string;
+  name: string;
   assetId: string;
   metadata?: defaultMetadata;
 };

@@ -34,7 +34,6 @@ import {
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { AddressBookUtils } from '@/utils';
 
 import { TransactionAccordion } from './accordion';
 
@@ -77,7 +76,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   } = useWorkspaceContext();
   const balanceAvailable = getBalanceAvailable();
   const {
-    handlers: { fetchResolverName, fetchResolveAddress },
+    handlers: { fetchResolveAddress },
   } = useBakoIDClient(providerInstance);
 
   const setResolverAndHandle = (resolver?: string, handle?: string) => {
@@ -148,35 +147,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
-                  onInputChange={async (value: string) => {
-                    const result = { value: value, label: value };
-
-                    if (value.startsWith('@')) {
-                      const address = await fetchResolveAddress.handler(
-                        value.split(' - ').at(0)!,
-                      );
-                      if (address) {
-                        result.value = address;
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          value,
-                          address,
-                        );
-                      }
-                    }
-
-                    if (isB256(value)) {
-                      const name = await fetchResolverName.handler(value);
-                      if (name) {
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          name,
-                          value,
-                        );
-                        result.value = value;
-                      }
-                    }
-
-                    return result;
-                  }}
                   isLoading={
                     !optionsRequests[index].isSuccess ||
                     fetchResolveAddress.isLoading ||
@@ -187,6 +157,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   clearable={false}
                   optionsRef={optionRef}
                   variant="dark"
+                  providerInstance={providerInstance}
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}

@@ -4,6 +4,7 @@ import { localStorageKeys } from '@/modules/auth/services';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { Asset, AssetMap } from './types';
+
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
@@ -44,7 +45,11 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
         ) ?? null;
       if (!network && asset?.name && asset?.symbol && asset) {
         acc.push({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           name: asset.name,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           slug: asset.symbol,
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignore
@@ -66,9 +71,6 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
           assetId: network.assetId,
           icon: asset.icon,
           units: network.decimals,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //@ts-ignore
-          metadata: asset.metadata,
         });
       }
       return acc;
