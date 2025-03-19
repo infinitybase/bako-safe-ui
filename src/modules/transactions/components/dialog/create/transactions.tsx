@@ -218,7 +218,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
-                  {parseFloat(balanceAvailable) > 0 && asset && (
+                  {!isNFT && parseFloat(balanceAvailable) > 0 && asset && (
                     <Text display="flex" alignItems="center">
                       Balance (available):{' '}
                       {isFeeCalcLoading ? (
@@ -248,7 +248,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     </>
   );
 };
-
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     form,
@@ -264,26 +263,26 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
     screenSizes: { isMobile },
     providerInstance,
   } = useWorkspaceContext();
+
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
 
-  // Logic to fix the button in the footer
-  // const accordionHeight = () => {
-  //   if (isMobile && isLargerThan900) return 500;
-  //   if (isMobile && isLargerThan768) return 400;
-  //   if (isMobile && isLargerThan660) return 220;
-  //   if (isMobile && isLargerThan600) return 200;
+  const allAssets = [...(assets.assets ?? []), ...(assets.nfts ?? [])];
 
-  //   return 450;
-  // };
+  const usedAssets = transactions.fields.map((_, index) =>
+    form.watch(`transactions.${index}.asset`),
+  );
+
+  const remainingAssets = allAssets.filter(
+    (asset) => !usedAssets.includes(asset.assetId),
+  );
 
   return (
     <Accordion
       index={accordion.index}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
-      // maxH={accordionHeight()}
       maxH={450}
       pr={{ base: 1, sm: 0 }}
       sx={{
@@ -294,7 +293,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         '&::-webkit-scrollbar-thumb': {
           backgroundColor: '#2C2C2C',
           borderRadius: '30px',
-          height: '10px' /* Adjust the height of the scrollbar thumb */,
+          height: '10px',
         },
       }}
     >
@@ -320,84 +319,87 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           contact ?? resolverName ?? AddressUtils.format(transaction.value);
 
         return (
-          <>
-            <AccordionItem
-              key={field.id}
-              mb={6}
-              borderWidth={1}
-              borderColor="grey.925"
-              borderRadius={10}
-              backgroundColor="dark.950"
-            >
-              <TransactionAccordion.Item
-                title={`Recipient ${index + 1}`}
-                actions={
-                  <TransactionAccordion.Actions>
-                    <HStack spacing={4}>
-                      <TransactionAccordion.EditAction
-                        onClick={() => accordion.open(index)}
-                      />
-                      <TransactionAccordion.DeleteAction
-                        isDisabled={props.transactions.fields.length === 1}
-                        onClick={() => {
-                          transactions.remove(index);
-                          accordion.close();
-                        }}
-                      />
-                    </HStack>
-                    <TransactionAccordion.ConfirmAction
-                      onClick={() => accordion.close()}
-                      isDisabled={isDisabled}
-                      isLoading={
-                        !isCurrentAmountZero ? isFeeCalcLoading : false
-                      }
+          <AccordionItem
+            key={field.id}
+            mb={6}
+            borderWidth={1}
+            borderColor="grey.925"
+            borderRadius={10}
+            backgroundColor="dark.950"
+          >
+            <TransactionAccordion.Item
+              title={`Recipient ${index + 1}`}
+              actions={
+                <TransactionAccordion.Actions>
+                  <HStack spacing={4}>
+                    <TransactionAccordion.EditAction
+                      onClick={() => accordion.open(index)}
                     />
-                  </TransactionAccordion.Actions>
-                }
-                resume={
-                  !hasEmptyField && (
-                    <Text fontSize="sm" color="grey.500" mt={2}>
-                      <b>
-                        {transaction.amount} {assetSlug}
-                      </b>{' '}
-                      to <b> {recipientLabel}</b>
-                    </Text>
-                  )
-                }
-              >
-                <TransactionFormField
-                  index={index}
-                  form={form}
-                  assets={assets}
-                  isFeeCalcLoading={isFeeCalcLoading}
-                  getBalanceAvailable={getBalanceAvailable}
-                />
-              </TransactionAccordion.Item>
-            </AccordionItem>
-          </>
+                    <TransactionAccordion.DeleteAction
+                      isDisabled={props.transactions.fields.length === 1}
+                      onClick={() => {
+                        transactions.remove(index);
+                        accordion.close();
+                      }}
+                    />
+                  </HStack>
+                  <TransactionAccordion.ConfirmAction
+                    onClick={() => accordion.close()}
+                    isDisabled={isDisabled}
+                    isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
+                  />
+                </TransactionAccordion.Actions>
+              }
+              resume={
+                !hasEmptyField && (
+                  <Text fontSize="sm" color="grey.500" mt={2}>
+                    <b>
+                      {transaction.amount} {assetSlug}
+                    </b>{' '}
+                    to <b> {recipientLabel}</b>
+                  </Text>
+                )
+              }
+            >
+              <TransactionFormField
+                index={index}
+                form={form}
+                assets={assets}
+                isFeeCalcLoading={isFeeCalcLoading}
+                getBalanceAvailable={getBalanceAvailable}
+              />
+            </TransactionAccordion.Item>
+          </AccordionItem>
         );
       })}
+
       <Center mt={6}>
-        <Button
-          w="full"
-          leftIcon={<UserAddIcon />}
-          variant="primary"
-          bgColor="grey.200"
-          border="none"
-          _hover={{
-            opacity: 0.8,
-          }}
-          onClick={() => {
-            transactions.append({
-              amount: '',
-              asset: NativeAssetId,
-              value: '',
-            });
-            delay(() => accordion.open(transactions.fields.length), 100);
-          }}
-        >
-          Add more recipients
-        </Button>
+        {remainingAssets.length > 0 ? (
+          <Button
+            w="full"
+            leftIcon={<UserAddIcon />}
+            variant="primary"
+            bgColor="grey.200"
+            border="none"
+            _hover={{
+              opacity: 0.8,
+            }}
+            onClick={() => {
+              transactions.append({
+                amount: '',
+                asset: NativeAssetId,
+                value: '',
+              });
+              delay(() => accordion.open(transactions.fields.length), 100);
+            }}
+          >
+            Add more recipients
+          </Button>
+        ) : (
+          <Text color="red.500" fontSize="sm">
+            All available assets have been used.
+          </Text>
+        )}
       </Center>
     </Accordion>
   );
