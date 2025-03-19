@@ -6,11 +6,10 @@ const currencyMask = createNumberMask({
   prefix: '',
   suffix: '',
   includeThousandsSeparator: true,
-  thousandsSeparatorSymbol: '',
+  thousandsSeparatorSymbol: ',',
   allowDecimal: true,
   decimalSymbol: '.',
-  decimalLimit: 9, // how many digits allowed after the decimal
-  integerLimit: 9, // limit length of integer numbers
+  decimalLimit: 9,
   allowNegative: false,
   allowLeadingZeroes: false,
 });
@@ -43,12 +42,12 @@ const AmountInput = (props: AmountInputProps) => (
             complement +
             inputValue.slice(caretPosition);
 
-        // Update the input value with the new value containing the dot
         event.target.value = newValue;
 
-        // Adjust the "focus" position after the dot is inserted
         const newCaretPosition = caretPosition + (isFirstChar ? 2 : 1);
-        event.target.setSelectionRange(newCaretPosition, newCaretPosition);
+        setTimeout(() => {
+          event.target.setSelectionRange(newCaretPosition, newCaretPosition);
+        }, 0);
 
         props.onChange?.(event);
         return;
@@ -66,8 +65,24 @@ const AmountInput = (props: AmountInputProps) => (
         event.target.value = `0.`;
       }
 
-      event.target.value = event.target.value.replace(/[^0-9.]/g, '');
+      event.target.value = event.target.value.replace(/[^0-9.,]/g, '');
 
+      props.onChange?.(event);
+    }}
+    onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+      let inputValue = event.target.value;
+
+      if (!inputValue.includes('.')) {
+        inputValue = `${inputValue}.00`;
+      } else {
+        const [integerPart, decimalPart] = inputValue.split('.');
+
+        if (decimalPart.length === 1) {
+          inputValue = `${integerPart}.${decimalPart}0`;
+        }
+      }
+
+      event.target.value = inputValue;
       props.onChange?.(event);
     }}
     render={(maskedInputRef, maskedInputProps) => (

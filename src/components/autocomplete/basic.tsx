@@ -77,7 +77,7 @@ const Autocomplete = ({
   inputRef,
   ...rest
 }: AutocompleteProps) => {
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>(value ?? '');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
