@@ -8,6 +8,7 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { TransactionType } from 'bakosafe';
+import { memo } from 'react';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -59,124 +60,129 @@ const ActionsMobile = ({ awaitingAnswer }: ActionsMobileProps) => {
   );
 };
 
-const Actions = ({
-  transaction,
-  status,
-  isSigner,
-  callBack,
-  ...rest
-}: TransactionActionsProps) => {
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
-  const { isOpen } = useAccordionItemState();
-  const {
-    signTransaction: {
-      confirmTransaction,
-      declineTransaction,
-      selectedTransaction,
-      isLoading,
-      isSuccess,
-    },
-  } = useTransactionsContext();
+const Actions = memo(
+  ({
+    transaction,
+    status,
+    isSigner,
+    callBack,
+    ...rest
+  }: TransactionActionsProps) => {
+    const {
+      screenSizes: { isMobile },
+    } = useWorkspaceContext();
+    const { isOpen } = useAccordionItemState();
+    const {
+      signTransaction: {
+        confirmTransaction,
+        declineTransaction,
+        selectedTransaction,
+        isLoading,
+        isSuccess,
+      },
+    } = useTransactionsContext();
 
-  const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } = status;
+    const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } =
+      status;
 
-  const awaitingAnswer =
-    !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
-  const notAnswered =
-    !isSigned && !isDeclined && (isCompleted || isCanceled || isReproved);
+    const awaitingAnswer =
+      !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
+    const notAnswered =
+      !isSigned && !isDeclined && (isCompleted || isCanceled || isReproved);
 
-  const isTxActionsInLoading =
-    isLoading && selectedTransaction?.id === transaction?.id;
+    const isTxActionsInLoading =
+      isLoading && selectedTransaction?.id === transaction?.id;
 
-  const disableActionButtons =
-    isSuccess && !awaitingAnswer
-      ? false
-      : isLoading && selectedTransaction
-        ? !isTxActionsInLoading
-        : false;
+    const disableActionButtons =
+      isSuccess && !awaitingAnswer
+        ? false
+        : isLoading && selectedTransaction
+          ? !isTxActionsInLoading
+          : false;
 
-  const isDeposit = transaction?.type === TransactionType.DEPOSIT;
+    const isDeposit = transaction?.type === TransactionType.DEPOSIT;
 
-  if (isMobile) {
-    return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
-  }
+    if (isMobile) {
+      return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
+    }
 
-  return (
-    <HStack minW={140} justifySelf="end" {...rest}>
-      {isSigned && (
-        <Badge
-          h={6}
-          rounded="full"
-          px={2}
-          variant={isCanceled ? 'grey' : 'success'}
-        >
-          You {isCanceled ? 'canceled' : 'signed'}
-          {!isCanceled && <Icon as={SuccessIcon} color="success.700" />}
-        </Badge>
-      )}
-
-      {isDeclined && (
-        <Badge h={6} rounded="full" px={2} variant="error">
-          You declined
-          <Icon as={ErrorIcon} fontSize={17} />
-        </Badge>
-      )}
-
-      {!isDeposit && notAnswered && (
-        <Badge h={6} rounded="full" px={2} variant="info">
-          {`You didn't sign`}
-        </Badge>
-      )}
-
-      {!isCanceled && awaitingAnswer && isSigner ? (
-        <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
-          <Button
-            h={9}
-            px={3}
-            variant="primary"
-            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            isLoading={isTxActionsInLoading}
-            isDisabled={disableActionButtons}
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              confirmTransaction(transaction.id, callBack);
-            }}
+    return (
+      <HStack minW={140} justifySelf="end" {...rest}>
+        {isSigned && (
+          <Badge
+            h={6}
+            rounded="full"
+            px={2}
+            variant={isCanceled ? 'grey' : 'success'}
           >
-            Sign
-          </Button>
-          <Button
-            h={9}
-            px={3}
-            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-            fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
-            variant="secondary"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              declineTransaction(transaction.hash);
-            }}
-            isLoading={isTxActionsInLoading}
-            isDisabled={disableActionButtons}
-          >
-            Decline
-          </Button>
-        </HStack>
-      ) : (
-        <Spacer />
-      )}
+            You {isCanceled ? 'canceled' : 'signed'}
+            {!isCanceled && <Icon as={SuccessIcon} color="success.700" />}
+          </Badge>
+        )}
 
-      <Icon
-        as={isOpen ? IoIosArrowUp : IoIosArrowDown}
-        fontSize="md"
-        color="grey.200"
-        cursor="pointer"
-      />
-    </HStack>
-  );
-};
+        {isDeclined && (
+          <Badge h={6} rounded="full" px={2} variant="error">
+            You declined
+            <Icon as={ErrorIcon} fontSize={17} />
+          </Badge>
+        )}
+
+        {!isDeposit && notAnswered && (
+          <Badge h={6} rounded="full" px={2} variant="info">
+            {`You didn't sign`}
+          </Badge>
+        )}
+
+        {!isCanceled && awaitingAnswer && isSigner ? (
+          <HStack minW={{ base: 140, sm: 100, xl: 140 }}>
+            <Button
+              h={9}
+              px={3}
+              variant="primary"
+              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
+              isLoading={isTxActionsInLoading}
+              isDisabled={disableActionButtons}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                confirmTransaction(transaction.id, callBack);
+              }}
+            >
+              Sign
+            </Button>
+            <Button
+              h={9}
+              px={3}
+              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+              fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
+              variant="secondary"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                declineTransaction(transaction.hash);
+              }}
+              isLoading={isTxActionsInLoading}
+              isDisabled={disableActionButtons}
+            >
+              Decline
+            </Button>
+          </HStack>
+        ) : (
+          <Spacer />
+        )}
+
+        <Icon
+          as={isOpen ? IoIosArrowUp : IoIosArrowDown}
+          fontSize="md"
+          color="grey.200"
+          cursor="pointer"
+        />
+      </HStack>
+    );
+  },
+);
+
+Actions.displayName = 'Transaction Card Actions';
 
 export { Actions, ActionsMobile };

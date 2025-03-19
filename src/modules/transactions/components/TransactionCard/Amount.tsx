@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';
+import { useMemo } from 'react';
 
 import { CustomSkeleton } from '@/components';
 import { useTxAmountToUSD } from '@/modules/assets-tokens/hooks/useTxAmountToUSD';
@@ -39,17 +40,25 @@ const Amount = ({
     assetsMap,
   } = useWorkspaceContext();
 
-  const totalAmoutSent = transaction.assets
-    .reduce((total, asset) => total.add(asset.amount), bn(0))
-    .format();
+  const totalAmoutSent = useMemo(
+    () =>
+      transaction.assets
+        .reduce((total, asset) => total.add(asset.amount), bn(0))
+        .format(),
+    [transaction.assets],
+  );
 
-  const oneAssetOfEach = transaction.assets.reduce((uniqueAssets, current) => {
-    if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
-      uniqueAssets.push(current);
-    }
+  const oneAssetOfEach = useMemo(
+    () =>
+      transaction.assets.reduce((uniqueAssets, current) => {
+        if (!uniqueAssets.find((asset) => asset.assetId === current.assetId)) {
+          uniqueAssets.push(current);
+        }
 
-    return uniqueAssets;
-  }, [] as ITransferAsset[]);
+        return uniqueAssets;
+      }, [] as ITransferAsset[]),
+    [transaction.assets],
+  );
 
   const isMultiToken = oneAssetOfEach.length >= 2;
 
