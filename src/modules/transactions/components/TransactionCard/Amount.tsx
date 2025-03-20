@@ -1,9 +1,7 @@
 import {
-  AvatarGroup,
   type BoxProps,
   Flex,
   HStack,
-  Image,
   Text,
   useMediaQuery,
 } from '@chakra-ui/react';
@@ -17,6 +15,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useGetAssetsByOperations } from '../../hooks';
 import type { TransactionWithVault } from '../../services';
+import { AssetsIcon } from './AssetsIcon';
 import { AmountUSD } from './transfer-details';
 
 interface TransactionCardAmountProps extends BoxProps {
@@ -60,20 +59,37 @@ const Amount = ({
     [transaction.assets],
   );
 
-  const isMultiToken = oneAssetOfEach.length >= 2;
+  const isMultiToken = useMemo(
+    () => oneAssetOfEach.length >= 2,
+    [oneAssetOfEach.length],
+  );
 
-  const txUSDAmount = useTxAmountToUSD(
-    transaction?.assets.map((a) => {
-      return {
+  const formattedAssets = useMemo(
+    () =>
+      transaction?.assets.map((a) => ({
         ...a,
         amount: bn(a?.amount)?.format({
           units: assetsMap[a?.assetId]?.units ?? assetsMap.UNKNOWN.units,
         }),
-      };
-    }),
+      })),
+    [transaction?.assets, assetsMap],
+  );
+
+  const txUSDAmount = useTxAmountToUSD(
+    formattedAssets,
     tokensUSD?.isLoading,
     tokensUSD?.data,
     tokensUSD?.isUnknownToken,
+  );
+
+  const formattedAmount = useMemo(
+    () =>
+      transaction?.assets.length === 1
+        ? bn(transaction.assets[0].amount).format({
+            units: assetsMap[transaction.assets[0].assetId]?.units ?? 15,
+          })
+        : totalAmoutSent,
+    [transaction?.assets, assetsMap, totalAmoutSent],
   );
 
   return (
@@ -85,26 +101,12 @@ const Amount = ({
     >
       {!showAmount || hasNoDefaultAssets ? null : (
         <>
-          <AvatarGroup
-            max={showOnlyOneAsset ? 1 : 2}
-            w={isMobile ? 'unset' : 56}
-            justifyContent={isMobile ? 'start' : 'end'}
-            position="relative"
-          >
-            {oneAssetOfEach.map((asset) => {
-              return (
-                <Image
-                  key={asset.assetId}
-                  w={{ base: '30.5px', sm: 6 }}
-                  h={{ base: 'full', sm: 6 }}
-                  src={assetsMap[asset.assetId]?.icon ?? assetsMap.UNKNOWN.icon}
-                  borderRadius={100}
-                  alt="Asset Icon"
-                  objectFit="cover"
-                />
-              );
-            })}
-          </AvatarGroup>
+          <AssetsIcon
+            assets={oneAssetOfEach}
+            isMobile={isMobile}
+            showOnlyOneAsset={showOnlyOneAsset}
+            assetsMap={assetsMap}
+          />
           <Flex
             flexDir={isMultiToken ? 'column-reverse' : 'column'}
             w={isMobile ? 'unset' : 'full'}
@@ -117,13 +119,7 @@ const Amount = ({
               </Text>
             ) : (
               <Text color="grey.75" fontSize="sm">
-                {transaction?.assets.length === 1
-                  ? bn(transaction.assets[0].amount).format({
-                      units:
-                        assetsMap[transaction.assets[0].assetId]?.units ?? 15,
-                    })
-                  : totalAmoutSent}
-                {/* {totalAmoutSent} */}
+                {formattedAmount}
               </Text>
             )}
             <Text

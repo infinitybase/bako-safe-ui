@@ -8,7 +8,7 @@ import {
   useAccordionItemState,
 } from '@chakra-ui/react';
 import { TransactionType } from 'bakosafe';
-import { memo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import {
   IoIosArrowDown,
   IoIosArrowForward,
@@ -85,13 +85,26 @@ const Actions = memo(
     const { isSigned, isDeclined, isCompleted, isReproved, isCanceled } =
       status;
 
-    const awaitingAnswer =
-      !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
-    const notAnswered =
-      !isSigned && !isDeclined && (isCompleted || isCanceled || isReproved);
+    const awaitingAnswer = useMemo(
+      () =>
+        !isSigned &&
+        !isDeclined &&
+        !isCompleted &&
+        !isReproved &&
+        !!transaction,
+      [isSigned, isDeclined, isCompleted, isReproved, transaction],
+    );
 
-    const isTxActionsInLoading =
-      isLoading && selectedTransaction?.id === transaction?.id;
+    const notAnswered = useMemo(
+      () =>
+        !isSigned && !isDeclined && (isCompleted || isCanceled || isReproved),
+      [isSigned, isDeclined, isCompleted, isCanceled, isReproved],
+    );
+
+    const isTxActionsInLoading = useMemo(
+      () => isLoading && selectedTransaction?.id === transaction?.id,
+      [isLoading, selectedTransaction?.id, transaction?.id],
+    );
 
     const disableActionButtons =
       isSuccess && !awaitingAnswer
@@ -101,6 +114,24 @@ const Actions = memo(
           : false;
 
     const isDeposit = transaction?.type === TransactionType.DEPOSIT;
+
+    const handleConfirm = useCallback(
+      (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        transaction && confirmTransaction(transaction.id, callBack);
+      },
+      [confirmTransaction, transaction, callBack],
+    );
+
+    const handleDecline = useCallback(
+      (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        transaction && declineTransaction(transaction.hash);
+      },
+      [declineTransaction, transaction],
+    );
 
     if (isMobile) {
       return <ActionsMobile awaitingAnswer={awaitingAnswer} />;
@@ -143,11 +174,7 @@ const Actions = memo(
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
               isLoading={isTxActionsInLoading}
               isDisabled={disableActionButtons}
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                confirmTransaction(transaction.id, callBack);
-              }}
+              onClick={handleConfirm}
             >
               Sign
             </Button>
@@ -157,11 +184,7 @@ const Actions = memo(
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
               variant="secondary"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                declineTransaction(transaction.hash);
-              }}
+              onClick={handleDecline}
               isLoading={isTxActionsInLoading}
               isDisabled={disableActionButtons}
             >
