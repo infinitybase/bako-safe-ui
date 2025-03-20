@@ -11,7 +11,7 @@ import {
   useSteps,
 } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -71,8 +71,9 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
     count: steps?.length,
   });
 
-  const isDeclined = steps?.find(
-    (steps) => steps.type === TransactionHistoryType.DECLINE,
+  const isDeclined = useMemo(
+    () => steps?.find((steps) => steps.type === TransactionHistoryType.DECLINE),
+    [steps],
   );
   const lastStep = steps?.length - 1;
 
