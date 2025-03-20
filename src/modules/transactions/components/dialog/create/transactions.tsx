@@ -9,6 +9,7 @@ import {
   FormLabel,
   HStack,
   Text,
+  Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
@@ -108,7 +109,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     currentAsset: asset,
     assets: assets.assets,
     nfts: assets.nfts,
-    recipients: form.watch('transactions'),
+    recipients,
     getBalanceAvailable,
   });
 
@@ -248,6 +249,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     </>
   );
 };
+
 const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     form,
@@ -267,16 +269,6 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
-
-  const allAssets = [...(assets.assets ?? []), ...(assets.nfts ?? [])];
-
-  const usedAssets = transactions.fields.map((_, index) =>
-    form.watch(`transactions.${index}.asset`),
-  );
-
-  const remainingAssets = allAssets.filter(
-    (asset) => !usedAssets.includes(asset.assetId),
-  );
 
   return (
     <Accordion
@@ -374,7 +366,12 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       })}
 
       <Center mt={6}>
-        {remainingAssets.length > 0 ? (
+        <Tooltip
+          label="All available assets have been used."
+          isDisabled={!form.allAssetsUsed}
+          hasArrow
+          placement="top"
+        >
           <Button
             w="full"
             leftIcon={<UserAddIcon />}
@@ -384,6 +381,11 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             _hover={{
               opacity: 0.8,
             }}
+            _disabled={{
+              cursor: 'not-allowed',
+              opacity: 0.6,
+            }}
+            isDisabled={form.allAssetsUsed}
             onClick={() => {
               transactions.append({
                 amount: '',
@@ -395,11 +397,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           >
             Add more recipients
           </Button>
-        ) : (
-          <Text color="red.500" fontSize="sm">
-            All available assets have been used.
-          </Text>
-        )}
+        </Tooltip>
       </Center>
     </Accordion>
   );

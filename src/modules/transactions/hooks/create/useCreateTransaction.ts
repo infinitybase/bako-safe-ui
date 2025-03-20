@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -180,6 +181,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const currentFieldAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
+
+  const currentFieldAmountWithoutCommas = currentFieldAmount
+    ? currentFieldAmount.replace(/,/g, '')
+    : '';
+
   const currentFieldAsset = form.watch(`transactions.${accordion.index}.asset`);
 
   const transactionTotalAmount = form
@@ -190,11 +196,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     .watch('transactions')
     ?.reduce((acc, tx) => {
       const { asset, amount } = tx;
-
+      const amountWithoutCommas = amount.replace(/,/g, '');
       if (!acc[asset]) {
-        acc[asset] = bn.parseUnits(amount);
+        acc[asset] = bn.parseUnits(amountWithoutCommas);
       } else {
-        acc[asset] = acc[asset].add(bn.parseUnits(amount));
+        acc[asset] = acc[asset].add(bn.parseUnits(amountWithoutCommas));
       }
 
       return acc;
@@ -219,7 +225,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         transactionAssetsTotalAmount?.[assetToCheck] ?? bn(0);
 
       const assetFieldsAmount = currentAssetAmount.gt(0)
-        ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmount))
+        ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmountWithoutCommas))
         : currentAssetAmount;
 
       const balanceAvailableWithoutFee = assetFieldsAmount.gte(
@@ -266,6 +272,58 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     }, 300),
     [],
   );
+
+  const transactionsForm = useWatch({
+    control: form.control,
+    name: 'transactions',
+    defaultValue: [],
+  });
+
+  const allAssetsUsed = useMemo(() => {
+    const nfts =
+      props?.nfts?.map((nft) => ({
+        assetId: nft.assetId,
+      })) ?? [];
+
+    const assets =
+      currentVaultAssets?.map((asset) => ({
+        assetId: asset.assetId,
+        units: asset.units,
+      })) ?? [];
+
+    const allNftsInTransactions =
+      nfts.length === 0 ||
+      nfts.every((nft) =>
+        (transactionsForm ?? []).some(
+          (transaction) => transaction.asset === nft.assetId,
+        ),
+      );
+
+    const hasSufficientBalance = assets.every(({ assetId, units }) => {
+      const available = getBalanceAvailable(assetId);
+      const assetAmount = bn.parseUnits(available, units);
+
+      const transactionAssets = (transactionsForm ?? []).filter(
+        (transaction) => transaction.asset === assetId,
+      );
+
+      const totalTransactionAmount = transactionAssets.reduce(
+        (sum, transaction) => {
+          const amount = bn.parseUnits(
+            (transaction.amount || '0').replace(/,/g, ''),
+          );
+          return sum.add(amount);
+        },
+        bn(0),
+      );
+
+      return assetAmount.lte(totalTransactionAmount);
+    });
+
+    const hasBalance = allNftsInTransactions && hasSufficientBalance;
+
+    return hasBalance;
+  }, [currentVaultAssets, getBalanceAvailable, props?.nfts, transactionsForm]);
 
   useEffect(() => {
     const _transactionFee =
@@ -334,6 +392,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       ...form,
       handleCreateTransaction,
       handleCreateAndSignTransaction,
+      allAssetsUsed,
     },
     nicks: listContactsRequest.data ?? [],
     navigate,

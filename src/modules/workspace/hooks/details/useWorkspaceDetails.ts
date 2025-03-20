@@ -28,6 +28,7 @@ const useWorkspaceDetails = () => {
     useGetFuelsTokensListRequest();
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
+
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
