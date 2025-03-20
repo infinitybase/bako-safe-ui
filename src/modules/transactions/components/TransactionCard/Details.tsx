@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
 import { TrashIcon } from '@/components/icons/trash';
@@ -103,13 +103,13 @@ const Details = memo(
       screenSizes: { isMobile },
     } = useWorkspaceContext();
 
-    const handleViewInExplorer = () => {
+    const handleViewInExplorer = useCallback(() => {
       const { hash, network } = transaction;
       window.open(
         `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
         '_BLANK',
       );
-    };
+    }, [transaction]);
 
     return (
       <DetailsTransactionStepper

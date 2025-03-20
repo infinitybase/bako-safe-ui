@@ -47,7 +47,6 @@ export const Item = memo(
               status={status}
               isSigner={isSigner}
               transaction={transaction}
-              account={userInfos.address}
               details={
                 <TransactionCard.Details
                   transaction={transaction}

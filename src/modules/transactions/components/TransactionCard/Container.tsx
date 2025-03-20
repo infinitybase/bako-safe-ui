@@ -21,7 +21,6 @@ interface TransactionCardContainerProps extends CardProps {
   status: TransactionState;
   details: ReactNode;
   transaction: TransactionWithVault;
-  account: string;
   isSigner: boolean;
   isInTheVaultPage?: boolean;
   callBack?: () => void;
@@ -32,7 +31,6 @@ const Container = memo(
     status,
     details,
     transaction,
-    account,
     isSigner,
     isInTheVaultPage,
     callBack,
@@ -68,7 +66,6 @@ const Container = memo(
             isOpen={isOpen}
             onClose={onClose}
             transaction={transaction}
-            account={account}
             status={status}
             isSigner={isSigner}
             isInTheVaultPage={isInTheVaultPage}

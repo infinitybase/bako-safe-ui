@@ -11,7 +11,7 @@ import {
   useSteps,
 } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
-import { useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -57,7 +57,7 @@ const TransactionTypeFormatter = (
   }
 };
 
-const TransactionStepper = ({ steps }: TransactionStepperProps) => {
+const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
   const {
     authDetails: { userInfos },
     addressBookInfos: {
@@ -211,6 +211,8 @@ const TransactionStepper = ({ steps }: TransactionStepperProps) => {
       </Stepper>
     </Box>
   );
-};
+});
+
+TransactionStepper.displayName = 'TransactionStepper';
 
 export { TransactionStepper };
