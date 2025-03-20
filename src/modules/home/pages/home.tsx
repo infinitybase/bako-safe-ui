@@ -22,6 +22,10 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
 
+import { HomeQueryKey, SocketEvents } from '@/modules/core';
+import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
+import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
+import { useTransactionsQueryCreateAndUpdate } from '@/modules/core/hooks/useTransactionsQueryCreateAndUpdate';
 const HomePage = () => {
   const {
     authDetails: { userInfos },
@@ -35,6 +39,13 @@ const HomePage = () => {
   const recentVaults = latestPredicates.data?.predicates?.data;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const queryKey = HomeQueryKey.HOME_WORKSPACE(userInfos.workspace?.id ?? '');
+  const updateQueryData = useReactQueryUpdate(
+    queryKey,
+    useTransactionsQueryCreateAndUpdate,
+  );
+  useSocketEvent(SocketEvents.TRANSACTION, updateQueryData);
 
   return (
     <VStack
