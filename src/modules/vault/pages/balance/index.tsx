@@ -9,6 +9,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,8 +24,8 @@ import { useVaultInfosContext } from '../../VaultInfosProvider';
 const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
-  const { vault, assets, activeTab, setActiveTab } = useVaultInfosContext();
-
+  const { vault, assets } = useVaultInfosContext();
+  const [activeTab, setActiveTab] = useState<'assets' | 'nfts'>('assets');
   const {
     authDetails: { userInfos },
     workspaceInfos: {

@@ -23,7 +23,6 @@ import {
 } from 'react';
 import { InViewHookResponse } from 'react-intersection-observer';
 
-import { useBakoIDClient } from '@/modules/core/hooks/bako-id';
 import { AddressBookUtils } from '@/utils';
 
 import { LineCloseIcon } from '../icons';
@@ -55,7 +54,8 @@ interface AutocompleteProps extends Omit<InputGroupProps, 'onChange'> {
   actionOnRemoveInput?: () => void;
   actionOnBlur?: () => void;
   inputRef?: LegacyRef<HTMLInputElement>;
-  providerInstance?: any;
+  fetchResolverName?: (value: string) => Promise<string | null>;
+  fetchResolveAddress?: (value: string) => Promise<string | null>;
 }
 // import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -78,16 +78,13 @@ const Autocomplete = ({
   actionOnRemoveInput = () => {},
   actionOnBlur = () => {},
   inputRef,
-  providerInstance,
+  fetchResolverName,
+  fetchResolveAddress,
   ...rest
 }: AutocompleteProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  const {
-    handlers: { fetchResolverName, fetchResolveAddress },
-  } = useBakoIDClient(providerInstance);
 
   const [inputValue, setInputValue] = useState<string>(value ?? '');
   const [formattedLabel, setFormattedLabel] = useState<string | null>(null);
@@ -99,15 +96,13 @@ const Autocomplete = ({
       const result = { value, label: value };
 
       if (value.startsWith('@')) {
-        const address = await fetchResolveAddress.handler(
-          value.split(' - ').at(0)!,
-        );
+        const address = await fetchResolveAddress?.(value.split(' - ').at(0)!);
         if (address) {
           result.value = address;
           result.label = AddressBookUtils.formatForAutocomplete(value, address);
         }
       } else if (isB256(value)) {
-        const name = await fetchResolverName.handler(value);
+        const name = await fetchResolverName?.(value);
         if (name) {
           result.label = AddressBookUtils.formatForAutocomplete(name, value);
           result.value = value;
@@ -124,7 +119,7 @@ const Autocomplete = ({
     };
 
     fetchAutocompleteData();
-  }, [value]);
+  }, [fetchResolveAddress, fetchResolverName, onChange, value]);
 
   useEffect(() => {
     if (formattedLabel) {

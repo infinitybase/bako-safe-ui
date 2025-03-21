@@ -77,7 +77,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
   } = useWorkspaceContext();
   const balanceAvailable = getBalanceAvailable();
   const {
-    handlers: { fetchResolveAddress },
+    handlers: { fetchResolverName, fetchResolveAddress },
   } = useBakoIDClient(providerInstance);
 
   const setResolverAndHandle = (resolver?: string, handle?: string) => {
@@ -159,7 +159,8 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   clearable={false}
                   optionsRef={optionRef}
                   variant="dark"
-                  providerInstance={providerInstance}
+                  fetchResolverName={fetchResolverName.handler}
+                  fetchResolveAddress={fetchResolveAddress.handler}
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}
@@ -269,6 +270,16 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
+
+  // Logic to fix the button in the footer
+  // const accordionHeight = () => {
+  //   if (isMobile && isLargerThan900) return 500;
+  //   if (isMobile && isLargerThan768) return 400;
+  //   if (isMobile && isLargerThan660) return 220;
+  //   if (isMobile && isLargerThan600) return 200;
+
+  //   return 450;
+  // };
 
   return (
     <Accordion

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { UseAssetMap } from '@/modules/assets-tokens/hooks/useAssetMap';
 import { isHex } from '@/utils';
 
-import { Asset, AssetMap, defaultMetadata, NFT } from '../utils';
+import { Asset, AssetMap, DefaultMetadata, NFT } from '../utils';
 import { parseURI } from '../utils/formatter';
 
 export type IGetTokenInfos = ReturnType<typeof useGetTokenInfos>;
@@ -12,7 +12,7 @@ export type IGetTokenInfos = ReturnType<typeof useGetTokenInfos>;
 interface IUseGetTokenInfos extends Pick<Asset, 'assetId' | 'amount'> {
   assetsMap: AssetMap;
 }
-interface IUseGetNftInfos extends NFT {
+interface IUseGetNftInfos extends Omit<NFT, 'name'> {
   nftList: UseAssetMap['nftList'];
 }
 
@@ -37,17 +37,21 @@ const useGetNftsInfos = ({ assetId, nftList }: IUseGetNftInfos) => {
     return nftList.find((nft) => nft.assetId === assetId);
   }, [assetId, nftList]);
 
-  let nftImageUrl = null;
+  const nftImageUrl = useMemo(() => {
+    if (!nftsInfo?.metadata) return null;
 
-  if (nftsInfo?.metadata) {
     const imageKeys = ['image'];
     const imageKey = Object.keys(nftsInfo.metadata).find((key) =>
-      imageKeys.includes(key.split(':').at(0)!),
+      imageKeys.includes(key.split(':')[0]),
     );
-    const nftnftImageUrl = parseURI(nftsInfo.metadata[imageKey!]);
-    const metadata = nftsInfo.metadata as defaultMetadata;
-    nftImageUrl = nftnftImageUrl || metadata.image;
-  }
+
+    if (imageKey) {
+      const parsedUrl = parseURI(nftsInfo.metadata[imageKey]);
+      if (parsedUrl) return parsedUrl;
+    }
+
+    return (nftsInfo.metadata as DefaultMetadata).image || null;
+  }, [nftsInfo]);
 
   return { nftsInfo, nftImageUrl };
 };

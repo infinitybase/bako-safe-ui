@@ -280,29 +280,23 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   });
 
   const allAssetsUsed = useMemo(() => {
-    const nfts =
-      props?.nfts?.map((nft) => ({
-        assetId: nft.assetId,
-      })) ?? [];
+    if (!transactionsForm?.length) return false;
 
-    const assets =
-      currentVaultAssets?.map((asset) => ({
-        assetId: asset.assetId,
-        units: asset.units,
-      })) ?? [];
+    const transactionAssetIds = new Set(
+      transactionsForm.map((transaction) => transaction.asset),
+    );
 
+    const nfts = props?.nfts || [];
     const allNftsInTransactions =
       nfts.length === 0 ||
-      nfts.every((nft) =>
-        (transactionsForm ?? []).some(
-          (transaction) => transaction.asset === nft.assetId,
-        ),
-      );
+      nfts.every((nft) => transactionAssetIds.has(nft.assetId));
+
+    const assets = currentVaultAssets || [];
 
     const hasSufficientBalance = assets.every(({ assetId, units }) => {
+      if (!transactionAssetIds.has(assetId)) return false;
       const available = getBalanceAvailable(assetId);
       const assetAmount = bn.parseUnits(available, units);
-
       const transactionAssets = (transactionsForm ?? []).filter(
         (transaction) => transaction.asset === assetId,
       );

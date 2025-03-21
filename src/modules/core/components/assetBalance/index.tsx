@@ -44,7 +44,6 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const { nftsInfo, nftImageUrl } = useGetNftsInfos({
     assetId: nft.assetId,
     nftList,
-    name: nft.name,
   });
   const redirectToNetwork = () =>
     window.open(
@@ -52,7 +51,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       '_BLANK',
     );
   if (!nftsInfo) {
-    return '';
+    return null;
   }
   return (
     <Card
