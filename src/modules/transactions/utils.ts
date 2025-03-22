@@ -1,6 +1,10 @@
 import { ITransactionResume, TransactionStatus } from 'bakosafe';
 import { bn } from 'fuels';
 
+import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
+import { ContractIcon } from '@/components/icons/tx-contract';
+import { DeployIcon } from '@/components/icons/tx-deploy';
+
 import { ITransaction } from '../core/hooks/bakosafe/utils/types';
 import { AssetModel, WitnessStatus } from '../core/models';
 import { NativeAssetId } from '../core/utils';
@@ -80,4 +84,21 @@ export const generateTransactionName = () => {
     transactionName += randomInt.toString();
   }
   return transactionName;
+};
+
+export const getTransactionIconComponent = ({
+  isDeploy,
+  isFromConnector,
+  isFromCLI,
+  isDeposit,
+}: {
+  isDeploy: boolean;
+  isFromConnector: boolean;
+  isFromCLI: boolean;
+  isDeposit: boolean;
+}) => {
+  if (isDeploy) return DeployIcon;
+  if (isFromConnector || isFromCLI) return ContractIcon;
+  if (isDeposit) return DownLeftArrowGreen;
+  return UpRightArrowYellow;
 };

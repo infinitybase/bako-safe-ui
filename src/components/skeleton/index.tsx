@@ -10,13 +10,15 @@ interface CustomSkeletonProps extends SkeletonProps {
 const CustomSkeleton = ({
   children,
   isLoaded,
+  customEndColor,
+  customStartColor,
   ...props
 }: CustomSkeletonProps) => (
   <Skeleton
     w="100%"
     speed={1}
-    startColor={props.customStartColor ?? 'dark.200'}
-    endColor={props.customEndColor ?? 'dark.500'}
+    startColor={customStartColor ?? 'dark.200'}
+    endColor={customEndColor ?? 'dark.500'}
     isLoaded={isLoaded}
     borderRadius={10}
     {...props}

@@ -7,6 +7,7 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
@@ -39,10 +40,14 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     isMint,
   } = useVerifyTransactionInformations(transaction);
 
-  const status = transactionStatus({
-    ...transaction,
-    account,
-  });
+  const status = useMemo(
+    () =>
+      transactionStatus({
+        ...transaction,
+        account,
+      }),
+    [transaction, account],
+  );
   const { isSigned, isCompleted, isDeclined, isReproved } = status;
 
   const missingSignature =
@@ -59,7 +64,6 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
         isOpen={isOpen}
         onClose={onClose}
         transaction={transaction}
-        account={account}
         status={status}
         isSigner={isSigner}
         callBack={props.callBack}

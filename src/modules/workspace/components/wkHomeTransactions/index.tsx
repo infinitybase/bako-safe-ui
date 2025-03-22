@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  HStack,
-  Icon,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Icon, Spacer, Text } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { MdKeyboardArrowRight } from 'react-icons/md';
@@ -14,12 +6,7 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 import { CustomSkeleton } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Pages, shakeAnimationX } from '@/modules/core';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
+import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 
 import { useWorkspaceContext } from '../../WorkspaceProvider';
@@ -112,61 +99,21 @@ const WkHomeTransactions = () => {
       {!isLoading && !transactions?.length && <EmptyState showAction={false} />}
 
       {transactions?.map((grouped) => (
-        <>
-          <HStack>
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color="grey.425"
-              whiteSpace="nowrap"
-            >
-              {grouped.monthYear}
-            </Text>
-
-            <Divider w="full" borderColor="grey.950" />
-          </HStack>
+        <Box key={grouped.monthYear}>
+          <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
           <TransactionCard.List spacing={4} mt={isExtraSmall ? 0 : 7} mb={12}>
             <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
-              {grouped?.transactions.map((transaction) => {
-                const status = transactionStatus({
-                  ...transaction,
-                  account: userInfos?.address,
-                });
-                const isSigner = !!transaction.predicate?.members?.find(
-                  (member) => member.address === userInfos?.address,
-                );
-
-                return (
-                  <>
-                    {isMobile ? (
-                      <TransactionCardMobile
-                        isSigner={isSigner}
-                        transaction={transaction}
-                        account={userInfos?.address}
-                        mt="15px"
-                      />
-                    ) : (
-                      <TransactionCard.Container
-                        mb="12px"
-                        key={transaction.id}
-                        status={status}
-                        isSigner={isSigner}
-                        transaction={transaction}
-                        account={userInfos?.address}
-                        details={
-                          <TransactionCard.Details
-                            transaction={transaction}
-                            status={status}
-                          />
-                        }
-                      />
-                    )}
-                  </>
-                );
-              })}
+              {grouped?.transactions.map((transaction) => (
+                <TransactionCard.Item
+                  key={transaction.id}
+                  transaction={transaction}
+                  isMobile={isMobile}
+                  userInfos={userInfos}
+                />
+              ))}
             </CustomSkeleton>
           </TransactionCard.List>
-        </>
+        </Box>
       ))}
     </Box>
   );
