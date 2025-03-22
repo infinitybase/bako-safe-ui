@@ -43,13 +43,18 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     ...transaction,
     account,
   });
-  const { isSigned, isCompleted, isDeclined, isReproved } = status;
+  const { isSigned, isCompleted, isDeclined, isReproved, isCanceled } = status;
 
   const missingSignature =
-    !isSigned && !isCompleted && !isDeclined && !isReproved;
+    !isSigned && !isCompleted && !isDeclined && !isReproved && !isCanceled;
 
   const awaitingAnswer =
-    !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
+    !isSigned &&
+    !isDeclined &&
+    !isCompleted &&
+    !isReproved &&
+    transaction &&
+    !isCanceled;
 
   const { isOpen, onOpen, onClose } = useDetailsDialog();
 
