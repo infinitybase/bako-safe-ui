@@ -139,6 +139,7 @@ const AssetCard = ({
       py={4}
       w="full"
       h="full"
+      aria-label={`${assetsInfo.slug} Asset Card`}
       {...rest}
     >
       <Flex
@@ -177,7 +178,13 @@ const AssetCard = ({
         gap={-1}
       >
         {visibleBalance ? (
-          <Text fontWeight="bold" color="white" maxW="100%" isTruncated>
+          <Text
+            aria-label={`${assetsInfo.slug} Amount`}
+            fontWeight="bold"
+            color="white"
+            maxW="100%"
+            isTruncated
+          >
             {isNFT ? 1 : (assetAmount ?? defaultAsset.amount)}
           </Text>
         ) : (
