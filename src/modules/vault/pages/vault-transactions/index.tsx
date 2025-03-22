@@ -23,7 +23,7 @@ import {
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages, useGetParams } from '@/modules/core';
+import { Pages, SocketEvents, useGetParams } from '@/modules/core';
 import {
   TransactionCard,
   TransactionCardMobile,
@@ -35,6 +35,11 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
+
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionsInfinityQueryCreateAndUpdate } from '@/modules/core/hooks/useTransactionsInfinityQueryCreateAndUpdate';
+import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
+import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 
 const TransactionsVaultPage = () => {
   const {
@@ -84,6 +89,16 @@ const TransactionsVaultPage = () => {
       resetAllTransactionsTypeFilters();
     };
   }, []);
+
+  const queryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+  const updateQueryData = useReactQueryUpdate(
+    queryKey,
+    useTransactionsInfinityQueryCreateAndUpdate,
+  );
+  useSocketEvent(SocketEvents.TRANSACTION, updateQueryData);
 
   const hasTransactions = !isLoading && transactions?.length;
 

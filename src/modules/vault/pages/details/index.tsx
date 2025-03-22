@@ -22,7 +22,7 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles } from '@/modules/core';
+import { PermissionRoles, SocketEvents } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -39,6 +39,11 @@ import { limitCharacters } from '@/utils/limit-characters';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
+
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionsInfinityQueryCreateAndUpdate } from '@/modules/core/hooks/useTransactionsInfinityQueryCreateAndUpdate';
+import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
+import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -92,6 +97,16 @@ const VaultDetailsPage = () => {
   const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   const hideSetTemplateButton = true;
+
+  const queryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+  const updateQueryData = useReactQueryUpdate(
+    queryKey,
+    useTransactionsInfinityQueryCreateAndUpdate,
+  );
+  useSocketEvent(SocketEvents.TRANSACTION, updateQueryData);
 
   if (!vault) return null;
 
