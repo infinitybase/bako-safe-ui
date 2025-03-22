@@ -28,6 +28,7 @@ const useWorkspaceDetails = () => {
     useGetFuelsTokensListRequest();
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
+
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
@@ -37,7 +38,7 @@ const useWorkspaceDetails = () => {
   } = useGetParams();
 
   const { currentNetwork } = useNetworks();
-  const { assetsMap } = useAssetMap(currentNetwork.chainId);
+  const { assetsMap, nftList } = useAssetMap(currentNetwork.chainId);
 
   const providerInstance = useMemo<Promise<BakoProvider>>(async () => {
     const provider = await ProviderInstance.create(currentNetwork.url);
@@ -135,6 +136,7 @@ const useWorkspaceDetails = () => {
     tokensUSD,
     fuelsTokens,
     assetsMap,
+    nftList,
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,

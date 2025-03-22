@@ -9,13 +9,14 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { AssetsBalanceList, Pages } from '@/modules/core';
+import { AssetsBalanceList, NftsBalanceList, Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
@@ -24,7 +25,7 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
-
+  const [activeTab, setActiveTab] = useState<'assets' | 'nfts'>('assets');
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -135,22 +136,54 @@ const VaultBalancePage = () => {
       </HStack>
 
       <Flex w="full" direction="column" flex={1}>
-        <Box mb={5} w="full">
-          <Text
-            color="grey.50"
-            fontWeight="bold"
-            fontSize={{ base: 'sm', sm: 'unset' }}
-          >
-            Balance
-          </Text>
-        </Box>
+        <Flex borderBottom="1px solid #333" w="full" mb={5}>
+          <Flex gap={2}>
+            <Box
+              px={5}
+              py={2}
+              fontSize="sm"
+              cursor="pointer"
+              borderTopLeftRadius="lg"
+              borderTopRightRadius="lg"
+              bg={activeTab === 'assets' ? 'white' : '#201F1D'}
+              color={activeTab === 'assets' ? 'black' : 'white'}
+              onClick={() => setActiveTab('assets')}
+            >
+              Tokens
+            </Box>
+            <Box
+              px={5}
+              py={2}
+              fontSize="sm"
+              cursor="pointer"
+              borderTopLeftRadius="lg"
+              borderTopRightRadius="lg"
+              bg={activeTab === 'nfts' ? 'white' : '#201F1D'}
+              color={activeTab === 'nfts' ? 'black' : 'white'}
+              onClick={() => setActiveTab('nfts')}
+            >
+              NFT
+            </Box>
+          </Flex>
+        </Flex>
 
         <CustomSkeleton
           isLoaded={!userInfos.isLoading && !assets.isLoading}
           flex={1}
         >
-          {hasAssets ? (
-            <AssetsBalanceList assets={assets.assets!} nfts={assets.nfts!} />
+          {activeTab === 'assets' ? (
+            hasAssets ? (
+              <AssetsBalanceList assets={assets.assets!} />
+            ) : (
+              <EmptyState
+                showAction={false}
+                title="No Data available"
+                subTitle="Currently, there is no available data to display in this section."
+                h="full"
+              />
+            )
+          ) : hasAssets ? (
+            <NftsBalanceList nfts={assets.nfts!} />
           ) : (
             <EmptyState
               showAction={false}

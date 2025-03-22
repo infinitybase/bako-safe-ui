@@ -61,10 +61,13 @@ const useAssetSelectOptions = (
     const balanceAvailableForAsset = parseFloat(
       getBalanceAvailable(asset.value),
     );
+
     return balanceAvailableForAsset > 0;
   });
 
-  return { assetsOptions: [...filteredAssets, ...formattedNFTs] };
+  const assetsOptions = [...filteredAssets, ...formattedNFTs];
+
+  return { assetsOptions };
 };
 
 export { useAssetSelectOptions };

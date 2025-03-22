@@ -9,6 +9,7 @@ import {
   FormLabel,
   HStack,
   Text,
+  Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
@@ -34,7 +35,6 @@ import {
 } from '@/modules/transactions/hooks';
 import { UseVaultDetailsReturn } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
-import { AddressBookUtils } from '@/utils';
 
 import { TransactionAccordion } from './accordion';
 
@@ -109,7 +109,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
     currentAsset: asset,
     assets: assets.assets,
     nfts: assets.nfts,
-    recipients: form.watch('transactions'),
+    recipients,
     getBalanceAvailable,
   });
 
@@ -149,35 +149,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   value={field.value}
                   label={`Recipient ${index + 1} address`}
                   onChange={field.onChange}
-                  onInputChange={async (value: string) => {
-                    const result = { value: value, label: value };
-
-                    if (value.startsWith('@')) {
-                      const address = await fetchResolveAddress.handler(
-                        value.split(' - ').at(0)!,
-                      );
-                      if (address) {
-                        result.value = address;
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          value,
-                          address,
-                        );
-                      }
-                    }
-
-                    if (isB256(value)) {
-                      const name = await fetchResolverName.handler(value);
-                      if (name) {
-                        result.label = AddressBookUtils.formatForAutocomplete(
-                          name,
-                          value,
-                        );
-                        result.value = value;
-                      }
-                    }
-
-                    return result;
-                  }}
                   isLoading={
                     !optionsRequests[index].isSuccess ||
                     fetchResolveAddress.isLoading ||
@@ -188,6 +159,8 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   clearable={false}
                   optionsRef={optionRef}
                   variant="dark"
+                  fetchResolverName={fetchResolverName.handler}
+                  fetchResolveAddress={fetchResolveAddress.handler}
                 />
                 <FormHelperText color="error.500">
                   {fieldState.error?.message}
@@ -247,7 +220,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
-                  {parseFloat(balanceAvailable) > 0 && asset && (
+                  {!isNFT && parseFloat(balanceAvailable) > 0 && asset && (
                     <Text display="flex" alignItems="center">
                       Balance (available):{' '}
                       {isFeeCalcLoading ? (
@@ -293,6 +266,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
     screenSizes: { isMobile },
     providerInstance,
   } = useWorkspaceContext();
+
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
@@ -312,7 +286,6 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       index={accordion.index}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
-      // maxH={accordionHeight()}
       maxH={450}
       pr={{ base: 1, sm: 0 }}
       sx={{
@@ -323,7 +296,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         '&::-webkit-scrollbar-thumb': {
           backgroundColor: '#2C2C2C',
           borderRadius: '30px',
-          height: '10px' /* Adjust the height of the scrollbar thumb */,
+          height: '10px',
         },
       }}
     >
@@ -349,84 +322,93 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           contact ?? resolverName ?? AddressUtils.format(transaction.value);
 
         return (
-          <>
-            <AccordionItem
-              key={field.id}
-              mb={6}
-              borderWidth={1}
-              borderColor="grey.925"
-              borderRadius={10}
-              backgroundColor="dark.950"
-            >
-              <TransactionAccordion.Item
-                title={`Recipient ${index + 1}`}
-                actions={
-                  <TransactionAccordion.Actions>
-                    <HStack spacing={4}>
-                      <TransactionAccordion.EditAction
-                        onClick={() => accordion.open(index)}
-                      />
-                      <TransactionAccordion.DeleteAction
-                        isDisabled={props.transactions.fields.length === 1}
-                        onClick={() => {
-                          transactions.remove(index);
-                          accordion.close();
-                        }}
-                      />
-                    </HStack>
-                    <TransactionAccordion.ConfirmAction
-                      onClick={() => accordion.close()}
-                      isDisabled={isDisabled}
-                      isLoading={
-                        !isCurrentAmountZero ? isFeeCalcLoading : false
-                      }
+          <AccordionItem
+            key={field.id}
+            mb={6}
+            borderWidth={1}
+            borderColor="grey.925"
+            borderRadius={10}
+            backgroundColor="dark.950"
+          >
+            <TransactionAccordion.Item
+              title={`Recipient ${index + 1}`}
+              actions={
+                <TransactionAccordion.Actions>
+                  <HStack spacing={4}>
+                    <TransactionAccordion.EditAction
+                      onClick={() => accordion.open(index)}
                     />
-                  </TransactionAccordion.Actions>
-                }
-                resume={
-                  !hasEmptyField && (
-                    <Text fontSize="sm" color="grey.500" mt={2}>
-                      <b>
-                        {transaction.amount} {assetSlug}
-                      </b>{' '}
-                      to <b> {recipientLabel}</b>
-                    </Text>
-                  )
-                }
-              >
-                <TransactionFormField
-                  index={index}
-                  form={form}
-                  assets={assets}
-                  isFeeCalcLoading={isFeeCalcLoading}
-                  getBalanceAvailable={getBalanceAvailable}
-                />
-              </TransactionAccordion.Item>
-            </AccordionItem>
-          </>
+                    <TransactionAccordion.DeleteAction
+                      isDisabled={props.transactions.fields.length === 1}
+                      onClick={() => {
+                        transactions.remove(index);
+                        accordion.close();
+                      }}
+                    />
+                  </HStack>
+                  <TransactionAccordion.ConfirmAction
+                    onClick={() => accordion.close()}
+                    isDisabled={isDisabled}
+                    isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
+                  />
+                </TransactionAccordion.Actions>
+              }
+              resume={
+                !hasEmptyField && (
+                  <Text fontSize="sm" color="grey.500" mt={2}>
+                    <b>
+                      {transaction.amount} {assetSlug}
+                    </b>{' '}
+                    to <b> {recipientLabel}</b>
+                  </Text>
+                )
+              }
+            >
+              <TransactionFormField
+                index={index}
+                form={form}
+                assets={assets}
+                isFeeCalcLoading={isFeeCalcLoading}
+                getBalanceAvailable={getBalanceAvailable}
+              />
+            </TransactionAccordion.Item>
+          </AccordionItem>
         );
       })}
+
       <Center mt={6}>
-        <Button
-          w="full"
-          leftIcon={<UserAddIcon />}
-          variant="primary"
-          bgColor="grey.200"
-          border="none"
-          _hover={{
-            opacity: 0.8,
-          }}
-          onClick={() => {
-            transactions.append({
-              amount: '',
-              asset: NativeAssetId,
-              value: '',
-            });
-            delay(() => accordion.open(transactions.fields.length), 100);
-          }}
+        <Tooltip
+          label="All available assets have been used."
+          isDisabled={!form.allAssetsUsed}
+          hasArrow
+          placement="top"
         >
-          Add more recipients
-        </Button>
+          <Button
+            w="full"
+            leftIcon={<UserAddIcon />}
+            variant="primary"
+            bgColor="grey.200"
+            border="none"
+            _hover={{
+              opacity: 0.8,
+            }}
+            _disabled={{
+              cursor: 'not-allowed',
+              opacity: 0.6,
+            }}
+            isDisabled={form.allAssetsUsed}
+            onClick={() => {
+              transactions.append({
+                amount: '',
+                asset: NativeAssetId,
+                value: '',
+              });
+              delay(() => accordion.open(transactions.fields.length), 100);
+            }}
+          >
+            Add more recipients
+          </Button>
+        </Tooltip>
       </Center>
     </Accordion>
   );
