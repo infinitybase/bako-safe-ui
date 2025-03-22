@@ -1,11 +1,12 @@
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
 import { useGetParams } from '@/modules/core';
 import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
+import { TransactionWithVault } from '../../services';
 import { useTransactionState } from '../../states';
 import { useFilterTxType } from '../filter';
 import { useTransactionListPaginationRequest } from './useTransactionListPaginationRequest';
@@ -39,6 +40,10 @@ export interface IPendingTransactionsRecord {
   [transactionId: string]: IPendingTransactionDetails;
 }
 
+export type ListItem =
+  | { type: 'group'; monthYear: string }
+  | { type: 'transaction'; transaction: TransactionWithVault };
+
 const useTransactionList = ({
   workspaceId = '',
 }: IUseTransactionListProps = {}) => {
@@ -58,6 +63,7 @@ const useTransactionList = ({
 
   const navigate = useNavigate();
   const inView = useInView();
+  const virtualizeRef = useRef<HTMLDivElement>(null);
 
   const {
     transactions,
@@ -73,6 +79,17 @@ const useTransactionList = ({
     status: filter ? [filter] : undefined,
     type: txFilterType,
   });
+  const flatList = useMemo(
+    () =>
+      transactions.reduce<ListItem[]>((acc, group) => {
+        acc.push({ type: 'group', monthYear: group.monthYear });
+        group.transactions.forEach((transaction) => {
+          acc.push({ type: 'transaction', transaction });
+        });
+        return acc;
+      }, []),
+    [transactions],
+  );
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
@@ -116,8 +133,10 @@ const useTransactionList = ({
     inView,
     defaultIndex: selectedTransaction?.id ? [0] : [],
     transactionsRef: lastElementRef,
+    virtualizeRef,
     lists: {
       transactions,
+      flatList,
     },
   };
 };
