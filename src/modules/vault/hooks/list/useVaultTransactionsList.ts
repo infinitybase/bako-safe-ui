@@ -1,8 +1,9 @@
 import { TransactionStatus } from 'bakosafe';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 
+import { ListItem } from '@/modules/transactions';
 import { useFilterTxType } from '@/modules/transactions/hooks/filter/useFilterTxType';
 import { useTransactionState } from '@/modules/transactions/states';
 
@@ -52,6 +53,17 @@ const useVaultTransactionsList = ({
     type: txFilterType,
     id: selectedTransaction.id,
   });
+  const flatList = useMemo(
+    () =>
+      transactions.reduce<ListItem[]>((acc, group) => {
+        acc.push({ type: 'group', monthYear: group.monthYear });
+        group.transactions.forEach((transaction) => {
+          acc.push({ type: 'transaction', transaction });
+        });
+        return acc;
+      }, []),
+    [transactions],
+  );
 
   const observer = useRef<IntersectionObserver>();
   const lastElementRef = useCallback(
@@ -102,6 +114,7 @@ const useVaultTransactionsList = ({
     lists: {
       transactions,
       limitedTransactions: transactions?.slice(0, 1),
+      flatList,
     },
     transactionsRef: lastElementRef,
   };

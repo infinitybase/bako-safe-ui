@@ -10,7 +10,7 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import { Card, DownLeftArrowGreen, UpRightArrowYellow } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
@@ -18,7 +18,7 @@ import { DeployIcon } from '@/components/icons/tx-deploy';
 import { TransactionState } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { TransactionCard, transactionStatus } from '../..';
+import { TransactionCard } from '../..';
 import { useDetailsDialog } from '../../hooks/details';
 import { useVerifyTransactionInformations } from '../../hooks/details/useVerifyTransactionInformations';
 import { TransactionWithVault } from '../../services/types';
@@ -50,8 +50,11 @@ const Container = ({
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
-  const missingSignature =
-    !isSigned && !isCanceled && !isCompleted && !isDeclined && !isReproved;
+  const missingSignature = useMemo(
+    () =>
+      !isSigned && !isCanceled && !isCompleted && !isDeclined && !isReproved,
+    [isCanceled, isCompleted, isDeclined, isReproved, isSigned],
+  );
 
   const {
     isFromConnector,
@@ -158,18 +161,12 @@ const Container = ({
               />
               <TransactionCard.Status
                 transaction={transaction}
-                status={transactionStatus({
-                  ...transaction,
-                  account,
-                })}
+                status={status}
               />
               <TransactionCard.Actions
                 transaction={transaction}
                 isSigner={isSigner}
-                status={transactionStatus({
-                  ...transaction,
-                  account,
-                })}
+                status={status}
               />
             </Grid>
           </HStack>
