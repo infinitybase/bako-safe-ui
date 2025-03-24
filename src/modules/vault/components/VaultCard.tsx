@@ -74,6 +74,8 @@ export const VaultCard = ({
       zIndex={100}
       {...rest}
       position="relative"
+      opacity={!isVisible ? 1 : 0.5}
+      transition="opacity 0.3s ease-in-out"
     >
       {inHome ?? (
         <Box

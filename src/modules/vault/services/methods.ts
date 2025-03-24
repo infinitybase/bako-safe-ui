@@ -16,6 +16,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   orderBy?: string;
   sort?: SortOption;
   orderByRoot?: boolean;
+  active?: boolean;
 }
 
 export interface HasReservedCoins {
