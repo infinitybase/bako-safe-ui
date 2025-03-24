@@ -11,6 +11,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
@@ -28,19 +30,36 @@ interface VaultCardProps extends CardProps {
   name: string;
   members: PredicateMember[];
   workspace: PredicateWorkspace;
+  inHome?: boolean;
+  isVisible?: boolean;
+  onVisibilityChange?: (isVisible: boolean) => void;
 }
 export const VaultCard = ({
   ownerId,
   name,
   workspace,
   members,
+  inHome,
+  isVisible: propIsVisible,
+  onVisibilityChange,
   ...rest
 }: VaultCardProps) => {
   const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
   } = useWorkspaceContext();
+  const [internalIsVisible, setInternalIsVisible] = useState(true);
+  const isVisible = propIsVisible ?? internalIsVisible;
 
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newValue = !isVisible;
+    if (onVisibilityChange) {
+      onVisibilityChange(newValue);
+    } else {
+      setInternalIsVisible(newValue);
+    }
+  };
   return (
     <Card
       borderColor="gradients.transaction-border"
@@ -54,7 +73,20 @@ export const VaultCard = ({
       cursor="pointer"
       zIndex={100}
       {...rest}
+      position="relative"
     >
+      {inHome ?? (
+        <Box
+          position="absolute"
+          top={3}
+          right={3}
+          cursor="pointer"
+          zIndex={10}
+          onClick={handleToggle}
+        >
+          {isVisible ? <FaEyeSlash /> : <FaEye />}
+        </Box>
+      )}
       <VStack alignItems="flex-start">
         <HStack maxW="80%" justifyContent="space-between" mb={1}>
           <HStack maxW="full">

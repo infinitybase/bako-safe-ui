@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -10,11 +11,13 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegPlusSquare } from 'react-icons/fa';
+import { css } from '@emotion/react';
+import { FaPlus } from 'react-icons/fa';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
+import { shakeAnimationX } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
 import { CreateVaultDialog, ExtraVaultCard, VaultCard } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -30,6 +33,7 @@ const HomePage = () => {
       requests: { latestPredicates },
       workspaceVaults: { extraCount, vaultsMax },
     },
+    screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
 
   const recentVaults = latestPredicates.data?.predicates?.data;
@@ -53,37 +57,8 @@ const HomePage = () => {
             Home
           </Text>
         </HStack>
-        <Box>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            onClick={onOpen}
-          >
-            Create vault
-          </Button>
-        </Box>
       </HStack>
       <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
-        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </CustomSkeleton>
-
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
@@ -107,6 +82,26 @@ const HomePage = () => {
             </Box>
           </ActionCard.Container>
         </CustomSkeleton>
+
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+          <ActionCard.Container
+            flex={1}
+            onClick={() =>
+              navigate(
+                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </CustomSkeleton>
+
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
@@ -135,16 +130,57 @@ const HomePage = () => {
         mt={latestPredicates.isLoading ? 6 : 4}
       >
         {recentVaults?.length ? (
-          <Box pb={6} alignSelf="flex-start">
-            <Text
-              color="grey.400"
-              variant="subtitle"
-              fontWeight="semibold"
-              fontSize="md"
-            >
+          <HStack w="full" justifyContent="space-between" pb={6}>
+            <Text color="white" fontWeight="semibold" fontSize="md">
               Recently used vaults
             </Text>
-          </Box>
+            <HStack spacing={2}>
+              <Button
+                color="grey.75"
+                variant="txFilterType"
+                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                rightIcon={
+                  <Icon
+                    as={() => <FaPlus color="grey.75" />}
+                    fontSize="lg"
+                    ml={isSmall ? -1 : 0}
+                    className="btn-icon"
+                  />
+                }
+                onClick={onOpen}
+                px={isExtraSmall ? 3 : 4}
+              >
+                Create vault
+              </Button>
+              <Button
+                color="grey.75"
+                variant="txFilterType"
+                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+                rightIcon={
+                  <Icon
+                    as={ChevronRightIcon}
+                    fontSize="lg"
+                    ml={isSmall ? -1 : 0}
+                    className="btn-icon"
+                    color="grey.75"
+                  />
+                }
+                onClick={() =>
+                  navigate(
+                    Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
+                  )
+                }
+                css={css`
+                  &:hover .btn-icon {
+                    animation: ${shakeAnimationX} 0.5s ease-in-out;
+                  }
+                `}
+                px={isExtraSmall ? 3 : 4}
+              >
+                View all
+              </Button>
+            </HStack>
+          </HStack>
         ) : null}
         {recentVaults?.length ? (
           <Grid
@@ -200,6 +236,7 @@ const HomePage = () => {
                               }),
                             )
                           }
+                          inHome={true}
                         />
                       )}
                     </GridItem>

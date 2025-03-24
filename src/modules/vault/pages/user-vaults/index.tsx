@@ -13,7 +13,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegPlusSquare } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
@@ -42,8 +43,11 @@ const UserVaultsPage = () => {
       handlers: { navigate },
       inView,
     },
+    screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
   const workspaceId = userInfos?.workspace?.id ?? '';
+
+  const [showAll, setShowAll] = useState(true);
 
   return (
     <VStack
@@ -134,17 +138,6 @@ const UserVaultsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
-        <Box>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={onOpen}
-          >
-            Create vault
-          </Button>
-        </Box>
       </HStack>
 
       <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
@@ -210,11 +203,68 @@ const UserVaultsPage = () => {
       </CustomSkeleton>
 
       {/* USER VAULTS */}
-      <Box mt={4} mb={-2} alignSelf="flex-start">
-        <Text variant="subtitle" fontWeight="semibold" color="grey.75">
+      <HStack w="full" justifyContent="space-between" pb={2}>
+        <Text color="white" fontWeight="semibold" fontSize="md">
           Vaults
         </Text>
-      </Box>
+        <HStack spacing={2}>
+          {showAll ? (
+            <Button
+              color="grey.75"
+              variant="txFilterType"
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              rightIcon={
+                <Icon
+                  as={() => <FaEyeSlash color="grey.75" />}
+                  fontSize="lg"
+                  ml={isSmall ? -1 : 0}
+                  className="btn-icon"
+                />
+              }
+              onClick={() => setShowAll(false)}
+              px={isExtraSmall ? 3 : 4}
+            >
+              Hide Inactives
+            </Button>
+          ) : (
+            <Button
+              color="grey.75"
+              variant="txFilterType"
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              rightIcon={
+                <Icon
+                  as={() => <FaEye color="grey.75" />}
+                  fontSize="lg"
+                  ml={isSmall ? -1 : 0}
+                  className="btn-icon"
+                />
+              }
+              onClick={() => setShowAll(true)}
+              px={isExtraSmall ? 3 : 4}
+            >
+              Show Inactives
+            </Button>
+          )}
+
+          <Button
+            color="grey.75"
+            variant="txFilterType"
+            alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+            rightIcon={
+              <Icon
+                as={() => <FaPlus color="grey.75" />}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
+            }
+            onClick={onOpen}
+            px={isExtraSmall ? 3 : 4}
+          >
+            Create vault
+          </Button>
+        </HStack>
+      </HStack>
 
       {!vaults?.length && !isLoading && (
         <CustomSkeleton isLoaded={!isLoading}>
