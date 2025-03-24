@@ -1,15 +1,18 @@
 import {
-  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
   HStack,
   Icon,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { RiMenuUnfoldLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,14 +28,10 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
-  const [activeTab, setActiveTab] = useState<'assets' | 'nfts'>('assets');
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: {
-        // handleWorkspaceSelection,
-        goHome,
-      },
+      handlers: { goHome },
     },
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
@@ -66,31 +65,6 @@ const VaultBalancePage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
-
-            {/* Commented out code to temporarily disable workspaces. */}
-
-            {/* {!userInfos.onSingleWorkspace && (
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  fontSize="sm"
-                  color="grey.200"
-                  fontWeight="semibold"
-                  onClick={() =>
-                    
-                  (
-                      userInfos.workspace?.id,
-                      Pages.workspace({
-                        workspaceId: userInfos.workspace?.id,
-                      }),
-                    )
-                  }
-                  maxW={40}
-                  isTruncated
-                >
-                  {userInfos.workspace?.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            )} */}
 
             <BreadcrumbItem>
               <BreadcrumbLink
@@ -136,63 +110,68 @@ const VaultBalancePage = () => {
       </HStack>
 
       <Flex w="full" direction="column" flex={1}>
-        <Flex borderBottom="1px solid #333" w="full" mb={5}>
-          <Flex gap={2}>
-            <Box
+        <Tabs>
+          <TabList borderBottom="1px solid #333">
+            <Tab
+              _selected={{ bg: 'white', color: 'black' }}
+              _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}
-              fontSize="sm"
-              cursor="pointer"
               borderTopLeftRadius="lg"
               borderTopRightRadius="lg"
-              bg={activeTab === 'assets' ? 'white' : '#201F1D'}
-              color={activeTab === 'assets' ? 'black' : 'white'}
-              onClick={() => setActiveTab('assets')}
             >
               Tokens
-            </Box>
-            <Box
+            </Tab>
+            <Tab
+              _selected={{ bg: 'white', color: 'black' }}
+              _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}
-              fontSize="sm"
-              cursor="pointer"
               borderTopLeftRadius="lg"
               borderTopRightRadius="lg"
-              bg={activeTab === 'nfts' ? 'white' : '#201F1D'}
-              color={activeTab === 'nfts' ? 'black' : 'white'}
-              onClick={() => setActiveTab('nfts')}
             >
               NFT
-            </Box>
-          </Flex>
-        </Flex>
+            </Tab>
+          </TabList>
 
-        <CustomSkeleton
-          isLoaded={!userInfos.isLoading && !assets.isLoading}
-          flex={1}
-        >
-          {activeTab === 'assets' ? (
-            hasAssets ? (
-              <AssetsBalanceList assets={assets.assets!} />
-            ) : (
-              <EmptyState
-                showAction={false}
-                title="No Data available"
-                subTitle="Currently, there is no available data to display in this section."
-                h="full"
-              />
-            )
-          ) : hasAssets ? (
-            <NftsBalanceList nfts={assets.nfts!} />
-          ) : (
-            <EmptyState
-              showAction={false}
-              title="No Data available"
-              subTitle="Currently, there is no available data to display in this section."
-              h="full"
-            />
-          )}
-        </CustomSkeleton>
+          <TabPanels>
+            <TabPanel>
+              <CustomSkeleton
+                isLoaded={!userInfos.isLoading && !assets.isLoading}
+                flex={1}
+              >
+                {hasAssets ? (
+                  <AssetsBalanceList assets={assets.assets!} />
+                ) : (
+                  <EmptyState
+                    showAction={false}
+                    title="No Data available"
+                    subTitle="Currently, there is no available data to display in this section."
+                    h="full"
+                  />
+                )}
+              </CustomSkeleton>
+            </TabPanel>
+
+            <TabPanel>
+              <CustomSkeleton
+                isLoaded={!userInfos.isLoading && !assets.isLoading}
+                flex={1}
+              >
+                {hasAssets ? (
+                  <NftsBalanceList nfts={assets.nfts!} />
+                ) : (
+                  <EmptyState
+                    showAction={false}
+                    title="No Data available"
+                    subTitle="Currently, there is no available data to display in this section."
+                    h="full"
+                  />
+                )}
+              </CustomSkeleton>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Flex>
     </Flex>
   );
