@@ -1,26 +1,29 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSocket } from '@/modules/core';
 
-export const useSocketEvent = (
+export const useSocketEvent = <T>(
   event: string,
-  callback: (data: any) => void,
+  callbacks: ((data: T) => void)[],
 ) => {
   const { socket } = useSocket();
-
-  const handleSocketEvent = useCallback(
-    (data: any) => {
-      callback(data);
-    },
-    [callback],
-  );
+  const callbacksRef = useRef<((data: T) => void)[]>([]);
+  const stableCallbacks = useMemo(() => callbacks, [callbacks]);
 
   useEffect(() => {
-    // console.log("✅ Socket conectado. Registrando eventos...");
+    callbacksRef.current = stableCallbacks;
+  }, [stableCallbacks]);
+
+  const handleSocketEvent = useCallback((data: T) => {
+    callbacksRef.current.forEach((callback) => callback(data));
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
     socket.on(event, handleSocketEvent);
 
     return () => {
-      // console.log("🗑️ Removendo listeners ao desmontar...");
       socket.off(event, handleSocketEvent);
     };
-  }, [socket?.connected, handleSocketEvent]);
+  }, [socket, event, handleSocketEvent]);
 };

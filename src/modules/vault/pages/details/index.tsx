@@ -41,9 +41,7 @@ import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
 import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
-import { useTransactionsInfinityQueryCreateAndUpdate } from '@/modules/core/hooks/useTransactionsInfinityQueryCreateAndUpdate';
-import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
-import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -98,15 +96,12 @@ const VaultDetailsPage = () => {
 
   const hideSetTemplateButton = true;
 
-  const queryKey =
+  const vaultQueryKey =
     vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
       vault.data?.id ?? undefined,
     );
-  const updateQueryData = useReactQueryUpdate(
-    queryKey,
-    useTransactionsInfinityQueryCreateAndUpdate,
-  );
-  useSocketEvent(SocketEvents.TRANSACTION, updateQueryData);
+
+  useTransactionSocketListener(vaultQueryKey ?? []);
 
   if (!vault) return null;
 

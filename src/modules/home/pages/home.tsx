@@ -22,10 +22,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
 
-import { HomeQueryKey, SocketEvents } from '@/modules/core';
-import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
-import { useReactQueryUpdate } from '@/modules/core/hooks/useReactQueryUpdate';
-import { useTransactionsQueryCreateAndUpdate } from '@/modules/core/hooks/useTransactionsQueryCreateAndUpdate';
+import { HomeQueryKey } from '@/modules/core';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+
 const HomePage = () => {
   const {
     authDetails: { userInfos },
@@ -40,12 +39,11 @@ const HomePage = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const queryKey = HomeQueryKey.HOME_WORKSPACE(userInfos.workspace?.id ?? '');
-  const updateQueryData = useReactQueryUpdate(
-    queryKey,
-    useTransactionsQueryCreateAndUpdate,
+  const homeQueryKey = HomeQueryKey.HOME_WORKSPACE(
+    userInfos.workspace?.id ?? '',
   );
-  useSocketEvent(SocketEvents.TRANSACTION, updateQueryData);
+
+  useTransactionSocketListener(homeQueryKey ?? []);
 
   return (
     <VStack
