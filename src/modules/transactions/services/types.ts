@@ -182,7 +182,7 @@ export interface ITransactionInfinityQueryData {
 }
 
 export interface ITransactionReactQueryUpdate {
-  type: '[UPDATED]' | '[CREATED]';
+  type: '[UPDATED]' | '[CREATED]' | '[CANCELED]';
   transaction: ITransaction;
   history: ITransactionHistory;
 }

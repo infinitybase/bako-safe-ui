@@ -261,7 +261,7 @@ export class TransactionService {
 
     const { type, transaction } = event;
 
-    if (type === '[UPDATED]') {
+    if (type !== '[CREATED]') {
       return {
         ...oldData,
         data: oldData.data.map((tx: ITransaction) =>
@@ -285,7 +285,7 @@ export class TransactionService {
     const { type, transaction } = event;
     const { pageParams, pages } = oldData;
 
-    if (type === '[UPDATED]') {
+    if (type !== '[CREATED]') {
       return {
         pageParams,
         pages: pages.map((page: ITransactionQueryUpdatePage) =>
