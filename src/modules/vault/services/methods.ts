@@ -29,7 +29,7 @@ export interface HasReservedCoins {
 export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
 export type PredicateAndWorkspace = Predicate & {
   workspace: PredicateWorkspace;
-  isHidden: boolean;
+  isHidden?: boolean;
 };
 export type PredicateResponseWithWorkspace = IPredicate & {
   workspace: Workspace;
