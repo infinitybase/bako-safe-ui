@@ -193,6 +193,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
           <SidebarMenu.Container
             isActive={menuItems.settings}
+            id={'settings_tab_sidebar'}
             onClick={() =>
               handleClick(
                 route.navigate(

@@ -153,6 +153,7 @@ const VaultBox = (props: VaultBoxPropx) => {
       {hasPermission && (
         <Box w="100%">
           <Button
+            aria-label={'Create transaction btn'}
             w="100%"
             variant="primary"
             fontWeight="bold"

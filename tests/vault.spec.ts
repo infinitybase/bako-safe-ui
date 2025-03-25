@@ -1,160 +1,117 @@
-import { expect, getByAriaLabel, hasText, test} from '@fuels/playwright-utils';
+import { expect, getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
+
+import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
-import { modalCloseTest } from './utils/helpers';
-import { txFilters } from './utils/helpers';
-import { settingsButtons } from './utils/helpers';
-import { newTabVerification } from './utils/helpers';
 
-const vaultName = 'Teste123';
+await E2ETestUtils.downloadFuelExtension({ test });
 
-test('webauthn', async ({ page }) => {
-  await E2ETestUtils.enablePasskey({ page });
+test.describe('Vaults', () => {
+  test('create vault 1/1', async ({ page }) => {
+    //await AuthTestService.loginWalletConnection(page, context, extensionId);
+    await AuthTestService.loginAuth(page);
 
-  // Navegue até a página inicial
-  await page.goto('/');
-  await page.bringToFront();
+    // Check if the user is logged in and go to Home page
+    await hasText(page, /Welcome to Bako Safe!/);
 
-  // select text "Welcome to Bako Safe"
-  const welcomeText = page.locator('text=Welcome to Bako Safe');
-  await expect(welcomeText).toBeVisible();
+    await page.locator('[aria-label="Close window"]').click();
+    await page.getByRole('button', { name: 'Home' }).click();
+    await expect(page).toHaveURL(/home/);
 
-  // select input by id
-  const usernameInput = page.locator('#fixed_id');
-  console.log('Clicou no input', usernameInput.focus());
-  const name = `teste${Date.now()}`;
-  await usernameInput.fill(name); // type 'guilhermemr'
-  await expect(usernameInput).toHaveValue(name);
+    // create vault 1/1
+    await page.getByRole('button', { name: 'Create vault' }).click();
+    await page.waitForTimeout(1000);
 
-  await page.waitForTimeout(1000);
-  await getByAriaLabel(page, 'Create account')
-    .filter({ has: page.locator(':visible') })
-    .click();
+    await page.locator('#vault_name').fill('vaultName');
+    await expect(page.getByText('This vault is available')).toBeVisible();
+    await page.locator('#vault_name').clear();
+    await page.locator('#vault_name').fill('Personal vault');
+    await expect(
+      page.getByText('Vault name already exists in this workspace'),
+    ).toBeVisible();
+    await page.locator('#vault_name').clear();
+    await expect(page.getByText('Name is required')).toBeVisible();
+    await page.locator('#vault_name').fill('vaultName');
 
-  // Scroll to bottom of dialog content
-  const termsOfUseDialog = await page.$('[aria-label="Terms of Use"]');
-  if (termsOfUseDialog) {
-    await termsOfUseDialog.evaluate((element) => {
-      element.scrollTop = element.scrollHeight;
-    });
-  }
+    await page.locator('#vault_description').fill('vaultDescription');
 
-  await getByAriaLabel(page, 'Accept Terms of Use').click();
-  await getByAriaLabel(page, 'Begin')
-    .filter({ has: page.locator(':visible') })
-    .click();
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
 
-  //Meu teste
-  await page.waitForTimeout(2000)
-  await hasText(page, /Welcome to Bako Safe!/);
-  const closeWindow = page.locator('[aria-label="Close window"]');
-  await closeWindow.click();
-  await page.waitForTimeout(2000);
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
 
-  await page.getByRole('button', { name: 'Home' }).click();
-  await expect(page).toHaveURL(/home/);
-  await page
-    .locator(
-      'div[title="This is your first vault. It requires a single signer (you) to execute transactions; a pattern called 1-of-1"]',
-    )
-    .click();
+    await page.locator('.loading-spinner').waitFor({ state: 'hidden' });
 
-  //Copiar endereço do vault
-  await page.getByRole('button', { name: 'Copy' }).nth(0).click();
+    await getByAriaLabel(page, 'Create Vault Secundary Action').click();
+    await page.waitForTimeout(300);
 
-  //Criar vault dentro da tab de Vaults
-  await page.getByRole('button', { name: 'Vault' }).click();
-  await page.getByRole('button', { name: 'Create new vault' }).click();
-  await page.waitForTimeout(1000);
-  await page.locator('#vault_name').fill(vaultName);
-  await page.locator('#vault_description').fill('vaultDescription');
-  await page.getByRole('button', { name: 'Continue' }).click();
+    const hasClose = page.locator('[aria-label="Close window"]');
+    if (await hasClose.isVisible()) {
+      await hasClose.click();
+    }
 
-  {
-    /*await page.getByText('Add more addresses').click()
-
-    Copia e cola nao funciona
-
-  await page.getByTestId("Address 2-label").click()
-  await page.keyboard.press('Command + v') */
-  }
-
-  await page.getByRole('button', { name: 'Create Vault' }).click();
-  await page.locator('.loading-spinner').waitFor({ state: 'hidden' });
-  await page.getByRole('button', { name: 'Done' }).click();
-
-  await closeWindow.nth(0).click();
-  await page.waitForTimeout(1000);
-
-  const elements = page.getByText(vaultName);
-  const count = await elements.count();
-  expect(count).toBe(3);
-  //Cria um loop
-  for (let i = 0; i < count; i++) {
-    await expect(elements.nth(i)).toBeVisible();
-  }
-
-  //wait expect.soft(page.getByText('vaultDescription')).toBeVisible()
-  await expect(page).toHaveURL(/workspace/);
-
-  //Pesquisar vault
-  await page.getByRole('button', { name: 'Vault' }).click();
-  await page.getByText('search').fill('personal');
-  await page.getByText('Personal Vault', { exact: false }).click();
-
-  
-  const explorer = page.getByRole('button',{name: 'Explorer'})
-  await newTabVerification(page, explorer , 'app-mainnet.fuel.network' )
-  await page.bringToFront()
-
-  await page.getByText('Balance', { exact: true }).click();
-  await expect(page).toHaveURL(/balance/);
-
-  await page.getByText('Transactions').click();
-  await expect(page).toHaveURL(/transactions/);
-  await txFilters(page);
-
-  await page.getByText('Settings').nth(1).click();
-  await expect(page).toHaveURL(/settings/);
-  const addAssets = page.getByRole('button', { name: 'Add Assets' });
-  await addAssets.click();
-  await modalCloseTest(page, addAssets);
-
-  const bridge = page.getByText('Bridge')
-  await newTabVerification(page, bridge, "https://app-mainnet.fuel.network/bridge")
-  await page.bringToFront()
-  await page.getByText('Deposit', { exact: true }).click();
-  await closeWindow.nth(0).click();
-  await page.waitForTimeout(1000);
-
-
-  await page.getByRole('button', { name: 'Copy' }).nth(1).click();
-
-  //add ao adressBook
-  const addtoAdressBook = page.getByRole('button', {
-    name: 'Add to Address Book',
+    const elements = page.locator('text="vaultName"');
+    const count = await elements.count();
+    expect(count).toBe(3);
+    for (let i = 0; i < count; i++) {
+      await expect(elements.nth(i)).toBeVisible();
+    }
+    await expect.soft(page.getByText('vaultDescription')).toBeVisible();
+    await expect(page).toHaveURL(/workspace/);
   });
 
-  {/*await addtoAdressBook.click();
-  await modalCloseTest(page, addtoAdressBook);
-  await page.getByText('Name or Label').fill('Signatario1');
-  await page.waitForLoadState('load')
-  await page.getByRole('button', { name: 'Add it' }).click();
-  await expect(page.getByText('Signatario1')).toBeVisible();
-  await page.waitForTimeout(2000); */}
+  test('create vault 2/2', async ({ page }) => {
+    //await AuthTestService.loginWalletConnection(page, context, extensionId);
+    const wrongAdr = '0xe77A8531c3EEEE448B7536dD9B44cc9B841269bE';
+    const adr2 =
+      '0x5cD19FF270Db082663993D3D9cF6342f9869491AfB06F6DC885B1794DB261fCB';
 
-  await settingsButtons(page, 'Spend limit');
-  await settingsButtons(page, 'Recovery');
-  await settingsButtons(page, 'Add other tokens');
+    await AuthTestService.loginAuth(page);
+    await hasText(page, /Welcome to Bako Safe!/);
 
-  {
-    /* 
-    Ajuda para selecionar o Toast
-    
-    await expect(page.locator('#coming-soon-toast')).toBeVisible()
-  await page.locator('#coming-soon-toast').waitFor({ state: 'hidden', timeout: 10000});
-  await page.locator('#coming-soon-toast').isHidden()*/
-  }
+    await page.locator('[aria-label="Close window"]').click();
+    await page.getByRole('button', { name: 'Home' }).click();
+    await expect(page).toHaveURL(/home/);
+
+    await page.getByRole('button', { name: 'Create vault' }).click();
+    await page.waitForTimeout(1000);
+    await page.locator('#vault_name').fill('vaultName2');
+
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await page.waitForTimeout(500);
+
+    await page.getByText('Add more addresses').click();
+
+    await page.locator('id=Address 2').fill(wrongAdr); //endereço meta mask
+    await page.waitForTimeout(1000);
+    await expect(page.getByText('Invalid address')).toBeVisible();
+    await page.locator('#Address\\ 2').clear();
+
+    await page.locator('#Address\\ 2').fill(adr2); //endereço meta mask
+
+    await page
+      .getByRole('textbox', { name: 'Select min signatures vault form' })
+      .click({ force: true });
+
+    await page.waitForTimeout(500);
+    await page.getByText('2', { exact: true }).click();
+    await page.waitForTimeout(200);
+
+    await getByAriaLabel(page, 'Create Vault Primary Action').click();
+    await page.waitForTimeout(2000);
+    await page.locator('.loading-spinner').waitFor({ state: 'hidden' });
+
+    await getByAriaLabel(page, 'Create Vault Secundary Action').click();
+    await page.waitForTimeout(300);
+
+    const hasClose = page.locator('[aria-label="Close window"]');
+    if (await hasClose.isVisible()) {
+      await hasClose.click();
+    }
+
+    const vaultsTitle = await page.getByText('vaultName2');
+    const number = await vaultsTitle.count();
+    expect(number).toBe(3);
+    for (let i = 0; i < number; i++) {
+      await expect(vaultsTitle.nth(i)).toBeVisible();
+    }
+  });
 });
-
-
-
