@@ -140,6 +140,7 @@ const Actions = ({
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             isLoading={isTxActionsInLoading}
             isDisabled={disableActionButtons}
+            aria-label={'Sign btn tx card'}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -154,6 +155,7 @@ const Actions = ({
             size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
             fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
             variant="secondary"
+            aria-label={'Decline btn tx card'}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
