@@ -4,7 +4,12 @@ import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { AddressUtils, AssetMap, NativeAssetId } from '@/modules/core/utils';
+import {
+  AddressUtils,
+  AddressValidator,
+  AssetMap,
+  NativeAssetId,
+} from '@/modules/core/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 export interface ITransactionField {
@@ -24,6 +29,12 @@ export type UseCreateTransactionFormParams = {
 
 const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
   const { providerInstance, fuelsTokens } = useWorkspaceContext();
+
+  const addressValidator = useMemo(
+    () => new AddressValidator(providerInstance),
+    [providerInstance],
+  );
+
   const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
     item.networks
       ?.map((network) => network['assetId'] ?? network['address'])
@@ -176,8 +187,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
                 AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
               if (!isValid) return false;
 
-              const provider = await providerInstance;
-              return await provider.isUserAccount(address);
+              return addressValidator.isValid(address);
             } catch {
               return false;
             }

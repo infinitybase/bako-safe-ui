@@ -2,20 +2,28 @@ import { CloseIcon, StarIcon } from '@chakra-ui/icons';
 import { Box, Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 import React from 'react';
 
-const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
+export const BAKO_SUPPORT_SEARCH = 'BAKO_SUPPORT_SEARCH';
 const BAKO_SUPPORT_SEARCH_URL = 'https://forms.gle/xqh4sADPoULPupnG8';
+const BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE =
+  'BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE';
 
 const FloatingCard = () => {
   const handleClose = () => {
-    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'true');
+    localStorage.setItem(BAKO_SUPPORT_SEARCH, 'false');
     setIsVisible(false);
   };
 
   const hasOpened = () => {
-    return !(localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true');
+    const hasSupportSearch =
+      localStorage.getItem(BAKO_SUPPORT_SEARCH) === 'true';
+    const hasResponded =
+      localStorage.getItem(BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE) === 'true';
+
+    return hasSupportSearch && !hasResponded;
   };
 
   const handleClick = () => {
+    localStorage.setItem(BAKO_SUPPORT_SEARCH_ALREADY_RESPONSE, 'true');
     window.open(BAKO_SUPPORT_SEARCH_URL, '_blank');
     handleClose();
   };

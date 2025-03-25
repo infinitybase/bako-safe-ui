@@ -53,8 +53,8 @@ const TransactionCardMobile = (props: TransactionCardMobileProps) => {
     !isDeclined &&
     !isCompleted &&
     !isReproved &&
-    !isCanceled &&
-    transaction;
+    transaction &&
+    !isCanceled;
 
   const { isOpen, onOpen, onClose } = useDetailsDialog();
 
