@@ -2,7 +2,7 @@ import {
   downloadFuel,
   FuelWalletTestHelper,
   getByAriaLabel,
-  getInputByName,
+  //getInputByName,
   test,
 } from '@fuels/playwright-utils';
 import type { BrowserContext, Page } from '@playwright/test';
@@ -16,7 +16,7 @@ export class E2ETestUtils {
     config.test.use({ pathToExtension: path });
   }
 
-  static async setup(config: {
+  static async setupFuelWallet(config: {
     page: Page;
     context: BrowserContext;
     extensionId: string;
@@ -46,17 +46,13 @@ export class E2ETestUtils {
     return { fuelWalletTestHelper, genesisWallet };
   }
 
-  static async signMessage(config: {
-    fuelWalletTestHelper: FuelWalletTestHelper;
-    page: Page;
-  }) {
-    const { fuelWalletTestHelper, page } = config;
-    await page.waitForTimeout(2000);
-    const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
-    await getByAriaLabel(popupPage, 'Sign').click();
-  }
+  static async setupPasskey(config: { page: Page }) {
+    const provider = new Provider('http://localhost:4000/v1/graphql');
+    const genesisWallet = Wallet.fromPrivateKey(
+      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+      provider,
+    );
 
-  static async enablePasskey(config: { page: Page }) {
     const client = await config.page.context().newCDPSession(config.page);
     await client.send('WebAuthn.enable');
     await client.send('WebAuthn.addVirtualAuthenticator', {
@@ -69,6 +65,22 @@ export class E2ETestUtils {
         automaticPresenceSimulation: true,
       },
     });
+
+    await config.page.goto('/');
+    await config.page.bringToFront();
+    await config.page.waitForTimeout(2000);
+
+    return { genesisWallet };
+  }
+
+  static async signMessageFuelWallet(config: {
+    fuelWalletTestHelper: FuelWalletTestHelper;
+    page: Page;
+  }) {
+    const { fuelWalletTestHelper, page } = config;
+    await page.waitForTimeout(2000);
+    const popupPage = await fuelWalletTestHelper.getWalletPopupPage();
+    await getByAriaLabel(popupPage, 'Sign').click();
   }
 
   static async fundVault(config: {

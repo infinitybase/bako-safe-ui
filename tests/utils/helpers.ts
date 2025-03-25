@@ -1,7 +1,13 @@
 // helpers.js
 
-import { expect } from '@fuels/playwright-utils';
+import { expect, getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
+
+export enum TestNetworks {
+  local = 'Local',
+  ignition = 'Ignition',
+  fuel_sepolia_testnet = 'Fuel Sepolia Testnet',
+}
 
 export async function modalCloseTest(page, element) {
   await page.locator('[aria-label="Close window"]').click();
@@ -47,17 +53,32 @@ export async function createVaults(page, baseVaultName) {
   }
 }
 
-export async function newTabVerification(page: Page, buttonSelector, urlEsperada: string) {
+export async function newTabVerification(
+  page: Page,
+  buttonSelector,
+  urlEsperada: string,
+) {
   const [novaAba] = await Promise.all([
-      page.context().waitForEvent('page'), // Captura a nova aba
-      await buttonSelector.click()// Clica no botão que abre a nova aba
+    page.context().waitForEvent('page'), // Captura a nova aba
+    await buttonSelector.click(), // Clica no botão que abre a nova aba
   ]);
 
-  await novaAba.waitForLoadState(); 
+  await novaAba.waitForLoadState();
 
-  const novaURL = novaAba.url(); 
+  const novaURL = novaAba.url();
   console.log('Nova aba URL:', novaURL);
 
   expect(novaURL).toContain(urlEsperada);
 }
 
+export async function disconnect(page: Page) {
+  await getByAriaLabel(page, 'Dropdown header').click();
+  await page.waitForTimeout(300);
+  await getByAriaLabel(page, 'Disconnect').click();
+}
+
+export async function selectLocalNetwork(page: Page, network: TestNetworks) {
+  await getByAriaLabel(page, 'Select networks').click();
+  await page.getByText(network).click();
+  await page.waitForTimeout(1000);
+}
