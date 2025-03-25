@@ -1,1 +1,1 @@
-export * from './useUpdateTransactionEvent';
+export * from './useTransactionsSocketListener';
