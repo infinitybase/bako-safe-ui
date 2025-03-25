@@ -4,9 +4,9 @@ import {
   SortOption,
   TransactionOrderBy,
 } from '@/modules/transactions/services';
+import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { VaultService } from '../services';
-import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 const useHomeVaultsRequest = (vaultsPerPage: number) => {
   const {

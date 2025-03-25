@@ -16,7 +16,7 @@ export interface GetAllPredicatesPayload extends PaginationParams {
   orderBy?: string;
   sort?: SortOption;
   orderByRoot?: boolean;
-  active?: boolean;
+  hidden?: boolean;
 }
 
 export interface HasReservedCoins {
@@ -29,6 +29,7 @@ export interface HasReservedCoins {
 export type PredicateWorkspace = Omit<Workspace, 'permissions'>;
 export type PredicateAndWorkspace = Predicate & {
   workspace: PredicateWorkspace;
+  isHidden: boolean;
 };
 export type PredicateResponseWithWorkspace = IPredicate & {
   workspace: Workspace;
@@ -60,6 +61,13 @@ export class VaultService {
       },
     );
 
+    return data;
+  }
+
+  static async toggleVisibility(address: string) {
+    const { data } = await api.post('/predicate/toggle-predicate', {
+      address,
+    });
     return data;
   }
 

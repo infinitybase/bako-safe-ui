@@ -13,7 +13,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
@@ -44,11 +43,11 @@ const UserVaultsPage = () => {
       inView,
     },
     screenSizes: { isSmall, isExtraSmall },
+    hiden,
+    setHiden,
   } = useWorkspaceContext();
+
   const workspaceId = userInfos?.workspace?.id ?? '';
-
-  const [showAll, setShowAll] = useState(true);
-
   return (
     <VStack
       w="full"
@@ -208,7 +207,7 @@ const UserVaultsPage = () => {
           Vaults
         </Text>
         <HStack spacing={2}>
-          {showAll ? (
+          {hiden ? (
             <Button
               color="grey.75"
               variant="txFilterType"
@@ -221,7 +220,7 @@ const UserVaultsPage = () => {
                   className="btn-icon"
                 />
               }
-              onClick={() => setShowAll(false)}
+              onClick={() => setHiden(false)}
               px={isExtraSmall ? 3 : 4}
             >
               Hide Inactives
@@ -239,7 +238,7 @@ const UserVaultsPage = () => {
                   className="btn-icon"
                 />
               }
-              onClick={() => setShowAll(true)}
+              onClick={() => setHiden(true)}
               px={isExtraSmall ? 3 : 4}
             >
               Show Inactives
@@ -316,7 +315,16 @@ const UserVaultsPage = () => {
             }}
           >
             {vaults?.map(
-              ({ id, name, workspace, members, description, owner }) => {
+              ({
+                id,
+                name,
+                workspace,
+                members,
+                description,
+                owner,
+                isHidden,
+                predicateAddress,
+              }) => {
                 return (
                   <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
                     <GridItem>
@@ -326,6 +334,7 @@ const UserVaultsPage = () => {
                         workspace={workspace}
                         title={description}
                         members={members!}
+                        isHidden={isHidden}
                         onClick={() =>
                           handleWorkspaceSelection(
                             workspace.id,
@@ -335,6 +344,7 @@ const UserVaultsPage = () => {
                             }),
                           )
                         }
+                        address={predicateAddress}
                       />
                     </GridItem>
                   </CustomSkeleton>

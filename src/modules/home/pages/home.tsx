@@ -37,7 +37,6 @@ const HomePage = () => {
   } = useWorkspaceContext();
 
   const recentVaults = latestPredicates.data?.predicates?.data;
-
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   return (
@@ -62,6 +61,25 @@ const HomePage = () => {
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
             flex={1}
+            onClick={() =>
+              navigate(
+                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
+              )
+            }
+          >
+            <ActionCard.Icon icon={VaultIcon} />
+            <Box>
+              <ActionCard.Title>Vaults</ActionCard.Title>
+              <ActionCard.Description>
+                Access and Manage All Your Vaults in One Place.
+              </ActionCard.Description>
+            </Box>
+          </ActionCard.Container>
+        </CustomSkeleton>
+
+        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
+          <ActionCard.Container
+            flex={1}
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
@@ -78,25 +96,6 @@ const HomePage = () => {
               <ActionCard.Title>Transactions</ActionCard.Title>
               <ActionCard.Description>
                 Manage Transactions Across All Vaults in One Place.
-              </ActionCard.Description>
-            </Box>
-          </ActionCard.Container>
-        </CustomSkeleton>
-
-        <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
-          <ActionCard.Container
-            flex={1}
-            onClick={() =>
-              navigate(
-                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
-              )
-            }
-          >
-            <ActionCard.Icon icon={VaultIcon} />
-            <Box>
-              <ActionCard.Title>Vaults</ActionCard.Title>
-              <ActionCard.Description>
-                Access and Manage All Your Vaults in One Place.
               </ActionCard.Description>
             </Box>
           </ActionCard.Container>
@@ -196,7 +195,19 @@ const HomePage = () => {
             }}
           >
             {recentVaults?.map(
-              ({ id, name, workspace, members, description, owner }, index) => {
+              (
+                {
+                  id,
+                  name,
+                  workspace,
+                  members,
+                  description,
+                  owner,
+                  isHidden,
+                  predicateAddress,
+                },
+                index,
+              ) => {
                 const lastCard = index === vaultsMax - 1;
                 const hasMore = extraCount > 0;
 
@@ -237,6 +248,8 @@ const HomePage = () => {
                             )
                           }
                           inHome={true}
+                          isHidden={isHidden}
+                          address={predicateAddress}
                         />
                       )}
                     </GridItem>
