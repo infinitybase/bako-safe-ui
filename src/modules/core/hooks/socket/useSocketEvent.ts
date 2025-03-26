@@ -1,11 +1,12 @@
-import { useEffect, useCallback, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+
 import { useSocket } from '@/modules/core';
 
 export const useSocketEvent = <T>(
   event: string,
   callbacks: ((data: T) => void)[],
 ) => {
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const callbacksRef = useRef<((data: T) => void)[]>([]);
   const stableCallbacks = useMemo(() => callbacks, [callbacks]);
 
@@ -18,12 +19,11 @@ export const useSocketEvent = <T>(
   }, []);
 
   useEffect(() => {
-    if (!socket) return;
-
+    if (!socket || !isConnected) return;
     socket.on(event, handleSocketEvent);
 
     return () => {
       socket.off(event, handleSocketEvent);
     };
-  }, [socket, event, handleSocketEvent]);
+  }, [socket, event, handleSocketEvent, isConnected]);
 };
