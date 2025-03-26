@@ -36,6 +36,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { StatusFilter } from '../../../transactions/hooks';
 import { transactionStatus } from '../../../transactions/utils';
 
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+
 const TransactionsVaultPage = () => {
   const {
     vaultPageParams: { workspaceId: vaultWkId },
@@ -84,6 +87,13 @@ const TransactionsVaultPage = () => {
       resetAllTransactionsTypeFilters();
     };
   }, []);
+
+  const vaultQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+
+  useTransactionSocketListener(vaultQueryKey ?? []);
 
   const hasTransactions = !isLoading && transactions?.length;
 

@@ -6,7 +6,7 @@ import { HomeService } from '../services';
 
 const useHomeTransactionsRequest = (workspaceId: string) => {
   return useQuery({
-    queryKey: [HomeQueryKey.HOME_WORKSPACE(workspaceId)],
+    queryKey: HomeQueryKey.HOME_WORKSPACE(workspaceId),
     queryFn: () => HomeService.homeTransactions(),
     refetchOnWindowFocus: true,
     enabled: window.location.pathname != '/',

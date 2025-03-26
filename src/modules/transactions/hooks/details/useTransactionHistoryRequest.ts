@@ -9,6 +9,15 @@ import {
 
 export const TRANSACTION_HISTORY_QUERY_KEY = 'transaction/history';
 
+export const getTransactionHistoryQueryKey = (
+  transactionId: string,
+  predicateId: string,
+) => {
+  return [TRANSACTION_HISTORY_QUERY_KEY, transactionId, predicateId].filter(
+    Boolean,
+  );
+};
+
 export interface UseTransactionHistoryRequestProps {
   transactionId: string;
   predicateId: string;

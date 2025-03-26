@@ -22,6 +22,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
 
+import { HomeQueryKey } from '@/modules/core';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+
 const HomePage = () => {
   const {
     authDetails: { userInfos },
@@ -35,6 +38,12 @@ const HomePage = () => {
   const recentVaults = latestPredicates.data?.predicates?.data;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const homeQueryKey = HomeQueryKey.HOME_WORKSPACE(
+    userInfos.workspace?.id ?? '',
+  );
+
+  useTransactionSocketListener(homeQueryKey ?? []);
 
   return (
     <VStack

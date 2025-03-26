@@ -6,7 +6,7 @@ import { HomeService } from '../services';
 
 const useHomeDataRequest = (currentWorkspace: string) => {
   return useQuery({
-    queryKey: HomeQueryKey.HOME_WORKSPACE(currentWorkspace),
+    queryKey: HomeQueryKey.HOME_DATA(currentWorkspace),
     queryFn: () => HomeService.home(),
     refetchOnWindowFocus: false,
     enabled: window.location.pathname != '/',

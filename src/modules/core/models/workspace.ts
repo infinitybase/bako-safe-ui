@@ -112,15 +112,17 @@ export const WorkspacesQueryKey = {
     vaultId?: string,
     id?: string,
     type?: TransactionType,
-  ) => [
-    WorkspacesQueryKey.DEFAULT,
-    'transaction-list-pagination',
-    workspaceId,
-    vaultId,
-    status,
-    id,
-    type,
-  ],
+  ) => {
+    return [
+      WorkspacesQueryKey.DEFAULT,
+      'transaction-list-pagination',
+      workspaceId,
+      status,
+      vaultId,
+      id,
+      type,
+    ].filter(Boolean);
+  },
   PENDING_TRANSACTIONS: (workspaceId: string, vaultId?: string) => [
     WorkspacesQueryKey.DEFAULT,
     workspaceId,
