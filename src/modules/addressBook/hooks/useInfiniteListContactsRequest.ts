@@ -45,18 +45,20 @@ const useInfiniteListcontactsRequest = (
           : undefined,
     });
 
-  const observer = useRef<IntersectionObserver>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoading) return;
 
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      });
+      if (!observer.current) {
+        observer.current = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            fetchNextPage();
+          }
+        });
+      } else {
+        observer.current.disconnect();
+      }
 
       if (node) observer.current.observe(node);
     },
