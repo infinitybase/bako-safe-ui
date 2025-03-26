@@ -5,10 +5,12 @@ import {
   Icon,
   IconButton,
   Image,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { useState } from 'react';
 
 import { UpRightArrow } from '@/components';
 import {
@@ -45,14 +47,19 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
     assetId: nft.assetId,
     nftList,
   });
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const redirectToNetwork = () =>
     window.open(
       `${NetworkService.getExplorer(network.url)}/account/${vault.data.predicateAddress}/assets`,
       '_BLANK',
     );
+
   if (!nftsInfo) {
     return null;
   }
+
   return (
     <Card
       p={4}
@@ -64,14 +71,17 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
-        <Image
-          w="full"
-          h="auto"
-          src={nftImageUrl || UNKNOWN_ASSET.icon}
-          borderRadius={5}
-          alt="NFT Image"
-          objectFit="cover"
-        />
+        <Skeleton isLoaded={imageLoaded} w="full" h="200px" borderRadius={5}>
+          <Image
+            w="full"
+            h="auto"
+            src={nftImageUrl || UNKNOWN_ASSET.icon}
+            borderRadius={5}
+            alt="NFT Image"
+            objectFit="cover"
+            onLoad={() => setImageLoaded(true)}
+          />
+        </Skeleton>
         <VStack alignItems="flex-start" gap={0} maxW="full">
           <HStack>
             <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
@@ -161,7 +171,7 @@ const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => (
       '2xl': 'repeat(6, 1fr)',
     }}
   >
-    {assets.map((asset) => (
+    {assets?.map((asset) => (
       <AssetsBalanceCard key={asset.assetId} asset={asset} />
     ))}
   </Grid>
