@@ -81,7 +81,9 @@ const AmountInput = (props: AmountInputProps) => (
           inputValue = `${integerPart}.${decimalPart}0`;
         }
       }
-
+      if (inputValue === '.00') {
+        inputValue = '0.00';
+      }
       event.target.value = inputValue;
       props.onChange?.(event);
     }}

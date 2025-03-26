@@ -155,7 +155,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                   onChange={field.onChange}
                   onInputChange={async (value: string) => {
                     const result = { value, label: value };
-
                     if (value.startsWith('@')) {
                       const address = await fetchResolveAddress.handler(
                         value.split(' - ').at(0)!,
@@ -360,9 +359,8 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const recipientLabel =
           contact ??
           resolverName ??
-          form.watch(`transactions.${index}.resolvedLabel`) ??
-          AddressUtils.format(transaction.value);
-
+          AddressUtils.format(transaction.value) ??
+          form.watch(`transactions.${index}.resolvedLabel`);
         const isNFT = isNFTAsset(transaction.asset);
 
         return (
