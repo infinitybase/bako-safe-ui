@@ -1,4 +1,5 @@
 import { Avatar, Badge, HStack, Text, VStack } from '@chakra-ui/react';
+import { memo } from 'react';
 
 import { Card, CardProps } from '@/components';
 
@@ -15,7 +16,7 @@ interface VaultDrawerBoxProps extends CardProps {
   root?: boolean;
 }
 
-const VaultItemBox = (props: VaultDrawerBoxProps) => {
+const VaultItemBox = memo((props: VaultDrawerBoxProps) => {
   const { isActive, name, members, root, ...rest } = props;
 
   const hasMultipleMembers = members && members >= 2;
@@ -96,6 +97,8 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
       </HStack>
     </Card>
   );
-};
+});
+
+VaultItemBox.displayName = 'VaultItemBox';
 
 export { VaultItemBox };
