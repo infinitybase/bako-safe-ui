@@ -342,18 +342,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const transaction = form.watch(`transactions.${index}`);
         const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
         const fieldState = form.getFieldState(`transactions.${index}`);
-        const resolvedLabel = form.watch(`transactions.${index}.resolvedLabel`);
+        let resolvedLabel = form.watch(`transactions.${index}.resolvedLabel`);
 
-        let label = ' ';
         if (resolvedLabel?.startsWith('@')) {
-          label = resolvedLabel?.split(' ')[0];
+          resolvedLabel = resolvedLabel?.split(' ')[0];
         }
-        if (resolvedLabel === '') {
-          form.setValue(`transactions.${index}.resolvedLabel`, label);
-        }
-        const hasEmptyField = Object.values(transaction).some(
-          (value) => value === '',
-        );
+        const hasEmptyField = Object.entries(transaction)
+          .filter(([key]) => key !== 'resolvedLabel')
+          .some(([, value]) => value === '');
 
         const currentAmount = form.watch(`transactions.${index}.amount`);
         const isCurrentAmountZero = Number(currentAmount) === 0;
@@ -365,12 +361,9 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         )?.nickname;
         const resolverName = getResolverName(transaction.value);
         let recipientLabel =
-          contact ??
-          resolverName ??
-          AddressUtils.format(transaction.value) ??
-          label;
-        if (label?.startsWith('@')) {
-          recipientLabel = label;
+          contact ?? resolverName ?? AddressUtils.format(transaction.value);
+        if (resolvedLabel?.startsWith('@')) {
+          recipientLabel = resolvedLabel;
         }
         const isNFT = isNFTAsset(transaction.asset);
 
