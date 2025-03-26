@@ -45,9 +45,6 @@ const VaultDetailsPage = () => {
   const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
   const [depositDialogState, setDepositDialogState] = useState(false);
   const menuDrawer = useDisclosure();
-  const {
-    vaultPageParams: { workspaceId: vaultWkId },
-  } = useGetParams();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
   const { vault, assets, account } = useVaultInfosContext();
@@ -270,14 +267,13 @@ const VaultDetailsPage = () => {
           />
         </Box>
         <Spacer />
-        {
-          <TransactionTypeFilters
-            currentFilter={txFilterType}
-            incomingAction={handleIncomingAction}
-            outgoingAction={handleOutgoingAction}
-            buttonsFullWidth={isSmall}
-          />
-        }
+
+        <TransactionTypeFilters
+          currentFilter={txFilterType}
+          incomingAction={handleIncomingAction}
+          outgoingAction={handleOutgoingAction}
+          buttonsFullWidth={isSmall}
+        />
       </Box>
 
       <CustomSkeleton
