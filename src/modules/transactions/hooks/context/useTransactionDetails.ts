@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/modules/auth';
@@ -81,12 +81,12 @@ const useTransactionDetails = () => {
     },
   });
 
-  const resetAllTransactionsTypeFilters = () => {
+  const resetAllTransactionsTypeFilters = useCallback(() => {
     transactionsPageList.handlers.listTransactionTypeFilter(undefined);
     transactionsPageList.filter.set(StatusFilter.ALL);
     vaultTransactions.handlers.listTransactionTypeFilter(undefined);
     vaultTransactions.filter.set(StatusFilter.ALL);
-  };
+  }, [transactionsPageList, vaultTransactions]);
 
   useEffect(() => {
     const prevPath = prevPathRef.current;

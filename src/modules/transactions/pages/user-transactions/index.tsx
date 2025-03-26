@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Divider,
   HStack,
   Icon,
   Stack,
@@ -27,13 +26,11 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
   TransactionCard,
-  TransactionCardMobile,
   TransactionFilter,
   WaitingSignatureBadge,
 } from '../../components';
 import { StatusFilter } from '../../hooks';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
-import { transactionStatus } from '../../utils';
 
 const UserTransactionsPage = () => {
   const {
@@ -41,7 +38,6 @@ const UserTransactionsPage = () => {
       transactionsRef,
       request: { isLoading, isFetching },
       filter,
-      inView,
       handlers: { navigate },
       lists: { transactions },
     },
@@ -312,67 +308,22 @@ const UserTransactionsPage = () => {
             }}
           >
             {transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
-                  >
-                    {grouped.monthYear}
-                  </Text>
+              <Box key={grouped.monthYear} w="full">
+                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
 
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
                 <TransactionCard.List mt={1} w="full" spacing={0}>
-                  {grouped?.transactions.map((transaction) => {
-                    const status = transactionStatus({
-                      ...transaction,
-                      account: userInfos.address,
-                    });
-                    const isSigner = !!transaction.predicate?.members?.find(
-                      (member) => member.address === userInfos.address,
-                    );
-
-                    return (
-                      <>
-                        <Box
-                          key={transaction.id}
-                          ref={transactionsRef}
-                          w="full"
-                        >
-                          {isMobile ? (
-                            <TransactionCardMobile
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos.address}
-                              mt="15px"
-                            />
-                          ) : (
-                            <TransactionCard.Container
-                              mb="11px"
-                              key={transaction.id}
-                              status={status}
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos.address}
-                              details={
-                                <TransactionCard.Details
-                                  transaction={transaction}
-                                  status={status}
-                                />
-                              }
-                            />
-                          )}
-                        </Box>
-
-                        <Box ref={inView.ref} />
-                      </>
-                    );
-                  })}
+                  {grouped?.transactions.map((transaction) => (
+                    <TransactionCard.Item
+                      key={transaction.id}
+                      ref={transactionsRef}
+                      w="full"
+                      isMobile={isMobile}
+                      transaction={transaction}
+                      userInfos={userInfos}
+                    />
+                  ))}
                 </TransactionCard.List>
-              </>
+              </Box>
             ))}
           </VStack>
         )}

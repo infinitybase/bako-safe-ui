@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   CircularProgress,
-  Divider,
   HStack,
   Icon,
   Text,
@@ -23,10 +22,9 @@ import {
 } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { Pages, useGetParams } from '@/modules/core';
+import { Pages } from '@/modules/core';
 import {
   TransactionCard,
-  TransactionCardMobile,
   TransactionFilter,
 } from '@/modules/transactions/components';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -34,13 +32,8 @@ import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
-import { transactionStatus } from '../../../transactions/utils';
 
 const TransactionsVaultPage = () => {
-  const {
-    vaultPageParams: { workspaceId: vaultWkId },
-  } = useGetParams();
-
   const menuDrawer = useDisclosure();
   const {
     authDetails: { userInfos },
@@ -55,16 +48,12 @@ const TransactionsVaultPage = () => {
 
   const workspaceId = userInfos.workspace?.id ?? '';
 
-  const {
-    vault,
-    assets: { hasBalance },
-  } = useVaultInfosContext();
+  const { vault } = useVaultInfosContext();
 
   const {
     vaultTransactions: {
       defaultIndex,
       filter,
-      inView,
       transactionsRef,
       lists: { transactions },
       handlers: {
@@ -294,68 +283,30 @@ const TransactionsVaultPage = () => {
             mt={3}
           >
             {transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
-                  >
-                    {grouped.monthYear}
-                  </Text>
-
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
-                {grouped?.transactions?.map((transaction) => {
-                  const status = transactionStatus({
-                    ...transaction,
-                    account: userInfos?.address,
-                  });
-                  const isSigner = !!transaction.predicate?.members?.find(
-                    (member) => member.address === userInfos?.address,
-                  );
-
-                  return (
-                    <TransactionCard.List
-                      w="full"
-                      spacing={0}
-                      openIndex={defaultIndex}
-                      key={defaultIndex.join(',')}
-                    >
-                      <Box key={transaction.id} ref={transactionsRef} w="full">
-                        <CustomSkeleton isLoaded={!isLoading}>
-                          {isMobile ? (
-                            <TransactionCardMobile
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos?.address}
-                              mt={1.5}
-                            />
-                          ) : (
-                            <TransactionCard.Container
-                              mb={0.5}
-                              key={transaction.id}
-                              status={status}
-                              isSigner={isSigner}
-                              transaction={transaction}
-                              account={userInfos?.address}
-                              details={
-                                <TransactionCard.Details
-                                  transaction={transaction}
-                                  status={status}
-                                />
-                              }
-                            />
-                          )}
-                        </CustomSkeleton>
-                      </Box>
-
-                      <Box ref={inView.ref} />
-                    </TransactionCard.List>
-                  );
-                })}
-              </>
+              <Box key={grouped.monthYear} w="full">
+                <TransactionCard.GroupMonth
+                  monthYear={grouped.monthYear}
+                  mb={2}
+                />
+                <TransactionCard.List
+                  w="full"
+                  spacing={0}
+                  openIndex={defaultIndex}
+                >
+                  {grouped?.transactions?.map((transaction) => {
+                    return (
+                      <TransactionCard.Item
+                        w="full"
+                        key={transaction.id}
+                        isMobile={isMobile}
+                        transaction={transaction}
+                        userInfos={userInfos}
+                        ref={transactionsRef}
+                      />
+                    );
+                  })}
+                </TransactionCard.List>
+              </Box>
             ))}
           </VStack>
         ) : (
