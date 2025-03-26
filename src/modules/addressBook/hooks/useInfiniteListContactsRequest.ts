@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { AddressBookQueryKey, WorkspaceContact } from '@/modules/core';
+import { DEFAULT_INITIAL_PAGE_PARAM } from '@/utils/constants';
 
 import { AddressBookService } from '../services';
 
@@ -13,7 +14,7 @@ const useInfiniteListcontactsRequest = (
   excludeContactsQueryKey: string,
   excludeContacts: string[] | undefined,
   perPage: number = 5,
-  page: number = 0,
+  page: number = DEFAULT_INITIAL_PAGE_PARAM,
 ) => {
   const dynamicPerPage =
     excludeContacts && excludeContacts.length >= 5
@@ -37,14 +38,14 @@ const useInfiniteListcontactsRequest = (
           perPage: dynamicPerPage,
           page: pageParam || page,
         }),
-      initialPageParam: 0,
+      initialPageParam: DEFAULT_INITIAL_PAGE_PARAM,
       getNextPageParam: (lastPage) =>
         lastPage.currentPage !== lastPage.totalPages
           ? lastPage.nextPage
           : undefined,
     });
 
-  const observer = useRef<IntersectionObserver>();
+  const observer = useRef<IntersectionObserver>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (isLoading) return;
