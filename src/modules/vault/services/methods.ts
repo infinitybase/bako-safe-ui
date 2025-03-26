@@ -65,9 +65,7 @@ export class VaultService {
   }
 
   static async toggleVisibility(address: string) {
-    const { data } = await api.post('/predicate/toggle-predicate', {
-      address,
-    });
+    const { data } = await api.put(`/predicate/${address}/visibility`);
     return data;
   }
 
