@@ -12,7 +12,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
@@ -56,7 +57,7 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { transactions },
-      request: { isLoading, isFetching },
+      request: { isLoading, isFetching, queryKey },
       handlers: { handleIncomingAction, handleOutgoingAction },
       inView,
       transactionsRef,
@@ -64,6 +65,7 @@ const VaultDetailsPage = () => {
     pendingSignerTransactions,
     isPendingSigner,
   } = useTransactionsContext();
+  const queryClient = useQueryClient();
 
   const { setTemplateFormInitial } = useTemplateStore();
 
@@ -92,6 +94,12 @@ const VaultDetailsPage = () => {
   const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   const hideSetTemplateButton = true;
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey, exact: true });
+    };
+  }, []);
 
   if (!vault) return null;
 

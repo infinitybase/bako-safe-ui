@@ -57,7 +57,6 @@ const useVaultTransactionsRequest = (
       }),
     refetchOnReconnect: false,
     refetchOnWindowFocus: true,
-    staleTime: Infinity,
     enabled: !!params.predicateId && !!params.predicateId[0],
     initialPageParam: { offsetDb: 0, offsetFuel: 0 },
     getNextPageParam: (lastPage) => {
@@ -75,6 +74,7 @@ const useVaultTransactionsRequest = (
   return {
     ...query,
     transactions: useGroupTransactionsByMonth(transactionsList),
+    queryKey,
   };
 };
 
