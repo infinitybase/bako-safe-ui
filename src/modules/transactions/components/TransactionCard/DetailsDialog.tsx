@@ -73,12 +73,12 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     },
   } = useTransactionsContext();
 
-  const { isSigned, isCompleted, isDeclined, isReproved } = status;
+  const { isSigned, isCompleted, isDeclined, isReproved, isCanceled } = status;
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
 
-  const showSignActions = awaitingAnswer && isSigner;
+  const showSignActions = awaitingAnswer && isSigner && !isCanceled;
 
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
