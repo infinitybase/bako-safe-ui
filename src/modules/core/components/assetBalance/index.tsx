@@ -71,10 +71,10 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
-        <Skeleton isLoaded={imageLoaded} w="full" h="200px" borderRadius={5}>
+        <Skeleton isLoaded={imageLoaded} w="full" h="auto" borderRadius={5}>
           <Image
             w="full"
-            h="auto"
+            h="full"
             src={nftImageUrl || UNKNOWN_ASSET.icon}
             borderRadius={5}
             alt="NFT Image"
