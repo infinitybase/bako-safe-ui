@@ -41,10 +41,9 @@ const UserVaultsPage = () => {
       request: { vaults, isLoading },
       handlers: { navigate },
       inView,
+      filter: { value, change },
     },
     screenSizes: { isSmall, isExtraSmall },
-    hiden,
-    setHiden,
   } = useWorkspaceContext();
 
   const workspaceId = userInfos?.workspace?.id ?? '';
@@ -207,7 +206,7 @@ const UserVaultsPage = () => {
           Vaults
         </Text>
         <HStack spacing={2}>
-          {hiden ? (
+          {value ? (
             <Button
               color="grey.75"
               variant="txFilterType"
@@ -220,7 +219,7 @@ const UserVaultsPage = () => {
                   className="btn-icon"
                 />
               }
-              onClick={() => setHiden(false)}
+              onClick={() => change(false)}
               px={isExtraSmall ? 3 : 4}
             >
               Hide Inactives
@@ -238,7 +237,7 @@ const UserVaultsPage = () => {
                   className="btn-icon"
                 />
               }
-              onClick={() => setHiden(true)}
+              onClick={() => change(true)}
               px={isExtraSmall ? 3 : 4}
             >
               Show Inactives

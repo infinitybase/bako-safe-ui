@@ -91,6 +91,9 @@ export type GetByNameResponse = {
 export type CheckNicknameResponse = {
   type: TypeUser;
 };
+export type UserSettings = {
+  inactivesPredicates: string[];
+};
 
 export type AuthenticateParams = {
   userId: string;
@@ -103,7 +106,7 @@ export type AuthenticateParams = {
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
   provider_url: string;
   first_login?: boolean;
-  settings?: Record<string, any>;
+  settings?: UserSettings;
 };
 
 export type AuthenticateWorkspaceParams = {

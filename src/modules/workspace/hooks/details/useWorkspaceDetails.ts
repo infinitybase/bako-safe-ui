@@ -29,7 +29,6 @@ const useWorkspaceDetails = () => {
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const screenSizes = useScreenSize();
-  const [hiden, setHiden] = useState(false);
   const authDetails = useAuth();
   const { isTxFromDapp } = useAuthUrlParams();
   const {
@@ -80,7 +79,7 @@ const useWorkspaceDetails = () => {
     useGetWorkspaceRequest(authDetails.userInfos.workspace?.id);
 
   const tokensUSD = useTokensUSDAmountRequest();
-  const userVaults = useUserVaults(authDetails.userInfos.address, hiden);
+  const userVaults = useUserVaults(authDetails.userInfos.address);
   const addressBookInfos = useAddressBook(
     authDetails,
     hasPermission,
@@ -141,8 +140,6 @@ const useWorkspaceDetails = () => {
     isTxFromDapp,
     isTokenExpired,
     setIsTokenExpired,
-    hiden,
-    setHiden,
   };
 };
 
