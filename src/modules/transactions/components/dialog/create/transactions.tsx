@@ -342,7 +342,15 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
         const transaction = form.watch(`transactions.${index}`);
         const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
         const fieldState = form.getFieldState(`transactions.${index}`);
+        const resolvedLabel = form.watch(`transactions.${index}.resolvedLabel`);
 
+        let label = ' ';
+        if (resolvedLabel?.startsWith('@')) {
+          label = resolvedLabel?.split(' ')[0];
+        }
+        if (resolvedLabel === '') {
+          form.setValue(`transactions.${index}.resolvedLabel`, label);
+        }
         const hasEmptyField = Object.values(transaction).some(
           (value) => value === '',
         );
@@ -356,11 +364,14 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           (nick) => nick.user.address === transaction.value,
         )?.nickname;
         const resolverName = getResolverName(transaction.value);
-        const recipientLabel =
+        let recipientLabel =
           contact ??
           resolverName ??
           AddressUtils.format(transaction.value) ??
-          form.watch(`transactions.${index}.resolvedLabel`);
+          label;
+        if (label?.startsWith('@')) {
+          recipientLabel = label;
+        }
         const isNFT = isNFTAsset(transaction.asset);
 
         return (
