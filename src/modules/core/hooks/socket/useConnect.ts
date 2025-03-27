@@ -1,8 +1,7 @@
 import { TransactionRequestLike } from 'fuels';
-import { useCallback, useContext, useRef } from 'react';
+import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
-import { useQueryParams } from '@/modules/auth';
 
 export enum SocketEvents {
   CONNECT = 'connection',
@@ -79,7 +78,7 @@ export interface ISocketEmitMessageParams {
 }
 
 export const useSocket = () => {
-  const socket = useContext(SocketContext);
+  const { socket, isConnected } = useContext(SocketContext);
   // const { request_id, origin } = useQueryParams();
 
   // const socketState = useRef(socket.connected);
@@ -128,5 +127,5 @@ export const useSocket = () => {
     );
   };
 
-  return { emitMessage, socket };
+  return { emitMessage, socket, isConnected };
 };

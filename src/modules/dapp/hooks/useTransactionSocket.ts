@@ -1,6 +1,5 @@
 import { TransactionRequestLike } from 'fuels';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook/hooks';
 import { useQueryParams } from '@/modules/auth/hooks';
@@ -64,9 +63,10 @@ export const useTransactionSocket = () => {
   const [isSigning, setIsSigning] = useState<boolean>(false);
 
   // const navigate = useNavigate(); // do not remove, makes socket connection work
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const { sessionId, request_id } = useQueryParams();
   const { warningToast, errorToast } = useContactToast();
+  const connectionAttemptedRef = useRef(false);
 
   const summary = useTransactionSummary();
 
@@ -175,6 +175,8 @@ export const useTransactionSocket = () => {
 
   const handleSocketEvent = useCallback(
     (data: any) => {
+      // eslint-disable-next-line no-debugger
+      debugger;
       console.log('SOCKET EVENT DATA:', data);
       if (data.to !== SocketUsernames.UI) return;
 
@@ -260,19 +262,23 @@ export const useTransactionSocket = () => {
   };
 
   useEffect(() => {
-    socket.emit(SocketEvents.DEFAULT, {
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      request_id,
-      type: SocketEvents.CONNECTED,
-      data: {},
-    });
+    if (!isConnected) return;
 
-    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+    if (!connectionAttemptedRef.current) {
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
+      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+      connectionAttemptedRef.current = true;
+    }
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
     };
-  }, [socket.connected]);
+  }, [socket, isConnected]);
 
   return {
     vault: vaultRef.current,
