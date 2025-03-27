@@ -61,10 +61,8 @@ export class AuthTestService {
     console.log('Clicou no input', usernameInput.focus());
 
     await usernameInput.fill(username);
-    //await page.locator('body').click();
-    await page
-      .locator('[id="tabs-\\:rt\\:--tabpanel-0"] #subtitle_login')
-      .click();
+
+    await getByAriaLabel(page, 'subtitle_login_page').nth(0).click();
 
     await page.waitForTimeout(300);
 
@@ -90,7 +88,7 @@ export class AuthTestService {
     });
   }
 
-  static async loginInTwoAccounts(page: Page) {
+  static async loginPassKeyInTwoAccounts(page: Page) {
     const { genesisWallet: wallet, username: firstUsername } =
       await this.loginAuth(page);
 
