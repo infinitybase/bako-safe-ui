@@ -1,5 +1,6 @@
 import { expect, getByAriaLabel, hasText, test } from '@fuels/playwright-utils';
 
+import { mockRouteAssets } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
 
@@ -8,6 +9,7 @@ await E2ETestUtils.downloadFuelExtension({ test });
 test.describe('Vaults', () => {
   test('create vault 1/1', async ({ page }) => {
     //await AuthTestService.loginWalletConnection(page, context, extensionId);
+    await mockRouteAssets(page);
     await AuthTestService.loginAuth(page);
 
     // Check if the user is logged in and go to Home page
@@ -60,6 +62,7 @@ test.describe('Vaults', () => {
 
   test('create vault 2/2', async ({ page }) => {
     //await AuthTestService.loginWalletConnection(page, context, extensionId);
+    await mockRouteAssets(page);
     const wrongAdr = '0xe77A8531c3EEEE448B7536dD9B44cc9B841269bE';
     const adr2 =
       '0x5cD19FF270Db082663993D3D9cF6342f9869491AfB06F6DC885B1794DB261fCB';

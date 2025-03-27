@@ -7,6 +7,7 @@ import {
 import { BakoProvider, Vault } from 'bakosafe';
 import { Address, WalletUnlocked } from 'fuels';
 
+import { mockRouteAssets } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { VaultTestService } from './utils/services/vault-service';
 import { E2ETestUtils } from './utils/setup';
@@ -30,6 +31,7 @@ test.describe('API Token', () => {
     const apiTokenName = 'key1';
     const txNameApiToken = 'tx1';
     const txName = 'Deposit by apy token';
+    await mockRouteAssets(page);
 
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
 

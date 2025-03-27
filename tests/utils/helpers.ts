@@ -1,7 +1,7 @@
 // helpers.js
-
 import { expect, getByAriaLabel } from '@fuels/playwright-utils';
 import { Page } from '@playwright/test';
+import fs from 'fs';
 
 export enum TestNetworks {
   local = 'Local',
@@ -77,8 +77,21 @@ export async function disconnect(page: Page) {
   await getByAriaLabel(page, 'Disconnect').click();
 }
 
-export async function selectLocalNetwork(page: Page, network: TestNetworks) {
+export async function selectNetwork(page: Page, network: TestNetworks) {
   await getByAriaLabel(page, 'Select networks').click();
   await page.getByText(network).click();
   await page.waitForTimeout(1000);
+}
+
+export async function mockRouteAssets(page: Page) {
+  const mockVerifiedAssets = JSON.parse(
+    fs.readFileSync('tests/utils/mocks/verified-assets.json', 'utf-8'),
+  );
+
+  await page.route(
+    'https://verified-assets.fuel.network/assets.json',
+    async (route) => {
+      await route.fulfill({ json: mockVerifiedAssets });
+    },
+  );
 }

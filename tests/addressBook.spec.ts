@@ -1,6 +1,6 @@
 import { expect, getByAriaLabel, test } from '@fuels/playwright-utils';
 
-import { modalCloseTest } from './utils/helpers';
+import { mockRouteAssets, modalCloseTest } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
 
@@ -10,6 +10,8 @@ test.describe('AddressBook', () => {
   test('crud address book', async ({ page }) => {
     const addressTitle = 'Novo endereço';
     const addressTitleEdited = 'Endereço editado';
+
+    await mockRouteAssets(page);
 
     //await AuthService.loginWalletConnection(page, context, extensionId);
     await AuthTestService.loginAuth(page);

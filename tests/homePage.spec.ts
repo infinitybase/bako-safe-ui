@@ -1,12 +1,13 @@
 import { expect, hasText, test } from '@fuels/playwright-utils';
 
-import { txFilters } from './utils/helpers';
+import { mockRouteAssets, txFilters } from './utils/helpers';
 import { AuthTestService } from './utils/services/auth-service';
 import { E2ETestUtils } from './utils/setup';
 
 await E2ETestUtils.downloadFuelExtension({ test });
 
 test('webauthn', async ({ page }) => {
+  await mockRouteAssets(page);
   await AuthTestService.loginAuth(page);
 
   await hasText(page, /Welcome to Bako Safe!/);

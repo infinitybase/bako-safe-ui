@@ -25,7 +25,7 @@ export class E2ETestUtils {
 
     const provider = new Provider('http://localhost:4000/v1/graphql');
     const genesisWallet = Wallet.fromPrivateKey(
-      '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+      '0x0b9554fC251Be0E3eb2B61266e827824Ac49f66347629c4dc9C440de5752a992',
       provider,
     );
 
