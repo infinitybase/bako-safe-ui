@@ -18,18 +18,16 @@ test.describe('Fuel Wallet', () => {
   let genesisWallet: WalletUnlocked;
 
   test.beforeEach(async ({ extensionId, context, page }) => {
-    const E2EUtils = await E2ETestUtils.setup({
+    const E2EUtils = await E2ETestUtils.setupFuelWallet({
       page,
       context,
       extensionId,
     });
 
-
-    masterWallet = E2EUtils.genesisWallet;
+    genesisWallet = E2EUtils.genesisWallet;
     fuelWalletTestHelper = E2EUtils.fuelWalletTestHelper;
   });
 
-  
   test('example fuel wallet', async ({ page }) => {
     // Get the Fuel Wallet button and click it
     await getByAriaLabel(page, 'Connect Fuel Wallet').click();
@@ -38,7 +36,7 @@ test.describe('Fuel Wallet', () => {
     await fuelWalletTestHelper.walletConnect();
 
     // Sign a message in the Fuel Wallet
-    await E2ETestUtils.signMessage({
+    await E2ETestUtils.signMessageFuelWallet({
       page,
       fuelWalletTestHelper,
     });
@@ -87,7 +85,7 @@ test('load page', async ({ page }) => {
 });
 
 test('webauthn', async ({ page }) => {
-  await E2ETestUtils.enablePasskey({ page });
+  await E2ETestUtils.setupPasskey({ page });
 
   // Navegue até a página inicial
   await page.goto('/');
