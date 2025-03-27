@@ -87,6 +87,10 @@ export type GetByNameResponse = {
   webAuthnId?: string;
 };
 
+export type GetByIdResponse = {
+  type: TypeUser;
+};
+
 export type CheckNicknameResponse = {
   type: TypeUser;
 };
@@ -198,6 +202,12 @@ export class UserService {
 
   static async getByName(name: string) {
     const { data } = await api.get<GetByNameResponse>(`/user/by-name/${name}`);
+
+    return data;
+  }
+
+  static async getById(id: string) {
+    const { data } = await api.get<GetByIdResponse>(`/user/${id}`);
 
     return data;
   }

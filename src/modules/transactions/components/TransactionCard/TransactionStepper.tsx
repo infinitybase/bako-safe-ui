@@ -16,6 +16,7 @@ import { memo, useEffect, useMemo } from 'react';
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
+import { useGetUserById } from '../../hooks/filter/useFilterUserType';
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
 
 interface TransactionStepperProps {
@@ -107,6 +108,8 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
         colorScheme="grey"
       >
         {steps?.map((step, index) => {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const { data: user } = useGetUserById(step.owner.id);
           const nickname = contactByAddress(step.owner.address)?.nickname;
           const declined = step.type === TransactionHistoryType.DECLINE;
           const failed = step.type === TransactionHistoryType.FAILED;
@@ -188,9 +191,11 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                     {!nickname && step.type !== TransactionHistoryType.SEND && (
                       <Text variant="subtitle" color="grey.425">
                         {step.owner.address !== userInfos.address &&
-                          AddressUtils.format(
-                            AddressUtils.toBech32(`${step.owner.address}`),
-                          )}
+                        user?.type === 'WEB_AUTHN'
+                          ? AddressUtils.format(
+                              AddressUtils.toBech32(`${step.owner.address}`),
+                            )
+                          : AddressUtils.format(`(${step.owner.address})`)}
                       </Text>
                     )}
                   </StepTitle>
