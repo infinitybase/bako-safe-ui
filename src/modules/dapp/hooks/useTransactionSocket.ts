@@ -175,9 +175,6 @@ export const useTransactionSocket = () => {
 
   const handleSocketEvent = useCallback(
     (data: any) => {
-      // eslint-disable-next-line no-debugger
-      debugger;
-      console.log('SOCKET EVENT DATA:', data);
       if (data.to !== SocketUsernames.UI) return;
 
       switch (data.type) {
