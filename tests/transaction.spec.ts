@@ -298,7 +298,7 @@ test.describe('Create transactions', () => {
     expect(completedCount).toBe(1);
   });
 
-  test('create two tx vault 2/2 wallet 2 signs', async ({ page }) => {
+  test('create tx vault 2/2 wallet 2 signs', async ({ page }) => {
     const signsNeed = 2;
     await AuthTestService.loginWalletConnection(page, fuelWalletTestHelper);
     // Check if the user is logged in
