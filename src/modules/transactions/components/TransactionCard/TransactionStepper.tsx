@@ -108,7 +108,6 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
       >
         {steps?.map((step, index) => {
           const nickname = contactByAddress(step.owner.address)?.nickname;
-          console.log(AddressUtils.toBech32(step.owner.address));
           const declined = step.type === TransactionHistoryType.DECLINE;
           const failed = step.type === TransactionHistoryType.FAILED;
           const canceled = step.type === TransactionHistoryType.CANCEL;
