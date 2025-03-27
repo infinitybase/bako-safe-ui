@@ -1,5 +1,7 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
+import { shakeAnimationY } from '@/modules';
+
 const primary = defineStyle({
   bgColor: 'brand.500',
   color: 'dark.300',
@@ -38,7 +40,13 @@ const secondaryV2 = defineStyle({
     _disabled: {
       bgColor: 'initial',
     },
+    span: {
+      animation: `${shakeAnimationY} 0.5s ease-in-out;`,
+    },
+    textDecoration: 'none',
   },
+  textDecoration: 'none',
+
   fontWeight: 'normal',
   letterSpacing: '.5px',
   fontSize: 'xs',

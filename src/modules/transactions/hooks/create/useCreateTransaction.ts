@@ -205,53 +205,56 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     assetsMap,
   );
 
-  const getBalanceAvailable = useCallback(() => {
-    const currentAssetBalance = bn.parseUnits(
-      formattedCurrentAssetBalance?.find(
-        (asset) => asset.assetId === currentFieldAsset,
-      )?.amount ?? '0',
-    );
+  const getBalanceAvailable = useCallback(
+    (assetId?: string) => {
+      const assetToCheck = assetId ?? currentFieldAsset;
 
-    const currentAssetAmount =
-      transactionAssetsTotalAmount?.[currentFieldAsset] ?? bn(0);
+      const currentAssetBalance = bn.parseUnits(
+        formattedCurrentAssetBalance?.find(
+          (asset) => asset.assetId === assetToCheck,
+        )?.amount ?? '0',
+      );
 
-    const assetFieldsAmount = currentAssetAmount.gt(0)
-      ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmount))
-      : currentAssetAmount;
+      const currentAssetAmount =
+        transactionAssetsTotalAmount?.[assetToCheck] ?? bn(0);
 
-    const balanceAvailableWithoutFee = assetFieldsAmount.gte(
-      currentAssetBalance,
-    )
-      ? bn(0)
-      : currentAssetBalance.sub(assetFieldsAmount);
+      const assetFieldsAmount = currentAssetAmount.gt(0)
+        ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmount))
+        : currentAssetAmount;
 
-    const isEthTransaction = currentFieldAsset === NativeAssetId;
-    const isNFT = !!props?.nfts?.find(
-      (nft) => nft.assetId === currentFieldAsset,
-    );
-    const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
+      const balanceAvailableWithoutFee = assetFieldsAmount.gte(
+        currentAssetBalance,
+      )
+        ? bn(0)
+        : currentAssetBalance.sub(assetFieldsAmount);
 
-    let balanceAvailable = '0.000';
+      const isEthTransaction = assetToCheck === NativeAssetId;
+      const isNFT = !!props?.nfts?.find((nft) => nft.assetId === assetToCheck);
+      const transactionFee = bn.parseUnits(validTransactionFee ?? '0');
 
-    if (isEthTransaction && balanceAvailableWithoutFee.gte(transactionFee)) {
-      balanceAvailable = balanceAvailableWithoutFee
-        .sub(transactionFee)
-        .format();
-    }
+      let balanceAvailable = '0.000';
 
-    if (!isEthTransaction) {
-      balanceAvailable = isNFT
-        ? bn(1)?.format({ units: -9, precision: 0 })
-        : balanceAvailableWithoutFee.format();
-    }
+      if (isEthTransaction && balanceAvailableWithoutFee.gte(transactionFee)) {
+        balanceAvailable = balanceAvailableWithoutFee
+          .sub(transactionFee)
+          .format();
+      }
 
-    return balanceAvailable;
-  }, [
-    currentFieldAmount,
-    validTransactionFee,
-    transactionAssetsTotalAmount,
-    currentVaultAssets,
-  ]);
+      if (!isEthTransaction) {
+        balanceAvailable = isNFT
+          ? bn(1)?.format({ units: -9, precision: 0 })
+          : balanceAvailableWithoutFee.format();
+      }
+
+      return balanceAvailable;
+    },
+    [
+      currentFieldAmount,
+      validTransactionFee,
+      transactionAssetsTotalAmount,
+      currentVaultAssets,
+    ],
+  );
 
   const handleClose = () => {
     props?.onClose();

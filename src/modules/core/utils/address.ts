@@ -1,4 +1,4 @@
-import { AddressUtils as BakoAddressUtils } from 'bakosafe';
+import { AddressUtils as BakoAddressUtils, BakoProvider } from 'bakosafe';
 import { Address, isB256 } from 'fuels';
 
 export enum Batch32Prefix {
@@ -7,7 +7,7 @@ export enum Batch32Prefix {
 
 export type Batch32 = `${Batch32Prefix}.${string}`;
 
-class AddressUtils {
+export class AddressUtils {
   static isValid(address: string) {
     try {
       return BakoAddressUtils.isPasskey(address) || isB256(address);
@@ -39,4 +39,22 @@ class AddressUtils {
   }
 }
 
-export { AddressUtils };
+export class AddressValidator {
+  private addresses: Map<string, boolean>;
+
+  constructor(public provider: Promise<BakoProvider>) {
+    this.addresses = new Map();
+  }
+
+  async isValid(address: string) {
+    if (this.addresses.has(address)) {
+      return this.addresses.get(address)!;
+    }
+
+    const provider = await this.provider;
+    const isValid = await provider.isUserAccount(address);
+    this.addresses.set(address, isValid);
+
+    return isValid;
+  }
+}
