@@ -4,6 +4,7 @@ import { localStorageKeys } from '@/modules/auth/services';
 import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { Asset, AssetMap } from './types';
+
 const ETHDefault = 'https://cdn.fuel.network/assets/eth.svg';
 const NativeAssetId =
   '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
@@ -18,6 +19,7 @@ export const UNKNOWN_ASSET = {
   units: UNKNOWN_ASSET_UNITS,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getFuelTokensList = () => {
   const atual = window.localStorage.getItem(
     localStorageKeys.FUEL_MAPPED_TOKENS,
@@ -43,14 +45,24 @@ export const formatedAssets = (assetsList: Assets, chainId: number): Asset[] =>
         ) ?? null;
       if (!network && asset?.name && asset?.symbol && asset) {
         acc.push({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           name: asset.name,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           slug: asset.symbol,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignore
           assetId: asset.assetId,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignore
           icon: asset?.metadata?.URI ?? UNKNOWN_ASSET.icon,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignore
           units: asset.decimals,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
+          metadata: asset.metadata,
         });
       } else if (network && network.type === 'fuel') {
         acc.push({
@@ -73,7 +85,7 @@ export const assetsMapFromFormattedFn = (
   chainId: number,
 ): AssetMap => {
   const assets = formatedAssets(tokenList, chainId);
-  let assetsMap: AssetMap = assets.reduce((previousValue, currentValue) => {
+  const assetsMap: AssetMap = assets.reduce((previousValue, currentValue) => {
     return {
       ...previousValue,
       [currentValue.assetId]: {
@@ -82,30 +94,10 @@ export const assetsMapFromFormattedFn = (
         icon: currentValue?.icon,
         assetId: currentValue?.assetId,
         units: currentValue?.units,
+        metadata: currentValue?.metadata,
       },
     };
   }, {});
-
-  // TODO: remove this
-  assetsMap = {
-    ...assetsMap,
-    '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82': {
-      assetId:
-        '0x1d5d97005e41cae2187a895fd8eab0506111e0e2f3331cd3912c15c24e3c1d82',
-      name: 'Fuel',
-      slug: 'FUEL',
-      icon: 'https://verified-assets.fuel.network/images/fuel.svg',
-      units: 9,
-    },
-    '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b': {
-      assetId:
-        '0x324d0c35a4299ef88138a656d5272c5a3a9ccde2630ae055dacaf9d13443d53b',
-      name: 'Fuel',
-      slug: 'FUEL',
-      icon: 'https://verified-assets.fuel.network/images/fuel.svg',
-      units: 9,
-    },
-  };
 
   return assetsMap;
 };
