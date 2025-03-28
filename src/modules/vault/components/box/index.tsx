@@ -85,7 +85,7 @@ const VaultBox = (props: VaultBoxPropx) => {
 
   const redirectToNetwork = () =>
     window.open(
-      `${NetworkService.getExplorer(network.url)}/account/${address}/assets`,
+      `${NetworkService.getExplorer(network?.url)}/account/${address}/assets`,
       '_BLANK',
     );
 

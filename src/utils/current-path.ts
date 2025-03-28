@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-const currentPath = () => {
+const useCurrentPath = () => {
   const { pathname } = useLocation();
 
   const isSignInpage = pathname === '/';
@@ -12,4 +12,4 @@ const currentPath = () => {
   };
 };
 
-export { currentPath };
+export { useCurrentPath };

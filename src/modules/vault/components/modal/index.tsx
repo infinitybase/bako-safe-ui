@@ -14,8 +14,8 @@ import { CustomSkeleton, Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog } from '../dialog';
-import { VaultItemBox } from './box';
 import { useVaultDrawer } from './hook';
+import { VaultList } from './VaultList';
 
 interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
@@ -136,22 +136,11 @@ const VaultListModal = ({
                 <CustomSkeleton h="90px" w="full" />
               )}
               <CustomSkeleton isLoaded={isLoadingVaults}>
-                {vaults?.map((vault) => {
-                  return (
-                    <VaultItemBox
-                      key={vault.id}
-                      mt={4}
-                      name={vault.name}
-                      address={vault.predicateAddress}
-                      root={vault.root}
-                      // workspace={vault.workspace}
-                      isActive={vaultId === vault.id}
-                      members={vault.members?.length}
-                      onClick={() => drawer.onSelectVault(vault)}
-                      // isSingleWorkspace={vault.workspace.single}
-                    />
-                  );
-                })}
+                <VaultList
+                  vaults={vaults}
+                  currentVaultId={vaultId}
+                  onSelectVault={drawer.onSelectVault}
+                />
               </CustomSkeleton>
               <Box ref={inView.ref} />
             </VStack>
@@ -185,6 +174,7 @@ const VaultListModal = ({
                 bg: '#f5f5f513',
               }}
               onClick={createVaultModalOnOpen}
+              aria-label="Create new vault"
             >
               Create new vault
             </Button>
