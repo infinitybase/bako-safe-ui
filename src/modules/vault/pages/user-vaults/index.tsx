@@ -13,7 +13,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { FaRegPlusSquare } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
@@ -41,10 +41,12 @@ const UserVaultsPage = () => {
       request: { vaults, isLoading },
       handlers: { navigate },
       inView,
+      filter: { value, change },
     },
+    screenSizes: { isSmall, isExtraSmall },
   } = useWorkspaceContext();
-  const workspaceId = userInfos?.workspace?.id ?? '';
 
+  const workspaceId = userInfos?.workspace?.id ?? '';
   return (
     <VStack
       w="full"
@@ -134,17 +136,6 @@ const UserVaultsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
-        <Box>
-          <Button
-            variant="primary"
-            fontWeight="bold"
-            leftIcon={<FaRegPlusSquare />}
-            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
-            onClick={onOpen}
-          >
-            Create vault
-          </Button>
-        </Box>
       </HStack>
 
       <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
@@ -210,11 +201,68 @@ const UserVaultsPage = () => {
       </CustomSkeleton>
 
       {/* USER VAULTS */}
-      <Box mt={4} mb={-2} alignSelf="flex-start">
-        <Text variant="subtitle" fontWeight="semibold" color="grey.75">
+      <HStack w="full" justifyContent="space-between" pb={2}>
+        <Text color="white" fontWeight="semibold" fontSize="md">
           Vaults
         </Text>
-      </Box>
+        <HStack spacing={2}>
+          {value ? (
+            <Button
+              color="grey.75"
+              variant="txFilterType"
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              rightIcon={
+                <Icon
+                  as={() => <FaEyeSlash color="grey.75" />}
+                  fontSize="lg"
+                  ml={isSmall ? -1 : 0}
+                  className="btn-icon"
+                />
+              }
+              onClick={() => change(false)}
+              px={isExtraSmall ? 3 : 4}
+            >
+              Hide Inactives
+            </Button>
+          ) : (
+            <Button
+              color="grey.75"
+              variant="txFilterType"
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              rightIcon={
+                <Icon
+                  as={() => <FaEye color="grey.75" />}
+                  fontSize="lg"
+                  ml={isSmall ? -1 : 0}
+                  className="btn-icon"
+                />
+              }
+              onClick={() => change(true)}
+              px={isExtraSmall ? 3 : 4}
+            >
+              Show Inactives
+            </Button>
+          )}
+
+          <Button
+            color="grey.75"
+            variant="txFilterType"
+            alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+            rightIcon={
+              <Icon
+                as={() => <FaPlus color="grey.75" />}
+                fontSize="lg"
+                ml={isSmall ? -1 : 0}
+                className="btn-icon"
+              />
+            }
+            onClick={onOpen}
+            px={isExtraSmall ? 3 : 4}
+          >
+            Create vault
+          </Button>
+        </HStack>
+      </HStack>
 
       {!vaults?.length && !isLoading && (
         <CustomSkeleton isLoaded={!isLoading}>
@@ -266,7 +314,16 @@ const UserVaultsPage = () => {
             }}
           >
             {vaults?.map(
-              ({ id, name, workspace, members, description, owner }) => {
+              ({
+                id,
+                name,
+                workspace,
+                members,
+                description,
+                owner,
+                isHidden,
+                predicateAddress,
+              }) => {
                 return (
                   <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
                     <GridItem>
@@ -276,6 +333,7 @@ const UserVaultsPage = () => {
                         workspace={workspace}
                         title={description}
                         members={members!}
+                        isHidden={isHidden}
                         onClick={() =>
                           handleWorkspaceSelection(
                             workspace.id,
@@ -285,6 +343,7 @@ const UserVaultsPage = () => {
                             }),
                           )
                         }
+                        address={predicateAddress}
                       />
                     </GridItem>
                   </CustomSkeleton>

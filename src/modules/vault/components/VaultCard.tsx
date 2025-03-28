@@ -11,6 +11,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { Card } from '@/components';
 import { usePermissions } from '@/modules/core/hooks/usePermissions';
@@ -21,26 +23,50 @@ import {
 } from '@/modules/workspace/utils';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { PredicateWorkspace } from '../services';
+import { PredicateWorkspace, VaultService } from '../services';
 
 interface VaultCardProps extends CardProps {
   ownerId: string;
   name: string;
   members: PredicateMember[];
   workspace: PredicateWorkspace;
+  inHome?: boolean;
+  isHidden?: boolean;
+  address: string;
 }
 export const VaultCard = ({
   ownerId,
   name,
   workspace,
   members,
+  inHome,
+  isHidden,
+  address,
   ...rest
 }: VaultCardProps) => {
   const { role } = usePermissions(ownerId);
   const {
     screenSizes: { isExtraSmall },
+    userVaults,
+    workspaceInfos: {
+      requests: { latestPredicates },
+    },
   } = useWorkspaceContext();
 
+  const { mutate: toogleVisibility } = useMutation({
+    mutationFn: VaultService.toggleVisibility,
+    onSuccess: () => {
+      userVaults.request.refetch();
+      latestPredicates.refetch();
+    },
+  });
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toogleVisibility(address);
+  };
+
+  if (inHome && isHidden) return null;
   return (
     <Card
       borderColor="gradients.transaction-border"
@@ -54,7 +80,22 @@ export const VaultCard = ({
       cursor="pointer"
       zIndex={100}
       {...rest}
+      position="relative"
+      opacity={!isHidden ? 1 : 0.5}
+      transition="opacity 0.3s ease-in-out"
     >
+      {inHome ?? (
+        <Box
+          position="absolute"
+          top={3}
+          right={3}
+          cursor="pointer"
+          zIndex={10}
+          onClick={handleToggle}
+        >
+          {isHidden ? <FaEyeSlash /> : <FaEye />}
+        </Box>
+      )}
       <VStack alignItems="flex-start">
         <HStack maxW="80%" justifyContent="space-between" mb={1}>
           <HStack maxW="full">

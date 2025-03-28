@@ -77,6 +77,7 @@ export type SignInResponse = {
     publicKey: string;
   };
   provider: string;
+  settings?: Record<string, any>;
 };
 
 export type GetByHardwareResponse = {
@@ -90,6 +91,9 @@ export type GetByNameResponse = {
 export type CheckNicknameResponse = {
   type: TypeUser;
 };
+export type UserSettings = {
+  inactivesPredicates: string[];
+};
 
 export type AuthenticateParams = {
   userId: string;
@@ -102,6 +106,7 @@ export type AuthenticateParams = {
   webAuthn?: Omit<SignWebAuthnPayload, 'challenge'>;
   provider_url: string;
   first_login?: boolean;
+  settings?: UserSettings;
 };
 
 export type AuthenticateWorkspaceParams = {
@@ -149,6 +154,7 @@ export type IGetUserInfosResponse = {
   type: UserType;
   webauthn: SignWebAuthnPayload;
   first_login?: boolean;
+  settings: any;
   workspace: {
     avatar: string;
     id: string;
