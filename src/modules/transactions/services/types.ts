@@ -31,6 +31,11 @@ export enum TransactionHistoryType {
 
 export type ITransactionStatusFilter = TransactionStatus[] | string[] | string;
 
+export enum TypeUser {
+  FUEL = 'FUEL',
+  WEB_AUTHN = 'WEB_AUTHN',
+}
+
 export interface ITransactionHistory {
   type: TransactionHistoryType;
   date: string;
@@ -38,6 +43,7 @@ export interface ITransactionHistory {
     id: string;
     avatar: string;
     address: string;
+    type: TypeUser;
   };
 }
 
