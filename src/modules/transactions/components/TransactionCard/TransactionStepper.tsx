@@ -83,7 +83,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps?.length]);
-  console.log(steps);
+
   return (
     <Box display="flex" flexDirection="column" gap={8}>
       <Text
