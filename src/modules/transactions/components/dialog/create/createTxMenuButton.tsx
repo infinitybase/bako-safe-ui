@@ -70,6 +70,7 @@ const CreateTxMenuButton = ({
       <HStack w="full" ref={actionMenuRef}>
         <HStack w="full" spacing={0.5}>
           <Dialog.PrimaryAction
+            aria-label="Create Transaction Primary Action"
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={() => handleCreateTransactionByMethod()}
@@ -81,6 +82,7 @@ const CreateTxMenuButton = ({
             {createTxMethod}
           </Dialog.PrimaryAction>
           <MenuButton
+            aria-label={'Menu select mode create tx'}
             as={Button}
             rightIcon={<ChevronDownIcon fontSize="24px" />}
             variant="primary"
@@ -134,6 +136,7 @@ const CreateTxMenuButton = ({
           <MenuItem
             display="flex"
             flexDir="column"
+            aria-label="Menu item create tx"
             alignItems="start"
             gap={2}
             onClick={() => setCreateTxMethod(ECreateTransactionMethods.CREATE)}

@@ -384,6 +384,7 @@ const SettingsOverview = (props: CardDetailsProps): JSX.Element | null => {
                   onClick={setting.onClick}
                   icon={setting.icon}
                   label={setting.label}
+                  aria-label={setting.label}
                   disabled={setting.disabled}
                 />
               ))}

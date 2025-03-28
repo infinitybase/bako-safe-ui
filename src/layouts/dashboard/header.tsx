@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -47,7 +47,6 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
-import React from 'react';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -166,6 +165,7 @@ const UserBox = () => {
               alignItems="center"
               cursor={isWebAuthn ? 'pointer' : 'default'}
               onClick={networkPopoverState.onOpen}
+              aria-label={'Select networks'}
               spacing={isMobile ? 2 : 4}
               position="relative"
               border={'1px solid'}
@@ -362,6 +362,7 @@ const UserBox = () => {
             </HStack>
             {!isMobile && (
               <Icon
+                aria-label={'Dropdown header'}
                 color="grey.200"
                 fontSize={{ base: 'sm', sm: 'lg' }}
                 as={FaChevronDown}
@@ -538,7 +539,12 @@ const UserBox = () => {
               h="70px"
               mb={0}
             >
-              <HStack cursor={'pointer'} onClick={logout} spacing={4}>
+              <HStack
+                cursor={'pointer'}
+                onClick={logout}
+                spacing={4}
+                aria-label={'Disconnect'}
+              >
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect

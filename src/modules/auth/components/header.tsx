@@ -26,6 +26,7 @@ const SignInHeader = ({ title, showDescription }: SignInHeaderProps) => {
           lineHeight="16.94px"
           fontWeight={400}
           fontSize="sm"
+          aria-label="subtitle_login_page"
         >
           Choose your prefered login method
         </Text>

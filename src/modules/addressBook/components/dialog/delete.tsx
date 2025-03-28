@@ -77,6 +77,7 @@ const DeleteContactDialog = ({
 
       <Dialog.Actions maxW={420}>
         <Dialog.SecondaryAction
+          aria-label={'Delete adb'}
           w={32}
           isLoading={isLoading}
           onClick={() => handleDelete(contactToDelete.id)}

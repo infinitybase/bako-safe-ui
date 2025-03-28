@@ -114,6 +114,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
         <VStack
           w="full"
           overflowY="scroll"
+          aria-label="Scroll vault form"
           sx={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -305,6 +306,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
                 variant="secondary"
                 mt="auto"
                 isDisabled={isDisable}
+                aria-label={'Add more addresses vault form'}
                 onClick={() => {
                   addresses.append();
                   setTimeout(
@@ -351,6 +353,7 @@ const VaultAddressesStep = (props: VaultAddressesStepProps) => {
               render={({ field }) => (
                 <FormControl position="relative" maxW={'full'} w="24">
                   <Select
+                    aria-label={'Select min signatures vault form'}
                     needShowOptionsAbove={hasTwoOrMoreAddresses}
                     style={{
                       background: '#201F1D',

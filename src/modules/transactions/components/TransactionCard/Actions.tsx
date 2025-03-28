@@ -169,6 +169,7 @@ const Actions = memo(
             <Button
               h={9}
               px={3}
+              aria-label={'Sign btn tx card'}
               variant="primary"
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
@@ -181,6 +182,7 @@ const Actions = memo(
             <Button
               h={9}
               px={3}
+              aria-label={'Decline btn tx card'}
               size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
               fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
               variant="secondary"

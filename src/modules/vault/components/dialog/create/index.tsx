@@ -141,6 +141,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
           <HStack w="full" justifyContent="space-between">
             <Dialog.SecondaryAction
               bgColor="transparent"
+              aria-label="Create Vault Secundary Action"
               border="1px solid white"
               w={tabs.tab !== TabState.SUCCESS ? '25%' : '100%'}
               onClick={
@@ -155,6 +156,7 @@ Bako Safe leverages Fuel predicates to manage vault permissions off-chain. There
             </Dialog.SecondaryAction>
             <Dialog.PrimaryAction
               w="65%"
+              aria-label="Create Vault Primary Action"
               hidden={steps.step?.hide}
               onClick={steps.step?.onContinue}
               leftIcon={

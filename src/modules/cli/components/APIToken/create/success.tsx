@@ -74,6 +74,7 @@ const CreateAPITokenSuccess = (props: CreateAPITokenSuccessProps) => {
               color="grey.425"
               fontSize="sm"
               cursor="pointer"
+              id={'copy_form_api_token'}
               onClick={() => {
                 clipboard.onCopy();
                 toast({

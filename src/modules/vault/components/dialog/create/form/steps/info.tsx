@@ -39,6 +39,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
           render={({ field, fieldState }) => (
             <FormControl>
               <Input
+                id="vault_name"
                 variant="dark"
                 value={search}
                 defaultValue={search || form.watch('name')}
@@ -81,6 +82,7 @@ const VaultInfosStep = ({ form, vaultName }: VaultInfoStepProps) => {
         >
           <Textarea
             {...form.register('description')}
+            id="vault_description"
             maxLength={199}
             placeholder="Description"
             bg={`grey.825`}
