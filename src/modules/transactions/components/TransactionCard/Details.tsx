@@ -159,7 +159,7 @@ const Details = memo(
                 </Stack>
 
                 <HStack justifyContent="end" width="100%">
-                  {!isMobile && (
+                  {!isMobile && !isDeposit && (
                     <Button
                       variant="secondaryV2"
                       alignSelf="flex-end"

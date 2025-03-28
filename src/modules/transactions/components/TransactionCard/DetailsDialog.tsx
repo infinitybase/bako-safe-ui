@@ -224,18 +224,20 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 )}
               </>
             )}
-            <Button
-              variant="secondaryV2"
-              as={Link}
-              href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-              isExternal
-              w="100%"
-              size="sm"
-              h={7}
-              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-            >
-              Advanced details
-            </Button>
+            {!isDeposit && (
+              <Button
+                variant="secondaryV2"
+                as={Link}
+                href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                isExternal
+                w="100%"
+                size="sm"
+                h={7}
+                rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+              >
+                Advanced details
+              </Button>
+            )}
           </VStack>
 
           <TransactionCard.Details

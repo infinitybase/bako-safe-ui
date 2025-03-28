@@ -4,15 +4,13 @@ import {
   Divider,
   HStack,
   Icon,
-  Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 import { type ITransferAsset, TransactionStatus } from 'bakosafe';
 
-import { FileCodeIcon, SuccessIcon, UpRightArrow } from '@/components';
-import env from '@/config/env';
+import { SuccessIcon, UpRightArrow } from '@/components';
 import { shakeAnimationY } from '@/modules/core';
 import { NetworkService } from '@/modules/network/services';
 import {
@@ -126,18 +124,6 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
 
       {!isMobile && (
         <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
-          <Button
-            variant="secondaryV2"
-            as={Link}
-            isExternal
-            href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-            size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
-            alignSelf="flex-end"
-            rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-          >
-            Advanced details
-          </Button>
-
           {transaction.status === TransactionStatus.SUCCESS && (
             <Button
               w={isMobile ? 'full' : 'unset'}
