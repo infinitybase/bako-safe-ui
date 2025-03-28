@@ -198,7 +198,7 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                       )}
                     {!nickname &&
                       step.type !== TransactionHistoryType.SEND &&
-                      step.owner.type === 'FUEL' && (
+                      step.owner.type !== 'WEB_AUTHN' && (
                         <Text variant="subtitle" color="grey.425">
                           {step.owner.address !== userInfos.address
                             ? AddressUtils.format(`(${step.owner.address})`)
