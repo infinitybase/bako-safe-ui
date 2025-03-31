@@ -51,30 +51,23 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      try {
-        const { hashTxId } = await vault.transaction({
-          name: payload.name!,
-          assets: payload.assets.map((asset) => {
-            const { units } = getAssetInfo(assetsMap, asset.assetId);
+      const { hashTxId } = await vault.transaction({
+        name: payload.name!,
+        assets: payload.assets.map((asset) => {
+          const { units } = getAssetInfo(assetsMap, asset.assetId);
 
-            return {
-              ...asset,
-              amount: bn
-                .parseUnits(asset.amount.replace(/,/g, ''), units)
-                .format(),
-            };
-          }),
-        });
-
-        const transaction = await TransactionService.getByHash(hashTxId, [
-          TransactionStatus.AWAIT_REQUIREMENTS,
-        ]);
-
-        return transaction;
-      } catch (error) {
-        console.error('Erro ao criar transação:', error); // Logando o erro
-        throw error; // Re-throw do erro para que o hook de mutação possa lidar com ele
-      }
+          return {
+            ...asset,
+            amount: bn
+              .parseUnits(asset.amount.replace(/,/g, ''), units)
+              .format(),
+          };
+        }),
+      });
+      const transaction = await TransactionService.getByHash(hashTxId, [
+        TransactionStatus.AWAIT_REQUIREMENTS,
+      ]);
+      return transaction;
     },
     options,
   );
