@@ -108,7 +108,7 @@ const VaultBalancePage = () => {
       </HStack>
 
       <Flex w="full" direction="column" flex={1}>
-        <Tabs>
+        <Tabs isLazy>
           <TabList borderBottom="1px solid #333">
             <Tab
               _selected={{ bg: 'white', color: 'black' }}
