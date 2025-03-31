@@ -191,7 +191,9 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                         <Text variant="subtitle" color="grey.425">
                           {step.owner.address !== userInfos.address
                             ? AddressUtils.format(
-                                AddressUtils.toBech32(`${step.owner.address}`),
+                                AddressUtils.toBech32(
+                                  `(${step.owner.address})`,
+                                ),
                               )
                             : null}
                         </Text>
