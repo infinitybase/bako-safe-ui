@@ -31,7 +31,10 @@ const VaultBalancePage = () => {
   const {
     authDetails: { userInfos },
     workspaceInfos: {
-      handlers: { goHome },
+      handlers: {
+        // handleWorkspaceSelection,
+        goHome,
+      },
     },
     screenSizes: { vaultRequiredSizeToColumnLayout },
   } = useWorkspaceContext();
@@ -63,6 +66,31 @@ const VaultBalancePage = () => {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
+
+            {/* Commented out code to temporarily disable workspaces. */}
+
+            {/* {!userInfos.onSingleWorkspace && (
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  fontSize="sm"
+                  color="grey.200"
+                  fontWeight="semibold"
+                  onClick={() =>
+                    
+                  (
+                      userInfos.workspace?.id,
+                      Pages.workspace({
+                        workspaceId: userInfos.workspace?.id,
+                      }),
+                    )
+                  }
+                  maxW={40}
+                  isTruncated
+                >
+                  {userInfos.workspace?.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )} */}
 
             <BreadcrumbItem>
               <BreadcrumbLink
