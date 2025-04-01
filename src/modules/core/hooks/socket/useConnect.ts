@@ -1,8 +1,7 @@
 import { TransactionRequestLike } from 'fuels';
-import { useCallback, useContext, useRef } from 'react';
+import { useContext } from 'react';
 
 import { SocketContext } from '@/config/socket';
-import { useQueryParams } from '@/modules/auth';
 
 export enum SocketEvents {
   CONNECT = 'connection',
@@ -16,6 +15,8 @@ export enum SocketEvents {
   TX_SIGN = '[TX_EVENT_SIGNED]',
   TX_REQUEST = '[TX_EVENT_REQUESTED]',
   SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
+
+  CHANGE_NETWORK = '[CHANGE_NETWORK]',
 }
 
 export enum SocketRealTimeNotifications {
