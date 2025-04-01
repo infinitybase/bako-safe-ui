@@ -185,12 +185,24 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                     >
                       {TransactionTypeFormatter(step, userInfos.address)}
                     </Text>
-                    {!nickname && step.type !== TransactionHistoryType.SEND && (
-                      <Text variant="subtitle" color="grey.425">
-                        {step.owner.address !== userInfos.address &&
-                          AddressUtils.format(`(${step.owner.address})`)}
-                      </Text>
-                    )}
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type === 'WEB_AUTHN' && (
+                        <Text variant="subtitle" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? `(${AddressUtils.format(AddressUtils.toBech32(`${step.owner.address}`))})`
+                            : null}
+                        </Text>
+                      )}
+                    {!nickname &&
+                      step.type !== TransactionHistoryType.SEND &&
+                      step.owner.type !== 'WEB_AUTHN' && (
+                        <Text variant="subtitle" color="grey.425">
+                          {step.owner.address !== userInfos.address
+                            ? AddressUtils.format(`(${step.owner.address})`)
+                            : null}
+                        </Text>
+                      )}
                   </StepTitle>
                   <StepDescription
                     style={{
