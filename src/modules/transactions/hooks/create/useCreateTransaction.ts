@@ -126,10 +126,10 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       }
       handleClose();
     },
-    onError: () => {
+    onError: (e) => {
       errorToast({
         title: 'Transaction creation failed',
-        description: 'Please try again later',
+        description: `${e.message}`,
       });
     },
   });
