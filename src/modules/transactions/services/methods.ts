@@ -249,7 +249,6 @@ export class TransactionService {
     event: ITransactionReactQueryUpdate,
   ) {
     if (!oldData) return oldData;
-
     return event.history;
   }
 

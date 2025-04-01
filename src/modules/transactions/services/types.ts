@@ -185,6 +185,7 @@ export interface ITransactionReactQueryUpdate {
   type: '[UPDATED]' | '[CREATED]' | '[CANCELED]';
   transaction: ITransaction;
   history: ITransactionHistory;
+  sessionId: string;
 }
 
 export type GetTransactionResponse = ITransaction;

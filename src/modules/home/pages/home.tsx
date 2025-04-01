@@ -39,9 +39,9 @@ const HomePage = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const homeQueryKey = HomeQueryKey.HOME_WORKSPACE(
-    userInfos.workspace?.id ?? '',
-  );
+  const workspaceId = userInfos.workspace?.id;
+
+  const homeQueryKey = HomeQueryKey.HOME_WORKSPACE(workspaceId ?? '');
 
   useTransactionSocketListener(homeQueryKey ?? []);
 
@@ -78,9 +78,7 @@ const HomePage = () => {
           <ActionCard.Container
             flex={1}
             onClick={() =>
-              navigate(
-                Pages.userVaults({ workspaceId: userInfos.workspace?.id }),
-              )
+              navigate(Pages.userVaults({ workspaceId: workspaceId }))
             }
           >
             <ActionCard.Icon icon={VaultIcon} />
@@ -99,7 +97,7 @@ const HomePage = () => {
             onClick={() => {
               return navigate(
                 Pages.userTransactions({
-                  workspaceId: userInfos.workspace?.id,
+                  workspaceId: workspaceId,
                 }),
               );
             }}
@@ -120,9 +118,7 @@ const HomePage = () => {
           <ActionCard.Container
             flex={1}
             onClick={() =>
-              navigate(
-                Pages.addressBook({ workspaceId: userInfos.workspace?.id }),
-              )
+              navigate(Pages.addressBook({ workspaceId: workspaceId }))
             }
           >
             <ActionCard.Icon icon={AddressBookIcon} />
@@ -188,7 +184,7 @@ const HomePage = () => {
                           onClick={() =>
                             navigate(
                               Pages.userVaults({
-                                workspaceId: userInfos.workspace?.id,
+                                workspaceId: workspaceId,
                               }),
                             )
                           }
