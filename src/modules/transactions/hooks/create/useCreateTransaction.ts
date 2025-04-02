@@ -271,19 +271,14 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     const _transactionFee =
       transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
     const newFee = _transactionFee || validTransactionFee || '0.000';
-    console.log(`_transactionFee:`, _transactionFee);
-    console.log(`validTransactionFee:`, validTransactionFee);
     const transactions = form.getValues('transactions') || [];
-    console.log(`transactions:`, transactions);
     transactions.forEach((transaction, index) => {
-      console.log(`Atualizando fee da transação ${index}:`, transaction);
       form.setValue(`transactions.${index}.fee`, newFee, {
         shouldValidate: true,
       });
     });
-    console.log(validTransactionFee);
     setValidTransactionFee(newFee);
-  }, [accordion.index, transactionFee]);
+  }, [transactionFee]);
 
   useEffect(() => {
     if (Number(currentFieldAmount) > 0 && validTransactionFee) {
@@ -320,7 +315,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
           }));
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset].filter(Boolean));
+  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]); //ERRO AQUI
 
   useEffect(() => {
     if (firstRender && vault) {
