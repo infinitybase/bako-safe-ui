@@ -154,7 +154,7 @@ export type IGetUserInfosResponse = {
   type: UserType;
   webauthn: SignWebAuthnPayload;
   first_login?: boolean;
-  settings: any;
+  settings: UserSettings;
   workspace: {
     avatar: string;
     id: string;
