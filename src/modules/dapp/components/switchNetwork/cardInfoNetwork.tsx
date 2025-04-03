@@ -1,64 +1,101 @@
 import { IconProps } from '@chakra-ui/icons';
-import { ComponentWithAs, HStack, Icon, Text, VStack } from '@chakra-ui/react';
+import {
+  ComponentWithAs,
+  HStack,
+  Icon,
+  IconButton,
+  Text,
+  useClipboard,
+  VStack,
+} from '@chakra-ui/react';
 import { IconType } from 'react-icons';
+
+import { CheckIcon } from '@/components';
+import { AddressUtils } from '@/modules/core';
+import { limitCharacters } from '@/utils';
 
 import { AvatarSwitchNetwork } from './avatar';
 
-//import { useNetworks } from '../../hooks';
-
 interface CardInfoNetworkProps {
   header: string;
-  logo?: string;
   title: string;
   operation: string;
   icon: ComponentWithAs<'svg', IconProps> | IconType;
   colorIcon: string;
-  avatarUrl?: string;
   avataBgColor: string;
+  avatarUrl?: string;
+  opIsAddress?: boolean;
+  logo?: string;
+  onClick?: () => void;
 }
 
 const CardInfoNetwork = ({ ...props }: CardInfoNetworkProps) => {
+  const clipboard = useClipboard(props.operation);
+
+  const hasCopeid = props.opIsAddress && clipboard.hasCopied;
+
   return (
     <VStack
       w="full"
-      height={90}
-      bgColor={'#151413'}
+      height={81}
+      bgColor={'dark.950'}
       alignItems="flex-start"
-      padding={3} //{12}
-      gap={2} //{6}
+      padding={3}
+      gap={1}
       borderRadius={8}
     >
-      <Text fontSize={12} fontWeight={400} color="#868079">
+      <Text fontSize={12} fontWeight={400} color="grey.425">
         {props.header}
       </Text>
-      <HStack gap={2}>
+      <HStack gap={3} h="40px">
         <AvatarSwitchNetwork
-          size={'40px'}
+          size={'32px'}
           bgColor={props.avataBgColor}
           src={props.avatarUrl}
           name={props.title}
         />
-        <VStack alignItems="flex-start">
+        <VStack
+          alignItems="flex-start"
+          justifyContent="center"
+          pt={1.5}
+          spacing={0}
+          w="full"
+        >
           <Text
             fontSize={12}
             fontWeight={500}
-            color="#F5F5F5"
+            color="grey.50"
             lineHeight={'100%'}
             letterSpacing={0}
           >
-            {props.title}
+            {limitCharacters(props.title, 45)}
           </Text>
-          <HStack>
+          <HStack w="full" spacing={0.5}>
             <Text
               fontSize={12}
               fontWeight={400}
-              color="#868079"
+              color="grey.425"
               lineHeight={'100%'}
               letterSpacing={0}
             >
-              {props.operation}
+              {props.opIsAddress
+                ? AddressUtils.format(props.operation ?? '', 4)
+                : props.operation}
             </Text>
-            <Icon as={props.icon} color={props.colorIcon} fontSize="md" />
+            <IconButton
+              aria-label="Copy Adr"
+              variant="icon"
+              bgColor="none"
+              size="xs"
+              icon={
+                <Icon
+                  as={clipboard.hasCopied ? CheckIcon : props.icon}
+                  color={hasCopeid ? 'success.700' : props.colorIcon}
+                  fontSize={16}
+                />
+              }
+              onClick={props.opIsAddress ? clipboard.onCopy : props.onClick}
+            />
           </HStack>
         </VStack>
       </HStack>

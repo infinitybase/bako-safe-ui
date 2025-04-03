@@ -1,25 +1,19 @@
-import { Icon, Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from '@chakra-ui/react';
 
-import { FuelIcon } from '@/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
-import { NetworkType } from '@/modules/network/services';
-//import { useNetworks } from '../../hooks';
+import { FuelLogo } from './logoFuel';
 
 interface CardSwitchNetworkProps {
   header: string;
-  logo: string;
   networkName: string;
   networkUrl: string;
 }
 
 const CardSwitchNetwork = ({ ...props }: CardSwitchNetworkProps) => {
-  const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
-
   return (
     <VStack
       w="full"
-      backgroundColor="#151413"
-      gap={7} //{24} // Reduzindo espaço entre elementos
+      backgroundColor="dark.950"
+      gap={7}
       paddingTop={3}
       paddingBottom={6}
       paddingLeft={3}
@@ -31,7 +25,7 @@ const CardSwitchNetwork = ({ ...props }: CardSwitchNetworkProps) => {
         <Text
           fontSize={12}
           fontWeight={400}
-          color="#868079"
+          color="grey.425"
           verticalAlign={'middle'}
           lineHeight={'100%'}
           letterSpacing={0}
@@ -41,21 +35,12 @@ const CardSwitchNetwork = ({ ...props }: CardSwitchNetworkProps) => {
       </VStack>
 
       <VStack gap={2}>
-        {/* <Avatar
-          color="#AAA6A1"
-          boxSize={'46px'}
-          bgColor="transparent"
-          variant="roundedSquare"
-          src={props.logo}
-        /> */}
-        <Icon
-          as={isMainnet(props.networkUrl) ? BakoIcon : FuelIcon}
-          fontSize={36}
-        />
+        {FuelLogo()}
+
         <Text
           fontSize={12}
           fontWeight={500}
-          color="#F5F5F5"
+          color="grey.50"
           lineHeight={'100%'}
           letterSpacing={0}
           verticalAlign={'middle'}
@@ -66,7 +51,7 @@ const CardSwitchNetwork = ({ ...props }: CardSwitchNetworkProps) => {
         <Text
           fontSize={12}
           fontWeight={400}
-          color="#868079"
+          color="grey.425"
           lineHeight={'100%'}
           letterSpacing={0}
         >

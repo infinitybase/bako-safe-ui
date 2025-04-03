@@ -13,13 +13,12 @@ const AvatarSwitchNetwork = ({ ...props }: AvatarInfoProps) => {
       color="#AAA6A1"
       boxSize={props.size}
       bgColor={props.bgColor}
-      variant="roundedSquare"
       src={props.src}
       name={props.name}
       sx={{
         '& div': { fontSize: '14px' },
       }}
-      borderRadius={4}
+      borderRadius={'4px'}
     />
   );
 };

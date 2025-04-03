@@ -1,16 +1,43 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { Network } from 'fuels';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useContactToast } from '@/modules/addressBook';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
+import {
+  availableNetWorks,
+  NetworkService,
+  NetworkType,
+} from '@/modules/network/services';
+
+import { useChangeNetworkRequest } from './useChangeNetworkRequest';
 
 interface IVaultEvent {
   name: string;
   address: string;
   description: string;
   provider: string;
-  pending_tx: boolean;
-  configurable: string;
-  version: string;
+}
+
+interface IDappEvent {
+  name: string;
+  description: string;
+  origin: string;
+  network: Network;
+}
+
+interface IHandleInfos {
+  vault: IVaultEvent;
+  dapp: IDappEvent;
+  currentNetwork: Network;
+}
+
+interface InfoPage {
+  currentNetworkName: string;
+  currentNetworkUrl: string;
+  dappNetworkName: string;
+  dappNetworkUrl: string;
+  dappOrigin: string;
 }
 
 export type UseSwitchNetworkSocket = ReturnType<typeof useSwitchNetworkSocket>;
@@ -21,64 +48,166 @@ export const useSwitchNetworkSocket = () => {
     address: '',
     description: '',
     provider: '',
-    pending_tx: true,
-    configurable: '',
-    version: '',
   });
 
-  // const navigate = useNavigate(); // do not remove, makes socket connection work
-  const { socket } = useSocket();
+  const dappRef = useRef<IDappEvent>({
+    name: '',
+    description: '',
+    origin: '',
+    network: {
+      url: '',
+      chainId: 0,
+    },
+  });
+
+  const currentNetworkRef = useRef<Network>({
+    url: '',
+    chainId: 0,
+  });
+
+  const { socket, isConnected } = useSocket();
   const { sessionId, request_id } = useQueryParams();
-  // const { warningToast, errorToast } = useContactToast();
+  const sendRequest = useChangeNetworkRequest();
+  const { errorToast } = useContactToast();
+  const [infoPage, setInfoPage] = useState<InfoPage>({} as InfoPage);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const connectionAttemptedRef = useRef(false);
 
-  const handleGetSummary = useCallback((data: any) => {
-    console.log('GETTING_SUMMARY');
-    const { data: content } = data;
-    const { vault } = content;
+  const isLoadingInfo = Object.keys(infoPage).length === 0;
 
-    vaultRef.current = vault;
+  const handlerInfos = useCallback((data: IHandleInfos) => {
+    const currentNetworkName = getNetworkname(data.currentNetwork.url);
+    const currentNetworkUrl = getHostname(data.currentNetwork.url);
+    const dappNetworkName = getNetworkname(data.dapp.network.url);
+    const dappNetworkUrl = getHostname(data.dapp.network.url);
+    const dappOrigin = getHostname(data.dapp.origin);
+
+    setInfoPage({
+      currentNetworkName,
+      currentNetworkUrl,
+      dappNetworkName,
+      dappNetworkUrl,
+      dappOrigin,
+    });
   }, []);
+
+  const handleGetInfoData = useCallback(
+    (data: any) => {
+      console.log('GETTING_NETWORK_DATA');
+      const { data: content } = data;
+      const { vault, dapp, currentNetwork } = content;
+
+      vaultRef.current = vault;
+      dappRef.current = dapp;
+      currentNetworkRef.current = currentNetwork;
+
+      handlerInfos({ vault, dapp, currentNetwork });
+    },
+    [handlerInfos],
+  );
 
   const handleSocketEvent = useCallback(
     (data: any) => {
-      console.log('SOCKET EVENT DATA:', data);
+      console.log('SOCKET EVENT DATA SWITCH NETWORK:', data);
       if (data.to !== SocketUsernames.UI) return;
 
       switch (data.type) {
         case SocketEvents.CHANGE_NETWORK:
-          console.log('>>> data', data);
-          handleGetSummary(data);
+          handleGetInfoData(data);
           break;
-        // case SocketEvents.TX_CREATE:
-        //   handleCreatedTransaction(data);
-        //   break;
-        // case SocketEvents.TX_SIGN:
-        //   handleSignedTransaction(data);
-        //   break;
         default:
           break;
       }
     },
-    [handleGetSummary],
+    [handleGetInfoData],
   );
 
-  useEffect(() => {
-    socket.emit(SocketEvents.DEFAULT, {
-      sessionId,
-      to: SocketUsernames.CONNECTOR,
-      request_id,
-      type: SocketEvents.CONNECTED,
-      data: {},
-    });
+  const getNetworkname = (url: string) => {
+    if (url.includes('localhost')) {
+      return availableNetWorks[NetworkType.DEV]?.name ?? '';
+    }
 
-    socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+    if (url === availableNetWorks[NetworkType.TESTNET].url) {
+      return availableNetWorks[NetworkType.TESTNET]?.name ?? '';
+    }
+
+    return availableNetWorks[NetworkType.MAINNET]?.name ?? '';
+  };
+
+  const getHostname = (url?: string) => {
+    if (!url) return '';
+    return new URL(url).hostname;
+  };
+
+  const redirectToDapp = (url: string) => {
+    window.open(`${NetworkService.getExplorer(url)}`, '_BLANK');
+  };
+
+  const onSuccessChangeNetwork = async (data: Network) => {
+    console.log('[EMITTING NETWORK CHANGED]');
+    socket.emit(SocketEvents.NETWORK_CHANGED, { network: data });
+
+    setIsSwitching(false);
+  };
+
+  const sendNetworkRequest = async (dapp: IDappEvent) => {
+    if (!sessionId) {
+      errorToast({
+        title: 'Session id not found',
+        description: 'Please try again!',
+      });
+      return;
+    }
+
+    setIsSwitching(true);
+
+    sendRequest.mutate(
+      { newNetwork: dapp.network, origin: dapp.origin, sessionId },
+      {
+        onSuccess: (data) => {
+          onSuccessChangeNetwork(data);
+        },
+        onError: () => {
+          setIsSwitching(false);
+          errorToast({
+            title: 'Change network failed',
+            description: 'Please try again!',
+          });
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (!isConnected) return;
+
+    if (!connectionAttemptedRef.current) {
+      socket.emit(SocketEvents.DEFAULT, {
+        sessionId,
+        to: SocketUsernames.CONNECTOR,
+        request_id,
+        type: SocketEvents.CONNECTED,
+        data: {},
+      });
+      socket.on(SocketEvents.DEFAULT, handleSocketEvent);
+      connectionAttemptedRef.current = true;
+    }
     return () => {
       socket.off(SocketEvents.DEFAULT, handleSocketEvent);
     };
-  }, [socket.connected]);
+  }, [socket, isConnected]);
 
   return {
     vault: vaultRef.current,
+    dapp: dappRef.current,
+    currentNetwork: currentNetworkRef.current,
+    isLoadingInfo,
+    isSwitching,
+    infoPage,
+    getHostname,
+    redirectToDapp,
+    getNetworkname,
+    sendNetworkRequest,
     socket,
   };
 };
