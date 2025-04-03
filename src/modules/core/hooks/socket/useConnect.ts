@@ -17,6 +17,7 @@ export enum SocketEvents {
   SIGN_CONFIRMED = '[SIGN_CONFIRMED]',
 
   CHANGE_NETWORK = '[CHANGE_NETWORK]',
+  NETWORK_CHANGED = '[NETWORK_CHANGED]',
 }
 
 export enum SocketRealTimeNotifications {
@@ -80,7 +81,7 @@ export interface ISocketEmitMessageParams {
 }
 
 export const useSocket = () => {
-  const socket = useContext(SocketContext);
+  const { socket, isConnected } = useContext(SocketContext);
   // const { request_id, origin } = useQueryParams();
 
   // const socketState = useRef(socket.connected);
@@ -129,5 +130,5 @@ export const useSocket = () => {
     );
   };
 
-  return { emitMessage, socket };
+  return { emitMessage, socket, isConnected };
 };
