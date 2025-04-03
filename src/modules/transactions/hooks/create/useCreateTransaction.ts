@@ -87,6 +87,21 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
+    onError: (error) => {
+      if (error.name === 'FuelError') {
+        const index = transactionsFields.fields.findIndex(
+          (obj) =>
+            obj.asset ===
+            '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
+        );
+
+        if (index !== -1) {
+          form.setError(`transactions.${index}`, {
+            message: '⚠️ Not enough ETH for transaction!',
+          });
+        }
+      }
+    },
   });
 
   const transactionFee = resolveTransactionCosts.data?.fee.format();
@@ -180,6 +195,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const currentFieldAmount = form.watch(
     `transactions.${accordion.index}.amount`,
   );
+
+  const currentFieldAmountWithoutCommas = currentFieldAmount
+    ? currentFieldAmount.replace(/,/g, '')
+    : '';
+
   const currentFieldAsset = form.watch(`transactions.${accordion.index}.asset`);
 
   const transactionTotalAmount = form
@@ -190,11 +210,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     .watch('transactions')
     ?.reduce((acc, tx) => {
       const { asset, amount } = tx;
-
+      const amountWithoutCommas = amount.replace(/,/g, '');
       if (!acc[asset]) {
-        acc[asset] = bn.parseUnits(amount);
+        acc[asset] = bn.parseUnits(amountWithoutCommas);
       } else {
-        acc[asset] = acc[asset].add(bn.parseUnits(amount));
+        acc[asset] = acc[asset].add(bn.parseUnits(amountWithoutCommas));
       }
 
       return acc;
@@ -219,7 +239,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         transactionAssetsTotalAmount?.[assetToCheck] ?? bn(0);
 
       const assetFieldsAmount = currentAssetAmount.gt(0)
-        ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmount))
+        ? currentAssetAmount.sub(bn.parseUnits(currentFieldAmountWithoutCommas))
         : currentAssetAmount;
 
       const balanceAvailableWithoutFee = assetFieldsAmount.gte(
@@ -260,13 +280,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     props?.onClose();
   };
 
-  const debouncedResolveTransactionCosts = useCallback(
-    debounce((assets, vault) => {
-      resolveTransactionCosts.mutate({ assets, vault });
-    }, 300),
-    [],
-  );
-
   useEffect(() => {
     const _transactionFee =
       transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
@@ -286,6 +299,13 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     }
   }, [accordion.index, resolveTransactionCosts.data, currentFieldAsset]);
 
+  const debouncedResolveTransactionCosts = useCallback(
+    debounce(async (assets, vault) => {
+      await resolveTransactionCosts.mutateAsync({ assets, vault });
+    }, 300),
+    [],
+  );
+
   useEffect(() => {
     if (
       (currentFieldAsset && !currentFieldAmount) ||
@@ -295,27 +315,58 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
     const transactions = form.getValues('transactions');
 
+    const startsWithZeroDecimal = (amount: string) => /^0\.\d+$/.test(amount);
+
+    const formatAmount = (amount: string) => {
+      try {
+        const sanitizedAmount = amount.replace(/(?<=\d),(?=\d{3})/g, '');
+
+        if (startsWithZeroDecimal(sanitizedAmount)) return sanitizedAmount;
+
+        let floatAmount = parseFloat(sanitizedAmount);
+        if (isNaN(floatAmount)) throw new Error(`Valor inválido: ${amount}`);
+
+        if (floatAmount >= 100) {
+          floatAmount = Math.floor(floatAmount);
+        }
+
+        return bn(floatAmount.toString()).formatUnits().replace(/,/g, '');
+      } catch (error) {
+        return amount;
+      }
+    };
+
+    const processTransactions = (transactions: any[]) =>
+      transactions
+        .map(({ amount, value, asset }) => {
+          const formattedAmount = formatAmount(amount);
+          return {
+            to: value || recipientMock,
+            amount: formattedAmount,
+            assetId: asset,
+          };
+        })
+        .filter(({ amount }) => Number(amount) > 0);
+
     const assets =
-      Number(transactionTotalAmount) > 0
-        ? transactions!
-            .map((transaction) => ({
-              to: transaction.value || recipientMock,
-              amount: transaction.amount,
-              assetId: transaction.asset,
-            }))
-            .filter(
-              (transaction) =>
-                !isNaN(Number(transaction.amount)) &&
-                Number(transaction.amount) > 0,
-            )
-        : currentVaultAssets?.map((asset) => ({
-            to: recipientMock,
-            amount: asset.amount,
-            assetId: asset.assetId,
-          }));
+      Number(transactionTotalAmount?.replace(/,/g, '')) > 0
+        ? processTransactions(transactions!)
+        : processTransactions(
+            currentVaultAssets?.map(({ amount, assetId }) => ({
+              amount: amount || '0',
+              asset: assetId,
+              value: recipientMock,
+            })) || [],
+          );
 
     debouncedResolveTransactionCosts(assets, vault!);
-  }, [transactionTotalAmount, currentVaultAssets, currentFieldAsset]); //ERRO AQUI
+  }, [
+    transactionTotalAmount,
+    currentVaultAssets,
+    currentFieldAsset,
+    currentFieldAmount,
+    debouncedResolveTransactionCosts,
+  ]);
 
   useEffect(() => {
     if (firstRender && vault) {

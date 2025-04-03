@@ -55,9 +55,6 @@ const useContactToast = ({
       description:
         description ?? 'Check the provided data and try again, please...',
       icon: <Icon fontSize="xl" color="error.500" as={RiCloseCircleFill} />,
-      containerStyle: {
-        fontSize: '25px',
-      },
     });
   };
 

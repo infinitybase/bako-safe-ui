@@ -1,6 +1,5 @@
-import { ITransactionResume } from 'bakosafe';
-import { Provider } from 'fuels';
-import { clone } from 'ramda';
+import { Asset, FAKE_WITNESSES, ITransactionResume } from 'bakosafe';
+import { Address, bn, calculateGasFee, ScriptTransactionRequest } from 'fuels';
 
 import { api } from '@/config/api';
 
@@ -143,15 +142,81 @@ export class TransactionService {
   }
 
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
-    const { vault: _vault, assets } = input;
-    const vault = clone(_vault);
-    vault.provider = new Provider(vault.provider.url);
-    console.log('assets:', assets);
-    const { tx } = await vault.transaction({ assets });
-    console.log('tx.inputs:', tx.inputs);
-    return {
-      fee: tx.maxFee,
-    };
+    const { vault, assets: assetsToSpend } = input;
+
+    const predicateGasUsed = await vault.maxGasUsed();
+
+    let transactionRequest = new ScriptTransactionRequest();
+    const assets = assetsToSpend || [];
+    if (!assetsToSpend.length) {
+      assets.push({
+        amount: bn(1).formatUnits(),
+        assetId: await vault.provider.getBaseAssetId(),
+        to: Address.fromRandom().toString(),
+      });
+    }
+
+    const outputs = Asset.assetsGroupByTo(assets);
+    const coins = Asset.assetsGroupById(assets);
+    const baseAssetId = await vault.provider.getBaseAssetId();
+    const containETH = !!coins[baseAssetId];
+
+    if (containETH) {
+      const value = bn(0).add(coins[baseAssetId]);
+      coins[baseAssetId] = value;
+    } else {
+      coins[baseAssetId] = bn(0);
+    }
+
+    const transactionCoins = Object.entries(coins).map(([key, value]) => {
+      return {
+        amount: value,
+        assetId: key,
+      };
+    });
+
+    const _coins = await vault.getResourcesToSpend(transactionCoins);
+
+    Object.entries(outputs).forEach(([, value]) => {
+      transactionRequest.addCoinOutput(
+        vault.address,
+        value.amount,
+        value.assetId,
+      );
+    });
+
+    transactionRequest.addResources(_coins);
+
+    const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
+    fakeSignatures.forEach((signature) =>
+      transactionRequest.addWitness(signature),
+    );
+
+    transactionRequest = await transactionRequest.estimateAndFund(vault);
+
+    let totalGasUsed = bn(0);
+    transactionRequest.inputs.forEach((input) => {
+      if ('predicate' in input && input.predicate) {
+        input.witnessIndex = 0;
+        input.predicateGasUsed = undefined;
+        totalGasUsed = totalGasUsed.add(predicateGasUsed);
+      }
+    });
+
+    const { gasPriceFactor } = await vault.provider.getGasConfig();
+    const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
+      transactionRequest,
+    });
+
+    const predicateSuccessFeeDiff = calculateGasFee({
+      gas: totalGasUsed,
+      priceFactor: gasPriceFactor,
+      gasPrice,
+    });
+
+    const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(14).div(10);
+
+    return { fee: maxFeeWithDiff };
   }
 
   static async getTransactionsHistory(id: string, predicateId: string) {

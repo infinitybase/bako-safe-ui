@@ -307,6 +307,20 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   //   return 450;
   // };
 
+  const isEth =
+    '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
+  const asset = assets.assets?.find((a) => a.assetId === isEth);
+
+  const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
+
+  const ethTransaction = transactions.fields.find((t) => t.asset === isEth);
+
+  const eth = ethTransaction
+    ? form.watch(`transactions.${transactions.fields.indexOf(ethTransaction)}`)
+    : { amount: 0, fee: 0 };
+
+  const hasEthForFee = Number(totalEth) < Number(eth.amount) + Number(eth.fee);
+
   return (
     <Accordion
       index={accordion.index}
@@ -341,6 +355,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
 
         const isDisabled =
           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
+
         const contact = nicks.find(
           (nick) => nick.user.address === transaction.value,
         )?.nickname;
@@ -354,7 +369,13 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               key={field.id}
               mb={6}
               borderWidth={1}
-              borderColor="grey.925"
+              borderColor={
+                hasEthForFee &&
+                transaction.asset === isEth &&
+                !isCurrentAmountZero
+                  ? 'red.500'
+                  : 'grey.925'
+              }
               borderRadius={10}
               backgroundColor="dark.950"
             >
