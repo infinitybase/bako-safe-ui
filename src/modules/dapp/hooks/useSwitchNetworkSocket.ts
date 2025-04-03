@@ -4,11 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useContactToast } from '@/modules/addressBook';
 import { useQueryParams } from '@/modules/auth/hooks';
 import { SocketEvents, SocketUsernames, useSocket } from '@/modules/core/hooks';
-import {
-  availableNetWorks,
-  NetworkService,
-  NetworkType,
-} from '@/modules/network/services';
+import { availableNetWorks, NetworkType } from '@/modules/network/services';
 
 import { useChangeNetworkRequest } from './useChangeNetworkRequest';
 
@@ -127,6 +123,10 @@ export const useSwitchNetworkSocket = () => {
       return availableNetWorks[NetworkType.DEV]?.name ?? '';
     }
 
+    if (getHostname(url) === 'devnet.fuel.network') {
+      return 'Fuel Sepolia Devnet';
+    }
+
     if (url === availableNetWorks[NetworkType.TESTNET].url) {
       return availableNetWorks[NetworkType.TESTNET]?.name ?? '';
     }
@@ -140,7 +140,7 @@ export const useSwitchNetworkSocket = () => {
   };
 
   const redirectToDapp = (url: string) => {
-    window.open(`${NetworkService.getExplorer(url)}`, '_BLANK');
+    window.open(`${url}`, '_BLANK');
   };
 
   const onSuccessChangeNetwork = async (data: Network) => {
