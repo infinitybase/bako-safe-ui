@@ -1,11 +1,15 @@
 import {
-  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
   HStack,
   Icon,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -15,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { CustomSkeleton, HomeIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { AssetsBalanceList, Pages } from '@/modules/core';
+import { AssetsBalanceList, NftsBalanceList, Pages } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { useVaultInfosContext } from '../../VaultInfosProvider';
@@ -24,7 +28,6 @@ const VaultBalancePage = () => {
   const navigate = useNavigate();
   const menuDrawer = useDisclosure();
   const { vault, assets } = useVaultInfosContext();
-
   const {
     authDetails: { userInfos },
     workspaceInfos: {
@@ -37,8 +40,6 @@ const VaultBalancePage = () => {
   } = useWorkspaceContext();
 
   if (!vault) return null;
-
-  const hasAssets = assets.hasAssets || assets.nfts?.length;
 
   return (
     <Flex w="full" direction="column">
@@ -135,31 +136,68 @@ const VaultBalancePage = () => {
       </HStack>
 
       <Flex w="full" direction="column" flex={1}>
-        <Box mb={5} w="full">
-          <Text
-            color="grey.50"
-            fontWeight="bold"
-            fontSize={{ base: 'sm', sm: 'unset' }}
-          >
-            Balance
-          </Text>
-        </Box>
+        <Tabs isLazy>
+          <TabList borderBottom="1px solid #333">
+            <Tab
+              _selected={{ bg: 'white', color: 'black' }}
+              _hover={{ bg: 'gray.700' }}
+              px={5}
+              py={2}
+              borderTopLeftRadius="lg"
+              borderTopRightRadius="lg"
+            >
+              Tokens
+            </Tab>
+            <Tab
+              _selected={{ bg: 'white', color: 'black' }}
+              _hover={{ bg: 'gray.700' }}
+              px={5}
+              py={2}
+              borderTopLeftRadius="lg"
+              borderTopRightRadius="lg"
+            >
+              NFT
+            </Tab>
+          </TabList>
 
-        <CustomSkeleton
-          isLoaded={!userInfos.isLoading && !assets.isLoading}
-          flex={1}
-        >
-          {hasAssets ? (
-            <AssetsBalanceList assets={assets.assets!} nfts={assets.nfts!} />
-          ) : (
-            <EmptyState
-              showAction={false}
-              title="No Data available"
-              subTitle="Currently, there is no available data to display in this section."
-              h="full"
-            />
-          )}
-        </CustomSkeleton>
+          <TabPanels>
+            <TabPanel px={-4}>
+              <CustomSkeleton
+                isLoaded={!userInfos.isLoading && !assets.isLoading}
+                flex={1}
+              >
+                {assets.hasAssets ? (
+                  <AssetsBalanceList assets={assets.assets!} />
+                ) : (
+                  <EmptyState
+                    showAction={false}
+                    title="No Data available"
+                    subTitle="Currently, there is no available data to display in this section."
+                    h="full"
+                  />
+                )}
+              </CustomSkeleton>
+            </TabPanel>
+
+            <TabPanel px={-4}>
+              <CustomSkeleton
+                isLoaded={!userInfos.isLoading && !assets.isLoading}
+                flex={1}
+              >
+                {assets.nfts?.length ? (
+                  <NftsBalanceList nfts={assets.nfts!} />
+                ) : (
+                  <EmptyState
+                    showAction={false}
+                    title="No Data available"
+                    subTitle="Currently, there is no available data to display in this section."
+                    h="full"
+                  />
+                )}
+              </CustomSkeleton>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Flex>
     </Flex>
   );
