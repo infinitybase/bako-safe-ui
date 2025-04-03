@@ -21,7 +21,7 @@ export interface ITransactionField {
 
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
-  nfts?: { assetId: string; amount: string }[];
+  nfts?: { assetId: string }[];
   assetsMap: AssetMap;
   validateBalance: (asset: string, amount: string) => boolean;
   getCoinAmount: (asset: string) => BN;
@@ -186,7 +186,9 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
               const isValid =
                 AddressUtils.isValid(address) && !isAssetIdOrAssetAddress;
               if (!isValid) return false;
-
+              if (AddressUtils.isPasskey(address)) {
+                return false;
+              }
               return addressValidator.isValid(address);
             } catch {
               return false;

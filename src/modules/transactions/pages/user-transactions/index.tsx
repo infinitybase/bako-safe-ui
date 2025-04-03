@@ -19,7 +19,7 @@ import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { EmptyState } from '@/components/emptyState';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
-import { Pages, PermissionRoles } from '@/modules/core';
+import { Pages, PermissionRoles, WorkspacesQueryKey } from '@/modules/core';
 import { ActionCard } from '@/modules/home/components/ActionCard';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -31,6 +31,8 @@ import {
 } from '../../components';
 import { StatusFilter } from '../../hooks';
 import { useTransactionsContext } from '../../providers/TransactionsProvider';
+import { transactionStatus } from '../../utils';
+import { useTransactionSocketListener } from '../../hooks/events/useTransactionsSocketListener';
 
 const UserTransactionsPage = () => {
   const {
@@ -61,6 +63,14 @@ const UserTransactionsPage = () => {
   useEffect(() => {
     return () => resetAllTransactionsTypeFilters();
   }, []);
+
+  const transactionQueryKey =
+    WorkspacesQueryKey.TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      userInfos.workspace?.id ?? undefined,
+      filter.value as StatusFilter,
+    );
+
+  useTransactionSocketListener(transactionQueryKey ?? []);
 
   return (
     <VStack

@@ -5,50 +5,51 @@ import {
   Icon,
   IconButton,
   Image,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
+import { useState } from 'react';
 
 import { UpRightArrow } from '@/components';
-import { BakoIcon } from '@/components/icons/assets/bakoIcon';
 import {
   AddressUtils,
   Asset,
   NFT,
   shakeAnimationY,
+  UNKNOWN_ASSET,
 } from '@/modules/core/utils';
 import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
-import { useGetTokenInfos } from '../../hooks';
+import { useGetNftsInfos, useGetTokenInfos, useScreenSize } from '../../hooks';
 
 interface AssetsBalanceProps {
   assets: Asset[];
+}
+
+interface NftsBalanceProps {
   nfts?: NFT[];
 }
 
-interface AssetsBalanceCardProps {
-  asset: Asset | NFT;
-  isNFT?: boolean;
-}
-
-const AssetsBalanceCard = ({
-  asset,
-  isNFT = false,
-}: AssetsBalanceCardProps) => {
+const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   const { vault } = useVaultInfosContext();
   const {
-    assetsMap,
     authDetails: {
       userInfos: { network },
     },
+    nftList,
+    screenSizes: { isLitteSmall, isSmall },
   } = useWorkspaceContext();
-  const { assetAmount, assetsInfo } = useGetTokenInfos({
-    ...asset,
-    assetsMap,
+
+  const { nftsInfo, nftImageUrl } = useGetNftsInfos({
+    assetId: nft.assetId,
+    nftList,
   });
+
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const redirectToNetwork = () =>
     window.open(
@@ -56,6 +57,90 @@ const AssetsBalanceCard = ({
       '_BLANK',
     );
 
+  if (!nftsInfo) {
+    return null;
+  }
+
+  return (
+    <Card
+      p={isLitteSmall ? 1 : 2}
+      borderRadius={isLitteSmall ? 5 : 8}
+      borderWidth="1px"
+      borderColor="grey.950"
+      backgroundColor="dark.50"
+      backdropFilter="blur(6px)"
+      boxShadow="lg"
+    >
+      <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
+        <Skeleton isLoaded={imageLoaded} w="full" h="auto" borderRadius={5}>
+          <Image
+            w={'full'}
+            h={'full'}
+            src={nftImageUrl || UNKNOWN_ASSET.icon}
+            borderRadius={5}
+            alt="NFT Image"
+            objectFit="cover"
+            onLoad={() => setImageLoaded(true)}
+          />
+        </Skeleton>
+        <VStack alignItems="flex-start" gap={0} maxW="full">
+          <HStack width="full" spacing={isLitteSmall ? 1 : 2} align="center">
+            <Text
+              flex={1}
+              fontSize={isSmall ? '11px' : 'sm'}
+              color="grey.50"
+              noOfLines={1}
+              textOverflow="ellipsis"
+              overflow="hidden"
+              whiteSpace="nowrap"
+              minWidth={0}
+            >
+              {AddressUtils.format(
+                nft.assetId ?? '',
+                isLitteSmall ? 10 : isSmall ? 6 : 10,
+              )}
+            </Text>
+            <IconButton
+              icon={
+                <Icon
+                  className="nft-icon-1"
+                  as={UpRightArrow}
+                  fontSize={isLitteSmall ? 'xs' : 'md'}
+                  color="grey.75"
+                />
+              }
+              aria-label="Explorer"
+              size={isLitteSmall ? 'xxs' : 'xs'}
+              minW="auto"
+              bg="none"
+              h="auto"
+              _hover={{ bg: 'none' }}
+              css={css`
+                &:hover .nft-icon-1 {
+                  animation: ${shakeAnimationY} 0.5s ease-in-out;
+                }
+              `}
+              onClick={redirectToNetwork}
+              flexShrink={0}
+            />
+          </HStack>
+        </VStack>
+        <Text
+          fontSize={isLitteSmall ? 'xs' : 'sm'}
+          color="grey.50"
+          maxW="full"
+          isTruncated
+        >
+          {nftsInfo?.name || 'NFT'}
+        </Text>
+      </VStack>
+    </Card>
+  );
+};
+
+const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
+  const { assetsMap } = useWorkspaceContext();
+  const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
   return (
     <Card
       p={4}
@@ -67,83 +152,72 @@ const AssetsBalanceCard = ({
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={2}>
-        {isNFT ? (
-          <Icon as={BakoIcon} w={{ base: 8, sm: 10 }} h={{ base: 8, sm: 10 }} />
-        ) : (
-          <Image
-            w={{ base: 8, sm: 10 }}
-            h={{ base: 8, sm: 10 }}
-            src={assetsInfo?.icon ?? ''}
-            borderRadius={100}
-            alt="Asset Icon"
-            objectFit="cover"
-          />
-        )}
+        <Image
+          w={{ base: 8, sm: 10 }}
+          h={{ base: 8, sm: 10 }}
+          src={assetsInfo?.icon}
+          borderRadius={100}
+          alt="Asset Icon"
+          objectFit="cover"
+        />
         <VStack alignItems="flex-start" gap={0} maxW="full">
           <HStack>
             <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-              {isNFT
-                ? AddressUtils.format(asset.assetId ?? '', 10)
-                : assetsInfo.name}
+              {assetsInfo?.name}
             </Text>
-            {isNFT && (
-              <IconButton
-                icon={
-                  <Icon
-                    className="nft-icon-1"
-                    as={UpRightArrow}
-                    fontSize="md"
-                    color="grey.75"
-                  />
-                }
-                aria-label="Explorer"
-                size="xs"
-                minW={2}
-                bg="none"
-                h={3}
-                _hover={{ bg: 'none' }}
-                css={css`
-                  &:hover .nft-icon-1 {
-                    animation: ${shakeAnimationY} 0.5s ease-in-out;
-                  }
-                `}
-                onClick={redirectToNetwork}
-              />
-            )}
           </HStack>
           <Text fontSize="xs" color="grey.250">
-            {isNFT ? 'NFT' : assetsInfo.slug}
+            {assetsInfo?.slug}
           </Text>
         </VStack>
         <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {isNFT ? 1 : assetAmount}
+          {assetAmount}
         </Text>
       </VStack>
     </Card>
   );
 };
 
-const AssetsBalanceList = ({ assets, nfts }: AssetsBalanceProps) => {
+const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => (
+  <Grid
+    gap={4}
+    templateColumns={{
+      base: 'repeat(1, 1fr)',
+      xs: 'repeat(2, 1fr)',
+      sm: 'repeat(3, 1fr)',
+      md: 'repeat(4, 1fr)',
+      xl: 'repeat(5, 1fr)',
+      '2xl': 'repeat(6, 1fr)',
+    }}
+  >
+    {assets?.map((asset) => (
+      <AssetsBalanceCard key={asset.assetId} asset={asset} />
+    ))}
+  </Grid>
+);
+
+const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
+  const { isLitteSmall } = useScreenSize();
+
   return (
     <Grid
       gap={4}
-      templateColumns={{
-        base: 'repeat(1, 1fr)',
-        xs: 'repeat(2, 1fr)',
-        sm: 'repeat(3, 1fr)',
-        md: 'repeat(4, 1fr)',
-        xl: 'repeat(5, 1fr)',
-        '2xl': 'repeat(6, 1fr)',
-      }}
+      templateColumns={
+        isLitteSmall
+          ? 'repeat(2, 1fr)'
+          : {
+              base: 'repeat(3, 1fr)',
+              xs: 'repeat(3, 1fr)',
+              sm: 'repeat(3, 1fr)',
+              md: 'repeat(4, 1fr)',
+              xl: 'repeat(5, 1fr)',
+              '2xl': 'repeat(6, 1fr)',
+            }
+      }
     >
-      {assets.map((asset) => (
-        <AssetsBalanceCard key={asset.assetId} asset={asset} />
-      ))}
-      {nfts?.map((nft) => (
-        <AssetsBalanceCard key={nft.assetId} asset={nft} isNFT={true} />
-      ))}
+      {nfts?.map((nft) => <NftBalanceCard key={nft.assetId} nft={nft} />)}
     </Grid>
   );
 };
 
-export { AssetsBalanceList };
+export { AssetsBalanceList, NftsBalanceList };
