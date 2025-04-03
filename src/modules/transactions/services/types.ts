@@ -166,6 +166,34 @@ export enum TransactionOrderBy {
   UPDATED_AT = 'updatedAt',
 }
 
+export interface ITransactionQueryOldData {
+  currentPage: number;
+  data: ITransaction[];
+  nextPage: number;
+  perPage: number;
+  prevPage: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ITransactionQueryUpdatePage {
+  page?: number;
+  perPage?: number;
+  data: ITransaction[];
+}
+
+export interface ITransactionInfinityQueryData {
+  pageParams: ITransactionQueryUpdatePage;
+  pages: ITransactionQueryUpdatePage[];
+}
+
+export interface ITransactionReactQueryUpdate {
+  type: '[UPDATED]' | '[CREATED]' | '[CANCELED]';
+  transaction: ITransaction;
+  history: ITransactionHistory;
+  sessionId: string;
+}
+
 export type GetTransactionResponse = ITransaction;
 export type GetTransactionsResponse = TransactionWithVault[];
 export type GetTransactionsPaginationResponse =
