@@ -177,6 +177,7 @@ export class TransactionService {
 
     const _coins = await vault.getResourcesToSpend(transactionCoins);
 
+    // Add outputs
     Object.entries(outputs).forEach(([, value]) => {
       transactionRequest.addCoinOutput(
         vault.address,
@@ -184,9 +185,10 @@ export class TransactionService {
         value.assetId,
       );
     });
-
+    // Add resources
     transactionRequest.addResources(_coins);
 
+    // Add witnesses
     const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
     fakeSignatures.forEach((signature) =>
       transactionRequest.addWitness(signature),
@@ -194,6 +196,7 @@ export class TransactionService {
 
     transactionRequest = await transactionRequest.estimateAndFund(vault);
 
+    // Calculate the total gas usage for the transaction
     let totalGasUsed = bn(0);
     transactionRequest.inputs.forEach((input) => {
       if ('predicate' in input && input.predicate) {
@@ -203,6 +206,7 @@ export class TransactionService {
       }
     });
 
+    // Estimate the max fee for the transaction and calculate fee difference
     const { gasPriceFactor } = await vault.provider.getGasConfig();
     const { maxFee, gasPrice } = await vault.provider.estimateTxGasAndFee({
       transactionRequest,
@@ -216,7 +220,9 @@ export class TransactionService {
 
     const maxFeeWithDiff = maxFee.add(predicateSuccessFeeDiff).mul(14).div(10);
 
-    return { fee: maxFeeWithDiff };
+    return {
+      fee: maxFeeWithDiff,
+    };
   }
 
   static async getTransactionsHistory(id: string, predicateId: string) {

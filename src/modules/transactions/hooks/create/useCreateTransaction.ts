@@ -285,7 +285,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
     const newFee = _transactionFee || validTransactionFee || '0.000';
     const transactions = form.getValues('transactions') || [];
-    transactions.forEach((transaction, index) => {
+    transactions.forEach((_, index) => {
       form.setValue(`transactions.${index}.fee`, newFee, {
         shouldValidate: true,
       });
