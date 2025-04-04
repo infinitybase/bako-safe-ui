@@ -178,7 +178,7 @@ export class TransactionService {
     const _coins = await vault.getResourcesToSpend(transactionCoins);
 
     // Add outputs
-    Object.entries(outputs).forEach(([, value]) => {
+    Object.entries(outputs).map(([, value]) => {
       transactionRequest.addCoinOutput(
         vault.address,
         value.amount,
@@ -198,7 +198,7 @@ export class TransactionService {
 
     // Calculate the total gas usage for the transaction
     let totalGasUsed = bn(0);
-    transactionRequest.inputs.map((input) => {
+    transactionRequest.inputs.forEach((input) => {
       if ('predicate' in input && input.predicate) {
         input.witnessIndex = 0;
         input.predicateGasUsed = undefined;
