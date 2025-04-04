@@ -65,6 +65,7 @@ const useTransactionDetails = () => {
         vaultTransactions.request.refetch(),
       ]);
       cancelTransaction.reset();
+      refetchAssets();
       return response;
     },
   });
