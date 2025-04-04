@@ -40,7 +40,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
       handlers: { setSelectedTransaction, selectedTransaction },
     },
     resetAllTransactionsTypeFilters,
-    pendingSignerTransactions,
   } = useTransactionsContext();
 
   const vaultList = useVaultListRequest(
@@ -97,10 +96,6 @@ const useVaultDrawer = (props: UseVaultDrawerParams) => {
         workspaceId: userInfos.workspace?.id,
       }),
     );
-
-    setTimeout(() => {
-      pendingSignerTransactions.refetch();
-    }, 100);
   };
 
   const onCloseDrawer = () => {
