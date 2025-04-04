@@ -198,7 +198,7 @@ export class TransactionService {
 
     // Calculate the total gas usage for the transaction
     let totalGasUsed = bn(0);
-    transactionRequest.inputs.forEach((input) => {
+    transactionRequest.inputs.map((input) => {
       if ('predicate' in input && input.predicate) {
         input.witnessIndex = 0;
         input.predicateGasUsed = undefined;
