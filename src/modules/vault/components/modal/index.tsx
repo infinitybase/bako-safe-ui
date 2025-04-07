@@ -51,6 +51,7 @@ const VaultListModal = ({
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
+
   return (
     <>
       {isCreateVaultModalOpen && (
@@ -140,6 +141,7 @@ const VaultListModal = ({
                   return (
                     <VaultItemBox
                       key={vault.id}
+                      id={vault.id}
                       mt={4}
                       name={vault.name}
                       address={vault.predicateAddress}
