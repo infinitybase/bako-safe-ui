@@ -54,18 +54,16 @@ const VaultListModal = ({
 
   return (
     <>
-      {isCreateVaultModalOpen && (
-        <CreateVaultDialog
-          isOpen={isCreateVaultModalOpen}
-          onClose={createVaultModalOnClose}
-          onCreate={onCloseAll}
-        />
-      )}
+      <CreateVaultDialog
+        isOpen={isCreateVaultModalOpen}
+        onClose={createVaultModalOnClose}
+        onCreate={onCloseAll}
+      />
 
       <Dialog.Modal
         autoFocus={false}
         onClose={drawer.onClose}
-        isOpen={isCreateVaultModalOpen ? false : props.isOpen}
+        isOpen={props.isOpen}
         modalContentProps={{
           px: 10,
           py: 10,
@@ -75,7 +73,7 @@ const VaultListModal = ({
           overflow: 'visible',
         }}
       >
-        <Dialog.Body>
+        <Dialog.Body display={isCreateVaultModalOpen ? 'none' : 'block'}>
           <Dialog.Header
             mt={0}
             mb={0}
@@ -107,7 +105,6 @@ const VaultListModal = ({
                 onChange={search.handler}
               />
               <FormLabel>Search</FormLabel>
-              {/* It is important that the Label comes after the Control due to css selectors */}
             </FormControl>
           </Box>
 
@@ -146,11 +143,9 @@ const VaultListModal = ({
                       name={vault.name}
                       address={vault.predicateAddress}
                       root={vault.root}
-                      // workspace={vault.workspace}
                       isActive={vaultId === vault.id}
                       members={vault.members?.length}
                       onClick={() => drawer.onSelectVault(vault)}
-                      // isSingleWorkspace={vault.workspace.single}
                     />
                   );
                 })}

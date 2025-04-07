@@ -34,8 +34,32 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
   const { isActive, name, address, members, root, ...rest } = props;
   const isPending = useTransactionsSignaturePending([props.id!]);
   const showPending = isPending.data?.transactionsBlocked;
+  const needSignature = isPending.data?.pendingSignature;
 
   const userIcon = members === 1 ? LuUser2 : LuUsers2;
+
+  const renderStatusBadge = () => {
+    if (showPending) {
+      if (needSignature) {
+        return (
+          <WaitingSignatureBadge
+            isLoading={isPending.isLoading}
+            quantity={isPending.data?.ofUser ?? 0}
+            label="Pending Signature"
+          />
+        );
+      } else {
+        return (
+          <WaitingSignatureBadge
+            isLoading={isPending.isLoading}
+            quantity={isPending.data?.ofUser ?? 0}
+            label="Pending Transaction"
+          />
+        );
+      }
+    }
+    return null;
+  };
 
   return (
     <Card
@@ -91,13 +115,10 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
             </HStack>
           )}
 
-          {showPending ? (
-            root ? (
-              <HStack spacing={2}>
-                <WaitingSignatureBadge
-                  isLoading={isPending.isLoading}
-                  quantity={isPending.data?.ofUser ?? 0}
-                />
+          {(showPending || root) && (
+            <HStack spacing={2}>
+              {renderStatusBadge()}
+              {root && !showPending && (
                 <Badge
                   variant="gray"
                   fontSize="2xs"
@@ -108,26 +129,20 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
                 >
                   Personal
                 </Badge>
-              </HStack>
-            ) : (
-              <WaitingSignatureBadge
-                isLoading={isPending.isLoading}
-                quantity={isPending.data?.ofUser ?? 0}
-              />
-            )
-          ) : (
-            root && (
-              <Badge
-                variant="gray"
-                fontSize="2xs"
-                color="grey.75"
-                h="20px"
-                px={3}
-                borderRadius="full"
-              >
-                Personal
-              </Badge>
-            )
+              )}
+              {root && showPending && (
+                <Badge
+                  variant="gray"
+                  fontSize="2xs"
+                  color="grey.75"
+                  h="20px"
+                  px={3}
+                  borderRadius="full"
+                >
+                  Personal
+                </Badge>
+              )}
+            </HStack>
           )}
         </VStack>
       </Flex>
