@@ -58,12 +58,7 @@ const useTransactionDetails = () => {
   const cancelTransaction = useMutation({
     mutationFn: async (hash: string) => {
       const response = await TransactionService.cancel(hash);
-      await Promise.all([
-        transactionsPageList.request.refetch(),
-        pendingSignerTransactions.refetch(),
-        homeTransactions.request.refetch(),
-        vaultTransactions.request.refetch(),
-      ]);
+      await pendingSignerTransactions.refetch();
       cancelTransaction.reset();
       return response;
     },
