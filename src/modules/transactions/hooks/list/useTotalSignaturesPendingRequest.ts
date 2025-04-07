@@ -10,7 +10,7 @@ export type IUseTransactionSignaturePendingReturn = ReturnType<
 
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
   return useQuery({
-    queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+    queryKey: [PENDING_TRANSACTIONS_QUERY_KEY, predicateId],
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
