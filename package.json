@@ -30,6 +30,7 @@
     "bech32": "^2.0.0",
     "crypto-js": "4.2.0",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "ethers": "^6.8.1",
     "framer-motion": "^10.16.1",
     "fuels": "0.99.0",
@@ -54,6 +55,11 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.3",
     "@types/js-cookie": "^3.0.4",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": "^18.2.15",
@@ -63,6 +69,7 @@
     "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.5.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "8.44.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "3.6.0",
@@ -78,17 +85,11 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
+    "semantic-release": "^24.2.3",
     "typescript": "~5.4.5",
     "vite": "^4.4.5",
     "vite-plugin-html": "^3.2.2",
-    "vite-tsconfig-paths": "^4.2.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.1",
-    "@semantic-release/release-notes-generator": "^14.0.3",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "semantic-release": "^24.2.3"
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "husky": {
     "hooks": {
