@@ -116,13 +116,7 @@ const VaultConnector = () => {
 
   return (
     <Container w="full">
-      <Flex
-        h="$100vh"
-        w="full"
-        overflow="hidden"
-        justifyContent="space-between"
-        direction={'column'}
-      >
+      <Flex h="$100vh" w="full" overflow="hidden" direction={'column'}>
         <CreateVaultDialog isOpen={isOpen} onClose={onClose} />
 
         <HStack gap={3} paddingX={6} paddingTop={5} w="full">
@@ -193,7 +187,8 @@ const VaultConnector = () => {
           px={6}
           pt={4}
           pb={0}
-          flex={1}
+          //flex={1}
+          //bgColor={'green.100'}
         >
           <HStack
             spacing={2}
@@ -215,7 +210,7 @@ const VaultConnector = () => {
             )}
           </HStack>
 
-          <CustomSkeleton h={'full'} isLoaded={!isLoading} mt={4}>
+          <CustomSkeleton isLoaded={!isLoading} mt={4}>
             {/* Result */}
             <VStack
               w="full"
