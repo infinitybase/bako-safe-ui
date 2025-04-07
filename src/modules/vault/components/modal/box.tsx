@@ -19,7 +19,7 @@ import {
 import { PredicateWorkspace } from '../../services';
 
 interface VaultDrawerBoxProps extends CardProps {
-  id: string;
+  id?: string;
   isActive?: boolean;
   name: string;
   address: string;
@@ -32,7 +32,7 @@ interface VaultDrawerBoxProps extends CardProps {
 
 const VaultItemBox = (props: VaultDrawerBoxProps) => {
   const { isActive, name, address, members, root, ...rest } = props;
-  const isPending = useTransactionsSignaturePending([props.id]);
+  const isPending = useTransactionsSignaturePending([props.id!]);
   const showPending = isPending.data?.transactionsBlocked;
 
   const userIcon = members === 1 ? LuUser2 : LuUsers2;
