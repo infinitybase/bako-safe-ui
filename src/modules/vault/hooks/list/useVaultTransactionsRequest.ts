@@ -82,6 +82,7 @@ const useVaultTransactionsRequest = (
 
   return {
     ...query,
+    queryKey,
     transactions: useGroupTransactionsByMonth(transactionsList),
   };
 };

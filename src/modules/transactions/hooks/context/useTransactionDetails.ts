@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth';
 import { useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
@@ -61,6 +62,13 @@ const useTransactionDetails = () => {
       await pendingSignerTransactions.refetch();
       cancelTransaction.reset();
       return response;
+    },
+    onSuccess: async () => {
+      await transactionsPageList.request.refetch();
+      await queryClient.invalidateQueries({
+        queryKey: vaultTransactions.request.queryKey,
+        exact: false,
+      });
     },
   });
 
