@@ -3,6 +3,10 @@ import Lottie from 'lottie-react';
 
 import bakoLoading from '@/assets/bako-loading/bako-loading.json';
 
+interface BakoLoadingProps {
+  size?: number;
+}
+
 const defaultOptions = {
   loop: true,
   autoplay: true,
@@ -12,13 +16,12 @@ const defaultOptions = {
   },
 };
 
-const BakoLoading = () => {
+const BakoLoading = ({ size }: BakoLoadingProps) => {
   return (
     <Flex alignItems="center" justifyContent="center" w="full" h="$100vh">
       <Lottie
         {...defaultOptions}
-        size={20}
-        style={{ height: '120px', width: '120px' }}
+        style={{ height: `${size}px`, width: `${size}px` }}
       />
     </Flex>
   );

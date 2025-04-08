@@ -17,12 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
   AddressWithCopyBtn,
+  BakoLoading,
   NotificationIcon,
   PlusIcon,
   UnknownIcon,
@@ -47,7 +48,6 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
-import React from 'react';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -99,6 +99,7 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const name = mySettingsRequest.data?.name ?? '';
@@ -107,8 +108,9 @@ const UserBox = () => {
   const isWebAuthn = authDetails.userInfos?.type?.type === TypeUser.WEB_AUTHN;
 
   const isMainnet = (url: string) => url?.includes(NetworkType.MAINNET);
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const logout = async () => {
+    setIsLoggingOut(true);
     try {
       authDetails.userInfos?.type.type === TypeUser.FUEL &&
         authDetails.userInfos?.type.name !== EConnectors.FULLET &&
@@ -538,11 +540,12 @@ const UserBox = () => {
               h="70px"
               mb={0}
             >
-              <HStack cursor={'pointer'} onClick={logout} spacing={4}>
+              <HStack cursor="pointer" onClick={logout} spacing={4} w="full">
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect
                 </Text>
+                {isLoggingOut && <BakoLoading size={65} />}
               </HStack>
             </VStack>
           </PopoverBody>
