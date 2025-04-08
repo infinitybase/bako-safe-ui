@@ -1,3 +1,50 @@
+## [1.2.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.1.0...v1.2.0) (2025-04-08)
+
+### Features
+
+* **balance:** added NFT tab and implemented image display ([9397a1a](https://github.com/infinitybase/bako-safe-ui/commit/9397a1a5030593b86bcc8f8e850ac6e05ad7d05b))
+* **connector:** remove network selection from connector ([1ecbae3](https://github.com/infinitybase/bako-safe-ui/commit/1ecbae34c8a9067d0361b8746bc671e62e43f686))
+* **transaction:** add getTransactionIconComponent to determine transaction icons ([e2d6a77](https://github.com/infinitybase/bako-safe-ui/commit/e2d6a770ebb97c58b932a4936dae11560ac00c43))
+* **transaction:** add TransactionItem component for rendering transaction details ([a26e243](https://github.com/infinitybase/bako-safe-ui/commit/a26e243eb101a378fefedc8d3a975c4172dd7e65))
+* **transaction:** remove advanced details from deposit card ([45ef42d](https://github.com/infinitybase/bako-safe-ui/commit/45ef42d566163f6c26582107279177f51a37fac0))
+* **transactions:** verify if all assets is used to remove button e add an warning ([86ec345](https://github.com/infinitybase/bako-safe-ui/commit/86ec345bdc40954708875d87d0cdd8f1193746d5))
+
+### Bug Fixes
+
+* **addres:** if user add a passkey the field address will trigger a new erro msg ([45fea1b](https://github.com/infinitybase/bako-safe-ui/commit/45fea1bd3ba1ff6f8018b84a0c69d8f6c297ba85))
+* **address-book:** fix update function, and fix error handler create address book ([397d919](https://github.com/infinitybase/bako-safe-ui/commit/397d91920b8cdd7e84678aed94bb74da7f4636b4))
+* **assets:** remove error build, add metadata transform ipfs:// to https:// ([7717734](https://github.com/infinitybase/bako-safe-ui/commit/7717734d434f5a34b949587932cd35ad05c7fd85))
+* **balance:** add empty logo on nfts, fix align and add skeleton on load image ([81cc0f2](https://github.com/infinitybase/bako-safe-ui/commit/81cc0f23c65392ed71617a2dbe263c3bcab016f1))
+* **balance:** add isLazy in tabs to render only active tab ([bd38f20](https://github.com/infinitybase/bako-safe-ui/commit/bd38f203c3bf55c794ead74dfe90433fe44530c1))
+* **balance:** adjust nft in mobile ([1dc1cec](https://github.com/infinitybase/bako-safe-ui/commit/1dc1cec95f9b2c5584cf4d200c1807ea09e52a0c))
+* **balance:** fix mobile nft size ([9c289a0](https://github.com/infinitybase/bako-safe-ui/commit/9c289a0b0fa7b7be40a1631ea0645fe2d43d28c9))
+* **build:** remove amount for nfts) ([a70b554](https://github.com/infinitybase/bako-safe-ui/commit/a70b5541df652e1b6c5ffa65ae9b2e7880da3e4a))
+* **components:** refatorate nft logic, split nfts from assets, correct @ addres error ([b10a35b](https://github.com/infinitybase/bako-safe-ui/commit/b10a35bac5d07c55f629b997dc49e4dd5225daef))
+* **conficts:** merge conflicts ([aaf00b7](https://github.com/infinitybase/bako-safe-ui/commit/aaf00b76ec9d437474d322acbc39d38a0d64489b))
+* **connector:** fix connector conection ([ef54422](https://github.com/infinitybase/bako-safe-ui/commit/ef544223318a5c01d39adeba3cbb1ccf1993477e))
+* **query:** fix vault query key ([1962e65](https://github.com/infinitybase/bako-safe-ui/commit/1962e65257c8b27335e89096747c40dd9ede8948))
+* **review:** change to tablist and removed transaction code ([7317e2e](https://github.com/infinitybase/bako-safe-ui/commit/7317e2e91b3d974f90f3f35778a7e29e73f10a28))
+* **review:** reviewed changes requested ([96fde44](https://github.com/infinitybase/bako-safe-ui/commit/96fde4451bce28254e8fa038835c161e09550983))
+* **skeleton:** fixes log warn react not recognize ([95f47fb](https://github.com/infinitybase/bako-safe-ui/commit/95f47fb929798c25f93ad7294378fd9aed286880))
+* **transaction-real-time:** fixed event exports and added hooks ([c6ef8c1](https://github.com/infinitybase/bako-safe-ui/commit/c6ef8c17c1a59fff1450a6a596a7b9d86cf31575))
+* **transaction-real-time:** fixed update of transaction cancel event ([bdfb70d](https://github.com/infinitybase/bako-safe-ui/commit/bdfb70d93c8975cef55b169d8be5586316b1ddac))
+* **transaction:** add () when is a passkey ([93d4767](https://github.com/infinitybase/bako-safe-ui/commit/93d476772ad1b0a2c3ec68802676011a312fcdba))
+* **transaction:** add verification if status = iscanceled on mobile ([afcf887](https://github.com/infinitybase/bako-safe-ui/commit/afcf887d510aed897323b9d99a4b7db58815c48c))
+* **transaction:** change verification type ([58fcd49](https://github.com/infinitybase/bako-safe-ui/commit/58fcd49ac95293dbb426acfed66d1b3eab9bad51))
+* **transaction:** create hook to get type user ([d9f6339](https://github.com/infinitybase/bako-safe-ui/commit/d9f633934e0af7e8a6864a9a584e2060d24815d2))
+* **transaction:** fixed mobile transaction list component ([2622149](https://github.com/infinitybase/bako-safe-ui/commit/2622149bf85f2ee335b8690c89848a39539c1593))
+* **transaction:** improve query invalidation on cancel transaction ([bea80e8](https://github.com/infinitybase/bako-safe-ui/commit/bea80e889712878ffc13d02084e76c693b5c811c))
+* **transaction:** prevent refetch many requests ([0b9ee2d](https://github.com/infinitybase/bako-safe-ui/commit/0b9ee2d4ce5270a67625d8b19040b986db583ae9))
+* **transaction:** prevent refetch many requests ([f24e30b](https://github.com/infinitybase/bako-safe-ui/commit/f24e30b839368a5268a177b6f392f8b7c1781075))
+* **transaction:** remove () from inside function, add () to final exibition only ([9a4b703](https://github.com/infinitybase/bako-safe-ui/commit/9a4b703dda284ccfc3851caf8424115d2e47df6e))
+* **transactions:** apply checksum to address book input ([d70a0da](https://github.com/infinitybase/bako-safe-ui/commit/d70a0da6f8af4a24fecb77a5c3a6aae24586a9c6))
+* **transactions:** fit with backend, rework transaction stepper, remove hook with no use ([1b7edc8](https://github.com/infinitybase/bako-safe-ui/commit/1b7edc8710b5372ead4aa2479ed9df086cce2e08))
+* **transactions:** refatoring some hooks and add logic to remove a token or nft when used ([f423164](https://github.com/infinitybase/bako-safe-ui/commit/f423164bed0bd23d779c7199c74a963b5af6c451))
+* **transactions:** remove transaction code and rebuild vercel ([a4d821f](https://github.com/infinitybase/bako-safe-ui/commit/a4d821fbbed87e7a76b89e1fdda10f7cd505b1a4))
+* **transactions:** vaults are no more stucks with other vault has a pending transaction ([c8dd966](https://github.com/infinitybase/bako-safe-ui/commit/c8dd96612051e43efe8498ed41c123c7f41a40ce))
+* **transaction:** when a user is a passkey, show the passkey instead of addres on tx) ([2e06030](https://github.com/infinitybase/bako-safe-ui/commit/2e060309d9ff9c4f4972134bdd1e8ec7255c1962))
+* **vault:** apply checksum to address book inputs ([6aea4be](https://github.com/infinitybase/bako-safe-ui/commit/6aea4bef44810010c8d9a5875842a9130fab3fda))
+
 ## [1.1.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.0.0...v1.1.0) (2025-03-19)
 
 ### Features
