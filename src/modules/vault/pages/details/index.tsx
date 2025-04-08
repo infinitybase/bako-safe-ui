@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
-  Divider,
   HStack,
   Icon,
   Spacer,
@@ -23,16 +22,11 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles } from '@/modules/core';
+import { PermissionRoles, SocketEvents } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
-import {
-  TransactionCard,
-  TransactionCardMobile,
-  transactionStatus,
-  WaitingSignatureBadge,
-} from '@/modules/transactions';
+import { TransactionCard, WaitingSignatureBadge } from '@/modules/transactions';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils/limit-characters';
@@ -41,17 +35,17 @@ import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
 
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
   const [addAssetsDialogState, setAddAssetsDialogState] = useState(false);
   const [depositDialogState, setDepositDialogState] = useState(false);
   const menuDrawer = useDisclosure();
-  const {
-    vaultPageParams: { workspaceId: vaultWkId },
-  } = useGetParams();
   const navigate = useNavigate();
   const { vaultPageParams } = useGetParams();
-  const { vault, assets, account } = useVaultInfosContext();
+  const { vault, assets } = useVaultInfosContext();
 
   const {
     vaultTransactions: {
@@ -59,7 +53,6 @@ const VaultDetailsPage = () => {
       lists: { transactions },
       request: { isLoading, isFetching, queryKey },
       handlers: { handleIncomingAction, handleOutgoingAction },
-      inView,
       transactionsRef,
     },
     pendingSignerTransactions,
@@ -100,6 +93,14 @@ const VaultDetailsPage = () => {
       queryClient.removeQueries({ queryKey, exact: true });
     };
   }, []);
+
+  const vaultQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+
+  useTransactionSocketListener(vaultQueryKey ?? []);
+
 
   if (!vault) return null;
 
@@ -295,18 +296,8 @@ const VaultDetailsPage = () => {
       >
         {hasTransactions
           ? transactions?.map((grouped) => (
-              <>
-                <HStack w="full">
-                  <Text
-                    fontSize="sm"
-                    fontWeight="semibold"
-                    color="grey.425"
-                    whiteSpace="nowrap"
-                  >
-                    {grouped.monthYear}
-                  </Text>
-                  <Divider w="full" borderColor="grey.950" />
-                </HStack>
+              <Box key={grouped.monthYear} w="full">
+                <TransactionCard.GroupMonth monthYear={grouped.monthYear} />
                 <TransactionCard.List
                   mt={5}
                   pb={!isLarge ? 10 : 0}
@@ -315,50 +306,23 @@ const VaultDetailsPage = () => {
                   spacing={0}
                 >
                   {grouped?.transactions?.map((transaction) => {
-                    const status = transactionStatus({
-                      ...transaction,
-                      account,
-                    });
-                    const isSigner = !!transaction.predicate?.members?.find(
-                      (member) => member.address === account,
-                    );
-
                     return (
-                      <Box key={transaction.id} ref={transactionsRef} w="full">
-                        {isMobile ? (
-                          <TransactionCardMobile
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            mt={2.5}
-                            w="full"
-                          />
-                        ) : (
-                          <TransactionCard.Container
-                            mb={2.5}
-                            key={transaction.id}
-                            status={status}
-                            isSigner={isSigner}
-                            transaction={transaction}
-                            account={account}
-                            details={
-                              <TransactionCard.Details
-                                transaction={transaction}
-                                status={status}
-                              />
-                            }
-                          />
-                        )}
-                      </Box>
+                      <TransactionCard.Item
+                        w="full"
+                        key={transaction.id}
+                        ref={transactionsRef}
+                        isMobile={isMobile}
+                        transaction={transaction}
+                        userInfos={userInfos}
+                      />
                     );
                   })}
-                  <Box ref={inView.ref} />
 
                   {grouped.transactions.length >= 5 && isFetching && (
                     <Spinner alignSelf={'center'} mt={4} color="brand.500" />
                   )}
                 </TransactionCard.List>
-              </>
+              </Box>
             ))
           : !hasTransactions &&
             !!transactions && (

@@ -86,9 +86,7 @@ const useWalletSignIn = (
       createUserRequest.mutate(
         {
           address: account!,
-          provider: fromConnector
-            ? localStorage.getItem(localStorageKeys.SELECTED_NETWORK)!
-            : network!.url,
+          provider: network!.url,
           type: TypeUser.FUEL,
         },
         {

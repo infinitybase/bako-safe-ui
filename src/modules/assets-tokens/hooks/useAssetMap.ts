@@ -43,8 +43,14 @@ export const useMappedAssetStore = create(
           let asset = get().mappedNfts[assetId];
           if (!asset) {
             asset = await WorkspaceService.getTokenFuelApi(assetId, chainId);
+            if (
+              asset.isNFT ||
+              asset?.totalSupply === '1' ||
+              asset?.totalSupply === null
+            ) {
+              assets[assetId] = asset;
+            }
           }
-          assets[assetId] = asset;
         }
         set({ mappedNfts: { ...get().mappedNfts, ...assets } });
       },
@@ -57,19 +63,28 @@ export const useMappedAssetStore = create(
 );
 
 export const useAssetMap = (chainId: number) => {
-  const { mappedTokens } = useMappedAssetStore();
+  const { mappedTokens, mappedNfts } = useMappedAssetStore();
 
   const assetList = useMemo(() => {
+    const tokenList = [...Object.values(mappedTokens), ...assets];
+    return tokenList;
+  }, [mappedTokens]);
+
+  const nftList = useMemo(() => {
     const tokenList = [
-      ...Object.values(mappedTokens).map((item) => item),
-      ...assets,
+      ...Object.values(mappedNfts).map((nft) => ({
+        ...nft,
+        metadata: nft.metadata,
+      })),
     ];
     return tokenList;
-  }, [mappedTokens, chainId]);
+  }, [mappedNfts]);
 
   const assetsMap = useMemo(() => {
     return assetsMapFromFormattedFn(assetList as unknown as Assets, chainId);
   }, [assetList, chainId]);
 
-  return { assetList, assetsMap };
+  return { assetList, nftList, assetsMap };
 };
+
+export type UseAssetMap = ReturnType<typeof useAssetMap>;

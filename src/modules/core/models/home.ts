@@ -7,6 +7,11 @@ export const HomeQueryKey = {
     'me',
     workspaceId,
   ],
+  HOME_DATA: (workspaceId: string) => [
+    HomeQueryKey.DEFAULT,
+    'data',
+    workspaceId,
+  ],
   ADDRESS_BOOK: () => [HomeQueryKey.DEFAULT, 'address-book'],
   PENDING_TRANSACTIONS: PENDING_TRANSACTIONS_QUERY_KEY,
   FULL_DATA: (workspaceId: string) => [

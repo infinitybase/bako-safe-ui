@@ -45,6 +45,7 @@ const useVaultTransactionsList = ({
     isFetching,
     hasNextPage,
     fetchNextPage,
+    queryKey,
     refetch,
     queryKey,
   } = useVaultTransactionsRequest({
@@ -79,6 +80,7 @@ const useVaultTransactionsList = ({
 
   return {
     request: {
+      queryKey,
       isLoading,
       isFetching,
       hasNextPage,

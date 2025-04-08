@@ -122,29 +122,28 @@ const DepositDetails = ({ transaction }: DepositDetailsProps) => {
         </Box>
       </VStack>
 
-      {!isMobile && transaction.status === TransactionStatus.SUCCESS && (
-        <Button
-          w={isMobile ? 'full' : 'unset'}
-          mt={isMobile ? 'auto' : '32px'}
-          border="none"
-          bgColor="#F5F5F50D"
-          fontSize="xs"
-          fontWeight="normal"
-          letterSpacing=".5px"
-          alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-          variant="secondary"
-          onClick={handleViewInExplorer}
-          css={css`
-            &:hover .btn-icon {
-              animation: ${shakeAnimationY} 0.5s ease-in-out;
-            }
-          `}
-          rightIcon={
-            <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
-          }
-        >
-          View on Explorer
-        </Button>
+      {!isMobile && (
+        <HStack w="100%" justifyContent="end" alignItems="center" mt={4}>
+          {transaction.status === TransactionStatus.SUCCESS && (
+            <Button
+              w={isMobile ? 'full' : 'unset'}
+              alignSelf={{ base: 'stretch', sm: 'flex-end' }}
+              size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+              variant="secondaryV2"
+              onClick={handleViewInExplorer}
+              css={css`
+                &:hover .btn-icon {
+                  animation: ${shakeAnimationY} 0.5s ease-in-out;
+                }
+              `}
+              rightIcon={
+                <Icon as={UpRightArrow} fontSize="lg" className="btn-icon" />
+              }
+            >
+              View on Explorer
+            </Button>
+          )}
+        </HStack>
       )}
     </Box>
   );

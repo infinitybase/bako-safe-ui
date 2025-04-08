@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Link,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -14,16 +15,17 @@ import {
   Dialog,
   DialogModalProps,
   DownLeftArrowGreen,
+  FileCodeIcon,
   UpRightArrow,
   UpRightArrowYellow,
 } from '@/components';
 import { ContractIcon } from '@/components/icons/tx-contract';
 import { DeployIcon } from '@/components/icons/tx-deploy';
+import env from '@/config/env';
 import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
-  transactionStatus,
   useVerifyTransactionInformations,
 } from '@/modules/transactions';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -33,7 +35,6 @@ import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
-  account: string;
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
@@ -42,7 +43,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const { onClose, isOpen, transaction, status, isSigner } = props;
   const {
     screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
@@ -72,12 +73,12 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
     },
   } = useTransactionsContext();
 
-  const { isSigned, isCompleted, isDeclined, isReproved } = status;
+  const { isSigned, isCompleted, isDeclined, isReproved, isCanceled } = status;
 
   const awaitingAnswer =
     !isSigned && !isDeclined && !isCompleted && !isReproved && transaction;
 
-  const showSignActions = awaitingAnswer && isSigner;
+  const showSignActions = awaitingAnswer && isSigner && !isCanceled;
 
   return (
     <Dialog.Modal onClose={onClose} isOpen={isOpen}>
@@ -192,30 +193,49 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               />
               <TransactionCard.Status
                 transaction={transaction}
-                status={transactionStatus({
-                  ...transaction,
-                  account,
-                })}
+                status={status}
               />
             </HStack>
-            {isLowerThanFourHundredAndThirty && isCompleted && (
+            {isLowerThanFourHundredAndThirty && (
+              <>
+                {isCompleted && (
+                  <Button
+                    mt={4}
+                    w="full"
+                    border="none"
+                    bgColor="#F5F5F50D"
+                    fontSize="xs"
+                    fontWeight="normal"
+                    letterSpacing=".5px"
+                    variant="secondary"
+                    h="28px"
+                    p="6px 8px"
+                    onClick={handleViewInExplorer}
+                    rightIcon={
+                      <Icon
+                        as={UpRightArrow}
+                        textColor="grey.75"
+                        fontSize="md"
+                      />
+                    }
+                  >
+                    View on Explorer
+                  </Button>
+                )}
+              </>
+            )}
+            {!isDeposit && (
               <Button
-                mt={4}
-                w="full"
-                border="none"
-                bgColor="#F5F5F50D"
-                fontSize="xs"
-                fontWeight="normal"
-                letterSpacing=".5px"
-                variant="secondary"
-                h="28px"
-                p="6px 8px"
-                onClick={handleViewInExplorer}
-                rightIcon={
-                  <Icon as={UpRightArrow} textColor="grey.75" fontSize="md" />
-                }
+                variant="secondaryV2"
+                as={Link}
+                href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                isExternal
+                w="100%"
+                size="sm"
+                h={7}
+                rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
               >
-                View on Explorer
+                Advanced details
               </Button>
             )}
           </VStack>

@@ -13,7 +13,6 @@ import { useContactToast } from '@/modules/addressBook/hooks';
 import { useListConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
 import { useVerifyBrowserType } from '@/modules/dapp/hooks';
 import { NetworkSignInDrawer } from '@/modules/network/components/signInDrawer';
-import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import {
@@ -69,8 +68,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
 
-  const { fromConnector } = useNetworks();
-
   const loginDrawer = useDisclosure();
 
   useEffect(() => {
@@ -81,12 +78,6 @@ const SignInWrapper = (props: SignInWrapperProps) => {
       });
     auth.handlers.setInvalidAccount?.(false);
   }, [auth.invalidAccount]);
-
-  useEffect(() => {
-    if (fromConnector) {
-      loginDrawer.onOpen?.();
-    }
-  }, []);
 
   if (isSafariBrowser && byConnector) {
     return (

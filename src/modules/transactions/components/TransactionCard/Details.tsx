@@ -1,11 +1,19 @@
-import { Box, Button, HStack, Icon, Stack, VStack } from '@chakra-ui/react';
-import { css } from '@emotion/react';
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Link,
+  Stack,
+  VStack,
+} from '@chakra-ui/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
-import { CustomSkeleton, UpRightArrow } from '@/components';
+import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
 import { TrashIcon } from '@/components/icons/trash';
-import { shakeAnimationY, type TransactionState } from '@/modules/core';
+import env from '@/config/env';
+import { type TransactionState } from '@/modules/core';
 import type { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 import { NetworkService } from '@/modules/network/services';
 import { useTransactionsContext } from '@/modules/transactions/providers/TransactionsProvider';
@@ -79,109 +87,121 @@ interface TransactionDetailsProps {
   isMobileDetailsOpen?: boolean;
 }
 
-const Details = ({
-  transaction,
-  status,
-  isInTheVaultPage,
-  isMobileDetailsOpen,
-}: TransactionDetailsProps) => {
-  const isDeposit = transaction.type === TransactionType.DEPOSIT;
-  const {
-    screenSizes: { isMobile },
-  } = useWorkspaceContext();
-
-  const handleViewInExplorer = () => {
-    const { hash, network } = transaction;
-    window.open(
-      `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
-      '_BLANK',
+const Details = memo(
+  ({
+    transaction,
+    status,
+    isInTheVaultPage,
+    isMobileDetailsOpen,
+  }: TransactionDetailsProps) => {
+    const isDeposit = useMemo(
+      () => transaction.type === TransactionType.DEPOSIT,
+      [transaction.type],
     );
-  };
 
-  return (
-    <DetailsTransactionStepper
-      transactionId={transaction.id}
-      predicateId={transaction.predicateId}
-      isMobileDetailsOpen={isMobileDetailsOpen ?? false}
-      isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
-      isDeposit={isDeposit}
-    >
-      {(isLoading, transactionHistory) => (
-        <CustomSkeleton
-          py={2}
-          isLoaded={isDeposit ? true : !isLoading && !!transactionHistory}
-        >
-          {isDeposit ? (
-            <DepositDetails transaction={transaction} />
-          ) : (
-            <VStack w="full">
-              <Stack
-                pt={{ base: 0, sm: 5 }}
-                alignSelf="flex-start"
-                display="flex"
-                direction={{ base: 'column', md: 'row' }}
-                alignItems="start"
-                justify="space-between"
-                columnGap={{
-                  base: isInTheVaultPage ? '3rem' : '72px',
-                  lg: '150px',
-                }}
-                w="full"
-              >
-                {/* Transaction Breakdown */}
-                <TransactionBreakdown
-                  transaction={transaction}
-                  status={status}
-                />
+    const {
+      screenSizes: { isMobile },
+    } = useWorkspaceContext();
 
-                {/* Transaction History */}
-                <Box
+    const handleViewInExplorer = useCallback(() => {
+      const { hash, network } = transaction;
+      window.open(
+        `${NetworkService.getExplorer(network.url)}/tx/0x${hash}`,
+        '_BLANK',
+      );
+    }, [transaction]);
+
+    return (
+      <DetailsTransactionStepper
+        transactionId={transaction.id}
+        predicateId={transaction.predicateId}
+        isMobileDetailsOpen={isMobileDetailsOpen ?? false}
+        isTransactionSuccess={transaction.status === TransactionStatus.SUCCESS}
+        isDeposit={isDeposit}
+      >
+        {(isLoading, transactionHistory) => (
+          <CustomSkeleton
+            py={2}
+            isLoaded={isDeposit ? true : !isLoading && !!transactionHistory}
+          >
+            {isDeposit ? (
+              <DepositDetails transaction={transaction} />
+            ) : (
+              <VStack w="full">
+                <Stack
+                  pt={{ base: 0, sm: 5 }}
                   alignSelf="flex-start"
+                  display="flex"
+                  direction={{ base: 'column', md: 'row' }}
+                  alignItems="start"
+                  justify="space-between"
+                  columnGap={{
+                    base: isInTheVaultPage ? '3rem' : '72px',
+                    lg: '150px',
+                  }}
                   w="full"
-                  minW={{ base: 200, sm: 'full' }}
-                  mt={isMobile ? 3 : 'unset'}
                 >
-                  <TransactionStepper steps={transactionHistory ?? []} />
-                </Box>
-              </Stack>
+                  {/* Transaction Breakdown */}
+                  <TransactionBreakdown
+                    transaction={transaction}
+                    status={status}
+                  />
 
-              {transaction.status === TransactionStatus.SUCCESS &&
-                !isMobile && (
-                  <Button
-                    border="none"
-                    bgColor="#F5F5F50D"
-                    fontSize="xs"
-                    fontWeight="normal"
-                    letterSpacing=".5px"
-                    alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                    variant="secondary"
-                    onClick={handleViewInExplorer}
-                    css={css`
-                      &:hover .btn-icon {
-                        animation: ${shakeAnimationY} 0.5s ease-in-out;
-                      }
-                    `}
-                    rightIcon={
-                      <Icon
-                        as={UpRightArrow}
-                        textColor="grey.75"
-                        fontSize="lg"
-                        className="btn-icon"
-                      />
-                    }
+                  {/* Transaction History */}
+                  <Box
+                    alignSelf="flex-start"
+                    w="full"
+                    minW={{ base: 200, sm: 'full' }}
+                    mt={isMobile ? 3 : 'unset'}
                   >
-                    View on Explorer
-                  </Button>
-                )}
-              <HStack justifyContent="end" w="full">
-                <CancelTransactionButton transaction={transaction} />
-              </HStack>
-            </VStack>
-          )}
-        </CustomSkeleton>
-      )}
-    </DetailsTransactionStepper>
-  );
-};
+                    <TransactionStepper steps={transactionHistory ?? []} />
+                  </Box>
+                </Stack>
+
+                <HStack justifyContent="end" width="100%">
+                  {!isMobile && !isDeposit && (
+                    <Button
+                      variant="secondaryV2"
+                      alignSelf="flex-end"
+                      href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                      isExternal
+                      as={Link}
+                      size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                      rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+                    >
+                      Advanced details
+                    </Button>
+                  )}
+
+                  {!isMobile &&
+                    transaction.status === TransactionStatus.SUCCESS && (
+                      <Button
+                        variant="secondaryV2"
+                        onClick={handleViewInExplorer}
+                        size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
+                        rightIcon={
+                          <Icon
+                            as={UpRightArrow}
+                            textColor="grey.75"
+                            fontSize="lg"
+                            className="btn-icon"
+                          />
+                        }
+                      >
+                        View on Explorer
+                      </Button>
+                    )}
+                  <CancelTransactionButton transaction={transaction} />
+                </HStack>
+              </VStack>
+            )}
+          </CustomSkeleton>
+        )}
+      </DetailsTransactionStepper>
+    );
+  },
+);
+
+Details.displayName = 'Transaction Details';
 
 export { AssetBoxInfo, Details };
