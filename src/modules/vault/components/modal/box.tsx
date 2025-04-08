@@ -86,7 +86,7 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
             <Text
               variant="subtitle"
               isTruncated
-              maxW={160}
+              maxW={{ base: 120, xs: 250 }}
               color="grey.75"
               fontSize="xs"
               lineHeight="14px"
@@ -98,7 +98,7 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
               color="grey.500"
               lineHeight="14px"
               isTruncated
-              maxW={160}
+              maxW={{ base: 120, xs: 250 }}
             >
               {AddressUtils.format(address ?? '', 4)}
             </Text>
