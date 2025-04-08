@@ -86,7 +86,7 @@ const useAddressBookMutations = ({
     onError: (error) => {
       const errorDescription = (
         (error as AxiosError)?.response?.data as IApiError
-      )?.detail;
+      )?.title;
 
       if (errorDescription?.includes('nickname')) {
         errorToast({
@@ -115,9 +115,15 @@ const useAddressBookMutations = ({
     },
   );
 
-  const handleUpdateContact = form.handleSubmit(async (data) => {
-    updateContactRequest.mutate({ ...data, id: contactToEdit.id });
-  });
+  const handleUpdateContact = form.handleSubmit(
+    async ({ nickname, address }) => {
+      updateContactRequest.mutate({
+        nickname,
+        address: new Address(address).toString(),
+        id: contactToEdit.id,
+      });
+    },
+  );
 
   const handleDeleteContact = async (id: string) => {
     deleteContactRequest.mutate(id);

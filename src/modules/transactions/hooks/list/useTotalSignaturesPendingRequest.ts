@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 import { TransactionService } from '../../services';
 
@@ -9,8 +10,12 @@ export type IUseTransactionSignaturePendingReturn = ReturnType<
 >;
 
 const useTransactionsSignaturePending = (predicateId?: string[]) => {
-  return useQuery({
-    queryKey: [PENDING_TRANSACTIONS_QUERY_KEY],
+  const queryKey = useMemo(
+    () => [PENDING_TRANSACTIONS_QUERY_KEY, predicateId],
+    [predicateId],
+  );
+  const query = useQuery({
+    queryKey,
     queryFn: () => {
       return TransactionService.getTransactionsSignaturePending(predicateId);
     },
@@ -19,6 +24,10 @@ const useTransactionsSignaturePending = (predicateId?: string[]) => {
     refetchOnMount: false,
     staleTime: 500, // 500ms second to prevent request spam
   });
+  return {
+    ...query,
+    queryKey,
+  };
 };
 
 export { PENDING_TRANSACTIONS_QUERY_KEY, useTransactionsSignaturePending };
