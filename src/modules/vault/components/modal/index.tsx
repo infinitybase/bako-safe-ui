@@ -9,6 +9,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { useCallback } from 'react';
 
 import { CustomSkeleton, Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -51,6 +52,27 @@ const VaultListModal = ({
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
+
+  const renderVaultBox = useCallback(
+    (vault: (typeof vaults)[0]) => {
+      const handleClick = () => drawer.onSelectVault(vault);
+
+      return (
+        <VaultItemBox
+          key={vault.id}
+          id={vault.id}
+          mt={4}
+          name={vault.name}
+          address={vault.predicateAddress}
+          root={vault.root}
+          isActive={vaultId === vault.id}
+          members={vault.members?.length}
+          onClick={handleClick}
+        />
+      );
+    },
+    [drawer, vaultId],
+  );
 
   return (
     <>
@@ -114,12 +136,8 @@ const VaultListModal = ({
             maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
             overflowY="scroll"
             sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                display: 'none',
-              },
+              '&::-webkit-scrollbar': { display: 'none' },
+              '&::-webkit-scrollbar-thumb': { display: 'none' },
             }}
           >
             {isSuccess && !vaults.length && (
@@ -134,21 +152,7 @@ const VaultListModal = ({
                 <CustomSkeleton h="90px" w="full" />
               )}
               <CustomSkeleton isLoaded={isLoadingVaults}>
-                {vaults?.map((vault) => {
-                  return (
-                    <VaultItemBox
-                      key={vault.id}
-                      id={vault.id}
-                      mt={4}
-                      name={vault.name}
-                      address={vault.predicateAddress}
-                      root={vault.root}
-                      isActive={vaultId === vault.id}
-                      members={vault.members?.length}
-                      onClick={() => drawer.onSelectVault(vault)}
-                    />
-                  );
-                })}
+                {vaults.map(renderVaultBox)}
               </CustomSkeleton>
               <Box ref={inView.ref} />
             </VStack>
@@ -178,9 +182,7 @@ const VaultListModal = ({
               color="grey.75"
               borderColor="grey.75"
               w="full"
-              _hover={{
-                bg: '#f5f5f513',
-              }}
+              _hover={{ bg: '#f5f5f513' }}
               onClick={createVaultModalOnOpen}
             >
               Create new vault

@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { memo, useCallback, useMemo } from 'react';
 import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
 import { Card, CardProps } from '@/components';
@@ -30,36 +31,35 @@ interface VaultDrawerBoxProps extends CardProps {
   root?: boolean;
 }
 
-const VaultItemBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, address, members, root, ...rest } = props;
-  const isPending = useTransactionsSignaturePending([props.id!]);
+const VaultItemBoxComponent = ({
+  isActive,
+  name,
+  address,
+  members,
+  root,
+  id,
+  ...rest
+}: VaultDrawerBoxProps) => {
+  const isPending = useTransactionsSignaturePending([id!]);
   const showPending = isPending.data?.transactionsBlocked;
   const needSignature = isPending.data?.pendingSignature;
 
-  const userIcon = members === 1 ? LuUser2 : LuUsers2;
+  const userIcon = useMemo(
+    () => (members === 1 ? LuUser2 : LuUsers2),
+    [members],
+  );
 
-  const renderStatusBadge = () => {
-    if (showPending) {
-      if (needSignature) {
-        return (
-          <WaitingSignatureBadge
-            isLoading={isPending.isLoading}
-            quantity={isPending.data?.ofUser ?? 0}
-            label="Pending Signature"
-          />
-        );
-      } else {
-        return (
-          <WaitingSignatureBadge
-            isLoading={isPending.isLoading}
-            quantity={isPending.data?.ofUser ?? 0}
-            label="Pending Transaction"
-          />
-        );
-      }
-    }
-    return null;
-  };
+  const renderStatusBadge = useCallback(() => {
+    if (!showPending) return null;
+
+    return (
+      <WaitingSignatureBadge
+        isLoading={isPending.isLoading}
+        quantity={isPending.data?.ofUser ?? 0}
+        label={needSignature ? 'Pending Signature' : 'Pending Transaction'}
+      />
+    );
+  }, [showPending, needSignature, isPending]);
 
   return (
     <Card
@@ -118,19 +118,7 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
           {(showPending || root) && (
             <HStack spacing={2}>
               {renderStatusBadge()}
-              {root && !showPending && (
-                <Badge
-                  variant="gray"
-                  fontSize="2xs"
-                  color="grey.75"
-                  h="20px"
-                  px={3}
-                  borderRadius="full"
-                >
-                  Personal
-                </Badge>
-              )}
-              {root && showPending && (
+              {root && (
                 <Badge
                   variant="gray"
                   fontSize="2xs"
@@ -150,4 +138,4 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
   );
 };
 
-export { VaultItemBox };
+export const VaultItemBox = memo(VaultItemBoxComponent);
