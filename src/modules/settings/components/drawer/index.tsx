@@ -188,7 +188,19 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                 )}
               />
             </VStack>
-
+            <Divider borderColor="#868079" mb={5} mt={4} />
+            <Text fontWeight="bold" color="grey.200" fontSize={15}>
+              Notifications Preferences
+            </Text>
+            <Text
+              fontSize="sm"
+              maxWidth={320}
+              color="grey.75"
+              fontWeight="light"
+              paddingBottom={'6px'}
+            >
+              Get wallet and vault alerts by email for enhanced security.
+            </Text>
             <Text fontWeight="bold" color="grey.200" fontSize={15}>
               Do you wanna receive email notifications?
             </Text>
@@ -203,11 +215,11 @@ const SettingsDrawer = ({ ...props }: SettingsDrawerProps) => {
                   onChange={field.onChange}
                 >
                   <VStack>
-                    <Radio value="true" size="md">
-                      Sounds good
-                    </Radio>
                     <Radio value="false" size="md">
-                      Nope, thanks
+                      Yes
+                    </Radio>
+                    <Radio value="true" size="md">
+                      No
                     </Radio>
                   </VStack>
                 </RadioGroup>

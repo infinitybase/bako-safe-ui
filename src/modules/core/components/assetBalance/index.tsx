@@ -1,11 +1,14 @@
 import {
+  Box,
   Card,
+  Center,
   Grid,
   HStack,
   Icon,
   IconButton,
   Image,
   Skeleton,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -72,17 +75,55 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
       boxShadow="lg"
     >
       <VStack alignItems="flex-start" gap={isLitteSmall ? 1 : 2}>
-        <Skeleton isLoaded={imageLoaded} w="full" h="auto" borderRadius={5}>
+        <Box
+          w="full"
+          aspectRatio={1}
+          borderRadius={5}
+          position="relative"
+          overflow="hidden"
+        >
+          {!imageLoaded && (
+            <>
+              <Skeleton
+                startColor="dark.200"
+                endColor="dark.500"
+                w="full"
+                h="full"
+                position="absolute"
+                top={0}
+                left={0}
+                zIndex={0}
+              />
+              <Center
+                w="full"
+                h="full"
+                position="absolute"
+                top={0}
+                left={0}
+                zIndex={1}
+              >
+                <Spinner
+                  thickness="3px"
+                  speed="0.5s"
+                  color="grey.400"
+                  size="md"
+                />
+              </Center>
+            </>
+          )}
+
           <Image
-            w={'full'}
-            h={'full'}
+            w="full"
+            h="full"
             src={nftImageUrl || UNKNOWN_ASSET.icon}
             borderRadius={5}
             alt="NFT Image"
             objectFit="cover"
             onLoad={() => setImageLoaded(true)}
+            opacity={imageLoaded ? 1 : 0}
+            transition="opacity 0.3s ease"
           />
-        </Skeleton>
+        </Box>
         <VStack alignItems="flex-start" gap={0} maxW="full">
           <HStack width="full" spacing={isLitteSmall ? 1 : 2} align="center">
             <Text

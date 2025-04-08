@@ -137,9 +137,12 @@ const VaultBalancePage = () => {
 
       <Flex w="full" direction="column" flex={1}>
         <Tabs isLazy>
-          <TabList borderBottom="1px solid #333">
+          <TabList borderBottom="1px solid #333" paddingBottom={'2px'}>
             <Tab
-              _selected={{ bg: 'white', color: 'black' }}
+              _selected={{
+                bg: 'white',
+                color: 'black',
+              }}
               _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}
@@ -149,7 +152,10 @@ const VaultBalancePage = () => {
               Tokens
             </Tab>
             <Tab
-              _selected={{ bg: 'white', color: 'black' }}
+              _selected={{
+                bg: 'white',
+                color: 'black',
+              }}
               _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}

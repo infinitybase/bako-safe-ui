@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
 import { Address } from 'fuels';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -47,7 +47,6 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
-import React from 'react';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -99,6 +98,7 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const name = mySettingsRequest.data?.name ?? '';
@@ -347,14 +347,16 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      minW="12px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
                       position="absolute"
                       top={-1}
                       right={-1}
-                      px={unreadCounter >= 10 ? 0.5 : 0}
+                      px={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>
@@ -371,17 +373,19 @@ const UserBox = () => {
             {unreadCounter > 0 && isMobile && (
               <Text
                 fontSize="xs"
+                minW="20px"
+                h="20px"
+                lineHeight="18px"
                 rounded="full"
                 bgColor="error.600"
                 color="white"
-                border="none"
-                w="16px"
                 textAlign="center"
                 position="absolute"
                 right={-2}
                 top={-2}
+                px={unreadCounter > 99 ? '0.5' : '0'}
               >
-                {unreadCounter}
+                {unreadCounter > 99 ? '+99' : unreadCounter}
               </Text>
             )}
           </HStack>
@@ -477,10 +481,14 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      w="16px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
+                      px={unreadCounter > 99 ? '0.5' : '0'}
+                      py={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>

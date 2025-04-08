@@ -58,15 +58,10 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                   Notifications
                 </Heading>
                 {unreadCounter > 0 && (
-                  <Center
-                    minW={4}
-                    minH={4}
-                    maxW={5}
-                    maxH={5}
-                    bg="error.600"
-                    borderRadius={10}
-                  >
-                    <Text fontSize="xs">{unreadCounter}</Text>
+                  <Center minW={5} minH={5} bg="error.600" borderRadius="full">
+                    <Text fontSize="xs" color="white" lineHeight="shorter">
+                      {unreadCounter > 99 ? '99+' : unreadCounter}
+                    </Text>
                   </Center>
                 )}
               </HStack>
