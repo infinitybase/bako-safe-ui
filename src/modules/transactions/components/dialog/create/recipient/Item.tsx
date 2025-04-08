@@ -1,5 +1,5 @@
 import { AccordionItem, HStack, Text } from '@chakra-ui/react';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { ListContactsResponse } from '@/modules/addressBook/services';
@@ -37,32 +37,41 @@ const RecipientItem = ({
   getBalanceAvailable,
 }: RecipientItemProps) => {
   const { watch, getFieldState } = useFormContext<ITransactionForm>();
-  const { providerInstance } = useWorkspaceContext();
+  const {
+    providerInstance,
+    vaultDetails: {
+      assets: { isNFTAsset },
+    },
+  } = useWorkspaceContext();
   const {
     handlers: { getResolverName },
   } = useBakoIDClient(providerInstance);
   const transaction = watch(`transactions.${index}`);
   const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
   const fieldState = getFieldState(`transactions.${index}`);
+  let resolvedLabel = watch(`transactions.${index}.resolvedLabel`);
 
-  const hasEmptyField = Object.values(transaction).some(
-    (value) => value === '',
-  );
+  if (resolvedLabel?.startsWith('@')) {
+    resolvedLabel = resolvedLabel?.split(' ')[0];
+  }
+  const hasEmptyField = Object.entries(transaction)
+    .filter(([key]) => key !== 'resolvedLabel')
+    .some(([, value]) => value === '');
 
   const currentAmount = watch(`transactions.${index}.amount`);
   const isCurrentAmountZero = Number(currentAmount) === 0;
 
   const isDisabled = hasEmptyField || fieldState.invalid || isCurrentAmountZero;
-
-  const contact = useMemo(
-    () =>
-      nicks.find((nick) => nick.user.address === transaction.value)?.nickname,
-    [nicks, transaction.value],
-  );
-
+  const contact = nicks.find(
+    (nick) => nick.user.address === transaction.value,
+  )?.nickname;
   const resolverName = getResolverName(transaction.value);
-  const recipientLabel =
+  let recipientLabel =
     contact ?? resolverName ?? AddressUtils.format(transaction.value);
+  if (resolvedLabel?.startsWith('@')) {
+    recipientLabel = resolvedLabel;
+  }
+  const isNFT = isNFTAsset(transaction.asset);
 
   return (
     <AccordionItem
@@ -99,7 +108,7 @@ const RecipientItem = ({
           !hasEmptyField && (
             <Text fontSize="sm" color="grey.500" mt={2}>
               <b>
-                {transaction.amount} {assetSlug}
+                {isNFT ? 'NFT' : transaction.amount} {isNFT ? '' : assetSlug}
               </b>{' '}
               to <b> {recipientLabel}</b>
             </Text>

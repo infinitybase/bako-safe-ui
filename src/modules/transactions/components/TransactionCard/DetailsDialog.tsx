@@ -26,7 +26,6 @@ import { TransactionState } from '@/modules/core/models/transaction';
 import { NetworkService } from '@/modules/network/services';
 import {
   TransactionCard,
-  transactionStatus,
   useVerifyTransactionInformations,
 } from '@/modules/transactions';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
@@ -36,7 +35,6 @@ import { TransactionWithVault } from '../../services/types';
 
 interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
   transaction: TransactionWithVault;
-  account: string;
   status: TransactionState;
   isInTheVaultPage?: boolean;
   isSigner: boolean;
@@ -45,7 +43,7 @@ interface DetailsDialogProps extends Omit<DialogModalProps, 'children'> {
 }
 
 const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
-  const { onClose, isOpen, transaction, account, status, isSigner } = props;
+  const { onClose, isOpen, transaction, status, isSigner } = props;
   const {
     screenSizes: { isLowerThanFourHundredAndThirty },
   } = useWorkspaceContext();
@@ -195,10 +193,7 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
               />
               <TransactionCard.Status
                 transaction={transaction}
-                status={transactionStatus({
-                  ...transaction,
-                  account,
-                })}
+                status={status}
               />
             </HStack>
             {isLowerThanFourHundredAndThirty && (
@@ -229,18 +224,20 @@ const DetailsDialog = ({ ...props }: DetailsDialogProps) => {
                 )}
               </>
             )}
-            <Button
-              variant="secondaryV2"
-              as={Link}
-              href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
-              isExternal
-              w="100%"
-              size="sm"
-              h={7}
-              rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
-            >
-              Advanced details
-            </Button>
+            {!isDeposit && (
+              <Button
+                variant="secondaryV2"
+                as={Link}
+                href={`${env.BASE_API_URL}/transaction/${transaction.id}/advanced-details`}
+                isExternal
+                w="100%"
+                size="sm"
+                h={7}
+                rightIcon={<Icon as={FileCodeIcon} fontSize="lg" />}
+              >
+                Advanced details
+              </Button>
+            )}
           </VStack>
 
           <TransactionCard.Details

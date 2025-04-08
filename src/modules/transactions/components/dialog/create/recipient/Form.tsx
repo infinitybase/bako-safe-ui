@@ -92,7 +92,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
     currentAsset: asset,
     assets: assets.assets,
     nfts: assets.nfts,
-    recipients: watch('transactions'),
+    recipients,
     getBalanceAvailable,
   });
 
@@ -129,26 +129,28 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
             return (
               <FormControl isInvalid={fieldState.invalid}>
                 <Autocomplete
-                  value={field.value}
+                  value={
+                    watch(`transactions.${index}.resolvedLabel`) || field.value
+                  }
                   label={`Recipient ${index + 1} address`}
+                  ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
                   onChange={field.onChange}
                   onInputChange={async (value: string) => {
-                    const result = { value: value, label: value };
-
+                    const result = { value, label: value };
                     if (value.startsWith('@')) {
                       const address = await fetchResolveAddress.handler(
                         value.split(' - ').at(0)!,
                       );
+
                       if (address) {
                         result.value = address;
                         result.label = AddressBookUtils.formatForAutocomplete(
                           value,
                           address,
                         );
+                        console.log('result.label:', result.label);
                       }
-                    }
-
-                    if (isB256(value)) {
+                    } else if (isB256(value)) {
                       const name = await fetchResolverName.handler(value);
                       if (name) {
                         result.label = AddressBookUtils.formatForAutocomplete(
@@ -159,12 +161,17 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                       result.value = new Address(value).toB256();
                     }
 
+                    field.onChange(result.value);
+                    setValue(
+                      `transactions.${index}.resolvedLabel`,
+                      result.label,
+                    );
                     return result;
                   }}
                   isLoading={
                     !optionsRequests[index].isSuccess ||
                     fetchResolveAddress.isLoading ||
-                    fetchResolveAddress.isLoading
+                    fetchResolverName.isLoading
                   }
                   options={appliedOptions}
                   inView={inView}
@@ -222,6 +229,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
             return (
               <FormControl>
                 <AmountInput
+                  id="transaction_amount"
                   placeholder=" "
                   value={isNFT ? '1' : field.value}
                   onChange={field.onChange}
@@ -230,7 +238,7 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
                 />
                 <FormLabel color="gray">Amount</FormLabel>
                 <FormHelperText>
-                  {parseFloat(balanceAvailable) > 0 && asset && (
+                  {!isNFT && parseFloat(balanceAvailable) > 0 && asset && (
                     <Text display="flex" alignItems="center">
                       Balance (available):{' '}
                       {isFeeCalcLoading ? (
@@ -262,3 +270,179 @@ const RecipientFormField = (props: RecipientFormFieldProps) => {
 };
 
 export default memo(RecipientFormField);
+// const TransactionAccordions = (props: TransactionAccordionProps) => {
+//   const {
+//     form,
+//     transactions,
+//     assets,
+//     accordion,
+//     nicks,
+//     isFeeCalcLoading,
+//     getBalanceAvailable,
+//   } = props;
+
+//   const {
+//     screenSizes: { isMobile },
+//     providerInstance,
+//     vaultDetails: {
+//       assets: { isNFTAsset },
+//     },
+//   } = useWorkspaceContext();
+
+//   const {
+//     handlers: { getResolverName },
+//   } = useBakoIDClient(providerInstance);
+
+//   // Logic to fix the button in the footer
+//   // const accordionHeight = () => {
+//   //   if (isMobile && isLargerThan900) return 500;
+//   //   if (isMobile && isLargerThan768) return 400;
+//   //   if (isMobile && isLargerThan660) return 220;
+//   //   if (isMobile && isLargerThan600) return 200;
+
+//   //   return 450;
+//   // };
+
+//   return (
+//     <Accordion
+//       index={accordion.index}
+//       overflowY="auto"
+//       pb={isMobile ? 10 : 0}
+//       maxH={450}
+//       pr={{ base: 1, sm: 0 }}
+//       sx={{
+//         '&::-webkit-scrollbar': {
+//           width: '5px',
+//           maxHeight: '330px',
+//         },
+//         '&::-webkit-scrollbar-thumb': {
+//           backgroundColor: '#2C2C2C',
+//           borderRadius: '30px',
+//           height: '10px',
+//         },
+//       }}
+//     >
+//       {transactions.fields.map((field, index) => {
+//         const transaction = form.watch(`transactions.${index}`);
+//         const assetSlug = assets.getAssetInfo(transaction.asset)?.slug;
+//         const fieldState = form.getFieldState(`transactions.${index}`);
+//         let resolvedLabel = form.watch(`transactions.${index}.resolvedLabel`);
+
+//         if (resolvedLabel?.startsWith('@')) {
+//           resolvedLabel = resolvedLabel?.split(' ')[0];
+//         }
+//         const hasEmptyField = Object.entries(transaction)
+//           .filter(([key]) => key !== 'resolvedLabel')
+//           .some(([, value]) => value === '');
+
+//         const currentAmount = form.watch(`transactions.${index}.amount`);
+//         const isCurrentAmountZero = Number(currentAmount) === 0;
+
+//         const isDisabled =
+//           hasEmptyField || fieldState.invalid || isCurrentAmountZero;
+//         const contact = nicks.find(
+//           (nick) => nick.user.address === transaction.value,
+//         )?.nickname;
+//         const resolverName = getResolverName(transaction.value);
+//         let recipientLabel =
+//           contact ?? resolverName ?? AddressUtils.format(transaction.value);
+//         if (resolvedLabel?.startsWith('@')) {
+//           recipientLabel = resolvedLabel;
+//         }
+//         const isNFT = isNFTAsset(transaction.asset);
+
+//         return (
+//           <AccordionItem
+//             key={field.id}
+//             mb={6}
+//             borderWidth={1}
+//             borderColor="grey.925"
+//             borderRadius={10}
+//             backgroundColor="dark.950"
+//           >
+//             <TransactionAccordion.Item
+//               title={`Recipient ${index + 1}`}
+//               actions={
+//                 <TransactionAccordion.Actions>
+//                   <HStack spacing={4}>
+//                     <TransactionAccordion.EditAction
+//                       onClick={() => accordion.open(index)}
+//                     />
+//                     <TransactionAccordion.DeleteAction
+//                       isDisabled={props.transactions.fields.length === 1}
+//                       onClick={() => {
+//                         transactions.remove(index);
+//                         accordion.close();
+//                       }}
+//                     />
+//                   </HStack>
+//                   <TransactionAccordion.ConfirmAction
+//                     onClick={() => accordion.close()}
+//                     isDisabled={isDisabled}
+//                     isLoading={!isCurrentAmountZero ? isFeeCalcLoading : false}
+//                   />
+//                 </TransactionAccordion.Actions>
+//               }
+//               resume={
+//                 !hasEmptyField && (
+//                   <Text fontSize="sm" color="grey.500" mt={2}>
+//                     <b>
+//                       {isNFT ? 'NFT' : transaction.amount}{' '}
+//                       {isNFT ? '' : assetSlug}
+//                     </b>{' '}
+//                     to <b> {recipientLabel}</b>
+//                   </Text>
+//                 )
+//               }
+//             >
+//               <TransactionFormField
+//                 index={index}
+//                 form={form}
+//                 assets={assets}
+//                 isFeeCalcLoading={isFeeCalcLoading}
+//                 getBalanceAvailable={getBalanceAvailable}
+//               />
+//             </TransactionAccordion.Item>
+//           </AccordionItem>
+//         );
+//       })}
+
+//       <Center mt={6}>
+//         <Tooltip
+//           label="All available assets have been used."
+//           isDisabled={!form.allAssetsUsed}
+//           hasArrow
+//           placement="top"
+//         >
+//           <Button
+//             w="full"
+//             leftIcon={<UserAddIcon />}
+//             variant="primary"
+//             bgColor="grey.200"
+//             border="none"
+//             _hover={{
+//               opacity: 0.8,
+//             }}
+//             _disabled={{
+//               cursor: 'not-allowed',
+//               opacity: 0.6,
+//             }}
+//             isDisabled={form.allAssetsUsed}
+//             onClick={() => {
+//               transactions.append({
+//                 amount: '',
+//                 asset: NativeAssetId,
+//                 value: '',
+//               });
+//               delay(() => accordion.open(transactions.fields.length), 100);
+//             }}
+//           >
+//             Add more recipients
+//           </Button>
+//         </Tooltip>
+//       </Center>
+//     </Accordion>
+//   );
+// };
+
+// export { TransactionAccordions };

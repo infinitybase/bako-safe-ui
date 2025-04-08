@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { useTransactionHistory } from '../../hooks/details/useTransactionHistory';
 import { ITransactionHistory } from '../../services';
 
@@ -32,4 +34,4 @@ const DetailsTransactionStepper = ({
   return <>{children(isLoading, transactionHistory)}</>;
 };
 
-export default DetailsTransactionStepper;
+export default memo(DetailsTransactionStepper);

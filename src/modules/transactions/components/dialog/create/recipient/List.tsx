@@ -1,4 +1,4 @@
-import { Accordion, Button, Center } from '@chakra-ui/react';
+import { Accordion, Button, Center, Tooltip } from '@chakra-ui/react';
 import { memo } from 'react';
 
 import { UserAddIcon } from '@/components';
@@ -10,11 +10,15 @@ interface RecipientListProps {
   accordion: UseCreateTransaction['accordion'];
   transactions: UseCreateTransaction['transactionsFields'];
   children: React.ReactNode;
+  allAssetsUsed: boolean;
 }
 
-export const RecipientList = (props: RecipientListProps) => {
-  const { transactions, accordion, children } = props;
-
+export const RecipientList = ({
+  transactions,
+  accordion,
+  children,
+  allAssetsUsed,
+}: RecipientListProps) => {
   const {
     screenSizes: { isMobile },
   } = useWorkspaceContext();
@@ -50,19 +54,31 @@ export const RecipientList = (props: RecipientListProps) => {
       {children}
 
       <Center mt={6}>
-        <Button
-          w="full"
-          leftIcon={<UserAddIcon />}
-          variant="primary"
-          bgColor="grey.200"
-          border="none"
-          _hover={{
-            opacity: 0.8,
-          }}
-          onClick={handleAddMoreRecipient}
+        <Tooltip
+          label="All available assets have been used."
+          isDisabled={!allAssetsUsed}
+          hasArrow
+          placement="top"
         >
-          Add more recipients
-        </Button>
+          <Button
+            w="full"
+            leftIcon={<UserAddIcon />}
+            variant="primary"
+            bgColor="grey.200"
+            border="none"
+            _hover={{
+              opacity: 0.8,
+            }}
+            _disabled={{
+              cursor: 'not-allowed',
+              opacity: 0.6,
+            }}
+            isDisabled={allAssetsUsed}
+            onClick={handleAddMoreRecipient}
+          >
+            Add more recipients
+          </Button>
+        </Tooltip>
       </Center>
     </Accordion>
   );

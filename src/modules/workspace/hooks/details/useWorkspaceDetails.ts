@@ -27,6 +27,7 @@ const useWorkspaceDetails = () => {
     useGetFuelsTokensListRequest();
 
   const [isTokenExpired, setIsTokenExpired] = useState(false);
+
   const screenSizes = useScreenSize();
 
   const authDetails = useAuth();
@@ -36,9 +37,8 @@ const useWorkspaceDetails = () => {
   } = useGetParams();
 
   const { currentNetwork } = useNetworks();
-  const { assetsMap } = useAssetMap(currentNetwork.chainId);
+  const { assetsMap, nftList } = useAssetMap(currentNetwork.chainId);
 
-  console.log('currentNetwork', currentNetwork);
   const providerInstance = ProviderInstance.create(currentNetwork.url).then(
     (res) => res.instance,
   );
@@ -133,6 +133,7 @@ const useWorkspaceDetails = () => {
     tokensUSD,
     fuelsTokens,
     assetsMap,
+    nftList,
     invalidateGifAnimationRequest,
     screenSizes,
     resetHomeRequests,

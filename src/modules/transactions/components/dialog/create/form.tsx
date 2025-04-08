@@ -74,7 +74,11 @@ const CreateTransactionForm = (props: CreateTransactionFormProps) => {
           descriptionFontSize="sm"
         />
 
-        <Recipient.List accordion={accordion} transactions={transactionsFields}>
+        <Recipient.List
+          accordion={accordion}
+          transactions={transactionsFields}
+          allAssetsUsed={form.allAssetsUsed}
+        >
           {transactionsFields.fields.map((transaction, index) => (
             <Recipient.Item
               key={transaction.id}

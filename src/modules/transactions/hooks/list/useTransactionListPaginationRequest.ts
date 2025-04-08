@@ -39,7 +39,11 @@ const useTransactionListPaginationRequest = (
         orderBy: TransactionOrderBy.CREATED_AT,
         sort: SortOptionTx.DESC,
       }).then((data) => {
-        invalidateQueries([PENDING_TRANSACTIONS_QUERY_KEY]);
+        const keysToInvalidate = [PENDING_TRANSACTIONS_QUERY_KEY];
+        if (params.predicateId?.length) {
+          keysToInvalidate.push(params.predicateId[0]);
+        }
+        invalidateQueries(keysToInvalidate);
         return data;
       }),
     enabled: window.location.pathname != '/',

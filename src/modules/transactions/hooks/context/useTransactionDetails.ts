@@ -1,15 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth';
-import {
-  SocketEvents,
-  SocketRealTimeNotifications,
-  SocketUsernames,
-  useGetParams,
-  useSocket,
-} from '@/modules/core';
+import { HomeQueryKey, useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import { TransactionService } from '@/modules/transactions/services';
 import { useHasReservedCoins } from '@/modules/vault/hooks';
@@ -17,22 +12,17 @@ import {
   StatusFilter,
   useVaultTransactionsList,
 } from '@/modules/vault/hooks/list/useVaultTransactionsList';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
 import { useSignTransaction } from '../signature';
 
 export type IuseTransactionDetails = ReturnType<typeof useTransactionDetails>;
-type HandleWithSocketEventProps = {
-  sessionId: string;
-  to: string;
-  type: string;
-};
 
 const useTransactionDetails = () => {
   const location = useLocation();
   const prevPathRef = useRef(location.pathname);
-  const { socket } = useSocket();
 
   const {
     userInfos: { workspace },
@@ -70,23 +60,33 @@ const useTransactionDetails = () => {
   const cancelTransaction = useMutation({
     mutationFn: async (hash: string) => {
       const response = await TransactionService.cancel(hash);
+      return response;
+    },
+    onSuccess: async () => {
+      await transactionsPageList.request.refetch();
       await Promise.all([
-        transactionsPageList.request.refetch(),
-        pendingSignerTransactions.refetch(),
-        homeTransactions.request.refetch(),
-        vaultTransactions.request.refetch(),
+        queryClient.invalidateQueries({
+          queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: pendingSignerTransactions.queryKey,
+          fetchStatus: 'idle',
+          exact: true,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [HomeQueryKey.DEFAULT],
+        }),
       ]);
       cancelTransaction.reset();
-      return response;
     },
   });
 
-  const resetAllTransactionsTypeFilters = () => {
+  const resetAllTransactionsTypeFilters = useCallback(() => {
     transactionsPageList.handlers.listTransactionTypeFilter(undefined);
     transactionsPageList.filter.set(StatusFilter.ALL);
     vaultTransactions.handlers.listTransactionTypeFilter(undefined);
     vaultTransactions.filter.set(StatusFilter.ALL);
-  };
+  }, [transactionsPageList, vaultTransactions]);
 
   useEffect(() => {
     const prevPath = prevPathRef.current;
@@ -111,28 +111,6 @@ const useTransactionDetails = () => {
       prevPathRef.current = currentPath;
     };
   }, [location.pathname, vaultTransactions.handlers.selectedTransaction?.id]);
-
-  const handleWithSocketEvent = ({ to, type }: HandleWithSocketEventProps) => {
-    const isValid =
-      to === SocketUsernames.UI &&
-      type === SocketRealTimeNotifications.TRANSACTION;
-    if (isValid) {
-      pendingSignerTransactions.refetch();
-      homeTransactions.request.refetch();
-      vaultTransactions.request.refetch();
-      transactionsPageList.request.refetch();
-      refetchAssets();
-    }
-  };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    socket.on(SocketEvents.NOTIFICATION, handleWithSocketEvent);
-
-    return () => {
-      socket.off(SocketEvents.NOTIFICATION, handleWithSocketEvent);
-    };
-  }, []);
 
   return {
     homeTransactions,

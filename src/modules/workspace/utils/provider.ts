@@ -13,7 +13,6 @@ export class ProviderInstance {
     const address = CookiesConfig.getCookie(CookieName.ADDRESS);
     const token = CookiesConfig.getCookie(CookieName.ACCESS_TOKEN);
     const url = networkUrl || import.meta.env.VITE_NETWORK;
-    console.log('url', networkUrl);
     const provider = await BakoProvider.create(url, { address, token });
 
     return new ProviderInstance(provider);

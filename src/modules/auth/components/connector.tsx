@@ -71,6 +71,7 @@ const CardConnector = (props: CardConnectorProps) => {
       gap={4}
       justifyContent="space-between"
       p={2}
+      aria-label={`Connect ${connector.label}`}
       cursor={connector.isEnabled ? 'pointer' : 'initial'}
       bgColor="grey.825"
       borderColor="grey.550"
