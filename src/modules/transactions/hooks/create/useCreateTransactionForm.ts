@@ -17,6 +17,7 @@ export interface ITransactionField {
   value: string;
   amount: string;
   fee?: string;
+  resolvedLabel?: string;
 }
 
 export type UseCreateTransactionFormParams = {
@@ -195,6 +196,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
             }
           },
         ),
+      resolvedLabel: yup.string().optional(),
     });
 
     const schema = yup.object({
@@ -219,6 +221,7 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
           value: '',
           amount: '',
           fee: '',
+          resolvedLabel: '',
         },
       ],
     },
