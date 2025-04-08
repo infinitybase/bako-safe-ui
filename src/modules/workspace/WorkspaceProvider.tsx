@@ -26,6 +26,8 @@ const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
 export default WorkspaceProvider;
 
 const useWorkspaceContext = () => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
   const context = useContext(WorkspaceContext);
   if (!context) {
     throw new Error(

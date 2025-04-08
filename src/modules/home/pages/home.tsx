@@ -14,16 +14,15 @@ import { FaRegPlusSquare } from 'react-icons/fa';
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
 import { TransactionsIcon } from '@/components/icons/transactions';
+import { HomeQueryKey } from '@/modules/core';
 import { Pages } from '@/modules/core/routes';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 import { CreateVaultDialog } from '@/modules/vault';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ActionCard } from '../components/ActionCard';
 import HomeTransactions from '../components/HomeTransactions';
 import RecentVaultsList from '../components/RecentVaultsList';
-
-import { HomeQueryKey } from '@/modules/core';
-import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 
 const HomePage = () => {
   const {
