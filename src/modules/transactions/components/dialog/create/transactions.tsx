@@ -152,6 +152,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     field.value
                   }
                   label={`Recipient ${index + 1} address`}
+                  ariaLabel={`Autocomplete Recipient Address ${index + 1}`}
                   onChange={field.onChange}
                   onInputChange={async (value: string) => {
                     const result = { value, label: value };
@@ -247,6 +248,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
             return (
               <FormControl>
                 <AmountInput
+                  id="transaction_amount"
                   placeholder=" "
                   value={isNFT ? '1' : field.value}
                   onChange={field.onChange}

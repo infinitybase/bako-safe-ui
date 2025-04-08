@@ -76,6 +76,7 @@ const HomePage = () => {
       <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
+            data-testid="vaultstab"
             flex={1}
             onClick={() =>
               navigate(Pages.userVaults({ workspaceId: workspaceId }))
@@ -93,6 +94,7 @@ const HomePage = () => {
 
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
+            data-testid="transactionTab"
             flex={1}
             onClick={() => {
               return navigate(
@@ -116,6 +118,7 @@ const HomePage = () => {
         </CustomSkeleton>
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
           <ActionCard.Container
+            data-testid="adressBookTab"
             flex={1}
             onClick={() =>
               navigate(Pages.addressBook({ workspaceId: workspaceId }))
