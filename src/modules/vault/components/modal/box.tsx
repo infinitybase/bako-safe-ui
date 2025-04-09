@@ -69,7 +69,7 @@ const VaultItemBoxComponent = ({
       borderColor={isActive ? 'brand.500' : 'dark.100'}
       borderWidth="1px"
       h="76px"
-      p={3}
+      p={4}
       display="flex"
       alignItems="center"
     >
