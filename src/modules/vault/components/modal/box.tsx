@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
 import { Card, CardProps } from '@/components';
@@ -49,8 +49,8 @@ const VaultItemBoxComponent = ({
     [members],
   );
 
-  const renderStatusBadge = useCallback(() => {
-    if (!showPending) return null;
+  const RenderStatusBadge = useMemo(() => {
+    if (!showPending && !needSignature) return null;
 
     return (
       <WaitingSignatureBadge
@@ -59,7 +59,7 @@ const VaultItemBoxComponent = ({
         label={needSignature ? 'Pending Signature' : 'Pending Transaction'}
       />
     );
-  }, [showPending, needSignature, isPending]);
+  }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
 
   return (
     <Card
@@ -117,7 +117,7 @@ const VaultItemBoxComponent = ({
 
           {(showPending || root) && (
             <HStack spacing={2}>
-              {renderStatusBadge()}
+              {RenderStatusBadge}
               {root && (
                 <Badge
                   variant="gray"

@@ -5,13 +5,14 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spinner,
   Text,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useCallback } from 'react';
 
-import { CustomSkeleton, Dialog } from '@/components';
+import { Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog } from '../dialog';
@@ -147,14 +148,19 @@ const VaultListModal = ({
               </Text>
             )}
 
-            <VStack spacing={4} w="full">
-              {!vaults.length && isFetching && (
-                <CustomSkeleton h="90px" w="full" />
+            <VStack marginBottom={4} w="full">
+              {isLoadingVaults && vaults.length === 0 && (
+                <VStack spacing={4} w="full" pt={4}>
+                  <Spinner size="md" thickness="4px" color="brand.500" />
+                </VStack>
               )}
-              <CustomSkeleton isLoaded={isLoadingVaults}>
-                {vaults.map(renderVaultBox)}
-              </CustomSkeleton>
+              {vaults.map(renderVaultBox)}
               <Box ref={inView.ref} />
+              {isFetching && vaults.length > 0 && (
+                <Box py={4}>
+                  <Spinner size="sm" thickness="3px" color="brand.500" />
+                </Box>
+              )}
             </VStack>
           </VStack>
 
