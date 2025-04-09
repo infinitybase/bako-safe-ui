@@ -61,12 +61,15 @@ const NotificationsDrawer = ({ ...props }: NotificationsDrawerProps) => {
                   <Center
                     minW={4}
                     minH={4}
-                    maxW={5}
-                    maxH={5}
+                    maxW={9}
+                    maxH={9}
                     bg="error.600"
                     borderRadius={10}
+                    px={unreadCounter > 99 ? '0.5' : '0'}
                   >
-                    <Text fontSize="xs">{unreadCounter}</Text>
+                    <Text fontSize="xs">
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
+                    </Text>
                   </Center>
                 )}
               </HStack>
