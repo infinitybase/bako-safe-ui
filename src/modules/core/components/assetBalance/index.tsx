@@ -15,13 +15,13 @@ import {
 import { css } from '@emotion/react';
 import { useState } from 'react';
 
+import NftEmpty from '@/assets/nft-empty.svg';
 import { UpRightArrow } from '@/components';
 import {
   AddressUtils,
   Asset,
   NFT,
   shakeAnimationY,
-  UNKNOWN_ASSET,
 } from '@/modules/core/utils';
 import { NetworkService } from '@/modules/network/services';
 import { useVaultInfosContext } from '@/modules/vault/VaultInfosProvider';
@@ -115,7 +115,7 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
           <Image
             w="full"
             h="full"
-            src={nftImageUrl || UNKNOWN_ASSET.icon}
+            src={nftImageUrl || NftEmpty}
             borderRadius={5}
             alt="NFT Image"
             objectFit="cover"

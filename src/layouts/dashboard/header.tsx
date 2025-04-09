@@ -486,7 +486,6 @@ const UserBox = () => {
                       lineHeight="18px"
                       textAlign="center"
                       px={unreadCounter > 99 ? '0.5' : '0'}
-                      py={unreadCounter > 99 ? '0.5' : '0'}
                     >
                       {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>

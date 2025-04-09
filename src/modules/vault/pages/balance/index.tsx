@@ -143,7 +143,6 @@ const VaultBalancePage = () => {
                 bg: 'white',
                 color: 'black',
               }}
-              _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}
               borderTopLeftRadius="lg"
@@ -156,7 +155,6 @@ const VaultBalancePage = () => {
                 bg: 'white',
                 color: 'black',
               }}
-              _hover={{ bg: 'gray.700' }}
               px={5}
               py={2}
               borderTopLeftRadius="lg"
