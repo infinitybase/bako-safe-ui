@@ -67,6 +67,7 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
               borderColor: 'brand.500',
               color: 'brand.500',
             }}
+            aria-label={'Secundary action create api token'}
           >
             {steps.step.secondaryAction.label}
           </Dialog.SecondaryAction>
@@ -79,6 +80,7 @@ const CreateAPITokenDialog = (props: CreateAPITokenDialogProps) => {
               opacity: !steps.step.primaryAction.disabled && 0.8,
             }}
             isLoading={steps.step.primaryAction.isLoading}
+            aria-label={'Primary action create api token'}
           >
             {steps.step.primaryAction.label}
           </Dialog.PrimaryAction>

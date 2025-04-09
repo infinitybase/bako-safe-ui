@@ -20,6 +20,9 @@ export enum SocketEvents {
   TRANSACTION_CREATED = '[CREATED]',
   TRANSACTION_SIGNED = '[SIGNED]',
   TRANSACTION_CANCELLED = '[CANCELLED]',
+
+  CHANGE_NETWORK = '[CHANGE_NETWORK]',
+  NETWORK_CHANGED = '[NETWORK_CHANGED]',
 }
 
 export enum SocketRealTimeNotifications {

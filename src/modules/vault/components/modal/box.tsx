@@ -80,7 +80,15 @@ const VaultItemBoxComponent = ({
             color="grey.250"
             bgColor="grey.950"
             name={name}
-            size="sm"
+            size={'md'}
+            sx={{
+              '> div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                lineHeight: 'normal',
+              },
+            }}
           />
           <VStack spacing={2} align="flex-start">
             <Text
@@ -89,14 +97,14 @@ const VaultItemBoxComponent = ({
               maxW={{ base: 120, xs: 250 }}
               color="grey.75"
               fontSize="xs"
-              lineHeight="14px"
+              lineHeight="16px"
             >
               {name}
             </Text>
             <Text
               fontSize="xs"
               color="grey.500"
-              lineHeight="14px"
+              lineHeight="16px"
               isTruncated
               maxW={{ base: 120, xs: 250 }}
             >

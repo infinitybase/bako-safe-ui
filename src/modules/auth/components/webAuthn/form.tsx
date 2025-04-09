@@ -50,7 +50,9 @@ const WebAuthnForm = (props: WebAuthnFormProps) => {
           return (
             <FormControl isInvalid={fieldState.invalid}>
               <AutocompleteBadge
+                id="fixed_id"
                 label="Username"
+                aria-label="Username"
                 value={field.value}
                 onChange={(e) => {
                   accountSeachHandler(e.toLowerCase());

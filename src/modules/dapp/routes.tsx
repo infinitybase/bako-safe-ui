@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { AuthRoute } from '@/modules/core/components/route/auth';
 import { Pages } from '@/modules/core/routes';
 
-import { TransactionConfirm, VaultConnector } from './pages';
+import { SwitchNetwork, TransactionConfirm, VaultConnector } from './pages';
 
 const dappRoutes = (
   <>
@@ -19,6 +19,8 @@ const dappRoutes = (
     </Route>
 
     <Route path={Pages.dappTransaction()} element={<TransactionConfirm />} />
+
+    <Route path={Pages.dappNetwork()} element={<SwitchNetwork />} />
   </>
 );
 
