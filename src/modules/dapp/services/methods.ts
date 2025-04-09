@@ -44,8 +44,8 @@ export class DAppService {
   }
 
   static async changeNetwork(params: IDAPPChangeNetwork) {
-    const { data } = await api.post<Network>(
-      `/connections/changeNetwork`,
+    const { data } = await api.put<Network>(
+      `/connections/${params.sessionId}/network`,
       params,
     );
     return data;
