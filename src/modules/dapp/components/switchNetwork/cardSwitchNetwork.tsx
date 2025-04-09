@@ -35,7 +35,7 @@ const CardSwitchNetwork = ({ ...props }: CardSwitchNetworkProps) => {
       </VStack>
 
       <VStack gap={2}>
-        {FuelLogo()}
+        <FuelLogo />
 
         <Text
           fontSize={12}
