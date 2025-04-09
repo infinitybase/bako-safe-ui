@@ -8,10 +8,12 @@ import {
   Heading,
   HStack,
   Spacer,
+  Spinner,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import { Card } from '@/components';
@@ -53,20 +55,27 @@ export const VaultCard = ({
     },
   } = useWorkspaceContext();
 
-  const { mutate: toogleVisibility } = useMutation({
+  const { mutate: toogleVisibility, isPending } = useMutation({
     mutationFn: VaultService.toggleVisibility,
     onSuccess: () => {
       userVaults.request.refetch();
       latestPredicates.refetch();
     },
   });
+  const [localHidden, setLocalHidden] = useState(isHidden);
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setLocalHidden((prev) => !prev);
     toogleVisibility(address);
   };
 
+  useEffect(() => {
+    setLocalHidden(isHidden);
+  }, [isHidden]);
+
   if (inHome && isHidden) return null;
+
   return (
     <Card
       borderColor="gradients.transaction-border"
@@ -81,19 +90,31 @@ export const VaultCard = ({
       zIndex={100}
       {...rest}
       position="relative"
-      opacity={!isHidden ? 1 : 0.5}
-      transition="opacity 0.3s ease-in-out"
+      opacity={!localHidden ? 1 : 0.5}
+      transition="opacity 0.3s ease-in-out, background 0.3s ease"
     >
       {inHome ?? (
         <Box
           position="absolute"
           top={3}
           right={3}
-          cursor="pointer"
+          cursor={isPending ? 'not-allowed' : 'pointer'}
           zIndex={10}
-          onClick={handleToggle}
+          bg="#F5F5F50D"
+          borderRadius="6px"
+          boxSize={8}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          onClick={isPending ? undefined : handleToggle}
         >
-          {isHidden ? <FaEyeSlash /> : <FaEye />}
+          {isPending ? (
+            <Spinner size="xs" color="grey.400" thickness="2px" speed="0.5s" />
+          ) : localHidden ? (
+            <FaEyeSlash size={16} color="#fff" />
+          ) : (
+            <FaEye size={16} color="#fff" />
+          )}
         </Box>
       )}
       <VStack alignItems="flex-start">
