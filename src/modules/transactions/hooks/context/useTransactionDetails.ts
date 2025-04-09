@@ -2,8 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { queryClient } from '@/config';
 import { useAuth } from '@/modules/auth';
-import { useGetParams } from '@/modules/core';
+import { HomeQueryKey, useGetParams } from '@/modules/core';
 import { useHomeTransactions } from '@/modules/home/hooks/useHomeTransactions';
 import { TransactionService } from '@/modules/transactions/services';
 import { useHasReservedCoins } from '@/modules/vault/hooks';
@@ -11,6 +12,7 @@ import {
   StatusFilter,
   useVaultTransactionsList,
 } from '@/modules/vault/hooks/list/useVaultTransactionsList';
+import { VAULT_TRANSACTIONS_LIST_PAGINATION } from '@/modules/vault/hooks/list/useVaultTransactionsRequest';
 
 import { useTransactionList, useTransactionsSignaturePending } from '../list';
 import { usePendingTransactionsList } from '../list/useGetPendingTransactionsList';
@@ -58,11 +60,22 @@ const useTransactionDetails = () => {
   const cancelTransaction = useMutation({
     mutationFn: async (hash: string) => {
       const response = await TransactionService.cancel(hash);
+      return response;
+    },
+    onSuccess: async () => {
+      await transactionsPageList.request.refetch();
       await Promise.all([
-        transactionsPageList.request.refetch(),
-        pendingSignerTransactions.refetch(),
-        homeTransactions.request.refetch(),
-        vaultTransactions.request.refetch(),
+        queryClient.invalidateQueries({
+          queryKey: [VAULT_TRANSACTIONS_LIST_PAGINATION],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: pendingSignerTransactions.queryKey,
+          fetchStatus: 'idle',
+          exact: true,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [HomeQueryKey.DEFAULT],
+        }),
       ]);
       cancelTransaction.reset();
       refetchAssets();
