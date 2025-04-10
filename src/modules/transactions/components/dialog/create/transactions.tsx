@@ -267,57 +267,87 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
           control={form.control}
           render={({ field, fieldState }) => {
             return (
-              <AssetSelect
-                isInvalid={fieldState.invalid}
-                options={assetsOptions}
-                name={`transaction.${index}.asset`}
-                value={field.value}
-                onChange={(e) => {
-                  field.onChange(e);
+              <HStack
+                align="start"
+                spacing={2}
+                position="relative"
+                width="100%"
+              >
+                <AssetSelect
+                  isInvalid={fieldState.invalid}
+                  options={assetsOptions}
+                  name={`transaction.${index}.asset`}
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
 
-                  if (isNFTAsset(e)) {
-                    form.setValue(
-                      `transactions.${index}.amount`,
-                      bn(1).format(),
-                    );
-                    return;
-                  }
+                    if (isNFTAsset(e)) {
+                      form.setValue(
+                        `transactions.${index}.amount`,
+                        bn(1).format(),
+                      );
+                      return;
+                    }
 
-                  if (isNFTAsset(field.value)) {
-                    form.setValue(`transactions.${index}.amount`, '');
+                    if (isNFTAsset(field.value)) {
+                      form.setValue(`transactions.${index}.amount`, '');
+                    }
+                  }}
+                  helperText={
+                    <FormHelperText>
+                      {!isNFT && (
+                        <Text display="flex" alignItems="center" mt={1}>
+                          {!field.value ? (
+                            'Select an asset to see the balance'
+                          ) : parseFloat(balanceAvailable) > 0 ? (
+                            isFeeCalcLoading ? (
+                              <>
+                                Balance (available):{' '}
+                                <CircularProgress
+                                  trackColor="dark.100"
+                                  size={3}
+                                  isIndeterminate
+                                  color="brand.500"
+                                  ml={1}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                Balance (available):{' '}
+                                {assets.getAssetInfo(asset)?.slug}{' '}
+                                {balanceAvailable}
+                              </>
+                            )
+                          ) : null}
+                        </Text>
+                      )}
+                    </FormHelperText>
                   }
-                }}
-                helperText={
-                  <FormHelperText>
-                    {!isNFT && (
-                      <Text display="flex" alignItems="center" mt={1}>
-                        {!field.value ? (
-                          'Select an asset to see the balance'
-                        ) : parseFloat(balanceAvailable) > 0 ? (
-                          isFeeCalcLoading ? (
-                            <>
-                              Balance (available):{' '}
-                              <CircularProgress
-                                trackColor="dark.100"
-                                size={3}
-                                isIndeterminate
-                                color="brand.500"
-                                ml={1}
-                              />
-                            </>
-                          ) : (
-                            <>
-                              Balance (available):{' '}
-                              {assets.getAssetInfo(asset)?.slug}{' '}
-                              {balanceAvailable}
-                            </>
-                          )
-                        ) : null}
-                      </Text>
-                    )}
-                  </FormHelperText>
-                }
-              />
+                />
+                {field.value && (
+                  <IconButton
+                    aria-label="Clear"
+                    icon={<CloseIcon boxSize={2.5} />}
+                    size="xs"
+                    variant="ghost"
+                    position="absolute"
+                    top={isNFT ? '45%' : '35%'}
+                    right="0.5rem"
+                    bg="#201F1D"
+                    padding="0.5rem"
+                    paddingTop={'20px'}
+                    paddingBottom={'20px'}
+                    borderRadius="md"
+                    _hover={{ bg: '#201F1D' }}
+                    color={'white'}
+                    transform="translateY(-50%)"
+                    zIndex={1}
+                    onClick={() => {
+                      field.onChange(null);
+                    }}
+                  />
+                )}
+              </HStack>
             );
           }}
         />
@@ -352,7 +382,6 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                       onChange={field.onChange}
                       isInvalid={fieldState.invalid}
                       isDisabled={isNFT}
-                      pr="4.5rem"
                     />
                     <FormLabel>Amount</FormLabel>
 
@@ -378,11 +407,12 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     {!isNFT && (
                       <HStack
                         position="absolute"
-                        top="50%"
+                        top="35%"
                         right="0.75rem"
-                        transform="translateY(-100%)"
                         spacing={1}
                         zIndex={1}
+                        bg="#201F1D"
+                        transform="translateY(-50%)"
                       >
                         <IconButton
                           aria-label="Clear"
@@ -390,8 +420,11 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                           size="xs"
                           variant="ghost"
                           color={'white'}
-                          onClick={() => field.onChange('')}
+                          padding={4}
+                          bg="201F1D"
                           _hover={{ bg: '#201F1D' }}
+                          zIndex={1}
+                          onClick={() => field.onChange('')}
                         />
                         <Button
                           size="xs"
