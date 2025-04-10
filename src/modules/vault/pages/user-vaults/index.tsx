@@ -264,18 +264,44 @@ const UserVaultsPage = () => {
         </HStack>
       </HStack>
 
-      {!vaults?.length && !isLoading && (
-        <CustomSkeleton isLoaded={!isLoading}>
-          <EmptyState
-            bg={'red'}
-            showAction={hasPermission([OWNER, MANAGER, ADMIN])}
-            title={`Let's Begin!`}
-            subTitle={`Your vaults are entirely free on Fuel. Let's create your very first one?`}
-            buttonActionTitle="Create my first vault"
-            buttonAction={onOpen}
-          />
-        </CustomSkeleton>
-      )}
+      {!vaults?.length &&
+        !isLoading &&
+        (!value ? (
+          <CustomSkeleton isLoaded={!isLoading}>
+            <VStack
+              w="full"
+              h="full"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              borderWidth="1px"
+              borderRadius="md"
+              borderColor="gray.700"
+              p={8}
+              bg="blackAlpha.300"
+            >
+              <Text fontSize="lg" fontWeight="semibold">
+                No vaults visible
+              </Text>
+              <Text fontSize="sm" color="gray.400" textAlign="center">
+                You&apos;ve hidden all your vaults. <br />
+                Update your visibility settings to see them again.
+              </Text>
+            </VStack>
+          </CustomSkeleton>
+        ) : (
+          <CustomSkeleton isLoaded={!isLoading}>
+            <EmptyState
+              bg="red"
+              showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+              title="Let's Begin!"
+              subTitle="Your vaults are entirely free on Fuel. Let's create your very first one?"
+              buttonActionTitle="Create my first vault"
+              buttonAction={onOpen}
+            />
+          </CustomSkeleton>
+        ))}
+
       {vaults?.length && (
         <Box
           w="full"

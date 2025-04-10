@@ -87,7 +87,7 @@ export const VaultCard = ({
       maxW={isExtraSmall ? 272 : 'full'}
       my={{ base: 6, sm: 0 }}
       cursor="pointer"
-      zIndex={100}
+      zIndex={20}
       {...rest}
       position="relative"
       opacity={!localHidden ? 1 : 0.5}
