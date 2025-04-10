@@ -2,7 +2,6 @@ import {
   Box,
   Card,
   CardProps,
-  Flex,
   HStack,
   Icon,
   IconButton,
@@ -40,11 +39,15 @@ interface AssetDetailsProps {
   defaultAsset: DefaultAsset;
   isNFT?: boolean;
   handleRedirect?: () => Window | null;
+  visibleBalance?: boolean;
+  assetAmount?: string | null;
+  usdAmount?: number | null;
 }
 
 interface AssetCardProps extends CardProps {
   asset: Asset;
   isNFT?: boolean;
+  usdAmount?: number | null;
   visibleBalance?: boolean;
 }
 
@@ -54,11 +57,23 @@ const AssetDetails = ({
   defaultAsset,
   isNFT = false,
   handleRedirect,
+  visibleBalance,
+  assetAmount,
+  usdAmount,
 }: AssetDetailsProps) => {
+  const amount = assetAmount ?? defaultAsset.amount;
+  const slug = assetSlug ?? defaultAsset.slug;
+  const transactionAmount = Number(amount) * (usdAmount ?? 0);
+
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(transactionAmount);
+
   return (
-    <Box maxW={{ base: '70%', lg: 'full' }}>
-      <HStack>
-        <Text color="grey.100" fontSize={{ base: 'sm', sm: 15 }} isTruncated>
+    <Box maxW="full" w="full">
+      <HStack spacing={1} align="center">
+        <Text color="grey.100" fontSize="sm" isTruncated>
           {isNFT
             ? AddressUtils.format(assetName ?? '', 5)
             : (assetName ?? defaultAsset.name)}
@@ -90,9 +105,37 @@ const AssetDetails = ({
         )}
       </HStack>
 
-      <Text fontWeight="bold" fontSize="xs" color="grey.400">
-        {isNFT ? 'NFT' : (assetSlug ?? defaultAsset.slug)}
-      </Text>
+      {visibleBalance ? (
+        <VStack spacing={0} align="start" mt={0}>
+          <Text color="white" fontWeight="bold" fontSize="sm" isTruncated>
+            {isNFT ? (
+              '1'
+            ) : (
+              <>
+                {amount}{' '}
+                <Text
+                  as="span"
+                  color="grey.400"
+                  fontWeight="medium"
+                  fontSize="xs"
+                >
+                  {slug?.toUpperCase() ?? ''}
+                </Text>
+              </>
+            )}
+          </Text>
+
+          {
+            <Text fontSize="xs" color="grey.400" minH="1em">
+              {transactionAmount > 0 ? formattedAmount : ''}
+            </Text>
+          }
+        </VStack>
+      ) : (
+        <Text color="white" fontSize="md" mt={1}>
+          ------
+        </Text>
+      )}
     </Box>
   );
 };
@@ -101,6 +144,7 @@ const AssetCard = ({
   asset,
   visibleBalance,
   isNFT = false,
+  usdAmount,
   ...rest
 }: AssetCardProps) => {
   const { vault } = useVaultInfosContext();
@@ -137,61 +181,45 @@ const AssetCard = ({
       borderRadius={10}
       px={4}
       py={4}
-      w="full"
-      h="full"
+      w="100%"
+      h="135px"
       aria-label={`${assetsInfo.slug} Asset Card`}
       {...rest}
     >
-      <Flex
-        direction={{ base: 'row', lg: 'column' }}
-        alignItems="flex-start"
-        gap={2}
-        mb={1}
-      >
-        {isNFT ? (
-          <Icon as={BakoIcon} w={{ base: 8, sm: 10 }} h={{ base: 8, sm: 10 }} />
-        ) : (
-          <Image
-            w={{ base: 8, sm: 10 }}
-            h={{ base: 8, sm: 10 }}
-            src={assetsInfo?.icon ?? ''}
-            borderRadius={100}
-            alt="Asset Icon"
-            objectFit="cover"
-          />
-        )}
-        <AssetDetails
-          assetName={isNFT ? asset.assetId : assetsInfo.name}
-          assetSlug={assetsInfo.slug}
-          defaultAsset={defaultAsset}
-          isNFT={isNFT}
-          handleRedirect={redirectToNetwork}
-        />
-      </Flex>
-
       <VStack
-        display="flex"
-        alignItems="flex-start"
-        flexDirection="column"
-        justifyContent="center"
-        spacing={1}
-        gap={-1}
+        align="flex-start"
+        justify="center"
+        w="full"
+        h="full"
+        spacing={0}
+        textAlign="center"
       >
-        {visibleBalance ? (
-          <Text
-            aria-label={`${assetsInfo.slug} Amount`}
-            fontWeight="bold"
-            color="white"
-            maxW="100%"
-            isTruncated
-          >
-            {isNFT ? 1 : (assetAmount ?? defaultAsset.amount)}
-          </Text>
-        ) : (
-          <Text color="white" fontSize="md" mr={1}>
-            ------
-          </Text>
-        )}
+        <Box mb={4}>
+          {isNFT ? (
+            <Icon as={BakoIcon} w={10} h={10} />
+          ) : (
+            <Image
+              w={10}
+              h={10}
+              src={assetsInfo?.icon ?? ''}
+              borderRadius="full"
+              alt="Asset Icon"
+              objectFit="cover"
+            />
+          )}
+        </Box>
+        <Box mb={1}>
+          <AssetDetails
+            assetName={isNFT ? asset.assetId : assetsInfo.name}
+            assetSlug={assetsInfo.slug}
+            defaultAsset={defaultAsset}
+            isNFT={isNFT}
+            handleRedirect={redirectToNetwork}
+            visibleBalance={visibleBalance}
+            assetAmount={assetAmount}
+            usdAmount={usdAmount}
+          />
+        </Box>
       </VStack>
     </Card>
   );

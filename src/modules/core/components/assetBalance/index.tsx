@@ -138,9 +138,22 @@ const NftBalanceCard = ({ nft }: { nft: NFT }) => {
   );
 };
 
-const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
+const AssetsBalanceCard = ({
+  asset,
+  usdAmount,
+}: {
+  asset: Asset;
+  usdAmount: number;
+}) => {
   const { assetsMap } = useWorkspaceContext();
   const { assetAmount, assetsInfo } = useGetTokenInfos({ ...asset, assetsMap });
+
+  const transactionAmount = Number(assetAmount) * (usdAmount ?? 0);
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(transactionAmount);
+
   return (
     <Card
       p={4}
@@ -170,31 +183,52 @@ const AssetsBalanceCard = ({ asset }: { asset: Asset }) => {
             {assetsInfo?.slug}
           </Text>
         </VStack>
-        <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-          {assetAmount}
-        </Text>
+        <VStack alignItems="flex-start" spacing={0} w="full">
+          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+            {assetAmount}{' '}
+            <Text as="span" color="grey.400" fontSize="xs">
+              {assetsInfo?.slug?.toUpperCase() ?? ''}
+            </Text>
+          </Text>
+          <Text fontSize="xs" color="grey.400" minH="1em">
+            {transactionAmount > 0 ? formattedAmount : ''}
+          </Text>
+        </VStack>
       </VStack>
     </Card>
   );
 };
 
-const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => (
-  <Grid
-    gap={4}
-    templateColumns={{
-      base: 'repeat(1, 1fr)',
-      xs: 'repeat(2, 1fr)',
-      sm: 'repeat(3, 1fr)',
-      md: 'repeat(4, 1fr)',
-      xl: 'repeat(5, 1fr)',
-      '2xl': 'repeat(6, 1fr)',
-    }}
-  >
-    {assets?.map((asset) => (
-      <AssetsBalanceCard key={asset.assetId} asset={asset} />
-    ))}
-  </Grid>
-);
+const AssetsBalanceList = ({ assets }: AssetsBalanceProps) => {
+  const { tokensUSD } = useWorkspaceContext();
+
+  return (
+    <Grid
+      gap={4}
+      templateColumns={{
+        base: 'repeat(1, 1fr)',
+        xs: 'repeat(2, 1fr)',
+        sm: 'repeat(3, 1fr)',
+        md: 'repeat(4, 1fr)',
+        xl: 'repeat(5, 1fr)',
+        '2xl': 'repeat(6, 1fr)',
+      }}
+    >
+      {assets?.map((asset) => {
+        const usdData = tokensUSD.data[asset.assetId.toLowerCase()];
+        const usdAmount = usdData?.usdAmount ?? null;
+
+        return (
+          <AssetsBalanceCard
+            key={asset.assetId}
+            asset={asset}
+            usdAmount={usdAmount}
+          />
+        );
+      })}
+    </Grid>
+  );
+};
 
 const NftsBalanceList = ({ nfts }: NftsBalanceProps) => {
   const { isLitteSmall } = useScreenSize();
