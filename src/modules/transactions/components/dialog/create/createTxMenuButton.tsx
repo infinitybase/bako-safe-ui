@@ -77,11 +77,6 @@ const CreateTxMenuButton = ({
               opacity: !isDisabled && 0.8,
             }}
             borderRadius="8px 0px 0px 8px"
-            title={
-              isDisabled && !isLoading
-                ? 'Please, verify your recipients'
-                : undefined
-            }
           >
             {createTxMethod}
           </Dialog.PrimaryAction>

@@ -307,19 +307,35 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   //   return 450;
   // };
 
-  const isEth =
-    '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07';
+  const isEth = NativeAssetId;
   const asset = assets.assets?.find((a) => a.assetId === isEth);
-
   const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
 
-  const ethTransaction = transactions.fields.find((t) => t.asset === isEth);
+  const { hasEthForFee } = useMemo(() => {
+    let feeAlreadyAdded = false;
 
-  const eth = ethTransaction
-    ? form.watch(`transactions.${transactions.fields.indexOf(ethTransaction)}`)
-    : { amount: 0, fee: 0 };
+    const used = transactions.fields.reduce((acc, _, index) => {
+      const transaction = form.watch(`transactions.${index}`);
+      if (transaction.asset !== isEth) return acc;
 
-  const hasEthForFee = Number(totalEth) < Number(eth.amount) + Number(eth.fee);
+      const amount = Number(transaction.amount || 0);
+      let fee = 0;
+
+      if (!feeAlreadyAdded) {
+        fee = Number(transaction.fee || 0);
+        feeAlreadyAdded = true;
+      }
+
+      return acc + amount + fee;
+    }, 0);
+
+    const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
+
+    return {
+      totalEthUsed: used,
+      hasEthForFee: hasEnough,
+    };
+  }, [transactions.fields, totalEth, form, isEth]);
 
   return (
     <Accordion
@@ -370,7 +386,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
               mb={6}
               borderWidth={1}
               borderColor={
-                hasEthForFee &&
+                !hasEthForFee &&
                 transaction.asset === isEth &&
                 !isCurrentAmountZero
                   ? 'red.500'
@@ -427,27 +443,39 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
           </>
         );
       })}
-      <Center mt={6}>
-        <Button
-          w="full"
-          leftIcon={<UserAddIcon />}
-          variant="primary"
-          bgColor="grey.200"
-          border="none"
-          _hover={{
-            opacity: 0.8,
-          }}
-          onClick={() => {
-            transactions.append({
-              amount: '',
-              asset: NativeAssetId,
-              value: '',
-            });
-            delay(() => accordion.open(transactions.fields.length), 100);
-          }}
-        >
-          Add more recipients
-        </Button>
+      <Center mt={6} flexDirection="column" w="full">
+        {hasEthForFee ? (
+          <Button
+            w="full"
+            leftIcon={<UserAddIcon />}
+            variant="primary"
+            bgColor="grey.200"
+            border="none"
+            _hover={{
+              opacity: 0.8,
+            }}
+            onClick={() => {
+              transactions.append({
+                amount: '',
+                asset: NativeAssetId,
+                value: '',
+              });
+              delay(() => accordion.open(transactions.fields.length), 100);
+            }}
+          >
+            Add more recipients
+          </Button>
+        ) : (
+          <Text
+            color="error.500"
+            fontSize="sm"
+            w="full"
+            textAlign="center"
+            mt={2}
+          >
+            Insufficient funds for gas
+          </Text>
+        )}
       </Center>
     </Accordion>
   );
