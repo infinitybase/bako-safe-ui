@@ -149,52 +149,54 @@ export class TransactionService {
   static async resolveTransactionCosts(input: ResolveTransactionCostInput) {
     const { vault, assets: assetsToSpend } = input;
 
-    console.log('🔍 [resolveTransactionCosts] Input:', input);
-
     const predicateGasUsed = await vault.maxGasUsed();
-
     let transactionRequest = new ScriptTransactionRequest();
-    const assets = assetsToSpend || [];
+    const assets = [...(assetsToSpend || [])];
 
-    if (!assetsToSpend.length) {
-      const baseAssetId = await vault.provider.getBaseAssetId();
-      console.log('⚠️ No assets provided. Using fallback dummy asset.');
+    const baseAssetId = await vault.provider.getBaseAssetId();
+    const hasETHAsset = assets.some((a) => a.assetId === baseAssetId);
+
+    if (!assets.length || !hasETHAsset) {
+      const { coins } = await vault.getCoins(baseAssetId);
+
+      const resources = vault.generateFakeResources(
+        coins.map((c) => ({
+          assetId: c.assetId,
+          amount: c.amount,
+        })),
+      );
+
       assets.push({
         amount: bn(1).formatUnits(),
         assetId: baseAssetId,
         to: Address.fromRandom().toString(),
       });
+
+      transactionRequest.addResources(resources);
     }
 
     const outputs = Asset.assetsGroupByTo(assets);
     const coins = Asset.assetsGroupById(assets);
-    const baseAssetId = await vault.provider.getBaseAssetId();
-    const containETH = !!coins[baseAssetId];
 
-    console.log('📦 Grouped Outputs:', outputs);
-    console.log('💰 Grouped Coins:', coins);
-
-    if (containETH) {
-      const value = bn(0).add(coins[baseAssetId]);
-      coins[baseAssetId] = value;
-    } else {
+    if (!coins[baseAssetId]) {
       coins[baseAssetId] = bn(0);
     }
 
-    const transactionCoins = Object.entries(coins).map(([key, value]) => {
-      return {
-        amount: value,
-        assetId: key,
-      };
-    });
-
-    console.log('📤 Transaction Coins:', transactionCoins);
+    const transactionCoins = Object.entries(coins).map(([assetId, amount]) => ({
+      assetId,
+      amount,
+    }));
 
     const _coins = await vault.getResourcesToSpend(transactionCoins);
-    console.log('📥 Coins from getResourcesToSpend:', _coins);
 
-    // Add outputs
-    Object.entries(outputs).map(([, value]) => {
+    const fakeCoins = vault.generateFakeResources(
+      _coins.map((c) => ({
+        assetId: c.assetId,
+        amount: c.amount,
+      })),
+    );
+
+    Object.entries(outputs).forEach(([, value]) => {
       transactionRequest.addCoinOutput(
         vault.address,
         value.amount,
@@ -202,19 +204,10 @@ export class TransactionService {
       );
     });
 
-    // Add resources
-    transactionRequest.addResources(_coins);
+    transactionRequest.addResources(fakeCoins);
 
-    // Add fake witnesses
     const fakeSignatures = Array.from({ length: 10 }, () => FAKE_WITNESSES);
-    fakeSignatures.forEach((signature) =>
-      transactionRequest.addWitness(signature),
-    );
-
-    console.log(
-      '🧾 TransactionRequest before estimateAndFund:',
-      transactionRequest,
-    );
+    fakeSignatures.forEach((sig) => transactionRequest.addWitness(sig));
 
     transactionRequest = await transactionRequest.estimateAndFund(vault);
 

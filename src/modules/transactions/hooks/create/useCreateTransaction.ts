@@ -88,23 +88,16 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
-    onSuccess: () => {
-      console.log('recalculo feito com sucesso');
-    },
     onError: (error) => {
-      console.log(error);
-      if (error.name === 'FuelError') {
-        const index = transactionsFields.fields.findIndex(
-          (obj) =>
-            obj.asset ===
-            '0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07',
-        );
-
-        if (index !== -1) {
-          form.setError(`transactions.${index}`, {
-            message: '⚠️ Not enough ETH for transaction!',
-          });
-        }
+      console.log(form.watch(`transactions.${accordion.index}.amount`));
+      if (
+        error.message.includes('255 coin limit') ||
+        error.message.includes('no coins')
+      ) {
+        form.setError(`transactions.${accordion.index}.amount`, {
+          message: '⚠️ Not enough ETH to pay for transaction fee!',
+          type: 'coin_limit',
+        });
       }
     },
   });
@@ -409,7 +402,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
               value: recipientMock,
             })) || [],
           );
-    console.log('assets enviados pro calculo: ', assets);
+
     debouncedResolveTransactionCosts(assets, vault!);
   }, [
     transactionTotalAmount,
