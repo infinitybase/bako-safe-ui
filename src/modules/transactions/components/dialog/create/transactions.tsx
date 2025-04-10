@@ -294,7 +294,9 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     }
                   }}
                   helperText={
-                    <FormHelperText>
+                    <FormHelperText
+                      color={fieldState.error ? 'error.500' : 'white'}
+                    >
                       {!isNFT && (
                         <Text display="flex" alignItems="center" mt={1}>
                           {!field.value ? (
@@ -331,7 +333,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     size="xs"
                     variant="ghost"
                     position="absolute"
-                    top={isNFT ? '45%' : '35%'}
+                    top={isNFT ? '47%' : '38%'}
                     right="0.5rem"
                     bg="#201F1D"
                     padding="0.5rem"
@@ -344,6 +346,7 @@ const TransactionFormField = (props: TransctionFormFieldProps) => {
                     zIndex={1}
                     onClick={() => {
                       field.onChange(null);
+                      form.setValue(`transactions.${index}.amount`, '');
                     }}
                   />
                 )}
@@ -498,8 +501,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       index={accordion.index}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
-      minH={400}
-      maxH={400}
+      h={'450px'}
       pr={{ base: 1, sm: 0 }}
       sx={{
         '&::-webkit-scrollbar': {
