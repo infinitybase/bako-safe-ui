@@ -88,7 +88,11 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
 
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
+    onSuccess: () => {
+      console.log('recalculo feito com sucesso');
+    },
     onError: (error) => {
+      console.log(error);
       if (error.name === 'FuelError') {
         const index = transactionsFields.fields.findIndex(
           (obj) =>
@@ -405,7 +409,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
               value: recipientMock,
             })) || [],
           );
-
+    console.log('assets enviados pro calculo: ', assets);
     debouncedResolveTransactionCosts(assets, vault!);
   }, [
     transactionTotalAmount,
@@ -413,6 +417,8 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     currentFieldAsset,
     currentFieldAmount,
     debouncedResolveTransactionCosts,
+    form,
+    vault,
   ]);
 
   useEffect(() => {
