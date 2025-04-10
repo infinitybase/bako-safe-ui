@@ -19,11 +19,17 @@ import {
   GetUserTransactionsResponse,
   GetVaultTransactionsParams,
   GetVaultTransactionsResponse,
+  ITransactionReactQueryUpdate,
   ITransactionStatusFilter,
   ResolveTransactionCostInput,
   SignerTransactionPayload,
   SignerTransactionResponse,
+  ITransactionQueryOldData,
+  ITransactionInfinityQueryData,
+  ITransactionQueryUpdatePage,
+  ITransactionHistory,
 } from './types';
+import { ITransaction } from '@/modules/core/hooks/bakosafe/utils/types';
 
 export class TransactionService {
   static async create(payload: CreateTransactionPayload) {
@@ -237,5 +243,69 @@ export class TransactionService {
       `/transaction/verify/${id}`,
     );
     return data;
+  }
+
+  static updateTransactionHistoryReactQuery(
+    oldData: ITransactionHistory,
+    event: ITransactionReactQueryUpdate,
+  ) {
+    if (!oldData) return oldData;
+    return event.history;
+  }
+
+  static updateTransactionReactQuery(
+    oldData: ITransactionQueryUpdatePage,
+    event: ITransactionReactQueryUpdate,
+  ): ITransactionQueryUpdatePage {
+    if (!oldData) return oldData;
+
+    const { type, transaction } = event;
+
+    if (type !== '[CREATED]') {
+      return {
+        ...oldData,
+        data: oldData.data.map((tx: ITransaction) =>
+          tx.id === transaction.id ? transaction : tx,
+        ),
+      };
+    }
+
+    return {
+      ...oldData,
+      data: [transaction, ...oldData.data],
+    };
+  }
+
+  static updateInfiniteTransactionReactQuery(
+    oldData: ITransactionInfinityQueryData,
+    event: ITransactionReactQueryUpdate,
+  ): ITransactionInfinityQueryData {
+    if (!oldData) return oldData;
+
+    const { type, transaction } = event;
+    const { pageParams, pages } = oldData;
+
+    if (type !== '[CREATED]') {
+      return {
+        pageParams,
+        pages: pages.map((page: ITransactionQueryUpdatePage) =>
+          page.data.some((item: ITransaction) => item.id === transaction.id)
+            ? {
+                ...page,
+                data: page.data.map((item: ITransaction) =>
+                  item.id === transaction.id ? transaction : item,
+                ),
+              }
+            : page,
+        ),
+      };
+    }
+
+    return {
+      pageParams,
+      pages: pages.map((page: any, index: number) =>
+        index === 0 ? { ...page, data: [transaction, ...page.data] } : page,
+      ),
+    };
   }
 }

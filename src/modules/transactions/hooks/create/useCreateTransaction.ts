@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { IAssetGroupById } from 'bakosafe';
 import { BN, bn } from 'fuels';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { useContactToast } from '@/modules/addressBook';
@@ -280,6 +281,52 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
     props?.onClose();
   };
 
+  const transactionsForm = useWatch({
+    control: form.control,
+    name: 'transactions',
+    defaultValue: [],
+  });
+
+  const allAssetsUsed = useMemo(() => {
+    if (!transactionsForm?.length) return false;
+
+    const transactionAssetIds = new Set(
+      transactionsForm.map((transaction) => transaction.asset),
+    );
+
+    const nfts = props?.nfts || [];
+    const allNftsInTransactions =
+      nfts.length === 0 ||
+      nfts.every((nft) => transactionAssetIds.has(nft.assetId));
+
+    const assets = currentVaultAssets || [];
+
+    const hasSufficientBalance = assets.every(({ assetId, units }) => {
+      if (!transactionAssetIds.has(assetId)) return false;
+      const available = getBalanceAvailable(assetId);
+      const assetAmount = bn.parseUnits(available, units);
+      const transactionAssets = (transactionsForm ?? []).filter(
+        (transaction) => transaction.asset === assetId,
+      );
+
+      const totalTransactionAmount = transactionAssets.reduce(
+        (sum, transaction) => {
+          const amount = bn.parseUnits(
+            (transaction.amount || '0').replace(/,/g, ''),
+          );
+          return sum.add(amount);
+        },
+        bn(0),
+      );
+
+      return assetAmount.lte(totalTransactionAmount);
+    });
+
+    const hasBalance = allNftsInTransactions && hasSufficientBalance;
+
+    return hasBalance;
+  }, [currentVaultAssets, getBalanceAvailable, props?.nfts, transactionsForm]);
+
   useEffect(() => {
     const _transactionFee =
       transactionFee && Number(transactionFee) > 0 ? transactionFee : null;
@@ -383,6 +430,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
       ...form,
       handleCreateTransaction,
       handleCreateAndSignTransaction,
+      allAssetsUsed,
     },
     nicks: listContactsRequest.data ?? [],
     navigate,

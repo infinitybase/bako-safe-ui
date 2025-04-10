@@ -33,6 +33,9 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { StatusFilter } from '../../../transactions/hooks';
 
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
+
 const TransactionsVaultPage = () => {
   const menuDrawer = useDisclosure();
   const {
@@ -73,6 +76,13 @@ const TransactionsVaultPage = () => {
       resetAllTransactionsTypeFilters();
     };
   }, []);
+
+  const vaultQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+
+  useTransactionSocketListener(vaultQueryKey ?? []);
 
   const hasTransactions = !isLoading && transactions?.length;
 
@@ -127,6 +137,7 @@ const TransactionsVaultPage = () => {
 
             <BreadcrumbItem>
               <BreadcrumbLink
+                data-testid="vaultbreadCrumb"
                 fontSize="sm"
                 color="grey.200"
                 fontWeight="semibold"
