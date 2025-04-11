@@ -40,6 +40,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 onChange={field.onChange}
                 placeholder=" "
                 maxLength={27}
+                aria-label={'Input key name api token'}
               />
               <FormLabel>Key name</FormLabel>
               <FormHelperText color="error.500">
@@ -60,6 +61,7 @@ const CreateAPITokenForm = (props: CreateAPITokenFormProps) => {
                 onChange={field.onChange}
                 placeholder=" "
                 maxLength={199}
+                aria-label={'Input tx api token'}
               />
               <FormLabel>Transaction name</FormLabel>
               <FormHelperText color="error.500">

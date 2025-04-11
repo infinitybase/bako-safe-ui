@@ -11,7 +11,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CustomSkeleton, HomeIcon, TransactionTypeFilters } from '@/components';
@@ -21,7 +22,7 @@ import { EmptyState } from '@/components/emptyState';
 import { MenuIcon } from '@/components/icons/menu';
 import WelcomeDialog from '@/components/welcomeDialog';
 import { Drawer } from '@/layouts/dashboard/drawer';
-import { PermissionRoles } from '@/modules/core';
+import { PermissionRoles, SocketEvents } from '@/modules/core';
 import { useGetParams } from '@/modules/core/hooks';
 import { Pages } from '@/modules/core/routes';
 import { useTemplateStore } from '@/modules/template/store/useTemplateStore';
@@ -33,6 +34,9 @@ import { limitCharacters } from '@/utils/limit-characters';
 import { CardDetails } from '../../components/CardDetails';
 import { SignersDetails } from '../../components/SignersDetails';
 import { useVaultInfosContext } from '../../VaultInfosProvider';
+
+import { vaultInfinityQueryKey } from '../../hooks/list/useVaultTransactionsRequest';
+import { useTransactionSocketListener } from '@/modules/transactions/hooks/events/useTransactionsSocketListener';
 
 const VaultDetailsPage = () => {
   const [welcomeDialogState, setWelcomeDialogState] = useState(true);
@@ -47,13 +51,14 @@ const VaultDetailsPage = () => {
     vaultTransactions: {
       filter: { txFilterType },
       lists: { transactions },
-      request: { isLoading, isFetching },
+      request: { isLoading, isFetching, queryKey },
       handlers: { handleIncomingAction, handleOutgoingAction },
       transactionsRef,
     },
     pendingSignerTransactions,
     isPendingSigner,
   } = useTransactionsContext();
+  const queryClient = useQueryClient();
 
   const { setTemplateFormInitial } = useTemplateStore();
 
@@ -82,6 +87,20 @@ const VaultDetailsPage = () => {
   const canSetTemplate = hasPermission([SIGNER]) || hasPermission([OWNER]);
 
   const hideSetTemplateButton = true;
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey, exact: true });
+    };
+  }, []);
+
+  const vaultQueryKey =
+    vaultInfinityQueryKey.VAULT_TRANSACTION_LIST_PAGINATION_QUERY_KEY(
+      vault.data?.id ?? undefined,
+    );
+
+  useTransactionSocketListener(vaultQueryKey ?? []);
+
 
   if (!vault) return null;
 

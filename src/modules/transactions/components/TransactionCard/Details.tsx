@@ -8,7 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { TransactionStatus, TransactionType } from 'bakosafe';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CustomSkeleton, FileCodeIcon, UpRightArrow } from '@/components';
 import { TrashIcon } from '@/components/icons/trash';
@@ -46,10 +46,12 @@ const CancelTransactionButton = ({
     signTransaction: { isLoading: isSigningTransaction },
     cancelTransaction: {
       isPending: isCancelingTransaction,
-      isSuccess: isCanceledTransaction,
       mutate: cancelTransaction,
     },
   } = useTransactionsContext();
+
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   const isCancelable = useMemo(
     () => transaction.status === TransactionStatus.AWAIT_REQUIREMENTS,
@@ -57,6 +59,20 @@ const CancelTransactionButton = ({
   );
 
   if (!isCancelable) return null;
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    setIsClicked(true);
+    setIsLocalLoading(true);
+
+    cancelTransaction(transaction.hash, {
+      onSettled: () => {
+        setIsLocalLoading(false);
+      },
+    });
+  };
 
   return (
     <Button
@@ -66,13 +82,11 @@ const CancelTransactionButton = ({
       size={{ base: 'sm', sm: 'xs', lg: 'sm' }}
       fontSize={{ base: 'unset', sm: 14, lg: 'unset' }}
       rightIcon={<Icon as={TrashIcon} />}
-      isLoading={isCancelingTransaction || isCanceledTransaction}
-      isDisabled={isSigningTransaction}
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        cancelTransaction(transaction.hash);
-      }}
+      isLoading={isLocalLoading}
+      isDisabled={
+        isSigningTransaction || (!isClicked && isCancelingTransaction)
+      }
+      onClick={handleCancel}
     >
       Cancel transaction
     </Button>
@@ -159,7 +173,7 @@ const Details = memo(
                 </Stack>
 
                 <HStack justifyContent="end" width="100%">
-                  {!isMobile && (
+                  {!isMobile && !isDeposit && (
                     <Button
                       variant="secondaryV2"
                       alignSelf="flex-end"

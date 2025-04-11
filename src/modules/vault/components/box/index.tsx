@@ -132,6 +132,7 @@ const VaultBox = (props: VaultBoxPropx) => {
             <AddressWithCopyBtn
               value={address}
               isSidebarAddress
+              aria-label="Sidebar Vault Address"
               h="20px"
               flexDir="row-reverse"
             />
@@ -152,6 +153,7 @@ const VaultBox = (props: VaultBoxPropx) => {
       {hasPermission && (
         <Box w="100%">
           <Button
+            aria-label={'Create transaction btn'}
             w="100%"
             variant="primary"
             fontWeight="bold"

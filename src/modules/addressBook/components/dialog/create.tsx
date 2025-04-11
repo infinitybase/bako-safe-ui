@@ -50,6 +50,7 @@ const CreateContactDialog = ({
           onClick={isEdit ? form.handleUpdateContact : form.handleCreateContact}
           isDisabled={isLoading || !form.formState.isValid}
           isLoading={isLoading}
+          aria-label={isEdit ? 'Edit adb' : 'Create adb'}
         >
           {isEdit ? 'Edit' : 'Add it'}
         </Dialog.PrimaryAction>
