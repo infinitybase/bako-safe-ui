@@ -13,7 +13,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaRegPlusSquare } from 'react-icons/fa';
 import { IoChevronBack } from 'react-icons/io5';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
@@ -47,6 +47,11 @@ const UserVaultsPage = () => {
   } = useWorkspaceContext();
 
   const workspaceId = userInfos?.workspace?.id ?? '';
+  const noVaults = !vaults?.length;
+  const showHiddenMessage = noVaults && !isLoading && !value;
+  const showEmptyState = noVaults && !isLoading && value;
+  const showVaultGrid = !!vaults?.length;
+
   return (
     <VStack
       w="full"
@@ -136,6 +141,17 @@ const UserVaultsPage = () => {
             </BreadcrumbItem>
           </Breadcrumb>
         </HStack>
+        <Box>
+          <Button
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            isDisabled={!hasPermission([OWNER, MANAGER, ADMIN])}
+            onClick={onOpen}
+          >
+            Create vault
+          </Button>
+        </Box>
       </HStack>
 
       <CustomSkeleton display="flex" isLoaded={!latestPredicates.isLoading}>
@@ -243,67 +259,55 @@ const UserVaultsPage = () => {
               Show Inactives
             </Button>
           )}
-
-          <Button
-            color="grey.75"
-            variant="txFilterType"
-            alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-            rightIcon={
-              <Icon
-                as={() => <FaPlus color="grey.75" />}
-                fontSize="lg"
-                ml={isSmall ? -1 : 0}
-                className="btn-icon"
-              />
-            }
-            onClick={onOpen}
-            px={isExtraSmall ? 3 : 4}
-          >
-            Create vault
-          </Button>
         </HStack>
       </HStack>
 
-      {!vaults?.length &&
-        !isLoading &&
-        (!value ? (
-          <CustomSkeleton isLoaded={!isLoading}>
-            <VStack
-              w="full"
-              h="full"
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-              borderWidth="1px"
-              borderRadius="md"
-              borderColor="gray.700"
-              p={8}
-              bg="blackAlpha.300"
-            >
-              <Text fontSize="lg" fontWeight="semibold">
-                No vaults visible
-              </Text>
-              <Text fontSize="sm" color="gray.400" textAlign="center">
-                You&apos;ve hidden all your vaults. <br />
-                Update your visibility settings to see them again.
-              </Text>
-            </VStack>
-          </CustomSkeleton>
-        ) : (
-          <CustomSkeleton isLoaded={!isLoading}>
-            <EmptyState
-              bg="red"
-              showAction={hasPermission([OWNER, MANAGER, ADMIN])}
-              title="Let's Begin!"
-              subTitle="Your vaults are entirely free on Fuel. Let's create your very first one?"
-              buttonActionTitle="Create my first vault"
-              buttonAction={onOpen}
-            />
-          </CustomSkeleton>
-        ))}
+      {showHiddenMessage && (
+        <CustomSkeleton isLoaded={!isLoading}>
+          <VStack
+            w="full"
+            h="full"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
+            spacing={2}
+            borderWidth="1px"
+            borderRadius="md"
+            borderColor="rgba(64, 58, 57, 0.5)"
+            p={8}
+            bg="linear-gradient(180deg, rgba(21, 20, 19, 0.15), rgba(21, 20, 19, 0.25), rgba(21, 20, 19, 0.5))"
+            fontWeight="semibold"
+            boxShadow="0px 8px 16px rgba(0, 0, 0, 0.15)"
+            backdropFilter="blur(16px)"
+          >
+            <Text fontSize="20px" fontWeight="semibold">
+              No vaults visible
+            </Text>
+            <Text fontSize="sm" color="gray.400" textAlign="center">
+              You&apos;ve hidden all your vaults. <br />
+              Update your visibility settings to see them again.
+            </Text>
+          </VStack>
+        </CustomSkeleton>
+      )}
 
-      {vaults?.length && (
+      {showEmptyState && (
+        <CustomSkeleton isLoaded={!isLoading}>
+          <EmptyState
+            bg="red"
+            showAction={hasPermission([OWNER, MANAGER, ADMIN])}
+            title="Let's Begin!"
+            subTitle="Your vaults are entirely free on Fuel. Let's create your very first one?"
+            buttonActionTitle="Create my first vault"
+            buttonAction={onOpen}
+          />
+        </CustomSkeleton>
+      )}
+
+      {showVaultGrid && (
         <Box
+          key={`vaults-${value}`} // força o React a limpar/recriar ao trocar visibilidade
           w="full"
           minH="60vh"
           maxH="79vh"
@@ -349,32 +353,30 @@ const UserVaultsPage = () => {
                 owner,
                 isHidden,
                 predicateAddress,
-              }) => {
-                return (
-                  <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
-                    <GridItem>
-                      <VaultCard
-                        ownerId={owner.id}
-                        name={name}
-                        workspace={workspace}
-                        title={description}
-                        members={members!}
-                        isHidden={isHidden}
-                        onClick={() =>
-                          handleWorkspaceSelection(
-                            workspace.id,
-                            Pages.detailsVault({
-                              workspaceId: workspace.id,
-                              vaultId: id,
-                            }),
-                          )
-                        }
-                        address={predicateAddress}
-                      />
-                    </GridItem>
-                  </CustomSkeleton>
-                );
-              },
+              }) => (
+                <CustomSkeleton isLoaded={!isLoading} key={id} maxH="180px">
+                  <GridItem>
+                    <VaultCard
+                      ownerId={owner.id}
+                      name={name}
+                      workspace={workspace}
+                      title={description}
+                      members={members!}
+                      isHidden={isHidden}
+                      onClick={() =>
+                        handleWorkspaceSelection(
+                          workspace.id,
+                          Pages.detailsVault({
+                            workspaceId: workspace.id,
+                            vaultId: id,
+                          }),
+                        )
+                      }
+                      address={predicateAddress}
+                    />
+                  </GridItem>
+                </CustomSkeleton>
+              ),
             )}
           </Grid>
           <Box ref={inView.ref} />

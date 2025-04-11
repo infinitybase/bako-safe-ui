@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { css } from '@emotion/react';
-import { FaPlus } from 'react-icons/fa';
+import { FaRegPlusSquare } from 'react-icons/fa';
 
 import { CustomSkeleton, HomeIcon, VaultIcon } from '@/components';
 import { AddressBookIcon } from '@/components/icons/address-book';
@@ -56,6 +56,16 @@ const HomePage = () => {
             Home
           </Text>
         </HStack>
+        <Box>
+          <Button
+            variant="primary"
+            fontWeight="bold"
+            leftIcon={<FaRegPlusSquare />}
+            onClick={onOpen}
+          >
+            Create vault
+          </Button>
+        </Box>
       </HStack>
       <Stack w="full" direction={{ base: 'column', md: 'row' }} spacing={6}>
         <CustomSkeleton isLoaded={!latestPredicates.isLoading}>
@@ -134,23 +144,6 @@ const HomePage = () => {
               Recently used vaults
             </Text>
             <HStack spacing={2}>
-              <Button
-                color="grey.75"
-                variant="txFilterType"
-                alignSelf={{ base: 'stretch', sm: 'flex-end' }}
-                rightIcon={
-                  <Icon
-                    as={() => <FaPlus color="grey.75" />}
-                    fontSize="lg"
-                    ml={isSmall ? -1 : 0}
-                    className="btn-icon"
-                  />
-                }
-                onClick={onOpen}
-                px={isExtraSmall ? 3 : 4}
-              >
-                Create vault
-              </Button>
               <Button
                 color="grey.75"
                 variant="txFilterType"

@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
@@ -53,6 +53,7 @@ export const VaultCard = ({
     workspaceInfos: {
       requests: { latestPredicates },
     },
+    authDetails: { userInfos },
   } = useWorkspaceContext();
 
   const { mutate: toogleVisibility, isPending } = useMutation({
@@ -60,9 +61,13 @@ export const VaultCard = ({
     onSuccess: () => {
       userVaults.request.refetch();
       latestPredicates.refetch();
+      queryClient.invalidateQueries({
+        queryKey: ['predicate/by-user-address', userInfos.address],
+      });
     },
   });
   const [localHidden, setLocalHidden] = useState(isHidden);
+  const queryClient = useQueryClient();
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
