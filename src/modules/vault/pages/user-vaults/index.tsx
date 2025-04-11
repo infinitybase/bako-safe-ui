@@ -216,7 +216,6 @@ const UserVaultsPage = () => {
         </Stack>
       </CustomSkeleton>
 
-      {/* USER VAULTS */}
       <HStack w="full" justifyContent="space-between" pb={2}>
         <Text color="white" fontWeight="semibold" fontSize="md">
           Vaults
@@ -307,7 +306,7 @@ const UserVaultsPage = () => {
 
       {showVaultGrid && (
         <Box
-          key={`vaults-${value}`} // força o React a limpar/recriar ao trocar visibilidade
+          key={`vaults-${value}`}
           w="full"
           minH="60vh"
           maxH="79vh"

@@ -68,7 +68,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   if (!transactionSummary) {
     return <BakoLoading />;
   }
-  console.log(transactionSummary);
+
   return (
     <Container>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
