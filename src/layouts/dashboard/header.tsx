@@ -10,6 +10,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Spacer,
   Spinner,
   Text,
   useDisclosure,
@@ -23,7 +24,6 @@ import { FaChevronDown } from 'react-icons/fa';
 import logo from '@/assets/bakoLogoWhite.svg';
 import {
   AddressWithCopyBtn,
-  BakoLoading,
   NotificationIcon,
   PlusIcon,
   UnknownIcon,
@@ -550,16 +550,27 @@ const UserBox = () => {
               mb={0}
             >
               <HStack
-                cursor={'pointer'}
+                cursor="pointer"
                 onClick={logout}
                 spacing={4}
-                aria-label={'Disconnect'}
+                aria-label="Disconnect"
+                w="full"
               >
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect
                 </Text>
-                {isLoggingOut && <BakoLoading size={65} />}
+                <Spacer />
+                {isLoggingOut && (
+                  <Spinner
+                    thickness="3px"
+                    speed="0.5s"
+                    emptyColor="gray.200"
+                    color="brand.500"
+                    w="20px"
+                    h="20px"
+                  />
+                )}
               </HStack>
             </VStack>
           </PopoverBody>
