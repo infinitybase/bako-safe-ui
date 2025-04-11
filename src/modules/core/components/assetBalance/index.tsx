@@ -164,7 +164,7 @@ const AssetsBalanceCard = ({
       backdropFilter="blur(6px)"
       boxShadow="lg"
     >
-      <VStack alignItems="flex-start" gap={2}>
+      <VStack alignItems="flex-start" gap={4}>
         <Image
           w={{ base: 8, sm: 10 }}
           h={{ base: 8, sm: 10 }}
@@ -173,17 +173,10 @@ const AssetsBalanceCard = ({
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack alignItems="flex-start" gap={0} maxW="full">
-          <HStack>
-            <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
-              {assetsInfo?.name}
-            </Text>
-          </HStack>
-          <Text fontSize="xs" color="grey.250">
-            {assetsInfo?.slug}
-          </Text>
-        </VStack>
         <VStack alignItems="flex-start" spacing={0} w="full">
+          <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
+            {assetsInfo?.name}
+          </Text>
           <Text fontSize="sm" color="grey.50" maxW="full" isTruncated>
             {assetAmount}{' '}
             <Text as="span" color="grey.400" fontSize="xs">

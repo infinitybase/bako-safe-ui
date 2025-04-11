@@ -501,7 +501,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       index={accordion.index}
       overflowY="auto"
       pb={isMobile ? 10 : 0}
-      h={'450px'}
+      maxH={'450px'}
       pr={{ base: 1, sm: 0 }}
       sx={{
         '&::-webkit-scrollbar': {

@@ -107,7 +107,7 @@ const AssetDetails = ({
 
       {visibleBalance ? (
         <VStack spacing={0} align="start" mt={0}>
-          <Text color="white" fontWeight="bold" fontSize="sm" isTruncated>
+          <Text color="white" fontWeight="bold" fontSize="sm" noOfLines={1}>
             {isNFT ? (
               '1'
             ) : (
@@ -186,14 +186,7 @@ const AssetCard = ({
       aria-label={`${assetsInfo.slug} Asset Card`}
       {...rest}
     >
-      <VStack
-        align="flex-start"
-        justify="center"
-        w="full"
-        h="full"
-        spacing={0}
-        textAlign="center"
-      >
+      <VStack align="flex-start" justify="center" w="full" h="full" spacing={1}>
         <Box mb={4}>
           {isNFT ? (
             <Icon as={BakoIcon} w={10} h={10} />
@@ -208,7 +201,7 @@ const AssetCard = ({
             />
           )}
         </Box>
-        <Box mb={1}>
+        <Box>
           <AssetDetails
             assetName={isNFT ? asset.assetId : assetsInfo.name}
             assetSlug={assetsInfo.slug}
