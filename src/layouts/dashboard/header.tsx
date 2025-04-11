@@ -17,8 +17,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Network } from 'ethers';
-import { Address } from 'fuels';
+import { Address, Network } from 'fuels';
 import React, { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
