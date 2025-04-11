@@ -181,8 +181,8 @@ const AssetCard = ({
       borderRadius={10}
       px={4}
       py={4}
-      w="100%"
-      h="135px"
+      w="full"
+      h="full"
       aria-label={`${assetsInfo.slug} Asset Card`}
       {...rest}
     >
