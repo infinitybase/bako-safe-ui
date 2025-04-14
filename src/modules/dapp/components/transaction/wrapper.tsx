@@ -1,9 +1,8 @@
-import { Box, Divider, Text, VStack } from '@chakra-ui/react';
+import { Box, Divider, VStack } from '@chakra-ui/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  BakoLoading,
   CustomSkeleton,
   Dialog,
   LineCloseIcon,
@@ -12,10 +11,10 @@ import {
 import { Dapp } from '@/layouts/dapp';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth/hooks';
-import { VaultItemBox } from '@/modules/vault/components/modal/box';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { UseTransactionSocket, useVerifyBrowserType } from '../../hooks';
+import { SimplifiedTransaction } from '../../services/simplify-transaction';
 import { DappError } from '../connection';
 import { DappTransaction } from '.';
 
@@ -28,6 +27,7 @@ interface DappTransactionWrapperProps {
   pendingSignerTransactions: UseTransactionSocket['pendingSignerTransactions'];
   summary: UseTransactionSocket['summary'];
   startTime: number;
+  transaction: SimplifiedTransaction | undefined;
   cancel: () => void;
 }
 
@@ -39,6 +39,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     primaryActionButton,
     primaryActionLoading,
     vault,
+    transaction,
     pendingSignerTransactions,
     summary: { transactionSummary, isPending: isLoadingTransactionSummary },
     cancel,
@@ -65,10 +66,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
 
-  if (!transactionSummary) {
-    return <BakoLoading />;
-  }
-
   return (
     <Container>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
@@ -82,9 +79,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         <Dapp.Section mb={-7}>
           <Dapp.Header
             title={title}
-            description="Send single or batch payments with multi assets. You can send multiple types of assets to different addresses."
-            titleFontSize="16px"
-            descriptionFontSize="12px"
+            description="Double-check transaction details before submission."
           />
 
           {isSafariBrowser && (
@@ -112,47 +107,55 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
               <DappError />
             </Dapp.Section>
           )}
-          {/* Vault */}
+          <VStack spacing={1} mb={-4} w="full">
+            {(isLoadingTransactionSummary || !transactionSummary) && (
+              <DappTransaction.OperationSkeleton />
+            )}
+            {transaction?.categorizedOperations.mainOperations?.map(
+              (operation, index) => (
+                <DappTransaction.Operation
+                  key={`${index}operation`}
+                  vault={{
+                    name: vault?.name || '',
+                    predicateAddress: vault?.address || '',
+                  }}
+                  operation={operation}
+                />
+              ),
+            )}
+            {transaction?.categorizedOperations.intermediateContractCalls?.map(
+              (operation, index) => (
+                <DappTransaction.Operation
+                  key={`${index}operation`}
+                  vault={{
+                    name: vault?.name || '',
+                    predicateAddress: vault?.address || '',
+                  }}
+                  operation={operation}
+                />
+              ),
+            )}
+            {transaction?.categorizedOperations.notRelatedToCurrentAccount?.map(
+              (operation, index) => (
+                <DappTransaction.Operation
+                  key={`${index}operation`}
+                  vault={{
+                    name: vault?.name || '',
+                    predicateAddress: vault?.address || '',
+                  }}
+                  operation={operation}
+                />
+              ),
+            )}
+          </VStack>
+
           <Dapp.Section>
             <DappTransaction.RequestingFrom
               mb={7}
               name={name}
               origin={origin}
             />
-
-            {vault && (
-              <>
-                <Text mb={2} fontSize={12} fontWeight={700}>
-                  Vault:
-                </Text>
-                <VaultItemBox
-                  name={vault?.name}
-                  address={vault?.address}
-                  isSingleWorkspace
-                  isInDapp
-                  px={4}
-                />
-              </>
-            )}
           </Dapp.Section>
-          <Text mb={2} fontWeight={700} fontSize={12}>
-            Details:
-          </Text>
-          <VStack spacing={1} mb={-4}>
-            {(isLoadingTransactionSummary || !transactionSummary) && (
-              <DappTransaction.OperationSkeleton />
-            )}
-            {transactionSummary?.operations?.map((operation, index) => (
-              <DappTransaction.Operation
-                key={`${index}operation`}
-                vault={{
-                  name: vault?.name || '',
-                  predicateAddress: vault?.address || '',
-                }}
-                operation={operation}
-              />
-            ))}
-          </VStack>
           <DappTransaction.Fee
             closePopover={closePopover}
             fee={transactionSummary?.fee}

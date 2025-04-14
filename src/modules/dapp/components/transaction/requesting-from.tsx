@@ -28,7 +28,7 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
       w="full"
     >
       <Text fontSize={10} color="grey.425" fontWeight={400}>
-        Requesting a transaction from:
+        Requesting from:
       </Text>
 
       <Divider borderColor="grey.950" my={1} />
@@ -36,11 +36,10 @@ const DappRequestingFrom = (props: DappRequestingFromProps) => {
       <HStack width="100%" spacing={3.5}>
         <VStack alignItems="flex-start" spacing={0.5}>
           <Text color="grey.250" fontSize={12} fontWeight={500}>
-            {name}
-          </Text>
-          <Text color="brand.500" fontSize={12} fontWeight={400} lineHeight={4}>
+            <Text as="span" color="white">
+              {name}
+            </Text>{' '}
             {origin?.split('//')[1]}
-            {/* fuel-connectors-hx60ddh96-fuel-labs.vercel.app */}
           </Text>
         </VStack>
       </HStack>

@@ -1,4 +1,9 @@
 import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import {
+  TransactionRequest,
+  TransactionResult,
+  TransactionSummary,
+} from 'fuels';
 import { useState } from 'react';
 
 import { Dialog } from '@/components/dialog';
@@ -11,6 +16,7 @@ import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { DappTransactionSuccess } from '../components/transaction/success';
 import { DappTransactionWrapper } from '../components/transaction/wrapper';
 import { useTransactionSocket } from '../hooks';
+import { useSimplifiedTransaction } from '../hooks/useSimplifiedTransaction';
 
 const TransactionConfirm = () => {
   const [createTxMethod, setCreateTxMethod] =
@@ -22,6 +28,7 @@ const TransactionConfirm = () => {
     vault,
     pendingSignerTransactions,
     summary,
+    tx,
     startTime,
     validAt,
     tabs,
@@ -41,12 +48,21 @@ const TransactionConfirm = () => {
   } = useWorkspaceContext();
   const { data: wallet } = useMyWallet();
 
+  const { transaction } = useSimplifiedTransaction({
+    tx: summary.transactionSummary as
+      | TransactionSummary
+      | TransactionResult
+      | undefined,
+    txRequest: tx as TransactionRequest | undefined,
+    txAccount: vault.address,
+  });
+
   return (
     <Tabs isLazy index={tabs.tab}>
       <TabPanels>
         <TabPanel p={0}>
           <DappTransactionWrapper
-            title="Create transaction"
+            title="Review Transaction"
             startTime={startTime}
             validAt={validAt}
             vault={vault}
@@ -54,6 +70,7 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSending}
             cancel={cancelSendTransaction}
+            transaction={transaction}
             primaryActionButton={
               type && (wallet || webauthn) ? (
                 <CreateTxMenuButton
@@ -88,6 +105,7 @@ const TransactionConfirm = () => {
             summary={summary}
             primaryActionLoading={isSigning}
             cancel={cancelSignTransaction}
+            transaction={transaction}
             primaryActionButton={
               <Dialog.PrimaryAction
                 size="md"
