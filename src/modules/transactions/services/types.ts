@@ -64,6 +64,7 @@ export interface TransactionDetails {
 export interface ITransactionPending {
   ofUser: number;
   transactionsBlocked: boolean;
+  pendingSignature: boolean;
 }
 
 export interface GetTransactionParams {

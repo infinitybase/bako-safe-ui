@@ -78,6 +78,7 @@ const useTransactionDetails = () => {
         }),
       ]);
       cancelTransaction.reset();
+      refetchAssets();
     },
   });
 

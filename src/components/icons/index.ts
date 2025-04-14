@@ -53,6 +53,7 @@ export * from './up-right-arrow';
 export * from './up-right-arrow-yellow';
 export * from './usdc';
 export * from './user-add';
+export * from './users';
 export * from './vault';
 export * from './vault-success';
 export * from './warning';

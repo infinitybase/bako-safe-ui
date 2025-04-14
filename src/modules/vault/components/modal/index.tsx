@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spinner,
   Text,
   useDisclosure,
   VStack,
@@ -51,20 +52,19 @@ const VaultListModal = ({
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
+
   return (
     <>
-      {isCreateVaultModalOpen && (
-        <CreateVaultDialog
-          isOpen={isCreateVaultModalOpen}
-          onClose={createVaultModalOnClose}
-          onCreate={onCloseAll}
-        />
-      )}
+      <CreateVaultDialog
+        isOpen={isCreateVaultModalOpen}
+        onClose={createVaultModalOnClose}
+        onCreate={onCloseAll}
+      />
 
       <Dialog.Modal
         autoFocus={false}
         onClose={drawer.onClose}
-        isOpen={isCreateVaultModalOpen ? false : props.isOpen}
+        isOpen={props.isOpen}
         modalContentProps={{
           px: 10,
           py: 10,
@@ -74,7 +74,7 @@ const VaultListModal = ({
           overflow: 'visible',
         }}
       >
-        <Dialog.Body>
+        <Dialog.Body display={isCreateVaultModalOpen ? 'none' : 'block'}>
           <Dialog.Header
             mt={0}
             mb={0}
@@ -106,7 +106,6 @@ const VaultListModal = ({
                 onChange={search.handler}
               />
               <FormLabel>Search</FormLabel>
-              {/* It is important that the Label comes after the Control due to css selectors */}
             </FormControl>
           </Box>
 
@@ -116,12 +115,8 @@ const VaultListModal = ({
             maxH={{ base: `calc(100vh - 350px)`, xs: 555, sm: 380, md: 500 }}
             overflowY="scroll"
             sx={{
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                display: 'none',
-              },
+              '&::-webkit-scrollbar': { display: 'none' },
+              '&::-webkit-scrollbar-thumb': { display: 'none' },
             }}
           >
             {isSuccess && !vaults.length && (
@@ -131,9 +126,11 @@ const VaultListModal = ({
               </Text>
             )}
 
-            <VStack spacing={4} w="full">
-              {!vaults.length && isFetching && (
-                <CustomSkeleton h="90px" w="full" />
+            <VStack marginBottom={4} w="full">
+              {isLoadingVaults && vaults.length === 0 && (
+                <VStack spacing={4} w="full" pt={4}>
+                  <Spinner size="md" thickness="4px" color="brand.500" />
+                </VStack>
               )}
               <CustomSkeleton isLoaded={isLoadingVaults}>
                 <VaultList
@@ -143,6 +140,11 @@ const VaultListModal = ({
                 />
               </CustomSkeleton>
               <Box ref={inView.ref} />
+              {isFetching && vaults.length > 0 && (
+                <Box py={4}>
+                  <Spinner size="sm" thickness="3px" color="brand.500" />
+                </Box>
+              )}
             </VStack>
           </VStack>
 
@@ -170,9 +172,7 @@ const VaultListModal = ({
               color="grey.75"
               borderColor="grey.75"
               w="full"
-              _hover={{
-                bg: '#f5f5f513',
-              }}
+              _hover={{ bg: '#f5f5f513' }}
               onClick={createVaultModalOnOpen}
               aria-label="Create new vault"
             >

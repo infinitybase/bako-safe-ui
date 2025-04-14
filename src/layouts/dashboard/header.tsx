@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Address } from 'fuels';
+import { Address, Network } from 'fuels';
 import React, { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
@@ -32,9 +32,15 @@ import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { useUserWorkspacesRequest } from '@/modules';
+import { queryClient } from '@/config';
+import {
+  IDefaultMessage,
+  SocketEvents,
+  useUserWorkspacesRequest,
+} from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
@@ -99,6 +105,7 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const name = mySettingsRequest.data?.name ?? '';
@@ -129,6 +136,14 @@ const UserBox = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
+    (message) => {
+      if (message.type === SocketEvents.SWITCH_NETWORK) {
+        queryClient.invalidateQueries();
+      }
+    },
+  ]);
 
   const b256UserAddress =
     authDetails.userInfos?.address &&
@@ -348,14 +363,16 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      minW="12px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
                       position="absolute"
                       top={-1}
                       right={-1}
-                      px={unreadCounter >= 10 ? 0.5 : 0}
+                      px={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>
@@ -373,17 +390,19 @@ const UserBox = () => {
             {unreadCounter > 0 && isMobile && (
               <Text
                 fontSize="xs"
+                minW="20px"
+                h="20px"
+                lineHeight="18px"
                 rounded="full"
                 bgColor="error.600"
                 color="white"
-                border="none"
-                w="16px"
                 textAlign="center"
                 position="absolute"
                 right={-2}
                 top={-2}
+                px={unreadCounter > 99 ? '0.5' : '0'}
               >
-                {unreadCounter}
+                {unreadCounter > 99 ? '+99' : unreadCounter}
               </Text>
             )}
           </HStack>
@@ -479,10 +498,13 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      w="16px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
+                      px={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>

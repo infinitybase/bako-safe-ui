@@ -46,7 +46,6 @@ const useVaultTransactionsList = ({
     hasNextPage,
     fetchNextPage,
     refetch,
-    queryKey,
   } = useVaultTransactionsRequest({
     predicateId: vaultId ? [vaultId] : undefined,
     status: filter ? [filter] : undefined,
@@ -84,7 +83,6 @@ const useVaultTransactionsList = ({
       hasNextPage,
       fetchNextPage,
       refetch,
-      queryKey,
     },
     handlers: {
       selectedTransaction,
