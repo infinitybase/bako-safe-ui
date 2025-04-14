@@ -62,6 +62,10 @@ export type SignInPayload = {
   name?: string;
 };
 
+export type UserSettings = {
+  inactivesPredicates: string[];
+};
+
 export type SignInResponse = {
   accessToken: string;
   address: string;
@@ -77,7 +81,7 @@ export type SignInResponse = {
     publicKey: string;
   };
   provider: string;
-  settings?: Record<string, any>;
+  settings?: UserSettings;
 };
 
 export type GetByHardwareResponse = {
@@ -90,9 +94,6 @@ export type GetByNameResponse = {
 
 export type CheckNicknameResponse = {
   type: TypeUser;
-};
-export type UserSettings = {
-  inactivesPredicates: string[];
 };
 
 export type AuthenticateParams = {
