@@ -1,11 +1,26 @@
-import { Avatar, Badge, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Avatar,
+  Badge,
+  Flex,
+  HStack,
+  Icon,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { memo, useMemo } from 'react';
+import { LuUser2, LuUsers2 } from 'react-icons/lu';
 
-import { Card, CardProps, UsersIcon } from '@/components';
+import { Card, CardProps } from '@/components';
 import { AddressUtils } from '@/modules/core';
+import {
+  useTransactionsSignaturePending,
+  WaitingSignatureBadge,
+} from '@/modules/transactions';
 
 import { PredicateWorkspace } from '../../services';
 
 interface VaultDrawerBoxProps extends CardProps {
+  id?: string;
   isActive?: boolean;
   name: string;
   address: string;
@@ -16,8 +31,35 @@ interface VaultDrawerBoxProps extends CardProps {
   root?: boolean;
 }
 
-const VaultItemBox = (props: VaultDrawerBoxProps) => {
-  const { isActive, name, members, root, address, ...rest } = props;
+const VaultItemBoxComponent = ({
+  isActive,
+  name,
+  address,
+  members,
+  root,
+  id,
+  ...rest
+}: VaultDrawerBoxProps) => {
+  const isPending = useTransactionsSignaturePending([id!]);
+  const showPending = isPending.data?.transactionsBlocked;
+  const needSignature = isPending.data?.pendingSignature;
+
+  const userIcon = useMemo(
+    () => (members === 1 ? LuUser2 : LuUsers2),
+    [members],
+  );
+
+  const RenderStatusBadge = useMemo(() => {
+    if (!showPending && !needSignature) return null;
+
+    return (
+      <WaitingSignatureBadge
+        isLoading={isPending.isLoading}
+        quantity={isPending.data?.ofUser ?? 0}
+        label={needSignature ? 'Pending Signature' : 'Pending Transaction'}
+      />
+    );
+  }, [isPending.data?.ofUser, isPending.isLoading, needSignature, showPending]);
 
   return (
     <Card
@@ -26,13 +68,13 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
       cursor="pointer"
       borderColor={isActive ? 'brand.500' : 'dark.100'}
       borderWidth="1px"
-      display="flex"
-      flexDir="column"
-      justifyContent="center"
+      h="76px"
       p={4}
+      display="flex"
+      alignItems="center"
     >
-      <HStack width="100%" alignItems="center" spacing={2} h="48px">
-        <HStack flex={1} alignItems="center" h="full" spacing={3}>
+      <Flex w="100%" align="center" justify="space-between">
+        <HStack spacing={4} align="center">
           <Avatar
             variant="roundedSquare"
             color="grey.250"
@@ -48,26 +90,7 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
               },
             }}
           />
-          <VStack
-            alignItems="flex-start"
-            spacing={1}
-            justifyContent="center"
-            h="full"
-          >
-            {/* Commented out this workspace logic */}
-            {/* {!isSingleWorkspace && (
-            <HStack>
-              <Icon as={HandbagIcon} fontSize={14} color="grey.200" />
-              <Text
-                maxW={isExtraSmall ? 40 : 48}
-                color="grey.75"
-                fontSize="xs"
-                isTruncated
-              >
-                {workspace?.name}
-              </Text>
-            </HStack>
-          )} */}
+          <VStack spacing={2} align="flex-start">
             <Text
               variant="subtitle"
               isTruncated
@@ -79,58 +102,48 @@ const VaultItemBox = (props: VaultDrawerBoxProps) => {
               {name}
             </Text>
             <Text
-              variant="subtitle"
+              fontSize="xs"
+              color="grey.500"
+              lineHeight="16px"
               isTruncated
               maxW={{ base: 120, xs: 250 }}
-              color="grey.550"
-              fontSize={12}
-              lineHeight="16px"
             >
               {AddressUtils.format(address ?? '', 4)}
             </Text>
           </VStack>
         </HStack>
 
-        <VStack
-          alignItems="center"
-          justifyContent={'center'}
-          h="full"
-          spacing={0}
-        >
-          <HStack
-            w={'full'}
-            spacing={1}
-            justifyContent="flex-end"
-            alignItems="flex-start"
-            paddingY={1}
-            h={'full'}
-          >
-            <Text
-              color="grey.250"
-              fontWeight={500}
-              fontSize={10}
-              lineHeight="1.4"
-              letterSpacing={'5%'}
-            >
-              {members}
-            </Text>
-            <UsersIcon fontSize={14} color={'grey.250'} />
-          </HStack>
-          {root && (
-            <Badge
-              variant="gray"
-              fontSize="2xs"
-              color="grey.75"
-              h={5}
-              borderRadius={20}
-            >
-              Personal
-            </Badge>
+        <VStack spacing={2} align="flex-end">
+          {members !== undefined && (
+            <HStack spacing={1} align="center">
+              <Text fontSize="sm" color="grey.75" lineHeight="20px">
+                {members}
+              </Text>
+              <Icon as={userIcon} boxSize={5} color="grey.75" />
+            </HStack>
+          )}
+
+          {(showPending || root) && (
+            <HStack spacing={2}>
+              {RenderStatusBadge}
+              {root && (
+                <Badge
+                  variant="gray"
+                  fontSize="2xs"
+                  color="grey.75"
+                  h="20px"
+                  px={3}
+                  borderRadius="full"
+                >
+                  Personal
+                </Badge>
+              )}
+            </HStack>
           )}
         </VStack>
-      </HStack>
+      </Flex>
     </Card>
   );
 };
 
-export { VaultItemBox };
+export const VaultItemBox = memo(VaultItemBoxComponent);
