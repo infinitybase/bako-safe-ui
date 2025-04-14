@@ -23,6 +23,8 @@ import { useIsWorkspaceReady } from '../useIsWorkspaceReady';
 import { useWorkspace } from '../useWorkspace';
 
 const useWorkspaceDetails = () => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
   const { fuelsTokens, isLoading: isFuelTokensLoading } =
     useGetFuelsTokensListRequest();
 

@@ -10,6 +10,8 @@ export type IWorkspaceContext = ReturnType<typeof useWorkspaceDetails>;
 const WorkspaceContext = createContext<IWorkspaceContext | null>(null);
 
 const WorkspaceProvider = ({ children }: { children: React.ReactNode }) => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
   const workspaceDetails = useWorkspaceDetails();
   const { isFromDapp } = useCurrentPath();
 
