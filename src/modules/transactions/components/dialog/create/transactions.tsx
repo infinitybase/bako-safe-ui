@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Address, bn, isB256 } from 'fuels';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AmountInput, Autocomplete, UserAddIcon } from '@/components';
@@ -321,16 +321,26 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
   //   return 450;
   // };
 
-  const isEth = NativeAssetId;
-  const asset = assets.assets?.find((a) => a.assetId === isEth);
-  const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
+  const [ethAssetId, setEthAssetId] = useState<string | undefined>();
+
+  useEffect(() => {
+    const fetchEthAssetId = async () => {
+      const provider = await providerInstance;
+      const baseAssetId = await provider.getBaseAssetId();
+      setEthAssetId(baseAssetId);
+    };
+
+    fetchEthAssetId();
+  }, [providerInstance]);
 
   const { hasEthForFee } = useMemo(() => {
+    if (!ethAssetId) return { hasEthForFee: false };
+
     let feeAlreadyAdded = false;
 
     const used = transactions.fields.reduce((acc, _, index) => {
       const transaction = form.watch(`transactions.${index}`);
-      if (transaction.asset !== isEth) return acc;
+      if (transaction.asset !== ethAssetId) return acc;
 
       const amount = Number(transaction.amount || 0);
       let fee = 0;
@@ -343,13 +353,16 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
       return acc + amount + fee;
     }, 0);
 
+    const asset = assets.assets?.find((a) => a.assetId === ethAssetId);
+    const totalEth = asset?.amount ? bn(asset.amount).formatUnits() : 0;
+
     const hasEnough = Number(totalEth) >= Number(used.toFixed(9));
 
     return {
       totalEthUsed: used,
       hasEthForFee: hasEnough,
     };
-  }, [transactions.fields, totalEth, form, isEth]);
+  }, [transactions.fields, form, assets.assets, ethAssetId]);
 
   return (
     <Accordion
@@ -411,7 +424,7 @@ const TransactionAccordions = (props: TransactionAccordionProps) => {
             borderWidth={1}
             borderColor={
               !hasEthForFee &&
-              transaction.asset === isEth &&
+              transaction.asset === ethAssetId &&
               !isCurrentAmountZero
                 ? 'red.500'
                 : 'grey.925'

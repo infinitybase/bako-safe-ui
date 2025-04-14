@@ -89,7 +89,6 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
   const resolveTransactionCosts = useMutation({
     mutationFn: TransactionService.resolveTransactionCosts,
     onError: (error) => {
-      console.log(form.watch(`transactions.${accordion.index}.amount`));
       if (
         error.message.includes('255 coin limit') ||
         error.message.includes('no coins')
@@ -368,7 +367,7 @@ const useCreateTransaction = (props?: UseCreateTransactionParams) => {
         if (startsWithZeroDecimal(sanitizedAmount)) return sanitizedAmount;
 
         let floatAmount = parseFloat(sanitizedAmount);
-        if (isNaN(floatAmount)) throw new Error(`Valor inválido: ${amount}`);
+        if (isNaN(floatAmount)) throw new Error(`Invalid Value: ${amount}`);
 
         if (floatAmount >= 100) {
           floatAmount = Math.floor(floatAmount);
