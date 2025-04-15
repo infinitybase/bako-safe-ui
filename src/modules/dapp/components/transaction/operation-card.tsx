@@ -1,4 +1,5 @@
 import { Avatar, Box, Flex, Icon, Text, VStack } from '@chakra-ui/react';
+import { MdOutlineContacts, MdOutlineSend } from 'react-icons/md';
 
 import { UseTransactionSocket } from '../../hooks';
 import {
@@ -17,7 +18,7 @@ export function DappTransactionOperationCard({
 }: DappTransactionCardProps) {
   const isContract = operation.type === TxCategory.CONTRACTCALL;
   const isTransfer = operation.type === TxCategory.SEND;
-
+  console.log(isContract, isTransfer, vault, operation);
   return (
     <VStack spacing="0" align="stretch" w="100%">
       {/* Vault 1 */}
@@ -47,7 +48,7 @@ export function DappTransactionOperationCard({
       <Flex ml="18px" pl="9px" borderLeft="2px solid" borderColor="gray.500">
         <VStack spacing="0" align="flex-start">
           <Flex align="center" gap="8px" py="1">
-            <Icon as={MdOutlineContract} color="yellow.500" boxSize="5" />
+            <Icon as={MdOutlineContacts} color="yellow.500" boxSize="5" />
             <Text fontSize="sm" color="orange.400" fontWeight="medium">
               Calling contract
             </Text>

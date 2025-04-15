@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { UseTransactionSocket } from '../../hooks';
 import { SimplifiedOperation } from '../../services/simplify-transaction';
-import { DappTransaction } from '.';
+import { DappTransactionOperationCard } from './operation-card';
 
 const MotionBox = motion(Box);
 
@@ -31,7 +31,7 @@ function DappTransactionOperation({
           overflow="hidden"
           boxShadow="0px 2px 6px -1px rgba(32, 32, 32, 0.1), 0px 0px 0px 1px rgba(32, 32, 32, 0.12)"
         >
-          <DappTransaction.Operation vault={vault!} operation={operation} />
+          <DappTransactionOperationCard vault={vault!} operation={operation} />
         </Box>
       </Flex>
 
