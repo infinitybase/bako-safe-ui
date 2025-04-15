@@ -20,6 +20,11 @@ export enum SocketEvents {
   TRANSACTION_CREATED = '[CREATED]',
   TRANSACTION_SIGNED = '[SIGNED]',
   TRANSACTION_CANCELLED = '[CANCELLED]',
+
+  CHANGE_NETWORK = '[CHANGE_NETWORK]',
+  NETWORK_CHANGED = '[NETWORK_CHANGED]',
+
+  SWITCH_NETWORK = '[SWITCH_NETWORK]',
 }
 
 export enum SocketRealTimeNotifications {
@@ -40,13 +45,13 @@ export interface IEventTX_CREATE {
   sign?: boolean;
 }
 
-export interface IDefaultMessage {
+export interface IDefaultMessage<D extends any> {
   username: string;
   room: string;
   to: SocketUsernames;
   type: SocketEvents;
   request_id: string;
-  data: any;
+  data: D;
 }
 
 export interface ISocketConnectParams {

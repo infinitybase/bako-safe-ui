@@ -16,8 +16,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useFuel } from '@fuels/react';
-import { Address } from 'fuels';
-import { useEffect } from 'react';
+import { Address, Network } from 'fuels';
+import React, { useEffect } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import logo from '@/assets/bakoLogoWhite.svg';
@@ -32,9 +32,15 @@ import { DisconnectIcon } from '@/components/icons/disconnect';
 import { FeedbackIcon } from '@/components/icons/feedback';
 import { NetworkIcon } from '@/components/icons/network';
 import { SettingsTopMenuIcon } from '@/components/icons/settings-top-menu';
-import { useUserWorkspacesRequest } from '@/modules';
+import { queryClient } from '@/config';
+import {
+  IDefaultMessage,
+  SocketEvents,
+  useUserWorkspacesRequest,
+} from '@/modules';
 import { TypeUser } from '@/modules/auth/services';
 import { EConnectors } from '@/modules/core/hooks/fuel/useListConnectors';
+import { useSocketEvent } from '@/modules/core/hooks/socket/useSocketEvent';
 import { AddressUtils } from '@/modules/core/utils/address';
 import { NetworkDialog } from '@/modules/network/components/dialog';
 import { NetworkDrawer } from '@/modules/network/components/drawer';
@@ -47,7 +53,6 @@ import { useMySettingsRequest } from '@/modules/settings/hooks/useMySettingsRequ
 import { SelectWorkspaceDialog } from '@/modules/workspace/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { limitCharacters } from '@/utils';
-import React from 'react';
 
 const SpacedBox = chakra(Box, {
   baseStyle: {
@@ -99,6 +104,7 @@ const UserBox = () => {
     authDetails.userInfos?.address,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const name = mySettingsRequest.data?.name ?? '';
@@ -129,6 +135,14 @@ const UserBox = () => {
     setUnreadCounter(0);
     setUnreadCounter(unreadCounter);
   }, []);
+
+  useSocketEvent<IDefaultMessage<Network>>(SocketEvents.SWITCH_NETWORK, [
+    (message) => {
+      if (message.type === SocketEvents.SWITCH_NETWORK) {
+        queryClient.invalidateQueries();
+      }
+    },
+  ]);
 
   const b256UserAddress =
     authDetails.userInfos?.address &&
@@ -166,6 +180,7 @@ const UserBox = () => {
               alignItems="center"
               cursor={isWebAuthn ? 'pointer' : 'default'}
               onClick={networkPopoverState.onOpen}
+              aria-label={'Select networks'}
               spacing={isMobile ? 2 : 4}
               position="relative"
               border={'1px solid'}
@@ -347,14 +362,16 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      minW="12px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
                       position="absolute"
                       top={-1}
                       right={-1}
-                      px={unreadCounter >= 10 ? 0.5 : 0}
+                      px={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>
@@ -362,6 +379,7 @@ const UserBox = () => {
             </HStack>
             {!isMobile && (
               <Icon
+                aria-label={'Dropdown header'}
                 color="grey.200"
                 fontSize={{ base: 'sm', sm: 'lg' }}
                 as={FaChevronDown}
@@ -371,17 +389,19 @@ const UserBox = () => {
             {unreadCounter > 0 && isMobile && (
               <Text
                 fontSize="xs"
+                minW="20px"
+                h="20px"
+                lineHeight="18px"
                 rounded="full"
                 bgColor="error.600"
                 color="white"
-                border="none"
-                w="16px"
                 textAlign="center"
                 position="absolute"
                 right={-2}
                 top={-2}
+                px={unreadCounter > 99 ? '0.5' : '0'}
               >
-                {unreadCounter}
+                {unreadCounter > 99 ? '+99' : unreadCounter}
               </Text>
             )}
           </HStack>
@@ -477,10 +497,13 @@ const UserBox = () => {
                       bgColor="error.600"
                       color="white"
                       border="none"
-                      w="16px"
+                      minW="20px"
+                      h="20px"
+                      lineHeight="18px"
                       textAlign="center"
+                      px={unreadCounter > 99 ? '0.5' : '0'}
                     >
-                      {unreadCounter}
+                      {unreadCounter > 99 ? '+99' : unreadCounter}
                     </Text>
                   )}
                 </HStack>
@@ -538,7 +561,12 @@ const UserBox = () => {
               h="70px"
               mb={0}
             >
-              <HStack cursor={'pointer'} onClick={logout} spacing={4}>
+              <HStack
+                cursor={'pointer'}
+                onClick={logout}
+                spacing={4}
+                aria-label={'Disconnect'}
+              >
                 <Icon color="grey.75" fontSize="xl" as={DisconnectIcon} />
                 <Text color="grey.75" fontWeight={500}>
                   Disconnect

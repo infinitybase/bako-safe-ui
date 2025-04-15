@@ -10,14 +10,15 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react';
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+import { formatInTimeZone } from 'date-fns-tz';
 import { memo, useEffect, useMemo } from 'react';
 
 import { AddressUtils } from '@/modules/core';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { ITransactionHistory, TransactionHistoryType } from '../../services';
-
 interface TransactionStepperProps {
   steps: ITransactionHistory[];
 }
@@ -212,7 +213,12 @@ const TransactionStepper = memo(({ steps }: TransactionStepperProps) => {
                     }}
                   >
                     <Text variant="description" color="grey.425" fontSize="xs">
-                      {format(parseISO(step.date), 'EEE MMM d yyyy HH:mm:s')}
+                      {formatInTimeZone(
+                        parseISO(step.date),
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        'EEE, do MMM, hh:mm a',
+                        { locale: enUS },
+                      )}
                     </Text>
                   </StepDescription>
                 </Box>

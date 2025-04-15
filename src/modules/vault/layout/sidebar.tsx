@@ -166,6 +166,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
           <SidebarMenu.Container
             isActive={menuItems.transactions}
+            id={'transactions_tab_sidebar'}
             cursor={'pointer'}
             onClick={() =>
               handleClick(
@@ -193,6 +194,7 @@ const Sidebar = ({ onDrawer, ...rest }: SidebarProps) => {
 
           <SidebarMenu.Container
             isActive={menuItems.settings}
+            id={'settings_tab_sidebar'}
             onClick={() =>
               handleClick(
                 route.navigate(
