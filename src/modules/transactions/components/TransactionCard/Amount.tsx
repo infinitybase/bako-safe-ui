@@ -1,9 +1,9 @@
 import {
-  type BoxProps,
   Flex,
   HStack,
   Text,
   useMediaQuery,
+  type BoxProps,
 } from '@chakra-ui/react';
 import type { ITransferAsset } from 'bakosafe';
 import { bn } from 'fuels';

@@ -104,13 +104,6 @@ const CreateTransactionDialog = (props: Omit<DialogModalProps, 'children'>) => {
       </Dialog.Body>
 
       <VStack
-        // Logic to fix buttons in the footer
-        // position={isMobile ? 'absolute' : 'unset'}
-        // zIndex={999}
-        // bottom={0}
-        // left={0}
-        // right={0}
-        // px={isSmall ? 6 : 'unset'}
         w="full"
         bg={isMobile ? 'dark.950' : 'unset'}
         maxW={480}

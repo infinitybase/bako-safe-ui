@@ -20,6 +20,13 @@ export interface ITransactionField {
   resolvedLabel?: string;
 }
 
+export interface ITransactionForm {
+  name?: string;
+  handle?: string;
+  resolver?: string;
+  transactions?: ITransactionField[];
+}
+
 export type UseCreateTransactionFormParams = {
   assets?: { assetId: string; amount: string }[];
   nfts?: { assetId: string }[];
@@ -38,7 +45,9 @@ const useCreateTransactionForm = (params: UseCreateTransactionFormParams) => {
 
   const assetIdsAndAddresses = fuelsTokens?.flatMap((item) =>
     item.networks
-      ?.map((network) => network['assetId'] ?? network['address'])
+      ?.map((network) =>
+        network.type === 'fuel' ? network.assetId : network.address,
+      )
       .filter(Boolean),
   );
 

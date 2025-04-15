@@ -2,11 +2,11 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { Sidebar } from '../../modules/vault/layout/sidebar';
 import { Container } from './container';
 import { Content } from './content';
 import { Drawer } from './drawer';
 import { Header } from './header';
-import { Sidebar } from '../../modules/vault/layout/sidebar';
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

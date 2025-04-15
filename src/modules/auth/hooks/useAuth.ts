@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { useFuel } from '@fuels/react';
 import { Provider } from 'fuels';
 import { useState } from 'react';
@@ -32,8 +33,6 @@ export type WorkspaceAuthentication = {
   workspace: string;
 };
 
-//coment
-//coment
 const useAuth = (): IUseAuthReturn => {
   const { infos, isLoading, isFetching, refetch } = useUserInfoRequest();
   const [invalidAccount, setInvalidAccount] = useState(false);

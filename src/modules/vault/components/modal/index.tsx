@@ -10,14 +10,13 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback } from 'react';
 
-import { Dialog } from '@/components';
+import { CustomSkeleton, Dialog } from '@/components';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 
 import { CreateVaultDialog } from '../dialog';
-import { VaultItemBox } from './box';
 import { useVaultDrawer } from './hook';
+import { VaultList } from './VaultList';
 
 interface VaultListModalProps extends Omit<DrawerProps, 'children'> {
   vaultId: string;
@@ -53,27 +52,6 @@ const VaultListModal = ({
   const isLoadingVaults = inView.inView
     ? !isLoading
     : !isLoading && !isFetching;
-
-  const renderVaultBox = useCallback(
-    (vault: (typeof vaults)[0]) => {
-      const handleClick = () => drawer.onSelectVault(vault);
-
-      return (
-        <VaultItemBox
-          key={vault.id}
-          id={vault.id}
-          mt={4}
-          name={vault.name}
-          address={vault.predicateAddress}
-          root={vault.root}
-          isActive={vaultId === vault.id}
-          members={vault.members?.length}
-          onClick={handleClick}
-        />
-      );
-    },
-    [drawer, vaultId],
-  );
 
   return (
     <>
@@ -154,7 +132,13 @@ const VaultListModal = ({
                   <Spinner size="md" thickness="4px" color="brand.500" />
                 </VStack>
               )}
-              {vaults.map(renderVaultBox)}
+              <CustomSkeleton isLoaded={isLoadingVaults}>
+                <VaultList
+                  vaults={vaults}
+                  currentVaultId={vaultId}
+                  onSelectVault={drawer.onSelectVault}
+                />
+              </CustomSkeleton>
               <Box ref={inView.ref} />
               {isFetching && vaults.length > 0 && (
                 <Box py={4}>
@@ -190,6 +174,7 @@ const VaultListModal = ({
               w="full"
               _hover={{ bg: '#f5f5f513' }}
               onClick={createVaultModalOnOpen}
+              aria-label="Create new vault"
             >
               Create new vault
             </Button>
