@@ -1,3 +1,47 @@
+## [1.3.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.2.0...v1.3.0) (2025-04-15)
+
+### Features
+
+* add playwright to project ([c5f0b23](https://github.com/infinitybase/bako-safe-ui/commit/c5f0b237ebef0917ddcb7e8555adddda908ccab0))
+* **connector:** add info acc, change requesting from to bottom and size list in page select vault ([0847c7e](https://github.com/infinitybase/bako-safe-ui/commit/0847c7e8d8eed25eae1532fa23de5d896c4b1123))
+* **connector:** change bottom card to attached to the content ([918135f](https://github.com/infinitybase/bako-safe-ui/commit/918135f82aea705de69daaae7526bce6fd10e120))
+* **connector:** change vaults card, create users component icon ([a132a60](https://github.com/infinitybase/bako-safe-ui/commit/a132a6026499e506499169ad8c8572c5add69a64))
+* **connector:** remove avatar and change spacing and colors in component requesting from ([cfbbc45](https://github.com/infinitybase/bako-safe-ui/commit/cfbbc45c2e44b20f1748eb59bc10db8a6a4dcd9a))
+* **dapp:** apply visual changes, refactor getting info data in hook ([dd6bfe0](https://github.com/infinitybase/bako-safe-ui/commit/dd6bfe02b8bf3f8d63bdebf933c04268d8b2f6dc))
+* **dapp:** change validation hostname and open url method ([044d098](https://github.com/infinitybase/bako-safe-ui/commit/044d098fdf59767bd35e71599d1b0300badc6947))
+* **dapp:** create new hook and add new socket event ([7e9a998](https://github.com/infinitybase/bako-safe-ui/commit/7e9a99870c34210d68859793e7aeef02d51c11f2))
+* **dapp:** create page and components to handle dapp switch network, add route for it ([012bff1](https://github.com/infinitybase/bako-safe-ui/commit/012bff1a1659ce8d0ac55ea5b1a6dd8411413bad))
+* **dapp:** create request change network dapp, apply socket staging changes ([0e8a869](https://github.com/infinitybase/bako-safe-ui/commit/0e8a869c7f61cb68b63103fe2d212f170c255859))
+* **e2e:** add fuel wallet extension and enable webauthn ([12bbf81](https://github.com/infinitybase/bako-safe-ui/commit/12bbf810deb4cba622a9afd8ce2c4ad147a367a2))
+* **network:** switch network in app when change on the connector ([78c41d8](https://github.com/infinitybase/bako-safe-ui/commit/78c41d8601102921667c84f0c5612e5ba77eee7e))
+* **transactions:** block create transactions when all assets used and fix address ([3cb245b](https://github.com/infinitybase/bako-safe-ui/commit/3cb245b61fa1cc890414cd7e8d0e1c90ed13adb7))
+* **vaults:** improve performance of vaults selector ([b9ddbff](https://github.com/infinitybase/bako-safe-ui/commit/b9ddbffbf0889a423334cc8a7ae1d40d2065a9c2))
+* **vaults:** refatoring vault selector, include pending transaction ([65f0a47](https://github.com/infinitybase/bako-safe-ui/commit/65f0a47c775f3836690d01981d9bcecd0dd0325b))
+
+### Bug Fixes
+
+* **connector:** set predicate id in vault box connector ([f7a30c1](https://github.com/infinitybase/bako-safe-ui/commit/f7a30c1e5890e1e23cacb933e1e5aeb4394982d3))
+* **header:** notifications on mobile number adjust ([4140508](https://github.com/infinitybase/bako-safe-ui/commit/4140508de24ed56fa4c24b877e764bb27e189e62))
+* merge conflict ([2aa861f](https://github.com/infinitybase/bako-safe-ui/commit/2aa861f242cc8411adf6901f7293a5bfddc83d24))
+* remove duplicated property ([1b27267](https://github.com/infinitybase/bako-safe-ui/commit/1b272679b17d810180deb0463d932a9e7184c9ae))
+* remove duplicated property ([5045d02](https://github.com/infinitybase/bako-safe-ui/commit/5045d0252ee79aa28026915ecc5a3a15b82b5127))
+* **review:** back maxW to original ([41aa487](https://github.com/infinitybase/bako-safe-ui/commit/41aa487cf0ffa01f2e207790ffa90b336f0bc497))
+* **review:** back padding to 4 ([8421694](https://github.com/infinitybase/bako-safe-ui/commit/842169499836a73f1010e2aaa4469affba0bfae2))
+* **transaction:** change date format in transaction history ([90a6077](https://github.com/infinitybase/bako-safe-ui/commit/90a60774e0fe6f1ddab53da382d3e4cc2d9371d6))
+* **transaction:** fix the addres card of transaction ([5b455c9](https://github.com/infinitybase/bako-safe-ui/commit/5b455c997758f192e3560ecd5d5b0e6324a35c97))
+* **transaction:** improve logic of recipient label ([9ecc494](https://github.com/infinitybase/bako-safe-ui/commit/9ecc494ddd44b446f35e4b25cb0fd96ed7c3de01))
+* **transactions:** fix addres in recipient, add case when amount input null ([3d14fea](https://github.com/infinitybase/bako-safe-ui/commit/3d14feaff6928136c96980ab588a8856c1c6a682))
+* **ui:** cancel button, nft align, nft skeleton, settings text, notification icon ([74d8279](https://github.com/infinitybase/bako-safe-ui/commit/74d827936ab37a5d1066b47855a766161adeafb6))
+* **vault:** add default image case nft does not show image, remover hover from balance tab ([95c03a9](https://github.com/infinitybase/bako-safe-ui/commit/95c03a916d070175054a74d08f5cadc003ae577b))
+* **vault:** add spinner to show loading on selector vault modal, and useMeme instead of callback ([9207cc7](https://github.com/infinitybase/bako-safe-ui/commit/9207cc753b58744506688808291b9dbc4d87b0ba))
+* **vault:** cleanup transactions query on unmount for prevent duplicate requests ([0c38246](https://github.com/infinitybase/bako-safe-ui/commit/0c3824648eeffe9ee7f79e32adc9c8e4ea57dbf7))
+* **vault:** disable refetch on window focus in useVaultTransactionsRequest ([3e63f39](https://github.com/infinitybase/bako-safe-ui/commit/3e63f39ea7a4a4e6cda3c5585bbf9b60e928705b))
+* **vault:** enable refetch on window focus in useVaultTransactionsRequest ([c2050e2](https://github.com/infinitybase/bako-safe-ui/commit/c2050e2d4c0b02b81e4c8ded4f92c4867e393a9a))
+* **vault:** refetch assets when cancel transaction ([eec3943](https://github.com/infinitybase/bako-safe-ui/commit/eec394384e00dd255e8ddddb7becc3bcba1c70af))
+* **vaults:** adjust after build ([ccbc1d4](https://github.com/infinitybase/bako-safe-ui/commit/ccbc1d46ad64dec14c01c71961c896710a96890f))
+* **vaults:** adjust with back for pending signature and pending transaction ([90d300d](https://github.com/infinitybase/bako-safe-ui/commit/90d300d7b2d0ec34ab4c09abb225ccef683ee91d))
+* **vault:** set staleTime to Infinity in useVaultTransactionsRequest ([141de1b](https://github.com/infinitybase/bako-safe-ui/commit/141de1b54a2a939a245d2c548f15857f3b36f823))
+
 ## [1.2.0](https://github.com/infinitybase/bako-safe-ui/compare/v1.1.0...v1.2.0) (2025-04-08)
 
 ### Features
