@@ -2,6 +2,7 @@ import { AssetAmount } from '@fuel-wallet/types';
 import type {
   AddressType,
   CallResult,
+  ChainName,
   CoinTransactionRequestInput,
   CoinTransactionRequestOutput,
   InputContract,
@@ -67,6 +68,7 @@ export type ContractCallMetadata = {
 };
 
 export type SimplifiedAddress = {
+  chain: ChainName | undefined;
   address: string;
   type: number; // 0 for contract, 1 for account
 };
@@ -450,6 +452,8 @@ export function getMainOperations(
     if (hasAssetsComingBack) {
       const mainOperation: SimplifiedOperation = {
         ...baseOperation,
+        from: { ...baseOperation.from, chain: undefined },
+        to: { ...baseOperation.to, chain: undefined },
         assetsToFrom,
         operations: [...opsFromAccount, ...opsToCurrentAccount],
       };
@@ -457,6 +461,8 @@ export function getMainOperations(
     } else {
       const mainOperation: SimplifiedOperation = {
         ...baseOperation,
+        from: { ...baseOperation.from, chain: undefined },
+        to: { ...baseOperation.to, chain: undefined },
         operations: [...opsFromAccount],
       };
       mainOperations.push(mainOperation);

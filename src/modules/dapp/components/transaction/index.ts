@@ -1,15 +1,13 @@
 import { DappTransactionFee } from './fee';
-import {
-  DappTransactionOperation,
-  DappTransactionOperationSekeleton,
-} from './operation';
+import { DappTransactionOperation } from './operation';
+import { DappTransactionOperationSection } from './operationSection';
 import { DappRequestingFrom } from './requesting-from';
 
 const DappTransaction = {
   Fee: DappTransactionFee,
   Operation: DappTransactionOperation,
-  OperationSkeleton: DappTransactionOperationSekeleton,
   RequestingFrom: DappRequestingFrom,
+  OperationSection: DappTransactionOperationSection,
 };
 
 export { DappTransaction };

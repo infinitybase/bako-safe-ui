@@ -1,94 +1,102 @@
-import { Box, HStack, VStack } from '@chakra-ui/react';
-import { Operation } from 'fuels';
+import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
 
-import { CustomSkeleton } from '@/components';
-import { DappTransactionAsset } from '@/modules/dapp/components/transaction/asset';
-import { DappTransactionFromTo } from '@/modules/dapp/components/transaction/from-to';
-import { RecipientCard } from '@/modules/dapp/components/transaction/recipient';
 import { useNetworks } from '@/modules/network/hooks';
 import { useWorkspaceContext } from '@/modules/workspace/WorkspaceProvider';
 import { formatAssetAmount } from '@/utils';
 
+import { UseTransactionSocket } from '../../hooks';
+import { SimplifiedOperation } from '../../services/simplify-transaction';
+
 interface OperationProps {
-  vault?: {
-    name: string;
-    predicateAddress: string;
-  };
-  operation?: Operation;
+  vault?: UseTransactionSocket['vault'];
+  operation?: SimplifiedOperation;
 }
 
-export const DappTransactionOperationSekeleton = () => (
-  <VStack w="full">
-    <HStack spacing={0} w="full">
-      <RecipientCard justifyContent="space-between">
-        {/*<CustomSkeleton w="full" h={5} borderRadius={2} />*/}
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-      <RecipientCard justifyContent="space-between">
-        <CustomSkeleton w="full" h="100px" borderRadius={2} />
-        <CustomSkeleton w="full" h={8} borderRadius={2} />
-      </RecipientCard>
-    </HStack>
-    <RecipientCard display="flex" flexDirection="row" gap={3} minH="95px">
-      <CustomSkeleton w={200} h="70px" borderRadius={2} />
-      <CustomSkeleton w="full" h="70px" borderRadius={2} />
-    </RecipientCard>
-  </VStack>
-);
+const formatUsdValue = (amount: string, price?: number) => {
+  if (!price) return '$0.00';
+  const value = parseFloat(amount) * price;
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
 
 const DappTransactionOperation = ({ vault, operation }: OperationProps) => {
-  const { assetsMap, fuelsTokens } = useWorkspaceContext();
-  const { to, assetsSent, from } = operation ?? {};
-
+  const { assetsMap, fuelsTokens, tokensUSD } = useWorkspaceContext();
   const { currentNetwork } = useNetworks();
+  const { to, assetsToFrom, from } = operation ?? {};
+  if (!to || !from || !vault || !operation) return null;
 
-  if (!to || !from || !vault) return null;
+  // Processa os assets
+  const processedAssets = assetsToFrom?.map((sent) => {
+    const assetInfo = assetsMap?.[sent.assetId] || {
+      name: 'Unknown',
+      symbol: 'UNKNOWN',
+      icon: '',
+      decimals: 18,
+    };
 
-  const assetData = assetsSent?.map((sent) => {
-    return assetsMap?.[sent.assetId] && assetsMap?.[sent.assetId]
-      ? { ...assetsMap?.[sent.assetId], amount: sent.amount }
-      : {
-          ...assetsMap?.['UNKNOWN'],
-          amount: sent.amount,
-        };
-  });
-
-  const assets = assetData?.map((data) => {
-    const assetAmount = formatAssetAmount({
+    const amount = formatAssetAmount({
       fuelsTokens,
       chainId: currentNetwork.chainId,
-      assetId: data.assetId,
-      amount: data.amount,
+      assetId: sent.assetId,
+      amount: sent.amount,
     });
 
+    const usdPrice = tokensUSD.data?.[sent.assetId]?.usdAmount;
+    const usdValue = formatUsdValue(amount, usdPrice);
+
     return {
-      icon: data?.icon,
-      amount: assetAmount,
-      assetId: data?.assetId,
-      name: data?.name,
-      slug: data?.slug,
+      ...assetInfo,
+      amount,
+      usdValue,
+      assetId: sent.assetId,
     };
   });
 
-  const hasAssets = !!assets?.length;
-
+  const bech32Address = vault.address;
+  const isVault = bech32Address === vault?.address;
+  const title = isVault ? vault?.name : 'Unknown';
+  //const primaryAsset = processedAssets?.[0];
+  console.log(operation, processedAssets);
   return (
-    <Box w="full" mb={7}>
-      <DappTransactionFromTo
-        from={{
-          address: from.address,
-          type: from.type,
-        }}
-        to={{
-          address: to.address,
-          type: to.type,
-        }}
-        vault={vault}
-        hasAssets={hasAssets}
-      />
-      {assets && <DappTransactionAsset assets={assets} />}
-    </Box>
+    <VStack>
+      <HStack>
+        <Avatar
+          mb={2}
+          name={title}
+          bgColor="grey.950"
+          variant="roundedSquare"
+          boxSize="40px"
+          fontSize="xs"
+          color="white"
+        />
+        <VStack>
+          {' '}
+          <Text
+            textAlign="center"
+            variant="title"
+            fontSize="sm"
+            mb={1}
+            noOfLines={1}
+          >
+            {title}
+          </Text>
+          <Text
+            textAlign="center"
+            variant="description"
+            fontSize="xs"
+            color="grey.250"
+            mb={1}
+            noOfLines={1}
+          >
+            {vault.address}
+          </Text>
+        </VStack>
+      </HStack>
+    </VStack>
   );
 };
 

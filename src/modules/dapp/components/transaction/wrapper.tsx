@@ -1,13 +1,8 @@
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Flex, Spinner, useDisclosure, VStack } from '@chakra-ui/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import {
-  CustomSkeleton,
-  Dialog,
-  LineCloseIcon,
-  TransactionExpire,
-} from '@/components';
+import { Dialog, LineCloseIcon, TransactionExpire } from '@/components';
 import { Dapp } from '@/layouts/dapp';
 import { Container } from '@/layouts/dapp/container';
 import { useQueryParams } from '@/modules/auth/hooks';
@@ -65,10 +60,19 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   useEffect(() => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
-  console.log(transaction);
-  console.log(transactionSummary);
+
+  const showLoading = isLoadingTransactionSummary || !transactionSummary;
+
+  const { isOpen: mainOpen, onToggle: toggleMain } = useDisclosure({
+    defaultIsOpen: true,
+  });
+  const { isOpen: intermediateOpen, onToggle: toggleIntermediate } =
+    useDisclosure();
+  const { isOpen: unrelatedOpen, onToggle: toggleUnrelated } = useDisclosure();
+
   return (
     <Container>
+      {/* Barra de expiração fixa */}
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
         <TransactionExpire
           validAt={validAt}
@@ -76,13 +80,31 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           callBack={cancel}
         />
       </Box>
-      <Dapp.Content maxW={404} bg="dark.950">
+
+      {/* Overlay de loading com transição suave */}
+      <Flex
+        position="fixed"
+        top={0}
+        left={0}
+        w="full"
+        h="full"
+        justify="center"
+        align="center"
+        zIndex={500}
+        bg="dark.950"
+        transition="opacity 0.5s ease"
+        opacity={showLoading ? 1 : 0}
+        pointerEvents={showLoading ? 'auto' : 'none'}
+      >
+        <Spinner size="lg" color="primary.500" />
+      </Flex>
+
+      <Dapp.Content maxW={404} bg="dark.950" pb="250px">
         <Dapp.Section mb={-7}>
           <Dapp.Header
             title={title}
             description="Double-check transaction details before submission."
           />
-
           {isSafariBrowser && (
             <LineCloseIcon
               onClick={cancel}
@@ -97,105 +119,96 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
           )}
         </Dapp.Section>
 
-        <CustomSkeleton
-          isLoaded={!isLoadingTransactionSummary && !!transactionSummary}
-        >
-          {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
-          <Box ref={inView?.ref} />
-          {pendingSignerTransactions && (
-            <Dapp.Section maxW={356}>
-              <DappError />
-            </Dapp.Section>
-          )}
-          <VStack spacing={1} mb={-4} w="full">
-            {(isLoadingTransactionSummary || !transactionSummary) && (
-              <DappTransaction.OperationSkeleton />
-            )}
-            {transaction?.categorizedOperations.mainOperations?.map(
-              (operation, index) => (
-                <DappTransaction.Operation
-                  key={`${index}operation`}
-                  vault={{
-                    name: vault?.name || '',
-                    predicateAddress: vault?.address || '',
-                  }}
-                  operation={operation}
-                />
-              ),
-            )}
-            {transaction?.categorizedOperations.intermediateContractCalls?.map(
-              (operation, index) => (
-                <DappTransaction.Operation
-                  key={`${index}operation`}
-                  vault={{
-                    name: vault?.name || '',
-                    predicateAddress: vault?.address || '',
-                  }}
-                  operation={operation}
-                />
-              ),
-            )}
-            {transaction?.categorizedOperations.notRelatedToCurrentAccount?.map(
-              (operation, index) => (
-                <DappTransaction.Operation
-                  key={`${index}operation`}
-                  vault={{
-                    name: vault?.name || '',
-                    predicateAddress: vault?.address || '',
-                  }}
-                  operation={operation}
-                />
-              ),
-            )}
-          </VStack>
+        <Box ref={inView?.ref} />
 
-          <Dapp.Section>
-            <DappTransaction.RequestingFrom
-              mb={7}
-              name={name}
-              origin={origin}
-            />
+        {pendingSignerTransactions && (
+          <Dapp.Section maxW={356}>
+            <DappError />
           </Dapp.Section>
-          <DappTransaction.Fee
-            closePopover={closePopover}
-            fee={transactionSummary?.fee}
-          />
-          {/* Actions */}
+        )}
 
-          <Dialog.Actions
-            hideDivider
-            hidden={isLoadingTransactionSummary || !transactionSummary}
-            w="full"
-          >
-            {!pendingSignerTransactions ? (
-              <>
-                <Dialog.SecondaryAction
-                  size="md"
-                  onClick={cancel}
-                  isDisabled={primaryActionLoading}
-                  borderColor="grey.75"
-                  fontSize={14}
-                >
-                  Cancel
-                </Dialog.SecondaryAction>
-                {primaryActionButton}
-              </>
-            ) : (
-              <>
-                <Dialog.SecondaryAction
-                  size="lg"
-                  width="full"
-                  onClick={cancel}
-                  fontSize={14}
-                  isDisabled={primaryActionLoading}
-                >
-                  Back
-                </Dialog.SecondaryAction>
-              </>
-            )}
-          </Dialog.Actions>
-        </CustomSkeleton>
+        <VStack spacing={2} gap={2} w="full">
+          <DappTransaction.OperationSection
+            operations={transaction?.categorizedOperations.mainOperations || []}
+            isOpen={mainOpen}
+            onToggle={toggleMain}
+            vault={vault!}
+            sectionKey="main"
+          />
+          <DappTransaction.OperationSection
+            title="Intermediate contract calls"
+            operations={
+              transaction?.categorizedOperations.intermediateContractCalls || []
+            }
+            isOpen={intermediateOpen}
+            onToggle={toggleIntermediate}
+            vault={vault!}
+            sectionKey="intermediate"
+          />
+          <DappTransaction.OperationSection
+            title="Operations not related to your vault"
+            operations={
+              transaction?.categorizedOperations.notRelatedToCurrentAccount ||
+              []
+            }
+            isOpen={unrelatedOpen}
+            onToggle={toggleUnrelated}
+            vault={vault!}
+            sectionKey="unrelated"
+          />
+        </VStack>
       </Dapp.Content>
+
+      {/* Footer fixo centralizado */}
+      <Box
+        position="fixed"
+        bottom={0}
+        left="50%"
+        transform="translateX(-50%)"
+        w="full"
+        maxW={404}
+        px={4}
+        pt={4}
+        pb={6}
+        zIndex={200}
+        bg="dark.950"
+      >
+        <Dapp.Section>
+          <DappTransaction.RequestingFrom mb={5} name={name} origin={origin} />
+        </Dapp.Section>
+
+        <DappTransaction.Fee
+          closePopover={closePopover}
+          fee={transactionSummary?.fee}
+        />
+
+        <Dialog.Actions hidden={showLoading} w="full" mt={4} hideDivider={true}>
+          {!pendingSignerTransactions ? (
+            <>
+              <Dialog.SecondaryAction
+                size="md"
+                onClick={cancel}
+                isDisabled={primaryActionLoading}
+                borderColor="grey.75"
+                fontSize={14}
+              >
+                Cancel
+              </Dialog.SecondaryAction>
+              {primaryActionButton}
+            </>
+          ) : (
+            <Dialog.SecondaryAction
+              size="lg"
+              width="full"
+              onClick={cancel}
+              fontSize={14}
+              isDisabled={primaryActionLoading}
+            >
+              Back
+            </Dialog.SecondaryAction>
+          )}
+        </Dialog.Actions>
+      </Box>
     </Container>
   );
 };

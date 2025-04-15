@@ -17,7 +17,6 @@ export interface AssetInfoProps {
   asset: AssetInfo;
 }
 
-// TODO: Remove this mock data and get the real data from the API
 const FUEL_ASSET = {
   name: 'Fuel',
   slug: 'FUEL',
@@ -27,11 +26,8 @@ const FUEL_ASSET = {
 
 const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
   const assetInfo = useMemo(() => {
-    if (asset && asset.assetId === FUEL_ASSET.assetId) {
-      return {
-        ...FUEL_ASSET,
-        amount: asset.amount,
-      };
+    if (asset.assetId === FUEL_ASSET.assetId) {
+      return { ...FUEL_ASSET, amount: asset.amount };
     }
     return asset;
   }, [asset]);
@@ -41,46 +37,41 @@ const DappTransactionAssetInfo = ({ asset }: AssetInfoProps) => {
       key={assetInfo.assetId}
       as={HStack}
       w="full"
-      borderTopRadius={0}
-      bg="grey.825"
-      px={3}
+      borderRadius={8}
+      bg="grey.850"
+      px={4}
+      py={3}
       maxW={356}
       alignItems="center"
       justifyContent="space-between"
-      gap={4}
+      gap={3}
     >
-      <HStack maxW="190px">
+      <HStack maxW="200px" alignItems="center" spacing={3}>
         <Image
-          w={6}
-          h={6}
-          src={assetInfo?.icon ?? ''}
-          borderRadius={100}
+          boxSize={6}
+          src={assetInfo.icon ?? ''}
+          borderRadius="full"
           alt="Asset Icon"
           objectFit="cover"
         />
-        <VStack spacing={0}>
-          <Text
-            variant="subtitle"
-            fontSize={12}
-            color="grey.75"
-            alignSelf="start"
-          >
+        <VStack spacing={0} align="start">
+          <Text variant="subtitle" fontSize="xs" color="grey.50">
             {assetInfo.name}
           </Text>
           <AddressCopy
             flexDir="row-reverse"
             address={AddressUtils.format(assetInfo.assetId)!}
-            fontSize="xs"
+            fontSize="10px"
             addressToCopy={assetInfo.assetId}
-            w="100%"
             bg="transparent"
-            spacing={2}
+            spacing={1}
             p={0}
           />
         </VStack>
       </HStack>
-      <Box minW="max-content" mt={4}>
-        <Text variant="subtitle" color="grey.75" fontSize="xs">
+
+      <Box textAlign="right">
+        <Text variant="subtitle" fontSize="xs" color="grey.50">
           {assetInfo.amount} {assetInfo.slug}
         </Text>
       </Box>
@@ -94,11 +85,11 @@ export interface FeeProps {
 
 const DappTransactionAsset = ({ assets }: FeeProps) => {
   return (
-    <Box w="full">
+    <VStack w="full" spacing={3} align="stretch">
       {assets.map((asset) => (
         <DappTransactionAssetInfo key={asset.assetId} asset={asset} />
       ))}
-    </Box>
+    </VStack>
   );
 };
 
