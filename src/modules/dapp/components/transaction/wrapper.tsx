@@ -1,4 +1,4 @@
-import { Box, Divider, VStack } from '@chakra-ui/react';
+import { Box, VStack } from '@chakra-ui/react';
 import { ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -65,7 +65,8 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
   useEffect(() => {
     setClosePopover(inView.inView);
   }, [inView.inView]);
-
+  console.log(transaction);
+  console.log(transactionSummary);
   return (
     <Container>
       <Box position="fixed" top={0} w="full" zIndex={100} left={0}>
@@ -99,7 +100,6 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
         <CustomSkeleton
           isLoaded={!isLoadingTransactionSummary && !!transactionSummary}
         >
-          <Divider borderColor="dark.100" my={6} />
           {/* Essa box é usada como "parâmetro" para fechar o popover do max fee. */}
           <Box ref={inView?.ref} />
           {pendingSignerTransactions && (
@@ -161,7 +161,7 @@ const DappTransactionWrapper = (props: DappTransactionWrapperProps) => {
             fee={transactionSummary?.fee}
           />
           {/* Actions */}
-          <Divider borderColor="grey.950" w="full" my={6} />
+
           <Dialog.Actions
             hideDivider
             hidden={isLoadingTransactionSummary || !transactionSummary}
