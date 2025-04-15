@@ -243,6 +243,7 @@ const VaultConnector = () => {
                     members={members?.length}
                     address={predicateAddress}
                     root={root}
+                    id={id}
                     isActive={selectedVaultId === id}
                     isSingleWorkspace={workspace.single}
                     onClick={() => setSelectedVaultId(id)}

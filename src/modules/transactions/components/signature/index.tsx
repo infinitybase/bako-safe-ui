@@ -5,10 +5,11 @@ import { PendingIcon } from '@/components';
 interface WaitingSignatureBadgeProps {
   isLoading?: boolean;
   quantity: number;
+  label?: string;
 }
 
 const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
-  const { isLoading, quantity } = props;
+  const { isLoading, quantity, label = 'Pending Transaction' } = props;
 
   const has = quantity > 0;
 
@@ -29,8 +30,8 @@ const WaitingSignatureBadge = (props: WaitingSignatureBadgeProps) => {
 
   return (
     <Badge h={5} variant="yellow" fontSize="xs">
-      <Icon as={PendingIcon} fontSize={12} />
-      {`${quantity} pending transaction`}
+      <Icon as={PendingIcon} fontSize={12} mr={1} />
+      {`${quantity} ${label}`}
     </Badge>
   );
 };
