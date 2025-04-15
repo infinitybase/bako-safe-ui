@@ -53,32 +53,31 @@ const useBakoSafeCreateTransaction = ({
   return useBakoSafeMutation(
     TRANSACTION_QUERY_KEYS.DEFAULT,
     async (payload: IPayloadTransfer) => {
-      try {
-        const { hashTxId } = await vault.transaction({
-          name: payload.name!,
-          assets: payload.assets.map((asset) => {
-            const { units } = getAssetInfo(assetsMap, asset.assetId);
+      const { hashTxId } = await vault.transaction({
+        name: payload.name!,
+        assets: payload.assets.map((asset) => {
+          const { units } = getAssetInfo(assetsMap, asset.assetId);
 
-            return {
-              ...asset,
-              amount: bn
-                .parseUnits(asset.amount.replace(/,/g, ''), units)
-                .format(),
-            };
-          }),
-        });
+          return {
+            ...asset,
+            amount: bn
+              .parseUnits(asset.amount.replace(/,/g, ''), units)
+              .format(),
+          };
+        }),
+      });
 
-        const transaction = await TransactionService.getByHash(hashTxId, [
-          TransactionStatus.AWAIT_REQUIREMENTS,
-        ]);
+      const transaction = await TransactionService.getByHash(hashTxId, [
+        TransactionStatus.AWAIT_REQUIREMENTS,
+      ]);
 
-        onSuccess(transaction);
-        return transaction;
-      } catch (error) {
-        onError(error as Error);
-      }
+      return transaction;
     },
-    options,
+    {
+      onSuccess,
+      onError,
+      ...options,
+    },
   );
 };
 
